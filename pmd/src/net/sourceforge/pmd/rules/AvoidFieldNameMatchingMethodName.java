@@ -38,7 +38,7 @@ public class AvoidFieldNameMatchingMethodName extends AbstractRule {
 					if (fieldDeclaringType.equals(getDeclaringType(m))) {
 						String n = m.getMethodName();
 						if (n!=null && varName.equals(n.toLowerCase())) {
-							addViolation((RuleContext) data, node);
+							addViolation(data, node);
 						}
 					}
 				}

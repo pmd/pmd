@@ -14,7 +14,6 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -44,7 +43,7 @@ public class ImmutableField extends AbstractRule {
                 continue;
             }
             if (result == IMMUTABLE || ((result == CHECKDECL) && initializedInDeclaration(decl.getAccessNodeParent()))) {
-                addViolation((RuleContext)data, decl.getNode(), decl.getImage());
+                addViolation(data, decl.getNode(), decl.getImage());
             }
         }
         return super.visit(node, data);

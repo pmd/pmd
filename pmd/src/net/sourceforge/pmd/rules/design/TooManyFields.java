@@ -46,12 +46,7 @@ public class TooManyFields extends AbstractRule {
             int val = ((Integer)stats.get(k)).intValue();
             SimpleNode n = (SimpleNode) nodes.get(k);
             if (val>maxFields) {
-                // TODO add violation with 
-//				RuleContext ctx = (RuleContext) data;
-//				RuleViolation ruleViolation = createRuleViolation(ctx, node.getBeginLine(), MessageFormat.format(getMessage(), new Object[]{methodName}));
-//                ctx.getReport().addRuleViolation(ruleViolation);
-                addViolation((RuleContext) data, n);
-
+                addViolation( data, n);
             }
         }
         return data;

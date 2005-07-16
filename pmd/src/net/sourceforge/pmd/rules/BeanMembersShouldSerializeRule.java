@@ -11,7 +11,6 @@ import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -55,7 +54,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             boolean hasGetMethod = Arrays.binarySearch(methNameArray, "get" + varName) >= 0 || Arrays.binarySearch(methNameArray, "is" + varName) >= 0;
             boolean hasSetMethod = Arrays.binarySearch(methNameArray, "set" + varName) >= 0;
             if (!hasGetMethod || !hasSetMethod) {
-                addViolation((RuleContext) data, decl.getNode(), decl.getImage());
+                addViolation(data, decl.getNode(), decl.getImage());
             }
         }
         return super.visit(node, data);

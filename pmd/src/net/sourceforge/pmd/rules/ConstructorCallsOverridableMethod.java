@@ -9,6 +9,7 @@ import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
@@ -19,9 +20,7 @@ import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTEnumDeclaration;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -573,7 +572,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         String methName = h.getASTMethodDeclarator().getImage();
                         int count = h.getASTMethodDeclarator().getParameterCount();
                         if (meth.getName().equals(methName) && meth.getArgumentCount() == count) {
-                            addViolation((RuleContext) data, meth.getASTPrimaryExpression(), h.getCalled());
+                            addViolation( data, meth.getASTPrimaryExpression(), h.getCalled());
                         }
                     }
                 }
@@ -588,7 +587,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         ConstructorInvocation ci = (ConstructorInvocation) calledConstIter.next();
                         if (ci.getArgumentCount() == paramCount) {
                             //match name  super / this !?
-                            addViolation((RuleContext) data, ci.getASTExplicitConstructorInvocation());
+                            addViolation(data, ci.getASTExplicitConstructorInvocation());
                         }
                     }
                 }

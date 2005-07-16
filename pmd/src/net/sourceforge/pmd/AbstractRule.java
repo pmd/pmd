@@ -10,10 +10,10 @@ import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.MethodScope;
 
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.text.MessageFormat;
 
 public abstract class AbstractRule extends JavaParserVisitorAdapter implements Rule {
 
@@ -102,6 +102,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     public void setExternalInfoUrl(String url) {
         this.externalInfoUrl = url;
     }
+
     /**
      * Test if rules are equals. Rules are equals if
      * 1. they have the same implementation class
@@ -223,7 +224,8 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      * @param ctx the RuleContext
      * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
      */
-    protected final void addViolation(RuleContext ctx, SimpleNode node) {
+    protected final void addViolation(Object data, SimpleNode node) {
+        RuleContext ctx = (RuleContext)data;
         ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
     }
 
@@ -234,7 +236,8 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
      * @param embed a message to embed in the rule violation message
      */
-    protected final void addViolation(RuleContext ctx, SimpleNode node, String embed) {
+    protected final void addViolation(Object data, SimpleNode node, String embed) {
+       RuleContext ctx = (RuleContext)data;
        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, MessageFormat.format(getMessage(), new Object[]{embed})));
     }
 

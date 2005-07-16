@@ -9,7 +9,6 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,7 @@ public class UnusedPrivateFieldRule extends AbstractRule {
                 continue;
             }
             if (!actuallyUsed((List) vars.get(decl))) {
-                addViolation((RuleContext)data, decl.getNode(), decl.getImage());
+                addViolation(data, decl.getNode(), decl.getImage());
             }
         }
         return super.visit(node, data);

@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.symboltable;
 
 import java.util.Map;
-import java.util.List;
 
 /**
  * Provides methods which all scopes must implement

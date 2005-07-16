@@ -24,7 +24,7 @@ public class AvoidFieldNameMatchingTypeName extends AbstractRule {
 			ASTClassOrInterfaceDeclaration cl = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
 			if (cl!=null && cl.getImage() != null) {
 				if (varName.equals(cl.getImage().toLowerCase())) {
-					addViolation((RuleContext) data, node);
+					addViolation(data, node);
 				}
 			}
 		}

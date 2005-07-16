@@ -37,7 +37,7 @@ public class PositionLiteralsFirstInComparisons extends AbstractRule {
             return data;
         }
 
-        addViolation((RuleContext)data, (SimpleNode)exp);
+        addViolation(data, exp);
 
         return data;
     }

@@ -11,10 +11,10 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDKVersion;
-import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 
 import java.io.StringReader;
 

@@ -11,7 +11,7 @@ public class ClassNamingConventions extends AbstractRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (Character.isLowerCase(node.getImage().charAt(0))) {
-            addViolation((RuleContext) data, node);
+            addViolation(data, node);
         }
         return data;
     }

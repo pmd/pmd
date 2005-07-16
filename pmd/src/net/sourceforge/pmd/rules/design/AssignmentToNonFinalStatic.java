@@ -14,7 +14,6 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,7 @@ public class AssignmentToNonFinalStatic extends AbstractRule {
             }
             
             if (initializedInConstructor((List)vars.get(decl))) {
-                addViolation((RuleContext)data, decl.getNode(), decl.getImage());
+                addViolation(data, decl.getNode(), decl.getImage());
             }
         }
         return super.visit(node, data);

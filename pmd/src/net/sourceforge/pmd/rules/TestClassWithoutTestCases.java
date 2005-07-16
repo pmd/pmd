@@ -33,7 +33,7 @@ public class TestClassWithoutTestCases extends AbstractRule {
             }
 
             if (!testsFound) {
-                addViolation((RuleContext)data, node);
+                addViolation(data, node);
             }
 
         }

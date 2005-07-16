@@ -7,9 +7,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -33,7 +31,7 @@ public class DuplicateImportsRule extends AbstractRule {
                 ImportWrapper thisSingleTypeImport = (ImportWrapper) j.next();
                 String singleTypePkg = thisSingleTypeImport.getName().substring(0, thisSingleTypeImport.getName().lastIndexOf("."));
                 if (thisImportOnDemand.getName().equals(singleTypePkg)) {
-                    addViolation((RuleContext) data, thisSingleTypeImport.getNode(), thisSingleTypeImport.getName());
+                    addViolation(data, thisSingleTypeImport.getNode(), thisSingleTypeImport.getName());
                 }
             }
         }
@@ -48,13 +46,13 @@ public class DuplicateImportsRule extends AbstractRule {
         // blahhhh... this really wants to be ASTImportDeclaration to be polymorphic...
         if (node.isImportOnDemand()) {
             if (importOnDemandImports.contains(wrapper)) {
-                addViolation((RuleContext) data, node.getImportedNameNode(), node.getImportedNameNode().getImage());
+                addViolation(data, node.getImportedNameNode(), node.getImportedNameNode().getImage());
             } else {
                 importOnDemandImports.add(wrapper);
             }
         } else {
             if (singleTypeImports.contains(wrapper)) {
-                addViolation((RuleContext) data, node.getImportedNameNode(), node.getImportedNameNode().getImage());
+                addViolation(data, node.getImportedNameNode(), node.getImportedNameNode().getImage());
             } else {
                 singleTypeImports.add(wrapper);
             }

@@ -5,19 +5,19 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.symboltable.ClassScope;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.symboltable.ClassScope;
+import net.sourceforge.pmd.symboltable.Scope;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 
 // Would this be simplified by using DFA somehow?
 public class NullAssignmentRule extends AbstractRule {

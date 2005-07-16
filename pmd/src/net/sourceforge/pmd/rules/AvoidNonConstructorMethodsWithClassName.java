@@ -22,7 +22,7 @@ public class AvoidNonConstructorMethodsWithClassName extends AbstractRule {
 		String declaringType = getDeclaringType (node);
 		if (methodName!=null && declaringType!=null) {
 			if (methodName.equals(declaringType)) {
-                addViolation((RuleContext) data, node, methodName);
+                addViolation(data, node, methodName);
 			}
 		}
 		return data;

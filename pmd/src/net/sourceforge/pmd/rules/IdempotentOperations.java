@@ -56,7 +56,7 @@ public class IdempotentOperations extends AbstractRule {
             }
         }
 
-        addViolation((RuleContext)data, node);
+        addViolation(data, node);
         return super.visit(node, data);
     }
 }

@@ -14,12 +14,12 @@ public class UnusedModifier extends AbstractRule {
         if (!node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
             ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration)node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
             if (parent.isInterface()) {
-                addViolation((RuleContext)data, node, getMessage());
+                addViolation(data, node, getMessage());
             }
         } else if (node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
             ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration)node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
             if (parent.isInterface() || (!parent.isInterface() && node.isStatic())) {
-                addViolation((RuleContext)data, node, getMessage());
+                addViolation(data, node, getMessage());
             }
         }
         return super.visit(node, data);
@@ -44,7 +44,7 @@ public class UnusedModifier extends AbstractRule {
         // if this is a method in an anonymous inner class
         Node parent = fieldOrMethod.jjtGetParent().jjtGetParent().jjtGetParent();
         if (parent instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration)parent).isInterface()) {
-            addViolation((RuleContext)data, fieldOrMethod);
+            addViolation(data, fieldOrMethod);
         }
     }
 

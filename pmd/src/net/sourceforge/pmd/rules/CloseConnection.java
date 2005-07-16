@@ -111,7 +111,7 @@ public class CloseConnection extends AbstractRule {
 
         // if all is not well, complain
         if (!closed) {
-            addViolation((RuleContext) data, id);
+            addViolation(data, id);
         }
     }
 

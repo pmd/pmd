@@ -25,7 +25,7 @@ These are new rules that are still in progress
         </example>
       </rule>
     <rule name="Foo"
-          message=""
+          message="blah ''{0}''"
           class="net.sourceforge.pmd.rules.FooRule">
       <description>
 

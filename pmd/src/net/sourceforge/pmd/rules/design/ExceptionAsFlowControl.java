@@ -39,7 +39,7 @@ public class ExceptionAsFlowControl extends AbstractRule {
                 ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) type.findChildrenOfType(ASTClassOrInterfaceType.class).get(0);
                 
                 if (throwName != null && throwName.equals(name.getImage())) {
-                    addViolation((RuleContext) data, name);
+                    addViolation(data, name);
                 }
             }
         }

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.symboltable;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.util.Applier;
-import net.sourceforge.pmd.PMD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
