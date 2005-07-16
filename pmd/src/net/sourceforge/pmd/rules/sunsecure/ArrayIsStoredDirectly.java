@@ -46,12 +46,12 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
         if (arrs!=null) {
             //TODO check if one of these arrays is stored in a non local variable
             List bs = node.findChildrenOfType(ASTBlockStatement.class);
-            checkDirectlyAssigned((RuleContext)data, arrs, bs);
+            checkDirectlyAssigned(data, arrs, bs);
         }
         return data;
     }
     
-    private void checkDirectlyAssigned(RuleContext context, ASTFormalParameter[] arrs, List bs) {
+    private void checkDirectlyAssigned(Object context, ASTFormalParameter[] arrs, List bs) {
         for (int i=0;i<arrs.length;i++) {
             if (isDirectlyAssigned(arrs[i], bs)) {
                 addViolation(context, arrs[i]);
@@ -119,7 +119,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
         ASTFormalParameter[] arrs = getArrays(params);
         if (arrs!=null) {
             List bs = node.findChildrenOfType(ASTBlockStatement.class);
-            checkDirectlyAssigned((RuleContext)data, arrs, bs);
+            checkDirectlyAssigned(data, arrs, bs);
         }
         return data;
     }

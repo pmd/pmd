@@ -20,6 +20,7 @@ The Ant task now accepts the short names of rulesets (e.g., unusedcode for rules
 Removed unnecessary '.html' suffix from displayed filenames when the linkPrefix attribute is used with the HTML renderer.
 Moved AvoidCallingFinalize from the design ruleset to the finalize ruleset.
 Deleted redundant ExplicitCallToFinalize rule.
+Added a simplified SimpleNode.addViolation() method to reduce duplicated rule violation creation code. 
 
 June 21, 2005 - 3.2:
 New rules: UseCorrectExceptionLogging (logging-jakarta-commons ruleset), AvoidPrintStackTrace (logging-java ruleset), CompareObjectsWithEquals (design ruleset)

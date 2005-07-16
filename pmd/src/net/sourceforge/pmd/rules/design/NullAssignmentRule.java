@@ -31,8 +31,7 @@ public class NullAssignmentRule extends AbstractRule {
             }
 
             if (n.jjtGetNumChildren() > 2 && n.jjtGetChild(1) instanceof ASTAssignmentOperator) {
-                RuleContext ctx = (RuleContext) data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
+                addViolation(data, node);
             }
         } else if (get4thParent(node) instanceof ASTConditionalExpression) {
             checkTernary((ASTConditionalExpression)get4thParent(node), data, node);
@@ -69,8 +68,7 @@ public class NullAssignmentRule extends AbstractRule {
 
     private void checkTernary(ASTConditionalExpression n, Object data, ASTNullLiteral node) {
         if (n.isTernary() && !(n.jjtGetChild(0) instanceof ASTEqualityExpression)) {
-            RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
+            addViolation(data, node);
         }
     }
 }

@@ -26,14 +26,13 @@ public class ImportFromSamePackageRule extends AbstractRule {
 
     public Object visit(ASTImportDeclaration node, Object data) {
         ASTName nameNode = node.getImportedNameNode();
-        RuleContext ctx = (RuleContext) data;
         if (packageName != null && !node.isImportOnDemand() && packageName.equals(getPackageName(nameNode.getImage()))) {
-            addViolation(ctx, node);
+            addViolation(data, node);
         }
 
         // special case
         if (packageName == null && getPackageName(nameNode.getImage()).equals("")) {
-            addViolation(ctx, node);
+            addViolation(data, node);
         }
         return data;
     }

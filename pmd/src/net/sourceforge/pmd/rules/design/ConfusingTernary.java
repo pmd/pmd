@@ -47,7 +47,7 @@ public class ConfusingTernary extends AbstractRule {
                     inode.jjtGetNumChildren() == 1) {
                 SimpleNode jnode = (SimpleNode) inode.jjtGetChild(0);
                 if (isMatch(jnode)) {
-                    addRuleViolation(node, data);
+                    addViolation(data, node);
                 }
             }
         }
@@ -59,15 +59,10 @@ public class ConfusingTernary extends AbstractRule {
         if (node.jjtGetNumChildren() > 0) {
             SimpleNode inode = (SimpleNode) node.jjtGetChild(0);
             if (isMatch(inode)) {
-                addRuleViolation(node, data);
+                addViolation(data, node);
             }
         }
         return super.visit(node, data);
-    }
-
-    private void addRuleViolation(SimpleNode node, Object data) {
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
     }
 
     // recursive!

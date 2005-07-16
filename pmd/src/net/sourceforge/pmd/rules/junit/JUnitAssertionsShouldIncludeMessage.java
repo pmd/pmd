@@ -41,18 +41,18 @@ public class JUnitAssertionsShouldIncludeMessage extends AbstractRule implements
     public Object visit(ASTArguments node, Object data) {
         for (Iterator i = checks.iterator(); i.hasNext();) {
             AssertionCall call = (AssertionCall) i.next();
-            check((RuleContext) data, node, call.args, call.name);
+            check(data, node, call.args, call.name);
         }
         return super.visit(node, data);
     }
 
-    private void check(RuleContext ctx, ASTArguments node, int args, String targetMethodName) {
+    private void check(Object ctx, ASTArguments node, int args, String targetMethodName) {
         if (node.getArgumentCount() == args && node.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
             ASTPrimaryExpression primary = (ASTPrimaryExpression) node.jjtGetParent().jjtGetParent();
             if (primary.jjtGetChild(0) instanceof ASTPrimaryPrefix && primary.jjtGetChild(0).jjtGetNumChildren() > 0 && primary.jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
                 ASTName name = (ASTName) primary.jjtGetChild(0).jjtGetChild(0);
                 if (name.getImage().equals(targetMethodName)) {
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, name));
+                    addViolation(ctx, name);
                 }
             }
         }

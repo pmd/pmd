@@ -61,8 +61,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
 
         // if we're back at the top level class, harvest
         if (depth == 1) {
-            RuleContext ctx = (RuleContext) data;
-            harvestUnused(ctx);
+            harvestUnused(data);
         }
 
         depth--;
@@ -159,11 +158,11 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         return false;
     }
 
-    private final void harvestUnused(RuleContext ctx) {
+    private final void harvestUnused(Object ctx) {
         SimpleNode node;
         for (Iterator i = privateMethodNodes.iterator(); i.hasNext();) {
             node = (SimpleNode) i.next();
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, MessageFormat.format(getMessage(), new Object[]{node.getImage()})));
+            addViolation(ctx, node, node.getImage());
         }
     }
 

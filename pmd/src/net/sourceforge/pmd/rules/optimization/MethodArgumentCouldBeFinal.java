@@ -34,8 +34,7 @@ public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
         for (Iterator i = decls.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration var = (VariableNameDeclaration)i.next();
             if (!var.getAccessNodeParent().isFinal() && (var.getAccessNodeParent() instanceof ASTFormalParameter) && !assigned((List)decls.get(var))) {
-                RuleContext ctx = (RuleContext)data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, var.getAccessNodeParent(), MessageFormat.format(getMessage(), new Object[]{var.getImage()})));
+                addViolation(data, var.getAccessNodeParent(), var.getImage());
             }
         }
         return data;

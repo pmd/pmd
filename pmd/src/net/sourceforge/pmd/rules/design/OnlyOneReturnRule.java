@@ -31,14 +31,13 @@ public class OnlyOneReturnRule extends AbstractRule {
         List returnNodes = new ArrayList();
         node.findChildrenOfType(ASTReturnStatement.class, returnNodes, false);
         if (returnNodes.size() > 1) {
-            RuleContext ctx = (RuleContext) data;
             for (Iterator i = returnNodes.iterator(); i.hasNext();) {
                 SimpleNode problem = (SimpleNode) i.next();
                 // skip the last one, it's OK
                 if (!i.hasNext()) {
                     continue;
                 }
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, problem));
+                addViolation(data, problem);
             }
         }
         return data;

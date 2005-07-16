@@ -25,14 +25,13 @@ public class UnusedFormalParameterRule extends AbstractRule {
         if (!node.isNative()) {
             Node parent  = node.jjtGetParent().jjtGetParent().jjtGetParent();
             if (parent instanceof ASTClassOrInterfaceDeclaration && !((ASTClassOrInterfaceDeclaration)parent).isInterface()) {
-                RuleContext ctx = (RuleContext) data;
                 Map vars = node.getScope().getVariableDeclarations();
                 for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
                     VariableNameDeclaration nameDecl = (VariableNameDeclaration) i.next();
                     if (!((List) vars.get(nameDecl)).isEmpty()) {
                         continue;
                     }
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, MessageFormat.format(getMessage(), new Object[]{nameDecl.getImage()})));
+                    addViolation(data, node, nameDecl.getImage());
                 }
             }
         }

@@ -47,13 +47,11 @@ public class UnnecessaryLocalBeforeReturn extends AbstractRule {
                 if (occ.getLocation().equals(name)) {
                     // only check declarations that occur one line earlier
                     if (key.getNode().getBeginLine() == name.getBeginLine()-1) {
-                        RuleContext ctx = (RuleContext)data;
                         String var = name.getImage();
                         if (var.indexOf('.') != -1) {
                             var = var.substring(0, var.indexOf('.'));
                         }
-                        RuleViolation rv = createRuleViolation(ctx, rtn, MessageFormat.format(getMessage(), new Object[]{var}));
-                        ctx.getReport().addRuleViolation(rv);
+                        addViolation(data, rtn, var);
                     }
                 }
             }

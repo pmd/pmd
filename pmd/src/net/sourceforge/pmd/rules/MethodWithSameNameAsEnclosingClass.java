@@ -15,8 +15,7 @@ public class MethodWithSameNameAsEnclosingClass extends AbstractRule {
         for (Iterator i = methods.iterator(); i.hasNext();) {
             ASTMethodDeclarator m = (ASTMethodDeclarator)i.next();
             if (m.getImage().equals(node.getImage())) {
-                RuleContext ctx = (RuleContext)data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, m));
+                addViolation(data, m);
             }
         }
         return super.visit(node, data);

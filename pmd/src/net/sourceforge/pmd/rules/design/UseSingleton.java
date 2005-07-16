@@ -21,8 +21,7 @@ public class UseSingleton extends AbstractRule {
         isOK = false;
         Object result = cu.childrenAccept(this, data);
         if (!isOK && methodCount > 0) {
-            RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, cu));
+            addViolation(data, cu);
         }
 
         return result;

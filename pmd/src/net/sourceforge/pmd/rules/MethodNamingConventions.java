@@ -11,8 +11,7 @@ public class MethodNamingConventions extends AbstractRule {
 
     public Object visit(ASTMethodDeclarator node, Object data) {
         if (Character.isUpperCase(node.getImage().charAt(0))) {
-            RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, getMessage()));
+            addViolation(data, node);
         }
 
         if (node.getImage().indexOf("_") >= 0) {

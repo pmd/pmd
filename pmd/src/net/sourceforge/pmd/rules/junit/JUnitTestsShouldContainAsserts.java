@@ -31,8 +31,7 @@ public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule
 
         if (((ASTResultType) method.jjtGetChild(0)).isVoid() && method.getMethodName().startsWith("test"))  {
             if (!containsAssert(method.getBlock(), false)) {
-                RuleContext ctx = (RuleContext)data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, method));
+                addViolation(data, method);
             }
         }
 		return data;

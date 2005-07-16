@@ -45,7 +45,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
             return super.visit(methodDeclaration, o);
         }
 
-        evaluateExceptions(exceptionList, (RuleContext) o);
+        evaluateExceptions(exceptionList, o);
         return super.visit(methodDeclaration, o);
     }
 
@@ -56,7 +56,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
             return super.visit(constructorDeclaration, o);
         }
 
-        evaluateExceptions(exceptionList, (RuleContext) o);
+        evaluateExceptions(exceptionList, o);
         return super.visit(constructorDeclaration, o);
     }
 
@@ -66,12 +66,12 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
      * @param exceptionList containing all exception for declaration
      * @param context
      */
-    private void evaluateExceptions(List exceptionList, RuleContext context) {
+    private void evaluateExceptions(List exceptionList, Object context) {
         ASTName exception;
         for (Iterator iter = exceptionList.iterator(); iter.hasNext();) {
             exception = (ASTName) iter.next();
             if (hasDeclaredExceptionInSignature(exception)) {
-                context.getReport().addRuleViolation(createRuleViolation(context, exception));
+                addViolation(context, exception);
             }
         }
     }
@@ -97,6 +97,6 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
     }
 
     private boolean hasContent(List nameList) {
-        return (nameList != null && nameList.size() > 0);
+        return nameList != null && nameList.size() > 0;
     }
 }

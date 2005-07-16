@@ -22,14 +22,10 @@ public class UnusedImportsRule extends AbstractRule {
 
     public Object visit(ASTCompilationUnit node, Object data) {
         imports.clear();
-
         super.visit(node, data);
-
-        RuleContext ctx = (RuleContext) data;
         for (Iterator i = imports.iterator(); i.hasNext();) {
             ImportWrapper wrapper = (ImportWrapper) i.next();
-            String msg = MessageFormat.format(getMessage(), new Object[]{wrapper.getFullName()});
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, wrapper.getNode(), msg));
+            addViolation(data, wrapper.getNode(), wrapper.getFullName());
         }
         return data;
     }
