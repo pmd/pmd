@@ -111,8 +111,7 @@ public class CloseConnection extends AbstractRule {
 
         // if all is not well, complain
         if (!closed) {
-            RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, id, getMessage()));
+            addViolation((RuleContext) data, id);
         }
     }
 

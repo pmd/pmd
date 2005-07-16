@@ -573,9 +573,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         String methName = h.getASTMethodDeclarator().getImage();
                         int count = h.getASTMethodDeclarator().getParameterCount();
                         if (meth.getName().equals(methName) && meth.getArgumentCount() == count) {
-                            RuleContext ctx = (RuleContext) data;
-                            String msg = MessageFormat.format(getMessage(), new Object[]{h.getCalled()});
-                            ctx.getReport().addRuleViolation(createRuleViolation(ctx, meth.getASTPrimaryExpression(), msg));
+                            addViolation((RuleContext) data, meth.getASTPrimaryExpression(), h.getCalled());
                         }
                     }
                 }
@@ -590,8 +588,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         ConstructorInvocation ci = (ConstructorInvocation) calledConstIter.next();
                         if (ci.getArgumentCount() == paramCount) {
                             //match name  super / this !?
-                            RuleContext ctx = (RuleContext) data;
-                            ctx.getReport().addRuleViolation(createRuleViolation(ctx, ci.getASTExplicitConstructorInvocation()));
+                            addViolation((RuleContext) data, ci.getASTExplicitConstructorInvocation());
                         }
                     }
                 }

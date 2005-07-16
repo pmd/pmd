@@ -20,7 +20,6 @@ public class DuplicateImportsRule extends AbstractRule {
     private Set importOnDemandImports;
 
     public Object visit(ASTCompilationUnit node, Object data) {
-        RuleContext ctx = (RuleContext) data;
         singleTypeImports = new HashSet();
         importOnDemandImports = new HashSet();
         super.visit(node, data);
@@ -34,8 +33,7 @@ public class DuplicateImportsRule extends AbstractRule {
                 ImportWrapper thisSingleTypeImport = (ImportWrapper) j.next();
                 String singleTypePkg = thisSingleTypeImport.getName().substring(0, thisSingleTypeImport.getName().lastIndexOf("."));
                 if (thisImportOnDemand.getName().equals(singleTypePkg)) {
-                    String msg = MessageFormat.format(getMessage(), new Object[]{thisSingleTypeImport.getName()});
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, thisSingleTypeImport.getNode(), msg));
+                    addViolation((RuleContext) data, thisSingleTypeImport.getNode(), thisSingleTypeImport.getName());
                 }
             }
         }
@@ -50,13 +48,13 @@ public class DuplicateImportsRule extends AbstractRule {
         // blahhhh... this really wants to be ASTImportDeclaration to be polymorphic...
         if (node.isImportOnDemand()) {
             if (importOnDemandImports.contains(wrapper)) {
-                createRV((RuleContext) data, node.getImportedNameNode());
+                addViolation((RuleContext) data, node.getImportedNameNode(), node.getImportedNameNode().getImage());
             } else {
                 importOnDemandImports.add(wrapper);
             }
         } else {
             if (singleTypeImports.contains(wrapper)) {
-                createRV((RuleContext) data, node.getImportedNameNode());
+                addViolation((RuleContext) data, node.getImportedNameNode(), node.getImportedNameNode().getImage());
             } else {
                 singleTypeImports.add(wrapper);
             }
@@ -64,8 +62,4 @@ public class DuplicateImportsRule extends AbstractRule {
         return data;
     }
 
-    private void createRV(RuleContext ctx, SimpleNode importNameNode) {
-        String msg = MessageFormat.format(getMessage(), new Object[]{importNameNode.getImage()});
-        ctx.getReport().addRuleViolation(createRuleViolation(ctx, importNameNode, msg));
-    }
 }
