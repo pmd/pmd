@@ -5,11 +5,7 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.*;
 
 public class UseSingleton extends AbstractRule {
 
@@ -53,6 +49,15 @@ public class UseSingleton extends AbstractRule {
 
         if (!isOK && !decl.isStatic()) {
             isOK = true;
+        }
+
+        // TODO use symbol table
+        if (decl.getMethodName().equals("suite")) {
+            ASTResultType res = (ASTResultType)decl.getFirstChildOfType(ASTResultType.class);
+            ASTClassOrInterfaceType c = (ASTClassOrInterfaceType)res.getFirstChildOfType(ASTClassOrInterfaceType.class);
+            if (c != null && c.getImage().equals("Test")) {
+                isOK = true;
+            }
         }
 
         return data;

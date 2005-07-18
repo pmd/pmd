@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Klaus - Suggestion for improving UseSingleton</li>
             <li>Nicolai Czempin - Bug report for UnnecessaryParentheses, various rule suggestions, additional PMD backronyms</li>
             <li>Kevin Routley - reported Ant task dependency problem, reported problems with RuleSetFactory unit tests</li>
             <li>Dennis Klemann - noted that errors were missing from text report, reported JDK 1.5 parsing bug with ExceptionSignatureDeclaration, reported fix for pmd.bat problem</li>

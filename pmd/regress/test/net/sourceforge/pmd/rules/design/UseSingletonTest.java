@@ -31,6 +31,7 @@ public class UseSingletonTest extends SimpleAggregatorTst implements ReportListe
            new TestDescriptor(TEST6, "abstract, so ok", 0, rule),
            new TestDescriptor(TEST7, "has no fields, so ok", 0, rule),
            new TestDescriptor(TEST8, "has public static field, so need to check", 1, rule),
+           new TestDescriptor(TEST9, "junit 'suite' method is OK", 0, rule),
        });
     }
 
@@ -103,5 +104,12 @@ public class UseSingletonTest extends SimpleAggregatorTst implements ReportListe
     "public class Foo {" + PMD.EOL +
     " public static final int x = 5;" + PMD.EOL +
     " public static void doSomething() {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST9 =
+    "public class FooTest {" + PMD.EOL +
+    " public static Test suite() {" + PMD.EOL +
+    "  return new TestSuite();" + PMD.EOL +
+    " }" + PMD.EOL +
     "}";
 }
