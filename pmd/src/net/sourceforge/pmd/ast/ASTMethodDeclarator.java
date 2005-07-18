@@ -2,6 +2,10 @@
 
 package net.sourceforge.pmd.ast;
 
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class ASTMethodDeclarator extends SimpleNode {
     public ASTMethodDeclarator(int id) {
         super(id);
@@ -14,7 +18,6 @@ public class ASTMethodDeclarator extends SimpleNode {
     public int getParameterCount() {
         return this.jjtGetChild(0).jjtGetNumChildren();
     }
-
 
     /**
      * Accept the visitor. *

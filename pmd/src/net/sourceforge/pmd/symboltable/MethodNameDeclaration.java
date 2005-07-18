@@ -8,6 +8,11 @@ import net.sourceforge.pmd.ast.ASTFormalParameters;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.ast.ASTType;
+
+import java.util.List;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration implements NameDeclaration {
 
@@ -15,26 +20,41 @@ public class MethodNameDeclaration extends AbstractNameDeclaration implements Na
         super(node);
     }
 
+    public String getParameterDisplaySignature() {
+        StringBuffer sb = new StringBuffer("(");
+
+        ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
+        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
+            ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
+            sb.append(((ASTType)p.getFirstChildOfType(ASTType.class)).getTypeImage());
+            sb.append(",");
+        }
+
+        if (sb.charAt(sb.length()-1) == ',') {
+            sb.deleteCharAt(sb.length()-1);
+        }
+        return sb.toString() + ")";
+    }
+
     public boolean equals(Object o) {
-        MethodNameDeclaration otherMethodDecl = (MethodNameDeclaration) o;
+        MethodNameDeclaration other = (MethodNameDeclaration) o;
 
         // compare name
-        if (!otherMethodDecl.node.getImage().equals(node.getImage())) {
+        if (!other.node.getImage().equals(node.getImage())) {
             return false;
         }
 
         // compare parameter count - this catches the case where there are no params, too
-        if (((ASTMethodDeclarator) (otherMethodDecl.node)).getParameterCount() != ((ASTMethodDeclarator) node).getParameterCount()) {
+        if (((ASTMethodDeclarator) (other.node)).getParameterCount() != ((ASTMethodDeclarator) node).getParameterCount()) {
             return false;
         }
 
         // compare parameter types
         ASTFormalParameters myParams = (ASTFormalParameters) node.jjtGetChild(0);
-        ASTFormalParameters otherParams = (ASTFormalParameters) otherMethodDecl.node.jjtGetChild(0);
+        ASTFormalParameters otherParams = (ASTFormalParameters) other.node.jjtGetChild(0);
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
             ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.jjtGetChild(i);
-
 
             SimpleNode myTypeNode = (SimpleNode) myParam.jjtGetChild(0).jjtGetChild(0);
             SimpleNode otherTypeNode = (SimpleNode) otherParam.jjtGetChild(0).jjtGetChild(0);

@@ -44,13 +44,11 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             return data;
         }
 
-        ClassScope cs = (ClassScope)node.getScope();
-        Map methods = cs.getMethodDeclarations();
+        Map methods = ((ClassScope)node.getScope()).getMethodDeclarations();
         for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
             MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
-            ASTMethodDeclarator n = (ASTMethodDeclarator)mnd.getNode();
-            if (check(n)) {
-                privateMethodNodes.add(n);
+            if (check(mnd)) {
+                privateMethodNodes.add(mnd);
             }
         }
 
@@ -68,7 +66,8 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         return data;
     }
 
-    private boolean check(ASTMethodDeclarator node) {
+    private boolean check(MethodNameDeclaration mnd) {
+        ASTMethodDeclarator node = (ASTMethodDeclarator)mnd.getNode();
         return ((AccessNode) node.jjtGetParent()).isPrivate() && !node.getImage().equals("readObject") && !node.getImage().equals("writeObject") && !node.getImage().equals("readResolve") && !node.getImage().equals("writeReplace");
     }
 
@@ -136,7 +135,8 @@ public class UnusedPrivateMethodRule extends AbstractRule {
     private final void removeIfUsed(SimpleNode node, int args) {
         String img = (node.getImage().indexOf('.') == -1) ? node.getImage() : node.getImage().substring(node.getImage().indexOf('.') + 1, node.getImage().length());
         for (Iterator i = privateMethodNodes.iterator(); i.hasNext();) {
-            ASTMethodDeclarator methodNode = (ASTMethodDeclarator) i.next();
+            MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
+            ASTMethodDeclarator methodNode = (ASTMethodDeclarator)mnd.getNode();
             // are name and number of parameters the same?
             if (methodNode.getImage().equals(img)
                     && methodNode.getParameterCount() == args
@@ -159,10 +159,10 @@ public class UnusedPrivateMethodRule extends AbstractRule {
     }
 
     private final void harvestUnused(Object ctx) {
-        SimpleNode node;
         for (Iterator i = privateMethodNodes.iterator(); i.hasNext();) {
-            node = (SimpleNode) i.next();
-            addViolation(ctx, node, node.getImage());
+            MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
+            ASTMethodDeclarator node = (ASTMethodDeclarator)mnd.getNode();
+            addViolation(ctx, node, node.getImage() + mnd.getParameterDisplaySignature());
         }
     }
 

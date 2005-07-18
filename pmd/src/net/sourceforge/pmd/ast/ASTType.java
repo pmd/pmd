@@ -18,6 +18,14 @@ public class ASTType extends SimpleNode {
         return visitor.visit(this, data);
     }
 
+    public String getTypeImage() {
+        ASTPrimitiveType prim = (ASTPrimitiveType)getFirstChildOfType(ASTPrimitiveType.class);
+        if (prim != null) {
+            return prim.getImage();
+        }
+        return ((ASTClassOrInterfaceType)getFirstChildOfType(ASTClassOrInterfaceType.class)).getImage();
+    }
+
     public int getArrayDepth() {
         if (jjtGetNumChildren() != 0 && (jjtGetChild(0) instanceof ASTReferenceType || jjtGetChild(0) instanceof ASTPrimitiveType)) {
             return ((Dimensionable)jjtGetChild(0)).getArrayDepth();

@@ -8,6 +8,7 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
@@ -102,6 +103,51 @@ public class ClassScopeTest extends STBBaseTst {
         //assertEquals("bar", ((MethodNameDeclaration)m.keySet().iterator().next()).getImage());
     }
 
+
+    public final void testOneParams() throws Throwable {
+        parseCode(ONE_PARAM);
+        ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration)acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        Map m = ((ClassScope)n.getScope()).getMethodDeclarations();
+        MethodNameDeclaration mnd = (MethodNameDeclaration)m.keySet().iterator().next();
+        assertEquals("(String)", mnd.getParameterDisplaySignature());
+    }
+
+    public final void testTwoParams() throws Throwable {
+        parseCode(TWO_PARAMS);
+        ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration)acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        Map m = ((ClassScope)n.getScope()).getMethodDeclarations();
+        MethodNameDeclaration mnd = (MethodNameDeclaration)m.keySet().iterator().next();
+        assertEquals("(String,int)", mnd.getParameterDisplaySignature());
+    }
+
+    public final void testNoParams() throws Throwable {
+        parseCode(NO_PARAMS);
+        ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration)acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        Map m = ((ClassScope)n.getScope()).getMethodDeclarations();
+        MethodNameDeclaration mnd = (MethodNameDeclaration)m.keySet().iterator().next();
+        assertEquals("()", mnd.getParameterDisplaySignature());
+    }
+
+
+    private static final String ONE_PARAM =
+    "public class Test {" + PMD.EOL +
+    "  void bar(String x) {" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}";
+
+    private static final String TWO_PARAMS =
+    "public class Test {" + PMD.EOL +
+    "  void bar(String x, int y) {" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}";
+
+    private static final String NO_PARAMS =
+    "public class Test {" + PMD.EOL +
+    "  void bar() {" + PMD.EOL +
+    "  }" + PMD.EOL +
+    "}";
+
+
     private static final String CLASS_NAME =
     "public class Foo {}";
 
@@ -132,5 +178,6 @@ public class ClassScopeTest extends STBBaseTst {
     "  return fuz;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
+
 
 }

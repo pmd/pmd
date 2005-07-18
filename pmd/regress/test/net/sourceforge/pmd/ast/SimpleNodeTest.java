@@ -205,6 +205,7 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals(x2, n);
     }
 
+/*
     public void testContainsNoInner() throws Throwable {
         ASTCompilationUnit c = (ASTCompilationUnit) getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
         List res = new ArrayList();
@@ -231,6 +232,7 @@ public class SimpleNodeTest extends ParserTst {
                 "</TypeDeclaration></CompilationUnit>";
         assertEquals( expectedXml, getXmlString( c ) );
     }
+*/
 
     public void testContainsNoInnerWithAnonInner() throws Throwable {
         ASTCompilationUnit c = (ASTCompilationUnit) getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
