@@ -278,10 +278,10 @@ public class Foo extends Bar{
     </rule>
 
     <rule name="UnnecessaryParentheses"
-          message="This return statement may have some unnecessary parentheses"
+          message="This statement may have some unnecessary parentheses"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-      Sometimes return statement expressions are wrapped in unnecessary parentheses,
+      Sometimes expressions are wrapped in unnecessary parentheses,
  making them look like a function call.
       </description>
     <properties>

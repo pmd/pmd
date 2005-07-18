@@ -43,6 +43,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Nicolai Czempin - Bug report for UnnecessaryParentheses, various rule suggestions, additional PMD backronyms</li>
             <li>Kevin Routley - reported Ant task dependency problem, reported problems with RuleSetFactory unit tests</li>
             <li>Dennis Klemann - noted that errors were missing from text report, reported JDK 1.5 parsing bug with ExceptionSignatureDeclaration, reported fix for pmd.bat problem</li>
             <li>dvholten - reported several NullAssignment bugs</li>
@@ -159,7 +160,6 @@
             <li>mcclain looney - patch for CPD GUI, bug reports</li>
             <li>Ralf Hauser - Various documentation suggestions, cygwin-run.sh</li>
             <li>Pablo Casado - Bug report for UseSingletonRule</li>
-            <li>Nicolai Czempin - Various rule suggestions, additional PMD backronyms</li>
             <li>Frank Hardisty - BeanMembersShouldSerializeRule</li>
             <li>Randall Schulz - bug report for LooseCouplingRule</li>
             <li>Wim Bervoets - bug report for the PMD Ant task</li>
