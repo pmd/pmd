@@ -40,8 +40,31 @@ public class XPathRuleTest extends RuleTst {
         assertEquals("a", rv.getDescription());
     }
 
+    public void testVariables() throws Throwable {
+        Rule rule = new XPathRule();
+        rule.addProperty("xpath", "//VariableDeclaratorId[@Image=$var]");
+        rule.setMessage("Avoid vars");
+        rule.addProperty("var", "fiddle");
+        PMD p = new PMD();
+        RuleContext ctx = new RuleContext();
+        Report report = new Report();
+        ctx.setReport(report);
+        ctx.setSourceCodeFilename("n/a");
+        RuleSet rules = new RuleSet();
+        rules.addRule(rule);
+        p.processFile(new StringReader(TEST2), rules, ctx);
+        RuleViolation rv = (RuleViolation)report.iterator().next();
+        assertEquals(3, rv.getLine());
+    }
+
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
-    "    int a;" + PMD.EOL +
+    " int a;" + PMD.EOL +
+    "}";
+
+    private static final String TEST2 =
+    "public class Foo {" + PMD.EOL +
+    " int faddle;" + PMD.EOL +
+    " int fiddle;" + PMD.EOL +
     "}";
 }

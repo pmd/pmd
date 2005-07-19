@@ -3,20 +3,23 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
+
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
+import org.jaxen.SimpleVariableContext;
 import org.jaxen.XPath;
-
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.text.MessageFormat;
-import java.util.Iterator;
 
 public class XPathRule extends AbstractRule {
 
@@ -48,6 +51,23 @@ public class XPathRule extends AbstractRule {
                 path = MessageFormat.format(path, new String[]{subst});
             }
             xpath = new BaseXPath(path, new DocumentNavigator());
+            initXPathVariables();
+        }
+    }
+
+    /**
+     * Create xpath variables for the rule properties
+     */
+    private void initXPathVariables() {
+        if (properties.size()>1) {  //Don't make the xpath itself available
+            SimpleVariableContext varContext = new SimpleVariableContext();
+            for (Iterator iter = properties.entrySet().iterator(); iter.hasNext();) {
+                Entry entry = (Entry) iter.next();
+                if (!"xpath".equals(entry.getKey())) { //Don't make the xpath itself available
+                    varContext.setVariableValue((String)entry.getKey(), entry.getValue());
+                }
+            }
+            xpath.setVariableContext(varContext);
         }
     }
 
