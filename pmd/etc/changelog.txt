@@ -3,7 +3,7 @@ New rule: PositionLiteralsFirstInComparisons, UnnecessaryLocalBeforeReturn
 Implemented RFE 1220171 - rule definitions can now contain a link to an external URL for more information on that rule - for example, a link to the rule's web page.  Thanks to Wouter Zelle for designing and implementing this!
 Implemented RFE 1230685 - The text report now includes parsing errors even if no rule violations are reported
 Implemented RFE 787860 - UseSingleton now accounts for JUnit test suite declarations.
-Implemented RFE 1097090 - The PMD Report object now contains the elapsed time for running PMD.  This shows up in the XML report as an elapsedMilliseconds attribute in the pmd element.
+Implemented RFE 1097090 - The PMD Report object now contains the elapsed time for running PMD.  This shows up in the XML report as an elapsedTime attribute in the pmd element in the format '2m 5s' or '1h 5h 35s' or '25s' .
 Fixed bug 1226858 - JUnitAssertionsShouldIncludeMessage now checks calls to assertFalse.
 Fixed bug 1227001 - AvoidCallingFinalize no longer flags calls to finalize() within finalizers.
 Fixed bug 1229755 - Fixed typo in ArrayIsStoredDirectly description.

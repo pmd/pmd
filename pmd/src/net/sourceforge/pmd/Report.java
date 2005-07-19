@@ -17,6 +17,42 @@ import java.util.TreeSet;
 
 public class Report {
 
+    public static class ReadableDuration {
+        private long duration;
+        public ReadableDuration(long duration) {
+            this.duration = duration;
+        }
+        public String getTime() {
+            long seconds = 0;
+            long minutes = 0;
+            long hours = 0;
+
+            if (duration > 1000) {
+                seconds = duration / 1000;
+            }
+
+            if (seconds > 60) {
+                minutes = seconds / 60;
+                seconds = seconds % 60;
+            }
+
+            if (minutes > 60) {
+                hours = minutes / 60;
+                minutes = minutes % 60;
+            }
+
+            StringBuffer res = new StringBuffer();
+            if (hours > 0) {
+                res.append(hours + "h ");
+            }
+            if (hours > 0 || minutes > 0) {
+                res.append(minutes + "m ");
+            }
+            res.append(seconds + "s");
+            return res.toString();
+        }
+    }
+
     public static class ProcessingError {
         private String msg;
         private String file;

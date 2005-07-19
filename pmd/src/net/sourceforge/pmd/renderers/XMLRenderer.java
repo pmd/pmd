@@ -88,7 +88,8 @@ public class XMLRenderer implements Renderer {
     }
 
     private String createTimeElapsedAttr(Report rpt) {
-        return " elapsedMilliseconds=\"" + rpt.getElapsedTimeInMillis() + "\"";
+        Report.ReadableDuration d = new Report.ReadableDuration(rpt.getElapsedTimeInMillis());
+        return " elapsedTime=\"" + d.getTime() + "\"";
     }
 
 }
