@@ -35,7 +35,6 @@ public class Report {
         }
     }
 
-
     /*
      * The idea is to store the violations in a tree instead of a list, to do
      * better and faster sort and filter mechanism and to visualize the result
@@ -49,11 +48,12 @@ public class Report {
     private List listeners = new ArrayList();
     private List errors = new ArrayList();
     private Set linesToExclude = new HashSet();
+    private long start;
+    private long end;
 
     public void exclude(Set lines) {
         linesToExclude = lines;
     }
-
 
     public Map getCountSummary() {
         Map summary = new HashMap();
@@ -158,4 +158,15 @@ public class Report {
         return violations.size();
     }
 
+    public void start() {
+        start = System.currentTimeMillis();
+    }
+
+    public void end() {
+        end = System.currentTimeMillis();
+    }
+
+    public long getElapsedTimeInMillis() {
+        return end-start;
+    }
 }

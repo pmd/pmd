@@ -141,7 +141,9 @@ public class PMD {
         pmd.setExcludeMarker(opts.getExcludeMarker());
 
         RuleContext ctx = new RuleContext();
-        ctx.setReport(new Report());
+        Report report = new Report();
+        ctx.setReport(report);
+        report.start();
 
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
@@ -172,6 +174,7 @@ public class PMD {
             System.out.println(opts.usage());
             ioe.printStackTrace();
         }
+        report.end();
 
         try {
             Renderer r = opts.createRenderer();

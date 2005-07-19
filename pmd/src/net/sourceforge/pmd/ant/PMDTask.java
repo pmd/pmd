@@ -150,7 +150,9 @@ public class PMDTask extends Task {
         }
 
         RuleContext ctx = new RuleContext();
-        ctx.setReport(new Report());
+        Report report = new Report();
+        ctx.setReport(report);
+        report.start();
         for (Iterator i = filesets.iterator(); i.hasNext();) {
             FileSet fs = (FileSet) i.next();
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());
@@ -183,6 +185,7 @@ public class PMDTask extends Task {
                 }
             }
         }
+        report.end();
 
         log(ctx.getReport().size() + " problems found", Project.MSG_VERBOSE);
 

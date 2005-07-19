@@ -35,7 +35,52 @@ catch( OtherException oe ) {
 }
 ]]></example>
 	</rule>
+                    <!--
 
+    <rule name="ProperLogger"
+                     message="Logger should be defined private static final and have the correct class"
+                     class="net.sourceforge.pmd.rules.XPathRule">
+             <description>
+ Logger should normally be defined private static final and have the correct class.
+ Private final Log log; is also allowed for rare cases when loggers need to be passed
+ around, but the logger needs to be passed into the constructor.
+ </description>
+             <properties>
+                     <property name="xpath">
+                             <value>
+     <![CDATA[
+ //ClassOrInterfaceBodyDeclaration[FieldDeclaration//ClassOrInterfaceType[@Image='Log']
+ and
+ not(FieldDeclaration[@Final='true'][@Static='true'][@Private='true'][//VariableDeclaratorId[@Image=$staticLoggerName]]
+ //ArgumentList//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration/@Image)
+ and
+ not(FieldDeclaration[@Final='true'][@Private='true'][//VariableDeclaratorId[@Image='log']]
+ [count(//VariableInitializer)=0]
+ [/descendant::StatementExpression[//PrimaryExpression/descendant::*[@Image='log']][count(//AllocationExpression)=0]]
+ ]
+     ]]>
+                             </value>
+                     </property>
+                     <property name="staticLoggerName">
+                             <value>LOG</value>
+                     </property>
+             </properties>
+             <priority>3</priority>
+             <example>
+ <![CDATA[
+     protected Log LOG = LogFactory
+         .getLog(Testclass.class);
+ ]]>
+ </example>
+     <example>
+ <![CDATA[
+     private static final Log LOG = LogFactory
+         .getLog(WrongClass.class);
+ ]]>
+ </example>
+     </rule>
+
+     -->
 
 </ruleset>
 

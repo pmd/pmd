@@ -14,15 +14,9 @@ import java.util.Iterator;
 
 public class XMLRenderer implements Renderer {
 
-    private String createVersionAttr() {
-        return "<pmd version=\"" + PMD.VERSION + "\"";
-    }
-    private String createTimestampAttr() {
-        return " timestamp=\"" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date()) + "\"";
-    }
     public String render(Report report) {
 
-        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + createVersionAttr() + createTimestampAttr() + ">" + PMD.EOL);
+        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + createVersionAttr() + createTimestampAttr() + createTimeElapsedAttr(report) + ">" + PMD.EOL);
         String filename = null;
 
         // rule violations
@@ -83,6 +77,18 @@ public class XMLRenderer implements Renderer {
             StringUtil.appendXmlEscaped(buf, value);
             buf.append("\"");
         }
+    }
+
+    private String createVersionAttr() {
+        return "<pmd version=\"" + PMD.VERSION + "\"";
+    }
+
+    private String createTimestampAttr() {
+        return " timestamp=\"" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date()) + "\"";
+    }
+
+    private String createTimeElapsedAttr(Report rpt) {
+        return " elapsedMilliseconds=\"" + rpt.getElapsedTimeInMillis() + "\"";
     }
 
 }
