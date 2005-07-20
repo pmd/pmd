@@ -35,7 +35,6 @@ catch( OtherException oe ) {
 }
 ]]></example>
 	</rule>
-                    <!--
 
     <rule name="ProperLogger"
                      message="Logger should be defined private static final and have the correct class"
@@ -68,19 +67,15 @@ catch( OtherException oe ) {
              <priority>3</priority>
              <example>
  <![CDATA[
+ // right
+ private static final Log LOG = LogFactory
+     .getLog(WrongClass.class);
+ // wrong
      protected Log LOG = LogFactory
          .getLog(Testclass.class);
  ]]>
  </example>
-     <example>
- <![CDATA[
-     private static final Log LOG = LogFactory
-         .getLog(WrongClass.class);
- ]]>
- </example>
      </rule>
-
-     -->
 
 </ruleset>
 
