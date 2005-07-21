@@ -18,8 +18,8 @@ public class AnyLanguage implements Language {
         }
     }
 
-    AnyTokenizer tokenizer;
-    String extension;
+    private AnyTokenizer tokenizer;
+    private String extension;
     
     public AnyLanguage(String extension) {
     	this.extension = extension;
