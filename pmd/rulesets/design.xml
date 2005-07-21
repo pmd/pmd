@@ -10,10 +10,10 @@ The Design Ruleset contains a collection of rules that find questionable designs
         message="All methods are static.  Consider using Singleton instead.  Alternatively, you could add a private constructor or make the class abstract to silence this warning."
         class="net.sourceforge.pmd.rules.design.UseSingleton">
     <description>
-    If you have a class that has nothing but static methods, consider making it a Singleton.
-        Note that this doesn't apply to abstract classes, since their subclasses may
-        well include non-static methods.  Also, if you want this class to be a Singleton,
-        remember to add a private constructor to prevent instantiation.
+If you have a class that has nothing but static methods, consider making it a Singleton.
+Note that this doesn't apply to abstract classes, since their subclasses may
+well include non-static methods.  Also, if you want this class to be a Singleton,
+remember to add a private constructor to prevent instantiation.
     </description>
       <priority>3</priority>
 
@@ -62,19 +62,19 @@ public class Foo {
           message="Avoid unnecessary comparisons in boolean expressions"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-  Avoid unnecessary comparisons in boolean expressions - this makes simple code seem complicated.
+Avoid unnecessary comparisons in boolean expressions - this makes simple code seem complicated.
       </description>
       <properties>
           <property name="xpath">
               <value>
 <![CDATA[
-//EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+//EqualityExpression/PrimaryExpression
+ /PrimaryPrefix/Literal/BooleanLiteral
 ]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
-
       <example>
   <![CDATA[
 public class Bar {
@@ -93,13 +93,13 @@ public class Bar {
         message="Switch statements should have a default label"
         class="net.sourceforge.pmd.rules.XPathRule">
     <description>
-    Switch statements should have a default label.
+Switch statements should have a default label.
     </description>
       <properties>
           <property name="xpath">
               <value>
                   <![CDATA[
-    //SwitchStatement[not(SwitchLabel[count(*) = 0])]
+//SwitchStatement[not(SwitchLabel[count(*) = 0])]
                   ]]>
               </value>
           </property>
@@ -126,7 +126,7 @@ public class Foo {
         message="Deeply nested if..then statements are hard to read"
         class="net.sourceforge.pmd.rules.AvoidDeeplyNestedIfStmtsRule">
     <description>
-    Deeply nested if..then statements are hard to read.
+Deeply nested if..then statements are hard to read.
     </description>
       <priority>3</priority>
    <properties>
@@ -155,7 +155,6 @@ public class Foo {
 
     <rule name="AvoidReassigningParameters"
         message="Avoid reassigning parameters such as ''{0}''"
-
         class="net.sourceforge.pmd.rules.AvoidReassigningParameters">
     <description>
 Reassigning values to parameters is a questionable practice.  Use a temporary local variable instead.
@@ -186,28 +185,28 @@ public class Foo {
         </properties>
       <example>
  <![CDATA[
-   public class Foo {
-     private int x;
-     public void bar() {
-       switch (x) {
-         case 1: {
-           System.out.println("I am a fish.");
-           System.out.println("I am a fish.");
-           System.out.println("I am a fish.");
-           System.out.println("I am a fish.");
-           break;
-         }
+public class Foo {
+ private int x;
+ public void bar() {
+   switch (x) {
+     case 1: {
+       System.out.println("I am a fish.");
+       System.out.println("I am a fish.");
+       System.out.println("I am a fish.");
+       System.out.println("I am a fish.");
+       break;
+     }
 
-         case 2: {
-           System.out.println("I am a cow.");
-           System.out.println("I am a cow.");
-           System.out.println("I am a cow.");
-           System.out.println("I am a cow.");
-           break;
-         }
-       }
+     case 2: {
+       System.out.println("I am a cow.");
+       System.out.println("I am a cow.");
+       System.out.println("I am a cow.");
+       System.out.println("I am a cow.");
+       break;
      }
    }
+ }
+}
  ]]>
       </example>
     </rule>
@@ -216,36 +215,36 @@ public class Foo {
           message="Overridable method ''{0}'' called during construction"
           class="net.sourceforge.pmd.rules.ConstructorCallsOverridableMethod">
       <description>
-      Calling overridable methods during construction poses a risk of invoking methods on an
-          incompletely constructed object.  This situation can be difficult to discern.
-      It may leave the sub-class unable to construct its superclass or forced to
-          replicate the construction process completely within itself, losing the ability to call
-      super().  If the default constructor contains a call to an overridable method,
-          the subclass may be completely uninstantiable.   Note that this includes method calls
-          throughout the control flow graph - i.e., if a constructor Foo() calls a private method
-            bar() that calls a public method buz(), there's a problem.
+Calling overridable methods during construction poses a risk of invoking methods on an
+incompletely constructed object.  This situation can be difficult to discern.
+It may leave the sub-class unable to construct its superclass or forced to
+replicate the construction process completely within itself, losing the ability to call
+super().  If the default constructor contains a call to an overridable method,
+the subclass may be completely uninstantiable.   Note that this includes method calls
+throughout the control flow graph - i.e., if a constructor Foo() calls a private method
+bar() that calls a public method buz(), there's a problem.
       </description>
         <priority>1</priority>
       <example>
   <![CDATA[
-    public class SeniorClass {
-      public SeniorClass(){
-          toString(); //may throw NullPointerException if overridden
-      }
-      public String toString(){
-        return "IAmSeniorClass";
-      }
-    }
-    public class JuniorClass extends SeniorClass {
-      private String name;
-      public JuniorClass(){
-        super(); //Automatic call leads to NullPointerException
-        name = "JuniorClass";
-      }
-      public String toString(){
-        return name.toUpperCase();
-      }
-    }
+public class SeniorClass {
+  public SeniorClass(){
+      toString(); //may throw NullPointerException if overridden
+  }
+  public String toString(){
+    return "IAmSeniorClass";
+  }
+}
+public class JuniorClass extends SeniorClass {
+  private String name;
+  public JuniorClass(){
+    super(); //Automatic call leads to NullPointerException
+    name = "JuniorClass";
+  }
+  public String toString(){
+    return name.toUpperCase();
+  }
+}
   ]]>
       </example>
     </rule>
@@ -254,11 +253,11 @@ public class Foo {
           message="Avoid instantiation through private constructors from outside of the constructor's class."
           class="net.sourceforge.pmd.rules.AccessorClassGeneration">
       <description>
-      Instantiation by way of private constructors from outside of the constructor's class often causes the generation of an accessor.
-      A factory method, or non-privitization of the constructor can eliminate this situation.
-      The generated class file is actually an interface.  It gives the accessing class the ability to invoke a new hidden package
-      scope constructor that takes the interface as a supplementary parameter.  This turns a private constructor effectively into
-      one with package scope, though not visible to the naked eye.
+Instantiation by way of private constructors from outside of the constructor's class often causes the generation of an accessor.
+A factory method, or non-privitization of the constructor can eliminate this situation.
+The generated class file is actually an interface.  It gives the accessing class the ability to invoke a new hidden package
+scope constructor that takes the interface as a supplementary parameter.  This turns a private constructor effectively into
+one with package scope, though not visible to the naked eye.
       </description>
       <priority>3</priority>
       <example>
@@ -313,8 +312,8 @@ public class Foo {
           message="This final field could be made static"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-      If a final field is assigned to a compile-time constant, it could be
-          made static, thus saving overhead in each object
+If a final field is assigned to a compile-time constant, it could be
+made static, thus saving overhead in each object
       </description>
         <properties>
             <property name="xpath">
@@ -330,7 +329,6 @@ public class Foo {
             </property>
         </properties>
         <priority>3</priority>
-
       <example>
   <![CDATA[
 public class Foo {
@@ -345,23 +343,23 @@ public class Foo {
         message="Ensure that Connection objects are always closed after use"
         class="net.sourceforge.pmd.rules.CloseConnection">
     <description>
-      Ensure that Connection objects are always closed after use
+Ensure that Connection objects are always closed after use
     </description>
     <priority>3</priority>
     <example>
-      <![CDATA[
-           public void foo() {
-             Connection c = pool.getConnection();
-             try {
-               // do stuff
-             } catch (SQLException ex) {
-               // handle exception
-             } finally {
-               // oops, should close the connection using 'close'!
-               // c.close();
-             }
-           }
-  ]]>
+<![CDATA[
+public void foo() {
+ Connection c = pool.getConnection();
+ try {
+   // do stuff
+ } catch (SQLException ex) {
+   // handle exception
+ } finally {
+   // oops, should close the connection using 'close'!
+   // c.close();
+ }
+}
+]]>
     </example>
   </rule>
 
@@ -369,9 +367,9 @@ public class Foo {
            message="Non-static initializers are confusing"
            class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-       A nonstatic initializer block will be called any time a constructor
-       is invoked (just prior to invoking the constructor).  While this
-       is a valid language construct, it is rarely used and is confusing.
+A nonstatic initializer block will be called any time a constructor
+is invoked (just prior to invoking the constructor).  While this
+is a valid language construct, it is rarely used and is confusing.
        </description>
          <properties>
              <property name="xpath">
@@ -399,8 +397,8 @@ public class MyClass {
            message="The default label should be the last label in a switch statement"
            class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-       The default label in a switch statement should be the last label, by convention.
-       Most programmers will expect the default label (if present) to be the last one.
+The default label in a switch statement should be the last label, by convention.
+Most programmers will expect the default label (if present) to be the last one.
        </description>
          <properties>
              <property name="xpath">
@@ -416,17 +414,16 @@ public class MyClass {
          <priority>3</priority>
        <example>
    <![CDATA[
-      switch (a)
-      {
-         case 1:
-            // do something
-            break;
-         default:
-            // the default case should be last, by convention
-            break;
-         case 2:
-            break;
-      }
+switch (a) {
+ case 1:
+    // do something
+    break;
+ default:
+    // the default case should be last, by convention
+    break;
+ case 2:
+    break;
+}
    ]]>
        </example>
      </rule>
@@ -435,14 +432,14 @@ public class MyClass {
            message="A non-case label was present in a switch statement"
            class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-       A non-case label (e.g. a named break/continue label) was present in a switch statement.
-       This legal, but confusing. It is easy to mix up the case labels and the non-case labels.
+A non-case label (e.g. a named break/continue label) was present in a switch statement.
+This legal, but confusing. It is easy to mix up the case labels and the non-case labels.
        </description>
          <properties>
              <property name="xpath">
                  <value>
  <![CDATA[
-    //SwitchStatement//BlockStatement/Statement/LabeledStatement
+//SwitchStatement//BlockStatement/Statement/LabeledStatement
  ]]>
                  </value>
              </property>
@@ -472,7 +469,7 @@ public class Foo {
           message="This call to Collection.toArray() may be optimizable"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-  A call to Collection.toArray can use the Collection's size vs an empty Array of the desired type.
+A call to Collection.toArray can use the Collection's size vs an empty Array of the desired type.
       </description>
       <properties>
           <property name="xpath">
@@ -511,7 +508,7 @@ class Example {
           message="Avoid equality comparisons with Double.NaN"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-  Avoid equality comparisons with Double.NaN - these are
+Avoid equality comparisons with Double.NaN - these are
 likely to be logic errors.
       </description>
       <properties>
@@ -530,7 +527,7 @@ likely to be logic errors.
       <example>
   <![CDATA[
 public class Bar {
-int x = (y == Double.NaN);
+ boolean x = (y == Double.NaN);
 }
   ]]>
       </example>
@@ -540,18 +537,18 @@ int x = (y == Double.NaN);
             message="Don't use equals() to compare against null"
             class="net.sourceforge.pmd.rules.XPathRule">
         <description>
-         Newbie programmers sometimes get the comparison concepts confused
-         and use equals() to compare to null.
+Newbie programmers sometimes get the comparison concepts confused
+and use equals() to compare to null.
         </description>
         <properties>
             <property name="xpath">
                 <value>
     <![CDATA[
-    //PrimaryExpression
-     [PrimaryPrefix/Name[ends-with(@Image, 'equals')]]
-     [PrimarySuffix/Arguments/ArgumentList
-      /Expression/PrimaryExpression/PrimaryPrefix
-       /Literal/NullLiteral]
+//PrimaryExpression
+ [PrimaryPrefix/Name[ends-with(@Image, 'equals')]]
+ [PrimarySuffix/Arguments/ArgumentList
+  /Expression/PrimaryExpression/PrimaryPrefix
+   /Literal/NullLiteral]
     ]]>
                 </value>
             </property>
@@ -559,14 +556,14 @@ int x = (y == Double.NaN);
         <priority>1</priority>
     <example>
        <![CDATA[
-    class Bar {
-       void foo() {
-           String x = "foo";
-           if (x.equals(null)) { // bad!
-            doSomething();
-           }
+class Bar {
+   void foo() {
+       String x = "foo";
+       if (x.equals(null)) { // bad!
+        doSomething();
        }
-    }
+   }
+}
     ]]>
         </example>
         </rule>
@@ -575,21 +572,21 @@ int x = (y == Double.NaN);
         message="Avoid if (x != y) ..; else ..;"
         class="net.sourceforge.pmd.rules.design.ConfusingTernary">
         <description>
-          In an "if" expression with an "else" clause, avoid negation in
-          the test.  For example, rephrase:
-            if (x != y) diff(); else same();
-          as:
-            if (x == y) same(); else diff();
-          Most "if (x != y)" cases without an "else" are often return
-          cases, so consistent use of this rule makes the code easier
-          to read.  Also, this resolves trivial ordering problems, such
-          as "does the error case go first?" or "does the common case
-          go first?".
+In an "if" expression with an "else" clause, avoid negation in
+the test.  For example, rephrase:
+if (x != y) diff(); else same();
+as:
+if (x == y) same(); else diff();
+Most "if (x != y)" cases without an "else" are often return
+cases, so consistent use of this rule makes the code easier
+to read.  Also, this resolves trivial ordering problems, such
+as "does the error case go first?" or "does the common case
+go first?".
         </description>
         <priority>3</priority>
         <example>
           <![CDATA[
-          return (x != y) ? diff : same;
+return (x != y) ? diff : same;
           ]]>
         </example>
       </rule>
@@ -602,7 +599,7 @@ Avoid instantiating an object just to call getClass() on it; use the .class publ
       </description>
         <example>
     <![CDATA[
-class Foo {
+public class Foo {
  Class c = new String().getClass();
 }
     ]]>
@@ -628,18 +625,18 @@ class Foo {
           message="Avoid idempotent operations (like assigning a variable to itself)"
           class="net.sourceforge.pmd.rules.IdempotentOperations">
       <description>
-      Avoid idempotent operations - they are silly.
+Avoid idempotent operations - they are silly.
       </description>
         <priority>3</priority>
 
       <example>
       <![CDATA[
-    public class Foo {
-     public void bar() {
-      int x = 2;
-      x = x;
-     }
-    }
+public class Foo {
+ public void bar() {
+  int x = 2;
+  x = x;
+ }
+}
       ]]>
       </example>
     </rule>
@@ -649,55 +646,50 @@ class Foo {
         message="When instantiating a SimpleDateFormat object, specify a Locale"
         class="net.sourceforge.pmd.rules.XPathRule">
         <description>
-            Be sure to specify a Locale when creating a new instance of SimpleDateFormat.
+Be sure to specify a Locale when creating a new instance of SimpleDateFormat.
         </description>
         <properties>
             <property name="xpath">
                 <value>
-        <![CDATA[
-    //AllocationExpression
-     [ClassOrInterfaceType[@Image='SimpleDateFormat']]
-     [Arguments[@ArgumentCount=1]]
-        ]]>
+<![CDATA[
+//AllocationExpression
+ [ClassOrInterfaceType[@Image='SimpleDateFormat']]
+ [Arguments[@ArgumentCount=1]]
+]]>
                     </value>
                  </property>
               </properties>
         <priority>3</priority>
         <example>
         <![CDATA[
-    public class Foo {
-     // Should specify Locale.US (or whatever)
-     private SimpleDateFormat sdf = new SimpleDateFormat("pattern");
-    }
+public class Foo {
+ // Should specify Locale.US (or whatever)
+ private SimpleDateFormat sdf = new SimpleDateFormat("pattern");
+}
         ]]>
         </example>
     </rule>
 
     <rule name="ImmutableField"
-
           message="Private field could be made final.  It is only initialized in the declaration or constructor."
           class="net.sourceforge.pmd.rules.design.ImmutableField">
       <description>
-      Identifies private fields whose values never change once they are initialized either in the declaration of the field or by
-      a constructor.  This aids in converting existing classes to immutable classes.
+Identifies private fields whose values never change once they are initialized either in the declaration of the field or by
+a constructor.  This aids in converting existing classes to immutable classes.
       </description>
         <priority>3</priority>
 
       <example>
   <![CDATA[
-  public class FinalFields {
-      private int x;
-
-      public FinalFields() {
-          x = 7;
-      }
-
-      public void foo() {
-         int a = x + 2;
-      }
-
+public class FinalFields {
+  private int x; // could be final
+  public FinalFields() {
+      x = 7;
   }
-  Identifies x as being eligible for making final.
+  public void foo() {
+     int a = x + 2;
+  }
+}
   ]]>
       </example>
     </rule>
@@ -707,7 +699,7 @@ class Foo {
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids
-          problems with certain locales, i.e. Turkish.
+problems with certain locales, i.e. Turkish.
       </description>
         <example>
     <![CDATA[
@@ -721,7 +713,6 @@ class Foo {
  or simply
  if (x.equalsIgnoreCase("list")) ...
  */
-
  // GOOD
  String z = a.toLowerCase(Locale.EN);
 }
@@ -748,49 +739,47 @@ class Foo {
              message="Avoid protected fields in a final class.  Change to private or package access."
              class="net.sourceforge.pmd.rules.XPathRule">
          <description>
-     Do not use protected fields in final classes since they cannot be subclassed.
-    Clarify your intent by using private or package access modifiers instead.
+Do not use protected fields in final classes since they cannot be subclassed.
+Clarify your intent by using private or package access modifiers instead.
          </description>
          <properties>
              <property name="xpath">
                  <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Final='true']//FieldDeclaration[@Protected='true'] 
+//ClassOrInterfaceDeclaration
+ [@Final='true']//FieldDeclaration[@Protected='true']
  ]]>
                  </value>
              </property>
          </properties>
            <priority>3</priority>
-
-         <example>
-     <![CDATA[public final class Bar {
-      private int x;
-      protected int y;  // <-- Bar cannot be subclassed, so is y really private or package visible???
-      Bar() {}
-   }]]>
+        <example>
+<![CDATA[
+public final class Bar {
+ private int x;
+ protected int y;  // <-- Bar cannot be subclassed, so is y really private or package visible???
+ Bar() {}
+}
+ ]]>
          </example>
        </rule>
        
      <rule name="AssignmentToNonFinalStatic"
-          
            message="Possible unsafe assignment to a non-final static field in a constructor."
            class="net.sourceforge.pmd.rules.design.AssignmentToNonFinalStatic">
        <description>
-       Identifies a possible unsafe usage of a static field.
+Identifies a possible unsafe usage of a static field.
        </description>
          <priority>3</priority>
  
        <example>
    <![CDATA[
-   public class StaticField {
-       static int x;
- 
-       public FinalFields(int y) {
-           x = y;
-       }
- 
+public class StaticField {
+   static int x;
+   public FinalFields(int y) {
+    x = y; // unsafe
    }
-   Identifies the unasignment to x as possibly unsafe.
+}
    ]]>
        </example>
      </rule>
@@ -800,7 +789,7 @@ class Foo {
           message="Class cannot be instantiated and does not provide any static methods"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-  A class that has private constructors and does not have any static method cannot be used.
+A class that has private constructors and does not have any static method cannot be used.
       </description>
       <properties>
           <property name="xpath">
@@ -825,12 +814,8 @@ count(.//MethodDeclaration[@Static='true'])=0
  and no static method can be called.
  */
 public class Foo {
-
-    private Foo() {}
-
-	void foo() {
-	}
-
+ private Foo() {}
+ void foo() {}
 }
 
 ]]>
@@ -855,20 +840,18 @@ public class Foo {
           </property>
       </properties>
         <priority>3</priority>
-
       <example>
 <![CDATA[
-
-    // Try to avoid this
-	synchronized void foo() {
-	}
-
-	// Prefer this:
-	void bar() {
-	    synchronized(mutex) {
-	    }
-	}
-
+public class Foo {
+ // Try to avoid this
+ synchronized void foo() {
+ }
+ // Prefer this:
+ void bar() {
+  synchronized(mutex) {
+  }
+ }
+}
 ]]>
       </example>
     </rule>
@@ -877,7 +860,7 @@ public class Foo {
           message="A switch statement does not contain a break"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-  A switch statement without an enclosed break statement may be a bug.
+A switch statement without an enclosed break statement may be a bug.
       </description>
       <properties>
           <property name="xpath">
@@ -910,8 +893,8 @@ switch(status) {
           message="Call Thread.notifyAll() rather than Thread.notify()"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-      notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
-      one is chosen.  The thread chosen is arbitrary; thus it's usually safer to call notifyAll() instead.
+Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
+one is chosen.  The thread chosen is arbitrary; thus it's usually safer to call notifyAll() instead.
       </description>
       <properties>
           <property name="xpath">
@@ -935,10 +918,14 @@ or (  ./AllocationExpression
 
       <example>
 <![CDATA[
-	x.notify();
-	// If many threads are monitoring x, only one (and you won't know which) will be notified.
-	// use instead:
-	x.notifyAll();
+public class Foo {
+ void bar() {
+  x.notify();
+  // If many threads are monitoring x, only one (and you won't know which) will be notified.
+  // use instead:
+  x.notifyAll();
+ }
+}
 ]]>
       </example>
     </rule>
@@ -947,7 +934,7 @@ or (  ./AllocationExpression
           message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
           class="net.sourceforge.pmd.rules.XPathRule">
     <description>
-  Each caught exception type should be handled in its own catch clause.
+Each caught exception type should be handled in its own catch clause.
       </description>
       <properties>
           <property name="xpath">
@@ -966,23 +953,18 @@ or (  ./AllocationExpression
         <priority>3</priority>
       <example>
 <![CDATA[
-    // Avoid this
-      try {
-            ...something...
-      }
-      catch (Exception ee) {
-            if (ee instanceof IOException) {
-                cleanup();
-            }
-      }
-
-      // Prefer this:
-      try {
-          ...something...
-      }
-      catch (IOException ee) {
-            cleanup();
-      }
+try { // Avoid this
+ // do something
+} catch (Exception ee) {
+ if (ee instanceof IOException) {
+  cleanup();
+ }
+}
+try {  // Prefer this:
+ // do something
+} catch (IOException ee) {
+ cleanup();
+}
 ]]>
       </example>
     </rule>
@@ -991,10 +973,10 @@ or (  ./AllocationExpression
           message="This abstract class does not have any abstract methods"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-      The abstract class does not contain any abstract methods. An abstract class suggests
-      an incomplete implementation, which is to be completed by subclasses implementing the
-      abstract methods. If the class is intended to be used as a base class only (not to be instantiated
-      direcly) a protected constructor can be provided prevent direct instantiation.
+The abstract class does not contain any abstract methods. An abstract class suggests
+an incomplete implementation, which is to be completed by subclasses implementing the
+abstract methods. If the class is intended to be used as a base class only (not to be instantiated
+direcly) a protected constructor can be provided prevent direct instantiation.
       </description>
       <properties>
           <property name="xpath">
@@ -1012,10 +994,10 @@ or (  ./AllocationExpression
       <example>
 <![CDATA[
 public abstract class Foo {
-	void int method1() { ... }
-	void int method2() { ... }
-	// consider using abstract methods or removing
-	// the abstract modifier and adding protected constructors
+ void int method1() { ... }
+ void int method2() { ... }
+ // consider using abstract methods or removing
+ // the abstract modifier and adding protected constructors
 }
 ]]>
       </example>
@@ -1025,7 +1007,7 @@ public abstract class Foo {
               message="No need to check for null before an instanceof"
               class="net.sourceforge.pmd.rules.XPathRule">
            <description>
-      No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
+No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
            </description>
           <properties>
               <property name="xpath">
@@ -1053,7 +1035,6 @@ InstanceOfExpression
               </property>
           </properties>
             <priority>3</priority>
-
            <example>
       <![CDATA[
 class Foo {
@@ -1070,7 +1051,7 @@ class Foo {
   message="Use equals() to compare object references."
   class="net.sourceforge.pmd.rules.design.CompareObjectsWithEquals">
   <description>
-  Use equals() to compare object references; don't compare them with ==.
+ Use equals() to compare object references; don't compare them with ==.
   </description>
   <priority>3</priority>
   <example>
@@ -1090,7 +1071,7 @@ class Foo {
   message="Position literals first in String comparisons"
   class="net.sourceforge.pmd.rules.design.PositionLiteralsFirstInComparisons">
   <description>
-  Position literals first in String comparisons - that way if the String is null you won't get a NullPointerException, it'll just return false.
+ Position literals first in String comparisons - that way if the String is null you won't get a NullPointerException, it'll just return false.
   </description>
   <priority>3</priority>
   <example>
@@ -1109,7 +1090,7 @@ class Foo {
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
           class="net.sourceforge.pmd.rules.design.UnnecessaryLocalBeforeReturn">
       <description>
-  Avoid unnecessary if..then..else statements when returning a boolean
+Avoid unnecessary if..then..else statements when returning a boolean
       </description>
         <priority>3</priority>
       <example>

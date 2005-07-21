@@ -10,39 +10,35 @@ These rules deal with different optimizations that generally apply to performanc
           message="Local variable could be declared final"
           class="net.sourceforge.pmd.rules.optimization.LocalVariableCouldBeFinal">
       <description>
-      A local variable assigned only once can be declared final.
+A local variable assigned only once can be declared final.
       </description>
         <priority>3</priority>
-
       <example>
   <![CDATA[
-  public void foo () {
-   String a = "a"; //if a will not be assigned again it is better to do this:
-   final String b = "b";
-   ...   
-  }
+public void foo () {
+ String a = "a"; //if a will not be assigned again it is better to do this:
+ final String b = "b";
+}
   ]]>
       </example>
       </rule>
 
     <rule name="MethodArgumentCouldBeFinal"
           message="Parameter ''{0}'' is not assigned and could be declared final"
-         
           class="net.sourceforge.pmd.rules.optimization.MethodArgumentCouldBeFinal">
       <description>
-      A method argument that is never assigned can be declared final.
+A method argument that is never assigned can be declared final.
       </description>
         <priority>3</priority>
       <example>
   <![CDATA[
-  public void foo (String param) {
-      // do stuff with param never assigning it
-      // better: public void foo (final String param) {
-  }
+public void foo (String param) {
+  // do stuff with param never assigning it
+  // better: public void foo (final String param) {
+}
   ]]>
       </example>
       </rule>
-
 
   <rule name="AvoidInstantiatingObjectsInLoops"
         message="Avoid instantiating new objects inside loops"
@@ -64,33 +60,31 @@ public class Something {
     </example>
   </rule>
   
-
-
     <rule name="UseArrayListInsteadOfVector"
           message="Use ArrayList instead of Vector"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-          ArrayList is a much better Collection implementation than Vector.
+ArrayList is a much better Collection implementation than Vector.
       </description>
       <properties>
           <property name="xpath">
               <value>
 <![CDATA[
-//AllocationExpression/ClassOrInterfaceType[@Image='Vector' or @Image='java.util.Vector']
+//AllocationExpression
+ /ClassOrInterfaceType[@Image='Vector' or @Image='java.util.Vector']
 ]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
-
       <example>
 <![CDATA[
 public class SimpleTest extends TestCase {
-    public void testX() {
-    Collection c = new Vector();
-    // This achieves the same with much better performance
-    // Collection c = new ArrayList();
-    }
+ public void testX() {
+  Collection c = new Vector();
+  // This achieves the same with much better performance
+  // Collection c = new ArrayList();
+ }
 }
 ]]>
           </example>
@@ -100,12 +94,12 @@ public class SimpleTest extends TestCase {
           message="This call to String.startsWith can be rewritten using String.charAt(0)"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-      Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
+Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
       </description>
     <properties>
         <property name="xpath">
             <value>
-                <![CDATA[
+<![CDATA[
 //PrimaryExpression
  [PrimaryPrefix/Name
   [ends-with(@Image, '.startsWith')]]
@@ -122,11 +116,13 @@ public class SimpleTest extends TestCase {
     </properties>
         <priority>3</priority>
       <example>
-  <![CDATA[public class Foo {
-      boolean checkIt(String x) {
-          return x.startsWith("a");
-      }
-  }]]>
+  <![CDATA[
+public class Foo {
+  boolean checkIt(String x) {
+      return x.startsWith("a");
+  }
+}
+]]>
       </example>
     </rule>
 
@@ -134,7 +130,7 @@ public class SimpleTest extends TestCase {
               message="Prefer StringBuffer over += for concatenating strings"
               class="net.sourceforge.pmd.rules.XPathRule">
            <description>
-      Finds usages of += for appending strings.
+Finds usages of += for appending strings.
            </description>
           <properties>
               <property name="xpath">
@@ -151,17 +147,18 @@ public class SimpleTest extends TestCase {
               </property>
           </properties>
             <priority>3</priority>
-
            <example>
       <![CDATA[
-         String a;
-
-         a = "foo";
-         a += " bar";
-
-         // better would be:
-         StringBuffer a = new StringBuffer("foo");
-         a.append(" bar);
+public class Foo {
+ void bar() {
+  String a;
+  a = "foo";
+  a += " bar";
+  // better would be:
+  // StringBuffer a = new StringBuffer("foo");
+  // a.append(" bar);
+ }
+}
       ]]>
            </example>
         </rule>

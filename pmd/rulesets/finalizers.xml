@@ -10,14 +10,14 @@ These rules deal with different problems that can occur with finalizers.
           message="Avoid empty finalize methods"
           class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-       If the finalize() method is empty, then it does not need to exist.
+If the finalize() method is empty, then it does not need to exist.
        </description>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-   //MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
-      /Block[count(*)=0]
+//MethodDeclaration[MethodDeclarator[@Image='finalize'][not(FormalParameters/*)]]
+  /Block[count(*)=0]
 ]]>
                 </value>
             </property>
@@ -25,9 +25,9 @@ These rules deal with different problems that can occur with finalizers.
         <priority>3</priority>
        <example>
 <![CDATA[
-   public class Foo {
-       protected void finalize() {}
-   }
+public class Foo {
+   protected void finalize() {}
+}
 ]]>
        </example>
      </rule>
@@ -36,19 +36,19 @@ These rules deal with different problems that can occur with finalizers.
           message="Finalize should do something besides just calling super.finalize()"
           class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-       If the finalize() is implemented, it should do something besides just calling
-       super.finalize().
+If the finalize() is implemented, it should do something besides just calling
+super.finalize().
        </description>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-   //MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
-       /Block[count(BlockStatement)=1]
-         /BlockStatement[
-           Statement/StatementExpression/PrimaryExpression
-          /PrimaryPrefix[@Image="finalize"]
-          ]
+//MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
+   /Block[count(BlockStatement)=1]
+     /BlockStatement[
+       Statement/StatementExpression/PrimaryExpression
+      /PrimaryPrefix[@Image="finalize"]
+      ]
 ]]>
                 </value>
             </property>
@@ -56,11 +56,11 @@ These rules deal with different problems that can occur with finalizers.
         <priority>3</priority>
        <example>
            <![CDATA[
-   public class Foo {
-       protected void finalize() {
-         super.finalize();
-       }
+public class Foo {
+   protected void finalize() {
+     super.finalize();
    }
+}
            ]]>
        </example>
      </rule>
@@ -69,9 +69,9 @@ These rules deal with different problems that can occur with finalizers.
       message="Finalize methods should not be overloaded"
       class="net.sourceforge.pmd.rules.XPathRule">
    <description>
-   Methods named finalize() should not have parameters.  It is
-   confusing and probably a bug to overload finalize().  It will
-   not be called by the VM.
+Methods named finalize() should not have parameters.  It is
+confusing and probably a bug to overload finalize().  It will
+not be called by the VM.
    </description>
     <properties>
         <property name="xpath">
@@ -86,11 +86,11 @@ These rules deal with different problems that can occur with finalizers.
     <priority>3</priority>
    <example>
 <![CDATA[
-   public class Foo {
-       // this is confusing and probably a bug
-       protected void finalize(int a) {
-       }
+public class Foo {
+   // this is confusing and probably a bug
+   protected void finalize(int a) {
    }
+}
 ]]>
    </example>
  </rule>
@@ -99,7 +99,7 @@ These rules deal with different problems that can occur with finalizers.
           message="Last statement in finalize method should be a call to super.finalize()"
           class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-       If the finalize() is implemented, its last action should be to call super.finalize
+If the finalize() is implemented, its last action should be to call super.finalize
        </description>
         <properties>
             <property name="xpath">
@@ -135,8 +135,8 @@ public class Foo {
           message="If you override finalize(), make it protected"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-      If you override finalize(), make it protected.  Otherwise, subclasses
-          may not called your implementation of finalize.
+If you override finalize(), make it protected.  Otherwise, subclasses
+  may not called your implementation of finalize.
       </description>
         <properties>
             <property name="xpath">
@@ -166,8 +166,8 @@ public class Foo {
           message="Avoid calling finalize() explicitly"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-  finalize() is called by the garbage collector on an object when garbage collection determines
-  that there are no more references to the object.
+Object.finalize() is called by the garbage collector on an object when garbage collection determines
+that there are no more references to the object.
       </description>
       <properties>
           <property name="xpath">
@@ -188,10 +188,12 @@ or @Image='finalize'
         <priority>3</priority>
       <example>
 <![CDATA[
-	void foo() {
-	    Bar b = new Bar();
-	    b.finalize();
-	}
+public class Foo {
+ void foo() {
+  Bar b = new Bar();
+  b.finalize();
+ }
+}
 ]]>
       </example>
     </rule>

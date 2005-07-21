@@ -10,20 +10,19 @@ These rules check the security guidelines from Sun, published at http://java.sun
           message="Never return a reference to an internal array that contains sensitive data"
           class="net.sourceforge.pmd.rules.sunsecure.MethodReturnsInternalArray">
       <description>
-      Exposing internal arrays directly allows the user to modify some code that could be critical.
-      It is safer to return a copy of the array.
+Exposing internal arrays directly allows the user to modify some code that could be critical.
+It is safer to return a copy of the array.
       </description>
         <priority>3</priority>
       <example>
   <![CDATA[
-  public class SecureSystem {
-      UserData [] ud;
-      
-      public UserData [] getUserData() {
-          // Don't return directly the internal array, return a copy 
-          return ud;
-      }
+public class SecureSystem {
+  UserData [] ud;
+  public UserData [] getUserData() {
+      // Don't return directly the internal array, return a copy
+      return ud;
   }
+}
   ]]>
       </example>
       </rule>
@@ -32,27 +31,23 @@ These rules check the security guidelines from Sun, published at http://java.sun
           message="A user given array is stored directly"
           class="net.sourceforge.pmd.rules.sunsecure.ArrayIsStoredDirectly">
       <description>
-      Constructors and methods receiving arrays should clone objects and store the copy.
-      This prevents that future changes from the user affect the internal functionallity.
+Constructors and methods receiving arrays should clone objects and store the copy.
+This prevents that future changes from the user affect the internal functionallity.
       </description>
         <priority>3</priority>
       <example>
   <![CDATA[
-  public class Foo {
-  private String [] x;
-  
-      public void foo (String [] param) {
-          // Don't do this, make a copy of the array at least
-          this.x=param;
-      }
+public class Foo {
+ private String [] x;
+  public void foo (String [] param) {
+      // Don't do this, make a copy of the array at least
+      this.x=param;
   }
-  
+}
   ]]>
       </example>
       </rule>
-
-<!--
- -->
+    
 </ruleset>
 
 

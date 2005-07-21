@@ -32,24 +32,23 @@ public class Foo {
     </example>
   </rule>
 
-
     <rule name="StringInstantiation"
         message="Avoid instantiating String objects; this is usually unnecessary."
         class="net.sourceforge.pmd.rules.XPathRule">
     <description>
-    Avoid instantiating String objects; this is usually unnecessary.
+Avoid instantiating String objects; this is usually unnecessary.
     </description>
        <properties>
            <property name="xpath">
                <value>
                    <![CDATA[
-    //AllocationExpression[ClassOrInterfaceType/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]
+//AllocationExpression
+ [ClassOrInterfaceType/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]
                     ]]>
                </value>
            </property>
        </properties>
        <priority>2</priority>
-
     <example>
 <![CDATA[
 public class Foo {
@@ -59,17 +58,13 @@ public class Foo {
     </example>
     </rule>
 
-
-
    <rule name="StringToString"
         message="Avoid calling toString() on String objects; this is unnecessary"
-       
         class="net.sourceforge.pmd.rules.StringToStringRule">
     <description>
     Avoid calling toString() on String objects; this is unnecessary
     </description>
        <priority>3</priority>
-
     <example>
 <![CDATA[
 public class Foo {
@@ -86,25 +81,23 @@ public class Foo {
         message="Avoid concatenating non literals in a StringBuffer constructor or append()"
         class="net.sourceforge.pmd.rules.AvoidConcatenatingNonLiteralsInStringBuffer">
     <description>
-    Avoid concatenating non literals in a StringBuffer constructor or append().
+Avoid concatenating non literals in a StringBuffer constructor or append().
     </description>
        <priority>2</priority>
-
     <example>
 <![CDATA[
-
-// Avoid this 
-StringBuffer sb=new
-StringBuffer("AAAAAAAAAA"+System.getProperty("java.io.tmpdir"));
-
-// use instead something like this
-StringBuffer sb = new StringBuffer("AAAAAAAAAA");
-sb.append(System.getProperty("java.io.tmpdir"));
-
+public class Foo {
+ void bar() {
+  // Avoid this
+  StringBuffer sb=new
+  StringBuffer("AAAAAAAAAA"+System.getProperty("java.io.tmpdir"));
+  // use instead something like this
+  StringBuffer sb = new StringBuffer("AAAAAAAAAA");
+  sb.append(System.getProperty("java.io.tmpdir"));
+ }
+}
 ]]>
     </example>
     </rule>
 </ruleset>
-
-
 

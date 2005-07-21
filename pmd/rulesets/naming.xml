@@ -17,9 +17,9 @@ Detects when a field, local or parameter has a short name.
           <property name="xpath" pluginname="true">
               <value>
                   <![CDATA[
-    //VariableDeclaratorId[string-length(@Image) < 3]
-     [not(ancestor::ForInit)]
-     [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
+//VariableDeclaratorId[string-length(@Image) < 3]
+ [not(ancestor::ForInit)]
+ [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
                   ]]>
               </value>
           </property>
@@ -29,10 +29,8 @@ Detects when a field, local or parameter has a short name.
 <![CDATA[
 public class Something {
   private int q = 15; // VIOLATION - Field
-
   public static void main( String as[] ) {  // VIOLATION - Formal
     int r = 20 + q; // VIOLATION - Local
-
     for (int i = 0; i < 10; i++) { // Not a Violation (inside FOR)
       r += q;
     }
@@ -53,7 +51,7 @@ Detects when a field, formal or local variable is declared with a long name.
           <property name="xpath" pluginname="true">
               <value>
                   <![CDATA[
-    //VariableDeclaratorId[string-length(@Image) > 17]
+//VariableDeclaratorId[string-length(@Image) > 17]
                   ]]>
               </value>
           </property>
@@ -62,17 +60,13 @@ Detects when a field, formal or local variable is declared with a long name.
 <![CDATA[
 public class Something {
   int reallyLongIntName = -3;  // VIOLATION - Field
-
   public static void main( String argumentsList[] ) { // VIOLATION - Formal
     int otherReallyLongName = -5; // VIOLATION - Local
-
     for (int interestingIntIndex = 0;  // VIOLATION - For
              interestingIntIndex < 10;
              interestingIntIndex ++ ) {
-
     }
 }
-
 ]]>
     </example>
   </rule>
@@ -88,7 +82,7 @@ Detects when very short method names are used.
           <property name="xpath">
               <value>
                   <![CDATA[
-    //MethodDeclarator[string-length(@Image) < 3]
+//MethodDeclarator[string-length(@Image) < 3]
                   ]]>
               </value>
           </property>
@@ -108,17 +102,17 @@ public class ShortMethod {
     message="{0} variable {1} should begin with {2}"
     class="net.sourceforge.pmd.rules.VariableNamingConventions">
         <description>
-    A variable naming conventions rule - customize this to your liking
-    Final variables should be all caps
-    Non-final variables should not include underscores
+A variable naming conventions rule - customize this to your liking
+Final variables should be all caps
+Non-final variables should not include underscores
         </description>
         <priority>1</priority>
         <example>
 <![CDATA[
 public class Foo {
-    public static final int MY_NUM = 0;
-    public String myTest = "";
-    DataModule dmTest = new DataModule();
+ public static final int MY_NUM = 0;
+ public String myTest = "";
+ DataModule dmTest = new DataModule();
 }
 ]]>
         </example>
@@ -128,24 +122,24 @@ public class Foo {
               message="Method name does not begin with a lower case character."
               class="net.sourceforge.pmd.rules.MethodNamingConventions">
           <description>
-              Method names should always begin with a lower case character, and should not contain underscores.
+Method names should always begin with a lower case character, and should not contain underscores.
           </description>
           <priority>1</priority>
           <example>
 <![CDATA[
 public class Foo {
-        public void fooStuff() {
-        }
+ public void fooStuff() {
+ }
 }
 ]]>
           </example>
         </rule>
 
-
     <rule name="ClassNamingConventions"
           message="Class names should begin with an uppercase character"
           class="net.sourceforge.pmd.rules.ClassNamingConventions">
-      <description> Class names should always begin with an upper case character.
+      <description>
+Class names should always begin with an upper case character.
       </description>
       <priority>1</priority>
       <example>
@@ -159,7 +153,7 @@ public class Foo {}
           message="Abstract classes should be named 'AbstractXXX'"
           class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-  Abstract classes should be named 'AbstractXXX'.
+Abstract classes should be named 'AbstractXXX'.
        </description>
         <priority>3</priority>
         <properties>
@@ -185,7 +179,7 @@ public abstract class Foo { // should be AbstractFoo
            message="Avoid using dollar signs in variable/method/class/interface names"
            class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-       Avoid using dollar signs in variable/method/class/interface names.
+Avoid using dollar signs in variable/method/class/interface names.
        </description>
          <properties>
              <property name="xpath">
@@ -213,16 +207,16 @@ public abstract class Foo { // should be AbstractFoo
           message="Classes should not have non-constructor methods with the same name as the class"
           class="net.sourceforge.pmd.rules.MethodWithSameNameAsEnclosingClass">
        <description>
-       Non-constructor methods should not have the same name as the enclosing class.
+Non-constructor methods should not have the same name as the enclosing class.
        </description>
         <priority>3</priority>
        <example>
     <![CDATA[
 public class MyClass {
-// this is bad because it is a method
-public void MyClass() {}
-// this is OK because it is a constructor
-public MyClass() {}
+ // this is bad because it is a method
+ public void MyClass() {}
+ // this is OK because it is a constructor
+ public MyClass() {}
 }
     ]]>
        </example>
@@ -232,8 +226,8 @@ public MyClass() {}
           message="The method name and return type are suspiciously close to hashCode()"
           class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-       The method name and return type are suspiciously close to hashCode(), which
-       may mean you are trying (and failing) to override the hashCode() method.
+The method name and return type are suspiciously close to hashCode(), which
+may mean you are trying (and failing) to override the hashCode() method.
        </description>
         <properties>
             <property name="xpath">
@@ -262,13 +256,12 @@ public class Foo {
        </example>
      </rule>
 
-
     <rule name="SuspiciousConstantFieldName"
           message="The field name indicates a constants but its modifiers don't"
           class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-       A field name is all in uppercase characters, which in sun's java naming 
-       conventions indicate a constant. However, the field is not final.
+A field name is all in uppercase characters, which in sun's java naming
+conventions indicate a constant. However, the field is not final.
        </description>
         <properties>
             <property name="xpath">
@@ -286,11 +279,10 @@ public class Foo {
        <example>
     <![CDATA[
 public class Foo {
-	// this is bad, since someone could accidentally 
-	// do PI = 2.71828; which is actualy e
-	// final double PI = 3.16; is ok
-	double PI = 3.16;
-	
+ // this is bad, since someone could accidentally
+ // do PI = 2.71828; which is actualy e
+ // final double PI = 3.16; is ok
+ double PI = 3.16;
 }
     ]]>
        </example>
@@ -301,9 +293,9 @@ public class Foo {
         message="The method name and parameter number are suspiciously close to equals(Object)"
         class="net.sourceforge.pmd.rules.XPathRule">
         <description>
-              The method name and parameter number are suspiciously close to
-     equals(Object), which may mean you are trying (and failing) to override the equals(Object)
-        method.
+The method name and parameter number are suspiciously close to
+equals(Object), which may mean you are trying (and failing) to override the equals(Object)
+method.
         </description>
         <properties>
             <property name="xpath">
@@ -330,14 +322,14 @@ or
         <priority>2</priority>
         <example>
         <![CDATA[
-    public class Foo {
-         public int equals(Object o) {
-         // oops, this probably was supposed to be boolean equals
-         }
-         public boolean equals(String s) {
-         // oops, this probably was supposed to be equals(Object)
-         }
-    }
+public class Foo {
+ public int equals(Object o) {
+ // oops, this probably was supposed to be boolean equals
+ }
+ public boolean equals(String s) {
+ // oops, this probably was supposed to be equals(Object)
+ }
+}
         ]]>
         </example>
     </rule>
@@ -346,34 +338,29 @@ or
           message="It is somewhat confusing to have a field name matching the declaring class name"
           class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingTypeName">
       <description>
-      It is somewhat confusing to have a field name matching the declaring class name.
-      This proabably means that type and or field names could be more precise.
+It is somewhat confusing to have a field name matching the declaring class name.
+This proabably means that type and or field names could be more precise.
       </description>
-      <properties></properties>
         <priority>3</priority>
-
       <example>
 <![CDATA[
 public class Foo extends Bar {
-	// There's probably a better name for foo
-	int foo;
+ // There's probably a better name for foo
+ int foo;
 }
 ]]>
       </example>
     </rule>
 
-
     <rule name="AvoidFieldNameMatchingMethodName"
           message="It is somewhat confusing to have a field name with the same name as a method"
           class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingMethodName">
       <description>
-      It is somewhat confusing to have a field name with the same name as a method.
-      While this is totally legal, having information (field) and actions (method) is
-      not clear naming.
+It is somewhat confusing to have a field name with the same name as a method.
+While this is totally legal, having information (field) and actions (method) is
+not clear naming.
       </description>
-      <properties></properties>
         <priority>3</priority>
-
       <example>
 <![CDATA[
 public class Foo {
@@ -386,23 +373,20 @@ public class Foo {
       </example>
     </rule>
 
-
     <rule name="AvoidNonConstructorMethodsWithClassName"
           message="Method {0} is not a constructor but it can be confused with one"
           class="net.sourceforge.pmd.rules.AvoidNonConstructorMethodsWithClassName">
       <description>
-      It is very easy to confuse methods with classname with constructors. It is preferrable
-      to name these non-constructor methods in a different way.
+It is very easy to confuse methods with classname with constructors. It is preferrable
+to name these non-constructor methods in a different way.
       </description>
-      <properties></properties>
         <priority>3</priority>
-
       <example>
 <![CDATA[
 public class Foo {
-	public void Foo() {
-		// not really a constructor...
-	}
+ public void Foo() {
+  // not a constructor, just a poorly named method
+ }
 }
 ]]>
       </example>

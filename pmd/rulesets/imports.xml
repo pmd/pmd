@@ -13,7 +13,6 @@ These rules deal with different problems that can occur with a class' import sta
     Avoid duplicate import statements.
     </description>
       <priority>4</priority>
-
     <example>
 <![CDATA[
 // this is bad
@@ -36,7 +35,7 @@ public class Foo {}
         message="Avoid importing anything from the package 'java.lang'"
         class="net.sourceforge.pmd.rules.XPathRule">
     <description>
-    Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
+Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
     </description>
       <properties>
           <property name="xpath">
@@ -54,7 +53,6 @@ public class Foo {}
           </property>
        </properties>
       <priority>4</priority>
-
     <example>
 <![CDATA[
 // this is bad
@@ -78,7 +76,6 @@ public class Foo {}
     Avoid unused import statements.
     </description>
       <priority>4</priority>
-
     <example>
 <![CDATA[
 // this is bad
@@ -92,7 +89,7 @@ public class Foo {}
          message="No need to import a type that's in the same package"
          class="net.sourceforge.pmd.rules.ImportFromSamePackageRule">
      <description>
-     No need to import a type that's in the same package.
+ No need to import a type that's in the same package.
      </description>
         <priority>3</priority>
      <example>

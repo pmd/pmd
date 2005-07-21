@@ -9,7 +9,6 @@ The JavaBeans Ruleset catches instances of bean rules not being followed.
 
   <rule name="BeanMembersShouldSerialize"
         message="Found non-transient, non-static member. Please mark as transient or provide accessors."
-       
         class="net.sourceforge.pmd.rules.BeanMembersShouldSerializeRule">
     <description>
 If a class is a bean, or is referenced by a bean, directly or indirectly
@@ -20,7 +19,6 @@ follow the Java naming conventions, i.e.if you have a variable foo, you should
 provide getFoo and setFoo methods.
     </description>
       <priority>3</priority>
-
     <example>
 <![CDATA[
   private transient int someFoo;//good, it's transient
@@ -41,12 +39,11 @@ provide getFoo and setFoo methods.
     </example>
   </rule>
 
-
     <rule name="MissingSerialVersionUID"
           message="Classes implementing Serializable should set a serialVersionUID"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-          Classes that are serializable should provide a serialVersionUID field.
+Classes that are serializable should provide a serialVersionUID field.
       </description>
       <properties>
           <property name="xpath">
@@ -66,13 +63,12 @@ and
           </property>
       </properties>
         <priority>3</priority>
-
       <example>
 <![CDATA[
 public class Foo implements java.io.Serializable {
-    String name;
-    // Define serialization id to avoid serialization related bugs
-    public static final long serialVersionUID = 4328743;
+ String name;
+ // Define serialization id to avoid serialization related bugs
+ // i.e., public static final long serialVersionUID = 4328743;
 }
 
 ]]>
