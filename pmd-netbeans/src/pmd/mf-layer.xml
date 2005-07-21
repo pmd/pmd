@@ -1,39 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
-	<folder name="Services">
-		<file name="pmd-config-option.settings" url="config/option.xml">
-			<attr name="SystemFileSystem.localizingBundle" stringvalue="pmd.config.Bundle"/>
-			<attr name="SystemFileSystem.icon" urlvalue="nbresloc:/pmd/resources/PMDOptionsSettingsIcon.gif"/>
-		</file>
-	</folder>
-	<folder name="UI">
-		<folder name="Services">
-			<folder name="IDEConfiguration">
-				<folder name="ServerAndExternalToolSettings">
-					<file name="pmd-config-option.shadow">
-                                                <attr name="originalFile" stringvalue="Services/pmd-config-option.settings"/>
-					</file>
-				</folder>
-			</folder>
-		</folder>
-	</folder>
-	<folder name="Actions">
+    <folder name="Services">
+        <file name="pmd-config-option.settings" url="config/option.xml">
+            <attr name="SystemFileSystem.localizingBundle" stringvalue="pmd.config.Bundle"/>
+            <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/pmd/resources/PMDOptionsSettingsIcon.gif"/>
+        </file>
+    </folder>
+    <folder name="UI">
+        <folder name="Services">
+            <folder name="IDEConfiguration">
+                <folder name="ServerAndExternalToolSettings">
+                    <file name="pmd-config-option.shadow">
+                        <attr name="originalFile" stringvalue="Services/pmd-config-option.settings"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
+    <folder name="Actions">
         <folder name="Tools">
             <file name="pmd-RunPMDAction.instance"/>
         </folder>
-	</folder>
-      <folder name="Editors">
-    <folder name="AnnotationTypes">
-      <file name="pmd-annotation.xml" url="resources/annotation.xml"/>
-      <file name="pmd-scan-annotation.xml" url="resources/annotation-scan.xml"/>
     </folder>
-  </folder>
-      <folder name="Shortcuts">
-        <file name="CS-P.instance">
-	    <attr name="instanceClass" stringvalue="pmd.RunPMDAction"/>
-	</file>
+    <folder name="Editors">
+        <folder name="AnnotationTypes">
+            <file name="pmd-annotation.xml" url="resources/annotation.xml"/>
+            <file name="pmd-scan-annotation.xml" url="resources/annotation-scan.xml"/>
+        </folder>
     </folder>
-
-
+    <folder name="Shortcuts">
+        <file name="D-O-P.instance">
+            <attr name="instanceClass" stringvalue="pmd.RunPMDAction"/>
+        </file>
+    </folder>
 </filesystem>
