@@ -383,6 +383,11 @@ public class RunPMDAction extends CookieAction {
 		}
 		return list;
 	}
+
+    protected boolean asynchronous() {
+        // PENDING need to rewriet to synchronous action
+        return true;
+    }
 	
 	/**
 	 * Default callback implementation, to use when no callback is provided to <code>checkCookies</code>.
