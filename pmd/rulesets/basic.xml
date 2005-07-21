@@ -12,9 +12,9 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
       <description>
-  Empty Catch Block finds instances where an exception is caught,
-  but nothing is done.  In most circumstances, this swallows an exception
-  which should either be acted on or reported.
+Empty Catch Block finds instances where an exception is caught,
+but nothing is done.  In most circumstances, this swallows an exception
+which should either be acted on or reported.
       </description>
       <properties>
           <property name="xpath">
@@ -32,13 +32,15 @@ The Basic Ruleset contains a collection of good practices which everyone should 
         <priority>3</priority>
 
       <example>
-  <![CDATA[public void doSomething() {
-      try {
-        FileInputStream fis = new FileInputStream("/tmp/bugger");
-      } catch (IOException ioe) {
-          // not good
-      }
-    }]]>
+  <![CDATA[
+public void doSomething() {
+  try {
+    FileInputStream fis = new FileInputStream("/tmp/bugger");
+  } catch (IOException ioe) {
+      // not good
+  }
+}
+ ]]>
       </example>
     </rule>
 
@@ -47,7 +49,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt">
       <description>
-  Empty If Statement finds instances where a condition is checked but nothing is done about it.
+Empty If Statement finds instances where a condition is checked but nothing is done about it.
     </description>
         <priority>3</priority>
       <properties>
@@ -62,9 +64,13 @@ The Basic Ruleset contains a collection of good practices which everyone should 
       </properties>
       <example>
     <![CDATA[
-    if (foo == 0) {
-       // why bother checking up on foo?
-    }
+public class Foo {
+ void bar(int x) {
+  if (x == 0) {
+   // empty!
+  }
+ }
+}
  ]]>
        </example>
     </rule>
@@ -75,25 +81,31 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
        <description>
-  Empty While Statement finds all instances where a while statement
-  does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if
-  it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
+Empty While Statement finds all instances where a while statement
+does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if
+it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
        </description>
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[
-                  //WhileStatement/Statement[./Block[count(*) = 0]  or ./EmptyStatement]
-                  ]]>
+<![CDATA[
+//WhileStatement/Statement[./Block[count(*) = 0]  or ./EmptyStatement]
+]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
        <example>
-  <![CDATA[while (a == b) {
-    // not good
-  }]]>
+  <![CDATA[
+public class Foo {
+ void bar(int a, int b) {
+  while (a == b) {
+   // empty!
+  }
+ }
+}
+ ]]>
        </example>
     </rule>
 
@@ -103,25 +115,30 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyTryBlock">
       <description>
-  Avoid empty try blocks - what's the point?
+Avoid empty try blocks - what's the point?
       </description>
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[//TryStatement/Block[1][count(*) = 0]]]>
+<![CDATA[
+//TryStatement/Block[1][count(*) = 0]
+]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[// this is bad
-  public void bar() {
-      try {
-      } catch (Exception e) {
-          e.printStackTrace();
-      }
-  }]]>
+  <![CDATA[
+public class Foo {
+ public void bar() {
+  try {
+  } catch (Exception e) {
+    e.printStackTrace();
+  }
+ }
+}
+]]>
       </example>
     </rule>
 
@@ -130,7 +147,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyFinallyBlock">
       <description>
-  Avoid empty finally blocks - these can be deleted.
+Avoid empty finally blocks - these can be deleted.
       </description>
       <properties>
           <property name="xpath">
@@ -144,13 +161,17 @@ The Basic Ruleset contains a collection of good practices which everyone should 
         <priority>3</priority>
 
       <example>
-  <![CDATA[// this is bad
-  public void bar() {
-      try {
-          int x=2;
-      } finally {
-      }
-  }]]>
+  <![CDATA[
+public class Foo {
+ public void bar() {
+  try {
+    int x=2;
+   } finally {
+    // empty!
+   }
+ }
+}
+ ]]>
       </example>
     </rule>
 
@@ -160,27 +181,30 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptySwitchStatements">
       <description>
-      Avoid empty switch statements.
+Avoid empty switch statements.
       </description>
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[//SwitchStatement[count(*) = 1]]]>
+<![CDATA[
+//SwitchStatement[count(*) = 1]
+ ]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[public class Foo {
-   public void bar() {
-    int x = 2;
-    switch (x) {
-     // once there was code here
-     // but it's been commented out or something
-    }
-   }
-  }]]>
+  <![CDATA[
+public class Foo {
+ public void bar() {
+  int x = 2;
+  switch (x) {
+   // once there was code here
+   // but it's been commented out or something
+  }
+ }
+}]]>
       </example>
       </rule>
 
@@ -190,24 +214,27 @@ The Basic Ruleset contains a collection of good practices which everyone should 
          class="net.sourceforge.pmd.rules.XPathRule"
          externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#JumbledIncrementer">
      <description>
-     Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.
+Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.
      </description>
      <properties>
          <property name="xpath">
              <value>
- <![CDATA[//ForStatement
+ <![CDATA[
+ //ForStatement
  [
   ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
   =
   ancestor::ForStatement/ForInit//VariableDeclaratorId/@Image
- ]]]>
+ ]
+ ]]>
              </value>
          </property>
      </properties>
         <priority>3</priority>
 
      <example>
- <![CDATA[public class JumbledIncrementerRule1 {
+ <![CDATA[
+public class JumbledIncrementerRule1 {
   public void foo() {
    for (int i = 0; i < 10; i++) {
     for (int k = 0; k < 20; i++) {
@@ -215,7 +242,8 @@ The Basic Ruleset contains a collection of good practices which everyone should 
     }
    }
   }
- }]]>
+ }
+ ]]>
      </example>
      </rule>
 
@@ -225,28 +253,30 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ForLoopShouldBeWhileLoop">
       <description>
-      Some for loops can be simplified to while loops - this makes them more concise.
+Some for loops can be simplified to while loops - this makes them more concise.
       </description>
     <properties>
         <property name="xpath">
             <value>
                 <![CDATA[
- //ForStatement
-  [count(*) > 1]
-  [not(ForInit)]
-  [not(ForUpdate)]
-  [not(Type and Expression and Statement)]
+//ForStatement
+ [count(*) > 1]
+ [not(ForInit)]
+ [not(ForUpdate)]
+ [not(Type and Expression and Statement)]
  ]]>
             </value>
         </property>
     </properties>
         <priority>3</priority>
       <example>
-  <![CDATA[public class Foo {
-      void bar() {
-          for (;true;) true; // No Init or Update part, may as well be: while (true)
-      }
-  }]]>
+  <![CDATA[
+public class Foo {
+ void bar() {
+  for (;true;) true; // No Init or Update part, may as well be: while (true)
+ }
+}
+ ]]>
       </example>
     </rule>
 
@@ -256,16 +286,18 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           class="net.sourceforge.pmd.rules.UnnecessaryConversionTemporary"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryConversionTemporary">
       <description>
-      Avoid unnecessary temporaries when converting primitives to Strings
+Avoid unnecessary temporaries when converting primitives to Strings
       </description>
         <priority>3</priority>
       <example>
-  <![CDATA[public String convert(int x) {
-      // this wastes an object
-      String foo = new Integer(x).toString();
-      // this is better
-      return Integer.toString(x);
-    }]]>
+  <![CDATA[
+public String convert(int x) {
+  // this wastes an object
+  String foo = new Integer(x).toString();
+  // this is better
+  return Integer.toString(x);
+}
+ ]]>
       </example>
     </rule>
 
@@ -274,7 +306,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode">
       <description>
-  Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
       </description>
       <properties>
           <property name="xpath">
@@ -299,29 +331,31 @@ not
         <priority>3</priority>
 
       <example>
-  <![CDATA[// this is bad
-  public class Bar {
-      public boolean equals(Object o) {
-          // do some comparison
-      }
+  <![CDATA[
+// this is bad
+public class Bar {
+  public boolean equals(Object o) {
+      // do some comparison
   }
+}
 
-  // and so is this
-  public class Baz {
-      public int hashCode() {
-          // return some hash value
-      }
+// and so is this
+public class Baz {
+  public int hashCode() {
+      // return some hash value
   }
+}
 
-  // this is OK
-  public class Foo {
-      public boolean equals(Object other) {
-          // do some comparison
-      }
-      public int hashCode() {
-          // return some hash value
-      }
-  }]]>
+// this is OK
+public class Foo {
+  public boolean equals(Object other) {
+      // do some comparison
+  }
+  public int hashCode() {
+      // return some hash value
+  }
+}
+ ]]>
       </example>
     </rule>
 
@@ -330,25 +364,27 @@ not
           class="net.sourceforge.pmd.rules.DoubleCheckedLocking"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#DoubleCheckedLocking">
       <description>
-      Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
-      An optimizing JRE may assign a reference to the baz variable before it creates the object the
-          reference is intended to point to.  For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html.
+Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
+An optimizing JRE may assign a reference to the baz variable before it creates the object the
+  reference is intended to point to.  For more details see http://www.javaworld.com/javaworld/jw-02-2001/jw-0209-double.html.
       </description>
         <priority>1</priority>
       <example>
-  <![CDATA[public class Foo {
-      Object baz;
-      Object bar() {
-        if(baz == null) { //baz may be non-null yet not fully created
-          synchronized(this){
-            if(baz == null){
-              baz = new Object();
-            }
-          }
+  <![CDATA[
+public class Foo {
+  Object baz;
+  Object bar() {
+    if(baz == null) { //baz may be non-null yet not fully created
+      synchronized(this){
+        if(baz == null){
+          baz = new Object();
         }
-        return baz;
       }
-  }]]>
+    }
+    return baz;
+  }
+}
+ ]]>
       </example>
     </rule>
 
@@ -357,22 +393,23 @@ not
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ReturnFromFinallyBlock">
       <description>
-  Avoid returning from a finally block - this can discard exceptions.
+Avoid returning from a finally block - this can discard exceptions.
       </description>
       <properties>
           <property name="xpath">
               <value>
 <![CDATA[
- //FinallyStatement//ReturnStatement
- ]]>
+//FinallyStatement//ReturnStatement
+]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[public class Bar {
- public String bugga() {
+  <![CDATA[
+public class Bar {
+ public String foo() {
   try {
    throw new Exception( "My Exception" );
   } catch (Exception e) {
@@ -381,7 +418,8 @@ not
    return "A. O. K."; // Very bad.
   }
  }
-}]]>
+}
+]]>
       </example>
     </rule>
 
@@ -395,17 +433,24 @@ not
       <properties>
           <property name="xpath">
               <value>
-                  <![CDATA[//SynchronizedStatement/Block[1][count(*) = 0]]]>
+<![CDATA[
+//SynchronizedStatement/Block[1][count(*) = 0]
+]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
 
       <example>
-  <![CDATA[// this is bad
-  public void bar() {
-      synchronized (this) {}
-  }]]>
+<![CDATA[
+public class Foo {
+ public void bar() {
+  synchronized (this) {
+   // empty!
+  }
+ }
+}
+]]>
       </example>
     </rule>
 
@@ -414,12 +459,13 @@ not
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryReturn">
       <description>
-  Avoid unnecessary return statements
+Avoid unnecessary return statements
       </description>
       <properties>
           <property name="xpath">
               <value>
- <![CDATA[//ReturnStatement
+ <![CDATA[
+//ReturnStatement
  [parent::Statement
   [parent::BlockStatement
    [parent::Block
@@ -428,18 +474,20 @@ not
    ]
   ]
  ]
- ]]>
+]]>
               </value>
           </property>
       </properties>
         <priority>3</priority>
-
       <example>
-  <![CDATA[// this is bad
-  public void bar() {
-      int x = 42;
-      return;
-  }]]>
+  <![CDATA[
+public class Foo {
+ public void bar() {
+  int x = 42;
+  return;
+ }
+}
+ ]]>
       </example>
     </rule>
 
@@ -449,21 +497,26 @@ not
            class="net.sourceforge.pmd.rules.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStaticInitializer">
        <description>
-       An empty static initializer was found.
+An empty static initializer was found.
        </description>
          <properties>
              <property name="xpath">
                  <value>
-<![CDATA[//ClassOrInterfaceBodyDeclaration/Initializer[@Static='true']/Block[count(*)=0]]]>
+<![CDATA[
+//ClassOrInterfaceBodyDeclaration/Initializer[@Static='true']/Block[count(*)=0]
+]]>
                  </value>
              </property>
          </properties>
          <priority>3</priority>
        <example>
-   <![CDATA[public class Foo {
-  // why are there no statements in this static block?
-  static {}
- }]]>
+   <![CDATA[
+public class Foo {
+ static {
+  // empty
+ }
+ }
+]]>
        </example>
      </rule>
 
@@ -472,26 +525,30 @@ not
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnconditionalIfStatement">
       <description>
-      Do not use "if" statements that are always true or always false.
+Do not use "if" statements that are always true or always false.
       </description>
         <properties>
             <property name="xpath">
                 <value>
- <![CDATA[//IfStatement/Expression
+ <![CDATA[
+//IfStatement/Expression
  [count(PrimaryExpression)=1]
- /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral]]>
+ /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
+]]>
                 </value>
             </property>
         </properties>
         <priority>3</priority>
       <example>
-  <![CDATA[public class Foo {
+  <![CDATA[
+public class Foo {
  public void close() {
   if (true) {
        // ...
    }
  }
-}]]>
+}
+]]>
       </example>
     </rule>
 
@@ -500,10 +557,10 @@ not
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop">
        <description>
-       An empty statement (aka a semicolon by itself) that is not used
-       as the sole body of a for loop or while loop is probably a bug.  It
-       could also be a double semicolon, which is useless and should be
-       removed.
+An empty statement (aka a semicolon by itself) that is not used
+as the sole body of a for loop or while loop is probably a bug.  It
+could also be a double semicolon, which is useless and should be
+removed.
        </description>
         <properties>
             <property name="xpath">
@@ -525,15 +582,16 @@ not
         </properties>
         <priority>3</priority>
        <example>
-<![CDATA[public class MyClass {
-   public void doit()
-   {
+<![CDATA[
+public class MyClass {
+   public void doit() {
       // this is probably not what you meant to do
       ;
       // the extra semicolon here this is not necessary
       System.out.println("look at the extra semicolon");;
    }
-}]]>
+}
+]]>
        </example>
      </rule>
 
@@ -542,14 +600,13 @@ not
        class="net.sourceforge.pmd.rules.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BooleanInstantiation">
    <description>
-   Avoid instantiating Boolean objects, instead use Boolean.TRUE or Boolean.FALSE.
+Avoid instantiating Boolean objects, instead use Boolean.TRUE or Boolean.FALSE.
    </description>
       <properties>
           <property name="xpath">
               <value>
 <![CDATA[
-//PrimaryExpression
-[
+//PrimaryExpression[
 PrimaryPrefix/AllocationExpression[not (ArrayDimsAndInits) and (ClassOrInterfaceType/@Image='Boolean' or ClassOrInterfaceType/@Image='java.lang.Boolean')]
 or
 (
@@ -577,7 +634,7 @@ public class Foo {
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier">
       <description>
-  When a class has the final modifier, all the methods are marked finally.
+When a class has the final modifier, all the methods are marked finally.
       </description>
       <properties>
           <property name="xpath">
@@ -594,12 +651,10 @@ public class Foo {
       <example>
 <![CDATA[
 public final class Foo {
-
     // This final modifier is not necessary, since the class is final
     // and thus, all methods are final
     private final void foo() {
     }
-
 }
 
 ]]>
@@ -611,7 +666,7 @@ public final class Foo {
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
       <description>
-      Sometimes two 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
+Sometimes two 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
       </description>
     <properties>
         <property name="xpath">
@@ -628,15 +683,17 @@ public final class Foo {
     </properties>
         <priority>3</priority>
       <example>
-  <![CDATA[public class Foo {
-      void bar() {
-          if (x) {
-           if (y) {
-             // do stuff
-           }
-          }
-      }
-  }]]>
+  <![CDATA[
+public class Foo {
+ void bar() {
+  if (x) {
+   if (y) {
+    // do stuff
+   }
+  }
+ }
+}
+ ]]>
       </example>
     </rule>
 

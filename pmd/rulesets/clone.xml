@@ -10,7 +10,7 @@ The Clone Implementation ruleset contains a collection of rules that find questi
          message="Object clone() should be implemented with super.clone()"
          class="net.sourceforge.pmd.rules.XPathRule">
      <description>
-     Object clone() should be implemented with super.clone()
+Object clone() should be implemented with super.clone()
      </description>
      <properties>
          <property name="xpath">
@@ -46,7 +46,7 @@ class Foo{
          message="clone() method should throw CloneNotSupportedException"
          class="net.sourceforge.pmd.rules.XPathRule">
          <description>
-        The method clone() should throw a CloneNotSupportedException
+The method clone() should throw a CloneNotSupportedException
          </description>
          <properties>
              <property name="xpath">
@@ -81,7 +81,7 @@ and count(NameList/Name[contains
         message="clone() method should be implemented only if implementing Cloneable interface"
         class="net.sourceforge.pmd.rules.XPathRule">
         <description>
-       The method clone() should only be implemented if the class implements Cloneable interface
+The method clone() should only be implemented if the class implements Cloneable interface
         </description>
         <properties>
             <property name="xpath">

@@ -13,8 +13,8 @@ most people really dislike :-)
           message="Avoid unnecessary constructors - the compiler will generate these for you"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-  Unnecessary constructor detects when a constructor is not necessary; i.e., when there's only one constructor,
-  it's public, has an empty body, and takes no arguments.
+Unnecessary constructor detects when a constructor is not necessary; i.e., when there's only one constructor,
+it's public, has an empty body, and takes no arguments.
       </description>
         <properties>
             <property name="xpath">
@@ -35,9 +35,9 @@ most people really dislike :-)
         <priority>3</priority>
       <example>
   <![CDATA[
-  public class Foo {
-   public Foo() {}
-  }
+public class Foo {
+ public Foo() {}
+}
   ]]>
       </example>
     </rule>
@@ -48,7 +48,7 @@ most people really dislike :-)
           message="Assigning an Object to null is a code smell.  Consider refactoring."
           class="net.sourceforge.pmd.rules.design.NullAssignmentRule">
       <description>
- Assigning a "null" to a variable (outside of its declaration) is usually in
+ Assigning a "null" to a variable (outside of its declaration) is usually
  bad form.  Some times, the assignment is an indication that the programmer doesn't
  completely understand what is going on in the code.  NOTE: This sort of assignment
  may in rare cases be useful to encourage garbage collection.  If that's what you're using
@@ -75,7 +75,7 @@ most people really dislike :-)
          message="A method should have only one exit point, and that should be the last statement in the method"
          class="net.sourceforge.pmd.rules.design.OnlyOneReturnRule">
      <description>
-     A method should have only one exit point, and that should be the last statement in the method.
+A method should have only one exit point, and that should be the last statement in the method.
      </description>
         <priority>3</priority>
 
@@ -97,25 +97,25 @@ most people really dislike :-)
          message="Avoid modifiers which are implied by the context"
          class="net.sourceforge.pmd.rules.UnusedModifier">
      <description>
-     Fields in interfaces are automatically public static final, and
-     methods are public abstract.
-     Classes or interfaces nested in an interface are automatically public
-     and static (all nested interfaces are automatically static).
-     For historical reasons, modifiers which are implied by the context
-     are accepted by the compiler, but are superfluous.
+ Fields in interfaces are automatically public static final, and
+ methods are public abstract.
+ Classes or interfaces nested in an interface are automatically public
+ and static (all nested interfaces are automatically static).
+ For historical reasons, modifiers which are implied by the context
+ are accepted by the compiler, but are superfluous.
      </description>
         <priority>3</priority>
      <example>
  <![CDATA[
-    public interface Foo {
-     public abstract void bar(); // both abstract and public are ignored by the compiler
-     public static final int X = 0; // public, static, and final all ignored
-     public static class Bar {} // public, static ignored
-     public static interface Baz {} // ditto
-    }
-    public class Bar {
-     public static interface Baz {} // static ignored
-    }
+public interface Foo {
+ public abstract void bar(); // both abstract and public are ignored by the compiler
+ public static final int X = 0; // public, static, and final all ignored
+ public static class Bar {} // public, static ignored
+ public static interface Baz {} // ditto
+}
+public class Bar {
+ public static interface Baz {} // static ignored
+}
  ]]>
      </example>
      </rule>
@@ -124,13 +124,14 @@ most people really dislike :-)
       message="Avoid assigments in operands"
       class="net.sourceforge.pmd.rules.XPathRule">
   <description>
-  Avoid assigments in operands; this can make code more complicated and harder to read.
+Avoid assigments in operands; this can make code more complicated and harder to read.
   </description>
         <properties>
             <property name="xpath">
                 <value>
                     <![CDATA[
-//*[name()='WhileStatement' or name()='IfStatement'][Expression//AssignmentOperator]
+//*[name()='WhileStatement' or name()='IfStatement']
+ [Expression//AssignmentOperator]
                     ]]>
                 </value>
             </property>
@@ -138,18 +139,17 @@ most people really dislike :-)
     <priority>3</priority>
   <example>
   <![CDATA[
-  public class Foo {
-   public void bar() {
-int x = 2;
-if ((x = getX()) == 3) {
- System.out.println("3!");
-}
-   }
-   private int getX() {
-return 3;
-   }
+public class Foo {
+ public void bar() {
+  int x = 2;
+  if ((x = getX()) == 3) {
+   System.out.println("3!");
   }
-
+ }
+ private int getX() {
+  return 3;
+ }
+}
   ]]>
   </example>
 </rule>
@@ -158,7 +158,7 @@ return 3;
       message="Each class should declare at least one constructor"
       class="net.sourceforge.pmd.rules.XPathRule">
   <description>
-  Each class should declare at least one constructor.
+Each class should declare at least one constructor.
   </description>
         <properties>
             <property name="xpath">
@@ -174,9 +174,9 @@ return 3;
     <priority>3</priority>
   <example>
   <![CDATA[
-  public class Foo {
-   // no constructor!  not good!
-  }
+public class Foo {
+ // no constructor!  not good!
+}
   ]]>
   </example>
 </rule>
@@ -185,15 +185,15 @@ return 3;
        message="Avoid importing anything from the 'sun.*' packages"
        class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-          Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
+Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
        </description>
        <properties>
           <property name="xpath">
                <value>
 <![CDATA[
-   //ImportDeclaration
-   [starts-with(Name/@Image, 'sun.')]
-   [not(starts-with(Name/@Image, 'sun.misc.Signal'))]
+//ImportDeclaration
+[starts-with(Name/@Image, 'sun.')]
+[not(starts-with(Name/@Image, 'sun.misc.Signal'))]
 ]]>
 
                </value>
@@ -203,8 +203,8 @@ return 3;
 
        <example>
 <![CDATA[
-   import sun.misc.foo;
-   public class Foo {}
+import sun.misc.foo;
+public class Foo {}
 ]]>
        </example>
     </rule>
@@ -213,26 +213,26 @@ return 3;
        message="Suspicious decimal characters following octal escape in string literal"
           class="net.sourceforge.pmd.rules.SuspiciousOctalEscape">
       <description>
-      A suspicious octal escape sequence was found inside a String literal.
-      The Java language specification (section 3.10.6) says an octal
-      escape sequence inside a literal String shall consist of a backslash
-      followed by:
+A suspicious octal escape sequence was found inside a String literal.
+The Java language specification (section 3.10.6) says an octal
+escape sequence inside a literal String shall consist of a backslash
+followed by:
 
-           OctalDigit | OctalDigit OctalDigit | ZeroToThree OctalDigit OctalDigit
+   OctalDigit | OctalDigit OctalDigit | ZeroToThree OctalDigit OctalDigit
 
-      Any octal escape sequence followed by non-octal digits can be confusing,
-      e.g. "\038" is interpreted as the octal escape sequence "\03" followed by
-      the literal character "8".
+Any octal escape sequence followed by non-octal digits can be confusing,
+e.g. "\038" is interpreted as the octal escape sequence "\03" followed by
+the literal character "8".
       </description>
       <priority>3</priority>
       <example>
 <![CDATA[
- public class Foo {
-    public void foo() {
-       // interpreted as octal 12, followed by character '8'
-       System.out.println("suspicious: \128");
-    }
+public class Foo {
+ public void foo() {
+  // interpreted as octal 12, followed by character '8'
+  System.out.println("suspicious: \128");
  }
+}
 ]]>
       </example>
     </rule>
@@ -250,7 +250,7 @@ return 3;
               <value>
     <![CDATA[
 //ConstructorDeclaration[
-count(.//ExplicitConstructorInvocation)=0
+ count(.//ExplicitConstructorInvocation)=0
 ]
     ]]>
               </value>
@@ -261,12 +261,10 @@ count(.//ExplicitConstructorInvocation)=0
       <example>
 <![CDATA[
 public class Foo extends Bar{
-
 	public Foo() {
 		// call the constructor of Bar
 		super();
 	}
-
 	public Foo(int code) {
 		// do something with code
 		this();
@@ -281,8 +279,8 @@ public class Foo extends Bar{
           message="This statement may have some unnecessary parentheses"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-      Sometimes expressions are wrapped in unnecessary parentheses,
- making them look like a function call.
+Sometimes expressions are wrapped in unnecessary parentheses,
+making them look like a function call.
       </description>
     <properties>
         <property name="xpath">
@@ -312,7 +310,7 @@ public class Foo extends Bar{
               message="Perhaps ''{0}'' could be replaced by a local variable."
               class="net.sourceforge.pmd.rules.SingularField">
           <description>
-              A field that's only used by one method could perhaps be replaced by a local variable
+A field that's only used by one method could perhaps be replaced by a local variable
           </description>
           <priority>3</priority>
           <example>

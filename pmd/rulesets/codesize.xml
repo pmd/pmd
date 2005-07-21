@@ -75,7 +75,6 @@ At this time, only one can be used at a time.
 public void addData(
   int p00, int p01, int p02, int p03, int p04, int p05,
   int p05, int p06, int p07, int p08, int p09, int p10) {
-
   }
 }
 ]]>
@@ -202,8 +201,8 @@ public class Foo
     message="A high number of public methods and attributes in an object can indicate the class may need to be broken up for exhaustive testing may prove difficult."
     class="net.sourceforge.pmd.rules.ExcessivePublicCount">
     <description>
-    A large amount of public methods and attributes declared in an object can indicate the class may need
-    to be broken up as increased effort will be required to thoroughly test such a class.
+A large amount of public methods and attributes declared in an object can indicate the class may need
+to be broken up as increased effort will be required to thoroughly test such a class.
     </description>
     <priority>3</priority>
     <properties>
@@ -211,22 +210,16 @@ public class Foo
     </properties>
     <example>
     <![CDATA[
-
-    public class Foo {
-    public String value;
-    public Bar something;
-    public Variable var;
-    //more public attributes
-    public void doWork() {}
-    public void doMoreWork() {}
-    public void doWorkAgain() {}
-    public void doWorking() {}
-    public void doWorkIt() {}
-    public void doWorkingAgain() {}
-    public void doWorkAgainAgain() {}
-    public void doWorked() {}
-
-    }
+public class Foo {
+ public String value;
+ public Bar something;
+ public Variable var;
+ // [... more more public attributes ...]
+ public void doWork() {}
+ public void doMoreWork() {}
+ public void doWorkAgain() {}
+ // [... more more public methods ...]
+}
     ]]>
     </example>
     </rule>
@@ -235,9 +228,9 @@ public class Foo
           message="Too many fields"
           class="net.sourceforge.pmd.rules.design.TooManyFields">
       <description>
-       Classes that have too many fields could be redesigned to have less fields
-       and some nested object grouping some of the information collected on the
-       many fields.
+Classes that have too many fields could be redesigned to have less fields
+and some nested object grouping some of the information collected on the
+many fields.
       </description>
         <priority>3</priority>
       <properties>
@@ -245,25 +238,12 @@ public class Foo
       </properties>
       <example>
    <![CDATA[
-   public Class Person {
-       String street;
-       int number;
-       int floor;
-       String postal;
-       String street;
-       long phone;
-       String city;
-       String state;
-       String Country;
-       // fields above should be in a class for Address or something similar
-       // that information does not really belong to a person, but to a place
-       // fields below are really from person
-       String firstname;
-       String lastname;
-       Date born;
-       Person father;
-       Person mother;
-   }
+public Class Person {
+   String one;
+   int two;
+   int three;
+   [... many more public fields ...]
+}
    ]]>
       </example>
 

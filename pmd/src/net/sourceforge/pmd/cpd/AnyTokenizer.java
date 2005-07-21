@@ -21,13 +21,10 @@ public class AnyTokenizer implements Tokenizer {
         StringBuffer sb = sourceCode.getCodeBuffer();
     	BufferedReader reader = new BufferedReader(new CharArrayReader(sb.toString().toCharArray()));
         try {
-        	
         	int lineNumber = 1;
         	String line = reader.readLine();
-        	
         	while (line != null) {
         		StringTokenizer tokenizer = new StringTokenizer(line, TOKENS, true);
-        		
         		try {
             		String token = tokenizer.nextToken();
         			while (token != null) {
@@ -39,7 +36,6 @@ public class AnyTokenizer implements Tokenizer {
         		} catch (NoSuchElementException ex) {
         			// done with tokens
         		}
-        		
         		// advance iteration variables
         		line = reader.readLine();
         		lineNumber++;
@@ -49,9 +45,7 @@ public class AnyTokenizer implements Tokenizer {
         } finally {
         	try {
         		reader.close();
-        	} catch (Exception ex) {
-        		// do nothing
-        	}
+        	} catch (Exception ex) {}
         	tokenEntries.add(TokenEntry.getEOF());
         }
     }
