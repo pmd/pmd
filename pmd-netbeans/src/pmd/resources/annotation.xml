@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE type PUBLIC
-          "-//NetBeans//DTD annotation type 1.0//EN"
-          "http://www.netbeans.org/dtds/annotation-type-1_0.dtd">
+          "-//NetBeans//DTD annotation type 1.1//EN"
+          "http://www.netbeans.org/dtds/annotation-type-1_1.dtd">
 <type name="pmd-annotation"
       description_key="LBL_pmd_annotation"
       localizing_bundle="pmd.Bundle"
@@ -10,3 +10,7 @@
       highlight="#FF8080"
       type="linepart"
 />
+      <!--
+      severity="warning"
+      browseable="true"
+      -->

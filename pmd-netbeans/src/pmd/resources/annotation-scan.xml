@@ -9,5 +9,7 @@
     type="linepart" 
     glyph="nbresloc:/pmd/resources/PMDOptionsSettingsIcon.gif" 
     waveunderline="0xff0000"
+    severity="warning"
+    browseable="true"
 />
 
