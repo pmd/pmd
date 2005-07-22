@@ -50,6 +50,8 @@ import net.sourceforge.pmd.TargetJDK1_5;
 
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.queries.SourceLevelQuery;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.ErrorManager;
 import org.openide.awt.StatusDisplayer;
 import org.openide.cookies.EditorCookie;
@@ -59,6 +61,7 @@ import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.Node;
+import org.openide.util.Cancellable;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -79,10 +82,9 @@ import pmd.scan.EditorChangeListener;
  */
 public class RunPMDAction extends CookieAction {
 	
-	/** True means verbose trace logging should be performed. 
-	 **/
-	public static final boolean TRACE_LOGGING = Boolean.getBoolean("pmd-netbeans.trace.logging");
-
+    /** True means verbose trace logging should be performed. 
+     **/
+    public static final boolean TRACE_LOGGING = Boolean.getBoolean("pmd-netbeans.trace.logging");
 
 	/**
 	 * Overridden to log that the action is being initialized, and to register an editor change listener for
@@ -155,19 +157,6 @@ public class RunPMDAction extends CookieAction {
 	 * @throws IOException on failure to read one of the files or to write to the output window.
 	 */
 	public static List checkCookies( List dataobjects ) throws IOException {
-		return checkCookies(dataobjects, new DefaultCallback());
-	}
-	
-	/**
-	 * Runs PMD on the given list of DataObjects, interacting with the given callback.
-	 *
-	 * @param dataobjects the list of data objects to run PMD on, not null. Elements are instanceof
-	 *                    {@link DataObject}.
-	 * @param callback the callback to interact with. Receives notifications and can stop the run.
-	 * @return the list of rule violations found in the run, not null. Elements are instanceof {@link Fault}.
-	 * @throws IOException on failure to read one of the files or to write to the output window.
-	 */
-	public static List checkCookies( List dataobjects, RunPMDCallback callback ) throws IOException {
                 SourceLevelQuery sourceLevelQuery =
                         (SourceLevelQuery) Lookup.getDefault().lookup(SourceLevelQuery.class);
 		RuleSet set = constructRuleSets();
@@ -175,15 +164,17 @@ public class RunPMDAction extends CookieAction {
                 PMD pmd_1_4 = null;
                 PMD pmd_1_5 = null;
 		ArrayList list = new ArrayList( 100 );
-		callback.pmdStart( dataobjects.size() );
+                
+                CancelCallback cancel = new CancelCallback ();
+                ProgressHandle prgHdl = ProgressHandleFactory.createHandle("PMD check", cancel); // PENDING action to show output
+                prgHdl.start(dataobjects.size());
 		for( int i = 0; i < dataobjects.size(); i++ ) {
-			boolean keepGoing = callback.pmdProgress( i + 1 );
-			if(!keepGoing) {
-				break;
-			}
-			DataObject dataobject = ( DataObject )dataobjects.get( i );
-			FileObject fobj = dataobject.getPrimaryFile();
-			String name = ClassPath.getClassPath( fobj, ClassPath.SOURCE ).getResourceName( fobj, '.', false );
+                    if (cancel.isCancelled())
+                        break;
+                    DataObject dataobject = ( DataObject )dataobjects.get( i );
+                    prgHdl.progress(dataobject.getName(), i); // TODO: I18N 'name', x of y
+                    FileObject fobj = dataobject.getPrimaryFile();
+                    String name = ClassPath.getClassPath( fobj, ClassPath.SOURCE ).getResourceName( fobj, '.', false );
 			
 			//The file is not a java file
 			if( !dataobject.getPrimaryFile().hasExt( "java" ) || dataobject.getCookie( LineCookie.class ) == null ) {
@@ -254,7 +245,7 @@ public class RunPMDAction extends CookieAction {
 				FaultRegistry.getInstance().registerFault( fault, dataobject );
 			}
 		}
-		callback.pmdEnd();
+                prgHdl.finish();
 		Collections.sort( list );
 		return list;
 	}
@@ -269,14 +260,11 @@ public class RunPMDAction extends CookieAction {
 		PMDOutputListener listener = PMDOutputListener.getInstance();
 		listener.detach();
 		FaultRegistry.getInstance().clearRegistry();
-		ProgressDialog progressDlg = null;
                 OutputWriter out = null;
 		try {
 			StatusDisplayer.getDefault().setStatusText("PMD checking for rule violations");
 			List list = getDataObjects(node);
-			progressDlg = new ProgressDialog();
-			List violations = checkCookies(list, progressDlg);
-			progressDlg = null;
+			List violations = checkCookies(list);
 			IOProvider ioProvider = (IOProvider)Lookup.getDefault().lookup(IOProvider.class);
 			InputOutput output = ioProvider.getIO("PMD output", false);
 			if(violations.isEmpty()) {
@@ -300,9 +288,6 @@ public class RunPMDAction extends CookieAction {
 			}
 		} catch(IOException e) {
 			ErrorManager.getDefault().notify(e);
-			if(progressDlg != null) {
-				progressDlg.pmdEnd();
-			}
 		}
                 finally {
                     if (out != null) {
@@ -388,44 +373,20 @@ public class RunPMDAction extends CookieAction {
         // PENDING need to rewriet to synchronous action
         return true;
     }
-	
-	/**
-	 * Default callback implementation, to use when no callback is provided to <code>checkCookies</code>.
-	 * Writes progress information into the StatusDisplayer (generally the status bar). Use a separate
-	 * instance of this for each run, as it stores state (the total number of files).
-	 */
-	private static class DefaultCallback implements RunPMDCallback {
-		
-		/**
-		 * This implementation is a no-op.
-		 */
-		public void pmdEnd() {
-			// NO-OP
-		}
-		
-		/**
-		 * This implementation reports progress in the status bar and returns true.
-		 *
-		 * @param index index of the file on which PMD execution is starting. Greater than 0,
-		 *              less than or equal to the number of files reported in {@link #pmdStart}.
-		 * @return true
-		 */
-		public boolean pmdProgress(int index) {
-			StatusDisplayer.getDefault().setStatusText(
-				"PMD checking for rule violations in file " + index + "/" + numFiles );
-			return true;
-		}
-		
-		/**
-		 * This implementation stores the number of files.
-		 *
-		 * @param numFiles the number of files to be scanned, greater than 0.
-		 */
-		public void pmdStart(int numFiles) {
-			this.numFiles = numFiles;
-		}
-		
-		private int numFiles;
-		
-	}
+    
+    private static class CancelCallback implements Cancellable {
+        private boolean cancelled = false;
+        
+        public CancelCallback () {}
+        
+        public boolean cancel() {
+            cancelled = true;
+            return true;
+        }
+        
+        public boolean isCancelled () {
+            return cancelled;
+        }
+    }
+
 }
