@@ -1145,11 +1145,12 @@ void ImplementsList():
 
 void EnumDeclaration(int modifiers):
 {
+
 Token t;
 jjtThis.setModifiers(modifiers);
 }
 {
-  t = <IDENTIFIER> {
+  t = <IDENTIFIER> {;
     if (!t.image.equals("enum")) {
       throw new ParseException("ERROR: expecting enum");
     }
@@ -1206,24 +1207,13 @@ void ClassOrInterfaceBodyDeclaration():
 {
    int modifiers;
 }
-{
-  LOOKAHEAD(2)
-  Initializer()
-|
-  modifiers = Modifiers()
-  (
-      ClassOrInterfaceDeclaration(modifiers)
-    |
-      LOOKAHEAD ( <IDENTIFIER> <IDENTIFIER> [ ImplementsList() ] EnumBody())
-      EnumDeclaration(modifiers)
-    |
-      LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" )
-      ConstructorDeclaration(modifiers)
-    |
-      LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )
-      FieldDeclaration(modifiers)
-    |
-      MethodDeclaration(modifiers)
+{ LOOKAHEAD(3) Initializer()
+|  modifiers = Modifiers()
+  ( LOOKAHEAD(3) ClassOrInterfaceDeclaration(modifiers)
+    | LOOKAHEAD(3) EnumDeclaration(modifiers)
+    | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
+    | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
+    | MethodDeclaration(modifiers)
   )
 |
   ";"
@@ -1638,8 +1628,8 @@ void PrimarySuffix() :
 {Token t;}
 { LOOKAHEAD(2) "." "this"
 | LOOKAHEAD(2) "." "super"
-| LOOKAHEAD(3) MemberSelector()
 | LOOKAHEAD(2) "." AllocationExpression()
+| LOOKAHEAD(3) MemberSelector()
 | "[" Expression() "]" {jjtThis.setIsArrayDereference();}
 | "." t=<IDENTIFIER> {jjtThis.setImage(t.image);}
 | Arguments() {jjtThis.setIsArguments();}
