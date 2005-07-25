@@ -12,14 +12,14 @@ public class ASTPrimarySuffix extends SimpleNode {
     }
 
     private boolean isArguments;
-    private boolean isArrayDeference;
+    private boolean isArrayDereference;
 
     public void setIsArrayDereference() {
-        isArrayDeference = true;
+        isArrayDereference = true;
     }
 
-    public boolean isArrayDeference() {
-        return isArrayDeference;
+    public boolean isArrayDereference() {
+        return isArrayDereference;
     }
 
     public void setIsArguments() {
@@ -30,6 +30,15 @@ public class ASTPrimarySuffix extends SimpleNode {
         return this.isArguments;
     }
 
+
+    public void dump(String prefix) {
+        String out = "";
+        if (isArrayDereference()) {
+            out += "[";
+        }
+        System.out.println(toString(prefix) + ":" + out);
+        dumpChildren(prefix);
+    }
     /**
      * Accept the visitor. *
      */

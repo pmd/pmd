@@ -10,7 +10,7 @@ public class ASTPrimarySuffixTest extends ParserTst {
 
     public void testArrayDereference() throws Throwable {
         Set ops = getNodes(ASTPrimarySuffix.class, TEST1);
-        assertTrue(((ASTPrimarySuffix)(ops.iterator().next())).isArrayDeference());
+        assertTrue(((ASTPrimarySuffix)(ops.iterator().next())).isArrayDereference());
     }
 
     public void testArguments() throws Throwable {

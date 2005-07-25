@@ -1027,7 +1027,7 @@ ConditionalAndExpression
  [EqualityExpression[@Image='!=']//NullLiteral
  and
 InstanceOfExpression
- [PrimaryExpression
+ [PrimaryExpression[count(PrimarySuffix[@ArrayDereference='true'])=0]
   //Name/@Image = ancestor::ConditionalAndExpression
    /EqualityExpression//PrimaryPrefix/Name/@Image]]]
  ]]>

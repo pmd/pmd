@@ -44,14 +44,14 @@ public class IdempotentOperations extends AbstractRule {
 
         if (lhs.jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
             Node n = lhs.jjtGetParent().jjtGetParent().jjtGetChild(1);
-            if (n instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) n).isArrayDeference()) {
+            if (n instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) n).isArrayDereference()) {
                 return super.visit(node, data);
             }
         }
 
         if (rhs.jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
             Node n = rhs.jjtGetParent().jjtGetParent().jjtGetChild(1);
-            if (n instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) n).isArguments() || ((ASTPrimarySuffix) n).isArrayDeference()) {
+            if (n instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) n).isArguments() || ((ASTPrimarySuffix) n).isArrayDereference()) {
                 return super.visit(node, data);
             }
         }

@@ -70,8 +70,7 @@ public class AttributeAxisIterator implements Iterator {
 
     protected Attribute getAttribute(Node node, Method method)
             throws IllegalAccessException, InvocationTargetException {
-        String name = method.getName();
-        name = truncateMethodName(name);
+        String name = truncateMethodName(method.getName());
         Object value = method.invoke(node, EMPTY_OBJ_ARRAY);
         if (value != null) {
             if (value instanceof String) {

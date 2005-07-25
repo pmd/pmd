@@ -19,6 +19,7 @@ public class SimplifyConditionalTest extends SimpleAggregatorTst{
            new TestDescriptor(TEST2, "ok", 0, rule),
            new TestDescriptor(TEST3, "transpose x and null, still bad", 1, rule),
            new TestDescriptor(TEST4, "conditional or and !(instanceof)", 1, rule),
+           new TestDescriptor(TEST5, "indexing into array is ok", 0, rule),
        });
     }
 
@@ -47,6 +48,13 @@ public class SimplifyConditionalTest extends SimpleAggregatorTst{
     "public class Foo {" + PMD.EOL +
     " void bar(Object x) {" + PMD.EOL +
     "  if (x == null || !(x instanceof String)) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " void bar(Object x) {" + PMD.EOL +
+    "  if (x != null && x[0] instanceof String) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
