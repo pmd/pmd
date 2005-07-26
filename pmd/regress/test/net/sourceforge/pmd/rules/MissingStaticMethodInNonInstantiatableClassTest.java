@@ -18,12 +18,13 @@ public class MissingStaticMethodInNonInstantiatableClassTest extends SimpleAggre
     
     public void testAll() {
        runTests(new TestDescriptor[] {
-               new TestDescriptor(TEST1, "TEST1", 0, rule),
-               new TestDescriptor(TEST2, "TEST2", 0, rule),
-               new TestDescriptor(TEST3, "TEST3", 1, rule),
-               new TestDescriptor(TEST4, "TEST4", 1, rule),
-               new TestDescriptor(TEST5, "TEST5", 0, rule),
-               new TestDescriptor(TEST6, "TEST6", 0, rule),
+               new TestDescriptor(TEST1, "ok", 0, rule),
+               new TestDescriptor(TEST2, "ok, default constructor", 0, rule),
+               new TestDescriptor(TEST3, "simple failure", 1, rule),
+               new TestDescriptor(TEST4, "failure with multiple constructors", 1, rule),
+               new TestDescriptor(TEST5, "protected constructor is ok", 0, rule),
+               new TestDescriptor(TEST6, "ok, one static method", 0, rule),
+               new TestDescriptor(TEST7, "nested class", 1, rule),
        });
     }
     
@@ -33,34 +34,41 @@ public class MissingStaticMethodInNonInstantiatableClassTest extends SimpleAggre
     
     private static final String TEST2 =
         "public class Foo {" + PMD.EOL +
-        " public void bar() {} ;" + PMD.EOL +
+        " public void bar() {} " + PMD.EOL +
         "}";
 
     private static final String TEST3 =
         "public class Foo {" + PMD.EOL +
-        " private Foo(){};" + PMD.EOL +
-        " public void bar() {} ;" + PMD.EOL +
+        " private Foo() {}" + PMD.EOL +
+        " public void bar() {}" + PMD.EOL +
         "}";
 
     private static final String TEST4 =
         "public class Foo {" + PMD.EOL +
-        " private Foo(){};" + PMD.EOL +
-        " private Foo(Object o){};" + PMD.EOL +
-        " public void bar() {} ;" + PMD.EOL +
+        " private Foo(){}" + PMD.EOL +
+        " private Foo(Object o){}" + PMD.EOL +
+        " public void bar() {} " + PMD.EOL +
         "}";
 
     private static final String TEST5 =
         "public class Foo {" + PMD.EOL +
-        " private Foo(){};" + PMD.EOL +
-        " protected Foo(Object o){};" + PMD.EOL +
-        " public void bar() {} ;" + PMD.EOL +
+        " private Foo(){}" + PMD.EOL +
+        " protected Foo(Object o){}" + PMD.EOL +
+        " public void bar() {} " + PMD.EOL +
         "}";
 
     private static final String TEST6 =
         "public class Foo {" + PMD.EOL +
-        " private Foo(){};" + PMD.EOL +
-        " private Foo(Object o){};" + PMD.EOL +
-        " public static void bar() {} ;" + PMD.EOL +
+        " private Foo(){}" + PMD.EOL +
+        " private Foo(Object o){}" + PMD.EOL +
+        " public static void bar() {} " + PMD.EOL +
+        "}";
+
+    private static final String TEST7 =
+        "public class Foo {" + PMD.EOL +
+        " private static class Bar {" + PMD.EOL +
+        "  private Bar() {}" + PMD.EOL +
+        " }" + PMD.EOL +
         "}";
 
 }

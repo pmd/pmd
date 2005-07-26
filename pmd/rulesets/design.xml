@@ -796,8 +796,8 @@ A class that has private constructors and does not have any static method cannot
               <value>
     <![CDATA[
 //ClassOrInterfaceDeclaration[
-( count(.//ConstructorDeclaration)>0
-  and count(.//ConstructorDeclaration) = count(.//ConstructorDeclaration[@Private='true']) )
+( count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)>0
+  and count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true']) )
 and
 count(.//MethodDeclaration[@Static='true'])=0
 ]
