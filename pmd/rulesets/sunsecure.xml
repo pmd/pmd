@@ -28,7 +28,7 @@ public class SecureSystem {
       </rule>
 
     <rule name="ArrayIsStoredDirectly"
-          message="A user given array is stored directly"
+        message="The user-supplied array ''{0}'' is stored directly"
           class="net.sourceforge.pmd.rules.sunsecure.ArrayIsStoredDirectly">
       <description>
 Constructors and methods receiving arrays should clone objects and store the copy.

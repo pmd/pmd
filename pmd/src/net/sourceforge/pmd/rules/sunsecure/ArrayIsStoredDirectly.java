@@ -17,6 +17,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.ASTEqualityExpression;
 
 import java.util.Iterator;
 import java.util.List;
@@ -35,43 +36,43 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
         return super.visit(node, data);
     }
 
-    /**
-     * Overriden method.
-     * 
-     * @see net.sourceforge.pmd.ast.JavaParserVisitor#visit(net.sourceforge.pmd.ast.ASTConstructorDeclaration, java.lang.Object)
-     */
     public Object visit(ASTConstructorDeclaration node, Object data) {
         ASTFormalParameter[] arrs = getArrays((ASTFormalParameters) node.jjtGetChild(0));
         if (arrs!=null) {
             //TODO check if one of these arrays is stored in a non local variable
             List bs = node.findChildrenOfType(ASTBlockStatement.class);
-            checkDirectlyAssigned(data, arrs, bs);
+            checkAll(data, arrs, bs);
         }
         return data;
     }
     
-    private void checkDirectlyAssigned(Object context, ASTFormalParameter[] arrs, List bs) {
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        final ASTFormalParameters params = (ASTFormalParameters) node.getFirstChildOfType(ASTFormalParameters.class);
+        ASTFormalParameter[] arrs = getArrays(params);
+        if (arrs!=null) {
+            List bs = node.findChildrenOfType(ASTBlockStatement.class);
+            checkAll(data, arrs, bs);
+        }
+        return data;
+    }
+
+    private void checkAll(Object context, ASTFormalParameter[] arrs, List bs) {
         for (int i=0;i<arrs.length;i++) {
-            if (isDirectlyAssigned(arrs[i], bs)) {
-                addViolation(context, arrs[i]);
-            }   
+            checkForDirectAssignment(context, arrs[i], bs);
         }
     }
     
     /**
      * Checks if the variable designed in parameter is written to a field (not local variable) in the statements.
      */
-    private boolean isDirectlyAssigned(final ASTFormalParameter parameter, final List bs) {
+    private boolean checkForDirectAssignment(Object ctx, final ASTFormalParameter parameter, final List bs) {
         final ASTVariableDeclaratorId vid = (ASTVariableDeclaratorId) parameter.getFirstChildOfType(ASTVariableDeclaratorId.class);
         final String varName = vid.getImage();
         for (Iterator it = bs.iterator() ; it.hasNext() ; ) {
             final ASTBlockStatement b = (ASTBlockStatement) it.next();
             if (b.containsChildOfType(ASTAssignmentOperator.class)) {
                 final ASTStatementExpression se = (ASTStatementExpression) b.getFirstChildOfType(ASTStatementExpression.class);
-                if (se == null) {
-                    continue;
-                }
-                if (!(se.jjtGetChild(0) instanceof ASTPrimaryExpression)) {
+                if (se == null || !(se.jjtGetChild(0) instanceof ASTPrimaryExpression)) {
                     continue;
                 }
                 ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
@@ -89,6 +90,9 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                         continue;
                     }
                     ASTExpression e = (ASTExpression) se.jjtGetChild(2);
+                    if (e.jjtGetChild(0) instanceof ASTEqualityExpression) {
+                        continue;
+                    }
                     String val = getFirstNameImage(e);
                     if (val==null) {
                         ASTPrimarySuffix foo = (ASTPrimarySuffix)se.getFirstChildOfType(ASTPrimarySuffix.class);
@@ -104,23 +108,13 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                     if (val.equals(varName)) {
                         ASTMethodDeclaration md = (ASTMethodDeclaration) parameter.getFirstParentOfType(ASTMethodDeclaration.class);
                         if (!isLocalVariable(varName, md)) {
-                            return true;
+                            addViolation(ctx, parameter, varName);
                         }
                     }
                 }
             }            
         }
         return false;
-    }
-
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        final ASTFormalParameters params = (ASTFormalParameters) node.getFirstChildOfType(ASTFormalParameters.class);
-        ASTFormalParameter[] arrs = getArrays(params);
-        if (arrs!=null) {
-            List bs = node.findChildrenOfType(ASTBlockStatement.class);
-            checkDirectlyAssigned(data, arrs, bs);
-        }
-        return data;
     }
 
     private final ASTFormalParameter[] getArrays(ASTFormalParameters params) {
