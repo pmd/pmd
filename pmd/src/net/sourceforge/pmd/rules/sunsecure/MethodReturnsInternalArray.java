@@ -31,32 +31,30 @@ public class MethodReturnsInternalArray extends AbstractSunSecureRule {
         return super.visit(node, data);
     }
 
-    public Object visit(ASTMethodDeclaration node, Object data) {
-        final ASTResultType rt = (ASTResultType) node.getFirstChildOfType(ASTResultType.class);
-
-        if (rt.returnsArray()) {
-            final List returns = node.findChildrenOfType(ASTReturnStatement.class);
-            
-            if (returns!=null) {
-                ASTTypeDeclaration td = (ASTTypeDeclaration) node.getFirstParentOfType(ASTTypeDeclaration.class);
-                
-                for (Iterator it = returns.iterator() ; it.hasNext() ; ) {
-                    final ASTReturnStatement ret = (ASTReturnStatement) it.next();
-                    final String vn = getReturnedVariableName(ret);
-                    if (isField(vn, td)) {
-                        if (!isLocalVariable(vn, node)) {  
-                            addViolation(data, ret);
-                        }  else {
-                            // This is to handle field hiding
-                            final ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ret.getFirstChildOfType(ASTPrimaryPrefix.class);
-                            if (pp!=null && pp.usesThisModifier()) {
-                                final ASTPrimarySuffix ps = (ASTPrimarySuffix) ret.getFirstChildOfType(ASTPrimarySuffix.class);
-                                if (ps.getImage().equals(vn)) {
-                                    addViolation(data, ret);
-                                }
-                            }
-                        }
-                    
+    public Object visit(ASTMethodDeclaration method, Object data) {
+        if (!method.getResultType().returnsArray()) {
+            return data;
+        }
+        List returns = method.findChildrenOfType(ASTReturnStatement.class);
+        ASTTypeDeclaration td = (ASTTypeDeclaration) method.getFirstParentOfType(ASTTypeDeclaration.class);
+        for (Iterator it = returns.iterator() ; it.hasNext() ; ) {
+            final ASTReturnStatement ret = (ASTReturnStatement) it.next();
+            final String vn = getReturnedVariableName(ret);
+            if (!isField(vn, td)) {
+                continue;
+            }
+            if (ret.findChildrenOfType(ASTPrimarySuffix.class).size() > 2) {
+                continue;
+            }
+            if (!isLocalVariable(vn, method)) {
+                addViolation(data, ret, vn);
+            }  else {
+                // This is to handle field hiding
+                final ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ret.getFirstChildOfType(ASTPrimaryPrefix.class);
+                if (pp!=null && pp.usesThisModifier()) {
+                    final ASTPrimarySuffix ps = (ASTPrimarySuffix) ret.getFirstChildOfType(ASTPrimarySuffix.class);
+                    if (ps.getImage().equals(vn)) {
+                        addViolation(data, ret, vn);
                     }
                 }
             }

@@ -11,7 +11,6 @@ public class ASTMethodDeclaration extends AccessNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */
@@ -37,6 +36,10 @@ public class ASTMethodDeclaration extends AccessNode {
 
     public boolean isVoid() {
         return ((ASTResultType)getFirstChildOfType(ASTResultType.class)).isVoid();
+    }
+
+    public ASTResultType getResultType() {
+        return (ASTResultType)getFirstChildOfType(ASTResultType.class);
     }
 
     public ASTBlock getBlock() {

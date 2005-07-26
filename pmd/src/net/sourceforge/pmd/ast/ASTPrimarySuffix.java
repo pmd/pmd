@@ -34,9 +34,12 @@ public class ASTPrimarySuffix extends SimpleNode {
     public void dump(String prefix) {
         String out = "";
         if (isArrayDereference()) {
-            out += "[";
+            out += ":[";
         }
-        System.out.println(toString(prefix) + ":" + out);
+        if (this.getImage() != null) {
+            out += out.length() == 0 ? ":" + this.getImage() : this.getImage();
+        }
+        System.out.println(toString(prefix) + out);
         dumpChildren(prefix);
     }
     /**

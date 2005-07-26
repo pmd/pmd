@@ -17,6 +17,7 @@ Fixed bug 1240201 - The UnnecessaryParentheses message is no longer restricted t
 Fixed bug 1242290 - The JDK 1.5 parser no longer chokes on nested enumerations with a constructor.
 Fixed bug 1242544 - SimplifyConditional no longer flags null checks that precede an instanceof involving an array dereference.
 Fixed bug 1242946 - ArrayIsStoredDirectly no longer reports false positives for equality expression comparisons.  As a bonus, its message now includes the variable name :-)
+Fixed bug 1232648 - MethodReturnsInternalArray no longer reports false positives on return statement expressions that involve method invocations on an internal array.
 Partially fixed bug 1244428 - MissingStaticMethodInNonInstantiatableClass no longer reports multiple warnings for nested classes.
 Applied patch 1228834 - XPath rules can now use properties to customize rules.  Thanks to Wouter Zelle for another great piece of work!
 Fixed a bug in RuleSetFactory that missed some override cases; thx to Wouter Zelle for the report and a fix.
