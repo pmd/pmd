@@ -41,7 +41,7 @@ public class DuplicateImportsRule extends AbstractRule {
     }
 
     public Object visit(ASTImportDeclaration node, Object data) {
-        ImportWrapper wrapper = new ImportWrapper(node.getImportedNameNode().getImage(), node.getImportedNameNode().getImage(), node.getImportedNameNode());
+        ImportWrapper wrapper = new ImportWrapper(node.getImportedName(), node.getImportedName(), node.getImportedNameNode());
 
         // blahhhh... this really wants to be ASTImportDeclaration to be polymorphic...
         if (node.isImportOnDemand()) {

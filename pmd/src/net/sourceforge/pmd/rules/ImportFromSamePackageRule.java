@@ -4,49 +4,22 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 
 public class ImportFromSamePackageRule extends AbstractRule {
 
-    private String packageName;
+    public Object visit(ASTImportDeclaration importDecl, Object data) {
+        String packageName = importDecl.getScope().getEnclosingSourceFileScope().getPackageName();
+        String importPkgName = importDecl.getPackageName();
 
-    public Object visit(ASTCompilationUnit node, Object data) {
-        packageName = null;
-        return super.visit(node, data);
-    }
-
-    public Object visit(ASTPackageDeclaration node, Object data) {
-        packageName = ((ASTName) node.jjtGetChild(0)).getImage();
-        return data;
-    }
-
-    public Object visit(ASTImportDeclaration node, Object data) {
-        ASTName nameNode = node.getImportedNameNode();
-        if (packageName != null && !node.isImportOnDemand() && packageName.equals(getPackageName(nameNode.getImage()))) {
-            addViolation(data, node);
+        if (packageName != null && packageName.equals(importPkgName)) {
+            addViolation(data, importDecl);
         }
 
         // special case
-        if (packageName == null && getPackageName(nameNode.getImage()).equals("")) {
-            addViolation(data, node);
+        if (packageName == null && importPkgName.equals("")) {
+            addViolation(data, importDecl);
         }
         return data;
     }
-
-    private void addViolation(RuleContext ctx, ASTImportDeclaration node) {
-        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
-    }
-
-    private String getPackageName(String importName) {
-        if (importName.indexOf('.') == -1) {
-            return "";
-        }
-        int lastDot = importName.lastIndexOf('.');
-        return importName.substring(0, lastDot);
-    }
-
 }

@@ -96,6 +96,7 @@ public class Foo {}
  <![CDATA[
  package foo;
  import foo.Buz; // no need for this
+ import foo.*; // or this
  public class Bar{}
  ]]>
      </example>

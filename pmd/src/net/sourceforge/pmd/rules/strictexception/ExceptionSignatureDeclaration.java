@@ -29,7 +29,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
     }
 
     public Object visit(ASTImportDeclaration node, Object o) {
-        if (node.getImportedNameNode().getImage().indexOf("junit") != -1) {
+        if (node.getImportedName().indexOf("junit") != -1) {
             junitImported = true;
         }
         return super.visit(node, o);

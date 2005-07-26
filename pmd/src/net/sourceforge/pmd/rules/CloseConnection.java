@@ -120,7 +120,7 @@ public class CloseConnection extends AbstractRule {
         boolean ok = false;
         for (Iterator i = nodes.iterator(); i.hasNext();) {
             ASTImportDeclaration n = (ASTImportDeclaration)i.next();
-            if (n.getImportedNameNode().getImage().startsWith("java.sql")) {
+            if (n.getPackageName().startsWith("java.sql")) {
                 ok = true;
                 break;
             }

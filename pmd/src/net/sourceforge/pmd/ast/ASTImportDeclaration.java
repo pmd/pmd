@@ -31,9 +31,27 @@ public class ASTImportDeclaration extends SimpleNode {
         return isStatic;
     }
 
+    // TODO - this should go away
     public ASTName getImportedNameNode() {
         return (ASTName) jjtGetChild(0);
     }
+
+    public String getImportedName() {
+        return ((ASTName)jjtGetChild(0)).getImage();
+    }
+
+    public String getPackageName() {
+        String importName = getImportedName();
+        if (isImportOnDemand) {
+            return importName;
+        }
+        if (importName.indexOf('.') == -1) {
+            return "";
+        }
+        int lastDot = importName.lastIndexOf('.');
+        return importName.substring(0, lastDot);
+    }
+
 
     /**
      * Accept the visitor. *
