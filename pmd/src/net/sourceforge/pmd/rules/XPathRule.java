@@ -3,23 +3,22 @@
  */
 package net.sourceforge.pmd.rules;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
-
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.SimpleVariableContext;
 import org.jaxen.XPath;
+
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.text.MessageFormat;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 public class XPathRule extends AbstractRule {
 

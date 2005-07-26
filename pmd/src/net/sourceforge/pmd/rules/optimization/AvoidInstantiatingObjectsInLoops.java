@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.rules.optimization;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTDoStatement;

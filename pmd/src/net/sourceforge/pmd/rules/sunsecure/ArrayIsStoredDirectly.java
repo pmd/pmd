@@ -5,7 +5,6 @@
  */
 package net.sourceforge.pmd.rules.sunsecure;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;

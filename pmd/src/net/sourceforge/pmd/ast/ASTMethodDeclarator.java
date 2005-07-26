@@ -2,9 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Iterator;
+
 
 public class ASTMethodDeclarator extends SimpleNode {
     public ASTMethodDeclarator(int id) {

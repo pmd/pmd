@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd;
 
-import net.sourceforge.pmd.Report;
 import junit.framework.TestCase;
+import net.sourceforge.pmd.Report;
 
 public class ReadableDurationTest extends TestCase{
 

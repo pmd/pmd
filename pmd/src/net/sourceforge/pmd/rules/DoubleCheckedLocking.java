@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTIfStatement;

@@ -7,23 +7,6 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="UnusedPrivateMethod"
-        message="Avoid unused private methods such as ''{0}''"
-        class="net.sourceforge.pmd.rules.UnusedPrivateMethodRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateMethod">
-    <description>
-Unused Private Method detects when a private method is declared but is unused.
-    </description>
-        <priority>3</priority>
-    <example>
-<![CDATA[
-public class Something {
- private void foo() {} // unused
-}
-]]>
-    </example>
-  </rule>
-
 
 <!--    <rule name="Foo"
           message="blah ''{0}''"

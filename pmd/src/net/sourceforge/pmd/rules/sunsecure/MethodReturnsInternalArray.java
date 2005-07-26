@@ -5,7 +5,6 @@
  */
 package net.sourceforge.pmd.rules.sunsecure;
 
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
