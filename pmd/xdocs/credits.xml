@@ -45,7 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Turb - bug report for MethodReturnsInternalArray</li>
+            <li>Sylvain Veyrie - bug report for MethodReturnsInternalArray</li>
             <li>Didier Duquennoy - bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Randy Ray - bug report for ArrayIsStoredDirectly</li>
             <li>Wouter Zelle - UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>

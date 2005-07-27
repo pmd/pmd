@@ -67,7 +67,7 @@ public class ArrayIsStoredDirectlyTest extends SimpleAggregatorTst {
     private static final String TEST7 =
     "public class Foo {" + PMD.EOL +
     " void bar(String[] buf) {" + PMD.EOL +
-    "   x = buf[0] == 1;" + PMD.EOL +
+    "   x = (buf[0] == 1);" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

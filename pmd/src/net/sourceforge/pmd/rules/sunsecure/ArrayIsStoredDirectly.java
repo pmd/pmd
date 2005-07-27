@@ -90,7 +90,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                         continue;
                     }
                     ASTExpression e = (ASTExpression) se.jjtGetChild(2);
-                    if (e.jjtGetChild(0) instanceof ASTEqualityExpression) {
+                    if (e.findChildrenOfType(ASTEqualityExpression.class).size() > 0) {
                         continue;
                     }
                     String val = getFirstNameImage(e);
