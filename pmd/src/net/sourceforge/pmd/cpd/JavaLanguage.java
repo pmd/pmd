@@ -11,7 +11,7 @@ public class JavaLanguage implements Language {
 
     public static class JavaFileOrDirectoryFilter implements FilenameFilter {
         public boolean accept(File dir, String filename) {
-            return filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
+            return (filename.endsWith("java") || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory())) && !filename.equals("SCCS");
         }
     }
 

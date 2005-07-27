@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Guillaume Boudreau - patches to fix problems with CPD's FileFinder and NTFS and SCCS</li>
             <li>Sylvain Veyrie - bug report for MethodReturnsInternalArray</li>
             <li>Didier Duquennoy - bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Randy Ray - bug report for ArrayIsStoredDirectly</li>

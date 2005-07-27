@@ -25,6 +25,9 @@ public class FileFinder {
      */
     private void scanDirectory(File dir, List list, boolean recurse) {
         String[] candidates = dir.list(filter);
+        if (candidates == null) {
+                return;
+        }
         for (int i = 0; i < candidates.length; i++) {
             File tmp = new File(dir + FILE_SEP + candidates[i]);
             if (tmp.isDirectory()) {
