@@ -24,7 +24,7 @@ public class MissingStaticMethodInNonInstantiatableClassTest extends SimpleAggre
                new TestDescriptor(TEST4, "failure with multiple constructors", 1, rule),
                new TestDescriptor(TEST5, "protected constructor is ok", 0, rule),
                new TestDescriptor(TEST6, "ok, one static method", 0, rule),
-               new TestDescriptor(TEST7, "nested class", 1, rule),
+               new TestDescriptor(TEST7, "nested class", 0, rule),
        });
     }
     

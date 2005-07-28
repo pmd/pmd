@@ -795,7 +795,7 @@ A class that has private constructors and does not have any static method cannot
           <property name="xpath">
               <value>
     <![CDATA[
-//ClassOrInterfaceDeclaration[
+//ClassOrInterfaceDeclaration[@Nested='false'][
 ( count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)>0
   and count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true']) )
 and

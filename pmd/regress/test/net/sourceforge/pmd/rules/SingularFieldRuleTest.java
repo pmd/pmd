@@ -20,6 +20,7 @@ public class SingularFieldRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST3, "second method uses 'this'", 0, rule),
            new TestDescriptor(TEST4, "skip publics", 0, rule),
            new TestDescriptor(TEST5, "skip statics", 0, rule),
+           new TestDescriptor(TEST6, "unused fields shouldn't show up", 0, rule),
        });
     }
 
@@ -69,6 +70,15 @@ public class SingularFieldRuleTest extends SimpleAggregatorTst {
     " int bar(int y) {" + PMD.EOL +
     "  x = y + 5; " + PMD.EOL +
     "  return x;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST6 =
+    "public class Foo {" + PMD.EOL +
+    " int a = 3;" + PMD.EOL +
+    " int b = 3;" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  foo(b); " + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
