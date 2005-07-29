@@ -19,6 +19,7 @@ import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -571,7 +572,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         String methName = h.getASTMethodDeclarator().getImage();
                         int count = h.getASTMethodDeclarator().getParameterCount();
                         if (meth.getName().equals(methName) && meth.getArgumentCount() == count) {
-                            addViolation( data, meth.getASTPrimaryExpression(), h.getCalled());
+                            addViolation( data, meth.getASTPrimaryExpression(), "method '" + h.getCalled() + "'");
                         }
                     }
                 }
@@ -586,7 +587,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         ConstructorInvocation ci = (ConstructorInvocation) calledConstIter.next();
                         if (ci.getArgumentCount() == paramCount) {
                             //match name  super / this !?
-                            addViolation(data, ci.getASTExplicitConstructorInvocation());
+                            addViolation(data, ci.getASTExplicitConstructorInvocation(), "constructor");
                         }
                     }
                 }
@@ -626,7 +627,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         String matchMethodName = h3.getASTMethodDeclarator().getImage();
                         int matchMethodParamCount = h3.getASTMethodDeclarator().getParameterCount();
                         //System.out.println("matching " + matchMethodName + " to " + meth.getName());
-                        if (matchMethodName.equals(meth.getName()) && (matchMethodParamCount == meth.getArgumentCount())) {
+                        if (matchMethodName.equals(meth.getName()) && matchMethodParamCount == meth.getArgumentCount()) {
                             h.setDangerous();
                             h.setCalledMethod(matchMethodName);
                             found = true;
@@ -787,6 +788,8 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
             MethodHolder h = new MethodHolder(node);
             if (!parent.isAbstract() && !parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) { //Skip abstract methods, have a separate rule for that
                 h.setDangerous();//this method is overridable
+                ASTMethodDeclaration decl = (ASTMethodDeclaration)node.getFirstParentOfType(ASTMethodDeclaration.class);
+                h.setCalledMethod(decl.getMethodName());
             }
             List l = new ArrayList();
             addCalledMethodsOfNode((SimpleNode) parent, l, getCurrentEvalPackage().m_ClassName);

@@ -212,7 +212,7 @@ public class Foo {
     </rule>
 
     <rule name="ConstructorCallsOverridableMethod"
-          message="Overridable method ''{0}'' called during construction"
+          message="Overridable {0} called during object construction"
           class="net.sourceforge.pmd.rules.ConstructorCallsOverridableMethod">
       <description>
 Calling overridable methods during construction poses a risk of invoking methods on an

@@ -10,7 +10,7 @@ Fixed bug 1227001 - AvoidCallingFinalize no longer flags calls to finalize() wit
 Fixed bug 1229755 - Fixed typo in ArrayIsStoredDirectly description.
 Fixed bug 1229749 - Improved error message when an external rule is not found.
 Fixed bug 1224849 - JUnitTestsShouldContainAsserts no longer skips method declarations which include explicit throws clauses.
-Fixed bug 1225492 - ConstructorCallsOverridableMethod now reports the correct method name.
+Fixed bug 1225492 - ConstructorCallsOverridableMethod now reports the correct method name.  dvholten's examples in RFE 1235562 also helped with this a great deal. 
 Fixed bug 1228589 - DoubleCheckedLocking and ExceptionSignatureDeclaration no longer throw ClassCastExceptions on method declarations that declare generic return types.
 Fixed bug 1235299 - NullAssignment no longer flags null equality comparisons in ternary expressions.
 Fixed bug 1235300 - NullAssignment no longer flags assignments to final fields.
