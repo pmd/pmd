@@ -45,10 +45,10 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Didier Duquennoy - missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>dvholten - test cases for ConstructorCallsOverridableMethod, reported several NullAssignment bugs</li>
             <li>Guillaume Boudreau - patches to fix problems with CPD's FileFinder and NTFS and SCCS</li>
             <li>Sylvain Veyrie - bug report for MethodReturnsInternalArray</li>
-            <li>Didier Duquennoy - bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Randy Ray - bug report for ArrayIsStoredDirectly</li>
             <li>Wouter Zelle - UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Andriy Rozeluk - Bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>

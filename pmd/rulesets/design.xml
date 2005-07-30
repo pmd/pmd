@@ -545,8 +545,12 @@ and use equals() to compare to null.
                 <value>
     <![CDATA[
 //PrimaryExpression
- [PrimaryPrefix/Name[ends-with(@Image, 'equals')]]
- [PrimarySuffix/Arguments/ArgumentList
+ [
+PrimaryPrefix/Name[ends-with(@Image, 'equals')]
+or
+PrimarySuffix[ends-with(@Image, 'equals')]
+]
+[PrimarySuffix/Arguments/ArgumentList
   /Expression/PrimaryExpression/PrimaryPrefix
    /Literal/NullLiteral]
     ]]>

@@ -7,7 +7,7 @@ These are new rules that are still in progress
   </description>
 
 
-<!--    <rule name="Foo"
+    <!--    <rule name="Foo"
           message="blah ''{0}''"
           class="net.sourceforge.pmd.rules.FooRule">
       <description>
