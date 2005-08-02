@@ -1,0 +1,114 @@
+package net.sourceforge.pmd.util;
+
+import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
+import net.sourceforge.pmd.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTTryStatement;
+import net.sourceforge.pmd.ast.ASTCatchStatement;
+import net.sourceforge.pmd.ast.ASTFinallyStatement;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.ast.ASTForStatement;
+
+public class SymbolTableViewer extends JavaParserVisitorAdapter {
+
+    private int depth;
+
+    public Object visit(ASTCompilationUnit node, Object data) {
+        depth++;
+        System.out.println(spaces() + node.getScope());
+        super.visit(node, data);
+        depth--;
+        return data;
+    }
+
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        depth++;
+        System.out.println(spaces() + node.getScope());
+        super.visit(node, data);
+        depth--;
+        return data;
+    }
+
+    private String spaces() {
+        String s = "";
+        for (int i=0;i<depth;i++) {
+            s += " ";
+        }
+        return s;
+    }
+
+/*
+    public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
+        System.out.println(node.getScope());
+        node.dump("");
+        return super.visit(node, data);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Object visit(ASTEnumDeclaration node, Object data) {
+        System.out.println(node.getScope());
+        node.dump("");
+        return super.visit(node, data);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Object visit(ASTBlock node, Object data) {
+        System.out.println(node.getScope());
+        node.dump("");
+        return super.visit(node, data);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Object visit(ASTTryStatement node, Object data) {
+        System.out.println(node.getScope());
+        node.dump("");
+        return super.visit(node, data);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Object visit(ASTCatchStatement node, Object data) {
+        System.out.println(node.getScope());
+        node.dump("");
+        return super.visit(node, data);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Object visit(ASTFinallyStatement node, Object data) {
+        System.out.println(node.getScope());
+        node.dump("");
+        return super.visit(node, data);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        System.out.println(node.getScope());
+        node.dump("");
+        return super.visit(node, data);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Object visit(ASTConstructorDeclaration node, Object data) {
+        System.out.println(node.getScope());
+        node.dump("");
+        return super.visit(node, data);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Object visit(ASTSwitchLabel node, Object data) {
+        System.out.println(node.getScope());
+        node.dump("");
+        return super.visit(node, data);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Object visit(ASTIfStatement node, Object data) {
+        System.out.println(node.getScope());
+        node.dump("");
+        return super.visit(node, data);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public Object visit(ASTForStatement node, Object data) {
+        System.out.println(node.getScope());
+        node.dump("");
+        return super.visit(node, data);  //To change body of implemented methods use File | Settings | File Templates.
+    }
+*/
+
+}

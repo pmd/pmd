@@ -44,70 +44,66 @@ import java.util.List;
  */
 public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
 
-    private boolean insideInterface;
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (node.isInterface()) {
+            return data;
+        }
+        return super.visit(node, data);
+    }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (insideInterface) {
+        if (node.getResultType().isVoid()) {
             return super.visit(node, data);
         }
 
-        ASTResultType rt = (ASTResultType)node.getFirstChildOfType(ASTResultType.class);
-        if (rt.isVoid()) {
-            return super.visit(node, data);
-        }
-
-        ASTType typeNode = (ASTType) rt.jjtGetChild(0);
+        ASTType typeNode = (ASTType)node.getResultType().jjtGetChild(0);
         if (typeNode.jjtGetNumChildren() == 0 || !(typeNode.jjtGetChild(0) instanceof ASTReferenceType)) {
             return super.visit(node, data);
         }
 
-        String returnVariableName = null;
         List finder = new ArrayList();
-        GET_RETURN_VARIABLE_NAME:{
-            node.findChildrenOfType(ASTReturnStatement.class, finder, true);
-            if (finder.size() != 1) {
-                return super.visit(node, data);
-            }
-            ASTReturnStatement rs = (ASTReturnStatement) finder.get(0);//EXPLODES IF THE CLASS IS AN INTERFACE SINCE NO RETURN
-
-            finder.clear();
-            rs.findChildrenOfType(ASTPrimaryExpression.class, finder, true);
-            ASTPrimaryExpression ape = (ASTPrimaryExpression) finder.get(0);
-            Node lastChild = ape.jjtGetChild(ape.jjtGetNumChildren() - 1);
-            if (lastChild instanceof ASTPrimaryPrefix) {
-                returnVariableName = getNameFromPrimaryPrefix((ASTPrimaryPrefix) lastChild);
-            }
-            if (returnVariableName == null) {
-                return super.visit(node, data);
-            }
+        node.findChildrenOfType(ASTReturnStatement.class, finder, true);
+        if (finder.size() != 1) {
+            return super.visit(node, data);
         }
-        CHECK_OUTER_IF:{
-            finder.clear();
-            node.findChildrenOfType(ASTIfStatement.class, finder, true);
-            if (finder.size() == 2) {
-                ASTIfStatement is = (ASTIfStatement) finder.get(0);
-                if (ifVerify(is, returnVariableName)) {
-                    //find synchronized
+        ASTReturnStatement rs = (ASTReturnStatement) finder.get(0);
+
+        finder.clear();
+        rs.findChildrenOfType(ASTPrimaryExpression.class, finder, true);
+        ASTPrimaryExpression ape = (ASTPrimaryExpression) finder.get(0);
+        Node lastChild = ape.jjtGetChild(ape.jjtGetNumChildren() - 1);
+        String returnVariableName = null;
+        if (lastChild instanceof ASTPrimaryPrefix) {
+            returnVariableName = getNameFromPrimaryPrefix((ASTPrimaryPrefix) lastChild);
+        }
+        if (returnVariableName == null) {
+            return super.visit(node, data);
+        }
+        finder.clear();
+        node.findChildrenOfType(ASTIfStatement.class, finder, true);
+        if (finder.size() == 2) {
+            ASTIfStatement is = (ASTIfStatement) finder.get(0);
+            if (ifVerify(is, returnVariableName)) {
+                //find synchronized
+                finder.clear();
+                is.findChildrenOfType(ASTSynchronizedStatement.class, finder, true);
+                if (finder.size() == 1) {
+                    ASTSynchronizedStatement ss = (ASTSynchronizedStatement) finder.get(0);
                     finder.clear();
-                    is.findChildrenOfType(ASTSynchronizedStatement.class, finder, true);
+                    ss.findChildrenOfType(ASTIfStatement.class, finder, true);
                     if (finder.size() == 1) {
-                        ASTSynchronizedStatement ss = (ASTSynchronizedStatement) finder.get(0);
-                        finder.clear();
-                        ss.findChildrenOfType(ASTIfStatement.class, finder, true);
-                        if (finder.size() == 1) {
-                            ASTIfStatement is2 = (ASTIfStatement) finder.get(0);
-                            if (ifVerify(is2, returnVariableName)) {
-                                finder.clear();
-                                is2.findChildrenOfType(ASTStatementExpression.class, finder, true);
-                                if (finder.size() == 1) {
-                                    ASTStatementExpression se = (ASTStatementExpression) finder.get(0);
-                                    if (se.jjtGetNumChildren() == 3) { //primaryExpression, AssignmentOperator, Expression
-                                        if (se.jjtGetChild(0) instanceof ASTPrimaryExpression) {
-                                            ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
-                                            if (matchName(pe, returnVariableName)) {
-                                                if (se.jjtGetChild(1) instanceof ASTAssignmentOperator) {
-                                                    addViolation(data, node);
-                                                }
+                        ASTIfStatement is2 = (ASTIfStatement) finder.get(0);
+                        if (ifVerify(is2, returnVariableName)) {
+                            finder.clear();
+                            is2.findChildrenOfType(ASTStatementExpression.class, finder, true);
+                            if (finder.size() == 1) {
+                                ASTStatementExpression se = (ASTStatementExpression) finder.get(0);
+                                if (se.jjtGetNumChildren() == 3) { //primaryExpression, AssignmentOperator, Expression
+                                    if (se.jjtGetChild(0) instanceof ASTPrimaryExpression) {
+                                        ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
+                                        if (matchName(pe, returnVariableName)) {
+                                            if (se.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+                                                addViolation(data, node);
                                             }
                                         }
                                     }
@@ -142,15 +138,7 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
         return false;
     }
 
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        boolean temp = insideInterface;
-        insideInterface = node.isInterface();
-        Object o = super.visit(node, data);
-        insideInterface = temp;
-        return o;
-    }
-
-    public boolean matchName(ASTPrimaryExpression ape, String name) {
+    private boolean matchName(ASTPrimaryExpression ape, String name) {
         if ((ape.jjtGetNumChildren() == 1) && (ape.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
             ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ape.jjtGetChild(0);
             String name2 = getNameFromPrimaryPrefix(pp);
@@ -161,7 +149,7 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
         return false;
     }
 
-    public String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp) {
+    private String getNameFromPrimaryPrefix(ASTPrimaryPrefix pp) {
         if ((pp.jjtGetNumChildren() == 1) && (pp.jjtGetChild(0) instanceof ASTName)) {
             return ((ASTName) pp.jjtGetChild(0)).getImage();
         }

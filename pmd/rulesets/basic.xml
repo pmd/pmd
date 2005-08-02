@@ -231,7 +231,6 @@ Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing eve
          </property>
      </properties>
         <priority>3</priority>
-
      <example>
  <![CDATA[
 public class JumbledIncrementerRule1 {
@@ -246,7 +245,6 @@ public class JumbledIncrementerRule1 {
  ]]>
      </example>
      </rule>
-
 
     <rule name="ForLoopShouldBeWhileLoop"
           message="This for loop could be simplified to a while loop"
@@ -600,7 +598,7 @@ public class MyClass {
        class="net.sourceforge.pmd.rules.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BooleanInstantiation">
    <description>
-Avoid instantiating Boolean objects, instead use Boolean.TRUE or Boolean.FALSE.
+Avoid instantiating Boolean objects, instead use the constants Boolean.TRUE or Boolean.FALSE.
    </description>
       <properties>
           <property name="xpath">
@@ -623,7 +621,8 @@ PrimarySuffix/Arguments//BooleanLiteral
    <example>
    <![CDATA[
 public class Foo {
- private Boolean bar = new Boolean("true"); // just do a Boolean bar = Boolean.TRUE;
+ Boolean bar = new Boolean("true"); // just do a Boolean bar = Boolean.TRUE;
+ Boolean buz = Boolean.valueOf(false); // just do a Boolean buz = Boolean.FALSE;
 }
    ]]>
    </example>
@@ -634,7 +633,7 @@ public class Foo {
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier">
       <description>
-When a class has the final modifier, all the methods are marked finally.
+When a class has the final modifier, all the methods are automatically final.
       </description>
       <properties>
           <property name="xpath">

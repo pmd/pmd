@@ -4,14 +4,29 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.SymbolTableViewer;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.JavaParserVisitor;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
+import net.sourceforge.pmd.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTTryStatement;
+import net.sourceforge.pmd.ast.ASTCatchStatement;
+import net.sourceforge.pmd.ast.ASTFinallyStatement;
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.ast.ASTForStatement;
+import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
 
 import java.util.Iterator;
 import java.util.List;
@@ -127,6 +142,24 @@ public class ClassScopeTest extends STBBaseTst {
         assertEquals("()", mnd.getParameterDisplaySignature());
     }
 
+
+    public final void testBook() throws Throwable {
+        parseCode(CLASS_NAMES_FOUND);
+        acu.jjtAccept(new SymbolTableViewer(), null);
+/*
+        ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration)acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        ClassScope c = (ClassScope)n.getScope();
+        Map m = c.getClassDeclarations();
+        ClassNameDeclaration cnd = (ClassNameDeclaration)m.keySet().iterator().next();
+        assertEquals("Buz", cnd.getImage());
+*/
+        //System.out.println(c);
+    }
+
+    private static final String CLASS_NAMES_FOUND =
+    "public class Test {" + PMD.EOL +
+    "  private class Buz {} " + PMD.EOL +
+    "}";
 
     private static final String ONE_PARAM =
     "public class Test {" + PMD.EOL +

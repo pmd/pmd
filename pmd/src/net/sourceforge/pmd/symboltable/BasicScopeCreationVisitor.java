@@ -53,7 +53,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void addScopeWithParent(Scope scope, SimpleNode node) {
-        scope.setParent((Scope) scopes.peek());
+        scope.setParent((Scope)scopes.peek());
         scopes.add(scope);
         node.setScope(scope);
     }
@@ -102,10 +102,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      */
     private void createSourceFileScope(SimpleNode node) {
-        // Note that the following code replaces
-        // the GlobalScope with a SourceFileScope.  Later, when we do full
-        // symbol resolution, we'll need to add a truly top-level GlobalScope.
-
+        // When we do full symbol resolution, we'll need to add a truly top-level GlobalScope.
         Scope scope;
         List packages = node.findChildrenOfType(ASTPackageDeclaration.class);
         if (!packages.isEmpty()) {
@@ -182,6 +179,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
         return data;
     }
 
+    // TODO - what about while loops and do loops?
     public Object visit(ASTForStatement node, Object data) {
         createLocalScope(node);
         cont(node);
@@ -199,6 +197,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
         cont(node);
         return data;
     }
+
 
     private void cont(SimpleNode node) {
         super.visit(node, null);

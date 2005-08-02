@@ -54,8 +54,6 @@ public class Benchmark {
         while (i.hasNext()) {
             stress((RuleSet)i.next(), files, results);
         }
-        stress(factory.createRuleSet("rulesets/newrules.xml"), files, results);
-
         System.out.println("=========================================================");
         System.out.println("Rule\t\t\t\t\t\tTime in ms");
         System.out.println("=========================================================");
