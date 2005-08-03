@@ -14,7 +14,7 @@ Check everything in
 Create the src release:
 
 CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
-cd ~/data/pmd/
+cd ~/pmd/
 cvs -q tag -D tomorrow "pmd_jdeveloper_release_1_6" pmd-jdeveloper
 rm -rf ~/tmp/pmd-jdeveloper
 mkdir -p ~/tmp/pmd-jdeveloper

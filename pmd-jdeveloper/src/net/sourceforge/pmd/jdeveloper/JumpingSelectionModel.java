@@ -1,13 +1,11 @@
 package net.sourceforge.pmd.jdeveloper;
 
 import net.sourceforge.pmd.RuleViolation;
-import oracle.ide.Ide;
 import oracle.ide.editor.EditorManager;
 import oracle.ide.net.URLFactory;
 import oracle.jdeveloper.ceditor.CodeEditor;
 
-import javax.swing.DefaultListModel;
-import javax.swing.DefaultListSelectionModel;
+import javax.swing.*;
 
 /**
  * This class was inspired by a class on Sun's web site in the JList tutorial section.  It's

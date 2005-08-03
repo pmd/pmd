@@ -4,9 +4,7 @@ import net.sourceforge.pmd.RuleViolation;
 import oracle.ide.layout.ViewId;
 import oracle.ide.log.AbstractLogPage;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 import java.awt.Component;
 
 public class RuleViolationPage extends AbstractLogPage {
