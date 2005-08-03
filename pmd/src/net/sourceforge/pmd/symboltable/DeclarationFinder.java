@@ -7,11 +7,14 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 public class DeclarationFinder extends JavaParserVisitorAdapter {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        node.getScope().addDeclaration(new ClassNameDeclaration(node));
+        // FIXME - this adds it to the wrong scope for top level classes
+        Scope s = ((SimpleNode)node.jjtGetParent()).getScope();
+        s.addDeclaration(new ClassNameDeclaration(node));
         return super.visit(node, data);
     }
 

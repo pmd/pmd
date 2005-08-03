@@ -38,8 +38,8 @@ public abstract class AbstractScope implements Scope {
         parent.addDeclaration(methodDecl);
     }
 
-    public void addDeclaration(ClassNameDeclaration methodDecl) {
-        parent.addDeclaration(methodDecl);
+    public void addDeclaration(ClassNameDeclaration classDecl) {
+        parent.addDeclaration(classDecl);
     }
 
     public boolean contains(NameOccurrence occurrence) {

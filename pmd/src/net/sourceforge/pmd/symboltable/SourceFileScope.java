@@ -8,15 +8,15 @@ import java.util.Map;
 
 public class SourceFileScope extends AbstractScope implements Scope  {
 
-    protected Map classes = new HashMap();
+    protected Map classNames = new HashMap();
     private String packageImage;
+
+    public SourceFileScope() {
+        this("");
+    }
 
     public SourceFileScope(String image) {
         this.packageImage = image;
-    }
-
-    public SourceFileScope() {
-        packageImage = "";
     }
 
     public ClassScope getEnclosingClassScope() {
@@ -36,7 +36,7 @@ public class SourceFileScope extends AbstractScope implements Scope  {
     }
 
     public void addDeclaration(ClassNameDeclaration classDecl) {
-        classes.put(classDecl, new ArrayList());
+        classNames.put(classDecl, new ArrayList());
     }
 
     public void addDeclaration(MethodNameDeclaration decl) {
@@ -48,7 +48,7 @@ public class SourceFileScope extends AbstractScope implements Scope  {
     }
 
     public Map getClassDeclarations() {
-        return classes;
+        return classNames;
     }
 
     public Map getVariableDeclarations() {
@@ -60,12 +60,12 @@ public class SourceFileScope extends AbstractScope implements Scope  {
     }
 
     public String toString() {
-        return "SourceFileScope class names:" + super.glomNames(classes.keySet().iterator());
+        return "SourceFileScope: " + glomNames(classNames.keySet().iterator());
     }
 
     protected NameDeclaration findVariableHere(NameOccurrence occ) {
         ImageFinderFunction finder = new ImageFinderFunction(occ.getImage());
-        Applier.apply(finder, classes.keySet().iterator());
+        Applier.apply(finder, classNames.keySet().iterator());
         return finder.getDecl();
     }
 

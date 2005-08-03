@@ -143,20 +143,16 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
 
-    public final void testBook() throws Throwable {
-        parseCode(CLASS_NAMES_FOUND);
-        acu.jjtAccept(new SymbolTableViewer(), null);
-/*
+    public final void testNestedClassDeclFound() throws Throwable {
+        parseCode(NESTED_CLASS_FOUND);
         ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration)acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         ClassScope c = (ClassScope)n.getScope();
         Map m = c.getClassDeclarations();
         ClassNameDeclaration cnd = (ClassNameDeclaration)m.keySet().iterator().next();
         assertEquals("Buz", cnd.getImage());
-*/
-        //System.out.println(c);
     }
 
-    private static final String CLASS_NAMES_FOUND =
+    private static final String NESTED_CLASS_FOUND =
     "public class Test {" + PMD.EOL +
     "  private class Buz {} " + PMD.EOL +
     "}";

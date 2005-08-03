@@ -48,14 +48,14 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
      * Sets the scope of a node and adjustes the scope stack accordingly.
      * The scope on top of the stack is set as the parent of the given scope,
      * which is then also stored on the scope stack.
-     * @param scope the scope for the node.
+     * @param newScope the scope for the node.
      * @param node the AST node for which the scope is to be set.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void addScopeWithParent(Scope scope, SimpleNode node) {
-        scope.setParent((Scope)scopes.peek());
-        scopes.add(scope);
-        node.setScope(scope);
+    private void addScope(Scope newScope, SimpleNode node) {
+        newScope.setParent((Scope)scopes.peek());
+        scopes.push(newScope);
+        node.setScope(newScope);
     }
     
     /**
@@ -66,7 +66,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void createLocalScope(SimpleNode node) {
-        addScopeWithParent(new LocalScope(), node);
+        addScope(new LocalScope(), node);
     }
 
     /**
@@ -77,7 +77,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void createMethodScope(SimpleNode node) {
-        addScopeWithParent(new MethodScope(node), node);
+        addScope(new MethodScope(node), node);
     }
 
     /**
@@ -89,10 +89,10 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
      */
     private void createClassScope(SimpleNode node) {
        if (node instanceof ASTClassOrInterfaceBodyDeclaration){
-           addScopeWithParent(new ClassScope(), node);
+           addScope(new ClassScope(), node);
        }
        else {
-           addScopeWithParent(new ClassScope(node.getImage()), node);
+           addScope(new ClassScope(node.getImage()), node);
        }
     }
 
@@ -111,7 +111,7 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
         } else {
             scope = new SourceFileScope();
         }
-        scopes.add(scope);
+        scopes.push(scope);
         node.setScope(scope);
     }
     
@@ -197,7 +197,6 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
         cont(node);
         return data;
     }
-
 
     private void cont(SimpleNode node) {
         super.visit(node, null);

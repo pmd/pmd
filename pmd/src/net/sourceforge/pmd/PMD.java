@@ -132,10 +132,13 @@ public class PMD {
 
         PMD pmd;
         if (opts.getTargetJDK().equals("1.3")) {
+            if (opts.debugEnabled()) System.out.println("In JDK 1.3 mode");
             pmd = new PMD(new TargetJDK1_3());
         } else if (opts.getTargetJDK().equals("1.5")) {
+            if (opts.debugEnabled()) System.out.println("In JDK 1.5 mode");
             pmd = new PMD(new TargetJDK1_5());
         } else {
+            if (opts.debugEnabled()) System.out.println("In JDK 1.4 mode");
             pmd = new PMD();
         }
         pmd.setExcludeMarker(opts.getExcludeMarker());

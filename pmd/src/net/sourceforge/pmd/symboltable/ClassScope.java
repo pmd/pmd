@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class ClassScope extends AbstractScope {
 
-//    protected Map classNames = new HashMap();
+    protected Map classNames = new HashMap();
     protected Map methodNames = new HashMap();
     protected Map variableNames = new HashMap();
 
@@ -64,11 +64,9 @@ public class ClassScope extends AbstractScope {
         return methodNames;
     }
 
-/*
     public Map getClassDeclarations() {
         return classNames;
     }
-*/
 
     public ClassScope getEnclosingClassScope() {
         return this;
@@ -82,11 +80,9 @@ public class ClassScope extends AbstractScope {
         methodNames.put(decl, new ArrayList());
     }
 
-/*
     public void addDeclaration(ClassNameDeclaration decl) {
         classNames.put(decl, new ArrayList());
     }
-*/
 
     protected NameDeclaration findVariableHere(NameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
@@ -120,7 +116,7 @@ public class ClassScope extends AbstractScope {
 
     public String toString() {
         String res = "Class scope:" + className;
-//        if (!classNames.isEmpty()) res += "\nclasses: " + glomNames(classNames.keySet().iterator());
+        if (!classNames.isEmpty()) res += "\nclasses: " + glomNames(classNames.keySet().iterator());
         if (!methodNames.isEmpty()) res += "\nmethods: " + glomNames(methodNames.keySet().iterator());
         if (!variableNames.isEmpty()) res += "\nvariables: " + glomNames(variableNames.keySet().iterator());
         return res;
