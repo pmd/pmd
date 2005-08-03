@@ -3,9 +3,11 @@
 	<property name="config" value="config/"/>
 	<property name="src" value="src/"/>
 	<property name="etc" value="etc/"/>
-	<property name="pmdjar" value="pmd-2.3.jar"/>
-	<property name="pluginversion" value="1.5"/>
-	<property name="jdeveloper.install.dir" value="/home/tom/jdev9052/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
+	<property name="pmdjar" value="pmd-3.2.jar"/>
+	<property name="pluginversion" value="1.6"/>
+<!--	<property name="jdeveloper.install.dir" value="/home/tom/jdev9052/jdev/lib/ext/${ant.project.name}-${pluginversion}"/> -->
+	<property name="jdeveloper.install.dir" value="c:/data/jdev1012/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
+
 
 	<path id="project.class.path">
 		<pathelement location="lib/${pmdjar}"/>
@@ -14,7 +16,6 @@
 		<pathelement location="lib/ide.jar"/>
 		<pathelement location="build"/>
 	</path>
-
 
     <target name="delete">
         <delete file="lib/${ant.project.name}.jar"/>
@@ -25,10 +26,7 @@
 
 	<target name="compile">
 		<javac
-			srcdir="${src}"
-			destdir="build"
-			debug="on"
-			deprecation="on">
+			srcdir="${src}"	destdir="build"	debug="on" deprecation="on">
 			<classpath refid="project.class.path"/>
 		</javac>
 	</target>
@@ -39,7 +37,6 @@
 			<fileset dir="build" excludes="**/*.di,**/*.i"/>
 		</jar>
     </target>
-
 
 	<target name="deploy" depends="delete,jar">
         <mkdir dir="${jdeveloper.install.dir}/lib"/>

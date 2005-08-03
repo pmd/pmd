@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'windows-1252'?>
-<extensions xmlns="http://xmlns.oracle.com/jdeveloper/905/extensions">
+<extensions xmlns="http://xmlns.oracle.com/jdeveloper/1012/extensions">
   <feature>
     <group name="" nlsclass="" exclusive="false">
       <description>PMD static analysis plugin</description>
