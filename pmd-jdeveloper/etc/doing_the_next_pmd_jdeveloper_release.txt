@@ -15,10 +15,10 @@ Create the src release:
 
 CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
 cd ~/data/pmd/
-cvs -q tag -D tomorrow "pmd_jdeveloper_release_1_5" pmd-jdeveloper
+cvs -q tag -D tomorrow "pmd_jdeveloper_release_1_6" pmd-jdeveloper
 rm -rf ~/tmp/pmd-jdeveloper
 mkdir -p ~/tmp/pmd-jdeveloper
-cvs -q export -d tmp -r pmd_jdeveloper_release_1_5 pmd-jdeveloper
+cvs -q export -d tmp -r pmd_jdeveloper_release_1_6 pmd-jdeveloper
 mv tmp/* ~/tmp/pmd-jdeveloper
 rmdir tmp/
 cp pmd-jdeveloper/lib/pmd-jdeveloper-1.6.jar ~/tmp/pmd-jdeveloper/lib
