@@ -20,6 +20,8 @@ import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
 import java.util.List;
 import java.util.Stack;
@@ -36,7 +38,7 @@ import java.util.Stack;
  * parent scope, which is the scope object of the next embedding syntactic 
  * entity that has a scope. 
  */
-public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
+public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     /**
      * A stack of scopes reflecting the scope hierarchy when a node is visited.
@@ -123,6 +125,8 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         createClassScope(node);
+        Scope s = ((SimpleNode)node.jjtGetParent()).getScope();
+        s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
     }
@@ -169,6 +173,8 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         createMethodScope(node);
+        ASTMethodDeclarator md = (ASTMethodDeclarator)node.getFirstChildOfType(ASTMethodDeclarator.class);
+        node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
         cont(node);
         return data;
     }
@@ -190,6 +196,11 @@ public class BasicScopeCreationVisitor extends JavaParserVisitorAdapter {
         createLocalScope(node);
         cont(node);
         return data;
+    }
+
+    public Object visit(ASTVariableDeclaratorId node, Object data) {
+        node.getScope().addDeclaration(new VariableNameDeclaration(node));
+        return super.visit(node, data);
     }
 
     public Object visit(ASTSwitchStatement node, Object data) {
