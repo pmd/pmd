@@ -9,7 +9,7 @@ public class ClassNameDeclaration extends AbstractNameDeclaration implements Nam
     }
 
     public String toString() {
-        return "Class " + node.getImage() + ":" + node.getBeginLine();
+        return "Class " + node.getImage();
     }
 
 }

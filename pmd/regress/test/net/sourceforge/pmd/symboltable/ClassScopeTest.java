@@ -152,6 +152,21 @@ public class ClassScopeTest extends STBBaseTst {
         assertEquals("Buz", cnd.getImage());
     }
 
+    public final void testbuz() throws Throwable {
+        parseCode(METH);
+        SymbolTableViewer st = new SymbolTableViewer();
+        acu.jjtAccept(st, null);
+    }
+
+    private static final String METH =
+    "public class Test {" + PMD.EOL +
+    "  static { " + PMD.EOL +
+    "   int y; " + PMD.EOL +
+    "  } " + PMD.EOL +
+    "  void bar(int x) {} " + PMD.EOL +
+    "  void baz(int x) {} " + PMD.EOL +
+    "}";
+
     private static final String NESTED_CLASS_FOUND =
     "public class Test {" + PMD.EOL +
     "  private class Buz {} " + PMD.EOL +

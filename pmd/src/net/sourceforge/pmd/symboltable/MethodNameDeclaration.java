@@ -88,6 +88,6 @@ public class MethodNameDeclaration extends AbstractNameDeclaration implements Na
     }
 
     public String toString() {
-        return "Method " + node.getImage() + ":" + node.getBeginLine();
+        return "Method " + node.getImage();
     }
 }

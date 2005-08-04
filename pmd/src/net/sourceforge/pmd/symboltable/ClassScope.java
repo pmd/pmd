@@ -115,10 +115,10 @@ public class ClassScope extends AbstractScope {
     }
 
     public String toString() {
-        String res = "Class scope:" + className;
-        if (!classNames.isEmpty()) res += "\nclasses: " + glomNames(classNames.keySet().iterator());
-        if (!methodNames.isEmpty()) res += "\nmethods: " + glomNames(methodNames.keySet().iterator());
-        if (!variableNames.isEmpty()) res += "\nvariables: " + glomNames(variableNames.keySet().iterator());
+        String res = "ClassScope (" + className + "): ";
+        if (!classNames.isEmpty()) res += "(" + glomNames(classNames.keySet().iterator()) + ")";
+        if (!methodNames.isEmpty()) res += "(" + glomNames(methodNames.keySet().iterator()) + ")";
+        if (!variableNames.isEmpty()) res += "(" + glomNames(variableNames.keySet().iterator()) + ")";
         return res;
     }
 

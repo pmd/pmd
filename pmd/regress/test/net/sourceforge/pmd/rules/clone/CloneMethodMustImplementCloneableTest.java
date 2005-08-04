@@ -18,6 +18,7 @@ public class CloneMethodMustImplementCloneableTest extends SimpleAggregatorTst{
      runTests(new TestDescriptor[] {
          new TestDescriptor(TEST1, "ok, implements Cloneable", 0, rule),
          new TestDescriptor(TEST2, "bad, doesn't implement Cloneable", 1, rule),
+         new TestDescriptor(TEST3, "ok, not Object.clone since method has a param", 0, rule),
      });
   }
 
@@ -29,5 +30,10 @@ public class CloneMethodMustImplementCloneableTest extends SimpleAggregatorTst{
     private static final String TEST2 =
     "public class Foo {" + PMD.EOL +
     " void clone() {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class Foo {" + PMD.EOL +
+    " void clone(int x) {}" + PMD.EOL +
     "}";
 }
