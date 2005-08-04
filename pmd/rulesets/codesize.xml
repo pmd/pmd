@@ -11,20 +11,8 @@ The Code Size Ruleset contains a collection of rules that find code size related
        message="Avoid really long methods."
        class="net.sourceforge.pmd.rules.design.LongMethodRule">
    <description>
-Excessive Method Length usually means that the method is doing
-too much.  There is usually quite a bit of Cut and Paste there
-as well.  Try to reduce the method size by creating helper methods,
-and removing cut and paste.
-
-Default value is 2.5 sigma greater than the mean.
-
-There are three parameters available:
-minimum - Minimum Length before reporting.
-sigma - Std Deviations away from the mean before reporting.
-topscore - The Maximum Number of reports to generate.
-
-At this time, only one can be used at a time.
-
+Violations of this rule usually indicate that the method is doing
+too much.  Try to reduce the method size by creating helper methods and removing any copy/pasted code.
    </description>
      <priority>3</priority>
    <properties>
@@ -32,13 +20,12 @@ At this time, only one can be used at a time.
    </properties>
    <example>
 <![CDATA[
-public void doSomething() {
-  System.out.println("I am a fish.");
-  System.out.println("I am a fish.");
-  System.out.println("I am a fish.");
-  System.out.println("I am a fish.");
-  System.out.println("I am a fish.");
-  // 495 copies omitted for brevity.
+public class Foo {
+ public void doSomething() {
+  System.out.println("Hello world!");
+  System.out.println("Hello world!");
+  // 98 copies omitted for brevity.
+ }
 }
 ]]>
    </example>
@@ -50,21 +37,8 @@ public void doSomething() {
        message="Avoid really long parameter lists."
        class="net.sourceforge.pmd.rules.design.LongParameterListRule">
    <description>
-This checks to make sure that the Parameter Lists in the project aren't
-getting too long.  If there are long parameter lists, then that is
-generally indicative that another object is hiding around there.
-
-Basically, try to group the parameters together.
-
-Default value is 2.5 sigma greater than the mean.
-
-NOTE:  In version 0.9 and higher, their are three parameters available:
-minimum - Minimum Length before reporting.
-sigma - Std Deviations away from the mean before reporting.
-topscore - The Maximum Number of reports to generate.
-
-At this time, only one can be used at a time.
-
+Long parameter lists can indicate that a new object should be created to
+ wrap the numerous parameters.  Basically, try to group the parameters together.
    </description>
      <priority>3</priority>
    <properties>
@@ -72,10 +46,12 @@ At this time, only one can be used at a time.
    </properties>
    <example>
 <![CDATA[
-public void addData(
-  int p00, int p01, int p02, int p03, int p04, int p05,
-  int p05, int p06, int p07, int p08, int p09, int p10) {
+public class Foo {
+ public void addData(
+  int p0, int p1, int p2, int p3, int p4, int p5,
+  int p5, int p6, int p7, int p8, int p9, int p10) {
   }
+ }
 }
 ]]>
    </example>
@@ -84,22 +60,12 @@ public void addData(
 
 
  <rule name="ExcessiveClassLength"
-       message="Avoid really long Classes."
+       message="Avoid really long classes."
        class="net.sourceforge.pmd.rules.design.LongClassRule">
    <description>
 Long Class files are indications that the class may be trying to
 do too much.  Try to break it down, and reduce the size to something
-managable.
-
-Default value is 2.5 sigma greater than the mean.
-
-NOTE:  In version 0.9 and higher, their are three parameters available:
-minimum - Minimum Length before reporting.
-sigma - Std Deviations away from the mean before reporting.
-topscore - The Maximum Number of reports to generate.
-
-At this time, only one can be used at a time.
-
+manageable.
    </description>
      <priority>3</priority>
        <properties>
@@ -109,11 +75,7 @@ At this time, only one can be used at a time.
 <![CDATA[
 public class Foo {
   public void bar() {
-    // 500 lines of code
-  }
-
-  public void baz() {
-    // 500 more lines of code
+    // 1000 lines of code
   }
 }
 ]]>
@@ -126,8 +88,9 @@ public class Foo {
       class="net.sourceforge.pmd.rules.CyclomaticComplexity">
    <description>
 Complexity is determined by the number of decision points in a method plus one for the
-method entry.  The decision points are 'if', 'while', 'for', and 'case labels'.  Scale:
-1-4 (low complexity)   5-7 (moderate complexity)   8-10 (high complexity)   10+ (very high complexity)
+method entry.  The decision points are 'if', 'while', 'for', and 'case labels'.  Generally,
+1-4 is low complexity, 5-7 indicates moderate complexity, 8-10 is high complexity,
+ and 11+ is very high complexity.
    </description>
    <priority>3</priority>
    <properties>
@@ -135,59 +98,38 @@ method entry.  The decision points are 'if', 'while', 'for', and 'case labels'. 
    </properties>
    <example>
 <![CDATA[
-Cyclomatic Complexity = 12
-
-public class Foo
-{
-1   public void example()
-    {
-2       if (a == b)
-        {
-3           if (a1 == b1)
-            {
-                do something;
+// Cyclomatic Complexity = 12
+public class Foo {
+1   public void example()  {
+2       if (a == b)  {
+3           if (a1 == b1) {
+                fiddle();
+4           } else if a2 == b2) {
+                fiddle();
+            }  else {
+                fiddle();
             }
-4           else if a2 == b2)
-            {
-                do something;
+5       } else if (c == d) {
+6           while (c == d) {
+                fiddle();
             }
-            else
-            {
-                do something;
+7        } else if (e == f) {
+8           for (int n = 0; n < h; n++) {
+                fiddle();
             }
-        }
-5       else if (c == d)
-        {
-6           while (c == d)
-            {
-                do something;
-            }
-        }
-7       else if (e == f)
-        {
-8           for (int n = 0; n < h; n++)
-            {
-                do something;
-            }
-        }
-        else
-        {
-            switch (z)
-            {
+        } else{
+            switch (z) {
 9               case 1:
-                    do something;
+                    fiddle();
                     break;
-
 10              case 2:
-                    do something;
+                    fiddle();
                     break;
-
 11              case 3:
-                    do something;
+                    fiddle();
                     break;
-
 12              default:
-                    do something;
+                    fiddle();
                     break;
             }
         }
@@ -198,11 +140,11 @@ public class Foo
 </rule>
 
     <rule name="ExcessivePublicCount"
-    message="A high number of public methods and attributes in an object can indicate the class may need to be broken up for exhaustive testing may prove difficult."
+    message="This class has a bunch of public methods and attributes"
     class="net.sourceforge.pmd.rules.ExcessivePublicCount">
     <description>
-A large amount of public methods and attributes declared in an object can indicate the class may need
-to be broken up as increased effort will be required to thoroughly test such a class.
+A large number of public methods and attributes declared in a class can indicate the
+ class may need to be broken up as increased effort will be required to thoroughly test it.
     </description>
     <priority>3</priority>
     <properties>
@@ -228,9 +170,9 @@ public class Foo {
           message="Too many fields"
           class="net.sourceforge.pmd.rules.design.TooManyFields">
       <description>
-Classes that have too many fields could be redesigned to have less fields
-and some nested object grouping some of the information collected on the
-many fields.
+Classes that have too many fields could be redesigned to have fewer fields, possibly
+ through some nested object grouping of some of the information.  For example, a class with
+ city/state/zip fields could instead have one Address field.
       </description>
         <priority>3</priority>
       <properties>
@@ -238,7 +180,7 @@ many fields.
       </properties>
       <example>
    <![CDATA[
-public Class Person {
+public class Person {
    String one;
    int two;
    int three;
@@ -246,7 +188,6 @@ public Class Person {
 }
    ]]>
       </example>
-
     </rule>
 
 </ruleset>
