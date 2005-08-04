@@ -101,7 +101,6 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                             continue;
                         }
                         JavaSourceNode jsn = (JavaSourceNode)obj;
-                        LogManager.getLogManager().getMsgPage().log(jsn.getSourceFile());
                         if (jsn.getLongLabel().endsWith(".java") && new File(jsn.getLongLabel()).exists()) {
                             ctx.setSourceCodeFilename(jsn.getLongLabel());
                             FileInputStream fis = new FileInputStream(new File(jsn.getLongLabel()));
