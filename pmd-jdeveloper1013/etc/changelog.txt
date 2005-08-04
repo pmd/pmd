@@ -1,0 +1,2 @@
+August 04, 2005 - 1.6:
+Forked plugin code to provide a 10.1.13 version.

@@ -1,0 +1,18 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<extensions xmlns="http://xmlns.oracle.com/jdeveloper/1013/extensions">
+<esdk-version>10.1.3</esdk-version>
+    <feature>
+        <group name="pmd">
+        <extension>
+            <addin>net.sourceforge.pmd.jdeveloper.Plugin</addin>
+            <classpath>jaxen-core-1.0-fcs.jar</classpath>
+            <classpath>saxpath-1.0-fcs.jar</classpath>
+            <gallery>
+                <name>net.sourceforge.pmd.jdeveloper.Plugin</name>
+                <category>General</category>
+                <folder>Projects</folder>
+            </gallery>
+        </extension>
+        </group>
+    </feature>
+</extensions>

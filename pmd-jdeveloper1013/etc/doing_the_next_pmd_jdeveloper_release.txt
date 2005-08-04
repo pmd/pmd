@@ -1,0 +1,36 @@
+update the release date in the changelog
+change the build.xml to reflect pmd-jdeveloper1013 release 1.6
+Update Plugin.version() to reflect release 1.6.
+
+Create the binary release:
+ant release
+TESTS:
+1) Does it unzip neatly on top of the jdev/ext/lib directory?
+2) Can you run it it on a file and find some unused code?
+3) Are options persistant?
+
+Check everything in
+
+Create the src release:
+
+CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
+cd ~/pmd/
+cvs -q tag -D tomorrow "pmd_jdeveloper1013_release_1_6" pmd-jdeveloper1013
+rm -rf ~/tmp/pmd-jdeveloper1013
+mkdir -p ~/tmp/pmd-jdeveloper1013
+cvs -q export -d tmp -r pmd_jdeveloper1013_release_1_6 pmd-jdeveloper1013
+mv tmp/* ~/tmp/pmd-jdeveloper1013
+rmdir tmp/
+cp pmd-jdeveloper1013/lib/pmd-jdeveloper1013-1.6.jar ~/tmp/pmd-jdeveloper1013/lib
+cd ~/tmp
+zip -q -r pmd-jdeveloper1013-src-1.6.zip pmd-jdeveloper1013
+ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper1013-bin-1.6.zip pmd-jdeveloper1013-src-1.6.zip
+rm -rf pmd-jdeveloper1013/
+
+Go to Admin, Edit/Release Files, click on Add new release
+Paste stuff into the changelog/readme boxes
+Add the pmd-jdeveloper1013-src-1.6.zip file
+Add the pmd-jdeveloper1013-bin-1.6.zip file
+Classify the file
+
+Submit some news saying "hey, new release of the jdeveloper 1013 plugin!"

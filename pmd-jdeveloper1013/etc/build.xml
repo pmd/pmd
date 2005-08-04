@@ -1,0 +1,70 @@
+<project name="pmd-jdeveloper1013" default="compile" basedir="../">
+
+	<property name="config" value="config/"/>
+	<property name="src" value="src/"/>
+	<property name="etc" value="etc/"/>
+	<property name="pmdjar" value="pmd-3.2.jar"/>
+	<property name="pluginversion" value="1.6"/>
+<!--	<property name="jdeveloper.install.dir" value="/home/tom/jdev9052/jdev/lib/ext/${ant.project.name}-${pluginversion}"/> -->
+	<property name="jdeveloper.install.dir" value="c:/data/jdev1013/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
+
+
+	<path id="project.class.path">
+		<pathelement location="lib/${pmdjar}"/>
+		<pathelement location="lib/jdev.jar"/>
+		<pathelement location="lib/javatools.jar"/>
+		<pathelement location="lib/ide.jar"/>
+		<pathelement location="build"/>
+	</path>
+
+    <target name="delete">
+        <delete file="lib/${ant.project.name}.jar"/>
+        <delete file="${jdeveloper.install.dir}/${ant.project.name}.jar"/>
+		<delete dir="build"/>
+        <mkdir dir="build"/>
+    </target>
+
+	<target name="compile">
+		<javac
+			srcdir="${src}"	destdir="build"	debug="on" deprecation="on">
+			<classpath refid="project.class.path"/>
+		</javac>
+	</target>
+
+    <target name="jar" depends="compile">
+        <copy file="etc/jdev-ext.xml" todir="build/meta-inf"/>
+        <jar jarfile="lib/${ant.project.name}-${pluginversion}.jar">
+			<fileset dir="build" excludes="**/*.di,**/*.i"/>
+		</jar>
+    </target>
+
+	<target name="deploy" depends="delete,jar">
+        <mkdir dir="${jdeveloper.install.dir}/lib"/>
+        <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper.install.dir}/lib"/>
+        <copy file="lib/${pmdjar}" todir="${jdeveloper.install.dir}/lib"/>
+        <copy file="lib/saxpath-1.0-fcs.jar" todir="${jdeveloper.install.dir}/lib"/>
+        <copy file="lib/jaxen-core-1.0-fcs.jar" todir="${jdeveloper.install.dir}/lib"/>
+	</target>
+
+    <target name="release" depends="clean,jar">
+        <mkdir dir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+        <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
+        <copy file="lib/${pmdjar}" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
+        <copy file="lib/saxpath-1.0-fcs.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+        <copy file="lib/jaxen-core-1.0-fcs.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+        <zip zipfile="${ant.project.name}-bin-${pluginversion}.zip" basedir="tmp/"/>
+        <move file="${ant.project.name}-bin-${pluginversion}.zip" todir="/home/tom/tmp"/>
+        <delete dir="tmp"/>
+    </target>
+
+	<target name="clean" depends="delete,compile">
+	</target>
+
+    <target name="tomserver" depends="release">
+        <echo message="Uploading zip file"/>
+        <exec executable="scp" os="Linux">
+            <arg line=" /home/tom/tmp/${ant.project.name}-bin-${pluginversion}.zip tom@infoether.com:public_html/"/>
+        </exec>
+    </target>
+
+</project>

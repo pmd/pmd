@@ -1,0 +1,15 @@
+@echo off
+set CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd
+set CVS_RSH=c:\data\bin\ssh\ssh
+set HOME=c:\data
+set ANT_HOME=c:\ant
+set PATH=c:\j2sdk1.4.2_04\bin;c:\ant\bin\;%PATH%
+set CLASSPATH=../build/
+set CLASSPATH=%CLASSPATH%;../
+set CLASSPATH=%CLASSPATH%;../lib/jaxen-core-1.0-fcs.jar
+set CLASSPATH=%CLASSPATH%;../lib/saxpath-1.0-fcs.jar
+set CLASSPATH=%CLASSPATH%;../lib/xercesImpl-2.6.2.jar
+set CLASSPATH=%CLASSPATH%;../lib/xmlParserAPIs-2.6.2.jar
+set CLASSPATH=%CLASSPATH%;c:\javacc2.1\bin\lib\JavaCC.zip
+set CLASSPATH=%CLASSPATH%;c:\ant\lib\ant.jar
+set CLASSPATH=%CLASSPATH%;c:\ant\lib\junit.j
