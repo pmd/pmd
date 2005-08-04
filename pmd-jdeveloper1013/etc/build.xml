@@ -10,7 +10,7 @@
 
 	<path id="project.class.path">
 		<pathelement location="lib/${pmdjar}"/>
-		<pathelement location="lib/jdev.jar"/>
+		<pathelement location="lib/myjdevdeps.jar"/>
 		<pathelement location="lib/javatools.jar"/>
 		<pathelement location="lib/ide.jar"/>
 		<pathelement location="build"/>
