@@ -81,7 +81,7 @@ and count(NameList/Name[contains
         message="clone() method should be implemented only if implementing Cloneable interface"
         class="net.sourceforge.pmd.rules.XPathRule">
         <description>
-The method clone() should only be implemented if the class implements Cloneable interface
+The method clone() should only be implemented if the class implements the Cloneable interface
         </description>
         <properties>
             <property name="xpath">
@@ -91,7 +91,7 @@ The method clone() should only be implemented if the class implements Cloneable 
 [not(./ImplementsList/ClassOrInterfaceType
 [@Image='Cloneable'])]
 [.//MethodDeclaration/MethodDeclarator[@Image
-= 'clone' and count(FormatParameters/*) = 0]]
+= 'clone' and count(FormalParameters/*) = 0]]
                     ]]>
                 </value>
             </property>
@@ -99,11 +99,10 @@ The method clone() should only be implemented if the class implements Cloneable 
         <priority>3</priority>
         <example>
             <![CDATA[
-public class MyClass  {
-   // will cause an error
-   public Object clone() throws CloneNotSupportedException {
-    ...
-   }
+public class MyClass {
+ public Object clone() throws CloneNotSupportedException {
+  return foo;
+ }
 }
    ]]>
         </example>
