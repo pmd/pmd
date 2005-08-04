@@ -5,7 +5,6 @@
 	<property name="etc" value="etc/"/>
 	<property name="pmdjar" value="pmd-3.2.jar"/>
 	<property name="pluginversion" value="1.6"/>
-<!--	<property name="jdeveloper.install.dir" value="/home/tom/jdev9052/jdev/lib/ext/${ant.project.name}-${pluginversion}"/> -->
 	<property name="jdeveloper.install.dir" value="c:/data/jdev1013/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 
 
