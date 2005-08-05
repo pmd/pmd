@@ -44,9 +44,7 @@ public class NullAssignmentRule extends AbstractRule {
     private boolean isAssignmentToFinalField(ASTStatementExpression n) {
         ASTName name = (ASTName)n.getFirstChildOfType(ASTName.class);
         if (name != null) {
-            Scope s = name.getScope();
-            ClassScope cs = s.getEnclosingClassScope();
-            Map vars = cs.getVariableDeclarations();
+            Map vars = name.getScope().getEnclosingClassScope().getVariableDeclarations();
             for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
                 VariableNameDeclaration vnd = (VariableNameDeclaration)i.next();
                 if (vnd.getImage().equals(name.getImage()) && vnd.getAccessNodeParent().isFinal()) {

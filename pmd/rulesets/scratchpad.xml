@@ -6,37 +6,29 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="SwitchStmtsShouldHaveDefault"
-          message="Switch statements should have a default label"
-          class="net.sourceforge.pmd.rules.XPathRule">
+    <rule name="ImmutableField"
+          message="Private field could be made final.  It is only initialized in the declaration or constructor."
+          class="net.sourceforge.pmd.rules.design.ImmutableField">
       <description>
-  Switch statements should have a default label.
+Identifies private fields whose values never change once they are initialized either in the declaration of the field or by
+a constructor.  This aids in converting existing classes to immutable classes.
       </description>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-  //SwitchStatement[not(SwitchLabel[@Default='true'])]
-                    ]]>
-                </value>
-            </property>
-        </properties>
         <priority>3</priority>
 
       <example>
   <![CDATA[
-  public class Foo {
-   public void bar() {
-    int x = 2;
-    switch (x) {
-     case 2: int j = 8;
-    }
-   }
+public class Foo {
+  private int x; // could be final
+  public Foo() {
+      x = 7;
   }
+  public void foo() {
+     int a = x + 2;
+  }
+}
   ]]>
       </example>
-      </rule>
-
+    </rule>
 
     <!--    <rule name="Foo"
           message="blah ''{0}''"

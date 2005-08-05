@@ -13,8 +13,6 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,67 +34,24 @@ import java.util.ListIterator;
  * @author David Konecny (david.konecny@)
  */
 public class AccessorClassGeneration extends AbstractRule {
+
+    private List classDataList = new ArrayList();
     private int classID = -1;
-    private List classDataList;
     private String packageName;
 
-    private ClassData getCurrentClassData() {
-        // TODO
-        // this is a hack to bail out here
-        // but I'm not sure why this is happening
-        // TODO
-        if (classID >= classDataList.size()) {
-            return null;
-        }
-        return (ClassData) classDataList.get(classID);
+    public Object visit(ASTEnumDeclaration node, Object data) {
+        return data;  // just skip Enums
     }
 
-    private void setClassID(int ID) {
-        classID = ID;
+    public Object visit(ASTCompilationUnit node, Object data) {
+        classDataList.clear();
+        packageName = node.getScope().getEnclosingSourceFileScope().getPackageName();
+        return super.visit(node, data);
     }
 
-    private int getClassID() {
-        return classID;
-    }
-
-    private String getPackageName() {
-        return packageName;
-    }
-
-    //remove = Fire.
-    //value = someFire.Fighter
-    //        0123456789012345
-    //index = 4
-    //remove.size() = 5
-    //value.substring(0,4) = some
-    //value.substring(4 + remove.size()) = Fighter
-    //return "someFighter"
-    private static String stripString(String remove, String value) {
-        String returnValue;
-        int index = value.indexOf(remove);
-        if (index != -1) {	//if the package name can start anywhere but 0 plese inform the author because this will break
-            returnValue = value.substring(0, index) + value.substring(index + remove.length());
-        } else {
-            returnValue = value;
-        }
-        return returnValue;
-    }
-
-    /**
-     *
-     */
     private static class ClassData {
-        /**
-         * The name of this class
-         */
         private String m_ClassName;
-        /**
-         * List of private constructors within this class
-         */
         private List m_PrivateConstructors;
-        /**
-         * List of instantiations of objects within this class
-         */
         private List m_Instantiations;
         /**
          * List of outer class names that exist above this class
@@ -113,31 +68,21 @@ public class AccessorClassGeneration extends AbstractRule {
         public void addInstantiation(AllocData ad) {
             m_Instantiations.add(ad);
         }
-
         public Iterator getInstantiationIterator() {
             return m_Instantiations.iterator();
         }
-
         public void addConstructor(ASTConstructorDeclaration cd) {
             m_PrivateConstructors.add(cd);
         }
-
         public Iterator getPrivateConstructorIterator() {
             return m_PrivateConstructors.iterator();
         }
-
         public String getClassName() {
             return m_ClassName;
         }
-
         public void addClassQualifyingName(String name) {
             m_ClassQualifyingNames.add(name);
         }
-
-        public Iterator getClassQualifyingNames() {
-            return m_ClassQualifyingNames.iterator();
-        }
-
         public List getClassQualifyingNamesList() {
             return m_ClassQualifyingNames;
         }
@@ -147,7 +92,7 @@ public class AccessorClassGeneration extends AbstractRule {
         private String m_Name;
         private int m_ArgumentCount;
         private ASTAllocationExpression m_ASTAllocationExpression;
-        private boolean isArray = false;
+        private boolean isArray;
 
         public AllocData(ASTAllocationExpression node, String aPackageName, List classQualifyingNames) {
             if (node.jjtGetChild(1) instanceof ASTArguments) {
@@ -163,16 +108,14 @@ public class AccessorClassGeneration extends AbstractRule {
 
                 //strip off outer class names
                 //try OuterClass, then try OuterClass.InnerClass, then try OuterClass.InnerClass.InnerClass2, etc...
-                STRIPPING: {
-                    String findName = "";
-                    for (ListIterator li = classQualifyingNames.listIterator(classQualifyingNames.size()); li.hasPrevious();) {
-                        String aName = (String) li.previous();
-                        findName = aName + "." + findName;
-                        if (m_Name.startsWith(findName)) {
-                            //strip off name and exit
-                            m_Name = m_Name.substring(findName.length());
-                            break;
-                        }
+                String findName = "";
+                for (ListIterator li = classQualifyingNames.listIterator(classQualifyingNames.size()); li.hasPrevious();) {
+                    String aName = (String) li.previous();
+                    findName = aName + "." + findName;
+                    if (m_Name.startsWith(findName)) {
+                        //strip off name and exit
+                        m_Name = m_Name.substring(findName.length());
+                        break;
                     }
                 }
             } else if (node.jjtGetChild(1) instanceof ASTArrayDimsAndInits) {
@@ -186,72 +129,15 @@ public class AccessorClassGeneration extends AbstractRule {
         public String getName() {
             return m_Name;
         }
-
         public int getArgumentCount() {
             return m_ArgumentCount;
         }
-
-        public void show() {
-            System.out.println("AllocData: " + getName() + " arguments= " + getArgumentCount());
-        }
-
         public ASTAllocationExpression getASTAllocationExpression() {
             return m_ASTAllocationExpression;
         }
-
         public boolean isArray() {
             return isArray;
         }
-    }
-
-    /**
-     * Work on each file independently.
-     * Assume a new AccessorClassGenerationRule object is created for each run?
-     */
-    public Object visit(ASTCompilationUnit node, Object data) {
-        classDataList = new ArrayList();
-        return super.visit(node, data);
-    }
-
-    public Object visit(ASTEnumDeclaration node, Object data) {
-        // just skip Enums
-        return data;
-    }
-
-    private void processRule(RuleContext ctx) {
-        //check constructors of outerIterator
-        //against allocations of innerIterator
-        for (Iterator outerIterator = classDataList.iterator(); outerIterator.hasNext();) {
-
-            ClassData outerDataSet = (ClassData) outerIterator.next();
-            for (Iterator constructors = outerDataSet.getPrivateConstructorIterator(); constructors.hasNext();) {
-                ASTConstructorDeclaration cd = (ASTConstructorDeclaration) constructors.next();
-
-                for (Iterator innerIterator = classDataList.iterator(); innerIterator.hasNext();) {
-                    ClassData innerDataSet = (ClassData) innerIterator.next();
-                    if (outerDataSet == innerDataSet) {
-                        continue;
-                    }
-                    for (Iterator allocations = innerDataSet.getInstantiationIterator(); allocations.hasNext();) {
-                        AllocData ad = (AllocData) allocations.next();
-                        //if the constructor matches the instantiation
-                        //flag the instantiation as a generator of an extra class
-
-                        if (outerDataSet.getClassName().equals(ad.getName()) && (cd.getParameterCount() == ad.getArgumentCount())) {
-                            addViolation(ctx, ad.getASTAllocationExpression());
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Store package name to strip off in case necessary
-     */
-    public Object visit(ASTPackageDeclaration node, Object data) {
-        packageName = ((ASTName) node.jjtGetChild(0)).getImage();
-        return super.visit(node, data);
     }
 
     /**
@@ -278,9 +164,9 @@ public class AccessorClassGeneration extends AbstractRule {
                 classDataList.add(getClassID(), new ClassData(interfaceName));
                 Object o = super.visit(node, data);
                 if (o != null) {
-                    processRule((RuleContext) o);
+                    processRule(o);
                 } else {
-                    processRule((RuleContext) data);
+                    processRule(data);
                 }
                 setClassID(-1);
                 return o;
@@ -312,9 +198,9 @@ public class AccessorClassGeneration extends AbstractRule {
         classDataList.add(getClassID(), new ClassData(className));
         Object o = super.visit(node, data);
         if (o != null) {
-            processRule((RuleContext) o);
+            processRule(o);
         } else {
-            processRule((RuleContext) data);
+            processRule(data);
         }
         setClassID(-1);
         return o;
@@ -338,11 +224,74 @@ public class AccessorClassGeneration extends AbstractRule {
         if (classID == -1 || getCurrentClassData() == null) {
             return data;
         }
-        AllocData ad = new AllocData(node, getPackageName(), getCurrentClassData().getClassQualifyingNamesList());
+        AllocData ad = new AllocData(node, packageName, getCurrentClassData().getClassQualifyingNamesList());
         if (ad.isArray() == false) {
             getCurrentClassData().addInstantiation(ad);
-            //ad.show();
         }
         return super.visit(node, data);
     }
+
+    private void processRule(Object ctx) {
+        //check constructors of outerIterator against allocations of innerIterator
+        for (Iterator outerIterator = classDataList.iterator(); outerIterator.hasNext();) {
+            ClassData outerDataSet = (ClassData) outerIterator.next();
+            for (Iterator constructors = outerDataSet.getPrivateConstructorIterator(); constructors.hasNext();) {
+                ASTConstructorDeclaration cd = (ASTConstructorDeclaration) constructors.next();
+
+                for (Iterator innerIterator = classDataList.iterator(); innerIterator.hasNext();) {
+                    ClassData innerDataSet = (ClassData) innerIterator.next();
+                    if (outerDataSet == innerDataSet) {
+                        continue;
+                    }
+                    for (Iterator allocations = innerDataSet.getInstantiationIterator(); allocations.hasNext();) {
+                        AllocData ad = (AllocData) allocations.next();
+                        //if the constructor matches the instantiation
+                        //flag the instantiation as a generator of an extra class
+                        if (outerDataSet.getClassName().equals(ad.getName()) && (cd.getParameterCount() == ad.getArgumentCount())) {
+                            addViolation(ctx, ad.getASTAllocationExpression());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private ClassData getCurrentClassData() {
+        // TODO
+        // this is a hack to bail out here
+        // but I'm not sure why this is happening
+        // TODO
+        if (classID >= classDataList.size()) {
+            return null;
+        }
+        return (ClassData) classDataList.get(classID);
+    }
+
+    private void setClassID(int ID) {
+        classID = ID;
+    }
+
+    private int getClassID() {
+        return classID;
+    }
+
+    //remove = Fire.
+    //value = someFire.Fighter
+    //        0123456789012345
+    //index = 4
+    //remove.size() = 5
+    //value.substring(0,4) = some
+    //value.substring(4 + remove.size()) = Fighter
+    //return "someFighter"
+    private static String stripString(String remove, String value) {
+        String returnValue;
+        int index = value.indexOf(remove);
+        if (index != -1) {	//if the package name can start anywhere but 0 please inform the author because this will break
+            returnValue = value.substring(0, index) + value.substring(index + remove.length());
+        } else {
+            returnValue = value;
+        }
+        return returnValue;
+    }
+
 }

@@ -16,16 +16,11 @@ well include non-static methods.  Also, if you want this class to be a Singleton
 remember to add a private constructor to prevent instantiation.
     </description>
       <priority>3</priority>
-
     <example>
 <![CDATA[
 public class MaybeASingleton {
-    public static void foo() {
-     // etc
-    }
-    public static void bar() {
-     // etc
-    }
+ public static void foo() {}
+ public static void bar() {}
 }
 ]]>
     </example>
@@ -104,7 +99,6 @@ Switch statements should have a default label.
           </property>
       </properties>
       <priority>3</priority>
-
     <example>
 <![CDATA[
 public class Foo {
@@ -132,14 +126,11 @@ Deeply nested if..then statements are hard to read.
     <example>
 <![CDATA[
 public class Foo {
- public void bar() {
-  int x=2;
-  int y=3;
-  int z=4;
+ public void bar(int x, int y, int z) {
   if (x>y) {
    if (y>z) {
     if (z==x) {
-     // this is officially out of control now
+     // whew, too deep
     }
    }
   }
@@ -250,48 +241,14 @@ one with package scope, though not visible to the naked eye.
       <priority>3</priority>
       <example>
   <![CDATA[
-  public class OuterClass {
-    void method(){
-      InnerClass ic = new InnerClass();//Causes generation of accessor
-    }
-    public class InnerClass {
-      private InnerClass(){
-      }
-    }
-  }
-
-  public class OuterClass {
-    void method(){
-      InnerClass ic = new InnerClass();//OK, due to public constructor
-    }
-    public class InnerClass {
-      public InnerClass(){
-      }
-    }
-  }
-
-  public class OuterClass {
-    void method(){
-      InnerClass ic = InnerClass.getInnerClass();//OK
-    }
-    public static class InnerClass {
-      private InnerClass(){
-      }
-      private static InnerClass getInnerClass(){
-        return new InnerClass();
-      }
-    }
-  }
-
-  public class OuterClass {
-    private OuterClass(){
-    }
-    public class InnerClass {
-      void method(){
-        OuterClass oc = new OuterClass();//Causes generation of accessor
-      }
-    }
-  }
+public class Outer {
+ void method(){
+  Inner ic = new Inner();//Causes generation of accessor class
+ }
+ public class Inner {
+  private Inner(){}
+ }
+}
   ]]>
       </example>
     </rule>
@@ -336,15 +293,17 @@ Ensure that Connection objects are always closed after use
     <priority>3</priority>
     <example>
 <![CDATA[
-public void foo() {
- Connection c = pool.getConnection();
- try {
-   // do stuff
- } catch (SQLException ex) {
-   // handle exception
- } finally {
-   // oops, should close the connection using 'close'!
-   // c.close();
+public class Bar {
+ public void foo() {
+  Connection c = pool.getConnection();
+  try {
+    // do stuff
+  } catch (SQLException ex) {
+    // handle exception
+  } finally {
+    // oops, should close the connection using 'close'!
+    // c.close();
+  }
  }
 }
 ]]>
@@ -385,16 +344,15 @@ public class MyClass {
            message="The default label should be the last label in a switch statement"
            class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-The default label in a switch statement should be the last label, by convention.
-Most programmers will expect the default label (if present) to be the last one.
+By convention, the default label should be the last label in a switch statement.
        </description>
          <properties>
              <property name="xpath">
                  <value>
 <![CDATA[
 //SwitchStatement
- [not(SwitchLabel[position() = last()][count(*) = 0])]
- [SwitchLabel[count(*) = 0]]
+ [not(SwitchLabel[position() = last()][@Default='true'])]
+ [SwitchLabel[@Default='true']]
 ]]>
                  </value>
              </property>
@@ -402,17 +360,18 @@ Most programmers will expect the default label (if present) to be the last one.
          <priority>3</priority>
        <example>
    <![CDATA[
-switch (a) {
- case 1:
-    // do something
-    break;
- default:
-    // the default case should be last, by convention
-    break;
- case 2:
-    break;
-}
-   ]]>
+public class Foo {
+ void bar(int a) {
+  switch (a) {
+   case 1:  // do something
+      break;
+   default:  // the default case should be last, by convention
+      break;
+   case 2:
+      break;
+  }
+ }
+}   ]]>
        </example>
      </rule>
 
@@ -477,16 +436,16 @@ PrimarySuffix/Arguments/ArgumentList/Expression
         <priority>3</priority>
       <example>
   <![CDATA[
-class Example {
- void bar() {
-   // A bit inefficient, unlike...
+class Foo {
+ void bar(Collection x) {
+   // A bit inefficient
    x.toArray(new Foo[0]);
-
-   // ..this one, which sizes the destination array, avoiding
+   // Much better; this one sizes the destination array, avoiding
    // a reflection call in some Collection implementations
    x.toArray(new Foo[x.size()]);
+ }
 }
-}  ]]>
+  ]]>
       </example>
     </rule>
 
@@ -510,7 +469,6 @@ likely to be logic errors.
           </property>
       </properties>
         <priority>3</priority>
-
       <example>
   <![CDATA[
 public class Bar {
@@ -577,8 +535,11 @@ go first?".
         <priority>3</priority>
         <example>
           <![CDATA[
-return (x != y) ? diff : same;
-          ]]>
+public class Foo {
+ boolean bar(int x, int y) {
+  return (x != y) ? diff : same;
+ }
+}          ]]>
         </example>
       </rule>
 
@@ -591,7 +552,10 @@ Avoid instantiating an object just to call getClass() on it; use the .class publ
         <example>
     <![CDATA[
 public class Foo {
+ // Replace this
  Class c = new String().getClass();
+ // with this:
+ Class c = String.class;
 }
     ]]>
         </example>
@@ -672,9 +636,9 @@ a constructor.  This aids in converting existing classes to immutable classes.
 
       <example>
   <![CDATA[
-public class FinalFields {
+public class Foo {
   private int x; // could be final
-  public FinalFields() {
+  public Foo() {
       x = 7;
   }
   public void foo() {
@@ -762,7 +726,6 @@ public final class Bar {
 Identifies a possible unsafe usage of a static field.
        </description>
          <priority>3</priority>
- 
        <example>
    <![CDATA[
 public class StaticField {
@@ -774,7 +737,6 @@ public class StaticField {
    ]]>
        </example>
      </rule>
-
 
     <rule name="MissingStaticMethodInNonInstantiatableClass"
           message="Class cannot be instantiated and does not provide any static methods"
@@ -797,7 +759,6 @@ count(.//MethodDeclaration[@Static='true'])=0
           </property>
       </properties>
         <priority>3</priority>
-
       <example>
 <![CDATA[
 /* This class is unusable, since it cannot be
@@ -865,16 +826,19 @@ A switch statement without an enclosed break statement may be a bug.
         <priority>3</priority>
       <example>
 <![CDATA[
-switch(status) {
-	case CANCELLED:
-		doCancelled();
-		// uncomment the next line if doNew() and doRemoved() should not be executed when status is cancelled
-		// break;
-	case NEW:
-		doNew();
-	case REMOVED:
-		doRemoved();
-	}
+public class Foo {
+ public void bar(int status) {
+  switch(status) {
+   case CANCELLED:
+    doCancelled();
+    // break; hm, should this be commented out?
+   case NEW:
+    doNew();
+   case REMOVED:
+    doRemoved();
+   }
+ }
+}
 ]]>
       </example>
     </rule>
@@ -981,7 +945,6 @@ direcly) a protected constructor can be provided prevent direct instantiation.
           </property>
       </properties>
         <priority>3</priority>
-
       <example>
 <![CDATA[
 public abstract class Foo {
@@ -1068,7 +1031,7 @@ class Foo {
   <example>
 <![CDATA[
 class Foo {
- boolean bar() {
+ boolean bar(String x) {
   return x.equals("2"); // should be "2".equals(x)
  }
 }

@@ -24,10 +24,10 @@ import java.util.Set;
  */
 public class ImmutableField extends AbstractRule {
     
-    static private final int MUTABLE = 0;
-    static private final int IMMUTABLE = 1;
-    static private final int CHECKDECL = 2;
-    
+    private static final int MUTABLE = 0;
+    private static final int IMMUTABLE = 1;
+    private static final int CHECKDECL = 2;
+
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Map vars = node.getScope().getVariableDeclarations();
         Set constructors = findAllConstructors(node);
@@ -36,18 +36,18 @@ public class ImmutableField extends AbstractRule {
             if (decl.getAccessNodeParent().isStatic() || !decl.getAccessNodeParent().isPrivate() || decl.getAccessNodeParent().isFinal()) {
                 continue;
             }
-            
+
             int result = initializedInConstructor((List)vars.get(decl), new HashSet(constructors));
             if (result == MUTABLE) {
                 continue;
             }
-            if (result == IMMUTABLE || ((result == CHECKDECL) && initializedInDeclaration(decl.getAccessNodeParent()))) {
+            if (result == IMMUTABLE || ((result == CHECKDECL) && !decl.getAccessNodeParent().findChildrenOfType(ASTVariableInitializer.class).isEmpty())) {
                 addViolation(data, decl.getNode(), decl.getImage());
             }
         }
         return super.visit(node, data);
     }
-    
+
     private int initializedInConstructor(List usages, Set allConstructors) {
         int rc = MUTABLE, methodInitCount = 0;
         boolean foundUsage = false;
@@ -80,10 +80,6 @@ public class ImmutableField extends AbstractRule {
             }
         }
         return rc;
-    }
-
-    private boolean initializedInDeclaration(SimpleNode node) {
-        return !node.findChildrenOfType(ASTVariableInitializer.class).isEmpty();
     }
 
     /** construct a set containing all ASTConstructorDeclaration nodes for this class

@@ -116,15 +116,13 @@ public class CloseConnection extends AbstractRule {
 
     private boolean importsJavaSqlPackage(ASTCompilationUnit node) {
         List nodes = node.findChildrenOfType(ASTImportDeclaration.class);
-        boolean ok = false;
         for (Iterator i = nodes.iterator(); i.hasNext();) {
             ASTImportDeclaration n = (ASTImportDeclaration)i.next();
             if (n.getPackageName().startsWith("java.sql")) {
-                ok = true;
-                break;
+                return true;
             }
         }
-        return ok;
+        return false;
     }
 
 }
