@@ -6,6 +6,38 @@
 These are new rules that are still in progress
   </description>
 
+    <rule name="SwitchStmtsShouldHaveDefault"
+          message="Switch statements should have a default label"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+  Switch statements should have a default label.
+      </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+  //SwitchStatement[not(SwitchLabel[@Default='true'])]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+
+      <example>
+  <![CDATA[
+  public class Foo {
+   public void bar() {
+    int x = 2;
+    switch (x) {
+     case 2: int j = 8;
+    }
+   }
+  }
+  ]]>
+      </example>
+      </rule>
+
+
     <!--    <rule name="Foo"
           message="blah ''{0}''"
           class="net.sourceforge.pmd.rules.FooRule">

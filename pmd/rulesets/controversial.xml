@@ -13,7 +13,7 @@ most people really dislike :-)
           message="Avoid unnecessary constructors - the compiler will generate these for you"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-Unnecessary constructor detects when a constructor is not necessary; i.e., when there's only one constructor,
+This rule detects when a constructor is not necessary; i.e., when there's only one constructor,
 it's public, has an empty body, and takes no arguments.
       </description>
         <properties>
@@ -78,7 +78,6 @@ public class Foo {
 A method should have only one exit point, and that should be the last statement in the method.
      </description>
         <priority>3</priority>
-
      <example>
  <![CDATA[
  public class OneReturnOnly1 {
@@ -200,7 +199,6 @@ Avoid importing anything from the 'sun.*' packages.  These packages are not port
           </property>
        </properties>
        <priority>4</priority>
-
        <example>
 <![CDATA[
 import sun.misc.foo;
@@ -241,9 +239,8 @@ public class Foo {
           message="It is a good practice to call super() in a constructor"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-      It is a good practice to call super() in a constructor. If super() is not called
-      but another constructor, such as an overloaded constructor, of the class is called, this rule
-      will not report it.
+It is a good practice to call super() in a constructor. If super() is not called but
+ another constructor (such as an overloaded constructor) is called, this rule will not report it.
       </description>
       <properties>
           <property name="xpath">
@@ -257,19 +254,18 @@ public class Foo {
           </property>
       </properties>
         <priority>3</priority>
-
       <example>
 <![CDATA[
 public class Foo extends Bar{
-	public Foo() {
-		// call the constructor of Bar
-		super();
-	}
-	public Foo(int code) {
-		// do something with code
-		this();
-		// no problem with this
-	}
+ public Foo() {
+  // call the constructor of Bar
+  super();
+ }
+ public Foo(int code) {
+  // do something with code
+  this();
+  // no problem with this
+ }
 }
 ]]>
       </example>

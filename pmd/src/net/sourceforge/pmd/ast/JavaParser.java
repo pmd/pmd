@@ -4360,6 +4360,7 @@ jjtree.openNodeScope(jjtn000);Token t;
         break;
       case _DEFAULT:
         jj_consume_token(_DEFAULT);
+             jjtn000.setDefault();
         jj_consume_token(COLON);
         break;
       default:

@@ -88,7 +88,6 @@ public class Bar {
       </example>
     </rule>
 
-
   <rule name="SwitchStmtsShouldHaveDefault"
         message="Switch statements should have a default label"
         class="net.sourceforge.pmd.rules.XPathRule">
@@ -99,7 +98,7 @@ Switch statements should have a default label.
           <property name="xpath">
               <value>
                   <![CDATA[
-//SwitchStatement[not(SwitchLabel[count(*) = 0])]
+//SwitchStatement[not(SwitchLabel[@Default='true'])]
                   ]]>
               </value>
           </property>
@@ -119,8 +118,6 @@ public class Foo {
 ]]>
     </example>
     </rule>
-
-
 
   <rule name="AvoidDeeplyNestedIfStmts"
         message="Deeply nested if..then statements are hard to read"
@@ -186,22 +183,13 @@ public class Foo {
       <example>
  <![CDATA[
 public class Foo {
- private int x;
- public void bar() {
+ public void bar(int x) {
    switch (x) {
      case 1: {
-       System.out.println("I am a fish.");
-       System.out.println("I am a fish.");
-       System.out.println("I am a fish.");
-       System.out.println("I am a fish.");
+       // lots of statements
        break;
-     }
-
-     case 2: {
-       System.out.println("I am a cow.");
-       System.out.println("I am a cow.");
-       System.out.println("I am a cow.");
-       System.out.println("I am a cow.");
+     } case 2: {
+       // lots of statements
        break;
      }
    }
@@ -449,8 +437,7 @@ This legal, but confusing. It is easy to mix up the case labels and the non-case
    <![CDATA[
 public class Foo {
  void bar(int a) {
-  switch (a)
-  {
+  switch (a) {
    case 1:
       // do something
       break;

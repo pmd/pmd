@@ -11,6 +11,16 @@ public class ASTSwitchLabel extends SimpleNode {
         super(p, id);
     }
 
+    private boolean isDefault;
+
+    public void setDefault() {
+        isDefault = true;
+    }
+
+    public boolean isDefault() {
+        return isDefault;
+    }
+
 
     /**
      * Accept the visitor. *

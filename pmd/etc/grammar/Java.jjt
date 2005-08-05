@@ -1793,7 +1793,7 @@ void SwitchLabel() :
 {
   "case" Expression() ":"
 |
-  "default" ":"
+  "default" {jjtThis.setDefault();} ":"
 }
 
 void IfStatement() :
