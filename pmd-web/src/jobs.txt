@@ -122,3 +122,5 @@ Lipidia:lipidia:src:src/
 EJBCA:ejbca:ejbca:ejbca/src/java
 Schemalizer:schemalizer:schemalizer:schemalizer/src/
 Tamarin:tamarin:tamarin:tamarin/src/
+JavaServer:javaserver:javaserver:javaserver/JavaServer/java/
+CSVObjects:csvparser:CSVParser:CSVParser/src/

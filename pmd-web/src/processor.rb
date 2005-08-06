@@ -2,7 +2,7 @@
 
 require 'rubygems'
 require_gem 'ikko'
-require_gem 'ruby-doom'
+require '/home/tom/rubyforge/ruby-doom/lib/doom.rb'
 
 # add timeout thingy to the Thread class, thx to Rich Kilmer for the code
 class MyThread < Thread
