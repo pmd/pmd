@@ -10,14 +10,13 @@ public class ImportFromSamePackageRule extends AbstractRule {
 
     public Object visit(ASTImportDeclaration importDecl, Object data) {
         String packageName = importDecl.getScope().getEnclosingSourceFileScope().getPackageName();
-        String importPkgName = importDecl.getPackageName();
 
-        if (packageName != null && packageName.equals(importPkgName)) {
+        if (packageName != null && packageName.equals(importDecl.getPackageName())) {
             addViolation(data, importDecl);
         }
 
         // special case
-        if (packageName == null && importPkgName.equals("")) {
+        if (packageName == null && importDecl.getPackageName().equals("")) {
             addViolation(data, importDecl);
         }
         return data;

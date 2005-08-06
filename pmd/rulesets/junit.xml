@@ -93,9 +93,8 @@ public class Foo extends TestCase {
           message="JUnit tests should include assert() or fail()"
           class="net.sourceforge.pmd.rules.junit.JUnitTestsShouldContainAsserts">
         <description>
-JUnit assertions should include an assertion - This makes the tests more robust
-and assert() with messages provide the developer a clearer idea of what
-the test does.
+JUnit tests should include at least one assertion.  This makes the tests more robust, and
+ using assert with messages provide the developer a clearer idea of what the test does.
         </description>
           <priority>3</priority>
         <example>
@@ -114,7 +113,7 @@ public class Foo extends TestCase {
 
     <rule name="TestClassWithoutTestCases"
           message="This class name ends with 'Test' but contains no test cases"
-          class="net.sourceforge.pmd.rules.TestClassWithoutTestCases">
+          class="net.sourceforge.pmd.rules.junit.TestClassWithoutTestCases">
       <description>
 Test classes end with the suffix Test. Having a non-test class with that name is
 not a good practice, since most people will assume it is a test case. Test
@@ -141,7 +140,7 @@ public class CarTest {
       <description>
 A JUnit test assertion with a boolean literal is unnecessary since it always will eval to the same thing.
 Consider using flow control (in case of assertTrue(false) or similar) or simply removing
-statements like assertTrue(true) and assertFalse(false);
+statements like assertTrue(true) and assertFalse(false).  If you just want a test to halt, use the fail method.
       </description>
       <properties>
           <property name="xpath">
@@ -229,10 +228,7 @@ should be made by more specific methods, like assertSame, assertNotSame.
 //PrimaryExpression [
     PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
 ]
-[PrimarySuffix/Arguments/ArgumentList/Expression/EqualityExpression[
-        @Image = '==' or  @Image = '!='
-    ]
-]
+[PrimarySuffix/Arguments/ArgumentList/Expression/EqualityExpression]
  ]]>
             </value>
         </property>

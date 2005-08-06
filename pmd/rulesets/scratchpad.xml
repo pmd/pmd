@@ -6,29 +6,38 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="ImmutableField"
-          message="Private field could be made final.  It is only initialized in the declaration or constructor."
-          class="net.sourceforge.pmd.rules.design.ImmutableField">
-      <description>
-Identifies private fields whose values never change once they are initialized either in the declaration of the field or by
-a constructor.  This aids in converting existing classes to immutable classes.
-      </description>
+    <rule name="FinalizeOnlyCallsSuperFinalize"
+          message="Finalize should do something besides just calling super.finalize()"
+          class="net.sourceforge.pmd.rules.XPathRule">
+       <description>
+If the finalize() is implemented, it should do something besides just calling
+super.finalize().
+       </description>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
+   /Block[count(BlockStatement)=1]
+     /BlockStatement[
+       Statement/StatementExpression/PrimaryExpression
+      /PrimaryPrefix[@Image="finalize"]
+      ]
+]]>
+                </value>
+            </property>
+        </properties>
         <priority>3</priority>
-
-      <example>
-  <![CDATA[
+       <example>
+           <![CDATA[
 public class Foo {
-  private int x; // could be final
-  public Foo() {
-      x = 7;
-  }
-  public void foo() {
-     int a = x + 2;
-  }
+   protected void finalize() {
+     super.finalize();
+   }
 }
-  ]]>
-      </example>
-    </rule>
+           ]]>
+       </example>
+     </rule>
 
     <!--    <rule name="Foo"
           message="blah ''{0}''"

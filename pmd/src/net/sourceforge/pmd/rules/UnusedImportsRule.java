@@ -38,8 +38,7 @@ public class UnusedImportsRule extends AbstractRule {
             } else {
                 className = importedType.getImage();
             }
-            ImportWrapper wrapper = new ImportWrapper(importedType.getImage(), className, node);
-            imports.add(wrapper);
+            imports.add(new ImportWrapper(importedType.getImage(), className, node));
         }
 
         return data;

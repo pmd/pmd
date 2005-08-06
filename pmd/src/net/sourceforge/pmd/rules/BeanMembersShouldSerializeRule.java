@@ -23,9 +23,8 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             return data;
         }
 
-        // TODO use MethodScope instead
-        List methList = new ArrayList();
-        node.findChildrenOfType(ASTMethodDeclarator.class, methList);
+        // TODO use ClassScope.getMethodDeclarations instead
+        List methList =  node.findChildrenOfType(ASTMethodDeclarator.class);
 
         List getSetMethList = new ArrayList();
         for (Iterator i = methList.iterator(); i.hasNext();) {
@@ -36,8 +35,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
         }
         String[] methNameArray = new String[getSetMethList.size()];
         for (int i = 0; i < getSetMethList.size(); i++) {
-            String methName = ((ASTMethodDeclarator) getSetMethList.get(i)).getImage();
-            methNameArray[i] = methName;
+            methNameArray[i] = ((ASTMethodDeclarator) getSetMethList.get(i)).getImage();
         }
 
         Arrays.sort(methNameArray);

@@ -135,8 +135,8 @@ public class Foo {
           message="If you override finalize(), make it protected"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-If you override finalize(), make it protected.  Otherwise, subclasses
-  may not called your implementation of finalize.
+If you override finalize(), make it protected.  If you make
+ it public, other classes may call it.
       </description>
         <properties>
             <property name="xpath">
