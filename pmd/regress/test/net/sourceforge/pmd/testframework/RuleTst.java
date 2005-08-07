@@ -21,7 +21,8 @@ import java.io.StringReader;
 public class RuleTst extends TestCase {
 
     public void runTestFromString(String code, int expectedResults, Rule rule) throws Throwable {
-        assertEquals(expectedResults, processUsingStringReader(code, rule).size());
+        int res = processUsingStringReader(code, rule).size();
+        assertEquals("Expected " + expectedResults + " failures, got " + res + ".", expectedResults, res);
     }
 
     public Rule findRule(String rs, String r) {

@@ -32,6 +32,6 @@ public class VariableUsageFinderFunctionTest extends TestCase {
         VariableUsageFinderFunction f = new VariableUsageFinderFunction(declarations);
         Applier.apply(f, vars.iterator());
         Map p = f.getUsed();
-        System.out.println("p = " + p.size());
+        assertEquals(1, p.size());
     }
 }

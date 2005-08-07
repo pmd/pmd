@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class JUnitAssertionsShouldIncludeMessage extends AbstractRule implements Rule {
+public class JUnitAssertionsShouldIncludeMessage extends AbstractRule {
 
     private static class AssertionCall {
         public int args;

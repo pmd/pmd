@@ -46,9 +46,13 @@ public class ExcludeLinesTest extends RuleTst {
     }
 
     public void testAcceptance() throws Throwable {
-        Rule rule = findRule("rulesets/unusedcode.xml", "UnusedLocalVariable");
-        runTestFromString(TEST1, 0, rule);
-        runTestFromString(TEST3, 1, rule);
+        try {
+            Rule rule = findRule("rulesets/unusedcode.xml", "UnusedLocalVariable");
+            runTestFromString(TEST1, 0, rule);
+            runTestFromString(TEST3, 1, rule);
+        } catch (Exception e) {
+            fail("Acceptance tests failed");
+        }
     }
 
 

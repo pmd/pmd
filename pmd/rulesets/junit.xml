@@ -159,7 +159,7 @@ or
 and
 PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
  /Expression/UnaryExpressionNotPlusMinus[@Image='!']
-)
+/PrimaryExpression/PrimaryPrefix[Literal/BooleanLiteral or Name[count(../../*)=1]])
 ]
 ]]>
               </value>
@@ -180,7 +180,7 @@ public class SimpleTest extends TestCase {
     </rule>
 
     <rule name="UseAssertEqualsInsteadOfAssertTrue"
-          message="user assertEquals(x, y) instead of assertTrue(x.equals(y))"
+          message="Use assertEquals(x, y) instead of assertTrue(x.equals(y))"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
 This rule detects JUnit assertions in object equality. These assertions
@@ -207,7 +207,7 @@ public class FooTest extends TestCase {
  void testCode() {
   Object a, b;
   assertTrue(a.equals(b)); // bad usage
-  assertEquals(a, b); // good usage
+  assertEquals(?a should equals b?, a, b); // good usage
  }
 }
 ]]>

@@ -6,6 +6,7 @@ package test.net.sourceforge.pmd.rules.junit;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -24,6 +25,7 @@ public class UnnecessaryBooleanAssertionTest extends SimpleAggregatorTst{
                new TestDescriptor(TEST3, "nested boolean literal", 0, rule),
                new TestDescriptor(TEST4, "asserting true a !", 1, rule),
                new TestDescriptor(TEST5, "asserting false a !", 1, rule),
+               new TestDescriptor(TEST6, "buz", 0, rule),
        });
     }
 
@@ -58,10 +60,18 @@ public class UnnecessaryBooleanAssertionTest extends SimpleAggregatorTst{
     " }" + PMD.EOL +
     "}";
 
+
     private static final String TEST5 =
     "public class Foo extends TestCase {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "  assertFalse(!foo); " + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST6 =
+    "public class Foo extends TestCase {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  assertTrue(!s.contains(new NameOccurrence(node, node.getImage()))); " + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

@@ -21,11 +21,11 @@ public class StringUtilTest extends TestCase {
     }
 
     public void testReplaceStringWithString2() {
-        assertEquals("foobar", StringUtil.replaceString("foobar", "]]>", "]]&gt;"));
+        assertEquals("replaceString didn't work with a >", "foobar", StringUtil.replaceString("foobar", "]]>", "]]&gt;"));
     }
 
     public void testReplaceWithNull() {
-        assertEquals("f", StringUtil.replaceString("foo", 'o', null));
+        assertEquals("replaceString didn't work with a char", "f", StringUtil.replaceString("foo", 'o', null));
     }
 
 /*

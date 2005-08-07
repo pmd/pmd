@@ -52,7 +52,7 @@ public class RuleSetFactoryTest extends TestCase {
         RuleSetFactory rsf = new RuleSetFactory();
         try {
             rsf.createRuleSet("fooooo");
-            throw new RuntimeException("Should have thrown a RuleSetNotFoundException");
+            fail("Should have thrown a RuleSetNotFoundException");
         } catch (RuleSetNotFoundException rsnfe) {
             // cool
         }

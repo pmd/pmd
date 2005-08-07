@@ -97,7 +97,7 @@ public class TypeSetTest extends TestCase {
         TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
         try {
             r.resolve("PMD");
-            throw new RuntimeException("Should have thrown an exception");
+            fail("Should have thrown an exception");
         } catch (ClassNotFoundException cnfe) {
         }
     }
@@ -123,12 +123,12 @@ public class TypeSetTest extends TestCase {
         TypeSet.Resolver r = new TypeSet.ImportOnDemandResolver(imports);
         try {
             r.resolve("foo");
-            throw new RuntimeException("Should have thrown an exception");
+            fail("Should have thrown a ClassNotFoundException");
         } catch (ClassNotFoundException cnfe) {
         }
         try {
             r.resolve("String");
-            throw new RuntimeException("Should have thrown an exception");
+            fail("Should have thrown a ClassNotFoundException");
         } catch (ClassNotFoundException cnfe) {
         }
     }
