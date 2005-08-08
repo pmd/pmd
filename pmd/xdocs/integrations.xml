@@ -19,15 +19,15 @@
   </tr>
   <tr><td>Emacs</td>
       <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-emacs/">pmd-emacs</a></td>
-      <td>Nascif Abousalh-Neto</td>
+      <td>No one at the moment</td>
   </tr>
   <tr><td>JBuilder</td>
       <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jbuilder/">pmd-jbuilder</a></td>
-      <td>Dave Craine</td>
+      <td>No one at the moment</td>
   </tr>
-  <tr><td>NetBeans/Sun ONE Studio</td>
+  <tr><td>NetBeans/Sun Java Studio Enterprise/Creator</td>
       <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-netbeans/">pmd-netbeans</a></td>
-      <td>Ole-Martin Mork, Gunnlaugur Thor Briem</td>
+      <td>Radim Kubacki</td>
   </tr>
   <tr><td>JEdit</td>
       <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jedit/">pmd-jedit</a></td>
@@ -199,7 +199,7 @@ selecting the "Ask for Directory" checkbox.</p>
         <LI>In the expanded list, select <B>PMD file</B>.</LI>
         <LI>In the "tool" form, enter the same parameters as above, except replace '<CODE>$FileDir</CODE>' with '<CODE>$File</CODE>', in the Parameters textbox.</LI>
         <LI>To save your work (truly, given a quirk of TextPad), click on <B>OK</B>, which closes the Preferences dialog.  Restart TextPad and re-open the Preferences dialog.</LI>
-        <LI>Go back to both the "PMD directory" and "PMD file" Tools branches, and replace '<CODE>E:\directory\my_pmd_ruleset.xml</CODE>' with the ruleset of your choice.  For example, <CODE>rulesets/basic.xml</CODE>.</LI>
+        <LI>Go back to both the "PMD directory" and "PMD file" Tools branches, and replace '<CODE>E:\directory\my_pmd_ruleset.xml</CODE>' with the ruleset of your choice.  For example, <CODE>basic</CODE>.</LI>
         <LI>Go to the <B>Keyboard</B> branch in the left pane (above <B>Tools</B>), which changes the right side to the "keyboard configuration" form.</LI>
         <LI>In the <B>Categories</B> list box, select <B>Tools</B>.</LI>
         <LI>In the <B>Command</B> list box, select <B>PMD directory</B>.</LI>
@@ -272,7 +272,7 @@ works OK.  Here's how to set it up:</p>
 <li>Description: PMD doth help one clean the code</li>
 <li>Program: javaw</li>
 <li>For the next two parameters you'll need to plug in the location of your PMD installation, the rulesets you want to use, and your working directory</li>
-<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-3.2.jar;c:\pmd\lib\jaxen-core-1.0-fcs.jar;c:\pmd\lib\saxpath-1.0-fcs.jar net.sourceforge.pmd.PMD $FilePath$ ideaj rulesets/unusedcode.xml,rulesets/imports.xml $Sourcepath$ $FileClass$.method $FileName$ </li>
+<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-3.2.jar;c:\pmd\lib\jaxen-core-1.0-fcs.jar;c:\pmd\lib\saxpath-1.0-fcs.jar net.sourceforge.pmd.PMD $FilePath$ ideaj unusedcode,imports $Sourcepath$ $FileClass$.method $FileName$ </li>
 <li>Working directory: c:\</li>
 </ul>
 </ul>
