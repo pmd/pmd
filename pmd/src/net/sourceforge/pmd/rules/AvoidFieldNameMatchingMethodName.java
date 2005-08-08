@@ -20,9 +20,6 @@ public class AvoidFieldNameMatchingMethodName extends AbstractRule {
         return super.visit(node,data);
 	}
 
-	/* (non-Javadoc)
-	 * @see net.sourceforge.pmd.ast.JavaParserVisitor#visit(net.sourceforge.pmd.ast.ASTFieldDeclaration, java.lang.Object)
-	 */
 	public Object visit(ASTFieldDeclaration node, Object data) {
 		String varName = node.getVariableName();
 		String fieldDeclaringType = getDeclaringType(node);
@@ -30,13 +27,13 @@ public class AvoidFieldNameMatchingMethodName extends AbstractRule {
 			varName = varName.toLowerCase();
 			ASTClassOrInterfaceDeclaration cl = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
 			List methods = cl.findChildrenOfType(ASTMethodDeclaration.class);
-			if (methods!=null && !methods.isEmpty()) {
+			if (!methods.isEmpty()) {
 				for (Iterator it = methods.iterator() ; it.hasNext() ; ) {
 					ASTMethodDeclaration m = (ASTMethodDeclaration) it.next();
 					//Make sure we are comparing fields and methods inside same type
 					if (fieldDeclaringType.equals(getDeclaringType(m))) {
 						String n = m.getMethodName();
-						if (n!=null && varName.equals(n.toLowerCase())) {
+						if (varName.equals(n.toLowerCase())) {
 							addViolation(data, node);
 						}
 					}

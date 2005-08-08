@@ -6,39 +6,41 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="FinalizeOnlyCallsSuperFinalize"
-          message="Finalize should do something besides just calling super.finalize()"
+    <rule name="SimplifyStartsWith"
+          message="This call to String.startsWith can be rewritten using String.charAt(0)"
           class="net.sourceforge.pmd.rules.XPathRule">
-       <description>
-If the finalize() is implemented, it should do something besides just calling
-super.finalize().
-       </description>
-        <properties>
-            <property name="xpath">
-                <value>
+      <description>
+Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
+      </description>
+    <properties>
+        <property name="xpath">
+            <value>
 <![CDATA[
-//MethodDeclaration[MethodDeclarator[@Image="finalize"][not(FormalParameters/*)]]
-   /Block[count(BlockStatement)=1]
-     /BlockStatement[
-       Statement/StatementExpression/PrimaryExpression
-      /PrimaryPrefix[@Image="finalize"]
-      ]
-]]>
-                </value>
-            </property>
-        </properties>
+//PrimaryExpression
+ [PrimaryPrefix/Name
+  [ends-with(@Image, '.startsWith')]]
+ [PrimarySuffix/Arguments/ArgumentList
+  /Expression/PrimaryExpression/PrimaryPrefix
+  /Literal
+   [string-length(@Image)=3]
+   [starts-with(@Image, '"')]
+   [ends-with(@Image, '"')]
+ ]
+ ]]>
+            </value>
+        </property>
+    </properties>
         <priority>3</priority>
-       <example>
-           <![CDATA[
+      <example>
+  <![CDATA[
 public class Foo {
-   protected void finalize() {
-     super.finalize();
-   }
+  boolean checkIt(String x) {
+      return x.startsWith("a");
+  }
 }
-           ]]>
-       </example>
-     </rule>
-
+]]>
+      </example>
+    </rule>
     <!--    <rule name="Foo"
           message="blah ''{0}''"
           class="net.sourceforge.pmd.rules.FooRule">

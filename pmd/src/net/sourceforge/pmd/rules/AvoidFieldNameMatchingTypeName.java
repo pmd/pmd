@@ -17,16 +17,10 @@ public class AvoidFieldNameMatchingTypeName extends AbstractRule {
 	}
 
 	public Object visit(ASTFieldDeclaration node, Object data) {
-		String varName = node.getVariableName();
-		if (varName!=null) {
-			varName = varName.toLowerCase();
-			ASTClassOrInterfaceDeclaration cl = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-			if (cl!=null && cl.getImage() != null) {
-				if (varName.equals(cl.getImage().toLowerCase())) {
-					addViolation(data, node);
-				}
-			}
-		}
+        ASTClassOrInterfaceDeclaration cl = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        if (node.getVariableName().toLowerCase().equals(cl.getImage().toLowerCase())) {
+            addViolation(data, node);
+        }
 		return data;
 	}
 }

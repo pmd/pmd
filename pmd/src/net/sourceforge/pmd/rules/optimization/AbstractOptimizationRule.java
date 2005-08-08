@@ -27,6 +27,21 @@ import java.util.List;
  */
 public class AbstractOptimizationRule extends AbstractRule implements Rule {
 
+    protected final boolean isVarWritterInMethod(String varName, ASTMethodDeclaration md) {
+        List assignments = md.findChildrenOfType(ASTAssignmentOperator.class);
+        return (variableAssigned(varName, assignments) || numericWithPrePost(md, varName));
+    }
+
+    // TODO - symbol table?
+    protected final String getVarName(ASTLocalVariableDeclaration node) {
+        List l = node.findChildrenOfType(ASTVariableDeclaratorId.class);
+        if (l != null && l.size()>0) {
+            ASTVariableDeclaratorId vd = (ASTVariableDeclaratorId) l.get(0);
+            return vd.getImage();
+        }
+        return null;
+    }
+
     /**
      * Check constructions like
      * int i; 
@@ -80,22 +95,12 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         return false;
     }
 
-    protected final String getVarName(ASTLocalVariableDeclaration node) {
-        List l = node.findChildrenOfType(ASTVariableDeclaratorId.class);
-        if (l != null && l.size()>0) {
-            ASTVariableDeclaratorId vd = (ASTVariableDeclaratorId) l.get(0);
-            return vd.getImage();
-        }
-        return null;
-    }
 
-
-
-    private final boolean variableAssigned(final String varName, final List assignements) {
-        if (assignements==null || assignements.isEmpty()) {
+    private final boolean variableAssigned(final String varName, final List assignments) {
+        if (assignments==null || assignments.isEmpty()) {
             return false;
         }
-        for (Iterator it = assignements.iterator() ; it.hasNext() ; ) {
+        for (Iterator it = assignments.iterator() ; it.hasNext() ; ) {
             final ASTAssignmentOperator a = (ASTAssignmentOperator) it.next();
             // if node is assigned return true
             SimpleNode firstChild = (SimpleNode)a.jjtGetParent().jjtGetChild(0);
@@ -112,10 +117,4 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         return false;
     }
     
-    protected final boolean isVarWritterInMethod(String varName, ASTMethodDeclaration md) {
-        List assignements = md.findChildrenOfType(ASTAssignmentOperator.class);
-
-        return (variableAssigned(varName, assignements)
-                || numericWithPrePost(md, varName));
-    }
 }

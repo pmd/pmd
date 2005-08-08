@@ -16,13 +16,7 @@ public class LocalVariableCouldBeFinal extends AbstractOptimizationRule {
         return super.visit(node, data);
     }
 
-    /**
-     * Find if this variable is ever written.
-     * 
-     * @see net.sourceforge.pmd.ast.JavaParserVisitor#visit(net.sourceforge.pmd.ast.ASTLocalVariableDeclaration, java.lang.Object)
-     */
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
-        //ignore if already declared final
         if (node.isFinal()) {
             return data;
         }

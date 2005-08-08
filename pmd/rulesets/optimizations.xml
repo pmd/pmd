@@ -15,9 +15,11 @@ A local variable assigned only once can be declared final.
         <priority>3</priority>
       <example>
   <![CDATA[
-public void foo () {
- String a = "a"; //if a will not be assigned again it is better to do this:
- final String b = "b";
+public class Bar {
+ public void foo () {
+  String a = "a"; //if a will not be assigned again it is better to do this:
+  final String b = "b";
+ }
 }
   ]]>
       </example>

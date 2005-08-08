@@ -102,9 +102,9 @@ public class ShortMethod {
     message="{0} variable {1} should begin with {2}"
     class="net.sourceforge.pmd.rules.VariableNamingConventions">
         <description>
-A variable naming conventions rule - customize this to your liking
-Final variables should be all caps
-Non-final variables should not include underscores
+A variable naming conventions rule - customize this to your liking.  Currently, it
+ checks that final variables should be all caps and non-final variables
+ should not include underscores.
         </description>
         <priority>1</priority>
         <example>
@@ -162,7 +162,7 @@ Abstract classes should be named 'AbstractXXX'.
                     <![CDATA[
 //ClassOrInterfaceDeclaration
  [@Abstract='true' and @Interface='false']
- [starts-with(@Image,'Abstract') = 0]
+ [not (starts-with(@Image,'Abstract'))]
                     ]]>
                 </value>
             </property>
@@ -227,7 +227,7 @@ public class MyClass {
           class="net.sourceforge.pmd.rules.XPathRule">
        <description>
 The method name and return type are suspiciously close to hashCode(), which
-may mean you are trying (and failing) to override the hashCode() method.
+may mean you are intending to override the hashCode() method.
        </description>
         <properties>
             <property name="xpath">
@@ -260,7 +260,7 @@ public class Foo {
           message="The field name indicates a constants but its modifiers don't"
           class="net.sourceforge.pmd.rules.XPathRule">
        <description>
-A field name is all in uppercase characters, which in sun's java naming
+A field name is all in uppercase characters, which in Sun's Java naming
 conventions indicate a constant. However, the field is not final.
        </description>
         <properties>
@@ -294,7 +294,7 @@ public class Foo {
         class="net.sourceforge.pmd.rules.XPathRule">
         <description>
 The method name and parameter number are suspiciously close to
-equals(Object), which may mean you are trying (and failing) to override the equals(Object)
+equals(Object), which may mean you are intending to override the equals(Object)
 method.
         </description>
         <properties>

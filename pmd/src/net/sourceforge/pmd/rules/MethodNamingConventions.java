@@ -15,9 +15,8 @@ public class MethodNamingConventions extends AbstractRule {
         }
 
         if (node.getImage().indexOf("_") >= 0) {
-            String msg = "Method names should not contain underscores";
             RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, msg));
+            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, "Method names should not contain underscores"));
 
         }
         return data;

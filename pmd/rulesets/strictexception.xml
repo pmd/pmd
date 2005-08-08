@@ -10,10 +10,9 @@ These rules provide some strict guidelines about throwing and catching exception
          message="A catch statement should never catch throwable since it includes errors"
           class="net.sourceforge.pmd.rules.strictexception.AvoidCatchingThrowable">
       <description>
-This is dangerous because if a java.lang.Error, for example OutOfMemmoryError,
-occurs then it will be caught. The container should handle java.lang.Error.
-If application code will catch them, try to log them (which will probably fail)
-and continue silently the situation will not be desirable.
+This is dangerous because if an Error, like an OutOfMemoryError, occurs then it will be caught.
+ The container should handle java.lang.Error.  If application code will catch them it will
+ try to log them (which will probably fail) and continue silently.
       </description>
       <priority>3</priority>
       <example>
@@ -40,33 +39,6 @@ Use either a class derived from RuntimeException or a checked exception.
       <example>
                 <![CDATA[
 public void methodThrowingException() throws Exception {
-}
-                ]]>
-      </example>
-    </rule>
-
-        <rule name="ExceptionTypeChecking"
-         message="The catch clause shouldn't check the exception type - catch several exceptions instead"
-          class="net.sourceforge.pmd.rules.strictexception.ExceptionTypeChecking">
-      <description>
-At some places Exception is caught and then a check with instanceof is performed.
-This result in messy code. It's considered better to catch all the specific
-exceptions instead.
-      </description>
-      <priority>3</priority>
-      <example>
-                <![CDATA[
-SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-try {
-    returnString = sdf.format(value);
-} catch (Exception ex) {
-    /* BAD STUFF !!!*/
-    if (ex instanceof NumberFormatException) {
-        System.out.println("NumberFormat exception!!!");
-    }
-    if (ex instanceof IllegalArgumentException) {
-        System.out.println("illegal argument...!!!");
-    }
 }
                 ]]>
       </example>
@@ -136,7 +108,11 @@ Avoid throwing certain exception types.  Rather than throw a raw RuntimeExceptio
     </description>
  <example>
       <![CDATA[
-throw new Exception();
+public class Foo {
+public void bar() throws Exception {
+  throw new Exception();
+ }
+}
 ]]>
     </example>
     <priority> 1 </priority>
@@ -161,8 +137,8 @@ throw new Exception();
         class="net.sourceforge.pmd.rules.XPathRule">
       <description>
 Avoid throwing a NullPointerException - it's confusing because most people will assume that the
-   VM threw NPE.  Consider using InvalidArgumentException("Null parameter") which will be clearly seen as
-  a programmer initiated exception..  Use IllegalArgumentException or IllegalStateException instead.
+ virtual machine threw it.  Consider using an IllegalArgumentException instead; this will be
+ clearly seen as a programmer initiated exception.
       </description>
    <example>
         <![CDATA[
