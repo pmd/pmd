@@ -11,7 +11,6 @@
         <subsection name="Committers">
         <ul>
             <li>David Dixon-Peugh - much of the early work on the grammar, initial Emacs plugin</li>
-            <li>David Craine - JBuilder plugin</li>
             <li>Philippe Herlin - Eclipse plugin, fixed bugs in RuleSetFactory</li>
             <li>Nascif Abousalh Neto - Emacs plugin</li>
             <li>Tom Copeland - lead developer, JDeveloper plugin, initial Gel plugin, initial jEdit plugin, IDEAJ integration</li>
@@ -27,6 +26,7 @@
         </subsection>
         <subsection name="Committers emeritus">
         <ul>
+            <li>David Craine - JBuilder plugin</li>
             <li>Tom Burke - Eclipse plugin</li>
             <li>Alex Chaffee - various bugfixes and features</li>
             <li>Siegfried Goeschl - original Maven plugin, various bugfixes and features</li>
