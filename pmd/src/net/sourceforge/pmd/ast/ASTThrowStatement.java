@@ -25,6 +25,8 @@ public class ASTThrowStatement extends SimpleNode {
      * returns 'Exception' and if the throw statement is like throw e: this method returns 'e'.
      * A special case of returning <code>null</code> is when the throws is like throw this.e or 
      * throw this.
+     *
+     * TODO - use symbol table (?)
      * 
      * @return the image of the first ASTClassOrInterfaceType node found or <code>null</code>
      */

@@ -6,7 +6,7 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTType;
 
 /**
- * PMD rule which is going to find <code>catch</code> statements
+ * Finds <code>catch</code> statements
  * containing <code>throwable</code> as the type definition.
  * <p/>
  *

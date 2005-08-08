@@ -10,18 +10,19 @@ These rules provide some strict guidelines about throwing and catching exception
          message="A catch statement should never catch throwable since it includes errors"
           class="net.sourceforge.pmd.rules.strictexception.AvoidCatchingThrowable">
       <description>
-This is dangerous because if an Error, like an OutOfMemoryError, occurs then it will be caught.
- The container should handle java.lang.Error.  If application code will catch them it will
- try to log them (which will probably fail) and continue silently.
+This is dangerous because it casts too wide a net; it can catch things like OutOfMemoryError.
       </description>
       <priority>3</priority>
       <example>
                 <![CDATA[
-SimpleDateFormat sdf = null;
-try {
-    sdf = new SimpleDateFormat("yyyy-MM-dd");
-} catch (Throwable th) {  //Should not catch throwable
-    th.printStackTrace();
+public class Foo {
+ public void bar() {
+  try {
+   // do something
+  } catch (Throwable th) {  //Should not catch throwable
+   th.printStackTrace();
+  }
+ }
 }
                 ]]>
       </example>
@@ -80,7 +81,8 @@ public class Foo {
 public class Foo {
  void bar() {
   try {
-  } catch (NullPointerException npe) {
+   // do something
+   }  catch (NullPointerException npe) {
   }
  }
 }

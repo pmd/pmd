@@ -39,8 +39,10 @@ Detects when a local variable is declared and/or assigned, but not used.
 
     <example>
 <![CDATA[
-public void doSomething() {
+public class Foo {
+ public void doSomething() {
   int i = 5; // Unused
+ }
 }
 ]]>
     </example>

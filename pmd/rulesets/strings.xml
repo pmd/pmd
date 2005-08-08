@@ -3,7 +3,7 @@
 <ruleset name="java.lang.String Rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
   <description>
-These rules deal with different problems that can occur with String manipulation.
+These rules deal with different problems that can occur with manipulation of the class String or StringBuffer.
   </description>
 
 

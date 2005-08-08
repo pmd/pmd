@@ -6,41 +6,26 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="SimplifyStartsWith"
-          message="This call to String.startsWith can be rewritten using String.charAt(0)"
-          class="net.sourceforge.pmd.rules.XPathRule">
-      <description>
-Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
-      </description>
-    <properties>
-        <property name="xpath">
-            <value>
-<![CDATA[
-//PrimaryExpression
- [PrimaryPrefix/Name
-  [ends-with(@Image, '.startsWith')]]
- [PrimarySuffix/Arguments/ArgumentList
-  /Expression/PrimaryExpression/PrimaryPrefix
-  /Literal
-   [string-length(@Image)=3]
-   [starts-with(@Image, '"')]
-   [ends-with(@Image, '"')]
- ]
- ]]>
-            </value>
-        </property>
-    </properties>
+    <rule name="StringToString"
+         message="Avoid calling toString() on String objects; this is unnecessary"
+         class="net.sourceforge.pmd.rules.StringToStringRule">
+     <description>
+     Avoid calling toString() on String objects; this is unnecessary
+     </description>
         <priority>3</priority>
-      <example>
-  <![CDATA[
-public class Foo {
-  boolean checkIt(String x) {
-      return x.startsWith("a");
+     <example>
+ <![CDATA[
+ public class Foo {
+  private String baz() {
+   String bar = "howdy";
+   return bar.toString();
   }
-}
-]]>
-      </example>
-    </rule>
+ }
+ ]]>
+     </example>
+     </rule>
+
+
     <!--    <rule name="Foo"
           message="blah ''{0}''"
           class="net.sourceforge.pmd.rules.FooRule">

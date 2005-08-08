@@ -19,9 +19,6 @@ import java.util.List;
 public class ExceptionAsFlowControl extends AbstractRule {
     
     public Object visit(ASTThrowStatement node, Object data) {
-        
-        String throwName = node.getFirstClassOrInterfaceTypeImage();
-
         ASTTryStatement parent = (ASTTryStatement) node.getFirstParentOfType(ASTTryStatement.class);
         if (parent == null) {
             return data;
@@ -36,8 +33,7 @@ public class ExceptionAsFlowControl extends AbstractRule {
                 ASTFormalParameter fp = (ASTFormalParameter)catchStmt.jjtGetChild(0);
                 ASTType type = (ASTType)fp.findChildrenOfType(ASTType.class).get(0);
                 ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) type.findChildrenOfType(ASTClassOrInterfaceType.class).get(0);
-                
-                if (throwName != null && throwName.equals(name.getImage())) {
+                if (node.getFirstClassOrInterfaceTypeImage() != null && node.getFirstClassOrInterfaceTypeImage().equals(name.getImage())) {
                     addViolation(data, name);
                 }
             }
