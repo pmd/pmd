@@ -164,6 +164,16 @@ public class JDKVersionTest extends TestCase  {
         p.CompilationUnit();
     }
 
+    public void testAnnotatedParams() throws Throwable {
+        System.out.println(ANNOTATED_PARAMS);
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(ANNOTATED_PARAMS));
+        p.CompilationUnit();
+    }
+
+    private static final String ANNOTATED_PARAMS =
+    "public class Foo {" + PMD.EOL +
+    " void bar(@SuppressWarnings(\"foo\") int x) {}" + PMD.EOL +
+    "}";
 
     private static final String ASSERT_TEST1 =
     "public class Foo {" + PMD.EOL +
