@@ -165,10 +165,21 @@ public class JDKVersionTest extends TestCase  {
     }
 
     public void testAnnotatedParams() throws Throwable {
-        System.out.println(ANNOTATED_PARAMS);
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(ANNOTATED_PARAMS));
         p.CompilationUnit();
     }
+
+    public void testAnnotatedLocals() throws Throwable {
+        JavaParser p = new TargetJDK1_5().createParser(new StringReader(ANNOTATED_LOCALS));
+        p.CompilationUnit();
+    }
+
+    private static final String ANNOTATED_LOCALS =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  @SuppressWarnings(\"foo\") int y = 5;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 
     private static final String ANNOTATED_PARAMS =
     "public class Foo {" + PMD.EOL +

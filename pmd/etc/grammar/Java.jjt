@@ -1288,6 +1288,7 @@ void FormalParameter() :
 }
 {
    [ "final" {jjtThis.setFinal();} ]
+   [ Annotation() ]
    Type()
    [ "..." {checkForBadVariableArgumentsUsage();} ]
    VariableDeclaratorId()
@@ -1739,7 +1740,7 @@ void BlockStatement():
 {
   LOOKAHEAD( { isNextTokenAnAssert() } ) AssertStatement()
 |
-  LOOKAHEAD([ "final" ] Type() <IDENTIFIER>)
+  LOOKAHEAD([ "final" ] [ Annotation() ] Type() <IDENTIFIER>)
   LocalVariableDeclaration() ";"
 |
   Statement()
@@ -1756,7 +1757,7 @@ void BlockStatement():
 void LocalVariableDeclaration() :
 {}
 {
-  [ "final" {jjtThis.setFinal();} ] Type() VariableDeclarator() ( "," VariableDeclarator() )*
+  [ "final" {jjtThis.setFinal();} ] [ Annotation() ] Type() VariableDeclarator() ( "," VariableDeclarator() )*
 }
 
 void EmptyStatement() :
