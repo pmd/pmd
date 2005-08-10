@@ -92,7 +92,7 @@ public class PapariTextRenderer implements Renderer {
                 lastFile = rv.getFilename();
                 buf.append(this.yellowBold + "*" + this.colorReset + " file: " + this.whiteBold + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
             }
-            buf.append(this.green + "    src:  " + this.cyan + lastFile.substring(lastFile.lastIndexOf(File.separator) + 1) + this.colorReset + ":" + this.cyan + rv.getLine() + ":" + rv.getLine2() + this.colorReset + PMD.EOL);
+            buf.append(this.green + "    src:  " + this.cyan + lastFile.substring(lastFile.lastIndexOf(File.separator) + 1) + this.colorReset + ":" + this.cyan + rv.getLine() + (rv.getLine2() == -1 ? "" : ":" + String.valueOf(rv.getLine2())) + this.colorReset + PMD.EOL);
             buf.append(this.green + "    rule: " + this.colorReset + rv.getRule().getName() + PMD.EOL);
             buf.append(this.green + "    msg:  " + this.colorReset + rv.getDescription() + PMD.EOL);
             buf.append(this.green + "    code: " + this.colorReset + this.getLine(lastFile, rv.getLine()) + PMD.EOL + PMD.EOL);
