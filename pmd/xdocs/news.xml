@@ -12,7 +12,7 @@
         <br/>
         <li>June 2005 - Amit Chaturvedi's article "Java &amp; Static Analysis" in <a href="http://www.ddj.com/documents/s=9809/ddj0507b/0507b.html">Doctor Dobb's Journal</a> talks about PMD and shows a screenshot of the rule designer</li>
         <br/>
-        <li>March 2005 - Kirk Knoernschild's article "Benefits of the Build" in <a href="http://www.sdmagazine.com/">Software Development magazine</a> mentions PMD as a way to automate code reviews</li>
+        <li>March 2005 - Kirk Knoernschild's article "Benefits of the Build" in <a href="http://www.sdmagazine.com/documents/s=9575/sdm0503b/sdm0503b.html">Software Development magazine</a> mentions PMD as a way to automate code reviews</li>
         <br/>
         <li>2/14/2005 - <a href="http://www.eweek.com/article2/0,1759,1766208,00.asp">"Java Is Well-Suited for Open-Source Projects"</a> - Peter Coffee's eWeek article on open source, Java, and PMD</li>
         <br/>
@@ -34,7 +34,7 @@
         <br/>
         <li>6/15/2003 - <a href="http://www.sdtimes.com/news/080/story15.htm">Software Development Times</a> - PMD is embedded in QStudio.</li>
         <br/>
-        <li>5/20/2003 - <a href="http://www.zdnet.com.au/builder/program/java/story/0,2000034779,20274635-1,00.htm">ZDNet</a> - PMD, Checkstyle, and Jalopy</li>
+        <li>5/20/2003 - <a href="http://builderau.com.au/program/java/soa/Three_tools_that_make_Java_code_review_painless/0,39024620,20274635,00.htm">Builder.au</a> - PMD, Checkstyle, and Jalopy</li>
         <br/>
         <li>4/13/2003 - <a href="http://www.onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html">O'Reilly OnJava.com</a> - PMD custom rules</li>
         <br/>

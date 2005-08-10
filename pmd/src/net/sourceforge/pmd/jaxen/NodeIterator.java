@@ -10,9 +10,6 @@ import java.util.NoSuchElementException;
 
 /**
  * @author daniels
- *         <p/>
- *         To change this generated comment go to
- *         Window>Preferences>Java>Code Generation>Code Template
  */
 public abstract class NodeIterator implements Iterator {
 

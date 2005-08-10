@@ -9,7 +9,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 
-
 public class AttributeAxisIterator implements Iterator {
 
     private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
@@ -97,18 +96,16 @@ public class AttributeAxisIterator implements Iterator {
     }
 
     protected boolean isAttribute(Method method) {
-        String name = method.getName();
-        Class returnType = method.getReturnType();
         return (method.getParameterTypes().length == 0)
-                && (Void.TYPE != returnType)
-                && !name.startsWith("jjt")
-                && !name.equals("toString")
-                && !name.equals("getScope")
-                && !name.equals("getClass")
-                && !name.equals("getFinallyBlock")
-                && !name.equals("getCatchBlocks")
-                && !name.equals("getTypeNameNode")
-                && !name.equals("getImportedNameNode")
-                && !name.equals("hashCode");
+                && (Void.TYPE != method.getReturnType())
+                && !method.getName().startsWith("jjt")
+                && !method.getName().equals("toString")
+                && !method.getName().equals("getScope")
+                && !method.getName().equals("getClass")
+                && !method.getName().equals("getFinallyBlock")
+                && !method.getName().equals("getCatchBlocks")
+                && !method.getName().equals("getTypeNameNode")
+                && !method.getName().equals("getImportedNameNode")
+                && !method.getName().equals("hashCode");
     }
 }
