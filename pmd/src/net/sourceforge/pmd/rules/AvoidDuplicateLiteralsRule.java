@@ -117,7 +117,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
     }
 
     public Object visit(ASTLiteral node, Object data) {
-        // just catching strings of 3 chars or more (including the enclosing quotes) for now - no numbers
+        // just catching strings of 5 chars or more (including the enclosing quotes) for now - no numbers
         if (node.getImage() == null || node.getImage().indexOf('\"') == -1 || node.getImage().length() < 5) {
             return data;
         }

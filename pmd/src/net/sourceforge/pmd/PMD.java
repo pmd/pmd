@@ -61,6 +61,7 @@ public class PMD {
             ASTCompilationUnit c = parser.CompilationUnit();
             Thread.yield();
 
+            // TODO - move SymbolFacade traversal inside JavaParser.CompilationUnit()
             SymbolFacade stb = new SymbolFacade();
             stb.initializeWith(c);
 

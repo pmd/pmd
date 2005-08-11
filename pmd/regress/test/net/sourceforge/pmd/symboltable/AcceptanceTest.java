@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.Iterator;
 import java.util.List;
@@ -61,10 +62,19 @@ public class AcceptanceTest extends STBBaseTst {
 
     public void testDemo() {
         parseCode(TEST_DEMO);
-        ASTLocalVariableDeclaration local = (ASTLocalVariableDeclaration)acu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
-        Scope s = local.getScope();
-        System.out.println("s = " + s);
-
+        ASTMethodDeclaration node = (ASTMethodDeclaration)acu.findChildrenOfType(ASTMethodDeclaration.class).get(0);
+        Scope s = node.getScope();
+        Map m = s.getVariableDeclarations();
+        for (Iterator i = m.keySet().iterator(); i.hasNext();) {
+            VariableNameDeclaration d = (VariableNameDeclaration)i.next();
+            System.out.println("Variable: " + d.getImage());
+            System.out.println("Type: " + d.getTypeImage());
+            List u = (List)m.get(d);
+            System.out.println("Usages: " + u.size());
+            NameOccurrence o = (NameOccurrence)u.get(0);
+            int beginLine = o.getLocation().getBeginLine();
+            System.out.println("Used in line " + beginLine);
+        }
     }
 
     private static final String TEST_EQ =
@@ -102,11 +112,8 @@ public class AcceptanceTest extends STBBaseTst {
     private static final String TEST_DEMO =
     "public class Foo  {" + PMD.EOL +
     " void bar(int x) { " + PMD.EOL +
-    "  if (x>2) { " + PMD.EOL +
-    "   int y = 3; " + PMD.EOL +
-    "  } else { " + PMD.EOL +
-    "   int y = 4; " + PMD.EOL +
-    "  } " + PMD.EOL +
+    "  int y = 3; " + PMD.EOL +
+    "  return x + y; " + PMD.EOL +
     " } " + PMD.EOL +
     "}" + PMD.EOL;
 

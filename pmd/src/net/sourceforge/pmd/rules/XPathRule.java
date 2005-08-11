@@ -17,22 +17,24 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.text.MessageFormat;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 public class XPathRule extends AbstractRule {
 
     private XPath xpath;
 
-    public Object visit(ASTCompilationUnit node, Object data) {
+    public Object visit(ASTCompilationUnit compilationUnit, Object data) {
         try {
             initializeXPathExpression();
-            for (Iterator iter = xpath.selectNodes(node).iterator(); iter.hasNext();) {
-                SimpleNode actualNode = (SimpleNode) iter.next();
+            List results = xpath.selectNodes(compilationUnit);
+            for (Iterator i = results.iterator(); i.hasNext();) {
+                SimpleNode n = (SimpleNode) i.next();
                 String msg = getMessage();
-                if (actualNode instanceof ASTVariableDeclaratorId && getBooleanProperty("pluginname")) {
-                    msg = MessageFormat.format(msg, new Object[]{actualNode.getImage()});
+                if (n instanceof ASTVariableDeclaratorId && getBooleanProperty("pluginname")) {
+                    msg = MessageFormat.format(msg, new Object[]{n.getImage()});
                 }
-                addViolation(data, actualNode, msg);
+                addViolation(data, n, msg);
             }
         } catch (JaxenException ex) {
             throwJaxenAsRuntime(ex);
@@ -46,14 +48,14 @@ public class XPathRule extends AbstractRule {
         }
         xpath = new BaseXPath(getStringProperty("xpath"), new DocumentNavigator());
         if (properties.size() > 1) {
-            SimpleVariableContext varContext = new SimpleVariableContext();
-            for (Iterator iter = properties.entrySet().iterator(); iter.hasNext();) {
-                Entry entry = (Entry) iter.next();
-                if (!"xpath".equals(entry.getKey())) {
-                    varContext.setVariableValue((String)entry.getKey(), entry.getValue());
+            SimpleVariableContext vc = new SimpleVariableContext();
+            for (Iterator i = properties.entrySet().iterator(); i.hasNext();) {
+                Entry e = (Entry) i.next();
+                if (!"xpath".equals(e.getKey())) {
+                    vc.setVariableValue((String)e.getKey(), e.getValue());
                 }
             }
-            xpath.setVariableContext(varContext);
+            xpath.setVariableContext(vc);
         }
     }
 
