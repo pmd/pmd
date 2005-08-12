@@ -14,11 +14,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class NameOccurrences {
+public class NameFinder {
 
     private LinkedList names = new LinkedList();
 
-    public NameOccurrences(ASTPrimaryExpression node) {
+    public NameFinder(ASTPrimaryExpression node) {
         ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);
         if (prefix.usesSuperModifier()) {
             add(new NameOccurrence(prefix, "super"));
@@ -34,12 +34,7 @@ public class NameOccurrences {
         return names;
     }
 
-    public Iterator iterator() {
-        return names.iterator();
-    }
-
     private void checkForNameChild(SimpleNode node) {
-        // TODO when is this null?
         if (node.getImage() != null) {
             add(new NameOccurrence(node, node.getImage()));
         }

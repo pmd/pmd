@@ -21,6 +21,7 @@ import java.util.Map;
 
 public class AcceptanceTest extends STBBaseTst {
 
+/*
     public void testClashingSymbols() {
         parseCode(TEST1);
     }
@@ -59,9 +60,11 @@ public class AcceptanceTest extends STBBaseTst {
         //System.out.println(m.size());
 
     }
+*/
 
     public void testDemo() {
         parseCode(TEST_DEMO);
+        System.out.println(TEST_DEMO);
         ASTMethodDeclaration node = (ASTMethodDeclaration)acu.findChildrenOfType(ASTMethodDeclaration.class).get(0);
         Scope s = node.getScope();
         Map m = s.getVariableDeclarations();
@@ -76,6 +79,13 @@ public class AcceptanceTest extends STBBaseTst {
             System.out.println("Used in line " + beginLine);
         }
     }
+
+    private static final String TEST_DEMO =
+    "public class Foo  {" + PMD.EOL +
+    " int addTwo(int param) { " + PMD.EOL +
+    "  return param + 2; " + PMD.EOL +
+    " } " + PMD.EOL +
+    "}" + PMD.EOL;
 
     private static final String TEST_EQ =
     "public class Foo  {" + PMD.EOL +
@@ -109,12 +119,5 @@ public class AcceptanceTest extends STBBaseTst {
     " } " + PMD.EOL +
     "}" + PMD.EOL;
 
-    private static final String TEST_DEMO =
-    "public class Foo  {" + PMD.EOL +
-    " void bar(int x) { " + PMD.EOL +
-    "  int y = 3; " + PMD.EOL +
-    "  return x + y; " + PMD.EOL +
-    " } " + PMD.EOL +
-    "}" + PMD.EOL;
 
 }

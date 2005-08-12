@@ -106,7 +106,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        createClassScope(node);
+        createClassScope(node);     
         Scope s = ((SimpleNode)node.jjtGetParent()).getScope();
         s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);

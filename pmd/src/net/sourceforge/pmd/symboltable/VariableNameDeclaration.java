@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Dimensionable;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTType;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration implements NameDeclaration {
 
@@ -22,7 +23,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration implements 
     }
 
     public boolean isArray() {
-        return ((Dimensionable) (((ASTVariableDeclaratorId) node).getTypeNode().jjtGetParent())).isArray();
+        ASTVariableDeclaratorId astVariableDeclaratorId = (ASTVariableDeclaratorId) node;
+        ASTType typeNode = astVariableDeclaratorId.getTypeNode();
+        return ((Dimensionable) (typeNode.jjtGetParent())).isArray();
     }
 
     public boolean isExceptionBlockParameter() {

@@ -4,15 +4,16 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 
 import java.util.Iterator;
+import java.util.List;
 
 public class OccurrenceFinder extends JavaParserVisitorAdapter {
 
     public Object visit(ASTPrimaryExpression node, Object data) {
-        NameOccurrences qualifiedNames = new NameOccurrences(node);
+        NameFinder nameFinder = new NameFinder(node);
         NameDeclaration decl = null;
-        for (Iterator i = qualifiedNames.iterator(); i.hasNext();) {
+        List names = nameFinder.getNames();
+        for (Iterator i = names.iterator(); i.hasNext();) {
             NameOccurrence occ = (NameOccurrence) i.next();
-            //System.out.println("searching for " + occ.getImage());
             Search search = new Search(occ);
             if (decl == null) {
                 // doing the first name lookup
