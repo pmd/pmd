@@ -41,8 +41,8 @@ public interface Scope {
 
     /**
      * Tests whether or not a NameOccurrence is directly contained in the scope
-     * Note that if this search is just in this scope - it doesn't go diving into any
-     * contained scopes.
+     * Note that this search is just for this scope - it doesn't go diving into any
+     * child scopes.
      */
     boolean contains(NameOccurrence occ);
 

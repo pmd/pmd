@@ -10,7 +10,11 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
 
     public Object visit(ASTPrimaryExpression node, Object data) {
         NameFinder nameFinder = new NameFinder(node);
+
+        // Maybe do some sort of State pattern thingy for when NameDeclaration
+        // is null/not null?
         NameDeclaration decl = null;
+
         List names = nameFinder.getNames();
         for (Iterator i = names.iterator(); i.hasNext();) {
             NameOccurrence occ = (NameOccurrence) i.next();

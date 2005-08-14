@@ -28,7 +28,6 @@ import java.util.Vector;
  */
 public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
-
     private List undefList = new Vector();
 
     public void compute(ASTMethodDeclaration node) {
@@ -42,18 +41,14 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     }
 
     private void computeNow(SimpleNode node) {
-
         IDataFlowNode inode = node.getDataFlowNode();
-
         IDataFlowNode firstINode = (IDataFlowNode) inode.getFlow().get(0);
-
         IDataFlowNode lastINode = (IDataFlowNode) inode.getFlow().get(inode.getFlow().size() - 1);
 
-
-        Set scopeSet = new HashSet();
+        Set variableDeclarations = new HashSet();
         /*
          * Fills the HashSet with all VariableDeclarations(Map) of all scopes
-         * of this data flow(method). Adds no duplicated VariablesDeclarations
+         * of this data flow (method/constructor). Adds no duplicated VariablesDeclarations
          * into the HashSet.
          * */
         for (int i = 0; i < inode.getFlow().size(); i++) {
@@ -61,28 +56,24 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
             if (n instanceof StartOrEndDataFlowNode) {
                 continue;
             }
-            if (!scopeSet.contains(n.getSimpleNode().getScope().getVariableDeclarations())) {
-                scopeSet.add(n.getSimpleNode().getScope().getVariableDeclarations());
+            if (!variableDeclarations.contains(n.getSimpleNode().getScope().getVariableDeclarations())) {
+                variableDeclarations.add(n.getSimpleNode().getScope().getVariableDeclarations());
             }
         }
 
         /*
-         * for all founded VariablesDeclarations of all scopes
+         * for all VariablesDeclarations of all scopes
          * */
-        Iterator scopeIter = scopeSet.iterator();
-        while (scopeIter.hasNext()) {
-            Map map = (Map) scopeIter.next();
-
-            // for each set of VariableDeclaration
-            Iterator iter = map.keySet().iterator();
-            while (iter.hasNext()) {
-                VariableNameDeclaration vnd = (VariableNameDeclaration) iter.next();
+        for (Iterator i = variableDeclarations.iterator(); i.hasNext();) {
+            Map declarations = (Map)i.next();
+            for (Iterator j = declarations.keySet().iterator(); j.hasNext();) {
+                VariableNameDeclaration vnd = (VariableNameDeclaration) j.next();
                 this.addVariableAccess(vnd.getNode().getBeginLine(),
                         new VariableAccess(VariableAccess.DEFINITION, vnd.getImage()),
                         inode.getFlow());
                 this.undefList.add(new VariableAccess(VariableAccess.UNDEFINITION,
                         vnd.getImage()));
-                List values = (List) map.get(vnd);
+                List values = (List) declarations.get(vnd);
                 for (int g = 0; g < values.size(); g++) {
                     NameOccurrence no = (NameOccurrence) values.get(g);
 

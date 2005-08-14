@@ -10,21 +10,18 @@ public class Search {
     private NameDeclaration decl;
 
     public Search(NameOccurrence occ) {
-        if (TRACE)
-            System.out.println("new search for " + occ);
+        if (TRACE) System.out.println("new search for " + occ);
         this.occ = occ;
     }
 
     public void execute() {
         decl = searchUpward(occ, occ.getLocation().getScope());
-        if (TRACE)
-            System.out.println("found " + decl);
+        if (TRACE) System.out.println("found " + decl);
     }
 
     public void execute(Scope startingScope) {
         decl = searchUpward(occ, startingScope);
-        if (TRACE)
-            System.out.println("found " + decl);
+        if (TRACE) System.out.println("found " + decl);
     }
 
     public NameDeclaration getResult() {
@@ -33,13 +30,11 @@ public class Search {
 
     private NameDeclaration searchUpward(NameOccurrence nameOccurrence, Scope scope) {
         if (!scope.contains(nameOccurrence) && scope.getParent() != null) {
-            if (TRACE)
-                System.out.println("moving up fm " + scope + " to " + scope.getParent());
+            if (TRACE) System.out.println("moving up fm " + scope + " to " + scope.getParent());
             return searchUpward(nameOccurrence, scope.getParent());
         }
         if (scope.contains(nameOccurrence)) {
-            if (TRACE)
-                System.out.println("found it!");
+            if (TRACE) System.out.println("found it!");
             return scope.addVariableNameOccurrence(nameOccurrence);
         }
         return null;

@@ -11,8 +11,8 @@ import net.sourceforge.pmd.dfa.variableaccess.VariableAccessVisitor;
 
 /**
  * @author raik
- *         <p/>
- *         The Layer of data flow analysis.
+ *
+ * What about initializers?  This only process methods and constructors
  */
 public class DataFlowFacade extends JavaParserVisitorAdapter {
 

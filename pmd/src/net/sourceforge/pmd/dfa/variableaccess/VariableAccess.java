@@ -51,6 +51,6 @@ public class VariableAccess {
         if (isDefinition()) return "Definition(" + variableName + ")";
         if (isReference()) return "Reference(" + variableName + ")";
         if (isUndefinition()) return "Undefinition(" + variableName + ")";
-        throw new RuntimeException("What is it then?");
+        throw new RuntimeException("Access type was never set");
     }
 }

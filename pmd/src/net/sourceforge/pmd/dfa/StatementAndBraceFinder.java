@@ -35,7 +35,6 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
     private Structure dataFlow;
 
     public void buildDataFlowFor(SimpleNode node) {
-        // TODO what about initializers?
         if (!(node instanceof ASTMethodDeclaration) && !(node instanceof ASTConstructorDeclaration)) {
             throw new RuntimeException("Can't build a data flow for anything other than a method or a constructor");
         }
@@ -237,16 +236,16 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         }
         if (!hasExpressionChild) {
             if (node instanceof ASTForInit) {
-                dataFlow.addNewNode(node); // FOR EXPRESSION
+                dataFlow.addNewNode(node);
                 dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
             } else if (node instanceof ASTForUpdate) {
                 if (!hasForInitNode) {
-                    dataFlow.addNewNode(node); // FOR EXPRESSION
+                    dataFlow.addNewNode(node);
                     dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
                 }
             } else if (node instanceof ASTStatement) {
                 if (!hasForInitNode && !hasForUpdateNode) {
-                    dataFlow.addNewNode(node); // FOR EXPRESSION
+                    dataFlow.addNewNode(node);
                     dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
                 }
             }
