@@ -40,12 +40,12 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         }
 
         this.dataFlow = new Structure();
-        this.dataFlow.addStartNode(node.getBeginLine());
-        this.dataFlow.addNewNode(node);
+        this.dataFlow.createStartNode(node.getBeginLine());
+        this.dataFlow.createNewNode(node);
 
         node.jjtAccept(this, dataFlow);
 
-        this.dataFlow.addEndNode(node.getEndLine());
+        this.dataFlow.createEndNode(node.getEndLine());
 
         Linker linker = new Linker(dataFlow);
         try {
@@ -62,7 +62,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             return data;
         }
         Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node);
+        dataFlow.createNewNode(node);
         return super.visit(node, data);
     }
 
@@ -71,7 +71,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             return data;
         }
         Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node);
+        dataFlow.createNewNode(node);
         return super.visit(node, data);
     }
 
@@ -83,19 +83,19 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
         // TODO what about throw stmts?
         if (node.jjtGetParent() instanceof ASTIfStatement) {
-            dataFlow.addNewNode(node); // START IF
+            dataFlow.createNewNode(node); // START IF
             dataFlow.pushOnStack(NodeType.IF_EXPR, dataFlow.getLast());
         } else if (node.jjtGetParent() instanceof ASTWhileStatement) {
-            dataFlow.addNewNode(node); // START WHILE
+            dataFlow.createNewNode(node); // START WHILE
             dataFlow.pushOnStack(NodeType.WHILE_EXPR, dataFlow.getLast());
         } else if (node.jjtGetParent() instanceof ASTSwitchStatement) {
-            dataFlow.addNewNode(node); // START SWITCH
+            dataFlow.createNewNode(node); // START SWITCH
             dataFlow.pushOnStack(NodeType.SWITCH_START, dataFlow.getLast());
         } else if (node.jjtGetParent() instanceof ASTForStatement) {
-            dataFlow.addNewNode(node); // FOR EXPR
+            dataFlow.createNewNode(node); // FOR EXPR
             dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
         } else if (node.jjtGetParent() instanceof ASTDoStatement) {
-            dataFlow.addNewNode(node); // DO EXPR
+            dataFlow.createNewNode(node); // DO EXPR
             dataFlow.pushOnStack(NodeType.DO_EXPR, dataFlow.getLast());
         }
 
@@ -134,12 +134,11 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
 
         if (node.jjtGetParent() instanceof ASTForStatement) {
-
             this.addForExpressionNode(node, dataFlow);
             dataFlow.pushOnStack(NodeType.FOR_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
         } else if (node.jjtGetParent() instanceof ASTDoStatement) {
             dataFlow.pushOnStack(NodeType.DO_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
-            dataFlow.addNewNode((SimpleNode) node.jjtGetParent());
+            dataFlow.createNewNode((SimpleNode) node.jjtGetParent());
         }
 
         super.visit(node, data);
@@ -190,7 +189,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             return data;
         }
         Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node);
+        dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.BREAK_STATEMENT, dataFlow.getLast());
         return super.visit(node, data);
     }
@@ -201,7 +200,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             return data;
         }
         Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node);
+        dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.CONTINUE_STATEMENT, dataFlow.getLast());
         return super.visit(node, data);
     }
@@ -211,7 +210,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             return data;
         }
         Structure dataFlow = (Structure) data;
-        dataFlow.addNewNode(node);
+        dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.RETURN_STATEMENT, dataFlow.getLast());
         return super.visit(node, data);
     }
@@ -236,16 +235,16 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         }
         if (!hasExpressionChild) {
             if (node instanceof ASTForInit) {
-                dataFlow.addNewNode(node);
+                dataFlow.createNewNode(node);
                 dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
             } else if (node instanceof ASTForUpdate) {
                 if (!hasForInitNode) {
-                    dataFlow.addNewNode(node);
+                    dataFlow.createNewNode(node);
                     dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
                 }
             } else if (node instanceof ASTStatement) {
                 if (!hasForInitNode && !hasForUpdateNode) {
-                    dataFlow.addNewNode(node);
+                    dataFlow.createNewNode(node);
                     dataFlow.pushOnStack(NodeType.FOR_EXPR, dataFlow.getLast());
                 }
             }

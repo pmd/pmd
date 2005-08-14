@@ -12,6 +12,17 @@ import java.util.List;
 
 public class AcceptanceTest extends ParserTst {
 
+    public void testbook() throws Throwable {
+        getOrderedNodes(ASTMethodDeclarator.class, FOO);
+    }
+
+    private static final String FOO =
+    "class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  int x = 2;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
     public void testLabelledBreakLockup() throws Throwable {
         getOrderedNodes(ASTMethodDeclarator.class, LABELLED_BREAK_LOCKUP);
     }
@@ -127,10 +138,8 @@ public class AcceptanceTest extends ParserTst {
         assertTrue(check(TEST30_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST30)));
     }
 
-    /**
-     *  first dimension: the index of a node
-     *  second dimension: the indices of the children
-     */
+    //  first dimension: the index of a node
+    //  second dimension: the indices of the children
     private static final int[][] TEST1_NODES = {
             {1},
             {2},

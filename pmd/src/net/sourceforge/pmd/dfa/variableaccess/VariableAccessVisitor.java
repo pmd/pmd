@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * @author raik
@@ -27,8 +28,6 @@ import java.util.Vector;
  *         access of a variable.
  */
 public class VariableAccessVisitor extends JavaParserVisitorAdapter {
-
-    private List undefList = new Vector();
 
     public void compute(ASTMethodDeclaration node) {
         if (node.jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration) {
@@ -41,65 +40,52 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     }
 
     private void computeNow(SimpleNode node) {
+        // undefinitions was once a field... seems like it can be a local
+        List undefinitions = new ArrayList();
         IDataFlowNode inode = node.getDataFlowNode();
+        Set variableDeclarations = collectDeclarations(inode);
+        for (Iterator i = variableDeclarations.iterator(); i.hasNext();) {
+            Map declarations = (Map)i.next();
+            for (Iterator j = declarations.keySet().iterator(); j.hasNext();) {
+                VariableNameDeclaration vnd = (VariableNameDeclaration) j.next();
+                addVariableAccess(vnd.getNode().getBeginLine(), new VariableAccess(VariableAccess.DEFINITION, vnd.getImage()), inode.getFlow());
+                undefinitions.add(new VariableAccess(VariableAccess.UNDEFINITION, vnd.getImage()));
+                for (Iterator k = ((List) declarations.get(vnd)).iterator(); k.hasNext();) {
+                    addAccess(k, inode);
+                }
+            }
+        }
         IDataFlowNode firstINode = (IDataFlowNode) inode.getFlow().get(0);
+        firstINode.setVariableAccess(undefinitions);
         IDataFlowNode lastINode = (IDataFlowNode) inode.getFlow().get(inode.getFlow().size() - 1);
+        lastINode.setVariableAccess(undefinitions);
+    }
 
-        Set variableDeclarations = new HashSet();
-        /*
-         * Fills the HashSet with all VariableDeclarations(Map) of all scopes
-         * of this data flow (method/constructor). Adds no duplicated VariablesDeclarations
-         * into the HashSet.
-         * */
+    private Set collectDeclarations(IDataFlowNode inode) {
+        Set decls = new HashSet();
         for (int i = 0; i < inode.getFlow().size(); i++) {
             IDataFlowNode n = (IDataFlowNode) inode.getFlow().get(i);
             if (n instanceof StartOrEndDataFlowNode) {
                 continue;
             }
-            if (!variableDeclarations.contains(n.getSimpleNode().getScope().getVariableDeclarations())) {
-                variableDeclarations.add(n.getSimpleNode().getScope().getVariableDeclarations());
+            if (!decls.contains(n.getSimpleNode().getScope().getVariableDeclarations())) {
+                decls.add(n.getSimpleNode().getScope().getVariableDeclarations());
             }
         }
+        return decls;
+    }
 
-        /*
-         * for all VariablesDeclarations of all scopes
-         * */
-        for (Iterator i = variableDeclarations.iterator(); i.hasNext();) {
-            Map declarations = (Map)i.next();
-            for (Iterator j = declarations.keySet().iterator(); j.hasNext();) {
-                VariableNameDeclaration vnd = (VariableNameDeclaration) j.next();
-                this.addVariableAccess(vnd.getNode().getBeginLine(),
-                        new VariableAccess(VariableAccess.DEFINITION, vnd.getImage()),
-                        inode.getFlow());
-                this.undefList.add(new VariableAccess(VariableAccess.UNDEFINITION,
-                        vnd.getImage()));
-                List values = (List) declarations.get(vnd);
-                for (int g = 0; g < values.size(); g++) {
-                    NameOccurrence no = (NameOccurrence) values.get(g);
-
-                    if (no.isOnLeftHandSide()) {
-                        this.addVariableAccess(no.getLocation().getBeginLine(),
-                                new VariableAccess(VariableAccess.DEFINITION, no.getImage()),
-                                inode.getFlow());
-                    }
-
-                    if (no.isOnRightHandSide()) {
-                        this.addVariableAccess(no.getLocation().getBeginLine(),
-                                new VariableAccess(VariableAccess.REFERENCING, no.getImage()),
-                                inode.getFlow());
-                    }
-
-                    if (!no.isOnLeftHandSide() && !no.isOnRightHandSide()) {
-                        this.addVariableAccess(no.getLocation().getBeginLine(),
-                                new VariableAccess(VariableAccess.REFERENCING, no.getImage()),
-                                inode.getFlow());
-                    }
-                }
-            }
+    private void addAccess(Iterator k, IDataFlowNode inode) {
+        NameOccurrence no = (NameOccurrence) k.next();
+        if (no.isOnLeftHandSide()) {
+            this.addVariableAccess(no.getLocation().getBeginLine(), new VariableAccess(VariableAccess.DEFINITION, no.getImage()), inode.getFlow());
         }
-
-        firstINode.setVariableAccess(this.undefList);
-        lastINode.setVariableAccess(this.undefList);
+        if (no.isOnRightHandSide()) {
+            this.addVariableAccess(no.getLocation().getBeginLine(), new VariableAccess(VariableAccess.REFERENCING, no.getImage()), inode.getFlow());
+        }
+        if (!no.isOnLeftHandSide() && !no.isOnRightHandSide()) {
+            this.addVariableAccess(no.getLocation().getBeginLine(), new VariableAccess(VariableAccess.REFERENCING, no.getImage()), inode.getFlow());
+        }
     }
 
     private void addVariableAccess(int line, VariableAccess va, List flow) {

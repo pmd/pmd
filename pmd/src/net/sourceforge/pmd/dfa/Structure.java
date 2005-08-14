@@ -14,7 +14,7 @@ import java.util.Stack;
  * @author raik
  *         <p/>
  *         Structure contains only raw data. A set of nodes wich represent a data flow
- *         and 2 stacks to link the nodes eachother.
+ *         and 2 stacks to link the nodes to each other.
  */
 public class Structure implements IProcessableStructure {
 
@@ -22,22 +22,18 @@ public class Structure implements IProcessableStructure {
     private Stack braceStack = new Stack();
     private Stack continueBreakReturnStack = new Stack();
 
-    public int getDataFlowSize() {
-        return dataFlow.size();
-    }
-
     /**
-     * This class capsulate the access to the DataFlowNode class. meaningfull?
+     * This class encapsulates the access to the DataFlowNode class. Is this worthwhile?
      */
-    public IDataFlowNode addNewNode(SimpleNode node) {
+    public IDataFlowNode createNewNode(SimpleNode node) {
         return new DataFlowNode(node, this.dataFlow);
     }
 
-    public IDataFlowNode addStartNode(int line) {
+    public IDataFlowNode createStartNode(int line) {
         return new StartOrEndDataFlowNode(this.dataFlow, line, true);
     }
 
-    public IDataFlowNode addEndNode(int line) {
+    public IDataFlowNode createEndNode(int line) {
         return new StartOrEndDataFlowNode(this.dataFlow, line, false);
     }
 
@@ -58,17 +54,14 @@ public class Structure implements IProcessableStructure {
      * There are 2 Stacks because the have to process differently.
      */
     protected void pushOnStack(int type, IDataFlowNode node) {
-        if (type == NodeType.RETURN_STATEMENT ||
-                type == NodeType.BREAK_STATEMENT ||
-                type == NodeType.CONTINUE_STATEMENT) {
-
+        StackObject obj = new StackObject(type, node);
+        if (type == NodeType.RETURN_STATEMENT || type == NodeType.BREAK_STATEMENT || type == NodeType.CONTINUE_STATEMENT) {
             // ugly solution - stores the type information in two ways
-            this.continueBreakReturnStack.push(new StackObject(type, node));
-            ((DataFlowNode) node).setType(type);
+            continueBreakReturnStack.push(obj);
         } else {
-            this.braceStack.push(new StackObject(type, node));
-            ((DataFlowNode) node).setType(type);
+            braceStack.push(obj);
         }
+        ((DataFlowNode) node).setType(type);
     }
 
     public List getBraceStack() {

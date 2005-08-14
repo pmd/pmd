@@ -20,12 +20,13 @@ import java.util.StringTokenizer;
 public class DataFlowNode implements IDataFlowNode {
 
     private SimpleNode node;
+    private Map typeMap = new HashMap();
 
     protected List parents = new ArrayList();
     protected List children = new ArrayList();
     protected BitSet type = new BitSet();
-    protected LinkedList dataFlow;
     protected List variableAccess = new ArrayList();
+    protected LinkedList dataFlow;
     protected int line;
 
     protected DataFlowNode() {}
@@ -137,8 +138,6 @@ public class DataFlowNode implements IDataFlowNode {
         }
         return res;
     }
-
-    private Map typeMap = new HashMap();
 
     private String stringFromType(int intype) {
         if (typeMap.isEmpty()) {

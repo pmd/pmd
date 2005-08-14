@@ -10,6 +10,6 @@ public class StructureTest extends TestCase {
     public void testAddResultsinDFANodeContainingAddedNode() {
         Structure s = new Structure();
         SimpleNode n = new ASTMethodDeclaration(1);
-        assertEquals(n, s.addNewNode(n).getSimpleNode());
+        assertEquals(n, s.createNewNode(n).getSimpleNode());
     }
 }

@@ -225,7 +225,7 @@ public class DAAPathFinder {
                     //addRefNode
                     this.addRefPathElement(level, ref);
                 } else {
-                    //addNewNode
+                    //createNewNode
                     this.addNewPathElement(level);
                 }
 
@@ -242,7 +242,7 @@ public class DAAPathFinder {
                             continue;
                         }
                     } else {
-                        //addNewNode
+                        //createNewNode
                         this.addNewPathElement(level);
                         break;
                     }
