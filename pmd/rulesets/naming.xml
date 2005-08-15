@@ -257,7 +257,7 @@ public class Foo {
      </rule>
 
     <rule name="SuspiciousConstantFieldName"
-          message="The field name indicates a constants but its modifiers don't"
+          message="The field name indicates a constant but its modifiers do not"
           class="net.sourceforge.pmd.rules.XPathRule">
        <description>
 A field name is all in uppercase characters, which in Sun's Java naming

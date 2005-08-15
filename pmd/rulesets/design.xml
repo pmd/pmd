@@ -479,7 +479,7 @@ public class Bar {
     </rule>
 
     <rule   name="EqualsNull"
-            message="Don't use equals() to compare against null"
+            message="Avoid using equals() to compare against null"
             class="net.sourceforge.pmd.rules.XPathRule">
         <description>
 Newbie programmers sometimes get the comparison concepts confused
@@ -1005,7 +1005,7 @@ class Foo {
   message="Use equals() to compare object references."
   class="net.sourceforge.pmd.rules.design.CompareObjectsWithEquals">
   <description>
- Use equals() to compare object references; don't compare them with ==.
+ Use equals() to compare object references; avoid comparing them with ==.
   </description>
   <priority>3</priority>
   <example>
