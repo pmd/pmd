@@ -46,11 +46,6 @@
             <include name="*.properties"/>
         </fileset>
     </copy>
-    <copy todir="${dir.build}net/sourceforge/pmd/util/viewer/resources">
-        <fileset dir="${dir.src}net/sourceforge/pmd/util/viewer/resources">
-            <include name="*.properties"/>
-        </fileset>
-    </copy>
 </target>
 
 <target name="jar" depends="copy,compile" description="Jars up the classes and rulesets">

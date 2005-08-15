@@ -1,4 +1,4 @@
-update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-3.2.jar
+update pmd.bat, designer.bat, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-3.2.jar
 update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-3.2
 update the release date in the changelog
 update rulesets/rulesets.properties - add any new ruleset file names
