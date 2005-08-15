@@ -22,25 +22,26 @@ public class MatchCollector {
         this.ma = ma;
     }
 
-    public void collect(int minimumLength, List marks) {
+    public void collect(List marks) {
         //first get a pairwise collection of all maximal matches
         for (int i = 0; i < marks.size() - 1; i++) {
             TokenEntry mark1 = (TokenEntry) marks.get(i);
             for (int j = i + 1; j < marks.size(); j++) {
                 TokenEntry mark2 = (TokenEntry) marks.get(j);
                 int diff = mark1.getIndex() - mark2.getIndex();
-                if (-diff < minimumLength) {
+                if (-diff < ma.getMinimumTileSize()) {
                     continue;
                 }
                 if (hasPreviousDupe(mark1, mark2)) {
                     continue;
                 }
+
+                // "match too small" check
                 int dupes = countDuplicateTokens(mark1, mark2);
-                //false positive check
-                if (dupes < minimumLength) {
+                if (dupes < ma.getMinimumTileSize()) {
                     continue;
                 }
-                //is it still too close together
+                // is it still too close together
                 if (diff + dupes >= 1) {
                     continue;
                 }
@@ -50,49 +51,9 @@ public class MatchCollector {
     }
 
     public List getMatches() {
-        ArrayList matchList = new ArrayList(startMap.values());
-        groupMatches(matchList);
-        return matchList;
-    }
-
-    /**
-     * A greedy algorithm for determining non-overlapping matches
-     */
-    private void determineMatch(TokenEntry mark1, TokenEntry mark2, int dupes) {
-        Match match = new Match(dupes, mark1, mark2);
-        String fileKey = mark1.getTokenSrcID() + mark2.getTokenSrcID();
-        ArrayList pairMatches = (ArrayList) fileMap.get(fileKey);
-        if (pairMatches == null) {
-            pairMatches = new ArrayList();
-            fileMap.put(fileKey, pairMatches);
-        }
-        boolean add = true;
-        for (int k = 0; k < pairMatches.size(); k++) {
-            Match other = (Match) pairMatches.get(k);
-            if (other.getFirstMark().getIndex() + other.getTokenCount() - mark1.getIndex()
-                    > 0) {
-                boolean ordered = other.getSecondMark().getIndex() - mark2.getIndex() < 0;
-                if ((ordered && (other.getEndIndex() - mark2.getIndex() > 0))
-                        || (!ordered && (match.getEndIndex() - other.getSecondMark().getIndex()) > 0)) {
-                    if (other.getTokenCount() >= match.getTokenCount()) {
-                        add = false;
-                        break;
-                    } else {
-                        pairMatches.remove(k);
-                        startMap.remove(other.getMatchCode());
-                    }
-                }
-            }
-        }
-        if (add) {
-            pairMatches.add(match);
-            startMap.put(match.getMatchCode(), match);
-        }
-    }
-
-    private void groupMatches(ArrayList matchList) {
+        List matchList = new ArrayList(startMap.values());
         Collections.sort(matchList);
-        HashSet matchSet = new HashSet();
+        Set matchSet = new HashSet();
         Match.MatchCode matchCode = new Match.MatchCode();
         for (int i = matchList.size(); i > 1; i--) {
             Match match1 = (Match) matchList.get(i - 1);
@@ -144,6 +105,42 @@ public class MatchCollector {
                     }
                 }
             }
+        }
+        return matchList;
+    }
+
+    /**
+     * A greedy algorithm for determining non-overlapping matches
+     */
+    private void determineMatch(TokenEntry mark1, TokenEntry mark2, int dupes) {
+        Match match = new Match(dupes, mark1, mark2);
+        String fileKey = mark1.getTokenSrcID() + mark2.getTokenSrcID();
+        List pairMatches = (ArrayList) fileMap.get(fileKey);
+        if (pairMatches == null) {
+            pairMatches = new ArrayList();
+            fileMap.put(fileKey, pairMatches);
+        }
+        boolean add = true;
+        for (int i = 0; i < pairMatches.size(); i++) {
+            Match other = (Match) pairMatches.get(i);
+            if (other.getFirstMark().getIndex() + other.getTokenCount() - mark1.getIndex()
+                    > 0) {
+                boolean ordered = other.getSecondMark().getIndex() - mark2.getIndex() < 0;
+                if ((ordered && (other.getEndIndex() - mark2.getIndex() > 0))
+                        || (!ordered && (match.getEndIndex() - other.getSecondMark().getIndex()) > 0)) {
+                    if (other.getTokenCount() >= match.getTokenCount()) {
+                        add = false;
+                        break;
+                    } else {
+                        pairMatches.remove(i);
+                        startMap.remove(other.getMatchCode());
+                    }
+                }
+            }
+        }
+        if (add) {
+            pairMatches.add(match);
+            startMap.put(match.getMatchCode(), match);
         }
     }
 

@@ -25,46 +25,48 @@ public class JavaTokenizer implements Tokenizer {
     }
 
     public void tokenize(SourceCode tokens, Tokens tokenEntries) {
-        StringBuffer sb = tokens.getCodeBuffer();
+        StringBuffer buffer = tokens.getCodeBuffer();
 
         /*
         I'm doing a sort of State pattern thing here where
         this goes into "discarding" mode when it hits an import or package
-        keyword and goes back into "accumulate mode when it hits a semicolon.
+        keyword and goes back into "accumulate mode" when it hits a semicolon.
         This could probably be turned into some objects.
         */
-        JavaParserTokenManager tokenMgr = new TargetJDK1_4().createJavaParserTokenManager(new StringReader(sb.toString()));
-        Token currToken = tokenMgr.getNextToken();
-        boolean discarding = false;
-        while (currToken.image.length() > 0) {
-            if (currToken.kind == JavaParserConstants.IMPORT || currToken.kind == JavaParserConstants.PACKAGE) {
-                discarding = true;
-                currToken = tokenMgr.getNextToken();
+
+        // TODO - allow for JDK 1.5 selection
+        JavaParserTokenManager tokenMgr = new TargetJDK1_4().createJavaParserTokenManager(new StringReader(buffer.toString()));
+        Token currentToken = tokenMgr.getNextToken();
+        boolean inDiscardingState = false;
+        while (currentToken.image.length() > 0) {
+            if (currentToken.kind == JavaParserConstants.IMPORT || currentToken.kind == JavaParserConstants.PACKAGE) {
+                inDiscardingState = true;
+                currentToken = tokenMgr.getNextToken();
                 continue;
             }
 
-            if (discarding && currToken.kind == JavaParserConstants.SEMICOLON) {
-                discarding = false;
+            if (inDiscardingState && currentToken.kind == JavaParserConstants.SEMICOLON) {
+                inDiscardingState = false;
             }
 
-            if (discarding) {
-                currToken = tokenMgr.getNextToken();
+            if (inDiscardingState) {
+                currentToken = tokenMgr.getNextToken();
                 continue;
             }
 
-            if (currToken.kind != JavaParserConstants.SEMICOLON) {
-                String image = currToken.image;
-                if (ignoreLiterals && (currToken.kind == JavaParserConstants.STRING_LITERAL || currToken.kind == JavaParserConstants.CHARACTER_LITERAL 
-                        || currToken.kind == JavaParserConstants.DECIMAL_LITERAL || currToken.kind == JavaParserConstants.FLOATING_POINT_LITERAL)) {
-                    image = String.valueOf(currToken.kind);
+            if (currentToken.kind != JavaParserConstants.SEMICOLON) {
+                String image = currentToken.image;
+                if (ignoreLiterals && (currentToken.kind == JavaParserConstants.STRING_LITERAL || currentToken.kind == JavaParserConstants.CHARACTER_LITERAL
+                        || currentToken.kind == JavaParserConstants.DECIMAL_LITERAL || currentToken.kind == JavaParserConstants.FLOATING_POINT_LITERAL)) {
+                    image = String.valueOf(currentToken.kind);
                 }
-                if (ignoreIdentifiers && currToken.kind == JavaParserConstants.IDENTIFIER) {
-                    image = String.valueOf(currToken.kind);
+                if (ignoreIdentifiers && currentToken.kind == JavaParserConstants.IDENTIFIER) {
+                    image = String.valueOf(currentToken.kind);
                 }
-                tokenEntries.add(new TokenEntry(image, tokens.getFileName(), currToken.beginLine));
+                tokenEntries.add(new TokenEntry(image, tokens.getFileName(), currentToken.beginLine));
             }
 
-            currToken = tokenMgr.getNextToken();
+            currentToken = tokenMgr.getNextToken();
         }
         tokenEntries.add(TokenEntry.getEOF());
     }

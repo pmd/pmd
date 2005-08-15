@@ -42,26 +42,36 @@ public class MatchAlgorithm {
         this.cpdListener = listener;
     }
 
+    public Iterator matches() {
+        return matches.iterator();
+    }
+
+    public TokenEntry tokenAt(int offset, TokenEntry m) {
+        return (TokenEntry) code.get(offset + m.getIndex());
+    }
+
+    public int getMinimumTileSize() {
+        return this.min;
+    }
+
     public void findMatches() {
         cpdListener.phaseUpdate(CPDListener.HASH);
         Map markGroups = hash();
 
         cpdListener.phaseUpdate(CPDListener.MATCH);
-        MatchCollector coll = new MatchCollector(this);
+        MatchCollector matchCollector = new MatchCollector(this);
         for (Iterator i = markGroups.values().iterator(); i.hasNext();) {
             Object o = i.next();
             if (o instanceof List) {
                 Collections.reverse((List) o);
-                coll.collect(min, (List) o);
+                matchCollector.collect((List) o);
             }
             i.remove();
         }
-
         cpdListener.phaseUpdate(CPDListener.GROUPING);
-        matches = coll.getMatches();
-        coll = null;
-
-        for (Iterator i = matches(); i.hasNext();) {
+        matches = matchCollector.getMatches();
+        matchCollector = null;
+        for (Iterator i = matches.iterator(); i.hasNext();) {
             Match match = (Match) i.next();
             for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
                 TokenEntry mark = (TokenEntry) occurrences.next();
@@ -86,6 +96,9 @@ public class MatchAlgorithm {
                 lastHash = MOD * lastHash + token.getIdentifier() - lastMod * last;
                 token.setHashCode(lastHash);
                 Object o = markGroups.get(token);
+
+                // Note that this insertion method is worthwhile since the vast majority
+                // markGroup keys will have only one value.
                 if (o == null) {
                     markGroups.put(token, token);
                 } else if (o instanceof TokenEntry) {
@@ -110,13 +123,4 @@ public class MatchAlgorithm {
         }
         return markGroups;
     }
-
-    public Iterator matches() {
-        return matches.iterator();
-    }
-
-    public TokenEntry tokenAt(int offset, TokenEntry m) {
-        return (TokenEntry) code.get(offset + m.getIndex());
-    }
-
 }
