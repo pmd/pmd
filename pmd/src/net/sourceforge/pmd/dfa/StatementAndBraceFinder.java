@@ -47,7 +47,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
         this.dataFlow.createEndNode(node.getEndLine());
 
-        Linker linker = new Linker(dataFlow);
+        Linker linker = new Linker(dataFlow.getBraceStack(), dataFlow.getContinueBreakReturnStack());
         try {
             linker.computePaths();
         } catch (LinkerException e) {

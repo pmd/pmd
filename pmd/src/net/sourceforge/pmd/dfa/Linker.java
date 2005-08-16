@@ -14,21 +14,19 @@ public class Linker {
     private List braceStack;
     private List continueBreakReturnStack;
 
-    public Linker(IProcessableStructure dataFlow) {
-        this.braceStack = dataFlow.getBraceStack();
-        this.continueBreakReturnStack = dataFlow.getContinueBreakReturnStack();
+    public Linker(List braceStack, List continueBreakReturnStack) {
+        this.braceStack = braceStack;
+        this.continueBreakReturnStack = continueBreakReturnStack;
     }
 
     /**
      * Creates all the links between the data flow nodes.
      */
     public void computePaths() throws LinkerException, SequenceException {
-        SequenceChecker sc = new SequenceChecker(braceStack);
 
-        /*
-         * Returns true if there are more sequences, computes the first and
-         * the last index of the sequence.
-         * */
+        // Returns true if there are more sequences, computes the first and
+        // the last index of the sequence.
+        SequenceChecker sc = new SequenceChecker(braceStack);
         while (!sc.run()) {
             if (sc.getFirstIndex() < 0 || sc.getLastIndex() < 0) {
                 throw new SequenceException("computePaths(): return index <  0");

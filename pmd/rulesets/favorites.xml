@@ -10,13 +10,6 @@ This ruleset also serves as an example of how to do a custom ruleset.
 
 
 
-    <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
-        <properties>
-           <property name="reportLevel" value="5"/>
-        </properties>
-      </rule>
-
-    <!--
   <rule ref="rulesets/basic.xml"/>
 
 <rule ref="rulesets/basic.xml/EmptyCatchBlock" message="Must handle exceptions">
@@ -37,7 +30,13 @@ This ruleset also serves as an example of how to do a custom ruleset.
   <rule ref="rulesets/controversial.xml/UnnecessaryConstructor"/>
   <rule ref="rulesets/controversial.xml/NullAssignment"/>
   <rule ref="rulesets/controversial.xml/UnusedModifier"/>
-  -->
+
+  <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
+      <properties>
+         <property name="reportLevel" value="5"/>
+      </properties>
+    </rule>
+
 
 </ruleset>
 

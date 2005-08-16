@@ -24,6 +24,10 @@ public class Structure implements IProcessableStructure {
 
     /**
      * This class encapsulates the access to the DataFlowNode class. Is this worthwhile?
+     * TODO I think it's too confusing to have the DataFlowNode constructor
+     * add the created instance to the LinkedList.  I think it'd be clearer if we did
+     * that more "procedurally", i.e., create the object, then add it to the list.
+     *
      */
     public IDataFlowNode createNewNode(SimpleNode node) {
         return new DataFlowNode(node, this.dataFlow);
@@ -50,7 +54,7 @@ public class Structure implements IProcessableStructure {
 
     /**
      * The braceStack contains all nodes which are important to link the data
-     * flow nodes. The cbrStack contains continue,- break- and return nodes.
+     * flow nodes. The cbrStack contains continue, break, and return nodes.
      * There are 2 Stacks because the have to process differently.
      */
     protected void pushOnStack(int type, IDataFlowNode node) {
