@@ -16,7 +16,7 @@ import java.util.Stack;
  *         Structure contains only raw data. A set of nodes wich represent a data flow
  *         and 2 stacks to link the nodes to each other.
  */
-public class Structure implements IProcessableStructure {
+public class Structure {
 
     private LinkedList dataFlow = new LinkedList();
     private Stack braceStack = new Stack();
