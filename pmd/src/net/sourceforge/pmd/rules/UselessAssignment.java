@@ -14,6 +14,8 @@ import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 public class UselessAssignment extends AbstractRule implements Executable  {
 
@@ -38,16 +40,14 @@ public class UselessAssignment extends AbstractRule implements Executable  {
         }
 */
 
-
         DAAPathFinder a = new DAAPathFinder((IDataFlowNode) node.getDataFlowNode().getFlow().get(0), this);
         a.run();
 
-        //super.visit(node, data);
         return data;
     }
 
     public void execute(List path) {
-        Hashtable hash = new Hashtable();
+        Map hash = new HashMap();
         //System.out.println("path size is " + path.size());
         for (int i = 0; i < path.size(); i++) {
             //System.out.println("i = " + i);
@@ -61,26 +61,25 @@ public class UselessAssignment extends AbstractRule implements Executable  {
                     if (o != null) {
                         List array = (List) o;
                         int last = ((Integer) array.get(0)).intValue();
-                        // TODO - at some point investigate and possibly reintroduce this line2 thing
+                        // At some point investigate and possibly reintroduce this line2 thing
                         //int line2 = ((Integer) array.get(1)).intValue();
 
-                        // DD - ??
+                        // DD - definition followed by another definition
                         if (va.accessTypeMatches(last) && va.isDefinition()) {
-                            Report rpt = rc.getReport();
-                            RuleViolation rv = createRuleViolation(rc, tmp, va.getVariableName(), "DD");
-                            //rpt.addRuleViolation(rv);
+                            addViolation(rc, tmp, va.getVariableName());
                         }
-                        // UR - ??
-                        else if (last == VariableAccess.UNDEFINITION && va.isReference()) {
+/*                        // UR - ??
+                      else if (last == VariableAccess.UNDEFINITION && va.isReference()) {
                             //this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "UR"));
                         }
                         // DU - variable is defined and then goes out of scope
                         // i.e., unused parameter
                         else if (last == VariableAccess.DEFINITION && va.isUndefinition()) {
-                            //if (inode.getSimpleNode() != null) {
+                            if (inode.getSimpleNode() != null) {
                                 this.rc.getReport().addRuleViolation(createRuleViolation(rc, tmp, va.getVariableName(), "DU"));
-                            //}
+                            }
                         }
+*/
                     }
                     List array = new ArrayList();
                     array.add(new Integer(va.getAccessType()));

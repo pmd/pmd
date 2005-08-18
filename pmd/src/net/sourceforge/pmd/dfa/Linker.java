@@ -23,7 +23,6 @@ public class Linker {
      * Creates all the links between the data flow nodes.
      */
     public void computePaths() throws LinkerException, SequenceException {
-
         // Returns true if there are more sequences, computes the first and
         // the last index of the sequence.
         SequenceChecker sc = new SequenceChecker(braceStack);
@@ -73,7 +72,7 @@ public class Linker {
             }
         }
 
-        while (!this.continueBreakReturnStack.isEmpty()) {
+        while (!continueBreakReturnStack.isEmpty()) {
             StackObject stackObject = (StackObject) continueBreakReturnStack.get(0);
             IDataFlowNode node = stackObject.getDataFlowNode();
 

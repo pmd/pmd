@@ -72,18 +72,19 @@ public class AcceptanceTest extends STBBaseTst {
             VariableNameDeclaration d = (VariableNameDeclaration)i.next();
             System.out.println("Variable: " + d.getImage());
             System.out.println("Type: " + d.getTypeImage());
+        }
+    }
+/*
             List u = (List)m.get(d);
             System.out.println("Usages: " + u.size());
             NameOccurrence o = (NameOccurrence)u.get(0);
             int beginLine = o.getLocation().getBeginLine();
             System.out.println("Used in line " + beginLine);
-        }
-    }
+*/
 
     private static final String TEST_DEMO =
     "public class Foo  {" + PMD.EOL +
-    " int addTwo(int param) { " + PMD.EOL +
-    "  return param + 2; " + PMD.EOL +
+    " void bar(ArrayList buz) { " + PMD.EOL +
     " } " + PMD.EOL +
     "}" + PMD.EOL;
 

@@ -6,25 +6,20 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="StringToString"
-         message="Avoid calling toString() on String objects; this is unnecessary"
-         class="net.sourceforge.pmd.rules.StringToStringRule">
-     <description>
-     Avoid calling toString() on String objects; this is unnecessary
-     </description>
-        <priority>3</priority>
-     <example>
- <![CDATA[
- public class Foo {
-  private String baz() {
-   String bar = "howdy";
-   return bar.toString();
-  }
- }
- ]]>
-     </example>
-     </rule>
 
+    <rule name="UselessAssignment"
+           message="This assignment to ''{0}'' is useless"
+           class="net.sourceforge.pmd.rules.UselessAssignment"
+           dfa="true">
+       <description>
+This assignment is useless
+       </description>
+         <priority>3</priority>
+       <example>
+   <![CDATA[
+   ]]>
+       </example>
+     </rule>
 
     <!--    <rule name="Foo"
           message="blah ''{0}''"
@@ -39,48 +34,6 @@ These are new rules that are still in progress
       </example>
     </rule>
 
-    -->
-    <!--
-<rule
- ref="rulesets/codesize.xml/ExcessiveMethodLength"
- message="This is one of the 6 longest methods">
-    <properties>
-      <property name="topscore" value="6"/>
-      <property name="minimum" value="1"/>
-    </properties>
-</rule>
-
-<rule name="UnnecessaryParentheses"
-      message="NOT FULLY IMPLEMENTED - Unnecessary parentheses are a bit noisy"
-      class="net.sourceforge.pmd.rules.XPathRule">
-  <description>
-  Unnecessary parameters are a bit noisy
-  </description>
-    <properties>
-        <property name="xpath">
-            <value>
-                <![CDATA[
-//ReturnStatement
- [count(//Expression) >1]
- [count(//PrimarySuffix)<2]
-                ]]>
-            </value>
-        </property>
-    </properties>
-    <priority>3</priority>
-
-  <example>
-  <![CDATA[
-public class Foo {
- public int bar() {
-  return (42);
- }
-}
-  ]]>
-  </example>
-</rule>   !-->
-
-    <!--
      <rule name="PositionalIterator"
            message="Avoid positional iterators"
            class="net.sourceforge.pmd.rules.design.PositionalIteratorRule">
@@ -102,7 +55,6 @@ public class Foo {
        }
        See javax.security.auth.Subject.java, inner class SecureSet, method removeAll(), around line 1092 for a good example.
        </description>
-
        <example>
    <![CDATA[
    public class PositionalIterators {

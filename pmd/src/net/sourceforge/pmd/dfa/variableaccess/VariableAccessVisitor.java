@@ -40,9 +40,21 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     }
 
     private void computeNow(SimpleNode node) {
-        // undefinitions was once a field... seems like it can be a local
-        List undefinitions = new ArrayList();
         IDataFlowNode inode = node.getDataFlowNode();
+
+        List undefinitions = markUsages(inode);
+
+        // is this necessary?  Why does the first node need undefs?
+        IDataFlowNode firstINode = (IDataFlowNode) inode.getFlow().get(0);
+        firstINode.setVariableAccess(undefinitions);
+
+        IDataFlowNode lastINode = (IDataFlowNode) inode.getFlow().get(inode.getFlow().size() - 1);
+        lastINode.setVariableAccess(undefinitions);
+    }
+
+    private List markUsages(IDataFlowNode inode) {
+        // undefinitions was once a field... seems like it works fine as a local
+        List undefinitions = new ArrayList();
         Set variableDeclarations = collectDeclarations(inode);
         for (Iterator i = variableDeclarations.iterator(); i.hasNext();) {
             Map declarations = (Map)i.next();
@@ -55,10 +67,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                 }
             }
         }
-        IDataFlowNode firstINode = (IDataFlowNode) inode.getFlow().get(0);
-        firstINode.setVariableAccess(undefinitions);
-        IDataFlowNode lastINode = (IDataFlowNode) inode.getFlow().get(inode.getFlow().size() - 1);
-        lastINode.setVariableAccess(undefinitions);
+        return undefinitions;
     }
 
     private Set collectDeclarations(IDataFlowNode inode) {
@@ -76,15 +85,11 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     }
 
     private void addAccess(Iterator k, IDataFlowNode inode) {
-        NameOccurrence no = (NameOccurrence) k.next();
-        if (no.isOnLeftHandSide()) {
-            this.addVariableAccess(no.getLocation().getBeginLine(), new VariableAccess(VariableAccess.DEFINITION, no.getImage()), inode.getFlow());
-        }
-        if (no.isOnRightHandSide()) {
-            this.addVariableAccess(no.getLocation().getBeginLine(), new VariableAccess(VariableAccess.REFERENCING, no.getImage()), inode.getFlow());
-        }
-        if (!no.isOnLeftHandSide() && !no.isOnRightHandSide()) {
-            this.addVariableAccess(no.getLocation().getBeginLine(), new VariableAccess(VariableAccess.REFERENCING, no.getImage()), inode.getFlow());
+        NameOccurrence occurrence = (NameOccurrence) k.next();
+        if (occurrence.isOnLeftHandSide()) {
+            this.addVariableAccess(occurrence.getLocation().getBeginLine(), new VariableAccess(VariableAccess.DEFINITION, occurrence.getImage()), inode.getFlow());
+        } else if (occurrence.isOnRightHandSide() || (!occurrence.isOnLeftHandSide() && !occurrence.isOnRightHandSide())) {
+            this.addVariableAccess(occurrence.getLocation().getBeginLine(), new VariableAccess(VariableAccess.REFERENCING, occurrence.getImage()), inode.getFlow());
         }
     }
 

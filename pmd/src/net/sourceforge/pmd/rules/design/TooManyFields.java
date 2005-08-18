@@ -34,9 +34,9 @@ public class TooManyFields extends AbstractRule {
         if (l!=null && !l.isEmpty()) {
             for (Iterator it = l.iterator() ; it.hasNext() ; ) {
                 ASTFieldDeclaration fd = (ASTFieldDeclaration) it.next();
-                ASTClassOrInterfaceDeclaration p = (ASTClassOrInterfaceDeclaration)fd.jjtGetParent().jjtGetParent().jjtGetParent();
-                if (!p.isInterface()) {
-                    processField(fd);
+                ASTClassOrInterfaceDeclaration clazz = (ASTClassOrInterfaceDeclaration)fd.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+                if (!clazz.isInterface()) {
+                    bumpCounterFor(clazz);
                 }
             }
         }
@@ -51,8 +51,7 @@ public class TooManyFields extends AbstractRule {
         return data;
     }
     
-    private void processField(ASTFieldDeclaration fd) {
-        ASTClassOrInterfaceDeclaration clazz = (ASTClassOrInterfaceDeclaration) fd.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+    private void bumpCounterFor(ASTClassOrInterfaceDeclaration clazz) {
         String key = clazz.getImage();
         if (!stats.containsKey(key)) {
             stats.put(key, new Integer(0));

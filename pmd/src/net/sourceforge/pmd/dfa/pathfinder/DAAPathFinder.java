@@ -32,9 +32,9 @@ public class DAAPathFinder {
         }
     }
 
-    public DAAPathFinder(IDataFlowNode rootNode, Executable exe) {
+    public DAAPathFinder(IDataFlowNode rootNode, Executable shim) {
         this.rootNode = rootNode;
-        this.shim = exe;
+        this.shim = shim;
     }
 
     public void run() {

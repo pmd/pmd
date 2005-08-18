@@ -24,13 +24,14 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
                new TestDescriptor(TEST4, "outer class, inner interface, both OK", 0, rule),
                new TestDescriptor(TEST5, "interface with 10 fields", 0, rule),
                new TestDescriptor(TEST6, "2 inner classes, each with > 10 fields", 2, rule),
+               new TestDescriptor(TEST7, "anonymous class with a field", 0, rule),
        });
     }
     
     public void testPropertySetting() throws Throwable {
         Report rpt = new Report();
         rule.addProperty("maxfields", "2");
-        runTestFromString(TEST7, rule, rpt);
+        runTestFromString(TEST8, rule, rpt);
         assertEquals(1, rpt.size());
     }
 
@@ -153,10 +154,16 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
     private static final String TEST7 =
     "public class Foo {" + PMD.EOL +
     " public class Bar1 {" + PMD.EOL +
-    "  int b1; " + PMD.EOL +
-    "  int b2; " + PMD.EOL +
-    "  int b3; " + PMD.EOL +
+    "  Object foo = new Object() {public int x;}; " + PMD.EOL +
     " }" + PMD.EOL +
     "}";
+
+    private static final String TEST8 =
+    "public class Foo {" + PMD.EOL +
+    " int a1; " + PMD.EOL +
+    " int a2; " + PMD.EOL +
+    " int a3; " + PMD.EOL +
+    "}";
+
 
 }
