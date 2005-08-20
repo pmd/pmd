@@ -25,39 +25,25 @@ import java.util.Iterator;
  * @author Jeff Epstein, based upon <a href="EmacsRenderer.html">EmacsRenderer</a>, Tuesday, September 23, 2003
  */
 public class TextPadRenderer implements Renderer {
-
-    /**
-     * <P>Get a string containing all errors as detected by PMD.</P>
-     *
-     * @param report The report containing the errors.  May not be null.
-     */
     public String render(Report report) {
-
         StringBuffer buf = new StringBuffer();
-
         Iterator i;
         try {
             i = report.iterator();
         } catch (NullPointerException npx) {
             throw new NullPointerException("ERROR in " + this.getClass().getName() + ".render:  Parameter report is null.");
         }
-
         while (i.hasNext()) {
             RuleViolation rv = (RuleViolation) i.next();
-
             //Filename
             buf.append(PMD.EOL).append(rv.getFilename() + "(");
-
             //Line number
             buf.append(Integer.toString(rv.getLine())).append(",  ");
-
             //Name of violated rule
             buf.append(rv.getRule().getName()).append("):  ");
-
             //Specific violation message
             buf.append(rv.getDescription());
         }
-
         return buf.toString();
     }
 }
