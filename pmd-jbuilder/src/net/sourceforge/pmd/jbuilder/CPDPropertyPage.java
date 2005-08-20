@@ -1,18 +1,12 @@
 package net.sourceforge.pmd.jbuilder;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import com.borland.jbcl.layout.VerticalFlowLayout;
+import com.borland.primetime.help.HelpTopic;
+import com.borland.primetime.help.ZipHelpTopic;
+import com.borland.primetime.properties.PropertyPage;
 
 import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
-
-import com.borland.primetime.help.*;
-import com.borland.primetime.ide.*;
-import com.borland.primetime.properties.*;
-import net.sourceforge.pmd.*;
-import com.borland.jbcl.layout.*;
+import java.awt.Dimension;
 
 
 /**

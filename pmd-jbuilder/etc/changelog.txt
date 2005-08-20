@@ -1,8 +1,10 @@
+August 20, 2005 - 1.3:
+Updated to PMD 3.2 
+
 July 12 2002 - 0.2:
 Added support for pmd-0.4
 Added configuration capability
 Fixed manifest problem
-
 
 July 10 2002 - 0.1:
 Initial release

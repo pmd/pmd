@@ -1,5 +1,0 @@
-1.  Make the checking of code more efficient by caching the set of active rules to be used when checking.
-This can be done when the plug-in is first loaded and every time the user updates the rule properties.
-Then the constructRuleSets() method in PMDOpenTool simply needs to retrieve this cached rule set.
-
-2.  Convert use of GlobalProperty to GlobalBooleanProperty

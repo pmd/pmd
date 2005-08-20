@@ -12,20 +12,16 @@
 
 package  net.sourceforge.pmd.jbuilder;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import com.borland.jbcl.layout.VerticalFlowLayout;
+import com.borland.primetime.help.HelpTopic;
+import com.borland.primetime.properties.PropertyPage;
 
 import javax.swing.*;
-import javax.swing.border.*;
-
-import com.borland.primetime.help.*;
-import com.borland.primetime.ide.*;
-import com.borland.primetime.properties.*;
-import com.borland.jbcl.layout.*;
-import java.io.InputStream;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSet;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 

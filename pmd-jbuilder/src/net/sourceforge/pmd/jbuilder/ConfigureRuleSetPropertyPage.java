@@ -1,17 +1,25 @@
 package net.sourceforge.pmd.jbuilder;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import com.borland.primetime.help.HelpTopic;
+import com.borland.primetime.help.ZipHelpTopic;
+import com.borland.primetime.properties.PropertyPage;
+import net.sourceforge.pmd.Rule;
 
 import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
-
-import com.borland.primetime.help.*;
-import com.borland.primetime.ide.*;
-import com.borland.primetime.properties.*;
-import net.sourceforge.pmd.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Iterator;
 
 
 /**

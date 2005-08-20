@@ -9,28 +9,55 @@
 
 package  net.sourceforge.pmd.jbuilder;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
+import com.borland.jbcl.control.MessageDialog;
+import com.borland.jbuilder.JBuilderMenu;
+import com.borland.jbuilder.node.JBProject;
+import com.borland.jbuilder.node.JavaFileNode;
+import com.borland.jbuilder.node.PackageNode;
+import com.borland.primetime.PrimeTime;
+import com.borland.primetime.actions.ActionGroup;
+import com.borland.primetime.editor.EditorAction;
+import com.borland.primetime.editor.EditorManager;
+import com.borland.primetime.editor.EditorPane;
+import com.borland.primetime.editor.LineMark;
+import com.borland.primetime.editor.MasterStyleContext;
+import com.borland.primetime.ide.Browser;
+import com.borland.primetime.ide.BrowserAction;
+import com.borland.primetime.ide.ContentManager;
+import com.borland.primetime.ide.ContextActionProvider;
+import com.borland.primetime.ide.Message;
+import com.borland.primetime.ide.MessageCategory;
+import com.borland.primetime.ide.ProjectView;
+import com.borland.primetime.node.FileNode;
+import com.borland.primetime.node.Node;
+import com.borland.primetime.properties.PropertyDialog;
+import com.borland.primetime.properties.PropertyManager;
+import com.borland.primetime.vfs.Url;
+import com.borland.primetime.viewer.TextNodeViewer;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.cpd.LanguageFactory;
+import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.cpd.TokenEntry;
 
 import javax.swing.*;
-import javax.swing.text.*;
-
-import com.borland.jbuilder.*;
-import com.borland.jbuilder.node.*;
-import com.borland.primetime.*;
-import com.borland.primetime.actions.*;
-import com.borland.primetime.editor.*;
-import com.borland.primetime.ide.*;
-import com.borland.primetime.node.*;
-import com.borland.primetime.properties.*;
-import com.borland.primetime.vfs.*;
-import com.borland.primetime.viewer.*;
-import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.cpd.*;
-import com.borland.jbcl.control.MessageDialog;
-import net.sourceforge.pmd.cpd.LanguageFactory;
+import javax.swing.text.Document;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 
 
@@ -485,7 +512,7 @@ public class PMDOpenTool {
                                         }
                                         CPDMessage msg = CPDMessage.createMessage(String.valueOf(dupCount)+" duplicates in code set: " + resultCount, m.getSourceCodeSlice());
                                         for (Iterator iter2 = m.iterator(); iter2.hasNext(); ) {
-                                            Mark mark = (Mark)iter2.next();
+                                            TokenEntry mark = (TokenEntry)iter2.next();
                                             msg.addChildMessage(mark.getBeginLine(), tileLineCount, mark.getTokenSrcID());
                                         }
                                         Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, msg, false);

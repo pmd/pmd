@@ -1,10 +1,9 @@
 package net.sourceforge.pmd.jbuilder;
 
-import com.borland.primetime.properties.PropertyGroup;
-import com.borland.primetime.properties.PropertyPageFactory;
-import  com.borland.primetime.properties.PropertyPage;
-import com.borland.primetime.ide.MessageCategory;
 import com.borland.primetime.properties.GlobalIntegerProperty;
+import com.borland.primetime.properties.PropertyGroup;
+import com.borland.primetime.properties.PropertyPage;
+import com.borland.primetime.properties.PropertyPageFactory;
 
 /**
  * <p>Title: JBuilder OpenTool for PMD</p>

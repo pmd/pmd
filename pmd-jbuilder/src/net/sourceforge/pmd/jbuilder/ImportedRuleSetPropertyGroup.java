@@ -13,22 +13,18 @@
 
 package  net.sourceforge.pmd.jbuilder;
 
-import  com.borland.primetime.properties.PropertyGroup;
-import  com.borland.primetime.properties.PropertyPageFactory;
-import  com.borland.primetime.properties.GlobalProperty;
-import  com.borland.primetime.properties.PropertyPage;
-import net.sourceforge.pmd.RuleSetFactory;
+import com.borland.primetime.properties.GlobalProperty;
+import com.borland.primetime.properties.PropertyGroup;
+import com.borland.primetime.properties.PropertyPage;
+import com.borland.primetime.properties.PropertyPageFactory;
 import net.sourceforge.pmd.RuleSet;
-import java.util.Iterator;
-import java.util.HashMap;
-import com.borland.primetime.ide.MessageCategory;
-import com.borland.primetime.ide.Browser;
-import java.util.StringTokenizer;
-import java.util.Vector;
+import net.sourceforge.pmd.RuleSetFactory;
+
 import java.io.InputStream;
-import java.util.Enumeration;
 import java.util.Collection;
-import com.borland.primetime.properties.PropertyDialog;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 
 
 

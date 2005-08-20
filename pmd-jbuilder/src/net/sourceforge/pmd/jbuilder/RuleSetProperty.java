@@ -1,12 +1,11 @@
 package net.sourceforge.pmd.jbuilder;
 
 import com.borland.primetime.properties.GlobalProperty;
-import net.sourceforge.pmd.RuleSet;
-import java.util.Iterator;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleSet;
+
 import java.util.HashMap;
-import com.borland.primetime.ide.Browser;
-import com.borland.primetime.ide.MessageCategory;
+import java.util.Iterator;
 
 /**
  * <p>Title: JBuilder OpenTool for PMD</p>

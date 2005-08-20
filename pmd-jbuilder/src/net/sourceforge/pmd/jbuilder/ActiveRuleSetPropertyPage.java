@@ -12,16 +12,20 @@
 
 package  net.sourceforge.pmd.jbuilder;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import com.borland.primetime.help.HelpTopic;
+import com.borland.primetime.help.ZipHelpTopic;
+import com.borland.primetime.properties.GlobalProperty;
+import com.borland.primetime.properties.PropertyPage;
 
 import javax.swing.*;
-import javax.swing.border.*;
-
-import com.borland.primetime.help.*;
-import com.borland.primetime.ide.*;
-import com.borland.primetime.properties.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.util.Enumeration;
+import java.util.Iterator;
 
 
 

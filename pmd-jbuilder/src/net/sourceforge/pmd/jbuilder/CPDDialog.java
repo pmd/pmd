@@ -1,15 +1,15 @@
 package net.sourceforge.pmd.jbuilder;
 
-import java.awt.*;
-import javax.swing.*;
-import com.borland.jbcl.layout.*;
-import javax.swing.plaf.ProgressBarUI;
-import java.io.File;
-import net.sourceforge.pmd.cpd.CPDListener;
+import com.borland.jbcl.layout.VerticalFlowLayout;
 import net.sourceforge.pmd.cpd.CPD;
-import java.awt.event.WindowListener;
+import net.sourceforge.pmd.cpd.CPDListener;
+
+import javax.swing.*;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
-//import net.sourceforge.pmd.cpd.Tile;
+import java.awt.event.WindowListener;
+import java.io.File;
 
 public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
     private CPD cpd;
@@ -111,6 +111,8 @@ public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
         this.setLocation(xpos, ypos);
         this.addWindowListener(this);
         this.show();
+    }
+    public void phaseUpdate(int i) {
     }
     public void windowOpened(WindowEvent e) {
     }
