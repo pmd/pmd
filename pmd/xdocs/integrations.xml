@@ -241,8 +241,8 @@ selecting the "Ask for Directory" checkbox.</p>
       <ul>
           <li>Name: PMD </li>
           <li>Kind: Tool for directories</li>
-          <li>Executable: /Applications/pmd-3.2/bin/run.sh</li>
-          <li>Arguments: $DIRECTORY_PATH$ emacs rulesets/$USER_ARGUMENTS$.xml</li>
+          <li>Executable: /Applications/pmd-3.2/bin/pmd.sh</li>
+          <li>Arguments: $DIRECTORY_PATH$ emacs $USER_ARGUMENTS$</li>
       </ul>
   </ul>
   <p>Now you can right click on a source directory, select the PMD tool and a dialog box will appear.
