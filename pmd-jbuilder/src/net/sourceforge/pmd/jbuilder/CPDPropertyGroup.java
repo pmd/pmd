@@ -10,6 +10,7 @@ import com.borland.primetime.properties.PropertyPageFactory;
  * <p>Description: Provides an environemnt for using the PMD aplication from within JBuilder</p>
  * <p>Copyright: Copyright (c) 2002</p>
  * <p>Company: InfoEther</p>
+ *
  * @author David Craine
  * @version 1.0
  */
@@ -22,13 +23,13 @@ public class CPDPropertyGroup implements PropertyGroup {
 
     public PropertyPageFactory getPageFactory(Object topic) {
         if (topic == Constants.RULESETS_TOPIC) {
-           return  new PropertyPageFactory("CPD Properties", "Configure the CPD RuleSets") {
+            return new PropertyPageFactory("CPD Properties", "Configure the CPD RuleSets") {
 
-               public PropertyPage createPropertyPage () {
-                   return  new CPDPropertyPage();
-               }
-           };
-       }
-        return  null;
+                public PropertyPage createPropertyPage() {
+                    return new CPDPropertyPage();
+                }
+            };
+        }
+        return null;
     }
 }

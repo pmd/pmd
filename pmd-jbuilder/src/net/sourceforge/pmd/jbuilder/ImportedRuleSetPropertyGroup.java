@@ -11,7 +11,7 @@
  */
 
 
-package  net.sourceforge.pmd.jbuilder;
+package net.sourceforge.pmd.jbuilder;
 
 import com.borland.primetime.properties.GlobalProperty;
 import com.borland.primetime.properties.PropertyGroup;
@@ -27,7 +27,6 @@ import java.util.Iterator;
 import java.util.StringTokenizer;
 
 
-
 public class ImportedRuleSetPropertyGroup
         implements PropertyGroup {
 
@@ -40,9 +39,9 @@ public class ImportedRuleSetPropertyGroup
 
 
     /**
-    * Standard Constructor
-    */
-    public ImportedRuleSetPropertyGroup () {
+     * Standard Constructor
+     */
+    public ImportedRuleSetPropertyGroup() {
         currentInstance = this;
         getImportedRuleSets();
     }
@@ -51,16 +50,18 @@ public class ImportedRuleSetPropertyGroup
      * Get a collection of the currently imported rule sets
      * This is used by the ActiveRuleSetPropertyGroup when constructing it's list
      * of rulesets to display
+     *
      * @return Collection of rule sets
      */
-    public  Collection getRuleSets() {
+    public Collection getRuleSets() {
         return importedRuleSets.values();
     }
 
     /**
      * Add a new imported rule set
+     *
      * @param ruleSetFileName The file name of the new rule set
-     * @param rs The rule set object
+     * @param rs              The rule set object
      */
     protected void addRuleSet(String ruleSetFileName, RuleSet rs) {
         if (!importedRuleSets.containsKey(rs.getName())) {
@@ -74,7 +75,8 @@ public class ImportedRuleSetPropertyGroup
 
     /**
      * Remove a currently imported rule set
-     * @param ruleSetName  the name of the rule set to remove
+     *
+     * @param ruleSetName the name of the rule set to remove
      */
     protected void removeRuleSet(String ruleSetName) {
         importedRuleSets.remove(ruleSetName);  //remove the rule set from the importedRuleSets map
@@ -106,8 +108,8 @@ public class ImportedRuleSetPropertyGroup
      */
     private void updateImportedRuleSets() {
         StringBuffer value = new StringBuffer();
-        for (Iterator iter = importedRuleSetFileNames.values().iterator(); iter.hasNext(); ) {
-            value.append((String)iter.next());
+        for (Iterator iter = importedRuleSetFileNames.values().iterator(); iter.hasNext();) {
+            value.append((String) iter.next());
             if (iter.hasNext())
                 value.append(DELIMETER);
         }
@@ -126,7 +128,7 @@ public class ImportedRuleSetPropertyGroup
         GlobalProperty.readProperties();
         GlobalProperty importedRuleSetsProps = new GlobalProperty(Constants.RULESETS, IMPORTED_PROPERTY, "");
 
-        StringTokenizer  st = new StringTokenizer(importedRuleSetsProps.getValue(), DELIMETER);
+        StringTokenizer st = new StringTokenizer(importedRuleSetsProps.getValue(), DELIMETER);
         RuleSetFactory rsf = new RuleSetFactory();
         while (st.hasMoreTokens()) {
             try {
@@ -135,8 +137,7 @@ public class ImportedRuleSetPropertyGroup
                 RuleSet ruleSet = rsf.createRuleSet(is);
                 importedRuleSets.put(ruleSet.getName(), ruleSet);
                 importedRuleSetFileNames.put(ruleSet.getName(), ruleSetFileName);
-             }
-            catch (Exception ex) {
+            } catch (Exception ex) {
             }
         }
     }
@@ -144,24 +145,25 @@ public class ImportedRuleSetPropertyGroup
     /**
      * Called by JBuilder
      */
-    public void initializeProperties () {
+    public void initializeProperties() {
     }
 
     /**
      * Create the panel that will go in the property page
+     *
      * @param topic Topic of page (represented as a tab in the property page)
      * @return Factory for creating property pages - this factory will create RuleSetPropertyPages
      */
-    public PropertyPageFactory getPageFactory (Object topic) {
+    public PropertyPageFactory getPageFactory(Object topic) {
         if (topic == Constants.RULESETS_TOPIC) {
-            return  new PropertyPageFactory("Imported PMD RuleSets", "Set the Imported PMD RuleSets") {
+            return new PropertyPageFactory("Imported PMD RuleSets", "Set the Imported PMD RuleSets") {
 
-                public PropertyPage createPropertyPage () {
-                    return  new ImportedRuleSetPropertyPage();
+                public PropertyPage createPropertyPage() {
+                    return new ImportedRuleSetPropertyPage();
                 }
             };
         }
-        return  null;
+        return null;
     }
 }
 

@@ -14,6 +14,7 @@ import java.awt.*;
  * <p>Description: Provides an environemnt for using the PMD aplication from within JBuilder</p>
  * <p>Copyright: Copyright (c) 2002</p>
  * <p>Company: InfoEther</p>
+ *
  * @author David Craine
  * @version 1.0
  */
@@ -30,8 +31,7 @@ public class CPDPropertyPage extends PropertyPage {
         try {
             jbInit();
             init2();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -44,8 +44,7 @@ public class CPDPropertyPage extends PropertyPage {
         try {
             int minTokenCount = Integer.parseInt(jTextField1.getText());
             CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.setInteger(minTokenCount);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
 
         }
 
@@ -55,9 +54,8 @@ public class CPDPropertyPage extends PropertyPage {
      * This methiod is called by JBuilder
      */
     public HelpTopic getHelpTopic() {
-        return new ZipHelpTopic(
-         null,
-         getClass().getResource("/html/cpd-props.html").toString());
+        return new ZipHelpTopic(null,
+                getClass().getResource("/html/cpd-props.html").toString());
     }
 
     /**
@@ -68,6 +66,7 @@ public class CPDPropertyPage extends PropertyPage {
 
     /**
      * JBuilder-constructed initialization
+     *
      * @throws Exception
      */
     private void jbInit() throws Exception {

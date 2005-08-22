@@ -10,7 +10,7 @@
  */
 
 
-package  net.sourceforge.pmd.jbuilder;
+package net.sourceforge.pmd.jbuilder;
 
 import com.borland.primetime.help.HelpTopic;
 import com.borland.primetime.help.ZipHelpTopic;
@@ -25,7 +25,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.Enumeration;
 import java.util.Iterator;
-
 
 
 public class ActiveRuleSetPropertyPage extends PropertyPage {
@@ -54,7 +53,7 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
     /**
      * Constuctor
      */
-    public ActiveRuleSetPropertyPage () {
+    public ActiveRuleSetPropertyPage() {
         currentInstance = this;
         try {
             jbInit();
@@ -76,16 +75,15 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
      * The left pane contains the list of available rule sets while the right pane
      * contains the list of selected rule sets
      */
-    private void initRuleSplitPanes () {
+    private void initRuleSplitPanes() {
         //loop through the sets of rules and place them in the appropriate pane based upon their setting
         Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator();
         while (iter.hasNext()) {
-            RuleSetProperty rsp = (RuleSetProperty)iter.next();
+            RuleSetProperty rsp = (RuleSetProperty) iter.next();
             ListEntry le = new ListEntry(rsp.getActiveRuleSet().getName(), rsp.getGlobalProperty());
             if (Boolean.valueOf(rsp.getGlobalProperty().getValue()).booleanValue()) {
                 dlmSelectedRuleSets.addElement(le);
-            }
-            else {
+            } else {
                 dlmAvailableRuleSets.addElement(le);
             }
         }
@@ -93,9 +91,10 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
 
     /**
      * Initialize the interface components
-     * @exception Exception thows any exceptions that occur
+     *
+     * @throws Exception thows any exceptions that occur
      */
-    protected void jbInit () throws Exception {
+    protected void jbInit() throws Exception {
         border1 = BorderFactory.createEtchedBorder(Color.white, new Color(178, 178, 178));
         titledBorder1 = new TitledBorder(border1, "Available Rule Sets");
         border2 = BorderFactory.createEtchedBorder(Color.white, new Color(178, 178, 178));
@@ -119,13 +118,13 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
         jpSelectedRuleSets.setLayout(borderLayout3);
         jbSelectRuleSets.setText("Select ===>>>");
         jbSelectRuleSets.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed (ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 jbSelectRuleSets_actionPerformed(e);
             }
         });
         jbDeselectRuleSets.setText("<<<===Remove");
         jbDeselectRuleSets.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed (ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 jbDeselectRuleSets_actionPerformed(e);
             }
         });
@@ -149,40 +148,42 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
      * We use this method to save the values of the properties based upon what list
      * they ended up in when the user was finished
      */
-    public void writeProperties () {
+    public void writeProperties() {
         //set the properties for the items items in the selected list to true
         for (Enumeration e = dlmSelectedRuleSets.elements(); e.hasMoreElements();) {
-            ListEntry le = (ListEntry)e.nextElement();
+            ListEntry le = (ListEntry) e.nextElement();
             le.getProp().setValue("true");
         }
         //set the properties for the items items in the available list to false
         for (Enumeration e = dlmAvailableRuleSets.elements(); e.hasMoreElements();) {
-            ListEntry le = (ListEntry)e.nextElement();
+            ListEntry le = (ListEntry) e.nextElement();
             le.getProp().setValue("false");
         }
     }
 
     /**
      * get the Help TOpic
+     *
      * @return help topic
      */
-    public HelpTopic getHelpTopic () {
-        return new ZipHelpTopic(
-         null,
-         getClass().getResource("/html/active-ruleset-props.html").toString());
+    public HelpTopic getHelpTopic() {
+        return new ZipHelpTopic(null,
+                getClass().getResource("/html/active-ruleset-props.html").toString());
     }
 
     /**
      * Called by JBuilder to setup the initial property settings.
      * We don't use this since we to all the property setup in the jbInit() method.
      */
-    public void readProperties () {}
+    public void readProperties() {
+    }
 
     /**
      * Called when the jbSelectRuleSets button is pressed
+     *
      * @param e action event
      */
-    void jbSelectRuleSets_actionPerformed (ActionEvent e) {
+    void jbSelectRuleSets_actionPerformed(ActionEvent e) {
         selectRules();
     }
 
@@ -194,9 +195,9 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
         //get the selected elements in the available list and move to the selected list
         int selectedIndex = jlistAvailableRuleSets.getSelectedIndex();
         while (selectedIndex != -1) {
-            ListEntry le = (ListEntry)dlmAvailableRuleSets.get(selectedIndex);
+            ListEntry le = (ListEntry) dlmAvailableRuleSets.get(selectedIndex);
             dlmSelectedRuleSets.addElement(le);
-            RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(le.getDisplayName());
+            RuleSetProperty rsp = (RuleSetProperty) ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(le.getDisplayName());
             rsp.getGlobalProperty().setValue("true");   //set the global property value to true
             dlmAvailableRuleSets.remove(selectedIndex);
             selectedIndex = jlistAvailableRuleSets.getSelectedIndex();
@@ -207,9 +208,10 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
 
     /**
      * Called when the jbDeselectRuleSets button is pressed
+     *
      * @param e action event
      */
-    void jbDeselectRuleSets_actionPerformed (ActionEvent e) {
+    void jbDeselectRuleSets_actionPerformed(ActionEvent e) {
         deselectRules();
     }
 
@@ -221,9 +223,9 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
         //get the selected elements in the selected list and move to the available list
         int selectedIndex = jlistSelectedRuleSets.getSelectedIndex();
         while (selectedIndex != -1) {
-            ListEntry le = (ListEntry)dlmSelectedRuleSets.get(selectedIndex);
+            ListEntry le = (ListEntry) dlmSelectedRuleSets.get(selectedIndex);
             dlmAvailableRuleSets.addElement(le);
-            RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(le.getDisplayName());
+            RuleSetProperty rsp = (RuleSetProperty) ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(le.getDisplayName());
             rsp.getGlobalProperty().setValue("false");   //set the global property value to false
             dlmSelectedRuleSets.remove(selectedIndex);
             selectedIndex = jlistSelectedRuleSets.getSelectedIndex();
@@ -235,6 +237,7 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
     /**
      * Called when the user double-clicks an item in the jlistSelectedRuleSets list
      * Move the item to the available list
+     *
      * @param e mouse event
      */
     void jlistSelectedRuleSets_mouseClicked(MouseEvent e) {
@@ -245,6 +248,7 @@ public class ActiveRuleSetPropertyPage extends PropertyPage {
     /**
      * Called when the user double-clicks an item in the jlistAvailableRuleSets list
      * move the item to the selected list
+     *
      * @param e mouse event
      */
     void jlistAvailableRuleSets_mouseClicked(MouseEvent e) {
@@ -264,36 +268,40 @@ class ListEntry {
 
     /**
      * Constructor
+     *
      * @param name name as it is to appear in the list box
      * @param prop the GlobalProperty associated with this name
      */
-    public ListEntry (String name, GlobalProperty prop) {
+    public ListEntry(String name, GlobalProperty prop) {
         this.displayName = name;
         this.prop = prop;
     }
 
     /**
      * get the GlobalProperty
+     *
      * @return GlobalProperty object
      */
-    public GlobalProperty getProp () {
-        return  prop;
+    public GlobalProperty getProp() {
+        return prop;
     }
 
     /**
      * Get the display name
+     *
      * @return display name
      */
-    public String getDisplayName () {
-        return  displayName;
+    public String getDisplayName() {
+        return displayName;
     }
 
     /**
      * Use the display name as the string representation
+     *
      * @return display name
      */
-    public String toString () {
-        return  displayName;
+    public String toString() {
+        return displayName;
     }
 }
 

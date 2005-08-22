@@ -9,6 +9,7 @@ import com.borland.primetime.properties.PropertyPageFactory;
  * <p>Description: Provides an environemnt for using the PMD aplication from within JBuilder</p>
  * <p>Copyright: Copyright (c) 2002</p>
  * <p>Company: InfoEther</p>
+ *
  * @author David Craine
  * @version 1.0
  */
@@ -19,13 +20,13 @@ public class ConfigureRuleSetPropertyGroup implements PropertyGroup {
 
     public PropertyPageFactory getPageFactory(Object topic) {
         if (topic == Constants.RULESETS_TOPIC) {
-           return  new PropertyPageFactory("PMD RuleSet Properties", "Configure the PMD RuleSets") {
+            return new PropertyPageFactory("PMD RuleSet Properties", "Configure the PMD RuleSets") {
 
-               public PropertyPage createPropertyPage () {
-                   return  new ConfigureRuleSetPropertyPage();
-               }
-           };
-       }
-        return  null;
+                public PropertyPage createPropertyPage() {
+                    return new ConfigureRuleSetPropertyPage();
+                }
+            };
+        }
+        return null;
     }
 }

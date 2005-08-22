@@ -10,7 +10,7 @@
  */
 
 
-package  net.sourceforge.pmd.jbuilder;
+package net.sourceforge.pmd.jbuilder;
 
 import com.borland.jbcl.layout.BoxLayout2;
 import com.borland.jbcl.layout.VerticalFlowLayout;
@@ -32,7 +32,6 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 
-
 public class ImportedRuleSetPropertyPage extends PropertyPage {
     private MessageCategory msgCat = new MessageCategory("PMD Import Status");
     private DefaultListModel dlmImportedRuleSets = new DefaultListModel();
@@ -52,7 +51,7 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
     /**
      * Constuctor
      */
-    public ImportedRuleSetPropertyPage () {
+    public ImportedRuleSetPropertyPage() {
         try {
             jbInit();
             init2();
@@ -64,11 +63,12 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
 
     /**
      * Initialize the interface components
-     * @exception Exception thows any exceptions that occur
+     *
+     * @throws Exception thows any exceptions that occur
      */
-    protected void jbInit () throws Exception {
-        border1 = BorderFactory.createEtchedBorder(Color.white,new Color(178, 178, 178));
-        titledBorder1 = new TitledBorder(border1,"Imported RuleSets");
+    protected void jbInit() throws Exception {
+        border1 = BorderFactory.createEtchedBorder(Color.white, new Color(178, 178, 178));
+        titledBorder1 = new TitledBorder(border1, "Imported RuleSets");
         this.setLayout(verticalFlowLayout1);
         jPanel1.setLayout(boxLayout21);
         btnImportRuleSet.setMaximumSize(new Dimension(175, 27));
@@ -105,8 +105,8 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
     private void init2() {
         listImportedRuleSets.setModel(dlmImportedRuleSets);
         //update the list with the
-        for (Iterator iter = ImportedRuleSetPropertyGroup.currentInstance.getRuleSets().iterator(); iter.hasNext(); ) {
-            RuleSet rs = (RuleSet)iter.next();
+        for (Iterator iter = ImportedRuleSetPropertyGroup.currentInstance.getRuleSets().iterator(); iter.hasNext();) {
+            RuleSet rs = (RuleSet) iter.next();
             dlmImportedRuleSets.addElement(rs.getName());
         }
     }
@@ -116,17 +116,17 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
      * We use this method to save the values of the properties based upon what list
      * they ended up in when the user was finished
      */
-    public void writeProperties () {
+    public void writeProperties() {
     }
 
     /**
      * get the Help TOpic
+     *
      * @return help topic
      */
-    public HelpTopic getHelpTopic () {
-        return new ZipHelpTopic(
-         null,
-         getClass().getResource("/html/import-ruleset-props.html").toString());
+    public HelpTopic getHelpTopic() {
+        return new ZipHelpTopic(null,
+                getClass().getResource("/html/import-ruleset-props.html").toString());
 
     }
 
@@ -134,17 +134,19 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
      * Called by JBuilder to setup the initial property settings.
      * We don't use this since we to all the property setup in the jbInit() method.
      */
-    public void readProperties () {}
+    public void readProperties() {
+    }
 
     /**
      * Called when the ImportRuleSet button is pressed
+     *
      * @param e action event
      */
     void btnImportRuleSet_actionPerformed(ActionEvent e) {
         String fileName = tfRuleSetFileName.getText();
         if (fileName != null && !fileName.trim().equals("")) {  //make sure we have a file name
             if (!fileName.toLowerCase().startsWith("rulesets/")) {   //normalize the file path and name
-                fileName = "rulesets/"+fileName;
+                fileName = "rulesets/" + fileName;
             }
             if (!fileName.toLowerCase().endsWith(".xml")) {
                 fileName += ".xml";
@@ -160,15 +162,13 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
                     dlmImportedRuleSets.addElement(rs.getName());
                     ImportedRuleSetPropertyGroup.currentInstance.addRuleSet(fileName, rs);
                     tfRuleSetFileName.setText("");   //clear out the text field
-                }
-                else {
+                } else {
                     //display error message
                     Message msg = new Message("Rule Set: " + fileName + " already exists");
                     msg.setForeground(Color.red);
                     Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg);
                 }
-            }
-            catch (Exception ex) {
+            } catch (Exception ex) {
                 //display error message
                 Message msg = new Message("Error importing: " + fileName);
                 msg.setForeground(Color.red);
@@ -179,11 +179,12 @@ public class ImportedRuleSetPropertyPage extends PropertyPage {
 
     /**
      * Remove the rule set
+     *
      * @param e action event
      */
     void btnRemoveRuleSet_actionPerformed(ActionEvent e) {
         int index = listImportedRuleSets.getSelectedIndex();
-        String ruleSetName = (String)dlmImportedRuleSets.elementAt(index);
+        String ruleSetName = (String) dlmImportedRuleSets.elementAt(index);
         dlmImportedRuleSets.remove(index);   //remove the ruleset from the list model
         ImportedRuleSetPropertyGroup.currentInstance.removeRuleSet(ruleSetName);  //remove the rule set from the property group
 

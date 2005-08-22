@@ -10,7 +10,7 @@
  */
 
 
-package  net.sourceforge.pmd.jbuilder;
+package net.sourceforge.pmd.jbuilder;
 
 import com.borland.jbcl.layout.VerticalFlowLayout;
 import com.borland.primetime.help.HelpTopic;
@@ -21,7 +21,6 @@ import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
 
 
 public class AcceleratorPropertyPage extends PropertyPage {
@@ -36,7 +35,7 @@ public class AcceleratorPropertyPage extends PropertyPage {
     private JPanel jPanel3 = new JPanel();
     private JLabel jLabel2 = new JLabel();
     private JLabel jLabel3 = new JLabel();
-    private int[][]keys = new int[2][2];
+    private int[][] keys = new int[2][2];
     private JTextField jTextField1 = new JTextField();
     private JLabel jLabel4 = new JLabel();
     private JPanel jPanel4 = new JPanel();
@@ -45,7 +44,7 @@ public class AcceleratorPropertyPage extends PropertyPage {
     /**
      * Constuctor
      */
-    public AcceleratorPropertyPage () {
+    public AcceleratorPropertyPage() {
         try {
             jbInit();
             init2();
@@ -57,9 +56,10 @@ public class AcceleratorPropertyPage extends PropertyPage {
 
     /**
      * Initialize the interface components
-     * @exception Exception thows any exceptions that occur
+     *
+     * @throws Exception thows any exceptions that occur
      */
-    protected void jbInit () throws Exception {
+    protected void jbInit() throws Exception {
         this.setLayout(verticalFlowLayout1);
         jLabel1.setText("Select the Action");
         jPanel2.setLayout(flowLayout1);
@@ -126,32 +126,29 @@ public class AcceleratorPropertyPage extends PropertyPage {
         jTextField2.setText(KeyEvent.getKeyText(keys[selectedItem][0]));
         jTextField3.setText(KeyEvent.getKeyModifiersText(keys[selectedItem][1]));
         jTextField1.addKeyListener(new KeyAdapter() {
-             public void keyPressed(KeyEvent e)
-             {
-                 int item = jComboBox1.getSelectedIndex();
-                 keys[item][0] = e.getKeyCode();
-                 keys[item][1] = e.getModifiers();
-                 if(e.isActionKey())
-                 {
-                     jTextField2.setText(KeyEvent.getKeyText(keys[item][0]));
-                     jTextField3.setText(KeyEvent.getKeyModifiersText(keys[item][1]));
-                     jTextField1.setText("");
+            public void keyPressed(KeyEvent e) {
+                int item = jComboBox1.getSelectedIndex();
+                keys[item][0] = e.getKeyCode();
+                keys[item][1] = e.getModifiers();
+                if (e.isActionKey()) {
+                    jTextField2.setText(KeyEvent.getKeyText(keys[item][0]));
+                    jTextField3.setText(KeyEvent.getKeyModifiersText(keys[item][1]));
+                    jTextField1.setText("");
 
-                 }
-             }
+                }
+            }
 
-             public void keyTyped(KeyEvent e)
-             {
-                 int item = jComboBox1.getSelectedIndex();
-                 jTextField2.setText(KeyEvent.getKeyText(keys[item][0]));
-                 jTextField3.setText(KeyEvent.getKeyModifiersText(keys[item][1]));
-                 jTextField1.setText("");
-             }
+            public void keyTyped(KeyEvent e) {
+                int item = jComboBox1.getSelectedIndex();
+                jTextField2.setText(KeyEvent.getKeyText(keys[item][0]));
+                jTextField3.setText(KeyEvent.getKeyModifiersText(keys[item][1]));
+                jTextField1.setText("");
+            }
 
         });
     }
 
-    public void writeProperties () {
+    public void writeProperties() {
         //we  need to tell the PMDOpenbTool to clear it's current key bindings before we save the new ones
         PMDOpenTool.clearShortCuts();
 
@@ -171,16 +168,18 @@ public class AcceleratorPropertyPage extends PropertyPage {
 
     /**
      * get the Help TOpic
+     *
      * @return help topic
      */
-    public HelpTopic getHelpTopic () {
+    public HelpTopic getHelpTopic() {
         return null;
     }
 
     /**
      * Called by JBuilder to setup the initial property settings.
      */
-    public void readProperties () {}
+    public void readProperties() {
+    }
 
     void jComboBox1_itemStateChanged(ItemEvent e) {
         int selectedItem = jComboBox1.getSelectedIndex();

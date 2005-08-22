@@ -10,7 +10,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 
-public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
+public class CPDDialog extends JFrame implements CPDListener, WindowListener {
     private CPD cpd;
     int progress = 0;
     boolean firstToken = true;
@@ -27,8 +27,7 @@ public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
         cpd.setCpdListener(this);
         try {
             jbInit();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -76,7 +75,7 @@ public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
 
     public void comparisonCountUpdate(long long0) {
         jLabel1.setText("Doing comparisons... " + long0);
-        jProgressBar1.setValue((int)long0);
+        jProgressBar1.setValue((int) long0);
     }
 
     public boolean wasCancelled() {
@@ -90,11 +89,11 @@ public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
     public CPDDialog() {
         try {
             jbInit();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     private void jbInit() throws Exception {
         jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel1.setText("CPD Status");
@@ -102,31 +101,39 @@ public class CPDDialog  extends JFrame implements CPDListener, WindowListener  {
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         this.getContentPane().add(jLabel1, null);
         this.getContentPane().add(jProgressBar1, null);
-        this.setVisible(true) ;
+        this.setVisible(true);
         this.pack();
         this.setSize(new Dimension(400, 114));
-        int xpos = (Toolkit.getDefaultToolkit().getScreenSize().width - this.getSize().width)/2;
-        int ypos = (Toolkit.getDefaultToolkit().getScreenSize().height - this.getSize().height)/2;
+        int xpos = (Toolkit.getDefaultToolkit().getScreenSize().width - this.getSize().width) / 2;
+        int ypos = (Toolkit.getDefaultToolkit().getScreenSize().height - this.getSize().height) / 2;
         this.setLocation(xpos, ypos);
         this.addWindowListener(this);
         this.show();
     }
+
     public void phaseUpdate(int i) {
     }
+
     public void windowOpened(WindowEvent e) {
     }
+
     public void windowClosing(WindowEvent e) {
         retCode = false;
     }
+
     public void windowClosed(WindowEvent e) {
 
     }
+
     public void windowIconified(WindowEvent e) {
     }
+
     public void windowDeiconified(WindowEvent e) {
     }
+
     public void windowActivated(WindowEvent e) {
     }
+
     public void windowDeactivated(WindowEvent e) {
     }
 }

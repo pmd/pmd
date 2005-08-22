@@ -24,6 +24,7 @@ import java.util.Iterator;
  * <p>Description: Provides an environemnt for using the PMD aplication from within JBuilder</p>
  * <p>Copyright: Copyright (c) 2002</p>
  * <p>Company: InfoEther</p>
+ *
  * @author David Craine
  * @version 1.0
  */
@@ -52,8 +53,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         try {
             jbInit();
             init2();
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -63,7 +63,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         //get the list if rule sets and populate the listRuleSets model
         dlmRuleSets.clear();
         for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext();) {
-            RuleSetProperty rsp = (RuleSetProperty)iter.next();
+            RuleSetProperty rsp = (RuleSetProperty) iter.next();
             dlmRuleSets.addElement(rsp.getActiveRuleSet().getName());
             listRuleSets.updateUI();
         }
@@ -78,8 +78,8 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
          * Go through all the ruleSetProperties objects and revalidate them to persist
          * their global properties
          */
-        for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext(); ) {
-            RuleSetProperty rsp = (RuleSetProperty)iter.next();
+        for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext();) {
+            RuleSetProperty rsp = (RuleSetProperty) iter.next();
             rsp.revalidateRules();
         }
     }
@@ -88,8 +88,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
      * This methiod is called by JBuilder
      */
     public HelpTopic getHelpTopic() {
-        return new ZipHelpTopic(
-                null,
+        return new ZipHelpTopic(null,
                 getClass().getResource("/html/configure-ruleset-props.html").toString());
     }
 
@@ -101,8 +100,8 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
          * Go through all the ruleSetProperties objects and reset them to the
          * GlobalProeprty values
          */
-        for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext(); ) {
-            RuleSetProperty rsp = (RuleSetProperty)iter.next();
+        for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext();) {
+            RuleSetProperty rsp = (RuleSetProperty) iter.next();
             rsp.resetRuleSelectionState();
         }
         this.listRules.updateUI();
@@ -110,15 +109,16 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
 
     /**
      * JBuilder-constructed initialization
+     *
      * @throws Exception
      */
     private void jbInit() throws Exception {
-        border1 = BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151));
-        titledBorderDescription = new TitledBorder(border1,"Description");
+        border1 = BorderFactory.createEtchedBorder(Color.white, new Color(165, 163, 151));
+        titledBorderDescription = new TitledBorder(border1, "Description");
         titledBorderExample = new TitledBorder(border1, "Example Code");
         this.setLayout(borderLayout1);
-        spRuleSets.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151)),"Rule Sets"));
-        spRules.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(Color.white,new Color(165, 163, 151)),"Rules"));
+        spRuleSets.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(Color.white, new Color(165, 163, 151)), "Rule Sets"));
+        spRules.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(Color.white, new Color(165, 163, 151)), "Rules"));
         listRuleSets.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         listRules.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         taExamples.setEditable(false);
@@ -133,7 +133,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         tpInfo.add(spExamples, "Example Code");
         spDescription.getViewport().add(taDescription, null);
         spExamples.getViewport().add(taExamples, null);
-        this.add(splitPaneConfRuleSets,  BorderLayout.CENTER);
+        this.add(splitPaneConfRuleSets, BorderLayout.CENTER);
         splitPaneConfRuleSets.add(spRuleSets, JSplitPane.TOP);
         spRuleSets.getViewport().add(listRuleSets, null);
         splitPaneConfRuleSets.add(spRules, JSplitPane.BOTTOM);
@@ -157,11 +157,10 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
             public void valueChanged(ListSelectionEvent e) {
                 listRuleSets_valueChanged(e);
             }
-        }
-        );
+        });
         //get the list if rule sets and populate the listRuleSets model
         for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext();) {
-            RuleSetProperty rsp = (RuleSetProperty)iter.next();
+            RuleSetProperty rsp = (RuleSetProperty) iter.next();
             dlmRuleSets.addElement(rsp.getActiveRuleSet().getName());
             listRuleSets.updateUI();
         }
@@ -171,18 +170,19 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
 
     /**
      * When a ruleset is selected we need to update the listRules list
+     *
      * @param e selection event
      */
     private void listRuleSets_valueChanged(ListSelectionEvent e) {
         this.dlmRules.clear();
-        String selectedRuleSet = ((JList)e.getSource()).getSelectedValue().toString();
+        String selectedRuleSet = ((JList) e.getSource()).getSelectedValue().toString();
         //get the RuleSetProperty for this ruleset
-        RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(selectedRuleSet);
+        RuleSetProperty rsp = (RuleSetProperty) ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(selectedRuleSet);
         //iterate over the rules from of the rule set
         //We need to iterate over the originalRuleSet because the active rule set only
         //has the rules that have been enabled
-        for (Iterator iter = rsp.getOriginalRuleSet().getRules().iterator(); iter.hasNext(); ) {
-            Rule rule = (Rule)iter.next();
+        for (Iterator iter = rsp.getOriginalRuleSet().getRules().iterator(); iter.hasNext();) {
+            Rule rule = (Rule) iter.next();
             String ruleName = rule.getName();
             dlmRules.addElement(new RuleData(ruleName, rsp));
         }
@@ -190,30 +190,26 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
 
     }
 
-    class CheckListener implements MouseListener, KeyListener
-    {
+    class CheckListener implements MouseListener, KeyListener {
         protected JList list;
 
-        public CheckListener(JList list)
-        {
+        public CheckListener(JList list) {
             this.list = list;
         }
 
-        public void mouseClicked(MouseEvent e)
-        {
+        public void mouseClicked(MouseEvent e) {
             if (e.getX() < 20)
                 doCheck();
             //display the example
             int index = list.getSelectedIndex();
             if (index < 0) return;
-            RuleData rd = (RuleData)list.getModel().getElementAt(index);
+            RuleData rd = (RuleData) list.getModel().getElementAt(index);
             //set the example text
             String example = rd.rsp.getOriginalRuleSet().getRuleByName(rd.ruleName).getExample();
             if (example != null) {
                 taExamples.setText(example);
                 taExamples.setCaretPosition(0);
-            }
-            else {
+            } else {
                 taExamples.setText("");
             }
             //set the description text
@@ -221,8 +217,7 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
             if (description != null) {
                 taDescription.setText(description);
                 taDescription.setCaretPosition(0);
-            }
-            else {
+            } else {
                 taDescription.setText("");
             }
             //set the border titleds
@@ -236,33 +231,37 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
         public void mousePressed(MouseEvent e) {
         }
 
-        public void mouseReleased(MouseEvent e) {}
+        public void mouseReleased(MouseEvent e) {
+        }
 
-        public void mouseEntered(MouseEvent e) {}
+        public void mouseEntered(MouseEvent e) {
+        }
 
-        public void mouseExited(MouseEvent e) {}
+        public void mouseExited(MouseEvent e) {
+        }
 
-        public void keyPressed(KeyEvent e)
-        {
+        public void keyPressed(KeyEvent e) {
             if (e.getKeyChar() == ' ')
                 doCheck();
         }
 
-        public void keyTyped(KeyEvent e) {}
-        public void keyReleased(KeyEvent e) {}
+        public void keyTyped(KeyEvent e) {
+        }
 
-        protected void doCheck()
-        {
+        public void keyReleased(KeyEvent e) {
+        }
+
+        protected void doCheck() {
             int index = list.getSelectedIndex();
             if (index < 0)
                 return;
-            RuleData rd = (RuleData)list.getModel().getElementAt(index);
+            RuleData rd = (RuleData) list.getModel().getElementAt(index);
             rd.invertSelected();
 
             //get the currently selected rule set
             String ruleSetName = listRuleSets.getSelectedValue().toString();
             //get the RuleSetProperty object
-            RuleSetProperty rsp = (RuleSetProperty)ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(ruleSetName);
+            RuleSetProperty rsp = (RuleSetProperty) ActiveRuleSetPropertyGroup.currentInstance.ruleSets.get(ruleSetName);
             //update the selection setting for this rule in the rule set property
             rsp.setRuleSelected(rd.getName(), rd.isSelected());
 
@@ -271,17 +270,13 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
     }
 
 
-
-
     class CheckCellRenderer extends JPanel
-            implements ListCellRenderer
-    {
+            implements ListCellRenderer {
         protected JCheckBox check;
         protected Border m_noFocusBorder = new EmptyBorder(1, 1, 1, 1);
 
 
-        public CheckCellRenderer()
-        {
+        public CheckCellRenderer() {
             super();
             setOpaque(true);
             setBorder(m_noFocusBorder);
@@ -289,14 +284,13 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
 
         // This is the only method defined by ListCellRenderer.
         // We just reconfigure the JLabel each time we're called.
-        public Component getListCellRendererComponent (
-                JList list,
-                Object value,                    // value to display
-                int index,                  // cell index
-                boolean isSelected,         // is the cell selected
-                boolean cellHasFocus)       // the list and the cell have the focus
+        public Component getListCellRendererComponent(JList list,
+                                                      Object value, // value to display
+                                                      int index, // cell index
+                                                      boolean isSelected, // is the cell selected
+                                                      boolean cellHasFocus)       // the list and the cell have the focus
         {
-            RuleData rd = (RuleData)value;
+            RuleData rd = (RuleData) value;
             JCheckBox c = new JCheckBox(rd.getName(), rd.isSelected());
             //c.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
             //c.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
@@ -309,30 +303,39 @@ public class ConfigureRuleSetPropertyPage extends PropertyPage {
     }
 }
 
-class RuleData
-{
+class RuleData {
     protected String ruleName;
     protected boolean selected;
     protected RuleSetProperty rsp;
 
-    public RuleData(String ruleName)
-    {
+    public RuleData(String ruleName) {
         this.ruleName = ruleName;
         selected = true;
     }
+
     public RuleData(String ruleName, RuleSetProperty rsp) {
         this(ruleName);
         this.rsp = rsp;
         this.selected = rsp.isRuleSelected(ruleName);
     }
 
-    public String getName() { return ruleName; }
+    public String getName() {
+        return ruleName;
+    }
 
-    public void setSelected(boolean selected) { this.selected = selected;}
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
-    public void invertSelected() { this.selected = !this.selected; }
+    public void invertSelected() {
+        this.selected = !this.selected;
+    }
 
-    public boolean isSelected() { return this.selected; }
+    public boolean isSelected() {
+        return this.selected;
+    }
 
-    public String toString() { return this.ruleName;}
+    public String toString() {
+        return this.ruleName;
+    }
 }

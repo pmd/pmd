@@ -10,7 +10,7 @@
  */
 
 
-package  net.sourceforge.pmd.jbuilder;
+package net.sourceforge.pmd.jbuilder;
 
 import com.borland.primetime.properties.GlobalProperty;
 import com.borland.primetime.properties.PropertyGroup;
@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 
-
 /**
  * put your documentation comment here
  */
@@ -34,15 +33,15 @@ public class ActiveRuleSetPropertyGroup
     public HashMap ruleSets = new HashMap();
 
     /**
-    * Standard Constructor
-    */
-    public ActiveRuleSetPropertyGroup () {
+     * Standard Constructor
+     */
+    public ActiveRuleSetPropertyGroup() {
         currentInstance = this;
     }
 
     private void getImportedRuleSets() {
-        for (Iterator e = ImportedRuleSetPropertyGroup.currentInstance.getRuleSets().iterator(); e.hasNext(); ) {
-            RuleSet rs = (RuleSet)e.next();
+        for (Iterator e = ImportedRuleSetPropertyGroup.currentInstance.getRuleSets().iterator(); e.hasNext();) {
+            RuleSet rs = (RuleSet) e.next();
             GlobalProperty gp = new GlobalProperty(Constants.RULESETS, rs.getName(), "true");
             RuleSetProperty rsp = new RuleSetProperty(gp, rs);
             ruleSets.put(rs.getName(), rsp);
@@ -58,45 +57,45 @@ public class ActiveRuleSetPropertyGroup
     /**
      * Called by JBuilder
      */
-    public void initializeProperties () {
-    /**
-     * Populate the ruleSets hashmap with the known rule sets and their corresponding
-     * global properties.
-     */
+    public void initializeProperties() {
+        /**
+         * Populate the ruleSets hashmap with the known rule sets and their corresponding
+         * global properties.
+         */
         try {
             GlobalProperty.readProperties();
             RuleSetFactory rsf = new RuleSetFactory();
             Iterator iter = rsf.getRegisteredRuleSets();
 
             while (iter.hasNext()) {
-                RuleSet rs = (RuleSet)iter.next();
+                RuleSet rs = (RuleSet) iter.next();
                 GlobalProperty gp = new GlobalProperty(Constants.RULESETS, rs.getName(), "true");
                 RuleSetProperty rsp = new RuleSetProperty(gp, rs);
                 ruleSets.put(rs.getName(), rsp);
             }
             getImportedRuleSets();
-        }
-        catch (Exception e) {
-        e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
 
     /**
      * Create the panel that will go in the property page
+     *
      * @param topic Topic of page (represented as a tab in the property page)
      * @return Factory for creating property pages - this factory will create RuleSetPropertyPages
      */
-    public PropertyPageFactory getPageFactory (Object topic) {
+    public PropertyPageFactory getPageFactory(Object topic) {
         if (topic == Constants.RULESETS_TOPIC) {
-            return  new PropertyPageFactory("Active PMD RuleSets", "Set the Active PMD RuleSets") {
+            return new PropertyPageFactory("Active PMD RuleSets", "Set the Active PMD RuleSets") {
 
-                public PropertyPage createPropertyPage () {
-                    return  new ActiveRuleSetPropertyPage();
+                public PropertyPage createPropertyPage() {
+                    return new ActiveRuleSetPropertyPage();
                 }
             };
         }
-        return  null;
+        return null;
     }
 }
 
