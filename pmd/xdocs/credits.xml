@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jan Koops - bug report for JBuilder plugin</li>
             <li>Peter Frandsen - PackageCase rule, NoPackage rule</li>
             <li>Noureddine Bekrar - French translation of some PMD documentation</li>
             <li>Florian Deissenboeck - reported JDK 1.5 grammar bug</li>
