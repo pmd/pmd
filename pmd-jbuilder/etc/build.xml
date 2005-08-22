@@ -37,14 +37,14 @@
 <target name="jar" depends="compile" description="Jars up the classes and rulesets">
     <mkdir dir="build/html"/>
     <copy todir="build/html">
-        <fileset dir="doc">
-            <include name="**/*.html"/>
+        <fileset dir="src/html">
+            <include name="*.html"/>
         </fileset>
     </copy>
     <mkdir dir="build/images"/>
     <copy todir="build/images">
-        <fileset dir="src/images/">
-            <include name="**/*.gif"/>
+        <fileset dir="src/images">
+            <include name="*.gif"/>
         </fileset>
     </copy>
     <jar

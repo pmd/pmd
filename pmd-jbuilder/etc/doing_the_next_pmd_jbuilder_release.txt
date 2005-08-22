@@ -41,3 +41,17 @@ Add the pmd-jbuilder-bin-0.3.zip file
 Classify the file
 
 Submit some news saying "hey, new release of the jbuilder plugin!"
+====================================================================
+Fixed in CVS, and you can download an updated PMDOpenTool.jar file here:
+
+http://infoether.com/~tom/PMDOpenTool.jar
+
+that fixes this bug.  To use the file, stop JBuilder, place PMDOpenTool.jar in your jbuilder/lib/ext directory, and restart JBuilder.
+
+Please note that this new file depends on pmd-3.2.jar, so you'll need to download the pmd-3.2 release and unzip it and copy the lib/pmd-3.2.jar file into the same directory.  Or if you prefer, you can just wait until I do the next formal JBuilder plugin release.
+
+Thanks for the report!
+
+Yours,
+
+Tom

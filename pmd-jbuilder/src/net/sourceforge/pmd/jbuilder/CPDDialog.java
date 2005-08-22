@@ -5,8 +5,7 @@ import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.CPDListener;
 
 import javax.swing.*;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;

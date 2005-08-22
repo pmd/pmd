@@ -7,7 +7,7 @@
  * @version 1.0
  */
 
-package  net.sourceforge.pmd.jbuilder;
+package net.sourceforge.pmd.jbuilder;
 
 import com.borland.jbcl.control.MessageDialog;
 import com.borland.jbuilder.JBuilderMenu;
@@ -16,29 +16,15 @@ import com.borland.jbuilder.node.JavaFileNode;
 import com.borland.jbuilder.node.PackageNode;
 import com.borland.primetime.PrimeTime;
 import com.borland.primetime.actions.ActionGroup;
-import com.borland.primetime.editor.EditorAction;
-import com.borland.primetime.editor.EditorManager;
-import com.borland.primetime.editor.EditorPane;
-import com.borland.primetime.editor.LineMark;
-import com.borland.primetime.editor.MasterStyleContext;
-import com.borland.primetime.ide.Browser;
-import com.borland.primetime.ide.BrowserAction;
-import com.borland.primetime.ide.ContentManager;
-import com.borland.primetime.ide.ContextActionProvider;
-import com.borland.primetime.ide.Message;
-import com.borland.primetime.ide.MessageCategory;
-import com.borland.primetime.ide.ProjectView;
+import com.borland.primetime.editor.*;
+import com.borland.primetime.ide.*;
 import com.borland.primetime.node.FileNode;
 import com.borland.primetime.node.Node;
 import com.borland.primetime.properties.PropertyDialog;
 import com.borland.primetime.properties.PropertyManager;
 import com.borland.primetime.vfs.Url;
 import com.borland.primetime.viewer.TextNodeViewer;
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Match;
@@ -49,16 +35,11 @@ import javax.swing.text.Document;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
-
 
 
 public class PMDOpenTool {
@@ -88,8 +69,7 @@ public class PMDOpenTool {
             IMAGE_CHECK_SELECTED_FILE = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkSelectedFile.gif"));
             IMAGE_CONFIGURE_PMD = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/configurePMD.gif"));
             IMAGE_CPD_SELECTED_PACKAGE = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/cpdSelectedPackage.gif"));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             MessageDialog md = new MessageDialog(null, "Error Loading PMD Images", e.toString());
             md.show();
         }
@@ -99,17 +79,17 @@ public class PMDOpenTool {
     /**
      * Default constructor
      */
-    public PMDOpenTool () {
+    public PMDOpenTool() {
     }
-
 
 
     /**
      * Required for JBuilder OpenTool support
+     *
      * @param majorVersion major version id
      * @param minorVersion minor version id
      */
-    public static void initOpenTool (byte majorVersion, byte minorVersion) {
+    public static void initOpenTool(byte majorVersion, byte minorVersion) {
         if (majorVersion == PrimeTime.CURRENT_MAJOR_VERSION) {
             try {
                 GROUP_MENU_PMD.add(B_ACTION_PMDCheckCurrentFile);
@@ -149,8 +129,7 @@ public class PMDOpenTool {
                     PropertyManager.registerPropertyGroup(accpropGrp);
                 }
                 PropertyManager.registerPropertyGroup(cpdPropGrp);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 MessageDialog md = new MessageDialog(null, "PMDOpenTool Loading Error", e.toString());
                 md.show();
             }
@@ -159,20 +138,20 @@ public class PMDOpenTool {
 
 
     static void clearShortCuts() {
-        EditorManager.getKeymap().removeKeyStrokeBinding(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKFILE_KEY.getInteger(),
-                AcceleratorPropertyGroup.PROP_CHECKFILE_MOD.getInteger()));
-        EditorManager.getKeymap().removeKeyStrokeBinding(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKPROJ_KEY.getInteger(),
-                AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.getInteger()));
+        EditorManager.getKeymap().removeKeyStrokeBinding(KeyStroke.getKeyStroke(net.sourceforge.pmd.jbuilder.AcceleratorPropertyGroup.PROP_CHECKFILE_KEY.getInteger(),
+                net.sourceforge.pmd.jbuilder.AcceleratorPropertyGroup.PROP_CHECKFILE_MOD.getInteger()));
+        EditorManager.getKeymap().removeKeyStrokeBinding(KeyStroke.getKeyStroke(net.sourceforge.pmd.jbuilder.AcceleratorPropertyGroup.PROP_CHECKPROJ_KEY.getInteger(),
+                net.sourceforge.pmd.jbuilder.AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.getInteger()));
     }
 
     static void registerShortCuts() {
 
-        EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKFILE_KEY.getInteger(),
-                AcceleratorPropertyGroup.PROP_CHECKFILE_MOD.getInteger()),
+        EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(net.sourceforge.pmd.jbuilder.AcceleratorPropertyGroup.PROP_CHECKFILE_KEY.getInteger(),
+                net.sourceforge.pmd.jbuilder.AcceleratorPropertyGroup.PROP_CHECKFILE_MOD.getInteger()),
                 E_ACTION_PMDCheckCurrentFile);
 
-        EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(AcceleratorPropertyGroup.PROP_CHECKPROJ_KEY.getInteger(),
-                AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.getInteger()),
+        EditorManager.getKeymap().addActionForKeyStroke(KeyStroke.getKeyStroke(net.sourceforge.pmd.jbuilder.AcceleratorPropertyGroup.PROP_CHECKPROJ_KEY.getInteger(),
+                net.sourceforge.pmd.jbuilder.AcceleratorPropertyGroup.PROP_CHECKPROJ_MOD.getInteger()),
                 E_ACTION_PMDCheckProject);
     }
 
@@ -180,11 +159,11 @@ public class PMDOpenTool {
      * Registers an "PMD Checker" action with the ContentManager (Tabs)
      * The action will not be visible if multiple nodes are selected
      */
-    private static void registerWithContentManager () {
+    private static void registerWithContentManager() {
         ContextActionProvider cap = new ContextActionProvider() {
 
-            public Action getContextAction (Browser browser, Node[] nodes) {
-                return  B_ACTION_PMDCheckCurrentFile;
+            public Action getContextAction(Browser browser, Node[] nodes) {
+                return B_ACTION_PMDCheckCurrentFile;
             }
         };
         ContentManager.registerContextActionProvider(cap);
@@ -197,15 +176,13 @@ public class PMDOpenTool {
         GROUP_PACKAGE_PMD.add(B_ACTION_CPDPackageCheck);
 
         ContextActionProvider cap1 = new ContextActionProvider() {
-            public Action getContextAction (Browser browser, Node[] nodes) {
+            public Action getContextAction(Browser browser, Node[] nodes) {
                 Node node = browser.getProjectView().getSelectedNode();
                 if (node instanceof JBProject) {  //used to check across an entire project
                     return GROUP_PROJECT_PMD;
-                }
-                else if (node instanceof PackageNode) {   //used to check against a single package
+                } else if (node instanceof PackageNode) {   //used to check against a single package
                     return GROUP_PACKAGE_PMD;
-                }
-                else if (node instanceof JavaFileNode) {
+                } else if (node instanceof JavaFileNode) {
                     return B_ACTION_PMDCheckSelectedFile;
                 }
                 return null;
@@ -217,321 +194,320 @@ public class PMDOpenTool {
 
     /**
      * Create PMD Rule Sets based upon the configuration settings
-     * @param ruleSetFactory PMD RuleSetFactory
-     * @param pmd PMD object
+     *
      * @return A Ruleset and any embedded rulesets
      */
-    private static RuleSet constructRuleSets () {
+    private static RuleSet constructRuleSets() {
         RuleSet masterRuleSet = new RuleSet();
-        for (Iterator iter = ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext(); ) {
-            RuleSetProperty rsp = (RuleSetProperty)iter.next();
+        for (Iterator iter = net.sourceforge.pmd.jbuilder.ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext();) {
+            net.sourceforge.pmd.jbuilder.RuleSetProperty rsp = (net.sourceforge.pmd.jbuilder.RuleSetProperty) iter.next();
             if (Boolean.valueOf(rsp.getGlobalProperty().getValue()).booleanValue()) {
                 RuleSet rules = rsp.getActiveRuleSet();
                 masterRuleSet.addRuleSet(rules);
             }
         }
-        return  masterRuleSet;
+        return masterRuleSet;
     }
 
     /**
      * Run the PMD against some code
+     *
      * @param text code to check
      * @return PMD Report object
      */
-    public static Report instanceCheck (String text, RuleSet rules) {
+    public static Report instanceCheck(String text, RuleSet rules) {
         PMD pmd = new PMD();
         RuleContext ctx = new RuleContext();
         if (rules == null) {
             rules = constructRuleSets();
         }
         if (rules == null)
-            return  new Report();
+            return new Report();
         ctx.setReport(new Report());
         ctx.setSourceCodeFilename("this");
         try {
             pmd.processFile(new StringReader(text), rules, ctx);
-            return  ctx.getReport();
+            return ctx.getReport();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return  null;
+        return null;
     }
 
 
     //create EditorAction for performing a PMD Check
     public static EditorAction E_ACTION_PMDCheckCurrentFile =
-            new EditorAction("Displays PMD statistics about a Java File") {
-        public void actionPerformed(ActionEvent e) {
-            pmdCheck();
-        }
-    };
+            new EditorAction("Check with PMD") {
+                public void actionPerformed(ActionEvent e) {
+                    pmdCheck();
+                }
+            };
 
-            //create EditorAction for performing a PMD Check on a project
-            public static EditorAction E_ACTION_PMDCheckProject =
-                    new EditorAction("Displays PMD statistics about a Java File") {
+    //create EditorAction for performing a PMD Check on a project
+    public static EditorAction E_ACTION_PMDCheckProject =
+            new EditorAction("Check with PMD") {
                 public void actionPerformed(ActionEvent e) {
                     pmdCheckProject();
                 }
             };
 
-                    //create the Menu action item for initiating the PMD check
-                    public static BrowserAction B_ACTION_PMDCheckCurrentFile =
-                            // A new action with short menu string, mnemonic, and long menu string
-                    new BrowserAction("PMD Check File", 'P', "Displays PMD statistics about a Java File", IMAGE_CHECK_FILE) {
-                        // The function called when the menu is selected
-                        public void actionPerformed (Browser browser) {
-                            pmdCheck();
+    //create the Menu action item for initiating the PMD check
+    public static BrowserAction B_ACTION_PMDCheckCurrentFile =
+            // A new action with short menu string, mnemonic, and long menu string
+            new BrowserAction("PMD Check File", 'P', "Check with PMD", IMAGE_CHECK_FILE) {
+                // The function called when the menu is selected
+                public void actionPerformed(Browser browser) {
+                    pmdCheck();
+                }
+            };
+
+    //create the Menu action item for initiating the PMD check
+    public static BrowserAction B_ACTION_PMDCheckSelectedFile =
+            // A new action with short menu string, mnemonic, and long menu string
+            new BrowserAction("PMD Check File", 'P', "Check with PMD", IMAGE_CHECK_SELECTED_FILE) {
+                // The function called when the menu is selected
+                public void actionPerformed(Browser browser) {
+                    try {
+                        browser.setActiveNode(browser.getProjectView().getSelectedNode(), true);
+                        pmdCheck();
+                    } catch (Exception e) {
+                    }
+                }
+            };
+
+    //Create the menu action item for configuring PMD
+    public static BrowserAction B_ACTION_PMDConfig = new BrowserAction("Configure PMD",
+            'C', "Configure the PMD Settings", IMAGE_CONFIGURE_PMD) {
+        public void actionPerformed(Browser browser) {
+            PropertyManager.showPropertyDialog(browser, "PMD Options", Constants.RULESETS_TOPIC,
+                    PropertyDialog.getLastSelectedPage());
+        }
+    };
+
+    //create the project menu action for running a PMD check against all the java files within the active project
+    public static BrowserAction B_ACTION_PMDProjectCheck = new BrowserAction("PMD Check Project", 'P', "Check all the java files in the project", IMAGE_CHECK_PROJECT) {
+        public void actionPerformed(Browser browser) {
+            pmdCheckProject();
+        }
+
+    };
+
+    //create the project menu action for running a PMD check against all the java files within the active project
+    public static BrowserAction B_ACTION_PMDPackageCheck = new BrowserAction("PMD Check Package", 'P', "Check all the java files in the selected package", IMAGE_CHECK_SELECTED_PACKAGE) {
+        public void actionPerformed(Browser browser) {
+            browser.waitMessage("PMD Status", "Please wait while PMD checks the files in this package.");
+            RuleSet rules = constructRuleSets();
+            PackageNode node = (PackageNode) browser.getProjectView().getSelectedNode();
+            pmdCheckPackage(node, rules);
+            browser.clearWaitMessages();
+        }
+
+    };
+
+    //create the project menu action for running a PMD check against all the java files within the active project
+    public static BrowserAction B_ACTION_CPDPackageCheck = new BrowserAction("CPD Check Package", 'P', "Check all the java files in the selected package", IMAGE_CPD_SELECTED_PACKAGE) {
+        public void actionPerformed(final Browser browser) {
+            Runnable r = new Runnable() {
+                public void run() {
+                    pmdCPD((PackageNode) browser.getProjectView().getSelectedNode());
+                }
+            };
+            Thread t = new Thread(r);
+            t.start();
+        }
+
+    };
+
+
+    //create the project menu action for running a PMD check against all the java files within the active project
+    public static BrowserAction B_ACTION_CPDProjectCheck = new BrowserAction("CPD Check Project", 'P', "Run CPD on all the java files in the project", IMAGE_CPD) {
+        public void actionPerformed(Browser browser) {
+            Runnable r = new Runnable() {
+                public void run() {
+                    pmdCPD(null);
+                }
+            };
+            Thread t = new Thread(r);
+            t.start();
+        }
+    };
+
+    static void checkCode(String srcCode, JavaFileNode node, RuleSet rules) {
+        try {
+            Report rpt = instanceCheck(srcCode, rules);
+            if (rpt == null) {
+                Message msg = new Message("Error Processing File");
+                msg.setFont(stdMsgFont);
+                Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg, false);
+            } else {
+                for (Iterator i = rpt.iterator(); i.hasNext();) {
+                    addPMDWarningMessage((RuleViolation) i.next(), node);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private static void addPMDWarningMessage(RuleViolation rv, JavaFileNode node) {
+        PMDMessage pmdMsg = new PMDMessage(rv.getRule().getName() + ": " + rv.getDescription() + " at line " + rv.getLine(), rv.getLine(), node);
+        pmdMsg.setForeground(Color.red);
+        pmdMsg.setFont(stdMsgFont);
+        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, pmdMsg, false);
+    }
+
+    private static void pmdCheck() {
+        Node node = Browser.getActiveBrowser().getActiveNode();
+        if (node instanceof JavaFileNode) {
+            Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
+            TextNodeViewer viewer = (TextNodeViewer) Browser.getActiveBrowser().getViewerOfType(node, TextNodeViewer.class);
+            if (viewer != null) {
+                Document doc = viewer.getEditor().getDocument();
+                try {
+                    checkCode(doc.getText(0, doc.getLength()), (JavaFileNode) node, null);
+                } catch (Exception e) {
+                    Browser.getActiveBrowser().getMessageView().addMessage(msgCat, "Error: " + e.toString());
+                    e.printStackTrace();
+                }
+            } else {
+                Browser.getActiveBrowser().getMessageView().addMessage(msgCat, "No active Browser.");
+            }
+        }
+    }
+
+    private static void pmdCheckPackage(PackageNode packageNode, RuleSet rules) {
+        Node[] fileNodes = packageNode.getDisplayChildren();
+        for (int j = 0; j < fileNodes.length; j++) {
+            if (fileNodes[j] instanceof JavaFileNode) {
+                JavaFileNode javaNode = (JavaFileNode) fileNodes[j];
+                try {
+                    StringBuffer code = loadCodeToString(javaNode);
+                    Report rpt = instanceCheck(code.toString(), rules);
+                    if (rpt == null) {
+                        Message msg = new Message("Error Processing File");
+                        msg.setFont(stdMsgFont);
+                        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg, false);
+                    } else {
+                        for (Iterator i = rpt.iterator(); i.hasNext();) {
+                            addPMDWarningMessage((RuleViolation) i.next(), javaNode);
                         }
-                    };
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else if (fileNodes[j] instanceof PackageNode) {
+                pmdCheckPackage((PackageNode) fileNodes[j], rules);  //recursive call
+            }
+        }
 
-                    //create the Menu action item for initiating the PMD check
-                    public static BrowserAction B_ACTION_PMDCheckSelectedFile =
-                            // A new action with short menu string, mnemonic, and long menu string
-                    new BrowserAction("PMD Check File", 'P', "Displays PMD statistics about a Java File", IMAGE_CHECK_SELECTED_FILE) {
-                        // The function called when the menu is selected
-                        public void actionPerformed (Browser browser) {
-                            try {
-                                browser.setActiveNode(browser.getProjectView().getSelectedNode(), true);
-                                pmdCheck();
-                            }
-                            catch (Exception e) {}
+    }
+
+    private static StringBuffer loadCodeToString(JavaFileNode javaNode) throws IOException {
+        StringBuffer code = new StringBuffer();
+        byte[] buffer = new byte[1024];
+        InputStream is = javaNode.getInputStream();
+        int charCount;
+        while ((charCount = is.read(buffer)) != -1) {
+            code.append(new String(buffer, 0, charCount));
+        }
+        return code;
+    }
+
+    private static void pmdCheckProject() {
+        Browser.getActiveBrowser().waitMessage("PMD Status", "Please wait while PMD checks the files in your project.");
+        Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
+        Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
+        RuleSet rules = constructRuleSets();
+        for (int i = 0; i < nodes.length; i++) {
+            if (nodes[i] instanceof PackageNode) {
+                PackageNode node = (PackageNode) nodes[i];
+                String packageName = node.getName();
+                if (packageName != null && !packageName.trim().equals("")) {  //if there is no name then this is probably the <Project Source> package - so ignore it so we don't get duplicates
+                    pmdCheckPackage(node, rules);
+                }
+            }
+        }
+        Browser.getActiveBrowser().clearWaitMessages();
+    }
+
+    private static void pmdCPDPackage(PackageNode packageNode, CPD cpd) {
+        Node[] fileNodes = packageNode.getDisplayChildren();
+        for (int j = 0; j < fileNodes.length; j++) {
+            if (fileNodes[j] instanceof JavaFileNode) {
+                try {
+                    cpd.add(new File(fileNodes[j].getLongDisplayName()));
+                } catch (Exception e) {
+                }
+            } else if (fileNodes[j] instanceof PackageNode) {
+                pmdCPDPackage((PackageNode) fileNodes[j], cpd);   //recursive call
+            }
+        }
+    }
+
+    private static void pmdCPD(PackageNode startingNode) {
+        try {
+            Browser.getActiveBrowser().getMessageView().clearMessages(cpdCat);      //clear the message window
+            final CPD cpd = new CPD(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger(), new LanguageFactory().createLanguage(LanguageFactory.JAVA_KEY));
+            //cpd.setMinimumTileSize(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger());
+            CPDDialog cpdd = new CPDDialog(cpd);
+
+            if (startingNode != null) {   //rub cpd across the provided node
+                pmdCPDPackage(startingNode, cpd);
+            } else {  //otherwise, traverse all the nodes looking for package nodes
+                Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
+                for (int i = 0; i < nodes.length; i++) {
+                    if (nodes[i] instanceof PackageNode) {
+                        PackageNode node = (PackageNode) nodes[i];
+                        String packageName = node.getName();
+                        if (packageName != null && !packageName.trim().equals("")) {  //if there is no name then this is probably the <Project Source> package - so ignore it so we don't get duplicates
+                            pmdCPDPackage(node, cpd);
                         }
-                    };
+                    }
+                }
+            }
+            cpd.go();
+            if (cpdd.wasCancelled()) {  //if the dialog was cancelled by the user then let's get out of here
+                cpdd.close();
+                return;
+            }
+            //Results results = cpd.getResults();
+            int resultCount = 0;
+            //if (results != null) {
+            //for (Iterator iter = results.getTiles(); iter.hasNext(); ) {
+            for (Iterator iter = cpd.getMatches(); iter.hasNext();) {
+                //Tile t = (Tile)iter.next();
+                Match m = (Match) iter.next();
+                resultCount++;
+                int tileLineCount = m.getLineCount();
+                int dupCount = 0;
+                for (Iterator iter2 = m.iterator(); iter2.hasNext();) {
+                    dupCount++;
+                    iter2.next();
+                }
+                CPDMessage msg = CPDMessage.createMessage(String.valueOf(dupCount) + " duplicates in code set: " + resultCount, m.getSourceCodeSlice());
+                for (Iterator iter2 = m.iterator(); iter2.hasNext();) {
+                    TokenEntry mark = (TokenEntry) iter2.next();
+                    msg.addChildMessage(mark.getBeginLine(), tileLineCount, mark.getTokenSrcID());
+                }
+                Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, msg, false);
+            }
 
-                    //Create the menu action item for configuring PMD
-                    public static BrowserAction B_ACTION_PMDConfig = new BrowserAction("Configure PMD",
-                            'C', "Configure the PMD Settings", IMAGE_CONFIGURE_PMD) {
-                        public void actionPerformed (Browser browser) {
-                            PropertyManager.showPropertyDialog(browser, "PMD Options", Constants.RULESETS_TOPIC,
-                                    PropertyDialog.getLastSelectedPage());
-                        }
-                    };
+            cpdd.close();
+        } catch (Exception e) {
+            Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, new Message(e.toString()), false);
+        }
+    }
 
-                            //create the project menu action for running a PMD check against all the java files within the active project
-                            public static BrowserAction B_ACTION_PMDProjectCheck = new BrowserAction ("PMD Check Project", 'P', "Check all the java files in the project", IMAGE_CHECK_PROJECT) {
-                                public void actionPerformed(Browser browser) {
-                                    pmdCheckProject();
-                                }
-
-                            };
-
-                            //create the project menu action for running a PMD check against all the java files within the active project
-                            public static BrowserAction B_ACTION_PMDPackageCheck = new BrowserAction ("PMD Check Package", 'P', "Check all the java files in the selected package", IMAGE_CHECK_SELECTED_PACKAGE) {
-                                public void actionPerformed(Browser browser) {
-                                    browser.waitMessage("PMD Status", "Please wait while PMD checks the files in this package.");
-                                    RuleSet rules = constructRuleSets();
-                                    PackageNode node = (PackageNode)browser.getProjectView().getSelectedNode();
-                                    pmdCheckPackage(node, rules);
-                                    browser.clearWaitMessages();
-                                }
-
-                            };
-
-                            //create the project menu action for running a PMD check against all the java files within the active project
-                            public static BrowserAction B_ACTION_CPDPackageCheck = new BrowserAction ("CPD Check Package", 'P', "Check all the java files in the selected package", IMAGE_CPD_SELECTED_PACKAGE) {
-                                public void actionPerformed(final Browser browser) {
-                                    Runnable r = new Runnable() {
-                                        public void run() {
-                                            pmdCPD((PackageNode)browser.getProjectView().getSelectedNode());
-                                        }
-                                    };
-                                    Thread t = new Thread(r);
-                                    t.start();
-                                }
-
-                            };
-
-
-                            //create the project menu action for running a PMD check against all the java files within the active project
-                            public static BrowserAction B_ACTION_CPDProjectCheck = new BrowserAction ("CPD Check Project", 'P', "Run CPD on all the java files in the project", IMAGE_CPD) {
-                                public void actionPerformed(Browser browser) {
-                                    Runnable r = new Runnable() {
-                                        public void run() {
-                                            pmdCPD(null);
-                                        }
-                                    };
-                                    Thread t = new Thread(r);
-                                    t.start();
-                                }
-                            };
-
-                            static void checkCode(String srcCode, JavaFileNode node, RuleSet rules) {
-                                try {
-                                    Report rpt = instanceCheck(srcCode, rules);
-                                    if (rpt == null) {
-                                        Message msg = new Message("Error Processing File");
-                                        msg.setFont(stdMsgFont);
-                                        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg, false);
-                                    }
-                                    else if (rpt.size() == 0) {
-//                                        Message msg = new Message("No violations detected.");
-//                                        msg.setFont(stdMsgFont);
-//                                        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg, false);
-                                    }
-                                    else {
-                                        for (Iterator i = rpt.iterator(); i.hasNext();) {
-                                            RuleViolation rv = (RuleViolation)i.next();
-                                            PMDMessage pmdMsg = new PMDMessage(rv.getRule().getName() + ": " + rv.getDescription()
-                                                    + " at line " + rv.getLine(), rv.getLine(),
-                                                    node);
-                                            pmdMsg.setForeground(Color.red);
-                                            pmdMsg.setFont(stdMsgFont);
-                                            Browser.getActiveBrowser().getMessageView().addMessage(msgCat, pmdMsg, false);                //add the result message
-                                        }
-                                    }
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                            }
-
-                            private static void pmdCheck() {
-                                Node node = Browser.getActiveBrowser().getActiveNode();
-                                if (node instanceof JavaFileNode) {
-                                    Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
-                                    TextNodeViewer viewer = (TextNodeViewer)Browser.getActiveBrowser().getViewerOfType(node, TextNodeViewer.class);
-                                    if (viewer != null) {
-                                        Document doc = viewer.getEditor().getDocument();
-                                        try {
-                                            checkCode(doc.getText(0, doc.getLength()), (JavaFileNode)node, null);
-                                        }
-                                        catch (Exception e){
-                                            Browser.getActiveBrowser().getMessageView().addMessage(msgCat, "Error: " + e.toString());
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    else {
-                                        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, "No active Browser.");
-                                    }
-                                }
-                            }
-
-                            private static void pmdCheckPackage(PackageNode packageNode, RuleSet rules) {
-                                Node[] fileNodes = packageNode.getDisplayChildren();
-                                for (int j=0; j<fileNodes.length; j++) {
-                                    if (fileNodes[j] instanceof JavaFileNode) {
-                                        Message fileNameMsg = new Message(fileNodes[j].getDisplayName());
-                                        fileNameMsg.setFont(fileNameMsgFont);
-                                        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, fileNameMsg, false);
-                                        JavaFileNode javaNode = (JavaFileNode)fileNodes[j];
-                                        StringBuffer code = new StringBuffer();
-                                        try {
-                                            byte[] buffer = new byte[1024];
-                                            InputStream is = javaNode.getInputStream();
-                                            int charCount;
-                                            while ((charCount = is.read(buffer)) != -1) {
-                                                code.append(new String(buffer, 0, charCount));
-                                            }
-                                            checkCode(code.toString(), javaNode, rules);
-                                        }
-                                        catch (Exception ex) {
-                                            ex.printStackTrace();
-                                        }
-                                    }
-                                    else if (fileNodes[j] instanceof PackageNode) {
-                                        pmdCheckPackage((PackageNode)fileNodes[j], rules);  //recursive call
-                                    }
-                                }
-
-                            }
-
-                            private static void pmdCheckProject() {
-                                Browser.getActiveBrowser().waitMessage("PMD Status", "Please wait while PMD checks the files in your project.");
-                                Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
-                                Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
-                                RuleSet rules = constructRuleSets();
-                                for (int i=0; i<nodes.length; i++ ) {
-                                    if (nodes[i] instanceof PackageNode) {
-                                        PackageNode node = (PackageNode)nodes[i];
-                                        String packageName = node.getName();
-                                        if (packageName != null && !packageName.trim().equals("")) {  //if there is no name then this is probably the <Project Source> package - so ignore it so we don't get duplicates
-                                            pmdCheckPackage(node, rules);
-                                        }
-                                    }
-                                }
-                                Browser.getActiveBrowser().clearWaitMessages();
-                            }
-
-                            private static void pmdCPDPackage(PackageNode packageNode, CPD cpd) {
-                                Node[] fileNodes = packageNode.getDisplayChildren();
-                                for (int j=0; j<fileNodes.length; j++) {
-                                    if (fileNodes[j] instanceof JavaFileNode) {
-                                        try {
-                                            cpd.add(new File(fileNodes[j].getLongDisplayName()));
-                                        }
-                                        catch (Exception e){
-                                        }
-                                    }
-                                    else if (fileNodes[j] instanceof PackageNode) {
-                                        pmdCPDPackage((PackageNode)fileNodes[j], cpd);   //recursive call
-                                    }
-                                }
-                            }
-
-                            private static void pmdCPD(PackageNode startingNode) {
-                                try {
-                                    Browser.getActiveBrowser().getMessageView().clearMessages(cpdCat);      //clear the message window
-                                    final CPD cpd = new CPD(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger(), new LanguageFactory().createLanguage(LanguageFactory.JAVA_KEY));
-                                    //cpd.setMinimumTileSize(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger());
-                                    CPDDialog cpdd = new CPDDialog(cpd);
-
-                                    if (startingNode != null) {   //rub cpd across the provided node
-                                        pmdCPDPackage(startingNode, cpd);
-                                    }
-                                    else {  //otherwise, traverse all the nodes looking for package nodes
-                                        Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
-                                        for (int i=0; i<nodes.length; i++ ) {
-                                            if (nodes[i] instanceof PackageNode) {
-                                                PackageNode node = (PackageNode)nodes[i];
-                                                String packageName = node.getName();
-                                                if (packageName != null && !packageName.trim().equals("")) {  //if there is no name then this is probably the <Project Source> package - so ignore it so we don't get duplicates
-                                                    pmdCPDPackage(node, cpd);
-                                                }
-                                            }
-                                        }
-                                    }
-                                    cpd.go();
-                                    if (cpdd.wasCancelled()) {  //if the dialog was cancelled by the user then let's get out of here
-                                        cpdd.close();
-                                        return;
-                                    }
-                                    //Results results = cpd.getResults();
-                                    int resultCount = 0;
-                                    //if (results != null) {
-                                    //for (Iterator iter = results.getTiles(); iter.hasNext(); ) {
-                                    for (Iterator iter = cpd.getMatches(); iter.hasNext(); ) {
-                                        //Tile t = (Tile)iter.next();
-                                        Match m = (Match)iter.next();
-                                        resultCount++;
-                                        int tileLineCount = m.getLineCount();
-                                        int dupCount = 0;
-                                        for (Iterator iter2 = m.iterator(); iter2.hasNext(); ) {
-                                            dupCount++;
-                                            iter2.next();
-                                        }
-                                        CPDMessage msg = CPDMessage.createMessage(String.valueOf(dupCount)+" duplicates in code set: " + resultCount, m.getSourceCodeSlice());
-                                        for (Iterator iter2 = m.iterator(); iter2.hasNext(); ) {
-                                            TokenEntry mark = (TokenEntry)iter2.next();
-                                            msg.addChildMessage(mark.getBeginLine(), tileLineCount, mark.getTokenSrcID());
-                                        }
-                                        Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, msg, false);
-                                    }
-
-                                    cpdd.close();
-                                }
-                                catch (Exception e) {
-                                    Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, new Message(e.toString()), false);
-                                }
-                            }
-
-                            /**
-                             * Main method for testing purposes
-                             * @param args standard arguments
-                             */
-                            public static void main (String[] args) {
-                                //Report ret = PMDOpenTool.instanceCheck("package abc; \npublic class foo {\npublic void bar() {int i;}\n}");
-                                //System.out.println("PMD: " + ret);
-                            }
+    /**
+     * Main method for testing purposes
+     *
+     * @param args standard arguments
+     */
+    public static void main(String[] args) {
+        //Report ret = PMDOpenTool.instanceCheck("package abc; \npublic class foo {\npublic void bar() {int i;}\n}");
+        //System.out.println("PMD: " + ret);
+    }
 }
 
 
@@ -546,11 +522,12 @@ class PMDMessage extends Message {
 
     /**
      * Constructor
-     * @param msg text message
+     *
+     * @param msg  text message
      * @param line line of code to associate this message with
      * @param node the node that the code belongs to
      */
-    public PMDMessage (String msg, int line, JavaFileNode node) {
+    public PMDMessage(String msg, int line, JavaFileNode node) {
         super(msg);
         this.line = line;
         this.javaNode = node;
@@ -558,30 +535,33 @@ class PMDMessage extends Message {
 
     /**
      * Called by JBuilder when user selects a message
+     *
      * @param browser JBuilder Browser
      */
-    public void selectAction (Browser browser) {
+    public void selectAction(Browser browser) {
         displayResult(browser, true);
     }
 
     /**
      * Called by JBuilder when the user double-clicks a message
+     *
      * @param browser JBuilder Browser
      */
-    public void messageAction (Browser browser) {
+    public void messageAction(Browser browser) {
         displayResult(browser, true);
     }
 
     /**
      * Position the code window to the line number that the message is associated with
-     * @param browser JBuilder Browser
+     *
+     * @param browser      JBuilder Browser
      * @param requestFocus whether or not the code window should receive focus
      */
-    private void displayResult (Browser browser, boolean requestFocus) {
+    private void displayResult(Browser browser, boolean requestFocus) {
         try {
             if (requestFocus || browser.isOpenNode(javaNode)) {
                 browser.setActiveNode(javaNode, requestFocus);
-                TextNodeViewer viewer = (TextNodeViewer)browser.getViewerOfType(javaNode,
+                TextNodeViewer viewer = (TextNodeViewer) browser.getViewerOfType(javaNode,
                         TextNodeViewer.class);
                 browser.setActiveViewer(javaNode, viewer, requestFocus);
                 EditorPane editor = viewer.getEditor();
@@ -616,7 +596,8 @@ class CPDMessage extends Message {
 
     /**
      * Constructor
-     * @param msg text message
+     *
+     * @param msg  text message
      * @param line line of code to associate this message with
      * @param node the node that the code belongs to
      */
@@ -627,7 +608,7 @@ class CPDMessage extends Message {
         this.setLazyFetchChildren(true);
     }
 
-    private CPDMessage (String msg, int startline, int lineCount, String fileName) {
+    private CPDMessage(String msg, int startline, int lineCount, String fileName) {
         super(msg);
         this.startline = startline;
         this.lineCount = lineCount;
@@ -635,8 +616,7 @@ class CPDMessage extends Message {
         try {
             File javaFile = new File(fileName);
             javaNode = Browser.getActiveBrowser().getActiveProject().findNode(new Url(javaFile));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             Browser.getActiveBrowser().getMessageView().addMessage(Constants.MSGCAT_TEST, e.toString());
         }
     }
@@ -649,11 +629,11 @@ class CPDMessage extends Message {
     }
 
 
-    public void addChildMessage (int startline, int endline, String fileName) {
+    public void addChildMessage(int startline, int endline, String fileName) {
         this.lazyFetchChildren = true;
         String sep = System.getProperty("file.separator");
-        String msg = fileName.substring(fileName.lastIndexOf(sep.charAt(0))+1)+": line: " + String.valueOf(startline);
-        CPDMessage cpdmsg =  new CPDMessage(msg, startline, endline, fileName);
+        String msg = fileName.substring(fileName.lastIndexOf(sep.charAt(0)) + 1) + ": line: " + String.valueOf(startline);
+        CPDMessage cpdmsg = new CPDMessage(msg, startline, endline, fileName);
         cpdmsg.isParent = false;
         cpdmsg.setFont(CHILD_FONT);
         childMessages.add(cpdmsg);
@@ -663,39 +643,42 @@ class CPDMessage extends Message {
     public void fetchChildren(Browser browser) {
         CodeFragmentMessage cfm = new CodeFragmentMessage(this.codeBlock);
         browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, cfm);
-        for (Iterator iter = childMessages.iterator(); iter.hasNext(); ) {
-            browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, (CPDMessage)iter.next());
+        for (Iterator iter = childMessages.iterator(); iter.hasNext();) {
+            browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, (CPDMessage) iter.next());
         }
     }
 
     /**
      * Called by JBuilder when user selects a message
+     *
      * @param browser JBuilder Browser
      */
-    public void selectAction (Browser browser) {
+    public void selectAction(Browser browser) {
         displayResult(browser, true);
     }
 
     /**
      * Called by JBuilder when the user double-clicks a message
+     *
      * @param browser JBuilder Browser
      */
-    public void messageAction (Browser browser) {
+    public void messageAction(Browser browser) {
         displayResult(browser, true);
     }
 
     /**
      * Position the code window to the line number that the message is associated with
-     * @param browser JBuilder Browser
+     *
+     * @param browser      JBuilder Browser
      * @param requestFocus whether or not the code window should receive focus
      */
-    private void displayResult (Browser browser, boolean requestFocus) {
+    private void displayResult(Browser browser, boolean requestFocus) {
         MARK.removeEditor();
         if (!isParent) {
             try {
                 if (requestFocus || browser.isOpenNode(javaNode)) {
                     browser.setActiveNode(javaNode, requestFocus);
-                    TextNodeViewer viewer = (TextNodeViewer)browser.getViewerOfType(javaNode,
+                    TextNodeViewer viewer = (TextNodeViewer) browser.getViewerOfType(javaNode,
                             TextNodeViewer.class);
                     browser.setActiveViewer(javaNode, viewer, requestFocus);
                     EditorPane editor = viewer.getEditor();
@@ -721,12 +704,14 @@ class CPDMessage extends Message {
 class CodeFragmentMessage extends Message {
     String codeFragment = null;
     static Font CODE_FONT = new Font("Monospaced", Font.ITALIC, 12);
+
     public CodeFragmentMessage(String codeFragment) {
         super("View Code");
         this.setLazyFetchChildren(true);
         this.codeFragment = codeFragment;
 
     }
+
     public void fetchChildren(Browser browser) {
         BufferedReader reader = new BufferedReader(new StringReader(codeFragment));
         try {
@@ -737,8 +722,8 @@ class CodeFragmentMessage extends Message {
                 browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, msg);
                 line = reader.readLine();
             }
+        } catch (Exception e) {
         }
-        catch (Exception e){}
 
     }
 
@@ -749,6 +734,7 @@ class CodeFragmentMessage extends Message {
  */
 class HighlightMark extends LineMark {
     static Style highlightStyle;
+
     static {
         StyleContext context = EditorManager.getStyleContext();
         highlightStyle = context.addStyle("line_highlight", null);
@@ -760,7 +746,7 @@ class HighlightMark extends LineMark {
     /**
      * Constructor
      */
-    public HighlightMark () {
+    public HighlightMark() {
         super(highlightStyle);
     }
 
