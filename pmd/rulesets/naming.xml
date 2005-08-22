@@ -392,6 +392,55 @@ public class Foo {
       </example>
     </rule>
 
+    <rule name="NoPackage"
+        message="All classes and interfaces must belong to a named package"
+        class="net.sourceforge.pmd.rules.XPathRule">
+    <description>
+Detects when a class or interface does not have a package definition.
+    </description>
+      <properties>
+          <property name="xpath" pluginname="true">
+              <value>
+                  <![CDATA[
+//ClassOrInterfaceDeclaration[count(preceding::PackageDeclaration) = 0]
+                  ]]>
+              </value>
+          </property>
+      </properties>
+      <priority>3</priority>
+    <example>
+<![CDATA[
+// no package declaration
+public class ClassInDefaultPackage {
+}
+]]>
+    </example>
+  </rule>
+
+    <rule name="PackageCase"
+            message="Package name contains upper case characters"
+            class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+    Detects when a package definition contains upper case characters.
+        </description>
+          <properties>
+              <property name="xpath" pluginname="true">
+                  <value>
+                      <![CDATA[
+//PackageDeclaration/Name[lower-case(@Image)!=@Image]
+                      ]]>
+                  </value>
+              </property>
+          </properties>
+          <priority>3</priority>
+        <example>
+    <![CDATA[
+package com.MyCompany;  // <- should be lower case name
+public class SomeClass {
+}
+    ]]>
+        </example>
+      </rule>
 </ruleset>
 
 

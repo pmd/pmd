@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Peter Frandsen - PackageCase rule, NoPackage rule</li>
             <li>Noureddine Bekrar - French translation of some PMD documentation</li>
             <li>Florian Deissenboeck - reported JDK 1.5 grammar bug</li>
             <li>Martin Jost - bug report for JDeveloper plugin</li>
