@@ -357,7 +357,6 @@ public class PMDOpenTool {
 
                             static void checkCode(String srcCode, JavaFileNode node, RuleSet rules) {
                                 try {
-
                                     Report rpt = instanceCheck(srcCode, rules);
                                     if (rpt == null) {
                                         Message msg = new Message("Error Processing File");
@@ -365,9 +364,9 @@ public class PMDOpenTool {
                                         Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg, false);
                                     }
                                     else if (rpt.size() == 0) {
-                                        Message msg = new Message("No violations detected.");
-                                        msg.setFont(stdMsgFont);
-                                        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg, false);
+//                                        Message msg = new Message("No violations detected.");
+//                                        msg.setFont(stdMsgFont);
+//                                        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg, false);
                                     }
                                     else {
                                         for (Iterator i = rpt.iterator(); i.hasNext();) {
