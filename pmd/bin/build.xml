@@ -53,6 +53,8 @@
     </copy>
 </target>
 
+
+
 <target name="jar" depends="copy,compile" description="Jars up the classes and rulesets">
     <jar
         jarfile="${dir.lib}\pmd-${version}.jar"
