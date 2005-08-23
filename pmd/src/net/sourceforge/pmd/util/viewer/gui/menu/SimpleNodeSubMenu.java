@@ -50,30 +50,3 @@ public class SimpleNodeSubMenu
 }
 
 
-/*
- * $Log$
- * Revision 1.6  2005/08/21 19:25:32  tomcopeland
- * Adding Boris' viewer back into the repository; as long as someone is using it, removing it is not good
- *
- * Revision 1.1.1.1  2005/08/15 19:51:43  tomcopeland
- * Import of Boris Grushko's viewer code
- *
- * Revision 1.4  2004/09/27 19:42:52  tomcopeland
- * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
- *
- * Revision 1.3  2004/04/15 18:21:58  tomcopeland
- * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
- *
- * Revision 1.2  2003/09/23 20:51:06  tomcopeland
- * Cleaned up imports
- *
- * Revision 1.1  2003/09/23 20:32:42  tomcopeland
- * Added Boris Gruschko's new AST/XPath viewer
- *
- * Revision 1.1  2003/09/24 01:33:03  bgr
- * moved to a new package
- *
- * Revision 1.1  2003/09/23 07:52:16  bgr
- * menus added
- *
- */

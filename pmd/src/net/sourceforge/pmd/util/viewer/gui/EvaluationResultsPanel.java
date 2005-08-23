@@ -8,9 +8,8 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.util.Vector;
-
 
 /**
  * A panel showing XPath expression evaluation results
@@ -74,35 +73,3 @@ public class EvaluationResultsPanel
         }
     }
 }
-
-
-/*
- * $Log$
- * Revision 1.7  2005/08/21 19:25:29  tomcopeland
- * Adding Boris' viewer back into the repository; as long as someone is using it, removing it is not good
- *
- * Revision 1.1.1.1  2005/08/15 19:51:42  tomcopeland
- * Import of Boris Grushko's viewer code
- *
- * Revision 1.5  2005/02/16 15:46:34  mikkey
- * javadoc fixes
- *
- * Revision 1.4  2004/09/27 19:42:52  tomcopeland
- * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
- *
- * Revision 1.3  2004/04/15 18:21:58  tomcopeland
- * Cleaned up imports with new version of IDEA; fixed some deprecated Ant junx
- *
- * Revision 1.2  2003/09/23 20:51:06  tomcopeland
- * Cleaned up imports
- *
- * Revision 1.1  2003/09/23 20:32:42  tomcopeland
- * Added Boris Gruschko's new AST/XPath viewer
- *
- * Revision 1.1  2003/09/24 01:33:03  bgr
- * moved to a new package
- *
- * Revision 1.1  2003/09/24 00:40:35  bgr
- * evaluation results browsing added
- *
- */

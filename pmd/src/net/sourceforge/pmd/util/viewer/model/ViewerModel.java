@@ -13,12 +13,15 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.Vector;
 
-
 /**
  * The model for the viewer gui
  * <p/>
  * <p/>
+ * <p/>
+ * <p/>
+ * <p/>
  * This is the model part of MVC
+ * <p/>
  * </p>
  *
  * @author Boris Gruschko ( boris at gruschko.org )
@@ -49,7 +52,11 @@ public class ViewerModel {
      * commits source code to the model.
      * <p/>
      * <p/>
+     * <p/>
+     * <p/>
+     * <p/>
      * all existing source will be replaced
+     * <p/>
      * </p>
      *
      * @param source source to be commited
@@ -78,9 +85,7 @@ public class ViewerModel {
     public void evaluateXPathExpression(String xPath, Object evaluator)
             throws ParseException, JaxenException {
         XPath xpath = new BaseXPath(xPath, new DocumentNavigator());
-
         evaluationResults = xpath.selectNodes(rootNode);
-
         fireViewerModelEvent(new ViewerModelEvent(evaluator, ViewerModelEvent.PATH_EXPRESSION_EVALUATED));
     }
 
@@ -88,6 +93,7 @@ public class ViewerModel {
      * retrieves the results of last evaluation
      *
      * @return a list containing the nodes selected by the last XPath expression
+     *         <p/>
      *         evaluation
      */
     public List getLastEvaluationResults() {
@@ -143,41 +149,3 @@ public class ViewerModel {
         }
     }
 }
-
-
-/*
- * $Log$
- * Revision 1.7  2005/08/21 19:25:32  tomcopeland
- * Adding Boris' viewer back into the repository; as long as someone is using it, removing it is not good
- *
- * Revision 1.1.1.1  2005/08/15 19:51:42  tomcopeland
- * Import of Boris Grushko's viewer code
- *
- * Revision 1.5  2004/09/27 19:42:52  tomcopeland
- * A ridiculously large checkin, but it's all just code reformatting.  Nothing to see here...
- *
- * Revision 1.4  2004/04/12 17:35:09  tomcopeland
- * Cleaned up imports
- *
- * Revision 1.3  2004/04/12 17:23:29  tomcopeland
- * Moving all explicit JavaParser creations over to a factory-ish sort of thing.  This makes the version of the parser explicit rather than assumed.
- *
- * Revision 1.2  2003/09/23 20:51:06  tomcopeland
- * Cleaned up imports
- *
- * Revision 1.1  2003/09/23 20:32:42  tomcopeland
- * Added Boris Gruschko's new AST/XPath viewer
- *
- * Revision 1.1  2003/09/24 01:33:03  bgr
- * moved to a new package
- *
- * Revision 1.3  2003/09/24 00:40:35  bgr
- * evaluation results browsing added
- *
- * Revision 1.2  2003/09/23 07:52:16  bgr
- * menus added
- *
- * Revision 1.1  2003/09/22 05:21:54  bgr
- * initial commit
- *
- */
