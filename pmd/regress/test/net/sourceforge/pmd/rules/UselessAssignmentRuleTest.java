@@ -15,7 +15,6 @@ public class UselessAssignmentRuleTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-        System.out.println(TEST1);
        runTests(new TestDescriptor[] {
                new TestDescriptor(TEST1, "local variable useless assignment", 1, rule),
        });
