@@ -32,17 +32,17 @@ public class ImmutableField extends AbstractRule {
         Map vars = node.getScope().getVariableDeclarations();
         Set constructors = findAllConstructors(node);
         for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
-            if (decl.getAccessNodeParent().isStatic() || !decl.getAccessNodeParent().isPrivate() || decl.getAccessNodeParent().isFinal()) {
+            VariableNameDeclaration field = (VariableNameDeclaration) i.next();
+            if (field.getAccessNodeParent().isStatic() || !field.getAccessNodeParent().isPrivate() || field.getAccessNodeParent().isFinal()) {
                 continue;
             }
 
-            int result = initializedInConstructor((List)vars.get(decl), new HashSet(constructors));
+            int result = initializedInConstructor((List)vars.get(field), new HashSet(constructors));
             if (result == MUTABLE) {
                 continue;
             }
-            if (result == IMMUTABLE || ((result == CHECKDECL) && !decl.getAccessNodeParent().findChildrenOfType(ASTVariableInitializer.class).isEmpty())) {
-                addViolation(data, decl.getNode(), decl.getImage());
+            if (result == IMMUTABLE || ((result == CHECKDECL) && !field.getAccessNodeParent().findChildrenOfType(ASTVariableInitializer.class).isEmpty())) {
+                addViolation(data, field.getNode(), field.getImage());
             }
         }
         return super.visit(node, data);
@@ -50,19 +50,16 @@ public class ImmutableField extends AbstractRule {
 
     private int initializedInConstructor(List usages, Set allConstructors) {
         int rc = MUTABLE, methodInitCount = 0;
-        boolean foundUsage = false;
         Set consSet = new HashSet();
-
         for (Iterator j = usages.iterator(); j.hasNext();) {
-            foundUsage = true;
             NameOccurrence occ = (NameOccurrence)j.next();
             if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
                 SimpleNode node = occ.getLocation();
-                if ((SimpleNode)node.getFirstParentOfType(ASTTryStatement.class) != null) {
-                    continue;
-                }
                 SimpleNode constructor = (SimpleNode)node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
+                    if ((SimpleNode)node.getFirstParentOfType(ASTTryStatement.class) != null) {
+                        continue;
+                    }
                     consSet.add(constructor);
                 } else {
                     if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
@@ -71,7 +68,7 @@ public class ImmutableField extends AbstractRule {
                 }
             }
         }
-        if (!foundUsage || ((methodInitCount == 0) && consSet.isEmpty())) {
+        if (usages.isEmpty() || ((methodInitCount == 0) && consSet.isEmpty())) {
             rc = CHECKDECL;
         } else {
             allConstructors.removeAll(consSet);
