@@ -21,6 +21,10 @@ public class ASTModifiers extends SimpleNode {
             super.discardIfNecessary();
         } else if (parent.jjtGetNumChildren() == 2) {
             parent.children = new Node[] {parent.children[1]};
+        } else if (parent.jjtGetNumChildren() == 3) {
+            // AnnotationTypeMemberDeclaration with default value, like this:
+            // String defaultValue() default "";
+            parent.children = new Node[] {parent.children[1], parent.children[2]};
         } else if (parent.jjtGetNumChildren() == 4) {
             // JDK 1.5 forloop syntax
             parent.children = new Node[] {parent.children[1], parent.children[2], parent.children[3]};
