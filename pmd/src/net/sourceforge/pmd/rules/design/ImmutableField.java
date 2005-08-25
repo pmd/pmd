@@ -10,6 +10,9 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTForStatement;
+import net.sourceforge.pmd.ast.ASTWhileStatement;
+import net.sourceforge.pmd.ast.ASTDoStatement;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
@@ -57,7 +60,7 @@ public class ImmutableField extends AbstractRule {
                 SimpleNode node = occ.getLocation();
                 SimpleNode constructor = (SimpleNode)node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
-                    if ((SimpleNode)node.getFirstParentOfType(ASTTryStatement.class) != null) {
+                    if (inLoopOrTry(node)) {
                         continue;
                     }
                     consSet.add(constructor);
@@ -77,6 +80,13 @@ public class ImmutableField extends AbstractRule {
             }
         }
         return rc;
+    }
+
+    private boolean inLoopOrTry(SimpleNode node) {
+        return (SimpleNode)node.getFirstParentOfType(ASTTryStatement.class) != null ||
+               (SimpleNode)node.getFirstParentOfType(ASTForStatement.class) != null ||
+               (SimpleNode)node.getFirstParentOfType(ASTWhileStatement.class) != null ||
+               (SimpleNode)node.getFirstParentOfType(ASTDoStatement.class) != null;
     }
 
     /** construct a set containing all ASTConstructorDeclaration nodes for this class
