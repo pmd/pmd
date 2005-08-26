@@ -27,7 +27,7 @@
                     <j:set var="rulesetName" value='${rs.attributeValue("name")}'/>
                     <j:if test="${rulesetName != 'scratchpad' &amp;&amp; rulesetName != 'Favorites' &amp;&amp; rulesetName != 'my-rules'}">
                         <j:set var="rulesetDesc" value='${rs.element("description").getText()}'/>
-                        <li><a href="#${rulesetName}">${rulesetName}</a> (${rulesetDesc})</li>
+                        <li><a href="#${rulesetName}">${rulesetName}</a>: ${rulesetDesc}</li>
                     </j:if>
                 </j:forEach>
                 </ul>
@@ -38,7 +38,7 @@
                         <subsection name="${rn}">
                             <!--x:set var="rules" select="/rulesets/rules[@name='${rn}'"/-->
                             <j:forEach var="r" items="${rs.elements('rule')}">
-                                <li> ${r.attributeValue("name")} (${r.element("description").getText()})</li>
+                                <li> ${r.attributeValue("name")}: ${r.element("description").getText()}</li>
                             </j:forEach>
                         </subsection>
                     </j:if>
