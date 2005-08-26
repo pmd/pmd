@@ -26,6 +26,7 @@ Fixed bug 1245139 - TooManyFields no longer throws a ClassCastException when pro
 Fixed bug 1251256 - ImmutableField no longer skips assignments in try blocks on methods (which led to false positives).
 Fixed bug 1250949 - The JDK 1.5 parser no longer chokes on AnnotationTypeMemberDeclaration with a default value.
 Fixed bug 1245367 - ImmutableField no longer triggers on assignments in loops in constructors.
+Fixed bug 1251269 - AvoidConcateningNonLiteralsInStringBuffer no longer triggers on StringBuffer constructors like 'new StringBuffer(1 + getFoo());'
 Applied patch 1228834 - XPath rules can now use properties to customize rules.  Thanks to Wouter Zelle for another great piece of work!
 Fixed a bug in RuleSetFactory that missed some override cases; thx to Wouter Zelle for the report and a fix.
 Fixed a bug in the grammar that didn't allow constructors to have type parameters, which couldn't parse some JDK 1.5 constructs.

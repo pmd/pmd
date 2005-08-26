@@ -88,4 +88,32 @@ public class StringUtil {
         }
     }
 
+/*    public static void appendXmlEscaped2(StringBuffer buf, String src) {
+        int l = src.length();
+        char c;
+        for (int i = 0; i < l; i++) {
+            c = src.charAt(i);
+            if (c <= 32) {
+                buf.append(c);
+            } else if (c > '~') {// 126
+                if (c <= 255)
+                    buf.append(ENTITIES[c - 126]);
+                else
+
+                    buf.append("&u").append(Integer.toHexString(c)).append(';');
+            } else if (c == 38)
+                buf.append("&amp;");
+            else if (c == 34)
+                buf.append("&quot;");
+            else if (c == 39)
+                buf.append("&apos;");
+            else if (c == 60)
+                buf.append("&lt;");
+            else if (c == 62)
+                buf.append("&gt;");
+            else
+                buf.append(c);
+        }
+    }
+*/
 }

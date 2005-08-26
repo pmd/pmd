@@ -45,9 +45,9 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>S. David Pullara - bug report for AvoidConcateningNonLiteralsInStringBuffer, bug report for ImmutableField</li>
             <li>Maarten Bodewes - bug report for ImmutableField</li>
             <li>Florian Deissenboeck - reported several JDK 1.5 grammar bugs</li>
-            <li>S. David Pullara - bug report for ImmutableField</li>
             <li>Jan Koops - bug report for JBuilder plugin</li>
             <li>Peter Frandsen - PackageCase rule, NoPackage rule</li>
             <li>Noureddine Bekrar - French translation of some PMD documentation</li>

@@ -12,6 +12,8 @@ import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTStatement;
 
+import java.io.IOException;
+
 /*
  * How this rule works:
  * find additive expresions: +
@@ -24,12 +26,12 @@ import net.sourceforge.pmd.ast.ASTStatement;
 public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractRule {
 
     public Object visit(ASTAdditiveExpression node, Object data) {
-        final ASTBlockStatement bs = (ASTBlockStatement) node.getFirstParentOfType(ASTBlockStatement.class);
+        ASTBlockStatement bs = (ASTBlockStatement) node.getFirstParentOfType(ASTBlockStatement.class);
         if (bs == null) {
             return data;
         }
 
-        if (!concatsLiteralAndNonLiteral(node)) {
+        if (!concatsLiteralStringAndNonLiteral(node)) {
             return data;
         }
         
@@ -43,12 +45,25 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
         return data;
     }
 
-    private boolean concatsLiteralAndNonLiteral(final ASTAdditiveExpression node) {
-        return node.containsChildOfType(ASTName.class) && node.containsChildOfType(ASTLiteral.class);
+    private boolean concatsLiteralStringAndNonLiteral(final ASTAdditiveExpression node) {
+        if (!node.containsChildOfType(ASTName.class)) {
+            return false;
+        }
+        ASTLiteral n = (ASTLiteral)node.getFirstChildOfType(ASTLiteral.class);
+        if (n == null) {
+            return false;
+        }
+        try {
+            Integer.parseInt(n.getImage());
+        } catch (NumberFormatException nfe) {
+            return true;
+        }
+        return false;
+        //&& node.containsChildOfType(ASTLiteral.class);
     }
 
     private boolean isInStringBufferAppend(final ASTAdditiveExpression node) {
-        final ASTStatement s = (ASTStatement) node.getFirstParentOfType(ASTStatement.class);
+        ASTStatement s = (ASTStatement) node.getFirstParentOfType(ASTStatement.class);
         if (s == null) {
             return false;
         }
@@ -57,13 +72,13 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
     }
     
     private boolean isAllocatedStringBuffer(final ASTAdditiveExpression node) {
-        final ASTAllocationExpression ao = (ASTAllocationExpression) node.getFirstParentOfType(ASTAllocationExpression.class);
+        ASTAllocationExpression ao = (ASTAllocationExpression) node.getFirstParentOfType(ASTAllocationExpression.class);
         if (ao == null) {
             return false;
         }
         // note that the child can be an ArrayDimsAndInits, for example, from java.lang.FloatingDecimal:  t = new int[ nWords+wordcount+1 ];
         final ASTClassOrInterfaceType an = (ASTClassOrInterfaceType) ao.getFirstChildOfType(ASTClassOrInterfaceType.class);
-        return an != null && an.getImage().endsWith("StringBuffer");
+        return an != null && (an.getImage().endsWith("StringBuffer") || an.getImage().endsWith("StringBuilder"));
     }
 }
 

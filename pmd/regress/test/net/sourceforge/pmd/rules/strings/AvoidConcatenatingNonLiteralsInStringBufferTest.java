@@ -25,7 +25,7 @@ public class AvoidConcatenatingNonLiteralsInStringBufferTest extends SimpleAggre
                new TestDescriptor(TEST5, "concatenating two literals post-construction", 0, rule),
                new TestDescriptor(TEST6, "case where concatenation is not a child of a BlockStatement, but instead is a child of an ExplicitConstructorInvocation", 0, rule),
                new TestDescriptor(TEST7, "don't error out on array instantiation", 0, rule),
-               //new TestDescriptor(TEST8, "usage of the StringBuffer constructor that takes an int", 0, rule),
+               new TestDescriptor(TEST8, "usage of the StringBuffer constructor that takes an int", 0, rule),
                new TestDescriptor(TEST9, "nested", 0, rule),
        });
     }
@@ -85,8 +85,9 @@ public class AvoidConcatenatingNonLiteralsInStringBufferTest extends SimpleAggre
 
    private static final String TEST8 =
        "public class Foo {" + PMD.EOL +
+       " public int foor() {return 2;}" + PMD.EOL +
        " public void bar(int x) {" + PMD.EOL +
-       "  StringBuffer buf = new StringBuffer(x);" + PMD.EOL +
+       "  StringBuffer buf = new StringBuffer(1 + foo());" + PMD.EOL +
        " }" + PMD.EOL +
        "}";
 
