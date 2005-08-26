@@ -59,6 +59,21 @@
 		<source>
 			${examplecode}
 		</source>
+
+        <j:set trim="true" var="hasproperties"><x:expr select="count(properties/property[@name!='xpath'])"/></j:set>
+        <j:choose>
+            <j:when test="${hasproperties != 0}">
+                <p>This rule has the following properties:</p>
+                <j:set trim="true" var="pname">
+                    <x:expr select="./properties/property/@name"/>
+                </j:set>
+                <j:set trim="true" var="pvalue">
+                    <x:expr select="./properties/property/@value"/>
+                </j:set>
+                <source>${pname} -> ${pvalue}</source>
+            </j:when>
+        </j:choose>
+
 	</subsection>
 </jsl:template>
 
