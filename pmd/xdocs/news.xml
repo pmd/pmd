@@ -45,16 +45,6 @@
         <li>1/07/2003 - <a href="http://www.netbeans.org/community/articles/interviews/tom_copeland_ole-martin.html">Sprout</a> - interview with Ole-Martin and Tom</li>
     </ul>
     </section>
-      <section name="Books that mention PMD">
-          <ul>
-              <br/>
-          <li><a href=" http://www.oreilly.com/catalog/mavenadn/?CMP=EML-9NI711011430">Maven: A Developer's Notebook</a>, co-authored by Vincent Massol, who's done a bunch of work on PMD.  Thanks Vincent!</li>
-              <br/>
-          <li><a href="http://www.amazon.com/exec/obidos/tg/detail/-/0596007949/qid=1120242556/sr=8-1/ref=pd_bbs_ur_1/104-1224815-1191932?v=glance&amp;s=books&amp;n=507846">Network Security Tools</a>, chapter 6 discusses using PMD to catch web app security problems.  Thanks to Joseph Hemler for the props!</li>
-              <br/>
-          <li><a href="http://www.amazon.com/exec/obidos/tg/detail/-/0672325624/ref=ase_interncom-20/103-5706126-6692649?v=glance&amp;s=book">Extreme Programming With Ant</a></li>
-          </ul>
-      </section>
   </body>
 </document>
 
