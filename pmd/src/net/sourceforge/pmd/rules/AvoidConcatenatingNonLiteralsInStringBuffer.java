@@ -12,12 +12,10 @@ import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTStatement;
 
-import java.io.IOException;
-
 /*
  * How this rule works:
- * find additive expresions: +
- * check that the additions is between literal and nonliteral
+ * find additive expressions: +
+ * check that the addition is between literal and nonliteral
  * if true and also the parent is StringBuffer constructor or append,
  * report a violation.
  * 
@@ -45,7 +43,7 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
         return data;
     }
 
-    private boolean concatsLiteralStringAndNonLiteral(final ASTAdditiveExpression node) {
+    private boolean concatsLiteralStringAndNonLiteral(ASTAdditiveExpression node) {
         if (!node.containsChildOfType(ASTName.class)) {
             return false;
         }
@@ -59,25 +57,24 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
             return true;
         }
         return false;
-        //&& node.containsChildOfType(ASTLiteral.class);
     }
 
-    private boolean isInStringBufferAppend(final ASTAdditiveExpression node) {
-        ASTStatement s = (ASTStatement) node.getFirstParentOfType(ASTStatement.class);
+    private boolean isInStringBufferAppend(ASTAdditiveExpression node) {
+        ASTBlockStatement s = (ASTBlockStatement) node.getFirstParentOfType(ASTBlockStatement.class);
         if (s == null) {
             return false;
         }
-        final ASTName n = (ASTName) s.getFirstChildOfType(ASTName.class);
+        ASTName n = (ASTName) s.getFirstChildOfType(ASTName.class);
         return n.getImage()!=null && n.getImage().endsWith("append");
     }
     
-    private boolean isAllocatedStringBuffer(final ASTAdditiveExpression node) {
+    private boolean isAllocatedStringBuffer(ASTAdditiveExpression node) {
         ASTAllocationExpression ao = (ASTAllocationExpression) node.getFirstParentOfType(ASTAllocationExpression.class);
         if (ao == null) {
             return false;
         }
         // note that the child can be an ArrayDimsAndInits, for example, from java.lang.FloatingDecimal:  t = new int[ nWords+wordcount+1 ];
-        final ASTClassOrInterfaceType an = (ASTClassOrInterfaceType) ao.getFirstChildOfType(ASTClassOrInterfaceType.class);
+        ASTClassOrInterfaceType an = (ASTClassOrInterfaceType) ao.getFirstChildOfType(ASTClassOrInterfaceType.class);
         return an != null && (an.getImage().endsWith("StringBuffer") || an.getImage().endsWith("StringBuilder"));
     }
 }
