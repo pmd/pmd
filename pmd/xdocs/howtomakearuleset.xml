@@ -45,6 +45,13 @@ Say you want to pick specific rules from various rule sets and customize them.  
     <priority>2</priority>
   </rule>
 
+  <!-- Now we'll customize a rule's property value -->
+  <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
+    <properties>
+        <property name="reportLevel" value="5"/>
+    </properties>
+  </rule>
+
   <!-- Note we want everything from braces.xml except the WhileLoopsMustUseBracesRule -->
   <rule ref="rulesets/braces.xml">
     <exclude name="WhileLoopsMustUseBracesRule"/>
