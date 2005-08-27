@@ -99,5 +99,26 @@ public class Foo {
 ]]>
     </example>
     </rule>
+
+    <rule name="UnnecessaryCaseChange"
+          message="Use String.equalsIgnoreCase rather than String.toUpperCase().equals()"
+           class="net.sourceforge.pmd.rules.UnnecessaryCaseChange">
+       <description>
+Use String.equalsIgnoreCase rather than String.toUpperCase().equals()
+       </description>
+       <priority>3</priority>
+       <example>
+                 <![CDATA[
+ public class Foo {
+  public boolean bar(String buz) {
+    // should be buz.equalsIgnoreCase("baz")
+    return buz.toUpperCase().equals("baz");
+  }
+ }
+                 ]]>
+       </example>
+     </rule>
+
+
 </ruleset>
 

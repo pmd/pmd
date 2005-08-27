@@ -45,6 +45,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+
+            <li>Andriy Rozeluk - Suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Wim Deblauwe - suggested putting property names/values in generated docs, UselessOverridingMethod, reported bug in JUnitTestsShouldContainAsserts, front page and "how to make a ruleset" patches, noted problems with web site rule index, bug report for JUnitTestsShouldContainAsserts, Clover license coordination and implementation, UseCorrectExceptionLogging, coordinated and coded a much nicer asXML() implementation, suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report, helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Didier Duquennoy - bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>S. David Pullara - bug report for AvoidConcateningNonLiteralsInStringBuffer, bug report for ImmutableField</li>
@@ -59,7 +61,6 @@
             <li>Sylvain Veyrie - bug report for MethodReturnsInternalArray</li>
             <li>Randy Ray - bug report for ArrayIsStoredDirectly</li>
             <li>Wouter Zelle - UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
-            <li>Andriy Rozeluk - Bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Ernst Reissner - reported JDK 1.5 parsing bug, suggested InstantiationToGetClass, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>
             <li>Benoit Xhenseval - suggestion to add elapsed time to XML report, bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Klaus - Suggestion for improving UseSingleton</li>
