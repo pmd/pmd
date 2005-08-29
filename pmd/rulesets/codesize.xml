@@ -16,7 +16,7 @@ too much.  Try to reduce the method size by creating helper methods and removing
    </description>
      <priority>3</priority>
    <properties>
-    <property name="minimum" value="100"/>
+    <property name="minimum" description="The method size reporting threshold" value="100"/>
    </properties>
    <example>
 <![CDATA[
@@ -42,7 +42,7 @@ Long parameter lists can indicate that a new object should be created to
    </description>
      <priority>3</priority>
    <properties>
-    <property name="minimum" value="10"/>
+    <property name="minimum" description="The parameter count reporting threshold" value="10"/>
    </properties>
    <example>
 <![CDATA[
@@ -69,7 +69,7 @@ manageable.
    </description>
      <priority>3</priority>
        <properties>
-        <property name="minimum" value="1000"/>
+        <property name="minimum" description="The class size reporting threshold"  value="1000"/>
        </properties>
    <example>
 <![CDATA[
@@ -94,7 +94,7 @@ method entry.  The decision points are 'if', 'while', 'for', and 'case labels'. 
    </description>
    <priority>3</priority>
    <properties>
-      <property name="reportLevel" value="10"/>
+      <property name="reportLevel" description="The Cyclomatic Complexity reporting threshold"  value="10"/>
    </properties>
    <example>
 <![CDATA[
@@ -148,7 +148,7 @@ A large number of public methods and attributes declared in a class can indicate
     </description>
     <priority>3</priority>
     <properties>
-    <property name="minimum" value="45"/>
+    <property name="minimum"  description="The public item reporting threshold" value="45"/>
     </properties>
     <example>
     <![CDATA[
@@ -176,7 +176,7 @@ Classes that have too many fields could be redesigned to have fewer fields, poss
       </description>
         <priority>3</priority>
       <properties>
-       <property name="maximum" value="15"/>
+       <property name="maximum"  description="The field count reporting threshold " value="15"/>
       </properties>
       <example>
    <![CDATA[

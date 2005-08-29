@@ -39,6 +39,7 @@ Improved EmptyIfStmt; now it catches the case where an IfStatement is followed b
 The Ant task now accepts the short names of rulesets (e.g., unusedcode for rulesets/unusedcode.xml).
 Removed unnecessary '.html' suffix from displayed filenames when the linkPrefix attribute is used with the HTML renderer.
 Moved AvoidCallingFinalize from the design ruleset to the finalize ruleset.
+Added an optional 'description' attribute to the 'property' element in the ruleset XML files.
 Deleted redundant ExplicitCallToFinalize rule from the finalize ruleset.
 Deleted redundant ExceptionTypeChecking rule from the strictexception ruleset; use AvoidInstanceofChecksInCatchClause in the design ruleset instead.
 Added a simplified SimpleNode.addViolation() method to reduce duplicated rule violation creation code.

@@ -70,7 +70,10 @@
                 <j:set trim="true" var="pvalue">
                     <x:expr select="./properties/property/@value"/>
                 </j:set>
-                <source>Name: ${pname} -> Default value: ${pvalue}</source>
+                <j:set trim="true" var="pdescription">
+                    <x:expr select="./properties/property/@description"/>
+                </j:set>
+                <source>Name: ${pname}<br/>Default value: ${pvalue}<br/>Description: ${pdescription}</source>
             </j:when>
         </j:choose>
 

@@ -351,6 +351,7 @@ public class RuleSetFactory {
         Element propertyElement = (Element) propertyNode;
         String name = propertyElement.getAttribute("name");
         String value = propertyElement.getAttribute("value");
+        // TODO String desc = propertyElement.getAttribute("description"); 
         if (value.trim().length() == 0) {
             for (int i = 0; i < propertyNode.getChildNodes().getLength(); i++) {
                 Node node = propertyNode.getChildNodes().item(i);

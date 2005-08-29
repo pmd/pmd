@@ -10,7 +10,7 @@ public class UnnecessaryCaseChangeRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("rulesets/scratchpad.xml", "UnnecessaryCaseChange");
+        rule = findRule("rulesets/strings.xml", "UnnecessaryCaseChange");
     }
 
     public void testAll() {
