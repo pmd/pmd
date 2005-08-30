@@ -4,6 +4,8 @@
 package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.util.Applier;
+import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +52,10 @@ public class ClassScope extends AbstractScope {
         if (decl != null && !occurrence.isThisOrSuper()) {
             List nameOccurrences = (List) variableNames.get(decl);
             nameOccurrences.add(occurrence);
+            SimpleNode n = occurrence.getLocation();
+            if (n instanceof ASTName) {
+                ((ASTName)n).setNameDeclaration(decl);
+            } // TODO what to do with PrimarySuffix case?
         }
         return decl;
     }

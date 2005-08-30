@@ -1,10 +1,14 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.symboltable.Scope;
+import net.sourceforge.pmd.symboltable.NameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
+import net.sourceforge.pmd.ast.ASTName;
 
 import java.util.List;
 
@@ -29,7 +33,17 @@ public class StringInstantiation extends AbstractRule {
             return data;
         }
 
-        addViolation(data, node);
+        ASTName name = (ASTName)node.getFirstChildOfType(ASTName.class);
+        if (name == null) { // Literal, i.e., new String("foo")
+            addViolation(data, node);
+            return data;
+        }
+
+        VariableNameDeclaration nd = (VariableNameDeclaration)name.getNameDeclaration();
+        if (nd.getTypeImage().equals("String")) {
+            addViolation(data, node);
+
+        }
         return data;
     }
 }

@@ -3,8 +3,10 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-public interface NameDeclaration {
-    String getImage();
+import net.sourceforge.pmd.ast.SimpleNode;
 
+public interface NameDeclaration {
+    SimpleNode getNode();
+    String getImage();
     Scope getScope();
 }

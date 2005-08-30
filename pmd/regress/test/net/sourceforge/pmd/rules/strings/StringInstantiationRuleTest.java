@@ -22,7 +22,8 @@ public class StringInstantiationRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST1, "new 'new String's", 2, rule),
            new TestDescriptor(TEST2, "new String array", 0, rule),
            new TestDescriptor(TEST3, "using multiple parameter constructor", 0, rule),
-           new TestDescriptor(TEST4, "using 4 parameter constructor", 0, rule)
+           new TestDescriptor(TEST4, "using 4 parameter constructor", 0, rule),
+           new TestDescriptor(TEST5, "byte array constructor is ok", 0, rule)
        });
     }
 
@@ -50,6 +51,14 @@ public class StringInstantiationRuleTest extends SimpleAggregatorTst {
     " void foo() {" + PMD.EOL +
     "  byte[] bytes = new byte[50];" + PMD.EOL +
     "  String bar = new String(bytes, 0, bytes.length, \"some-encoding\");" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " void foo() {" + PMD.EOL +
+    "  byte[] bytes = new byte[50];" + PMD.EOL +
+    "  String bar = new String(bytes);" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

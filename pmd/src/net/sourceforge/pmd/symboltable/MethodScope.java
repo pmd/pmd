@@ -5,6 +5,7 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.util.Applier;
 
 import java.util.ArrayList;
@@ -35,6 +36,10 @@ public class MethodScope extends AbstractScope {
         NameDeclaration decl = findVariableHere(occurrence);
         if (decl != null && !occurrence.isThisOrSuper()) {
             ((List) variableNames.get(decl)).add(occurrence);
+            SimpleNode n = occurrence.getLocation();
+            if (n instanceof ASTName) {
+                ((ASTName)n).setNameDeclaration(decl);
+            } // TODO what to do with PrimarySuffix case?
         }
         return decl;
     }

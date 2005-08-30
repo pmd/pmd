@@ -10,7 +10,7 @@ import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-public class MethodNameDeclaration extends AbstractNameDeclaration implements NameDeclaration {
+public class MethodNameDeclaration extends AbstractNameDeclaration {
 
     public MethodNameDeclaration(ASTMethodDeclarator node) {
         super(node);

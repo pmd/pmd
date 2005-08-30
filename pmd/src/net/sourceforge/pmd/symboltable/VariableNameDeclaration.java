@@ -12,7 +12,7 @@ import net.sourceforge.pmd.ast.Dimensionable;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTType;
 
-public class VariableNameDeclaration extends AbstractNameDeclaration implements NameDeclaration {
+public class VariableNameDeclaration extends AbstractNameDeclaration {
 
     public VariableNameDeclaration(ASTVariableDeclaratorId node) {
         super(node);

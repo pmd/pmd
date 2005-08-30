@@ -5,7 +5,7 @@ package net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.ast.SimpleNode;
 
-public abstract class AbstractNameDeclaration {
+public abstract class AbstractNameDeclaration implements NameDeclaration{
 
     protected SimpleNode node;
 

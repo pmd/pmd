@@ -2,6 +2,8 @@
 
 package net.sourceforge.pmd.ast;
 
+import net.sourceforge.pmd.symboltable.NameDeclaration;
+
 public class ASTName extends SimpleNode {
     public ASTName(int id) {
         super(id);
@@ -9,6 +11,14 @@ public class ASTName extends SimpleNode {
 
     public ASTName(JavaParser p, int id) {
         super(p, id);
+    }
+
+    private NameDeclaration nd;
+    public void setNameDeclaration(NameDeclaration nd) {
+        this.nd = nd;
+    }
+    public NameDeclaration getNameDeclaration() {
+        return this.nd;
     }
 
 
