@@ -39,7 +39,12 @@ public class CompareObjectsWithEquals extends AbstractRule {
             return data;
         }
 
-        Scope scope = (Scope)node.getScope();
+        check((Scope)node.getScope(), node, data);
+        check(node.getScope().getEnclosingMethodScope(), node, data);
+        return data;
+    }
+
+    private void check(Scope scope, SimpleNode node, Object ctx) {
         Map vars = scope.getVariableDeclarations();
         for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration key = (VariableNameDeclaration)i.next();
@@ -52,11 +57,10 @@ public class CompareObjectsWithEquals extends AbstractRule {
             }
             for (Iterator j = usages.iterator(); j.hasNext();) {
                 if (((NameOccurrence)j.next()).getLocation().jjtGetParent().jjtGetParent().jjtGetParent() == node) {
-                    addViolation(data, node);
-                    return data;
+                    addViolation(ctx, node);
+                    return;
                 }
             }
         }
-        return data;
     }
 }

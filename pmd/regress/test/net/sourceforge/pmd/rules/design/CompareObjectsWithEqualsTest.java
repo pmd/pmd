@@ -16,13 +16,11 @@ public class CompareObjectsWithEqualsTest extends SimpleAggregatorTst{
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-/*
            new TestDescriptor(TEST1, "simple failure with method params", 1, rule),
            new TestDescriptor(TEST2, "primitives are ok", 0, rule),
            new TestDescriptor(TEST3, "skip nulls", 0, rule),
            new TestDescriptor(TEST4, "missed hit - qualified names.  that's ok, we can't resolve the types yet, so better to skip this for now", 0, rule),
            new TestDescriptor(TEST5, "more qualified name skippage", 0, rule),
-*/
            new TestDescriptor(TEST6, "locals", 1, rule),
        });
     }
