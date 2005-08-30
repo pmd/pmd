@@ -16,11 +16,14 @@ public class CompareObjectsWithEqualsTest extends SimpleAggregatorTst{
 
     public void testAll() {
        runTests(new TestDescriptor[] {
+/*
            new TestDescriptor(TEST1, "simple failure with method params", 1, rule),
            new TestDescriptor(TEST2, "primitives are ok", 0, rule),
            new TestDescriptor(TEST3, "skip nulls", 0, rule),
            new TestDescriptor(TEST4, "missed hit - qualified names.  that's ok, we can't resolve the types yet, so better to skip this for now", 0, rule),
            new TestDescriptor(TEST5, "more qualified name skippage", 0, rule),
+*/
+           new TestDescriptor(TEST6, "locals", 1, rule),
        });
     }
 
@@ -56,6 +59,15 @@ public class CompareObjectsWithEqualsTest extends SimpleAggregatorTst{
     "public class Foo {" + PMD.EOL +
     " boolean bar(String a, String b) {" + PMD.EOL +
     "  return a.charAt(0) == b.charAt(0);" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST6 =
+    "public class Foo {" + PMD.EOL +
+    " boolean bar() {" + PMD.EOL +
+    "  String a = \"foo\";" + PMD.EOL +
+    "  String b = \"bar\";" + PMD.EOL +
+    "  return a == b;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

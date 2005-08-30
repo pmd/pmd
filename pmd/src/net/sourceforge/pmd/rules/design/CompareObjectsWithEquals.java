@@ -9,6 +9,8 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.MethodScope;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.LocalScope;
+import net.sourceforge.pmd.symboltable.Scope;
 
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +38,8 @@ public class CompareObjectsWithEquals extends AbstractRule {
         if (!node.getParentsOfType(ASTInitializer.class).isEmpty()) {
             return data;
         }
-        MethodScope scope = node.getScope().getEnclosingMethodScope();
+
+        Scope scope = (Scope)node.getScope();
         Map vars = scope.getVariableDeclarations();
         for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration key = (VariableNameDeclaration)i.next();
