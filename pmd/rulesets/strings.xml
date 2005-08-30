@@ -34,20 +34,10 @@ public class Foo {
 
     <rule name="StringInstantiation"
         message="Avoid instantiating String objects; this is usually unnecessary."
-        class="net.sourceforge.pmd.rules.XPathRule">
+        class="net.sourceforge.pmd.rules.StringInstantiation">
     <description>
 Avoid instantiating String objects; this is usually unnecessary.
     </description>
-       <properties>
-           <property name="xpath">
-               <value>
-                   <![CDATA[
-//AllocationExpression
- [ClassOrInterfaceType/@Image='String'][count(.//Expression) < 2][not(ArrayDimsAndInits)]
-                    ]]>
-               </value>
-           </property>
-       </properties>
        <priority>2</priority>
     <example>
 <![CDATA[
