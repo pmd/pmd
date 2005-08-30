@@ -22,6 +22,7 @@ public class UnnecessaryCaseChange extends AbstractRule {
         if (prefix.jjtGetNumChildren() != 1 || !(prefix.jjtGetChild(0) instanceof ASTName)) {
            return data;
         }
+        
 
         ASTName name = (ASTName)prefix.jjtGetChild(0);
         if (name.getImage() == null || !(name.getImage().endsWith("toUpperCase") || name.getImage().endsWith("toLowerCase"))){

@@ -64,16 +64,16 @@
         <j:choose>
             <j:when test="${hasproperties != 0}">
                 <p>This rule has the following properties:</p>
-                <j:set trim="true" var="pname">
-                    <x:expr select="./properties/property/@name"/>
-                </j:set>
-                <j:set trim="true" var="pvalue">
-                    <x:expr select="./properties/property/@value"/>
-                </j:set>
-                <j:set trim="true" var="pdescription">
-                    <x:expr select="./properties/property/@description"/>
-                </j:set>
-                <source>Name: ${pname}<br/>Default value: ${pvalue}<br/>Description: ${pdescription}</source>
+                <table><th>Name</th><th>Default value</th><th>Description</th>
+                <x:set var="props" select="properties/property[@name!='xpath']"/>
+                <j:forEach var="p" items="${props}">
+                    <tr>
+                    <td>${p.attributeValue("name")}</td>
+                    <td>${p.attributeValue("value")}</td>
+                    <td>${p.attributeValue("description")}</td>
+                    </tr>
+                </j:forEach>
+                </table>
             </j:when>
         </j:choose>
 

@@ -15,7 +15,7 @@ Code containing duplicate String literals can usually be improved by declaring t
     </description>
         <priority>3</priority>
    <properties>
-    <property name="threshold" value="4"/>
+    <property name="threshold" description="The number of duplicate literals reporting threshold" value="4"/>
    </properties>
     <example>
 <![CDATA[

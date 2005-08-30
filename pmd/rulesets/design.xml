@@ -121,7 +121,7 @@ Deeply nested if..then statements are hard to read.
     </description>
       <priority>3</priority>
    <properties>
-    <property name="problemDepth" value="3"/>
+    <property name="problemDepth" description="The if statement depth reporting threshold" value="3"/>
    </properties>
     <example>
 <![CDATA[
@@ -169,7 +169,7 @@ public class Foo {
       </description>
         <priority>3</priority>
         <properties>
-         <property name="minimum" value="10"/>
+         <property name="minimum" description="The switch statement ratio reporting threshold" value="10"/>
         </properties>
       <example>
  <![CDATA[

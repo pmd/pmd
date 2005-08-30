@@ -15,7 +15,7 @@ Rule counts unique attributes, local variables and return types within an object
     </description>
     <priority>3</priority>
     <properties>
-      <property name="threshold" value="20"/>
+      <property name="threshold" description="The unique type reporting threshold" value="20"/>
     </properties>
     <example>
 <![CDATA[
@@ -47,7 +47,7 @@ if the count is above the user defined threshold.
   </description>
   <priority>3</priority>
   <properties>
-      <property name="minimum" value="30"/>
+      <property name="minimum" description="The import count reporting threshold" value="30"/>
   </properties>
   <example>
       <![CDATA[
