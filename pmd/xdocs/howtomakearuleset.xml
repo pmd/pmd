@@ -71,25 +71,6 @@ Say you want to pick specific rules from various rule sets and customize them.  
   </rule>
 </ruleset>]]></source>
             </subsection>
-            <subsection name="Adjusting rules through properties">
-                <p>You can adjust settings of certain rules through the &lt;properties&gt; element, like this:</p>
-                <source><![CDATA[<rule ref="rulesets/coupling.xml/ExcessiveImports">
-  <properties>
-    <property name="minimum" value="20"/>
-  </properties>
-</rule>]]>
-                </source>
-                <p>You can also use a value element instead of an attribute, like this:</p>
-                <source><![CDATA[<rule ref="rulesets/coupling.xml/ExcessiveImports">
-  <properties>
-    <property name="minimum">
-      <value>20</value>
-    </property>
-  </properties>
-</rule>]]></source>
-                <p>This is mainly used for customizing the XPathRule. This way you can add your own custom
-                xpath rule to your ruleset without effort.</p>
-            </subsection>
             <subsection name="Reference it in your Ant task">
                 <p>You can specify the full path to your custom ruleset name alongside
         of the built-in PMD rulesets - like this:</p>
