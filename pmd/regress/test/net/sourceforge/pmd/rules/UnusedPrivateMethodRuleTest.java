@@ -28,8 +28,10 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST7, "simple unused private static method", 1, rule),
            new TestDescriptor(TEST8, "readResolve/writeReplace/etc are OK", 0, rule),
            new TestDescriptor(TEST9, "Private methods called only by themselves, BUG 1038229", 1, rule),
-           //new TestDescriptor(TEST10, "private with same name as public, different method signature", 0, rule),
-           //new TestDescriptor(BUG_1114754, "False +, BUG 1114754", 0, rule), //FIXME
+           new TestDescriptor(TEST10, "private with same name as public, different method signature", 0, rule),
+           new TestDescriptor(BUG_1114754, "False +, BUG 1114754", 0, rule),
+           new TestDescriptor(TEST11, "called from constructor", 0, rule),
+//           new TestDescriptor(TEST12, "another same name case", 0, rule),
        });
     }
 
@@ -55,7 +57,6 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
     "   }" + PMD.EOL +
     "  };" + PMD.EOL +
     " }" + PMD.EOL +
-    "" + PMD.EOL +
     " private void foo() {}" + PMD.EOL +
     "}";
 
@@ -114,16 +115,31 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
     "}";
 
     private static final String BUG_1114754 =
-        "public class Foo {" + PMD.EOL +
-        "   public void methodFlagged(Object[] arrayObj) {" + PMD.EOL + 
-        "       for(int i=0; i<arrayObj.length; i++) {" + PMD.EOL + 
-        "           methodFlagged(arrayObj[i]);" + PMD.EOL + 
-        "       }" + PMD.EOL + 
-        "   }" + PMD.EOL + 
-        "   private void methodFlagged(Object a) {" + PMD.EOL + 
-        "       // bla bla bla" + PMD.EOL + 
-        "       a.toString();" + PMD.EOL + 
-        "   }" + PMD.EOL + 
-        "}";
+    "public class Foo {" + PMD.EOL +
+    "   public void methodFlagged(Object[] arrayObj) {" + PMD.EOL +
+    "       for(int i=0; i<arrayObj.length; i++) {" + PMD.EOL +
+    "           methodFlagged(arrayObj[i]);" + PMD.EOL +
+    "       }" + PMD.EOL +
+    "   }" + PMD.EOL +
+    "   private void methodFlagged(Object a) {" + PMD.EOL +
+    "       a.toString();" + PMD.EOL +
+    "   }" + PMD.EOL +
+    "}";
+
+    private static final String TEST11 =
+    "public class Foo {" + PMD.EOL +
+    " public Foo() {" + PMD.EOL +
+    "  bar();" + PMD.EOL +
+    " }" + PMD.EOL +
+    " private void bar() {}" + PMD.EOL +
+    "}";
+
+    private static final String TEST12 =
+    "public class Foo {" + PMD.EOL +
+    " public void baz() {" + PMD.EOL +
+    "  baz(x, y);" + PMD.EOL +
+    " }" + PMD.EOL +
+    " private void baz(int x, int y) {}" + PMD.EOL +
+    "}";
 
 }

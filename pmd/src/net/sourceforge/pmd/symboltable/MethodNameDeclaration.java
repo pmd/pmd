@@ -88,6 +88,6 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     }
 
     public String toString() {
-        return "Method " + node.getImage();
+        return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = " +  ((ASTMethodDeclarator) node).getParameterCount();
     }
 }

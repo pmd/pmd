@@ -148,6 +148,6 @@ public class NameOccurrence {
     }
 
     public String toString() {
-        return getImage() + ":" + location.getBeginLine() + ":" + location.getClass();
+        return getImage() + ":" + location.getBeginLine() + ":" + location.getClass() + (this.isMethodOrConstructorInvocation() ? "(method call)" : "");
     }
 }

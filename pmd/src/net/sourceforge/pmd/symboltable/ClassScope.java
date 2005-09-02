@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 public class ClassScope extends AbstractScope {
 
@@ -49,13 +50,25 @@ public class ClassScope extends AbstractScope {
 
     public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
         NameDeclaration decl = findVariableHere(occurrence);
-        if (decl != null && !occurrence.isThisOrSuper()) {
-            List nameOccurrences = (List) variableNames.get(decl);
+        if (decl != null && occurrence.isMethodOrConstructorInvocation()) {
+            List nameOccurrences = (List) methodNames.get(decl);
             nameOccurrences.add(occurrence);
             SimpleNode n = occurrence.getLocation();
             if (n instanceof ASTName) {
                 ((ASTName)n).setNameDeclaration(decl);
             } // TODO what to do with PrimarySuffix case?
+
+        } else if (decl != null && !occurrence.isThisOrSuper()) {
+            List nameOccurrences = (List) variableNames.get(decl);
+            if (nameOccurrences == null) {
+                // TODO may be a class name
+            } else {
+                nameOccurrences.add(occurrence);
+                SimpleNode n = occurrence.getLocation();
+                if (n instanceof ASTName) {
+                    ((ASTName)n).setNameDeclaration(decl);
+                } // TODO what to do with PrimarySuffix case?
+            }
         }
         return decl;
     }
@@ -92,7 +105,7 @@ public class ClassScope extends AbstractScope {
 
     protected NameDeclaration findVariableHere(NameOccurrence occurrence) {
         if (occurrence.isThisOrSuper() || occurrence.getImage().equals(className)) {
-            if (variableNames.isEmpty()) {
+            if (variableNames.isEmpty() && methodNames.isEmpty()) {
                 // this could happen if you do this:
                 // public class Foo {
                 //  private String x = super.toString();
@@ -107,7 +120,22 @@ public class ClassScope extends AbstractScope {
             // }
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
-            return (NameDeclaration) variableNames.keySet().iterator().next();
+            if (!variableNames.isEmpty()) {
+                return (NameDeclaration)variableNames.keySet().iterator().next();
+            }
+            return (NameDeclaration) methodNames.keySet().iterator().next();
+        }
+
+        if (occurrence.isMethodOrConstructorInvocation()) {
+            List images = new ArrayList();
+            images.add(occurrence.getImage());
+            if (occurrence.getImage().startsWith(className)) {
+                images.add(clipClassName(occurrence.getImage()));
+            }
+
+            ImageFinderFunction finder = new ImageFinderFunction(images);
+            Applier.apply(finder, methodNames.keySet().iterator());
+            return finder.getDecl();
         }
 
         List images = new ArrayList();
@@ -123,7 +151,16 @@ public class ClassScope extends AbstractScope {
     public String toString() {
         String res = "ClassScope (" + className + "): ";
         if (!classNames.isEmpty()) res += "(" + glomNames(classNames.keySet().iterator()) + ")";
-        if (!methodNames.isEmpty()) res += "(" + glomNames(methodNames.keySet().iterator()) + ")";
+        if (!methodNames.isEmpty()) {
+            Iterator i = methodNames.keySet().iterator();
+            while (i.hasNext()) {
+                MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
+                res += mnd.toString();
+                int usages =  ((List)methodNames.get(mnd)).size();
+                res += "(begins at line " + mnd.getNode().getBeginLine() + ", " + usages + " usages)";
+                res += ",";
+            }
+        }
         if (!variableNames.isEmpty()) res += "(" + glomNames(variableNames.keySet().iterator()) + ")";
         return res;
     }

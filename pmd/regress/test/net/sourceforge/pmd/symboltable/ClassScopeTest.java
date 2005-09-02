@@ -102,21 +102,6 @@ public class ClassScopeTest extends STBBaseTst {
         assertEquals("bar", ((MethodNameDeclaration)i.next()).getImage());
     }
 
-    public void testMethodUsageSeen() {
-        parseCode(METHOD_USAGE_SEEN);
-        ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration)acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
-        Map m = ((ClassScope)n.getScope()).getMethodDeclarations();
-        Iterator i = m.keySet().iterator();
-        MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
-        if (!mnd.getImage().equals("bar")) {
-            mnd = (MethodNameDeclaration)i.next();
-        }
-        List usages = (List)m.get(mnd);
-        // FIXME
-        //assertEquals(1, usages.size());
-        //assertEquals("bar", ((MethodNameDeclaration)m.keySet().iterator().next()).getImage());
-    }
-
 
     public final void testOneParams() throws Throwable {
         parseCode(ONE_PARAM);
@@ -154,9 +139,77 @@ public class ClassScopeTest extends STBBaseTst {
 
     public final void testbuz() throws Throwable {
         parseCode(METH);
-        SymbolTableViewer st = new SymbolTableViewer();
-        acu.jjtAccept(st, null);
+        //SymbolTableViewer st = new SymbolTableViewer();
+        //acu.jjtAccept(st, null);
     }
+
+    public void testMethodUsageSeen() {
+        parseCode(METHOD_USAGE_SEEN);
+        ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration)acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        Map m = ((ClassScope)n.getScope()).getMethodDeclarations();
+        Iterator i = m.keySet().iterator();
+        MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
+        if (!mnd.getImage().equals("bar")) {
+            mnd = (MethodNameDeclaration)i.next();
+        }
+        List usages = (List)m.get(mnd);
+        assertEquals(1, usages.size());
+        assertEquals("bar", ((NameOccurrence)usages.get(0)).getImage());
+    }
+
+    public void testMethodUsageSeenWithThis() {
+        parseCode(METHOD_USAGE_SEEN_WITH_THIS);
+        ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration)acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        Map m = ((ClassScope)n.getScope()).getMethodDeclarations();
+        Iterator i = m.keySet().iterator();
+        MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
+        if (!mnd.getImage().equals("bar")) {
+            mnd = (MethodNameDeclaration)i.next();
+        }
+        List usages = (List)m.get(mnd);
+        assertEquals(1, usages.size());
+        assertEquals("bar", ((NameOccurrence)usages.get(0)).getImage());
+    }
+
+    public void testMethodUsageSeen2() {
+        parseCode(METHOD_USAGE_SEEN2);
+        ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration)acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        Map m = ((ClassScope)n.getScope()).getMethodDeclarations();
+        Iterator i = m.keySet().iterator();
+        MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
+        if (mnd.getNode().getBeginLine() == 2) {
+            List usages = (List)m.get(mnd);
+            System.out.println(usages.size());
+            System.out.println(mnd);
+            mnd = (MethodNameDeclaration)i.next();
+        }
+    }
+
+    private static final String METHOD_USAGE_SEEN2 =
+    "public class Foo {" + PMD.EOL +
+    " public void baz() {" + PMD.EOL +
+    "  baz(x, y);" + PMD.EOL +
+    " }" + PMD.EOL +
+   " private void baz(int x, int y) {}" + PMD.EOL +
+    "}";
+
+
+    private static final String METHOD_USAGE_SEEN =
+    "public class Foo {" + PMD.EOL +
+    " private void bar() {}" + PMD.EOL +
+    " public void buz() {" + PMD.EOL +
+    "  bar();" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String METHOD_USAGE_SEEN_WITH_THIS =
+    "public class Foo {" + PMD.EOL +
+    " private void bar() {}" + PMD.EOL +
+    " public void buz() {" + PMD.EOL +
+    "  this.bar();" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
 
     private static final String METH =
     "public class Test {" + PMD.EOL +
@@ -203,14 +256,6 @@ public class ClassScopeTest extends STBBaseTst {
     "public class Foo {" + PMD.EOL +
     " private void bar(String x) {}" + PMD.EOL +
     " private void bar() {}" + PMD.EOL +
-    "}";
-
-    private static final String METHOD_USAGE_SEEN =
-    "public class Foo {" + PMD.EOL +
-    " private void bar() {}" + PMD.EOL +
-    " private void buz(String x) {" + PMD.EOL +
-    "  bar();" + PMD.EOL +
-    " }" + PMD.EOL +
     "}";
 
     private static final String ENUM_SCOPE =
