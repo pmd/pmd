@@ -52,11 +52,15 @@ public class ClassScope extends AbstractScope {
         NameDeclaration decl = findVariableHere(occurrence);
         if (decl != null && occurrence.isMethodOrConstructorInvocation()) {
             List nameOccurrences = (List) methodNames.get(decl);
-            nameOccurrences.add(occurrence);
-            SimpleNode n = occurrence.getLocation();
-            if (n instanceof ASTName) {
-                ((ASTName)n).setNameDeclaration(decl);
-            } // TODO what to do with PrimarySuffix case?
+            if (nameOccurrences == null) {
+                // TODO may be a class name: Foo.this.super();
+            } else {
+                nameOccurrences.add(occurrence);
+                SimpleNode n = occurrence.getLocation();
+                if (n instanceof ASTName) {
+                    ((ASTName)n).setNameDeclaration(decl);
+                } // TODO what to do with PrimarySuffix case?
+            }
 
         } else if (decl != null && !occurrence.isThisOrSuper()) {
             List nameOccurrences = (List) variableNames.get(decl);
