@@ -82,3 +82,4 @@ cd ~/pmd/pmd
 
 Submit some news saying "hey, new release!"
 Go to http://freshmeat.net/, say "hey, new release!"
+Post note to JCreator Tips and Tricks forum - http://www.jcreator.com/forums/index.php?showforum=3

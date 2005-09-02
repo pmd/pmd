@@ -23,18 +23,7 @@ This assignment is useless
      </rule>
      -->
 
-    <!--    <rule name="Foo"
-          message="blah ''{0}''"
-          class="net.sourceforge.pmd.rules.FooRule">
-      <description>
-
-      </description>
-        <priority>3</priority>
-      <example>
-  <![CDATA[
-  ]]>
-      </example>
-    </rule>
+    <!--
 
      <rule name="PositionalIterator"
            message="Avoid positional iterators"

@@ -22,6 +22,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+// Note that ruleset parsing may fail on JDK 1.6 beta
+// due to this bug - http://www.netbeans.org/issues/show_bug.cgi?id=63257
 public class RuleSetFactory {
 
     private static class OverrideParser {
@@ -351,7 +353,7 @@ public class RuleSetFactory {
         Element propertyElement = (Element) propertyNode;
         String name = propertyElement.getAttribute("name");
         String value = propertyElement.getAttribute("value");
-        // TODO String desc = propertyElement.getAttribute("description"); 
+        // TODO String desc = propertyElement.getAttribute("description");
         if (value.trim().length() == 0) {
             for (int i = 0; i < propertyNode.getChildNodes().getLength(); i++) {
                 Node node = propertyNode.getChildNodes().item(i);

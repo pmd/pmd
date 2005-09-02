@@ -34,16 +34,15 @@ Fixed a bug in RuleSetFactory that missed some override cases; thx to Wouter Zel
 Fixed a bug in the grammar that didn't allow constructors to have type parameters, which couldn't parse some JDK 1.5 constructs.
 Fixed a bug in ImportFromSamePackage; now it catches the case where a class has an on-demand import for the same package it is in.
 Fixed a bug in CompareObjectsWithEquals; now it catches some local variable cases.
+Moved AvoidCallingFinalize from the design ruleset to the finalize ruleset and then deleted redundant ExplicitCallToFinalize rule from the finalize ruleset.
+Deleted redundant ExceptionTypeChecking rule from the strictexception ruleset; use AvoidInstanceofChecksInCatchClause in the design ruleset instead.
 Added some new XSLT scripts that create nifty HTML output; thanks to Wouter Zelle for the code.
 Improved UseCorrectExceptionLogging; thx to Wouter Zelle for the new XPath.
 Improved warning message from UnusedPrivateMethod.
 Improved EmptyIfStmt; now it catches the case where an IfStatement is followed by an EmptyStatement node.
 The Ant task now accepts the short names of rulesets (e.g., unusedcode for rulesets/unusedcode.xml).
 Removed unnecessary '.html' suffix from displayed filenames when the linkPrefix attribute is used with the HTML renderer.
-Moved AvoidCallingFinalize from the design ruleset to the finalize ruleset.
 Added an optional 'description' attribute to the 'property' element in the ruleset XML files.
-Deleted redundant ExplicitCallToFinalize rule from the finalize ruleset.
-Deleted redundant ExceptionTypeChecking rule from the strictexception ruleset; use AvoidInstanceofChecksInCatchClause in the design ruleset instead.
 Added a simplified SimpleNode.addViolation() method to reduce duplicated rule violation creation code.
 
 June 21, 2005 - 3.2:

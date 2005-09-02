@@ -21,6 +21,7 @@ public class StringToStringRule extends AbstractRule {
         if (nameNode instanceof ASTPrimitiveType) {
             return data;
         }
+        
         if (!((SimpleNode)(nameNode.jjtGetChild(0))).getImage().equals("String")) {
             return data;
         }

@@ -46,6 +46,7 @@
         <subsection name="Contributors">
         <ul>
 
+            <li>Raja Rajan - bug report for CompareObjectswithEquals</li>
             <li>Andrew Taylor - bug report for StringInstantiation</li>
             <li>Jeff Jensen - suggested description attribute in property element</li>
             <li>Andriy Rozeluk - Suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
