@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;

@@ -4,7 +4,8 @@ package net.sourceforge.pmd.util.viewer.gui;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

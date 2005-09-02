@@ -3,15 +3,15 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.util.Applier;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.util.Applier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
 
 public class ClassScope extends AbstractScope {
 

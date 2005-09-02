@@ -5,8 +5,8 @@ package test.net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.NameFinder;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.List;
 

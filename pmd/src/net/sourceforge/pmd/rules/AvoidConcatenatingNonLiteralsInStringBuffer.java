@@ -10,7 +10,6 @@ import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTStatement;
 
 /*
  * How this rule works:

@@ -13,13 +13,13 @@ import net.sourceforge.pmd.dfa.StartOrEndDataFlowNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-import java.util.ArrayList;
 
 /**
  * @author raik

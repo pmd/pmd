@@ -10,7 +10,8 @@ import net.sourceforge.pmd.util.viewer.util.NLS;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
 
 
 /**

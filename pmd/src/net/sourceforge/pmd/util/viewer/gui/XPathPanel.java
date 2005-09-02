@@ -7,7 +7,7 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
 
 
 /**

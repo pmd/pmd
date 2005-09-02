@@ -1,13 +1,11 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.SymbolTableViewer;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
-import net.sourceforge.pmd.symboltable.Scope;
 
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 
 public class SourceFileScopeTest extends STBBaseTst {
 

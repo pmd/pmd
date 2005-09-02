@@ -3,9 +3,9 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.util.Applier;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.util.Applier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
