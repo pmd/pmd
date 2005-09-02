@@ -46,6 +46,7 @@
         <subsection name="Contributors">
         <ul>
 
+            <li>Pieter Bloemendaal - bug report for UnusedPrivateMethod, found typo in ArrayIsStoredDirectly, bug report for AvoidReassigningParametersRule</li>
             <li>Benoit Xhenseval - bug report for UnusedPrivateMethod, suggestion to add elapsed time to XML report, bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Raja Rajan - bug report for CompareObjectswithEquals</li>
             <li>Andrew Taylor - bug report for StringInstantiation</li>
@@ -71,7 +72,6 @@
             <li>Kevin Routley - reported Ant task dependency problem, reported problems with RuleSetFactory unit tests</li>
             <li>Dennis Klemann - noted that errors were missing from text report, reported JDK 1.5 parsing bug with ExceptionSignatureDeclaration, reported fix for pmd.bat problem</li>
             <li>Elliotte Rusty Harold - bug report for ConstructorCallsOverridableMethod, suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
-            <li>Pieter Bloemendaal - Found typo in ArrayIsStoredDirectly, bug report for AvoidReassigningParametersRule</li>
             <li>Jorn Stampehl - Noticed redundancy of ExplicitCallToFinalize, reported bug in AvoidCallingFinalize, reported bug in JUnitAssertionsShouldIncludeMessage, reported bug in bug report on JUnitTestsShouldContainAsserts</li>
             <li>Jeff Chamblee - bug report for CompareObjectsWithEquals</li>
             <li>Tor Norbye - Suggested CompareObjectsWithEquals</li>
