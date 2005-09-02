@@ -45,7 +45,10 @@ public class NameFinder {
             }
         }
         if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) node).isArguments()) {
-            ((NameOccurrence)names.getLast()).setIsMethodOrConstructorInvocation();
+            NameOccurrence occurrence = (NameOccurrence)names.getLast();
+            occurrence.setIsMethodOrConstructorInvocation();
+            occurrence.setArgumentCount(((ASTPrimarySuffix) node).getArgumentCount());
+
         }
     }
 

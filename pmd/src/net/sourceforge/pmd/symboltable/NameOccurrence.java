@@ -20,7 +20,9 @@ public class NameOccurrence {
     private SimpleNode location;
     private String image;
     private NameOccurrence qualifiedName;
+
     private boolean isMethodOrConstructorInvocation;
+    private int argumentCount;
 
     public NameOccurrence(SimpleNode location, String image) {
         this.location = location;
@@ -29,6 +31,14 @@ public class NameOccurrence {
 
     public void setIsMethodOrConstructorInvocation() {
         isMethodOrConstructorInvocation = true;
+    }
+
+    public void setArgumentCount(int count) {
+        argumentCount = count;
+    }
+
+    public int getArgumentCount() {
+        return argumentCount;
     }
 
     public boolean isMethodOrConstructorInvocation() {

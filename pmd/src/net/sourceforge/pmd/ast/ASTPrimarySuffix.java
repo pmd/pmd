@@ -30,6 +30,14 @@ public class ASTPrimarySuffix extends SimpleNode {
         return this.isArguments;
     }
 
+    public int getArgumentCount() {
+        if (isArguments()) {
+            ASTArguments args = (ASTArguments)this.jjtGetChild(0);
+            return args.getArgumentCount();
+        }
+        throw new RuntimeException("Call ASTPrimarySuffix.isArguments() before calling ASTPrimarySuffix.getArgumentCount()!");
+    }
+
 
     public void dump(String prefix) {
         String out = "";

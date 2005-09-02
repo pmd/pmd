@@ -260,25 +260,6 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals("Unexpected ending column:", endCol, node.getEndColumn());
     }
 
-    /**
-     * Returns an unformatted xml string (without the declaration)
-     *
-     * @param node
-     * @return
-     * @throws IOException
-     */
-    private String getXmlString(SimpleNode node) throws IOException {
-        Document document = node.asXml();
-        StringWriter writer = new StringWriter();
-        OutputFormat outputFormat = new OutputFormat("XML", "UTF-8", false);
-        outputFormat.setOmitXMLDeclaration( true );
-        XMLSerializer xmlSerializer = new XMLSerializer(writer, outputFormat);
-        xmlSerializer.asDOMSerializer();
-        xmlSerializer.serialize(document);
-        String xmlString = writer.toString();
-        return xmlString;
-    }
-
     private static final String HAS_EXPLICIT_EXTENDS =
             "public class Test extends Foo {}";
 

@@ -31,7 +31,7 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST10, "private with same name as public, different method signature", 0, rule),
            new TestDescriptor(BUG_1114754, "False +, BUG 1114754", 0, rule),
            new TestDescriptor(TEST11, "called from constructor", 0, rule),
-//           new TestDescriptor(TEST12, "another same name case", 0, rule),
+           new TestDescriptor(TEST12, "another same name case", 0, rule),
        });
     }
 

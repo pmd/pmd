@@ -16,16 +16,18 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         super(node);
     }
 
+    public int getParameterCount() {
+        return ((ASTMethodDeclarator) node).getParameterCount();
+    }
+
     public String getParameterDisplaySignature() {
         StringBuffer sb = new StringBuffer("(");
-
         ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
             sb.append(((ASTType)p.getFirstChildOfType(ASTType.class)).getTypeImage());
             sb.append(",");
         }
-
         if (sb.charAt(sb.length()-1) == ',') {
             sb.deleteCharAt(sb.length()-1);
         }

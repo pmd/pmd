@@ -131,15 +131,20 @@ public class ClassScope extends AbstractScope {
         }
 
         if (occurrence.isMethodOrConstructorInvocation()) {
-            List images = new ArrayList();
-            images.add(occurrence.getImage());
-            if (occurrence.getImage().startsWith(className)) {
-                images.add(clipClassName(occurrence.getImage()));
+            for (Iterator i = methodNames.keySet().iterator(); i.hasNext();) {
+                MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
+                if (mnd.getImage().equals(occurrence.getImage())) {
+                    int args = occurrence.getArgumentCount();
+                    if (args == mnd.getParameterCount()) {
+                        // FIXME if several methods have the same name
+                        // and parameter count, only one will get caught here
+                        // we need to make some attempt at type lookup and discrimination
+                        // or, failing that, mark this as a usage of all those methods
+                        return mnd;
+                    }
+                }
             }
-
-            ImageFinderFunction finder = new ImageFinderFunction(images);
-            Applier.apply(finder, methodNames.keySet().iterator());
-            return finder.getDecl();
+            return null;
         }
 
         List images = new ArrayList();
