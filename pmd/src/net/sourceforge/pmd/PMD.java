@@ -152,6 +152,13 @@ public class PMD {
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             RuleSet rules = ruleSetFactory.createRuleSet(opts.getRulesets());
+            if (opts.debugEnabled()) {
+                for (Iterator i = rules.getRules().iterator(); i.hasNext();) {
+                    Rule r = (Rule)i.next();
+                    System.out.println("Loaded rule " + r.getName());
+                }
+            }
+
             for (Iterator i = files.iterator(); i.hasNext();) {
                 DataSource dataSource = (DataSource) i.next();
                 String niceFileName = dataSource.getNiceFileName(opts.shortNamesEnabled(), opts.getInputPath());

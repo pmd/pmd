@@ -8,6 +8,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTArguments;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -47,7 +48,8 @@ public class NameFinder {
         if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) node).isArguments()) {
             NameOccurrence occurrence = (NameOccurrence)names.getLast();
             occurrence.setIsMethodOrConstructorInvocation();
-            occurrence.setArgumentCount(((ASTPrimarySuffix) node).getArgumentCount());
+            ASTArguments args = (ASTArguments)((ASTPrimarySuffix) node).jjtGetChild(0);
+            occurrence.setArgumentCount(args.getArgumentCount());
 
         }
     }
