@@ -46,6 +46,7 @@
         <subsection name="Contributors">
         <ul>
 
+            <li>shawn2005 - documentation bug report</li>
             <li>Pieter Bloemendaal - bug report for UnusedPrivateMethod, found typo in ArrayIsStoredDirectly, bug report for AvoidReassigningParametersRule</li>
             <li>Benoit Xhenseval - bug report for UnusedPrivateMethod, suggestion to add elapsed time to XML report, bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Raja Rajan - bug report for CompareObjectswithEquals</li>
