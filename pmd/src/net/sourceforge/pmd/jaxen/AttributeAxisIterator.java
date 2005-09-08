@@ -10,10 +10,13 @@ import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 // before any optimization, this took 22.9 seconds:
 // time ./pmd.sh /usr/local/java/src/java/lang text basic > rpt.txt
 // report size is 3167 bytes
+// after caching and preprocessing, takes about 21.7 seconds
 public class AttributeAxisIterator implements Iterator {
 
     private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
@@ -27,10 +30,17 @@ public class AttributeAxisIterator implements Iterator {
     public AttributeAxisIterator(Node contextNode) {
         this.node = contextNode;
 
-        // caching the methods is almost 10x faster than
-        // looking them up each time
+        // preprocessing and caching the methods
+        // knocks about 5% off total processing time
         if (!methodCache.containsKey(contextNode.getClass())) {
-            methodCache.put(contextNode.getClass(), contextNode.getClass().getMethods());
+            Method[] tmp = contextNode.getClass().getMethods();
+            List set = new ArrayList();
+            for (int i = 0; i<tmp.length; i++) {
+                if (isAttribute(tmp[i])) {
+                    set.add(tmp[i]);
+                }
+            }
+            methodCache.put(contextNode.getClass(), (Method[])set.toArray(new Method[set.size()]));
         }
         this.methods = (Method[])methodCache.get(contextNode.getClass());
 
@@ -59,15 +69,13 @@ public class AttributeAxisIterator implements Iterator {
         while (position < methods.length) {
             Method method = methods[position];
             try {
-                if (isAttribute(method)) {
-                    Class returnType = method.getReturnType();
-                    if (Boolean.TYPE == returnType
-                            || String.class == returnType
-                            || Integer.TYPE == returnType) {
-                        Attribute attribute = getAttribute(node, method);
-                        if (attribute != null) {
-                            return attribute;
-                        }
+                Class returnType = method.getReturnType();
+                if (Boolean.TYPE == returnType
+                        || String.class == returnType
+                        || Integer.TYPE == returnType) {
+                    Attribute attribute = getAttribute(node, method);
+                    if (attribute != null) {
+                        return attribute;
                     }
                 }
             } catch (IllegalAccessException e) {
