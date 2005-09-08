@@ -8,7 +8,12 @@ import net.sourceforge.pmd.ast.Node;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.HashMap;
 
+// before any optimization, this took 22.9 seconds:
+// time ./pmd.sh /usr/local/java/src/java/lang text basic > rpt.txt
+// report size is 3167 bytes
 public class AttributeAxisIterator implements Iterator {
 
     private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
@@ -17,9 +22,18 @@ public class AttributeAxisIterator implements Iterator {
     private int position;
     private Node node;
 
+    private static Map methodCache = new HashMap();
+
     public AttributeAxisIterator(Node contextNode) {
         this.node = contextNode;
-        this.methods = contextNode.getClass().getMethods();
+
+        // caching the methods is almost 10x faster than
+        // looking them up each time
+        if (!methodCache.containsKey(contextNode.getClass())) {
+            methodCache.put(contextNode.getClass(), contextNode.getClass().getMethods());
+        }
+        this.methods = (Method[])methodCache.get(contextNode.getClass());
+
         this.position = 0;
         this.currObj = getNextAttribute();
     }

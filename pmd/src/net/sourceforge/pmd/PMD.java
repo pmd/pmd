@@ -11,6 +11,7 @@ import net.sourceforge.pmd.cpd.JavaLanguage;
 import net.sourceforge.pmd.dfa.DataFlowFacade;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
+import net.sourceforge.pmd.jaxen.AttributeAxisIterator;
 
 import java.io.BufferedInputStream;
 import java.io.File;

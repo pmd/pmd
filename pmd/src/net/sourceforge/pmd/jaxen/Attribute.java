@@ -28,20 +28,8 @@ public class Attribute {
         return value;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public Node getParent() {
         return parent;
-    }
-
-    public void setParent(Node parent) {
-        this.parent = parent;
     }
 
     public String toString() {

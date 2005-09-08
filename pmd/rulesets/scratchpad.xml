@@ -6,6 +6,41 @@
 These are new rules that are still in progress
   </description>
 
+
+
+      <rule name="InstantiationToGetClass"
+            message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
+            class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+  Avoid instantiating an object just to call getClass() on it; use the .class public member instead
+        </description>
+          <example>
+      <![CDATA[
+  public class Foo {
+   // Replace this
+   Class c = new String().getClass();
+   // with this:
+   Class c = String.class;
+  }
+      ]]>
+          </example>
+          <priority>4</priority>
+          <properties>
+            <property name="xpath">
+              <value>
+                  <![CDATA[
+  //PrimarySuffix
+   [@Image='getClass']
+   [parent::PrimaryExpression
+    [PrimaryPrefix/AllocationExpression]
+    [count(PrimarySuffix) = 2]
+   ]
+       ]]>
+              </value>
+            </property>
+          </properties>
+        </rule>
+
     <!--
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"

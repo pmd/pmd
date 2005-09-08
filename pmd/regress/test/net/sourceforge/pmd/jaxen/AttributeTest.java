@@ -14,14 +14,4 @@ public class AttributeTest extends TestCase {
         assertEquals("value", a.getValue());
         assertNull(a.getParent());
     }
-
-    public void testAccessors() {
-        Attribute a = new Attribute(null, null, null);
-        a.setName("name");
-        a.setValue("value");
-        a.setParent(null);
-        assertEquals("name", a.getName());
-        assertEquals("value", a.getValue());
-        assertNull(a.getParent());
-    }
 }
