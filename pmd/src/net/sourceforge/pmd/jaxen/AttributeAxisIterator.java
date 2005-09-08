@@ -70,9 +70,7 @@ public class AttributeAxisIterator implements Iterator {
             Method method = methods[position];
             try {
                 Class returnType = method.getReturnType();
-                if (Boolean.TYPE == returnType
-                        || String.class == returnType
-                        || Integer.TYPE == returnType) {
+                if (Boolean.TYPE == returnType || String.class == returnType || Integer.TYPE == returnType) {
                     Attribute attribute = getAttribute(node, method);
                     if (attribute != null) {
                         return attribute;
