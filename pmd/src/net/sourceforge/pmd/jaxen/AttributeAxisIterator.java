@@ -19,9 +19,30 @@ import java.util.ArrayList;
 // after caching and preprocessing, takes about 21.7 seconds
 public class AttributeAxisIterator implements Iterator {
 
+    private static class MethodWrapper {
+        public Method method;
+        public String name;
+        public MethodWrapper(Method m) {
+            this.method = m;
+            this.name = truncateMethodName(m.getName());
+        }
+        private String truncateMethodName(String n) {
+            if (n.startsWith("is")) {
+                n = n.substring("is".length());
+            } else if (n.startsWith("uses")) {
+                n = n.substring("uses".length());
+            } else if (n.startsWith("has")) {
+                n = n.substring("has".length());
+            } else if (n.startsWith("get")) {
+                n = n.substring("get".length());
+            }
+            return n;
+        }
+    }
+
     private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
     private Object currObj;
-    private Method[] methods;
+    private MethodWrapper[] methodWrappers;
     private int position;
     private Node node;
 
@@ -30,19 +51,20 @@ public class AttributeAxisIterator implements Iterator {
     public AttributeAxisIterator(Node contextNode) {
         this.node = contextNode;
 
-        // preprocessing and caching the methods
-        // knocks about 5% off total processing time
         if (!methodCache.containsKey(contextNode.getClass())) {
-            Method[] tmp = contextNode.getClass().getMethods();
-            List set = new ArrayList();
-            for (int i = 0; i<tmp.length; i++) {
-                if (isAttribute(tmp[i])) {
-                    set.add(tmp[i]);
+            Method[] preFilter = contextNode.getClass().getMethods();
+            List postFilter = new ArrayList();
+            for (int i = 0; i<preFilter.length; i++) {
+                if (isAttribute(preFilter[i])) {
+                    Class returnType = preFilter[i].getReturnType();
+                    if (String.class == returnType || Integer.TYPE == returnType || Boolean.TYPE == returnType) {
+                        postFilter.add(new MethodWrapper(preFilter[i]));
+                    }
                 }
             }
-            methodCache.put(contextNode.getClass(), (Method[])set.toArray(new Method[set.size()]));
+            methodCache.put(contextNode.getClass(), (MethodWrapper[])postFilter.toArray(new MethodWrapper[postFilter.size()]));
         }
-        this.methods = (Method[])methodCache.get(contextNode.getClass());
+        this.methodWrappers = (MethodWrapper[])methodCache.get(contextNode.getClass());
 
         this.position = 0;
         this.currObj = getNextAttribute();
@@ -66,15 +88,12 @@ public class AttributeAxisIterator implements Iterator {
     }
 
     private Attribute getNextAttribute() {
-        while (position < methods.length) {
-            Method method = methods[position];
+        while (position < methodWrappers.length) {
+            MethodWrapper methodWrapper = methodWrappers[position];
             try {
-                Class returnType = method.getReturnType();
-                if (Boolean.TYPE == returnType || String.class == returnType || Integer.TYPE == returnType) {
-                    Attribute attribute = getAttribute(node, method);
-                    if (attribute != null) {
-                        return attribute;
-                    }
+                Attribute attribute = getAttribute(node, methodWrapper);
+                if (attribute != null) {
+                    return attribute;
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
@@ -87,32 +106,18 @@ public class AttributeAxisIterator implements Iterator {
         return null;
     }
 
-    protected Attribute getAttribute(Node node, Method method)
+    protected Attribute getAttribute(Node node, MethodWrapper methodWrapper)
             throws IllegalAccessException, InvocationTargetException {
-        String name = truncateMethodName(method.getName());
-        Object value = method.invoke(node, EMPTY_OBJ_ARRAY);
+        Object value = methodWrapper.method.invoke(node, EMPTY_OBJ_ARRAY);
         if (value != null) {
             if (value instanceof String) {
-                return new Attribute(node, name, (String) value);
+                return new Attribute(node, methodWrapper.name, (String) value);
             } else {
-                return new Attribute(node, name, String.valueOf(value));
+                return new Attribute(node, methodWrapper.name, String.valueOf(value));
             }
         } else {
             return null;
         }
-    }
-
-    protected String truncateMethodName(String name) {
-        if (name.startsWith("is")) {
-            name = name.substring("is".length());
-        } else if (name.startsWith("uses")) {
-            name = name.substring("uses".length());
-        } else if (name.startsWith("has")) {
-            name = name.substring("has".length());
-        } else if (name.startsWith("get")) {
-            name = name.substring("get".length());
-        }
-        return name;
     }
 
     protected boolean isAttribute(Method method) {
