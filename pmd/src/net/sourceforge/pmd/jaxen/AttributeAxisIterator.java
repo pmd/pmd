@@ -16,7 +16,7 @@ import java.util.ArrayList;
 // before any optimization, this took 22.9 seconds:
 // time ./pmd.sh /usr/local/java/src/java/lang text basic > rpt.txt
 // report size is 3167 bytes
-// after caching and preprocessing, takes about 21.7 seconds
+// after caching and preprocessing, takes about 21.6 seconds
 public class AttributeAxisIterator implements Iterator {
 
     private static class MethodWrapper {
@@ -56,10 +56,7 @@ public class AttributeAxisIterator implements Iterator {
             List postFilter = new ArrayList();
             for (int i = 0; i<preFilter.length; i++) {
                 if (isAttribute(preFilter[i])) {
-                    Class returnType = preFilter[i].getReturnType();
-                    if (String.class == returnType || Integer.TYPE == returnType || Boolean.TYPE == returnType) {
-                        postFilter.add(new MethodWrapper(preFilter[i]));
-                    }
+                    postFilter.add(new MethodWrapper(preFilter[i]));
                 }
             }
             methodCache.put(contextNode.getClass(), (MethodWrapper[])postFilter.toArray(new MethodWrapper[postFilter.size()]));
@@ -91,7 +88,18 @@ public class AttributeAxisIterator implements Iterator {
         while (position < methodWrappers.length) {
             MethodWrapper methodWrapper = methodWrappers[position];
             try {
-                Attribute attribute = getAttribute(node, methodWrapper);
+                Attribute result;
+                Object value = methodWrapper.method.invoke(node, EMPTY_OBJ_ARRAY);
+                if (value != null) {
+                    if (value instanceof String) {
+                        result = new Attribute(node, methodWrapper.name, (String) value);
+                    } else {
+                        result = new Attribute(node, methodWrapper.name, String.valueOf(value));
+                    }
+                } else {
+                    result = null;
+                }
+                Attribute attribute = result;
                 if (attribute != null) {
                     return attribute;
                 }
@@ -106,22 +114,9 @@ public class AttributeAxisIterator implements Iterator {
         return null;
     }
 
-    protected Attribute getAttribute(Node node, MethodWrapper methodWrapper)
-            throws IllegalAccessException, InvocationTargetException {
-        Object value = methodWrapper.method.invoke(node, EMPTY_OBJ_ARRAY);
-        if (value != null) {
-            if (value instanceof String) {
-                return new Attribute(node, methodWrapper.name, (String) value);
-            } else {
-                return new Attribute(node, methodWrapper.name, String.valueOf(value));
-            }
-        } else {
-            return null;
-        }
-    }
-
     protected boolean isAttribute(Method method) {
-        return (method.getParameterTypes().length == 0)
+        return (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType() || String.class == method.getReturnType())
+        && (method.getParameterTypes().length == 0)
                 && (Void.TYPE != method.getReturnType())
                 && !method.getName().startsWith("jjt")
                 && !method.getName().equals("toString")
