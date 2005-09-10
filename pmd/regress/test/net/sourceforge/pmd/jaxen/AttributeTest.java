@@ -5,15 +5,26 @@ package test.net.sourceforge.pmd.jaxen;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.jaxen.Attribute;
+import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
+
+import java.lang.reflect.Method;
 
 public class AttributeTest extends TestCase {
 
     public void testConstructor() {
-/*
-        Attribute a = new Attribute(null, "name", "value");
-        assertEquals("name", a.getName());
-        assertEquals("value", a.getValue());
-        assertNull(a.getParent());
-*/
+        ASTPrimaryPrefix p = new ASTPrimaryPrefix(1);
+        p.testingOnly__setBeginLine(5);
+        Method[] methods = p.getClass().getMethods();
+        Method m = null;
+        for (int i=0;i<methods.length;i++) {
+            if (methods[i].getName().equals("getBeginLine")) {
+                m = methods[i];
+                break;
+            }
+        }
+        Attribute a = new Attribute(p, "BeginLine", m);
+        assertEquals("BeginLine", a.getName());
+        assertEquals("5", a.getValue());
+        assertEquals(p, a.getParent());
     }
 }
