@@ -12,11 +12,11 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 // before any optimization, this took 22.9 seconds:
 // time ./pmd.sh /usr/local/java/src/java/lang text basic > rpt.txt
-// report size is 3167 bytes
-// after caching and preprocessing, takes about 21.6 seconds
+// after caching and preprocessing, takes about 21.0 seconds
 public class AttributeAxisIterator implements Iterator {
 
     private static class MethodWrapper {
@@ -27,20 +27,20 @@ public class AttributeAxisIterator implements Iterator {
             this.name = truncateMethodName(m.getName());
         }
         private String truncateMethodName(String n) {
-            if (n.startsWith("is")) {
+            // about 70% of the methods start with 'get', so this case goes first
+            if (n.startsWith("get")) {
+                n = n.substring("get".length());
+            } else if (n.startsWith("is")) {
                 n = n.substring("is".length());
-            } else if (n.startsWith("uses")) {
-                n = n.substring("uses".length());
             } else if (n.startsWith("has")) {
                 n = n.substring("has".length());
-            } else if (n.startsWith("get")) {
-                n = n.substring("get".length());
+            } else if (n.startsWith("uses")) {
+                n = n.substring("uses".length());
             }
             return n;
         }
     }
 
-    private static final Object[] EMPTY_OBJ_ARRAY = new Object[0];
     private Object currObj;
     private MethodWrapper[] methodWrappers;
     private int position;
@@ -50,7 +50,6 @@ public class AttributeAxisIterator implements Iterator {
 
     public AttributeAxisIterator(Node contextNode) {
         this.node = contextNode;
-
         if (!methodCache.containsKey(contextNode.getClass())) {
             Method[] preFilter = contextNode.getClass().getMethods();
             List postFilter = new ArrayList();
@@ -85,33 +84,12 @@ public class AttributeAxisIterator implements Iterator {
     }
 
     private Attribute getNextAttribute() {
-        while (position < methodWrappers.length) {
-            MethodWrapper methodWrapper = methodWrappers[position];
-            try {
-                Attribute result;
-                Object value = methodWrapper.method.invoke(node, EMPTY_OBJ_ARRAY);
-                if (value != null) {
-                    if (value instanceof String) {
-                        result = new Attribute(node, methodWrapper.name, (String) value);
-                    } else {
-                        result = new Attribute(node, methodWrapper.name, String.valueOf(value));
-                    }
-                } else {
-                    result = null;
-                }
-                Attribute attribute = result;
-                if (attribute != null) {
-                    return attribute;
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } finally {
-                position++;
-            }
+        if (position == methodWrappers.length) {
+            return null;
         }
-        return null;
+        MethodWrapper m = methodWrappers[position];
+        position++;
+        return new Attribute(node, m.name, m.method);
     }
 
     protected boolean isAttribute(Method method) {
@@ -122,8 +100,6 @@ public class AttributeAxisIterator implements Iterator {
                 && !method.getName().equals("toString")
                 && !method.getName().equals("getScope")
                 && !method.getName().equals("getClass")
-                && !method.getName().equals("getFinallyBlock")
-                && !method.getName().equals("getCatchBlocks")
                 && !method.getName().equals("getTypeNameNode")
                 && !method.getName().equals("getImportedNameNode")
                 && !method.getName().equals("hashCode");
