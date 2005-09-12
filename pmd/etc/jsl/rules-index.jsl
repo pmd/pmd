@@ -8,12 +8,8 @@
   xmlns:x="jelly:xml"
   xmlns:doc="doc"
   trim="false">
-
 <jsl:template match="rulesets">
 	<document>
-		<j:set trim="true" var="rulesetname">
-			<x:expr select="@name"/>
-		</j:set>
 		<properties>
 			<author email="mikkey@sourceforge.net">Miguel Griffa</author>
 			<title>PMD Rulesets index</title>
@@ -31,12 +27,10 @@
                     </j:if>
                 </j:forEach>
                 </ul>
-
                 <j:forEach var="rs" items="${ruleset}">
                     <j:set var="rn" value="${rs.attributeValue('name')}"/>
                     <j:if test="${rn != 'scratchpad' &amp;&amp; rn != 'Favorites' &amp;&amp; rn != 'my-rules'}">
                         <subsection name="${rn}">
-                            <!--x:set var="rules" select="/rulesets/rules[@name='${rn}'"/-->
                             <j:forEach var="r" items="${rs.elements('rule')}">
                                 <li> ${r.attributeValue("name")}: ${r.element("description").getText()}</li>
                             </j:forEach>
@@ -53,5 +47,4 @@
 		</body>
 	</document>
 </jsl:template>
-
 </jsl:stylesheet>
