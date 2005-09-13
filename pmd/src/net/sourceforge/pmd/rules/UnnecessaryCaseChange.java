@@ -13,34 +13,49 @@ public class UnnecessaryCaseChange extends AbstractRule {
             return data;
         }
 
-        // verify PrimaryPrefix/Name[ends-with(@Image, toUpperCase]
-        if (!(exp.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
+        String first = getBadPrefixOrNull(exp);
+        if (first == null) {
             return data;
         }
 
-        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix)exp.jjtGetChild(0);
-        if (prefix.jjtGetNumChildren() != 1 || !(prefix.jjtGetChild(0) instanceof ASTName)) {
-           return data;
-        }
-        
-
-        ASTName name = (ASTName)prefix.jjtGetChild(0);
-        if (name.getImage() == null || !(name.getImage().endsWith("toUpperCase") || name.getImage().endsWith("toLowerCase"))){
-            return data;
-        }
-
-        // verify PrimarySuffix[@Image='equals']
-        if (!(exp.jjtGetChild(2) instanceof ASTPrimarySuffix)) {
-            return data;
-        }
-
-        ASTPrimarySuffix suffix = (ASTPrimarySuffix)exp.jjtGetChild(2);
-        if (suffix.getImage() == null || !suffix.getImage().equals("equals")) {
+        String second = getBadSuffixOrNull(exp);
+        if (second == null) {
             return data;
         }
 
         addViolation(data, exp);
-
         return data;
     }
+
+    private String getBadPrefixOrNull(ASTPrimaryExpression exp) {
+        // verify PrimaryPrefix/Name[ends-with(@Image, 'toUpperCase']
+        if (!(exp.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
+            return null;
+        }
+
+        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix)exp.jjtGetChild(0);
+        if (prefix.jjtGetNumChildren() != 1 || !(prefix.jjtGetChild(0) instanceof ASTName)) {
+           return null;
+        }
+
+        ASTName name = (ASTName)prefix.jjtGetChild(0);
+        if (name.getImage() == null || !(name.getImage().endsWith("toUpperCase") || name.getImage().endsWith("toLowerCase"))){
+            return null;
+        }
+        return name.getImage();
+    }
+
+    private String getBadSuffixOrNull(ASTPrimaryExpression exp) {
+        // verify PrimarySuffix[@Image='equals']
+        if (!(exp.jjtGetChild(2) instanceof ASTPrimarySuffix)) {
+            return null;
+        }
+
+        ASTPrimarySuffix suffix = (ASTPrimarySuffix)exp.jjtGetChild(2);
+        if (suffix.getImage() == null || !suffix.getImage().equals("equals")) {
+            return null;
+        }
+        return suffix.getImage();
+    }
+
 }
