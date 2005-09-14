@@ -91,7 +91,7 @@ public class Foo {
     </rule>
 
     <rule name="UnnecessaryCaseChange"
-          message="Use String.equalsIgnoreCase rather than String.toUpperCase().equals()"
+          message="Using String.equalsIgnoreCase with toUpperCase/toLowerCase is usually unnecessary"
            class="net.sourceforge.pmd.rules.UnnecessaryCaseChange">
        <description>
 Use String.equalsIgnoreCase rather than String.toUpperCase().equals()
@@ -103,6 +103,8 @@ Use String.equalsIgnoreCase rather than String.toUpperCase().equals()
   public boolean bar(String buz) {
     // should be buz.equalsIgnoreCase("baz")
     return buz.toUpperCase().equals("baz");
+    // another unnecessary toUpperCase()
+    // return buz.toUpperCase().equalsIgnoreCase("baz");
   }
  }
                  ]]>

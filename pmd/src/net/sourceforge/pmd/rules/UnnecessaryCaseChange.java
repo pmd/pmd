@@ -52,7 +52,7 @@ public class UnnecessaryCaseChange extends AbstractRule {
         }
 
         ASTPrimarySuffix suffix = (ASTPrimarySuffix)exp.jjtGetChild(2);
-        if (suffix.getImage() == null || !suffix.getImage().equals("equals")) {
+        if (suffix.getImage() == null || !(suffix.getImage().equals("equals") || suffix.getImage().equals("equalsIgnoreCase") )) {
             return null;
         }
         return suffix.getImage();

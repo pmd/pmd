@@ -8,38 +8,26 @@ These are new rules that are still in progress
 
 
 
-      <rule name="InstantiationToGetClass"
-            message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
-            class="net.sourceforge.pmd.rules.XPathRule">
-        <description>
-  Avoid instantiating an object just to call getClass() on it; use the .class public member instead
-        </description>
-          <example>
-      <![CDATA[
-  public class Foo {
-   // Replace this
-   Class c = new String().getClass();
-   // with this:
-   Class c = String.class;
+    <rule name="UnnecessaryCaseChange"
+          message="Using String.equalsIgnoreCase with toUpperCase/toLowerCase is usually unnecessary"
+           class="net.sourceforge.pmd.rules.UnnecessaryCaseChange">
+       <description>
+Use String.equalsIgnoreCase rather than String.toUpperCase().equals()
+       </description>
+       <priority>3</priority>
+       <example>
+                 <![CDATA[
+ public class Foo {
+  public boolean bar(String buz) {
+    // should be buz.equalsIgnoreCase("baz")
+    return buz.toUpperCase().equals("baz");
+    // another unnecessary toUpperCase()
+    // return buz.toUpperCase().equalsIgnoreCase("baz");
   }
-      ]]>
-          </example>
-          <priority>4</priority>
-          <properties>
-            <property name="xpath">
-              <value>
-                  <![CDATA[
-  //PrimarySuffix
-   [@Image='getClass']
-   [parent::PrimaryExpression
-    [PrimaryPrefix/AllocationExpression]
-    [count(PrimarySuffix) = 2]
-   ]
-       ]]>
-              </value>
-            </property>
-          </properties>
-        </rule>
+ }
+                 ]]>
+       </example>
+     </rule>
 
     <!--
     <rule name="UselessAssignment"
