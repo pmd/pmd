@@ -8,27 +8,27 @@ These are new rules that are still in progress
 
 
 
-    <rule name="UnnecessaryCaseChange"
-          message="Using String.equalsIgnoreCase with toUpperCase/toLowerCase is usually unnecessary"
-           class="net.sourceforge.pmd.rules.UnnecessaryCaseChange">
+    <rule name="UselessAssignment"
+           message="This assignment to ''{0}'' is useless"
+           class="net.sourceforge.pmd.rules.UselessAssignment"
+           dfa="true">
        <description>
-Use String.equalsIgnoreCase rather than String.toUpperCase().equals()
+This assignment is useless
        </description>
-       <priority>3</priority>
+         <priority>3</priority>
        <example>
-                 <![CDATA[
- public class Foo {
-  public boolean bar(String buz) {
-    // should be buz.equalsIgnoreCase("baz")
-    return buz.toUpperCase().equals("baz");
-    // another unnecessary toUpperCase()
-    // return buz.toUpperCase().equalsIgnoreCase("baz");
-  }
+   <![CDATA[
+public class Foo {
+ public void foo() {
+  int x = 2; // useless assignment!
+  x = 5;
+  bar(x);
  }
-                 ]]>
+}
+   ]]>
        </example>
      </rule>
-
+ 
     <!--
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"

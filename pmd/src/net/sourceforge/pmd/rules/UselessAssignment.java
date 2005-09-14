@@ -17,11 +17,9 @@ import java.util.Map;
 public class UselessAssignment extends AbstractRule implements Executable  {
 
     private RuleContext rc;
-    private SimpleNode tmp;
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         this.rc = (RuleContext) data;
-        this.tmp = node;
 
 /*
         IDataFlowNode n1 = node.getDataFlowNode();
@@ -43,46 +41,56 @@ public class UselessAssignment extends AbstractRule implements Executable  {
         return data;
     }
 
+    private static class Usage {
+        public int accessType;
+        public int line;
+        public Usage(int accessType, int line) {
+            this.accessType = accessType;
+            this.line = line;
+        }
+        public String toString() {
+            return "accessType = " + accessType + ", line = " + line;
+        }
+    }
+
     public void execute(List path) {
         Map hash = new HashMap();
-        //System.out.println("path size is " + path.size());
+        System.out.println("path size is " + path.size());
         for (int i = 0; i < path.size(); i++) {
             //System.out.println("i = " + i);
             IDataFlowNode inode = (IDataFlowNode) path.get(i);
-            if (inode.getVariableAccess() != null) {
-                for (int j = 0; j < inode.getVariableAccess().size(); j++) {
-                    //System.out.println("j = " + j);
-                    VariableAccess va = (VariableAccess) inode.getVariableAccess().get(j);
+            if (inode.getVariableAccess() == null) {
+                continue;
+            }
+            for (int j = 0; j < inode.getVariableAccess().size(); j++) {
+                VariableAccess va = (VariableAccess) inode.getVariableAccess().get(j);
+                System.out.println("inode = " + inode + ", va = " + va);
+                Object o = hash.get(va.getVariableName());
+                if (o != null) {
+                    Usage u = (Usage) o;
+                    // At some point investigate and possibly reintroduce this line2 thing
+                    //int line2 = ((Integer) array.get(1)).intValue();
 
-                    Object o = hash.get(va.getVariableName());
-                    if (o != null) {
-                        List array = (List) o;
-                        int last = ((Integer) array.get(0)).intValue();
-                        // At some point investigate and possibly reintroduce this line2 thing
-                        //int line2 = ((Integer) array.get(1)).intValue();
-
-                        // DD - definition followed by another definition
-                        if (va.accessTypeMatches(last) && va.isDefinition()) {
-                            addViolation(rc, tmp, va.getVariableName());
-                        }
-/*                        // UR - ??
-                      else if (last == VariableAccess.UNDEFINITION && va.isReference()) {
-                            //this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "UR"));
-                        }
-                        // DU - variable is defined and then goes out of scope
-                        // i.e., unused parameter
-                        else if (last == VariableAccess.DEFINITION && va.isUndefinition()) {
-                            if (inode.getSimpleNode() != null) {
-                                this.rc.getReport().addRuleViolation(createRuleViolation(rc, tmp, va.getVariableName(), "DU"));
-                            }
-                        }
-*/
+                    // DD - definition followed by another definition
+                    if (va.isDefinition() && va.accessTypeMatches(u.accessType)) {
+                        System.out.println(va.getVariableName() + ":" + u);
+                        addViolation(rc, inode.getSimpleNode(), va.getVariableName());
                     }
-                    List array = new ArrayList();
-                    array.add(new Integer(va.getAccessType()));
-                    array.add(new Integer(inode.getLine()));
-                    hash.put(va.getVariableName(), array);
+/*                        // UR - ??
+                  else if (last == VariableAccess.UNDEFINITION && va.isReference()) {
+                        //this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "UR"));
+                    }
+                    // DU - variable is defined and then goes out of scope
+                    // i.e., unused parameter
+                    else if (last == VariableAccess.DEFINITION && va.isUndefinition()) {
+                        if (inode.getSimpleNode() != null) {
+                            this.rc.getReport().addRuleViolation(createRuleViolation(rc, tmp, va.getVariableName(), "DU"));
+                        }
+                    }
+*/
                 }
+                Usage u = new Usage(va.getAccessType(), inode.getLine());
+                hash.put(va.getVariableName(), u);
             }
         }
     }

@@ -118,7 +118,7 @@ public class DataFlowNode implements IDataFlowNode {
     }
 
     public String toString() {
-        String res = "DataFlowNode ";
+        String res = "DataFlowNode: line " + this.getLine() + ", ";
         if (node instanceof ASTMethodDeclaration || node instanceof ASTConstructorDeclaration) {
             res += (node instanceof ASTMethodDeclaration) ? "(method)" : "(constructor)";
        } else {
@@ -133,7 +133,7 @@ public class DataFlowNode implements IDataFlowNode {
                 int newTmpInt = Integer.parseInt(st.nextToken());
                 res += "(" + stringFromType(newTmpInt) + ")";
             }
-            res += ": " + this.node.getClass().toString();
+            res += ", " + this.node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.')+1);
             res += (node.getImage() == null ? "" : "(" + this.node.getImage() + ")");
         }
         return res;
@@ -145,6 +145,7 @@ public class DataFlowNode implements IDataFlowNode {
             typeMap.put(new Integer(NodeType.IF_LAST_STATEMENT), "IF_LAST_STATEMENT");
             typeMap.put(new Integer(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE), "IF_LAST_STATEMENT_WITHOUT_ELSE");
             typeMap.put(new Integer(NodeType.ELSE_LAST_STATEMENT), "ELSE_LAST_STATEMENT");
+            typeMap.put(new Integer(NodeType.WHILE_LAST_STATEMENT), "WHILE_LAST_STATEMENT");
             typeMap.put(new Integer(NodeType.WHILE_EXPR), "WHILE_EXPR");
             typeMap.put(new Integer(NodeType.SWITCH_START), "SWITCH_START");
             typeMap.put(new Integer(NodeType.CASE_LAST_STATEMENT), "CASE_LAST_STATEMENT");
