@@ -8,11 +8,9 @@ combine this ruleset with the unusedcode.xml, basic.xml, and import.xml rulesets
 This ruleset also serves as an example of how to do a custom ruleset.
   </description>
 
-
-
   <rule ref="rulesets/basic.xml"/>
 
-<rule ref="rulesets/basic.xml/EmptyCatchBlock" message="Must handle exceptions">
+ <rule ref="rulesets/basic.xml/EmptyCatchBlock" message="Must handle exceptions">
      <priority>2</priority>
   </rule>
 

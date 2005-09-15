@@ -71,10 +71,10 @@
 
 <target name="pmd" description="Runs PMD">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="/home/tom/fav.xml" shortFilenames="true">
+    <pmd rulesetfiles="unusedcode" shortFilenames="true">
       <formatter type="html" toFile="rpt.html" linkPrefix="http://pmd.sf.net/xref/"/>
       <fileset dir="/home/tom/pmd/pmd/src/">
-        <include name="**/renderers/*.java"/>
+        <include name="**/rules/*.java"/>
        </fileset>
     </pmd>
 </target>
