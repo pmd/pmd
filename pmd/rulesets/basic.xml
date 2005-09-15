@@ -698,23 +698,10 @@ public class Foo {
 
 	<rule name="UselessOverridingMethod"
     message="Overriding method merely calls super"
-    class="net.sourceforge.pmd.rules.XPathRule">
+    class="net.sourceforge.pmd.rules.UselessOverridingMethod">
         <description>
 The overriding method merely calls the same method defined in a superclass
         </description>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-//MethodDeclaration/Block[count(descendant::Statement)=1][BlockStatement
-/Statement/child::*/child::*/descendant-or-self::PrimaryExpression
-[count(../child::*)=1][PrimaryPrefix[@SuperModifier='true']
-[@Image = ancestor::MethodDeclaration/MethodDeclarator/@Image]]
-[count(PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression[PrimaryPrefix]
-[count(PrimarySuffix) = 0]) =
-count(ancestor::MethodDeclaration/MethodDeclarator/FormalParameters//VariableDeclaratorId]]
-                ]]></value>
-            </property>
-        </properties>
         <priority>3</priority>
         <example><![CDATA[
 public void foo(String bar) {

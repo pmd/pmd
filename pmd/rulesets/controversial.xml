@@ -322,26 +322,6 @@ public class Foo {
           </example>
         </rule>
 
-    <rule name="UselessAssignment"
-           message="This assignment to ''{0}'' is useless"
-           class="net.sourceforge.pmd.rules.UselessAssignment"
-           dfa="true">
-       <description>
-This assignment is useless
-       </description>
-         <priority>3</priority>
-       <example>
-   <![CDATA[
-public class Foo {
- public void foo() {
-  int x = 2; // useless assignment!
-  x = 5;
-  bar(x);
- }
-}
-   ]]>
-       </example>
-     </rule>
 
 </ruleset>
 
