@@ -38,7 +38,8 @@ public class StringInstantiation extends AbstractRule {
         }
 
         VariableNameDeclaration nd = (VariableNameDeclaration)name.getNameDeclaration();
-        if (nd.getTypeImage().equals("String")) {
+        // nd == null in cases like: return new String("foo");
+        if (nd == null || nd.getTypeImage().equals("String")) {
             addViolation(data, node);
 
         }

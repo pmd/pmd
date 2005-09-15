@@ -1,4 +1,4 @@
-????, 2005 - 3.3:
+September 15, 2005 - 3.3:
 New rules: PositionLiteralsFirstInComparisons (in the design ruleset), UnnecessaryLocalBeforeReturn (design ruleset), ProperLogger (logging-jakarta-commons ruleset), UselessOverridingMethod (basic ruleset), PackageCase (naming ruleset), NoPackage (naming ruleset), UnnecessaryCaseChange (strings ruleset)
 Implemented RFE 1220171 - rule definitions can now contain a link to an external URL for more information on that rule - for example, a link to the rule's web page.  Thanks to Wouter Zelle for designing and implementing this!
 Implemented RFE 1230685 - The text report now includes parsing errors even if no rule violations are reported
@@ -26,8 +26,8 @@ Fixed bug 1245139 - TooManyFields no longer throws a ClassCastException when pro
 Fixed bug 1251256 - ImmutableField no longer skips assignments in try blocks on methods (which led to false positives).
 Fixed bug 1250949 - The JDK 1.5 parser no longer chokes on AnnotationTypeMemberDeclaration with a default value.
 Fixed bug 1245367 - ImmutableField no longer triggers on assignments in loops in constructors.
-Fixed bug 1251269 - AvoidConcateningNonLiteralsInStringBuffer no longer triggers on StringBuffer constructors like 'new StringBuffer(1 + getFoo());'
-Fixed bug 1244570 - AvoidConcateningNonLiteralsInStringBuffer no longer triggers on certain AST patterns involving local variable declarations inside Statement nodes.
+Fixed bug 1251269 - AvoidConcatenatingNonLiteralsInStringBuffer no longer triggers on StringBuffer constructors like 'new StringBuffer(1 + getFoo());'
+Fixed bug 1244570 - AvoidConcatenatingNonLiteralsInStringBuffer no longer triggers on certain AST patterns involving local variable declarations inside Statement nodes.
 Fixed bug 695344 - StringInstantiation no longer triggers on the String(byte[]) constructor.
 Fixed bug 1114754 - UnusedPrivateMethod reports fewer false positives.
 Fixed bug 1290718 - Command line parameter documentation is now correct for targetjdk options.

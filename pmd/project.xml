@@ -4,7 +4,7 @@
 	<pomVersion>3</pomVersion>
 	<id>pmd</id>
 	<name>PMD</name>
-	<currentVersion>3.2</currentVersion>
+	<currentVersion>3.3</currentVersion>
 	<organization>
 		<name>InfoEther</name>
 		<url>http://pmd.sourceforge.net/</url>
@@ -44,9 +44,9 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
 
 	<versions>
 		<version>
-			<id>3.2</id>
-			<name>3.2</name>
-			<tag>pmd_release_3_2</tag>
+			<id>3.3</id>
+			<name>3.3</name>
+			<tag>pmd_release_3_3</tag>
 		</version>
 		<version>
 			<id>dev</id>

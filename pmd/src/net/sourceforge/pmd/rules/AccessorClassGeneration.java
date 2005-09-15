@@ -179,7 +179,7 @@ public class AccessorClassGeneration extends AbstractRule {
             // this is a hack to bail out here
             // but I'm not sure why this is happening
             // TODO
-            if (formerID == -1) {
+            if (formerID == -1 || formerID >= classDataList.size())  {
                 return null;
             }
             //store the names of any outer classes of this class in the classQualifyingName List
