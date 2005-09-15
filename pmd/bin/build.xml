@@ -11,9 +11,7 @@
 <path id="dependencies.path">
     <pathelement location="${dir.build}"/>
     <fileset dir="${dir.lib}">
-        <include name="jaxen-core-1.0-fcs.jar"/>
-        <!--<include name="jaxen-1.1-beta-6.jar"/>-->
-        <include name="saxpath-1.0-fcs.jar"/>
+        <include name="jaxen-1.1-beta-7.jar"/>
         <include name="xercesImpl-2.6.2.jar"/>
         <include name="xmlParserAPIs-2.6.2.jar"/>
     </fileset>
@@ -62,9 +60,9 @@
         basedir="${dir.build}">
         <manifest>
             <attribute name="Main-Class" value="net.sourceforge.pmd.PMD"/>
-            <attribute name="Class-Path" value="jaxen-core-1.0-fcs.jar saxpath-1.0-fcs.jar"/>
+            <attribute name="Class-Path" value="jaxen-1.1-beta-7.jar"/>
         </manifest>
-    </jar>  
+    </jar>
 </target>
 
 <target name="jarsrc" depends="copy,compile"  description="Jars up the source directory">

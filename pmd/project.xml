@@ -99,15 +99,6 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
 		</developer>
 
 		<developer>
-			<name>Andrey Lumyanski</name>
-			<id>a_lumyanski</id>
-			<email>a_lumyanski@users.sourceforge.net</email>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-
-		<developer>
 			<name>Ole-Martin Mork</name>
 			<id>olemartin</id>
 			<email>olemartin@users.sourceforge.net</email>
@@ -192,11 +183,7 @@ Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/sh
 		</dependency>
 		<dependency>
 			<id>jaxen</id>
-			<version>1.0-FCS-full</version>
-		</dependency>
-		<dependency>
-			<id>saxpath</id>
-			<version>1.0-FCS</version>
+			<version>1.1-beta-7</version>
 		</dependency>
 		<dependency>
 			<groupId>xerces</groupId>
