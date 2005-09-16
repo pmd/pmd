@@ -32,9 +32,15 @@ public class XPathRule extends AbstractRule {
                 SimpleNode n = (SimpleNode) i.next();
                 String msg = getMessage();
                 if (n instanceof ASTVariableDeclaratorId && getBooleanProperty("pluginname")) {
+                    addViolation(data, n, n.getImage());
+/*
+                    System.out.println("img = " + n.getImage());
                     msg = MessageFormat.format(msg, new Object[]{n.getImage()});
+                    System.out.println("msg = " + msg);
+*/
+                } else {
+                    addViolation(data, n, msg);
                 }
-                addViolation(data, n, msg);
             }
         } catch (JaxenException ex) {
             throwJaxenAsRuntime(ex);
