@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
@@ -52,8 +53,14 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             ASTConstructorDeclaration enclosingConstructor = (ASTConstructorDeclaration)occNode.getFirstParentOfType(ASTConstructorDeclaration.class);
             if (enclosingConstructor != null) {
                 callsFromOutsideMethod++;
-                continue; // Do we miss unused private constructors here?
+                break; // Do we miss unused private constructors here?
             }
+            ASTInitializer enclosingInitializer = (ASTInitializer)occNode.getFirstParentOfType(ASTInitializer.class);
+            if (enclosingInitializer != null) {
+                callsFromOutsideMethod++;
+                break;
+            }
+
             ASTMethodDeclaration enclosingMethod = (ASTMethodDeclaration)occNode.getFirstParentOfType(ASTMethodDeclaration.class);
             if (enclosingMethod != null && !mnd.getNode().jjtGetParent().equals(enclosingMethod)) {
                callsFromOutsideMethod++;
