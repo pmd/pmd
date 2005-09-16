@@ -7,29 +7,6 @@ These are new rules that are still in progress
   </description>
 
 
-    <!--
-
-    <rule name="UselessOverridingMethod"
-    message="Overriding method merely calls super"
-    class="net.sourceforge.pmd.rules.UselessOverridingMethod">
-        <description>
-The overriding method merely calls the same method defined in a superclass
-        </description>
-        <priority>3</priority>
-        <example><![CDATA[
-public void foo(String bar) {
-    super.foo(bar);		 //Why bother overriding?
-}
-        ]]></example>
-        <example><![CDATA[
-public String foo() {
-    return super.foo();  //Why bother overriding?
-}
-        ]]></example>
-    </rule>
-        -->
-
-    <!--
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"
            class="net.sourceforge.pmd.rules.UselessAssignment"
@@ -50,7 +27,7 @@ public class Foo {
    ]]>
        </example>
      </rule>
--->
+
     <!--
 
      <rule name="PositionalIterator"

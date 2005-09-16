@@ -43,19 +43,19 @@ public class UselessAssignment extends AbstractRule implements Executable  {
 
     private static class Usage {
         public int accessType;
-        public int line;
-        public Usage(int accessType, int line) {
+        public IDataFlowNode node;
+        public Usage(int accessType, IDataFlowNode node) {
             this.accessType = accessType;
-            this.line = line;
+            this.node = node;
         }
         public String toString() {
-            return "accessType = " + accessType + ", line = " + line;
+            return "accessType = " + accessType + ", line = " + node.getLine();
         }
     }
 
     public void execute(List path) {
         Map hash = new HashMap();
-        System.out.println("path size is " + path.size());
+        //System.out.println("path size is " + path.size());
         for (int i = 0; i < path.size(); i++) {
             //System.out.println("i = " + i);
             IDataFlowNode inode = (IDataFlowNode) path.get(i);
@@ -64,7 +64,7 @@ public class UselessAssignment extends AbstractRule implements Executable  {
             }
             for (int j = 0; j < inode.getVariableAccess().size(); j++) {
                 VariableAccess va = (VariableAccess) inode.getVariableAccess().get(j);
-                System.out.println("inode = " + inode + ", va = " + va);
+                //System.out.println("inode = " + inode + ", va = " + va);
                 Object o = hash.get(va.getVariableName());
                 if (o != null) {
                     Usage u = (Usage) o;
@@ -72,9 +72,10 @@ public class UselessAssignment extends AbstractRule implements Executable  {
                     //int line2 = ((Integer) array.get(1)).intValue();
 
                     // DD - definition followed by another definition
+                    // FIXME need to check for assignment as well!
                     if (va.isDefinition() && va.accessTypeMatches(u.accessType)) {
-                        System.out.println(va.getVariableName() + ":" + u);
-                        addViolation(rc, inode.getSimpleNode(), va.getVariableName());
+                        //System.out.println(va.getVariableName() + ":" + u);
+                        addViolation(rc, u.node.getSimpleNode(), va.getVariableName());
                     }
 /*                        // UR - ??
                   else if (last == VariableAccess.UNDEFINITION && va.isReference()) {
@@ -89,7 +90,7 @@ public class UselessAssignment extends AbstractRule implements Executable  {
                     }
 */
                 }
-                Usage u = new Usage(va.getAccessType(), inode.getLine());
+                Usage u = new Usage(va.getAccessType(), inode);
                 hash.put(va.getVariableName(), u);
             }
         }
