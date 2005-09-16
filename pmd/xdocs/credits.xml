@@ -45,8 +45,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Pieter Bloemendaal - reported JDK 1.3 parsing bug, command line docs bug report, bug report for UnusedPrivateMethod, found typo in ArrayIsStoredDirectly, bug report for AvoidReassigningParametersRule</li>
             <li>Wouter Zelle - reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
-            <li>Pieter Bloemendaal - command line docs bug report, bug report for UnusedPrivateMethod, found typo in ArrayIsStoredDirectly, bug report for AvoidReassigningParametersRule</li>
             <li>shawn2005 - documentation bug report</li>
             <li>Benoit Xhenseval - bug report for UnusedPrivateMethod, suggestion to add elapsed time to XML report, bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Raja Rajan - bug report for CompareObjectswithEquals</li>

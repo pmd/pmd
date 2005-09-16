@@ -174,6 +174,12 @@ public class JDKVersionTest extends TestCase  {
         p.CompilationUnit();
     }
 
+    public void testAssertAsIdentifierSucceedsWith1_3_test2() {
+        JavaParser jp = (new TargetJDK1_3()).createParser(new StringReader(ASSERT_TEST5_a));
+        jp.CompilationUnit();
+    }
+
+
     private static final String ANNOTATED_LOCALS =
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
@@ -217,6 +223,12 @@ public class JDKVersionTest extends TestCase  {
     private static final String ASSERT_TEST5 =
     "public class Foo {" + PMD.EOL +
     "  int assert = 2;" + PMD.EOL +
+    "}";
+
+
+    private static final String ASSERT_TEST5_a =
+    "public class Foo {" + PMD.EOL +
+    "  void bar() { assert(); }" + PMD.EOL +
     "}";
 
     private static final String ASSERT_TEST6 =

@@ -66,11 +66,11 @@ PARSER_BEGIN(JavaParser)
 package net.sourceforge.pmd.ast;
 public class JavaParser {
 
-  private boolean usingAssertAsIdentifier;
+  private boolean isJDK13;
   private boolean isJDK15;
 
-  public void setAssertAsIdentifier() {
-   this.usingAssertAsIdentifier = true;
+  public void setJDK13() {
+   this.isJDK13 = true;
   }
 
   public void setJDK15() {
@@ -78,7 +78,7 @@ public class JavaParser {
   }
 
   private void checkForBadAssertUsage(String in, String usage) {
-    if (!usingAssertAsIdentifier && in.equals("assert")) {
+    if (!isJDK13 && in.equals("assert")) {
       throw new ParseException("Can't use 'assert' as " + usage + " when running in JDK 1.4 mode!");
     }
   }
@@ -111,7 +111,11 @@ public class JavaParser {
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
   private boolean isNextTokenAnAssert() {
-    return getToken(1).image.equals("assert");
+    boolean res = getToken(1).image.equals("assert");
+    if (res && isJDK13 && getToken(2).image.equals("(")) {
+     res = false;
+    }
+    return res;
   }
 
   private boolean enumLookahead() {
@@ -1918,8 +1922,8 @@ void FinallyStatement() :
 
 void AssertStatement() :
 {
-    if (usingAssertAsIdentifier) {
-     throw new ParseException("Can't use 'assert' as a keyword when running in JDK 1.3 mode!");
+    if (isJDK13) {
+        throw new ParseException("Can't use 'assert' as a keyword when running in JDK 1.3 mode!");
     }
 }
 {

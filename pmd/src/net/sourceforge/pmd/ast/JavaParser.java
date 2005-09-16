@@ -2,11 +2,11 @@
 package net.sourceforge.pmd.ast;
 public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, JavaParserConstants {/*@bgen(jjtree)*/
   protected JJTJavaParserState jjtree = new JJTJavaParserState();
-  private boolean usingAssertAsIdentifier;
+  private boolean isJDK13;
   private boolean isJDK15;
 
-  public void setAssertAsIdentifier() {
-   this.usingAssertAsIdentifier = true;
+  public void setJDK13() {
+   this.isJDK13 = true;
   }
 
   public void setJDK15() {
@@ -14,7 +14,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
   }
 
   private void checkForBadAssertUsage(String in, String usage) {
-    if (!usingAssertAsIdentifier && in.equals("assert")) {
+    if (!isJDK13 && in.equals("assert")) {
       throw new ParseException("Can't use 'assert' as " + usage + " when running in JDK 1.4 mode!");
     }
   }
@@ -47,7 +47,11 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
   private boolean isNextTokenAnAssert() {
-    return getToken(1).image.equals("assert");
+    boolean res = getToken(1).image.equals("assert");
+    if (res && isJDK13 && getToken(2).image.equals("(")) {
+     res = false;
+    }
+    return res;
   }
 
   private boolean enumLookahead() {
@@ -5122,8 +5126,8 @@ jjtree.openNodeScope(jjtn000);Token t;
  /*@bgen(jjtree) AssertStatement */
     ASTAssertStatement jjtn000 = new ASTAssertStatement(this, JJTASSERTSTATEMENT);
     boolean jjtc000 = true;
-    jjtree.openNodeScope(jjtn000);if (usingAssertAsIdentifier) {
-     throw new ParseException("Can't use 'assert' as a keyword when running in JDK 1.3 mode!");
+    jjtree.openNodeScope(jjtn000);if (isJDK13) {
+        throw new ParseException("Can't use 'assert' as a keyword when running in JDK 1.3 mode!");
     }
     try {
       jj_consume_token(IDENTIFIER);
@@ -6122,31 +6126,6 @@ jjtn000.setModifiers(modifiers);
     try { return !jj_3_50(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(49, xla); }
-  }
-
-  final private boolean jj_3R_75() {
-    if (jj_scan_token(LSHIFT)) return true;
-    return false;
-  }
-
-  final private boolean jj_3_20() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_75()) {
-    jj_scanpos = xsp;
-    if (jj_3_21()) {
-    jj_scanpos = xsp;
-    if (jj_3_22()) return true;
-    }
-    }
-    if (jj_3R_276()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_230() {
-    if (jj_scan_token(SC_OR)) return true;
-    if (jj_3R_198()) return true;
-    return false;
   }
 
   final private boolean jj_3R_269() {
@@ -9013,6 +8992,31 @@ jjtn000.setModifiers(modifiers);
   final private boolean jj_3R_249() {
     if (jj_scan_token(SC_AND)) return true;
     if (jj_3R_213()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_75() {
+    if (jj_scan_token(LSHIFT)) return true;
+    return false;
+  }
+
+  final private boolean jj_3_20() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_75()) {
+    jj_scanpos = xsp;
+    if (jj_3_21()) {
+    jj_scanpos = xsp;
+    if (jj_3_22()) return true;
+    }
+    }
+    if (jj_3R_276()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_230() {
+    if (jj_scan_token(SC_OR)) return true;
+    if (jj_3R_198()) return true;
     return false;
   }
 
