@@ -17,6 +17,7 @@ import java.util.LinkedList;
 // before any optimization, this took 22.9 seconds:
 // time ./pmd.sh /usr/local/java/src/java/lang text basic > rpt.txt
 // after caching and preprocessing, takes about 21.0 seconds
+// after Jaxen 1.0-fcs to 1.1b7 upgrade, takes 17.5 seconds!
 public class AttributeAxisIterator implements Iterator {
 
     private static class MethodWrapper {

@@ -34,6 +34,32 @@ public class ASTMethodDeclaration extends AccessNode {
 		return null;
 	}
 
+    public boolean isSyntacticallyPublic() {
+        return super.isPublic();
+    }
+
+    public boolean isSyntacticallyAbstract() {
+        return super.isAbstract();
+    }
+
+    public boolean isPublic() {
+        if (isInterfaceMember()) {
+            return true;
+        }
+        return super.isPublic();
+    }
+
+    public boolean isAbstract() {
+        if (isInterfaceMember()) {
+            return true;
+        }
+        return super.isAbstract();
+    }
+
+    public boolean isInterfaceMember() {
+        return ((ASTClassOrInterfaceDeclaration)getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)).isInterface();
+    }
+
     public boolean isVoid() {
         return ((ASTResultType)getFirstChildOfType(ASTResultType.class)).isVoid();
     }

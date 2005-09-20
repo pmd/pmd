@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTPrimarySuffix extends SimpleNode {
+public class    ASTPrimarySuffix extends SimpleNode {
     public ASTPrimarySuffix(int id) {
         super(id);
     }

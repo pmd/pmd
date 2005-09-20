@@ -5,6 +5,7 @@ Fixed bug 1292609 - The JDK 1.3 parser now correctly handles certain 'assert' us
 Fixed bug 1292689 - Description wrong for UnnecessaryLocalBeforeReturn
 Fixed bug 1293157 - UnusedPrivateMethod no longer reports false positives for private methods which are only invoked from static initializers.
 Fixed bug 1293277 - Messages that used 'pluginname' had duplicated messages.
+Fixed bug 1291353 - ASTMethodDeclaration isPublic/isAbstract methods are always return true.  The syntactical modifier - i.e., whether or not 'public' was used in the source code in the method declaration - is available via 'isSyntacticallyPublic' and 'isSyntacticallyAbstract'
 
 September 15, 2005 - 3.3:
 New rules: PositionLiteralsFirstInComparisons (in the design ruleset), UnnecessaryLocalBeforeReturn (design ruleset), ProperLogger (logging-jakarta-commons ruleset), UselessOverridingMethod (basic ruleset), PackageCase (naming ruleset), NoPackage (naming ruleset), UnnecessaryCaseChange (strings ruleset)
@@ -54,6 +55,7 @@ The Ant task now accepts the short names of rulesets (e.g., unusedcode for rules
 Removed unnecessary '.html' suffix from displayed filenames when the linkPrefix attribute is used with the HTML renderer.
 Added an optional 'description' attribute to the 'property' element in the ruleset XML files.
 Added a simplified SimpleNode.addViolation() method to reduce duplicated rule violation creation code.
+Moved from jaxen-1.0-fcs.jar/saxpath-1.0-fcs.jar to jaxen-1.1-beta-7.jar.  This yielded a 20% speed increase in the basic ruleset!
 
 June 21, 2005 - 3.2:
 New rules: UseCorrectExceptionLogging (logging-jakarta-commons ruleset), AvoidPrintStackTrace (logging-java ruleset), CompareObjectsWithEquals (design ruleset)

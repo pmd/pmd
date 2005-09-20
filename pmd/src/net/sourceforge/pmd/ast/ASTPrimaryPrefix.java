@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTPrimaryPrefix extends SimpleNode {
+public class    ASTPrimaryPrefix extends SimpleNode {
     public ASTPrimaryPrefix(int id) {
         super(id);
     }

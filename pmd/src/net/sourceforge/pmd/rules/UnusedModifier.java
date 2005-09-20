@@ -25,7 +25,7 @@ public class UnusedModifier extends AbstractRule {
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (node.isPublic() || node.isAbstract()) {
+        if (node.isSyntacticallyPublic() || node.isSyntacticallyAbstract()) {
             check(node, data);
         }
         return super.visit(node, data);

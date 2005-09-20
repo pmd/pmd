@@ -15,7 +15,6 @@ import org.jaxen.XPath;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -30,16 +29,10 @@ public class XPathRule extends AbstractRule {
             List results = xpath.selectNodes(compilationUnit);
             for (Iterator i = results.iterator(); i.hasNext();) {
                 SimpleNode n = (SimpleNode) i.next();
-                String msg = getMessage();
                 if (n instanceof ASTVariableDeclaratorId && getBooleanProperty("pluginname")) {
                     addViolation(data, n, n.getImage());
-/*
-                    System.out.println("img = " + n.getImage());
-                    msg = MessageFormat.format(msg, new Object[]{n.getImage()});
-                    System.out.println("msg = " + msg);
-*/
                 } else {
-                    addViolation(data, n, msg);
+                    addViolation(data, n, getMessage());
                 }
             }
         } catch (JaxenException ex) {
