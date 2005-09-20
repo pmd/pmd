@@ -28,10 +28,8 @@ public class XPathFragmentAddingItem
      */
     public XPathFragmentAddingItem(String caption, ViewerModel model, String fragment) {
         super(caption);
-
         this.model = model;
         this.fragment = fragment;
-
         addActionListener(this);
     }
 

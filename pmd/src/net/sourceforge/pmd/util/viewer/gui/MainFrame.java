@@ -5,6 +5,10 @@ import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
+import net.sourceforge.pmd.TargetJDKVersion;
+import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDK1_3;
+import net.sourceforge.pmd.TargetJDK1_5;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -30,6 +34,9 @@ public class MainFrame
     private JButton compileBtn;
     private JButton evalBtn;
     private JLabel statusLbl;
+    private JRadioButtonMenuItem jdk13MenuItem;
+    private JRadioButtonMenuItem jdk14MenuItem;
+    private JRadioButtonMenuItem jdk15MenuItem;
 
     /**
      * constructs and shows the frame
@@ -66,10 +73,38 @@ public class MainFrame
         btnPane.add(evalBtn);
         btnPane.add(statusLbl);
         getContentPane().add(btnPane, BorderLayout.SOUTH);
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("JDK");
+        ButtonGroup group = new ButtonGroup();
+        jdk13MenuItem = new JRadioButtonMenuItem("JDK 1.3");
+        jdk13MenuItem.setSelected(false);
+        group.add(jdk13MenuItem);
+        menu.add(jdk13MenuItem);
+        jdk14MenuItem = new JRadioButtonMenuItem("JDK 1.4");
+        jdk14MenuItem.setSelected(true);
+        group.add(jdk14MenuItem);
+        menu.add(jdk14MenuItem);
+        jdk15MenuItem = new JRadioButtonMenuItem("JDK 1.5");
+        jdk15MenuItem.setSelected(false);
+        group.add(jdk15MenuItem);
+        menu.add(jdk15MenuItem);
+        menuBar.add(menu);
+        setJMenuBar(menuBar);
+
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         pack();
         setSize(800, 600);
         setVisible(true);
+    }
+
+    private TargetJDKVersion createJDKVersion() {
+        if (jdk14MenuItem.isSelected()) {
+            return new TargetJDK1_4();
+        } else if (jdk13MenuItem.isSelected()) {
+            return new TargetJDK1_3();
+        }
+        return new TargetJDK1_5();
     }
 
     /**
@@ -81,7 +116,7 @@ public class MainFrame
         if (command.equals(COMPILE_ACTION)) {
             try {
                 t0 = System.currentTimeMillis();
-                model.commitSource(sourcePanel.getSourceCode());
+                model.commitSource(sourcePanel.getSourceCode(), createJDKVersion());
                 t1 = System.currentTimeMillis();
                 setStatus(NLS.nls("MAIN.FRAME.COMPILATION.TOOK") + " " + (t1 - t0) + " ms");
             } catch (ParseException exc) {
@@ -107,9 +142,7 @@ public class MainFrame
      * @param string the new status, the empty string will be set if the value is <code>null</code>
      */
     private void setStatus(String string) {
-        if (string == null)
-            string = "";
-        statusLbl.setText(string);
+        statusLbl.setText(string == null ? "" : string);
     }
 
     /**

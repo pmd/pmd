@@ -14,7 +14,7 @@ import net.sourceforge.pmd.jaxen.Attribute;
 public class AttributeToolkit {
 
     /**
-     * formats a value for it's usage in XPath expressions
+     * formats a value for its usage in XPath expressions
      *
      * @param attribute atribute which value should be formatted
      * @return formmated value

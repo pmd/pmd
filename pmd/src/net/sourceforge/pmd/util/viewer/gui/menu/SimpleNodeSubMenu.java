@@ -28,22 +28,17 @@ public class SimpleNodeSubMenu
      */
     public SimpleNodeSubMenu(ViewerModel model, SimpleNode node) {
         super(MessageFormat.format(NLS.nls("AST.MENU.NODE.TITLE"), new Object[]{node.toString()}));
-
         this.model = model;
         this.node = node;
-
         init();
     }
 
     private void init() {
         StringBuffer buf = new StringBuffer(200);
-
         for (Node temp = node; temp != null; temp = temp.jjtGetParent()) {
             buf.insert(0, "/" + temp.toString());
         }
-
         add(new XPathFragmentAddingItem(NLS.nls("AST.MENU.NODE.ADD_ABSOLUTE_PATH"), model, buf.toString()));
-
         add(new XPathFragmentAddingItem(NLS.nls("AST.MENU.NODE.ADD_ALLDESCENDANTS"), model,
                 "//" + node.toString()));
     }

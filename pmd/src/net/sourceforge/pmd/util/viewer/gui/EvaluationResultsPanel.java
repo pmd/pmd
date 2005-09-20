@@ -17,9 +17,7 @@ import java.util.Vector;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
-public class EvaluationResultsPanel
-        extends JPanel
-        implements ViewerModelListener {
+public class EvaluationResultsPanel extends JPanel implements ViewerModelListener {
     private ViewerModel model;
     private JList list;
 

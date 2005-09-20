@@ -7,10 +7,5 @@ package net.sourceforge.pmd.util.viewer.model;
  * @version $Id$
  */
 public interface ViewerModelListener {
-    /**
-     * DOCUMENT ME!
-     *
-     * @param e DOCUMENT ME!
-     */
     void viewerModelChanged(ViewerModelEvent e);
 }

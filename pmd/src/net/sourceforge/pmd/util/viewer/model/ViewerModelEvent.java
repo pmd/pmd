@@ -58,29 +58,14 @@ public class ViewerModelEvent {
         this.parameter = parameter;
     }
 
-    /**
-     * retrieves the reason for event's occurance
-     *
-     * @return event's reason
-     */
     public int getReason() {
         return reason;
     }
 
-    /**
-     * retrieves the object which caused the event
-     *
-     * @return object that casused the event
-     */
     public Object getSource() {
         return source;
     }
 
-    /**
-     * retrieves event's parameter
-     *
-     * @return event's parameter
-     */
     public Object getParameter() {
         return parameter;
     }

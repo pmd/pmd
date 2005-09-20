@@ -9,11 +9,6 @@ import net.sourceforge.pmd.util.viewer.gui.MainFrame;
  * @version $Id$
  */
 public class Viewer {
-    /**
-     * starts the viewer
-     *
-     * @param args arguments
-     */
     public static void main(String[] args) {
         new MainFrame();
     }

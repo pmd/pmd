@@ -26,9 +26,7 @@ import java.util.LinkedList;
  * @version $Id$
  */
 
-public class ASTPanel
-        extends JPanel
-        implements ViewerModelListener, TreeSelectionListener {
+public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelectionListener {
     private ViewerModel model;
     private JTree tree;
 
@@ -39,31 +37,21 @@ public class ASTPanel
      */
     public ASTPanel(ViewerModel model) {
         this.model = model;
-
         init();
     }
 
     private void init() {
         model.addViewerModelListener(this);
-
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), NLS.nls("AST.PANEL.TITLE")));
-
         setLayout(new BorderLayout());
-
         tree = new JTree((TreeNode) null);
-
         tree.addTreeSelectionListener(this);
-
         tree.addMouseListener(new MouseAdapter() {
             public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger()) {
-                    TreePath path =
-                            tree.getClosestPathForLocation(e.getX(), e.getY());
+                    TreePath path = tree.getClosestPathForLocation(e.getX(), e.getY());
                     tree.setSelectionPath(path);
-
-                    JPopupMenu menu =
-                            new ASTNodePopupMenu(model, (SimpleNode) path.getLastPathComponent());
-
+                    JPopupMenu menu = new ASTNodePopupMenu(model, (SimpleNode) path.getLastPathComponent());
                     menu.show(tree, e.getX(), e.getY());
                 }
             }
@@ -83,10 +71,9 @@ public class ASTPanel
             case ViewerModelEvent.NODE_SELECTED:
                 if (e.getSource() != this) {
                     LinkedList list = new LinkedList();
-                    for (
-                            Node node = (Node) e.getParameter(); node != null;
-                            node = node.jjtGetParent())
-                        list.addFirst(node);
+                    for (Node n = (Node) e.getParameter(); n != null; n = n.jjtGetParent()) {
+                        list.addFirst(n);
+                    }
                     TreePath path = new TreePath(list.toArray());
                     tree.setSelectionPath(path);
                     tree.scrollPathToVisible(path);

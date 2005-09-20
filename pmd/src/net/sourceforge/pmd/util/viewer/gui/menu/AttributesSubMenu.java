@@ -24,19 +24,15 @@ public class AttributesSubMenu
 
     public AttributesSubMenu(ViewerModel model, SimpleNode node) {
         super(MessageFormat.format(NLS.nls("AST.MENU.ATTRIBUTES"), new Object[]{node.toString()}));
-
         this.model = model;
         this.node = node;
-
         init();
     }
 
     private void init() {
         AttributeAxisIterator i = new AttributeAxisIterator(node);
-
         while (i.hasNext()) {
             Attribute attribute = (Attribute) i.next();
-
             add(new XPathFragmentAddingItem(attribute.getName() + " = " + attribute.getValue(), model,
                     AttributeToolkit.constructPredicate(attribute)));
         }
