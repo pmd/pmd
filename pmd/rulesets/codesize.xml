@@ -176,7 +176,7 @@ Classes that have too many fields could be redesigned to have fewer fields, poss
       </description>
         <priority>3</priority>
       <properties>
-       <property name="maximum"  description="The field count reporting threshold " value="15"/>
+       <property name="maxfields"  description="The field count reporting threshold " value="15"/>
       </properties>
       <example>
    <![CDATA[

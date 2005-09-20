@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jorn Stampehl - Reported TooManyFields property bug, noticed redundancy of ExplicitCallToFinalize, reported bug in AvoidCallingFinalize, reported bug in JUnitAssertionsShouldIncludeMessage, reported bug in bug report on JUnitTestsShouldContainAsserts</li>
             <li>Wouter Zelle - worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Elliotte Rusty Harold - bug report 1293277 for duplicated rule messages, bug report for ConstructorCallsOverridableMethod, suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Andriy Rozeluk - Reported bug 1293157 for UnusedPrivateMethod, suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
@@ -72,7 +73,6 @@
             <li>Nicolai Czempin - Bug report for UnnecessaryParentheses, various rule suggestions, additional PMD backronyms</li>
             <li>Kevin Routley - reported Ant task dependency problem, reported problems with RuleSetFactory unit tests</li>
             <li>Dennis Klemann - noted that errors were missing from text report, reported JDK 1.5 parsing bug with ExceptionSignatureDeclaration, reported fix for pmd.bat problem</li>
-            <li>Jorn Stampehl - Noticed redundancy of ExplicitCallToFinalize, reported bug in AvoidCallingFinalize, reported bug in JUnitAssertionsShouldIncludeMessage, reported bug in bug report on JUnitTestsShouldContainAsserts</li>
             <li>Jeff Chamblee - bug report for CompareObjectsWithEquals</li>
             <li>Tor Norbye - Suggested CompareObjectsWithEquals</li>
             <li>Thomas Skariah - bug reports for MethodArgumentCouldBeFinal and AvoidReassigningParameters</li>
