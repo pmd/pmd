@@ -323,6 +323,23 @@ public class Foo {
         </rule>
 
 
+    <rule name="DefaultPackage"
+        message="Use explicit scoping instead of the default Package Private level"
+        class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+Use explicit scoping instead of the default Package Private level
+        </description>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//FieldDeclaration[@PackagePrivate='true']
+| //MethodDeclaration[@PackagePrivate='true']
+                ]]></value>
+            </property>
+        </properties>
+        <priority>3</priority>
+    </rule>
+
 </ruleset>
 
 
