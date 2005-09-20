@@ -26,7 +26,9 @@
 You can get an overview of all the rules at the <a href="rules/index.html">Rulesets Index</a> page.
 <p>PMD has <a href="integrations.html">plugins</a> for JDeveloper, Eclipse, JEdit, JBuilder, Omnicore's CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant,
 Gel, JCreator, and Emacs.  You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>.</p>
-<p><center><h3>Support PMD by purchasing <i><a href="http://pmdapplied.com/">PMD Applied</a></i>, the official book!</h3></center></p>
+<p><center><h3>Using PMD?  <i><a href="http://pmdapplied.com/">Get the book, "PMD Applied"</a>!</i></h3>
+<br/><a href="http://pmdapplied.com/"><img border="1" src="./images/pmd_applied_cover.jpg"/></a>
+</center></p>
 	]]>
 	</description>
 	<shortDescription>Java Static Analysis Tool</shortDescription>
