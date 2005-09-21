@@ -1059,4 +1059,52 @@ Avoid unnecessarily creating a local variable when returning a boolean
       </example>
     </rule>
 
+    <rule name="NonThreadSafeSingleton"
+    message="Singleton is not thread safe"
+    class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+Non-thread safe singletons can result in bad state changes. If possible,
+get rid of static singletons by directly instantiating the object. Static
+singletons are usually not needed as only a single instance exists anyway.
+Other possible fixes are to synchronize the entire method or to use an
+initialize-on-demand holder class (do not use the double-check idiom).
+
+See Effective Java, item 48.
+        </description>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//MethodDeclaration[$checkNonStaticMethods='true' or @Static='true'][@Synchronized='false']
+//IfStatement[not (ancestor::SynchronizedStatement)]/Expression
+ /EqualityExpression
+   [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+   [PrimaryExpression/PrimaryPrefix
+     /Name[@Image=
+       //FieldDeclaration[$checkNonStaticFields='true' or @Static='true']
+       /VariableDeclarator/VariableDeclaratorId/@Image]
+]
+                ]]></value>
+            </property>
+            <property name="checkNonStaticMethods">
+                <description>Do not set this to false and checkNonStaticFields to true</description>
+                <value>true</value>
+            </property>
+            <property name="checkNonStaticFields">
+                <description>Do not set this to true and checkNonStaticMethods to false</description>
+                <value>false</value>
+            </property>
+        </properties>
+        <priority>3</priority>
+        <example><![CDATA[
+private static Foo foo = null;
+
+//multiple simultaneous callers may see partially initialized objects
+public static Foo getFoo() {
+    if (foo==null)
+        foo = new Foo();
+    return foo;
+}
+        ]]></example>
+    </rule>
+
 </ruleset>

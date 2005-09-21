@@ -7,6 +7,8 @@ These are new rules that are still in progress
   </description>
 
 
+
+    <!--
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"
            class="net.sourceforge.pmd.rules.UselessAssignment"
@@ -27,6 +29,7 @@ public class Foo {
    ]]>
        </example>
      </rule>
+     -->
 
     <!--
 
