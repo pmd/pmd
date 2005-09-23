@@ -12,7 +12,7 @@ import net.sourceforge.pmd.dfa.variableaccess.VariableAccessVisitor;
 /**
  * @author raik
  *
- * What about initializers?  This only processes methods and constructors
+ * TODO What about initializers?  This only processes methods and constructors
  */
 public class DataFlowFacade extends JavaParserVisitorAdapter {
 

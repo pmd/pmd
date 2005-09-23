@@ -11,12 +11,12 @@ public class UselessAssignmentRuleTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() throws RuleSetNotFoundException {
-        //rule = findRule("rulesets/scratchpad.xml", "UselessAssignment");
+        rule = findRule("rulesets/scratchpad.xml", "UselessAssignment");
     }
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-               //new TestDescriptor(TEST1, "local variable useless assignment", 1, rule),
+               new TestDescriptor(TEST1, "local variable useless assignment", 1, rule),
        });
     }
 

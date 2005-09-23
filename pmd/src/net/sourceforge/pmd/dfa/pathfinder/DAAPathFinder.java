@@ -5,6 +5,7 @@ package net.sourceforge.pmd.dfa.pathfinder;
 
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.NodeType;
+import net.sourceforge.pmd.dfa.StartOrEndDataFlowNode;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.LinkedList;
@@ -19,11 +20,45 @@ public class DAAPathFinder {
 
     private IDataFlowNode rootNode;
     private Executable shim;
-    private LinkedList currentPath = new LinkedList();
+
+    private CurrentPath currentPath = new CurrentPath();
+
     private DefaultMutableTreeNode stack = new DefaultMutableTreeNode();
     private static final int MAX_PATHS = 5000;
 
-    private static class PathElement {
+    public static class CurrentPath extends LinkedList {
+        public boolean isDoBranchNode() {
+            return ((IDataFlowNode)getLast()).isType(NodeType.DO_EXPR);
+        }
+        public boolean isFirstDoStatement() {
+            return isFirstDoStatement((IDataFlowNode)getLast());
+        }
+        public IDataFlowNode getDoBranchNodeFromFirstDoStatement() {
+            IDataFlowNode inode = (IDataFlowNode)getLast();
+            if (!isFirstDoStatement()) return null;
+            for (int i = 0; i < inode.getParents().size(); i++) {
+                IDataFlowNode parent = (IDataFlowNode) inode.getParents().get(i);
+                if (parent.isType(NodeType.DO_EXPR)) {
+                    return parent;
+                }
+            }
+            return null;
+        }
+        public boolean isEndNode() {
+            return ((IDataFlowNode)getLast()).getChildren().size() == 0;
+            //return inode instanceof StartOrEndDataFlowNode;
+        }
+        public boolean isBranch() {
+            return ((IDataFlowNode)getLast()).getChildren().size() > 1;
+        }
+        private boolean isFirstDoStatement(IDataFlowNode inode) {
+            int index = inode.getIndex() - 1;
+            if (index < 0) return false;
+            return ((IDataFlowNode) inode.getFlow().get(index)).isType(NodeType.DO_BEFORE_FIRST_STATEMENT);
+        }
+    }
+
+    private static class PathElement{
         int currentChild;
         IDataFlowNode node;
         IDataFlowNode pseudoRef;
@@ -63,8 +98,8 @@ public class DAAPathFinder {
      * Builds up the path.
      * */
     private void phase2(boolean flag) {
-        while (!isEndNode()) {
-            if (isBranch() || isFirstDoStatement()) {
+        while (!currentPath.isEndNode()) {
+            if (currentPath.isBranch() || currentPath.isFirstDoStatement()) {
                 if (flag) {
                     addNodeToTree();
                 }
@@ -87,57 +122,30 @@ public class DAAPathFinder {
      * traversed.
      * */
     private boolean phase3() {
-
-        while (!this.isEmpty()) {
-            if (this.isBranch()) {
+        while (!currentPath.isEmpty()) {
+            if (currentPath.isBranch()) {
                 if (this.countLoops() == 1) {
                     if (this.hasMoreChildren()) {
                         this.incChild();
                         return true;
                     } else {
                         this.removeFromTree();
-                        this.removeFromList();
+                        currentPath.removeLast();
                     }
                 } else {
                     this.removeFromTree();
-                    this.removeFromList();
+                    currentPath.removeLast();
                 }
             } else {
-                this.removeFromList();
+                currentPath.removeLast();
             }
         }
-
         return false;
     }
 
-    private void removeFromList() {
-        this.currentPath.removeLast();
-    }
-
-    private boolean isEmpty() {
-        return this.currentPath.isEmpty();
-    }
-
     private boolean hasMoreChildren() {
-        DefaultMutableTreeNode last = this.getLastNode();
-        PathElement e = (PathElement) last.getUserObject();
+        PathElement e = (PathElement) getLastNode().getUserObject();
         return e.currentChild + 1 < e.node.getChildren().size();
-    }
-
-    private boolean isEndNode() {
-        IDataFlowNode inode = (IDataFlowNode) this.currentPath.getLast();
-        // TODO use instanceof StartOrEndNode?
-        return inode.getChildren().size() == 0;
-    }
-
-    private boolean isBranch() {
-        IDataFlowNode inode = (IDataFlowNode) this.currentPath.getLast();
-        return inode.getChildren().size() > 1;
-    }
-
-    private boolean isFirstDoStatement() {
-        IDataFlowNode inode = (IDataFlowNode)this.currentPath.getLast();
-        return this.isFirstDoStatement(inode);
     }
 
     private void addSecondChild() {
@@ -153,7 +161,7 @@ public class DAAPathFinder {
     }
 
     private void addCurrentChild() {
-        if (this.isBranch()) { // TODO WHY????
+        if (currentPath.isBranch()) { // TODO WHY????
             PathElement last = (PathElement) this.getLastNode().getUserObject();
             IDataFlowNode inode = (IDataFlowNode) this.currentPath.getLast();
             IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(last.currentChild);
@@ -165,23 +173,6 @@ public class DAAPathFinder {
         }
     }
 
-    private boolean isFirstDoStatement(IDataFlowNode inode) {
-        int index = inode.getIndex() - 1;
-        if (index < 0) return false;
-
-        IDataFlowNode before = (IDataFlowNode) inode.getFlow().get(index);
-        return before.isType(NodeType.DO_BEFORE_FIRST_STATEMENT);
-    }
-
-    private boolean isDoBranchNode() {
-        IDataFlowNode last = (IDataFlowNode) this.currentPath.getLast();
-        return this.isDoBranch(last);
-    }
-
-    private boolean isDoBranch(IDataFlowNode inode) {
-        return inode.isType(NodeType.DO_EXPR);
-    }
-    
 //  ----------------------------------------------------------------------------
 //	TREE FUNCTIONS
     
@@ -190,9 +181,9 @@ public class DAAPathFinder {
      * loops and "local scopes - encapsulation".
      * */
     private void addNodeToTree() {
-        if (this.isFirstDoStatement()) {
+        if (currentPath.isFirstDoStatement()) {
             DefaultMutableTreeNode level = this.getRootNode();
-            IDataFlowNode doBranch = this.getDoBranchNodeFromFirstDoStatement();
+            IDataFlowNode doBranch = currentPath.getDoBranchNodeFromFirstDoStatement();
 
             while (true) {
                 if (this.hasTheLevelChildren(level)) {
@@ -213,10 +204,10 @@ public class DAAPathFinder {
             }
         }
 
-        if (this.isBranch()) {
+        if (currentPath.isBranch()) {
             DefaultMutableTreeNode level = this.getRootNode();
 
-            if (this.isDoBranchNode()) {
+            if (currentPath.isDoBranchNode()) {
                 while (!this.equalsPseudoPathElementWithDoBranchNodeInLevel(level)) {
                     level = this.getLastChildNode(level);
                 }
@@ -253,39 +244,19 @@ public class DAAPathFinder {
 
     private void removeFromTree() {
         DefaultMutableTreeNode last = this.getLastNode();
-
         if (last == null) {
             System.out.println("removeFromTree - last == null");
             return;
         }
-
         DefaultMutableTreeNode parent = (DefaultMutableTreeNode) last.getParent();
         parent.remove(last);
-
         last = this.getLastNode();
-
-        if (last == null) return;
-        if (last.getUserObject() == null) return;
+        if (last == null || last.getUserObject() == null) return;
 
         PathElement e = (PathElement) last.getUserObject();
         if (this.isPseudoPathElement(e)) {
             this.removeFromTree();
         }
-    }
-
-    private IDataFlowNode getDoBranchNodeFromFirstDoStatement() {
-        IDataFlowNode inode = (IDataFlowNode) this.currentPath.getLast();
-
-        if (!this.isFirstDoStatement()) return null;
-
-        for (int i = 0; i < inode.getParents().size(); i++) {
-            IDataFlowNode parent = (IDataFlowNode) inode.getParents().get(i);
-
-            if (this.isDoBranch(parent)) {
-                return parent;
-            }
-        }
-        return null;
     }
 
     private void addNewPathElement(DefaultMutableTreeNode level) {
@@ -318,7 +289,7 @@ public class DAAPathFinder {
     private boolean equalsPseudoPathElementWithDoBranchNodeInLevel(DefaultMutableTreeNode level) {
         IDataFlowNode inode = (IDataFlowNode) this.currentPath.getLast();
 
-        if (!this.isDoBranch(inode)) return false;
+        if (!inode.isType(NodeType.DO_EXPR)) return false;
 
         int childCount = level.getChildCount();
         DefaultMutableTreeNode child;
@@ -334,9 +305,8 @@ public class DAAPathFinder {
     }
 
     private PathElement getDoBranchNodeInLevel(DefaultMutableTreeNode level) {
-        IDataFlowNode inode = (IDataFlowNode) this.currentPath.getLast();
-
-        if (!this.isDoBranch(inode)) return null;
+        IDataFlowNode inode = (IDataFlowNode)currentPath.getLast();
+        if (!inode.isType(NodeType.DO_EXPR)) return null;
 
         int childCount = level.getChildCount();
         DefaultMutableTreeNode child;
