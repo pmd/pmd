@@ -17,9 +17,6 @@ public class CurrentPath {
     public Iterator iterator() {
         return list.iterator();
     }
-    public void clear() {
-        list.clear();
-    }
     public IDataFlowNode getLast() {
         return (IDataFlowNode)list.getLast();
     }
