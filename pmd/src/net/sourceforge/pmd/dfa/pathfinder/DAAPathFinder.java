@@ -25,15 +25,6 @@ public class DAAPathFinder {
     private CurrentPath currentPath = new CurrentPath();
     private DefaultMutableTreeNode stack = new DefaultMutableTreeNode();
 
-    private static class PathElement{
-        int currentChild;
-        IDataFlowNode node;
-        IDataFlowNode pseudoRef;
-        PathElement(IDataFlowNode node) {
-            this.node = node;
-        }
-    }
-
     public DAAPathFinder(IDataFlowNode rootNode, Executable shim) {
         this.rootNode = rootNode;
         this.shim = shim;
@@ -219,9 +210,7 @@ public class DAAPathFinder {
      * Needed for do loops
      * */
     private void addNewPseudoPathElement(DefaultMutableTreeNode level, IDataFlowNode ref) {
-        PathElement e = new PathElement(currentPath.getLast());
-        e.pseudoRef = ref;
-        this.addNode(level, e);
+        this.addNode(level, new PathElement(currentPath.getLast(), ref));
     }
 
     /*
