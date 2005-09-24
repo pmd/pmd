@@ -8,11 +8,13 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
+import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Iterator;
 
 /**
  * @author raik
@@ -39,15 +41,15 @@ public class DaaRule extends AbstractRule implements Executable {
         return data;
     }
 
-    public void execute(List path) {
+    public void execute(CurrentPath path) {
         Hashtable hash = new Hashtable();
         counter++;
         if (counter == 5000) {
             System.out.print("|");
             counter = 0;
         }
-        for (int d = 0; d < path.size(); d++) {
-            IDataFlowNode inode = (IDataFlowNode) path.get(d);
+        for (Iterator d = path.iterator(); d.hasNext();) {
+            IDataFlowNode inode = (IDataFlowNode)d.next();
             if (inode.getVariableAccess() != null) {
                 for (int g = 0; g < inode.getVariableAccess().size(); g++) {
                     VariableAccess va = (VariableAccess) inode.getVariableAccess().get(g);

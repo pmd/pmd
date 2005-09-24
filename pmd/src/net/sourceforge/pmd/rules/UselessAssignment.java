@@ -7,12 +7,14 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
+import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Iterator;
 
 public class UselessAssignment extends AbstractRule implements Executable  {
 
@@ -53,12 +55,12 @@ public class UselessAssignment extends AbstractRule implements Executable  {
         }
     }
 
-    public void execute(List path) {
+    public void execute(CurrentPath path) {
         Map hash = new HashMap();
         //System.out.println("path size is " + path.size());
-        for (int i = 0; i < path.size(); i++) {
+        for (Iterator i = path.iterator(); i.hasNext();) {
             //System.out.println("i = " + i);
-            IDataFlowNode inode = (IDataFlowNode) path.get(i);
+            IDataFlowNode inode = (IDataFlowNode)i.next();
             if (inode.getVariableAccess() == null) {
                 continue;
             }

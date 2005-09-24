@@ -5,6 +5,7 @@ import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
+import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class DAAPathFinderTest extends ParserTst implements Executable {
 //        a.run();
     }
 
-    public void execute(List path) {}
+    public void execute(CurrentPath path) {}
 
 
     private static final String TWO_UPDATE_DEFS =

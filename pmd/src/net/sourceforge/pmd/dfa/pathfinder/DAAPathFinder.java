@@ -26,38 +26,6 @@ public class DAAPathFinder {
     private DefaultMutableTreeNode stack = new DefaultMutableTreeNode();
     private static final int MAX_PATHS = 5000;
 
-    public static class CurrentPath extends LinkedList {
-        public boolean isDoBranchNode() {
-            return ((IDataFlowNode)getLast()).isType(NodeType.DO_EXPR);
-        }
-        public boolean isFirstDoStatement() {
-            return isFirstDoStatement((IDataFlowNode)getLast());
-        }
-        public IDataFlowNode getDoBranchNodeFromFirstDoStatement() {
-            IDataFlowNode inode = (IDataFlowNode)getLast();
-            if (!isFirstDoStatement()) return null;
-            for (int i = 0; i < inode.getParents().size(); i++) {
-                IDataFlowNode parent = (IDataFlowNode) inode.getParents().get(i);
-                if (parent.isType(NodeType.DO_EXPR)) {
-                    return parent;
-                }
-            }
-            return null;
-        }
-        public boolean isEndNode() {
-            return ((IDataFlowNode)getLast()).getChildren().size() == 0;
-            //return inode instanceof StartOrEndDataFlowNode;
-        }
-        public boolean isBranch() {
-            return ((IDataFlowNode)getLast()).getChildren().size() > 1;
-        }
-        private boolean isFirstDoStatement(IDataFlowNode inode) {
-            int index = inode.getIndex() - 1;
-            if (index < 0) return false;
-            return ((IDataFlowNode) inode.getFlow().get(index)).isType(NodeType.DO_BEFORE_FIRST_STATEMENT);
-        }
-    }
-
     private static class PathElement{
         int currentChild;
         IDataFlowNode node;
@@ -163,11 +131,11 @@ public class DAAPathFinder {
     private void addCurrentChild() {
         if (currentPath.isBranch()) { // TODO WHY????
             PathElement last = (PathElement) this.getLastNode().getUserObject();
-            IDataFlowNode inode = (IDataFlowNode) this.currentPath.getLast();
+            IDataFlowNode inode = currentPath.getLast();
             IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(last.currentChild);
             this.currentPath.addLast(child);
         } else {
-            IDataFlowNode inode = (IDataFlowNode) this.currentPath.getLast();
+            IDataFlowNode inode = currentPath.getLast();
             IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(0); //TODO ???? IMPORTANT - ERROR?
             this.currentPath.addLast(child);
         }
