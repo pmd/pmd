@@ -7,6 +7,7 @@ Fixed bug 1293157 - UnusedPrivateMethod no longer reports false positives for pr
 Fixed bug 1293277 - Messages that used 'pluginname' had duplicated messages.
 Fixed bug 1291353 - ASTMethodDeclaration isPublic/isAbstract methods are always return true.  The syntactical modifier - i.e., whether or not 'public' was used in the source code in the method declaration - is available via 'isSyntacticallyPublic' and 'isSyntacticallyAbstract'
 Fixed bug 1296544 - TooManyFields no longer checks the wrong property value.
+Fixed bug 1304739 - StringInstantiation no longer crashes on certain String constructor usages.
 
 September 15, 2005 - 3.3:
 New rules: PositionLiteralsFirstInComparisons (in the design ruleset), UnnecessaryLocalBeforeReturn (design ruleset), ProperLogger (logging-jakarta-commons ruleset), UselessOverridingMethod (basic ruleset), PackageCase (naming ruleset), NoPackage (naming ruleset), UnnecessaryCaseChange (strings ruleset)

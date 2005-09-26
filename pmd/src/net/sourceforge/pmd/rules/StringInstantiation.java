@@ -6,7 +6,9 @@ import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 
 import java.util.List;
 
@@ -27,12 +29,13 @@ public class StringInstantiation extends AbstractRule {
             return data;
         }
 
-        if (node.getFirstChildOfType(ASTArrayDimsAndInits.class) != null) {
+        if (node.getFirstChildOfType(ASTArrayDimsAndInits.class) != null || node.getFirstChildOfType(ASTAdditiveExpression.class) != null) {
             return data;
         }
 
         ASTName name = (ASTName)node.getFirstChildOfType(ASTName.class);
-        if (name == null) { // Literal, i.e., new String("foo")
+        // Literal, i.e., new String("foo")
+        if (name == null) {
             addViolation(data, node);
             return data;
         }

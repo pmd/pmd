@@ -15,5 +15,8 @@ public class PathElement{
         this.node = node;
         this.pseudoRef = ref;
     }
+    public boolean isPseudoPathElement() {
+        return pseudoRef != null;
+    }
 }
 

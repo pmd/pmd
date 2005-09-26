@@ -300,6 +300,6 @@ public class DAAPathFinder {
     }
 
     private boolean isPseudoPathElement(PathElement pe) {
-        return pe != null && pe.pseudoRef != null;
+        return pe != null && pe.isPseudoPathElement();
     }
 }
