@@ -197,7 +197,7 @@ public class DAAPathFinder {
         if (last == null || last.getUserObject() == null) return;
 
         PathElement e = (PathElement) last.getUserObject();
-        if (this.isPseudoPathElement(e)) {
+        if (e != null && e.isPseudoPathElement()) {
             this.removeFromTree();
         }
     }
@@ -210,14 +210,14 @@ public class DAAPathFinder {
      * Needed for do loops
      * */
     private void addNewPseudoPathElement(DefaultMutableTreeNode level, IDataFlowNode ref) {
-        this.addNode(level, new PathElement(currentPath.getLast(), ref));
+        addNode(level, new PathElement(currentPath.getLast(), ref));
     }
 
     /*
      * Needed for do loops
      * */
     private void addRefPseudoPathElement(DefaultMutableTreeNode level, PathElement ref) {
-        this.addNode(level, ref);
+        addNode(level, ref);
     }
 
     private boolean equalsPseudoPathElementWithDoBranchNodeInLevel(DefaultMutableTreeNode level) {
@@ -231,7 +231,7 @@ public class DAAPathFinder {
         for (int i = 0; i < childCount; i++) {
             child = (DefaultMutableTreeNode) level.getChildAt(i);
             PathElement pe = (PathElement) child.getUserObject();
-            if (isPseudoPathElement(pe) && pe.pseudoRef.equals(inode)) {
+            if (pe != null && pe.isPseudoPathElement() && pe.pseudoRef.equals(inode)) {
                 return true;
             }
         }
@@ -288,7 +288,7 @@ public class DAAPathFinder {
         for (int i = 0; i < childCount; i++) {
             DefaultMutableTreeNode tNode = (DefaultMutableTreeNode) treeNode.getParent().getChildAt(i);
             PathElement e = (PathElement) tNode.getUserObject();
-            if (!this.isPseudoPathElement(e)) {
+            if (e !=null && !e.isPseudoPathElement()) {
                 counter++;
             }
         }
@@ -299,7 +299,4 @@ public class DAAPathFinder {
         ((PathElement) stack.getLastLeaf().getUserObject()).currentChild++;
     }
 
-    private boolean isPseudoPathElement(PathElement pe) {
-        return pe != null && pe.isPseudoPathElement();
-    }
 }

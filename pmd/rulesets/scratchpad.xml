@@ -7,23 +7,6 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="StringInstantiation"
-        message="Avoid instantiating String objects; this is usually unnecessary."
-        class="net.sourceforge.pmd.rules.StringInstantiation">
-    <description>
-Avoid instantiating String objects; this is usually unnecessary.
-    </description>
-       <priority>2</priority>
-    <example>
-<![CDATA[
-public class Foo {
- private String bar = new String("bar"); // just do a String bar = "bar";
-}
-]]>
-    </example>
-    </rule>
-    
-    <!--
 
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"
@@ -45,7 +28,7 @@ public class Foo {
    ]]>
        </example>
      </rule>
-        -->
+
     <!--
 
      <rule name="PositionalIterator"
