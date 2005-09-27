@@ -1,1 +1,1 @@
-To enable this plugin simply extract the PMDOpenTool.jar and the pmd-0.9.jar file into the JBuilder lib/ext directory.  Once you restart JBuilder the toolbars and menus should reflect that PMD is now available.
+To enable this plugin simply extract the PMDOpenTool.jar and the pmd-3.3.jar file into the JBuilder lib/ext directory.  Once you restart JBuilder the toolbars and menus should reflect that PMD is now available.

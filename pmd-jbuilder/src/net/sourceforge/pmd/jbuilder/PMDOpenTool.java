@@ -498,16 +498,6 @@ public class PMDOpenTool {
             Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, new Message(e.toString()), false);
         }
     }
-
-    /**
-     * Main method for testing purposes
-     *
-     * @param args standard arguments
-     */
-    public static void main(String[] args) {
-        //Report ret = PMDOpenTool.instanceCheck("package abc; \npublic class foo {\npublic void bar() {int i;}\n}");
-        //System.out.println("PMD: " + ret);
-    }
 }
 
 

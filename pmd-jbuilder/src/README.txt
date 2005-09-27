@@ -1,7 +1,7 @@
 To install this plugin, simply place the PMDOpenTool.jar and the
-pmd-3.2.jar (again, whatever version) into the JBuilder/lib/ext directory.  PLEASE NOTE:  if you
+pmd-3.3.jar (again, whatever version) into the JBuilder/lib/ext directory.  PLEASE NOTE:  if you
 have been using previous verisons of this opentool, and the version of the pmd.jar file has changed,
-you need to remove the old pmd.jar file (pmd-0.9.jar for example
+you need to remove the old pmd.jar file (pmd-3.2.jar for example)
 
 The PMD_Jbuilder OpenTool requres the pmd-x.x.jar file to run (where x.x is the major/minor version id).
 Although the openTool has no other special requirements, the PMD utility does.  PMD also requires that Xerces
