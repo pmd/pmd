@@ -29,6 +29,7 @@
             srcdir="${dir.src}"
             destdir="${dir.build}">
     <classpath>
+
     <path refid="dependencies.path"/>
     </classpath>
     </javac>
@@ -70,6 +71,8 @@
     <copy todir="c:\jbuilder2005\lib\ext\">
         <fileset dir="${dir.lib}">
             <include name="PMDOpenTool.jar"/>
+            <include name="pmd-${pmd.version}.jar"/>
+            <include name="jaxen-1.1-beta-7.jar"/>
         </fileset>
     </copy>
  </target>

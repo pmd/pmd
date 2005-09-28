@@ -1,5 +1,6 @@
-September 27, 2005 - 1.4:
+September 28, 2005 - 1.4:
 Updated to PMD 3.3
+Implemented RFE 714950 - Now there's an option to check all the open files in a project.
 
 August 20, 2005 - 1.3:
 Updated to PMD 3.2

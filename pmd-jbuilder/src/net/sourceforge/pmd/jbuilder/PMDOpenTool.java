@@ -43,6 +43,7 @@ import java.util.Iterator;
 
 
 public class PMDOpenTool {
+
     static MessageCategory msgCat = new MessageCategory("PMD Results");
     static MessageCategory cpdCat = new MessageCategory("CPD Results");
     public static ActionGroup GROUP_MENU_PMD = new ActionGroup("PMD", 'p', true);
@@ -53,6 +54,7 @@ public class PMDOpenTool {
     static Font stdMsgFont = new Font("Dialog", Font.PLAIN, 12);
     static ImageIcon IMAGE_CHECK_PROJECT;
     static ImageIcon IMAGE_CHECK_SELECTED_PACKAGE;
+    static ImageIcon IMAGE_CHECK_ALL_OPEN_FILES;
     static ImageIcon IMAGE_CPD;
     static ImageIcon IMAGE_CHECK_FILE;
     static ImageIcon IMAGE_CHECK_SELECTED_FILE;
@@ -64,6 +66,7 @@ public class PMDOpenTool {
 
             IMAGE_CHECK_PROJECT = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkProject.gif"));
             IMAGE_CHECK_SELECTED_PACKAGE = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkSelectedPackage.gif"));
+            IMAGE_CHECK_ALL_OPEN_FILES = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkSelectedPackage.gif"));
             IMAGE_CPD = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/cpd.gif"));
             IMAGE_CHECK_FILE = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkFile.gif"));
             IMAGE_CHECK_SELECTED_FILE = new ImageIcon(PMDOpenTool.class.getClassLoader().getSystemResource("images/checkSelectedFile.gif"));
@@ -76,11 +79,7 @@ public class PMDOpenTool {
 
     }
 
-    /**
-     * Default constructor
-     */
-    public PMDOpenTool() {
-    }
+    public PMDOpenTool() {}
 
 
     /**
@@ -161,7 +160,6 @@ public class PMDOpenTool {
      */
     private static void registerWithContentManager() {
         ContextActionProvider cap = new ContextActionProvider() {
-
             public Action getContextAction(Browser browser, Node[] nodes) {
                 return B_ACTION_PMDCheckCurrentFile;
             }
@@ -173,6 +171,7 @@ public class PMDOpenTool {
         GROUP_PROJECT_PMD.add(B_ACTION_PMDProjectCheck);
         GROUP_PROJECT_PMD.add(B_ACTION_CPDProjectCheck);
         GROUP_PACKAGE_PMD.add(B_ACTION_PMDPackageCheck);
+        GROUP_PACKAGE_PMD.add(B_ACTION_PMDAllOpenFilesCheck);
         GROUP_PACKAGE_PMD.add(B_ACTION_CPDPackageCheck);
 
         ContextActionProvider cap1 = new ContextActionProvider() {
@@ -289,19 +288,30 @@ public class PMDOpenTool {
         public void actionPerformed(Browser browser) {
             pmdCheckProject();
         }
-
     };
 
     //create the project menu action for running a PMD check against all the java files within the active project
     public static BrowserAction B_ACTION_PMDPackageCheck = new BrowserAction("PMD Check Package", 'P', "Check all the java files in the selected package", IMAGE_CHECK_SELECTED_PACKAGE) {
         public void actionPerformed(Browser browser) {
             browser.waitMessage("PMD Status", "Please wait while PMD checks the files in this package.");
+            Browser.getActiveBrowser().getMessageView().clearMessages(null);
+            Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);
             RuleSet rules = constructRuleSets();
             PackageNode node = (PackageNode) browser.getProjectView().getSelectedNode();
             pmdCheckPackage(node, rules);
             browser.clearWaitMessages();
         }
+    };
 
+    //create the project menu action for running a PMD check against all the java files within the active project
+    public static BrowserAction B_ACTION_PMDAllOpenFilesCheck = new BrowserAction("PMD Check All Open Files", 'P', "Check all the open java filese", IMAGE_CHECK_ALL_OPEN_FILES) {
+        public void actionPerformed(Browser browser) {
+            browser.waitMessage("PMD Status", "Please wait while PMD checks all open files.");
+            RuleSet rules = constructRuleSets();
+            Node[] nodes = Browser.getAllOpenNodes(Browser.getActiveBrowser().getActiveProject());
+            pmdCheckAllOpenFiles(nodes, rules);
+            browser.clearWaitMessages();
+        }
     };
 
     //create the project menu action for running a PMD check against all the java files within the active project
@@ -315,7 +325,6 @@ public class PMDOpenTool {
             Thread t = new Thread(r);
             t.start();
         }
-
     };
 
 
@@ -351,16 +360,18 @@ public class PMDOpenTool {
     }
 
     private static void addPMDWarningMessage(RuleViolation rv, JavaFileNode node) {
-        PMDMessage pmdMsg = new PMDMessage(rv.getRule().getName() + ": " + rv.getDescription() + " at line " + rv.getLine(), rv.getLine(), node);
+        PMDMessage pmdMsg = new PMDMessage(node.getDisplayName() + ": " + rv.getRule().getName() + ": " + rv.getDescription() + " at line " + rv.getLine(), rv.getLine(), node);
         pmdMsg.setForeground(Color.red);
         pmdMsg.setFont(stdMsgFont);
         Browser.getActiveBrowser().getMessageView().addMessage(msgCat, pmdMsg, false);
     }
 
     private static void pmdCheck() {
+        Browser.getActiveBrowser().getMessageView().clearMessages(null);
+        Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);
+        System.out.println("just called it!");
         Node node = Browser.getActiveBrowser().getActiveNode();
         if (node instanceof JavaFileNode) {
-            Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
             TextNodeViewer viewer = (TextNodeViewer) Browser.getActiveBrowser().getViewerOfType(node, TextNodeViewer.class);
             if (viewer != null) {
                 Document doc = viewer.getEditor().getDocument();
@@ -400,7 +411,32 @@ public class PMDOpenTool {
                 pmdCheckPackage((PackageNode) fileNodes[j], rules);  //recursive call
             }
         }
+    }
 
+    private static void pmdCheckAllOpenFiles(Node[] candidates, RuleSet rules) {
+        Browser.getActiveBrowser().getMessageView().clearMessages(null);
+        Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);
+        for (int i = 0; i < candidates.length; i++) {
+            if (candidates[i] instanceof JavaFileNode) {
+                JavaFileNode javaNode = (JavaFileNode) candidates[i];
+                try {
+                    StringBuffer code = loadCodeToString(javaNode);
+                    Report rpt = instanceCheck(code.toString(), rules);
+                    if (rpt == null) {
+                        Message msg = new Message("Error Processing File");
+                        msg.setFont(stdMsgFont);
+                        Browser.getActiveBrowser().getMessageView().addMessage(msgCat, msg, false);
+                    } else {
+                        for (Iterator j = rpt.iterator(); j.hasNext();) {
+                            addPMDWarningMessage((RuleViolation)j.next(), javaNode);
+                        }
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        Browser.getActiveBrowser().clearWaitMessages();
     }
 
     private static StringBuffer loadCodeToString(JavaFileNode javaNode) throws IOException {
@@ -417,13 +453,13 @@ public class PMDOpenTool {
     private static void pmdCheckProject() {
         Browser.getActiveBrowser().waitMessage("PMD Status", "Please wait while PMD checks the files in your project.");
         Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
-        Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);      //clear the message window
+        Browser.getActiveBrowser().getMessageView().clearMessages(null);
+        Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);
         RuleSet rules = constructRuleSets();
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i] instanceof PackageNode) {
                 PackageNode node = (PackageNode) nodes[i];
-                String packageName = node.getName();
-                if (packageName != null && !packageName.trim().equals("")) {  //if there is no name then this is probably the <Project Source> package - so ignore it so we don't get duplicates
+                if (node.getName() != null && !node.getName().trim().equals("")) {  //if there is no name then this is probably the <Project Source> package - so ignore it so we don't get duplicates
                     pmdCheckPackage(node, rules);
                 }
             }
@@ -507,8 +543,8 @@ public class PMDOpenTool {
 class PMDMessage extends Message {
     final LineMark MARK = new HighlightMark();
     JavaFileNode javaNode;
-    int line = 0;
-    int column = 0;
+    int line;
+    int column;
 
     /**
      * Constructor
@@ -525,8 +561,6 @@ class PMDMessage extends Message {
 
     /**
      * Called by JBuilder when user selects a message
-     *
-     * @param browser JBuilder Browser
      */
     public void selectAction(Browser browser) {
         displayResult(browser, true);
@@ -534,8 +568,6 @@ class PMDMessage extends Message {
 
     /**
      * Called by JBuilder when the user double-clicks a message
-     *
-     * @param browser JBuilder Browser
      */
     public void messageAction(Browser browser) {
         displayResult(browser, true);
@@ -720,11 +752,10 @@ class CodeFragmentMessage extends Message {
 }
 
 /**
- * Used to highlite a line of code within a source file
+ * Used to highlight a line of code within a source file
  */
 class HighlightMark extends LineMark {
     static Style highlightStyle;
-
     static {
         StyleContext context = EditorManager.getStyleContext();
         highlightStyle = context.addStyle("line_highlight", null);
@@ -732,14 +763,9 @@ class HighlightMark extends LineMark {
         StyleConstants.setBackground(highlightStyle, Color.yellow);
         StyleConstants.setForeground(highlightStyle, Color.black);
     }
-
-    /**
-     * Constructor
-     */
     public HighlightMark() {
         super(highlightStyle);
     }
-
     public HighlightMark(boolean isLightWeight) {
         super(isLightWeight, highlightStyle);
     }
