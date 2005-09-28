@@ -93,6 +93,7 @@ public class PMDOpenTool {
             try {
                 GROUP_MENU_PMD.add(B_ACTION_PMDCheckCurrentFile);
                 GROUP_MENU_PMD.add(B_ACTION_PMDProjectCheck);
+                GROUP_MENU_PMD.add(B_ACTION_PMDAllOpenFilesCheck);
                 GROUP_MENU_PMD.add(B_ACTION_CPDProjectCheck);
                 GROUP_MENU_PMD.add(B_ACTION_PMDConfig);
                 JBuilderMenu.GROUP_Tools.add(GROUP_MENU_PMD);
