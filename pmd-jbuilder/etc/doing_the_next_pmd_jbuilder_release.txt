@@ -48,7 +48,12 @@ Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
 Add the files and then classify them
 
-Submit some news saying "hey, new release of the JBuilder plugin!"
+Submit some news saying "hey, new release of the JBuilder plugin!" to
+http://codecentral.borland.com
+and
+borland.public.jbuilder.thirdpartytools news group
+If you don't plan on posting/reading regularly, you can post via the web:
+http://newsgroups.borland.com/cgi-bin/dnewsweb?cmd=xover&group=borland.public.jbuilder.thirdpartytools&utag=
 ====================================================================
 Fixed in CVS, and you can download an updated PMDOpenTool.jar file here:
 
