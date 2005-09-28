@@ -1,54 +1,60 @@
-update the release date in the changelog
-grab the latest pmd.jar file
+Update the release date in the changelog
+Update the version number in build.xml and README.txt
 
-Create the binary release, i.e., zip upthe PMDOpentools.jar file
-move the zip file into c:\tmp
+ant dist
+rm -rf ~/tmp/pmd-jbuilder-1.3/
+mkdir -p ~/tmp/pmd-jbuilder-1.3/
+cp ../lib/pmd-3.3.jar ../lib/PMDOpenTool.jar ../lib/jaxen-1.1-beta-7.jar ~/tmp/pmd-jbuilder-1.3/
+cp ../LICENSE.txt ~/tmp/pmd-jbuilder-1.3/
+cp ../lib/ReadMe.txt ~/tmp/pmd-jbuilder-1.3/
+cd ~/tmp/pmd-jbuilder-1.3
+zip -q -r ../pmd-jbuilder-bin-1.3.zip *
+cd -
+
+CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
+cd ../../
+cvs -q tag -D tomorrow "pmd_jbuilder_release_1_3" pmd-jbuilder
 
 Create the src release:
-cd lib
-cvs add -kb PMDOpenTools-0.4.jar
-cvs rm PMDOpenTools-0.3.jar
-cvs ci -m "adding new jar, removing old one"
-cd c:\data\pmd
-rmdir /q /s pmd-jbuilder\build
-cvs rtag -D tomorrow "pmd_jbuilder_release_0_4" pmd-jbuilder
-rmdir /q /s c:\tmp\pmd-jbuilder
-mkdir c:\tmp\pmd-jbuilder
-cvs export -d c:\tmp\pmd-jbuilder -r pmd_jbuilder_release_0_4 pmd-jbuilder
-zip it up, rename it to pmd-jbuilder-src-0.4.zip
+rm -rf ~/tmp/pmd-jbuilder-1.3
+rm -rf ~/tmp/pmd-jbuilder-1.3.zip
+cd pmd-jbuilder/etc/
+ant jarsrc
+cd ../../
+rm -rf tmp/
+mkdir tmp
+cd tmp
+cvs -q export -r pmd_jbuilder_release_1_3 pmdjbuilder
+mv pmdjbuilder/ pmd-jbuilder-1.3/
+cd ..
+cp pmd/lib/pmd-jbuilder-src-1.3.jar tmp/pmd-jbuilder-1.3/lib/
+mv tmp/pmd-jbuilder-1.3/ ~/tmp/
+cp pmd-jbuilder/lib/PMDOpenTool.jar ~/tmp/pmd-jbuilder-1.3/lib
+cd ~/tmp/
+zip -q -r pmd-jbuilder-src-1.3.zip pmd-jbuilder-1.3/
 
-unzip binary release into the JBuilder lib/ext directory
+Unzip binary release into the JBuilder lib/ext directory
 TESTS:
 1) Can you run jbuilder ok?
 2) Can you run it it on a file and find some unused code?
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_jbuilder_release_0_4 pmd
+cvs rtag -d pmd_jbuilder_release_1_3 pmd-jbuilder
 and then retag everything
 
-FTP the zip file to SF
-ftp upload.sourceforge.net
-generic userid/password: anonymous/dcraine@infoether.com
-cd incoming
-bin
-put pmd-jbuilder-src-0.4.zip
-put pmd-jbuilder-bin-0.4.zip
+ncftpput upload.sourceforge.net incoming/ pmd-jbuilder-src-1.3.zip pmd-jbuilder-bin-1.3.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jbuilder-src-0.3.zip file
-Add the pmd-jbuilder-bin-0.3.zip file
-Classify the file
+Add the files and then classify them
 
-Submit some news saying "hey, new release of the jbuilder plugin!"
+Submit some news saying "hey, new release of the JBuilder plugin!"
 ====================================================================
 Fixed in CVS, and you can download an updated PMDOpenTool.jar file here:
 
 http://infoether.com/~tom/PMDOpenTool.jar
 
 that fixes this bug.  To use the file, stop JBuilder, place PMDOpenTool.jar in your jbuilder/lib/ext directory, and restart JBuilder.
-
-Please note that this new file depends on pmd-3.2.jar, so you'll need to download the pmd-3.2 release and unzip it and copy the lib/pmd-3.2.jar file into the same directory.  Or if you prefer, you can just wait until I do the next formal JBuilder plugin release.
 
 Thanks for the report!
 
