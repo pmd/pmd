@@ -169,9 +169,9 @@ public class PMDOpenTool {
 
     private static void registerWithProjectView() {
         GROUP_PROJECT_PMD.add(B_ACTION_PMDProjectCheck);
+        GROUP_PROJECT_PMD.add(B_ACTION_PMDAllOpenFilesCheck);
         GROUP_PROJECT_PMD.add(B_ACTION_CPDProjectCheck);
         GROUP_PACKAGE_PMD.add(B_ACTION_PMDPackageCheck);
-        GROUP_PACKAGE_PMD.add(B_ACTION_PMDAllOpenFilesCheck);
         GROUP_PACKAGE_PMD.add(B_ACTION_CPDPackageCheck);
 
         ContextActionProvider cap1 = new ContextActionProvider() {
