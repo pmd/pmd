@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.Node;
 
 /*
  * How this rule works:
@@ -59,6 +60,9 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
     }
 
     private boolean isInStringBufferAppend(ASTAdditiveExpression node) {
+        if (!eighthParentIsBlockStatement(node)) {
+            return false;
+        }
         ASTBlockStatement s = (ASTBlockStatement) node.getFirstParentOfType(ASTBlockStatement.class);
         if (s == null) {
             return false;
@@ -66,7 +70,18 @@ public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractR
         ASTName n = (ASTName) s.getFirstChildOfType(ASTName.class);
         return n.getImage()!=null && n.getImage().endsWith("append");
     }
-    
+
+    private boolean eighthParentIsBlockStatement(ASTAdditiveExpression node) {
+        Node curr = node;
+        for (int i=0; i<8; i++) {
+            if (node.jjtGetParent() == null) {
+                return false;
+            }
+            curr = curr.jjtGetParent();
+        }
+        return curr instanceof ASTBlockStatement;
+    }
+
     private boolean isAllocatedStringBuffer(ASTAdditiveExpression node) {
         ASTAllocationExpression ao = (ASTAllocationExpression) node.getFirstParentOfType(ASTAllocationExpression.class);
         if (ao == null) {

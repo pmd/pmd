@@ -79,10 +79,9 @@ Avoid concatenating non literals in a StringBuffer constructor or append().
 public class Foo {
  void bar() {
   // Avoid this
-  StringBuffer sb=new
-  StringBuffer("AAAAAAAAAA"+System.getProperty("java.io.tmpdir"));
+  StringBuffer sb=new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
   // use instead something like this
-  StringBuffer sb = new StringBuffer("AAAAAAAAAA");
+  StringBuffer sb = new StringBuffer("tmp = ");
   sb.append(System.getProperty("java.io.tmpdir"));
  }
 }

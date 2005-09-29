@@ -17,6 +17,7 @@ import java.util.Map;
 public class StringToStringRule extends AbstractRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
+        // FIXME - use symbol table!!!
         SimpleNode nameNode = node.getTypeNameNode();
         if (nameNode instanceof ASTPrimitiveType) {
             return data;

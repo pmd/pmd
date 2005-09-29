@@ -28,6 +28,7 @@ public class AvoidConcatenatingNonLiteralsInStringBufferTest extends SimpleAggre
                new TestDescriptor(TEST8, "usage of the StringBuffer constructor that takes an int", 0, rule),
                new TestDescriptor(TEST9, "nested", 0, rule),
                new TestDescriptor(TEST10, "looking up too high", 0, rule),
+               new TestDescriptor(TEST11, "looking too deep", 0, rule),
        });
     }
 
@@ -107,6 +108,14 @@ public class AvoidConcatenatingNonLiteralsInStringBufferTest extends SimpleAggre
        "   buf.append(\"hello\");" + PMD.EOL +
        "   Object x = a(\"world\" + x, buf.toString());" + PMD.EOL +
        "  }" + PMD.EOL +
+       " }" + PMD.EOL +
+       "}";
+
+   private static final String TEST11 =
+       "public class Foo {" + PMD.EOL +
+       " public void bar(int i) {" + PMD.EOL +
+       "  StringBuffer buf = new StringBuffer();" + PMD.EOL +
+       "  buf.append(getFoo(getBar(i + \"hi\")));" + PMD.EOL +
        " }" + PMD.EOL +
        "}";
 
