@@ -542,7 +542,7 @@ public class PMDOpenTool {
  * Wrapper for the OpenTools message object
  */
 class PMDMessage extends Message {
-    final LineMark MARK = new HighlightMark();
+    //final LineMark MARK = new HighlightMark();
     JavaFileNode javaNode;
     int line;
     int column;
@@ -592,7 +592,7 @@ class PMDMessage extends Message {
                 if (requestFocus) {
                     editor.requestFocus();
                 }
-                editor.setTemporaryMark(line, MARK);
+                editor.setTemporaryMark(line, new EditorPane.HighlightMark());
 
             }
         } catch (Exception ex) {
