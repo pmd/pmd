@@ -11,14 +11,10 @@ public class ASTModifiers extends SimpleNode {
     super(p, id);
   }
 
-    public boolean isDiscardable() {
-        return true;
-    }
-
     public void discardIfNecessary() {
         SimpleNode parent = (SimpleNode)jjtGetParent();
-        if (jjtGetNumChildren() > 0  && jjtGetChild(0) instanceof ASTAnnotation) {
-            super.discardIfNecessary();
+        if (allChildrenAreAnnotations()) {
+            handleAnnotations(parent);
         } else if (parent.jjtGetNumChildren() == 2) {
             parent.children = new Node[] {parent.children[1]};
         } else if (parent.jjtGetNumChildren() == 3) {
@@ -32,6 +28,31 @@ public class ASTModifiers extends SimpleNode {
             throw new RuntimeException("ASTModifiers.discardIfNecessary didn't see expected children");
         }
     }
+
+    private boolean allChildrenAreAnnotations() {
+        if (jjtGetNumChildren() == 0) {
+            return false;
+        }
+        for (int i=0; i<jjtGetNumChildren(); i++) {
+            if (!(jjtGetChild(i) instanceof ASTAnnotation)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void handleAnnotations(SimpleNode parent) {
+        SimpleNode kid = (SimpleNode) this.jjtGetChild(0);
+        kid.jjtSetParent(parent);
+        for (int i=0; i<jjtGetNumChildren(); i++) {
+            if (i==0) {
+                parent.jjtReplaceChild(this, kid);
+            } else {
+                parent.jjtAddChild(jjtGetChild(i), i);
+            }
+        }
+    }
+
 
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {
