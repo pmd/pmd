@@ -5,6 +5,8 @@ package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.dfa.report.ReportTree;
 import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -135,9 +137,19 @@ public class Report {
     }
 
     public void addRuleViolation(RuleViolation violation) {
-        if (linesToExclude.contains(new Integer(violation.getLine()))) {
+        // NOPMD excluder
+        if (linesToExclude.contains(new Integer(violation.getNode().getBeginLine()))) {
             return;
         }
+        // Annotation excluder
+/*
+        SimpleNode node = violation.getNode();
+        if (node.jjtGetParent() != null && node.jjtGetParent() instanceof ASTTypeDeclaration) {
+            ASTTypeDeclaration t = (ASTTypeDeclaration)node.jjtGetParent();
+            if (t.jjtGetChild(0) instanceof ASTAnnotation)
+        }
+*/
+
         violations.add(violation);
         violationTree.addRuleViolation(violation);
         for (Iterator i = listeners.iterator(); i.hasNext();) {

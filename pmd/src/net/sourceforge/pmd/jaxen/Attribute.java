@@ -5,8 +5,8 @@ package net.sourceforge.pmd.jaxen;
 
 import net.sourceforge.pmd.ast.Node;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * @author daniels

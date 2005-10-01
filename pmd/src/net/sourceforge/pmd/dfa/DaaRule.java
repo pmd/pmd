@@ -6,15 +6,15 @@ package net.sourceforge.pmd.dfa;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
-import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author raik
@@ -60,6 +60,7 @@ public class DaaRule extends AbstractRule implements Executable {
                         int last = ((Integer) array.get(0)).intValue();
                         // TODO - at some point investigate and possibly reintroduce this line2 thing
                         //int line2 = ((Integer) array.get(1)).intValue();
+/*
                         if (va.accessTypeMatches(last) && va.isDefinition()) { // DD
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "DD"));
                         } else if (last == VariableAccess.UNDEFINITION && va.isReference()) { // UR
@@ -67,6 +68,7 @@ public class DaaRule extends AbstractRule implements Executable {
                         } else if (last == VariableAccess.DEFINITION && va.isUndefinition()) { // DU
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "DU"));
                         }
+*/
                     }
                     List array = new ArrayList();
                     array.add(new Integer(va.getAccessType()));

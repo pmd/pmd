@@ -54,7 +54,7 @@ public class XPathRuleTest extends RuleTst {
         rules.addRule(rule);
         p.processFile(new StringReader(TEST2), rules, ctx);
         RuleViolation rv = (RuleViolation)report.iterator().next();
-        assertEquals(3, rv.getLine());
+        assertEquals(3, rv.getNode().getBeginLine());
     }
 
     private static final String TEST1 =

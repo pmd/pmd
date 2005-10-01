@@ -29,7 +29,7 @@ public class CSVRenderer implements Renderer {
             buf.append(quoteAndCommify(rv.getPackageName()));
             buf.append(quoteAndCommify(rv.getFilename()));
             buf.append(quoteAndCommify(Integer.toString(rv.getRule().getPriority())));
-            buf.append(quoteAndCommify(Integer.toString(rv.getLine())));
+            buf.append(quoteAndCommify(Integer.toString(rv.getNode().getBeginLine())));
             buf.append(quoteAndCommify(StringUtil.replaceString(rv.getDescription(), '\"', "'")));
             buf.append(quoteAndCommify(rv.getRule().getRuleSetName()));
             buf.append(quote(rv.getRule().getName()));

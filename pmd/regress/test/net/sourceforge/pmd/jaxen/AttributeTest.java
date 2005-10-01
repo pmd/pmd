@@ -4,8 +4,8 @@
 package test.net.sourceforge.pmd.jaxen;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.jaxen.Attribute;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.jaxen.Attribute;
 
 import java.lang.reflect.Method;
 

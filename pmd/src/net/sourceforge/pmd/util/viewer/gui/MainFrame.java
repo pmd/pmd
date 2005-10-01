@@ -1,14 +1,14 @@
 package net.sourceforge.pmd.util.viewer.gui;
 
+import net.sourceforge.pmd.TargetJDK1_3;
+import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
-import net.sourceforge.pmd.TargetJDKVersion;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDK1_3;
-import net.sourceforge.pmd.TargetJDK1_5;
 
 import javax.swing.*;
 import java.awt.BorderLayout;

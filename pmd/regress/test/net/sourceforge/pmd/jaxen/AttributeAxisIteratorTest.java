@@ -5,11 +5,7 @@ package test.net.sourceforge.pmd.jaxen;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.jaxen.Attribute;
 import net.sourceforge.pmd.jaxen.AttributeAxisIterator;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class AttributeAxisIteratorTest extends TestCase {
 

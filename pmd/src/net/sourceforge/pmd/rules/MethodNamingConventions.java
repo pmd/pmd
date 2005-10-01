@@ -5,6 +5,7 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
 public class MethodNamingConventions extends AbstractRule {
@@ -13,11 +14,8 @@ public class MethodNamingConventions extends AbstractRule {
         if (Character.isUpperCase(node.getImage().charAt(0))) {
             addViolation(data, node);
         }
-
         if (node.getImage().indexOf("_") >= 0) {
-            RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, "Method names should not contain underscores"));
-
+            addViolationWithMessage(data, node, "Method names should not contain underscores");
         }
         return data;
     }

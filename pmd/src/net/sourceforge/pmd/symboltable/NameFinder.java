@@ -3,12 +3,12 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTArguments;
 
 import java.util.Iterator;
 import java.util.LinkedList;

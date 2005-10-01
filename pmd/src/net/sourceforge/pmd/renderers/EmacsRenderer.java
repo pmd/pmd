@@ -17,7 +17,7 @@ public class EmacsRenderer implements Renderer {
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append(EOL).append(rv.getFilename());
-            buf.append(":").append(Integer.toString(rv.getLine()));
+            buf.append(":").append(Integer.toString(rv.getNode().getBeginLine()));
             buf.append(": ").append(rv.getDescription());
         }
         return buf.toString();

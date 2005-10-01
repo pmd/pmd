@@ -38,7 +38,7 @@ public class TextPadRenderer implements Renderer {
             //Filename
             buf.append(PMD.EOL).append(rv.getFilename() + "(");
             //Line number
-            buf.append(Integer.toString(rv.getLine())).append(",  ");
+            buf.append(Integer.toString(rv.getNode().getBeginLine())).append(",  ");
             //Name of violated rule
             buf.append(rv.getRule().getName()).append("):  ");
             //Specific violation message

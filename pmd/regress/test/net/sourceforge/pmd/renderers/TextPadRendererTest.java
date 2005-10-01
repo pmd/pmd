@@ -3,15 +3,26 @@
 */
 package test.net.sourceforge.pmd.renderers;
 
-import junit.framework.TestCase;
+import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.renderers.TextPadRenderer;
-import test.net.sourceforge.pmd.testframework.MockRule;
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
-public class TextPadRendererTest extends TestCase  {
+public class TextPadRendererTest extends RuleTst  {
+
+    private static class FooRule extends AbstractRule {
+        public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
+            if (c.getImage().equals("Foo")) addViolation(ctx,c);
+            return ctx;
+        }
+        public String getMessage() { return "blah"; }
+        public String getName() { return "Foo"; }
+        public String getRuleSetName() { return "RuleSet"; }
+        public String getDescription() { return "desc"; }
+    }
+
 
     public void testNullPassedIn() {
         try  {
@@ -22,15 +33,16 @@ public class TextPadRendererTest extends TestCase  {
         }
     }
 
-    public void testRenderer()  {
-        RuleContext ctx = new RuleContext();
-        ctx.setSourceCodeFilename("Foo.java");
+    public void testRenderer() throws Throwable {
         Report rep = new Report();
-        rep.addRuleViolation(new RuleViolation(new MockRule("DontImportJavaLang", "Avoid importing anything from the package 'java.lang'", "Avoid importing anything from the package 'java.lang'", "rulesetname"), 3,ctx, "package", "class", "method"));
+        runTestFromString(TEST1, new FooRule(), rep);
         String actual = (new TextPadRenderer()).render(rep);
-        String expected = PMD.EOL + "Foo.java(3,  DontImportJavaLang):  Avoid importing anything from the package 'java.lang'" ;
+        String expected = PMD.EOL + "n/a(1,  Foo):  desc" ;
         assertEquals(expected, actual);
     }
+
+    private static final String TEST1 =
+    "public class Foo {}" + PMD.EOL;
 }
 
 

@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.util.viewer.model;
 
-import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ParseException;

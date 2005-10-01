@@ -3,8 +3,8 @@ package net.sourceforge.pmd.dfa.pathfinder;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.NodeType;
 
-import java.util.LinkedList;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 public class CurrentPath {
 

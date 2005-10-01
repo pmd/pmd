@@ -44,8 +44,8 @@ public class HTMLRenderer implements Renderer {
             }
             buf.append("> " + PMD.EOL);
             buf.append("<td align=\"center\">" + violationCount + "</td>" + PMD.EOL);
-            buf.append("<td width=\"*%\">" + maybeWrap(rv.getFilename(), Integer.toString(rv.getLine())) + "</td>" + PMD.EOL);
-            buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getLine()) + "</td>" + PMD.EOL);
+            buf.append("<td width=\"*%\">" + maybeWrap(rv.getFilename(), Integer.toString(rv.getNode().getBeginLine())) + "</td>" + PMD.EOL);
+            buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getNode().getBeginLine()) + "</td>" + PMD.EOL);
 
             String d = rv.getDescription();
             d = StringUtil.replaceString(d, '&', "&amp;");

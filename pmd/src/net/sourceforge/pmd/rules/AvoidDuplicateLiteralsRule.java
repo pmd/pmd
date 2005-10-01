@@ -5,6 +5,7 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -110,7 +111,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
             List occurrences = (List) literals.get(key);
             if (occurrences.size() >= threshold) {
                 Object[] args = new Object[]{key, new Integer(occurrences.size()), new Integer(((SimpleNode) occurrences.get(0)).getBeginLine())};
-                ((RuleContext) data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, ((SimpleNode) occurrences.get(0)), MessageFormat.format(getMessage(), args)));
+                addViolation(data, (SimpleNode)occurrences.get(0), args);
             }
         }
         return data;

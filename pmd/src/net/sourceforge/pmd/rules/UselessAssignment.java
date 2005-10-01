@@ -3,18 +3,15 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
-import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
 
 public class UselessAssignment extends AbstractRule implements Executable  {
 

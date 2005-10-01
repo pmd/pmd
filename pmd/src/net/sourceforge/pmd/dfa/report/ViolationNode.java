@@ -22,7 +22,7 @@ public class ViolationNode extends AbstractReportNode {
         ViolationNode vn = (ViolationNode) arg0;
 
         return vn.getRuleViolation().getFilename().equals(this.getRuleViolation().getFilename()) &&
-                vn.getRuleViolation().getLine() == this.getRuleViolation().getLine() &&
+                vn.getRuleViolation().getNode().getBeginLine() == this.getRuleViolation().getNode().getBeginLine() &&
                 vn.getRuleViolation().getVariableName().equals(this.getRuleViolation().getVariableName());
     }
 

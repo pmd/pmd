@@ -5,6 +5,7 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
@@ -75,8 +76,7 @@ public class VariableNamingConventions extends AbstractRule {
             // checked for uppercase
             if ((node.isStatic() && node.isFinal()) || (node.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration)node.jjtGetParent().jjtGetParent().jjtGetParent()).isInterface())) {
                 if (!varName.equals(varName.toUpperCase())) {
-                    RuleContext ctx = (RuleContext) data;
-                    ctx.getReport().addRuleViolation(createRuleViolation(ctx, childNodeName, "Variables that are final and static should be in all caps."));
+                    addViolation(data, childNodeName, "Variables that are final and static should be in all caps.");
                 }
                 return data;
             }
@@ -89,12 +89,10 @@ public class VariableNamingConventions extends AbstractRule {
             }
 
             if (strippedVarName.indexOf("_") >= 0) {
-                RuleContext ctx = (RuleContext) data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, childNodeName, "Variables that are not final should not contain underscores (except for underscores in standard prefix/suffix)."));
+                addViolation(data, childNodeName, "Variables that are not final should not contain underscores (except for underscores in standard prefix/suffix).");
             }
             if (Character.isUpperCase(varName.charAt(0))) {
-                RuleContext ctx = (RuleContext) data;
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, childNodeName, "Variables should start with a lowercase character"));
+                addViolation(data, childNodeName, "Variables should start with a lowercase character");
             }
         }
         return data;

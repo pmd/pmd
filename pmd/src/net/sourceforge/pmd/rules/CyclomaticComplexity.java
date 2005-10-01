@@ -98,10 +98,7 @@ public class CyclomaticComplexity extends AbstractRule {
         super.visit(node, data);
         Entry classEntry = (Entry) entryStack.pop();
         if ((classEntry.getComplexityAverage() >= getIntProperty("reportLevel")) || (classEntry.highestDecisionPoints >= getIntProperty("reportLevel"))) {
-            RuleContext ruleContext = (RuleContext) data;
-            String[] args = {"class", node.getImage(), String.valueOf(classEntry.getComplexityAverage()) + " (Highest = " + String.valueOf(classEntry.highestDecisionPoints) + ")"};
-            RuleViolation ruleViolation = createRuleViolation(ruleContext, node, MessageFormat.format(getMessage(), args));
-            ruleContext.getReport().addRuleViolation(ruleViolation);
+            addViolation(data, node, new String[]{"class", node.getImage(), String.valueOf(classEntry.getComplexityAverage()) + " (Highest = " + String.valueOf(classEntry.highestDecisionPoints) + ")"});
         }
         return data;
     }
@@ -129,9 +126,7 @@ public class CyclomaticComplexity extends AbstractRule {
         }
 
         if (methodEntry.decisionPoints >= getIntProperty("reportLevel")) {
-            RuleContext ruleContext = (RuleContext) data;
-            String[] args = {"method", (methodDeclarator == null) ? "" : methodDeclarator.getImage(), String.valueOf(methodEntry.decisionPoints)};
-            ruleContext.getReport().addRuleViolation(createRuleViolation(ruleContext, node, MessageFormat.format(getMessage(), args)));
+            addViolation(data, node, new String[]{"method", (methodDeclarator == null) ? "" : methodDeclarator.getImage(), String.valueOf(methodEntry.decisionPoints)});
         }
 
         return data;
@@ -149,10 +144,7 @@ public class CyclomaticComplexity extends AbstractRule {
             classEntry.highestDecisionPoints = constructorDecisionPointCount;
         }
         if (constructorEntry.decisionPoints >= getIntProperty("reportLevel")) {
-            RuleContext ruleContext = (RuleContext) data;
-            String[] args = {"constructor", classEntry.node.getImage(), String.valueOf(constructorDecisionPointCount)};
-            RuleViolation ruleViolation = createRuleViolation(ruleContext, node, MessageFormat.format(getMessage(), args));
-            ruleContext.getReport().addRuleViolation(ruleViolation);
+            addViolation(data, node, new String[]{"constructor", classEntry.node.getImage(), String.valueOf(constructorDecisionPointCount)});
         }
         return data;
     }

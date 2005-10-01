@@ -3,13 +3,11 @@
  */
 package net.sourceforge.pmd.rules;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTArgumentList;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTFormalParameters;
@@ -23,7 +21,9 @@ import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UselessOverridingMethod extends AbstractRule {
 

@@ -26,6 +26,7 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ast.SimpleNode;
 import test.net.sourceforge.pmd.testframework.MockRule;
 
 public class RuleViolationTest extends TestCase {
@@ -34,9 +35,11 @@ public class RuleViolationTest extends TestCase {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
-        RuleViolation r = new RuleViolation(rule, 2, ctx, "package", "class", "method");
+        SimpleNode s = new SimpleNode(1);
+        s.testingOnly__setBeginLine(2);
+        RuleViolation r = new RuleViolation(rule, ctx, s);
         assertEquals("object mismatch", rule, r.getRule());
-        assertEquals("line number is wrong", 2, r.getLine());
+        assertEquals("line number is wrong", 2, r.getNode().getBeginLine());
         assertEquals("filename is wrong", "filename", r.getFilename());
     }
 
@@ -44,9 +47,11 @@ public class RuleViolationTest extends TestCase {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
-        RuleViolation r = new RuleViolation(rule, 2, "description", ctx);
+        SimpleNode s = new SimpleNode(1);
+        s.testingOnly__setBeginLine(2);
+        RuleViolation r = new RuleViolation(rule, ctx, s, "description");
         assertEquals("object mismatch", rule, r.getRule());
-        assertEquals("line number is wrong", 2, r.getLine());
+        assertEquals("line number is wrong", 2, r.getNode().getBeginLine());
         assertEquals("filename is wrong", "filename", r.getFilename());
         assertEquals("description is wrong", "description", r.getDescription());
     }
@@ -56,9 +61,13 @@ public class RuleViolationTest extends TestCase {
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename1");
-        RuleViolation r1 = new RuleViolation(rule, 10, "description", ctx);
+        SimpleNode s = new SimpleNode(1);
+        s.testingOnly__setBeginLine(10);
+        RuleViolation r1 = new RuleViolation(rule, ctx, s, "description");
         ctx.setSourceCodeFilename("filename2");
-        RuleViolation r2 = new RuleViolation(rule, 20, "description", ctx);
+        SimpleNode s1 = new SimpleNode(1);
+        s1.testingOnly__setBeginLine(10);
+        RuleViolation r2 = new RuleViolation(rule, ctx, s1, "description");
         assertEquals(-1, comp.compare(r1, r2));
         assertEquals(1, comp.compare(r2, r1));
     }
@@ -68,8 +77,12 @@ public class RuleViolationTest extends TestCase {
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
-        RuleViolation r1 = new RuleViolation(rule, 10, "description", ctx);
-        RuleViolation r2 = new RuleViolation(rule, 20, "description", ctx);
+        SimpleNode s = new SimpleNode(1);
+        s.testingOnly__setBeginLine(10);
+        SimpleNode s1 = new SimpleNode(1);
+        s1.testingOnly__setBeginLine(20);
+        RuleViolation r1 = new RuleViolation(rule, ctx, s, "description");
+        RuleViolation r2 = new RuleViolation(rule, ctx, s1, "description");
         assertTrue(comp.compare(r1, r2) < 0);
         assertTrue(comp.compare(r2, r1) > 0);
     }
@@ -79,8 +92,12 @@ public class RuleViolationTest extends TestCase {
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
-        RuleViolation r1 = new RuleViolation(rule, 10, "description", ctx);
-        RuleViolation r2 = new RuleViolation(rule, 10, "description", ctx);
+        SimpleNode s = new SimpleNode(1);
+        s.testingOnly__setBeginLine(10);
+        SimpleNode s1 = new SimpleNode(1);
+        s1.testingOnly__setBeginLine(10);
+        RuleViolation r1 = new RuleViolation(rule, ctx, s, "description");
+        RuleViolation r2 = new RuleViolation(rule, ctx, s1, "description");
         assertEquals(1, comp.compare(r1, r2));
         assertEquals(1, comp.compare(r2, r1));
     }

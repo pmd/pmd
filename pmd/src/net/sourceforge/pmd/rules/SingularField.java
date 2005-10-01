@@ -8,6 +8,7 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
@@ -41,7 +42,7 @@ public class SingularField extends AbstractRule {
                     } else {
                         method = ((ASTClassOrInterfaceDeclaration)((ASTConstructorDeclaration)nodes.get(0)).getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)).getImage();
                     }
-                    ((RuleContext)data).getReport().addRuleViolation(createRuleViolation((RuleContext) data, decl, MessageFormat.format(getMessage(), new Object[]{name, method})));
+                    addViolation(data, decl, new Object[]{name, method});
                 }
             } catch (JaxenException je) {
                 je.printStackTrace();   

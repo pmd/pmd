@@ -5,6 +5,7 @@ package net.sourceforge.pmd.stat;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 
 import java.util.Iterator;
 import java.util.List;
@@ -121,7 +122,7 @@ public abstract class StatisticalRule extends AbstractRule {
         Iterator points = p.iterator();
         while (points.hasNext()) {
             DataPoint point = (DataPoint) points.next();
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, point.getNode(), point.getMessage()));
+            addViolationWithMessage(ctx, point.getNode(), point.getMessage());
         }
     }
 }

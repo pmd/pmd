@@ -3,29 +3,35 @@
 */
 package test.net.sourceforge.pmd.renderers;
 
-import junit.framework.TestCase;
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import test.net.sourceforge.pmd.testframework.MockRule;
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 
-public class XMLRendererTest extends TestCase {
+public class XMLRendererTest extends RuleTst {
 
-    private MockRule RULE1 = new MockRule("RULE1", "RULE1", "msg", "rulesetname", 3);
-    private MockRule RULE2 = new MockRule("RULE2", "RULE2", "msg", "rulesetname");
-    private RuleContext ctx = new RuleContext();
-
-    public XMLRendererTest(String name) {
-        super(name);
+    private static class FooRule extends AbstractRule {
+        public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
+            if (c.getImage().equals("Foo")) addViolation(ctx,c);
+            return ctx;
+        }
+        public String getMessage() { return "blah"; }
+        public String getName() { return "Foo"; }
+        public String getRuleSetName() { return "RuleSet"; }
+        public String getDescription() { return "desc"; }
     }
 
     public void testEmptyReport() throws Throwable {
@@ -43,79 +49,48 @@ public class XMLRendererTest extends TestCase {
 
     public void testSingleReport() throws Throwable {
         Report report = new Report();
-        ctx.setSourceCodeFilename("testSingleReport");
-        report.addRuleViolation(new RuleViolation(RULE1, 1, "Rule1", ctx));
+        runTestFromString(TEST1, new FooRule(), report);
         Element root = parseRootElement(report);
-        assertEquals("testSingleReport", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
-        assertEquals("RULE1", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
-        assertEquals("rulesetname", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("ruleset").getNodeValue());
+        assertEquals("n/a", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("Foo", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
+        assertEquals("RuleSet", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("ruleset").getNodeValue());
         assertEquals("1", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("line").getNodeValue());
     }
 
+    private static final String TEST1 =
+    "public class Foo {}" + PMD.EOL;
+
+    private static final String TEST2 =
+    "public class Foo {" + PMD.EOL +
+    " public class Foo {}" + PMD.EOL +
+    "}" + PMD.EOL;
+
+
     public void testDoubleReport() throws Throwable {
         Report report = new Report();
-        ctx.setSourceCodeFilename("testDoubleReport");
-        report.addRuleViolation(new RuleViolation(RULE1, 1, "Rule1", ctx));
-        report.addRuleViolation(new RuleViolation(RULE2, 2, "Rule2", ctx));
+        runTestFromString(TEST2, new FooRule(), report);
+        runTestFromString(TEST2, new FooRule(), report);
         Element root = parseRootElement(report);
-        assertEquals("RULE1", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
-        assertEquals("RULE2", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
+        assertEquals("Foo", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
+        assertEquals("Foo", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
     }
 
     public void testTwoFiles() throws Throwable {
         Report report = new Report();
-        ctx.setSourceCodeFilename("testTwoFiles_0");
-        report.addRuleViolation(new RuleViolation(RULE1, 1, "Rule1", ctx));
-        ctx.setSourceCodeFilename("testTwoFiles_1");
-        report.addRuleViolation(new RuleViolation(RULE1, 1, "Rule1", ctx));
+        FooRule rule = new FooRule();
+        runTestFromString(TEST2, rule, report);
+        PMD p = new PMD(new TargetJDK1_4());
+        RuleContext ctx = new RuleContext();
+        ctx.setReport(report);
+        ctx.setSourceCodeFilename("bar");
+        RuleSet rules = new RuleSet();
+        rules.addRule(rule);
+        p.processFile(new StringReader(TEST2), rules, ctx);
         Element root = parseRootElement(report);
-        assertEquals("testTwoFiles_0", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
-        assertEquals("testTwoFiles_1", root.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("bar", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
+        assertEquals("n/a", root.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
     }
 
-    public void testUnorderedFiles() throws Throwable {
-        Report report = new Report();
-        ctx.setSourceCodeFilename("testTwoFiles_0");
-        report.addRuleViolation(new RuleViolation(RULE1, 1, "Rule1", ctx));
-
-        ctx.setSourceCodeFilename("testTwoFiles_1");
-        report.addRuleViolation(new RuleViolation(RULE1, 1, "Rule1", ctx));
-
-        ctx.setSourceCodeFilename("testTwoFiles_0");
-        report.addRuleViolation(new RuleViolation(RULE2, 2, "Rule2", ctx));
-
-        Element root = parseRootElement(report);
-        assertEquals("testTwoFiles_0", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
-        assertEquals("testTwoFiles_1", root.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
-        assertEquals("RULE1", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
-        assertEquals("RULE2", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
-        assertEquals("RULE1", root.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
-    }
-
-
-    public void testEscaping() throws Throwable {
-        // <?xml version="1.0"?>
-        // <pmd>
-        //   <file name="testEscaping: Less than: &lt; Greater than: &gt; Ampersand: &amp; Quote: &quot; 'e' acute: &#233;">
-        //     <violation line="1" rule="RULE1">
-        // [RULE] Less than: &lt; Greater than: &gt; Ampersand: &amp; Quote: &quot; 'e' acute: &#233;
-        //     </violation>
-        //   </file>
-        // </pmd>
-        Report report = new Report();
-        ctx.setSourceCodeFilename("testEscaping: Less than: < Greater than: > Ampersand: & Quote: \" 'e' acute: \u00E9");
-        report.addRuleViolation(new RuleViolation(RULE1, 1, "[RULE] Less than: < Greater than: > Ampersand: & Quote: \" 'e' acute: \u00E9", ctx));
-        Element root = parseRootElement(report);
-        String out = root.getFirstChild().getNextSibling().toString();
-        // TODO - this works when run "manually" but not when run using Maven.  Must
-        // be some hideous XML difference.  Argh.
-/*
-        assertTrue(out.indexOf("&gt;") != -1);
-        assertTrue(out.indexOf("&lt;") != -1);
-        assertTrue(out.indexOf("&amp;") != -1);
-        assertTrue(out.indexOf("&apos;") != -1);
-*/
-    }
     private Element parseRootElement(Report rpt) throws SAXException, IOException, ParserConfigurationException {
         return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(new XMLRenderer().render(rpt)))).getDocumentElement();
     }

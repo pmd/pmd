@@ -3,6 +3,11 @@
  */
 package net.sourceforge.pmd;
 
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.symboltable.MethodScope;
+
 import java.util.Comparator;
 
 public class RuleViolation {
@@ -20,95 +25,51 @@ public class RuleViolation {
                 return r1.getFilename().compareTo(r2.getFilename());
             }
 
-            if (r1.getLine() != r2.getLine())
-                return r1.getLine() - r2.getLine();
+            if (r1.getNode().getBeginLine() != r2.getNode().getBeginLine())
+                return r1.getNode().getBeginLine() - r2.getNode().getBeginLine();
 
             if (r1.getDescription() != null && r2.getDescription() != null && !r1.getDescription().equals(r2.getDescription())) {
                 return r1.getDescription().compareTo(r2.getDescription());
             }
 
-            if (r1.getLine() == r2.getLine()) {
+            if (r1.getNode().getBeginLine() == r2.getNode().getBeginLine()) {
                 return 1;
             }
             
             // line number diff maps nicely to compare()
-            return r1.getLine() - r2.getLine();
+            return r1.getNode().getBeginLine() - r2.getNode().getBeginLine();
         }
     }
 
-    private int line;
     private Rule rule;
     private String description;
     private String filename;
-    private int line2 = -1;
-    private String packageName;
-    private String className;
-    private String methodName;
-    private String variableName;
-    private int beginColumn = -1;
-    private int endColumn = -1;
+    private SimpleNode node;
 
-    /**
-     * gets the character in the line where the violation starts
-     * @return a greater than or zero if set and a negative value if not available
-     */
-    public final int getBeginColumn() {
-        return beginColumn;
-    }
-    /**
-     * gets the character in the line where the violation ends
-     * @return a greater than or zero if set and a negative value if not available
-     */
-    public final int getEndColumn() {
-        return endColumn;
-    }
-    /**
-     * sets both beginColumn and endColumn
-     * @param begin
-     * @param end
-     */
-    public void setColumnInfo(int begin, int end) {
-        this.beginColumn = begin;
-        this.endColumn = end;
+    public RuleViolation(Rule rule, RuleContext ctx, SimpleNode node) {
+        this(rule, ctx, node, rule.getDescription());
     }
 
-    public RuleViolation(Rule rule, int line, RuleContext ctx, String packageName, String className, String methodName) {
-        this(rule, line, rule.getMessage(), ctx, packageName, className, methodName);
-    }
-
-    public RuleViolation(Rule rule, int line, String specificDescription, RuleContext ctx, String packageName, String className, String methodName) {
-        this(rule, line, -1, "", specificDescription, ctx, packageName, className, methodName);
-    }
-
-    public RuleViolation(Rule rule, int line, int line2, String variableName, String specificDescription, RuleContext ctx, String packageName, String className, String methodName) {
-        this.line = line;
-        this.line2 = line2;
+    public RuleViolation(Rule rule, RuleContext ctx, SimpleNode node, String specificDescription) {
         this.rule = rule;
-        this.description = specificDescription;
+        this.node = node;
         this.filename = ctx.getSourceCodeFilename();
-        this.packageName = packageName;
-        this.className = className;
-        this.methodName = methodName;
-        this.variableName = variableName;
+        this.description = specificDescription;
     }
 
-    public RuleViolation(Rule rule, int line, String specificDescription, RuleContext ctx) {
-        this.line = line;
-        this.rule = rule;
-        this.description = specificDescription;
-        this.filename = ctx.getSourceCodeFilename();
+    /**
+     * @deprecated use getNode().getBeginLine() instead
+     */
+    public int getLine() {
+        return node.getBeginLine();
     }
 
-    public RuleViolation(AbstractRule rule, RuleContext ctx, String packageName, String className, String methodName) {
-        this(rule, 0, ctx, packageName, className, methodName);
-    }
-    
     public Rule getRule() {
         return rule;
     }
 
-    public int getLine() {
-        return line;
+    public SimpleNode getNode() {
+        return node;
     }
 
     public String getDescription() {
@@ -120,29 +81,31 @@ public class RuleViolation {
     }
 
     public String getClassName() {
+        String className;
+        if (node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) == null) {
+            // This takes care of nodes which are outside a class definition - i.e., import declarations
+            className = "";
+        } else {
+             // default to symbol table lookup
+            className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : node.getScope().getEnclosingClassScope().getClassName();
+        }
         return className;
     }
 
     public String getMethodName() {
-        return methodName;
-    }
-
-    public int getLine2() {
-        return line2;
+        return node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : ((MethodScope)node.getScope().getEnclosingMethodScope()).getName();
     }
 
     public String getPackageName() {
-        return packageName;
+        return node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
     }
 
     public String getVariableName() {
-        return variableName;
+        return "";
     }
 
     public String toString() {
-        return getFilename() + ":" + getRule() + ":" + getDescription() + ":" + getLine();
+        return getFilename() + ":" + getRule() + ":" + getDescription() + ":" + node.getBeginLine();
     }
-    public final void setLine(int line) {
-        this.line = line;
-    }
+
 }

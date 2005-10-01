@@ -19,7 +19,7 @@ public class TextRenderer implements Renderer {
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append(PMD.EOL + rv.getFilename());
-            buf.append("\t" + Integer.toString(rv.getLine()));
+            buf.append("\t" + Integer.toString(rv.getNode().getBeginLine()));
             buf.append("\t" + rv.getDescription());
         }
         for (Iterator i = report.errors(); i.hasNext();) {

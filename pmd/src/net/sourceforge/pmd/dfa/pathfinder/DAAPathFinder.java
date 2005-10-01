@@ -5,10 +5,8 @@ package net.sourceforge.pmd.dfa.pathfinder;
 
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.NodeType;
-import net.sourceforge.pmd.dfa.StartOrEndDataFlowNode;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import java.util.LinkedList;
 
 /**
  * @author raik

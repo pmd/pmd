@@ -39,6 +39,7 @@ public class AbstractRuleTest extends TestCase {
         public MyRule() {
             setName("MyRule");
             setMessage("my rule");
+            setDescription("my rule desc");
             setPriority(3);
             addProperty("foo", "value");
         }
@@ -66,11 +67,11 @@ public class AbstractRuleTest extends TestCase {
         s.testingOnly__setBeginColumn(5);
         s.testingOnly__setBeginLine(5);
         s.setScope(new SourceFileScope("foo"));
-        RuleViolation rv = r.createRuleViolation(ctx, s);
-        assertEquals("Line number mismatch!", 5, rv.getLine());
+        RuleViolation rv = new RuleViolation(r, ctx, s);
+        assertEquals("Line number mismatch!", 5, rv.getNode().getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
-        assertEquals("Rule description mismatch!", "my rule", rv.getDescription());
+        assertEquals("Rule description mismatch!", "my rule desc", rv.getDescription());
         assertEquals("RuleSet name mismatch!", "foo", rv.getRule().getRuleSetName());
     }
 
@@ -82,8 +83,8 @@ public class AbstractRuleTest extends TestCase {
         s.testingOnly__setBeginColumn(5);
         s.testingOnly__setBeginLine(5);
         s.setScope(new SourceFileScope("foo"));
-        RuleViolation rv = r.createRuleViolation(ctx, s, "specificdescription");
-        assertEquals("Line number mismatch!", 5, rv.getLine());
+        RuleViolation rv = new RuleViolation(r, ctx, s, "specificdescription");
+        assertEquals("Line number mismatch!", 5, rv.getNode().getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
         assertEquals("Rule description mismatch!", "specificdescription", rv.getDescription());
@@ -101,7 +102,8 @@ public class AbstractRuleTest extends TestCase {
         n.testingOnly__setBeginColumn(5);
         n.testingOnly__setBeginLine(5);
         n.setScope(new SourceFileScope("foo"));
-        r.createRuleViolation(ctx, n, "specificdescription");
+        RuleViolation rv = new RuleViolation(r, ctx, n, "specificdescription");
+        ctx.getReport().addRuleViolation(rv);
         assertTrue(ctx.getReport().isEmpty());
     }
     

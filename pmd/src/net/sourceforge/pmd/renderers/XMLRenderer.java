@@ -32,7 +32,7 @@ public class XMLRenderer implements Renderer {
                 buf.append("\">").append(PMD.EOL);
             }
 
-            buf.append("<violation line=\"").append(rv.getLine()).append("\"");
+            buf.append("<violation line=\"").append(rv.getNode().getBeginLine()).append("\"");
             buf.append(" rule=\"");
             StringUtil.appendXmlEscaped(buf, rv.getRule().getName());
             buf.append("\"");

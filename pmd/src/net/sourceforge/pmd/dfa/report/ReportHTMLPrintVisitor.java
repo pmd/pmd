@@ -50,10 +50,10 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
             ret += "<tr><td><b>Variable:</b></td><td>" + vio.getVariableName() + "</td></tr>";
         }
 
-        if (vio.getLine2() > 0) {
-            ret += "<tr><td><b>Line:</b></td><td>" + vio.getLine2() + " and " + vio.getLine() + "</td></tr>";
+        if (vio.getNode().getEndLine() > 0) {
+            ret += "<tr><td><b>Line:</b></td><td>" + vio.getNode().getEndLine() + " and " + vio.getNode().getBeginLine() + "</td></tr>";
         } else {
-            ret += "<tr><td><b>Line:</b></td><td>" + vio.getLine() + "</td></tr>";
+            ret += "<tr><td><b>Line:</b></td><td>" + vio.getNode().getBeginLine() + "</td></tr>";
         }
 
         ret += "</table>";

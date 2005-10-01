@@ -5,10 +5,9 @@ package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.symboltable.MethodScope;
+import net.sourceforge.pmd.ast.Node;
 
 import java.text.MessageFormat;
 import java.util.Iterator;
@@ -144,40 +143,6 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         visitAll(acus, ctx);
     }
 
-    public RuleViolation createRuleViolation(RuleContext ctx, SimpleNode node) {
-        String packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
-        RuleViolation v = new RuleViolation(this, ctx, packageName, findClassName(node), findMethodName(node));
-        extractNodeInfo(v, node);
-        return v;
-    }
-
-    public RuleViolation createRuleViolation(RuleContext ctx, SimpleNode node, String specificDescription) {
-        String packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
-        RuleViolation rv = new RuleViolation(this, node.getBeginLine(), specificDescription, ctx, packageName, findClassName(node), findMethodName(node));
-        extractNodeInfo(rv, node);
-        return rv;
-    }
-
-    public RuleViolation createRuleViolation(RuleContext ctx, SimpleNode node, String variableName, String specificDescription) {
-        String packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
-        return new RuleViolation(this, node.getBeginLine(), node.getEndLine(), variableName, specificDescription, ctx, packageName, findClassName(node), findMethodName(node));
-    }
-
-    private String findMethodName(SimpleNode node) {
-        return node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : ((MethodScope)node.getScope().getEnclosingMethodScope()).getName();
-    }
-
-    private String findClassName(SimpleNode node) {
-        String className;
-        if (node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) == null) {
-            // This takes care of nodes which are outside a class definition - i.e., import declarations
-            className = "";
-        } else {
-             // default to symbol table lookup
-            className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : node.getScope().getEnclosingClassScope().getClassName();
-        }
-        return className;
-    }
 
     public Properties getProperties() {
         return properties;
@@ -222,11 +187,35 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      * Adds a violation to the report.
      *
      * @param ctx the RuleContext
-     * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
+     * @param node the node that produces the violation
      */
     protected final void addViolation(Object data, SimpleNode node) {
         RuleContext ctx = (RuleContext)data;
-        ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
+        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node));
+    }
+
+    /**
+     * Adds a violation to the report.
+     *
+     * @param ctx the RuleContext
+     * @param node the node that produces the violation
+     * @param msg specific message to put in the report
+     */
+    protected final void addViolationWithMessage(Object data, SimpleNode node, String msg) {
+        RuleContext ctx = (RuleContext)data;
+        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, msg));
+    }
+
+    /**
+     * Adds a violation to the report.
+     *
+     * @param ctx the RuleContext
+     * @param node the node that produces the violation
+     * @param embed a variable to embed in the rule violation message
+     */
+    protected final void addViolation(Object data, SimpleNode node, String embed) {
+        RuleContext ctx = (RuleContext)data;
+        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, MessageFormat.format(getMessage(), new Object[]{embed})));
     }
 
     /**
@@ -234,11 +223,11 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      *
      * @param ctx the RuleContext
      * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
-     * @param embed a message to embed in the rule violation message
+     * @param args objects to embed in the rule violation message
      */
-    protected final void addViolation(Object data, SimpleNode node, String embed) {
+    protected final void addViolation(Object data, Node node, Object[] args) {
        RuleContext ctx = (RuleContext)data;
-       ctx.getReport().addRuleViolation(createRuleViolation(ctx, node, MessageFormat.format(getMessage(), new Object[]{embed})));
+        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, (SimpleNode)node, MessageFormat.format(getMessage(), args)));
     }
 
     /**
@@ -252,15 +241,4 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 			return c.getImage();
 		return null;
 	}
-
-    private final void extractNodeInfo(RuleViolation v, SimpleNode n) {
-        if (n==null) {
-            v.setLine(0);
-            v.setColumnInfo(0, 0);
-        } else {
-            v.setLine(n.getBeginLine());
-            v.setColumnInfo(n.getBeginColumn(), n.getEndColumn());
-        }
-    }
-
 }

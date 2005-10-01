@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.dfa.pathfinder;
 
-import java.util.List;
+
 
 
 /**

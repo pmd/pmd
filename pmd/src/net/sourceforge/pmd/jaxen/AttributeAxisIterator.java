@@ -5,14 +5,12 @@ package net.sourceforge.pmd.jaxen;
 
 import net.sourceforge.pmd.ast.Node;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 // before any optimization, this took 22.9 seconds:
 // time ./pmd.sh /usr/local/java/src/java/lang text basic > rpt.txt

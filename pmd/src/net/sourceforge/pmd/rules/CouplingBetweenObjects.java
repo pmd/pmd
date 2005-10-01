@@ -5,6 +5,7 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -41,8 +42,7 @@ public class CouplingBetweenObjects extends AbstractRule {
         Object returnObj = cu.childrenAccept(this, data);
 
         if (this.couplingCount > getIntProperty("threshold")) {
-            RuleContext ctx = (RuleContext) data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, cu, "A value of " + this.couplingCount + " may denote a high amount of coupling within the class"));
+            addViolation(data, cu, "A value of " + this.couplingCount + " may denote a high amount of coupling within the class");
         }
 
         return returnObj;
