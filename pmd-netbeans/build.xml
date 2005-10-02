@@ -2,8 +2,8 @@
 
     <import file="nbproject/build-impl.xml"/>
 
-    <property name="pmd.jar" value="pmd-3.2.jar"/>
-    <property name="VERSION" value="1.2"/>
+    <property name="pmd.jar" value="pmd-3.3.jar"/>
+    <property name="VERSION" value="1.3"/>
 
     <property file="build.ant.properties"/>
 
@@ -30,30 +30,29 @@
         <copy todir="${cluster}/modules/ext">
           <fileset dir="lib">
             <include name="${pmd.jar}"/>
-            <include name="saxpath-1.0-fcs.jar"/>
             <include name="jakarta-oro-2.0.jar"/>
-            <include name="jaxen-core-1.0-fcs.jar"/>
+            <include name="jaxen-1.1-beta-7.jar"/>
           </fileset>
         </copy>
     </target>
 
 	<target depends="clean, nbm" description="Builds the distribution" name="distribution">
 		<fail unless="VERSION" message="Must define VERSION property with the version number for this distribution!"/>
-		<zip compress="true" destfile="build/pmd-netbeans40-${VERSION}-src.zip">
+		<zip compress="true" destfile="build/pmd-netbeans50-${VERSION}-src.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 				<include name="manifest.mf"/>
 				<include name="build.xml"/>
 				<include name="nbproject/*.*"/>
 				<include name="src/**/*"/>
+				<include name="libsrc/**/*"/>
 				<include name="lib/${pmd.jar}"/>
-				<include name="lib/saxpath-1.0-fcs.jar"/>
-				<include name="lib/jaxen-core-1.0-fcs.jar"/>
+				<include name="lib/jaxen-1.1-beta-7.jar"/>
 				<include name="lib/jakarta-oro-2.0.jar"/>
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>
-		<zip compress="true" destfile="build/pmd-netbeans40-${VERSION}-bin.zip">
+		<zip compress="true" destfile="build/pmd-netbeans50-${VERSION}-bin.zip">
 			<zipfileset dir=".">
 				<include name="*.txt"/>
 			</zipfileset>

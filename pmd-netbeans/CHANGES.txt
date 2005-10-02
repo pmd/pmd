@@ -1,6 +1,8 @@
 Version 1.3
-- Works with IDE newer than 4.1
+- Updated pmd to version 3.3
+- Works with IDE 5.0
 - Modified action shortcut
+- Progress now uses default NetBeans API
 - Added few rules specific to NetBeans that can be selected
 
 Version 1.2
