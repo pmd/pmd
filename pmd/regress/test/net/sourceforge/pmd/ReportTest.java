@@ -33,7 +33,7 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
 
 import java.util.Iterator;
 
-public class ReportTest extends RuleTst  implements ReportListener {
+public class ReportTest extends RuleTst implements ReportListener {
 
     private static class FooRule extends AbstractRule {
         public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
@@ -63,8 +63,6 @@ public class ReportTest extends RuleTst  implements ReportListener {
         assertTrue(!r.isEmpty());
     }
 
-    private static final String TEST1 =
-    "public class Foo {}" + PMD.EOL;
 
     public void testMetric0() {
         Report r = new Report();
@@ -92,6 +90,29 @@ public class ReportTest extends RuleTst  implements ReportListener {
         assertEquals("wrong std dev value", 4.0, m.getStandardDeviation(), 0.05);
     }
 
+    public void testExclusionsInReportWithAnnotations() throws Throwable {
+        Report rpt = new Report();
+        runTestFromString15(TEST2, new FooRule(), rpt);
+        assertTrue(rpt.isEmpty());
+        assertEquals(1, rpt.getExcludedRuleViolations().size());
+    }
+
+    public void testExclusionsInReportWithNOPMD() throws Throwable {
+        Report rpt = new Report();
+        runTestFromString(TEST3, new FooRule(), rpt);
+        assertTrue(rpt.isEmpty());
+        assertEquals(1, rpt.getExcludedRuleViolations().size());
+    }
+
+    private static final String TEST1 =
+    "public class Foo {}" + PMD.EOL;
+
+    private static final String TEST2 =
+    "@SuppressWarnings()" + PMD.EOL +
+    "public class Foo {}";
+
+    private static final String TEST3 =
+    "public class Foo {} // NOPMD";
 /*
 
     // Files are grouped together now.

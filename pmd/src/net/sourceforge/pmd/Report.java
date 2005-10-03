@@ -89,6 +89,8 @@ public class Report {
     private long start;
     private long end;
 
+    private List excludedRuleViolations = new ArrayList();
+
     public void exclude(Set lines) {
         linesToExclude = lines;
     }
@@ -136,9 +138,14 @@ public class Report {
         listeners.add(listener);
     }
 
+    public List getExcludedRuleViolations() {
+        return this.excludedRuleViolations;
+    }
+
     public void addRuleViolation(RuleViolation violation) {
         // NOPMD excluder
         if (linesToExclude.contains(new Integer(violation.getNode().getBeginLine()))) {
+            excludedRuleViolations.add(violation);
             return;
         }
         // Annotation excluder
@@ -150,6 +157,7 @@ public class Report {
         for (Iterator i = parentTypes.iterator(); i.hasNext();) {
             ASTTypeDeclaration t = (ASTTypeDeclaration)i.next();
             if (t.hasSuppressWarningsAnnotationFor(violation.getRule())) {
+                excludedRuleViolations.add(violation);
                 return;
             }
         }
