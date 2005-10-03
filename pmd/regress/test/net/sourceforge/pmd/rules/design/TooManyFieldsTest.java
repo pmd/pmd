@@ -25,6 +25,7 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
                new TestDescriptor(TEST5, "interface with 10 fields", 0, rule),
                new TestDescriptor(TEST6, "2 inner classes, each with > 10 fields", 2, rule),
                new TestDescriptor(TEST7, "anonymous class with a field", 0, rule),
+               new TestDescriptor(TEST9, "lots of static finals, those are ok", 0, rule),
        });
     }
     
@@ -34,7 +35,6 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
         runTestFromString(TEST8, rule, rpt);
         assertEquals(1, rpt.size());
     }
-
 
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
@@ -163,6 +163,27 @@ public class TooManyFieldsTest extends SimpleAggregatorTst  {
     " int a1; " + PMD.EOL +
     " int a2; " + PMD.EOL +
     " int a3; " + PMD.EOL +
+    "}";
+
+    private static final String TEST9 =
+    "public class Foo {" + PMD.EOL +
+    " public static final int a1 = 2 ; " + PMD.EOL +
+    " public static final int a2 = 2 ; " + PMD.EOL +
+    " public static final int a3 = 2 ; " + PMD.EOL +
+    " public static final int a4 = 2 ; " + PMD.EOL +
+    " public static final int a5 = 2 ; " + PMD.EOL +
+    " public static final int a6 = 2 ; " + PMD.EOL +
+    " public static final int a7 = 2 ; " + PMD.EOL +
+    " public static final int a8 = 2 ; " + PMD.EOL +
+    " public static final int a9 = 2 ; " + PMD.EOL +
+    " public static final int a10 = 2 ; " + PMD.EOL +
+    " public static final int a11 = 2 ; " + PMD.EOL +
+    " public static final int a12 = 2 ; " + PMD.EOL +
+    " public static final int a13 = 2 ; " + PMD.EOL +
+    " public static final int a14 = 2 ; " + PMD.EOL +
+    " public static final int a15 = 2 ; " + PMD.EOL +
+    " public static final int a16 = 2 ; " + PMD.EOL +
+    " public static final int a17 = 2 ; " + PMD.EOL +
     "}";
 
 

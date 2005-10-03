@@ -45,6 +45,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Lori Olson - JBuilder plugin suggestions and prerelease tests, found copy/paste bug in rule descriptions</li>
+            <li>Rodrigo Ruiz - bug report 1309235 for TooManyFields</li>
             <li>Andriy Rozeluk - bug report 1306180 for AvoidConcatenatingNonLiteralsInStringBuffer, reported bug 1293157 for UnusedPrivateMethod, suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Thomas Dudziak - bug report 1304739 for StringInstantiation</li>
             <li>Wouter Zelle - wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
@@ -133,7 +135,6 @@
             <li>Bertrand Mollinier Toublet - Bug report which led to platform character set encoding enhancement</li>
             <li>Choi Ki Soo - Found bug in XMLRenderer</li>
             <li>wedemann - Found bug in RuleSetFactory XPath message variable plugging</li>
-            <li>Lori Olson - Found copy/paste bug in rule descriptions</li>
             <li>Adrian Papari - Wrote the PapariTextRenderer</li>
             <li>Curt Cox -   some additions to the 'Similar Projects' page</li>
             <li>Michael Griffel - bug fix for XMLRenderer</li>

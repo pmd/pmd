@@ -9,6 +9,7 @@ Fixed bug 1291353 - ASTMethodDeclaration isPublic/isAbstract methods are always 
 Fixed bug 1296544 - TooManyFields no longer checks the wrong property value.
 Fixed bug 1304739 - StringInstantiation no longer crashes on certain String constructor usages.
 Fixed bug 1306180 - AvoidConcatenatingNonLiteralsInStringBuffer no longer reports false positives on certain StringBuffer usages.
+Fixed bug 1309235 - TooManyFields no longer includes static finals towards its count.
 
 September 15, 2005 - 3.3:
 New rules: PositionLiteralsFirstInComparisons (in the design ruleset), UnnecessaryLocalBeforeReturn (design ruleset), ProperLogger (logging-jakarta-commons ruleset), UselessOverridingMethod (basic ruleset), PackageCase (naming ruleset), NoPackage (naming ruleset), UnnecessaryCaseChange (strings ruleset)

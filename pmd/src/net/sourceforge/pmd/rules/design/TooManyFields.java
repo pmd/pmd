@@ -31,13 +31,14 @@ public class TooManyFields extends AbstractRule {
 
         List l = node.findChildrenOfType(ASTFieldDeclaration.class);
         
-        if (l!=null && !l.isEmpty()) {
-            for (Iterator it = l.iterator() ; it.hasNext() ; ) {
-                ASTFieldDeclaration fd = (ASTFieldDeclaration) it.next();
-                ASTClassOrInterfaceDeclaration clazz = (ASTClassOrInterfaceDeclaration)fd.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-                if (!clazz.isInterface()) {
-                    bumpCounterFor(clazz);
-                }
+        for (Iterator it = l.iterator() ; it.hasNext() ; ) {
+            ASTFieldDeclaration fd = (ASTFieldDeclaration) it.next();
+            if (fd.isFinal() && fd.isStatic()) {
+                continue;
+            }
+            ASTClassOrInterfaceDeclaration clazz = (ASTClassOrInterfaceDeclaration)fd.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+            if (!clazz.isInterface()) {
+                bumpCounterFor(clazz);
             }
         }
         for (Iterator it = stats.keySet().iterator() ; it.hasNext() ; ) {

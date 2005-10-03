@@ -6,6 +6,8 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.ast.ASTStatement;
+import net.sourceforge.pmd.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
@@ -15,34 +17,17 @@ import java.util.Map;
 
 public class SymbolTableTestRule extends AbstractRule implements Rule {
 
-    public Object visit(ASTStatement node, Object data) {
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Map decls = node.getScope().getVariableDeclarations();
         for (Iterator i = decls.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
-
+            System.out.println("decl " + decl);
             List usages = (List) decls.get(decl);
-            if (!isStaticMethodBeingInvoked(usages)) {
-                System.out.println("Error");
+            for (Iterator j = usages.iterator(); j.hasNext();) {
+                NameOccurrence occ = (NameOccurrence)j.next();
+                System.out.println("occ = " + occ);
             }
         }
         return data;
-    }
-
-    private boolean isStaticMethodBeingInvoked(List usages) {
-        for (Iterator j = usages.iterator(); j.hasNext();) {
-            NameOccurrence nameOccurrence = (NameOccurrence) j.next();
-            if (nameOccurrence.isPartOfQualifiedName()) {
-                System.out.println(nameOccurrence.getNameForWhichThisIsAQualifier().getImage());
-
-// how do i get the method access node here?
-
-/*
-if(method is static) {
-return true;
-}
-*/
-            }
-        }
-        return false;
     }
 }
