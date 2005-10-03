@@ -52,6 +52,7 @@ public class PMDOpenTool {
     public static ActionGroup GROUP_TOOLBAR_PMD = new ActionGroup("PMD", 'P', true);
     static Font fileNameMsgFont = new Font("Dialog", Font.BOLD, 12);
     static Font stdMsgFont = new Font("Dialog", Font.PLAIN, 12);
+/*
     static ImageIcon IMAGE_CHECK_PROJECT;
     static ImageIcon IMAGE_CHECK_SELECTED_PACKAGE;
     static ImageIcon IMAGE_CHECK_ALL_OPEN_FILES;
@@ -60,7 +61,9 @@ public class PMDOpenTool {
     static ImageIcon IMAGE_CHECK_SELECTED_FILE;
     static ImageIcon IMAGE_CONFIGURE_PMD;
     static ImageIcon IMAGE_CPD_SELECTED_PACKAGE;
+*/
 
+/*
     static {
         try {
 
@@ -78,6 +81,7 @@ public class PMDOpenTool {
         }
 
     }
+*/
 
     public PMDOpenTool() {}
 
@@ -97,10 +101,12 @@ public class PMDOpenTool {
                 GROUP_MENU_PMD.add(B_ACTION_CPDProjectCheck);
                 GROUP_MENU_PMD.add(B_ACTION_PMDConfig);
                 JBuilderMenu.GROUP_Tools.add(GROUP_MENU_PMD);
+/*
                 GROUP_TOOLBAR_PMD.add(B_ACTION_PMDCheckCurrentFile);
                 GROUP_TOOLBAR_PMD.add(B_ACTION_PMDProjectCheck);
                 GROUP_TOOLBAR_PMD.add(B_ACTION_CPDProjectCheck);
                 Browser.addToolBarGroup(GROUP_TOOLBAR_PMD);
+*/
                 registerWithContentManager();
                 registerWithProjectView();
 
@@ -254,7 +260,7 @@ public class PMDOpenTool {
     //create the Menu action item for initiating the PMD check
     public static BrowserAction B_ACTION_PMDCheckCurrentFile =
             // A new action with short menu string, mnemonic, and long menu string
-            new BrowserAction("PMD Check File", 'P', "Check with PMD", IMAGE_CHECK_FILE) {
+            new BrowserAction("PMD Check File", 'P', "Check with PMD"/*, IMAGE_CHECK_FILE*/) {
                 // The function called when the menu is selected
                 public void actionPerformed(Browser browser) {
                     pmdCheck();
@@ -264,7 +270,7 @@ public class PMDOpenTool {
     //create the Menu action item for initiating the PMD check
     public static BrowserAction B_ACTION_PMDCheckSelectedFile =
             // A new action with short menu string, mnemonic, and long menu string
-            new BrowserAction("PMD Check File", 'P', "Check with PMD", IMAGE_CHECK_SELECTED_FILE) {
+            new BrowserAction("PMD Check File", 'P', "Check with PMD"/*, IMAGE_CHECK_SELECTED_FILE*/) {
                 // The function called when the menu is selected
                 public void actionPerformed(Browser browser) {
                     try {
@@ -277,7 +283,7 @@ public class PMDOpenTool {
 
     //Create the menu action item for configuring PMD
     public static BrowserAction B_ACTION_PMDConfig = new BrowserAction("Configure PMD",
-            'C', "Configure the PMD Settings", IMAGE_CONFIGURE_PMD) {
+            'C', "Configure the PMD Settings"/*, IMAGE_CONFIGURE_PMD*/) {
         public void actionPerformed(Browser browser) {
             PropertyManager.showPropertyDialog(browser, "PMD Options", Constants.RULESETS_TOPIC,
                     PropertyDialog.getLastSelectedPage());
@@ -285,14 +291,14 @@ public class PMDOpenTool {
     };
 
     //create the project menu action for running a PMD check against all the java files within the active project
-    public static BrowserAction B_ACTION_PMDProjectCheck = new BrowserAction("PMD Check Project", 'P', "Check all the java files in the project", IMAGE_CHECK_PROJECT) {
+    public static BrowserAction B_ACTION_PMDProjectCheck = new BrowserAction("PMD Check Project", 'P', "Check all the java files in the project"/*, IMAGE_CHECK_PROJECT*/) {
         public void actionPerformed(Browser browser) {
             pmdCheckProject();
         }
     };
 
     //create the project menu action for running a PMD check against all the java files within the active project
-    public static BrowserAction B_ACTION_PMDPackageCheck = new BrowserAction("PMD Check Package", 'P', "Check all the java files in the selected package", IMAGE_CHECK_SELECTED_PACKAGE) {
+    public static BrowserAction B_ACTION_PMDPackageCheck = new BrowserAction("PMD Check Package", 'P', "Check all the java files in the selected package"/*, IMAGE_CHECK_SELECTED_PACKAGE*/) {
         public void actionPerformed(Browser browser) {
             browser.waitMessage("PMD Status", "Please wait while PMD checks the files in this package.");
             Browser.getActiveBrowser().getMessageView().clearMessages(null);
@@ -305,7 +311,7 @@ public class PMDOpenTool {
     };
 
     //create the project menu action for running a PMD check against all the java files within the active project
-    public static BrowserAction B_ACTION_PMDAllOpenFilesCheck = new BrowserAction("PMD Check All Open Files", 'P', "Check all the open java filese", IMAGE_CHECK_ALL_OPEN_FILES) {
+    public static BrowserAction B_ACTION_PMDAllOpenFilesCheck = new BrowserAction("PMD Check All Open Files", 'P', "Check all the open java filese"/*, IMAGE_CHECK_ALL_OPEN_FILES*/) {
         public void actionPerformed(Browser browser) {
             browser.waitMessage("PMD Status", "Please wait while PMD checks all open files.");
             RuleSet rules = constructRuleSets();
@@ -316,7 +322,7 @@ public class PMDOpenTool {
     };
 
     //create the project menu action for running a PMD check against all the java files within the active project
-    public static BrowserAction B_ACTION_CPDPackageCheck = new BrowserAction("CPD Check Package", 'P', "Check all the java files in the selected package", IMAGE_CPD_SELECTED_PACKAGE) {
+    public static BrowserAction B_ACTION_CPDPackageCheck = new BrowserAction("CPD Check Package", 'P', "Check all the java files in the selected package"/*, IMAGE_CPD_SELECTED_PACKAGE*/) {
         public void actionPerformed(final Browser browser) {
             Runnable r = new Runnable() {
                 public void run() {
@@ -330,7 +336,7 @@ public class PMDOpenTool {
 
 
     //create the project menu action for running a PMD check against all the java files within the active project
-    public static BrowserAction B_ACTION_CPDProjectCheck = new BrowserAction("CPD Check Project", 'P', "Run CPD on all the java files in the project", IMAGE_CPD) {
+    public static BrowserAction B_ACTION_CPDProjectCheck = new BrowserAction("CPD Check Project", 'P', "Run CPD on all the java files in the project"/*, IMAGE_CPD*/) {
         public void actionPerformed(Browser browser) {
             Runnable r = new Runnable() {
                 public void run() {
@@ -605,7 +611,7 @@ class PMDMessage extends Message {
  * Wrapper for the OpenTools message object
  */
 class CPDMessage extends Message {
-    final static LineMark MARK = new HighlightMark(true);
+    final static LineMark MARK = new EditorPane.HighlightMark();
     static Font PARENT_FONT = new Font("SansSerif", Font.BOLD, 12);
     static Font CHILD_FONT = new Font("SansSerif", Font.PLAIN, 12);
     String filename;
@@ -616,14 +622,6 @@ class CPDMessage extends Message {
     boolean isParent = true;
     ArrayList childMessages = new ArrayList();
     String codeBlock = null;
-
-    /**
-     * Constructor
-     *
-     * @param msg  text message
-     * @param line line of code to associate this message with
-     * @param node the node that the code belongs to
-     */
 
     private CPDMessage(String msg, String codeBlock) {
         super(msg);
@@ -755,6 +753,7 @@ class CodeFragmentMessage extends Message {
 /**
  * Used to highlight a line of code within a source file
  */
+/*
 class HighlightMark extends LineMark {
     static Style highlightStyle;
     static {
@@ -771,3 +770,4 @@ class HighlightMark extends LineMark {
         super(isLightWeight, highlightStyle);
     }
 }
+*/
