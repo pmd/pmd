@@ -2,6 +2,11 @@
 
 package net.sourceforge.pmd.ast;
 
+import net.sourceforge.pmd.Rule;
+
+import java.util.Set;
+import java.util.List;
+
 public class ASTSingleMemberAnnotation extends SimpleNode {
   public ASTSingleMemberAnnotation(int id) {
     super(id);
@@ -10,7 +15,6 @@ public class ASTSingleMemberAnnotation extends SimpleNode {
   public ASTSingleMemberAnnotation(JavaParser p, int id) {
     super(p, id);
   }
-
 
   /** Accept the visitor. **/
   public Object jjtAccept(JavaParserVisitor visitor, Object data) {

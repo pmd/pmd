@@ -142,13 +142,18 @@ public class Report {
             return;
         }
         // Annotation excluder
-/*
         SimpleNode node = violation.getNode();
-        if (node.jjtGetParent() != null && node.jjtGetParent() instanceof ASTTypeDeclaration) {
-            ASTTypeDeclaration t = (ASTTypeDeclaration)node.jjtGetParent();
-            if (t.jjtGetChild(0) instanceof ASTAnnotation)
+        List parentTypes = node.getParentsOfType(ASTTypeDeclaration.class);
+        if (node instanceof ASTTypeDeclaration) {
+            parentTypes.add(node);
         }
-*/
+        for (Iterator i = parentTypes.iterator(); i.hasNext();) {
+            ASTTypeDeclaration t = (ASTTypeDeclaration)i.next();
+            if (t.hasSuppressWarningsAnnotationFor(violation.getRule())) {
+                return;
+            }
+        }
+
 
         violations.add(violation);
         violationTree.addRuleViolation(violation);
