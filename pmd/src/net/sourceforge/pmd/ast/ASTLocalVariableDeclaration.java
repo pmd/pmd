@@ -53,6 +53,9 @@ public class ASTLocalVariableDeclaration extends AccessNode implements Dimension
             }
             out += ")";
         }
+         if (isFinal()) {
+             out += "(final)";
+         }
         System.out.println(toString(prefix) + out);
         dumpChildren(prefix);
     }
