@@ -30,6 +30,28 @@ public class ASTFieldDeclaration extends AccessNode implements Dimensionable {
         return super.isPublic();
     }
 
+    public boolean isSyntacticallyStatic() {
+        return super.isStatic();
+    }
+
+    public boolean isStatic() {
+        if (isInterfaceMember()) {
+            return true;
+        }
+        return super.isStatic();
+    }
+
+    public boolean isSyntacticallyFinal() {
+        return super.isFinal();
+    }
+
+    public boolean isFinal() {
+        if (isInterfaceMember()) {
+            return true;
+        }
+        return super.isFinal();
+    }
+
     public boolean isPrivate() {
         if (isInterfaceMember()) {
             return false;

@@ -38,6 +38,8 @@ public class ASTFieldDeclarationTest extends ParserTst{
         assertFalse(node.isPackagePrivate());
         assertFalse(node.isPrivate());
         assertFalse(node.isProtected());
+        assertTrue(node.isFinal());
+        assertTrue(node.isStatic());
         assertTrue(node.isPublic());
     }
 

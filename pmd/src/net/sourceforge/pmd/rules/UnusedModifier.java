@@ -32,7 +32,7 @@ public class UnusedModifier extends AbstractRule {
     }
 
     public Object visit(ASTFieldDeclaration node, Object data) {
-        if (node.isPublic() || node.isStatic() || node.isFinal()) {
+        if (node.isSyntacticallyPublic() || node.isSyntacticallyStatic() || node.isSyntacticallyFinal()) {
             check(node, data);
         }
         return super.visit(node, data);
