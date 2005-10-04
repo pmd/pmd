@@ -19,6 +19,7 @@ public class DefaultPackageTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST1, "ok", 0, rule),
            new TestDescriptor(TEST2, "bad", 1, rule),
            new TestDescriptor(TEST3, "interface methods are always public", 0, rule),
+           new TestDescriptor(TEST4, "interface field are always public", 0, rule),
        });
     }
 
@@ -35,6 +36,11 @@ public class DefaultPackageTest extends SimpleAggregatorTst {
     private static final String TEST3 =
     "public interface Foo {" + PMD.EOL +
     " void bar();" + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public interface Foo {" + PMD.EOL +
+    " int bar = 10;" + PMD.EOL +
     "}";
 
 }

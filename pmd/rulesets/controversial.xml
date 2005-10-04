@@ -332,8 +332,11 @@ Use explicit scoping instead of the default Package Private level
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-//FieldDeclaration[@PackagePrivate='true']
-| //MethodDeclaration[@PackagePrivate='true']
+//ClassOrInterfaceDeclaration[@Interface='false']
+/ClassOrInterfaceBody
+/ClassOrInterfaceBodyDeclaration
+/FieldDeclaration[@PackagePrivate='true']
+| /MethodDeclaration[@PackagePrivate='true']
                 ]]></value>
             </property>
         </properties>
