@@ -45,7 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Rodrigo Ruiz - bug report 1312720 (and code fix!) for DefaultPackage, bug report 1309235 for TooManyFields</li>
+            <li>Rodrigo Ruiz - bug report 1312754 for pmd.bat option handling, bug report 1312720 (and code fix!) for DefaultPackage, bug report 1309235 for TooManyFields</li>
             <li>Allan Caplan - Patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
             <li>Lori Olson - JBuilder plugin suggestions and prerelease tests, found copy/paste bug in rule descriptions</li>
             <li>Andriy Rozeluk - bug report 1306180 for AvoidConcatenatingNonLiteralsInStringBuffer, reported bug 1293157 for UnusedPrivateMethod, suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
