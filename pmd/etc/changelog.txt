@@ -12,6 +12,7 @@ Fixed bug 1306180 - AvoidConcatenatingNonLiteralsInStringBuffer no longer report
 Fixed bug 1309235 - TooManyFields no longer includes static finals towards its count.
 Fixed bug 1312720 - DefaultPackage no longer flags interface fields.
 Fixed bug 1312754 - pmd.bat now handles command line arguments better in WinXP.
+Fixed bug 1312723 - Added isSyntacticallyPublic() and isSyntacticallyAbstract() methods and behavior to ASTFieldDeclaration nodes.
 Implemented RFE 1311309 - Suppressed RuleViolation counts are now included in the text report.
 Applied patch 1306999 - Renamed CloseConnection to CloseResource and added support for checking Statement and ResultSet objects.
 

@@ -30,6 +30,14 @@ public class ASTFieldDeclarationTest extends ParserTst{
         assertEquals(3, node.getArrayDepth());
     }
 
+    public void testIsSyntacticallyPublic() {
+        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST3));
+        ASTCompilationUnit cu = parser.CompilationUnit();
+        ASTFieldDeclaration node = (ASTFieldDeclaration)cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        assertFalse(node.isSyntacticallyPublic());
+        assertTrue(node.isPublic());
+    }
+
     private static final String TEST1 =
     "class Foo {" + PMD.EOL +
     " String[] foo;" + PMD.EOL +
@@ -40,6 +48,11 @@ public class ASTFieldDeclarationTest extends ParserTst{
     " String[][][] foo;" + PMD.EOL +
     "}";
     
+    private static final String TEST3 =
+    "interface Foo {" + PMD.EOL +
+    " int BAR = 6;" + PMD.EOL +
+    "}";
+
     public void testGetVariableName() {
     	int id = 0;
     	ASTFieldDeclaration n = new ASTFieldDeclaration(id++);

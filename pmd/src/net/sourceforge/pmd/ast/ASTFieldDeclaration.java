@@ -19,6 +19,32 @@ public class ASTFieldDeclaration extends AccessNode implements Dimensionable {
         return visitor.visit(this, data);
     }
 
+    public boolean isSyntacticallyPublic() {
+        return super.isPublic();
+    }
+
+    public boolean isSyntacticallyAbstract() {
+        return super.isAbstract();
+    }
+
+    public boolean isPublic() {
+        if (isInterfaceMember()) {
+            return true;
+        }
+        return super.isPublic();
+    }
+
+    public boolean isAbstract() {
+        if (isInterfaceMember()) {
+            return true;
+        }
+        return super.isAbstract();
+    }
+
+    public boolean isInterfaceMember() {
+        return ((ASTClassOrInterfaceDeclaration)getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)).isInterface();
+    }
+
     public boolean isArray() {
         return checkType() + checkDecl() > 0;
     }
