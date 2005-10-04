@@ -35,6 +35,9 @@ public class ASTFieldDeclarationTest extends ParserTst{
         ASTCompilationUnit cu = parser.CompilationUnit();
         ASTFieldDeclaration node = (ASTFieldDeclaration)cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
         assertFalse(node.isSyntacticallyPublic());
+        assertFalse(node.isPackagePrivate());
+        assertFalse(node.isPrivate());
+        assertFalse(node.isProtected());
         assertTrue(node.isPublic());
     }
 

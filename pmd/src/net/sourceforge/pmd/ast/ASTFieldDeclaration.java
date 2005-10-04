@@ -23,10 +23,6 @@ public class ASTFieldDeclaration extends AccessNode implements Dimensionable {
         return super.isPublic();
     }
 
-    public boolean isSyntacticallyAbstract() {
-        return super.isAbstract();
-    }
-
     public boolean isPublic() {
         if (isInterfaceMember()) {
             return true;
@@ -34,11 +30,25 @@ public class ASTFieldDeclaration extends AccessNode implements Dimensionable {
         return super.isPublic();
     }
 
-    public boolean isAbstract() {
+    public boolean isPrivate() {
         if (isInterfaceMember()) {
-            return true;
+            return false;
         }
-        return super.isAbstract();
+        return super.isPrivate();
+    }
+
+    public boolean isPackagePrivate() {
+        if (isInterfaceMember()) {
+            return false;
+        }
+        return super.isPackagePrivate();
+    }
+
+    public boolean isProtected() {
+        if (isInterfaceMember()) {
+            return false;
+        }
+        return super.isProtected();
     }
 
     public boolean isInterfaceMember() {
