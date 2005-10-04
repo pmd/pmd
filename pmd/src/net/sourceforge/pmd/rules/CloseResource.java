@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 
 /**
@@ -35,11 +38,18 @@ import java.util.Vector;
  *  }
  * </pre>
  */
-public class CloseConnection extends AbstractRule {
+public class CloseResource extends AbstractRule {
+
+    private Set types = new HashSet();
 
     public Object visit(ASTCompilationUnit node, Object data) {
         if (!importsJavaSqlPackage(node)) {
             return data;
+        }
+        if (types.isEmpty()) {
+            for (StringTokenizer st = new StringTokenizer(getStringProperty("types"), ","); st.hasMoreTokens();) {
+                types.add(st.nextToken());
+            }
         }
         return super.visit(node, data);
     }
@@ -57,7 +67,7 @@ public class CloseConnection extends AbstractRule {
                 ASTReferenceType ref = (ASTReferenceType)type.jjtGetChild(0);
                 if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
                     ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType)ref.jjtGetChild(0);
-                    if (clazz.getImage().equals("Connection")) {
+                    if (types.contains(clazz.getImage())) {
                         ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) var.jjtGetChild(1).jjtGetChild(0);
                         ids.add(id);
                     }
@@ -68,8 +78,7 @@ public class CloseConnection extends AbstractRule {
         // if there are connections, ensure each is closed.
         for (int i = 0; i < ids.size(); i++) {
             ASTVariableDeclaratorId x = (ASTVariableDeclaratorId) ids.get(i);
-            ensureClosed((ASTLocalVariableDeclaration) x.jjtGetParent()
-                    .jjtGetParent(), x, data);
+            ensureClosed((ASTLocalVariableDeclaration) x.jjtGetParent().jjtGetParent(), x, data);
         }
         return data;
     }
@@ -110,7 +119,10 @@ public class CloseConnection extends AbstractRule {
 
         // if all is not well, complain
         if (!closed) {
-            addViolation(data, id);
+            ASTType type = (ASTType) var.jjtGetChild(0);
+            ASTReferenceType ref = (ASTReferenceType)type.jjtGetChild(0);
+            ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType)ref.jjtGetChild(0);
+            addViolation(data, id, clazz.getImage());
         }
     }
 

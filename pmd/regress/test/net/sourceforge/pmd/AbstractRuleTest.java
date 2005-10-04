@@ -38,8 +38,7 @@ public class AbstractRuleTest extends TestCase {
     private static class MyRule extends AbstractRule{
         public MyRule() {
             setName("MyRule");
-            setMessage("my rule");
-            setDescription("my rule desc");
+            setMessage("my rule msg");
             setPriority(3);
             addProperty("foo", "value");
         }
@@ -71,7 +70,7 @@ public class AbstractRuleTest extends TestCase {
         assertEquals("Line number mismatch!", 5, rv.getNode().getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
-        assertEquals("Rule description mismatch!", "my rule desc", rv.getDescription());
+        assertEquals("Rule msg mismatch!", "my rule msg", rv.getDescription());
         assertEquals("RuleSet name mismatch!", "foo", rv.getRule().getRuleSetName());
     }
 

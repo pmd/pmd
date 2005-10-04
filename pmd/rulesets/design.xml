@@ -284,12 +284,15 @@ public class Foo {
     </rule>
 
 
-  <rule name="CloseConnection"
-        message="Ensure that Connection objects are always closed after use"
-        class="net.sourceforge.pmd.rules.CloseConnection">
+  <rule name="CloseResource"
+        message="Ensure that resources like this {0} object are closed after use"
+        class="net.sourceforge.pmd.rules.CloseResource">
     <description>
-Ensure that Connection objects are always closed after use
+Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use
     </description>
+      <properties>
+          <property name="types" value="Connection,Statement,ResultSet"/>
+      </properties>
     <priority>3</priority>
     <example>
 <![CDATA[

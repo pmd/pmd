@@ -47,14 +47,14 @@ public class RuleViolation {
     private SimpleNode node;
 
     public RuleViolation(Rule rule, RuleContext ctx, SimpleNode node) {
-        this(rule, ctx, node, rule.getDescription());
+        this(rule, ctx, node, rule.getMessage());
     }
 
-    public RuleViolation(Rule rule, RuleContext ctx, SimpleNode node, String specificDescription) {
+    public RuleViolation(Rule rule, RuleContext ctx, SimpleNode node, String specificMsg) {
         this.rule = rule;
         this.node = node;
         this.filename = ctx.getSourceCodeFilename();
-        this.description = specificDescription;
+        this.description = specificMsg;
     }
 
     /**

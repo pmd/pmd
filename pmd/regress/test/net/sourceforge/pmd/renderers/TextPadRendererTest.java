@@ -17,7 +17,7 @@ public class TextPadRendererTest extends RuleTst  {
             if (c.getImage().equals("Foo")) addViolation(ctx,c);
             return ctx;
         }
-        public String getMessage() { return "blah"; }
+        public String getMessage() { return "msg"; }
         public String getName() { return "Foo"; }
         public String getRuleSetName() { return "RuleSet"; }
         public String getDescription() { return "desc"; }
@@ -37,7 +37,7 @@ public class TextPadRendererTest extends RuleTst  {
         Report rep = new Report();
         runTestFromString(TEST1, new FooRule(), rep);
         String actual = (new TextPadRenderer()).render(rep);
-        String expected = PMD.EOL + "n/a(1,  Foo):  desc" ;
+        String expected = PMD.EOL + "n/a(1,  Foo):  msg" ;
         assertEquals(expected, actual);
     }
 
