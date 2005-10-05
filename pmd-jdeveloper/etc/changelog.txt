@@ -1,3 +1,6 @@
+October 5, 2005 - 1.7:
+Updated PMD version to 3.3.
+
 August 03, 2005 - 1.6:
 Updated PMD version to 3.2.
 Verified that the plugin runs with JDeveloper 10.1.2 on Windows.
