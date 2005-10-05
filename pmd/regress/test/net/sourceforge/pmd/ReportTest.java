@@ -94,14 +94,14 @@ public class ReportTest extends RuleTst implements ReportListener {
         Report rpt = new Report();
         runTestFromString15(TEST2, new FooRule(), rpt);
         assertTrue(rpt.isEmpty());
-        assertEquals(1, rpt.getExcludedRuleViolations().size());
+        assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }
 
     public void testExclusionsInReportWithNOPMD() throws Throwable {
         Report rpt = new Report();
         runTestFromString(TEST3, new FooRule(), rpt);
         assertTrue(rpt.isEmpty());
-        assertEquals(1, rpt.getExcludedRuleViolations().size());
+        assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }
 
     private static final String TEST1 =

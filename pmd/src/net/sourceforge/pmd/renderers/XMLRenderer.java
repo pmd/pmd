@@ -67,6 +67,16 @@ public class XMLRenderer implements Renderer {
             buf.append("\"/>").append(PMD.EOL);
         }
 
+        // suppressed violations
+        for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
+            RuleViolation rv = (RuleViolation) i.next();
+            buf.append("<suppressedviolation ").append("filename=\"");
+            StringUtil.appendXmlEscaped(buf, rv.getFilename());
+            buf.append("\" msg=\"");
+            StringUtil.appendXmlEscaped(buf, rv.getDescription());
+            buf.append("\"/>").append(PMD.EOL);
+        }
+
         buf.append("</pmd>");
         return buf.toString();
     }

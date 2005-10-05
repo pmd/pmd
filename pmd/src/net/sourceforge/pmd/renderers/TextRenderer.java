@@ -43,7 +43,7 @@ public class TextRenderer implements Renderer {
 
     private void addSuppressed(Report report, StringBuffer buf) {
         Map suppressed = new HashMap();
-        for (Iterator i = report.getExcludedRuleViolations().iterator(); i.hasNext();) {
+        for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
             RuleViolation excluded = (RuleViolation) i.next();
             if (!suppressed.containsKey(excluded.getFilename())) {
                 suppressed.put(excluded.getFilename(), new Integer(0));
