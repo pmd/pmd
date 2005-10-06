@@ -42,20 +42,9 @@ public class TextRenderer implements Renderer {
     }
 
     private void addSuppressed(Report report, StringBuffer buf) {
-        Map suppressed = new HashMap();
         for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
-            RuleViolation excluded = (RuleViolation) i.next();
-            if (!suppressed.containsKey(excluded.getFilename())) {
-                suppressed.put(excluded.getFilename(), new Integer(0));
-            }
-            int newValue = ((Integer)suppressed.get(excluded.getFilename())).intValue();
-            suppressed.put(excluded.getFilename(), new Integer(++newValue));
-        }
-        Set keys = suppressed.keySet();
-        for (Iterator i = keys.iterator(); i.hasNext();){
-            String filename = (String)i.next();
-            int count = ((Integer)suppressed.get(filename)).intValue();
-            buf.append(PMD.EOL + "Suppressed " + count + " rule violation" + (count == 1 ? "" : "s") + " in " + filename);
+            Report.SuppressedViolation excluded = (Report.SuppressedViolation) i.next();
+            buf.append(PMD.EOL + excluded.getRuleViolation().getRule().getName() + " rule violation suppressed by "  + (excluded.suppressedByNOPMD() ? "//NOPMD" : "Annotation") + " in " + excluded.getRuleViolation().getFilename());
         }
     }
 }

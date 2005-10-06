@@ -69,11 +69,13 @@ public class XMLRenderer implements Renderer {
 
         // suppressed violations
         for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
-            RuleViolation rv = (RuleViolation) i.next();
+            Report.SuppressedViolation suppressed = (Report.SuppressedViolation) i.next();
             buf.append("<suppressedviolation ").append("filename=\"");
-            StringUtil.appendXmlEscaped(buf, rv.getFilename());
+            StringUtil.appendXmlEscaped(buf, suppressed.getRuleViolation().getFilename());
+            buf.append("\" suppressiontype=\"");
+            StringUtil.appendXmlEscaped(buf, suppressed.suppressedByNOPMD() ? "nopmd" : "annotation");
             buf.append("\" msg=\"");
-            StringUtil.appendXmlEscaped(buf, rv.getDescription());
+            StringUtil.appendXmlEscaped(buf, suppressed.getRuleViolation().getDescription());
             buf.append("\"/>").append(PMD.EOL);
         }
 

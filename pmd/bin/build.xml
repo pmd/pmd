@@ -72,9 +72,12 @@
 <target name="pmd" description="Runs PMD">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
     <pmd rulesetfiles="unusedcode" shortFilenames="true">
+        <classpath>
+        <path refid="dependencies.path"/>
+        </classpath>
       <formatter type="html" toFile="rpt.html" linkPrefix="http://pmd.sf.net/xref/"/>
-      <fileset dir="/home/tom/pmd/pmd/src/">
-        <include name="**/rules/*.java"/>
+      <fileset dir="/home/tom/pmd/pmd/bin/">
+        <include name="Foo.java"/>
        </fileset>
     </pmd>
 </target>

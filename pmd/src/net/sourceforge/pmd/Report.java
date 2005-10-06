@@ -73,6 +73,18 @@ public class Report {
         }
     }
 
+    public static class SuppressedViolation {
+        private RuleViolation rv;
+        private boolean isNOPMD;
+        public SuppressedViolation(RuleViolation rv, boolean isNOPMD) {
+            this.isNOPMD = isNOPMD;
+            this.rv = rv;
+        }
+        public boolean suppressedByNOPMD() { return this.isNOPMD; }
+        public boolean suppressedByAnnotation() { return !this.isNOPMD; }
+        public RuleViolation getRuleViolation() { return this.rv; }
+    }
+
     /*
      * The idea is to store the violations in a tree instead of a list, to do
      * better and faster sort and filter mechanism and to visualize the result
@@ -145,7 +157,7 @@ public class Report {
     public void addRuleViolation(RuleViolation violation) {
         // NOPMD excluder
         if (linesToExclude.contains(new Integer(violation.getNode().getBeginLine()))) {
-            suppressedRuleViolations.add(violation);
+            suppressedRuleViolations.add(new SuppressedViolation(violation, true));
             return;
         }
         // Annotation excluder
@@ -157,7 +169,7 @@ public class Report {
         for (Iterator i = parentTypes.iterator(); i.hasNext();) {
             ASTTypeDeclaration t = (ASTTypeDeclaration)i.next();
             if (t.hasSuppressWarningsAnnotationFor(violation.getRule())) {
-                suppressedRuleViolations.add(violation);
+                suppressedRuleViolations.add(new SuppressedViolation(violation, false));
                 return;
             }
         }
