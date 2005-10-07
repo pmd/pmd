@@ -6,7 +6,7 @@ import net.sourceforge.pmd.Rule;
 
 import java.util.Set;
 
-public class ASTTypeDeclaration extends SimpleNode {
+public class ASTTypeDeclaration extends SimpleNode implements CanSuppressWarnings{
     public ASTTypeDeclaration(int id) {
         super(id);
     }

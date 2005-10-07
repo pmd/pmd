@@ -7,6 +7,8 @@ import net.sourceforge.pmd.dfa.report.ReportTree;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
+import net.sourceforge.pmd.ast.CanSuppressWarnings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -160,14 +162,22 @@ public class Report {
             suppressedRuleViolations.add(new SuppressedViolation(violation, true));
             return;
         }
+
         // Annotation excluder
         SimpleNode node = violation.getNode();
+
+        // TODO combine this duplicated code
+        // TODO same for duplicated code in ASTTypeDeclaration && ASTClassOrInterfaceBodyDeclaration
         List parentTypes = node.getParentsOfType(ASTTypeDeclaration.class);
         if (node instanceof ASTTypeDeclaration) {
             parentTypes.add(node);
         }
+        parentTypes.addAll(node.getParentsOfType(ASTClassOrInterfaceBodyDeclaration.class));
+        if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
+            parentTypes.add(node);
+        }
         for (Iterator i = parentTypes.iterator(); i.hasNext();) {
-            ASTTypeDeclaration t = (ASTTypeDeclaration)i.next();
+            CanSuppressWarnings t = (CanSuppressWarnings)i.next();
             if (t.hasSuppressWarningsAnnotationFor(violation.getRule())) {
                 suppressedRuleViolations.add(new SuppressedViolation(violation, false));
                 return;

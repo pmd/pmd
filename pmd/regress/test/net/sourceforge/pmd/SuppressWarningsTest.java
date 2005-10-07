@@ -26,6 +26,8 @@ public class SuppressWarningsTest extends RuleTst {
         assertEquals(0, rpt.size());
         runTestFromString15(TEST2, new FooRule(), rpt);
         assertEquals(0, rpt.size());
+        runTestFromString15(TEST3, new FooRule(), rpt);
+        assertEquals(0, rpt.size());
     }
 
     private static final String TEST1 =
@@ -38,6 +40,16 @@ public class SuppressWarningsTest extends RuleTst {
     " void bar() {" + PMD.EOL +
     "  int foo;" + PMD.EOL +
     " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST3 =
+    "public class Baz {" + PMD.EOL +
+    " @SuppressWarnings()" + PMD.EOL +
+    " public class Bar {" + PMD.EOL +
+    "  void bar() {" + PMD.EOL +
+    "   int foo;" + PMD.EOL +
+    "  }" + PMD.EOL +
+    " }"  + PMD.EOL +
     "}";
 
 }
