@@ -20,11 +20,6 @@
     <td align="center" valign="top"><b>Required</b></td>
   </tr>
   <tr>
-    <td valign="top">formatter</td>
-    <td valign="top">Specifies the format of and the files to which the report is written.   Formats can be of type 'xml', 'text', 'csv', 'papari', 'summaryhtml', or 'html', filenames can be either relative or absolute, and you can supply a "linkPrefix" for linking to online HTMLized source (like <a href="http://pmd.sourceforge.net/xref/index.html">this</a>).  See example belows.</td>
-    <td valign="top" align="center">Yes</td>
-  </tr>
-  <tr>
     <td valign="top">rulesetfiles</td>
     <td valign="top">A comma delimited list of ruleset files ('rulesets/basic.xml,rulesets/design.xml').  If you write
     your own ruleset files, you can put them on the classpath and plug them in here.</td>
@@ -38,11 +33,6 @@
     <tr>
       <td valign="top">failOnRuleViolation</td>
       <td valign="top">Whether or not to fail the build if PMD finds any problems</td>
-      <td valign="top" align="center">No</td>
-    </tr>
-    <tr>
-      <td valign="top">A nested classpath element</td>
-       <td valign="top">Also accepts a nested classpath element so you can specify custom ruleset files more easily.  See the example below.</td>
       <td valign="top" align="center">No</td>
     </tr>
   <tr>
@@ -77,7 +67,46 @@
     </tr>
 </table>
 
-      </subsection>
+          <p><code>formatter</code> nested element - specifies the format of and the files to which the report is written.</p>
+   <table>
+       <tr><th>Name</th><th>Values</th></tr>
+ <tr>
+     <td>format</td>
+     <td>xml,html,text,csv,papari,summaryhtml</td>
+ </tr>
+       <tr>
+           <td>filename</td>
+           <td>A filename to which to write the report</td>
+       </tr>
+       <tr>
+           <td>linkPrefix</td>
+           <td>Used for linking to online HTMLized source (like <a href="http://pmd.sourceforge.net/xref/index.html">this</a>).  See example below.</td>
+       </tr>
+ </table>
+
+     <p><code>classpath</code> nested element - useful for specifying custom rule.  More details on the <code>classpath</code>
+     element are in the Ant documentation <a href="http://ant.apache.org/manual/using.html#path">here</a> and there's
+     an example below.</p>
+
+     <p><code>ruleset</code> nested element - another way to specify rulesets.  Here's an example:</p>
+          <source>
+<![CDATA[
+<target name="pmd">
+ <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+ <pmd shortFilenames="true">
+  <ruleset>rulesets/favorites.xml</ruleset>
+  <ruleset>basic</ruleset>
+  <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
+  <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
+   <include name="java/lang/*.java"/>
+  </fileset>
+ </pmd>
+</target>
+]]>
+      </source>
+
+
+        </subsection>
 
     <subsection name="Postprocessing the report file with XSLT">
         <p>Several folks (most recently, Wouter Zelle) have written XSLT scripts
@@ -212,30 +241,13 @@ Total time: 2 seconds
 <source>
 <![CDATA[
 <target name="pmd">
-  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-  <pmd rulesetfiles="basic" shortFilenames="true">
-      <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
-      <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
-          <include name="java/lang/*.java"/>
-      </fileset>
-  </pmd>
-</target>
-]]>
-</source>
-
-<p>Using the ruleset nested element</p>
-<source>
-<![CDATA[
-<target name="pmd">
-  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-  <pmd shortFilenames="true">
-       <ruleset>rulesets/favorites.xml</ruleset>
-       <ruleset>basic</ruleset>
-      <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
-      <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
-          <include name="java/lang/*.java"/>
-      </fileset>
-  </pmd>
+ <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+ <pmd rulesetfiles="basic" shortFilenames="true">
+  <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
+  <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
+   <include name="java/lang/*.java"/>
+  </fileset>
+ </pmd>
 </target>
 ]]>
 </source>
