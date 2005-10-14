@@ -2,7 +2,7 @@
 <updates version="1.0"
   xmlns="http://xmlns.oracle.com/jdeveloper/updatecenter"
   xmlns:u="http://xmlns.oracle.com/jdeveloper/update">
-  <u:update id="oracle.jdeveloper.extensions.pmd">
+  <u:update id="net.sourceforge.pmd.jdeveloper">
     <u:name>PMD JDeveloper Extension</u:name>
     <u:version>1.7</u:version>
     <u:author>Tom Copeland</u:author>
