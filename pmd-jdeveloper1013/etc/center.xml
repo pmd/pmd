@@ -8,6 +8,6 @@
     <u:author>Tom Copeland</u:author>
     <u:author-url>http://pmd.sf.net</u:author-url>
     <u:description>Install the PMD extension in your instance of JDeveloper</u:description>
-    <u:bundle-url>http://pmd.sf.net/pmd-jdeveloper1013-1.7.zip</u:bundle-url>
+    <u:bundle-url>http://infoether.com/~tom/update-center-bundle/pmd-jdeveloper1013-1.7.zip</u:bundle-url>
   </u:update>
   </updates>

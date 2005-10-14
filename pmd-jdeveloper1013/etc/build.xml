@@ -5,7 +5,7 @@
 	<property name="etc" value="etc/"/>
 	<property name="pmdjar" value="pmd-3.3.jar"/>
 	<property name="pluginversion" value="1.7"/>
-    <property name="bundle.jarname" value="oracle.jdeveloper.extensions.pmd.${pluginversion}.jar"/>
+    <property name="bundle.jarname" value="net.sourceforge.pmd.jdeveloper.${pluginversion}.jar"/>
 	<property name="jdeveloper.install.dir" value="c:/data/jdev1013/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 
 
@@ -32,6 +32,9 @@
 	</target>
 
     <target name="jar" depends="compile">
+        <delete dir="build/META-INF/"/>
+        <mkdir dir="build/META-INF"/>
+        <copy file="etc/extension.xml" todir="build/META-INF/"/>
         <jar jarfile="lib/${bundle.jarname}">
 			<fileset dir="build" excludes="**/*.di,**/*.i"/>
 		</jar>
@@ -64,17 +67,30 @@
         </exec>
     </target>
 
- <target name="bundle" depends="jar">
-     <delete dir="update-center-bundle/"/>
+ <target name="bundle" depends="clean,jar">
+     <delete>
+         <fileset dir="/home/tom/jdev1013/jdev/extensions/" includes="jaxen*.jar,*pmd*"/>
+     </delete>
+    <delete dir="/home/tom/jdev1013/jdev/extensions/net.sourceforge.pmd.jdeveloper.1.7"/>
+
+    <delete dir="update-center-bundle/"/>
+
     <mkdir dir="update-center-bundle/META-INF"/>
-    <copy file="etc/bundle.xml" tofile="update-center-bundle/META-INF/bundle.xml"/>
-    <copy file="etc/center.xml" tofile="update-center-bundle/center.xml"/>
+    <copy file="etc/bundle.xml" todir="update-center-bundle/META-INF/"/>
+    <copy file="etc/center.xml" todir="update-center-bundle/"/>
     <copy file="lib/${bundle.jarname}" todir="update-center-bundle/"/>
+    <copy file="lib/${pmdjar}" todir="update-center-bundle/net.sourceforge.pmd.jdeveloper.${pluginversion}/lib/"/>
+    <copy file="lib/jaxen-1.1-beta-7.jar" todir="update-center-bundle/net.sourceforge.pmd.jdeveloper.${pluginversion}/lib/"/>
     <zip destfile="update-center-bundle/pmd-jdeveloper1013-1.7.zip" basedir="update-center-bundle">
       <exclude name="center.xml"/>
-      <exclude name="*.zip"/>
     </zip>
-    <delete file="update-center-bundle/${bundle.jarname}"/>
+    <copy file="update-center-bundle/pmd-jdeveloper1013-1.7.zip" todir="/home/tom/jdevhome/"/>
+
+    <delete>
+        <fileset dir="update-center-bundle" includes="*.jar"/>
+    </delete>
+    <delete dir="update-center-bundle/net.sourceforge.pmd.jdeveloper.${pluginversion}"/>
+    <delete dir="update-center-bundle/lib"/>
     <delete dir="update-center-bundle/META-INF"/>
   </target>
 

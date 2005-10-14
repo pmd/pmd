@@ -1,0 +1,28 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<ex:extension xmlns:ex="http://jcp.org/jsr/198/extension-manifest"
+              xmlns="http://xmlns.oracle.com/jdeveloper/1013/extension"
+              xmlns:jdev="http://xmlns.oracle.com/jdeveloper/1013/jdev-libraries"
+              id="net.sourceforge.pmd.jdeveloper">
+  <ex:name>PMD Extension</ex:name>
+  <ex:version>1.7</ex:version>
+  <ex:esdk-version>10</ex:esdk-version>
+  <ex:owner>Tom Copeland</ex:owner>
+  <ex:dependencies>
+    <ex:import version="10.1.3">oracle.jdeveloper</ex:import>
+  </ex:dependencies>
+  <ex:classpaths>
+    <ex:classpath>${ide.extension.install.home}/lib/pmd-3.3.jar</ex:classpath>
+    <ex:classpath>${ide.extension.install.home}/lib/jaxen-1.1-beta-7.jar</ex:classpath>
+  </ex:classpaths>
+  <ex:hooks>
+    <jdeveloper-hook>
+      <addins>
+        <addin>net.sourceforge.pmd.jdeveloper.Plugin</addin>
+      </addins>
+    </jdeveloper-hook>
+    <ex:feature-hook>
+      <ex:description>PMD and whatnot</ex:description>
+      <ex:optional>true</ex:optional>
+    </ex:feature-hook>
+  </ex:hooks>
+</ex:extension>

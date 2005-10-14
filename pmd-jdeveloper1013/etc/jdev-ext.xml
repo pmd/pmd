@@ -6,6 +6,7 @@
         <extension>
             <addin>net.sourceforge.pmd.jdeveloper.Plugin</addin>
             <classpath>jaxen-1.1-beta-7.jar</classpath>
+            <classpath>pmd-3.3.jar</classpath>
             <gallery>
                 <name>net.sourceforge.pmd.jdeveloper.Plugin</name>
                 <category>General</category>
@@ -15,3 +16,6 @@
         </group>
     </feature>
 </extensions>
+
+
+
