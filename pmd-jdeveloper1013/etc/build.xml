@@ -5,6 +5,7 @@
 	<property name="etc" value="etc/"/>
 	<property name="pmdjar" value="pmd-3.3.jar"/>
 	<property name="pluginversion" value="1.7"/>
+    <property name="bundle.jarname" value="oracle.jdeveloper.extensions.pmd.${pluginversion}.jar"/>
 	<property name="jdeveloper.install.dir" value="c:/data/jdev1013/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 
 
@@ -31,8 +32,7 @@
 	</target>
 
     <target name="jar" depends="compile">
-        <copy file="etc/jdev-ext.xml" todir="build/meta-inf"/>
-        <jar jarfile="lib/${ant.project.name}-${pluginversion}.jar">
+        <jar jarfile="lib/${bundle.jarname}">
 			<fileset dir="build" excludes="**/*.di,**/*.i"/>
 		</jar>
     </target>
@@ -63,5 +63,19 @@
             <arg line=" /home/tom/tmp/${ant.project.name}-bin-${pluginversion}.zip tom@infoether.com:public_html/"/>
         </exec>
     </target>
+
+ <target name="bundle" depends="jar">
+     <delete dir="update-center-bundle/"/>
+    <mkdir dir="update-center-bundle/META-INF"/>
+    <copy file="etc/bundle.xml" tofile="update-center-bundle/META-INF/bundle.xml"/>
+    <copy file="etc/center.xml" tofile="update-center-bundle/center.xml"/>
+    <copy file="lib/${bundle.jarname}" todir="update-center-bundle/"/>
+    <zip destfile="update-center-bundle/pmd-jdeveloper1013-1.7.zip" basedir="update-center-bundle">
+      <exclude name="center.xml"/>
+      <exclude name="*.zip"/>
+    </zip>
+    <delete file="update-center-bundle/${bundle.jarname}"/>
+    <delete dir="update-center-bundle/META-INF"/>
+  </target>
 
 </project>

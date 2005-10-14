@@ -1,0 +1,17 @@
+<?xml version = '1.0'?>
+<update-bundle version="1.0"
+               xmlns="http://xmlns.oracle.com/jdeveloper/updatebundle"
+               xmlns:u="http://xmlns.oracle.com/jdeveloper/update">
+  <u:update id="oracle.jdeveloper.extensions.pmd">
+    <u:name>PMD JDeveloper Extension</u:name>
+    <u:version>1.7</u:version>
+    <u:author>Tom Copeland</u:author>
+    <u:author-url>http://pmd.sf.net</u:author-url>
+    <u:description>Install the PMD extension in your instance of JDeveloper</u:description>
+    <u:requirements>
+     <u:requires-extension id="oracle.jdeveloper"
+                            minVersion="10.1.3"
+                            maxVersion="10.1.4" />
+    </u:requirements>
+  </u:update>
+</update-bundle>
