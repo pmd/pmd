@@ -81,11 +81,10 @@
     <copy file="lib/${bundle.jarname}" todir="update-center-bundle/"/>
     <copy file="lib/${pmdjar}" todir="update-center-bundle/net.sourceforge.pmd.jdeveloper.${pluginversion}/lib/"/>
     <copy file="lib/jaxen-1.1-beta-7.jar" todir="update-center-bundle/net.sourceforge.pmd.jdeveloper.${pluginversion}/lib/"/>
-    <zip destfile="update-center-bundle/pmd-jdeveloper1013-1.7.zip" basedir="update-center-bundle">
+    <zip destfile="update-center-bundle/pmd-jdeveloper1013-${pluginversion}.zip" basedir="update-center-bundle">
       <exclude name="center.xml"/>
     </zip>
-    <copy file="update-center-bundle/pmd-jdeveloper1013-1.7.zip" todir="/home/tom/jdevhome/"/>
-
+    <copy file="update-center-bundle/pmd-jdeveloper1013-${pluginversion}.zip" todir="/home/tom/jdevhome/"/>
     <delete>
         <fileset dir="update-center-bundle" includes="*.jar"/>
     </delete>
@@ -93,5 +92,15 @@
     <delete dir="update-center-bundle/lib"/>
     <delete dir="update-center-bundle/META-INF"/>
   </target>
+
+    <target name="uploadbundle" depends="bundle">
+        <echo message="Uploading center.xml file"/>
+        <exec executable="scp" os="Linux">
+            <arg line=" update-center-bundle/center.xml tomcopeland@pmd.sf.net:/home/groups/p/pm/pmd/htdocs/"/>
+        </exec>
+        <exec executable="scp" os="Linux">
+            <arg line=" update-center-bundle/pmd-jdeveloper1013-${pluginversion}.zip tomcopeland@pmd.sf.net:/home/groups/p/pm/pmd/htdocs/"/>
+        </exec>
+    </target>
 
 </project>
