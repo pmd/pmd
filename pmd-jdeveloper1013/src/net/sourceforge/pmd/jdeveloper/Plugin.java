@@ -1,28 +1,43 @@
 package net.sourceforge.pmd.jdeveloper;
 
-import net.sourceforge.pmd.*;
-import oracle.ide.AddinManager;
-import oracle.ide.ContextMenu;
-import oracle.ide.Ide;
-import oracle.ide.IdeAction;
-import oracle.ide.addin.Addin;
-import oracle.ide.addin.Context;
-import oracle.ide.addin.ContextMenuListener;
-import oracle.ide.addin.Controller;
-import oracle.ide.config.IdeSettings;
-import oracle.ide.editor.EditorManager;
-import oracle.ide.log.LogManager;
-import oracle.ide.model.Element;
-import oracle.ide.model.Project;
-import oracle.ide.navigator.NavigatorManager;
-import oracle.ide.panels.Navigable;
-import oracle.jdeveloper.model.JProject;
-import oracle.jdeveloper.model.JavaSourceNode;
-
-import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
+
 import java.util.Iterator;
+
+import javax.ide.model.Document;
+
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
+
+import oracle.ide.Addin;
+import oracle.ide.AddinManager;
+import oracle.ide.Context;
+import oracle.ide.Ide;
+import oracle.ide.config.IdeSettings;
+import oracle.ide.controller.ContextMenu;
+import oracle.ide.controller.ContextMenuListener;
+import oracle.ide.controller.Controller;
+import oracle.ide.controller.IdeAction;
+import oracle.ide.controller.Menubar;
+import oracle.ide.editor.EditorManager;
+import oracle.ide.log.LogManager;
+import oracle.ide.log.LogPage;
+import oracle.ide.log.LogWindow;
+import oracle.ide.model.Element;
+import oracle.ide.model.Project;
+import oracle.ide.model.Reference;
+import oracle.ide.navigator.NavigatorManager;
+import oracle.ide.panels.Navigable;
+
+import oracle.jdeveloper.model.JavaSourceNode;
+
 
 public class Plugin implements Addin, Controller, ContextMenuListener {
 
@@ -61,7 +76,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     }
 
     public float version() {
-        return 1.6f;
+        return 1.7f;
     }
 
     public float ideVersion() {
@@ -77,7 +92,6 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     public Controller supervisor() {
         return null;
     }
-
     private boolean added;
 
     public boolean handleEvent(IdeAction ideAction, Context context) {
@@ -92,26 +106,30 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                 SelectedRules rs = new SelectedRules(SettingsPanel.createSettingsStorage());
                 RuleContext ctx = new RuleContext();
                 ctx.setReport(new Report());
-                if (resolveType(context.getDocument()) == PROJECT) {
-                    Project project = (Project)context.getDocument();
-                    Iterator kids = project.getChildren();
-                    while (kids.hasNext()) {
-                        Object obj = kids.next();
-                        if (!(obj instanceof JavaSourceNode)) {
+                if (resolveType(context.getElement()) == PROJECT) {
+                    Iterator i = context.getProject().getListOfChildren().iterator();
+                    while (i.hasNext()) {
+                        Object obj = i.next();
+                        if (!(obj instanceof Reference)) {
+                            System.out.println("PMD plugin expected a Reference, found a " + obj.getClass() + " instead.  Odd.");
                             continue;
                         }
-                        JavaSourceNode jsn = (JavaSourceNode)obj;
-                        if (jsn.getLongLabel().endsWith(".java") && new File(jsn.getLongLabel()).exists()) {
-                            ctx.setSourceCodeFilename(jsn.getLongLabel());
-                            FileInputStream fis = new FileInputStream(new File(jsn.getLongLabel()));
+                        obj = ((Reference)obj).getData();
+                        if (!(obj instanceof Document)) {
+                            continue;
+                        }
+                        Document candidate = (Document)obj;
+                        if (candidate.getLongLabel().endsWith(".java") && new File(candidate.getLongLabel()).exists()) {
+                            ctx.setSourceCodeFilename(candidate.getLongLabel());
+                            FileInputStream fis = new FileInputStream(new File(candidate.getLongLabel()));
                             pmd.processFile(fis, rs.getSelectedRules(), ctx);
                             fis.close();
                         }
                     }
                     render(ctx);
-                } else if (resolveType(context.getDocument()) == SOURCE) {
-                    ctx.setSourceCodeFilename(context.getDocument().getLongLabel());
-                    pmd.processFile(context.getDocument().getInputStream(), rs.getSelectedRules(), ctx);
+                } else if (resolveType(context.getElement()) == SOURCE) {
+                    ctx.setSourceCodeFilename(context.getNode().getLongLabel());
+                    pmd.processFile(context.getNode().getInputStream(), rs.getSelectedRules(), ctx);
                     render(ctx);
                 }
                 return true;
@@ -135,7 +153,10 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         rvPage.clearAll();
         if (ctx.getReport().isEmpty()) {
             JOptionPane.showMessageDialog(null, "No problems found", TITLE, JOptionPane.INFORMATION_MESSAGE);
-            LogManager.getLogManager().getMsgPage().show();
+            LogPage page = LogManager.getLogManager().getMsgPage();
+            if (page instanceof LogWindow) {
+              ((LogWindow)page).show();
+            }
         } else {
             for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
                 rvPage.add((RuleViolation)i.next());
@@ -151,14 +172,15 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     // Controller
 
     // ContextMenuListener
-    public void poppingUp(ContextMenu contextMenu) {
-        Element doc = contextMenu.getContext().getDocument();
-        if (resolveType(doc) == PROJECT || resolveType(doc) == SOURCE) {
-            contextMenu.add(checkItem);
-        }
-    }
+   public void menuWillHide(ContextMenu contextMenu) {
+   }
 
-    public void poppingDown(ContextMenu contextMenu) {}
+   public void menuWillShow(ContextMenu contextMenu) {
+     Element doc = contextMenu.getContext().getElement();
+     if (resolveType(doc) == PROJECT || resolveType(doc) == SOURCE) {
+         contextMenu.add(checkItem);
+     }
+   }
 
     public boolean handleDefaultAction(Context context) {
         return false;
@@ -172,7 +194,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     private int resolveType(Element element) {
         if (element instanceof JavaSourceNode) {
             return SOURCE;
-        } else if (element instanceof JProject) {
+        } else if (element instanceof Project) {
             return PROJECT;
         }
         return UNUSED;

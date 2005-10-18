@@ -11,9 +11,10 @@
 
 	<path id="project.class.path">
 		<pathelement location="lib/${pmdjar}"/>
-		<pathelement location="lib/myjdevdeps.jar"/>
+		<pathelement location="lib/javax-ide.jar"/>
 		<pathelement location="lib/javatools.jar"/>
 		<pathelement location="lib/ide.jar"/>
+        <pathelement location="lib/myjdevdeps.jar"/>
 		<pathelement location="build"/>
 	</path>
 

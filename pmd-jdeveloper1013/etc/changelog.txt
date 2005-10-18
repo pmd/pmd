@@ -1,2 +1,6 @@
+Oct 18, 2005 - 1.7:
+Merged in changes from Olaf Heimburger to update plugin to work with JDev 10.1.3 early access.
+Modified to use "update center" functionality.  Update center location is http://pmd.sf.net/center.xml
+
 August 04, 2005 - 1.6:
 Forked plugin code to provide a 10.1.13 version.
