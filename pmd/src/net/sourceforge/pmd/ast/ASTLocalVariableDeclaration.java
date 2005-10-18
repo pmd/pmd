@@ -2,7 +2,9 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTLocalVariableDeclaration extends AccessNode implements Dimensionable {
+import net.sourceforge.pmd.Rule;
+
+public class ASTLocalVariableDeclaration extends AccessNode implements Dimensionable, CanSuppressWarnings {
 
     public ASTLocalVariableDeclaration(int id) {
         super(id);
@@ -17,6 +19,18 @@ public class ASTLocalVariableDeclaration extends AccessNode implements Dimension
      */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
+        for (int i=0;i<jjtGetNumChildren(); i++) {
+            if (jjtGetChild(i) instanceof ASTAnnotation) {
+                ASTAnnotation a = (ASTAnnotation)jjtGetChild(i);
+                if (a.suppresses(rule)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean isArray() {

@@ -9,6 +9,8 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.ast.CanSuppressWarnings;
+import net.sourceforge.pmd.ast.ASTFormalParameter;
+import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -174,6 +176,14 @@ public class Report {
         }
         parentTypes.addAll(node.getParentsOfType(ASTClassOrInterfaceBodyDeclaration.class));
         if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
+            parentTypes.add(node);
+        }
+        parentTypes.addAll(node.getParentsOfType(ASTFormalParameter.class));
+        if (node instanceof ASTFormalParameter) {
+            parentTypes.add(node);
+        }
+        parentTypes.addAll(node.getParentsOfType(ASTLocalVariableDeclaration.class));
+        if (node instanceof ASTLocalVariableDeclaration) {
             parentTypes.add(node);
         }
         for (Iterator i = parentTypes.iterator(); i.hasNext();) {

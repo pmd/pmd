@@ -17,7 +17,7 @@ Fixed bug 1313216 - Designer was not displaying 'final' attribute for ASTLocalVa
 Fixed bug 1314086 - Added logging-jakarta-commons as a short name for rulesets/logging-jakarta-commons.xml to SimpleRuleSetNameMapper.
 Implemented RFE 1311309 - Suppressed RuleViolation counts are now included in the reports.
 Applied patch 1306999 - Renamed CloseConnection to CloseResource and added support for checking Statement and ResultSet objects.
-Implemented rule violation suppression via annotations.
+Implemented rule violation suppression via annotations.  Per the JLS, @SuppressWarnings can be placed before the following nodes: TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE.  
 
 September 15, 2005 - 3.3:
 New rules: PositionLiteralsFirstInComparisons (in the design ruleset), UnnecessaryLocalBeforeReturn (design ruleset), ProperLogger (logging-jakarta-commons ruleset), UselessOverridingMethod (basic ruleset), PackageCase (naming ruleset), NoPackage (naming ruleset), UnnecessaryCaseChange (strings ruleset)
