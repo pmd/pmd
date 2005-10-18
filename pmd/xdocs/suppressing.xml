@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<document>
+  <properties>
+    <author email="tom@infoether.com">Tom Copeland</author>
+    <title>Suppressing warnings</title>
+  </properties>
+
+  <body>
+   <section name="Suppressing warnings">
+   <subsection name="Annotations">
+       <p>You can use a JDK 1.5 annotation to suppress PMD warnings, like this:</p>
+<source>
+// This will suppress all the PMD warnings in this class
+@SuppressWarnings()
+public class Bar {
+ void bar() {
+  int foo;
+ }
+}
+</source>
+   </subsection>
+
+       <subsection name="NOPMD">
+           <p>Alternatively, you can tell PMD to ignore a specific line by using the "NOPMD" marker, like this:</p>
+<source>
+public class Bar {
+ // 'bar' is accessed by a native method, so we want to suppress warnings for it
+ private int bar; //NOPMD
+}
+</source>
+           <p>There's an additional note on NOPMD usage <a href="http://sourceforge.net/forum/message.php?msg_id=3041261">here</a></p>
+       </subsection>
+
+     <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</p>
+   </section>
+  </body>
+</document>
+
+
