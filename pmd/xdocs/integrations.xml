@@ -281,14 +281,28 @@ be displayed in a window and hyperlinked into the correct file and line of code.
 right-click on the message window title bar and unselect "autohide" so the window doesn't go
 away every time I fix something in the code window.</p>
       </subsection>
-        <subsection name="jDeveloper">
-  <p>To install the jDeveloper plugin, download the binary release and unzip it
-      into your jdev/lib/ext directory.  Then restart jDeveloper.  To use it, open the
+
+        <subsection name="JDeveloper">
+  <p>To install the extension for JDeveloper 10.1.2, download the binary release and unzip it
+      into your jdev/lib/ext directory.  Then restart JDeveloper.  To use it, open the
 Tools-&amp;Preferences menu, click on the PMD option, and select
 a couple of rules to try.  To run it, right click on either
 a Java source file or a .jpr file (i.e., a project file) and
 select PMD.  Any rule violations should show up in a
-LogWindow at the bottom of the screen.              </p>
+LogWindow at the bottom of the screen.
+  </p>
+           <P>To install the extension for JDeveloper 10.1.3, use JDeveloper's built in "update center"
+               functionality. Fire up JDeveloper, click "Help", click "Check for Updates",
+ then click "Add" to add a new update center and enter:
+<UL>
+<LI>Name: PMD Update Center</LI>
+<LI>Location: http://pmd.sf.net/center.xml</LI>
+</UL>
+</P>
+            <P>Click your way through the ensuing dialogs and you'll install the plugin.  Note
+            that I've set up the plugin for the latest JDeveloper 10.1.3 EA, so if you're using an earlier
+            preview release of 10.1.3 it might not work.</P>
+
         </subsection>
       <subsection name="Ant">
 <p>

@@ -15,8 +15,9 @@ Fixed bug 1312754 - pmd.bat now handles command line arguments better in WinXP.
 Fixed bug 1312723 - Added isSyntacticallyPublic() behavior to ASTFieldDeclaration nodes.
 Fixed bug 1313216 - Designer was not displaying 'final' attribute for ASTLocalVariableDeclaration nodes.
 Fixed bug 1314086 - Added logging-jakarta-commons as a short name for rulesets/logging-jakarta-commons.xml to SimpleRuleSetNameMapper.
-Implemented RFE 1311309 - Suppressed RuleViolation counts are now included in the text report.
+Implemented RFE 1311309 - Suppressed RuleViolation counts are now included in the reports.
 Applied patch 1306999 - Renamed CloseConnection to CloseResource and added support for checking Statement and ResultSet objects.
+Implemented rule violation suppression via annotations.
 
 September 15, 2005 - 3.3:
 New rules: PositionLiteralsFirstInComparisons (in the design ruleset), UnnecessaryLocalBeforeReturn (design ruleset), ProperLogger (logging-jakarta-commons ruleset), UselessOverridingMethod (basic ruleset), PackageCase (naming ruleset), NoPackage (naming ruleset), UnnecessaryCaseChange (strings ruleset)

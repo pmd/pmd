@@ -45,6 +45,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Olaf Heimburger - code changes to get JDeveloper plugin working under JDev 10.1.3 EA</li>
+            <li>Brian Duff - helped get Oracle JDeveloper plugin working</li>
             <li>Sivakumar Mambakka - bug report 1314086 for missing name in SimpleRuleSetNameMapper</li>
             <li>Allan Caplan - bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
             <li>Rodrigo Ruiz - bug report 1312723 for FieldDeclaration nodes inside interfaces, bug report 1312754 for pmd.bat option handling, bug report 1312720 (and code fix!) for DefaultPackage, bug report 1309235 for TooManyFields</li>
