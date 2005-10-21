@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>dvholten - formatting suggestions for HTML report, test cases for ConstructorCallsOverridableMethod, reported several NullAssignment bugs</li>
             <li>Olaf Heimburger - code changes to get JDeveloper plugin working under JDev 10.1.3 EA</li>
             <li>Brian Duff - helped get Oracle JDeveloper plugin working</li>
             <li>Sivakumar Mambakka - bug report 1314086 for missing name in SimpleRuleSetNameMapper</li>
@@ -71,7 +72,6 @@
             <li>Peter Frandsen - PackageCase rule, NoPackage rule</li>
             <li>Noureddine Bekrar - French translation of some PMD documentation</li>
             <li>Martin Jost - bug report for JDeveloper plugin</li>
-            <li>dvholten - test cases for ConstructorCallsOverridableMethod, reported several NullAssignment bugs</li>
             <li>Guillaume Boudreau - patches to fix problems with CPD's FileFinder and NTFS and SCCS</li>
             <li>Sylvain Veyrie - bug report for MethodReturnsInternalArray</li>
             <li>Randy Ray - bug report for ArrayIsStoredDirectly</li>

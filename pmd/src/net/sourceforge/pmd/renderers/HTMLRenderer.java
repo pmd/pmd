@@ -115,7 +115,7 @@ public class HTMLRenderer implements Renderer {
             }
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
-            buf.append("<td align=\"center\">" + sv.getRuleViolation().getFilename() + "</td>" + PMD.EOL);
+            buf.append("<td align=\"left\">" + sv.getRuleViolation().getFilename() + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + sv.getRuleViolation().getNode().getBeginLine() + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + sv.getRuleViolation().getRule().getName() + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + (sv.suppressedByNOPMD() ? "NOPMD" : "Annotation") + "</td>" + PMD.EOL);
