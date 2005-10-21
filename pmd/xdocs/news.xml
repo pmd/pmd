@@ -10,39 +10,41 @@
     <section name="Sites/Articles about PMD">
     <ul>
         <br/>
+        <li>October 2005 - Levent Gurses' article "Improving Code Quality with PMD and Eclipse" in <a href="http://www.eclipsezone.com/articles/pmd/">EclipseZone</a> talks about the PMD Eclipse plugin and explains many different facets of PMD - XPath, writing rules, the AST, all that.  Good stuff!</li>
+        <br/>
         <li>June 2005 - Amit Chaturvedi's article "Java &amp; Static Analysis" in <a href="http://www.ddj.com/documents/s=9809/ddj0507b/0507b.html">Doctor Dobb's Journal</a> talks about PMD and shows a screenshot of the rule designer</li>
         <br/>
         <li>March 2005 - Kirk Knoernschild's article "Benefits of the Build" in <a href="http://www.sdmagazine.com/documents/s=9575/sdm0503b/sdm0503b.html">Software Development magazine</a> mentions PMD as a way to automate code reviews</li>
         <br/>
-        <li>2/14/2005 - <a href="http://www.eweek.com/article2/0,1759,1766208,00.asp">"Java Is Well-Suited for Open-Source Projects"</a> - Peter Coffee's eWeek article on open source, Java, and PMD</li>
+        <li>February 2005 - <a href="http://www.eweek.com/article2/0,1759,1766208,00.asp">"Java Is Well-Suited for Open-Source Projects"</a> - Peter Coffee's eWeek article on open source, Java, and PMD</li>
         <br/>
-        <li>1/7/2005 - <a href="http://www-106.ibm.com/developerworks/java/library/j-pmd/">"Zap bugs with PMD"</a> - Elliotte Rusty Harold's article on installing, configuring, and running PMD</li>
+        <li>January 2005 - <a href="http://www-106.ibm.com/developerworks/java/library/j-pmd/">"Zap bugs with PMD"</a> - Elliotte Rusty Harold's article on installing, configuring, and running PMD</li>
         <br/>
-        <li>11/16/2004 - <a href="http://www.newsforge.com/article.pl?sid=04/11/11/1517207">"PMD: A code analyzer for Java programmers"</a> - Daniel Rubio's article about PMD; includes some notes on XPath rules</li>
+        <li>November 2004 - <a href="http://www.newsforge.com/article.pl?sid=04/11/11/1517207">"PMD: A code analyzer for Java programmers"</a> - Daniel Rubio's article about PMD; includes some notes on XPath rules</li>
         <br/>
-        <li>6/16/2004 - <a href="http://www.onjava.com/pub/a/onjava/2004/06/16/ccunittest.html">"Code Improvement Through Cyclomatic Complexity"</a> - Andrew Glover's CCM article featuring PMD</li>
+        <li>June 2004 - <a href="http://www.onjava.com/pub/a/onjava/2004/06/16/ccunittest.html">"Code Improvement Through Cyclomatic Complexity"</a> - Andrew Glover's CCM article featuring PMD</li>
         <br/>
-        <li>6/1/2004 - <a href="http://tinyurl.com/3dgpe">"Open Source-Perlen"</a> - A German article on PMD in Java Magazin</li>
+        <li>June 2004 - <a href="http://tinyurl.com/3dgpe">"Open Source-Perlen"</a> - A German article on PMD in Java Magazin</li>
         <br/>
-        <li>6/1/2004 - <a href="http://www.ociweb.com/jnb/jnbJun2004.html">"Improving Project Quality with PMD"</a> - Tom Wheeler's "Java News Brief", June 2004 issue</li>
+        <li>June 2004 - <a href="http://www.ociweb.com/jnb/jnbJun2004.html">"Improving Project Quality with PMD"</a> - Tom Wheeler's "Java News Brief", June 2004 issue</li>
         <br/>
-        <li>2/1/2004 - <a href="http://www.sdmagazine.com/documents/s=9058/sdm0403a/sdm0403a.html">Software Development</a> - Listed as one of their 'Open-Source Projects to Watch'</li>
+        <li>February 2004 - <a href="http://www.sdmagazine.com/documents/s=9058/sdm0403a/sdm0403a.html">Software Development</a> - Listed as one of their 'Open-Source Projects to Watch'</li>
         <br/>
-        <li>11/21/2003 - <a href="http://www.javaworld.com/javaworld/jw-11-2003/jw-1121-quality_p.html">JavaWorld</a> - Various code inspection tools</li>
+        <li>November 2003 - <a href="http://www.javaworld.com/javaworld/jw-11-2003/jw-1121-quality_p.html">JavaWorld</a> - Various code inspection tools</li>
         <br/>
         <li><a href="https://jjguidelines.dev.java.net/index.html">JJGuidelines - Java and J2EE Conventions, Guidelines and Best Practices</a> - a project sponsored by the Belgian government to codify coding practices; uses PMD as the compliance checking utility</li>
         <br/>
-        <li>6/15/2003 - <a href="http://www.sdtimes.com/news/080/story15.htm">Software Development Times</a> - PMD is embedded in QStudio.</li>
+        <li>June 2003 - <a href="http://www.sdtimes.com/news/080/story15.htm">Software Development Times</a> - PMD is embedded in QStudio.</li>
         <br/>
-        <li>5/20/2003 - <a href="http://builderau.com.au/program/java/soa/Three_tools_that_make_Java_code_review_painless/0,39024620,20274635,00.htm">Builder.au</a> - PMD, Checkstyle, and Jalopy</li>
+        <li>May 2003 - <a href="http://builderau.com.au/program/java/soa/Three_tools_that_make_Java_code_review_painless/0,39024620,20274635,00.htm">Builder.au</a> - PMD, Checkstyle, and Jalopy</li>
         <br/>
-        <li>4/13/2003 - <a href="http://www.onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html">O'Reilly OnJava.com</a> - PMD custom rules</li>
+        <li>April 2003 - <a href="http://www.onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html">O'Reilly OnJava.com</a> - PMD custom rules</li>
         <br/>
-        <li>3/13/2003 - <a href="http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html">O'Reilly OnJava.com</a> - overview of CPD</li>
+        <li>March 2003 - <a href="http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html">O'Reilly OnJava.com</a> - overview of CPD</li>
         <br/>
-        <li>2/12/2003 - <a href="http://www.onjava.com/pub/a/onjava/2003/02/12/static_analysis.html">O'Reilly OnJava.com</a> - overview of PMD</li>
+        <li>February 2003 - <a href="http://www.onjava.com/pub/a/onjava/2003/02/12/static_analysis.html">O'Reilly OnJava.com</a> - overview of PMD</li>
         <br/>
-        <li>1/07/2003 - <a href="http://www.netbeans.org/community/articles/interviews/tom_copeland_ole-martin.html">Sprout</a> - interview with Ole-Martin and Tom</li>
+        <li>January 2003 - <a href="http://www.netbeans.org/community/articles/interviews/tom_copeland_ole-martin.html">Sprout</a> - interview with Ole-Martin and Tom</li>
     </ul>
     </section>
   </body>
