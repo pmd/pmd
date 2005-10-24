@@ -38,6 +38,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -51,6 +52,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IViewActionDelegate;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 
 /**
@@ -60,26 +63,37 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2003/11/30 22:57:37  phherlin
+ * Revision 1.3  2005/10/24 22:39:00  phherlin
+ * Integrating Sebastian Raffel's work
+ * Refactor command processing
+ * Revision 1.2 2003/11/30 22:57:37 phherlin
  * Merging from eclipse-v2 development branch
- *
- * Revision 1.1.2.1  2003/11/04 16:27:19  phherlin
- * Refactor to use the adaptable framework instead of downcasting
- *
- * Revision 1.1  2003/08/14 16:10:41  phherlin
- * Implementing Review feature (RFE#787086)
- *
+ * 
+ * Revision 1.1.2.1 2003/11/04 16:27:19 phherlin Refactor to use the adaptable
+ * framework instead of downcasting
+ * 
+ * Revision 1.1 2003/08/14 16:10:41 phherlin Implementing Review feature
+ * (RFE#787086)
+ * 
  */
-public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisitor {
+public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisitor, IViewActionDelegate {
     private static Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.ClearReviewsAction");
     private IWorkbenchPart activePart;
     private IProgressMonitor monitor;
 
     /**
-     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
+     * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
+     */
+    public void init(IViewPart view) {
+        this.activePart = view.getSite().getPage().getActivePart();
+    }
+
+    /**
+     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction,
+     *      org.eclipse.ui.IWorkbenchPart)
      */
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-        activePart = targetPart;
+        this.activePart = targetPart;
     }
 
     /**
@@ -103,13 +117,15 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
     }
 
     /**
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
+     *      org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged(IAction action, ISelection selection) {
     }
 
     /**
      * Get the monitor
+     * 
      * @return
      */
     protected IProgressMonitor getMonitor() {
@@ -118,6 +134,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
     /**
      * Set the monitor
+     * 
      * @param monitor
      */
     protected void setMonitor(IProgressMonitor monitor) {
@@ -135,6 +152,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
     /**
      * Set a substask
+     * 
      * @param message
      */
     protected void monitorSubTask(String message) {
@@ -148,30 +166,34 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
      */
     protected void clearReviews() {
         ISelection selection = activePart.getSite().getSelectionProvider().getSelection();
+
         if ((selection != null) && (selection instanceof IStructuredSelection)) {
             IStructuredSelection structuredSelection = (IStructuredSelection) selection;
             if (getMonitor() != null) {
-                getMonitor().beginTask(
-                    PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_REMOVE_REVIEWS),
-                    IProgressMonitor.UNKNOWN);
+                getMonitor().beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_REMOVE_REVIEWS),
+                        IProgressMonitor.UNKNOWN);
 
                 Iterator i = structuredSelection.iterator();
                 try {
                     while (i.hasNext()) {
                         Object object = (Object) i.next();
-                        
-                        if (object instanceof IAdaptable) {
+                        IResource resource = null;
+
+                        if (object instanceof IMarker) {
+                            resource = ((IMarker) object).getResource();
+                        } else if (object instanceof IAdaptable) {
                             IAdaptable adaptable = (IAdaptable) object;
-                            IResource resource = (IResource) adaptable.getAdapter(IResource.class);
-                            if (resource != null) {
-                                resource.accept(this);
-                            } else {
-                                log.warn("The selected object cannot adapt to a resource.");
-                                log.debug("   -> selected object" + object);
-                            }
+                            resource = (IResource) adaptable.getAdapter(IResource.class);
                         } else {
                             log.warn("The selected object is not adaptable");
                             log.debug("   -> selected object = " + object);
+                        }
+
+                        if (resource != null) {
+                            resource.accept(this);
+                        } else {
+                            log.warn("The selected object cannot adapt to a resource.");
+                            log.debug("   -> selected object" + object);
                         }
                     }
                 } catch (CoreException e) {
@@ -183,6 +205,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
     /**
      * Clear reviews for a file
+     * 
      * @param file
      */
     private void clearReviews(IFile file) {
@@ -198,6 +221,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
     /**
      * remove reviews from file content
+     * 
      * @param file
      * @return
      */
@@ -240,6 +264,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
 
     /**
      * Save the file
+     * 
      * @param file
      * @param newContent
      */
