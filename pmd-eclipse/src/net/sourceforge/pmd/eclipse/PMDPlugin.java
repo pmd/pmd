@@ -55,6 +55,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.28  2005/10/24 22:47:41  phherlin
+ * Integrating Sebastian Raffel's work
+ *
  * Revision 1.27  2005/07/02 14:34:08  phherlin
  * Use the new ruleset manager to get registered default rules
  *
@@ -454,14 +457,44 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
      */
     public String[] getPriorityLabels() {
         if (priorityLabels == null) {
-            priorityLabels = new String[]{getMessage(PMDConstants.MSGKEY_PRIORITY_ERROR_HIGH),
-                    getMessage(PMDConstants.MSGKEY_PRIORITY_ERROR), getMessage(PMDConstants.MSGKEY_PRIORITY_WARNING_HIGH),
-                    getMessage(PMDConstants.MSGKEY_PRIORITY_WARNING), getMessage(PMDConstants.MSGKEY_PRIORITY_INFORMATION)};
+            priorityLabels = new String[]{
+            	getMessage(PMDConstants.MSGKEY_PRIORITY_ERROR_HIGH),
+				getMessage(PMDConstants.MSGKEY_PRIORITY_ERROR),
+				getMessage(PMDConstants.MSGKEY_PRIORITY_WARNING_HIGH),
+				getMessage(PMDConstants.MSGKEY_PRIORITY_WARNING),
+				getMessage(PMDConstants.MSGKEY_PRIORITY_INFORMATION)
+			};
         }
 
         return priorityLabels;
     }
 
+    /**
+     * @return the priority values
+     */
+    public Integer[] getPriorityValues() {
+    	return new Integer[] {
+    			new Integer(1),
+    			new Integer(2),
+    			new Integer(3),
+    			new Integer(4),
+    			new Integer(5)
+    	};
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public boolean useDFA() {
+    	int value = 
+    		getPreferenceStore().getInt(PMDPlugin.USE_DFA_PREFERENCE);
+    	if (value == 1)
+    		return true;
+    	else
+    		return false;
+    }
+    
     /**
      * Get an image corresponding to the severity
      */

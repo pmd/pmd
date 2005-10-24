@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.eclipse"
    name="%plugin.name"
-   version="3.1.0"
+   version="3.1.1"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.eclipse.PMDPlugin">
 
@@ -29,7 +29,6 @@
       <import plugin="net.sourceforge.pmd.core"/>
    </requires>
 
-
    <extension
          id="pmdPreferencePages"
          name="PMDPreferencePages"
@@ -52,6 +51,7 @@
             id="net.sourceforge.pmd.eclipse.preferences.cpdPreferencePage">
       </page>
    </extension>
+
    <extension
          id="pmdMarker"
          name="%marker.pmd"
@@ -66,6 +66,7 @@
             name="rulename">
       </attribute>
    </extension>
+
    <extension
          point="org.eclipse.ui.ide.markerResolution">
       <markerResolutionGenerator
@@ -73,6 +74,7 @@
             class="net.sourceforge.pmd.eclipse.PMDResolutionGenerator">
       </markerResolutionGenerator>
    </extension>
+
    <extension
          id="pmdTaskMarker"
          name="%marker.task"
@@ -87,6 +89,15 @@
             value="true">
       </persistent>
    </extension>
+  
+   <extension
+         id="pmdDFAMarker"
+         name="%marker.dfa"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <persistent value="false"/>
+   </extension>
+
    <extension
          id="pmdBuilder"
          name="%builder.name"
@@ -97,6 +108,7 @@
          </run>
       </builder>
    </extension>
+
    <extension
          id="pmdPropertyPage"
          name="PMD Property Page"
@@ -110,6 +122,7 @@
             id="net.sourceforge.pmd.eclipse.properties.pmdPropertyPage">
       </page>
    </extension>
+
    <extension
          id="pmdNature"
          name="%nature.name"
@@ -126,6 +139,7 @@
             id="org.eclipse.jdt.core.javanature">
       </requires-nature>
    </extension>
+
    <extension
          id="pmdPopupMenus"
          name="PMD Popup Menus"
@@ -290,7 +304,41 @@
                id="net.sourceforge.pmd.eclipse.pmdRemoveAllMarkersAction">
          </action>
       </viewerContribution>
+      <viewerContribution
+            targetID="net.sourceforge.pmd.eclipse.views.violationOverview"
+            id="net.sourceforge.pmd.eclipse.pmdOverviewContribution">
+         <action
+               label="%action.clearpmd"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.PMDRemoveMarkersAction"
+               menubarPath="additions"
+               id="net.sourceforge.pmd.eclipse.pmdRemoveMarkersAction">
+         </action>
+      </viewerContribution>
+      <viewerContribution
+            targetID="net.sourceforge.pmd.eclipse.views.violationOutline"
+            id="net.sourceforge.pmd.eclipse.pmdOutlineContribution">
+         <action
+               label="%action.clearreviews"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.ClearReviewsAction"
+               menubarPath="additions"
+               id="net.sourceforge.pmd.eclipse.pmdClearReviewsAction"/>
+      </viewerContribution>
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.jdt.core.IMethod"
+            nameFilter="*"
+            id="net.sourceforge.pmd.eclipse.pmdMethodContribution">
+         <action
+               label="%action.showdataflow"
+               icon="icons/pmd-icon-16.gif"
+               class="net.sourceforge.pmd.eclipse.actions.ShowDataflowAction"
+               menubarPath="additions"
+               id="net.sourceforge.pmd.eclipse.pmdShowDataflowAction"/>
+      </objectContribution>
    </extension>
+
    <extension
          point="org.eclipse.help.toc">
       <toc
@@ -298,6 +346,7 @@
             primary="false">
       </toc>
    </extension>
+
    <extension
          id="pmdViews"
          point="org.eclipse.ui.views">
@@ -306,17 +355,48 @@
             id="net.sourceforge.pmd.eclipse.views">
       </category>
       <view
+            allowMultiple="false"
             name="%view.violation"
             icon="icons/pmd-icon-16.gif"
             category="net.sourceforge.pmd.eclipse.views"
-            class="net.sourceforge.pmd.eclipse.views.ViolationView"
-            id="net.sourceforge.pmd.eclipse.views.ViolationView">
-      </view>
+            class="net.sourceforge.pmd.eclipse.views.legacy.ViolationView"
+            id="net.sourceforge.pmd.eclipse.views.legacy.ViolationView"/>
+      <view
+            allowMultiple="false"
+            icon="icons/icon_outline.gif"
+            class="net.sourceforge.pmd.eclipse.views.ViolationOutline"
+            category="net.sourceforge.pmd.eclipse.views"
+            name="%view.outline"
+            id="net.sourceforge.pmd.eclipse.views.violationOutline"/>
+      <view
+            allowMultiple="false"
+            icon="icons/icon_overview.gif"
+            class="net.sourceforge.pmd.eclipse.views.ViolationOverview"
+            category="net.sourceforge.pmd.eclipse.views"
+            name="%view.overview"
+            id="net.sourceforge.pmd.eclipse.views.violationOverview"/>
+      <view
+            allowMultiple="false"
+            icon="icons/pmd-icon-16.gif"
+            class="net.sourceforge.pmd.eclipse.views.DataflowView"
+            category="net.sourceforge.pmd.eclipse.views"
+            name="%view.dataflowview"
+            id="net.sourceforge.pmd.eclipse.views.dataflowView"/>
    </extension>
+
    <extension
          id="pmdPreferences"
          point="org.eclipse.core.runtime.preferences">
       <initializer class="net.sourceforge.pmd.eclipse.PluginPreferenceInitializer"/>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            icon="icons/pmd-icon-16.gif"
+            class="net.sourceforge.pmd.eclipse.views.PMDPerspective"
+            name="%view.perspective"
+            id="net.sourceforge.pmd.eclipse.views.pmdPerspective"/>
    </extension>
 
 </plugin>

@@ -6,6 +6,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2005/10/24 22:36:42  phherlin
+ * Integrating Sebastian Raffel's work
+ *
  * Revision 1.11  2003/11/30 22:57:43  phherlin
  * Merging from eclipse-v2 development branch
  *
@@ -55,13 +58,18 @@ public interface PMDConstants {
     public static final String MSGKEY_PROPERTY_LABEL_NO_WORKINGSET = "property.label.no_workingset";
     public static final String MSGKEY_PROPERTY_LABEL_SELECTED_WORKINGSET = "property.label.selected_workingset";
     public static final String MSGKEY_PROPERTY_BUTTON_STORE_RULESET_PROJECT = "property.button.store_ruleset_project";
-        
+    
+    public static final String MSGKEY_PREF_GENERAL_HEADER = "preference.pmd.header";
     public static final String MSGKEY_PREF_GENERAL_TITLE = "preference.pmd.title";
     public static final String MSGKEY_PREF_GENERAL_LABEL_ADDCOMMENT = "preference.pmd.label.addcomment";
     public static final String MSGKEY_PREF_GENERAL_LABEL_SAMPLE = "preference.pmd.label.sample";
     public static final String MSGKEY_PREF_GENERAL_TOOLTIP_ADDCOMMENT = "preference.pmd.tooltip.addcomment";
     public static final String MSGKEY_PREF_GENERAL_MESSAGE_INCORRECT_FORMAT ="preference.pmd.message.incorrect_format";
     public static final String MSGKEY_PREF_GENERAL_GROUP_REVIEW = "preference.pmd.group.review";
+    public static final String MSGKEY_PREF_GENERAL_GROUP_GENERAL = "preference.pmd.group.general";
+    public static final String MSGKEY_PREF_GENERAL_LABEL_SHOW_PERSPECTIVE = "preference.pmd.label.perspective_on_check";
+    public static final String MSGKEY_PREF_GENERAL_LABEL_USE_DFA = "preference.pmd.label.use_dfa";
+    
     public static final String MSGKEY_PREF_RULESET_TITLE = "preference.ruleset.title";
     public static final String MSGKEY_PREF_RULESET_LIST = "preference.ruleset.list";
     public static final String MSGKEY_PREF_RULESET_ADD = "preference.ruleset.add";
@@ -98,6 +106,43 @@ public interface PMDConstants {
     public static final String MSGKEY_PREF_CPD_TITLE = "preference.cpd.title";
     public static final String MSGKEY_PREF_CPD_TILESIZE = "preference.cpd.tilesize";
     
+    public static final String MSGKEY_VIEW_OUTLINE_DEFAULT_TEXT = "view.outline.default_text";
+    public static final String MSGKEY_VIEW_OUTLINE_COLUMN_MESSAGE = "view.outline.column_message";
+    public static final String MSGKEY_VIEW_OUTLINE_COLUMN_LINE = "view.outline.column_line";
+    public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_ELEMENT = "view.overview.column_element";
+    public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_TOTAL = "view.overview.column_vio_total";
+    public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_LOC = "view.overview.column_vio_loc";
+    public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_METHOD = "view.overview.column_vio_method";
+    public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_PROJECT = "view.overview.column_project";
+    public static final String MSGKEY_VIEW_DATAFLOW_DEFAULT_TEXT = "view.dataflow.default_text";
+    public static final String MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_LINE = "view.dataflow.graph.column_line";
+    public static final String MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_GRAPH = "view.dataflow.graph.column_graph";
+    public static final String MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_NEXT = "view.dataflow.graph.column_nextnodes";
+    public static final String MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_VALUES = "view.dataflow.graph.column_values";
+    public static final String MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_CODE = "view.dataflow.graph.column_code";
+    public static final String MSGKEY_VIEW_DATAFLOW_SWITCHBUTTON_SHOW = "view.dataflow.switchbutton.show";
+    public static final String MSGKEY_VIEW_DATAFLOW_SWITCHBUTTON_HIDE = "view.dataflow.switchbutton.hide";
+    public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_TYPE = "view.dataflow.table.column_type";
+    public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_LINE = "view.dataflow.table.column_line";
+    public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_VARIABLE = "view.dataflow.table.column_variable";
+
+    public static final String MSGKEY_VIEW_FILTER_PRIORITY_1 = "view.filter.priority.1";
+    public static final String MSGKEY_VIEW_FILTER_PRIORITY_2 = "view.filter.priority.2";
+    public static final String MSGKEY_VIEW_FILTER_PRIORITY_3 = "view.filter.priority.3";
+    public static final String MSGKEY_VIEW_FILTER_PRIORITY_4 = "view.filter.priority.4";
+    public static final String MSGKEY_VIEW_FILTER_PRIORITY_5 = "view.filter.priority.5";
+    public static final String MSGKEY_VIEW_FILTER_PROJECT_PREFIX = "view.filter.project_prefix";
+    
+    public static final String MSGKEY_VIEW_ACTION_CURRENT_PROJECT = "view.action.current_project";
+    
+    public static final String MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_1 = "view.tooltip.filter.priority.1";
+    public static final String MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_2 = "view.tooltip.filter.priority.2";
+    public static final String MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_3 = "view.tooltip.filter.priority.3";
+    public static final String MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_4 = "view.tooltip.filter.priority.4";
+    public static final String MSGKEY_VIEW_TOOLTIP_FILTER_PRIORITY_5 = "view.tooltip.filter.priority.5";
+    public static final String MSGKEY_VIEW_TOOLTIP_PACKAGES_FILES = "view.tooltip.packages_files";
+    public static final String MSGKEY_VIEW_TOOLTIP_COLLAPSE_ALL = "view.tooltip.collapse_all";
+        
     public static final String MSGKEY_VIEW_COLUMN_MESSAGE = "view.column.message";
     public static final String MSGKEY_VIEW_COLUMN_RULE = "view.column.rule";
     public static final String MSGKEY_VIEW_COLUMN_CLASS = "view.column.class";
@@ -146,6 +191,8 @@ public interface PMDConstants {
     public static final String MSGKEY_ERROR_STORING_PROPERTY = "message.error.storing_property";
     public static final String MSGKEY_ERROR_FIND_MARKER = "message.error.find_marker";
     public static final String MSGKEY_ERROR_LOADING_RULESET = "message.error.loading_ruleset";
+    public static final String MSGKEY_ERROR_VIEW_EXCEPTION = "message.error.view_exception";
+    public static final String MSGKEY_ERROR_FILE_NOT_FOUND = "message.error.file_not_found";
     
     public static final String MSGKEY_QUESTION_TITLE = "message.question.title";
     public static final String MSGKEY_QUESTION_RULES_CHANGED = "message.question.rules_changed";
@@ -171,6 +218,7 @@ public interface PMDConstants {
     public static final String MSGKEY_PRIORITY_WARNING      = "priority.warning";
     public static final String MSGKEY_PRIORITY_INFORMATION  = "priority.information";
     
+    public static final String MSGKEY_MONITOR_JOB_TITLE = "monitor.job_title";
     public static final String MSGKEY_MONITOR_CHECKING_FILE = "monitor.checking_file";
     public static final String MSGKEY_PMD_PROCESSING = "monitor.begintask";
     public static final String MSGKEY_MONITOR_UPDATING_PROJECTS = "monitor.updating_projects";

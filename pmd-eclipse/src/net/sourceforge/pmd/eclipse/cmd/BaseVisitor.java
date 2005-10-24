@@ -40,6 +40,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.dfa.DaaRule;
 import net.sourceforge.pmd.eclipse.MarkerInfo;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
@@ -64,10 +65,11 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.4  2005/07/04 21:00:52  phherlin
- * Oops! forgot to use properties model to get project working set
- * Revision 1.3 2005/05/31 20:44:41 phherlin
- * Continuing refactoring
+ * Revision 1.5  2005/10/24 22:40:33  phherlin
+ * Integrating Sebastian Raffel's work
+ * Revision 1.4 2005/07/04 21:00:52 phherlin Oops!
+ * forgot to use properties model to get project working set Revision 1.3
+ * 2005/05/31 20:44:41 phherlin Continuing refactoring
  * 
  * Revision 1.2 2005/05/10 21:49:26 phherlin Fix new violations detected by PMD
  * 3.1
@@ -84,6 +86,7 @@ public class BaseVisitor {
     private Map accumulator;
     private PMD pmdEngine;
     private RuleSet ruleSet;
+    protected RuleSet hiddenRules;
 
     /**
      * The constructor is protected to avoid illegal instanciation
@@ -91,6 +94,13 @@ public class BaseVisitor {
      */
     protected BaseVisitor() {
         super();
+
+        this.hiddenRules = new RuleSet();
+        if (PMDPlugin.getDefault().useDFA()) {
+            DaaRule daaRule = new DaaRule();
+            daaRule.setUsesDFA();
+            this.hiddenRules.addRule(daaRule);
+        }
     }
 
     /**
@@ -204,6 +214,7 @@ public class BaseVisitor {
      *            The ruleSet to set.
      */
     public void setRuleSet(final RuleSet ruleSet) {
+        ruleSet.addRuleSet(hiddenRules);
         this.ruleSet = ruleSet;
     }
 
@@ -238,13 +249,21 @@ public class BaseVisitor {
                 }
 
             } catch (CoreException e) {
-                log.error("Core exception visiting " + file.getName(), e); // TODO: complete message
+                log.error("Core exception visiting " + file.getName(), e); // TODO:
+                                                                            // complete
+                                                                            // message
             } catch (PMDException e) {
-                log.error("PMD exception visiting " + file.getName(), e); // TODO: complete message
+                log.error("PMD exception visiting " + file.getName(), e); // TODO:
+                                                                            // complete
+                                                                            // message
             } catch (IOException e) {
-                log.error("IO exception visiting " + file.getName(), e); // TODO: complete message
+                log.error("IO exception visiting " + file.getName(), e); // TODO:
+                                                                            // complete
+                                                                            // message
             } catch (ModelException e) {
-                log.error("Model exception visiting " + file.getName(), e); // TODO: complete message
+                log.error("Model exception visiting " + file.getName(), e); // TODO:
+                                                                            // complete
+                                                                            // message
             }
 
         }
@@ -296,7 +315,11 @@ public class BaseVisitor {
                 log.debug("Ignoring violation of rule " + violation.getRule().getName() + " at line " + violation.getLine()
                         + " because of a review.");
             } else {
-                markerSet.add(getMarkerInfo(violation, fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER));
+                if (PMDPlugin.getDefault().useDFA() && violation.getRule().usesDFA()) {
+                    markerSet.add(getMarkerInfo(violation, PMDPlugin.PMD_DFA_MARKER));
+                } else {
+                    markerSet.add(getMarkerInfo(violation, fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER));
+                }
                 log.debug("Adding a violation for rule " + violation.getRule().getName() + " at line " + violation.getLine());
             }
         }
@@ -388,8 +411,17 @@ public class BaseVisitor {
         attributeNames.add(IMarker.LINE_NUMBER);
         values.add(new Integer(violation.getLine()));
 
+        attributeNames.add(PMDPlugin.KEY_MARKERATT_LINE2);
+        values.add(new Integer(violation.getLine2()));
+
+        attributeNames.add(PMDPlugin.KEY_MARKERATT_VARIABLE);
+        values.add(violation.getVariableName());
+
         attributeNames.add(PMDPlugin.KEY_MARKERATT_RULENAME);
         values.add(violation.getRule().getName());
+
+        attributeNames.add(PMDPlugin.KEY_MARKERATT_PRIORITY);
+        values.add(new Integer(violation.getRule().getPriority()));
 
         switch (violation.getRule().getPriority()) {
         case 1:
