@@ -29,7 +29,7 @@ mkdir ~/tmp/pmd-3.3/bin
 mkdir ~/tmp/pmd-3.3/lib
 cp ../LICENSE.txt changelog.txt ~/tmp/pmd-3.3/etc
 cd ../bin/
-cp pmd.* cygwin-run.sh build.xml cpdgui.bat designer.* ~/tmp/pmd-3.3/bin
+cp pmd.* cygwin-run.sh build.xml cpd.sh cpdgui.bat designer.* ~/tmp/pmd-3.3/bin
 cd ../etc/
 cp ../lib/pmd-3.3.jar ../lib/xmlParserAPIs-2.6.2.jar ../lib/xercesImpl-2.6.2.jar ../lib/jaxen-1.1-beta-7.jar ~/tmp/pmd-3.3/lib/
 mkdir ~/tmp/pmd-3.3/etc/xslt

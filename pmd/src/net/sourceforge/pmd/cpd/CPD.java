@@ -90,15 +90,17 @@ public class CPD {
 
         try {
             String lang = LanguageFactory.JAVA_KEY;
-            Renderer renderer = new SimpleRenderer();
             if (args.length > 2) {
                 lang = args[2];
             }
+            LanguageFactory f = new LanguageFactory();
+            Language language = f.createLanguage(lang);
+
+            Renderer renderer = new SimpleRenderer();
             if (args.length > 3) {
                 renderer = CPD.getRendererFromString(args[3]);
             }
-            LanguageFactory f = new LanguageFactory();
-            Language language = f.createLanguage(lang);
+
             CPD cpd = new CPD(Integer.parseInt(args[0]), language);
             cpd.addRecursively(args[1]);
             cpd.go();

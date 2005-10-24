@@ -33,6 +33,7 @@ public class CPPTokenizer implements Tokenizer {
             tokenEntries.add(TokenEntry.getEOF());
             System.out.println("Added " + sourceCode.getFileName());
         } catch (TokenMgrError err) {
+            err.printStackTrace();
             System.out.println("Skipping " + sourceCode.getFileName() + " due to parse error");
             List emptyCode = new ArrayList();
             emptyCode.add("");

@@ -15,7 +15,6 @@
             href="http://sourceforge.net" />
     </links>
     <menu name="Overview">
-      <item name="Installation" href="/installing.html" />
       <item name="PMD in the news" href="/news.html" />
       <item name="PMD-related products and books" href="/products.html" />
       <item name="Best practices" href="/bestpractices.html" />
@@ -26,6 +25,7 @@
       <item name="What does 'PMD' mean?" href="/meaning.html" />
     </menu>
     <menu name="Usage">
+      <item name="Installation" href="/installing.html" />
       <item name="Command line usage" href="/running.html" />
       <item name="Ant task usage" href="/ant-task.html" />
       <item name="Maven plugin usage" href="/maven-plugin.html" />

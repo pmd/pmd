@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jarkko Hietaniemin - several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
             <li>dvholten - formatting suggestions for HTML report, test cases for ConstructorCallsOverridableMethod, reported several NullAssignment bugs</li>
             <li>Olaf Heimburger - code changes to get JDeveloper plugin working under JDev 10.1.3 EA</li>
             <li>Brian Duff - helped get Oracle JDeveloper plugin working</li>
