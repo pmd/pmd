@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/jaxen-core-1.0-fcs.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/saxpath-1.0-fcs.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xercesImpl.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/xmlParserAPIs.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pmd-3.2.jar"/>
-	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxen-1.1-beta-7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.6.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xmlParserAPIs-2.6.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pmd-3.3.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

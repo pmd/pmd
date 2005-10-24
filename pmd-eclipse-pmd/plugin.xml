@@ -3,24 +3,21 @@
 <plugin
    id="net.sourceforge.pmd.core"
    name="%plugin.name"
-   version="3.2.0"
+   version="3.3.0"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.core.PMDCorePlugin">
 
    <runtime>
-      <library name="lib/jaxen-core-1.0-fcs.jar">
+      <library name="lib/jaxen-1.1-beta-7.jar">
          <export name="*"/>
       </library>
-      <library name="lib/saxpath-1.0-fcs.jar">
+      <library name="lib/xercesImpl-2.6.2.jar">
          <export name="*"/>
       </library>
-      <library name="lib/xercesImpl.jar">
+      <library name="lib/xmlParserAPIs-2.6.2.jar">
          <export name="*"/>
       </library>
-      <library name="lib/xmlParserAPIs.jar">
-         <export name="*"/>
-      </library>
-      <library name="lib/pmd-3.2.jar">
+      <library name="lib/pmd-3.3.jar">
          <export name="*"/>
       </library>
       <library name="core.jar">

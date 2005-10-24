@@ -42,6 +42,9 @@ package net.sourceforge.pmd.core;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/10/24 22:35:20  phherlin
+ * Upgrading to PMD v3.3
+ *
  * Revision 1.2  2005/07/02 14:33:05  phherlin
  * Implement the RuleSets extension point
  *
@@ -63,6 +66,7 @@ public interface PluginConstants {
             "rulesets/imports.xml",
             "rulesets/javabeans.xml",
             "rulesets/junit.xml",
+            "rulesets/logging-jakarta-commons.xml",
             "rulesets/logging-java.xml",
             "rulesets/naming.xml",
             "rulesets/optimizations.xml",
