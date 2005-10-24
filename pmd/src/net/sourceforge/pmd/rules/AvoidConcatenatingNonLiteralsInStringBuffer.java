@@ -21,7 +21,7 @@ import net.sourceforge.pmd.ast.Node;
  * 
  * @author mgriffa
  */
-public final class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractRule {
+public class AvoidConcatenatingNonLiteralsInStringBuffer extends AbstractRule {
 
     public Object visit(ASTAdditiveExpression node, Object data) {
         ASTBlockStatement bs = (ASTBlockStatement) node.getFirstParentOfType(ASTBlockStatement.class);

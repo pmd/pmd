@@ -118,5 +118,4 @@ public class AvoidConcatenatingNonLiteralsInStringBufferTest extends SimpleAggre
        "  buf.append(getFoo(getBar(i + \"hi\")));" + PMD.EOL +
        " }" + PMD.EOL +
        "}";
-
 }

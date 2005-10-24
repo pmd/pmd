@@ -310,7 +310,10 @@ Override both public boolean Object.equals(Object other), and public int Object.
           <property name="xpath">
               <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Interface='false']//MethodDeclarator
+//ClassOrInterfaceDeclaration
+ [@Interface='false']
+ [not (ImplementsList/ClassOrInterfaceType[@Image='Comparable'])]
+//MethodDeclarator
 [(@Image = 'equals' and count(FormalParameters/*) = 1
 and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode']))
 or
