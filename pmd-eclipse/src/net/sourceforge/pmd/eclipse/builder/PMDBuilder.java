@@ -24,6 +24,10 @@ import org.eclipse.core.runtime.Status;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2005/10/24 23:32:55  phherlin
+ * Fix "markers not displayed if file editor is open"
+ * Run the review code command synchronously
+ *
  * Revision 1.10  2005/10/24 22:39:56  phherlin
  * Refactor command processing
  *
@@ -117,7 +121,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
                 cmd.setResourceDelta(resourceDelta);
                 cmd.setTaskMarker(false);
                 cmd.setMonitor(monitor);
-                cmd.performExecute();
+                cmd.execute(); // a builder is always asynchronous; execute a command synchronously whatever its processor
             } else {
                 log.info("No change reported. Performing no build");
             }
@@ -135,7 +139,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
         cmd.addResource(project);
         cmd.setTaskMarker(false);
         cmd.setMonitor(monitor);
-        cmd.performExecute();
+        cmd.execute(); // a builder is always asynchronous; execute a command synchronously whatever its processor
     }
 
 }
