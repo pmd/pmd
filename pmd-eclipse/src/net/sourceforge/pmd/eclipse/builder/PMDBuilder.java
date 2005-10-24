@@ -24,6 +24,9 @@ import org.eclipse.core.runtime.Status;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2005/10/24 22:39:56  phherlin
+ * Refactor command processing
+ *
  * Revision 1.9  2005/05/07 13:32:06  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -51,7 +54,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
     public static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.builder.PMDBuilder");
 
     /**
-     * @see org.eclipse.core.internal.events.InternalBuilder#build(int, Map, IProgressMonitor)
+     * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
      */
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
         log.info("Incremental builder activated");
@@ -129,7 +132,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
      */
     private void processProjectFiles(IProject project, IProgressMonitor monitor) throws CommandException {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
-        cmd.setResource(project);
+        cmd.addResource(project);
         cmd.setTaskMarker(false);
         cmd.setMonitor(monitor);
         cmd.performExecute();

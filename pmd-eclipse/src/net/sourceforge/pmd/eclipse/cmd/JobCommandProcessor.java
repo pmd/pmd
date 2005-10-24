@@ -61,6 +61,9 @@ import net.sourceforge.pmd.eclipse.PMDPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/10/24 22:40:54  phherlin
+ * Refactor command processing
+ *
  * Revision 1.2  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -82,7 +85,7 @@ public class JobCommandProcessor implements CommandProcessor {
      * @see name.herlin.command.CommandProcessor#processCommand(name.herlin.command.AbstractProcessableCommand)
      */
     public void processCommand(final AbstractProcessableCommand aCommand) throws CommandException {
-        log.debug("Begining a job command");
+        log.debug("Begining job command " + aCommand.getName());
 
         if (!aCommand.isReadyToExecute()) {
             throw new UnsetInputPropertiesException();
@@ -91,7 +94,9 @@ public class JobCommandProcessor implements CommandProcessor {
         final Job job = new Job(aCommand.getName()) {
             protected IStatus run(IProgressMonitor monitor) {
                 try {
-                    ((AbstractDefaultCommand) aCommand).setMonitor(monitor);
+                    if (aCommand instanceof AbstractDefaultCommand) {
+                        ((AbstractDefaultCommand) aCommand).setMonitor(monitor);
+                    }
                     aCommand.execute();
                 } catch (CommandException e) {
                     PMDPlugin.getDefault().logError("Error executing command " + aCommand.getName(), e);
@@ -101,9 +106,13 @@ public class JobCommandProcessor implements CommandProcessor {
             }
         };
         
+        if (aCommand instanceof AbstractDefaultCommand) {
+            job.setUser(((AbstractDefaultCommand) aCommand).isUserInitiated());
+        }
+
         job.schedule();
         this.addJob(aCommand, job);
-        log.debug("Ending a job command");
+        log.debug("Ending job command " + aCommand.getName());
     }
 
     /**

@@ -29,6 +29,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/10/24 22:39:35  phherlin
+ * Refactor command processing
+ *
  * Revision 1.1  2005/04/20 23:15:53  phherlin
  * Implement reports generation RFE#1177802
  *
@@ -59,24 +62,28 @@ public class GenerateReportAction implements IObjectActionDelegate {
                     cmd1.setProject(project);
                     cmd1.setRenderer(new HTMLRenderer());
                     cmd1.setReportName(PMDPluginConstants.HTML_REPORT_NAME);
+                    cmd1.setUserInitiated(true);
                     cmd1.performExecute();
                     
                     RenderReportCmd cmd2 = new RenderReportCmd();                    
                     cmd2.setProject(project);
                     cmd2.setRenderer(new CSVRenderer());
                     cmd2.setReportName(PMDPluginConstants.CSV_REPORT_NAME);
+                    cmd1.setUserInitiated(true);
                     cmd2.performExecute();
                     
                     RenderReportCmd cmd3 = new RenderReportCmd();                    
                     cmd3.setProject(project);
                     cmd3.setRenderer(new XMLRenderer());
                     cmd3.setReportName(PMDPluginConstants.XML_REPORT_NAME);
+                    cmd1.setUserInitiated(true);
                     cmd3.performExecute();
                     
                     RenderReportCmd cmd4 = new RenderReportCmd();                    
                     cmd4.setProject(project);
                     cmd4.setRenderer(new TextRenderer());
                     cmd4.setReportName(PMDPluginConstants.TXT_REPORT_NAME);
+                    cmd1.setUserInitiated(true);
                     cmd4.performExecute();
                 }
             } catch (CommandException e) {

@@ -35,8 +35,6 @@
  */
 package net.sourceforge.pmd.eclipse.properties;
 
-import java.lang.reflect.InvocationTargetException;
-
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.eclipse.PMDConstants;
@@ -49,9 +47,7 @@ import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
@@ -59,7 +55,6 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
-import org.eclipse.ui.progress.IProgressService;
 
 /**
  * This class implements the controler of the Property page
@@ -68,26 +63,23 @@ import org.eclipse.ui.progress.IProgressService;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.9  2005/06/11 22:11:32  phherlin
- * Fixing the project ruleset management
- *
- * Revision 1.8  2005/06/07 18:38:13  phherlin
- * Move classes to limit packages cycle dependencies
- *
- * Revision 1.7  2005/05/31 20:33:01  phherlin
- * Continuing refactoring
- *
- * Revision 1.6  2005/05/10 21:49:29  phherlin
- * Fix new violations detected by PMD 3.1
- *
- * Revision 1.5  2005/05/07 13:32:05  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
- * Revision 1.4 2004/12/03 00:22:43
- * phherlin Continuing the refactoring experiment. Implement the Command
- * framework. Refine the MVC pattern usage.
+ * Revision 1.10  2005/10/24 22:43:54  phherlin
+ * Refactor command processing
+ * Revision 1.9 2005/06/11 22:11:32
+ * phherlin Fixing the project ruleset management
+ * 
+ * Revision 1.8 2005/06/07 18:38:13 phherlin Move classes to limit packages
+ * cycle dependencies
+ * 
+ * Revision 1.7 2005/05/31 20:33:01 phherlin Continuing refactoring
+ * 
+ * Revision 1.6 2005/05/10 21:49:29 phherlin Fix new violations detected by PMD
+ * 3.1
+ * 
+ * Revision 1.5 2005/05/07 13:32:05 phherlin Continuing refactoring Fix some PMD
+ * violations Fix Bug 1144793 Fix Bug 1190624 (at least try) Revision 1.4
+ * 2004/12/03 00:22:43 phherlin Continuing the refactoring experiment. Implement
+ * the Command framework. Refine the MVC pattern usage.
  * 
  * Revision 1.3 2004/11/28 20:31:39 phherlin Continuing the refactoring
  * experiment
@@ -96,14 +88,13 @@ import org.eclipse.ui.progress.IProgressService;
  * 2004/11/18 23:54:27 phherlin Refactoring to apply MVC. The goal is to test
  * the refactoring before a complete refactoring for all GUI
  * 
- *  
+ * 
  */
-public class PMDPropertyPageController implements IRunnableWithProgress, PMDConstants {
+public class PMDPropertyPageController implements PMDConstants {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.properties.PMDPropertyPageController");
     private final Shell shell;
     private IProject project;
     private PMDPropertyPageBean propertyPageBean;
-    private boolean rebuildNeeded;
 
     /**
      * Contructor
@@ -175,31 +166,6 @@ public class PMDPropertyPageController implements IRunnableWithProgress, PMDCons
 
         try {
             checkProjectRuleSetFile();
-            
-            final IProgressService progressService = PlatformUI.getWorkbench().getProgressService();
-            progressService.busyCursorWhile(this);
-
-            // If rebuild is needed, then rebuild the project
-            log.debug("Updating command terminated, checking whether the project need to be rebuilt");
-            if (this.rebuildNeeded) {
-                rebuildProject();
-            }
-        } catch (InvocationTargetException e) {
-            PMDPlugin.getDefault().showError(e.getMessage(), e);
-        } catch (InterruptedException e) {
-            PMDPlugin.getDefault().showError(e.getMessage(), e);
-        } catch (ModelException e) {
-            PMDPlugin.getDefault().showError(e.getMessage(), e);
-        }
-
-        return true;
-    }
-
-    /**
-     * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
-     */
-    public void run(final IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
-        try {
 
             // Updates the project properties
             final UpdateProjectPropertiesCmd cmd = new UpdateProjectPropertiesCmd();
@@ -208,13 +174,21 @@ public class PMDPropertyPageController implements IRunnableWithProgress, PMDCons
             cmd.setProjectWorkingSet(this.propertyPageBean.getProjectWorkingSet());
             cmd.setProjectRuleSet(this.propertyPageBean.getProjectRuleSet());
             cmd.setRuleSetStoredInProject(this.propertyPageBean.isRuleSetStoredInProject());
-            cmd.setMonitor(monitor);
+            cmd.setUserInitiated(true);
             cmd.performExecute();
-            this.rebuildNeeded = cmd.isNeedRebuild();
+
+            // If rebuild is needed, then rebuild the project
+            log.debug("Updating command terminated, checking whether the project need to be rebuilt");
+            if (cmd.isNeedRebuild()) {
+                rebuildProject();
+            }
+        } catch (ModelException e) {
+            PMDPlugin.getDefault().showError(e.getMessage(), e);
         } catch (CommandException e) {
             PMDPlugin.getDefault().showError(e.getMessage(), e);
         }
 
+        return true;
     }
 
     /**
@@ -223,7 +197,7 @@ public class PMDPropertyPageController implements IRunnableWithProgress, PMDCons
      * @param currentWorkingSet
      *            the working set currently selected of null if none
      * @return the newly selected working set or null if none.
-     *  
+     * 
      */
     public IWorkingSet selectWorkingSet(final IWorkingSet currentWorkingSet) {
         final IWorkbench workbench = PlatformUI.getWorkbench();
@@ -232,7 +206,7 @@ public class PMDPropertyPageController implements IRunnableWithProgress, PMDCons
         IWorkingSet selectedWorkingSet = null;
 
         if (currentWorkingSet != null) {
-            selectionDialog.setSelection(new IWorkingSet[]{currentWorkingSet});
+            selectionDialog.setSelection(new IWorkingSet[] { currentWorkingSet });
         }
 
         if (selectionDialog.open() == Window.OK) {
@@ -252,27 +226,29 @@ public class PMDPropertyPageController implements IRunnableWithProgress, PMDCons
      * 
      * @param monitor
      *            a progress monitor
-     *  
+     * 
      */
     private void rebuildProject() {
-        final boolean rebuild = MessageDialog.openQuestion(shell, getMessage(MSGKEY_QUESTION_TITLE), getMessage(MSGKEY_QUESTION_REBUILD_PROJECT));
+        final boolean rebuild = MessageDialog.openQuestion(shell, getMessage(MSGKEY_QUESTION_TITLE),
+                getMessage(MSGKEY_QUESTION_REBUILD_PROJECT));
 
         if (rebuild) {
             log.info("Full rebuild of the project " + this.project.getName());
             try {
                 final BuildProjectCommand cmd = new BuildProjectCommand();
                 cmd.setProject(this.project);
+                cmd.setUserInitiated(true);
                 cmd.performExecute();
             } catch (CommandException e) {
                 PMDPlugin.getDefault().showError(e.getMessage(), e);
             }
         }
     }
-    
+
     /**
      * If the user asks to use a project ruleset file, check if it exists.
      * Otherwise, asks the user to create a default one
-     *
+     * 
      */
     private void checkProjectRuleSetFile() throws ModelException {
         if (this.propertyPageBean.isRuleSetStoredInProject()) {
@@ -280,15 +256,16 @@ public class PMDPropertyPageController implements IRunnableWithProgress, PMDCons
             if (!model.isRuleSetFileExist()) {
                 createDefaultRuleSetFile();
             }
-        }        
+        }
     }
-    
+
     /**
      * Create a default ruleset file from the current project ruleset
-     *
+     * 
      */
     private void createDefaultRuleSetFile() throws ModelException {
-        final boolean create = MessageDialog.openQuestion(shell, getMessage(MSGKEY_QUESTION_TITLE), getMessage(MSGKEY_QUESTION_CREATE_RULESET_FILE));
+        final boolean create = MessageDialog.openQuestion(shell, getMessage(MSGKEY_QUESTION_TITLE),
+                getMessage(MSGKEY_QUESTION_CREATE_RULESET_FILE));
         if (create) {
             final ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.project);
             model.createDefaultRuleSetFile();

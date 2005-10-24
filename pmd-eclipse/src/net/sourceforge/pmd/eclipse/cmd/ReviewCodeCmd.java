@@ -35,8 +35,10 @@
  */
 package net.sourceforge.pmd.eclipse.cmd;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -62,9 +64,19 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IPerspectiveRegistry;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 
 /**
  * This command executes the PMD engine on a specified resource
@@ -73,6 +85,9 @@ import org.eclipse.jdt.core.JavaCore;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2005/10/24 22:40:54  phherlin
+ * Refactor command processing
+ *
  * Revision 1.5  2005/06/30 23:24:19  phherlin
  * Add the JDK 1.5 support
  *
@@ -95,17 +110,18 @@ import org.eclipse.jdt.core.JavaCore;
  */
 public class ReviewCodeCmd extends AbstractDefaultCommand {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.ReviewCodeCmd");
-    private IResource resource;
+    private List resources = new ArrayList();
     private IResourceDelta resourceDelta;
     private Map markers = new HashMap();
     private boolean taskMarker = false;
+    private boolean openPmdPerspective = false;
 
     /**
      * Default constructor
      */
     public ReviewCodeCmd() {
         super();
-        this.setDescription("Run PMD on a workbench resource");
+        this.setDescription("Run PMD on a list of workbench resources.");
         this.setName("ReviewCode");
         this.setOutputProperties(true);
         this.setReadOnly(true);
@@ -117,15 +133,23 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     public void execute() throws CommandException {
         try {
-            if (this.resource == null) {
+            if (this.resources.size() == 0) {
                 this.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), this.getStepsCount());
                 this.processResourceDelta();
             } else {
                 this.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), this.getStepsCount());
-                this.processResource();
+                this.processResources();
             }
 
             applyMarkers();
+            
+            if (this.openPmdPerspective) {
+                Display.getDefault().asyncExec(new Runnable() {
+                    public void run() {
+                        openPmdPerspective();
+                    }
+                });
+            }
 
         } finally {
             this.setTerminated(true);
@@ -144,8 +168,17 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * @param resource
      *            The resource to set.
      */
-    public void setResource(final IResource resource) {
-        this.resource = resource;
+    public void setResources(final List resources) {
+        this.resources.clear();
+        this.resources.addAll(resources);
+    }
+    
+    /**
+     * Add a resource to the list of resources to be reviewed.
+     * @param resource a workbench resource
+     */
+    public void addResource(final IResource resource) {
+        this.resources.add(resource);
     }
 
     /**
@@ -162,20 +195,29 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     public void setTaskMarker(final boolean taskMarker) {
         this.taskMarker = taskMarker;
     }
+    
+    /**
+     * @param openPmdPerspective Tell whether the PMD perspective should be opened after processing.
+     */
+    public void setOpenPmdPerspective(boolean openPmdPerspective) {
+        this.openPmdPerspective = openPmdPerspective;
+    }
+
     /**
      * @see name.herlin.command.Command#reset()
      */
     public void reset() {
-        this.setResource(null);
+        this.resources.clear();
         this.markers = new HashMap();
         this.setTerminated(false);
+        this.openPmdPerspective = false;
     }
 
     /**
      * @see name.herlin.command.Command#isReadyToExecute()
      */
     public boolean isReadyToExecute() {
-        return (this.resource != null) || (this.resourceDelta != null);
+        return (this.resources.size() != 0) || (this.resourceDelta != null);
     }
 
     /**
@@ -210,16 +252,28 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * Review a resource
+     * Process the list of workbench resources
+     * @throws CommandException
      */
-    private void processResource() throws CommandException {
+    private void processResources() throws CommandException {
+        Iterator i = this.resources.iterator();
+        while (i.hasNext()) {
+            IResource resource = (IResource) i.next();
+            processResource(resource);
+        }
+    }
+    
+    /**
+     * Review a single resource
+     */
+    private void processResource(IResource resource) throws CommandException {
         try {
-            final IProject project = this.resource.getProject();
+            final IProject project = resource.getProject();
             final ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(project);
             final RuleSet ruleSet = model.getProjectRuleSet();
             final PMD pmdEngine = this.getPmdEngineForProject(project);
-            this.setStepsCount(this.countResourceElement(this.resource));
-            log.debug("Visit of resource " + this.resource.getName() + " : " + this.getStepsCount());
+            this.setStepsCount(this.countResourceElement(resource));
+            log.debug("Visit of resource " + resource.getName() + " : " + this.getStepsCount());
 
             final ResourceVisitor visitor = new ResourceVisitor();
             visitor.setMonitor(this.getMonitor());
@@ -227,7 +281,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             visitor.setPmdEngine(pmdEngine);
             visitor.setAccumulator(this.markers);
             visitor.setUseTaskMarker(this.taskMarker);
-            this.resource.accept(visitor);
+            resource.accept(visitor);
         } catch (ModelException e) {
             throw new CommandException(e);
         } catch (CoreException e) {
@@ -268,11 +322,13 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private void applyMarkers() {
         log.info("Processing marker directives");
 
+        String currentFile = ""; // for logging
         try {
             final Set filesSet = this.markers.keySet();
             final Iterator i = filesSet.iterator();
             while (i.hasNext()) {
                 final IFile file = (IFile) i.next();
+                currentFile = file.getName();
 
                 final Set markerInfoSet = (Set) this.markers.get(file);
                 file.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
@@ -285,8 +341,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
             }
         } catch (CoreException e) {
-            log.warn("CoreException when setting marker info for resource " + this.resource.getName() + " : " + e.getMessage()); // TODO:
-                                                                                                                                 // NLS
+            log.warn("CoreException when setting marker info for file " + currentFile + " : " + e.getMessage()); // TODO: NLS
         }
 
     }
@@ -323,6 +378,35 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         }
 
         return visitor.count;
+    }
+
+    /**
+     * opens the PMD perspective
+     * 
+     * @author SebastianRaffel ( 07.05.2005 )
+     */
+    private void openPmdPerspective() {
+        String perspectiveId = PMDPlugin.ID_PERSPECTIVE;
+        IAdaptable input = ResourcesPlugin.getWorkspace();
+
+        // instead of just opening the perspective
+        // we check the preferences, if that's okay
+        IPreferenceStore store = PlatformUI.getPreferenceStore();
+        String pref = store.getString(IWorkbenchPreferenceConstants.OPEN_NEW_PERSPECTIVE);
+
+        // get the workbench and show the perspective
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        try {
+            if (pref.equals(IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_WINDOW)) {
+                workbench.openWorkbenchWindow(perspectiveId, input);
+            } else if (pref.equals(IWorkbenchPreferenceConstants.OPEN_PERSPECTIVE_REPLACE)) {
+                IPerspectiveRegistry reg = workbench.getPerspectiveRegistry();
+                IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+                window.getActivePage().setPerspective(reg.findPerspectiveWithId(perspectiveId));
+            }
+        } catch (WorkbenchException wbe) {
+            PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_VIEW_EXCEPTION + this.toString(), wbe);
+        }
     }
 
     /**

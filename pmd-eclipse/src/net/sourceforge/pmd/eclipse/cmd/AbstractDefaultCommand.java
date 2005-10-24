@@ -51,6 +51,9 @@ import net.sourceforge.pmd.eclipse.PMDPluginConstants;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/10/24 22:40:54  phherlin
+ * Refactor command processing
+ *
  * Revision 1.2  2005/05/31 20:44:41  phherlin
  * Continuing refactoring
  *
@@ -78,6 +81,7 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
     private String name;
     private IProgressMonitor monitor;
     private int stepsCount;
+    private boolean userInitiated;
 
     /**
      * @return Returns the readOnly.
@@ -163,6 +167,20 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         this.stepsCount = stepsCount;
     }
     
+    /**
+     * @return Returns the userInitiated.
+     */
+    public boolean isUserInitiated() {
+        return userInitiated;
+    }
+
+    /**
+     * @param userInitiated The userInitiated to set.
+     */
+    public void setUserInitiated(boolean userInitiated) {
+        this.userInitiated = userInitiated;
+    }
+
     /**
      * @return Returns the monitor.
      */
