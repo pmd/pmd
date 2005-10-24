@@ -74,6 +74,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2005/10/24 23:53:51  phherlin
+ * Fix "when enabling PMD, does not ask to rebuild or not the project".
+ *
  * Revision 1.10  2005/10/24 23:19:58  phherlin
  * Fix never ending loop issue (finally..)
  *
@@ -173,9 +176,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     public RuleSet getProjectRuleSet() throws ModelException {
         log.info("Query the rule set for project " + this.project.getName());
         if (!isRuleSetStoredInProject()) {
-            if (synchronizeRuleSet()) {
-                sync();
-            }
+            this.needRebuild |= synchronizeRuleSet();
         }
 
         return this.projectRuleSet;
@@ -190,7 +191,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
             throw new ModelException("Setting a project rule set to null"); // TODO NLS
         }
 
-        this.needRebuild = !this.projectRuleSet.getRules().equals(projectRuleSet.getRules());
+        this.needRebuild |= !this.projectRuleSet.getRules().equals(projectRuleSet.getRules());
         this.projectRuleSet = projectRuleSet;
 
         this.needRebuild |= synchronizeRuleSet();
