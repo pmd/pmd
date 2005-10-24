@@ -42,6 +42,9 @@ package net.sourceforge.pmd.eclipse.model;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/10/24 22:41:57  phherlin
+ * Refactor preferences management
+ *
  * Revision 1.1  2005/05/07 13:32:04  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -52,16 +55,86 @@ package net.sourceforge.pmd.eclipse.model;
  */
 public interface PreferencesModel extends PMDPluginModel {
     /**
-     * The comment text that will be added to review tags
-     * @return
+     * @return the comment text that will be added to review tags
+     * @throws ModelException if an error occurs
      */
-    String getReviewAdditionalComment();
+    String getReviewAdditionalComment() throws ModelException;
     
     /**
      * Set the comment text that will be added to review tags.
      * This is a dynamic message. Substitutions strings are 0 for the user name
      * and 1 for the current date and time.
      * @param comment the review additional comment
+     * @throws ModelException if an error occurs
      */
-    void setReviewAdditionalComment(String comment);
+    void setReviewAdditionalComment(String comment) throws ModelException;
+    
+    /**
+     * @return the string used for NOPMD comments
+     * @throws ModelException if an error occurs
+     */
+    String getNoPmdString() throws ModelException;
+    
+    /**
+     * Set the string for NOPMD comments
+     * @param noPmdString the NOPMD string
+     * @throws ModelException if an error occurs
+     */
+    void setNoPmdString(String noPmdString) throws ModelException;
+    
+    /**
+     * @return all plugun rulesets configurations
+     * @throws ModelException if an error occurs
+     */
+    Configuration[] getConfigurations() throws ModelException;
+    
+    /**
+     * Get a configuration by its name
+     * @param configurationName a configuration name;
+     * @return a configuration or null if not found
+     * @throws ModelException if an error occurs
+     */
+    Configuration searchConfigurationByName(String configurationName) throws ModelException;
+    
+    /**
+     * Add a configuration to the plugin. If the configuration already exists,
+     * it is replaced.
+     * @param configuration a ruleset configuration
+     * @throws ModelException if an error occurs
+     */
+    void addConfiguration(Configuration configuration) throws ModelException;
+    
+    /**
+     * Remove a configuration from the plugin. This is not an
+     * error to remove a configuration that does not exist.
+     * @param configuration the configuration to remove
+     * @throws ModelException if an error occurs
+     */
+    void removeConfiguration(Configuration configuration) throws ModelException;
+    
+    /**
+     * Remove a configuration by its name. This is not an
+     * error to remove a configuration that does not exist.
+     * @param configurationName the configuration to remove.
+     * @throws ModelException if an error occurs
+     */
+    void removeConfigurationByName(String configurationName) throws ModelException;
+    
+    /**
+     * @return a default configuration
+     */
+    Configuration getDefaultConfiguration() throws ModelException;
+    
+    /**
+     * @return the CPD minimal tile size
+     * @throws ModelException if an error occurs
+     */
+    int getCpdTileSize() throws ModelException;
+
+    /**
+     * Set the CPD minimal tile size
+     * @param tileSize a tile size
+     * @throws ModelException if an error occurs
+     */
+    void setCpdTileSize(int tileSize) throws ModelException;
 }
