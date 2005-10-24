@@ -57,8 +57,13 @@ import org.eclipse.core.runtime.Status;
  * 
  * @author Philippe Herlin
  * @version $Revision$
+ * @deprecated use always a JobCommandProcessor instead
  * 
  * $Log$
+ * Revision 1.4  2005/10/24 23:35:19  phherlin
+ * Make RunnableCommandProcessor deprecated.
+ * For long running commands, a JobCommandProcessor should be used instead.
+ *
  * Revision 1.3  2005/05/31 20:44:41  phherlin
  * Continuing refactoring
  *
