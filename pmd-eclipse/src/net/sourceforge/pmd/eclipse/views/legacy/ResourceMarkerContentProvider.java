@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.eclipse.views;
+package net.sourceforge.pmd.eclipse.views.legacy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,10 @@ import org.eclipse.jface.viewers.Viewer;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2005/10/24 22:45:58  phherlin
+ * Integrating Sebastian Raffel's work
+ * Move orginal Violations view to legacy
+ *
  * Revision 1.2  2003/08/13 20:10:20  phherlin
  * Refactoring private->protected to remove warning about non accessible member access in enclosing types
  *

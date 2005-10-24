@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.eclipse.views;
+package net.sourceforge.pmd.eclipse.views.legacy;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -22,6 +22,10 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2005/10/24 22:45:58  phherlin
+ * Integrating Sebastian Raffel's work
+ * Move orginal Violations view to legacy
+ *
  * Revision 1.1  2003/07/07 19:24:54  phherlin
  * Adding PMD violations view
  *

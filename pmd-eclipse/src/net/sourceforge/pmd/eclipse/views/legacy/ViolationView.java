@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.eclipse.views;
+package net.sourceforge.pmd.eclipse.views.legacy;
 
 import java.util.Iterator;
 
@@ -53,6 +53,10 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2005/10/24 22:45:58  phherlin
+ * Integrating Sebastian Raffel's work
+ * Move orginal Violations view to legacy
+ *
  * Revision 1.7  2003/12/02 22:30:54  phherlin
  * Adapting to Eclipse v3M5
  *

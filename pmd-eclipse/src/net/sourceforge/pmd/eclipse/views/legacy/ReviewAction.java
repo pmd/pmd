@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.eclipse.views;
+package net.sourceforge.pmd.eclipse.views.legacy;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,6 +35,10 @@ import org.eclipse.swt.widgets.Shell;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2005/10/24 22:45:58  phherlin
+ * Integrating Sebastian Raffel's work
+ * Move orginal Violations view to legacy
+ *
  * Revision 1.5  2004/04/19 22:25:50  phherlin
  * Fixing UTF-8 encoding
  *

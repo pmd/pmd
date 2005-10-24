@@ -20,7 +20,7 @@
  *   
  * </copyright>
  */ 
-package net.sourceforge.pmd.eclipse.views;
+package net.sourceforge.pmd.eclipse.views.legacy;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.action.Action;
@@ -38,6 +38,10 @@ import org.eclipse.ui.ide.IDE;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2005/10/24 22:45:58  phherlin
+ * Integrating Sebastian Raffel's work
+ * Move orginal Violations view to legacy
+ *
  * Revision 1.3  2003/12/02 22:30:54  phherlin
  * Adapting to Eclipse v3M5
  *
