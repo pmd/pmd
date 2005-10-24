@@ -74,6 +74,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.9  2005/10/24 22:42:22  phherlin
+ * Fix never ending loop issue
+ *
  * Revision 1.8  2005/07/01 00:04:11  phherlin
  * Fix the bug of the rules that cannot be unselected
  *
@@ -348,9 +351,12 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
                     ruleSet.addRule(pluginRule);
                 }
             }
-            this.projectRuleSet = ruleSet;
 
-            flChanged = true;
+            flChanged = !ruleSet.getRules().equals(this.projectRuleSet.getRules());
+            if (flChanged) {
+                this.projectRuleSet = ruleSet;
+                log.info("Ruleset for project " + this.project.getName() + " is now synchronized.");
+            }
         }
 
         return flChanged;
