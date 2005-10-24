@@ -74,6 +74,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2005/10/24 23:19:58  phherlin
+ * Fix never ending loop issue (finally..)
+ *
  * Revision 1.9  2005/10/24 22:42:22  phherlin
  * Fix never ending loop issue
  *
@@ -187,11 +190,10 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
             throw new ModelException("Setting a project rule set to null"); // TODO NLS
         }
 
+        this.needRebuild = !this.projectRuleSet.getRules().equals(projectRuleSet.getRules());
         this.projectRuleSet = projectRuleSet;
-        if (synchronizeRuleSet()) {
-            sync();
-            this.needRebuild = true;
-        }
+
+        this.needRebuild |= synchronizeRuleSet();
     }
 
     /**
@@ -352,11 +354,13 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
                 }
             }
 
-            flChanged = !ruleSet.getRules().equals(this.projectRuleSet.getRules());
-            if (flChanged) {
+            if (!(ruleSet.getRules().equals(this.projectRuleSet.getRules()))) {
+                log.info("Updating the projet ruleset according to preferences.");
                 this.projectRuleSet = ruleSet;
-                log.info("Ruleset for project " + this.project.getName() + " is now synchronized.");
+                flChanged = true;
             }
+
+            log.info("Ruleset for project " + this.project.getName() + " is now synchronized.");
         }
 
         return flChanged;
