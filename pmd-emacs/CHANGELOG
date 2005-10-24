@@ -1,8 +1,10 @@
+10/24/05 - 0.6:
+Updated with latest code from Nascif; should work with PMD 3.3 now.
+
 2/04/03 - 0.3:
 Updated the primary plugin with Nascif A. Abousalh-Neto's contributions.  Note that these changes include an updated pmd-1.02.jar file to support them.  These changes will be part of pmd-1.03 when it comes out; this is just an updated release of 
 pmd-1.02 to support this Emacs plugin.
 Added an alternate plugin that doesn't require the Emacs XML stuff to be installed; thx to Jason Rumney.
-
 
 1/16/03 - 0.2:
 Completely rewritten by John Russell.

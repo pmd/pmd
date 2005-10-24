@@ -1,12 +1,13 @@
 ;;; pmd.el --- Major mode for pluging PMD into Emacs.
 
-;; Author: John Russell <drjimmy42@yahoo.com>
-;; Maintainer: John Russell <drjimmy42@yahoo.com>
-;; Created: Dec 30 2002
+;; Author: John Russell <drjimmy42 at yahoo.com>
+;; Maintainer: Nascif A. Abousalh-Neto <nascif at acm.org>
+;; Created: 06/16/2004 18:21
 ;; Version: $Revision$
 ;; Keywords: PMD major-mode
 
 ;; Copyright (C) 2002 John Russell
+;; Copyright (C) 2003 Nascif A. Abousalh-Neto
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -24,30 +25,66 @@
 
 ;;; Commentary:
 ;; Installation:
-;; 	add this line to your .emacs file:
+;;  1) Install the core PMD application (not part of this download, get it 
+;;     from http://pmd.sourceforge.net/);
+;;  2) Make sure the directory of pmd.el is part of your Emacs load-path;
+;; 	3) Add this line to your .emacs file:
 ;; 	    (autoload 'pmd-current-buffer "pmd" "PMD Mode" t)
-;; 	once this is done, you can call the pmd-current-buffer function
-;; 	using C-x or bind it to a key sequence.
-
-;;   NOTE: This requies the xml parser in xml.el.  This is distributed
-;; 	with the standard Gnu Emacs 21.x release. 
+;; 	    (autoload 'pmd-current-dir "pmd" "PMD Mode" t)
+;;  4) Load pmd.el
+;;  5) Configure the location of the Java executable and the PMD installation 
+;;     directory using the command pmd-customize.
+;;
+;; 	Once this is done, you can call the pmd-current-buffer and pmd-current-dir 
+;;  functions using M-x <function name> or by bind them to key sequences.
 
 ;; Configuration:
-;; 	Most user variables can be customized through standard
-;; 	customization buffers.  Type:
+;; 	Besides the variables described above, you can also compile the rulesets used by PMD.
+;;  Type:
 ;; 	    M-x pmd-customize
 ;; 		--or--
 ;; 	    M-x customize-group <RET>
 ;; 	    pmd <RET>
 	
 ;; Description:
-;; 	This mode is similar to the compilation buffer found in the
-;; 	JDE.  When you run pmd-current-buffer on a .java file, it runs
-;; 	the PMD tool (http://pmd.sourceforge.net/) on the file with
-;; 	the rulesets defined in pmd-rulesets.
-	
-;; 	Type ? in the *PMD* buffer for a list of key bindings for
-;; 	pmd-mode and usage help.
+;; 	This mode uses a compilation buffer to display the output of PMD
+;; (http://pmd.sourceforge.net/).  
+;; It provides two commands, pmd-current-buffer and pmd-current-dir, which as you
+;; guessed run PMD on the contents of the current buffer (must be a .java file)
+;; or on all .java files in the directory associated with the current buffer. 
+;; You can defining the PMD rulesets by customizing the variable pmd-ruleset-list.
+
+;; Change History 
+
+;; 10/21/2005 0.6: Nascif A. Abousalh-Neto
+;; - Updated to work with PMD 3.3
+
+;; 06/16/2004 0.5: Nascif A. Abousalh-Neto
+;; - Tested with PMD 1.08
+;; - fixed dependency on missing defun
+;;
+;; 03/24/03 - 0.4: Nascif A. Abousalh-Neto
+;; Update to align with PMD 1.04.
+;; - Added new method, pmd-current-dir
+;; - Removed variable pmd-version
+;; - Changed customization: string variable pmd-rulesets replaced by list-based variable pmd-ruleset-list
+
+;; 02/04/03 - 0.3: Nascif A. Abousalh-Neto
+;; Updated the primary plugin with 
+;; contributions.  Note that these changes include an updated pmd-1.02.jar file
+;; to support them.  These changes will be part of pmd-1.03 when it comes out;
+;; this is just an updated release of pmd-1.02 to support this Emacs plugin.
+
+;; 01/16/03 - 0.2 - John Russell
+;; Completely rewritten
+
+;; 06/06/02 - 0.1
+;; First version of PMD for Emacs
+;; Defined one function "pmd-current-buffer" which will
+;; run PMD on the current buffer, and write the output
+;; to *PMD*. Output format is in XML.  I will work in trying to 
+;; get a better, easier to read format for everyone.
+
 
 (defgroup pmd nil "PMD"
   :group 'emacs)
@@ -62,37 +99,20 @@
   :type 'directory
   :group 'pmd)
 
-(defcustom pmd-rulesets "rulesets/basic.xml"
-  "A comma delimited list of Rulesets to apply"
-  :type 'string
+(defcustom pmd-ruleset-list (list "basic" "braces" "clone" "codesize" "controversial" "coupling" 
+                                  "design" "finalizers" "imports" "javabeans" "junit" "logging-java" 
+                                  "naming" "optimizations" "strictexception" "strings" "sunsecure" 
+                                  "unusedcode" "logging-jakarta-commons")
+
+  "A list of Rulesets to apply. Rulesets are specified in XML files inside the \"rulesets\" subdirectory of the main PMD jar file."
+  :type '(repeat (file :tag "Ruleset"))
   :group 'pmd)
-
-(defcustom pmd-append-output 'nil
-  "If non-nil, append each output to the end of the *PMD* buffer,
-else clear buffer each time."
-  :type 'boolean
-  :group 'pmd)
-
-(defcustom pmd-version "1.02"
-  "The main library version, used to create the jar file name for the Java invocation."
-  :type 'string
-  :group 'pmd)
-
-
-(defun pmd-mode ()
-  "Plugin for PMD (http://pmd.sourceforge.net).  Opens a buffer which \
-displays the output of PMD when run on the Java file in the current buffer.
-Uses the standard compilation mode for navigation."
-
-  (interactive)
-  (kill-all-local-variables)
-  (setq mode-name "PMD Mode" 
-   truncate-lines nil)
-  (compilation-mode))
 
 ;;-------------------------
 ;;Inner workings
 ;;-------------------------
+
+(defconst pmd-xemacsp (string-match "XEmacs" (emacs-version)))
 
 (defun pmd-help ()
   "Help for `pmd-mode'."
@@ -102,7 +122,6 @@ Uses the standard compilation mode for navigation."
 ;;-------------------------
 ;; Main functions
 ;;-------------------------
-
 
 ;;;###autoload 
 (defun pmd-customize ()
@@ -114,27 +133,82 @@ Uses the standard compilation mode for navigation."
 (defun pmd-current-buffer ()
   "Run PMD on the contents of the current buffer."
   (interactive)
-  (cond ((string-equal (file-name-extension
-(buffer-file-name)) "java")
-	 (let ((file-name         (buffer-file-name) )
-;; Nascif: updated version
-	       (pmd-jar (concat pmd-home "/lib/pmd-" pmd-version ".jar"))) 
-	   (if (eq (count-windows) 1)
-	       (split-window-vertically))
-	   (other-window 1)
-	   (switch-to-buffer (get-buffer-create "*PMD*"))
-	   (cond (pmd-append-output
-		  (goto-char(point-max)))
-		 ((not pmd-append-output)
-		  (erase-buffer)))
-		  
-	   (pmd-mode)
-	   (insert-string (concat " PMD output for " pmd-rulesets "\n\n"))
-	   (insert (concat (shell-command-to-string 
-			    (concat pmd-java-home " -cp " pmd-jar " net.sourceforge.pmd.PMD "
-				    file-name " emacs " pmd-rulesets )) "\n"))))
-	((not(string-equal (file-name-extension (buffer-file-name)) "java"))
-	 (message "File is not a Java file.  Aborting."))))
+  (if (string-equal (file-name-extension
+                        (buffer-file-name)) "java")
+         (pmd-file-or-dir (buffer-file-name))
+    (message "Current buffer does not contain a Java file.  Aborting.")))
+
+(defun pmd-current-dir ()
+  "Run PMD on the contents of the current directory (recursively)."
+  (interactive)
+  (pmd-file-or-dir (file-name-directory (buffer-file-name))))
+
+(defun pmd-classpath ()
+  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
+         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
+         (pmd-etc     (concat pmd-home "etc"))
+         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
+    (concat "\'" 
+            pmd-etc path-separator
+            (mapconcat
+             (lambda (path)
+               path) 
+             (directory-files pmd-lib t "\\.jar$")
+             path-separator)
+            "\'")))
+
+(defun pmd-jar ()
+  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
+         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
+         (pmd-etc     (concat pmd-home "etc"))
+         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
+    (concat "\'" 
+            (car (directory-files pmd-lib t ".*pmd-.*\\.jar$"))
+            "\'")))
+
+;; (defun pmd-file-or-dir (target)
+;;   "Run PMD on the given target (file or dir)"
+;;   (if (eq (count-windows) 1)
+;;       (split-window-vertically))
+;;   (other-window 1)
+;;   (switch-to-buffer (get-buffer-create "*PMD*"))
+;;   (if pmd-append-output
+;;       (goto-char (point-max))
+;;     (erase-buffer))
+;;   (pmd-mode)
+;;   (insert-string (concat " PMD output for " target "\n\n"))
+
+;;   (insert-string (concat pmd-java-home " -cp \"" (pmd-classpath) "\" net.sourceforge.pmd.PMD "
+;;                            target " emacs " (mapconcat (lambda (path) path) pmd-ruleset-list ",")))
+
+;;   (insert-string "\n\n")
+
+;;   (insert (concat (shell-command-to-string 
+;;                    (concat pmd-java-home " -cp \"" (pmd-classpath) "\" net.sourceforge.pmd.PMD "
+;;                            target " emacs " (mapconcat (lambda (path) path) pmd-ruleset-list ","))) "\n"))
+;;   (insert-string "Done.\n")
+;;   (goto-char (point-min)))
+
+(defun pmd-file-or-dir (target)
+  "Run PMD on the given target (file or dir)"
+
+  (let ((pmd-command
+         (concat pmd-java-home " -jar " (pmd-jar) " "
+                           target " emacs " (mapconcat (lambda (path) path) pmd-ruleset-list ","))))
+    
+    ;; Force save-some-buffers to use the minibuffer
+    ;; to query user about whether to save modified buffers.
+    (if (and (eq system-type 'windows-nt)
+             (not pmd-xemacsp)) 
+        (let ((temp last-nonmenu-event))
+          ;; The next line makes emacs think that jde-jalopy
+          ;; was invoked from the minibuffer, even when it
+          ;; is actually invoked from the menu-bar.
+          (setq last-nonmenu-event t)
+          (save-some-buffers (not compilation-ask-about-save) nil)
+          (setq last-nonmenu-event temp))
+      (save-some-buffers (not compilation-ask-about-save) nil))
+    (compile-internal pmd-command "No more errors" "PMD")))
 
 (provide 'pmd)
 
