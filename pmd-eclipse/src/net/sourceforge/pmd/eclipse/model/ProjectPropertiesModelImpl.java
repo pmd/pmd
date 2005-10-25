@@ -74,6 +74,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2005/10/25 00:02:44  phherlin
+ * Fix the update of the project rule set file.
+ *
  * Revision 1.11  2005/10/24 23:53:51  phherlin
  * Fix "when enabling PMD, does not ask to rebuild or not the project".
  *
@@ -177,6 +180,8 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
         log.info("Query the rule set for project " + this.project.getName());
         if (!isRuleSetStoredInProject()) {
             this.needRebuild |= synchronizeRuleSet();
+        } else {
+            loadRuleSetFromProject();
         }
 
         return this.projectRuleSet;
@@ -427,7 +432,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
      *
      */
     private void loadRuleSetFromProject() {
-        if (!isRuleSetFileExist()) {
+        if (isRuleSetFileExist()) {
             try {
                 final RuleSetFactory factory = new RuleSetFactory();
                 final IFile ruleSetFile = this.project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);
