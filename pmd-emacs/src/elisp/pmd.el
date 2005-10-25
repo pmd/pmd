@@ -56,9 +56,6 @@
 
 ;; Change History 
 
-;; 10/21/2005 0.6: Nascif A. Abousalh-Neto
-;; - Updated to work with PMD 3.3
-
 ;; 06/16/2004 0.5: Nascif A. Abousalh-Neto
 ;; - Tested with PMD 1.08
 ;; - fixed dependency on missing defun
@@ -99,11 +96,7 @@
   :type 'directory
   :group 'pmd)
 
-(defcustom pmd-ruleset-list (list "basic" "braces" "clone" "codesize" "controversial" "coupling" 
-                                  "design" "finalizers" "imports" "javabeans" "junit" "logging-java" 
-                                  "naming" "optimizations" "strictexception" "strings" "sunsecure" 
-                                  "unusedcode" "logging-jakarta-commons")
-
+(defcustom pmd-ruleset-list (list "rulesets/basic.xml")
   "A list of Rulesets to apply. Rulesets are specified in XML files inside the \"rulesets\" subdirectory of the main PMD jar file."
   :type '(repeat (file :tag "Ruleset"))
   :group 'pmd)
@@ -146,24 +139,13 @@
 (defun pmd-classpath ()
   (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
          (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
-         (pmd-etc     (concat pmd-home "etc"))
          (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
     (concat "\'" 
-            pmd-etc path-separator
             (mapconcat
              (lambda (path)
                path) 
              (directory-files pmd-lib t "\\.jar$")
              path-separator)
-            "\'")))
-
-(defun pmd-jar ()
-  (let* ((path-separator (if (eq system-type 'windows-nt) ";" ":"))
-         (path-slash     (if (eq system-type 'windows-nt) "\\" "/"))
-         (pmd-etc     (concat pmd-home "etc"))
-         (pmd-lib     (concat pmd-home path-slash "lib" path-slash)))
-    (concat "\'" 
-            (car (directory-files pmd-lib t ".*pmd-.*\\.jar$"))
             "\'")))
 
 ;; (defun pmd-file-or-dir (target)
@@ -193,7 +175,7 @@
   "Run PMD on the given target (file or dir)"
 
   (let ((pmd-command
-         (concat pmd-java-home " -jar " (pmd-jar) " "
+         (concat pmd-java-home " -classpath " (pmd-classpath) " net.sourceforge.pmd.PMD "
                            target " emacs " (mapconcat (lambda (path) path) pmd-ruleset-list ","))))
     
     ;; Force save-some-buffers to use the minibuffer
