@@ -38,11 +38,11 @@ public class CPDDialog extends JFrame implements CPDListener, WindowListener {
     public void addedFile(int fileCount, File file) {
         if (firstFile) {
             firstFile = false;
-            label.setText("Adding files");
-            progressBar.setString(file.getName());
+            label.setText("Adding file " + file.getName());
             progressBar.setMaximum(fileCount);
             progress = 0;
         }
+        label.setText("Adding file " + file.getName());
         progressBar.setValue(++progress);
     }
 
