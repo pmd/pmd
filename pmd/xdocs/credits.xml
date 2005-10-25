@@ -45,6 +45,10 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Brian Remedios - code improvements to Eclipse plugin</li>
+            <li>Chris Grindstaff - fixed SWTException when Eclipse plugin is run on a file with syntax error</li>
+            <li>Eduard Naum - fixed JDK 1.3 runtime problems in Eclipse plugin</li>
+            <li>Jacques Lebourgeois - fix for UTF8 characters in Eclipse plugin</li>
             <li>dvholten - suggestions for improving OverrideBothEqualsAndHashcode, formatting suggestions for HTML report, test cases for ConstructorCallsOverridableMethod, reported several NullAssignment bugs</li>
             <li>Jarkko Hietaniemin - several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
             <li>Olaf Heimburger - code changes to get JDeveloper plugin working under JDev 10.1.3 EA</li>
