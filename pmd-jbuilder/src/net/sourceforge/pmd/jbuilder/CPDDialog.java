@@ -11,19 +11,18 @@ import java.awt.event.WindowListener;
 import java.io.File;
 
 public class CPDDialog extends JFrame implements CPDListener, WindowListener {
-    private CPD cpd;
-    int progress = 0;
+
+    int progress;
     boolean firstToken = true;
     boolean firstFile = true;
     boolean firstNewTile = true;
     private VerticalFlowLayout verticalFlowLayout1 = new VerticalFlowLayout();
-    private JLabel jLabel1 = new JLabel();
-    private JProgressBar jProgressBar1 = new JProgressBar();
+    private JLabel label = new JLabel();
+    private JProgressBar progressBar = new JProgressBar();
     private boolean retCode = true;
 
     public CPDDialog(CPD cpd) {
         super("CPD Status Monitor");
-        this.cpd = cpd;
         cpd.setCpdListener(this);
         try {
             jbInit();
@@ -36,46 +35,29 @@ public class CPDDialog extends JFrame implements CPDListener, WindowListener {
         return retCode;
     }
 
-
     public void addedFile(int fileCount, File file) {
         if (firstFile) {
             firstFile = false;
-            jLabel1.setText("Adding Files...");
-            jProgressBar1.setString(file.getName());
-            jProgressBar1.setMaximum(fileCount);
+            label.setText("Adding files");
+            progressBar.setString(file.getName());
+            progressBar.setMaximum(fileCount);
             progress = 0;
         }
-        jProgressBar1.setValue(++progress);
+        progressBar.setValue(++progress);
     }
 
-
-    public boolean addingTokens(int tokenSetCount, int doneSoFar, String tokenSrcID) {
-        if (firstToken) {
-            firstToken = false;
-            jLabel1.setText("Adding Tokens...");
-            jProgressBar1.setMaximum(tokenSetCount);
+    public void phaseUpdate(int i) {
+        if (i == CPDListener.INIT) {
+            label.setText("Initializing");
+        } else if (i == CPDListener.HASH) {
+            label.setText("Hashing");
+        } else if (i == CPDListener.MATCH) {
+            label.setText("Matching");
+        } else if (i == CPDListener.GROUPING) {
+            label.setText("Grouping");
+        } else if (i == CPDListener.DONE) {
+            label.setText("Done");
         }
-        jProgressBar1.setValue(doneSoFar);
-        return retCode;
-    }
-
-
-    /*public boolean addedNewTile(Tile tile, int tilesSoFar, int totalTiles) {
-        if (firstNewTile) {
-            firstNewTile = false;
-            jLabel1.setText("Adding Tiles... ");
-            jProgressBar1.setMaximum(totalTiles);
-        }
-        if (jProgressBar1.getMaximum() != totalTiles)
-            jProgressBar1.setMaximum(totalTiles);
-
-        jProgressBar1.setValue(tilesSoFar);
-        return retCode;
-    }*/
-
-    public void comparisonCountUpdate(long long0) {
-        jLabel1.setText("Doing comparisons... " + long0);
-        jProgressBar1.setValue((int) long0);
     }
 
     public boolean wasCancelled() {
@@ -86,21 +68,13 @@ public class CPDDialog extends JFrame implements CPDListener, WindowListener {
         this.dispose();
     }
 
-    public CPDDialog() {
-        try {
-            jbInit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void jbInit() throws Exception {
-        jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
-        jLabel1.setText("CPD Status");
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setText("CPD Status");
         this.getContentPane().setLayout(verticalFlowLayout1);
         this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        this.getContentPane().add(jLabel1, null);
-        this.getContentPane().add(jProgressBar1, null);
+        this.getContentPane().add(label, null);
+        this.getContentPane().add(progressBar, null);
         this.setVisible(true);
         this.pack();
         this.setSize(new Dimension(400, 114));
@@ -111,29 +85,14 @@ public class CPDDialog extends JFrame implements CPDListener, WindowListener {
         this.show();
     }
 
-    public void phaseUpdate(int i) {
-    }
-
-    public void windowOpened(WindowEvent e) {
-    }
-
     public void windowClosing(WindowEvent e) {
         retCode = false;
     }
 
-    public void windowClosed(WindowEvent e) {
-
-    }
-
-    public void windowIconified(WindowEvent e) {
-    }
-
-    public void windowDeiconified(WindowEvent e) {
-    }
-
-    public void windowActivated(WindowEvent e) {
-    }
-
-    public void windowDeactivated(WindowEvent e) {
-    }
+    public void windowOpened(WindowEvent e) {   }
+    public void windowClosed(WindowEvent e) {   }
+    public void windowIconified(WindowEvent e) {   }
+    public void windowDeiconified(WindowEvent e) {   }
+    public void windowActivated(WindowEvent e) {   }
+    public void windowDeactivated(WindowEvent e) {   }
 }

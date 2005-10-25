@@ -16,30 +16,26 @@ import com.borland.jbuilder.node.JavaFileNode;
 import com.borland.jbuilder.node.PackageNode;
 import com.borland.primetime.PrimeTime;
 import com.borland.primetime.actions.ActionGroup;
-import com.borland.primetime.editor.*;
+import com.borland.primetime.editor.EditorAction;
+import com.borland.primetime.editor.EditorManager;
+import com.borland.primetime.editor.EditorPane;
 import com.borland.primetime.ide.*;
-import com.borland.primetime.node.FileNode;
 import com.borland.primetime.node.Node;
 import com.borland.primetime.properties.PropertyDialog;
 import com.borland.primetime.properties.PropertyManager;
-import com.borland.primetime.vfs.Url;
 import com.borland.primetime.viewer.TextNodeViewer;
 import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.cpd.LanguageFactory;
-import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.TokenEntry;
+import net.sourceforge.pmd.cpd.*;
 
 import javax.swing.*;
 import javax.swing.text.Document;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.*;
 
 
 public class PMDOpenTool {
@@ -208,8 +204,7 @@ public class PMDOpenTool {
         for (Iterator iter = net.sourceforge.pmd.jbuilder.ActiveRuleSetPropertyGroup.currentInstance.ruleSets.values().iterator(); iter.hasNext();) {
             net.sourceforge.pmd.jbuilder.RuleSetProperty rsp = (net.sourceforge.pmd.jbuilder.RuleSetProperty) iter.next();
             if (Boolean.valueOf(rsp.getGlobalProperty().getValue()).booleanValue()) {
-                RuleSet rules = rsp.getActiveRuleSet();
-                masterRuleSet.addRuleSet(rules);
+                masterRuleSet.addRuleSet(rsp.getActiveRuleSet());
             }
         }
         return masterRuleSet;
@@ -367,7 +362,7 @@ public class PMDOpenTool {
     }
 
     private static void addPMDWarningMessage(RuleViolation rv, JavaFileNode node) {
-        PMDMessage pmdMsg = new PMDMessage(node.getDisplayName() + ": " + rv.getRule().getName() + ": " + rv.getDescription() + " at line " + rv.getLine(), rv.getLine(), node);
+        PMDMessage pmdMsg = new PMDMessage(node.getDisplayName() + ": " + rv.getRule().getName() + ": " + rv.getDescription() + " at line " + rv.getNode().getBeginLine(), rv.getNode().getBeginLine(), node);
         pmdMsg.setForeground(Color.red);
         pmdMsg.setFont(stdMsgFont);
         Browser.getActiveBrowser().getMessageView().addMessage(msgCat, pmdMsg, false);
@@ -376,7 +371,6 @@ public class PMDOpenTool {
     private static void pmdCheck() {
         Browser.getActiveBrowser().getMessageView().clearMessages(null);
         Browser.getActiveBrowser().getMessageView().clearMessages(msgCat);
-        System.out.println("just called it!");
         Node node = Browser.getActiveBrowser().getActiveNode();
         if (node instanceof JavaFileNode) {
             TextNodeViewer viewer = (TextNodeViewer) Browser.getActiveBrowser().getViewerOfType(node, TextNodeViewer.class);
@@ -474,16 +468,16 @@ public class PMDOpenTool {
         Browser.getActiveBrowser().clearWaitMessages();
     }
 
-    private static void pmdCPDPackage(PackageNode packageNode, CPD cpd) {
+    private static void collectFiles(PackageNode packageNode, Set files) {
         Node[] fileNodes = packageNode.getDisplayChildren();
         for (int j = 0; j < fileNodes.length; j++) {
             if (fileNodes[j] instanceof JavaFileNode) {
                 try {
-                    cpd.add(new File(fileNodes[j].getLongDisplayName()));
+                    files.add(new File(fileNodes[j].getLongDisplayName()));
                 } catch (Exception e) {
                 }
             } else if (fileNodes[j] instanceof PackageNode) {
-                pmdCPDPackage((PackageNode) fileNodes[j], cpd);   //recursive call
+                collectFiles((PackageNode) fileNodes[j], files);   //recursive call
             }
         }
     }
@@ -491,264 +485,68 @@ public class PMDOpenTool {
     private static void pmdCPD(PackageNode startingNode) {
         try {
             Browser.getActiveBrowser().getMessageView().clearMessages(cpdCat);      //clear the message window
-            final CPD cpd = new CPD(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger(), new LanguageFactory().createLanguage(LanguageFactory.JAVA_KEY));
-            //cpd.setMinimumTileSize(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger());
+            CPD cpd = new CPD(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger(), new LanguageFactory().createLanguage(LanguageFactory.JAVA_KEY));
             CPDDialog cpdd = new CPDDialog(cpd);
 
-            if (startingNode != null) {   //rub cpd across the provided node
-                pmdCPDPackage(startingNode, cpd);
+            Set files = new HashSet();
+            if (startingNode != null) {
+                collectFiles(startingNode, files);
             } else {  //otherwise, traverse all the nodes looking for package nodes
                 Node[] nodes = Browser.getActiveBrowser().getActiveProject().getDisplayChildren();
                 for (int i = 0; i < nodes.length; i++) {
                     if (nodes[i] instanceof PackageNode) {
-                        PackageNode node = (PackageNode) nodes[i];
-                        String packageName = node.getName();
+                        String packageName = ((PackageNode) nodes[i]).getName();
                         if (packageName != null && !packageName.trim().equals("")) {  //if there is no name then this is probably the <Project Source> package - so ignore it so we don't get duplicates
-                            pmdCPDPackage(node, cpd);
+                            collectFiles((PackageNode)nodes[i], files);
                         }
                     }
                 }
             }
+
+            for (Iterator i = files.iterator(); i.hasNext();) {
+                cpd.add((File)i.next());
+            }
+
             cpd.go();
+
             if (cpdd.wasCancelled()) {  //if the dialog was cancelled by the user then let's get out of here
                 cpdd.close();
                 return;
             }
-            //Results results = cpd.getResults();
-            int resultCount = 0;
-            //if (results != null) {
-            //for (Iterator iter = results.getTiles(); iter.hasNext(); ) {
-            for (Iterator iter = cpd.getMatches(); iter.hasNext();) {
-                //Tile t = (Tile)iter.next();
-                Match m = (Match) iter.next();
-                resultCount++;
-                int tileLineCount = m.getLineCount();
-                int dupCount = 0;
-                for (Iterator iter2 = m.iterator(); iter2.hasNext();) {
-                    dupCount++;
-                    iter2.next();
-                }
-                CPDMessage msg = CPDMessage.createMessage(String.valueOf(dupCount) + " duplicates in code set: " + resultCount, m.getSourceCodeSlice());
+
+
+            SortedSet matches = new TreeSet(new MatchLengthComparator());
+            for (Iterator i = cpd.getMatches(); i.hasNext();) {
+                matches.add((Match) i.next());
+            }
+
+            for (Iterator i = matches.iterator(); i.hasNext();) {
+                Match m = (Match) i.next();
+                CPDMessage msg = CPDMessage.createMessage(getFileName(m.getFirstMark().getTokenSrcID()) + " contains a " + m.getLineCount() + " line block of duplicated code", m.getSourceCodeSlice());
                 for (Iterator iter2 = m.iterator(); iter2.hasNext();) {
                     TokenEntry mark = (TokenEntry) iter2.next();
-                    msg.addChildMessage(mark.getBeginLine(), tileLineCount, mark.getTokenSrcID());
+                    msg.addChildMessage(mark.getBeginLine(), m.getLineCount(), mark.getTokenSrcID());
                 }
                 Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, msg, false);
             }
 
             cpdd.close();
         } catch (Exception e) {
+            e.printStackTrace();
             Browser.getActiveBrowser().getMessageView().addMessage(cpdCat, new Message(e.toString()), false);
         }
     }
-}
 
-
-/**
- * Wrapper for the OpenTools message object
- */
-class PMDMessage extends Message {
-    //final LineMark MARK = new HighlightMark();
-    JavaFileNode javaNode;
-    int line;
-    int column;
-
-    /**
-     * Constructor
-     *
-     * @param msg  text message
-     * @param line line of code to associate this message with
-     * @param node the node that the code belongs to
-     */
-    public PMDMessage(String msg, int line, JavaFileNode node) {
-        super(msg);
-        this.line = line;
-        this.javaNode = node;
-    }
-
-    /**
-     * Called by JBuilder when user selects a message
-     */
-    public void selectAction(Browser browser) {
-        displayResult(browser, true);
-    }
-
-    /**
-     * Called by JBuilder when the user double-clicks a message
-     */
-    public void messageAction(Browser browser) {
-        displayResult(browser, true);
-    }
-
-    /**
-     * Position the code window to the line number that the message is associated with
-     *
-     * @param browser      JBuilder Browser
-     * @param requestFocus whether or not the code window should receive focus
-     */
-    private void displayResult(Browser browser, boolean requestFocus) {
-        try {
-            if (requestFocus || browser.isOpenNode(javaNode)) {
-                browser.setActiveNode(javaNode, requestFocus);
-                TextNodeViewer viewer = (TextNodeViewer) browser.getViewerOfType(javaNode,
-                        TextNodeViewer.class);
-                browser.setActiveViewer(javaNode, viewer, requestFocus);
-                EditorPane editor = viewer.getEditor();
-                editor.gotoLine(line, false, EditorPane.CENTER_IF_NEAR_EDGE);
-                if (requestFocus) {
-                    editor.requestFocus();
-                }
-                editor.setTemporaryMark(line, new EditorPane.HighlightMark());
-
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    public static String getFileName(String in) {
+        String sepChar = System.getProperty("file.separator");
+        int last = in.lastIndexOf(sepChar.charAt(0));
+        if (last == -1) {
+            return in;
         }
+        return in.substring(last+1);
     }
 }
 
-/**
- * Wrapper for the OpenTools message object
- */
-class CPDMessage extends Message {
-    final static LineMark MARK = new EditorPane.HighlightMark();
-    static Font PARENT_FONT = new Font("SansSerif", Font.BOLD, 12);
-    static Font CHILD_FONT = new Font("SansSerif", Font.PLAIN, 12);
-    String filename;
-    FileNode javaNode = null;
-    int startline = 0;
-    int lineCount = 0;
-    int column = 0;
-    boolean isParent = true;
-    ArrayList childMessages = new ArrayList();
-    String codeBlock = null;
-
-    private CPDMessage(String msg, String codeBlock) {
-        super(msg);
-        this.codeBlock = codeBlock;
-        this.setLazyFetchChildren(true);
-    }
-
-    private CPDMessage(String msg, int startline, int lineCount, String fileName) {
-        super(msg);
-        this.startline = startline;
-        this.lineCount = lineCount;
-        this.filename = fileName;
-        try {
-            File javaFile = new File(fileName);
-            javaNode = Browser.getActiveBrowser().getActiveProject().findNode(new Url(javaFile));
-        } catch (Exception e) {
-            Browser.getActiveBrowser().getMessageView().addMessage(Constants.MSGCAT_TEST, e.toString());
-        }
-    }
-
-    public static CPDMessage createMessage(String msg, String codeBlock) {
-        CPDMessage cpdm = new CPDMessage(msg, codeBlock);
-        cpdm.isParent = true;
-        cpdm.setFont(PARENT_FONT);
-        return cpdm;
-    }
-
-
-    public void addChildMessage(int startline, int endline, String fileName) {
-        this.lazyFetchChildren = true;
-        String sep = System.getProperty("file.separator");
-        String msg = fileName.substring(fileName.lastIndexOf(sep.charAt(0)) + 1) + ": line: " + String.valueOf(startline);
-        CPDMessage cpdmsg = new CPDMessage(msg, startline, endline, fileName);
-        cpdmsg.isParent = false;
-        cpdmsg.setFont(CHILD_FONT);
-        childMessages.add(cpdmsg);
-
-    }
-
-    public void fetchChildren(Browser browser) {
-        CodeFragmentMessage cfm = new CodeFragmentMessage(this.codeBlock);
-        browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, cfm);
-        for (Iterator iter = childMessages.iterator(); iter.hasNext();) {
-            browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, (CPDMessage) iter.next());
-        }
-    }
-
-    /**
-     * Called by JBuilder when user selects a message
-     *
-     * @param browser JBuilder Browser
-     */
-    public void selectAction(Browser browser) {
-        displayResult(browser, true);
-    }
-
-    /**
-     * Called by JBuilder when the user double-clicks a message
-     *
-     * @param browser JBuilder Browser
-     */
-    public void messageAction(Browser browser) {
-        displayResult(browser, true);
-    }
-
-    /**
-     * Position the code window to the line number that the message is associated with
-     *
-     * @param browser      JBuilder Browser
-     * @param requestFocus whether or not the code window should receive focus
-     */
-    private void displayResult(Browser browser, boolean requestFocus) {
-        MARK.removeEditor();
-        if (!isParent) {
-            try {
-                if (requestFocus || browser.isOpenNode(javaNode)) {
-                    browser.setActiveNode(javaNode, requestFocus);
-                    TextNodeViewer viewer = (TextNodeViewer) browser.getViewerOfType(javaNode,
-                            TextNodeViewer.class);
-                    browser.setActiveViewer(javaNode, viewer, requestFocus);
-                    EditorPane editor = viewer.getEditor();
-                    editor.gotoLine(startline, false, EditorPane.CENTER_IF_NEAR_EDGE);
-                    if (requestFocus) {
-                        editor.requestFocus();
-                    }
-                    /*EditorDocument ed = (EditorDocument)editor.getDocument();
-                    int[] lines = new int[lineCount];
-                    for (int i=0; i<lineCount; i++)
-                        lines[i] = startline+i-1;
-                    ed.setLightweightLineMarks(lines, MARK);*/
-                    editor.setTemporaryMark(startline, MARK);
-
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-}
-
-class CodeFragmentMessage extends Message {
-    String codeFragment = null;
-    static Font CODE_FONT = new Font("Monospaced", Font.ITALIC, 12);
-
-    public CodeFragmentMessage(String codeFragment) {
-        super("View Code");
-        this.setLazyFetchChildren(true);
-        this.codeFragment = codeFragment;
-
-    }
-
-    public void fetchChildren(Browser browser) {
-        BufferedReader reader = new BufferedReader(new StringReader(codeFragment));
-        try {
-            String line = reader.readLine();
-            while (line != null) {
-                Message msg = new Message(line);
-                msg.setFont(CODE_FONT);
-                browser.getMessageView().addMessage(PMDOpenTool.cpdCat, this, msg);
-                line = reader.readLine();
-            }
-        } catch (Exception e) {
-        }
-
-    }
-
-}
 
 /**
  * Used to highlight a line of code within a source file
