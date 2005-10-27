@@ -15,7 +15,6 @@
             <li>Nascif Abousalh Neto - Emacs plugin</li>
             <li>Tom Copeland - lead developer, JDeveloper plugin, initial Gel plugin, initial jEdit plugin, IDEAJ integration</li>
             <li>Jiger Patel - jEdit plugin</li>
-            <li>Gunnlaugur Thor Briem - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use of java.lang.Error</li>
             <li>Ole-Martin Mork - NetBeans plugin</li>
             <li>Brant Gurganus - JCreator integration, Swing GUI work</li>
             <li>Miguel Griffa - over a dozen rules, lots of documentation, and other improvements all over the place</li>
@@ -25,6 +24,7 @@
         </subsection>
         <subsection name="Committers emeritus">
         <ul>
+            <li>Gunnlaugur Thor Briem - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use of java.lang.Error</li>
             <li>Andrey Lumyanski - Gel plugin</li>
             <li>David Craine - JBuilder plugin</li>
             <li>Tom Burke - Eclipse plugin</li>
