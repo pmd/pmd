@@ -11,6 +11,8 @@
           <ul>
               <br/>
               <li><a href="http://qalab.sf.net">QALab</a> - Aggregates PMD + Checkstyle + FindBugs and tracks problems over time</li>
+              <br/>
+              <li><a href="http://xradar.sf.net">XRadar</a> - Using PMD, CPD, and lots of other projects to give measurements on standard software metrics such as package metrics and dependencies, code size and complexity, code duplications, coding violations and code-style violations.</li>
           </ul>
       </section>
       <section name="Commercial products">
