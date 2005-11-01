@@ -67,9 +67,9 @@ public class Foo {
     </example>
     </rule>
 
-    <rule name="AvoidConcatenatingNonLiteralsInStringBuffer"
+    <rule name="InefficientStringBuffering"
         message="Avoid concatenating nonliterals in a StringBuffer constructor or append()"
-        class="net.sourceforge.pmd.rules.AvoidConcatenatingNonLiteralsInStringBuffer">
+        class="net.sourceforge.pmd.rules.InefficientStringBuffering">
     <description>
 Avoid concatenating non literals in a StringBuffer constructor or append().
     </description>
