@@ -2,6 +2,21 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
+v3.1.1 - xx/xx/2005
+
+Runtime
+-------
+. RFE#1231112-Make the rule table columns sortable in preferences dialog (thanks to Brian R)
+. BUG#1231108-Fix the resizing issue
+. Upgrade to PMD 3.3
+. Add a PMD perspective
+. Add a Violations Overview view
+. Add a Violation Outline view
+. Add a Dataflow view
+. Continue internal code refactoring
+
+
+----------------------------------------------------------------------------------------
 v3.1.0 - 04/07/2005
 
 Runtime

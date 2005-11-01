@@ -1,11 +1,28 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
 
-IMPORTANT : SINCE v2.0 THE INSTALLATION PROCEDURE HAS BEEN CHANGED.
-            READ THE SETUP_README.TXT FILE IN THE DOWNLOADED PACKAGE
-            FOR INSTRUCTIONS.
-            
+v3.1.1 01/11/2005
+-----------------
 
+NEW : PMD perspective and views
+-------------------------------
+Great thanks to Sebastian Raffel.
+Sebastian has developped a PMD perspective with new views.
+The legacy "Violations view" still exists.
+By default, the PMD perspective is shown when a manual check is performed.
+Otherwise, simply go to the menu Window->Open perspective->Other... and select
+PMD in the PMD folder.
+
+UPDATED : PMD v3.3
+------------------
+This version includes version 3.3 of the PMD engine
+
+FIXED : Various bug fixes
+-------------------------
+Some internal bugs and some described in the user forum has been fixed.
+
+
+----------------------------------------------------------------------------------------
 v3.1.0 04/07/2005
 -----------------
 
