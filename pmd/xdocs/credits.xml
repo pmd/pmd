@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Johan Stuyts - nice patch to clean up build environment</li>
             <li>Brian Remedios - code improvements to Eclipse plugin</li>
             <li>Chris Grindstaff - fixed SWTException when Eclipse plugin is run on a file with syntax error</li>
             <li>Eduard Naum - fixed JDK 1.3 runtime problems in Eclipse plugin</li>

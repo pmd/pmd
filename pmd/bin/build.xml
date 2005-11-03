@@ -1,12 +1,14 @@
 <project name="pmd" default="pmd" basedir="../">
 
+<property file="bin/local.properties"/>
+
 <property name="dir.lib" value="lib\"/>
 <property name="dir.src" value="src\"/>
 <property name="dir.build" value="build\"/>
 <property name="dir.rulesets" value="rulesets\"/>
 <property name="dir.regress" value="regress\"/>
 <property name="version" value="3.3"/>
-<property name="keystore" value="/home/tom/myKeyStore"/>
+<property name="keystore" value="${keystore.path}"/>
 
 <path id="dependencies.path">
     <pathelement location="${dir.build}"/>
@@ -139,8 +141,8 @@
     <delete file="src/net/sourceforge/pmd/ast/JavaParserConstants.java"/>
     <delete file="src/net/sourceforge/pmd/ast/JavaParserTreeConstants.java"/>
     <delete file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java"/>
-    <jjtree target="etc/grammar/Java.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc/"/>
-    <javacc target="src/net/sourceforge/pmd/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="/usr/local/javacc/"/>
+    <jjtree target="etc/grammar/Java.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="${javacc-home.path}"/>
+    <javacc target="src/net/sourceforge/pmd/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="${javacc-home.path}"/>
     <delete file="src/net/sourceforge/pmd/ast/Java.jj"/>
     <replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException"/>
     <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="(Error)" value="(RuntimeException)"/>
@@ -160,7 +162,7 @@
             <exclude name="SymtabManager.java"/>
         </fileset>
     </delete>
-    <javacc target="../etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="/usr/local/javacc/"/>
+    <javacc target="../etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="${javacc-home.path}"/>
     <replace file="src/net/sourceforge/pmd/cpd/cppast/ParseException.java" token="extends Exception" value="extends RuntimeException"/>
 </target>
 
@@ -198,7 +200,7 @@
     <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
     <!-- ignoreIdentifiers="true" -->
     <cpd ignoreLiterals="true" minimumTokenCount="20" outputFile="cpd.txt" format="text">
-        <fileset dir="/usr/local/java/src/java/lang/ref">
+        <fileset dir="${java-source.path}/java/lang/ref">
             <include name="**/*.java"/>
         </fileset>
     </cpd>
