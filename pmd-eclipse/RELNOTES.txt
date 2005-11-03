@@ -1,6 +1,13 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
 
+v3.1.2 03/11/2005
+-----------------
+
+This is a minor release that fix missing elements from previous release.
+
+
+----------------------------------------------------------------------------------------
 v3.1.1 01/11/2005
 -----------------
 

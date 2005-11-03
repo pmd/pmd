@@ -2,7 +2,17 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
-v3.1.1 - xx/xx/2005
+v3.1.2 - 03/11/2005
+
+Runtime
+-------
+. RFE#1334241-Add an extension point to declare custom rulesets
+. BUG#1212311-Deselecting a rules should now work
+. Fix the missing ShowDataflowView issue
+
+
+----------------------------------------------------------------------------------------
+v3.1.1 - 01/11/2005
 
 Runtime
 -------
