@@ -1,5 +1,5 @@
 ????, 2005 - 3.4:
-New rules: NonThreadSafeSingleton (design ruleset), DefaultPackage (controversial ruleset)
+New rules: NonThreadSafeSingleton (design ruleset), DefaultPackage (controversial ruleset), MisleadingVariableName (naming ruleset)
 Fixed bug 1292745 - Removed unused source file ExceptionTypeChecking.java
 Fixed bug 1292609 - The JDK 1.3 parser now correctly handles certain 'assert' usages.  Also added a 'JDK 1.3' menu item to the Designer.
 Fixed bug 1292689 - Description wrong for UnnecessaryLocalBeforeReturn
@@ -482,3 +482,5 @@ Added new HTML report format
 
 June 25 2002 - 0.1:
 Initial release
+
+Using PMD?  Get "PMD Applied", the book!  http://pmdapplied.com/

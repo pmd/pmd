@@ -441,6 +441,38 @@ public class SomeClass {
     ]]>
         </example>
       </rule>
+
+    <rule name="MisleadingVariableName"
+          message="Avoid naming non-fields with the prefix 'm_'"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+Detects when a non-field has a name starting with 'm_'.  This usually
+indicates a field and thus is confusing.
+      </description>
+        <properties>
+            <property name="xpath" pluginname="true">
+                <value>
+                    <![CDATA[
+//VariableDeclaratorId
+[starts-with(@Image, 'm_')]
+[not (../../../FieldDeclaration)]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+  public class Foo {
+    private int m_foo; // OK
+    public void bar(String m_baz) {  // Bad
+      int m_boz = 42; // Bad
+    }
+  }
+  ]]>
+      </example>
+    </rule>
+
 </ruleset>
 
 
