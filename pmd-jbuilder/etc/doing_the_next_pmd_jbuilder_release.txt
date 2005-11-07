@@ -1,37 +1,37 @@
 Update the release date in the changelog
-Update the version number in build.xml and README.txt
+Update the version number in build.xml.
 
 ant dist
-rm -rf ~/tmp/pmd-jbuilder-1.3/
-mkdir -p ~/tmp/pmd-jbuilder-1.3/
-cp ../lib/pmd-3.3.jar ../lib/PMDOpenTool.jar ../lib/jaxen-1.1-beta-7.jar ~/tmp/pmd-jbuilder-1.3/
-cp ../LICENSE.txt ~/tmp/pmd-jbuilder-1.3/
-cp ../lib/ReadMe.txt ~/tmp/pmd-jbuilder-1.3/
-cd ~/tmp/pmd-jbuilder-1.3
-zip -q -r ../pmd-jbuilder-bin-1.3.zip *
+rm -rf ~/tmp/pmd-jbuilder-1.4/
+mkdir -p ~/tmp/pmd-jbuilder-1.4/
+cp ../lib/pmd-3.3.jar ../lib/PMDOpenTool.jar ../lib/jaxen-1.1-beta-7.jar ~/tmp/pmd-jbuilder-1.4/
+cp ../LICENSE.txt ~/tmp/pmd-jbuilder-1.4/
+cp ../lib/ReadMe.txt ~/tmp/pmd-jbuilder-1.4/
+cd ~/tmp/pmd-jbuilder-1.4
+zip -q -r ../pmd-jbuilder-bin-1.4.zip *
 cd -
 
 CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
 cd ../../
-cvs -q tag -D tomorrow "pmd_jbuilder_release_1_3" pmd-jbuilder
+cvs -q tag -D tomorrow "pmd_jbuilder_release_1_4" pmd-jbuilder
 
 Create the src release:
-rm -rf ~/tmp/pmd-jbuilder-1.3
-rm -rf ~/tmp/pmd-jbuilder-1.3.zip
+rm -rf ~/tmp/pmd-jbuilder-1.4
+rm -rf ~/tmp/pmd-jbuilder-1.4.zip
 cd pmd-jbuilder/etc/
 ant jarsrc
 cd ../../
 rm -rf tmp/
 mkdir tmp
 cd tmp
-cvs -q export -r pmd_jbuilder_release_1_3 pmdjbuilder
-mv pmdjbuilder/ pmd-jbuilder-1.3/
+cvs -q export -r pmd_jbuilder_release_1_4 pmdjbuilder
+mv pmdjbuilder/ pmd-jbuilder-1.4/
 cd ..
-cp pmd/lib/pmd-jbuilder-src-1.3.jar tmp/pmd-jbuilder-1.3/lib/
-mv tmp/pmd-jbuilder-1.3/ ~/tmp/
-cp pmd-jbuilder/lib/PMDOpenTool.jar ~/tmp/pmd-jbuilder-1.3/lib
+cp pmd/lib/pmd-jbuilder-src-1.4.jar tmp/pmd-jbuilder-1.4/lib/
+mv tmp/pmd-jbuilder-1.4/ ~/tmp/
+cp pmd-jbuilder/lib/PMDOpenTool.jar ~/tmp/pmd-jbuilder-1.4/lib
 cd ~/tmp/
-zip -q -r pmd-jbuilder-src-1.3.zip pmd-jbuilder-1.3/
+zip -q -r pmd-jbuilder-src-1.4.zip pmd-jbuilder-1.4/
 
 Unzip binary release into the JBuilder lib/ext directory
 TESTS:
@@ -39,10 +39,10 @@ TESTS:
 2) Can you run it it on a file and find some unused code?
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_jbuilder_release_1_3 pmd-jbuilder
+cvs rtag -d pmd_jbuilder_release_1_4 pmd-jbuilder
 and then retag everything
 
-ncftpput upload.sourceforge.net incoming/ pmd-jbuilder-src-1.3.zip pmd-jbuilder-bin-1.3.zip
+ncftpput upload.sourceforge.net incoming/ pmd-jbuilder-src-1.4.zip pmd-jbuilder-bin-1.4.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
