@@ -24,10 +24,10 @@ cd ../../
 rm -rf tmp/
 mkdir tmp
 cd tmp
-cvs -q export -r pmd_jbuilder_release_1_4 pmdjbuilder
-mv pmdjbuilder/ pmd-jbuilder-1.4/
+cvs -q export -r pmd_jbuilder_release_1_4 pmd-jbuilder
+mv pmd-jbuilder/ pmd-jbuilder-1.4/
 cd ..
-cp pmd/lib/pmd-jbuilder-src-1.4.jar tmp/pmd-jbuilder-1.4/lib/
+cp pmd-jbuilder/lib/pmd-jbuilder-src-1.4.jar tmp/pmd-jbuilder-1.4/lib/
 mv tmp/pmd-jbuilder-1.4/ ~/tmp/
 cp pmd-jbuilder/lib/PMDOpenTool.jar ~/tmp/pmd-jbuilder-1.4/lib
 cd ~/tmp/
