@@ -1,5 +1,6 @@
-??? - 1.4:
+November 7, 2005 - 1.4:
 Improved copy/paste detector (CPD) dialog
+Improved "PMD Status" messages.
 CPD output is now sorted by duplication length
 Improved CPD message window information
 

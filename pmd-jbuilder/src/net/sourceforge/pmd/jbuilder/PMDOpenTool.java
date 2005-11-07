@@ -321,7 +321,7 @@ public class PMDOpenTool {
         public void actionPerformed(final Browser browser) {
             Runnable r = new Runnable() {
                 public void run() {
-                    pmdCPD((PackageNode) browser.getProjectView().getSelectedNode());
+                    runCPDOnPackage((PackageNode) browser.getProjectView().getSelectedNode());
                 }
             };
             Thread t = new Thread(r);
@@ -335,7 +335,7 @@ public class PMDOpenTool {
         public void actionPerformed(Browser browser) {
             Runnable r = new Runnable() {
                 public void run() {
-                    pmdCPD(null);
+                    runCPDOnPackage(null);
                 }
             };
             Thread t = new Thread(r);
@@ -394,6 +394,7 @@ public class PMDOpenTool {
             if (fileNodes[j] instanceof JavaFileNode) {
                 JavaFileNode javaNode = (JavaFileNode) fileNodes[j];
                 try {
+                    Browser.getActiveBrowser().waitMessage("PMD Status", "PMD is checking " + javaNode.getDisplayName());
                     StringBuffer code = loadCodeToString(javaNode);
                     Report rpt = instanceCheck(code.toString(), rules);
                     if (rpt == null) {
@@ -482,7 +483,7 @@ public class PMDOpenTool {
         }
     }
 
-    private static void pmdCPD(PackageNode startingNode) {
+    private static void runCPDOnPackage(PackageNode startingNode) {
         try {
             Browser.getActiveBrowser().getMessageView().clearMessages(cpdCat);      //clear the message window
             CPD cpd = new CPD(CPDPropertyGroup.PROP_MIN_TOKEN_COUNT.getInteger(), new LanguageFactory().createLanguage(LanguageFactory.JAVA_KEY));
@@ -546,26 +547,3 @@ public class PMDOpenTool {
         return in.substring(last+1);
     }
 }
-
-
-/**
- * Used to highlight a line of code within a source file
- */
-/*
-class HighlightMark extends LineMark {
-    static Style highlightStyle;
-    static {
-        StyleContext context = EditorManager.getStyleContext();
-        highlightStyle = context.addStyle("line_highlight", null);
-        highlightStyle.addAttribute(MasterStyleContext.DISPLAY_NAME, "Line highlight");
-        StyleConstants.setBackground(highlightStyle, Color.yellow);
-        StyleConstants.setForeground(highlightStyle, Color.black);
-    }
-    public HighlightMark() {
-        super(highlightStyle);
-    }
-    public HighlightMark(boolean isLightWeight) {
-        super(isLightWeight, highlightStyle);
-    }
-}
-*/
