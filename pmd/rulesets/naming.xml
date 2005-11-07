@@ -48,10 +48,11 @@ Detects when a field, formal or local variable is declared with a long name.
     </description>
       <priority>3</priority>
       <properties>
+          <property name="minimum" description="The variable length reporting threshold" value="17"/>
           <property name="xpath" pluginname="true">
               <value>
                   <![CDATA[
-//VariableDeclaratorId[string-length(@Image) > 17]
+//VariableDeclaratorId[string-length(@Image) > $minimum]
                   ]]>
               </value>
           </property>

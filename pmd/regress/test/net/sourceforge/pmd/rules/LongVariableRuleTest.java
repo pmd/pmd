@@ -27,6 +27,14 @@ public class LongVariableRuleTest extends SimpleAggregatorTst {
        });
     }
 
+    public void testThreshold() {
+        rule.addProperty("minimum", "3");
+        runTests(new TestDescriptor[] {
+            new TestDescriptor(TEST6, "threshold test", 2, rule),
+        });
+
+    }
+
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +
     "    void foo(String argsWithExtraMustard) {} " + PMD.EOL +
@@ -60,6 +68,12 @@ public class LongVariableRuleTest extends SimpleAggregatorTst {
     "public class Foo {" + PMD.EOL +
     "    private int a2345678901234567;" + PMD.EOL +
     "    private int a23456789012345678;" + PMD.EOL +
+    "}";
+
+    private static final String TEST6 =
+    "public class Foo {" + PMD.EOL +
+    "    private int a234;" + PMD.EOL +
+    "    private int b234;" + PMD.EOL +
     "}";
 
 }

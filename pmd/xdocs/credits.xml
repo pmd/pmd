@@ -144,7 +144,7 @@
             <li>Will Sargent - AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
             <li>Bertrand Mollinier Toublet - Bug report which led to platform character set encoding enhancement</li>
             <li>Choi Ki Soo - Found bug in XMLRenderer</li>
-            <li>wedemann - Found bug in RuleSetFactory XPath message variable plugging</li>
+            <li>Gero Wedemann - Found bug in RuleSetFactory XPath message variable substitution</li>
             <li>Adrian Papari - Wrote the PapariTextRenderer</li>
             <li>Curt Cox -   some additions to the 'Similar Projects' page</li>
             <li>Michael Griffel - bug fix for XMLRenderer</li>

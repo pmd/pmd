@@ -17,9 +17,10 @@ Fixed bug 1313216 - Designer was not displaying 'final' attribute for ASTLocalVa
 Fixed bug 1314086 - Added logging-jakarta-commons as a short name for rulesets/logging-jakarta-commons.xml to SimpleRuleSetNameMapper.
 Implemented RFE 1311309 - Suppressed RuleViolation counts are now included in the reports.
 Implemented RFE 1220371 - Rule violation suppression via annotations.  Per the JLS, @SuppressWarnings can be placed before the following nodes: TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE.
+Implemented RFE 1275547 - OverrideBothEqualsAndHashcode now skips Comparator implementations.
 Applied patch 1306999 - Renamed CloseConnection to CloseResource and added support for checking Statement and ResultSet objects.
 Renamed AvoidConcatenatingNonLiteralsInStringBuffer to InefficientStringBuffering; new name is a bit more concise.
-Implemented RFE 1275547 - OverrideBothEqualsAndHashcode now skips Comparator implementations.
+Modified LongVariable; now it has a property which can be used to override the minimum reporting value.
 
 September 15, 2005 - 3.3:
 New rules: PositionLiteralsFirstInComparisons (in the design ruleset), UnnecessaryLocalBeforeReturn (design ruleset), ProperLogger (logging-jakarta-commons ruleset), UselessOverridingMethod (basic ruleset), PackageCase (naming ruleset), NoPackage (naming ruleset), UnnecessaryCaseChange (strings ruleset)
@@ -452,7 +453,7 @@ Added new ruleset: rulesets/imports.xml
 Changed sorting of RuleViolations to group Files together.
 Changed XML Renderer to improved format.
 Created DVSL Stylesheet for the new format.
-Moved the Cougaar rules out of the PMD core.
+Moved the Cougaxar rules out of the PMD core.
 Fixed bug 580093 - OverrideBothEqualsAndHashcodeRule reports a more correct line number.
 Fixed bug 581853 - UnusedLocalVariableRule now handles anonymous inner classes correctly.
 Fixed bug 580278 - this was a side effect of bug 581853.
@@ -483,4 +484,4 @@ Added new HTML report format
 June 25 2002 - 0.1:
 Initial release
 
-Using PMD?  Get "PMD Applied", the book!  http://pmdapplied.com/
+Using PMD?  Get "PMD Applied", the owner's manual!  http://pmdapplied.com/

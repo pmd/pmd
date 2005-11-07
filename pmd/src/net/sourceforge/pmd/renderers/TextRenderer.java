@@ -8,9 +8,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleViolation;
 
 import java.util.Iterator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class TextRenderer implements Renderer {
 
