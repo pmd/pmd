@@ -1,0 +1,59 @@
+<project name="pmd-jbuilder" default="compile" basedir="../">
+
+<property name="dir.lib" value="lib\"/>
+<property name="dir.src" value="src\"/>
+<property name="dir.build" value="build\"/>
+<property name="version" value="1.0"/>
+<property name="pmd.version" value="3.3"/>
+
+<path id="dependencies.path">
+    <pathelement location="${dir.build}"/>
+    <fileset dir="${dir.lib}">
+        <include name="*.jar"/>
+    </fileset>
+</path>
+
+<target name="delete">
+    <delete dir="${dir.build}"/>
+    <delete file="${dir.lib}\PMDExtension.jar"/>
+    <mkdir dir="${dir.build}"/>
+</target>
+
+<target name="compile" description="Compiles the code">
+    <mkdir dir="${dir.build}"/>
+    <javac  deprecation="false"
+            debug="true"
+            optimize="false"
+            srcdir="${dir.src}"
+            destdir="${dir.build}">
+    <classpath>
+
+    <path refid="dependencies.path"/>
+    </classpath>
+    </javac>
+</target>
+
+<target name="jar" depends="compile" description="Jars up the classes and rulesets">
+    <jar
+        jarfile="${dir.lib}\PMDExtension.jar"
+        includes="net/sourceforge/pmd/**/**/*.class"
+        basedir="${dir.build}">
+        <manifest>
+            <attribute name="Main-Class" value="net.sourceforge.pmd.bluej.PMDExtension"/>
+        </manifest>
+    </jar>
+</target>
+
+<target name="clean" depends="delete,compile" description="Does a complete recompile"/>
+
+<target name="deploy" depends="clean,jar" description="Deploys new jar file to my BlueJ install">
+    <copy todir="/home/tom/pmd/ides/bluej/lib/extensions">
+        <fileset dir="${dir.lib}">
+            <include name="PMDExtension.jar"/>
+            <include name="pmd-${pmd.version}.jar"/>
+            <include name="jaxen-1.1-beta-7.jar"/>
+        </fileset>
+    </copy>
+ </target>
+
+</project>
