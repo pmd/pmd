@@ -11,14 +11,12 @@ import java.net.URL;
 public class PMDExtension extends Extension implements PackageListener {
 
     public void startup (BlueJ bluej) {
-/*
         // Register a generator for menu items
         bluej.setMenuGenerator(new MenuBuilder());
 
         // Register a "preferences" panel generator
         Preferences myPreferences = new Preferences(bluej);
         bluej.setPreferenceGenerator(myPreferences);
-*/
 
         // Listen for BlueJ events at the "package" level
         bluej.addPackageListener(this);
