@@ -40,6 +40,7 @@
         basedir="${dir.build}">
         <manifest>
             <attribute name="Main-Class" value="net.sourceforge.pmd.bluej.PMDExtension"/>
+            <attribute name="Class-Path" value="pmd/pmd-${pmd.version}.jar pmd/jaxen-1.1-beta-7.jar"/>
         </manifest>
     </jar>
 </target>
@@ -50,6 +51,10 @@
     <copy todir="/home/tom/pmd/ides/bluej/lib/extensions">
         <fileset dir="${dir.lib}">
             <include name="PMDExtension.jar"/>
+        </fileset>
+    </copy>
+    <copy todir="/home/tom/pmd/ides/bluej/lib/extensions/pmd">
+        <fileset dir="${dir.lib}">
             <include name="pmd-${pmd.version}.jar"/>
             <include name="jaxen-1.1-beta-7.jar"/>
         </fileset>
