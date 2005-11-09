@@ -10,6 +10,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -21,9 +22,19 @@ public class MenuBuilder extends MenuGenerator {
 
     private BClass curClass;
     private Frame frame;
+    private RuleSet ruleSet = new RuleSet();
 
     public MenuBuilder(Frame frame) {
         this.frame = frame;
+
+        try {
+            RuleSetFactory rsf = new RuleSetFactory();
+            ruleSet.addRuleSet(rsf.createRuleSet("rulesets/basic.xml"));
+            ruleSet.addRuleSet(rsf.createRuleSet("rulesets/unusedcode.xml"));
+        } catch (RuleSetNotFoundException rsnfe) {
+            System.out.println("Hm, PMD couldn't find its rules");
+            rsnfe.printStackTrace();
+        }
     }
 
     public JMenuItem getClassMenuItem(BClass aClass) {
@@ -45,19 +56,14 @@ public class MenuBuilder extends MenuGenerator {
 
         public void actionPerformed(ActionEvent anEvent) {
             try {
-
                 int textLen = curClass.getEditor().getTextLength();
                 TextLocation lastLine = curClass.getEditor().getTextLocationFromOffset(textLen);
                 String code = curClass.getEditor().getText(new TextLocation(0,0), lastLine);
 
-                RuleSetFactory rsf = new RuleSetFactory();
-                RuleSet rs = new RuleSet();
-                rs.addRuleSet(rsf.createRuleSet("rulesets/basic.xml"));
-                rs.addRuleSet(rsf.createRuleSet("rulesets/unusedcode.xml"));
                 RuleContext ctx = new RuleContext();
                 ctx.setSourceCodeFilename(curClass.getJavaClass().getName());
                 StringReader reader = new StringReader(code);
-                new PMD(new TargetJDK1_4()).processFile(reader, rs, ctx);
+                new PMD(new TargetJDK1_4()).processFile(reader, ruleSet, ctx);
 
                 StringBuffer msg = new StringBuffer("");
                 if (ctx.getReport().size() == 0) {
