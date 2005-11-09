@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jeff Chamblee - suggested better message for UnnecessaryCaseChange, bug report for CompareObjectsWithEquals</li>
             <li>Dave Brosius - suggested MisleadingVariableName rule, a couple of nice patches to clean up some string handling inefficiencies, non-static class usages, and unclosed streams/readers - found with Findbugs, I daresay :-)</li>
             <li>Johan Stuyts - nice patch to clean up build environment</li>
             <li>Brian Remedios - code improvements to Eclipse plugin</li>
@@ -87,7 +88,6 @@
             <li>Nicolai Czempin - Bug report for UnnecessaryParentheses, various rule suggestions, additional PMD backronyms</li>
             <li>Kevin Routley - reported Ant task dependency problem, reported problems with RuleSetFactory unit tests</li>
             <li>Dennis Klemann - noted that errors were missing from text report, reported JDK 1.5 parsing bug with ExceptionSignatureDeclaration, reported fix for pmd.bat problem</li>
-            <li>Jeff Chamblee - bug report for CompareObjectsWithEquals</li>
             <li>Tor Norbye - Suggested CompareObjectsWithEquals</li>
             <li>Thomas Skariah - bug reports for MethodArgumentCouldBeFinal and AvoidReassigningParameters</li>
             <li>Tom Parker - bug report for MethodReturnsInternalArray, found missed case in NullAssignment, suggested addition to UnnecessaryBooleanAssertion, suggested splitting up AvoidThrowingCertainExceptionTypes, AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>

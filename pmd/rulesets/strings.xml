@@ -90,10 +90,10 @@ public class Foo {
     </rule>
 
     <rule name="UnnecessaryCaseChange"
-          message="Using String.equalsIgnoreCase with toUpperCase/toLowerCase is usually unnecessary"
+          message="Using equalsIgnoreCase() is cleaner than using toUpperCase/toLowerCase().equals()"
            class="net.sourceforge.pmd.rules.UnnecessaryCaseChange">
        <description>
-Use String.equalsIgnoreCase rather than String.toUpperCase().equals()
+Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
        </description>
        <priority>3</priority>
        <example>
