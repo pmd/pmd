@@ -26,6 +26,9 @@ public class EmptyCatchBlockRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST5, "empty try with finally", 0, rule),
            new TestDescriptor(TEST6, "InterruptedException is OK", 0, rule),
            new TestDescriptor(TEST7, "CloneNotSupportedException is OK", 0, rule),
+           new TestDescriptor(TEST8, "single-line comment is OK", 0, rule),
+           new TestDescriptor(TEST9, "multiple-line comment is OK", 0, rule),
+           new TestDescriptor(TEST10, "Javadoc comment is OK", 0, rule),
        });
     }
 
@@ -87,6 +90,30 @@ public class EmptyCatchBlockRuleTest extends SimpleAggregatorTst {
     " void foo() {" + PMD.EOL +
     "  try {" + PMD.EOL +
     "  } catch (CloneNotSupportedException e) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    public static final String TEST8 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  try {} catch (Exception e) { // Commented " + PMD.EOL +
+    " }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    public static final String TEST9 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  try {} catch (Exception e) { /* Commented */" + PMD.EOL +
+    " }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    public static final String TEST10 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  try {} catch (Exception e) { /** Commented */" + PMD.EOL +
+    " }" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 }

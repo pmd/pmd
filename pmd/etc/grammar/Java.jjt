@@ -147,6 +147,17 @@ public class JavaParser {
       c.clean(node);
   }
 
+  private boolean isPrecededByComment(Token tok) {
+      boolean res = false;
+      while (!res && tok.specialToken != null) {
+          tok = tok.specialToken;
+          res = tok.kind == SINGLE_LINE_COMMENT ||
+                tok.kind == FORMAL_COMMENT ||
+                tok.kind == MULTI_LINE_COMMENT;
+      }
+      return res;
+  }
+
 }
 PARSER_END(JavaParser)
 
@@ -1733,9 +1744,9 @@ void LabeledStatement() :
 }
 
 void Block() :
-{}
+{Token t;}
 {
-  "{" ( BlockStatement() )* "}"
+  "{" ( BlockStatement() )* t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); }; }
 }
 
 void BlockStatement():

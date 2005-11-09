@@ -21,7 +21,7 @@ which should either be acted on or reported.
               <value>
     <![CDATA[
 //CatchStatement
- [count(Block/BlockStatement) = 0]
+ [count(Block/BlockStatement) = 0 and Block/@containsComment = 'false']
  [FormalParameter/Type/ReferenceType
    /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
  ]
