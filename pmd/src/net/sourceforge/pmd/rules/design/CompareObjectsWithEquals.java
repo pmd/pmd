@@ -6,13 +6,7 @@ import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class CompareObjectsWithEquals extends AbstractRule {
 
@@ -37,28 +31,17 @@ public class CompareObjectsWithEquals extends AbstractRule {
             return data;
         }
 
-        check((Scope)node.getScope(), node, data);
-        check(node.getScope().getEnclosingMethodScope(), node, data);
-        return data;
-    }
+        ASTName n0 = (ASTName)node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+        ASTName n1 = (ASTName)node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0);
 
-    private void check(Scope scope, SimpleNode node, Object ctx) {
-        Map vars = scope.getVariableDeclarations();
-        for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration key = (VariableNameDeclaration)i.next();
-            if (key.isPrimitiveType() || key.isArray()) {
-                continue;
-            }
-            List usages = (List)vars.get(key);
-            if (usages.isEmpty()) {
-                continue;
-            }
-            for (Iterator j = usages.iterator(); j.hasNext();) {
-                if (((NameOccurrence)j.next()).getLocation().jjtGetParent().jjtGetParent().jjtGetParent() == node) {
-                    addViolation(ctx, node);
-                    return;
-                }
+        if (n0.getNameDeclaration() instanceof VariableNameDeclaration && n1.getNameDeclaration() instanceof VariableNameDeclaration) {
+            VariableNameDeclaration nd0 = (VariableNameDeclaration)n0.getNameDeclaration();
+            VariableNameDeclaration nd1 = (VariableNameDeclaration)n1.getNameDeclaration();
+            if (nd0.isReferenceType() && nd1.isReferenceType()) {
+                addViolation(data, node);
             }
         }
+
+        return data;
     }
 }

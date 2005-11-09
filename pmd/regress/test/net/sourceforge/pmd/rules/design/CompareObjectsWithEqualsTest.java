@@ -22,6 +22,7 @@ public class CompareObjectsWithEqualsTest extends SimpleAggregatorTst{
            new TestDescriptor(TEST4, "missed hit - qualified names.  that's ok, we can't resolve the types yet, so better to skip this for now", 0, rule),
            new TestDescriptor(TEST5, "more qualified name skippage", 0, rule),
            new TestDescriptor(TEST6, "locals", 1, rule),
+           new TestDescriptor(TEST7, "2 locals declared on one line", 1, rule),
        });
     }
 
@@ -66,6 +67,16 @@ public class CompareObjectsWithEqualsTest extends SimpleAggregatorTst{
     "  String a = \"foo\";" + PMD.EOL +
     "  String b = \"bar\";" + PMD.EOL +
     "  return a == b;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  String a,b;" + PMD.EOL +
+    "  a = \"foo\";" + PMD.EOL +
+    "  b = \"bar\";" + PMD.EOL +
+    "  if (a == b) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
