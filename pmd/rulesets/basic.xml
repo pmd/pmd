@@ -21,12 +21,15 @@ which should either be acted on or reported.
               <value>
     <![CDATA[
 //CatchStatement
- [count(Block/BlockStatement) = 0 and Block/@containsComment = 'false']
+ [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
  [FormalParameter/Type/ReferenceType
    /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
  ]
  ]]>
              </value>
+          </property>
+          <property name="allowCommentedBlocks" description="Empty blocks containing comments will be skipped">
+              <value>false</value>
           </property>
       </properties>
         <priority>3</priority>
