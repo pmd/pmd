@@ -30,7 +30,6 @@ which should either be acted on or reported.
           </property>
       </properties>
         <priority>3</priority>
-
       <example>
   <![CDATA[
 public void doSomething() {

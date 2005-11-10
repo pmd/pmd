@@ -21,7 +21,7 @@ Implemented RFE 1311309 - Suppressed RuleViolation counts are now included in th
 Implemented RFE 1220371 - Rule violation suppression via annotations.  Per the JLS, @SuppressWarnings can be placed before the following nodes: TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE.
 Implemented RFE 1275547 - OverrideBothEqualsAndHashcode now skips Comparator implementations.
 Applied patch 1306999 - Renamed CloseConnection to CloseResource and added support for checking Statement and ResultSet objects.
-Applied patch 1344754 - EmptyCatchBlock now skips catch blocks that contain comments.
+Applied patch 1344754 - EmptyCatchBlock now skips catch blocks that contain comments.  This is also requested in RFE 1347884.
 Renamed AvoidConcatenatingNonLiteralsInStringBuffer to InefficientStringBuffering; new name is a bit more concise.
 Modified LongVariable; now it has a property which can be used to override the minimum reporting value.
 

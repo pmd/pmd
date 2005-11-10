@@ -29,6 +29,21 @@ public class Bar {
  private int bar; //NOPMD
 }
 </source>
+           <p>You can use whatever text string you want to suppress warnings, for example, here's
+ how to use TURN_OFF_WARNINGS as the suppressor:</p>
+<source>
+$ cat Foo.java
+public class Foo {
+  void bar() {
+    int x = 2; // TURN_OFF_WARNINGS
+  }
+}
+
+$ ./pmd.sh Foo.java text unusedcode -excludemarker TURN_OFF_WARNINGS
+No problems found!
+UnusedLocalVariable rule violation suppressed by //NOPMD in /home/tom/pmd/pmd/bin/Foo.java
+</source>
+           
            <p>There's an additional note on NOPMD usage <a href="http://sourceforge.net/forum/message.php?msg_id=3041261">here</a></p>
        </subsection>
 
