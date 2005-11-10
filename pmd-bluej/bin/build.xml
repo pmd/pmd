@@ -78,11 +78,11 @@
 <target name="deploysfserver" depends="mergejars" description="Deploys new jar file to my BlueJ install">
     <echo message="Uploading jar file to SourceForge"/>
     <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/pmd/pmd-bluej/lib/PMDExtension.jar tom@infoether.com:public_html/"/>
+        <arg line=" /home/tom/pmd/pmd-bluej/lib/PMDExtension.jar tomcopeland@pmd.sf.net:/home/groups/p/pm/pmd/htdocs/"/>
     </exec>
     <echo message="Uploading extensions.xml to SourceForge"/>
     <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/pmd/pmd-bluej/bin/extensions.xml tom@infoether.com:public_html/"/>
+        <arg line=" /home/tom/pmd/pmd-bluej/bin/extensions.xml tomcopeland@pmd.sf.net:/home/groups/p/pm/pmd/htdocs/"/>
     </exec>
  </target>
 
