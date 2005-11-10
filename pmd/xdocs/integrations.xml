@@ -13,59 +13,74 @@
       <td><b>CVS Module</b></td>
       <td><b>Maintainers</b></td>
       </tr>
-  <tr><td>Eclipse</td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-eclipse/">pmd-eclipse</a></td>
-      <td>Philippe Herlin</td>
-  </tr>
-  <tr><td>Emacs</td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-emacs/">pmd-emacs</a></td>
-      <td>No one at the moment</td>
-  </tr>
-  <tr><td>JBuilder</td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jbuilder/">pmd-jbuilder</a></td>
-      <td>No one at the moment</td>
-  </tr>
-  <tr><td>NetBeans/Sun Java Studio Enterprise/Creator</td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-netbeans/">pmd-netbeans</a></td>
-      <td>Radim Kubacki</td>
-  </tr>
-  <tr><td>JEdit</td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jedit/">pmd-jedit</a></td>
-      <td>Jiger Patel</td>
-  </tr>
-  <tr><td>jDeveloper</td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jdeveloper/">pmd-jdeveloper</a></td>
-      <td>Tom Copeland</td>
-  </tr>
-  <tr><td>Maven</td>
-      <td>N/A</td>
-      <td>Vincent Massol</td>
-  </tr>
-    <tr><td>Gel</td>
-        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-gel/">pmd-gel</a></td>
-        <td>Andrei Lumianski</td>
+
+    <tr><td><a href="#bluej">BlueJ</a></td>
+        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-bluej/">pmd-bluej</a></td>
+        <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
-    <tr><td>TextPad</td>
-        <td>N/A</td>
-        <td>Jeff Epstein</td>
-    </tr>
-    <tr><td>Omnicore's CodeGuide</td>
+
+    <tr><td><a href="#codeguide">CodeGuide</a></td>
         <td>N/A</td>
         <td>Austin Moore</td>
     </tr>
-    <tr><td>JCreator</td>
+
+  <tr><td><a href="#eclipse">Eclipse</a></td>
+      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-eclipse/">pmd-eclipse</a></td>
+      <td>Philippe Herlin</td>
+  </tr>
+
+  <tr><td><a href="#emacs">Emacs</a></td>
+      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-emacs/">pmd-emacs</a></td>
+      <td>Nascif Abousalh Neto</td>
+  </tr>
+
+    <tr><td><a href="#gel">Gel</a></td>
+        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-gel/">pmd-gel</a></td>
+        <td>Andrei Lumianski</td>
+    </tr>
+
+    <tr><td><a href="#idea">IntelliJ IDEA</a></td>
+        <td>N/A</td>
+        <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
+    </tr>
+
+  <tr><td><a href="#jbuilder">JBuilder</a></td>
+      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jbuilder/">pmd-jbuilder</a></td>
+      <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
+  </tr>
+
+    <tr><td><a href="#jcreator">JCreator</a></td>
         <td>N/A</td>
         <td>Brant Gurganus</td>
     </tr>
-  <tr><td>IntelliJ IDEA</td>
-      <td>N/A</td>
-      <td>Tom Copeland</td>
+
+    <tr><td><a href="#jdeveloper">JDeveloper</a></td>
+        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jdeveloper/">pmd-jdeveloper</a></td>
+        <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
+    </tr>
+
+    <tr><td><a href="#jedit">JEdit</a></td>
+        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jedit/">pmd-jedit</a></td>
+        <td>Jiger Patel</td>
+    </tr>
+
+    <tr><td><a href="#maven">Maven</a></td>
+        <td>N/A</td>
+        <td><a href="http://blogs.codehaus.org/people/vmassol/">Vincent Massol</a></td>
+    </tr>
+
+  <tr><td><a href="#netbeans">NetBeans/Sun Java Studio Enterprise/Creator</a></td>
+      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-netbeans/">pmd-netbeans</a></td>
+      <td>Radim Kubacki</td>
   </tr>
-  <tr><td>Ant</td>
-      <td>N/A</td>
-      <td>Tom Copeland</td>
-  </tr>
-  </table>
+
+    <tr><td><a href="#textpad">TextPad</a></td>
+        <td>N/A</td>
+        <td>Jeff Epstein</td>
+    </tr>
+
+
+</table>
       </subsection>
         <subsection name="General comments">
             <p>A general note - most plugins include the PMD jar file, which has the rulesets
@@ -73,7 +88,46 @@
             use (i.e., "rulesets/unusedcode.xml") looks like a filesystem reference, it's really
             being used by a getResourceAsStream() call to load it out of the PMD jar file.</p>
         </subsection>
-      <subsection name="Eclipse">
+
+
+        <a name="bluej"/><subsection name="BlueJ">
+  <p>
+  <a href="http://bluej.org/">BlueJ</a> is a teaching IDE.  To install the PMD extension for BlueJ, download
+ the <a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=169167">PMDExtension jar file</a>
+ and place it in your <code>bluej/lib/extensions/</code> directory.
+  </p>
+        </subsection>
+
+
+        <a name="codeguide"/><subsection name="Code Guide">
+  <p>Here's how to set up PMD with Omnicore's CodeGuide (taken from <a href="http://sourceforge.net/forum/forum.php?thread_id=1098291&amp;forum_id=188193">here</a>):
+ </p>
+  <ul>
+      <li>Download the PMD zip file from <a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=51441">here</a></li>
+      <li>Unpack the zip file to your local disk. I put it in /Applications/</li>
+      <li>Add the following tool to CodeGuide (Tools->Configure Tools->New):</li>
+      <ul>
+          <li>Name: PMD </li>
+          <li>Kind: Tool for directories</li>
+          <li>Executable: /Applications/pmd-3.3/bin/pmd.sh</li>
+          <li>Arguments: $DIRECTORY_PATH$ emacs $USER_ARGUMENTS$</li>
+      </ul>
+  </ul>
+  <p>Now you can right click on a source directory, select the PMD tool and a dialog box will appear.
+ Type in the name of a rule set (e.g. unusedcode). PMD is then executed on the directory you
+ selected with the rule set you specified. Since CodeGuide understands the emacs syntax you can
+ click on the file name and CodeGuide will jump to that file and line number.</p>
+
+    <p>Note: I set this up on Mac OS X. It should work on other unix variations just the same.
+    Of course you need to change the "Executable" setting above to where your PMD is installed.
+    On Windows you need to use the pmd.bat file instead of pmd.sh.</p>
+
+    <p>If you haven't heard of CodeGuide before, <a href="http://www.omnicore.com/">check it out</a>.
+ It's a great IDE.</p>
+        </subsection>
+
+
+      <a name="eclipse"/><subsection name="Eclipse">
 <p>
 Integration into Eclipse is accomplished through the extensive
 Plugin architecture provided by Eclipse.  It is written in Java,
@@ -94,7 +148,10 @@ make suggestions, and possibly even handle the care and feeding of
 the Eclipse plugin.
 </p>
       </subsection>
-      <subsection name="Emacs">
+
+
+
+      <a name="emacs"/><subsection name="Emacs">
     <p>
     Integration with GNU Emacs is performed through an ELisp package, pmd.el.
     It supports two commands, &quot;pmd-current-buffer&quot; and &quot;pmd-current-dir&quot;.
@@ -102,50 +159,10 @@ the Eclipse plugin.
     directly to the source code position associated with the PMD warnings.
           </p>
       </subsection>
-      <subsection name="Borland JBuilder">
-<p>
-To enable this OpenTool in JBuilder, place the PMDOpenTool.jar file AND the pmd-x.x.jar file (where
-x.x is the version id) into JBuilder's lib/ext directory.  Once JBuilder is restart, the PMD OpenTool
-will be enabled.
-What you can do:
-<ul>
-<li>Check a single file by bringing up the context menu from the file tab and selecting PMDCheck</li>
-<li>Configure the rulesets that the PMD OpenTool will use by selecting Tools->PMD->Configure PMD</li>
-<li>Check all the files in a project by bringing up the context menu for the project node and selecting PMD Check Project</li>
-</ul>
-</p>
-<p>When running PMD, the results will be displayed in the MessageView under a tab called PMD Results.  If you click on a
-violation message within this view, you will be taken to the line in the source code where the violation was detected.
-</p>
-<p>Things still to do:
-<ul>
-<li>Enable selection of individual rules within a rule set (maybe)</li>
-<li>Optional insertion of @todo comments at the point of a violation</li>
-<li>Possibly provide configurable ability to limit the number of violations per rule per file</li>
-</ul>
-</p>
-      </subsection>
 
-      <subsection name="JEdit">
-<p>The way I use the JEdit plugin is:</p>
-<ul>
-<li>Dock the ErrorList by going to Utilities->Global Options->Docking and putting ErrorList at the bottom of the screen</li>
-<li>Open the File Browser if it isn't already open</li>
-<li>Double-click on a source directory</li>
-<li>Select Plugins->PMD->Check directory recursively</li>
-</ul>
-<p>Note that you can select individual rules by going to Utilities->Global Options->Plugin Options->PMD.  Also,
-you can change the plugin to prompt you for a directory to check by going to that same menu and
-selecting the "Ask for Directory" checkbox.</p>
 
-      </subsection>
-
-<subsection name="Maven">
-<p>Please see <a href="http://maven.apache.org/reference/plugins/pmd/">the Maven plugins web site</a> for more information.</p>
-</subsection>
-
-        <subsection name="Gel">
-  <p>Here's how to set up the PMD-Gel plugin:</p>
+        <a name="gel"/><subsection name="Gel">
+  <p>Here's how to set up the Gel plugin:</p>
   <ul>
   <li>Download the pmd-gel-[version].zip file</li>
   <li>Close Gel</li>
@@ -161,20 +178,141 @@ selecting the "Ask for Directory" checkbox.</p>
   a configuration panel will pop up.  You can pick which ruleset you want to run and
       you can also pick whether you want to run PMD on the current file or on every
       source file in your project.</p>
-    <p>Note that the source code needs to be compilable before PMD can check it.</p>
         </subsection>
 
-        <subsection name="TextPad">
 
+        <a name="idea"/><subsection name="IDEA">
+  <p>There's not a "real" - i.e., integrated into the same Java VM - plugin for IDEA, but using it as an IDEA "External Tool"
+  works OK.  Here's how to set it up:</p>
+  <ul>
+  <li>Open IDEA and go to File->Settings</li>
+  <li>Click on the "External Tools" icon</li>
+  <li>Click on the Add button</li>
+  <li>Fill in the blocks</li>
+  <ul>
+  <li>Name: PMD</li>
+  <li>Description: PMD, good for what ails you.</li>
+  <li>Menu: Select the "Main menu", "Project views", "Editor menu", and "Search results" checkboxes.</li>
+  <li>Program: $JDKPath$\bin\java.exe</li>
+  <li>For the next parameter you'll need to plug in the location of your PMD installation and the rulesets you want to use</li>
+  <li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-3.3.jar;c:\pmd\lib\jaxen-1.1-beta-7.jar net.sourceforge.pmd.PMD $FilePath$ ideaj unusedcode,imports $Sourcepath$ $FileClass$.method $FileName$ </li>
+  </ul>
+  </ul>
+  <p>That's pretty much it.  Now you can right click on a source directory and select PMD, it'll run recursively on the source files, and the results should
+  be displayed in a window and hyperlinked into the correct file and line of code.  I usually
+  right-click on the message window title bar and unselect "autohide" so the window doesn't go
+  away every time I fix something in the code window.</p>
+        </subsection>
+
+
+      <a name="jbuilder"/><subsection name="JBuilder">
+<p>
+To enable this OpenTool in JBuilder:</p>
+ <ul>
+     <li>Download the <a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=53028">latest binary release</a>.</li>
+     <li>Unzip it into your <code>jbuilder/lib/ext/</code> directory</li>
+     <li>Restart JBuilder</li>
+ </ul>
+ What you can do:
+<ul>
+<li>Check a single file by bringing up the context menu from the file tab and selecting PMDCheck</li>
+<li>Configure the rulesets that the PMD OpenTool will use by selecting Tools->PMD->Configure PMD</li>
+<li>Check all the files in a project by bringing up the context menu for the project node and selecting PMD Check Project</li>
+<li>Locate duplicate code by right clicking on a package and selection "Check with CPD"</li>
+</ul>
+<p>When running PMD, the results will be displayed in the MessageView under a tab called PMD Results.  If you click on a
+violation message within this view, you will be taken to the line in the source code where the violation was detected.
+</p>
+<p>Things still to do:
+<ul>
+<li>Enable selection of individual rules within a rule set (maybe)</li>
+<li>Optional insertion of @todo comments at the point of a violation</li>
+<li>Possibly provide configurable ability to limit the number of violations per rule per file</li>
+</ul>
+</p>
+      </subsection>
+
+
+
+        <a name="jcreator"/><subsection name="JCreator">
+  <p>
+      <ol>
+          <li>Open Configure > Options</li>
+          <li>Go to the Tools panel</li>
+          <li>Click New > Program</li>
+          <li>Browse for PMD's pmd.bat</li>
+          <li>Put quotations around the path if it has spaces.</li>
+          <li>Set the initial directory to PMD's \bin directory</li>
+          <li>Check capture output</li>
+          <li>Put '"$[PrjDir]" emacs' followed by desired rulesets in the arguments</li>
+      </ol>
+      <p>To  run PMD on a project, just pick pmd from the Tools menu.</p>
+  </p>
+        </subsection>
+
+
+        <a name="jdeveloper"/><subsection name="JDeveloper">
+  <p>To install the extension for JDeveloper 10.1.2, download the binary release and unzip it
+      into your jdev/lib/ext directory.  Then restart JDeveloper.  To use it, open the
+Tools-&amp;Preferences menu, click on the PMD option, and select
+a couple of rules to try.  To run it, right click on either
+a Java source file or a .jpr file (i.e., a project file) and
+select PMD.  Any rule violations should show up in a
+LogWindow at the bottom of the screen.
+  </p>
+           <P>To install the extension for JDeveloper 10.1.3, use JDeveloper's built in "update center"
+               functionality. Fire up JDeveloper, click "Help", click "Check for Updates",
+ then click "Add" to add a new update center and enter:
+<UL>
+<LI>Name: PMD Update Center</LI>
+<LI>Location: http://pmd.sf.net/center.xml</LI>
+</UL>
+</P>
+            <P>Click your way through the ensuing dialogs and you'll install the plugin.  Note
+            that I've set up the plugin for the latest JDeveloper 10.1.3 EA, so if you're using an earlier
+            preview release of 10.1.3 it might not work.</P>
+        </subsection>
+
+
+      <a name="jedit"/><subsection name="JEdit">
+<p>The way I use the JEdit plugin is:</p>
+<ul>
+<li>Dock the ErrorList by going to Utilities->Global Options->Docking and putting ErrorList at the bottom of the screen</li>
+<li>Open the File Browser if it isn't already open</li>
+<li>Double-click on a source directory</li>
+<li>Select Plugins->PMD->Check directory recursively</li>
+</ul>
+<p>Note that you can select individual rules by going to Utilities->Global Options->Plugin Options->PMD.  Also,
+you can change the plugin to prompt you for a directory to check by going to that same menu and
+selecting the "Ask for Directory" checkbox.</p>
+      </subsection>
+
+
+        <a name="maven"/><subsection name="Maven">
+<p>Please see <a href="http://maven.apache.org/reference/plugins/pmd/">the Maven plugins web site</a> for more information.</p>
+</subsection>
+
+
+        <a name="netbeans"/><subsection name="NetBeans">
+  <p>Here's how to set up the Netbeans plugin:</p>
+  <ul>
+  <li>Download the latest binary release from <a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=63621">here</a></li>
+  <li>Unzip the zip file to any directory. You'll see that it contained a .nbm file that encapsulates the plugin.</li>
+  <li>Run NetBeans and click Tools->Update Center</li>
+  <li>Click the 'Install Manually Downloaded Modules' radiobutton and click Next</li>
+  <li>Click the Add buttom and select the .nbm file, then click Next.</li>
+  <li>Click thru the rest of the dialog to install the plugin</li>
+  </ul>
+        </subsection>
+
+
+        <a name="textpad"/><subsection name="TextPad">
     <H5><U>Assumptions</U></H5>
-
     <P><UL>
         <LI>The Java Development Kit, version 1.3.1 (versions 1.3 and higher are acceptable) is properly installed into your machine, and exists in <CODE>D:\java\jdk_131\</CODE>.  This means that <CODE>D:\java\jdk_131\bin\java.exe</CODE> exists.</LI>
         <LI>PMD version 3.3 exists in <CODE>D:\java\pmd-3.3\</CODE>.  This means that <CODE>D:\java\pmd-3.3\lib\pmd-3.3.jar</CODE> (among other jar files in the same directory) exist.</LI>
     </UL></P>
-
     <H5><U>To integrate into TextPad</U></H5>
-
     <P><OL>
         <LI>In the <B>Configure</B> menu, choose <B>Preferences...</B>.  This opens the Preferences dialog</LI>
         <LI>In the left pane of the Preferences dialog, choose the <B>Tools</B> branch by clicking on the <I>word</I> "Tools".</LI>
@@ -210,121 +348,22 @@ selecting the "Ask for Directory" checkbox.</p>
         <LI>Click <B>Assign</B>.</LI>
         <LI>Save your work again:  Click on <B>OK</B>, which closes the Preferences dialog, and then restart TextPad.</LI>
     </OL></P>
-
-
     <H5><U>To run PMD against a single Java file</U></H5>
-
     <P><OL>
         <LI>In TextPad, open any Java file.</LI>
         <LI>Click <CODE>Ctrl+Page Down</CODE>.  This opens an empty, read-only text document (titled "Command Results").  When PMD completes its analysis, this document will be populated with a listing of violated rules (or "Command completed successfully" indicating no violations).</LI>
         <LI>Double click any line to go to it.</LI>
     </OL></P>
-
     <H5><U>To run PMD against a directory of Java files</U></H5>
-
     <P><OL>
         <LI>In TextPad, open <I>any</I> file in the <I>root</I> directory you wish to analyze.  Unfortunately, you'll need to create a dummy file, if no file exists there.</LI>
         <LI>Click <CODE>Ctrl+Page Up</CODE>.  This opens an empty, read-only text document (titled "Command Results").  When PMD completes its analysis, this document will be populated with a listing of violated rules (or "Command completed successfully" indicating no violations).</LI>
         <LI>Double click any line to go to it.</LI>
     </OL></P>
-
     <P><I>Because directory analysis may take a while, you may choose to cancel this operation.  Do so by closing the (blank Command Results) document, and then confirming that, "yes, I do really want to exit the tool".</I></P>
 </subsection>
 
-        <subsection name="Code Guide">
-  <p>Here's how to set up PMD with Omnicore's CodeGuide (taken from <a href="http://sourceforge.net/forum/forum.php?thread_id=1098291&amp;forum_id=188193">here</a>):
- </p>
-  <ul>
-      <li>Download the PMD zip file from <a href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=51441">here</a></li>
-      <li>Unpack the zip file to your local disk. I put it in /Applications/</li>
-      <li>Add the following tool to CodeGuide (Tools->Configure Tools->New):</li>
-      <ul>
-          <li>Name: PMD </li>
-          <li>Kind: Tool for directories</li>
-          <li>Executable: /Applications/pmd-3.3/bin/pmd.sh</li>
-          <li>Arguments: $DIRECTORY_PATH$ emacs $USER_ARGUMENTS$</li>
-      </ul>
-  </ul>
-  <p>Now you can right click on a source directory, select the PMD tool and a dialog box will appear.
- Type in the name of a rule set (e.g. unusedcode). PMD is then executed on the directory you
- selected with the rule set you specified. Since CodeGuide understands the emacs syntax you can
- click on the file name and CodeGuide will jump to that file and line number.</p>
 
-    <p>Note: I set this up on Mac OS X. It should work on other unix variations just the same.
-    Of course you need to change the "Executable" setting above to where your PMD is installed.
-    On Windows you need to use the pmd.bat file instead of pmd.sh.</p>
-
-    <p>If you haven't heard of CodeGuide before, <a href="http://www.omnicore.com/">check it out</a>.
- It's a great IDE.</p>
-        </subsection>
-
-
-      <subsection name="IDEA">
-<p>There's not a "real" - i.e., integrated into the same Java VM - plugin for IDEA, but using it as an IDEA "External Tool"
-works OK.  Here's how to set it up:</p>
-<ul>
-<li>Open IDEA and go to File->Settings</li>
-<li>Click on the "External Tools" icon</li>
-<li>Click on the Add button</li>
-<li>Fill in the blocks</li>
-<ul>
-<li>Name: PMD</li>
-<li>Description: PMD, good for what ails you.</li>
-<li>Menu: Select the "Main menu", "Project views", "Editor menu", and "Search results" checkboxes.</li>
-<li>Program: $JDKPath$\bin\java.exe</li>
-<li>For the next parameter you'll need to plug in the location of your PMD installation and the rulesets you want to use</li>
-<li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-3.3.jar;c:\pmd\lib\jaxen-1.1-beta-7.jar net.sourceforge.pmd.PMD $FilePath$ ideaj unusedcode,imports $Sourcepath$ $FileClass$.method $FileName$ </li>
-</ul>
-</ul>
-<p>That's pretty much it.  Now you can right click on a source directory and select PMD, it'll run recursively on the source files, and the results should
-be displayed in a window and hyperlinked into the correct file and line of code.  I usually
-right-click on the message window title bar and unselect "autohide" so the window doesn't go
-away every time I fix something in the code window.</p>
-      </subsection>
-
-        <subsection name="JDeveloper">
-  <p>To install the extension for JDeveloper 10.1.2, download the binary release and unzip it
-      into your jdev/lib/ext directory.  Then restart JDeveloper.  To use it, open the
-Tools-&amp;Preferences menu, click on the PMD option, and select
-a couple of rules to try.  To run it, right click on either
-a Java source file or a .jpr file (i.e., a project file) and
-select PMD.  Any rule violations should show up in a
-LogWindow at the bottom of the screen.
-  </p>
-           <P>To install the extension for JDeveloper 10.1.3, use JDeveloper's built in "update center"
-               functionality. Fire up JDeveloper, click "Help", click "Check for Updates",
- then click "Add" to add a new update center and enter:
-<UL>
-<LI>Name: PMD Update Center</LI>
-<LI>Location: http://pmd.sf.net/center.xml</LI>
-</UL>
-</P>
-            <P>Click your way through the ensuing dialogs and you'll install the plugin.  Note
-            that I've set up the plugin for the latest JDeveloper 10.1.3 EA, so if you're using an earlier
-            preview release of 10.1.3 it might not work.</P>
-
-        </subsection>
-      <subsection name="Ant">
-<p>
-Using PMD with Ant is such a standard usage that we hardly think of it as an integration point.  But, I guess
-it is.  You can read more about the PMD Ant task <a href="running.html">here</a>.
-</p>
-      </subsection>
-      <subsection name="JCreator">
-<p>
-    <ol>
-        <li>Open Configure > Options</li>
-        <li>Go to the Tools panel</li>
-        <li>Click New > Program</li>
-        <li>Browse for PMD's pmd.bat</li>
-        <li>Put quotations around the path if it has spaces.</li>
-        <li>Set the initial directory to PMD's \bin directory</li>
-        <li>Check capture output</li>
-        <li>Put '"$[PrjDir]" emacs' followed by desired rulesets in the arguments</li>
-    </ol>
-    <p>To  run PMD on a project, just pick pmd from the Tools menu.</p>
-</p>
-      </subsection>
       </section>
   </body>
 </document>

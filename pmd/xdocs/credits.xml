@@ -13,7 +13,7 @@
             <li>David Dixon-Peugh - much of the early work on the grammar, initial Emacs plugin</li>
             <li>Philippe Herlin - Eclipse plugin, fixed bugs in RuleSetFactory</li>
             <li>Nascif Abousalh Neto - Emacs plugin</li>
-            <li>Tom Copeland - lead developer, JDeveloper plugin, initial Gel plugin, initial jEdit plugin, IDEAJ integration</li>
+            <li><a href="http://tomcopeland.blogs.com/">Tom Copeland</a> - lead developer, JDeveloper plugin, initial Gel plugin, initial jEdit plugin, IDEAJ integration, BlueJ extension</li>
             <li>Jiger Patel - jEdit plugin</li>
             <li>Ole-Martin Mork - NetBeans plugin</li>
             <li>Brant Gurganus - JCreator integration, Swing GUI work</li>
@@ -31,7 +31,7 @@
             <li>Alex Chaffee - various bugfixes and features</li>
             <li>Siegfried Goeschl - original Maven plugin, various bugfixes and features</li>
             <li>Don Leckie - The PMD GUI</li>
-            <li>Rich Kilmer - logo design</li>
+            <li><a href="http://richkilmer.blogs.com/">Rich Kilmer</a> - logo design</li>
             <li>Paul Kendall - various bugfixes and features</li>
         </ul>
         </subsection>
