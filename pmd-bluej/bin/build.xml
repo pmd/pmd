@@ -33,10 +33,12 @@
     </javac>
 </target>
 
-<target name="jar" depends="compile" description="Jars up the classes and rulesets">
+<target name="clean" depends="delete,compile" description="Does a complete recompile"/>
+
+<target name="jar" depends="clean" description="Jars up the classes and rulesets">
     <jar
         jarfile="${dir.lib}\PMDExtension.jar"
-        includes="net/sourceforge/pmd/**/**/*.class"
+        includes="net/sourceforge/pmd/bluej/*.class"
         basedir="${dir.build}">
         <manifest>
             <attribute name="Main-Class" value="net.sourceforge.pmd.bluej.PMDExtension"/>
@@ -45,20 +47,43 @@
     </jar>
 </target>
 
-<target name="clean" depends="delete,compile" description="Does a complete recompile"/>
+<target name="mergejars" depends="jar" description="Creates one uber-jar for easier deployment">
+    <unjar src="${dir.lib}/jaxen-1.1-beta-7.jar" dest="lib" overwrite="true"/>
+    <unjar src="${dir.lib}/pmd-${pmd.version}.jar" dest="lib" overwrite="true"/>
+    <unjar src="${dir.lib}/PMDExtension.jar" dest="lib" overwrite="true"/>
+    <delete file="${dir.lib}\PMDExtension.jar"/>
+    <jar
+        jarfile="${dir.lib}\PMDExtension.jar"
+        includes="net/**/*.*,org/**/*.*,META-INF/**/*.*,rulesets/**/*.*,"
+        basedir="${dir.lib}">
+        <manifest>
+            <attribute name="Main-Class" value="net.sourceforge.pmd.bluej.PMDExtension"/>
+        </manifest>
+    </jar>
+    <delete dir="${dir.lib}/net"/>
+    <delete dir="${dir.lib}/rulesets"/>
+    <delete dir="${dir.lib}/org"/>
+    <delete dir="${dir.lib}/test"/>
+    <delete dir="${dir.lib}/META-INF"/>
+</target>
 
-<target name="deploy" depends="clean,jar" description="Deploys new jar file to my BlueJ install">
+<target name="deploy" depends="mergejars" description="Deploys new jar file to my BlueJ install">
     <copy todir="/home/tom/pmd/ides/bluej/lib/extensions">
         <fileset dir="${dir.lib}">
             <include name="PMDExtension.jar"/>
         </fileset>
     </copy>
-    <copy todir="/home/tom/pmd/ides/bluej/lib/extensions/pmd">
-        <fileset dir="${dir.lib}">
-            <include name="pmd-${pmd.version}.jar"/>
-            <include name="jaxen-1.1-beta-7.jar"/>
-        </fileset>
-    </copy>
+ </target>
+
+<target name="deploysfserver" depends="mergejars" description="Deploys new jar file to my BlueJ install">
+    <echo message="Uploading jar file to SourceForge"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/pmd/pmd-bluej/lib/PMDExtension.jar tom@infoether.com:public_html/"/>
+    </exec>
+    <echo message="Uploading extensions.xml to SourceForge"/>
+    <exec executable="scp" os="Linux">
+        <arg line=" /home/tom/pmd/pmd-bluej/bin/extensions.xml tom@infoether.com:public_html/"/>
+    </exec>
  </target>
 
 </project>
