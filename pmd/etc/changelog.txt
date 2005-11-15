@@ -18,6 +18,7 @@ Fixed bug 1314086 - Added logging-jakarta-commons as a short name for rulesets/l
 Fixed bug 1351498 - Improved UnnecessaryCaseChange warning message.
 Fixed bug 1351706 - CompareObjectsWithEquals now catches more cases.
 Fixed bug 1277373 - InefficientStringBuffering now flags fewer false positives.
+Fixed bug 1347286 - InefficientStringBuffering now flags fewer false positives. 
 Implemented RFE 1311309 - Suppressed RuleViolation counts are now included in the reports.
 Implemented RFE 1220371 - Rule violation suppression via annotations.  Per the JLS, @SuppressWarnings can be placed before the following nodes: TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE.
 Implemented RFE 1275547 - OverrideBothEqualsAndHashcode now skips Comparator implementations.

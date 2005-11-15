@@ -4,6 +4,8 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.symboltable.NameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
@@ -67,7 +69,13 @@ public class InefficientStringBuffering extends AbstractRule {
             return false;
         }
         ASTName n = (ASTName) s.getFirstChildOfType(ASTName.class);
-        return n!=null && n.getImage()!=null && n.getImage().endsWith("append");
+        if (!(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
+            return false;
+        }
+
+        VariableNameDeclaration vnd = (VariableNameDeclaration)n.getNameDeclaration();
+        return vnd.getTypeImage().equals("StringBuffer");
+//        return n!=null && n.getImage()!=null && n.getImage().endsWith("append");
     }
 
     private boolean eighthParentIsBlockStatement(ASTAdditiveExpression node) {

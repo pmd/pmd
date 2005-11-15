@@ -31,6 +31,7 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST11, "looking too deep", 0, rule),
                new TestDescriptor(TEST12, "concatenating two non-literals", 1, rule),
                new TestDescriptor(TEST13, "concatenating method + int", 0, rule),
+               new TestDescriptor(TEST14, "JTextArea.append", 0, rule),
        });
     }
 
@@ -134,6 +135,13 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
        " public void bar(Date a) {" + PMD.EOL +
        "  StringBuffer buf = new StringBuffer();" + PMD.EOL +
        "  buf.append(a.getYear() + 1900);" + PMD.EOL +
+       " }" + PMD.EOL +
+       "}";
+
+   private static final String TEST14 =
+       "public class Foo {" + PMD.EOL +
+       " public void bar(JTextArea jta) {" + PMD.EOL +
+       "  jta.append(f + \"hi\");" + PMD.EOL +
        " }" + PMD.EOL +
        "}";
 }
