@@ -15,7 +15,7 @@ public class XMLRenderer implements Renderer {
     public String render(Iterator matches) {
         StringBuffer buffer = new StringBuffer();
         buffer.append("<?xml version=\"1.0\"?>");
-        buffer.append("<pmd-cpd>");
+        buffer.append("<pmd-cpd>" + PMD.EOL);
         for (; matches.hasNext();) {
             Match match = (Match) matches.next();
             buffer.append("<duplication");
@@ -24,7 +24,7 @@ public class XMLRenderer implements Renderer {
             buffer.append("\"");
             buffer.append(" tokens=\"");
             buffer.append(match.getTokenCount());
-            buffer.append("\">");
+            buffer.append("\">" + PMD.EOL);
 
             for (Iterator iterator = match.iterator(); iterator.hasNext();) {
                 TokenEntry mark = (TokenEntry) iterator.next();
@@ -34,13 +34,13 @@ public class XMLRenderer implements Renderer {
                 buffer.append("\"");
                 buffer.append(" path=\"");
                 buffer.append(mark.getTokenSrcID());
-                buffer.append("\"/>");
+                buffer.append("\"/>" + PMD.EOL);
             }
             String codeFragment = match.getSourceCodeSlice();
             if (codeFragment != null) {
-                buffer.append("<codefragment><![CDATA[" + PMD.EOL + StringUtil.replaceString(codeFragment, "]]>", "]]&gt;") + PMD.EOL + "]]></codefragment>");
+                buffer.append("<codefragment>"  + PMD.EOL + "<![CDATA[" + PMD.EOL + StringUtil.replaceString(codeFragment, "]]>", "]]&gt;") + PMD.EOL + "]]>"  + PMD.EOL + "</codefragment>" + PMD.EOL);
             }
-            buffer.append("</duplication>");
+            buffer.append("</duplication>" + PMD.EOL);
         }
         buffer.append("</pmd-cpd>");
         return buffer.toString();
