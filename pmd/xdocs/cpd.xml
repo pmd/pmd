@@ -7,9 +7,10 @@
   </properties>
 
   <body>
-   <section name="Copied and pasted code is usually bad">
-     <p>But it can be hard to find, especially in a large project.  So we wrote a utility - CPD - to find it for us.
-         It's been through three major incarnations:</p>
+   <section name="Finding duplicate code">
+       <subsection name="Overview">
+     <p>Duplicate code can be hard to find, especially in a large project.  But PMD's Copy/Paste Detector (CPD) can find it for you!
+        CPD has been through three major incarnations:</p>
          <ul>
              <li>First we wrote it using a variant of Michael Wise's Greedy String Tiling algorithm (our variant is described
          <a href="http://www.onjava.com/pub/a/onjava/2003/03/12/pmd_cpd.html">here</a>)</li>
@@ -28,6 +29,9 @@
      <p><a href="cpdresults.txt">Here</a> are the duplicates CPD found in the JDK 1.4 source code.</p>
      <p><a href="cpp_cpdresults.txt">Here</a> are the duplicates CPD found in the APACHE_2_0_BRANCH branch of Apache
          (just the <code>httpd-2.0/server/</code> directory).</p>
+       </subsection>
+
+       <subsection name="Ant task">
        <p>Andy Glover wrote an Ant task for CPD; here's how to use it:</p>
        <source>
 <![CDATA[
@@ -48,16 +52,31 @@
            that does the same thing with identifiers; i.e., variable names, methods names, and so forth.
            The same guidelines apply.
  </p>
-       <p>Also, you can get verbose output from this task by running ant with the <code>-v</code> flag; i.e., <code>ant -v -f mybuildfile.xml cpd</code>.</p>
-       <p>Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:
+       <p>Also, you can get verbose output from this task by running ant with the <code>-v</code> flag; i.e.:</p>
+  <source>
+ ant -v -f mybuildfile.xml cpd
+  </source>
+       </subsection>
+
+       <subsection name="Command line usage">
+           <p>To run CPD from the command line, just give it the minimum duplicate size and the source directory:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD 100 /usr/local/java/src/java
+           </source>
+           <p>You can also specify the language and a report format - here we're using the XML report:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD 100 /usr/local/java/src/java java net.sourceforge.pmd.cpd.XMLRenderer
+           </source>
+       <p>The default format is a text report, and there's also a <code>net.sourceforge.pmd.cpd.CSVRenderer</code> report.</p>
+ <p>Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:</p>
        <source>
-$ java -Xmx512m net.sourceforge.pmd.cpd.CPD 100 /path/to/my/src
+$ java -Xmx512m net.sourceforge.pmd.cpd.CPD 100 /usr/local/java/src/java
        </source>
- </p>
-       <p>There's also a JavaSpaces version available for splitting the CPD effort across a farm of machines.
-       I usually post news on that <a href="http://cpd.jini.org/">here</a> and the releases are <a href="http://sf.net/projects/pmd/">here</a>.
-           This project is pretty much dead, though, since the current code is  fast enough to just run it on one machine.</p>
+
+       </subsection>
+
      <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</p>
+
    </section>
   </body>
 </document>
