@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Didier Duquennoy - bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Brian R - documentation suggestion</li>
             <li>Jeff Jensen - discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>Johan Stuyts - patch to allow empty catch blocks with comments in them, patch to clean up build environment</li>
@@ -73,7 +74,6 @@
             <li>Benoit Xhenseval - bug report for UnusedPrivateMethod, suggestion to add elapsed time to XML report, bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Andrew Taylor - bug report for StringInstantiation</li>
             <li>Wim Deblauwe - suggested putting property names/values in generated docs, UselessOverridingMethod, reported bug in JUnitTestsShouldContainAsserts, front page and "how to make a ruleset" patches, noted problems with web site rule index, bug report for JUnitTestsShouldContainAsserts, Clover license coordination and implementation, UseCorrectExceptionLogging, coordinated and coded a much nicer asXML() implementation, suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report, helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
-            <li>Didier Duquennoy - bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>S. David Pullara - bug report for AvoidConcateningNonLiteralsInStringBuffer, bug report for ImmutableField</li>
             <li>Maarten Bodewes - bug report for ImmutableField</li>
             <li>Florian Deissenboeck - reported several JDK 1.5 grammar bugs</li>

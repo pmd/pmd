@@ -12,10 +12,13 @@ import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.Node;
 
+import java.util.List;
+import java.util.Iterator;
+
 /*
  * How this rule works:
  * find additive expressions: +
- * check that the addition is between literal and nonliteral
+ * check that the addition is between anything other than two literals
  * if true and also the parent is StringBuffer constructor or append,
  * report a violation.
  * 
@@ -29,10 +32,22 @@ public class InefficientStringBuffering extends AbstractRule {
             return data;
         }
 
-        if (!concatsLiteralStringAndNonLiteral(node)) {
+        // two literals?  usually OK, although this misses buf.append("1" + "2" + (a+b))
+        if (node.findChildrenOfType(ASTLiteral.class).size() == 2) {
             return data;
         }
-        
+
+        List nodes = node.findChildrenOfType(ASTLiteral.class);
+        for (Iterator i = nodes.iterator();i.hasNext();) {
+            ASTLiteral literal = (ASTLiteral)i.next();
+            try {
+                Integer.parseInt(literal.getImage());
+                return data;
+            } catch (NumberFormatException nfe) {
+                // NFE means new StringBuffer("a" + "b"), want to flag those
+            }
+        }
+
         if (bs.isAllocation()) {
             if (isAllocatedStringBuffer(node)) {
                 addViolation(data, node);
@@ -41,22 +56,6 @@ public class InefficientStringBuffering extends AbstractRule {
             addViolation(data, node);
         }
         return data;
-    }
-
-    private boolean concatsLiteralStringAndNonLiteral(ASTAdditiveExpression node) {
-        if (!node.containsChildOfType(ASTName.class)) {
-            return false;
-        }
-        ASTLiteral n = (ASTLiteral)node.getFirstChildOfType(ASTLiteral.class);
-        if (n == null) {
-            return false;
-        }
-        try {
-            Integer.parseInt(n.getImage());
-        } catch (NumberFormatException nfe) {
-            return true;
-        }
-        return false;
     }
 
     private boolean isInStringBufferAppend(ASTAdditiveExpression node) {
@@ -68,7 +67,7 @@ public class InefficientStringBuffering extends AbstractRule {
             return false;
         }
         ASTName n = (ASTName) s.getFirstChildOfType(ASTName.class);
-        return n.getImage()!=null && n.getImage().endsWith("append");
+        return n!=null && n.getImage()!=null && n.getImage().endsWith("append");
     }
 
     private boolean eighthParentIsBlockStatement(ASTAdditiveExpression node) {

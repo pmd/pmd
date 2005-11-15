@@ -29,6 +29,8 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST9, "nested", 0, rule),
                new TestDescriptor(TEST10, "looking up too high", 0, rule),
                new TestDescriptor(TEST11, "looking too deep", 0, rule),
+               new TestDescriptor(TEST12, "concatenating two non-literals", 1, rule),
+               new TestDescriptor(TEST13, "concatenating method + int", 0, rule),
        });
     }
 
@@ -116,6 +118,22 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
        " public void bar(int i) {" + PMD.EOL +
        "  StringBuffer buf = new StringBuffer();" + PMD.EOL +
        "  buf.append(getFoo(getBar(i + \"hi\")));" + PMD.EOL +
+       " }" + PMD.EOL +
+       "}";
+
+   private static final String TEST12 =
+       "public class Foo {" + PMD.EOL +
+       " public void bar(String a, String b) {" + PMD.EOL +
+       "  StringBuffer buf = new StringBuffer();" + PMD.EOL +
+       "  buf.append(a + b);" + PMD.EOL +
+       " }" + PMD.EOL +
+       "}";
+
+   private static final String TEST13 =
+       "public class Foo {" + PMD.EOL +
+       " public void bar(Date a) {" + PMD.EOL +
+       "  StringBuffer buf = new StringBuffer();" + PMD.EOL +
+       "  buf.append(a.getYear() + 1900);" + PMD.EOL +
        " }" + PMD.EOL +
        "}";
 }
