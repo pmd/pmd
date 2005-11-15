@@ -11,34 +11,33 @@
    <section name="Similar to PMD">
      <subsection name="Open Source">
        <ul>
-         <li><a href="http://javapathfinder.sourceforge.net/">JPathFinder</a> - A verification VM written by NASA; supports a subset of the Java packages</li>
-         <li><a href="http://jikes.sourceforge.net/">Jikes</a> - More than a compiler; now it reports code warnings too</li>
-         <li><a href="http://www.hammurapi.org/content/home.html">Hammurapi</a> - Uses ANTLR, excellent documentation, lots of <a href="http://www.hammurapi.org/content/inspectors.html">rules</a></li>
+         <li><a href="http://checkstyle.sourceforge.net/">Checkstyle</a> - Very detailed, supports both Maven and Ant. Uses ANTLR.</li>
+         <li><a href="http://doctorj.sourceforge.net">DoctorJ</a> - Uses JavaCC.  Checks Javadoc, syntax and calculates metrics.</li>
          <li><a href="http://secure.ucd.ie/products/opensource/ESCJava2/">ESC/Java</a> - Finds null dereference errors, array bounds errors, type cast errors, and race conditions.  Uses Java Modeling Language annotations.</li>
          <li><a href="http://findbugs.sourceforge.net/">FindBugs</a> - works on bytecode, uses BCEL.  Source code uses templates, nifty stuff!</li>
+         <li><a href="http://www.hammurapi.org/content/home.html">Hammurapi</a> - Uses ANTLR, excellent documentation, lots of <a href="http://www.hammurapi.org/content/inspectors.html">rules</a></li>
          <li><a href="http://www.ovmj.org/jamit/index.html">Jamit</a> - bytecode analyzer, nice <a href="http://www.ovmj.org/jamit/data2_classes.php3">graphs</a></li>
-         <li><a href="http://csdl.ics.hawaii.edu/Research/JWiz/JWiz.html">JWiz</a> - Research project, checks some neat stuff, like if you create a Button without adding an ActionListener to it.  Neat.</li>
-         <li><a href="http://doctorj.sourceforge.net">DoctorJ</a> - Written in C++.  Uses Lex and YACC.  Checks Javadoc, syntax and calculates metrics.</li>
-         <li><a href="http://jlint.sourceforge.net/">JLint</a> - Written in C++.  Uses data flow analysis and a lock graph to do lots of synchronization checks.  Operates on class files, not source code.</li>
-         <li><a href="http://checkstyle.sourceforge.net/">Checkstyle</a> - Very detailed, supports both Maven and Ant. Uses ANTLR.</li>
          <li><a href="http://jcsc.sourceforge.net/">JCSC</a> - Does a variety of coding standard checks, uses JavaCC and the GNU Regexp package.</li>
+         <li><a href="http://jikes.sourceforge.net/">Jikes</a> - More than a compiler; now it reports code warnings too</li>
+         <li><a href="http://jlint.sourceforge.net/">JLint</a> - Written in C++.  Uses data flow analysis and a lock graph to do lots of synchronization checks.  Operates on class files, not source code.</li>
+         <li><a href="http://javapathfinder.sourceforge.net/">JPathFinder</a> - A verification VM written by NASA; supports a subset of the Java packages</li>
+         <li><a href="http://csdl.ics.hawaii.edu/Research/JWiz/JWiz.html">JWiz</a> - Research project, checks some neat stuff, like if you create a Button without adding an ActionListener to it.  Neat.</li>
        </ul>
      </subsection>
      <subsection name="Commercial">
        <ul>
-         <li><a href="http://www.jutils.com/index.html">Lint4J</a> - Lock graph, DFA, and type analysis, many EJB checks</li>
-         <li><a href="http://www.mmsindia.com/jstyle.html">JStyle</a> - $995, nice folks, lots of metrics and rules</li>
-         <li><a href="http://www.enerjy.com/en/analyzer/brief.htm">Enerjy Java Code Analyser</a> - 200 rules, lots of IDE plugins</li>
-         <li><a href="http://www.redhillconsulting.com.au/products/simian/index.html">Simian</a> - fast, works with Java, C#, C, CPP, COBOL, JSP, HTML</li>
-         <li><a href="http://www.instantiations.com/codepro/default.htm">CodePro Studio</a> - $589, works with Eclipse, lots of rules</li>
-         <li><a href="http://www.parasoft.com/jsp/products/home.jsp?product=Jtest&amp;itemId=13">JTest</a> - Very nice with tons of features,
-             but also very expensive and requires a running X server (or Xvfb) to run on
-             Linux.  They charge $500 to move a license from one machine to another.</li>
-         <li><a href="http://www.tcs.com/0_products/assent/assent_rules.htm#java">Assent</a> - The usual stuff, seems pretty complete.</li>
-         <li><a href="http://www.andiz.de/azosystems/en/index.html">AzoJavaChecker</a> - Rules aren't listed online so it's hard to tell what they have.  Not sure how much it costs since I don't know German.</li>
-         <li><a href="http://www.alajava.com/aubjex/products.htm">Aubjex</a> - Rules aren't listed online.  Appears to have some code modification stuff, which would be cool to have in PMD.  $299.</li>
-         <li><a href="http://www.excelsior-usa.com/fd.html">Flaw Detector</a> - In beta, does control/data flow analysis to detect NullPointerExceptions</li>
          <li><a href="http://www.appperfect.com/products/devsuite/ca.html">AppPerfect</a> - 220 rules, produces PDF/Excel reports, std version is free, professional version $500 and includes auto-fixing problems</li>
+         <li><a href="http://www.tcs.com/0_products/assent/assent_rules.htm#java">Assent</a> - The usual stuff, seems pretty complete.</li>
+         <li><a href="http://www.alajava.com/aubjex/products.htm">Aubjex</a> - Rules aren't listed online.  Appears to have some code modification stuff, which would be cool to have in PMD.  $299.</li>
+         <li><a href="http://www.andiz.de/azosystems/en/index.html">AzoJavaChecker</a> - Rules aren't listed online so it's hard to tell what they have.  Not sure how much it costs since I don't know German.</li>
+         <li><a href="http://www.instantiations.com/codepro/default.htm">CodePro Studio</a> - $589, works with Eclipse, lots of rules</li>
+         <li><a href="http://www.enerjy.com/en/analyzer/brief.htm">Enerjy Java Code Analyser</a> - 200 rules, lots of IDE plugins</li>
+         <li><a href="http://www.excelsior-usa.com/fd.html">Flaw Detector</a> - In beta, does control/data flow analysis to detect NullPointerExceptions</li>
+         <li><a href="http://www.mmsindia.com/jstyle.html">JStyle</a> - $995, nice folks, lots of metrics and rules</li>
+         <li><a href="http://www.parasoft.com/jsp/products/home.jsp?product=Jtest&amp;itemId=13">JTest</a> - Very nice with tons of features,
+               but also very expensive and requires a running X server (or Xvfb) to run on
+               Linux.  They charge $500 to move a license from one machine to another.</li>
+         <li><a href="http://www.jutils.com/index.html">Lint4J</a> - Lock graph, DFA, and type analysis, many EJB checks</li>
        </ul>
      </subsection>
    </section>
