@@ -18,7 +18,7 @@ Fixed bug 1314086 - Added logging-jakarta-commons as a short name for rulesets/l
 Fixed bug 1351498 - Improved UnnecessaryCaseChange warning message.
 Fixed bug 1351706 - CompareObjectsWithEquals now catches more cases.
 Fixed bug 1277373 - InefficientStringBuffering now flags fewer false positives.
-Fixed bug 1347286 - InefficientStringBuffering now flags fewer false positives. 
+Fixed bug 1347286 - InefficientStringBuffering now flags fewer false positives.
 Implemented RFE 1311309 - Suppressed RuleViolation counts are now included in the reports.
 Implemented RFE 1220371 - Rule violation suppression via annotations.  Per the JLS, @SuppressWarnings can be placed before the following nodes: TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE.
 Implemented RFE 1275547 - OverrideBothEqualsAndHashcode now skips Comparator implementations.
@@ -26,6 +26,8 @@ Applied patch 1306999 - Renamed CloseConnection to CloseResource and added suppo
 Applied patch 1344754 - EmptyCatchBlock now skips catch blocks that contain comments.  This is also requested in RFE 1347884.
 Renamed AvoidConcatenatingNonLiteralsInStringBuffer to InefficientStringBuffering; new name is a bit more concise.
 Modified LongVariable; now it has a property which can be used to override the minimum reporting value.
+Improved CPD XML report.
+CPD no longer skips header files when checking C/C++ code.
 
 September 15, 2005 - 3.3:
 New rules: PositionLiteralsFirstInComparisons (in the design ruleset), UnnecessaryLocalBeforeReturn (design ruleset), ProperLogger (logging-jakarta-commons ruleset), UselessOverridingMethod (basic ruleset), PackageCase (naming ruleset), NoPackage (naming ruleset), UnnecessaryCaseChange (strings ruleset)
