@@ -1,5 +1,6 @@
 ????, 2005 - 1.8:
 Better presentation of the rule violations.
+PMD menu item now appears on Package nodes.
 Upgraded to PMD 3.3.
 
 Oct 18, 2005 - 1.7:

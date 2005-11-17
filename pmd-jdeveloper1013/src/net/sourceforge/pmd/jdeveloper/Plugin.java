@@ -21,6 +21,7 @@ import oracle.ide.log.LogWindow;
 import oracle.ide.model.Element;
 import oracle.ide.model.Node;
 import oracle.ide.model.Project;
+import oracle.ide.model.RelativeDirectoryContextFolder;
 import oracle.ide.navigator.NavigatorManager;
 import oracle.ide.panels.Navigable;
 import oracle.jdeveloper.compiler.IdeLog;
@@ -30,6 +31,7 @@ import oracle.jdeveloper.model.JavaSourceNode;
 import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,33 +41,27 @@ import java.util.Map;
 
 public class Plugin implements Addin, Controller, ContextMenuListener {
 
-    public static final String CHECK_CMD = "net.sourceforge.pmd.jdeveloper.Check";
-    public static final int CHECK_CMD_ID = Ide.createCmdID("PMDJDeveloperPlugin.CHECK_CMD_ID");
+    public static final String RUN_PMD_CMD = "net.sourceforge.pmd.jdeveloper.Check";
+    public static final int RUN_PMD_CMD_ID = Ide.createCmdID("PMDJDeveloperPlugin.RUN_PMD_CMD_ID");
     public static final String TITLE = "PMD";
 
-    private static final int UNUSED = -1;
-    private static final int SOURCE = 0;
-    private static final int PROJECT = 6;
-
-    private JMenuItem checkItem;
-    private RuleViolationPage rvPage;
-
-    public Plugin() {
-        super();
-    }
+    private JMenuItem pmdMenuItem;
+    private RuleViolationPage ruleViolationPage;
+    private boolean added;
+    private Map fileToNodeMap = new HashMap(); // whew, this is kludgey
 
     // Addin
     public void initialize() {
-        IdeAction action = IdeAction.get(CHECK_CMD_ID, AddinManager.getAddinManager().getCommand(CHECK_CMD_ID, CHECK_CMD), TITLE, TITLE, null, null, null, true);
+        IdeAction action = IdeAction.get(RUN_PMD_CMD_ID, AddinManager.getAddinManager().getCommand(RUN_PMD_CMD_ID, RUN_PMD_CMD), TITLE, TITLE, null, null, null, true);
         action.addController(this);
-        checkItem = Ide.getMenubar().createMenuItem(action);
-        checkItem.setText(TITLE);
-        checkItem.setMnemonic('P');
+        pmdMenuItem = Ide.getMenubar().createMenuItem(action);
+        pmdMenuItem.setText(TITLE);
+        pmdMenuItem.setMnemonic('P');
         NavigatorManager.getWorkspaceNavigatorManager().addContextMenuListener(this, null);
         EditorManager.getEditorManager().getContextMenu().addContextMenuListener(this, null);
-        IdeSettings.registerUI(new Navigable(TITLE, SettingsPanel.class, new Navigable[] {}));
+        IdeSettings.registerUI(new Navigable(TITLE, SettingsPanel.class, new Navigable[]{}));
         Ide.getVersionInfo().addComponent(TITLE, " JDeveloper Extension " + version());
-        rvPage = new RuleViolationPage();
+        ruleViolationPage = new RuleViolationPage();
     }
 
     public void shutdown() {
@@ -90,46 +86,31 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     public Controller supervisor() {
         return null;
     }
-    private boolean added;
 
-    // whew, this is kludgey
-    private Map fileToNodeMap = new HashMap();
 
     public boolean handleEvent(IdeAction ideAction, Context context) {
         if (!added) {
-            LogManager.getLogManager().addPage(rvPage);
+            LogManager.getLogManager().addPage(ruleViolationPage);
             LogManager.getLogManager().showLog();
             added = true;
         }
-        if (ideAction.getCommandId() == CHECK_CMD_ID) {
+        if (ideAction.getCommandId() == RUN_PMD_CMD_ID) {
             try {
                 fileToNodeMap.clear();
                 PMD pmd = new PMD();
-                SelectedRules rs = new SelectedRules(SettingsPanel.createSettingsStorage());
+                SelectedRules rules = new SelectedRules(SettingsPanel.createSettingsStorage());
                 RuleContext ctx = new RuleContext();
                 ctx.setReport(new Report());
-                if (context.getElement() instanceof Project) {
-                    Project project = (Project)context.getElement();
-                    for (Iterator i = project.getChildren(); i.hasNext();) {
-                        Object obj = i.next();
-                        if (!(obj instanceof JavaSourceNode)) {
-                            System.out.println("PMD plugin expected a JavaSourceNode, found a " + obj.getClass() + " instead.  Odd.");
-                            continue;
-                        }
-                        JavaSourceNode candidate = (JavaSourceNode)obj;
-                        if (candidate.getLongLabel().endsWith(".java") && new File(candidate.getLongLabel()).exists()) {
-                            fileToNodeMap.put(candidate.getLongLabel(), candidate);
-                            ctx.setSourceCodeFilename(candidate.getLongLabel());
-                            FileInputStream fis = new FileInputStream(new File(candidate.getLongLabel()));
-                            pmd.processFile(fis, rs.getSelectedRules(), ctx);
-                            fis.close();
-                        }
-                    }
-                    render(ctx);
-                } else if (resolveType(context.getElement()) == SOURCE) {
+                if (context.getElement() instanceof RelativeDirectoryContextFolder) {
+                    RelativeDirectoryContextFolder folder = (RelativeDirectoryContextFolder) context.getElement();
+                    checkTree(folder.getChildren(), pmd, rules, ctx);
+                } else if (context.getElement() instanceof Project) {
+                    Project project = (Project) context.getElement();
+                    checkTree(project.getChildren(), pmd, rules, ctx);
+                } else if (context.getElement() instanceof JavaSourceNode) {
                     fileToNodeMap.put(context.getNode().getLongLabel(), context.getNode());
                     ctx.setSourceCodeFilename(context.getNode().getLongLabel());
-                    pmd.processFile(context.getNode().getInputStream(), rs.getSelectedRules(), ctx);
+                    pmd.processFile(context.getNode().getInputStream(), rules.getSelectedRules(), ctx);
                     render(ctx);
                 }
                 return true;
@@ -141,28 +122,8 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error while running PMD: " + e.getMessage(), TITLE, JOptionPane.ERROR_MESSAGE);
             }
-       }
-        return true;
-    }
-
-    private void render(RuleContext ctx) {
-        rvPage.show();
-        rvPage.clearAll();
-        if (ctx.getReport().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "No problems found", TITLE, JOptionPane.INFORMATION_MESSAGE);
-            LogPage page = LogManager.getLogManager().getMsgPage();
-            if (page instanceof LogWindow) {
-              ((LogWindow)page).show();
-            }
-        } else {
-            List list = new ArrayList();
-            for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
-                RuleViolation rv = (RuleViolation)i.next();
-                Node node = (Node)fileToNodeMap.get(rv.getFilename());
-                list.add(new IdeLog.Message(Ide.getActiveWorkspace(), Ide.getActiveProject(), new IdeStorage(node), rv.getDescription(), 2, rv.getNode().getBeginLine()+1, rv.getNode().getBeginColumn()));
-            }
-            rvPage.add(list);
         }
+        return true;
     }
 
     public boolean update(IdeAction ideAction, Context context) {
@@ -173,14 +134,15 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     // Controller
 
     // ContextMenuListener
-   public void menuWillHide(ContextMenu contextMenu) {}
+    public void menuWillHide(ContextMenu contextMenu) {}
 
-   public void menuWillShow(ContextMenu contextMenu) {
-     Element doc = contextMenu.getContext().getElement();
-     if (resolveType(doc) == PROJECT || resolveType(doc) == SOURCE) {
-         contextMenu.add(checkItem);
-     }
-   }
+    public void menuWillShow(ContextMenu contextMenu) {
+        Element doc = contextMenu.getContext().getElement();
+        // RelativeDirectoryContextFolder -> a package
+        if (doc instanceof Project || doc instanceof JavaSourceNode || doc instanceof RelativeDirectoryContextFolder) {
+            contextMenu.add(pmdMenuItem);
+        }
+    }
 
     public boolean handleDefaultAction(Context context) {
         return false;
@@ -191,12 +153,43 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         return Package.getPackage("net.sourceforge.pmd.jdeveloper").getImplementationVersion();
     }
 
-    private int resolveType(Element element) {
-        if (element instanceof JavaSourceNode) {
-            return SOURCE;
-        } else if (element instanceof Project) {
-            return PROJECT;
+    private void render(RuleContext ctx) {
+        ruleViolationPage.show();
+        ruleViolationPage.clearAll();
+        if (ctx.getReport().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No problems found", TITLE, JOptionPane.INFORMATION_MESSAGE);
+            LogPage page = LogManager.getLogManager().getMsgPage();
+            if (page instanceof LogWindow) {
+                ((LogWindow) page).show();
+            }
+        } else {
+            List list = new ArrayList();
+            for (Iterator i = ctx.getReport().iterator(); i.hasNext();) {
+                RuleViolation rv = (RuleViolation) i.next();
+                Node node = (Node) fileToNodeMap.get(rv.getFilename());
+                list.add(new IdeLog.Message(Ide.getActiveWorkspace(), Ide.getActiveProject(), new IdeStorage(node), rv.getDescription(), 2, rv.getNode().getBeginLine() + 1, rv.getNode().getBeginColumn()));
+            }
+            ruleViolationPage.add(list);
         }
-        return UNUSED;
     }
+
+    private void checkTree(Iterator i, PMD pmd, SelectedRules rules, RuleContext ctx) throws IOException, PMDException {
+        while (i.hasNext()) {
+            Object obj = i.next();
+            if (!(obj instanceof JavaSourceNode)) {
+                continue;
+            }
+            JavaSourceNode candidate = (JavaSourceNode) obj;
+            if (candidate.getLongLabel().endsWith(".java") && new File(candidate.getLongLabel()).exists()) {
+                fileToNodeMap.put(candidate.getLongLabel(), candidate);
+                ctx.setSourceCodeFilename(candidate.getLongLabel());
+                FileInputStream fis = new FileInputStream(new File(candidate.getLongLabel()));
+                pmd.processFile(fis, rules.getSelectedRules(), ctx);
+                fis.close();
+            }
+        }
+        render(ctx);
+
+    }
+
 }
