@@ -7,6 +7,7 @@
 	<property name="pluginversion" value="1.7"/>
     <property name="bundle.jarname" value="net.sourceforge.pmd.jdeveloper.${pluginversion}.jar"/>
 	<property name="jdeveloper.install.dir" value="c:/data/jdev1013/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
+    <property name="linux.jdeveloper.install.dir" value="/home/tom/jdev1013/jdev/extensions/"/>
 
 
 	<path id="project.class.path">
@@ -14,7 +15,8 @@
 		<pathelement location="lib/javax-ide.jar"/>
 		<pathelement location="lib/javatools.jar"/>
 		<pathelement location="lib/ide.jar"/>
-        <pathelement location="lib/myjdevdeps.jar"/>
+		<pathelement location="lib/ojc.jar"/>
+        <pathelement location="lib/jdev.jar"/>
 		<pathelement location="build"/>
 	</path>
 
@@ -47,6 +49,12 @@
         <copy file="lib/${pmdjar}" todir="${jdeveloper.install.dir}/lib"/>
         <copy file="lib/jaxen-1.1-beta-7.jar" todir="${jdeveloper.install.dir}/lib"/>
 	</target>
+
+    <target name="deploylinux" depends="delete,jar">
+        <copy file="lib/${bundle.jarname}" todir="${linux.jdeveloper.install.dir}"/>
+        <copy file="lib/${pmdjar}" todir="${linux.jdeveloper.install.dir}/net.sourceforge.pmd.jdeveloper.1.7/lib"/>
+        <copy file="lib/jaxen-1.1-beta-7.jar" todir="${linux.jdeveloper.install.dir}/net.sourceforge.pmd.jdeveloper.1.7/lib"/>
+    </target>
 
     <target name="release" depends="clean,jar">
         <mkdir dir="tmp/${ant.project.name}-${pluginversion}/lib"/>

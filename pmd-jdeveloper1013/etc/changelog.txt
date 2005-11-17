@@ -1,3 +1,7 @@
+????, 2005 - 1.8:
+Better presentation of the rule violations.
+Upgraded to PMD 3.3.
+
 Oct 18, 2005 - 1.7:
 Merged in changes from Olaf Heimburger to update plugin to work with JDev 10.1.3 early access.
 Modified to use "update center" functionality.  Update center location is http://pmd.sf.net/center.xml

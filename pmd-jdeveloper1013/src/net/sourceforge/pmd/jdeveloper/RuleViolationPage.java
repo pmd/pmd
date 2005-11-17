@@ -1,34 +1,16 @@
 package net.sourceforge.pmd.jdeveloper;
 
-import net.sourceforge.pmd.RuleViolation;
-import oracle.ide.layout.ViewId;
-import oracle.ide.log.AbstractLogPage;
+import oracle.jdeveloper.compiler.CompilerPage;
 
-import javax.swing.*;
-import java.awt.*;
+import java.util.List;
 
-public class RuleViolationPage extends AbstractLogPage {
-
-    private DefaultListModel model = new DefaultListModel();
-    private JScrollPane scrollPane;
-    private JList list;
+public class RuleViolationPage extends CompilerPage {
 
     public RuleViolationPage() {
-        super(new ViewId("PMDPage", Plugin.TITLE), null, false);
-        list = new JList(model);
-        list.setSelectionModel(new JumpingSelectionModel(model));
-        scrollPane = new JScrollPane(list);
+        super(Plugin.TITLE, Plugin.TITLE, null);
     }
 
-    public void add(RuleViolation ruleViolation) {
-        model.addElement(new RuleViolationWrapper(ruleViolation));
-    }
-
-    public Component getGUI() {
-        return scrollPane;
-    }
-
-    public void clearAll() {
-        model.clear();
+    public void add(List list) {
+        super.logMsg(list);
     }
 }
