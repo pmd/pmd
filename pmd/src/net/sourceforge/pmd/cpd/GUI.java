@@ -109,7 +109,7 @@ public class GUI implements CPDListener {
     private List matches = new ArrayList();
 
     public GUI() {
-        frame = new JFrame("PMD Cut and Paste Detector");
+        frame = new JFrame("PMD Duplicate Code Detector");
 
         timeField.setEditable(false);
 
