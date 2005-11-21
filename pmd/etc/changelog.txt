@@ -28,6 +28,8 @@ Renamed AvoidConcatenatingNonLiteralsInStringBuffer to InefficientStringBufferin
 Modified LongVariable; now it has a property which can be used to override the minimum reporting value.
 Improved CPD XML report.
 CPD no longer skips header files when checking C/C++ code.
+Reworked CPD command line arguments; old-style arguments will still work for one more version, though.
+Lots of documentation improvements.
 
 September 15, 2005 - 3.3:
 New rules: PositionLiteralsFirstInComparisons (in the design ruleset), UnnecessaryLocalBeforeReturn (design ruleset), ProperLogger (logging-jakarta-commons ruleset), UselessOverridingMethod (basic ruleset), PackageCase (naming ruleset), NoPackage (naming ruleset), UnnecessaryCaseChange (strings ruleset)

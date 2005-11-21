@@ -45,7 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Derek Hofmann - bug report for CPD skipping header files when in C/C++ mode</li>
+            <li>Derek Hofmann - suggestion for adding --skip-duplicate-files option for CPD, bug report for CPD skipping header files when in C/C++ mode</li>
             <li>Mark Holczhammer - bug report for InefficientStringBuffering</li>
             <li>Didier Duquennoy - bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Brian R - documentation suggestion</li>

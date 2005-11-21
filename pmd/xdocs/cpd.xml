@@ -61,16 +61,25 @@
        <subsection name="Command line usage">
            <p>To run CPD from the command line, just give it the minimum duplicate size and the source directory:</p>
            <source>
-$ java net.sourceforge.pmd.cpd.CPD 100 /usr/local/java/src/java
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java
            </source>
-           <p>You can also specify the language and a report format - here we're using the XML report:</p>
+           <p>You can also specify the language:</p>
            <source>
-$ java net.sourceforge.pmd.cpd.CPD 100 /usr/local/java/src/java java net.sourceforge.pmd.cpd.XMLRenderer
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/source --language cpp
+           </source>
+           <p>And if you're checking a C source tree with duplicate files in different architecture directories
+           you can skip those using --skip-duplicate-files:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/source --language cpp --skip-duplicate-files
+           </source>
+           <p>You can also specify a report format - here we're using the XML report:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java --format net.sourceforge.pmd.cpd.XMLRenderer
            </source>
        <p>The default format is a text report, and there's also a <code>net.sourceforge.pmd.cpd.CSVRenderer</code> report.</p>
  <p>Note that CPD is pretty memory-hungry; you may need to give Java more memory to run it, like this:</p>
        <source>
-$ java -Xmx512m net.sourceforge.pmd.cpd.CPD 100 /usr/local/java/src/java
+$ java -Xmx512m net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java
        </source>
 
        </subsection>
