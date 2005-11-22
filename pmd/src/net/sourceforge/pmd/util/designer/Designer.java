@@ -38,6 +38,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Enumeration;
 
 public class Designer implements ClipboardOwner {
 
@@ -128,6 +129,16 @@ public class Designer implements ClipboardOwner {
         }
     }
 
+
+    class Foo implements Enumeration {
+        public boolean hasMoreElements() {
+            return false;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+
+        public Object nextElement() {
+            return null;  //To change body of implemented methods use File | Settings | File Templates.
+        }
+    }
 
     private final CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
     private final JTextArea astArea = new JTextArea();

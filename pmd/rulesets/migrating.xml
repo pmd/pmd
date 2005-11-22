@@ -61,5 +61,35 @@ public class Foo {
       </example>
     </rule>
 
+    <rule name="ReplaceEnumerationWithIterator"
+      message="Consider replacing this Enumeration with the newer java.util.Iterator"
+      class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      Consider replacing this Enumeration with the newer java.util.Iterator
+      </description>
+      <properties>
+        <property name="xpath">
+        <value>
+    <![CDATA[
+    //ImplementsList/ClassOrInterfaceType[@Image='Enumeration']
+     ]]>
+        </value>
+        </property>
+      </properties>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+public class Foo implements Enumeration {
+    private int x = 42;
+    public boolean hasMoreElements() {
+        return true;
+    }
+    public Object nextElement() {
+        return String.valueOf(i++);
+    }
+}
+    ]]>
+      </example>
+    </rule>
 </ruleset>
 
