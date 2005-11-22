@@ -1,3 +1,6 @@
+????, 2006 - 3.5:
+Removed old-style CPD command line options that were deprecated in 3.4.
+
 ????, 2005 - 3.4:
 New rules: NonThreadSafeSingleton (design ruleset), DefaultPackage (controversial ruleset), MisleadingVariableName (naming ruleset)
 Fixed bug 1292745 - Removed unused source file ExceptionTypeChecking.java
@@ -19,6 +22,7 @@ Fixed bug 1351498 - Improved UnnecessaryCaseChange warning message.
 Fixed bug 1351706 - CompareObjectsWithEquals now catches more cases.
 Fixed bug 1277373 - InefficientStringBuffering now flags fewer false positives.
 Fixed bug 1347286 - InefficientStringBuffering now flags fewer false positives.
+Fixed bug 1363447 - MissingBreakInSwitch no longer reports false positives for switch statements where each switch label has a return statement.
 Implemented RFE 1311309 - Suppressed RuleViolation counts are now included in the reports.
 Implemented RFE 1220371 - Rule violation suppression via annotations.  Per the JLS, @SuppressWarnings can be placed before the following nodes: TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE.
 Implemented RFE 1275547 - OverrideBothEqualsAndHashcode now skips Comparator implementations.

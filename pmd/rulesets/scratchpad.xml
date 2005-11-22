@@ -8,19 +8,45 @@ These are new rules that are still in progress
 
 
 
-    <rule name="Test"
-           message="There may be multiple accessor methods for ''{0}''"
-           class="net.sourceforge.pmd.rules.SymbolTableTestRule"
-          >
-       <description>
-Test
-       </description>
-         <priority>3</priority>
-       <example>
-   <![CDATA[
-   ]]>
-       </example>
-     </rule>
+    <rule name="MissingBreakInSwitch"
+          message="A switch statement does not contain a break"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+A switch statement without an enclosed break statement may be a bug.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//SwitchStatement
+[count(.//BreakStatement)=0]
+[count(SwitchLabel) > 0]
+[count(BlockStatement/Statement/ReturnStatement) < count (SwitchLabel)]
+    ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public class Foo {
+ public void bar(int status) {
+  switch(status) {
+   case CANCELLED:
+    doCancelled();
+    // break; hm, should this be commented out?
+   case NEW:
+    doNew();
+   case REMOVED:
+    doRemoved();
+   }
+ }
+}
+]]>
+      </example>
+    </rule>
+
+
 <!--
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"

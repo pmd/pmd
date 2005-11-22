@@ -821,7 +821,10 @@ A switch statement without an enclosed break statement may be a bug.
           <property name="xpath">
               <value>
     <![CDATA[
-//SwitchStatement[count(.//BreakStatement)=0]
+//SwitchStatement
+[count(.//BreakStatement)=0]
+[count(SwitchLabel) > 0]
+[count(BlockStatement/Statement/ReturnStatement) < count (SwitchLabel)]
     ]]>
               </value>
           </property>

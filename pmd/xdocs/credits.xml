@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Noel Grandin - bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Derek Hofmann - suggestion for adding --skip-duplicate-files option for CPD, bug report for CPD skipping header files when in C/C++ mode</li>
             <li>Mark Holczhammer - bug report for InefficientStringBuffering</li>
             <li>Didier Duquennoy - bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
@@ -140,7 +141,6 @@
             <li>Phil Shaw - documentation suggestions</li>
             <li>Sreenivasa Viswanadha - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
             <li>Austin Moore - Integration with Omnicore's CodeGuide IDE</li>
-            <li>Noel Grandin - EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Matt Inger - CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException</li>
             <li>Morgan Schweers - Javascript highlighter for the PMD scoreboard</li>
             <li>Brandon Franklin - bug report for BeanMembersShouldSerializeRule, many PMD scoreboard ideas</li>
