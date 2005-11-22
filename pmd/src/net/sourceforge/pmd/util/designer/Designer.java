@@ -129,17 +129,6 @@ public class Designer implements ClipboardOwner {
         }
     }
 
-
-    class Foo implements Enumeration {
-        public boolean hasMoreElements() {
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        public Object nextElement() {
-            return null;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-    }
-
     private final CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
     private final JTextArea astArea = new JTextArea();
     private DefaultListModel xpathResults = new DefaultListModel();
