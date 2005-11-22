@@ -50,17 +50,18 @@ public class SimpleRuleSetNameMapper {
         nameMap.put("design", "rulesets/design.xml");
         nameMap.put("finalizers", "rulesets/finalizers.xml");
         nameMap.put("imports", "rulesets/imports.xml");
+        nameMap.put("junit", "rulesets/junit.xml");
+        nameMap.put("javabeans", "rulesets/javabeans.xml");
         nameMap.put("logging-java", "rulesets/logging-java.xml");
         nameMap.put("logging-jakarta", "rulesets/logging-jakarta-commons.xml");
         nameMap.put("logging-jakarta-commons", "rulesets/logging-jakarta-commons.xml");
-        nameMap.put("junit", "rulesets/junit.xml");
-        nameMap.put("javabeans", "rulesets/javabeans.xml");
+        nameMap.put("migrating", "rulesets/migrating.xml");
         nameMap.put("naming", "rulesets/naming.xml");
         nameMap.put("optimizations", "rulesets/optimizations.xml");
+        nameMap.put("scratchpad", "rulesets/scratchpad.xml");
         nameMap.put("strictexception", "rulesets/strictexception.xml");
         nameMap.put("strings", "rulesets/strings.xml");
         nameMap.put("sunsecure", "rulesets/sunsecure.xml");
         nameMap.put("unusedcode", "rulesets/unusedcode.xml");
-        nameMap.put("scratchpad", "rulesets/scratchpad.xml");
     }
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+
+<ruleset name="Migration Rules" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
+  <description>
+Contains rules about migrating from one JDK version to another.  Don't use these rules directly,
+      rather, use a wrapper ruleset such as migrating_to_14.xml.
+  </description>
+
+<rule name="ReplaceVectorWithList"
+  message="Consider replacing this Vector with the newer java.util.List"
+  class="net.sourceforge.pmd.rules.XPathRule">
+  <description>
+  Consider replacing this Vector with the newer java.util.List
+  </description>
+  <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']
+ ]]>
+    </value>
+    </property>
+  </properties>
+  <priority>3</priority>
+  <example>
+<![CDATA[
+public class Foo {
+ void bar() {
+    Vector v = new Vector();
+ }
+}
+]]>
+  </example>
+</rule>
+
+    <rule name="ReplaceHashtableWithMap"
+      message="Consider replacing this Hashtable with the newer java.util.Map"
+      class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+      Consider replacing this Hashtable with the newer java.util.Map
+      </description>
+      <properties>
+        <property name="xpath">
+        <value>
+    <![CDATA[
+    //Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']
+     ]]>
+        </value>
+        </property>
+      </properties>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+    public class Foo {
+     void bar() {
+        Hashtable h = new Hashtable();
+     }
+    }
+    ]]>
+      </example>
+    </rule>
+
+</ruleset>
+

@@ -58,6 +58,7 @@
         <item name="JUnit Tests" href="/rules/junit.html" />
         <item name="Logging (Java)" href="/rules/logging-java.html" />
         <item name="Logging (Jakarta)" href="/rules/logging-jakarta-commons.html" />
+        <item name="Migrating" href="/rules/migrating.html" />
         <item name="Naming" href="/rules/naming.html" />
         <item name="Optimizations" href="/rules/optimizations.html" />
         <item name="Strict Exceptions" href="/rules/strictexception.html" />

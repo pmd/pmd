@@ -105,11 +105,15 @@ public class Designer implements ClipboardOwner {
                 ASTCompilationUnit c = parser.CompilationUnit();
                 for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
                     StringBuffer sb = new StringBuffer();
-                    SimpleNode node = (SimpleNode) iter.next();
-                    String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
-                    String line = " at line " + String.valueOf(node.getBeginLine());
-                    sb.append(name).append(line).append(System.getProperty("line.separator"));
-                    xpathResults.addElement(sb.toString().trim());
+                    Object obj = iter.next();
+                    // if it's a Boolean and it's 'false', what does that mean?
+                    if (!(obj instanceof Boolean)) {
+                        SimpleNode node = (SimpleNode)obj;
+                        String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
+                        String line = " at line " + String.valueOf(node.getBeginLine());
+                        sb.append(name).append(line).append(System.getProperty("line.separator"));
+                        xpathResults.addElement(sb.toString().trim());
+                    }
                 }
                 if (xpathResults.isEmpty()) {
                     xpathResults.addElement("No matching nodes " + System.currentTimeMillis());
