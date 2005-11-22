@@ -742,10 +742,10 @@ public class StaticField {
      </rule>
 
     <rule name="MissingStaticMethodInNonInstantiatableClass"
-          message="Class cannot be instantiated and does not provide any static methods"
+          message="Class cannot be instantiated and does not provide any static methods or fields"
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>
-A class that has private constructors and does not have any static method cannot be used.
+A class that has private constructors and does not have any static methods or fields cannot be used.
       </description>
       <properties>
           <property name="xpath">
@@ -756,6 +756,8 @@ A class that has private constructors and does not have any static method cannot
   and count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true']) )
 and
 count(.//MethodDeclaration[@Static='true'])=0
+and
+count(.//FieldDeclaration[@Public='true'][@Static='true'])=0
 ]
     ]]>
               </value>

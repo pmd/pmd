@@ -25,6 +25,8 @@ public class MissingStaticMethodInNonInstantiatableClassTest extends SimpleAggre
                new TestDescriptor(TEST5, "protected constructor is ok", 0, rule),
                new TestDescriptor(TEST6, "ok, one static method", 0, rule),
                new TestDescriptor(TEST7, "nested class", 0, rule),
+               new TestDescriptor(TEST8, "ok, public static field", 0, rule),
+               new TestDescriptor(TEST9, "not ok, non-public static field", 1, rule),
        });
     }
     
@@ -69,6 +71,18 @@ public class MissingStaticMethodInNonInstantiatableClassTest extends SimpleAggre
         " private static class Bar {" + PMD.EOL +
         "  private Bar() {}" + PMD.EOL +
         " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST8 =
+        "public class Foo {" + PMD.EOL +
+        " public static int BUZ = 2;" + PMD.EOL +
+        "  private Foo() {}" + PMD.EOL +
+        "}";
+
+    private static final String TEST9 =
+        "public class Foo {" + PMD.EOL +
+        " private static int BUZ = 2;" + PMD.EOL +
+        "  private Foo() {}" + PMD.EOL +
         "}";
 
 }

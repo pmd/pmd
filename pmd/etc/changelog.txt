@@ -23,6 +23,7 @@ Fixed bug 1351706 - CompareObjectsWithEquals now catches more cases.
 Fixed bug 1277373 - InefficientStringBuffering now flags fewer false positives.
 Fixed bug 1347286 - InefficientStringBuffering now flags fewer false positives.
 Fixed bug 1363447 - MissingBreakInSwitch no longer reports false positives for switch statements where each switch label has a return statement.
+Fixed bug 1363458 - MissingStaticMethodInNonInstantiatableClass no longer reports cases where there are public static fields.
 Implemented RFE 1311309 - Suppressed RuleViolation counts are now included in the reports.
 Implemented RFE 1220371 - Rule violation suppression via annotations.  Per the JLS, @SuppressWarnings can be placed before the following nodes: TYPE, FIELD, METHOD, PARAMETER, CONSTRUCTOR, LOCAL_VARIABLE.
 Implemented RFE 1275547 - OverrideBothEqualsAndHashcode now skips Comparator implementations.
