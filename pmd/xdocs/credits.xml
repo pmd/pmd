@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Chris Erskine - documentation suggestions</li>
             <li>Noel Grandin - bug report for MissingStaticMethodInNonInstantiatableClass, bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Derek Hofmann - suggestion for adding --skip-duplicate-files option for CPD, bug report for CPD skipping header files when in C/C++ mode</li>
             <li>Mark Holczhammer - bug report for InefficientStringBuffering</li>

@@ -15,6 +15,7 @@ public class ImmutableFieldTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
+        System.out.println(TEST13);
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "could be immutable, only assigned in constructor", 1, rule),
            new TestDescriptor(TEST2, "could be immutable, only assigned in decl", 1, rule),

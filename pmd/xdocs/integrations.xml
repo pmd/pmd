@@ -128,24 +128,26 @@
 
 
       <a name="eclipse"/><subsection name="Eclipse">
+<P>To install the PMD plugin for Eclipse:</P>
+<ul>
+    <li>Start Eclipse and open a project</li>
+    <li>Select "Help"->"Software Updates"->"Find and Install"</li>
+    <li>Click "Next", then click "New remote site"</li>
+    <li>Enter "PMD" into the Name field and "http://pmd.sf.net/eclipse" into the URL field</li>
+    <li>Click through the rest of the dialog boxes to install the plugin</li>
+</ul>
+<P>Alternatively, you can download the latest zip file and follow the above procedures
+except for using "New local site" and browsing to the downloaded zip file.</P>
 <p>
-Integration into Eclipse is accomplished through the extensive
-Plugin architecture provided by Eclipse.  It is written in Java,
-and has some nice features to it.
+To configure PMD, select "Windows"->"Preferences", then select PMD.
 </p>
 <p>
-Eclipse Integration will fill the TODO list of the project with
-each Rule Violation that PMD detects.  These violations are marked
-in the code with the Task icon on the left hand side of the editor.
+To run PMD, right-click on a project node and select "PMD"->"Check code with PMD".
 </p>
 <p>
-The Eclipse integration was written with the version 2.0 of Eclipse,
-so I'm not certain if it will work on earlier versions.
-</p>
-<p>
-As Eclipse is not my primary IDE, we are looking for people who can
-make suggestions, and possibly even handle the care and feeding of
-the Eclipse plugin.
+To run the duplicate code detector, right-click on a project node and
+ select "PMD"->"Find suspect cut and paste".  The report will be placed in a "reports" directory
+    in a file called "cpd-report.txt".
 </p>
       </subsection>
 
