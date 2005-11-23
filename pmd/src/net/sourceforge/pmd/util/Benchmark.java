@@ -7,6 +7,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaLanguage;
 
@@ -61,10 +62,8 @@ public class Benchmark {
     public static void main(String[] args) throws RuleSetNotFoundException, IOException, PMDException {
 
         boolean debug = findBooleanSwitch(args, "--debug");
-        String srcDir = "/usr/local/java/src/java/lang/";
-        if (args.length != 0) {
-            srcDir = findOptionalStringValue(args, "--source-directory", srcDir);
-        }
+        String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
+        String ruleset = findOptionalStringValue(args, "--ruleset", "");
         if (debug) System.out.println("Checking directory " + srcDir);
 
         Set results = new TreeSet();
@@ -73,9 +72,15 @@ public class Benchmark {
         List files = finder.findFilesFrom(srcDir, new JavaLanguage.JavaFileOrDirectoryFilter(), true);
 
         RuleSetFactory factory = new RuleSetFactory();
-        Iterator i = factory.getRegisteredRuleSets();
-        while (i.hasNext()) {
-            stress((RuleSet)i.next(), files, results, debug);
+
+        if (ruleset.length() > 0) {
+            SimpleRuleSetNameMapper mapper = new SimpleRuleSetNameMapper(ruleset);
+            stress(factory.createRuleSet(mapper.getRuleSets()), files, results, debug);
+        } else {
+            Iterator i = factory.getRegisteredRuleSets();
+            while (i.hasNext()) {
+                stress((RuleSet)i.next(), files, results, debug);
+            }
         }
         System.out.println("=========================================================");
         System.out.println("Rule\t\t\t\t\t\tTime in ms");
