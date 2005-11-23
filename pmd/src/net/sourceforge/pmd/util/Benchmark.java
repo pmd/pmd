@@ -32,7 +32,8 @@ public class Benchmark {
             } else if (other.time > time) {
                 return 1;
             }
-            return 0;
+
+            return rule.getName().compareTo(((Result)o).rule.getName());
         }
 
         public Result(long elapsed, Rule rule) {
