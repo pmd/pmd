@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
   <description>
 Contains rules about migrating from one JDK version to another.  Don't use these rules directly,
-      rather, use a wrapper ruleset such as migrating_to_14.xml.
+      rather, use a wrapper ruleset such as migrating_to_13.xml.
   </description>
 
 <rule name="ReplaceVectorWithList"
