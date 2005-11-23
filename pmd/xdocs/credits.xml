@@ -45,12 +45,13 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Allan Caplan - wrote AvoidEnumAsIdentifier, bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
+            <li>Didier Duquennoy - suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Bruno Juillet - suggested reporting suppressed warnings, bug report for missing package/class/method names, patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
             <li>Chris Erskine - documentation suggestions</li>
             <li>Noel Grandin - bug report for MissingStaticMethodInNonInstantiatableClass, bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Derek Hofmann - suggestion for adding --skip-duplicate-files option for CPD, bug report for CPD skipping header files when in C/C++ mode</li>
             <li>Mark Holczhammer - bug report for InefficientStringBuffering</li>
-            <li>Didier Duquennoy - bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Brian R - documentation suggestion</li>
             <li>Jeff Jensen - discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>Johan Stuyts - patch to allow empty catch blocks with comments in them, patch to clean up build environment</li>
@@ -66,7 +67,6 @@
             <li>Olaf Heimburger - code changes to get JDeveloper plugin working under JDev 10.1.3 EA</li>
             <li>Brian Duff - helped get Oracle JDeveloper plugin working</li>
             <li>Sivakumar Mambakka - bug report 1314086 for missing name in SimpleRuleSetNameMapper</li>
-            <li>Allan Caplan - bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
             <li>Rodrigo Ruiz - bug report 1312723 for FieldDeclaration nodes inside interfaces, bug report 1312754 for pmd.bat option handling, bug report 1312720 (and code fix!) for DefaultPackage, bug report 1309235 for TooManyFields</li>
             <li>Lori Olson - JBuilder plugin suggestions and prerelease tests, found copy/paste bug in rule descriptions</li>
             <li>Andriy Rozeluk - bug report 1306180 for AvoidConcatenatingNonLiteralsInStringBuffer, reported bug 1293157 for UnusedPrivateMethod, suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>

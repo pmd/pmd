@@ -91,5 +91,31 @@ public class Foo implements Enumeration {
     ]]>
       </example>
     </rule>
+
+    <rule name="AvoidEnumAsIdentifier"
+          message="Avoid using enum as an identifier; it's a reserved word in JDK 1.5"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>Finds all places 'enum' is used as an identifier is used</description>
+      <properties>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+                    //VariableDeclaratorId[@Image='enum']
+                  ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>2</priority>
+      <example>
+  <![CDATA[
+    public class A {
+        public  class foo {
+            String enum = "foo";
+        }
+    }
+  ]]>
+      </example>
+    </rule>
+
 </ruleset>
 
