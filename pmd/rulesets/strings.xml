@@ -9,7 +9,7 @@ These rules deal with different problems that can occur with manipulation of the
 
     <rule name="AvoidDuplicateLiterals"
         message="The String literal {0} appears {1} times in this file; the first occurrence is on line {2}"
-        class="net.sourceforge.pmd.rules.AvoidDuplicateLiteralsRule">
+        class="net.sourceforge.pmd.rules.strings.AvoidDuplicateLiteralsRule">
     <description>
 Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
     </description>
@@ -34,7 +34,7 @@ public class Foo {
 
     <rule name="StringInstantiation"
         message="Avoid instantiating String objects; this is usually unnecessary."
-        class="net.sourceforge.pmd.rules.StringInstantiation">
+        class="net.sourceforge.pmd.rules.strings.StringInstantiation">
     <description>
 Avoid instantiating String objects; this is usually unnecessary.
     </description>
@@ -50,7 +50,7 @@ public class Foo {
 
    <rule name="StringToString"
         message="Avoid calling toString() on String objects; this is unnecessary"
-        class="net.sourceforge.pmd.rules.StringToStringRule">
+        class="net.sourceforge.pmd.rules.strings.StringToStringRule">
     <description>
     Avoid calling toString() on String objects; this is unnecessary
     </description>
@@ -69,7 +69,7 @@ public class Foo {
 
     <rule name="InefficientStringBuffering"
         message="Avoid concatenating nonliterals in a StringBuffer constructor or append()"
-        class="net.sourceforge.pmd.rules.InefficientStringBuffering">
+        class="net.sourceforge.pmd.rules.strings.InefficientStringBuffering">
     <description>
 Avoid concatenating non literals in a StringBuffer constructor or append().
     </description>
@@ -91,7 +91,7 @@ public class Foo {
 
     <rule name="UnnecessaryCaseChange"
           message="Using equalsIgnoreCase() is cleaner than using toUpperCase/toLowerCase().equals()"
-           class="net.sourceforge.pmd.rules.UnnecessaryCaseChange">
+           class="net.sourceforge.pmd.rules.strings.UnnecessaryCaseChange">
        <description>
 Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
        </description>
@@ -109,6 +109,31 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
                  ]]>
        </example>
      </rule>
+
+    <rule name="UseStringBufferLength"
+          message="This is an inefficient use of StringBuffer.toString; just call StringBuffer.length instead"
+          class="net.sourceforge.pmd.rules.strings.UseStringBufferLength">
+      <description>
+ Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
+          or StringBuffer.toString().length() ==
+      </description>
+      <properties>
+      </properties>
+        <priority>2</priority>
+      <example>
+  <![CDATA[
+    public class A {
+        public  class fooinner {
+            StringBuffer sb = new StringBuffer();
+            if(sb.toString().equals("")){
+                // this is bad
+            }
+        }
+    }
+  ]]>
+      </example>
+    </rule>
+
 
 
 </ruleset>

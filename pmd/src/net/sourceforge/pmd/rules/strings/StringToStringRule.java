@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.rules;
+package net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
@@ -28,6 +28,7 @@ public class StringToStringRule extends AbstractRule {
         }
         
         // now we know we're at a variable declaration of type String
+        // FIXME - use getNameDeclaration to get back, don't loop!
         Map decls = node.getScope().getVariableDeclarations();
         for (Iterator i = decls.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration decl = (VariableNameDeclaration) i.next();

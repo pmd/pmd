@@ -21,6 +21,7 @@ public class SingularFieldRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "skip publics", 0, rule),
            new TestDescriptor(TEST5, "skip statics", 0, rule),
            new TestDescriptor(TEST6, "unused fields shouldn't show up", 0, rule),
+           new TestDescriptor(TEST7, "inner class", 0, rule),
        });
     }
 
@@ -79,6 +80,21 @@ public class SingularFieldRuleTest extends SimpleAggregatorTst {
     " int b = 3;" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "  foo(b); " + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + PMD.EOL +
+    " private int a;" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  Object o = new FooAdapter() {"  + PMD.EOL +
+    "   public void bar(Event e) {"  + PMD.EOL +
+    "    a = e.GetInt();"  + PMD.EOL +
+    "   }"  + PMD.EOL +
+    "  }; " + PMD.EOL +
+    " }" + PMD.EOL +
+    " int baz() {" + PMD.EOL +
+    "  return a; " + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

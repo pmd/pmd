@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.rules;
+package net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
@@ -75,7 +75,6 @@ public class InefficientStringBuffering extends AbstractRule {
 
         VariableNameDeclaration vnd = (VariableNameDeclaration)n.getNameDeclaration();
         return vnd.getTypeImage().equals("StringBuffer");
-//        return n!=null && n.getImage()!=null && n.getImage().endsWith("append");
     }
 
     private boolean eighthParentIsBlockStatement(ASTAdditiveExpression node) {

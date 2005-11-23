@@ -39,6 +39,7 @@ public class NullAssignmentRule extends AbstractRule {
         return data;
     }
 
+    // FIXME use getNameDeclaration rather than looping
     private boolean isAssignmentToFinalField(ASTStatementExpression n) {
         ASTName name = (ASTName)n.getFirstChildOfType(ASTName.class);
         if (name != null) {

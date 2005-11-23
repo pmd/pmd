@@ -45,7 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Allan Caplan - wrote AvoidEnumAsIdentifier, bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
+            <li>Allan Caplan - wrote UseStringBufferLength, wrote AvoidEnumAsIdentifier, bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
             <li>Didier Duquennoy - suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Bruno Juillet - suggested reporting suppressed warnings, bug report for missing package/class/method names, patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
             <li>Chris Erskine - documentation suggestions</li>

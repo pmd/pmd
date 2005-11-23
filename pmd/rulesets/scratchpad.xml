@@ -7,44 +7,6 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="MissingStaticMethodInNonInstantiatableClass"
-          message="Class cannot be instantiated and does not provide any static methods"
-          class="net.sourceforge.pmd.rules.XPathRule">
-      <description>
-A class that has private constructors and does not have any static method cannot be used.
-      </description>
-      <properties>
-          <property name="xpath">
-              <value>
-    <![CDATA[
-//ClassOrInterfaceDeclaration[@Nested='false'][
-( count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)>0
-  and count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true']) )
-and
-count(.//MethodDeclaration[@Static='true'])=0
-and
-count(.//FieldDeclaration[@Static='true'])=0
-]
-    ]]>
-              </value>
-          </property>
-      </properties>
-        <priority>3</priority>
-      <example>
-<![CDATA[
-/* This class is unusable, since it cannot be
- instantiated (private constructor),
- and no static method can be called.
- */
-public class Foo {
- private Foo() {}
- void foo() {}
-}
-
-]]>
-      </example>
-    </rule>
-
 
 <!--
     <rule name="UselessAssignment"
