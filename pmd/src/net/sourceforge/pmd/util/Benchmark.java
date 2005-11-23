@@ -40,19 +40,42 @@ public class Benchmark {
         }
     }
 
-    private static final String JAVA_SRC_DIR = "/usr/local/java/src/java/lang/";
-    private static final boolean DEBUG = false;
+    private static boolean findBooleanSwitch(String[] args, String name) {
+        for (int i=0; i<args.length; i++) {
+            if (args[i].equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String findOptionalStringValue(String[] args, String name, String defaultValue) {
+        for (int i=0; i<args.length; i++) {
+            if (args[i].equals(name)) {
+                return args[i+1];
+            }
+        }
+        return defaultValue;
+    }
 
     public static void main(String[] args) throws RuleSetNotFoundException, IOException, PMDException {
+
+        boolean debug = findBooleanSwitch(args, "--debug");
+        String srcDir = "/usr/local/java/src/java/lang/";
+        if (args.length != 0) {
+            srcDir = findOptionalStringValue(args, "--source-directory", srcDir);
+        }
+        if (debug) System.out.println("Checking directory " + srcDir);
+
         Set results = new TreeSet();
 
         FileFinder finder = new FileFinder();
-        List files = finder.findFilesFrom(JAVA_SRC_DIR, new JavaLanguage.JavaFileOrDirectoryFilter(), true);
+        List files = finder.findFilesFrom(srcDir, new JavaLanguage.JavaFileOrDirectoryFilter(), true);
 
         RuleSetFactory factory = new RuleSetFactory();
         Iterator i = factory.getRegisteredRuleSets();
         while (i.hasNext()) {
-            stress((RuleSet)i.next(), files, results);
+            stress((RuleSet)i.next(), files, results, debug);
         }
         System.out.println("=========================================================");
         System.out.println("Rule\t\t\t\t\t\tTime in ms");
@@ -70,11 +93,11 @@ public class Benchmark {
         System.out.println("=========================================================");
     }
 
-    private static void stress(RuleSet ruleSet, List files, Set results) throws PMDException, IOException {
+    private static void stress(RuleSet ruleSet, List files, Set results, boolean debug) throws PMDException, IOException {
         Set rules = ruleSet.getRules();
         for (Iterator j = rules.iterator(); j.hasNext();) {
             Rule rule = (Rule)j.next();
-            if (DEBUG) System.out.println("Starting " + rule.getName());
+            if (debug) System.out.println("Starting " + rule.getName());
 
             RuleSet working = new RuleSet();
             working.addRule(rule);
@@ -92,7 +115,7 @@ public class Benchmark {
             long end = System.currentTimeMillis();
             long elapsed = end - start;
             results.add(new Result(elapsed, rule));
-            if (DEBUG) System.out.println("Done timing " + rule.getName() + "; elapsed time was " + elapsed);
+            if (debug) System.out.println("Done timing " + rule.getName() + "; elapsed time was " + elapsed);
         }
     }
 }

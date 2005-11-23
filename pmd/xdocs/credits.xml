@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Bruno Juillet - suggested reporting suppressed warnings, bug report for missing package/class/method names, patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
             <li>Chris Erskine - documentation suggestions</li>
             <li>Noel Grandin - bug report for MissingStaticMethodInNonInstantiatableClass, bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Derek Hofmann - suggestion for adding --skip-duplicate-files option for CPD, bug report for CPD skipping header files when in C/C++ mode</li>
@@ -96,7 +97,6 @@
             <li>Tor Norbye - Suggested CompareObjectsWithEquals</li>
             <li>Thomas Skariah - bug reports for MethodArgumentCouldBeFinal and AvoidReassigningParameters</li>
             <li>Tom Parker - bug report for MethodReturnsInternalArray, found missed case in NullAssignment, suggested addition to UnnecessaryBooleanAssertion, suggested splitting up AvoidThrowingCertainExceptionTypes, AvoidInstantiatingObjectsInLoops bug report, AtLeastOneConstructor bug report</li>
-            <li>Bruno Juillet - bug report for missing package/class/method names, patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
             <li>Ian Flanigan - reported CPD JNLP breakage</li>
             <li>Glen Cordrey - Reported bug involved JavaCC string handling</li>
             <li>Oto 'tapik' Buchta - Patched XMLRenderer for UTF8 support</li>
