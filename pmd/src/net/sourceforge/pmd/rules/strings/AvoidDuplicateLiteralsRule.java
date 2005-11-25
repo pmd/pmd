@@ -4,8 +4,6 @@
 package net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -15,7 +13,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

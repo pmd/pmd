@@ -2,10 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.Rule;
 
-import java.util.Set;
-import java.util.List;
 
 public class ASTSingleMemberAnnotation extends SimpleNode {
   public ASTSingleMemberAnnotation(int id) {

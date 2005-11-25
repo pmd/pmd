@@ -38,7 +38,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Enumeration;
 
 public class Designer implements ClipboardOwner {
 

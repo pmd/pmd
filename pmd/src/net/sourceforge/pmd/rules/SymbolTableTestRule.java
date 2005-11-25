@@ -8,9 +8,9 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.HashSet;
 import java.util.Set;
 
 public class SymbolTableTestRule extends AbstractRule implements Rule {

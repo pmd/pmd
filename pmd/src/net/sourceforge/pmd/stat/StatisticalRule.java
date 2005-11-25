@@ -5,7 +5,6 @@ package net.sourceforge.pmd.stat;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
 
 import java.util.Iterator;
 import java.util.List;

@@ -7,8 +7,6 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
@@ -17,7 +15,6 @@ import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import org.jaxen.JaxenException;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 /**

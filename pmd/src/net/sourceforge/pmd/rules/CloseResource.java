@@ -18,12 +18,12 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 /**

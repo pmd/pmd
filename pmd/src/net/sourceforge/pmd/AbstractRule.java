@@ -6,8 +6,8 @@ package net.sourceforge.pmd;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.text.MessageFormat;
 import java.util.Iterator;

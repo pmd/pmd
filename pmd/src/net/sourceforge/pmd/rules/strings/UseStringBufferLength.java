@@ -1,29 +1,16 @@
 package net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.symboltable.MethodScope;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTReferenceType;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.symboltable.NameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Iterator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
-import org.jaxen.JaxenException;
 
 
 /**

@@ -3,14 +3,14 @@
  */
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.dfa.report.ReportTree;
-import net.sourceforge.pmd.stat.Metric;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
-import net.sourceforge.pmd.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.ast.CanSuppressWarnings;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.dfa.report.ReportTree;
+import net.sourceforge.pmd.stat.Metric;
 
 import java.util.ArrayList;
 import java.util.HashMap;

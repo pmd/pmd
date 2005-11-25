@@ -4,8 +4,6 @@
 package net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
@@ -13,9 +11,10 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 /*
  * How this rule works:

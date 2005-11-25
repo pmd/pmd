@@ -4,8 +4,6 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
@@ -19,7 +17,6 @@ import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.text.MessageFormat;
 import java.util.Stack;
 
 /**
