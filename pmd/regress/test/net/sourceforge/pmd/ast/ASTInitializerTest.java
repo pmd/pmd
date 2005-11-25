@@ -1,14 +1,8 @@
 package test.net.sourceforge.pmd.ast;
 
-import test.net.sourceforge.pmd.testframework.ParserTst;
-
-import java.util.Set;
-
-import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.ast.ASTInitializer;
-import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.ASTInitializer;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
 public class ASTInitializerTest extends ParserTst {
 

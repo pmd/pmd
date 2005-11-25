@@ -12,6 +12,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
+import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDKVersion;
@@ -45,6 +46,10 @@ public class RuleTst extends TestCase {
 
     public void runTestFromString15(String code, Rule rule, Report report) throws Throwable {
         runTestFromString(code, rule, report, new TargetJDK1_5());
+    }
+
+    public void runTestFromString13(String code, Rule rule, Report report) throws Throwable {
+        runTestFromString(code, rule, report, new TargetJDK1_3());
     }
 
     public void runTestFromString(String code, Rule rule, Report report, TargetJDKVersion jdk) throws Throwable {

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<ruleset name="Migration14" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../etc/ruleset_xml_schema.xml">
+  <description>
+Contains rules for migrating to JDK 1.4
+  </description>
+
+    <rule ref="rulesets/migrating.xml/AvoidAssertAsIdentifierTest"/>
+
+</ruleset>
+
+
+
