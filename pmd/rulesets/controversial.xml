@@ -11,7 +11,8 @@ most people really dislike :-)
 
     <rule name="UnnecessaryConstructor"
           message="Avoid unnecessary constructors - the compiler will generate these for you"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UnnecessaryConstructor">
       <description>
 This rule detects when a constructor is not necessary; i.e., when there's only one constructor,
 it's public, has an empty body, and takes no arguments.
@@ -46,7 +47,8 @@ public class Foo {
 
     <rule name="NullAssignment"
           message="Assigning an Object to null is a code smell.  Consider refactoring."
-          class="net.sourceforge.pmd.rules.design.NullAssignmentRule">
+          class="net.sourceforge.pmd.rules.design.NullAssignmentRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#NullAssignment">
       <description>
  Assigning a "null" to a variable (outside of its declaration) is usually
  bad form.  Some times, the assignment is an indication that the programmer doesn't
@@ -73,7 +75,8 @@ public class Foo {
 
     <rule name="OnlyOneReturn"
          message="A method should have only one exit point, and that should be the last statement in the method"
-         class="net.sourceforge.pmd.rules.design.OnlyOneReturnRule">
+         class="net.sourceforge.pmd.rules.design.OnlyOneReturnRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#OnlyOneReturn">
      <description>
 A method should have only one exit point, and that should be the last statement in the method.
      </description>
@@ -94,7 +97,8 @@ A method should have only one exit point, and that should be the last statement 
 
     <rule name="UnusedModifier"
          message="Avoid modifiers which are implied by the context"
-         class="net.sourceforge.pmd.rules.UnusedModifier">
+         class="net.sourceforge.pmd.rules.UnusedModifier"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UnusedModifier">
      <description>
  Fields in interfaces are automatically public static final, and
  methods are public abstract.
@@ -121,7 +125,8 @@ public class Bar {
 
     <rule name="AssignmentInOperand"
       message="Avoid assigments in operands"
-      class="net.sourceforge.pmd.rules.XPathRule">
+      class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AssignmentInOperand">
   <description>
 Avoid assigments in operands; this can make code more complicated and harder to read.
   </description>
@@ -155,7 +160,8 @@ public class Foo {
 
     <rule name="AtLeastOneConstructor"
       message="Each class should declare at least one constructor"
-      class="net.sourceforge.pmd.rules.XPathRule">
+      class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AtLeastOneConstructor">
   <description>
 Each class should declare at least one constructor.
   </description>
@@ -182,7 +188,8 @@ public class Foo {
 
     <rule name="DontImportSun"
        message="Avoid importing anything from the 'sun.*' packages"
-       class="net.sourceforge.pmd.rules.XPathRule">
+       class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DontImportSun">
        <description>
 Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
        </description>
@@ -209,7 +216,8 @@ public class Foo {}
 
     <rule name="SuspiciousOctalEscape"
        message="Suspicious decimal characters following octal escape in string literal"
-          class="net.sourceforge.pmd.rules.SuspiciousOctalEscape">
+          class="net.sourceforge.pmd.rules.SuspiciousOctalEscape"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SuspiciousOctalEscape">
       <description>
 A suspicious octal escape sequence was found inside a String literal.
 The Java language specification (section 3.10.6) says an octal
@@ -237,7 +245,8 @@ public class Foo {
 
     <rule name="CallSuperInConstructor"
           message="It is a good practice to call super() in a constructor"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#CallSuperInConstructor">
       <description>
 It is a good practice to call super() in a constructor. If super() is not called but
  another constructor (such as an overloaded constructor) is called, this rule will not report it.
@@ -273,7 +282,8 @@ public class Foo extends Bar{
 
     <rule name="UnnecessaryParentheses"
           message="This statement may have some unnecessary parentheses"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UnnecessaryParentheses">
       <description>
 Sometimes expressions are wrapped in unnecessary parentheses,
 making them look like a function call.
@@ -304,7 +314,8 @@ making them look like a function call.
 
     <rule name="SingularField"
               message="Perhaps ''{0}'' could be replaced by a local variable."
-              class="net.sourceforge.pmd.rules.SingularField">
+              class="net.sourceforge.pmd.rules.SingularField"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SingularField">
           <description>
 A field that's only used by one method could perhaps be replaced by a local variable
           </description>
@@ -324,10 +335,11 @@ public class Foo {
 
 
     <rule name="DefaultPackage"
-        message="Use explicit scoping instead of the default Package Private level"
-        class="net.sourceforge.pmd.rules.XPathRule">
+        message="Use explicit scoping instead of the default package private level"
+        class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DefaultPackage">
         <description>
-Use explicit scoping instead of the default Package Private level
+Use explicit scoping instead of the default package private level
         </description>
         <properties>
             <property name="xpath">

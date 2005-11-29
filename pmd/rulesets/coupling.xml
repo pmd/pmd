@@ -8,7 +8,8 @@
 
     <rule name="CouplingBetweenObjects"
         message="High amount of different objects as memebers donotes a high coupling"
-        class="net.sourceforge.pmd.rules.CouplingBetweenObjects">
+        class="net.sourceforge.pmd.rules.CouplingBetweenObjects"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#CouplingBetweenObjects">
     <description>
 Rule counts unique attributes, local variables and return types within an object. An amount
  higher than specified threshold can indicate a high degree of coupling.
@@ -39,7 +40,8 @@ public class Foo {
 
   <rule name="ExcessiveImports"
      message="A high number of imports can indicate a high degree of coupling within an object."
-     class="net.sourceforge.pmd.rules.ExcessiveImports">
+     class="net.sourceforge.pmd.rules.ExcessiveImports"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#ExcessiveImports">
      <description>
 A high number of imports can indicate a high degree of coupling within
 an object. Rule counts the number of unique imports and reports a violation
@@ -63,7 +65,8 @@ public class Foo {
 
     <rule name="LooseCoupling"
           message="Avoid using implementation types like ''{0}''; use the interface instead"
-          class="net.sourceforge.pmd.rules.design.LooseCoupling">
+          class="net.sourceforge.pmd.rules.design.LooseCoupling"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling">
       <description>
 Avoid using implementation types (i.e., HashSet); use the interface (i.e, Set) instead
       </description>

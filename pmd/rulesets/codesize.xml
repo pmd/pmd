@@ -9,7 +9,8 @@ The Code Size Ruleset contains a collection of rules that find code size related
 
  <rule name="ExcessiveMethodLength"
        message="Avoid really long methods."
-       class="net.sourceforge.pmd.rules.design.LongMethodRule">
+       class="net.sourceforge.pmd.rules.design.LongMethodRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#LongMethodRule">
    <description>
 Violations of this rule usually indicate that the method is doing
 too much.  Try to reduce the method size by creating helper methods and removing any copy/pasted code.
@@ -35,7 +36,8 @@ public class Foo {
 
  <rule name="ExcessiveParameterList"
        message="Avoid really long parameter lists."
-       class="net.sourceforge.pmd.rules.design.LongParameterListRule">
+       class="net.sourceforge.pmd.rules.design.LongParameterListRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#LongParameterListRule">
    <description>
 Long parameter lists can indicate that a new object should be created to
  wrap the numerous parameters.  Basically, try to group the parameters together.
@@ -61,7 +63,8 @@ public class Foo {
 
  <rule name="ExcessiveClassLength"
        message="Avoid really long classes."
-       class="net.sourceforge.pmd.rules.design.LongClassRule">
+       class="net.sourceforge.pmd.rules.design.LongClassRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#LongClassRule">
    <description>
 Long Class files are indications that the class may be trying to
 do too much.  Try to break it down, and reduce the size to something
@@ -85,7 +88,8 @@ public class Foo {
 
     <rule name="CyclomaticComplexity"
       message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
-      class="net.sourceforge.pmd.rules.CyclomaticComplexity">
+      class="net.sourceforge.pmd.rules.CyclomaticComplexity"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#CyclomaticComplexity">
    <description>
 Complexity is determined by the number of decision points in a method plus one for the
 method entry.  The decision points are 'if', 'while', 'for', and 'case labels'.  Generally,
@@ -141,7 +145,8 @@ public class Foo {
 
     <rule name="ExcessivePublicCount"
     message="This class has a bunch of public methods and attributes"
-    class="net.sourceforge.pmd.rules.ExcessivePublicCount">
+    class="net.sourceforge.pmd.rules.ExcessivePublicCount"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#ExcessivePublicCount">
     <description>
 A large number of public methods and attributes declared in a class can indicate the
  class may need to be broken up as increased effort will be required to thoroughly test it.
@@ -168,7 +173,8 @@ public class Foo {
 
     <rule name="TooManyFields"
           message="Too many fields"
-          class="net.sourceforge.pmd.rules.design.TooManyFields">
+          class="net.sourceforge.pmd.rules.design.TooManyFields"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#TooManyFields">
       <description>
 Classes that have too many fields could be redesigned to have fewer fields, possibly
  through some nested object grouping of some of the information.  For example, a class with
