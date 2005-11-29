@@ -23,6 +23,16 @@ public class ASTConstructorDeclaration extends AccessNode {
         return visitor.visit(this, data);
     }
 
+    private boolean containsComment;
+
+    public boolean containsComment() {
+        return this.containsComment;
+    }
+
+    public void setContainsComment() {
+        this.containsComment = true;
+    }
+
     public void dump(String prefix) {
         System.out.println(collectDumpedModifiers(prefix));
         dumpChildren(prefix);

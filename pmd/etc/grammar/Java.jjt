@@ -1309,14 +1309,15 @@ void FormalParameter() :
 }
 
 void ConstructorDeclaration(int modifiers) :
-{jjtThis.setModifiers(modifiers);}
+{jjtThis.setModifiers(modifiers);
+Token t;}
 {
     [ TypeParameters() ]
   <IDENTIFIER> FormalParameters() [ "throws" NameList() ]
   "{"
     [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
     ( BlockStatement() )*
-  "}"
+  t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); }; }
 }
 
 void ExplicitConstructorInvocation() :

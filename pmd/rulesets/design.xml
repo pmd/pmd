@@ -1115,4 +1115,63 @@ public static Foo getFoo() {
         ]]></example>
     </rule>
 
+
+
+    <rule name="UncommentedEmptyMethod"
+          message="Document empty method"
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UncommentedEmptyMethod">
+      <description>
+Uncommented Empty Method finds instances where a method does not contain
+statements, but there is no comment. By explicitly commenting empty methods
+it is easier to distinguish between intentional (commented) and unintentional
+empty methods.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//MethodDeclaration/Block[count(BlockStatement) = 0 and @containsComment = 'false']
+ ]]>
+             </value>
+          </property>
+      </properties>
+      <priority>3</priority>
+      <example>
+  <![CDATA[
+public void doSomething() {
+}
+ ]]>
+      </example>
+    </rule>
+
+    <rule name="UncommentedEmptyConstructor"
+          message="Document empty constructor"
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UncommentedEmptyConstructor">
+      <description>
+Uncommented Empty Constructor finds instances where a constructor does not
+contain statements, but there is no comment. By explicitly commenting empty
+constructors it is easier to distinguish between intentional (commented)
+and unintentional empty constructors.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//ConstructorDeclaration[count(BlockStatement) = 0 and @containsComment = 'false']
+ ]]>
+             </value>
+          </property>
+      </properties>
+      <priority>3</priority>
+      <example>
+  <![CDATA[
+public Foo() {
+  super();
+}
+ ]]>
+      </example>
+    </rule>
+
 </ruleset>
