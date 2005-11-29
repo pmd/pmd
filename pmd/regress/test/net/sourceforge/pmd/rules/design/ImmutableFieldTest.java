@@ -31,6 +31,7 @@ public class ImmutableFieldTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST13, "assignment in constructor is in try block", 0, rule),
            new TestDescriptor(TEST14, "assignment in method is in try block", 0, rule),
            new TestDescriptor(TEST15, "assignment in constructor in loop is ok", 0, rule),
+           new TestDescriptor(TEST16, "assignment in anonymous inner class method is OK", 0, rule),
        });
     }
 
@@ -162,6 +163,19 @@ public class ImmutableFieldTest extends SimpleAggregatorTst {
     " private int x;" + PMD.EOL +
     " public Foo() {" + PMD.EOL +
     "  for (int i=0; i<10; i++) { x += 5; }" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST16 =
+    "public class Foo {" + PMD.EOL +
+    " private int x;" + PMD.EOL +
+    " public Foo() {" + PMD.EOL +
+    "   mouseListener = new MouseAdapter() {" +PMD.EOL +
+    "      public void mouseClicked(MouseEvent e) {" +PMD.EOL +
+    "        x = e.getSource();" +PMD.EOL +
+    "        super.mouseClicked(e);" +PMD.EOL +
+    "      }" + PMD.EOL +
+    "    };" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

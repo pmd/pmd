@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
@@ -63,6 +64,9 @@ public class ImmutableField extends AbstractRule {
                     if (inLoopOrTry(node)) {
                         continue;
                     }
+                    if (inAnonymousInnerClass(node)) {
+                        continue;
+                    }
                     consSet.add(constructor);
                 } else {
                     if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
@@ -87,6 +91,11 @@ public class ImmutableField extends AbstractRule {
                (SimpleNode)node.getFirstParentOfType(ASTForStatement.class) != null ||
                (SimpleNode)node.getFirstParentOfType(ASTWhileStatement.class) != null ||
                (SimpleNode)node.getFirstParentOfType(ASTDoStatement.class) != null;
+    }
+
+    private boolean inAnonymousInnerClass(SimpleNode node) {
+        ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration)node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+        return parent != null && parent.isAnonymousInnerClass();    
     }
 
     /** construct a set containing all ASTConstructorDeclaration nodes for this class

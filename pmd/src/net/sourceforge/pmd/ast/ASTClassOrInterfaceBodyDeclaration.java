@@ -35,4 +35,11 @@ public class ASTClassOrInterfaceBodyDeclaration extends SimpleNode  implements C
     public boolean isAnonymousInnerClass() {
         return jjtGetParent().jjtGetParent() instanceof ASTAllocationExpression;
     }
+
+    public void dump(String prefix) {
+        String isAnonyString = isAnonymousInnerClass() ? ": (anonymous inner class)" : "";
+        System.out.println(toString(prefix) + isAnonyString);
+        dumpChildren(prefix);
+    }
+
 }
