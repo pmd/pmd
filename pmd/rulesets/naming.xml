@@ -9,7 +9,8 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
 
   <rule name="ShortVariable"
         message="Avoid variables with short names like {0}"
-        class="net.sourceforge.pmd.rules.XPathRule">
+        class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ShortVariable">
     <description>
 Detects when a field, local or parameter has a short name.
     </description>
@@ -42,7 +43,8 @@ public class Something {
 
   <rule name="LongVariable"
         message="Avoid excessively long variable names like {0}"
-        class="net.sourceforge.pmd.rules.XPathRule">
+        class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#LongVariable">
     <description>
 Detects when a field, formal or local variable is declared with a long name.
     </description>
@@ -74,7 +76,8 @@ public class Something {
 
   <rule name="ShortMethodName"
         message="Avoid using short method names"
-        class="net.sourceforge.pmd.rules.XPathRule">
+        class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ShortMethodName">
      <description>
 Detects when very short method names are used.
      </description>
@@ -101,7 +104,8 @@ public class ShortMethod {
 
     <rule name="VariableNamingConventions"
     message="{0} variable {1} should begin with {2}"
-    class="net.sourceforge.pmd.rules.VariableNamingConventions">
+    class="net.sourceforge.pmd.rules.VariableNamingConventions"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#VariableNamingConventions">
         <description>
 A variable naming conventions rule - customize this to your liking.  Currently, it
  checks that final variables should be all caps and non-final variables
@@ -121,7 +125,8 @@ public class Foo {
 
     <rule name="MethodNamingConventions"
               message="Method name does not begin with a lower case character."
-              class="net.sourceforge.pmd.rules.MethodNamingConventions">
+              class="net.sourceforge.pmd.rules.MethodNamingConventions"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#MethodNamingConventions">
           <description>
 Method names should always begin with a lower case character, and should not contain underscores.
           </description>
@@ -138,7 +143,8 @@ public class Foo {
 
     <rule name="ClassNamingConventions"
           message="Class names should begin with an uppercase character"
-          class="net.sourceforge.pmd.rules.ClassNamingConventions">
+          class="net.sourceforge.pmd.rules.ClassNamingConventions"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ClassNamingConventions">
       <description>
 Class names should always begin with an upper case character.
       </description>
@@ -152,7 +158,8 @@ public class Foo {}
 
     <rule name="AbstractNaming"
           message="Abstract classes should be named 'AbstractXXX'"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AbstractNaming">
        <description>
 Abstract classes should be named 'AbstractXXX'.
        </description>
@@ -178,7 +185,8 @@ public abstract class Foo { // should be AbstractFoo
 
     <rule name="AvoidDollarSigns"
            message="Avoid using dollar signs in variable/method/class/interface names"
-           class="net.sourceforge.pmd.rules.XPathRule">
+           class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidDollarSigns">
        <description>
 Avoid using dollar signs in variable/method/class/interface names.
        </description>
@@ -206,7 +214,8 @@ Avoid using dollar signs in variable/method/class/interface names.
 
     <rule name="MethodWithSameNameAsEnclosingClass"
           message="Classes should not have non-constructor methods with the same name as the class"
-          class="net.sourceforge.pmd.rules.MethodWithSameNameAsEnclosingClass">
+          class="net.sourceforge.pmd.rules.MethodWithSameNameAsEnclosingClass"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#MethodWithSameNameAsEnclosingClass">
        <description>
 Non-constructor methods should not have the same name as the enclosing class.
        </description>
@@ -225,7 +234,8 @@ public class MyClass {
 
     <rule name="SuspiciousHashcodeMethodName"
           message="The method name and return type are suspiciously close to hashCode()"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#SuspiciousHashcodeMethodName">
        <description>
 The method name and return type are suspiciously close to hashCode(), which
 may mean you are intending to override the hashCode() method.
@@ -259,7 +269,8 @@ public class Foo {
 
     <rule name="SuspiciousConstantFieldName"
           message="The field name indicates a constant but its modifiers do not"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#SuspiciousConstantFieldName">
        <description>
 A field name is all in uppercase characters, which in Sun's Java naming
 conventions indicate a constant. However, the field is not final.
@@ -292,7 +303,8 @@ public class Foo {
     <rule
         name="SuspiciousEqualsMethodName"
         message="The method name and parameter number are suspiciously close to equals(Object)"
-        class="net.sourceforge.pmd.rules.XPathRule">
+        class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#SuspiciousEqualsMethodName">
         <description>
 The method name and parameter number are suspiciously close to
 equals(Object), which may mean you are intending to override the equals(Object)
@@ -337,7 +349,8 @@ public class Foo {
 
     <rule name="AvoidFieldNameMatchingTypeName"
           message="It is somewhat confusing to have a field name matching the declaring class name"
-          class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingTypeName">
+          class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingTypeName"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidFieldNameMatchingTypeName">
       <description>
 It is somewhat confusing to have a field name matching the declaring class name.
 This proabably means that type and or field names could be more precise.
@@ -355,7 +368,8 @@ public class Foo extends Bar {
 
     <rule name="AvoidFieldNameMatchingMethodName"
           message="It is somewhat confusing to have a field name with the same name as a method"
-          class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingMethodName">
+          class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingMethodName"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidFieldNameMatchingMethodName">
       <description>
 It is somewhat confusing to have a field name with the same name as a method.
 While this is totally legal, having information (field) and actions (method) is
@@ -376,7 +390,8 @@ public class Foo {
 
     <rule name="AvoidNonConstructorMethodsWithClassName"
           message="Method {0} is not a constructor but it can be confused with one"
-          class="net.sourceforge.pmd.rules.AvoidNonConstructorMethodsWithClassName">
+          class="net.sourceforge.pmd.rules.AvoidNonConstructorMethodsWithClassName"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidNonConstructorMethodsWithClassName">
       <description>
 It is very easy to confuse methods with classname with constructors. It is preferrable
 to name these non-constructor methods in a different way.
@@ -395,7 +410,8 @@ public class Foo {
 
     <rule name="NoPackage"
         message="All classes and interfaces must belong to a named package"
-        class="net.sourceforge.pmd.rules.XPathRule">
+        class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#NoPackage">
     <description>
 Detects when a class or interface does not have a package definition.
     </description>
@@ -420,7 +436,8 @@ public class ClassInDefaultPackage {
 
     <rule name="PackageCase"
             message="Package name contains upper case characters"
-            class="net.sourceforge.pmd.rules.XPathRule">
+            class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#PackageCase">
         <description>
     Detects when a package definition contains upper case characters.
         </description>
@@ -445,7 +462,8 @@ public class SomeClass {
 
     <rule name="MisleadingVariableName"
           message="Avoid naming non-fields with the prefix 'm_'"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#MisleadingVariableName">
       <description>
 Detects when a non-field has a name starting with 'm_'.  This usually
 indicates a field and thus is confusing.

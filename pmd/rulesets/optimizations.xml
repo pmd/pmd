@@ -8,7 +8,8 @@ These rules deal with different optimizations that generally apply to performanc
 
     <rule name="LocalVariableCouldBeFinal"
           message="Local variable could be declared final"
-          class="net.sourceforge.pmd.rules.optimization.LocalVariableCouldBeFinal">
+          class="net.sourceforge.pmd.rules.optimization.LocalVariableCouldBeFinal"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#LocalVariableCouldBeFinal">
       <description>
 A local variable assigned only once can be declared final.
       </description>
@@ -27,7 +28,8 @@ public class Bar {
 
     <rule name="MethodArgumentCouldBeFinal"
           message="Parameter ''{0}'' is not assigned and could be declared final"
-          class="net.sourceforge.pmd.rules.optimization.MethodArgumentCouldBeFinal">
+          class="net.sourceforge.pmd.rules.optimization.MethodArgumentCouldBeFinal"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#MethodArgumentCouldBeFinal">
       <description>
 A method argument that is never assigned can be declared final.
       </description>
@@ -44,7 +46,8 @@ public void foo (String param) {
 
   <rule name="AvoidInstantiatingObjectsInLoops"
         message="Avoid instantiating new objects inside loops"
-        class="net.sourceforge.pmd.rules.optimization.AvoidInstantiatingObjectsInLoops">
+        class="net.sourceforge.pmd.rules.optimization.AvoidInstantiatingObjectsInLoops"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#AvoidInstantiatingObjectsInLoops">
     <description>
 Detects when a new object is created inside a loop
     </description>
@@ -64,7 +67,8 @@ public class Something {
   
     <rule name="UseArrayListInsteadOfVector"
           message="Use ArrayList instead of Vector"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseArrayListInsteadOfVector">
       <description>
 ArrayList is a much better Collection implementation than Vector.
       </description>
@@ -94,7 +98,8 @@ public class SimpleTest extends TestCase {
 
     <rule name="SimplifyStartsWith"
           message="This call to String.startsWith can be rewritten using String.charAt(0)"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#SimplifyStartsWith">
       <description>
 Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
       </description>
@@ -130,7 +135,8 @@ public class Foo {
 
     <rule name="UseStringBufferForStringAppends"
               message="Prefer StringBuffer over += for concatenating strings"
-              class="net.sourceforge.pmd.rules.XPathRule">
+              class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseStringBufferForStringAppends">
            <description>
 Finds usages of += for appending strings.
            </description>

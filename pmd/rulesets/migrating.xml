@@ -9,7 +9,8 @@ Contains rules about migrating from one JDK version to another.  Don't use these
 
 <rule name="ReplaceVectorWithList"
   message="Consider replacing this Vector with the newer java.util.List"
-  class="net.sourceforge.pmd.rules.XPathRule">
+  class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ReplaceVectorWithList">
   <description>
   Consider replacing this Vector with the newer java.util.List
   </description>
@@ -36,7 +37,8 @@ public class Foo {
 
     <rule name="ReplaceHashtableWithMap"
       message="Consider replacing this Hashtable with the newer java.util.Map"
-      class="net.sourceforge.pmd.rules.XPathRule">
+      class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ReplaceHashtableWithMap">
       <description>
       Consider replacing this Hashtable with the newer java.util.Map
       </description>
@@ -63,7 +65,8 @@ public class Foo {
 
     <rule name="ReplaceEnumerationWithIterator"
       message="Consider replacing this Enumeration with the newer java.util.Iterator"
-      class="net.sourceforge.pmd.rules.XPathRule">
+      class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ReplaceEnumerationWithIterator">
       <description>
       Consider replacing this Enumeration with the newer java.util.Iterator
       </description>
@@ -94,7 +97,8 @@ public class Foo implements Enumeration {
 
     <rule name="AvoidEnumAsIdentifier"
           message="Avoid using enum as an identifier; it's a reserved word in JDK 1.5"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#AvoidEnumAsIdentifier">
       <description>Finds all places 'enum' is used as an identifier is used</description>
       <properties>
           <property name="xpath">
@@ -119,7 +123,8 @@ public class Foo implements Enumeration {
 
     <rule name="AvoidAssertAsIdentifier"
           message="Avoid using assert as an identifier; it's a reserved word in JDK 1.4"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#AvoidAssertAsIdentifier">
       <description>Finds all places 'assert' is used as an identifier is used</description>
       <properties>
           <property name="xpath">

@@ -8,7 +8,8 @@ The Java Logging ruleset contains a collection of rules that find questionable u
 
     <rule name="MoreThanOneLogger"
          message="Class contains more than one Logger"
-         class="net.sourceforge.pmd.rules.XPathRule">
+         class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#MoreThanOneLogger">
      <description>
 Normally only one logger is used in each class.
      </description>
@@ -39,7 +40,8 @@ class Foo{
 
      <rule name="LoggerIsNotStaticFinal"
          message="The Logger variable declaration does not contain the static and final modifiers"
-         class="net.sourceforge.pmd.rules.XPathRule">
+         class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#LoggerIsNotStaticFinal">
      <description>
 In most cases, the Logger can be declared static and final.
      </description>
@@ -106,7 +108,8 @@ first -->
 
     <rule name="SystemPrintln"
          message="System.out.print is used"
-         class="net.sourceforge.pmd.rules.XPathRule">
+         class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln">
      <description>
 System.(out|err).print is used, consider using a logger.
      </description>
