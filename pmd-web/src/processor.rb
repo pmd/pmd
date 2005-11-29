@@ -2,6 +2,7 @@
 
 require 'rubygems'
 require_gem 'ikko'
+require 'yaml'
 require '/home/tom/rubyforge/ruby-doom/lib/doom.rb'
 
 # add timeout thingy to the Thread class, thx to Rich Kilmer for the code
@@ -58,7 +59,7 @@ class Job
    `#{cmd}`
   end
   def run_pmd
-		cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-core-1.0-fcs.jar:/home/tom/pmd/pmd/lib/saxpath-1.0-fcs.jar:/home/tom/pmd/pmd-web/src/pmd-3.0.jar net.sourceforge.pmd.PMD \"#{ROOT}/#{@src}\" html unusedcode -shortnames > #{report}"
+		cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.3.jar net.sourceforge.pmd.PMD \"#{ROOT}/#{@src}\" html unusedcode -shortnames > #{report}"
    `#{cmd}`
    arr = IO.readlines(report)
    File.read(report) {|f|
@@ -66,7 +67,7 @@ class Job
 		}
   end
   def run_cpd
-   cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-core-1.0-fcs.jar:/home/tom/pmd/pmd/lib/saxpath-1.0-fcs.jar:/home/tom/pmd/pmd-web/src/pmd-3.0.jar net.sourceforge.pmd.cpd.CPD 100 " + @src + " > " + cpd_file
+   cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.3.jar net.sourceforge.pmd.cpd.CPD 100 " + @src + " > " + cpd_file
    `#{cmd}`
   end
 	def copy_up
@@ -141,21 +142,23 @@ class PreviousTracker
 end
 
 if __FILE__ == $0
+  puts "Starting at #{Time.now}"
 	Dir.chdir(Job::ROOT)
 	ENV['JAVA_HOME']="/usr/local/java"
 	ENV['PATH']="#{ENV['PATH']}:#{ENV['JAVA_HOME']}/bin"
 	jobs = []
-	File.read("jobs.txt").each_line {|jobtext| 
-		jobs << Job.new(*jobtext.split(":")) 
-	}
-
+  tree = YAML.load(File.open("jobs.yaml"))
+  tree.keys.each {|key|
+    jobs << Job.new(key, tree[key]["cvsroot"], tree[key]["module"], tree[key]["srcdir"])
+  }
+  
 	if ARGV.include?("-build") 
 		jobs.each do |job|
 			if ARGV.include?("-job") && job.mod != ARGV.at(ARGV.index("-job")+1)
 				puts "Skipping " + job.mod
 				next
 			end
-			puts "Processing " + job.to_s
+			puts "Processing " + job.unix_name
 			job.checkout_code
 			if File.exists?(job.src) 
 				if Dir.glob("#{job.src}/**/*.java").empty?
@@ -227,5 +230,7 @@ if __FILE__ == $0
 	File.open("scoreboard.html", "w") {|f| f.syswrite(out)}
 
 	`scp scoreboard.html tomcopeland@pmd.sf.net:/home/groups/p/pm/pmd/htdocs/`
+
+  puts "Done at #{Time.now}"
 end
 

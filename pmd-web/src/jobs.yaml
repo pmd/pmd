@@ -1,0 +1,505 @@
+--- 
+Polonius: 
+  module: polonius
+  cvsroot: polonius
+  srcdir: polonius/src
+PMD-JEdit: 
+  module: pmd-jedit
+  cvsroot: pmd
+  srcdir: pmd-jedit/src
+hipergate: 
+  module: java
+  cvsroot: hipergate
+  srcdir: java/src/
+PMD-Netbeans: 
+  module: pmd-netbeans
+  cvsroot: pmd
+  srcdir: pmd-netbeans/src
+Maverick: 
+  module: maverick
+  cvsroot: mav
+  srcdir: maverick/src/java
+Easy Explore Eclipse version: 
+  module: easyexplore-plugin
+  cvsroot: easystruts
+  srcdir: easyexplore-plugin/src
+Spring Framework: 
+  module: spring
+  cvsroot: springframework
+  srcdir: spring/src
+MX4J: 
+  module: mx4j
+  cvsroot: mx4j
+  srcdir: mx4j/src/core
+ChemicalMarkupLanguge: 
+  module: jumbo
+  cvsroot: cml
+  srcdir: jumbo/src
+Breath: 
+  module: breath
+  cvsroot: breath
+  srcdir: breath/src/
+XDoclet: 
+  module: xdocletgui
+  cvsroot: xdoclet
+  srcdir: xdocletgui/src
+Jmol: 
+  module: Jmol
+  cvsroot: jmol
+  srcdir: Jmol/src
+jcrontab: 
+  module: jcrontab
+  cvsroot: jcrontab
+  srcdir: jcrontab/src
+Horst: 
+  module: TrainGame
+  cvsroot: horst
+  srcdir: TrainGame/src
+JavaServer: 
+  module: javaserver
+  cvsroot: javaserver
+  srcdir: javaserver/JavaServer/java/
+Kaprekar: 
+  module: kaprekar-java
+  cvsroot: kaprekar
+  srcdir: kaprekar-java/com/
+XmlWriter: 
+  module: xmlwriter
+  cvsroot: xmlwriter
+  srcdir: xmlwriter/src/java
+PMD: 
+  module: pmd
+  cvsroot: pmd
+  srcdir: pmd/src
+Dexter: 
+  module: dexter
+  cvsroot: jdexter
+  srcdir: dexter/net
+JasperReports: 
+  module: jasperreports
+  cvsroot: jasperreports
+  srcdir: jasperreports/src
+tftp4java: 
+  module: tftp4java
+  cvsroot: tftp4java
+  srcdir: tftp4java
+AJTools Configuration: 
+  module: configuration
+  cvsroot: ajtools
+  srcdir: configuration/src/java
+JBoss-Common: 
+  module: jboss-common
+  cvsroot: jboss
+  srcdir: jboss-common/src
+MTAC: 
+  module: mtac
+  cvsroot: mtac
+  srcdir: mtac/net
+Import Scrubber: 
+  module: importscrubber
+  cvsroot: importscrubber
+  srcdir: importscrubber/src/net
+Chaperon: 
+  module: chaperon
+  cvsroot: chaperon
+  srcdir: chaperon/src
+jEdit: 
+  module: jEdit
+  cvsroot: jedit
+  srcdir: jEdit/org/
+Middlegen: 
+  module: middlegen
+  cvsroot: middlegen
+  srcdir: middlegen/src
+JUnit Addons PMD rules: 
+  module: junit-addons-pmd
+  cvsroot: junit-addons
+  srcdir: junit-addons-pmd/src
+Hibernate: 
+  module: Hibernate
+  cvsroot: hibernate
+  srcdir: Hibernate/cirrus/
+Freenet: 
+  module: freenet
+  cvsroot: freenet
+  srcdir: freenet/src
+Matra: 
+  module: matra-java
+  cvsroot: matra
+  srcdir: matra-java/com/
+PMD-Eclipse: 
+  module: pmd-eclipse
+  cvsroot: pmd
+  srcdir: pmd-eclipse/src
+Megamek.NET: 
+  module: MegaMekNET
+  cvsroot: megameknet
+  srcdir: MegaMekNET/src
+JRoseViewer: 
+  module: jroseviewer
+  cvsroot: jroseviewer
+  srcdir: jroseviewer/src
+FreeTTS: 
+  module: FreeTTS
+  cvsroot: freetts
+  srcdir: FreeTTS
+CSVObjects: 
+  module: CSVParser
+  cvsroot: csvparser
+  srcdir: CSVParser/src/
+Octet: 
+  module: octet
+  cvsroot: octet
+  srcdir: octet/src/
+"Writer's Forge": 
+  module: writersforge
+  cvsroot: writersforge
+  srcdir: writersforge/src
+JChemPaint: 
+  module: JCPCDK
+  cvsroot: jchempaint
+  srcdir: JCPCDK/src
+CSVJdbc: 
+  module: csvjdbc
+  cvsroot: csvjdbc
+  srcdir: csvjdbc/src/java
+ToscanaJ: 
+  module: source
+  cvsroot: toscanaj
+  srcdir: source
+Mirage: 
+  module: mirage
+  cvsroot: blijf
+  srcdir: mirage/src
+JBook: 
+  module: source
+  cvsroot: jbook
+  srcdir: source
+Chemical Development Kit: 
+  module: cdk
+  cvsroot: cdk
+  srcdir: cdk/src
+Woodward: 
+  module: source
+  cvsroot: woodward
+  srcdir: source/com
+Scope: 
+  module: scopemvc2
+  cvsroot: scope
+  srcdir: scopemvc2/src
+JBCcm: 
+  module: jbccm
+  cvsroot: jbccm
+  srcdir: jbccm/src
+EJP: 
+  module: ejp
+  cvsroot: ejp
+  srcdir: ejp/presenter/src/
+JGraph: 
+  module: jgraphpad3
+  cvsroot: jgraph
+  srcdir: jgraphpad3/src
+Tamarin: 
+  module: tamarin
+  cvsroot: tamarin
+  srcdir: tamarin/src/
+EJBCA: 
+  module: ejbca
+  cvsroot: ejbca
+  srcdir: ejbca/src/java
+Time Track: 
+  module: timetrack
+  cvsroot: timetrack
+  srcdir: timetrack/src
+Robugs3d: 
+  module: src
+  cvsroot: robugs3d
+  srcdir: src
+pcgen: 
+  module: pcgen
+  cvsroot: pcgen
+  srcdir: pcgen/src/java
+Merkwelt: 
+  module: merkwelt
+  cvsroot: merkwelt
+  srcdir: merkwelt/src
+Checkstyle: 
+  module: checkstyle
+  cvsroot: checkstyle
+  srcdir: checkstyle/src/checkstyle
+Lipidia: 
+  module: src
+  cvsroot: lipidia
+  srcdir: src/
+JGraphT: 
+  module: src
+  cvsroot: jgrapht
+  srcdir: src
+Semionic Network Toolkit: 
+  module: sntool-dev
+  cvsroot: sntool
+  srcdir: sntool-dev/src
+MyPod: 
+  module: myPod
+  cvsroot: mypod
+  srcdir: myPod/src
+joeq: 
+  module: joeq_core
+  cvsroot: joeq
+  srcdir: joeq_core/joeq
+JBidwatcher: 
+  module: jbidwatcher
+  cvsroot: jbidwatcher
+  srcdir: jbidwatcher
+Jagzilla: 
+  module: jagzilla
+  cvsroot: jagzilla
+  srcdir: jagzilla/src/net
+htmlparser: 
+  module: htmlparser
+  cvsroot: htmlparser
+  srcdir: htmlparser/src
+FreeMarker: 
+  module: freemarker
+  cvsroot: freemarker
+  srcdir: freemarker/src
+Foedus Mail: 
+  module: foedus
+  cvsroot: foedus
+  srcdir: foedus/src/java
+e-xml: 
+  module: e-xml
+  cvsroot: e-xml
+  srcdir: e-xml/src
+Bookmark Sync: 
+  module: bookmarksyncro
+  cvsroot: bookmarksyncro
+  srcdir: bookmarksyncro/src
+Roller Weblogger: 
+  module: roller
+  cvsroot: roller
+  srcdir: roller/src
+JUnit addons Runner: 
+  module: junit-addons-runner
+  cvsroot: junit-addons
+  srcdir: junit-addons-runner/src
+Foundry: 
+  module: foundry
+  cvsroot: foundry
+  srcdir: foundry/foundry
+Calliope: 
+  module: calliope
+  cvsroot: calliope
+  srcdir: calliope/src
+PMD-JDeveloper: 
+  module: pmd-jdeveloper
+  cvsroot: pmd
+  srcdir: pmd-jdeveloper/src
+JUnit addons: 
+  module: junit-addons
+  cvsroot: junit-addons
+  srcdir: junit-addons/src/main
+Abbot Java GUI Test Framework: 
+  module: abbot
+  cvsroot: abbot
+  srcdir: abbot/src
+Secure Data Manager: 
+  module: sdm
+  cvsroot: sdm
+  srcdir: sdm/src
+MP3 Tagmaster: 
+  module: mp3tagmaster
+  cvsroot: mp3tagmaster
+  srcdir: mp3tagmaster/src
+jmx4ant: 
+  module: jmx4ant
+  cvsroot: jmx4ant
+  srcdir: jmx4ant/src
+Schemalizer: 
+  module: schemalizer
+  cvsroot: schemalizer
+  srcdir: schemalizer/src/
+WebOS: 
+  module: WebOS
+  cvsroot: xtremesuite
+  srcdir: WebOS/src/java
+tn5250j: 
+  module: tn5250j
+  cvsroot: tn5250j
+  srcdir: tn5250j/src
+Metrics: 
+  module: net.sourceforge.metrics
+  cvsroot: metrics
+  srcdir: net.sourceforge.metrics/src
+Prevayler: 
+  module: prevayler
+  cvsroot: prevayler
+  srcdir: prevayler/src
+MC4J: 
+  module: mc4j
+  cvsroot: mc4j
+  srcdir: mc4j/src
+jGnash: 
+  module: jgnash
+  cvsroot: jgnash
+  srcdir: jgnash/src
+Columba: 
+  module: columba
+  cvsroot: columba
+  srcdir: columba/src
+Cayenne: 
+  module: cayenne
+  cvsroot: cayenne
+  srcdir: cayenne/src/cayenne/java
+Tapestry: 
+  module: Tapestry
+  cvsroot: tapestry
+  srcdir: Tapestry/framework/src
+Geotools: 
+  module: geotools2
+  cvsroot: geotools
+  srcdir: geotools2/geotools-src
+OneBook: 
+  module: devel
+  cvsroot: onebook
+  srcdir: devel/onebook
+Active JMS: 
+  module: core
+  cvsroot: active-jms
+  srcdir: core/src
+UML 2 EJB: 
+  module: uml2ejb
+  cvsroot: uml2ejb
+  srcdir: uml2ejb/simple2ejb/src
+Sorched Earth 2000: 
+  module: src
+  cvsroot: scorch
+  srcdir: src
+JHotDraw: 
+  module: JHotDraw
+  cvsroot: jhotdraw
+  srcdir: JHotDraw/src
+JFCUnit: 
+  module: main
+  cvsroot: jfcunit
+  srcdir: main/src
+JAIMBot: 
+  module: jaimbot
+  cvsroot: jaimbot
+  srcdir: jaimbot/src
+eXist XML database: 
+  module: eXist-1.0
+  cvsroot: exist
+  srcdir: eXist-1.0/src
+Easy Struts: 
+  module: easystruts-core
+  cvsroot: easystruts
+  srcdir: easystruts-core/src
+Multi-Lingual Crosswords: 
+  module: mlcrosswords
+  cvsroot: mlcrosswords
+  srcdir: mlcrosswords/src
+Quizzer: 
+  module: Source
+  cvsroot: quizzer
+  srcdir: Source
+jgimp: 
+  module: jgimp
+  cvsroot: jgimp
+  srcdir: jgimp/src/java
+Java Gui Builder: 
+  module: jgb
+  cvsroot: jgb
+  srcdir: jgb/src/java/core
+Dexter-plugins: 
+  module: plugins
+  cvsroot: jdexter
+  srcdir: plugins
+Easy Struts Eclipse version: 
+  module: easystruts-plugin
+  cvsroot: easystruts
+  srcdir: easystruts-plugin/src
+JUnit: 
+  module: junit
+  cvsroot: junit
+  srcdir: junit
+jRevProxy: 
+  module: jRevProxy
+  cvsroot: jrevproxy
+  srcdir: jRevProxy/src
+attrib4j: 
+  module: attrib4j
+  cvsroot: attrib4j
+  srcdir: attrib4j/src
+Vector Visuals: 
+  module: vectors
+  cvsroot: vectors
+  srcdir: vectors/src
+Tyrant: 
+  module: tyrant
+  cvsroot: tyrant
+  srcdir: tyrant/mikera/
+MFlow: 
+  module: mflow
+  cvsroot: mflow
+  srcdir: mflow/src
+"SUSHI - Universal Student Help Interface": 
+  module: sushi
+  cvsroot: fugu
+  srcdir: sushi/WEB-INF/src
+Thought River Commons: 
+  module: commons
+  cvsroot: commons
+  srcdir: commons/src
+Cañamo: 
+  module: canyamo
+  cvsroot: canyamo
+  srcdir: canyamo/src
+Installer Tasks For Ant: 
+  module: src
+  cvsroot: instant
+  srcdir: src/main
+Hermes JMS: 
+  module: Hermes4
+  cvsroot: hermesjms
+  srcdir: Hermes4/src/java
+Structure: 
+  module: structure
+  cvsroot: structure
+  srcdir: structure/src/
+SkinLF: 
+  module: skinlf2
+  cvsroot: skinlf
+  srcdir: skinlf2/src
+Jalopy: 
+  module: main
+  cvsroot: jalopy
+  srcdir: main/src/java
+Chiba: 
+  module: chiba1
+  cvsroot: chiba
+  srcdir: chiba1/src
+Wrapper: 
+  module: wrapper
+  cvsroot: wrapper
+  srcdir: wrapper/src/java
+PMD-JBuilder: 
+  module: pmd-jbuilder
+  cvsroot: pmd
+  srcdir: pmd-jbuilder/src
+P6spy: 
+  module: p6spy
+  cvsroot: p6spy
+  srcdir: p6spy/com
+JPublish: 
+  module: jpublish
+  cvsroot: jpublish
+  srcdir: jpublish/src
+DbUnit: 
+  module: dbunit
+  cvsroot: dbunit
+  srcdir: dbunit/src/java
+CGLIB: 
+  module: cglib
+  cvsroot: cglib
+  srcdir: cglib/src/proxy
