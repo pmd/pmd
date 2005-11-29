@@ -10,7 +10,7 @@ The Code Size Ruleset contains a collection of rules that find code size related
  <rule name="ExcessiveMethodLength"
        message="Avoid really long methods."
        class="net.sourceforge.pmd.rules.design.LongMethodRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#LongMethodRule">
+          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#ExcessiveMethodLength">
    <description>
 Violations of this rule usually indicate that the method is doing
 too much.  Try to reduce the method size by creating helper methods and removing any copy/pasted code.
@@ -37,7 +37,7 @@ public class Foo {
  <rule name="ExcessiveParameterList"
        message="Avoid really long parameter lists."
        class="net.sourceforge.pmd.rules.design.LongParameterListRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#LongParameterListRule">
+          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#ExcessiveParameterList">
    <description>
 Long parameter lists can indicate that a new object should be created to
  wrap the numerous parameters.  Basically, try to group the parameters together.
@@ -64,7 +64,7 @@ public class Foo {
  <rule name="ExcessiveClassLength"
        message="Avoid really long classes."
        class="net.sourceforge.pmd.rules.design.LongClassRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#LongClassRule">
+          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#ExcessiveClassLength">
    <description>
 Long Class files are indications that the class may be trying to
 do too much.  Try to break it down, and reduce the size to something
