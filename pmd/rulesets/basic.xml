@@ -721,4 +721,109 @@ public String foo() {
         ]]></example>
     </rule>
 
+ <rule name="ClassCastExceptionWithToArray"
+       message="This usage of the Collection.toArray() method will throw a ClassCastException."
+       class="net.sourceforge.pmd.rules.XPathRule"
+       externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ClassCastExceptionWithToArray">
+  <description>
+if you need to get an array of a class from your Collection,
+you should pass an array of the desidered class
+as the parameter of the toArray method. Otherwise you will get a
+ClassCastException.
+  </description>
+  <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//CastExpression[Type/ReferenceType/ClassOrInterfaceType[@Image !=
+"Object"]]//PrimaryExpression
+[
+ PrimaryPrefix/Name[ends-with(@Image, '.toArray')]
+ and
+ PrimarySuffix/Arguments[count(*) = 0]
+]
+]]>
+    </value>
+    </property>
+  </properties>
+  <priority>3</priority>
+  <example>
+<![CDATA[
+import java.util.ArrayList;
+import java.util.Collection;
+
+public class Test {
+
+    public static void main(String[] args) {
+        Collection c=new ArrayList();
+        Integer obj=new Integer(1);
+        c.add(obj);
+
+        // this would trigger the rule (and throw a ClassCastException
+if executed)
+        Integer[] a=(Integer [])c.toArray();
+
+        // this wouldn't trigger the rule
+        Integer[] b=(Integer [])c.toArray(new Integer[c.size()]);
+    }
+}
+]]>
+  </example>
+</rule>
+
+
+<rule  name="AvoidDecimalLiteralsInBigDecimalConstructor"
+       message="Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal"
+       class="net.sourceforge.pmd.rules.XPathRule"
+       externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor">
+  <description>
+     One might assume that "new BigDecimal(.1)" is exactly equal
+     to .1, but it is actually equal
+     to .1000000000000000055511151231257827021181583404541015625.
+     This is so because .1 cannot be represented exactly as a double
+     (or, for that matter, as a binary fraction of any finite length).
+     Thus, the long value that is being passed in to the constructor
+     is not exactly equal to .1, appearances notwithstanding.
+
+     The (String) constructor, on the other hand, is perfectly predictable:
+     'new BigDecimal(".1")' is exactly equal to .1, as one
+     would expect.  Therefore, it is generally recommended that the (String)
+     constructor be used in preference to this one.
+  </description>
+  <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//VariableInitializer/Expression
+/PrimaryExpression/PrimaryPrefix
+/AllocationExpression[ClassOrInterfaceType[@Image="BigDecimal"]
+and
+./Arguments/ArgumentList
+/Expression/PrimaryExpression/PrimaryPrefix/Literal[(not (ends-with
+(@Image,'"'))) and contains(@Image,".")]]
+]]>
+    </value>
+    </property>
+  </properties>
+  <priority>3</priority>
+  <example>
+<![CDATA[
+import java.math.BigDecimal;
+public class Test {
+
+    public static void main(String[] args) {
+      // this would trigger the rule
+     BigDecimal bd=new BigDecimal(1.123);
+      // this wouldn't trigger the rule
+     BigDecimal bd=new BigDecimal("1.123");
+      // this wouldn't trigger the rule
+     BigDecimal bd=new BigDecimal(12);
+    }
+}
+]]>
+  </example>
+</rule>
+
+    
 </ruleset>
+

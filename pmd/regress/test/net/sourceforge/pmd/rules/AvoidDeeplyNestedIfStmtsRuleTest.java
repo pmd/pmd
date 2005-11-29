@@ -5,13 +5,27 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.AvoidDeeplyNestedIfStmtsRule;
-import test.net.sourceforge.pmd.testframework.RuleTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class AvoidDeeplyNestedIfStmtsRuleTest extends RuleTst {
+public class AvoidDeeplyNestedIfStmtsRuleTest extends SimpleAggregatorTst {
+
+    private Rule rule;
+
+    public void setUp() {
+        rule = findRule("design", "AvoidDeeplyNestedIfStmts");
+        rule.addProperty("problemDepth", "3");
+    }
+
+    public void testAll() {
+       runTests(new TestDescriptor[] {
+           new TestDescriptor(TEST1, "Bad, very deep", 1, rule),
+           new TestDescriptor(TEST2, "OK, not so deep", 0, rule),
+       });
+    }
 
     public static final String TEST1 =
-    "public class AvoidDeeplyNestedIfStmtsRule1 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public void bar() { " + PMD.EOL +
     "  int x=2; " + PMD.EOL +
     "  int y=3; " + PMD.EOL +
@@ -27,7 +41,7 @@ public class AvoidDeeplyNestedIfStmtsRuleTest extends RuleTst {
     "}";
 
     public static final String TEST2 =
-    "public class AvoidDeeplyNestedIfStmtsRule2 {" + PMD.EOL +
+    "public class Foo {" + PMD.EOL +
     " public void bar() { " + PMD.EOL +
     "  if (true) {" + PMD.EOL +
     "  } else if (true) {" + PMD.EOL +
@@ -38,18 +52,4 @@ public class AvoidDeeplyNestedIfStmtsRuleTest extends RuleTst {
     " }" + PMD.EOL +
     "}";
 
-    private Rule rule;
-
-    public void setUp() {
-        rule = new AvoidDeeplyNestedIfStmtsRule();
-        rule.addProperty("problemDepth", "3");
-    }
-
-    public void test1() throws Throwable {
-        runTestFromString(TEST1, 1, rule);
-    }
-
-    public void test2() throws Throwable {
-        runTestFromString(TEST2, 0, rule);
-    }
 }

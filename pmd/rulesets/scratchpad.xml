@@ -7,7 +7,59 @@ These are new rules that are still in progress
   </description>
 
 
+    <rule  name="AvoidDecimalLiteralsInBigDecimalConstructor"
+           message="Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal"
+           class="net.sourceforge.pmd.rules.XPathRule"
+           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor">
+      <description>
+         One might assume that "new BigDecimal(.1)" is exactly equal
+         to .1, but it is actually equal
+         to .1000000000000000055511151231257827021181583404541015625.
+         This is so because .1 cannot be represented exactly as a double
+         (or, for that matter, as a binary fraction of any finite length).
+         Thus, the long value that is being passed in to the constructor
+         is not exactly equal to .1, appearances notwithstanding.
 
+         The (String) constructor, on the other hand, is perfectly predictable:
+         'new BigDecimal(".1")' is exactly equal to .1, as one
+         would expect.  Therefore, it is generally recommended that the (String)
+         constructor be used in preference to this one.
+      </description>
+      <properties>
+        <property name="xpath">
+        <value>
+    <![CDATA[
+    //VariableInitializer/Expression
+    /PrimaryExpression/PrimaryPrefix
+    /AllocationExpression[ClassOrInterfaceType[@Image="BigDecimal"]
+    and
+    ./Arguments/ArgumentList
+    /Expression/PrimaryExpression/PrimaryPrefix/Literal[(not (ends-with
+    (@Image,'"'))) and contains(@Image,".")]]
+    ]]>
+        </value>
+        </property>
+      </properties>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+    import java.math.BigDecimal;
+    public class Test {
+
+        public static void main(String[] args) {
+          // this would trigger the rule
+         BigDecimal bd=new BigDecimal(1.123);
+          // this wouldn't trigger the rule
+         BigDecimal bd=new BigDecimal("1.123");
+          // this wouldn't trigger the rule
+         BigDecimal bd=new BigDecimal(12);
+        }
+    }
+    ]]>
+      </example>
+    </rule>
+
+    
 <!--
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"
