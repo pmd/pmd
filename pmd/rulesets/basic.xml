@@ -703,7 +703,8 @@ public class Foo {
 
 	<rule name="UselessOverridingMethod"
     message="Overriding method merely calls super"
-    class="net.sourceforge.pmd.rules.UselessOverridingMethod">
+    class="net.sourceforge.pmd.rules.UselessOverridingMethod"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOverridingMethod">
         <description>
 The overriding method merely calls the same method defined in a superclass
         </description>
