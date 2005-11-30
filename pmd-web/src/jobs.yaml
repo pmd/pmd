@@ -599,3 +599,8 @@ Wrapper:
   unix_name: wrapper
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/wrapper"
   srcdir: wrapper/src/java
+ArgoUML: 
+  module: argouml
+  unix_name: argouml
+  cvsroot: ":pserver:guest@cvs.tigris.org:/cvs"
+  srcdir: argouml/src/model/src/org/argouml/model/

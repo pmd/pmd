@@ -62,13 +62,15 @@ class Job
   def run_pmd
 		cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.3.jar net.sourceforge.pmd.PMD \"#{ROOT}/#{@src}\" html unusedcode -shortnames > #{report}"
    `#{cmd}`
-   arr = IO.readlines(report)
-   File.read(report) {|f|
-	   arr.each {|x| f << x if x =~ /Error while parsing/ }
-		}
+   if File.exists?(report)
+     arr = IO.readlines(report)
+     File.read(report) {|f|
+  	   arr.each {|x| f << x if x =~ /Error while parsing/ }
+  		}
+    end
   end
   def run_cpd
-   cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.3.jar net.sourceforge.pmd.cpd.CPD 100 " + @src + " > " + cpd_file
+   cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.3.jar net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files #{@src} > #{cpd_file}"
    `#{cmd}`
   end
 	def copy_up
@@ -152,6 +154,7 @@ if __FILE__ == $0
   tree.keys.each {|key|
     jobs << Job.new(key, tree[key]["unix_name"], tree[key]["module"], tree[key]["srcdir"], tree[key]["cvsroot"])
   }
+  jobs.sort! {|a,b| a.unix_name <=> b.unix_name } 
   
 	if ARGV.include?("-build") 
 		jobs.each do |job|
