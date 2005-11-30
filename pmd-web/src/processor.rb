@@ -39,17 +39,18 @@ class Job
 	REMOTE_REPORT_DIR="/home/groups/p/pm/pmd/htdocs/reports/"
 	attr_reader :unix_name, :mod, :title, :src
 	attr_accessor :barrels
-	def initialize(title, unix_name, mod, src )
+	def initialize(title, unix_name, mod, src, cvsroot)
 		@title = title
 		@unix_name = unix_name
-		@cvsroot = ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/#{unix_name}"
 		@mod = mod
 		@src = src.strip
+		@cvsroot = cvsroot
 	end
 	def checkout_code
 		t = MyThread.new {
 			MyThread.ttl = 120 
 			cmd = "cvs -Q -d#{@cvsroot} export -D tomorrow \"#{@src}\""
+      puts "running cmd: #{cmd}"
 			`#{cmd}`
 		}
 		t.join  
@@ -149,7 +150,7 @@ if __FILE__ == $0
 	jobs = []
   tree = YAML.load(File.open("jobs.yaml"))
   tree.keys.each {|key|
-    jobs << Job.new(key, tree[key]["cvsroot"], tree[key]["module"], tree[key]["srcdir"])
+    jobs << Job.new(key, tree[key]["unix_name"], tree[key]["module"], tree[key]["srcdir"], tree[key]["cvsroot"])
   }
   
 	if ARGV.include?("-build") 
