@@ -39,21 +39,20 @@ class Job
 	REMOTE_REPORT_DIR="/home/groups/p/pm/pmd/htdocs/reports/"
 	attr_reader :unix_name, :mod, :title, :src
 	attr_accessor :barrels
-	def initialize(title, unix_name, mod, src, cvsroot)
-		@title = title
-		@unix_name = unix_name
-		@mod = mod
-		@src = src.strip
-		@cvsroot = cvsroot
+	def initialize(title, data)
+    @title, @unix_name, @mod, @src,  @cvsroot = title, data["unix_name"], data["module"], data["srcdir"], data["cvsroot"]
+    @data = data
 	end
 	def checkout_code
 		t = MyThread.new {
 			MyThread.ttl = 120 
 			cmd = "cvs -Q -d#{@cvsroot} export -D tomorrow \"#{@src}\""
-      puts "running cmd: #{cmd}"
 			`#{cmd}`
 		}
 		t.join  
+    if @data["delete"] && File.exist?(@data["delete"]) 
+        `rm -rf #{@data["delete"]}`
+    end
 	end
   def run_ncss
    cmd="#{JAVANCSS_BINARY} -ncss -recursive \"#{@src}\" > \"#{ncss_report}\""
@@ -152,14 +151,14 @@ if __FILE__ == $0
 	jobs = []
   tree = YAML.load(File.open("jobs.yaml"))
   tree.keys.each {|key|
-    jobs << Job.new(key, tree[key]["unix_name"], tree[key]["module"], tree[key]["srcdir"], tree[key]["cvsroot"])
+    jobs << Job.new(key, tree[key])
   }
   jobs.sort! {|a,b| a.unix_name <=> b.unix_name } 
   
 	if ARGV.include?("-build") 
 		jobs.each do |job|
-			if ARGV.include?("-job") && job.mod != ARGV.at(ARGV.index("-job")+1)
-				puts "Skipping " + job.mod
+			if ARGV.include?("-job") && job.unix_name != ARGV.at(ARGV.index("-job")+1)
+				puts "Skipping " + job.unix_name
 				next
 			end
 			puts "Processing " + job.unix_name

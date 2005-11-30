@@ -224,11 +224,6 @@ EJP:
   unix_name: ejp
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/ejp"
   srcdir: ejp/presenter/src/
-JGraph: 
-  module: jgraphpad3
-  unix_name: jgraph
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jgraph"
-  srcdir: jgraphpad3/src
 Merkwelt: 
   module: merkwelt
   unix_name: merkwelt
@@ -324,6 +319,7 @@ JGraphT:
   unix_name: jgrapht
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jgrapht"
   srcdir: src
+  delete: src/org/_3pq/jgrapht/experimental
 Foundry: 
   module: foundry
   unix_name: foundry
