@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jean-Marc Vanel - suggested enhancements to the PMD scoreboard</li>
             <li>Didier Duquennoy - bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Fabio Insaccanebbia - AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
             <li>Johan Stuyts - nice patch for UncommentedEmptyConstructor and UncommentedEmptyMethod, patch to allow empty catch blocks with comments in them, patch to clean up build environment</li>

@@ -1,7 +1,7 @@
 ????, 2006 - 3.5:
 Removed old-style CPD command line options that were deprecated in 3.4.
 
-????, 2005 - 3.4:
+November 30, 2005 - 3.4:
 New rules:
  Basic ruleset: ClassCastExceptionWithToArray, AvoidDecimalLiteralsInBigDecimalConstructor
  Design ruleset: NonThreadSafeSingleton, UncommentedEmptyMethod, UncommentedEmptyConstructor
