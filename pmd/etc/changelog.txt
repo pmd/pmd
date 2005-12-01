@@ -1,6 +1,7 @@
 ????, 2006 - 3.5:
 New rules:
  Migration ruleset: IntegerInstantiation
+Fixed bug 1277373 - InefficientStringBuffering now catches more cases.
 Removed old-style CPD command line options that were deprecated in 3.4.
 
 November 30, 2005 - 3.4:

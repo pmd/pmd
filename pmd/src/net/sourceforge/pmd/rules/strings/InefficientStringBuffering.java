@@ -34,19 +34,29 @@ public class InefficientStringBuffering extends AbstractRule {
         }
 
         // two literals?  usually OK, although this misses buf.append("1" + "2" + (a+b))
+/*
         if (node.findChildrenOfType(ASTLiteral.class).size() == 2) {
             return data;
         }
+*/
 
+        int immediateLiterals = 0;
         List nodes = node.findChildrenOfType(ASTLiteral.class);
         for (Iterator i = nodes.iterator();i.hasNext();) {
             ASTLiteral literal = (ASTLiteral)i.next();
+            if (literal.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTAdditiveExpression) {
+                immediateLiterals++;
+            }
             try {
                 Integer.parseInt(literal.getImage());
                 return data;
             } catch (NumberFormatException nfe) {
                 // NFE means new StringBuffer("a" + "b"), want to flag those
             }
+        }
+
+        if (immediateLiterals == 2) {
+            return data;
         }
 
         if (bs.isAllocation()) {

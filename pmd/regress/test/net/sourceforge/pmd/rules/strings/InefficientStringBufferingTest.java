@@ -32,6 +32,7 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST12, "concatenating two non-literals", 1, rule),
                new TestDescriptor(TEST13, "concatenating method + int", 0, rule),
                new TestDescriptor(TEST14, "JTextArea.append", 0, rule),
+               new TestDescriptor(TEST15, "don't get thrown off by a buried literal", 1, rule),
        });
     }
 
@@ -144,4 +145,12 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
        "  jta.append(f + \"hi\");" + PMD.EOL +
        " }" + PMD.EOL +
        "}";
+
+    private static final String TEST15 =
+        "public class Foo {" + PMD.EOL +
+        " private void baz() {" + PMD.EOL +
+        "  StringBuffer sb = new StringBuffer(\"hello\"+ System.getProperty(\"blah\"));" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
 }
