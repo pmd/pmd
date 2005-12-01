@@ -147,5 +147,32 @@ public class Foo implements Enumeration {
       </example>
     </rule>
 
+    <rule name="IntegerInstantiation"
+          message="Avoid instantiating Integer objects. Call Integer.valueOf() instead"
+          class="net.sourceforge.pmd.rules.XPathRule">
+      <description>In JDK 1.5, calling new Integer() causes memory allocation.  Integer.valueOf() is more memory friendly.</description>
+      <properties>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
+//PrimaryPrefix
+ /AllocationExpression
+  [not (ArrayDimsAndInits)
+   and (ClassOrInterfaceType/@Image='Integer'
+    or ClassOrInterfaceType/@Image='java.lang.Integer')]
+                  ]]>
+              </value>
+          </property>
+      </properties>
+        <priority>2</priority>
+      <example>
+  <![CDATA[
+public class Foo {
+ private Integer i = new Integer(0); // change to Integer i = Integer.valueOf(0);
+}
+   ]]>
+      </example>
+    </rule>
+
 </ruleset>
 
