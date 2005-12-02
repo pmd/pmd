@@ -2,6 +2,7 @@
 New rules:
  Migration ruleset: IntegerInstantiation
 Fixed bug 1277373 - InefficientStringBuffering now catches more cases.
+Fixed bug 1371757 - Misleading example in AvoidSynchronizedAtMethodLevel
 Removed old-style CPD command line options that were deprecated in 3.4.
 
 November 30, 2005 - 3.4:

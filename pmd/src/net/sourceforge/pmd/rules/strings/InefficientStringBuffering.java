@@ -33,13 +33,6 @@ public class InefficientStringBuffering extends AbstractRule {
             return data;
         }
 
-        // two literals?  usually OK, although this misses buf.append("1" + "2" + (a+b))
-/*
-        if (node.findChildrenOfType(ASTLiteral.class).size() == 2) {
-            return data;
-        }
-*/
-
         int immediateLiterals = 0;
         List nodes = node.findChildrenOfType(ASTLiteral.class);
         for (Iterator i = nodes.iterator();i.hasNext();) {

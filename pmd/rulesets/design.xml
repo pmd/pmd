@@ -832,7 +832,7 @@ public class Foo {
  }
  // Prefer this:
  void bar() {
-  synchronized(mutex) {
+  synchronized(this) {
   }
  }
 }
