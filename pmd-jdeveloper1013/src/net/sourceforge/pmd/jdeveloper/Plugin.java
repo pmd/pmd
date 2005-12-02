@@ -191,5 +191,4 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         render(ctx);
 
     }
-
 }

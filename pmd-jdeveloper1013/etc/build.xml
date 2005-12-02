@@ -3,11 +3,11 @@
 	<property name="config" value="config/"/>
 	<property name="src" value="src/"/>
 	<property name="etc" value="etc/"/>
-	<property name="pmdjar" value="pmd-3.3.jar"/>
+	<property name="pmdjar" value="pmd-3.4.jar"/>
 	<property name="pluginversion" value="1.7"/>
     <property name="bundle.jarname" value="net.sourceforge.pmd.jdeveloper.${pluginversion}.jar"/>
 	<property name="jdeveloper.install.dir" value="c:/data/jdev1013/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
-    <property name="linux.jdeveloper.install.dir" value="/home/tom/jdev1013/jdev/extensions/"/>
+    <property name="linux.jdeveloper.install.dir" value="/home/tom/pmd/ides/jdev1013/jdev/extensions/"/>
 
 
 	<path id="project.class.path">

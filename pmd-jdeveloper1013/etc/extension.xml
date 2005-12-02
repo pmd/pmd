@@ -6,7 +6,7 @@
   <ex:name>PMD Extension</ex:name>
   <ex:owner>Tom Copeland</ex:owner>
   <ex:classpaths>
-    <ex:classpath>${ide.extension.install.home}/lib/pmd-3.3.jar</ex:classpath>
+    <ex:classpath>${ide.extension.install.home}/lib/pmd-3.4.jar</ex:classpath>
     <ex:classpath>${ide.extension.install.home}/lib/jaxen-1.1-beta-7.jar</ex:classpath>
   </ex:classpaths>
   <ex:dependencies>

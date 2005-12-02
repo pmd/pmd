@@ -40,6 +40,9 @@ public class SettingsPanel extends DefaultTraversablePanel {
                 if (index != -1) {
                     JCheckBox box = (JCheckBox)getModel().getElementAt(index);
                     String example = rules.getRule(box).getExample();
+                    while (example.charAt(0) == '\r' || example.charAt(0) == '\n' || example.charAt(0) == '\t' || example.charAt(0) == ' ') {
+                        example = example.substring(1);
+                    }
                     exampleTextArea.setText(example);
                     exampleTextArea.setCaretPosition(0);
                 }
