@@ -1087,7 +1087,7 @@ class Foo {
           class="net.sourceforge.pmd.rules.design.UnnecessaryLocalBeforeReturn"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn">
       <description>
-Avoid unnecessarily creating a local variable when returning a boolean
+Avoid unnecessarily creating local variables
       </description>
         <priority>3</priority>
       <example>
