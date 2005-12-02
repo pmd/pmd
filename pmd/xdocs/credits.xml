@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Sean Montgomery - bug report 1371980 for InefficientStringBuffering</li>
             <li>Elliotte Rusty Harold - reported mistake in UnnecessaryLocalBeforeReturn message, bug report 1371757 for misleading AvoidSynchronizedAtMethodLevel example, bug report 1293277 for duplicated rule messages, bug report for ConstructorCallsOverridableMethod, suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Didier Duquennoy - bug report for InefficientStringBuffering, bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Allan Caplan - wrote IntegerInstantiation, wrote UseStringBufferLength, wrote AvoidEnumAsIdentifier, bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>

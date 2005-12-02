@@ -71,6 +71,11 @@ public class InefficientStringBuffering extends AbstractRule {
             return false;
         }
         ASTName n = (ASTName) s.getFirstChildOfType(ASTName.class);
+
+        if (n.getImage().indexOf("append") == -1) {
+            return false;
+        }
+        
         if (!(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
             return false;
         }

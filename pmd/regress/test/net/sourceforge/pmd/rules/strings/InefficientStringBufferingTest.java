@@ -33,6 +33,7 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST13, "concatenating method + int", 0, rule),
                new TestDescriptor(TEST14, "JTextArea.append", 0, rule),
                new TestDescriptor(TEST15, "don't get thrown off by a buried literal", 1, rule),
+               new TestDescriptor(TEST16, "sb.delete shouldn't trigger it", 0, rule),
        });
     }
 
@@ -153,4 +154,10 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
         " }" + PMD.EOL +
         "}";
 
+    private static final String TEST16 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar(StringBuffer sb) {" + PMD.EOL +
+        "  sb.delete(x, y+z);" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
 }
