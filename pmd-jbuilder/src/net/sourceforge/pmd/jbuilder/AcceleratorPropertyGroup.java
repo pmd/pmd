@@ -12,7 +12,11 @@
 
 package net.sourceforge.pmd.jbuilder;
 
-import com.borland.primetime.properties.*;
+import com.borland.primetime.properties.GlobalBooleanProperty;
+import com.borland.primetime.properties.GlobalIntegerProperty;
+import com.borland.primetime.properties.PropertyGroup;
+import com.borland.primetime.properties.PropertyPage;
+import com.borland.primetime.properties.PropertyPageFactory;
 
 import java.awt.event.KeyEvent;
 

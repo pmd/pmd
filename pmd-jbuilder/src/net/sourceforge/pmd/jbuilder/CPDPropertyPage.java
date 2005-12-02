@@ -6,7 +6,7 @@ import com.borland.primetime.help.ZipHelpTopic;
 import com.borland.primetime.properties.PropertyPage;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
 
 
 /**

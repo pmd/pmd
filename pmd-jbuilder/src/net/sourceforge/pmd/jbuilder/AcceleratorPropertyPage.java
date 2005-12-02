@@ -17,7 +17,8 @@ import com.borland.primetime.help.HelpTopic;
 import com.borland.primetime.properties.PropertyPage;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

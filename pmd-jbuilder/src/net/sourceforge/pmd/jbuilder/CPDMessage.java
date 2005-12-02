@@ -8,7 +8,7 @@ import com.borland.primetime.node.FileNode;
 import com.borland.primetime.vfs.Url;
 import com.borland.primetime.viewer.TextNodeViewer;
 
-import java.awt.*;
+import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;

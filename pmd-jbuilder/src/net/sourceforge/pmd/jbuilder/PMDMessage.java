@@ -1,10 +1,10 @@
 package net.sourceforge.pmd.jbuilder;
 
-import com.borland.primetime.ide.Message;
-import com.borland.primetime.ide.Browser;
-import com.borland.primetime.viewer.TextNodeViewer;
-import com.borland.primetime.editor.EditorPane;
 import com.borland.jbuilder.node.JavaFileNode;
+import com.borland.primetime.editor.EditorPane;
+import com.borland.primetime.ide.Browser;
+import com.borland.primetime.ide.Message;
+import com.borland.primetime.viewer.TextNodeViewer;
 
 public class PMDMessage extends Message {
     //final LineMark MARK = new HighlightMark();

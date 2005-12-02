@@ -18,24 +18,42 @@ import com.borland.primetime.PrimeTime;
 import com.borland.primetime.actions.ActionGroup;
 import com.borland.primetime.editor.EditorAction;
 import com.borland.primetime.editor.EditorManager;
-import com.borland.primetime.editor.EditorPane;
-import com.borland.primetime.ide.*;
+import com.borland.primetime.ide.Browser;
+import com.borland.primetime.ide.BrowserAction;
+import com.borland.primetime.ide.ContentManager;
+import com.borland.primetime.ide.ContextActionProvider;
+import com.borland.primetime.ide.Message;
+import com.borland.primetime.ide.MessageCategory;
+import com.borland.primetime.ide.ProjectView;
 import com.borland.primetime.node.Node;
 import com.borland.primetime.properties.PropertyDialog;
 import com.borland.primetime.properties.PropertyManager;
 import com.borland.primetime.viewer.TextNodeViewer;
-import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.cpd.*;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.cpd.CPD;
+import net.sourceforge.pmd.cpd.LanguageFactory;
+import net.sourceforge.pmd.cpd.Match;
+import net.sourceforge.pmd.cpd.MatchLengthComparator;
+import net.sourceforge.pmd.cpd.TokenEntry;
 
 import javax.swing.*;
 import javax.swing.text.Document;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 
 public class PMDOpenTool {
@@ -109,7 +127,7 @@ public class PMDOpenTool {
                 /**
                  * Unfortunately for now, the order in which these are instantiated is important
                  * The ActiveRuleSetPropertyGroup relies upon the ImportedRuleSetPropertyGroup already
-                 * being construted before it builds itself.  It's ugly but it works.
+                 * being constructed before it builds itself.  It's ugly but it works.
                  */
                 ImportedRuleSetPropertyGroup ipropGrp = new ImportedRuleSetPropertyGroup();
                 ActiveRuleSetPropertyGroup apropGrp = new ActiveRuleSetPropertyGroup();

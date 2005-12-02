@@ -3,7 +3,7 @@ package net.sourceforge.pmd.jbuilder;
 import com.borland.primetime.ide.Browser;
 import com.borland.primetime.ide.Message;
 
-import java.awt.*;
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.StringReader;
 
