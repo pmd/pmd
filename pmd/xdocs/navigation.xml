@@ -15,6 +15,8 @@
             href="http://sourceforge.net" />
     </links>
     <menu name="Overview">
+      <item name="Download PMD 3.4" href="http://sourceforge.net/project/showfiles.php?group_id=56262&amp;package_id=51441" />
+      <item name="What's new in PMD 3.4" href="http://sourceforge.net/project/shownotes.php?release_id=374942&amp;group_id=56262" />
       <item name="PMD in the news" href="/news.html" />
       <item name="PMD-related products and books" href="/products.html" />
       <item name="Best practices" href="/bestpractices.html" />
