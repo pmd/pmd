@@ -222,7 +222,7 @@ public class FooTest extends TestCase {
     </rule>
 
    <rule name="UseAssertSameInsteadOfAssertTrue"
-          message="user assertSame(x, y) instead of assertTrue(x==y)"
+          message="Use assertSame(x, y) instead of assertTrue(x==y), or !assertSame(x,y) vs assertFalse(x==y)"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UseAssertSameInsteadOfAssertTrue">
       <description>

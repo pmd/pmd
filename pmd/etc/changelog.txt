@@ -3,8 +3,9 @@ New rules:
  Migration ruleset: IntegerInstantiation
 Fixed bug 1277373 - InefficientStringBuffering now catches more cases.
 Fixed bug 1371757 - Misleading example in AvoidSynchronizedAtMethodLevel
-Partially fixed bug 1371753 - UnnecessaryLocalBeforeReturn message now reflects the fact that that rule flags all types
 Fixed bug 1371980 - InefficientStringBuffering no longer flags StringBuffer methods other than append().
+Fixed bug 1373510 - UseAssertSameInsteadOfAssertTrue no longer has a typo in its message, and its message is more clear.
+Partially fixed bug 1371753 - UnnecessaryLocalBeforeReturn message now reflects the fact that that rule flags all types
 UnusedFormalParameter now catches unused constructor parameters, and its warning message now reflects whether it caught a method or a constructor param.
 TODO: Removed old-style CPD command line options that were deprecated in 3.4.
 
