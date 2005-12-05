@@ -25,7 +25,8 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST4, "interface", 0, rule),
            new TestDescriptor(TEST5, "don't flag public methods by default", 0, rule),
            new TestDescriptor(TEST6, "skip native/abstract methods", 0, rule),
-           new TestDescriptor(TEST7, "anonymous inner class npe", 0, rule)
+           new TestDescriptor(TEST7, "anonymous inner class npe", 0, rule),
+           new TestDescriptor(TEST8, "unused constructor param", 1, rule)
        });
     }
 
@@ -83,4 +84,8 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
     " }" + PMD.EOL +
     "}";
 
+    private static final String TEST8 =
+    "class Foo {" + PMD.EOL +
+    " public Foo(int s) {}" + PMD.EOL +
+    "}";
 }

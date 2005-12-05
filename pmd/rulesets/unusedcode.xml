@@ -69,11 +69,11 @@ public class Something {
 
 
   <rule name="UnusedFormalParameter"
-        message="Avoid unused formal parameters such as ''{0}''"
+        message="Avoid unused {0} parameters such as ''{1}''"
         class="net.sourceforge.pmd.rules.UnusedFormalParameterRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter">
     <description>
-Avoid passing parameters to methods and then not using those parameters.
+Avoid passing parameters to methods or constructors and then not using those parameters.
     </description>
       <priority>3</priority>
 
