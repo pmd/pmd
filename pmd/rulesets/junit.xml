@@ -255,6 +255,45 @@ public class FooTest extends TestCase {
       </example>
     </rule>
 
+    <rule name="UseAssertNullInsteadOfAssertTrue"
+           message="Use assertNull(x) instead of assertTrue(x==null), or assertNotNull(x) vs assertFalse(x==null)"
+           class="net.sourceforge.pmd.rules.XPathRule"
+           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UseAssertNullInsteadOfAssertTrue">
+       <description>
+ This rule detects JUnit assertions in object references equality. These assertions
+ should be made by more specific methods, like assertNull, assertNotNull.
+       </description>
+     <properties>
+         <property name="xpath">
+             <value>
+                 <![CDATA[
+//PrimaryExpression[
+ PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
+][
+ PrimarySuffix/Arguments/ArgumentList[
+  Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
+ ]
+]
+  ]]>
+             </value>
+         </property>
+     </properties>
+         <priority>3</priority>
+       <example>
+ <![CDATA[
+ public class FooTest extends TestCase {
+  void testCode() {
+   Object a = doSomething();
+   assertTrue(a==null); // bad usage
+   assertNull(a);  // good usage
+   assertTrue(a != null); // bad usage
+   assertNotNull(a);  // good usage
+  }
+ }
+ ]]>
+       </example>
+     </rule>
+
 </ruleset>
 
 

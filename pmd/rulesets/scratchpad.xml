@@ -7,25 +7,6 @@ These are new rules that are still in progress
   </description>
 
 
-  <rule name="UnusedFormalParameter"
-        message="Avoid unused {0} parameters such as ''{1}''"
-        class="net.sourceforge.pmd.rules.UnusedFormalParameterRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter">
-    <description>
-Avoid passing parameters to methods or constructors and then not using those parameters.
-    </description>
-      <priority>3</priority>
-
-    <example>
-<![CDATA[
-public class Foo {
- private void bar(String howdy) {
-  // howdy is not used
- }
-]]>
-    </example>
-  </rule>
-
 <!--
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"
