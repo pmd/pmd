@@ -106,8 +106,10 @@ public class Designer implements ClipboardOwner {
                 for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
                     StringBuffer sb = new StringBuffer();
                     Object obj = iter.next();
-                    // if it's a Boolean and it's 'false', what does that mean?
-                    if (!(obj instanceof Boolean)) {
+                    if (obj instanceof String) {
+                        System.out.println("Result was a string: " + ((String)obj));
+                    } else if (!(obj instanceof Boolean)) {
+                        // if it's a Boolean and it's 'false', what does that mean?
                         SimpleNode node = (SimpleNode)obj;
                         String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
                         String line = " at line " + String.valueOf(node.getBeginLine());
