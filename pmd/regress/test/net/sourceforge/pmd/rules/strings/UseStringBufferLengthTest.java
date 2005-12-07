@@ -19,6 +19,7 @@ public class UseStringBufferLengthTest extends SimpleAggregatorTst  {
            new TestDescriptor(TEST2, "StringBuffer.toString.equals(\"\"), bad", 1, rule),
            new TestDescriptor(TEST3, "StringBuffer.toString.equals(\"foo\"), ok", 0, rule),
            new TestDescriptor(TEST4, "StringBuffer.toString.length(), bad", 1, rule),
+           new TestDescriptor(TEST5, "no literals", 0, rule),
        });
     }
 
@@ -65,4 +66,12 @@ public class UseStringBufferLengthTest extends SimpleAggregatorTst  {
         "    sb.append( \"whatever\" );" + PMD.EOL +
         "}" + PMD.EOL +
         "}";
+
+    private static final String TEST5 =
+    "public class Foo {" + PMD.EOL +
+    " boolean bar(Object foo) {" + PMD.EOL +
+    "  StringBuffer sb = new StringBuffer();" + PMD.EOL +
+    "  return sb.toString().equals(foo);" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 }

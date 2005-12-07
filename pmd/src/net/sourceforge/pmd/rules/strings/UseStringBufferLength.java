@@ -31,6 +31,7 @@ import java.util.Set;
  */
 public class UseStringBufferLength extends AbstractRule {
 
+    // FIXME
     // BLAH.  Need to remove this somehow.
     private Set alreadySeen = new HashSet();
 
@@ -70,7 +71,7 @@ public class UseStringBufferLength extends AbstractRule {
     private boolean isViolation(SimpleNode parent, SimpleNode achild) {
         if ("equals".equals(achild.getImage())) {
             List literals = parent.findChildrenOfType(ASTLiteral.class);
-            return ("\"\"".equals(((SimpleNode) literals.get(0)).getImage()));
+            return (!literals.isEmpty() && "\"\"".equals(((SimpleNode)literals.get(0)).getImage()));
         } else if ("length".equals(achild.getImage())) {
             return true;
         }

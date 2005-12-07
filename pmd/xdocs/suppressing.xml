@@ -12,7 +12,7 @@
        <p>You can use a JDK 1.5 annotation to suppress PMD warnings, like this:</p>
 <source>
 // This will suppress all the PMD warnings in this class
-@SuppressWarnings()
+@SuppressWarnings("")
 public class Bar {
  void bar() {
   int foo;
