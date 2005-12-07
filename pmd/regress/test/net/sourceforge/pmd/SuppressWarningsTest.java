@@ -65,11 +65,11 @@ public class SuppressWarningsTest extends RuleTst {
     }
 
     private static final String TEST1 =
-    "@SuppressWarnings()" + PMD.EOL +
+    "@SuppressWarnings(\"\")" + PMD.EOL +
     "public class Foo {}";
 
     private static final String TEST2 =
-    "@SuppressWarnings()" + PMD.EOL +
+    "@SuppressWarnings(\"\")" + PMD.EOL +
     "public class Foo {" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "  int foo;" + PMD.EOL +
@@ -78,7 +78,7 @@ public class SuppressWarningsTest extends RuleTst {
 
     private static final String TEST3 =
     "public class Baz {" + PMD.EOL +
-    " @SuppressWarnings()" + PMD.EOL +
+    " @SuppressWarnings(\"\")" + PMD.EOL +
     " public class Bar {" + PMD.EOL +
     "  void bar() {" + PMD.EOL +
     "   int foo;" + PMD.EOL +
@@ -88,7 +88,7 @@ public class SuppressWarningsTest extends RuleTst {
 
     private static final String TEST4 =
     "public class Foo {" + PMD.EOL +
-    " @SuppressWarnings()" + PMD.EOL +
+    " @SuppressWarnings(\"\")" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "  int foo;" + PMD.EOL +
     " }" + PMD.EOL +
@@ -96,7 +96,7 @@ public class SuppressWarningsTest extends RuleTst {
 
     private static final String TEST5 =
     "public class Bar {" + PMD.EOL +
-    " @SuppressWarnings()" + PMD.EOL +
+    " @SuppressWarnings(\"\")" + PMD.EOL +
     " public Bar() {" + PMD.EOL +
     "  int foo;" + PMD.EOL +
     " }" + PMD.EOL +
@@ -104,7 +104,7 @@ public class SuppressWarningsTest extends RuleTst {
 
     private static final String TEST6 =
     "public class Bar {" + PMD.EOL +
-    " @SuppressWarnings()" + PMD.EOL +
+    " @SuppressWarnings(\"\")" + PMD.EOL +
     " int foo;" + PMD.EOL +
     " void bar() {" + PMD.EOL +
     "  int foo;" + PMD.EOL +
@@ -114,14 +114,14 @@ public class SuppressWarningsTest extends RuleTst {
     private static final String TEST7 =
     "public class Bar {" + PMD.EOL +
     " int foo;" + PMD.EOL +
-    " void bar(@SuppressWarnings() int foo) {}" + PMD.EOL +
+    " void bar(@SuppressWarnings(\"\") int foo) {}" + PMD.EOL +
     "}";
 
     private static final String TEST8 =
     "public class Bar {" + PMD.EOL +
     " int foo;" + PMD.EOL +
     " void bar() {" + PMD.EOL +
-    "  @SuppressWarnings() int foo;" + PMD.EOL +
+    "  @SuppressWarnings(\"\") int foo;" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

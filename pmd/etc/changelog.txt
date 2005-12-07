@@ -6,6 +6,7 @@ Fixed bug 1277373 - InefficientStringBuffering now catches more cases.
 Fixed bug 1371757 - Misleading example in AvoidSynchronizedAtMethodLevel
 Fixed bug 1371980 - InefficientStringBuffering no longer flags StringBuffer methods other than append().
 Fixed bug 1373510 - UseAssertSameInsteadOfAssertTrue no longer has a typo in its message, and its message is more clear.
+Fixed bug 1375290 - @SuppressWarnings annotations are now implemented correctly; they accept one blank argument to suppress all warnings.
 Partially fixed bug 1371753 - UnnecessaryLocalBeforeReturn message now reflects the fact that that rule flags all types
 UnusedFormalParameter now catches unused constructor parameters, and its warning message now reflects whether it caught a method or a constructor param.
 TODO: Removed old-style CPD command line options that were deprecated in 3.4.
@@ -482,7 +483,7 @@ Added new ruleset: rulesets/imports.xml
 Changed sorting of RuleViolations to group Files together.
 Changed XML Renderer to improved format.
 Created DVSL Stylesheet for the new format.
-Moved the Cougaxar rules out of the PMD core.
+Moved the Cougaar rules out of the PMD core.
 Fixed bug 580093 - OverrideBothEqualsAndHashcodeRule reports a more correct line number.
 Fixed bug 581853 - UnusedLocalVariableRule now handles anonymous inner classes correctly.
 Fixed bug 580278 - this was a side effect of bug 581853.

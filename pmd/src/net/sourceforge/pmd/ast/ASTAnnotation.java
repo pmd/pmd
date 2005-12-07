@@ -17,14 +17,14 @@ public class ASTAnnotation extends SimpleNode {
 
     public boolean suppresses(Rule rule) {
         /*  Check for "suppress all warnings" case
-          @SuppressWarnings()
+          @SuppressWarnings("")
           TypeDeclaration
           Annotation
            NormalAnnotation
             Name:SuppressWarnings
         */
-        if (jjtGetChild(0) instanceof ASTNormalAnnotation) {
-            ASTNormalAnnotation n = (ASTNormalAnnotation)jjtGetChild(0);
+        if (jjtGetChild(0) instanceof ASTSingleMemberAnnotation) {
+            ASTSingleMemberAnnotation n = (ASTSingleMemberAnnotation)jjtGetChild(0);
             if (n.jjtGetChild(0) instanceof ASTName && ((ASTName)n.jjtGetChild(0)).getImage().equals("SuppressWarnings")) {
                 return true;
             }
