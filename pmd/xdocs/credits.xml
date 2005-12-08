@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Allan Caplan - wrote InefficientStringBufferAppend, wrote IntegerInstantiation, wrote UseStringBufferLength, wrote AvoidEnumAsIdentifier, bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
             <li>Wouter Zelle - Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Bhatia Saurabh - reported a bug in UseStringBufferLength</li>
             <li>Hendrik Maryns - reported bug 1375290 for SuppressWarnings facility</li>
@@ -52,7 +53,6 @@
             <li>Elliotte Rusty Harold - noted missed case for UnusedFormalParameter, documentation suggestions, reported mistake in UnnecessaryLocalBeforeReturn message, bug report 1371757 for misleading AvoidSynchronizedAtMethodLevel example, bug report 1293277 for duplicated rule messages, bug report for ConstructorCallsOverridableMethod, suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Sean Montgomery - bug report 1371980 for InefficientStringBuffering</li>
             <li>Didier Duquennoy - bug report for InefficientStringBuffering, bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
-            <li>Allan Caplan - wrote IntegerInstantiation, wrote UseStringBufferLength, wrote AvoidEnumAsIdentifier, bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
             <li>Jean-Marc Vanel - suggested enhancements to the PMD scoreboard</li>
             <li>Fabio Insaccanebbia - AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
             <li>Johan Stuyts - nice patch for UncommentedEmptyConstructor and UncommentedEmptyMethod, patch to allow empty catch blocks with comments in them, patch to clean up build environment</li>

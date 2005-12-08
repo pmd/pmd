@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.rules.strings;
 
+import java.util.Iterator;
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
@@ -11,10 +14,8 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
-import java.util.Iterator;
-import java.util.List;
 
 /*
  * How this rule works:
@@ -56,14 +57,14 @@ public class InefficientStringBuffering extends AbstractRule {
             if (isAllocatedStringBuffer(node)) {
                 addViolation(data, node);
             }
-        } else if (isInStringBufferAppend(node)) {
+        } else if (isInStringBufferAppend(node, 8)) {
             addViolation(data, node);
         }
         return data;
     }
 
-    private boolean isInStringBufferAppend(ASTAdditiveExpression node) {
-        if (!eighthParentIsBlockStatement(node)) {
+    protected static boolean isInStringBufferAppend(SimpleNode node, int length) {
+        if (!xParentIsBlockStatement(node, length)) {
             return false;
         }
         ASTBlockStatement s = (ASTBlockStatement) node.getFirstParentOfType(ASTBlockStatement.class);
@@ -84,9 +85,9 @@ public class InefficientStringBuffering extends AbstractRule {
         return vnd.getTypeImage().equals("StringBuffer");
     }
 
-    private boolean eighthParentIsBlockStatement(ASTAdditiveExpression node) {
+    protected static boolean xParentIsBlockStatement(SimpleNode node, int length) {
         Node curr = node;
-        for (int i=0; i<8; i++) {
+        for (int i=0; i<length; i++) {
             if (node.jjtGetParent() == null) {
                 return false;
             }
