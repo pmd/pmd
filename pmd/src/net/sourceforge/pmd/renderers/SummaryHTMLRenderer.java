@@ -6,7 +6,7 @@ import net.sourceforge.pmd.Report;
 import java.util.Iterator;
 import java.util.Map;
 
-public class SummaryHTMLRenderer implements Renderer {
+public class SummaryHTMLRenderer extends AbstractRenderer implements Renderer {
     public String render(Report report) {
         StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + PMD.EOL);
         buf.append(renderSummary(report));

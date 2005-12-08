@@ -9,7 +9,7 @@ import net.sourceforge.pmd.RuleViolation;
 
 import java.util.Iterator;
 
-public class TextRenderer implements Renderer {
+public class TextRenderer extends AbstractRenderer implements Renderer {
 
     public String render(Report report) {
         StringBuffer buf = new StringBuffer();
@@ -34,7 +34,10 @@ public class TextRenderer implements Renderer {
             buf.append("\t" + error.getMsg());
         }
 
-        addSuppressed(report, buf);
+        if (showSuppressedViolations) {
+            addSuppressed(report, buf);
+        }
+        
         return buf.toString();
     }
 

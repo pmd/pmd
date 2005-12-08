@@ -10,7 +10,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 import java.util.Iterator;
 
-public class HTMLRenderer implements Renderer {
+public class HTMLRenderer extends AbstractRenderer implements Renderer {
 
     private String linkPrefix;
 
@@ -32,7 +32,9 @@ public class HTMLRenderer implements Renderer {
     public String renderBody(Report report) {
         StringBuffer buf = glomRuleViolations(report);
         glomProcessingErrors(report, buf);
-        glomSuppressions(report, buf);
+        if (showSuppressedViolations) {
+            glomSuppressions(report, buf);
+        }
         return buf.toString();
     }
 

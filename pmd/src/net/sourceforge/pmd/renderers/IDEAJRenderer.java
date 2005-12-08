@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-public class IDEAJRenderer implements Renderer {
+public class IDEAJRenderer extends AbstractRenderer implements Renderer {
 
     private static class SourcePath {
 

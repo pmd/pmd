@@ -10,7 +10,8 @@ import net.sourceforge.pmd.util.StringUtil;
 
 import java.util.Iterator;
 
-public class CSVRenderer implements Renderer {
+public class CSVRenderer extends AbstractRenderer implements Renderer {
+
     public String render(Report report) {
         StringBuffer buf = new StringBuffer(quoteAndCommify("Problem"));
         buf.append(quoteAndCommify("Package"));

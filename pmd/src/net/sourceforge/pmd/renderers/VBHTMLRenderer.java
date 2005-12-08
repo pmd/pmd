@@ -13,7 +13,7 @@ import java.util.Iterator;
  * @author Vladimir
  * @version $Revision$ $Date$
  */
-public class VBHTMLRenderer implements Renderer {
+public class VBHTMLRenderer extends AbstractRenderer implements Renderer {
 
     public String render(Report report) {
         if (report.isEmpty()) {

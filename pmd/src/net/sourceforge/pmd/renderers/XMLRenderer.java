@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
-public class XMLRenderer implements Renderer {
+public class XMLRenderer extends AbstractRenderer  implements Renderer {
 
     public String render(Report report) {
 
@@ -68,15 +68,17 @@ public class XMLRenderer implements Renderer {
         }
 
         // suppressed violations
-        for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
-            Report.SuppressedViolation suppressed = (Report.SuppressedViolation) i.next();
-            buf.append("<suppressedviolation ").append("filename=\"");
-            StringUtil.appendXmlEscaped(buf, suppressed.getRuleViolation().getFilename());
-            buf.append("\" suppressiontype=\"");
-            StringUtil.appendXmlEscaped(buf, suppressed.suppressedByNOPMD() ? "nopmd" : "annotation");
-            buf.append("\" msg=\"");
-            StringUtil.appendXmlEscaped(buf, suppressed.getRuleViolation().getDescription());
-            buf.append("\"/>").append(PMD.EOL);
+        if (showSuppressedViolations) {
+            for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
+                Report.SuppressedViolation suppressed = (Report.SuppressedViolation) i.next();
+                buf.append("<suppressedviolation ").append("filename=\"");
+                StringUtil.appendXmlEscaped(buf, suppressed.getRuleViolation().getFilename());
+                buf.append("\" suppressiontype=\"");
+                StringUtil.appendXmlEscaped(buf, suppressed.suppressedByNOPMD() ? "nopmd" : "annotation");
+                buf.append("\" msg=\"");
+                StringUtil.appendXmlEscaped(buf, suppressed.getRuleViolation().getDescription());
+                buf.append("\"/>").append(PMD.EOL);
+            }
         }
 
         buf.append("</pmd>");

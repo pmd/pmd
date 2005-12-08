@@ -24,7 +24,7 @@ import java.util.Iterator;
  *
  * @author Jeff Epstein, based upon <a href="EmacsRenderer.html">EmacsRenderer</a>, Tuesday, September 23, 2003
  */
-public class TextPadRenderer implements Renderer {
+public class TextPadRenderer extends AbstractRenderer implements Renderer {
     public String render(Report report) {
         StringBuffer buf = new StringBuffer();
         Iterator i;

@@ -44,7 +44,7 @@ import java.util.Map;
  * colorization is atm only supported under *nix terminals accepting ansi escape
  * sequences, such as xterm, rxvt et cetera.</p>
  */
-public class PapariTextRenderer implements Renderer {
+public class PapariTextRenderer extends AbstractRenderer implements Renderer {
     /**
      * Directory from where java was invoked.
      */

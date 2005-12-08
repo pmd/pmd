@@ -138,12 +138,16 @@ public class PMDTask extends Task {
 
         PMD pmd;
         if (targetJDK.equals("1.3")) {
+            log("Targeting Java language version 1.3", Project.MSG_VERBOSE);
             pmd = new PMD(new TargetJDK1_3());
         } else if (targetJDK.equals("1.5")) {
+            log("Targeting Java language version 1.5", Project.MSG_VERBOSE);
             pmd = new PMD(new TargetJDK1_5());
         } else {
+            log("Targeting Java language version 1.4", Project.MSG_VERBOSE);
             pmd = new PMD();
         }
+
         if (excludeMarker != null) {
             log("Setting exclude marker to be " + excludeMarker, Project.MSG_VERBOSE);
             pmd.setExcludeMarker(excludeMarker);
@@ -209,6 +213,7 @@ public class PMDTask extends Task {
 
         if (printToConsole) {
             Renderer r = new TextRenderer();
+            r.showSuppressedViolations(false);
             log(r.render(ctx.getReport()), Project.MSG_INFO);
         }
 
