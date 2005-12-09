@@ -23,7 +23,7 @@ public class TextRenderer extends AbstractRenderer implements Renderer {
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append(PMD.EOL + rv.getFilename());
-            buf.append("\t" + Integer.toString(rv.getNode().getBeginLine()));
+            buf.append(":" + Integer.toString(rv.getNode().getBeginLine()));
             buf.append("\t" + rv.getDescription());
         }
 
@@ -37,7 +37,7 @@ public class TextRenderer extends AbstractRenderer implements Renderer {
         if (showSuppressedViolations) {
             addSuppressed(report, buf);
         }
-        
+
         return buf.toString();
     }
 
