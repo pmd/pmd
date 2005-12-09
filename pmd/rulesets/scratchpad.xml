@@ -6,6 +6,29 @@
 These are new rules that are still in progress
   </description>
 
+    <rule name="InefficientStringBufferAppend"
+        message="Avoid appending characters as strings in StringBuffer.append"
+        class="net.sourceforge.pmd.rules.strings.InefficientStringBufferAppend">
+    <description>
+Avoid concatenating characters as strings in StringBuffer.append
+    </description>
+       <priority>2</priority>
+    <example>
+<![CDATA[
+public class Foo {
+ void bar() {
+  StringBuffer sb=new StringBuffer();
+  // Avoid this
+  sb.append("a");
+
+  // use instead something like this
+  StringBuffer sb=new StringBuffer();
+  sb.append('a');
+ }
+}
+]]>
+    </example>
+    </rule>
 
 <!--
     <rule name="UselessAssignment"

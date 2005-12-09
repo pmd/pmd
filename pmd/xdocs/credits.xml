@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Bruce Kelly - bug report 1376760 for InefficientStringBuffering</li>
             <li>Allan Caplan - wrote InefficientStringBufferAppend, wrote IntegerInstantiation, wrote UseStringBufferLength, wrote AvoidEnumAsIdentifier, bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
             <li>Wouter Zelle - Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Bhatia Saurabh - reported a bug in UseStringBufferLength</li>

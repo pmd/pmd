@@ -25,8 +25,7 @@ public class InefficientStringBufferAppend extends AbstractRule {
 		}
 
 		String str = node.getImage();
-		if (str != null && str.length() == 3 && str.charAt(0) == '\"'
-				&& str.charAt(2) == '"') {
+		if (str != null && str.length() == 3 && str.charAt(0) == '\"' && str.charAt(2) == '"') {
 			if (!InefficientStringBuffering.isInStringBufferAppend(node, 10)) {
 				return data;
 			}
