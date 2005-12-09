@@ -113,10 +113,7 @@ public class UselessOverridingMethodTest extends SimpleAggregatorTst {
 
     private static final String TEST13 =
     "public class Foo {" + PMD.EOL +
-    "public void foo(String[] args) {" + PMD.EOL +
-    "    super.init( args, Application.NO_MODULES );" + PMD.EOL +
-    "}" + PMD.EOL +
-    "public void foo(String args) {" + PMD.EOL +
+    "public void init(String[] args) {" + PMD.EOL +
     "    super.init( args, Application.NO_MODULES );" + PMD.EOL +
     "}" + PMD.EOL +
     "}";

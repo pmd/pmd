@@ -93,11 +93,16 @@ public class UselessOverridingMethod extends AbstractRule {
                 if (!(argumentPrimaryPrefixChild instanceof ASTName))
                     return super.visit(node, data); //The arguments are not simply passed through
 
+                if (formalParameters.jjtGetNumChildren() < i+1) {
+                    return super.visit(node, data); // different number of args
+                }
+
                 ASTName argumentName = (ASTName)argumentPrimaryPrefixChild;
                 ASTFormalParameter formalParameter = (ASTFormalParameter)formalParameters.jjtGetChild(i);
                 ASTVariableDeclaratorId variableId = (ASTVariableDeclaratorId)findFirstDegreeChildrenOfType(formalParameter, ASTVariableDeclaratorId.class).get(0);
-                if (!argumentName.getImage().equals(variableId.getImage()))
+                if (!argumentName.getImage().equals(variableId.getImage())) {
                     return super.visit(node, data); //The arguments are not simply passed through
+                }
 
             }
             addViolation(data, node, getMessage()); //All arguments are passed through directly
@@ -107,11 +112,11 @@ public class UselessOverridingMethod extends AbstractRule {
 
     public List findFirstDegreeChildrenOfType(SimpleNode n, Class targetType) {
         List l = new ArrayList();
-        lclFindChildrenOfType(n, targetType, l, 0);
+        lclFindChildrenOfType(n, targetType, l);
         return l;
     }
 
-    private void lclFindChildrenOfType(Node node, Class targetType, List results, int depth) {
+    private void lclFindChildrenOfType(Node node, Class targetType, List results) {
          if (node.getClass().equals(targetType)) {
              results.add(node);
          }
