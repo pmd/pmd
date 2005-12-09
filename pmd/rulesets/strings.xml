@@ -141,9 +141,9 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
     </rule>
 
 
-    <rule name="InefficientStringBufferAppend"
+    <rule name="AppendCharacterWithChar"
         message="Avoid appending characters as strings in StringBuffer.append"
-        class="net.sourceforge.pmd.rules.strings.InefficientStringBufferAppend">
+        class="net.sourceforge.pmd.rules.strings.AppendCharacterWithChar">
     <description>
 Avoid concatenating characters as strings in StringBuffer.append
     </description>

@@ -23,9 +23,10 @@ public class UselessOverridingMethodTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST7, "return value of super", 1, rule),
            new TestDescriptor(TEST8, "return value of super with argument", 1, rule),
            new TestDescriptor(TEST9, "return value of super after adding a string", 0, rule),
-           new TestDescriptor(TEST10,"do not crash on abstract methods", 0, rule),
-           new TestDescriptor(TEST11,"do not crash on interfaces", 0, rule),
-           new TestDescriptor(TEST12,"do not crash on empty returns", 0, rule)
+           new TestDescriptor(TEST10, "do not crash on abstract methods", 0, rule),
+           new TestDescriptor(TEST11, "do not crash on interfaces", 0, rule),
+           new TestDescriptor(TEST12, "do not crash on empty returns", 0, rule),
+           new TestDescriptor(TEST13, "do not crash on super", 0, rule)
        });
     }
 
@@ -107,6 +108,16 @@ public class UselessOverridingMethodTest extends SimpleAggregatorTst {
     "public class Foo {" + PMD.EOL +
     "public void foo(String bar) {" + PMD.EOL +
     "    return;" + PMD.EOL +
+    "}" + PMD.EOL +
+    "}";
+
+    private static final String TEST13 =
+    "public class Foo {" + PMD.EOL +
+    "public void foo(String[] args) {" + PMD.EOL +
+    "    super.init( args, Application.NO_MODULES );" + PMD.EOL +
+    "}" + PMD.EOL +
+    "public void foo(String args) {" + PMD.EOL +
+    "    super.init( args, Application.NO_MODULES );" + PMD.EOL +
     "}" + PMD.EOL +
     "}";
 

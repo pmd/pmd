@@ -8,12 +8,12 @@ import net.sourceforge.pmd.Rule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
-public class InefficientStringBufferAppendTest extends SimpleAggregatorTst {
+public class AppendCharacterWithCharTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
     public void setUp() throws Exception {
-        rule = findRule("strings", "InefficientStringBufferAppend");
+        rule = findRule("strings", "AppendCharacterWithChar");
     }
 
     public void testAll() {

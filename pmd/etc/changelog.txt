@@ -2,7 +2,7 @@
 New rules:
  Migration ruleset: IntegerInstantiation
  JUnit ruleset: UseAssertNullInsteadOfAssertTrue
- Strings ruleset: InefficientStringBufferAppend
+ Strings ruleset: AppendCharacterWithChar
 Fixed bug 1277373 - InefficientStringBuffering now catches more cases.
 Fixed bug 1371757 - Misleading example in AvoidSynchronizedAtMethodLevel
 Fixed bug 1371980 - InefficientStringBuffering no longer flags StringBuffer methods other than append().

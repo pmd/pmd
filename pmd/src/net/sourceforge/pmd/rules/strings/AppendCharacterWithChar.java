@@ -16,7 +16,7 @@ import net.sourceforge.pmd.ast.ASTLiteral;
  * StringBuffer.append('c'); // appends a single character
  * Implementation of PMD RFE 1373863 
  */
-public class InefficientStringBufferAppend extends AbstractRule {
+public class AppendCharacterWithChar extends AbstractRule {
 
 	public Object visit(ASTLiteral node, Object data) {
 		ASTBlockStatement bs = (ASTBlockStatement) node.getFirstParentOfType(ASTBlockStatement.class);
