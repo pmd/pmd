@@ -137,6 +137,7 @@
 </target>
 
 <target name="jjtree" description="Generates the Java parser and AST source filesr">
+    <delete file="src/net/sourceforge/pmd/ast/Java.jj"/>
     <delete file="src/net/sourceforge/pmd/ast/JavaParser.java"/>
     <delete file="src/net/sourceforge/pmd/ast/JavaParserConstants.java"/>
     <delete file="src/net/sourceforge/pmd/ast/JavaParserTreeConstants.java"/>

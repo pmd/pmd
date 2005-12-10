@@ -15,6 +15,7 @@ Partially fixed bug 1371753 - UnnecessaryLocalBeforeReturn message now reflects 
 Modified renderers to support disabling printing of suppressed warnings.  Introduced a new AbstractRenderer class that all Renderers can extends to get the current behavior - that is, suppressed violations are printed.
 Added current CLASSPATH to pmd.bat.
 UnusedFormalParameter now catches unused constructor parameters, and its warning message now reflects whether it caught a method or a constructor param.
+Rebuilt JavaCC parser with JavaCC 4.0beta1.
 TODO: Removed old-style CPD command line options that were deprecated in 3.4.
 
 November 30, 2005 - 3.4:

@@ -1794,12 +1794,10 @@ StringBuffer image;
 int jjimageLen;
 int lengthOfMatch;
 protected char curChar;
-public JavaParserTokenManager(CharStream stream)
-{
+public JavaParserTokenManager(CharStream stream){
    input_stream = stream;
 }
-public JavaParserTokenManager(CharStream stream, int lexState)
-{
+public JavaParserTokenManager(CharStream stream, int lexState){
    this(stream);
    SwitchTo(lexState);
 }
@@ -1985,9 +1983,8 @@ void MoreLexicalActions()
    {
       case 7 :
          if (image == null)
-              image = new StringBuffer(new String(input_stream.GetSuffix(jjimageLen)));
-         else
-            image.append(input_stream.GetSuffix(jjimageLen));
+            image = new StringBuffer();
+         image.append(input_stream.GetSuffix(jjimageLen));
          jjimageLen = 0;
                    input_stream.backup(1);
          break;
@@ -2001,8 +1998,7 @@ void TokenLexicalActions(Token matchedToken)
    {
       case 119 :
         if (image == null)
-            image = new StringBuffer(jjstrLiteralImages[119]);
-         else
+            image = new StringBuffer();
             image.append(jjstrLiteralImages[119]);
      matchedToken.kind = GT;
      ((Token.GTToken)matchedToken).realKind = RUNSIGNEDSHIFT;
@@ -2011,8 +2007,7 @@ void TokenLexicalActions(Token matchedToken)
          break;
       case 120 :
         if (image == null)
-            image = new StringBuffer(jjstrLiteralImages[120]);
-         else
+            image = new StringBuffer();
             image.append(jjstrLiteralImages[120]);
      matchedToken.kind = GT;
      ((Token.GTToken)matchedToken).realKind = RSIGNEDSHIFT;
