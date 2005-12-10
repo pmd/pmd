@@ -4,45 +4,32 @@
 package net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 public class StringToStringRule extends AbstractRule {
 
-    public Object visit(ASTVariableDeclaratorId node, Object data) {
-        // FIXME - use symbol table!!!
-        SimpleNode nameNode = node.getTypeNameNode();
-        if (nameNode instanceof ASTPrimitiveType) {
-            return data;
+    public Object visit(ASTName node, Object data) {
+        if (!(node.getNameDeclaration() instanceof VariableNameDeclaration)) {
+            return super.visit(node, data);
         }
-        
-        if (!((SimpleNode)(nameNode.jjtGetChild(0))).getImage().equals("String")) {
-            return data;
+
+        VariableNameDeclaration vnd = (VariableNameDeclaration)node.getNameDeclaration();
+        if (!vnd.getTypeImage().equals("String")) {
+            return super.visit(node, data);
         }
-        
-        // now we know we're at a variable declaration of type String
-        // FIXME - use getNameDeclaration to get back, don't loop!
-        Map decls = node.getScope().getVariableDeclarations();
-        for (Iterator i = decls.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
-            if (!decl.getImage().equals(node.getImage())) {
-                continue;
-            }
-            List usages = (List) decls.get(decl);
-            for (Iterator j = usages.iterator(); j.hasNext();) {
-                NameOccurrence occ = (NameOccurrence) j.next();
-                if (occ.getNameForWhichThisIsAQualifier() != null && occ.getNameForWhichThisIsAQualifier().getImage().indexOf("toString") != -1) {
-                    addViolation(data, occ.getLocation());
-                }
+
+        List usages = (List)vnd.getDeclaratorId().getScope().getVariableDeclarations().get(vnd);
+        for (Iterator j = usages.iterator(); j.hasNext();) {
+            NameOccurrence occ = (NameOccurrence) j.next();
+            if (occ.getNameForWhichThisIsAQualifier() != null && occ.getNameForWhichThisIsAQualifier().getImage().indexOf("toString") != -1) {
+                addViolation(data, occ.getLocation());
             }
         }
-        return data;
+        return super.visit(node, data);
     }
 }
