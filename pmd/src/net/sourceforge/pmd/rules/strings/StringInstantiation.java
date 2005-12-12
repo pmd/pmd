@@ -8,6 +8,7 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.NameDeclaration;
 
 import java.util.List;
 
@@ -39,9 +40,14 @@ public class StringInstantiation extends AbstractRule {
             return data;
         }
 
-        VariableNameDeclaration nd = (VariableNameDeclaration)name.getNameDeclaration();
+        NameDeclaration nd = (NameDeclaration)name.getNameDeclaration();
+        if (!(nd instanceof VariableNameDeclaration)) {
+            return data;
+        }
+
+        VariableNameDeclaration vnd = (VariableNameDeclaration)nd;
         // nd == null in cases like: return new String("foo");
-        if (nd == null || nd.getTypeImage().equals("String")) {
+        if (vnd == null || vnd.getTypeImage().equals("String")) {
             addViolation(data, node);
 
         }
