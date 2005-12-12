@@ -10,18 +10,14 @@ import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
-import java.util.Iterator;
-import java.util.Map;
 
 // Would this be simplified by using DFA somehow?
 public class NullAssignmentRule extends AbstractRule {
 
     public Object visit(ASTNullLiteral node, Object data) {
-        if (get5thParent(node) instanceof ASTStatementExpression) {
-            ASTStatementExpression n = (ASTStatementExpression)get5thParent(node);
+        if (node.getNthParent(5) instanceof ASTStatementExpression) {
+            ASTStatementExpression n = (ASTStatementExpression)node.getNthParent(5);
 
             if (isAssignmentToFinalField(n)) {
                 return data;
@@ -30,36 +26,20 @@ public class NullAssignmentRule extends AbstractRule {
             if (n.jjtGetNumChildren() > 2 && n.jjtGetChild(1) instanceof ASTAssignmentOperator) {
                 addViolation(data, node);
             }
-        } else if (get4thParent(node) instanceof ASTConditionalExpression) {
-            checkTernary((ASTConditionalExpression)get4thParent(node), data, node);
-        } else if (get5thParent(node) instanceof ASTConditionalExpression) {
-            checkTernary((ASTConditionalExpression)get5thParent(node), data, node);
+        } else if (node.getNthParent(4) instanceof ASTConditionalExpression) {
+            checkTernary((ASTConditionalExpression)node.getNthParent(4), data, node);
+        } else if (node.getNthParent(5) instanceof ASTConditionalExpression) {
+            checkTernary((ASTConditionalExpression)node.getNthParent(5), data, node);
         }
 
         return data;
     }
 
-    // FIXME use getNameDeclaration rather than looping
     private boolean isAssignmentToFinalField(ASTStatementExpression n) {
         ASTName name = (ASTName)n.getFirstChildOfType(ASTName.class);
-        if (name != null) {
-            Map vars = name.getScope().getEnclosingClassScope().getVariableDeclarations();
-            for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-                VariableNameDeclaration vnd = (VariableNameDeclaration)i.next();
-                if (vnd.getImage().equals(name.getImage()) && vnd.getAccessNodeParent().isFinal()) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private Node get4thParent(ASTNullLiteral node) {
-        return node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent();
-    }
-
-    private Node get5thParent(ASTNullLiteral node) {
-        return get4thParent(node).jjtGetParent();
+        return name != null
+                && name.getNameDeclaration() instanceof VariableNameDeclaration
+                && ((VariableNameDeclaration)name.getNameDeclaration()).getAccessNodeParent().isFinal();
     }
 
     private void checkTernary(ASTConditionalExpression n, Object data, ASTNullLiteral node) {

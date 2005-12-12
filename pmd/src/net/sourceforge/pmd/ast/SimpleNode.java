@@ -140,6 +140,18 @@ public class SimpleNode implements Node {
         return endColumn;
     }
 
+    public Node getNthParent(int n) {
+        Node result = null;
+        for (int i = 0; i < n; i++) {
+            if (result == null) {
+                result = this.jjtGetParent();
+            } else {
+                result = result.jjtGetParent();
+            }
+        }
+        return result;
+    }
+
     /**
      * Traverses up the tree to find the first parent instance of type parentType
      *

@@ -6,25 +6,34 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="StringToString"
-         message="Avoid calling toString() on String objects; this is unnecessary"
-         class="net.sourceforge.pmd.rules.strings.StringToStringRule"
-           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringToString">
-     <description>
-     Avoid calling toString() on String objects; this is unnecessary
-     </description>
+    <rule name="NullAssignment"
+          message="Assigning an Object to null is a code smell.  Consider refactoring."
+          class="net.sourceforge.pmd.rules.design.NullAssignmentRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#NullAssignment">
+      <description>
+ Assigning a "null" to a variable (outside of its declaration) is usually
+ bad form.  Some times, the assignment is an indication that the programmer doesn't
+ completely understand what is going on in the code.  NOTE: This sort of assignment
+ may in rare cases be useful to encourage garbage collection.  If that's what you're using
+ it for, by all means, disregard this rule :-)
+      </description>
         <priority>3</priority>
-     <example>
+      <example>
  <![CDATA[
  public class Foo {
-  private String baz() {
-   String bar = "howdy";
-   return bar.toString();
-  }
+   public void bar() {
+     Object x = null; // This is OK.
+     x = new Object();
+     // Big, complex piece of code here.
+     x = null; // This is BAD.
+     // Big, complex piece of code here.
+   }
  }
+
  ]]>
-     </example>
-     </rule>
+      </example>
+    </rule>
+
 
 <!--
     <rule name="UselessAssignment"
