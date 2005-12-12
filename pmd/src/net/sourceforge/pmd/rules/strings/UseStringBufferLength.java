@@ -31,8 +31,16 @@ import java.util.Set;
  */
 public class UseStringBufferLength extends AbstractRule {
 
-    // FIXME
-    // BLAH.  Need to remove this somehow.
+    // FIXME  Need to remove this somehow.
+    /*
+    Specifically, we need a symbol tree that can be traversed downwards, so that instead
+    of visiting each name and then visiting the declaration for that name, we should visit all
+    the declarations and check their usages.
+    With that in place, this rule would be reduced to:
+    - find all StringBuffer declarations
+    - check each usage
+    - flag those that involve variable.toString()
+    */
     private Set alreadySeen = new HashSet();
 
     public Object visit(ASTCompilationUnit acu, Object data) {
