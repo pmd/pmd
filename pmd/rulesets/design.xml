@@ -1195,9 +1195,12 @@ and unintentional empty constructors.
           <property name="xpath">
               <value>
     <![CDATA[
-//ConstructorDeclaration[count(BlockStatement) = 0 and @containsComment = 'false']
+//ConstructorDeclaration[count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
  ]]>
              </value>
+          </property>
+          <property name="ignoreExplicitConstructorInvocation" description="Ignore explicit constructor invocation when deciding whether constructor is empty or not">
+              <value>false</value>
           </property>
       </properties>
       <priority>3</priority>

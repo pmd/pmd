@@ -10,23 +10,41 @@ import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class UncommentedEmptyConstructorRuleTest extends SimpleAggregatorTst {
 
-    private Rule rule;
+    private Rule defaultRuleRule;
+
+    private Rule ignoredConstructorInvocationRule;
 
     public void setUp() {
-        rule = findRule("design", "UncommentedEmptyConstructor");
+        defaultRuleRule = findRule("design", "UncommentedEmptyConstructor");
+        ignoredConstructorInvocationRule = findRule("design", "UncommentedEmptyConstructor");
+        ignoredConstructorInvocationRule.addProperty("ignoreExplicitConstructorInvocation", "true");
     }
 
-    public void testAll() {
+    public void testDefault() {
         runTests(new TestDescriptor[] {
-            new TestDescriptor(TEST1, "simple failure", 1, rule),
-            new TestDescriptor(TEST2, "only 'this(...)' failure", 1, rule),
-            new TestDescriptor(TEST3, "only 'super(...)' failure", 1, rule),
-            new TestDescriptor(TEST4, "single-line comment is OK", 0, rule),
-            new TestDescriptor(TEST5, "multiple-line comment is OK", 0, rule),
-            new TestDescriptor(TEST6, "Javadoc comment is OK", 0, rule),
-            new TestDescriptor(TEST7, "ok", 0, rule),
-            new TestDescriptor(TEST8, "with 'this(...)' ok", 0, rule),
-            new TestDescriptor(TEST9, "with 'super(...)' ok", 0, rule),
+            new TestDescriptor(TEST1, "simple failure", 1, defaultRuleRule),
+            new TestDescriptor(TEST2, "only 'this(...)' is OK", 0, defaultRuleRule),
+            new TestDescriptor(TEST3, "only 'super(...)' is OK", 0, defaultRuleRule),
+            new TestDescriptor(TEST4, "single-line comment is OK", 0, defaultRuleRule),
+            new TestDescriptor(TEST5, "multiple-line comment is OK", 0, defaultRuleRule),
+            new TestDescriptor(TEST6, "Javadoc comment is OK", 0, defaultRuleRule),
+            new TestDescriptor(TEST7, "ok", 0, defaultRuleRule),
+            new TestDescriptor(TEST8, "with 'this(...)' ok", 0, defaultRuleRule),
+            new TestDescriptor(TEST9, "with 'super(...)' ok", 0, defaultRuleRule),
+        });
+    }
+
+    public void testIgnoredConstructorInvocation() {
+        runTests(new TestDescriptor[] {
+            new TestDescriptor(TEST1, "simple failure", 1, ignoredConstructorInvocationRule),
+            new TestDescriptor(TEST2, "only 'this(...)' failure", 1, ignoredConstructorInvocationRule),
+            new TestDescriptor(TEST3, "only 'super(...)' failure", 1, ignoredConstructorInvocationRule),
+            new TestDescriptor(TEST4, "single-line comment is OK", 0, ignoredConstructorInvocationRule),
+            new TestDescriptor(TEST5, "multiple-line comment is OK", 0, ignoredConstructorInvocationRule),
+            new TestDescriptor(TEST6, "Javadoc comment is OK", 0, ignoredConstructorInvocationRule),
+            new TestDescriptor(TEST7, "ok", 0, ignoredConstructorInvocationRule),
+            new TestDescriptor(TEST8, "with 'this(...)' ok", 0, ignoredConstructorInvocationRule),
+            new TestDescriptor(TEST9, "with 'super(...)' ok", 0, ignoredConstructorInvocationRule),
         });
     }
 

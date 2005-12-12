@@ -11,6 +11,7 @@ Fixed bug 1375290 - @SuppressWarnings annotations are now implemented correctly;
 Fixed bug 1376760 - InefficientStringBuffering no longer throws a NullPointerException when processing certain expressions.
 Fixed bug 1376756 - UselessOverridingMethod no longer throws an exception on overloaded methods.
 Fixed bug 1378358 - StringInstantiation no longer throws ClassCastExceptions on certain allocation patterns.
+Fixed bug 1371741 - UncommentedEmptyConstructor no longer flags constructors that consist of a this() or a super() invocation.
 Fixed a bug in UseStringBufferLength; it no longers fails with an exception on expressions like StringBuffer.toString.equals(x)
 Partially fixed bug 1371753 - UnnecessaryLocalBeforeReturn message now reflects the fact that that rule flags all types
 Modified renderers to support disabling printing of suppressed warnings.  Introduced a new AbstractRenderer class that all Renderers can extends to get the current behavior - that is, suppressed violations are printed.
