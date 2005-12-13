@@ -58,7 +58,7 @@
             <li>Sean Montgomery - bug report 1371980 for InefficientStringBuffering</li>
             <li>Jean-Marc Vanel - suggested enhancements to the PMD scoreboard</li>
             <li>Fabio Insaccanebbia - AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
-            <li>Andriy Rozeluk - suggested UseStringBufferLength, bug report 1306180 for AvoidConcatenatingNonLiteralsInStringBuffer, reported bug 1293157 for UnusedPrivateMethod, suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
+            <li><a href="http://www.websoup.net/">Andriy Rozeluk</a> - suggested UseStringBufferLength, bug report 1306180 for AvoidConcatenatingNonLiteralsInStringBuffer, reported bug 1293157 for UnusedPrivateMethod, suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Bruno Juillet - suggested reporting suppressed warnings, bug report for missing package/class/method names, patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
             <li>Chris Erskine - documentation suggestions</li>
             <li>Noel Grandin - bug report for MissingStaticMethodInNonInstantiatableClass, bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
@@ -75,11 +75,11 @@
             <li>Jacques Lebourgeois - fix for UTF8 characters in Eclipse plugin</li>
             <li>dvholten - suggestions for improving OverrideBothEqualsAndHashcode, formatting suggestions for HTML report, test cases for ConstructorCallsOverridableMethod, reported several NullAssignment bugs</li>
             <li>Jarkko Hietaniemin - several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
-            <li>Olaf Heimburger - code changes to get JDeveloper plugin working under JDev 10.1.3 EA</li>
-            <li>Brian Duff - helped get Oracle JDeveloper plugin working</li>
+            <li><a href="http://www.orablogs.com/olaf/">Olaf Heimburger</a> - code changes to get JDeveloper plugin working under JDev 10.1.3 EA</li>
+            <li><a href="http://www.orablogs.com/duffblog/">Brian Duff</a> - helped get Oracle JDeveloper plugin working</li>
             <li>Sivakumar Mambakka - bug report 1314086 for missing name in SimpleRuleSetNameMapper</li>
             <li>Rodrigo Ruiz - bug report 1312723 for FieldDeclaration nodes inside interfaces, bug report 1312754 for pmd.bat option handling, bug report 1312720 (and code fix!) for DefaultPackage, bug report 1309235 for TooManyFields</li>
-            <li>Lori Olson - JBuilder plugin suggestions and prerelease tests, found copy/paste bug in rule descriptions</li>
+            <li><a href="http://blogs.teamb.com/LoriOlson/">Lori Olson</a> - JBuilder plugin suggestions and prerelease tests, found copy/paste bug in rule descriptions</li>
             <li>Thomas Dudziak - bug report 1304739 for StringInstantiation</li>
             <li>Jorn Stampehl - Reported TooManyFields property bug, noticed redundancy of ExplicitCallToFinalize, reported bug in AvoidCallingFinalize, reported bug in JUnitAssertionsShouldIncludeMessage, reported bug in bug report on JUnitTestsShouldContainAsserts</li>
             <li>Pieter Bloemendaal - reported JDK 1.3 parsing bug 1292609, command line docs bug report, bug report for UnusedPrivateMethod, found typo in ArrayIsStoredDirectly, bug report for AvoidReassigningParametersRule</li>
