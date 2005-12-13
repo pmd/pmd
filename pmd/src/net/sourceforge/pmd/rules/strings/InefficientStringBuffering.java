@@ -53,6 +53,19 @@ public class InefficientStringBuffering extends AbstractRule {
             return data;
         }
 
+        // if literal + public static final, return
+        List nameNodes = node.findChildrenOfType(ASTName.class);
+        for (Iterator i = nameNodes.iterator(); i.hasNext();) {
+            ASTName name = (ASTName)i.next();
+            if (name.getNameDeclaration() != null && name.getNameDeclaration() instanceof VariableNameDeclaration) {
+                VariableNameDeclaration vnd = (VariableNameDeclaration)name.getNameDeclaration();
+                if (vnd.getAccessNodeParent().isFinal() && vnd.getAccessNodeParent().isStatic()) {
+                    return data;
+                }
+            }
+        }
+
+
         if (bs.isAllocation()) {
             if (isAllocatedStringBuffer(node)) {
                 addViolation(data, node);
@@ -73,19 +86,14 @@ public class InefficientStringBuffering extends AbstractRule {
         }
         ASTName n = (ASTName) s.getFirstChildOfType(ASTName.class);
 
-        if (n == null || n.getImage().indexOf("append") == -1) {
+        if (n == null || n.getImage().indexOf("append") == -1 || !(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
             return false;
         }
-        
-        if (!(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
-            return false;
-        }
-
-        VariableNameDeclaration vnd = (VariableNameDeclaration)n.getNameDeclaration();
-        return vnd.getTypeImage().equals("StringBuffer");
+        return ((VariableNameDeclaration)n.getNameDeclaration()).getTypeImage().equals("StringBuffer");
     }
 
-    protected static boolean xParentIsBlockStatement(SimpleNode node, int length) {
+    // TODO move this method to SimpleNode
+    private static boolean xParentIsBlockStatement(SimpleNode node, int length) {
         Node curr = node;
         for (int i=0; i<length; i++) {
             if (node.jjtGetParent() == null) {

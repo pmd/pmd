@@ -34,6 +34,7 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST14, "JTextArea.append", 0, rule),
                new TestDescriptor(TEST15, "don't get thrown off by a buried literal", 1, rule),
                new TestDescriptor(TEST16, "sb.delete shouldn't trigger it", 0, rule),
+               new TestDescriptor(TEST17, "skip additions involving static finals, compiler will do constant folding for these", 0, rule),
        });
     }
 
@@ -158,6 +159,14 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
         "public class Foo {" + PMD.EOL +
         " public void bar(StringBuffer sb) {" + PMD.EOL +
         "  sb.delete(x, y+z);" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST17 =
+        "public class Foo {" + PMD.EOL +
+        " public static final String FOO = \"bar\";" + PMD.EOL +
+        " public void bar(StringBuffer sb) {" + PMD.EOL +
+        "  sb.append(\"foo\" + FOO);" + PMD.EOL +
         " }" + PMD.EOL +
         "}";
 }
