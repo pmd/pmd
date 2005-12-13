@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>George Sexton - Bug report 1379701 for CompareObjectsWithEquals, suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
             <li>Didier Duquennoy - several bug reports for InefficientStringBuffering, bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Johan Stuyts - improvements to UncommentedEmptyConstructor, nice patch for UncommentedEmptyConstructor and UncommentedEmptyMethod, patch to allow empty catch blocks with comments in them, patch to clean up build environment</li>
             <li><a href="http://www.cafeaulait.org/">Elliotte Rusty Harold</a> - UncommentedEmptyConstructor suggestions, noted missed case for UnusedFormalParameter, documentation suggestions, reported mistake in UnnecessaryLocalBeforeReturn message, bug report 1371757 for misleading AvoidSynchronizedAtMethodLevel example, bug report 1293277 for duplicated rule messages, bug report for ConstructorCallsOverridableMethod, suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
@@ -125,7 +126,6 @@
             <li>Paddy Fagan - reported bug in StatisticalRule</li>
             <li>Leszek Migdal - reported documentation mistake for Eclipse plugin</li>
             <li>Hakan Civelek - an order-of-magnitude optimization to the SystemOutPrintln rule</li>
-            <li>George Sexton - Suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
             <li>John Heintz - Added "any language" support to CPD.</li>
             <li>Harald Gurres - cleaned up the symbol table code with a very nice patch</li>
             <li>Matthias Kerkhoff - CPD suggestions, several bug reports</li>

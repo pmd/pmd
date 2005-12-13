@@ -23,6 +23,7 @@ public class CompareObjectsWithEqualsTest extends SimpleAggregatorTst{
            new TestDescriptor(TEST5, "more qualified name skippage", 0, rule),
            new TestDescriptor(TEST6, "locals", 1, rule),
            new TestDescriptor(TEST7, "2 locals declared on one line", 1, rule),
+           new TestDescriptor(TEST8, "array element comparison", 0, rule),
        });
     }
 
@@ -77,6 +78,13 @@ public class CompareObjectsWithEqualsTest extends SimpleAggregatorTst{
     "  a = \"foo\";" + PMD.EOL +
     "  b = \"bar\";" + PMD.EOL +
     "  if (a == b) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST8 =
+    "public class Foo {" + PMD.EOL +
+    " void bar(String[] a, String[] b) {" + PMD.EOL +
+    "  if (a[1] == b[1]) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 

@@ -37,6 +37,12 @@ public class CompareObjectsWithEquals extends AbstractRule {
         if (n0.getNameDeclaration() instanceof VariableNameDeclaration && n1.getNameDeclaration() instanceof VariableNameDeclaration) {
             VariableNameDeclaration nd0 = (VariableNameDeclaration)n0.getNameDeclaration();
             VariableNameDeclaration nd1 = (VariableNameDeclaration)n1.getNameDeclaration();
+
+            // skip array dereferences... this misses some cases 
+            if (nd0.isArray() || nd1.isArray()) {
+                return data;
+            }
+
             if (nd0.isReferenceType() && nd1.isReferenceType()) {
                 addViolation(data, node);
             }
