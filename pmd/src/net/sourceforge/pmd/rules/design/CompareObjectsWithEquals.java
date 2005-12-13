@@ -38,7 +38,8 @@ public class CompareObjectsWithEquals extends AbstractRule {
             VariableNameDeclaration nd0 = (VariableNameDeclaration)n0.getNameDeclaration();
             VariableNameDeclaration nd1 = (VariableNameDeclaration)n1.getNameDeclaration();
 
-            // skip array dereferences... this misses some cases 
+            // skip array dereferences... this misses some cases
+            // FIXME catch comparisons btwn array elements of reference types
             if (nd0.isArray() || nd1.isArray()) {
                 return data;
             }

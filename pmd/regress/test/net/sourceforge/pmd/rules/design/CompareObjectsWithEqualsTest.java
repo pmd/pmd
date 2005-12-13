@@ -83,7 +83,7 @@ public class CompareObjectsWithEqualsTest extends SimpleAggregatorTst{
 
     private static final String TEST8 =
     "public class Foo {" + PMD.EOL +
-    " void bar(String[] a, String[] b) {" + PMD.EOL +
+    " void bar(int[] a, String[] b) {" + PMD.EOL +
     "  if (a[1] == b[1]) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
