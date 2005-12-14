@@ -14,6 +14,8 @@ public class UseArraysAsListTest extends SimpleAggregatorTst {
         rule = findRule("optimizations", "UseArraysAsList");
     }
 
+    // FIXME should be able to catch case where Integer[] is passed
+    // as an argument... but may need to rewrite in Java for that.
     public void testAll() {
        runTests(new TestDescriptor[] {
                new TestDescriptor(TEST1, "failure case", 1, rule),
