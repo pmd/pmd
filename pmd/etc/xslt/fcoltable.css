@@ -1,0 +1,75 @@
+body{
+	font-family:Arial,Sans-Serif;
+	font-size:90%;
+	background:#cc9;
+}
+#boundary{
+	background:#f8f8f8;
+	padding:2em;
+	width:40em;
+}
+h1{
+	font-family:"Trebuchet MS",Sans-serif;
+	text-transform:uppercase;
+	color:#696;
+	font-size:120%;
+}
+
+table.footcollapse{
+	width:100%;
+}
+table.footcollapse caption{
+	font-size:120%;
+	text-transform:uppercase;
+	text-align:left;
+	padding:.5em 1em;
+}
+table.footcollapse th{
+	text-align:left;
+}
+table.footcollapse,table.footcollapse th,table.footcollapse th
+{
+	border:none;
+	border-collapse:collapse;	
+}
+table.footcollapse thead th
+{
+	width:10em;
+	border-style:solid;
+	border-width:1px;
+	border-color:#cff #69c #69c #cff;
+	background:#9cf;
+	padding:2px 10px;
+}
+table.footcollapse tfoot th,
+table.footcollapse tfoot td
+{
+	border-style:solid;
+	border-width:1px;
+	border-color:#9cf #369 #369 #9cf;
+	background:#69c;
+	padding:2px 10px;
+}
+table.footcollapse tbody{
+	background:#ddd;
+}
+table.footcollapse tbody td{
+	padding:5px 10px;
+	border:1px solid #999;
+}
+table.footcollapse tbody th{
+	padding:2px 10px;
+	border:1px solid #999;
+	border-left:none;
+}
+table.footcollapse tbody tr.odd{
+	background:#ccc;
+}
+
+table.footcollapse tfoot td img{
+	border:none;
+	vertical-align:bottom;
+	padding-left:10px;
+	float:right;
+}
+

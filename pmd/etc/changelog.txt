@@ -20,6 +20,7 @@ Modified renderers to support disabling printing of suppressed warnings.  Introd
 Added current CLASSPATH to pmd.bat.
 UnusedFormalParameter now catches unused constructor parameters, and its warning message now reflects whether it caught a method or a constructor param.
 Rebuilt JavaCC parser with JavaCC 4.0beta1.
+Added David Corley's Javascript report, more details are here: http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html 
 TODO: Removed old-style CPD command line options that were deprecated in 3.4.
 
 November 30, 2005 - 3.4:
