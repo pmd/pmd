@@ -171,7 +171,69 @@ public class Foo {
            </example>
         </rule>
 
-    <!-- 
+  <rule name="UseArraysAsList"
+     message="Use asList instead of tight loops"
+     class="net.sourceforge.pmd.rules.XPathRule">
+     <description>
+   The class java.util.Arrays has a "asList" method that
+   should be use when you want to create a new List from
+   an array of objects. It is faster than executing a loop to
+   cpy all the elements of the array one by one
+     </description>
+     <properties>
+       <property name="xpath">
+       <value>
+   <![CDATA[
+   //Statement[
+    (ForStatement) and (count(.//IfStatement)=0)
+   ]
+   //StatementExpression[
+    PrimaryExpression/PrimaryPrefix/Name[
+     @Image = concat(ancestor::MethodDeclaration//LocalVariableDeclaration[
+      ./Type//ClassOrInterfaceType[
+       @Image = 'List' or @Image ='ArrayList'
+      ]
+     ]
+     /VariableDeclarator/VariableDeclaratorId[
+      count(..//AllocationExpression/ClassOrInterfaceType[
+       @Image="ArrayList"
+      ]
+      )=1
+     ]/@Image,".add")
+    ]
+   and
+   PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
+   [@Image = ancestor::MethodDeclaration//LocalVariableDeclaration
+   [@Array="true"]/VariableDeclarator/VariableDeclaratorId/@Image]
+   /../..[count(.//PrimarySuffix)
+   =1]/PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix
+   /Name
+   ]
+   ]]>
+       </value>
+       </property>
+     </properties>
+     <priority>3</priority>
+     <example>
+   <![CDATA[
+   public class Test {
+    public void foo(Integer[] ints) {
+    // could just use Arrays.asList(ints)
+     List l= new ArrayList(10);
+     for (int i=0; i< 100; i++) {
+      l.add(ints[i]);
+     }
+     for (int i=0; i< 100; i++) {
+      l.add(a[i].toString()); // won't trigger the rule
+     }
+    }
+   }
+   ]]>
+     </example>
+   </rule>
+
+
+    <!--
     other optimization should be like avoiding
     "" + int
     or "" + (int) i

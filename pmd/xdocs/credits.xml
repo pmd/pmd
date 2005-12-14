@@ -45,7 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Fabio Insaccanebbia - AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
+            <li>Fabio Insaccanebbia - UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
             <li>David Corley - Nifty Javascript folding for XML report, <a href="http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html">demo is here</a></li>
             <li>George Sexton - Bug report 1379701 for CompareObjectsWithEquals, suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
             <li>Didier Duquennoy - several bug reports for InefficientStringBuffering, bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>

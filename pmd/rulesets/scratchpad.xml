@@ -6,27 +6,6 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="UnusedLocalVariable"
-            message="Avoid unused local variables such as ''{0}''"
-            class="net.sourceforge.pmd.rules.UnusedLocalVariableRule"
-            externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable">
-        <description>
-    Detects when a local variable is declared and/or assigned, but not used.
-        </description>
-        <priority>3</priority>
-
-        <example>
-    <![CDATA[
-    public class Foo {
-     public void doSomething() {
-      int i = 5; // Unused
-     }
-    }
-    ]]>
-        </example>
-      </rule>
-
-
 
 <!--
     <rule name="UselessAssignment"
