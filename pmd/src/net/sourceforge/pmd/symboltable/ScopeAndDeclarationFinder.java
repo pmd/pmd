@@ -199,7 +199,9 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        node.getScope().addDeclaration(new VariableNameDeclaration(node));
+        VariableNameDeclaration decl = new VariableNameDeclaration(node);
+        node.getScope().addDeclaration(decl);
+        node.setNameDeclaration(decl);
         return super.visit(node, data);
     }
 

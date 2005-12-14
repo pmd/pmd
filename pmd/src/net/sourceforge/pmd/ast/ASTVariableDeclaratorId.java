@@ -2,6 +2,9 @@
 
 package net.sourceforge.pmd.ast;
 
+import net.sourceforge.pmd.symboltable.NameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+
 public class ASTVariableDeclaratorId extends SimpleNode {
 
     public ASTVariableDeclaratorId(int id) {
@@ -20,6 +23,14 @@ public class ASTVariableDeclaratorId extends SimpleNode {
     }
 
     private int arrayDepth;
+    private VariableNameDeclaration nameDeclaration;
+
+    public VariableNameDeclaration getNameDeclaration() {
+        return nameDeclaration;
+    }
+    public void setNameDeclaration(VariableNameDeclaration decl) {
+        nameDeclaration = decl;
+    }
 
     public void bumpArrayDepth() {
         arrayDepth++;
