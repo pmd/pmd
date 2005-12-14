@@ -3,6 +3,7 @@ New rules:
  Migration ruleset: IntegerInstantiation
  JUnit ruleset: UseAssertNullInsteadOfAssertTrue
  Strings ruleset: AppendCharacterWithChar
+ Design ruleset: AvoidConstantsInterface
 Fixed bug 1277373 - InefficientStringBuffering now catches more cases.
 Fixed bug 1371757 - Misleading example in AvoidSynchronizedAtMethodLevel
 Fixed bug 1371980 - InefficientStringBuffering no longer flags StringBuffer methods other than append().
@@ -20,8 +21,10 @@ Modified renderers to support disabling printing of suppressed warnings.  Introd
 Added current CLASSPATH to pmd.bat.
 UnusedFormalParameter now catches unused constructor parameters, and its warning message now reflects whether it caught a method or a constructor param.
 Rebuilt JavaCC parser with JavaCC 4.0beta1.
-Added David Corley's Javascript report, more details are here: http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html 
-TODO: Removed old-style CPD command line options that were deprecated in 3.4.
+Added David Corley's Javascript report, more details are here: http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html
+
+***** TODO: Remove old-style CPD command line options that were deprecated in 3.4.
+***** TODO: Remove deprecated RuleViolation.getLine()
 
 November 30, 2005 - 3.4:
 New rules:

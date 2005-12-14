@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Fabio Insaccanebbia - AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
             <li>David Corley - Nifty Javascript folding for XML report, <a href="http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html">demo is here</a></li>
             <li>George Sexton - Bug report 1379701 for CompareObjectsWithEquals, suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
             <li>Didier Duquennoy - several bug reports for InefficientStringBuffering, bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
@@ -59,7 +60,6 @@
             <li><a href="http://www.jroller.com/page/Fester">Wim Deblauwe</a> - suggested UseAssertNullInsteadOfAssertTrue, bug report 1373510 for UseAssertSameInsteadOfAssertTrue, suggested putting property names/values in generated docs, UselessOverridingMethod, reported bug in JUnitTestsShouldContainAsserts, front page and "how to make a ruleset" patches, noted problems with web site rule index, bug report for JUnitTestsShouldContainAsserts, Clover license coordination and implementation, UseCorrectExceptionLogging, coordinated and coded a much nicer asXML() implementation, suggested cleanup of UnusedFormalParameter, Javadoc patch, SystemPrintln bug report, helped get Ant task and CLI squared away with JDK 1.5 params, JDK 1.5-specific bug reports, suggested improvements for ExceptionSignatureDeclaration</li>
             <li>Sean Montgomery - bug report 1371980 for InefficientStringBuffering</li>
             <li>Jean-Marc Vanel - suggested enhancements to the PMD scoreboard</li>
-            <li>Fabio Insaccanebbia - AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
             <li><a href="http://www.websoup.net/">Andriy Rozeluk</a> - suggested UseStringBufferLength, bug report 1306180 for AvoidConcatenatingNonLiteralsInStringBuffer, reported bug 1293157 for UnusedPrivateMethod, suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Bruno Juillet - suggested reporting suppressed warnings, bug report for missing package/class/method names, patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
             <li>Chris Erskine - documentation suggestions</li>
