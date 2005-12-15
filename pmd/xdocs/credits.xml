@@ -171,7 +171,7 @@
             <li>Hariolf Häfele - PMD-JDeveloper plugin bug reports</li>
             <li><a href="http://www.bossicard.com/">Vladimir Bossicard</a> - suggested AbstractNamingRule, test package organization suggestions, VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Ken Foskey - noticed bad link</li>
-            <li>Stephan Janssen - promoted PMD for <a href="https://jjguidelines.dev.java.net/">JJGuidelines</a></li>
+            <li><a href="http://www.bejug.org/confluenceBeJUG/display/BeJUG/Stephan+Janssen">Stephan Janssen</a> - promoted PMD for <a href="https://jjguidelines.dev.java.net/">JJGuidelines</a></li>
             <li>Ron Sidi - bug reports</li>
             <li>David Koontz - suggestions for tweaking PMD command line options</li>
             <li>Jeff Epstein - TextPad integration and tests</li>
@@ -180,7 +180,7 @@
             <li>Jeff Anderson - node finding utility code</li>
             <li>Boris Gruschko - regression test suites, nifty AST/XPath viewer</li>
             <li>Trevor Harmon - rewrote XSLT script</li>
-            <li>Vadim Nasardinov - xdocs cleanup, run.sh cleanup</li>
+            <li><a href="http://philip.greenspun.com/shared/community-member?user_id=174176">Vadim Nasardinov</a> - xdocs cleanup, run.sh cleanup</li>
             <li>Sigiswald Madou - bug report</li>
             <li>Dan Tullis - bug report</li>
             <li>George Menhorn - CPD bug reports and suggestions</li>
@@ -190,7 +190,7 @@
             <li>Joerg K. Wegner - PMD scoreboard suggestions</li>
             <li>Chris Webster - fix (and test) for UnnecessaryConstructorRule, BooleanInstantiation rule</li>
             <li>Colin Simmonds - detailed bug reports</li>
-            <li>Trond Andersen - AvoidCatchingThrowable, ExceptionSignatureDeclaration, ExceptionTypeChecking</li>
+            <li><a href="http://reassess.blogspot.com/">Trond Andersen</a> - AvoidCatchingThrowable, ExceptionSignatureDeclaration, ExceptionTypeChecking</li>
             <li>Bernd Jansen - grammer modification</li>
             <li>Jarle Naess - bug report</li>
             <li>Jeff Anderson - VariableNamingConventionsRule, MethodNamingConventionsRule, ClassNamingConventionsRule</li>
@@ -226,19 +226,18 @@
             <li>Egon Willighagen - PMD scoreboard suggestion</li>
             <li>Adam Nemeth - bug report on missing final attribute for local variable declarations</li>
             <li>Frederic Harper - bug report and subsequent troubleshooting</li>
-            <li>Mats Henricson - an XSLT script and several bug reports</li>
+            <li><a href="http://www.henricson.se/mats/">Mats Henricson</a> - an XSLT script and several bug reports</li>
             <li>Martin Cooper - feature suggestions</li>
             <li>Bruce Mayhew - feedback on the jEdit plugin</li>
             <li>Juergen Ebert - feature suggestions and pmd-netbeans feedback</li>
             <li>J.D. Fagan - feature suggestions</li>
             <li>William McArthur - ForLoopShouldBeWhileLoop rule</li>
             <li>Ales Bukovsky - pmd-netbeans feedback</li>
-            <li>Stefan Bodewig - bug report</li>
-            <li>Paul Kendall - enhanced EmptyCatchBlock rule</li>
+            <li><a href="http://stefan.samaflost.de/blog">Stefan Bodewig</a> - bug report</li>
             <li>Sean Sullivan - rule suggestions</li>
             <li>Dale Vissar - rule suggestions</li>
-            <li>Alina Copeland - PMD scoreboard formulas, pmd-dcpd optimizations</li>
-            <li>Vincent Massol - bug reports, design suggestions, feature suggestions, Maven guidance</li>
+            <li><a href="http://www.informatik.uni-trier.de/~ley/db/indices/a-tree/c/Copeland:Alina.html">Alina Copeland</a> - PMD scoreboard formulas, pmd-dcpd optimizations</li>
+            <li><a href="http://blogs.codehaus.org/people/vmassol/">Vincent Massol</a> - bug reports, design suggestions, feature suggestions, Maven guidance</li>
             <li>Peter Donald - design suggestions</li>
             <li>Liam Holohan - bug reports</li>
             <li>Ralph Schaer - bug reports and verification</li>
