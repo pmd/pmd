@@ -3,9 +3,6 @@
  */
 package net.sourceforge.pmd.rules.strings;
 
-import java.util.Iterator;
-import java.util.List;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
@@ -16,6 +13,9 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+
+import java.util.Iterator;
+import java.util.List;
 
 /*
  * How this rule works:

@@ -2,7 +2,6 @@
 
 package net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.List;

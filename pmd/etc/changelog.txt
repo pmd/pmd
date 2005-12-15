@@ -531,4 +531,4 @@ Added new HTML report format
 June 25 2002 - 0.1:
 Initial release
 
-Using PMD?  Get the book, "PMD Applied"!  http://pmdapplied.com/
+Support PMD, get the book: http://pmdapplied.com/

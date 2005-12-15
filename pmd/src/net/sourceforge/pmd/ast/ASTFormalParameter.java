@@ -3,9 +3,6 @@
 package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
-import java.util.List;
 
 public class ASTFormalParameter extends AccessNode implements Dimensionable, CanSuppressWarnings {
     public ASTFormalParameter(int id) {
