@@ -7,50 +7,25 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="SimplifyConditional"
-              message="No need to check for null before an instanceof"
-              class="net.sourceforge.pmd.rules.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyConditional">
-           <description>
-No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
-           </description>
-          <properties>
-              <property name="xpath">
-                  <value>
-                      <![CDATA[
-//Expression
- [ConditionalOrExpression
- [EqualityExpression[@Image='==']
-  //NullLiteral
-  and
-  UnaryExpressionNotPlusMinus
-   [@Image='!']//InstanceOfExpression[PrimaryExpression
-     //Name/@Image = ancestor::ConditionalOrExpression/EqualityExpression
-      //PrimaryPrefix/Name/@Image]]
-or
-ConditionalAndExpression
- [EqualityExpression[@Image='!=']//NullLiteral
- and
-InstanceOfExpression
- [PrimaryExpression[count(PrimarySuffix[@ArrayDereference='true'])=0]
-  //Name/@Image = ancestor::ConditionalAndExpression
-   /EqualityExpression//PrimaryPrefix/Name/@Image]]]
- ]]>
-                  </value>
-              </property>
-          </properties>
-            <priority>3</priority>
-           <example>
-      <![CDATA[
-class Foo {
- void bar(Object x) {
-  if (x != null && x instanceof Bar) {
-   // just drop the "x != null" check
+    <rule name="StringToString"
+         message="Avoid calling toString() on String objects; this is unnecessary"
+         class="net.sourceforge.pmd.rules.strings.StringToStringRule"
+           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringToString">
+     <description>
+     Avoid calling toString() on String objects; this is unnecessary
+     </description>
+        <priority>3</priority>
+     <example>
+ <![CDATA[
+ public class Foo {
+  private String baz() {
+   String bar = "howdy";
+   return bar.toString();
   }
  }
-}      ]]>
-           </example>
-        </rule>
+ ]]>
+     </example>
+     </rule>
     
 
 
