@@ -7,5 +7,5 @@ that contains this fix.
 Thanks,
 
 Tom
-Using PMD?  Get the book, "PMD Applied"!  http://pmdapplied.com/
+Support PMD, get the book: http://pmdapplied.com/
 

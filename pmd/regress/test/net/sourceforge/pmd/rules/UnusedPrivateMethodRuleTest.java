@@ -33,7 +33,8 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST11, "called from constructor", 0, rule),
            new TestDescriptor(TEST12, "private method with same name but diff arg count than public method", 0, rule),
            new TestDescriptor(TEST13, "static private called from initializer", 0, rule),
-           // FIXME new TestDescriptor(TEST14, "two methods, one private, one public, same name, same arg count, diff types", 0, rule),
+           new TestDescriptor(TEST14, "static private invoked in static context - i.e., Foo.hi()", 0, rule),
+           // FIXME new TestDescriptor(TEST15, "two methods, one private, one public, same name, same arg count, diff types", 0, rule),
        });
     }
 
@@ -152,6 +153,12 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
 
 
     private static final String TEST14 =
+    "public class Foo {" + PMD.EOL +
+    " static boolean BUZ = Foo.bar(); " + PMD.EOL +
+    " private static boolean bar() { return true; }" + PMD.EOL +
+    "}";
+
+    private static final String TEST15 =
     "public class Foo {" + PMD.EOL +
     " public void baz() {" + PMD.EOL +
     "  foo(\"hi\");" + PMD.EOL +
