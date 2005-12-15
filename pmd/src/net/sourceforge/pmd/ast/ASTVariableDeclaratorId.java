@@ -5,6 +5,8 @@ package net.sourceforge.pmd.ast;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
+import java.util.List;
+
 public class ASTVariableDeclaratorId extends SimpleNode {
 
     public ASTVariableDeclaratorId(int id) {
@@ -30,6 +32,10 @@ public class ASTVariableDeclaratorId extends SimpleNode {
     }
     public void setNameDeclaration(VariableNameDeclaration decl) {
         nameDeclaration = decl;
+    }
+
+    public List getUsages() {
+        return (List)getScope().getVariableDeclarations().get(nameDeclaration);
     }
 
     public void bumpArrayDepth() {
