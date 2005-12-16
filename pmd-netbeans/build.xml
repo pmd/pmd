@@ -2,8 +2,8 @@
 
     <import file="nbproject/build-impl.xml"/>
 
-    <property name="pmd.jar" value="pmd-3.3.jar"/>
-    <property name="VERSION" value="1.3"/>
+    <property name="pmd.jar" value="pmd-3.4.jar"/>
+    <property name="VERSION" value="1.4"/>
 
     <property file="build.ant.properties"/>
 

@@ -93,10 +93,10 @@ public class ForeignBundleCodeRule extends AbstractRule {
                             pN = (ASTClassOrInterfaceType)pRefT.jjtGetChild(0);
                         }
                         if (pN != null && !isCorrectClass (node, pN)) {
-                            ctx.getReport().addRuleViolation(createRuleViolation(
+                            addViolation(
                                     ctx, 
                                     node /*child.getBeginLine()*/, 
-                                    MessageFormat.format(getMessage(), new Object[] {pN.getImage()})));
+                                    MessageFormat.format(getMessage(), new Object[] {pN.getImage()}));
                         }
                     }
                 }

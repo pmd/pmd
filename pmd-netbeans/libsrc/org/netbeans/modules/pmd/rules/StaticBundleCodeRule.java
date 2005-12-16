@@ -73,7 +73,7 @@ public class StaticBundleCodeRule extends AbstractRule {
                 }
                 SimpleNode var = (SimpleNode)field.jjtGetChild(1).jjtGetChild(0);
 
-                ctx.getReport().addRuleViolation(createRuleViolation(ctx, field, MessageFormat.format(getMessage(), new Object[] {var.getImage()})));
+                addViolation(ctx, field, MessageFormat.format(getMessage(), new Object[] {var.getImage()}));
             }
         }
         super.visit(node, data);

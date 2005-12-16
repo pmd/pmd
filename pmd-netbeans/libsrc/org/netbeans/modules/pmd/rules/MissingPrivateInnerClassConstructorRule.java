@@ -62,7 +62,7 @@ public class MissingPrivateInnerClassConstructorRule extends AbstractRule {
         }*/
         if (!ok) {
             RuleContext ctx = (RuleContext)data;
-            ctx.getReport().addRuleViolation(createRuleViolation(ctx, node));
+            addViolation(ctx, node);
         }
 
         return super.visit(node, data);
