@@ -43,10 +43,14 @@ class Job
     @title, @unix_name, @mod, @src,  @cvsroot = title, data["unix_name"], data["module"], data["srcdir"], data["cvsroot"]
     @data = data
 	end
+  def jdk15?
+    @data["jdk15"] == true
+  end
 	def checkout_code
 		t = MyThread.new {
 			MyThread.ttl = 120 
 			cmd = "cvs -Q -d#{@cvsroot} export -D tomorrow \"#{@src}\""
+      puts cmd
 			`#{cmd}`
 		}
 		t.join  
@@ -59,7 +63,8 @@ class Job
    `#{cmd}`
   end
   def run_pmd
-		cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.3.jar net.sourceforge.pmd.PMD \"#{ROOT}/#{@src}\" html unusedcode -shortnames > #{report}"
+		cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.3.jar net.sourceforge.pmd.PMD \"#{ROOT}/#{@src}\" html unusedcode -shortnames #{self.jdk15? ? "-targetjdk 1.5" : ""} > #{report}"
+    puts cmd
    `#{cmd}`
    if File.exists?(report)
      arr = IO.readlines(report)
@@ -67,10 +72,12 @@ class Job
   	   arr.each {|x| f << x if x =~ /Error while parsing/ }
   		}
     end
+	  puts "PMD report contains #{pmd_lines} violations"
   end
   def run_cpd
    cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.3.jar net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files #{@src} > #{cpd_file}"
    `#{cmd}`
+	  puts "CPD report contains #{cpd_lines} violations"
   end
 	def copy_up
 		`scp #{wad} #{report} #{cpd_file} #{ncss_report} tomcopeland@pmd.sf.net:#{REMOTE_REPORT_DIR}`
@@ -161,7 +168,7 @@ if __FILE__ == $0
 				puts "Skipping " + job.unix_name
 				next
 			end
-			puts "Processing " + job.unix_name
+			puts "Processing #{job.unix_name}; jdk15 = #{job.jdk15?}"
 			job.checkout_code
 			if File.exists?(job.src) 
 				if Dir.glob("#{job.src}/**/*.java").empty?
@@ -209,7 +216,10 @@ if __FILE__ == $0
 		end
 	end
 	
-	jobs.each {|j| j.copy_up } if ARGV.include?("-copy")
+	jobs.each {|j| 
+    puts "Copying up #{j}"
+    j.copy_up 
+  } if ARGV.include?("-copy")
 
 	fm = Ikko::FragmentManager.new
 	fm.base_path="./"
