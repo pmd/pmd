@@ -193,7 +193,7 @@ Chemistry Development Kit:
   module: cdk
   unix_name: cdk
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/cdk"
-  srcdir: cdk/src
+  srcdir: cdk/src/org
 ToscanaJ: 
   module: source
   unix_name: toscanaj
@@ -607,7 +607,7 @@ ArgoUML:
   cvsroot: ":pserver:guest@cvs.tigris.org:/cvs"
   srcdir: argouml/src/model/src/org/argouml/model/
 BioClipse: 
-  module: bc_biojava
+  module: bioclipse
   unix_name: bioclipse
   cvsroot: ":pserver::anonymous@cvs.sourceforge.net:/cvsroot/bioclipse"
   srcdir: bioclipse/src
