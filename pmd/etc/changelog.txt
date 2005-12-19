@@ -20,10 +20,11 @@ Fixed bug 1380969 - UnusedPrivateMethod no longer flags private static methods t
 Fixed a bug in UseStringBufferLength; it no longers fails with an exception on expressions like StringBuffer.toString.equals(x)
 Partially fixed bug 1371753 - UnnecessaryLocalBeforeReturn message now reflects the fact that that rule flags all types
 Modified renderers to support disabling printing of suppressed warnings.  Introduced a new AbstractRenderer class that all Renderers can extends to get the current behavior - that is, suppressed violations are printed.
-Implemented RFE 1375435 - you can now embed regular expressions inside XPath expressions, i.e., //ClassOrInterfaceDeclaration[regexp(@Image, '/F?o/')].
+Implemented RFE 1375435 - you can now embed regular expressions inside XPath rules, i.e., //ClassOrInterfaceDeclaration[regexp(@Image, '/F?o/')].
 Added current CLASSPATH to pmd.bat.
 UnusedFormalParameter now catches unused constructor parameters, and its warning message now reflects whether it caught a method or a constructor param.
 Rebuilt JavaCC parser with JavaCC 4.0beta1.
+Added jakarta-oro-2.0.8.jar as a new dependency to support regular expression in XPath rules.
 Added David Corley's Javascript report, more details are here: http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html
 
 ***** TODO: Remove old-style CPD command line options that were deprecated in 3.4.
