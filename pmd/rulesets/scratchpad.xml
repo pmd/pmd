@@ -7,30 +7,6 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="RegexTest"
-         message="regex test"
-         class="net.sourceforge.pmd.rules.XPathRule"
-           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringToString">
-     <description>
-     test
-     </description>
-        <properties>
-        <property name="xpath">
-            <value>
-                <![CDATA[
-//ClassOrInterfaceDeclaration[regexp(@Image, '/F?o/')]
-                ]]>
-            </value>
-        </property>
-        </properties>
-        <priority>3</priority>
-     <example>
- <![CDATA[
- ]]>
-     </example>
-     </rule>
-
-
 
     <!--
     <rule name="UselessAssignment"

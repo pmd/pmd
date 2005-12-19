@@ -233,6 +233,58 @@ public class Foo {
    </rule>
 
 
+    <rule name="AvoidArrayLoops"
+      message="System.arrayCopy is more efficient"
+      class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+    Instead of copying data between two arrays, use
+    System.arrayCopy method
+      </description>
+      <properties>
+        <property name="xpath">
+        <value>
+    <![CDATA[
+    //Statement[
+     (ForStatement or WhileStatement) and count(*//AssignmentOperator)=1
+     and
+     */Statement[
+      ./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
+      /PrimaryPrefix/Name/../../PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix/Name/@Image
+      and
+      ./Block/BlockStatement/Statement/StatementExpression/Expression/PrimaryExpression
+      /PrimaryPrefix/Name/../../PrimarySuffix[
+       count(..//PrimarySuffix)=1
+      ]/Expression/PrimaryExpression/PrimaryPrefix/Name/@Image
+     ]
+    ]
+    ]]>
+        </value>
+        </property>
+      </properties>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+public class Test {
+ public void bar() {
+  int[] a = new int[10];
+  int[] b = new int[10];
+  for (int i=0;i<10;i++) {
+   b[i]=a[i];
+  }
+ }
+}
+            // this will trigger the rule
+            for (int i=0;i<10;i++) {
+             b[i]=a[c[i]];
+            }
+
+        }
+    }
+    ]]>
+      </example>
+    </rule>
+
+
     <!--
     other optimization should be like avoiding
     "" + int

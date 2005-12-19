@@ -149,7 +149,7 @@ public class Designer implements ClipboardOwner {
     public Designer() {
         ((SimpleFunctionContext)XPathFunctionContext.getInstance()).registerFunction(null, "regexp", new RegexpFunction());
 
-        xpathQueryArea.setFont(new Font("Courier", Font.PLAIN, 16));
+        xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
         JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(codeEditorPane), createXPathQueryPanel());
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createASTPanel(), createXPathResultPanel());
         

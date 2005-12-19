@@ -4,7 +4,7 @@ New rules:
  JUnit ruleset: UseAssertNullInsteadOfAssertTrue
  Strings ruleset: AppendCharacterWithChar
  Design ruleset: AvoidConstantsInterface
- Optimizations ruleset: UseArraysAsList
+ Optimizations ruleset: UseArraysAsList, AvoidArrayLoops
 Fixed bug 1277373 - InefficientStringBuffering now catches more cases.
 Fixed bug 1371757 - Misleading example in AvoidSynchronizedAtMethodLevel
 Fixed bug 1371980 - InefficientStringBuffering no longer flags StringBuffer methods other than append().
