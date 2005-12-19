@@ -189,7 +189,7 @@ Mirage:
   unix_name: blijf
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/blijf"
   srcdir: mirage/src
-Chemical Development Kit: 
+Chemistry Development Kit: 
   module: cdk
   unix_name: cdk
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/cdk"
@@ -535,6 +535,7 @@ Vector Visuals:
   unix_name: vectors
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/vectors"
   srcdir: vectors/src
+  jdk15: true
 "SUSHI - Universal Student Help Interface": 
   module: sushi
   unix_name: fugu
@@ -595,8 +596,18 @@ Wrapper:
   unix_name: wrapper
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/wrapper"
   srcdir: wrapper/src/java
+Cobertura: 
+  module: cobertura
+  unix_name: cobertura
+  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/cobertura"
+  srcdir: cobertura/src
 ArgoUML: 
   module: argouml
   unix_name: argouml
   cvsroot: ":pserver:guest@cvs.tigris.org:/cvs"
   srcdir: argouml/src/model/src/org/argouml/model/
+BioClipse: 
+  module: bc_biojava
+  unix_name: bioclipse
+  cvsroot: ":pserver::anonymous@cvs.sourceforge.net:/cvsroot/bioclipse"
+  srcdir: bioclipse/src
