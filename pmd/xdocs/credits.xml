@@ -113,11 +113,11 @@
             <li>Fred Hartman - Reported exact location of bug in TooManyFields, fixed bug in UnnecessaryBooleanAssertion</li>
             <li>Andreas Ehn - Reported bug with JDK 1.5 generics parsing</li>
             <li>Eric Olander - SingularField, SimplifyConditional fix, UseStringBufferForStringAppends, CollapsibleIfStatements, AvoidInstanceofChecksInCatchClause, AssignmentToNonFinalStatic rule, nice patch for DFAPanel cleanup, AvoidProtectedFieldInFinalClass, ImmutableFieldRule, noticed missing image in Postfix nodes</li>
-            <li>Tomas Gustavsson - reported pmd-web breakage</li>
+            <li><a href="http://sourceforge.net/users/anatom/">Tomas Gustavsson</a> - reported pmd-web breakage</li>
             <li>Payal Subhash - Tweaks to CSVRenderer</li>
             <li>Christophe Mourette - Reported JDK 1.3 problem with XMLRenderer</li>
 			<li>Alex Givant - caught documentation bug</li>
-            <li>Luke Francl - suggested UnnecessaryParentheses rule, numerous <b>high quality</b> feature suggestions and bug reports</li>
+            <li><a href="http://justlooking.recursion.org/">Luke Francl</a> - suggested UnnecessaryParentheses rule, numerous <b>high quality</b> feature suggestions and bug reports</li>
             <li><a href="http://www.cs.umd.edu/~daveho/">David Hovemeyer</a> - reported missing labelled stmt images, a nice patch to let PMD process code in jar/zip files</li>
             <li>Peter 'Bruno' Kofler - reported bug #1146116 for JUnitTestsShouldIncludeAssert </li>
             <li><a href="http://jdj.sys-con.com/author/298Blut.htm">Zev Blut</a> - nice patch to add Ruby support to CPD</li>
@@ -128,7 +128,7 @@
             <li>Leszek Migdal - reported documentation mistake for Eclipse plugin</li>
             <li>Hakan Civelek - an order-of-magnitude optimization to the SystemOutPrintln rule</li>
             <li>John Heintz - Added "any language" support to CPD.</li>
-            <li>Harald Gurres - cleaned up the symbol table code with a very nice patch</li>
+            <li><a href="http://www-ag-mayer.informatik.uni-kl.de/~gurres/">Harald Gurres</a> - cleaned up the symbol table code with a very nice patch</li>
             <li>Matthias Kerkhoff - CPD suggestions, several bug reports</li>
             <li>Chris Riesbeck - identified some dead code in RuleSet</li>
             <li>Lars Gregori - reported a bug in the Ant task docs</li>
@@ -147,7 +147,7 @@
             <li>Enno Derksen - enhancements to VariableNamingConventionsRule</li>
             <li>Michael Haggerty - bug reports for FinalizeDoesNotCallSuperFinalize and UnusedModifier</li>
             <li>Phil Shaw - documentation suggestions</li>
-            <li>Sreenivasa Viswanadha - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
+            <li><a href="https://javacc.dev.java.net/">Sreenivasa Viswanadha</a> - reminded me to use BufferedInputStreams, grammar cleanup for Ctrl-Z problem</li>
             <li>Austin Moore - Integration with Omnicore's CodeGuide IDE</li>
             <li>Matt Inger - CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException</li>
             <li>Morgan Schweers - Javascript highlighter for the PMD scoreboard</li>
@@ -164,9 +164,9 @@
             <li>Chad Loder - SuspiciousOctalEscapeRule, EmptyStatementNotInLoop, SuspiciousHashcodeMethodName, NonCaseLabelInSwitchStatement, DefaultLabelNotLastInSwitchStmt, NonStaticInitializer, ExplicitCallToFinalize, MethodWithSameNameAsEnclosingClassRuleTest, FinalizeDoesNotCallSuperFinalize, FinalizeOverloaded, FinalizeOnlyCallsSuperFinalize, UnconditionalIfStatement, AvoidDollarSigns, EmptyStaticInitializer, EmptyFinalizerMethod rule, DontImportSun rule, improvements to ASTBooleanLiteral</li>
             <li><a href="http://www.blizzy.de/blog/page/blizzy/blizzog">Maik Schreiber</a> - AccessNode bug report, other bug reports</li>
             <li>Lokesh Gupta - improvements to the AST viewer</li>
-            <li>Jesse Glick - improvements to VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
+            <li><a href="http://www.oreillynet.com/cs/catalog/view/au/960?x-t=book.view">Jesse Glick</a> - improvements to VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
             <li>Nicolas Liochon - CloneShouldCallSuperCloneRule implementation</li>
-            <li>Slava Pestov -  Suggestions for jEdit plugin enhancements.</li>
+            <li><a href="http://factor-language.blogspot.com/">Slava Pestov</a> -  Suggestions for jEdit plugin enhancements.</li>
             <li>Olivier Mengué - Diagnosed and patched XML report character encoding problems</li>
             <li>Hariolf Häfele - PMD-JDeveloper plugin bug reports</li>
             <li><a href="http://www.bossicard.com/">Vladimir Bossicard</a> - suggested AbstractNamingRule, test package organization suggestions, VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
@@ -223,7 +223,7 @@
             <li>David Whitmore - parser bug report</li>
             <li>David Campbell - detailed bugs reports, Ant task refactoring, documentation tweaks</li>
             <li>Michael Sutherland - bug report in IfStmtMustUseBracesRule</li>
-            <li>Egon Willighagen - PMD scoreboard suggestion</li>
+            <li><a href="http://www.cac.science.ru.nl/people/egonw/">Egon Willighagen</a> - PMD scoreboard suggestion</li>
             <li>Adam Nemeth - bug report on missing final attribute for local variable declarations</li>
             <li>Frederic Harper - bug report and subsequent troubleshooting</li>
             <li><a href="http://www.henricson.se/mats/">Mats Henricson</a> - an XSLT script and several bug reports</li>
