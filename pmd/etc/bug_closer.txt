@@ -2,7 +2,11 @@ Fixed in CVS, and you can download a new pmd-3.4.jar file here:
 
 http://infoether.com/~tom/pmd-3.4.jar
 
-that contains this fix.
+that contains that fix.
+
+Note that we've recently added a dependency on jakarta-oro to support regular expressions in XPath expressions; you can get that here:
+
+http://infoether.com/~tom/jakarta-oro-2.0.8.jar
 
 Thanks,
 

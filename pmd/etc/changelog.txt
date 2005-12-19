@@ -20,6 +20,7 @@ Fixed bug 1380969 - UnusedPrivateMethod no longer flags private static methods t
 Fixed a bug in UseStringBufferLength; it no longers fails with an exception on expressions like StringBuffer.toString.equals(x)
 Partially fixed bug 1371753 - UnnecessaryLocalBeforeReturn message now reflects the fact that that rule flags all types
 Modified renderers to support disabling printing of suppressed warnings.  Introduced a new AbstractRenderer class that all Renderers can extends to get the current behavior - that is, suppressed violations are printed.
+Implemented RFE 1375435 - you can now embed regular expressions inside XPath expressions, i.e., //ClassOrInterfaceDeclaration[regexp(@Image, '/F?o/')].
 Added current CLASSPATH to pmd.bat.
 UnusedFormalParameter now catches unused constructor parameters, and its warning message now reflects whether it caught a method or a constructor param.
 Rebuilt JavaCC parser with JavaCC 4.0beta1.
