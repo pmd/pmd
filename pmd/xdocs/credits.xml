@@ -45,7 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Fabio Insaccanebbia - UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
+            <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
             <li>David Corley - Nifty Javascript folding for XML report, <a href="http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html">demo is here</a></li>
             <li>George Sexton - Bug report 1379701 for CompareObjectsWithEquals, suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
             <li>Didier Duquennoy - several bug reports for InefficientStringBuffering, bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
@@ -162,7 +162,7 @@
             <li>Doug Tillman - correction to finalizers.xml examples</li>
             <li>Luis Alberto Domínguez Ruiz - bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Chad Loder - SuspiciousOctalEscapeRule, EmptyStatementNotInLoop, SuspiciousHashcodeMethodName, NonCaseLabelInSwitchStatement, DefaultLabelNotLastInSwitchStmt, NonStaticInitializer, ExplicitCallToFinalize, MethodWithSameNameAsEnclosingClassRuleTest, FinalizeDoesNotCallSuperFinalize, FinalizeOverloaded, FinalizeOnlyCallsSuperFinalize, UnconditionalIfStatement, AvoidDollarSigns, EmptyStaticInitializer, EmptyFinalizerMethod rule, DontImportSun rule, improvements to ASTBooleanLiteral</li>
-            <li>Maik Schreiber - AccessNode bug report, other bug reports</li>
+            <li><a href="http://www.blizzy.de/blog/page/blizzy/blizzog">Maik Schreiber</a> - AccessNode bug report, other bug reports</li>
             <li>Lokesh Gupta - improvements to the AST viewer</li>
             <li>Jesse Glick - improvements to VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
             <li>Nicolas Liochon - CloneShouldCallSuperCloneRule implementation</li>

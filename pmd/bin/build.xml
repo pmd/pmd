@@ -14,6 +14,7 @@
     <pathelement location="${dir.build}"/>
     <fileset dir="${dir.lib}">
         <include name="jaxen-1.1-beta-7.jar"/>
+        <include name="jakarta-oro-2.0.8.jar"/>
         <include name="xercesImpl-2.6.2.jar"/>
         <include name="xmlParserAPIs-2.6.2.jar"/>
     </fileset>

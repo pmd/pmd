@@ -10,6 +10,8 @@ import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDKVersion;
+import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.jaxen.RegexpFunction;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
@@ -20,6 +22,8 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
+import org.jaxen.SimpleFunctionContext;
+import org.jaxen.XPathFunctionContext;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -143,6 +147,8 @@ public class Designer implements ClipboardOwner {
     private JRadioButtonMenuItem jdk15MenuItem;
 
     public Designer() {
+        ((SimpleFunctionContext)XPathFunctionContext.getInstance()).registerFunction(null, "regexp", new RegexpFunction());
+
         xpathQueryArea.setFont(new Font("Courier", Font.PLAIN, 16));
         JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(codeEditorPane), createXPathQueryPanel());
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createASTPanel(), createXPathResultPanel());

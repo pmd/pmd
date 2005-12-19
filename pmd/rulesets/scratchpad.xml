@@ -7,26 +7,29 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="StringToString"
-         message="Avoid calling toString() on String objects; this is unnecessary"
-         class="net.sourceforge.pmd.rules.strings.StringToStringRule"
+    <rule name="RegexTest"
+         message="regex test"
+         class="net.sourceforge.pmd.rules.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringToString">
      <description>
-     Avoid calling toString() on String objects; this is unnecessary
+     test
      </description>
+        <properties>
+        <property name="xpath">
+            <value>
+                <![CDATA[
+//ClassOrInterfaceDeclaration[regexp(@Image, '/F?o/')]
+                ]]>
+            </value>
+        </property>
+        </properties>
         <priority>3</priority>
      <example>
  <![CDATA[
- public class Foo {
-  private String baz() {
-   String bar = "howdy";
-   return bar.toString();
-  }
- }
  ]]>
      </example>
      </rule>
-    
+
 
 
     <!--
