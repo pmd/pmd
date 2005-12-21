@@ -11,12 +11,14 @@ import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.EmacsRenderer;
 import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 import org.apache.tools.ant.BuildException;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.OutputStreamWriter;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -25,6 +27,7 @@ public class Formatter {
     private File toFile;
     private String linkPrefix;
     private String type;
+    private boolean toConsole = false;
 
     public void setType(String type) {
         this.type = type;
@@ -52,6 +55,8 @@ public class Formatter {
             renderer = new CSVRenderer();
         } else if (type.equals("text")) {
             renderer = new TextRenderer();
+        } else if (type.equals("emacs")) {
+            renderer = new EmacsRenderer();
         } else if (type.equals("vbhtml")) {
             renderer = new VBHTMLRenderer();
         } else if (type.equals("yahtml")) {
@@ -63,20 +68,28 @@ public class Formatter {
                 throw new BuildException("Unable to instantiate custom formatter: " + type);
             }
         } else {
-            throw new BuildException("Formatter type must be 'xml', 'text', 'html', 'summaryhtml', 'papari', 'csv', 'vbhtml', 'yahtml', or a class name; you specified " + type);
+            throw new BuildException("Formatter type must be 'xml', 'text', 'html', 'emacs', 'summaryhtml', 'papari', 'csv', 'vbhtml', 'yahtml', or a class name; you specified " + type);
         }
         return renderer;
     }
 
+    public void setToConsole(boolean toConsole) {
+        this.toConsole = toConsole;
+    }
+
     public boolean isToFileNull() {
-        return toFile == null;
+        return (toFile == null) && (!this.toConsole);
     }
 
     public Writer getToFileWriter(String baseDir) throws IOException {
-        if (!toFile.isAbsolute()) {
-            return new BufferedWriter(new FileWriter(new File(baseDir + System.getProperty("file.separator") + toFile.getPath())));
+        if (!this.toConsole) {
+            if (!toFile.isAbsolute()) {
+                return new BufferedWriter(new FileWriter(new File(baseDir + System.getProperty("file.separator") + toFile.getPath())));
+            }
+            return new BufferedWriter(new FileWriter(toFile));
+        } else {
+            return new BufferedWriter(new OutputStreamWriter(System.out));
         }
-        return new BufferedWriter(new FileWriter(toFile));
     }
 
     public String toString() {
