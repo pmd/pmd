@@ -57,7 +57,7 @@ public class InefficientStringBuffering extends AbstractRule {
         List nameNodes = node.findChildrenOfType(ASTName.class);
         for (Iterator i = nameNodes.iterator(); i.hasNext();) {
             ASTName name = (ASTName)i.next();
-            if (name.getNameDeclaration() != null && name.getNameDeclaration() instanceof VariableNameDeclaration) {
+            if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
                 VariableNameDeclaration vnd = (VariableNameDeclaration)name.getNameDeclaration();
                 if (vnd.getAccessNodeParent().isFinal() && vnd.getAccessNodeParent().isStatic()) {
                     return data;
