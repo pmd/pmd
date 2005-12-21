@@ -14,12 +14,12 @@ public class RegexpFunction implements Function {
         }
         List attributes = (List)args.get(0);
         Attribute attr = (Attribute)attributes.get(0);
-        String pattern = attr.getValue();
-        String input = (String)args.get(1);
+        String testString = attr.getValue();
+        String regularExpression = '/' + (String)args.get(1) + '/';
 
         // see http://jakarta.apache.org/oro/api/org/apache/oro/text/regex/package-summary.html#package_description
         Perl5Util regexp = new Perl5Util();
-        if (regexp.match(input, pattern)) {
+        if (regexp.match(regularExpression, testString)) {
             return context.getNodeSet();
         }
         return Boolean.FALSE;

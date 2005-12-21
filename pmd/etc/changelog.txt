@@ -20,7 +20,7 @@ Fixed bug 1380969 - UnusedPrivateMethod no longer flags private static methods t
 Fixed a bug in UseStringBufferLength; it no longers fails with an exception on expressions like StringBuffer.toString.equals(x)
 Partially fixed bug 1371753 - UnnecessaryLocalBeforeReturn message now reflects the fact that that rule flags all types
 Modified renderers to support disabling printing of suppressed warnings.  Introduced a new AbstractRenderer class that all Renderers can extends to get the current behavior - that is, suppressed violations are printed.
-Implemented RFE 1375435 - you can now embed regular expressions inside XPath rules, i.e., //ClassOrInterfaceDeclaration[regexp(@Image, '/F?o/')].
+Implemented RFE 1375435 - you can now embed regular expressions inside XPath rules, i.e., //ClassOrInterfaceDeclaration[regexp(@Image, 'F?o')].
 Added current CLASSPATH to pmd.bat.
 UnusedFormalParameter now catches unused constructor parameters, and its warning message now reflects whether it caught a method or a constructor param.
 Rebuilt JavaCC parser with JavaCC 4.0beta1.
@@ -36,7 +36,7 @@ New rules:
  Design ruleset: NonThreadSafeSingleton, UncommentedEmptyMethod, UncommentedEmptyConstructor
  Controversial ruleset: DefaultPackage
  Naming ruleset: MisleadingVariableName
- Migration ruleset: ReplaceVectorWithList, ReplaceHashtableWithMap, ReplaceEnumerationWithIterator, AvoidEnumAsIdentifierTest, AvoidAssertAsIdentifier
+ Migration ruleset: ReplaceVectorWithList, ReplaceHashtableWithMap, ReplaceEnumerationWithIterator, AvoidEnumAsIdentifiert, AvoidAssertAsIdentifier
  Strings ruleset: UseStringBufferLength
 Fixed bug 1292745 - Removed unused source file ExceptionTypeChecking.java
 Fixed bug 1292609 - The JDK 1.3 parser now correctly handles certain 'assert' usages.  Also added a 'JDK 1.3' menu item to the Designer.
@@ -72,7 +72,12 @@ Reworked CPD command line arguments; old-style arguments will still work for one
 Lots of documentation improvements.
 
 September 15, 2005 - 3.3:
-New rules: PositionLiteralsFirstInComparisons (in the design ruleset), UnnecessaryLocalBeforeReturn (design ruleset), ProperLogger (logging-jakarta-commons ruleset), UselessOverridingMethod (basic ruleset), PackageCase (naming ruleset), NoPackage (naming ruleset), UnnecessaryCaseChange (strings ruleset)
+New rules:
+    Design: PositionLiteralsFirstInComparisons,  UnnecessaryLocalBeforeReturn,
+    Logging-jakarta-commons: ProperLogger
+    Basic: UselessOverridingMethod
+    Naming: PackageCase, NoPackage
+    Strings: UnnecessaryCaseChange
 Implemented RFE 1220171 - rule definitions can now contain a link to an external URL for more information on that rule - for example, a link to the rule's web page.  Thanks to Wouter Zelle for designing and implementing this!
 Implemented RFE 1230685 - The text report now includes parsing errors even if no rule violations are reported
 Implemented RFE 787860 - UseSingleton now accounts for JUnit test suite declarations.

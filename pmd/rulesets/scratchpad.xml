@@ -6,25 +6,131 @@
 These are new rules that are still in progress
   </description>
 
-    <rule name="UnusedLocalVariable"
-            message="Avoid unused local variables such as ''{0}''"
-            class="net.sourceforge.pmd.rules.UnusedLocalVariableRule"
-            externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable">
-        <description>
-    Detects when a local variable is declared and/or assigned, but not used.
-        </description>
-        <priority>3</priority>
+    <rule name="SimplifyConditional"
+              message="No need to check for null before an instanceof"
+              class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyConditional">
+           <description>
+No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
+           </description>
+          <properties>
+              <property name="xpath">
+                  <value>
+                      <![CDATA[
+//Expression
+ [ConditionalOrExpression
+ [EqualityExpression[@Image='==']
+  //NullLiteral
+  and
+  UnaryExpressionNotPlusMinus
+   [@Image='!']//InstanceOfExpression[PrimaryExpression
+     //Name/@Image = ancestor::ConditionalOrExpression/EqualityExpression
+      //PrimaryPrefix/Name/@Image]]
+or
+ConditionalAndExpression
+ [EqualityExpression[@Image='!=']//NullLiteral
+ and
+InstanceOfExpression
+ [PrimaryExpression[count(PrimarySuffix[@ArrayDereference='true'])=0]
+  //Name/@Image = ancestor::ConditionalAndExpression
+   /EqualityExpression//PrimaryPrefix/Name/@Image]]]
+ ]]>
+                  </value>
+              </property>
+          </properties>
+            <priority>3</priority>
+           <example>
+      <![CDATA[
+class Foo {
+ void bar(Object x) {
+  if (x != null && x instanceof Bar) {
+   // just drop the "x != null" check
+  }
+ }
+}      ]]>
+           </example>
+        </rule>
 
-        <example>
-    <![CDATA[
-    public class Foo {
-     public void doSomething() {
-      int i = 5; // Unused
-     }
-    }
-    ]]>
-        </example>
-      </rule>
+
+
+    <!--
+    <rule name="UnusedNullCheckInEquals"
+message="Use the equals metod on the object you've
+already cheched as not null"
+class="net.sourceforge.pmd.rules.XPathRule">
+<description>
+In the condition you've already checked the variable is
+not null. You'd better use equals on it, rather than
+having it as a parameter
+</description>
+<properties>
+<property name="xpath">
+<value>
+<![CDATA[
+//PrimarySuffix[@Image='equals' and not
+(../PrimaryPrefix/Literal)
+]/../PrimarySuffix/Arguments/ArgumentList/Expression
+/PrimaryExpression/PrimaryPrefix
+/Name
+[@Image =
+./../../../../../../../../../../Expression/ConditionalAndExpression
+/EqualityExpression[@Image="!=" and count
+(./preceding-sibling::*)=0 and
+./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]/PrimaryExpression/PrimaryPrefix/Name/@Image]
+]]>
+</value>
+</property>
+</properties>
+<priority>3</priority>
+<example>
+<![CDATA[
+public class Test {
+
+public String method1() { return "ok";}
+public String method2() { return null;}
+
+public void method(String a) {
+String b;
+/*
+I don't know it method1() can be "null"
+but I know "a" is not null..
+I'd better write a.equals(method1())
+*/
+if (a!=null && method1().equals(a)) { // will
+trigger the rule
+//whatever
+}
+
+if (method1().equals(a) && a != null) { //
+won't trigger the rule
+//whatever
+}
+
+if (a!=null && method1().equals(b)) { // won't
+trigger the rule
+//whatever
+}
+
+if (a!=null && "LITERAL".equals(a)) { // won't
+trigger the rule
+//whatever
+}
+
+if (a!=null && !a.equals("go")) { // won't
+trigger the rule
+a=method2();
+if (method1().equals(a)) {
+//whatever
+}
+}
+}
+}
+]]>
+</example>
+</rule>
+
+-->
+
 
     <!--
 <rule name="MisplacedNullCheck"

@@ -43,14 +43,14 @@ public class RegexFunctionTest extends TestCase implements Node {
 
     public void testMatch() throws FunctionCallException {
         className = "Foo";
-        assertTrue(tryRegexp("/Foo/") instanceof List);
+        assertTrue(tryRegexp("Foo") instanceof List);
     }
 
     public void testNoMatch() throws FunctionCallException {
         className = "bar";
-        assertTrue(tryRegexp("/Foo/") instanceof Boolean);
+        assertTrue(tryRegexp("Foo") instanceof Boolean);
         className = "FobboBar";
-        assertTrue(tryRegexp("/Foo/") instanceof Boolean);
+        assertTrue(tryRegexp("Foo") instanceof Boolean);
     }
 
     private Object tryRegexp(String exp) throws FunctionCallException {
