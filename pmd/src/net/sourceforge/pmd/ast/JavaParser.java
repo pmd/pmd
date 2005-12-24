@@ -1898,7 +1898,7 @@ Token t;
         }
         jj_consume_token(DOT);
         t = jj_consume_token(IDENTIFIER);
-                                     s.append(".").append(t.image);
+                                     s.append('.').append(t.image);
         if (jj_2_18(2)) {
           TypeArguments();
         } else {
@@ -2203,7 +2203,7 @@ Token t;
         }
         jj_consume_token(DOT);
         t = jj_consume_token(IDENTIFIER);
-     s.append(".").append(t.image);
+     s.append('.').append(t.image);
       }
     jjtree.closeNodeScope(jjtn000, true);
     jjtc000 = false;

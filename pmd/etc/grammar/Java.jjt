@@ -1362,7 +1362,7 @@ void ClassOrInterfaceType():
 {
   t=<IDENTIFIER> {s.append(t.image);}
   [ LOOKAHEAD(2) TypeArguments() ]
-  ( LOOKAHEAD(2) "." t=<IDENTIFIER> {s.append(".").append(t.image);} [ LOOKAHEAD(2) TypeArguments() ] )*
+  ( LOOKAHEAD(2) "." t=<IDENTIFIER> {s.append('.').append(t.image);} [ LOOKAHEAD(2) TypeArguments() ] )*
   {jjtThis.setImage(s.toString());}
 }
 
@@ -1425,7 +1425,7 @@ void Name() :
     s.append(t.image);
   }
   ( LOOKAHEAD(2) "." t=<IDENTIFIER>
-    {s.append(".").append(t.image);}
+    {s.append('.').append(t.image);}
   )*
   {jjtThis.setImage(s.toString());}
 }
