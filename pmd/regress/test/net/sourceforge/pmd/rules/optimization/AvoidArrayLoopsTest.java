@@ -15,14 +15,15 @@ public class AvoidArrayLoopsTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-        System.out.println(TEST6);
        runTests(new TestDescriptor[] {
                new TestDescriptor(TEST1, "copy index into array", 0, rule),
                new TestDescriptor(TEST2, "copy one array to another", 1, rule),
                new TestDescriptor(TEST3, "copy via while loop", 1, rule),
                new TestDescriptor(TEST4, "copy involving multiple arrays is ok", 0, rule),
                new TestDescriptor(TEST5, "copy involving method invocation on array element is ok", 0, rule),
-               // FIXME new TestDescriptor(TEST6, "nested arrays, still bad", 1, rule),
+               new TestDescriptor(TEST6, "using an offset, still bad", 1, rule),
+               // FIXME new TestDescriptor(TEST7, "nested arrays on LHS, still bad", 1, rule),
+               // FIXME new TestDescriptor(TEST8, "nested arrays, still bad", 1, rule),
        });
     }
 
@@ -75,6 +76,24 @@ public class AvoidArrayLoopsTest extends SimpleAggregatorTst {
      "}";
 
     private static final String TEST6 =
+    "public class Foo {" + PMD.EOL +
+     " public void bar() {" + PMD.EOL +
+     "  for (int i=0;i<10;i++) {" + PMD.EOL +
+     "   b[i]=a[i+6];" + PMD.EOL +
+     "  }" + PMD.EOL +
+     " }" + PMD.EOL +
+     "}";
+
+    private static final String TEST7 =
+    "public class Foo {" + PMD.EOL +
+     " public void bar() {" + PMD.EOL +
+     "  for (int i=0;i<10;i++) {" + PMD.EOL +
+     "   b[c[i]] = a[i];" + PMD.EOL +
+     "  }" + PMD.EOL +
+     " }" + PMD.EOL +
+     "}";
+
+    private static final String TEST8 =
     "public class Foo {" + PMD.EOL +
      " public void bar() {" + PMD.EOL +
      "  for (int i=0;i<10;i++) {" + PMD.EOL +

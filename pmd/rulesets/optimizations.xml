@@ -244,19 +244,22 @@ public class Foo {
         <property name="xpath">
         <value>
     <![CDATA[
-    //Statement[
-     (ForStatement or WhileStatement) and count(*//AssignmentOperator)=1
-     and
-     */Statement[
-      ./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
-      /PrimaryPrefix/Name/../../PrimarySuffix/Expression/PrimaryExpression/PrimaryPrefix/Name/@Image
-      and
-      ./Block/BlockStatement/Statement/StatementExpression/Expression/PrimaryExpression
-      /PrimaryPrefix/Name/../../PrimarySuffix[
-       count(..//PrimarySuffix)=1
-      ]/Expression/PrimaryExpression/PrimaryPrefix/Name/@Image
-     ]
-    ]
+//Statement[(ForStatement or WhileStatement) and
+count(*//AssignmentOperator)=1
+and
+*/Statement
+[
+./Block/BlockStatement/Statement/StatementExpression/PrimaryExpression
+/PrimaryPrefix/Name/../../PrimarySuffix/Expression
+[(PrimaryExpression or AdditiveExpression) and count
+(.//PrimaryPrefix/Name)=1]//PrimaryPrefix/Name/@Image
+and
+./Block/BlockStatement/Statement/StatementExpression/Expression/PrimaryExpression
+/PrimaryPrefix/Name/../../PrimarySuffix[count
+(..//PrimarySuffix)=1]/Expression[(PrimaryExpression
+or AdditiveExpression) and count(.//PrimaryPrefix/Name)=1]
+//PrimaryPrefix/Name/@Image
+]]
     ]]>
         </value>
         </property>
