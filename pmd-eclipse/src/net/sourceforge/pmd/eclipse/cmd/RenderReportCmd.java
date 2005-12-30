@@ -44,6 +44,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -56,6 +57,9 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IPackageDeclaration;
+import org.eclipse.jdt.core.JavaCore;
 
 /**
  * This command produce a HTML report for a project
@@ -64,6 +68,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/12/30 17:30:21  phherlin
+ * Upgrade to PMD v3.4 -> RuleViolation interface has changed!
+ *
  * Revision 1.3  2005/05/31 20:44:41  phherlin
  * Continuing refactoring
  *
@@ -192,11 +199,56 @@ public class RenderReportCmd extends AbstractDefaultCommand {
             final RuleContext ruleContext = new RuleContext();
             ruleContext.setSourceCodeFilename(markers[i].getResource().getProjectRelativePath().toString());
 
+            final SimpleNode fakeNode = new SimpleNode(0);
+            fakeNode.testingOnly__setBeginLine(lineNumber);  // TODO ask PMD Core dev team to add a legal setter operation
+            
             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
-            final RuleViolation ruleViolation = new RuleViolation(rule, lineNumber, message, ruleContext);
+            final FakeRuleViolation ruleViolation = new FakeRuleViolation(rule, ruleContext, fakeNode);
+
+            if (markers[i].getResource() instanceof IFile) {
+                ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) markers[i].getResource());
+                IPackageDeclaration packages[] = unit.getPackageDeclarations();
+                if (packages.length > 0) {
+                    ruleViolation.setPackageName(packages[0].getElementName());
+                }
+                packages[0].getElementName();
+            }
             report.addRuleViolation(ruleViolation);
         }
         
         return report;
+    }
+    
+    /**
+     * Inner class to fake rule violation necessary for report violation.
+     * This is a consequence of PMD v3.4 evolutions that a RuleViolation object cannot be instantiated outside a parsing process.
+     * 
+     */
+    private class FakeRuleViolation extends RuleViolation {
+        private String packageName;
+
+        public FakeRuleViolation(Rule arg0, RuleContext arg1, SimpleNode arg2, String arg3) {
+            super(arg0, arg1, arg2, arg3);
+        }
+
+        public FakeRuleViolation(Rule arg0, RuleContext arg1, SimpleNode arg2) {
+            super(arg0, arg1, arg2);
+        }
+
+        /**
+         * @see net.sourceforge.pmd.RuleViolation#getPackageName()
+         */
+        public String getPackageName() {
+            return this.packageName;
+        }
+        
+        /**
+         * Set the package name
+         * @param packageName
+         */
+        public void setPackageName(String packageName) {
+            this.packageName = packageName;
+        }
+        
     }
 }
