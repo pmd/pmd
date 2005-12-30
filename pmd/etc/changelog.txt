@@ -1,5 +1,5 @@
 ????, 2006 - 3.6:
-***** TODO delete deprecated printToConsole element from PMDTask
+***** TODO: remove deprecated printToConsole element from PMDTask
 
 ????, 2006 - 3.5:
 New rules:

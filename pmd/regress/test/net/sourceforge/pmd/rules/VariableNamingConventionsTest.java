@@ -31,17 +31,16 @@ public class VariableNamingConventionsTest extends SimpleAggregatorTst {
     }
 
     public void testPrefixStripping() throws Throwable {
-        Rule r =  new VariableNamingConventions();
+        Rule r = findRule("naming", "VariableNamingConventions");
         r.addProperty("staticPrefix", "s_");
         runTestFromString(TEST9, 0, r);
     }
 
     public void testSuffixStripping() throws Throwable {
-        Rule r =  new VariableNamingConventions();
+        Rule r = findRule("naming", "VariableNamingConventions");
         r.addProperty("staticSuffix", "_s");
         runTestFromString(TEST10, 0, r);
     }
-
 
     private static final String TEST1 =
     "public class Foo {" + PMD.EOL +

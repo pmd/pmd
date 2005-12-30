@@ -112,6 +112,12 @@ A variable naming conventions rule - customize this to your liking.  Currently, 
  should not include underscores.
         </description>
         <priority>1</priority>
+        <properties>
+            <property name="staticPrefix" description="A prefix for static variables" value=""/>
+            <property name="staticSuffix" description="A suffix for static variables" value=""/>
+            <property name="memberPrefix" description="A prefix for member variables" value=""/>
+            <property name="memberSuffix" description="A suffix for member variables" value=""/>
+        </properties>
         <example>
 <![CDATA[
 public class Foo {

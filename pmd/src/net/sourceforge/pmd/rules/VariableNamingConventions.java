@@ -97,13 +97,11 @@ public class VariableNamingConventions extends AbstractRule {
     }
 
     private String normalizeMemberVariableName(String varName) {
-        String name = stripPrefix(varName, memberPrefix);
-        return stripSuffix(name, memberSuffix);
+        return stripSuffix(stripPrefix(varName, memberPrefix), memberSuffix);
     }
 
     private String normalizeStaticVariableName(String varName) {
-        String name = stripPrefix(varName, staticPrefix);
-        return stripSuffix(name, staticSuffix);
+        return stripSuffix(stripPrefix(varName, staticPrefix), staticSuffix);
     }
 
     private String stripSuffix(String varName, String[] suffix) {
