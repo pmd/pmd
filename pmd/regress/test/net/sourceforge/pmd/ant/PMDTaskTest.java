@@ -34,7 +34,6 @@ public class PMDTaskTest extends TestCase {
 
     public void testNoRuleSets() {
         PMDTask task = new PMDTask();
-        task.setPrintToConsole(true);
         try {
             task.execute();
             throw new RuntimeException("Should have thrown a BuildException - no rulesets");
@@ -61,7 +60,7 @@ public class PMDTaskTest extends TestCase {
         }
     }
 
-    public void testInValidJDK() {
+    public void testInvalidJDK() {
         PMDTask task = new PMDTask();
         task.setTargetJDK("1.6");
         try {

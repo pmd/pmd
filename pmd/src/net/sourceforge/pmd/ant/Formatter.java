@@ -27,7 +27,7 @@ public class Formatter {
     private File toFile;
     private String linkPrefix;
     private String type;
-    private boolean toConsole = false;
+    private boolean toConsole;
 
     public void setType(String type) {
         this.type = type;
@@ -39,6 +39,10 @@ public class Formatter {
 
     public void setToFile(File toFile) {
         this.toFile = toFile;
+    }
+
+    public void setToConsole(boolean toConsole) {
+        this.toConsole = toConsole;
     }
 
     public Renderer getRenderer() {
@@ -73,16 +77,12 @@ public class Formatter {
         return renderer;
     }
 
-    public void setToConsole(boolean toConsole) {
-        this.toConsole = toConsole;
-    }
-
     public boolean isToFileNull() {
-        return (toFile == null) && (!this.toConsole);
+        return toFile == null && !toConsole;
     }
 
     public Writer getToFileWriter(String baseDir) throws IOException {
-        if (!this.toConsole) {
+        if (!toConsole) {
             if (!toFile.isAbsolute()) {
                 return new BufferedWriter(new FileWriter(new File(baseDir + System.getProperty("file.separator") + toFile.getPath())));
             }

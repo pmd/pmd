@@ -35,11 +35,11 @@
       <td valign="top">Whether or not to fail the build if PMD finds any problems</td>
       <td valign="top" align="center">No</td>
     </tr>
-  <tr>
-    <td valign="top">printToConsole</td>
-    <td valign="top">Whether or not to print any problems found to the Ant log/console</td>
-    <td valign="top" align="center">No</td>
-  </tr>
+    <tr>
+      <td valign="top">minimumPriority</td>
+      <td valign="top">The rule priority threshold; rules with lower priority than they will not be used</td>
+      <td valign="top" align="center">No</td>
+    </tr>
     <tr>
       <td valign="top">shortFilenames</td>
       <td valign="top">Places truncated filenames in the report.  This can reduce your report file size by 15%-20%.</td>
@@ -128,7 +128,7 @@
 
       <subsection name="Examples">
 
-<p>Running one ruleset to produce a HTML report</p>
+<p>Running one ruleset to produce a HTML report (and printing the report to the console as well)</p>
 <source>
 <![CDATA[
 <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
@@ -136,7 +136,7 @@
 <target name="pmd">
     <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
     <pmd rulesetfiles="imports">
-        <formatter type="html" toFile="pmd_report.html"/>
+        <formatter type="html" toFile="pmd_report.html" toConsole="true"/>
         <fileset dir="C:\j2sdk1.4.1_01\src\java\lang\">
             <include name="**/*.java"/>
         </fileset>

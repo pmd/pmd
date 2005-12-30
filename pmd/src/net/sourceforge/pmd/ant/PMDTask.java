@@ -43,6 +43,7 @@ public class PMDTask extends Task {
     private Path classpath;
     private List formatters = new ArrayList();
     private List filesets = new ArrayList();
+    private int minPriority = Rule.LOWEST_PRIORITY;
     private boolean shortFilenames;
     private boolean printToConsole;
     private String ruleSetFiles;
@@ -75,6 +76,7 @@ public class PMDTask extends Task {
     }
 
     public void setPrintToConsole(boolean printToConsole) {
+        log("The 'printToConsole' ant task attribute has been deprecated.  Please use the 'toConsole' attribute of the 'formatter' element instead.", Project.MSG_INFO);
         this.printToConsole = printToConsole;
     }
 
@@ -124,6 +126,7 @@ public class PMDTask extends Task {
         RuleSet rules;
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
+            ruleSetFactory.setMinimumPriority(minPriority);
             if (classpath == null) {
                 log("Using the normal ClassLoader", Project.MSG_VERBOSE);
                 rules = ruleSetFactory.createRuleSet(ruleSetFiles);

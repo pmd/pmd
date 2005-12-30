@@ -62,6 +62,11 @@ public class RuleSetFactory {
 
 
     private ClassLoader classLoader;
+    private int minPriority = Rule.LOWEST_PRIORITY;
+
+    public void setMinimumPriority(int minPriority) {
+        this.minPriority = minPriority;
+    }
 
     /**
      * Returns an Iterator of RuleSet objects loaded from descriptions from
@@ -252,7 +257,9 @@ public class RuleSetFactory {
                 }
             }
         }
-        ruleSet.addRule(rule);
+        if (rule.getPriority() <= minPriority) {
+            ruleSet.addRule(rule);
+        }
     }
 
     /**
@@ -290,7 +297,9 @@ public class RuleSetFactory {
         OverrideParser p = new OverrideParser((Element)ruleNode);
         p.overrideAsNecessary(externalRule);
 
-        ruleSet.addRule(externalRule);
+        if (externalRule.getPriority() <= minPriority) {
+            ruleSet.addRule(externalRule);
+        }
     }
 
     /**
@@ -314,7 +323,7 @@ public class RuleSetFactory {
         RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader.loadResourceAsStream(ref));
         for (Iterator i = externalRuleSet.getRules().iterator(); i.hasNext();) {
             Rule rule = (Rule) i.next();
-            if (!excludes.contains(rule.getName())) {
+            if (!excludes.contains(rule.getName()) && rule.getPriority() <= minPriority) {
                 ruleSet.addRule(rule);
             }
         }

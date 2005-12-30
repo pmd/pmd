@@ -152,7 +152,14 @@ public class RuleSetFactoryTest extends TestCase {
         } catch (IllegalArgumentException iae) {
             // cool
         }
+    }
 
+    public void testSetPriority() {
+        RuleSetFactory rsf = new RuleSetFactory();
+        rsf.setMinimumPriority(2);
+        assertEquals(0, rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes())).size());
+        rsf.setMinimumPriority(4);
+        assertEquals(1, rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes())).size());
     }
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME =
@@ -213,6 +220,7 @@ public class RuleSetFactoryTest extends TestCase {
             "name=\"MockRuleName\" " + PMD.EOL +
             "message=\"avoid the mock rule\" " + PMD.EOL +
             "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
+            "<priority>3</priority>" + PMD.EOL +
             "</rule></ruleset>";
 
     private static final String MULTIPLE_RULES =
