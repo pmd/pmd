@@ -16,7 +16,7 @@
             <li><a href="http://tomcopeland.blogs.com/">Tom Copeland</a> - lead developer, JDeveloper plugin, initial Gel plugin, initial jEdit plugin, IDEAJ integration, BlueJ extension</li>
             <li>Jiger Patel - jEdit plugin</li>
             <li>Ole-Martin Mork - NetBeans plugin</li>
-            <li>Brant Gurganus - JCreator integration, Swing GUI work</li>
+            <li><a href="http://www.rose-hulman.edu/~gurganbl/">Brant Gurganus</a> - JCreator integration, Swing GUI work</li>
             <li>Miguel Griffa - over a dozen rules, lots of documentation, and other improvements all over the place</li>
             <li>Radim Kubacki - Netbeans plugin, OptimizableToArrayCallRule suggestion, bug reports, pmd-netbeans feedback</li>
             <li>Colin Wilson-Salt - Eclipse plugin team</li>
@@ -25,10 +25,10 @@
         </subsection>
         <subsection name="Committers emeritus">
         <ul>
-            <li>Gunnlaugur Thor Briem - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use of java.lang.Error</li>
-            <li>David Craine - JBuilder plugin</li>
+            <li><a href="http://www.hi.is/~gthb/">Gunnlaugur Thor Briem</a> - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use of java.lang.Error</li>
+            <li><a href="http://cougaar.org/users/dave/">David Craine</a> - JBuilder plugin</li>
             <li>Tom Burke - Eclipse plugin</li>
-            <li>Alex Chaffee - various bugfixes and features</li>
+            <li><a href="http://www.stinky.com/alex/">Alex Chaffee</a> - various bugfixes and features</li>
             <li>Siegfried Goeschl - original Maven plugin, various bugfixes and features</li>
             <li>Don Leckie - The PMD GUI</li>
             <li><a href="http://richkilmer.blogs.com/">Rich Kilmer</a> - logo design</li>
@@ -38,8 +38,8 @@
         <subsection name="Significant contributors">
         <ul>
             <li>Raik Schroeder - data flow analyis layer, YAHTMLRenderer</li>
-            <li>Steve Hawkins - rewrite of CPD based on Karp-Rabin string matching</li>
-            <li>Dan Sheppard - XPath engine integration concept and implementation</li>
+            <li><a href="http://www.ourhomestead.net/jststeve/">Steve Hawkins</a> - rewrite of CPD based on Karp-Rabin string matching</li>
+            <li><a href="http://www.jroller.com/comments/soxbox/Weblog">Daniel Sheppard</a> - XPath engine integration concept and implementation</li>
             <li>Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform</li>
         </ul>
         </subsection>
