@@ -3,6 +3,7 @@
 
 ????, 2006 - 3.5:
 New rules:
+ Basic ruleset: UselessOperationOnImmutable
  Migration ruleset: IntegerInstantiation
  JUnit ruleset: UseAssertNullInsteadOfAssertTrue
  Strings ruleset: AppendCharacterWithChar

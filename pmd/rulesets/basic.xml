@@ -824,6 +824,71 @@ public class Test {
   </example>
 </rule>
 
-    
+
+    <rule  name="UselessOperationOnImmutable"
+           message="An operation on an Immutable object (BigDecimal or BigInteger) won''t change the object itself"
+           class="net.sourceforge.pmd.rules.XPathRule"
+           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor">
+      <description>
+    An operation on an Immutable object (BigDecimal or BigInteger) won't change the object itself. The
+    result of the operation is a new object. Therefore, ignoring the operation result is an error.
+      </description>
+      <properties>
+        <property name="xpath">
+        <value>
+    <![CDATA[
+    //Statement//StatementExpression
+    [PrimaryExpression/PrimaryPrefix/Name
+    [
+    starts-with(@Image,concat(ancestor::MethodDeclaration//LocalVariableDeclaration
+    [./Type//ClassOrInterfaceType[@Image = 'BigInteger' or
+    @Image = 'BigDecimal']]/VariableDeclarator/VariableDeclaratorId/@Image,"."))
+    and
+    (
+    ends-with(@Image,".add")
+    or
+    ends-with(@Image,".multiply")
+    or
+    ends-with(@Image,".divide")
+    or
+    ends-with(@Image,".subtract")
+    or
+    ends-with(@Image,".setScale")
+    or
+    ends-with(@Image,".negate")
+    or
+    ends-with(@Image,".movePointLeft")
+    or
+    ends-with(@Image,".movePointRight")
+    or
+    ends-with(@Image,".pow")
+    or
+    ends-with(@Image,".shiftLeft")
+    or
+    ends-with(@Image,".shiftRight")
+    )
+    ]
+    ]
+    ]]>
+        </value>
+        </property>
+      </properties>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+import java.math.*;
+class Test {
+ void method1() {
+  BigDecimal bd=new BigDecimal(10);
+  bd.add(new BigDecimal(5)); // this will trigger the rule
+ }
+ void method2() {
+  BigDecimal bd=new BigDecimal(10);
+  bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
+ }
+}
+    ]]>
+      </example>
+    </rule>
 </ruleset>
 
