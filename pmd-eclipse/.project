@@ -26,10 +26,16 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>net.sourceforge.pmd.eclipse.pmdBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>net.sourceforge.metrics.nature</nature>
+		<nature>net.sourceforge.pmd.eclipse.pmdNature</nature>
 	</natures>
 </projectDescription>
