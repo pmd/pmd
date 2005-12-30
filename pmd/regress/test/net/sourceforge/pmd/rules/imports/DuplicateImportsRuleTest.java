@@ -4,17 +4,17 @@
 package test.net.sourceforge.pmd.rules.imports;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.DuplicateImportsRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 public class DuplicateImportsRuleTest extends SimpleAggregatorTst {
 
-    private DuplicateImportsRule rule;
+    private Rule rule;
 
     public void setUp() {
-        rule = new DuplicateImportsRule();
-        rule.setMessage("Avoid this stuff -> ''{0}''");
+        rule = findRule("imports", "DuplicateImports");
     }
 
     public void testAll() {

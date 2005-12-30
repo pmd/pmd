@@ -14,7 +14,6 @@ public class UnnecessaryTemporariesTest extends SimpleAggregatorTst {
 
     public void setUp() throws Exception {
         rule = findRule("basic", "UnnecessaryConversionTemporary");
-        rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 
     public void testAll() {

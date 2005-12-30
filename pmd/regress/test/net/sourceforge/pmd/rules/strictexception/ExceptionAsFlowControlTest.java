@@ -11,7 +11,6 @@ public class ExceptionAsFlowControlTest extends SimpleAggregatorTst {
 
     public void setUp() throws Exception {
         rule = findRule("strictexception", "ExceptionAsFlowControl");
-        rule.setMessage("Avoid this stuff -> ''{0}''");
     }
     
     public void testAll() {

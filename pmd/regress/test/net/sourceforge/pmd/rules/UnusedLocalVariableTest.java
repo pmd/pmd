@@ -14,7 +14,6 @@ public class UnusedLocalVariableTest extends SimpleAggregatorTst {
 
     public void setUp() throws Exception {
         rule = findRule("unusedcode", "UnusedLocalVariable");
-        rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 
     public void testAll() {

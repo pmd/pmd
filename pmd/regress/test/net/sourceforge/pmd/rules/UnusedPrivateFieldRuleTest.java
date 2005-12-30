@@ -14,7 +14,6 @@ public class UnusedPrivateFieldRuleTest extends SimpleAggregatorTst {
 
     public void setUp() throws Exception {
         rule = findRule("unusedcode", "UnusedPrivateField");
-        rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 
     public void testAll() {

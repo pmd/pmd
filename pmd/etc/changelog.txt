@@ -28,7 +28,8 @@ Added current CLASSPATH to pmd.bat.
 UnusedFormalParameter now catches unused constructor parameters, and its warning message now reflects whether it caught a method or a constructor param.
 Rebuilt JavaCC parser with JavaCC 4.0RC1.
 Added jakarta-oro-2.0.8.jar as a new dependency to support regular expression in XPath rules.
-Ant task now supports a 'minimumPriority' attribute; only rules with this priority or higher will be run.  Renamed Ant task 'printToConsole' attribute to 'toConsole' and it can only be used inside a formatter element.
+Ant task now supports a 'minimumPriority' attribute; only rules with this priority or higher will be run.
+Renamed Ant task 'printToConsole' attribute to 'toConsole' and it can only be used inside a formatter element.
 Added David Corley's Javascript report, more details are here: http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html
 
 ***** TODO: Remove old-style CPD command line options that were deprecated in 3.4.

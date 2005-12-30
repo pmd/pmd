@@ -14,7 +14,6 @@ public class BeanMembersShouldSerializeRuleTest extends SimpleAggregatorTst {
 
     public void setUp() throws Exception {
         rule = findRule("javabeans", "BeanMembersShouldSerialize");
-        rule.setMessage("Don't {0} !");
     }
 
     public void testAll() {

@@ -14,7 +14,6 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
 
     public void setUp() throws Exception {
         rule = find();
-        rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 
     public void testAll() {

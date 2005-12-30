@@ -15,7 +15,6 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
 
     public void setUp() {
         rule = findRule("imports", "UnusedImports");
-        rule.setMessage("Avoid this stuff -> ''{0}''");
     }
 
     public void testAll() {
