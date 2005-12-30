@@ -46,6 +46,9 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/12/30 16:29:16  phherlin
+ * Implement a new preferences model and review some tests
+ *
  * Revision 1.1  2005/06/15 21:14:56  phherlin
  * Create the project for the Eclipse plugin unit tests
  *
@@ -60,26 +63,6 @@ public class PreferencesModelTest extends TestCase {
      */
     public PreferencesModelTest(String name) {
         super(name);
-    }
-    
-    /**
-     * Plugin preferences should contains a review additional comment.
-     * This preference must be access through a model.
-     *
-     */
-    public void testReviewAdditionalComment() {
-        // Get the preference model
-        PreferencesModel model = ModelFactory.getFactory().getPreferencesModel();
-        assertNotNull("Cannot get a preferenes model", model);
-        
-        // Store a comment
-        model.setReviewAdditionalComment(REVIEW_ADDITIONAL_COMMENT);
-        // nothing to assert yet
-        
-        // try get the comment
-        String comment = model.getReviewAdditionalComment();
-        assertNotNull(comment);
-        assertEquals(REVIEW_ADDITIONAL_COMMENT, comment);
     }
     
 }

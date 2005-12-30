@@ -36,6 +36,7 @@
 package test.net.sourceforge.pmd.eclipse.model;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.AbstractRule;
@@ -64,6 +65,9 @@ import test.net.sourceforge.pmd.eclipse.EclipseUtils;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/12/30 16:29:16  phherlin
+ * Implement a new preferences model and review some tests
+ *
  * Revision 1.3  2005/07/02 14:31:11  phherlin
  * Fixing equals assertion to test on rules collection instead
  *
@@ -149,8 +153,8 @@ public class ProjectPropertiesModelTest extends TestCase {
 
         // Test the ruleset we set is equal to the ruleset we queried
         RuleSet projectRuleSet = model.getProjectRuleSet();
-        assertNotNull("Project ruleset has not been set", projectRuleSet);
-        assertEquals("The project ruleset is not the basic ruleset", basicRuleSet.getRules(), projectRuleSet.getRules());
+        assertNotNull("Project ruleset has not been set", projectRuleSet);        
+        assertTrue("The project ruleset is not the basic ruleset", EclipseUtils.assertRuleSetEquals(basicRuleSet.getRules(), projectRuleSet.getRules()));
     }
 
     /**

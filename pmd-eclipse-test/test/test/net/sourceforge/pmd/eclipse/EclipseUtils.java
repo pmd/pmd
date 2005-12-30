@@ -37,7 +37,11 @@ package test.net.sourceforge.pmd.eclipse;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.Set;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 import net.sourceforge.pmd.eclipse.builder.PMDNature;
 
@@ -58,6 +62,9 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/12/30 16:29:15  phherlin
+ * Implement a new preferences model and review some tests
+ *
  * Revision 1.1  2005/06/15 21:14:57  phherlin
  * Create the project for the Eclipse plugin unit tests
  *
@@ -171,6 +178,34 @@ public class EclipseUtils {
     }
     
     /**
+     * Test if 2 sets of rules are equals
+     * @param ruleSet1
+     * @param ruleSet2
+     * @return
+     */
+    public static boolean assertRuleSetEquals(Set ruleSet1, Set ruleSet2) {
+        boolean equals = true;
+        
+        for (Iterator i = ruleSet1.iterator(); i.hasNext() && equals;) {
+            Rule rule = (Rule) i.next();
+            if (!searchRule(rule, ruleSet2)) {
+                equals = false;
+                System.out.println("Rule " + rule.getName() + " is not in the second ruleset");
+            }
+        }
+        
+        for (Iterator i = ruleSet2.iterator(); i.hasNext() && equals;) {
+            Rule rule = (Rule) i.next();
+            if (!searchRule(rule, ruleSet1)) {
+                equals = false;
+                System.out.println("Rule " + rule.getName() + " is not in the first ruleset");
+            }
+        }
+        
+        return equals;
+    }
+    
+    /**
      * Add a Java Nature to a project when creating
      * @param project
      * @throws CoreException
@@ -184,6 +219,52 @@ public class EclipseUtils {
             newNatures[prevNatures.length]= JavaCore.NATURE_ID;
             description.setNatureIds(newNatures);
             project.setDescription(description, null);
+        }
+    }
+    
+    /**
+     * Search a rule in a set of rules
+     * @param rule
+     * @param set
+     * @return
+     */
+    private static boolean searchRule(Rule rule, Set set) {
+        boolean found = false;
+        
+        for (Iterator i = set.iterator(); i.hasNext() && !found;) {
+            Rule r = (Rule) i.next();
+            if (r.getClass().getName().equals(rule.getClass().getName())) {
+                found = r.getName().equals(rule.getName()) && r.getProperties().equals(rule.getProperties()) && (r.getPriority() == rule.getPriority());
+                if ((!found) && (r.getName().equals(rule.getName()))) {
+                    System.out.println("Rules " + r.getName() + " are different because:");
+                    System.out.println("Priorities are different: " + (r.getPriority() != rule.getPriority()));
+                    System.out.println("Properties are different: " + !r.getProperties().equals(rule.getProperties()));
+                    System.out.println();
+                    System.out.println("Rule to search");
+                    dumpRule(rule);
+                    System.out.println();
+                    System.out.println("Rule from set");
+                    dumpRule(r);
+                    System.out.println();
+                }
+            }
+        }
+        
+        return found;
+    }
+    
+    /**
+     * Print rule details
+     * @param rule
+     */
+    private static void dumpRule(Rule rule) {
+        System.out.println("Rule: " + rule.getName());
+        System.out.println("Priority: " + rule.getPriority());
+        Properties p = rule.getProperties();
+        Set keys = p.keySet();
+        for (Iterator i = keys.iterator(); i.hasNext();) {
+            String key = (String) i.next();
+            System.out.println("   " + key + " = " + p.getProperty(key));
         }
     }
     

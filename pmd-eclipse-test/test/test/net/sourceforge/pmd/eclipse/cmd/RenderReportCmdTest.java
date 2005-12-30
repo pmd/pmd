@@ -60,6 +60,9 @@ import test.net.sourceforge.pmd.eclipse.EclipseUtils;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/12/30 16:29:15  phherlin
+ * Implement a new preferences model and review some tests
+ *
  * Revision 1.1  2005/06/15 21:14:57  phherlin
  * Create the project for the Eclipse plugin unit tests
  *
@@ -82,7 +85,7 @@ public class RenderReportCmdTest extends TestCase {
      */
     public void testRenderReportCmdBasic() throws CommandException, CoreException {
         ReviewCodeCmd reviewCmd = new ReviewCodeCmd();
-        reviewCmd.setResource(this.testProject);
+        reviewCmd.addResource(this.testProject);
         reviewCmd.performExecute();
         
         RenderReportCmd cmd = new RenderReportCmd();

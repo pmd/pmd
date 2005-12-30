@@ -56,6 +56,9 @@ import test.net.sourceforge.pmd.eclipse.EclipseUtils;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/12/30 16:29:15  phherlin
+ * Implement a new preferences model and review some tests
+ *
  * Revision 1.1  2005/06/15 21:14:57  phherlin
  * Create the project for the Eclipse plugin unit tests
  *
@@ -80,7 +83,7 @@ public class ReviewCmdTest extends TestCase {
      */
     public void testReviewCmdBasic() throws CommandException, CoreException {
         ReviewCodeCmd cmd = new ReviewCodeCmd();
-        cmd.setResource(this.testProject);
+        cmd.addResource(this.testProject);
         cmd.performExecute();
         cmd.join();
         Map markers = cmd.getMarkers();
@@ -107,11 +110,13 @@ public class ReviewCmdTest extends TestCase {
     public void testReviewCmdNullResource() throws CommandException {
         try {
             ReviewCodeCmd cmd = new ReviewCodeCmd();
-            cmd.setResource(null);
+            cmd.addResource(null);
             cmd.setResourceDelta(null);
             cmd.performExecute();
-            fail("A UnsetInputPropertiesException must be thrown");
+            fail("An Exception must be thrown");
         } catch (UnsetInputPropertiesException e) {
+            fail("An IllegalArgumentException must have been thrown before");
+        } catch (IllegalArgumentException e) {
             ; // cool, success
         }
     }
