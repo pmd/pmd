@@ -11,7 +11,7 @@
 	</appender>
 	
 	<logger name="net.sourceforge.pmd" additivity="false">
-		<level value="DEBUG"/>
+		<level value="WARN"/>
 		<appender-ref ref="plugin"/>
 	</logger>
 	
