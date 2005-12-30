@@ -1,5 +1,5 @@
 /*
- * Created on 29 mai 2005
+ * Created on 27 déc. 2005
  *
  * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
@@ -33,58 +33,51 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.dao;
 
+package net.sourceforge.pmd.eclipse.model;
 
 /**
- * Factory for all DAO of the plugin
+ * Interface of the Review part of the plugin preferences
  * 
- * @author Philippe Herlin
+ * @author Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.3  2005/12/30 16:25:39  phherlin
+ * Revision 1.1  2005/12/30 16:26:30  phherlin
  * Implement a new preferences model
- *
- * Revision 1.2  2005/06/07 18:38:14  phherlin
- * Move classes to limit packages cycle dependencies
- *
- * Revision 1.1  2005/05/31 20:33:01  phherlin
- * Continuing refactoring
  *
  *
  */
-public class DAOFactory {
-    private static final DAOFactory SELF = new DAOFactory();
-    private final ProjectPropertiesDAO projectPropertiesDao = new ProjectPropertiesDAOCastor(); // NOPMD:SingularField
-    private final PreferencesDAO preferencesDao = new PreferencesDAOImpl();
+
+public interface ReviewPreferences {
+    String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
+    String NO_PMD_STRING_DEFAULT = "NOPMD";
+
+    /**
+     * @return the comment text that will be added to review tags
+     * @throws ModelException if an error occurs
+     */
+    String getAdditionalComment() throws ModelException;
     
     /**
-     * Constructor. DAOFactory is a singleton.
-     *
+     * Set the comment text that will be added to review tags.
+     * This is a dynamic message. Substitutions strings are 0 for the user name
+     * and 1 for the current date and time.
+     * @param comment the review additional comment
+     * @throws ModelException if an error occurs
      */
-    private DAOFactory() {
-        super();
-    }
+    void setAdditionalComment(String comment) throws ModelException;
     
     /**
-     * @return the singleton instance of the factory
+     * @return the string used for NOPMD comments
+     * @throws ModelException if an error occurs
      */
-    public static DAOFactory getFactory() {
-        return SELF;
-    }
+    String getNoPmdString() throws ModelException;
     
     /**
-     * @return a ProjectPropertiesDAO
+     * Set the string for NOPMD comments
+     * @param noPmdString the NOPMD string
+     * @throws ModelException if an error occurs
      */
-    public ProjectPropertiesDAO getProjectPropertiesDAO() {
-        return this.projectPropertiesDao;
-    }
-    
-    /**
-     * @return a preferences DAO
-     */
-    public PreferencesDAO getPreferencesDAO() {
-        return this.preferencesDao;
-    }
+    void setNoPmdString(String noPmdString) throws ModelException;
 }

@@ -46,4 +46,61 @@
                         <bind-xml name="ruleset" node="element"/>
                 </field>
         </class>
+
+        <class name="net.sourceforge.pmd.eclipse.dao.ConfigurationsTO">
+                <map-to xml="configurations"/>
+
+                <field name="Configurations"
+                       type="net.sourceforge.pmd.eclipse.dao.ConfigurationTO"
+                       collection="array"
+                       get-method="getConfigurations"
+                       set-method="setConfigurations">
+                        <bind-xml name="configuration" node="element"/>
+                </field>
+        </class>
+
+        <class name="net.sourceforge.pmd.eclipse.dao.ConfigurationTO">
+                <map-to xml="configuration"/>
+
+                <field name="Name"
+                       type="java.lang.String"
+                       get-method="getName"
+                       set-method="setName">
+                        <bind-xml name="name" node="attribute"/>
+                </field>
+
+                <field name="ReadOnly"
+                       type="boolean"
+                       get-method="isReadOnly"
+                       set-method="setReadOnly">
+                        <bind-xml name="readonly" node="attribute"/>
+                </field>
+
+                <field name="RuleSets"
+                       type="net.sourceforge.pmd.eclipse.dao.RuleSetTO"
+                       collection="array"
+                       get-method="getRuleSets"
+                       set-method="setRuleSets">
+                        <bind-xml name="ruleset" node="element"/>
+                </field>
+        </class>
+
+        <class name="net.sourceforge.pmd.eclipse.dao.RuleSetTO">
+                <map-to xml="ruleset"/>
+
+                <field name="RuleSetUrl"
+                       type="java.lang.String"
+                       get-method="getRuleSetUrl"
+                       set-method="setRuleSetUrl">
+                        <bind-xml name="url" node="attribute"/>
+                </field>
+
+                <field name="Override"
+                       type="boolean"
+                       get-method="isOverride"
+                       set-method="setOverride">
+                        <bind-xml name="override" node="attribute"/>
+                </field>
+        </class>
+
 </mapping>

@@ -39,9 +39,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -51,11 +51,17 @@ import net.sourceforge.pmd.core.IRuleSetManager;
 import net.sourceforge.pmd.core.PMDCorePlugin;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDPluginConstants;
+import net.sourceforge.pmd.eclipse.dao.ConfigurationTO;
+import net.sourceforge.pmd.eclipse.dao.ConfigurationsTO;
+import net.sourceforge.pmd.eclipse.dao.DAOException;
+import net.sourceforge.pmd.eclipse.dao.DAOFactory;
+import net.sourceforge.pmd.eclipse.dao.PreferencesDAO;
+import net.sourceforge.pmd.eclipse.dao.PreferencesTO;
+import net.sourceforge.pmd.eclipse.dao.RuleSetTO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * This is the implementation class for the preferences model.
@@ -64,6 +70,9 @@ import org.eclipse.jface.preference.IPreferenceStore;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2005/12/30 16:26:30  phherlin
+ * Implement a new preferences model
+ *
  * Revision 1.3  2005/10/24 22:41:57  phherlin
  * Refactor preferences management
  *
@@ -81,18 +90,12 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public class PreferencesModelImpl extends AbstractModel implements PreferencesModel {
     private static final Log log = LogFactory.getLog(PreferencesModelImpl.class);
     
-    private static final String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
-    private static final String REVIEW_ADDITIONAL_COMMENT_PREFERENCE = PMDPluginConstants.PLUGIN_ID + ".review_additional_comment";
-    private static final String MIN_TILE_SIZE_PREFERENCE = PMDPluginConstants.PLUGIN_ID + ".CPDPreference.mintilesize";
-    private static final int MIN_TILE_SIZE_DEFAULT = 25;
-    private static final String NO_PMD_STRING_DEFAULT = "NOPMD";
-    private static final String NO_PMD_STRING_PREFERENCE = PMDPluginConstants.PLUGIN_ID + ".no_pmd_string";
-    private static final String CONFIGURATIONS_DIRECTORY = "/confs";
-
-    private String noPmdString;
-    private String reviewAdditionalComment;
+    private final PreferencesDAO preferencesDao = DAOFactory.getFactory().getPreferencesDAO();
+    private boolean switchPmdPerspective;
+    private boolean dfaEnabled;
+    private ReviewPreferences reviewPreferences = new ReviewPreferencesImpl();
+    private CPDPreferences cpdPreferences = new CPDPreferencesImpl();
     private final Map configurations = new HashMap();
-    private int cpdTileSize;
     private final Configuration defaultConfiguration = new ConfigurationImpl("Plugin Default");
 
     /**
@@ -101,62 +104,53 @@ public class PreferencesModelImpl extends AbstractModel implements PreferencesMo
      */
     public PreferencesModelImpl() {
         super();
-        loadPreferences();
+        try {
+            loadPreferences();
+        } catch (RuntimeException e) {
+            PMDPlugin.getDefault().logError("Exception occured when loading preferences", e);
+        }
     }
     
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#getReviewAdditionalComment()
+     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#dfaEnabled()
      */
-    public String getReviewAdditionalComment() {
-        if (this.reviewAdditionalComment == null) {
-            this.reviewAdditionalComment = REVIEW_ADDITIONAL_COMMENT_DEFAULT;
-        }
-
-        return this.reviewAdditionalComment;
+    public boolean dfaEnabled() throws ModelException {
+        return this.dfaEnabled;
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#setReviewAdditionalComment(java.lang.String)
+     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#getCpdPreferences()
      */
-    public void setReviewAdditionalComment(final String comment) {
-        this.reviewAdditionalComment = comment;
-
+    public CPDPreferences getCpdPreferences() throws ModelException {
+        return this.cpdPreferences;
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#getCpdTileSize()
+     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#getReviewPreferences()
      */
-    public int getCpdTileSize() throws ModelException {
-        if (this.cpdTileSize == 0) {
-            this.cpdTileSize = MIN_TILE_SIZE_DEFAULT;
-        }
-        
-        return this.cpdTileSize;
+    public ReviewPreferences getReviewPreferences() throws ModelException {
+        return this.reviewPreferences;
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#setCpdTileSize(int)
+     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#isSwitchPmdPerspective()
      */
-    public void setCpdTileSize(final int tileSize) throws ModelException {
-        this.cpdTileSize = tileSize;
+    public boolean isSwitchPmdPerspective() throws ModelException {
+        return this.switchPmdPerspective;
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#getNoPmdString()
+     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#setDfaEnabled(boolean)
      */
-    public String getNoPmdString() throws ModelException {
-        if (this.noPmdString == null) {
-            this.noPmdString = NO_PMD_STRING_DEFAULT;
-        }
-        
-        return this.noPmdString;
+    public void setDfaEnabled(boolean dfaEnabled) throws ModelException {
+        this.dfaEnabled = dfaEnabled;
     }
 
     /**
-     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#setNoPmdString(java.lang.String)
+     * @see net.sourceforge.pmd.eclipse.model.PreferencesModel#setSwitchPmdPerspective(boolean)
      */
-    public void setNoPmdString(final String noPmdString) throws ModelException {
-        this.noPmdString = noPmdString;
+    public void setSwitchPmdPerspective(boolean switchPmdPerspective) throws ModelException {
+        this.switchPmdPerspective = switchPmdPerspective;
     }
 
     /**
@@ -222,10 +216,20 @@ public class PreferencesModelImpl extends AbstractModel implements PreferencesMo
      * @see net.sourceforge.pmd.eclipse.model.PMDPluginModel#sync()
      */
     public void sync() throws ModelException {
-        final IPreferenceStore preferenceStore = PMDPlugin.getDefault().getPreferenceStore();
-        preferenceStore.setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, this.reviewAdditionalComment);
-        preferenceStore.setValue(MIN_TILE_SIZE_PREFERENCE, this.cpdTileSize);
-        preferenceStore.setValue(NO_PMD_STRING_PREFERENCE, this.noPmdString);
+        try {
+            PreferencesTO preferencesTo = new PreferencesTO();
+            preferencesTo.setCpdMinTileSize(this.cpdPreferences.getTileSize());
+            preferencesTo.setDfaEnabled(this.dfaEnabled);
+            preferencesTo.setReviewAdditionalComment(this.reviewPreferences.getAdditionalComment());
+            preferencesTo.setReviewNoPmdString(this.reviewPreferences.getNoPmdString());
+            preferencesTo.setSwitchPmdPerspective(this.switchPmdPerspective);
+            
+            storeConfigurations(preferencesTo);
+            
+            this.preferencesDao.writePreferences(preferencesTo);
+        } catch (DAOException e) {
+            throw new ModelException(e);
+        }
     }
     
     /**
@@ -233,26 +237,46 @@ public class PreferencesModelImpl extends AbstractModel implements PreferencesMo
      *
      */
     private void loadPreferences() {
-        final IPreferenceStore preferenceStore = PMDPlugin.getDefault().getPreferenceStore();
-        this.reviewAdditionalComment = preferenceStore.getString(REVIEW_ADDITIONAL_COMMENT_PREFERENCE);
-        this.cpdTileSize = preferenceStore.getInt(MIN_TILE_SIZE_PREFERENCE);
-        this.noPmdString = preferenceStore.getString(NO_PMD_STRING_PREFERENCE);
-        
-        loadConfigurations();
-
         try {
-            final RuleSet oldRuleSet = loadDefaultConfigurationForCompatibility();
-            if (oldRuleSet == null) {
-                final IRuleSetManager ruleSetManager = PMDCorePlugin.getDefault().getRuleSetManager();
-                final Set defaultRuleSets = ruleSetManager.getDefaultRuleSets();
-                this.defaultConfiguration.setRuleSets((RuleSet[]) defaultRuleSets.toArray(new RuleSet[defaultRuleSets.size()]));
-            } else {
-                this.defaultConfiguration.setRuleSets(new RuleSet[] { oldRuleSet });
-            }
-            this.defaultConfiguration.setReadOnly(true);
+            PreferencesTO preferencesTo = this.preferencesDao.readPreferences();
+            
+            this.cpdPreferences.setTileSize(preferencesTo.getCpdMinTileSize());
+            this.dfaEnabled = preferencesTo.isDfaEnabled();
+            this.reviewPreferences.setAdditionalComment(preferencesTo.getReviewAdditionalComment());
+            this.reviewPreferences.setNoPmdString(preferencesTo.getReviewNoPmdString());
+            this.switchPmdPerspective = preferencesTo.isSwitchPmdPerspective();
+            
+            loadConfigurations(preferencesTo);
+            loadDefaultConfiguration();
+                        
+        } catch (DAOException e) {
+            PMDPlugin.getDefault().logError("Error intializing the preferences model. The default configuration may be empty", e);
         } catch (ModelException e) {
             PMDPlugin.getDefault().logError("Error intializing the preferences model. The default configuration may be empty", e);
         }
+        
+    }
+    
+    private void loadDefaultConfiguration() throws ModelException {
+        final RuleSet oldRuleSet = loadDefaultConfigurationForCompatibility();
+        if (oldRuleSet == null) {
+            final IRuleSetManager ruleSetManager = PMDCorePlugin.getDefault().getRuleSetManager();
+            final Set defaultRuleSets = ruleSetManager.getDefaultRuleSets();
+            RuleSetProxy proxy = null;
+            for (Iterator i = defaultRuleSets.iterator(); i.hasNext();) {
+                RuleSet ruleSet = (RuleSet) i.next();
+                proxy.setOverride(true);
+                proxy.setRuleSet(ruleSet);
+                this.defaultConfiguration.addRuleSet(proxy);
+            }
+        } else {
+            RuleSetProxy ruleSet = new RuleSetProxyImpl();
+            ruleSet.setOverride(true);
+            ruleSet.setRuleSet(oldRuleSet);
+            this.defaultConfiguration.addRuleSet(ruleSet);
+        }
+        
+        this.defaultConfiguration.setReadOnly(true);
     }
     
     /**
@@ -282,48 +306,53 @@ public class PreferencesModelImpl extends AbstractModel implements PreferencesMo
     }
     
     /**
-     * Load configurations from state location
+     * Load configurations from stored preferences
      *
      */
-    private void loadConfigurations() {
-        final IPath configurationsLocation = PMDPlugin.getDefault().getStateLocation().append(CONFIGURATIONS_DIRECTORY);
-        final File confsDir = new File(configurationsLocation.toOSString());
-        if (confsDir.exists()) {
-            final File[] confs = confsDir.listFiles();
-            for (int i = 0; i < confs.length; i++) {
-                loadConfiguration(confs[i]);
+    private void loadConfigurations(PreferencesTO preferencesTo) throws ModelException {
+        this.configurations.clear();
+        ConfigurationTO[] configurations = preferencesTo.getConfigurations().getConfigurations();
+        if (configurations != null) {
+            for (int i = 0; i < configurations.length; i++) {
+                Configuration configuration = new ConfigurationImpl();
+                configuration.setName(configurations[i].getName());
+                configuration.setReadOnly(configurations[i].isReadOnly());
+                
+                RuleSetTO[] rulesets = configurations[i].getRuleSets();
+                for (int j = 0; j < rulesets.length; j++) {
+                    RuleSetProxy ruleSet = new RuleSetProxyImpl();
+                    ruleSet.setOverride(rulesets[j].isOverride());
+                    ruleSet.setRuleSetUrl(rulesets[j].getRuleSetUrl());
+                    ruleSet.setRuleSet(rulesets[j].getRuleSet());
+                    configuration.addRuleSet(ruleSet);
+                }
+                
+                this.configurations.put(configuration.getName(), configuration);
             }
         }
     }
     
     /**
-     * Load a configuration
-     * @param confLocation the configuration directory
+     * Store configurations inside a transfer object for effective storage
+     * @param preferences
+     * @throws ModelException
      */
-    private void loadConfiguration(final File confLocation) {
-        if (confLocation.isDirectory()) {
-            try {
-                final Configuration conf = new ConfigurationImpl(confLocation.getName());
-                final RuleSetFactory factory = new RuleSetFactory();
-                final File[] ruleSetFiles = confLocation.listFiles();
-                for (int i = 0; i < ruleSetFiles.length; i++) {
-                    try {
-                        if (ruleSetFiles[i].isFile() && ruleSetFiles[i].canRead()) {
-                            final InputStream is = new FileInputStream(ruleSetFiles[i]);
-                            final RuleSet ruleSet = factory.createRuleSet(is);
-                            conf.addRuleSet(ruleSet);
-                            is.close();
-                        }
-                    } catch (FileNotFoundException e) {
-                        log.warn("FileNotFound exception when loading configuration from " + ruleSetFiles[i].getName() + ": " + e.getMessage());
-                    } catch (IOException e) {
-                        log.warn("IO exception when loading configuration from " + ruleSetFiles[i].getName() + ": " + e.getMessage());
-                    }
-                }
-                
-                this.configurations.put(conf.getName(), conf);
-            } catch (ModelException e) {
+    private void storeConfigurations(PreferencesTO preferencesTo) throws ModelException {
+        ConfigurationsTO configurationsTo = new ConfigurationsTO();
+        for (Iterator i = this.configurations.values().iterator(); i.hasNext();) {
+            Configuration configuration = (Configuration) i.next();
+            ConfigurationTO configurationTo = new ConfigurationTO();
+            configurationTo.setName(configuration.getName());
+            
+            RuleSetProxy[] proxies = configuration.getRuleSets();
+            RuleSetTO[] ruleSetTo = new RuleSetTO[proxies.length];
+            for (int j = 0; j < proxies.length; j++) {
+                ruleSetTo[j] = new RuleSetTO();
+                ruleSetTo[j].setOverride(proxies[j].isOverride());
+                ruleSetTo[j].setRuleSet(proxies[j].getRuleSet());
+                ruleSetTo[j].setRuleSetUrl(proxies[j].getRuleSetUrl());
             }
+            configurationTo.setRuleSets(ruleSetTo);
         }
     }
 }

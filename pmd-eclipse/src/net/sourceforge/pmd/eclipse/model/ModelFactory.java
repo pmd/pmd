@@ -48,6 +48,9 @@ import org.eclipse.core.resources.IProject;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2005/12/30 16:26:30  phherlin
+ * Implement a new preferences model
+ *
  * Revision 1.5  2005/06/07 18:38:13  phherlin
  * Move classes to limit packages cycle dependencies
  *
@@ -101,16 +104,20 @@ public class ModelFactory {
             throw new ModelException("A project cannot be null");
         }
         
-        ProjectPropertiesModel model;
-        synchronized (this.projectPropertiesModels) {
-            model = (ProjectPropertiesModel) this.projectPropertiesModels.get(project.getName());
-            if (model == null) {
-                model = new ProjectPropertiesModelImpl(project);
-                this.projectPropertiesModels.put(project.getName(), model);
+        try {
+            ProjectPropertiesModel model;
+            synchronized (this.projectPropertiesModels) {
+                model = (ProjectPropertiesModel) this.projectPropertiesModels.get(project.getName());
+                if (model == null) {
+                    model = new ProjectPropertiesModelImpl(project);
+                    this.projectPropertiesModels.put(project.getName(), model);
+                }
             }
+            
+            return model;
+        } catch (RuntimeException e) {
+            throw new ModelException(e);
         }
-        
-        return model;
     }
  
     /**

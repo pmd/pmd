@@ -1,5 +1,5 @@
 /*
- * Created on 29 mai 2005
+ * Created on 27 déc. 2005
  *
  * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
@@ -33,58 +33,67 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package net.sourceforge.pmd.eclipse.dao;
 
-
 /**
- * Factory for all DAO of the plugin
+ * Transfer Object for a configuration
  * 
- * @author Philippe Herlin
+ * @author Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.3  2005/12/30 16:25:39  phherlin
+ * Revision 1.1  2005/12/30 16:25:39  phherlin
  * Implement a new preferences model
- *
- * Revision 1.2  2005/06/07 18:38:14  phherlin
- * Move classes to limit packages cycle dependencies
- *
- * Revision 1.1  2005/05/31 20:33:01  phherlin
- * Continuing refactoring
  *
  *
  */
-public class DAOFactory {
-    private static final DAOFactory SELF = new DAOFactory();
-    private final ProjectPropertiesDAO projectPropertiesDao = new ProjectPropertiesDAOCastor(); // NOPMD:SingularField
-    private final PreferencesDAO preferencesDao = new PreferencesDAOImpl();
+
+public class ConfigurationTO {
+    private String name;
+    private boolean readOnly;
+    private RuleSetTO[] ruleSets;
     
     /**
-     * Constructor. DAOFactory is a singleton.
-     *
+     * @return Returns the name.
      */
-    private DAOFactory() {
-        super();
+    public String getName() {
+        return name;
     }
     
     /**
-     * @return the singleton instance of the factory
+     * @param name The name to set.
      */
-    public static DAOFactory getFactory() {
-        return SELF;
+    public void setName(String name) {
+        this.name = name;
     }
     
     /**
-     * @return a ProjectPropertiesDAO
+     * @return Returns the readOnly.
      */
-    public ProjectPropertiesDAO getProjectPropertiesDAO() {
-        return this.projectPropertiesDao;
+    public boolean isReadOnly() {
+        return readOnly;
     }
     
     /**
-     * @return a preferences DAO
+     * @param readOnly The readOnly to set.
      */
-    public PreferencesDAO getPreferencesDAO() {
-        return this.preferencesDao;
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
+
+    /**
+     * @return Returns the ruleSets.
+     */
+    public RuleSetTO[] getRuleSets() {
+        return this.ruleSets;
+    }
+
+    /**
+     * @param ruleSets The ruleSets to set.
+     */
+    public void setRuleSets(RuleSetTO[] ruleSets) {
+        this.ruleSets = ruleSets;
+    }
+
 }

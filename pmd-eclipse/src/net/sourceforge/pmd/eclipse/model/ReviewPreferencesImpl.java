@@ -1,5 +1,5 @@
 /*
- * Created on 29 mai 2005
+ * Created on 27 déc. 2005
  *
  * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
@@ -33,58 +33,64 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.dao;
 
+package net.sourceforge.pmd.eclipse.model;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
- * Factory for all DAO of the plugin
+ * Default implementation of the ReviewPreferences interface
  * 
- * @author Philippe Herlin
+ * @author Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.3  2005/12/30 16:25:39  phherlin
+ * Revision 1.1  2005/12/30 16:26:30  phherlin
  * Implement a new preferences model
- *
- * Revision 1.2  2005/06/07 18:38:14  phherlin
- * Move classes to limit packages cycle dependencies
- *
- * Revision 1.1  2005/05/31 20:33:01  phherlin
- * Continuing refactoring
  *
  *
  */
-public class DAOFactory {
-    private static final DAOFactory SELF = new DAOFactory();
-    private final ProjectPropertiesDAO projectPropertiesDao = new ProjectPropertiesDAOCastor(); // NOPMD:SingularField
-    private final PreferencesDAO preferencesDao = new PreferencesDAOImpl();
+
+public class ReviewPreferencesImpl implements ReviewPreferences {
+    private static final Log log = LogFactory.getLog(ReviewPreferencesImpl.class);
     
+    private String noPmdString;
+    private String additionalComment;
+
     /**
-     * Constructor. DAOFactory is a singleton.
-     *
+     * @see net.sourceforge.pmd.eclipse.model.ReviewPreferences#getAdditionalComment()
      */
-    private DAOFactory() {
-        super();
+    public String getAdditionalComment() throws ModelException {
+        if (this.additionalComment == null) {
+            this.additionalComment = REVIEW_ADDITIONAL_COMMENT_DEFAULT;
+        }
+        
+        return this.additionalComment;
     }
-    
+
     /**
-     * @return the singleton instance of the factory
+     * @see net.sourceforge.pmd.eclipse.model.ReviewPreferences#setAdditionalComment(java.lang.String)
      */
-    public static DAOFactory getFactory() {
-        return SELF;
+    public void setAdditionalComment(String comment) throws ModelException {
+        this.additionalComment = comment;
     }
-    
+
     /**
-     * @return a ProjectPropertiesDAO
+     * @see net.sourceforge.pmd.eclipse.model.ReviewPreferences#getNoPmdString()
      */
-    public ProjectPropertiesDAO getProjectPropertiesDAO() {
-        return this.projectPropertiesDao;
+    public String getNoPmdString() throws ModelException {
+        if (this.noPmdString == null) {
+            this.noPmdString = NO_PMD_STRING_DEFAULT;
+        }
+        
+        return this.noPmdString;
     }
-    
+
     /**
-     * @return a preferences DAO
+     * @see net.sourceforge.pmd.eclipse.model.ReviewPreferences#setNoPmdString(java.lang.String)
      */
-    public PreferencesDAO getPreferencesDAO() {
-        return this.preferencesDao;
+    public void setNoPmdString(String noPmdString) throws ModelException {
+        this.noPmdString = noPmdString;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Created on 29 mai 2005
+ * Created on 28 déc. 2005
  *
  * Copyright (c) 2005, PMD for Eclipse Development Team
  * All rights reserved.
@@ -33,58 +33,83 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package net.sourceforge.pmd.eclipse.dao;
 
+package net.sourceforge.pmd.eclipse.model;
+
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 
 /**
- * Factory for all DAO of the plugin
+ * Default implementation of a RuleSetProxy
  * 
- * @author Philippe Herlin
+ * @author Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.3  2005/12/30 16:25:39  phherlin
+ * Revision 1.1  2005/12/30 16:26:30  phherlin
  * Implement a new preferences model
- *
- * Revision 1.2  2005/06/07 18:38:14  phherlin
- * Move classes to limit packages cycle dependencies
- *
- * Revision 1.1  2005/05/31 20:33:01  phherlin
- * Continuing refactoring
  *
  *
  */
-public class DAOFactory {
-    private static final DAOFactory SELF = new DAOFactory();
-    private final ProjectPropertiesDAO projectPropertiesDao = new ProjectPropertiesDAOCastor(); // NOPMD:SingularField
-    private final PreferencesDAO preferencesDao = new PreferencesDAOImpl();
-    
+
+public class RuleSetProxyImpl implements RuleSetProxy {
+    private boolean override;
+    private String ruleSetUrl;
+    private RuleSet ruleSet;
+
     /**
-     * Constructor. DAOFactory is a singleton.
-     *
+     * @see net.sourceforge.pmd.eclipse.model.RuleSetProxy#isOverride()
      */
-    private DAOFactory() {
-        super();
+    public boolean isOverride() throws ModelException {
+        return this.override;
     }
-    
+
     /**
-     * @return the singleton instance of the factory
+     * @see net.sourceforge.pmd.eclipse.model.RuleSetProxy#setOverride(boolean)
      */
-    public static DAOFactory getFactory() {
-        return SELF;
+    public void setOverride(boolean override) throws ModelException {
+        this.override = override;
     }
-    
+
     /**
-     * @return a ProjectPropertiesDAO
+     * @see net.sourceforge.pmd.eclipse.model.RuleSetProxy#getRuleSetUrl()
      */
-    public ProjectPropertiesDAO getProjectPropertiesDAO() {
-        return this.projectPropertiesDao;
+    public String getRuleSetUrl() throws ModelException {
+        return this.ruleSetUrl;
     }
-    
+
     /**
-     * @return a preferences DAO
+     * @see net.sourceforge.pmd.eclipse.model.RuleSetProxy#setRuleSetUrl(java.lang.String)
      */
-    public PreferencesDAO getPreferencesDAO() {
-        return this.preferencesDao;
+    public void setRuleSetUrl(String ruleSetUrl) throws ModelException {
+        this.ruleSetUrl = ruleSetUrl;
     }
+
+    /**
+     * @see net.sourceforge.pmd.eclipse.model.RuleSetProxy#getRuleSet()
+     */
+    public RuleSet getRuleSet() throws ModelException {
+        try {
+            if ((this.ruleSet == null) && (!this.override)) {
+                RuleSetFactory factory = new RuleSetFactory();
+                this.ruleSet = factory.createRuleSet(this.ruleSetUrl);
+            }
+            
+            return this.ruleSet;
+            
+        } catch (RuleSetNotFoundException e) {
+            throw new ModelException(e);
+        }
+    }
+
+    /**
+     * @see net.sourceforge.pmd.eclipse.model.RuleSetProxy#setRuleSet(net.sourceforge.pmd.RuleSet)
+     */
+    public void setRuleSet(RuleSet ruleSet) throws ModelException {
+        if (this.override) {
+            this.ruleSet = ruleSet;
+        }
+    }
+
 }

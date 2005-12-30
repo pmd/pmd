@@ -47,6 +47,9 @@ import net.sourceforge.pmd.RuleSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/12/30 16:26:30  phherlin
+ * Implement a new preferences model
+ *
  * Revision 1.1  2005/10/24 22:41:57  phherlin
  * Refactor preferences management
  *
@@ -71,14 +74,14 @@ public interface Configuration {
      * @return all rulesets contained in that configuration
      * @throws ModelException if an error occurs
      */
-    RuleSet[] getRuleSets() throws ModelException;
+    RuleSetProxy[] getRuleSets() throws ModelException;
     
     /**
      * Convinient method to allow to set all configuration rulesets
      * @param ruleSets an array of rulesets
      * @throws ModelException if an error occurs
      */
-    void setRuleSets(RuleSet[] ruleSets) throws ModelException;
+    void setRuleSets(RuleSetProxy[] ruleSets) throws ModelException;
     
     /**
      * Add a ruleset to that configuration. If the ruleSet already exists,
@@ -86,7 +89,7 @@ public interface Configuration {
      * @param ruleSet a rule set
      * @throws ModelException if an error occurs
      */
-    void addRuleSet(RuleSet ruleSet) throws ModelException;
+    void addRuleSet(RuleSetProxy ruleSet) throws ModelException;
     
     /**
      * Remove a ruleset from that configuration.
@@ -95,7 +98,7 @@ public interface Configuration {
      * @param ruleSet the ruleset to remove
      * @throws ModelException if an error occurs
      */
-    void removeRuleSet(RuleSet ruleSet) throws ModelException;
+    void removeRuleSet(RuleSetProxy ruleSet) throws ModelException;
     
     /**
      * This is a convenient method that returns all rules from

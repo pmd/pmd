@@ -52,6 +52,9 @@ import net.sourceforge.pmd.RuleSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2005/12/30 16:26:30  phherlin
+ * Implement a new preferences model
+ *
  * Revision 1.1  2005/10/24 22:41:57  phherlin
  * Refactor preferences management
  *
@@ -105,14 +108,14 @@ public class ConfigurationImpl implements Configuration {
     /**
      * @see net.sourceforge.pmd.eclipse.model.Configuration#getRuleSets()
      */
-    public RuleSet[] getRuleSets() throws ModelException {
-        return (RuleSet[]) this.ruleSets.toArray(new RuleSet[this.ruleSets.size()]);
+    public RuleSetProxy[] getRuleSets() throws ModelException {
+        return (RuleSetProxy[]) this.ruleSets.toArray(new RuleSetProxy[this.ruleSets.size()]);
     }
 
     /**
      * @see net.sourceforge.pmd.eclipse.model.Configuration#setRuleSets(net.sourceforge.pmd.RuleSet[])
      */
-    public void setRuleSets(final RuleSet[] ruleSets) throws ModelException {
+    public void setRuleSets(final RuleSetProxy[] ruleSets) throws ModelException {
         if ((ruleSets == null) || (ruleSets.length == 0)) {
             throw new ModelException("Rulesets cannot be null nor empty"); // TODO NLS
         }
@@ -129,7 +132,7 @@ public class ConfigurationImpl implements Configuration {
     /**
      * @see net.sourceforge.pmd.eclipse.model.Configuration#addRuleSet(net.sourceforge.pmd.RuleSet)
      */
-    public void addRuleSet(final RuleSet ruleSet) throws ModelException {
+    public void addRuleSet(final RuleSetProxy ruleSet) throws ModelException {
         if (ruleSet == null) {
             throw new ModelException("RuleSet cannot be null"); //TODO NLS
         }
@@ -144,7 +147,7 @@ public class ConfigurationImpl implements Configuration {
     /**
      * @see net.sourceforge.pmd.eclipse.model.Configuration#removeRuleSet(net.sourceforge.pmd.RuleSet)
      */
-    public void removeRuleSet(final RuleSet ruleSet) throws ModelException {
+    public void removeRuleSet(final RuleSetProxy ruleSet) throws ModelException {
         if (ruleSet == null) {
             throw new ModelException("RuleSet cannot be null"); //TODO NLS
         }

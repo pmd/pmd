@@ -42,6 +42,9 @@ package net.sourceforge.pmd.eclipse.model;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2005/12/30 16:26:30  phherlin
+ * Implement a new preferences model
+ *
  * Revision 1.2  2005/10/24 22:41:57  phherlin
  * Refactor preferences management
  *
@@ -54,33 +57,38 @@ package net.sourceforge.pmd.eclipse.model;
  *
  */
 public interface PreferencesModel extends PMDPluginModel {
-    /**
-     * @return the comment text that will be added to review tags
-     * @throws ModelException if an error occurs
-     */
-    String getReviewAdditionalComment() throws ModelException;
     
     /**
-     * Set the comment text that will be added to review tags.
-     * This is a dynamic message. Substitutions strings are 0 for the user name
-     * and 1 for the current date and time.
-     * @param comment the review additional comment
-     * @throws ModelException if an error occurs
+     * @return wether the GUI should switch to the PMD perspective after PMD has been executed.
      */
-    void setReviewAdditionalComment(String comment) throws ModelException;
+    boolean isSwitchPmdPerspective() throws ModelException;
     
     /**
-     * @return the string used for NOPMD comments
-     * @throws ModelException if an error occurs
+     * Set wether the GUI should switch to the PMD perspective after PMD has been executed.
+     * @param switchPmdPerspective
      */
-    String getNoPmdString() throws ModelException;
+    void setSwitchPmdPerspective(boolean switchPmdPerspective) throws ModelException;
     
     /**
-     * Set the string for NOPMD comments
-     * @param noPmdString the NOPMD string
-     * @throws ModelException if an error occurs
+     * @return wether the Data Flow Analysis is enabled
      */
-    void setNoPmdString(String noPmdString) throws ModelException;
+    boolean dfaEnabled() throws ModelException;
+    
+    /**
+     * Set wether the Data Flow Analysis is enabled
+     * @param dfaEnabled
+     */
+    void setDfaEnabled(boolean dfaEnabled) throws ModelException;
+    
+    /**
+     * @return the preferences for violations review
+     */
+    ReviewPreferences getReviewPreferences() throws ModelException;
+    
+    /**
+     * @return preferences for the CPD tool
+     */
+    CPDPreferences getCpdPreferences() throws ModelException;
     
     /**
      * @return all plugun rulesets configurations
@@ -124,17 +132,4 @@ public interface PreferencesModel extends PMDPluginModel {
      * @return a default configuration
      */
     Configuration getDefaultConfiguration() throws ModelException;
-    
-    /**
-     * @return the CPD minimal tile size
-     * @throws ModelException if an error occurs
-     */
-    int getCpdTileSize() throws ModelException;
-
-    /**
-     * Set the CPD minimal tile size
-     * @param tileSize a tile size
-     * @throws ModelException if an error occurs
-     */
-    void setCpdTileSize(int tileSize) throws ModelException;
 }
