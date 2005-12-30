@@ -20,6 +20,7 @@ Fixed bug 1371741 - UncommentedEmptyConstructor no longer flags constructors tha
 Fixed bug 1277373 - InefficientStringBuffering no longer flags concatenations that involve a static final String.
 Fixed bug 1379701 - CompareObjectsWithEquals no longer flags comparisons of array elements.
 Fixed bug 1380969 - UnusedPrivateMethod no longer flags private static methods that are only invoked in a static context from a field declaration.
+Fixed bug 1384594 - Added a 'prefix' property for BeanMembersShouldSerializeRule
 Partially fixed bug 1371753 - UnnecessaryLocalBeforeReturn message now reflects the fact that that rule flags all types
 Fixed a bug in UseStringBufferLength; it no longers fails with an exception on expressions like StringBuffer.toString.equals(x)
 Modified renderers to support disabling printing of suppressed warnings.  Introduced a new AbstractRenderer class that all Renderers can extends to get the current behavior - that is, suppressed violations are printed.

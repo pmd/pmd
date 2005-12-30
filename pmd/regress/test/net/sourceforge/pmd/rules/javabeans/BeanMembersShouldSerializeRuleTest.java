@@ -26,7 +26,14 @@ public class BeanMembersShouldSerializeRuleTest extends SimpleAggregatorTst {
            new TestDescriptor(TEST6, "both accessors, yay!", 0, rule),
            new TestDescriptor(TEST7, "setFoo and isFoo is OK for booleans", 0, rule),
            new TestDescriptor(TEST8, "setFoo and isFoo is not OK for Strings", 1, rule),
+           new TestDescriptor(TEST9, "prefix is off by default", 1, rule),
        });
+    }
+
+    public void testPrefixProperty() throws Throwable {
+        Rule lclrule = findRule("javabeans", "BeanMembersShouldSerialize");
+        lclrule.addProperty("prefix", "m_");
+        runTestFromString(TEST10, 0, lclrule);
     }
 
     private static final String TEST1 =
@@ -81,6 +88,20 @@ public class BeanMembersShouldSerializeRuleTest extends SimpleAggregatorTst {
     " private String foo;" + PMD.EOL +
     " public void setFoo(String foo) {this.foo = foo;}" + PMD.EOL +
     " public String isFoo() {return foo;}" + PMD.EOL +
+    "}";
+
+    private static final String TEST9 =
+    "public class Foo {" + PMD.EOL +
+    " private String m_foo;" + PMD.EOL +
+    " public void setFoo(String foo) {m_foo = foo;}" + PMD.EOL +
+    " public String getFoo() {return m_foo;}" + PMD.EOL +
+    "}";
+
+    private static final String TEST10 =
+    "public class Foo {" + PMD.EOL +
+    " private String m_foo;" + PMD.EOL +
+    " public void setFoo(String foo) {m_foo = foo;}" + PMD.EOL +
+    " public String getFoo() {return m_foo;}" + PMD.EOL +
     "}";
 
 }

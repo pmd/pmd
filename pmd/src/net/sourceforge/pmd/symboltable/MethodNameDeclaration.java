@@ -20,6 +20,10 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         return ((ASTMethodDeclarator) node).getParameterCount();
     }
 
+    public ASTMethodDeclarator getMethodNameDeclaratorNode() {
+        return (ASTMethodDeclarator)node;
+    }
+
     public String getParameterDisplaySignature() {
         StringBuffer sb = new StringBuffer("(");
         ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);

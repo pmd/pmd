@@ -9,6 +9,7 @@ import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,16 +24,15 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             return data;
         }
 
-        // TODO use ClassScope.getMethodDeclarations instead
-        List methList =  node.findChildrenOfType(ASTMethodDeclarator.class);
-
+        Map methods = node.getScope().getEnclosingClassScope().getMethodDeclarations();
         List getSetMethList = new ArrayList();
-        for (Iterator i = methList.iterator(); i.hasNext();) {
-            ASTMethodDeclarator meth = (ASTMethodDeclarator) i.next();
-            if (isBeanAccessor(meth)) {
-                getSetMethList.add(meth);
+        for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
+            ASTMethodDeclarator mnd = ((MethodNameDeclaration)i.next()).getMethodNameDeclaratorNode();
+            if (isBeanAccessor(mnd)) {
+                getSetMethList.add(mnd);
             }
         }
+
         String[] methNameArray = new String[getSetMethList.size()];
         for (int i = 0; i < getSetMethList.size(); i++) {
             methNameArray[i] = ((ASTMethodDeclarator) getSetMethList.get(i)).getImage();
@@ -46,7 +46,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             if (((List) vars.get(decl)).isEmpty() || decl.getAccessNodeParent().isTransient() || decl.getAccessNodeParent().isStatic()) {
                 continue;
             }
-            String varName = decl.getImage();
+            String varName = trimIfPrefix(decl.getImage());
             varName = varName.substring(0, 1).toUpperCase() + varName.substring(1, varName.length());
             boolean hasGetMethod = Arrays.binarySearch(methNameArray, "get" + varName) >= 0 || Arrays.binarySearch(methNameArray, "is" + varName) >= 0;
             boolean hasSetMethod = Arrays.binarySearch(methNameArray, "set" + varName) >= 0;
@@ -55,6 +55,13 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             }
         }
         return super.visit(node, data);
+    }
+
+    private String trimIfPrefix(String img) {
+        if (getStringProperty("prefix") != null && img.startsWith(getStringProperty("prefix"))) {
+            return img.substring(getStringProperty("prefix").length());
+        }
+        return img;
     }
 
     private boolean isBeanAccessor(ASTMethodDeclarator meth) {
