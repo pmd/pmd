@@ -27,6 +27,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.13  2005/12/30 16:22:31  phherlin
+ * Add a debug log to check what happens when this action is launched in an editor pane
+ *
  * Revision 1.12  2005/10/24 22:39:00  phherlin
  * Integrating Sebastian Raffel's work
  * Refactor command processing
@@ -80,6 +83,8 @@ public class PMDCheckAction implements IObjectActionDelegate {
             ISelection selection = this.targetPart.getSite().getSelectionProvider().getSelection();
             if (selection instanceof IStructuredSelection) {
                 reviewSelectedResources((IStructuredSelection) selection);
+            } else {
+                log.debug("The selection is not an instance of IStructuredSelection. This is not supported: " + selection.getClass().getName());
             }
         } catch (CommandException e) {
             PMDPlugin.getDefault().showError(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
