@@ -85,6 +85,9 @@ import org.eclipse.ui.WorkbenchException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2005/12/30 16:24:01  phherlin
+ * Adding a null resource is illegal. Throw an IllegalArgumentException.
+ *
  * Revision 1.6  2005/10/24 22:40:54  phherlin
  * Refactor command processing
  *
@@ -178,6 +181,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * @param resource a workbench resource
      */
     public void addResource(final IResource resource) {
+        if (resource == null) {
+            throw new IllegalArgumentException("Resource parameter can not be null");
+        }
+        
         this.resources.add(resource);
     }
 
