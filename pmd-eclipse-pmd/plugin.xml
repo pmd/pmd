@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.core"
    name="%plugin.name"
-   version="3.3.0"
+   version="3.4.0"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.core.PMDCorePlugin">
 
@@ -17,7 +17,7 @@
       <library name="lib/xmlParserAPIs-2.6.2.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd-3.3.jar">
+      <library name="lib/pmd-3.4.jar">
          <export name="*"/>
       </library>
       <library name="core.jar">
