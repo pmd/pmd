@@ -1,9 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.rules;
+package net.sourceforge.pmd.rules.imports;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.rules.ImportWrapper;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;

@@ -18,10 +18,10 @@ public class UseAssertSameInsteadOfAssertTrueTest extends SimpleAggregatorTst {
     public void testAll() throws Throwable {
 
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "TEST1", 1, rule),
-           new TestDescriptor(TEST2, "TEST2", 1, rule),
-           new TestDescriptor(TEST3, "TEST3", 1, rule),
-           new TestDescriptor(TEST4, "TEST4", 1, rule),
+           new TestDescriptor(TEST1, "assert true a == b", 1, rule),
+           new TestDescriptor(TEST2, "assert true a != b", 1, rule),
+           new TestDescriptor(TEST3, "assert false a == b", 1, rule),
+           new TestDescriptor(TEST4, "assert false a != b", 1, rule),
        });
     }
 
@@ -33,24 +33,24 @@ public class UseAssertSameInsteadOfAssertTrueTest extends SimpleAggregatorTst {
     "}";
 
     private static final String TEST2 =
-        "public class Foo {" + PMD.EOL +
-        " public void test1() {" + PMD.EOL +
-        "  assertTrue(a!=b);" + PMD.EOL +
-        " }" + PMD.EOL +
-        "}";
+    "public class Foo {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertTrue(a!=b);" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 
     private static final String TEST3 =
-        "public class Foo {" + PMD.EOL +
-        " public void test1() {" + PMD.EOL +
-        "  assertFalse(a==b);" + PMD.EOL +
-        " }" + PMD.EOL +
-        "}";
+    "public class Foo {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertFalse(a==b);" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 
     private static final String TEST4 =
-        "public class Foo {" + PMD.EOL +
-        " public void test1() {" + PMD.EOL +
-        "  assertFalse(a!=b);" + PMD.EOL +
-        " }" + PMD.EOL +
-        "}";
+    "public class Foo {" + PMD.EOL +
+    " public void test1() {" + PMD.EOL +
+    "  assertFalse(a!=b);" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 
 }

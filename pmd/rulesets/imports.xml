@@ -8,7 +8,7 @@ These rules deal with different problems that can occur with a class' import sta
 
   <rule name="DuplicateImports"
         message="Avoid duplicate imports such as ''{0}''"
-        class="net.sourceforge.pmd.rules.DuplicateImportsRule"
+        class="net.sourceforge.pmd.rules.imports.DuplicateImportsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#DuplicateImports">
     <description>
     Avoid duplicate import statements.
@@ -64,7 +64,7 @@ public class Foo {}
 
   <rule name="UnusedImports"
         message="Avoid unused imports such as ''{0}''"
-        class="net.sourceforge.pmd.rules.UnusedImportsRule"
+        class="net.sourceforge.pmd.rules.imports.UnusedImportsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports">
     <description>
     Avoid unused import statements.
@@ -81,7 +81,7 @@ public class Foo {}
 
     <rule name="ImportFromSamePackage"
          message="No need to import a type that's in the same package"
-         class="net.sourceforge.pmd.rules.ImportFromSamePackageRule"
+         class="net.sourceforge.pmd.rules.imports.ImportFromSamePackageRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#ImportFromSamePackage">
      <description>
  No need to import a type that's in the same package.

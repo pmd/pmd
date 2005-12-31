@@ -6,72 +6,94 @@
 These are new rules that are still in progress
   </description>
 
-    <rule  name="UselessOperationOnImmutable"
-           message="An operation on an Immutable object (BigDecimal or BigInteger) won''t change the object itself"
-           class="net.sourceforge.pmd.rules.XPathRule"
-           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor">
-      <description>
-    An operation on an Immutable object (BigDecimal or BigInteger) won't change the object itself. The
-    result of the operation is a new object. Therefore, ignoring the operation result is an error.
-      </description>
-      <properties>
-        <property name="xpath">
-        <value>
-    <![CDATA[
-    //Statement//StatementExpression
-    [PrimaryExpression/PrimaryPrefix/Name
-    [
-    starts-with(@Image,concat(ancestor::MethodDeclaration//LocalVariableDeclaration
-    [./Type//ClassOrInterfaceType[@Image = 'BigInteger' or
-    @Image = 'BigDecimal']]/VariableDeclarator/VariableDeclaratorId/@Image,"."))
-    and
-    (
-    ends-with(@Image,".add")
-    or
-    ends-with(@Image,".multiply")
-    or
-    ends-with(@Image,".divide")
-    or
-    ends-with(@Image,".subtract")
-    or
-    ends-with(@Image,".setScale")
-    or
-    ends-with(@Image,".negate")
-    or
-    ends-with(@Image,".movePointLeft")
-    or
-    ends-with(@Image,".movePointRight")
-    or
-    ends-with(@Image,".pow")
-    or
-    ends-with(@Image,".shiftLeft")
-    or
-    ends-with(@Image,".shiftRight")
-    )
-    ]
-    ]
-    ]]>
-        </value>
-        </property>
-      </properties>
-      <priority>3</priority>
-      <example>
-    <![CDATA[
-import java.math.*;
-class Test {
- void method1() {
-  BigDecimal bd=new BigDecimal(10);
-  bd.add(new BigDecimal(5)); // this will trigger the rule
- }
- void method2() {
-  BigDecimal bd=new BigDecimal(10);
-  bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
- }
-}
-    ]]>
-      </example>
-    </rule>
+<rule name="MisplacedNullCheck"
+  message="The null check here is misplaced. if the
+variable is null we will get a NullPointerException"
+  class="net.sourceforge.pmd.rules.XPathRule">
+  <description>
+The null check here is misplaced. if the variable is null
+we will get a NullPointerException.
+Either the check is useless (the variable will never
+be "null" or incorrect).
+  </description>
+  <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//Expression/ConditionalAndExpression
+ /descendant::PrimaryExpression/PrimaryPrefix
+  /Name[starts-with(@Image, concat(ancestor::PrimaryExpression/following-sibling::EqualityExpression[@Image="!=" and ./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+ /PrimaryExpression/PrimaryPrefix
+  /Name[count(../../PrimarySuffix)=0]/@Image,"."))
+]
+]]>
+   </value>
+    </property>
+  </properties>
+  <priority>3</priority>
+  <example>
+<![CDATA[
+public class Test {
 
+ public String method1() { return "ok";}
+
+ public String method2() {
+
+        Test a=new Test();
+
+        Test b=new Test();
+
+        Test[] c= new Test[10];
+
+        if (a!=null && a.equals(method1())) { //
+won't
+trigger the rule
+          //whatever
+        }
+
+
+        if (a.equals(method1()) && a!=null) { // will
+trigger the rule
+          //whatever
+        }
+
+        if (b!=null && b.equals("1")
+&& a!= null) { // will
+trigger the rule
+          //whatever
+        }
+
+
+        if ( "1".equals(b) && a!=null
+&& a.equals(b.method1
+())) {  // won't trigger the rule
+          //whatever
+        }
+
+        if (b.equals(a.method1()) && a!=null) { // will
+
+trigger the rule
+          //whatever
+        }
+
+        if (a != null && a.equals("submit")
+&& b != this)
+{ // won't trigger the rule
+          //whatever
+        }
+
+        if (c.length==1 && c[0].method2()!=null) { //
+won't
+trigger the rule
+          //whatever
+        }
+
+        return "ok";
+	}
+}
+]]>
+  </example>
+</rule>
     <!--
     <rule name="UnusedNullCheckInEquals"
 message="Use the equals metod on the object you've

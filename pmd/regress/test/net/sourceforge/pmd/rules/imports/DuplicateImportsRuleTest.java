@@ -5,7 +5,7 @@ package test.net.sourceforge.pmd.rules.imports;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.DuplicateImportsRule;
+import net.sourceforge.pmd.rules.imports.DuplicateImportsRule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 

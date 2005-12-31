@@ -19,11 +19,11 @@ public class JUnitSpellingRuleTest extends SimpleAggregatorTst {
 
     public void testAll() {
        runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "testSetupMisspellings1", 2, rule),
-           new TestDescriptor(TEST2, "testTeardownMisspellings", 2, rule),
-           new TestDescriptor(TEST3, "testMethodsSpelledOK", 0, rule),
-           new TestDescriptor(TEST4, "testUnrelatedMethods", 0, rule),
-           new TestDescriptor(TEST5, "testMethodWithParams", 0, rule),
+           new TestDescriptor(TEST1, "setUp mispellings", 2, rule),
+           new TestDescriptor(TEST2, "tearDown mispellings", 2, rule),
+           new TestDescriptor(TEST3, "ok", 0, rule),
+           new TestDescriptor(TEST4, "unrelated methods", 0, rule),
+           new TestDescriptor(TEST5, "overloaded setUp", 0, rule),
        });
     }
 
