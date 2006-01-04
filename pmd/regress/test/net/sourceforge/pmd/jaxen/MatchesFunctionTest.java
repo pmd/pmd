@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.jaxen;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.jaxen.RegexpFunction;
+import net.sourceforge.pmd.jaxen.MatchesFunction;
 import net.sourceforge.pmd.jaxen.Attribute;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
@@ -12,7 +12,7 @@ import java.util.List;
 import org.jaxen.Context;
 import org.jaxen.FunctionCallException;
 
-public class RegexFunctionTest extends TestCase implements Node {
+public class MatchesFunctionTest extends TestCase implements Node {
 
     public void jjtOpen() {
     }
@@ -21,7 +21,7 @@ public class RegexFunctionTest extends TestCase implements Node {
     public void jjtSetParent(Node n) {
     }
     public Node jjtGetParent() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
     public void jjtAddChild(Node n, int i) {
     }
@@ -54,10 +54,10 @@ public class RegexFunctionTest extends TestCase implements Node {
     }
 
     private Object tryRegexp(String exp) throws FunctionCallException {
-        RegexpFunction function = new RegexpFunction();
+        MatchesFunction function = new MatchesFunction();
         List list = new ArrayList();
         List attrs = new ArrayList();
-        attrs.add(new Attribute(this, "regexp", getClass().getMethods()[0]));
+        attrs.add(new Attribute(this, "matches", getClass().getMethods()[0]));
         list.add(attrs);
         list.add(exp);
         Context c = new Context(null);

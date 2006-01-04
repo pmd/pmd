@@ -9,7 +9,7 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.jaxen.Attribute;
-import net.sourceforge.pmd.jaxen.RegexpFunction;
+import net.sourceforge.pmd.jaxen.MatchesFunction;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.SimpleVariableContext;
@@ -56,8 +56,7 @@ public class XPathRule extends AbstractRule {
         }
 
         if (!regexpFunctionRegistered) {
-            // see http://jaxen.org/extensions.html
-            ((SimpleFunctionContext)XPathFunctionContext.getInstance()).registerFunction(null, "regexp", new RegexpFunction());
+            MatchesFunction.registerSelfInSimpleContext();
             regexpFunctionRegistered = true;
         }
 

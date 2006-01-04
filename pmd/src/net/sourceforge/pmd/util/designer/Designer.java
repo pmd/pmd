@@ -11,7 +11,7 @@ import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.rules.XPathRule;
-import net.sourceforge.pmd.jaxen.RegexpFunction;
+import net.sourceforge.pmd.jaxen.MatchesFunction;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
@@ -147,7 +147,7 @@ public class Designer implements ClipboardOwner {
     private JRadioButtonMenuItem jdk15MenuItem;
 
     public Designer() {
-        ((SimpleFunctionContext)XPathFunctionContext.getInstance()).registerFunction(null, "regexp", new RegexpFunction());
+        MatchesFunction.registerSelfInSimpleContext();
 
         xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
         JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(codeEditorPane), createXPathQueryPanel());
