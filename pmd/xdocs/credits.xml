@@ -47,7 +47,7 @@
         <ul>
             <li>Allan Caplan - fixed missed hits for AppendCharacterWithChar and InefficientStringBuffering, wrote AppendCharacterWithChar, wrote IntegerInstantiation, wrote UseStringBufferLength, wrote AvoidEnumAsIdentifier, bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
             <li>Greg Broderick - provided patch for 'minimum priority' support</li>
-            <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
+            <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
             <li>David Corley - Nifty Javascript folding for XML report, <a href="http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html">demo is here</a></li>
             <li>George Sexton - Bug report 1379701 for CompareObjectsWithEquals, suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
             <li>Didier Duquennoy - several bug reports for InefficientStringBuffering, bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>

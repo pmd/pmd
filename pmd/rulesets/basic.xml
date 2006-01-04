@@ -828,7 +828,7 @@ public class Test {
     <rule  name="UselessOperationOnImmutable"
            message="An operation on an Immutable object (BigDecimal or BigInteger) won''t change the object itself"
            class="net.sourceforge.pmd.rules.XPathRule"
-           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor">
+           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOperationOnImmutable">
       <description>
     An operation on an Immutable object (BigDecimal or BigInteger) won't change the object itself. The
     result of the operation is a new object. Therefore, ignoring the operation result is an error.
@@ -890,5 +890,44 @@ class Test {
     ]]>
       </example>
     </rule>
+
+    <rule  name="MisplacedNullCheck"
+           message="The null check here is misplaced; if the variable is null there'll be a NullPointerException"
+           class="net.sourceforge.pmd.rules.XPathRule"
+           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#MisplacedNullCheck">
+      <description>
+    The null check here is misplaced. if the variable is null you'll get a NullPointerException.
+    Either the check is useless (the variable will never  be "null") or it's incorrect.
+      </description>
+      <properties>
+        <property name="xpath">
+        <value>
+    <![CDATA[
+    //Expression/ConditionalAndExpression
+     /descendant::PrimaryExpression/PrimaryPrefix
+      /Name[starts-with(@Image,
+      concat(ancestor::PrimaryExpression/following-sibling::EqualityExpression
+       [@Image="!=" and ./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+     /PrimaryExpression/PrimaryPrefix
+      /Name[count(../../PrimarySuffix)=0]/@Image,"."))
+    ]
+    ]]>
+        </value>
+        </property>
+      </properties>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+public class Foo {
+ public void bar() {
+  if (a.equals("hi") && a != null) {
+   // do something
+  }
+ }
+}
+    ]]>
+      </example>
+    </rule>
+
 </ruleset>
 
