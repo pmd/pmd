@@ -35,6 +35,8 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST15, "don't get thrown off by a buried literal", 1, rule),
                new TestDescriptor(TEST16, "sb.delete shouldn't trigger it", 0, rule),
                new TestDescriptor(TEST17, "skip additions involving static finals, compiler will do constant folding for these", 0, rule),
+               new TestDescriptor(TEST18, "for statement without braces", 1, rule),
+               new TestDescriptor(TEST19, "if statement without braces", 1, rule),
        });
     }
 
@@ -167,6 +169,24 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
         " public static final String FOO = \"bar\";" + PMD.EOL +
         " public void bar(StringBuffer sb) {" + PMD.EOL +
         "  sb.append(\"foo\" + FOO);" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+   
+    private static final String TEST18 =
+        "public class Foo {" + PMD.EOL +
+        " private void baz() {" + PMD.EOL +
+        "  StringBuffer sb = new StringBuffer();" + PMD.EOL +
+        "  for(int ix = 0; ix < 100; ix++) "+
+        "      sb.append(\"hello\"+ world()); "+
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST19 =
+        "public class Foo {" + PMD.EOL +
+        " private void baz() {" + PMD.EOL +
+        "  StringBuffer sb = new StringBuffer();" + PMD.EOL +
+        "  if(true) "+
+        "      sb.append(\"hello\"+ world()); "+
         " }" + PMD.EOL +
         "}";
 }

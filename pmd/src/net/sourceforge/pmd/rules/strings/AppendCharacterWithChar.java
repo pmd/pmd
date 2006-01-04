@@ -26,7 +26,7 @@ public class AppendCharacterWithChar extends AbstractRule {
 
 		String str = node.getImage();
 		if (str != null && str.length() == 3 && str.charAt(0) == '\"' && str.charAt(2) == '"') {
-			if (!InefficientStringBuffering.isInStringBufferAppend(node, 10)) {
+			if (!InefficientStringBuffering.isInStringBufferAppend(node, 8)) {
 				return data;
 			}
 			addViolation(data, node);

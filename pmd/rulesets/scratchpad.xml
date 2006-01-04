@@ -7,8 +7,7 @@ These are new rules that are still in progress
   </description>
 
 <rule name="MisplacedNullCheck"
-  message="The null check here is misplaced. if the
-variable is null we will get a NullPointerException"
+  message="The null check here is misplaced; if the variable is null there'll get a NullPointerException"
   class="net.sourceforge.pmd.rules.XPathRule">
   <description>
 The null check here is misplaced. if the variable is null

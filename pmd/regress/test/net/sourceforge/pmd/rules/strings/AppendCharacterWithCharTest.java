@@ -23,6 +23,7 @@ public class AppendCharacterWithCharTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST3, "this is probably wrong, but shouldn't fail", 0, rule),
                new TestDescriptor(TEST4, "concatenates a three character int", 0, rule),
                new TestDescriptor(TEST5, "concatenates a string explicitly set to 1 character, not explicitly checking right now", 0, rule),
+               new TestDescriptor(TEST6, "for statement", 1, rule),
        });
     }
     private static final String TEST1 =
@@ -62,4 +63,13 @@ public class AppendCharacterWithCharTest extends SimpleAggregatorTst {
         "  sb.append(str);" + PMD.EOL +
         " }" + PMD.EOL +
         "}";
+
+    private static final String TEST6 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar(StringBuffer sb) {" + PMD.EOL +
+        "  for(int ix = 0; ix < 100; ix++) "+
+        "      sb.append(\"a\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
 }

@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
@@ -70,17 +71,17 @@ public class InefficientStringBuffering extends AbstractRule {
             if (isAllocatedStringBuffer(node)) {
                 addViolation(data, node);
             }
-        } else if (isInStringBufferAppend(node, 8)) {
+        } else if (isInStringBufferAppend(node, 6)) {
             addViolation(data, node);
         }
         return data;
     }
 
     protected static boolean isInStringBufferAppend(SimpleNode node, int length) {
-        if (!xParentIsBlockStatement(node, length)) {
+        if (!xParentIsStatementExpression(node, length)) {
             return false;
         }
-        ASTBlockStatement s = (ASTBlockStatement) node.getFirstParentOfType(ASTBlockStatement.class);
+        ASTStatementExpression s = (ASTStatementExpression) node.getFirstParentOfType(ASTStatementExpression.class);
         if (s == null) {
             return false;
         }
@@ -93,7 +94,7 @@ public class InefficientStringBuffering extends AbstractRule {
     }
 
     // TODO move this method to SimpleNode
-    private static boolean xParentIsBlockStatement(SimpleNode node, int length) {
+    private static boolean xParentIsStatementExpression(SimpleNode node, int length) {
         Node curr = node;
         for (int i=0; i<length; i++) {
             if (node.jjtGetParent() == null) {
@@ -101,7 +102,7 @@ public class InefficientStringBuffering extends AbstractRule {
             }
             curr = curr.jjtGetParent();
         }
-        return curr instanceof ASTBlockStatement;
+        return curr instanceof ASTStatementExpression;
     }
 
     private boolean isAllocatedStringBuffer(ASTAdditiveExpression node) {
