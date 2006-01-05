@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Sean Mountcastle - reported documentation bug</li>
             <li>Allan Caplan - wrote BooleanInversion, fixed missed hits for AppendCharacterWithChar and InefficientStringBuffering, wrote AppendCharacterWithChar, wrote IntegerInstantiation, wrote UseStringBufferLength, wrote AvoidEnumAsIdentifier, bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
             <li>Greg Broderick - provided patch for 'minimum priority' support</li>
             <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>

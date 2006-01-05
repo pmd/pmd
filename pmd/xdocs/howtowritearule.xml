@@ -192,7 +192,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
         &lt;?xml version="1.0"?>
             &lt;rule name="WhileLoopsMustUseBracesRule"
                   message="Avoid using 'while' statements without curly braces"
-                  class="net.sourceforge.pmd.rules.XPathRule">
+                  class="WhileLoopsMustUseBracesRule">
               &lt;description>
               Avoid using 'while' statements without using curly braces
               &lt;/description>
