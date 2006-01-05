@@ -134,8 +134,8 @@ public class Foo {
     </rule>
 
     <rule name="UseStringBufferForStringAppends"
-              message="Prefer StringBuffer over += for concatenating strings"
-              class="net.sourceforge.pmd.rules.XPathRule"
+          message="Prefer StringBuffer over += for concatenating strings"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseStringBufferForStringAppends">
            <description>
 Finds usages of += for appending strings.
@@ -173,7 +173,8 @@ public class Foo {
 
   <rule name="UseArraysAsList"
      message="Use asList instead of tight loops"
-     class="net.sourceforge.pmd.rules.XPathRule">
+      class="net.sourceforge.pmd.rules.XPathRule"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseArraysAsList">
      <description>
    The class java.util.Arrays has a "asList" method that
    should be use when you want to create a new List from
@@ -235,7 +236,8 @@ public class Foo {
 
     <rule name="AvoidArrayLoops"
       message="System.arrayCopy is more efficient"
-      class="net.sourceforge.pmd.rules.XPathRule">
+      class="net.sourceforge.pmd.rules.XPathRule"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#AvoidArrayLoops">
       <description>
     Instead of copying data between two arrays, use
     System.arrayCopy method
@@ -284,6 +286,38 @@ public class Test {
         }
     }
     ]]>
+      </example>
+    </rule>
+
+
+    <rule name="BooleanInversion"
+          message="Use bitwise inversion to invert boolean values"
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#BooleanInversion">
+      <description>
+Use bitwise inversion to invert boolean values - it's the fastest way to do this.
+See http://www.javaspecialists.co.za/archive/newsletter.do?issue=042&amp;locale=en_US for specific details
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//AssignmentOperator[@Image="="]/../Expression/UnaryExpressionNotPlusMinus[@Image="!"]
+]]>
+             </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+      <example>
+  <![CDATA[
+public class Foo {
+	public static void main(String[] args) {
+		boolean b = true;
+		boolean c = false;
+		c = !b;
+	}
+}
+]]>
       </example>
     </rule>
 
