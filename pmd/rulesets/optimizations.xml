@@ -311,11 +311,11 @@ See http://www.javaspecialists.co.za/archive/newsletter.do?issue=042&amp;locale=
       <example>
   <![CDATA[
 public class Foo {
-	public static void main(String[] args) {
-		boolean b = true;
-		boolean c = false;
-		c = !b;
-	}
+ public void main(bar) {
+  boolean b = true;
+  b = !b; // slow
+  b ^= true; // fast
+ }
 }
 ]]>
       </example>
