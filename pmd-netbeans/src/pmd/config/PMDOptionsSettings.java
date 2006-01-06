@@ -52,7 +52,7 @@ public class PMDOptionsSettings extends SystemOption {
 	 */
 	public final static String PROP_RULES = "rules";
 
-	/** The constant for the rule properties property. Please excuse the name! The value of this property is
+	/** The constant for the rule properties property. The value of this property is
 	 * a <code>Map</code>, whose keys are Strings (rule names) and whose values are instances of
 	 * <code>Map</code> containing rule properties (keys and values are <code>String</code>s). These rule
 	 * properties override the rules configured for a given rule in its ruleset definition. This is to
@@ -159,7 +159,7 @@ public class PMDOptionsSettings extends SystemOption {
 	}
 
 	/**
-	 * Returns the rule properties property (sorry). See {@link #PROP_RULE_PROPERTIES}.
+	 * Returns the rule properties property. See {@link #PROP_RULE_PROPERTIES}.
 	 * Note: this returns a non-live <em>deep copy</em> of the rule properties map;
 	 * changes to the map or its contents will not affect the PMD settings until you
 	 * call {@link #setRuleProperties} with the modified map.

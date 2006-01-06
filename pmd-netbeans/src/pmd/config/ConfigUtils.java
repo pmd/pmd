@@ -86,9 +86,8 @@ public abstract class ConfigUtils {
 	 * @param rules a string containing the names of the rules to use, with a comma-and-space after each one (including the last).
 	 * @return a list containing the rules to use. Each element of the list is an instance of {@link Rule}.
 	 */
-	public static List createRuleList( String rules ) {
+	public static List createRuleList( String rules, Map propOverrides ) {
 		Iterator iterator = getAllAvailableRules().iterator();
-		Map propOverrides = PMDOptionsSettings.getDefault().getRuleProperties();
 		List list = new ArrayList();
 		while( iterator.hasNext() ) {
 			Rule rule = ( Rule )iterator.next();
@@ -118,7 +117,9 @@ public abstract class ConfigUtils {
 	 * @return a list containing the rules to use. Each element of the list is an instance of {@link Rule}.
 	 */
 	public static List getRuleList() {
-		return createRuleList( PMDOptionsSettings.getDefault().getRules() );
+		return createRuleList( PMDOptionsSettings.getDefault().getRules(),
+                        PMDOptionsSettings.getDefault().getRuleProperties()
+                        );
 	}
 	
 	

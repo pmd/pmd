@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2002-2003, the pmd-netbeans team
+ *  Copyright (c) 2002-2006, the pmd-netbeans team
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without modification,
@@ -26,37 +26,25 @@
  */
 package pmd.config.ui;
 
-import java.util.ArrayList;
+import org.netbeans.spi.options.AdvancedOption;
+import org.netbeans.spi.options.OptionsPanelController;
+import org.openide.util.NbBundle;
 
-
-/**
- * The data model for the selected-rules UI.
+/** 
+ * The PropertyEditor of the Rule property
  */
-public class SelectedListModel extends RuleListModel {
-
-	/** The instance */
-	private static SelectedListModel listmodel;
-
-	/**
-	 * Gets the instance of the SelectedListModel class
-	 *
-	 * @return The instance
-	 */
-	public static synchronized SelectedListModel getInstance() {
-		if(listmodel == null) {
-			listmodel = new SelectedListModel();
-		}
-		return listmodel;
+public class PmdOptionsPanel extends AdvancedOption {
+    
+	public String getDisplayName() {
+	    return NbBundle.getMessage(PmdOptionsPanel.class, "LBL_PmdOptions");
 	}
 
-	/** Creates a new instance of SelectedListModel */
-	private SelectedListModel() {
-		super();
+	public String getTooltip() {
+	    return NbBundle.getMessage(PmdOptionsPanel.class, "LBL_PmdOptionsTip");
 	}
 
-	/** Resets the content of the list */
-	public void refresh() {
-		setList(new ArrayList());
+	public OptionsPanelController create() {
+            return new PmdOptionsController();
 	}
 
 }

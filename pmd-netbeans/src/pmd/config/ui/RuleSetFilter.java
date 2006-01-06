@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2002-2003, the pmd-netbeans team
+ *  Copyright (c) 2002-2006, the pmd-netbeans team
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without modification,
@@ -54,10 +54,10 @@ public class RuleSetFilter extends FileFilter {
 
 	public String getDescription() {
 		if( type == RULESETS ) {
-			return "RuleSet(*.xml)";
+			return "RuleSet (*.xml)";
 		}
 		else {
-			return "Rules(*.jar)";
+			return "Rules (*.jar)";
 		}
 	}
 	

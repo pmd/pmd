@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2002-2003, the pmd-netbeans team
+ *  Copyright (c) 2002-2006, the pmd-netbeans team
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without modification,
@@ -26,39 +26,34 @@
  */
 package pmd.config.ui;
 
-import java.util.Collections;
+import java.util.Map;
 
-import pmd.config.ConfigUtils;
-
-/**
- * The data model for the available-but-not-selected-rules UI.
+/** 
+ * Wrapper for list of selected rules and overriden properties.
  */
-public class AvailableListModel extends RuleListModel {
-	
-	/** The instance */
-	private static AvailableListModel listmodel;
+public class RulesConfig {
 
-	/**
-	 * Gets the instance of the AvailableListModel class
-	 *
-	 * @return The instance
-	 */
-	public static synchronized AvailableListModel getInstance() {
-		if(listmodel == null) {
-			listmodel = new AvailableListModel();
-		}
-		return listmodel;
-	}
+    private String rules;
+    private Map/*<String,<String,Object>>*/ props;
+    
+    RulesConfig (String rules, Map props) {
+        this.rules = rules;
+        this.props = props;
+    }
+    
+    public void setProperties (Map props) {
+        this.props = props;
+    }
 
-	/** Creates a new instance of ListModel */
-	protected AvailableListModel() {
-		super();
-	}
-
-	/** Resets the list */
-	public void refresh() {
-		list = ConfigUtils.getAllAvailableRules();
-		list.removeAll(SelectedListModel.getInstance().getList());
-		Collections.sort(list, new RuleComparator());	
-	}
+    public Map getProperties () {
+        return props;
+    }
+    
+    public void setRules (String rules) {
+        this.rules = rules;
+    }
+    
+    public String getRules () {
+        return rules;
+    }
 }

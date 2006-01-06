@@ -37,15 +37,14 @@ import net.sourceforge.pmd.Rule;
 /**
  * Common base class for list models for PMD rule lists.
  */
-public abstract class RuleListModel extends AbstractListModel {
+public class RuleListModel extends AbstractListModel {
 	
 	/** The data in the list. */
-	protected List list;
+	private List/*<Rule>*/ list;
 	
 	/** Constructor for use by subclasses. */
 	protected RuleListModel() {
 		list = new ArrayList();
-		refresh();
 	}
 
 	/**
@@ -130,7 +129,4 @@ public abstract class RuleListModel extends AbstractListModel {
 		return list;
 	}
 
-
-	/** Resets the list to a starting state. */
-	public abstract void refresh();
 }

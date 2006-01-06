@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
+ <folder name="OptionsDialog">
+     <folder name="Advanced">
+         <attr name="FormEditor.instance/PmdOptionsPanel.instance" boolvalue="true"/>
+            <file name="PmdOptionsPanel.instance">
+             <attr name="instanceClass" stringvalue="pmd.config.ui.PmdOptionsPanel"/>
+         </file>
+     </folder>
+ </folder>
     <folder name="Services">
         <file name="pmd-config-option.settings" url="config/option.xml">
             <attr name="SystemFileSystem.localizingBundle" stringvalue="pmd.config.Bundle"/>

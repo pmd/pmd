@@ -35,6 +35,7 @@ import pmd.config.ConfigUtils;
  */
 public class RuleEditor extends PropertyEditorSupport {
 
+    private RulesConfig data;
 	/** 
 	 * Returns the custom editor of the Rule property
 	 * @return the editor
@@ -58,8 +59,10 @@ public class RuleEditor extends PropertyEditorSupport {
 	 * @return the selected rules
 	 */
 	public Object getValue() {
-		return ConfigUtils.getValueAsText( 
-			SelectedListModel.getInstance().getList() );
+            return data;
+            
+//		return ConfigUtils.getValueAsText( 
+//			SelectedListModel.getInstance().getList() );
 	}
 
 
@@ -77,10 +80,9 @@ public class RuleEditor extends PropertyEditorSupport {
 	 * @param obj The new value
 	 */
 	public void setValue( Object obj ) {
-		if( obj != null ) {
-			SelectedListModel.getInstance().setList( 
-				ConfigUtils.createRuleList( (String)obj ) );
-			AvailableListModel.getInstance().refresh();
+		if( obj instanceof RulesConfig) {
+                    data = (RulesConfig)obj;
+                    firePropertyChange();
 		}
 	}
 
