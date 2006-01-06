@@ -43,7 +43,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
-
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 public class Designer implements ClipboardOwner {
 
     private JavaParser createParser() {
@@ -158,12 +159,25 @@ public class Designer implements ClipboardOwner {
         tabbed.addTab("Data Flow Analysis", dfaPanel);
         try {
             // Remove when minimal runtime support is >= JDK 1.4
-            if (JTabbedPane.class.getMethod("setMnemonicAt", new Class[]{Integer.TYPE, Integer.TYPE}) != null) {
-                // Compatible with >= JDK 1.4
-                tabbed.setMnemonicAt(0, KeyEvent.VK_A);
-                tabbed.setMnemonicAt(1, KeyEvent.VK_D);
+            Method setMnemonicAt = JTabbedPane.class.getMethod("setMnemonicAt", new Class[]{Integer.TYPE, Integer.TYPE});
+            if (setMnemonicAt != null) {
+        //        // Compatible with >= JDK 1.4
+        //        tabbed.setMnemonicAt(0, KeyEvent.VK_A);
+        //        tabbed.setMnemonicAt(1, KeyEvent.VK_D);
+                setMnemonicAt.invoke(tabbed, new Object[] { new Integer(0), new Integer(KeyEvent.VK_A) });
+                setMnemonicAt.invoke(tabbed, new Object[] { new Integer(1), new Integer(KeyEvent.VK_D) });
             }
-        } catch (NoSuchMethodException nsme) {} // Runtime is < JDK 1.4
+        } catch (NoSuchMethodException nsme) { // Runtime is < JDK 1.4
+        } catch (IllegalAccessException e) { // Runtime is >= JDK 1.4 but there was an error accessing the function
+            e.printStackTrace();
+            throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
+        } catch (InvocationTargetException e) { // Runtime is >= JDK 1.4 but there was an error accessing the function
+            e.printStackTrace();
+            throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
+        }
 
         JSplitPane containerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, controlSplitPane, tabbed);
         containerSplitPane.setContinuousLayout(true);

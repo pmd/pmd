@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
-
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 public class ReportTree {
 
     private PackageNode rootNode = new PackageNode("");
@@ -116,10 +117,24 @@ public class ReportTree {
         } else if (pack.indexOf(".") != -1) {
             // TODO Remove when minimal runtime support is >= JDK 1.4
             try {
-                if (String.class.getMethod("split", new Class[]{String.class}) != null) {
-                    // Compatible with >= JDK 1.4
-                    a = pack.split("\\.");
+                Method split = String.class.getMethod("split", new Class[]{String.class});
+                if (split != null) {
+            //        // Compatible with >= JDK 1.4
+                    Object[] tmp = (Object[])split.invoke(pack, new Object[] {"\\."});
+                    a = new String[tmp.length];
+                    for (int i = 0; i < tmp.length; i++) {
+                        a[i] = (String)tmp[i];
+                    }
                 }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken."); 
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+                throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
+           } catch (InvocationTargetException e) {
+                e.printStackTrace();
+                throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
             } catch (NoSuchMethodException nsme) {
                 // Compatible with < JDK 1.4
                 StringTokenizer toker = new StringTokenizer(pack, ".");
