@@ -15,17 +15,6 @@
             <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/pmd/resources/PMDOptionsSettingsIcon.gif"/>
         </file>
     </folder>
-    <folder name="UI">
-        <folder name="Services">
-            <folder name="IDEConfiguration">
-                <folder name="ServerAndExternalToolSettings">
-                    <file name="pmd-config-option.shadow">
-                        <attr name="originalFile" stringvalue="Services/pmd-config-option.settings"/>
-                    </file>
-                </folder>
-            </folder>
-        </folder>
-    </folder>
     <folder name="Actions">
         <folder name="Tools">
             <file name="pmd-RunPMDAction.instance"/>
