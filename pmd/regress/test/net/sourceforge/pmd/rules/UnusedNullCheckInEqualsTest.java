@@ -15,12 +15,12 @@ public class UnusedNullCheckInEqualsTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-        System.out.println(TEST4);
        runTests(new TestDescriptor[] {
            new TestDescriptor(TEST1, "failure case", 1, rule),
            new TestDescriptor(TEST2, "different var, 'tis ok", 0, rule),
            new TestDescriptor(TEST3, "proper usage", 0, rule),
-           //new TestDescriptor(TEST4, "shouldn't this fail?", 1, rule),
+           new TestDescriptor(TEST4, "variation of correct usage", 0, rule),
+           //new TestDescriptor(TESTN, "shouldn't this fail?", 1, rule),
        });
     }
 
@@ -46,6 +46,14 @@ public class UnusedNullCheckInEqualsTest extends SimpleAggregatorTst {
     "}";
 
     private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " public void bar() {" + PMD.EOL +
+    "  if (x != null && \"Foo\".equals(y)) {} " + PMD.EOL +
+    "  if (y.equals(x)) {} " + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TESTN =
     "public class Foo {" + PMD.EOL +
     " public void bar() {" + PMD.EOL +
     "  if (x != null && y.equals(x)) {} " + PMD.EOL +
