@@ -4497,7 +4497,7 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_304() {
+  static final private boolean jj_3R_303() {
     if (jj_3R_226()) return true;
     Token xsp;
     xsp = jj_scanpos;
@@ -4726,7 +4726,7 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_296() {
+  static final private boolean jj_3R_295() {
     if (jj_scan_token(LESSTHAN)) return true;
     if (jj_3R_75()) return true;
     if (jj_scan_token(GREATERTHAN)) return true;
@@ -4783,12 +4783,12 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_295() {
+  static final private boolean jj_3R_294() {
     if (jj_3R_139()) return true;
     return false;
   }
 
-  static final private boolean jj_3R_303() {
+  static final private boolean jj_3R_302() {
     if (jj_scan_token(VIRTUAL)) return true;
     Token xsp;
     xsp = jj_scanpos;
@@ -4796,12 +4796,12 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_294() {
+  static final private boolean jj_3R_293() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_303()) {
+    if (jj_3R_302()) {
     jj_scanpos = xsp;
-    if (jj_3R_304()) return true;
+    if (jj_3R_303()) return true;
     }
     return false;
   }
@@ -4809,12 +4809,12 @@ void type_specifier() :
   static final private boolean jj_3R_282() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_294()) jj_scanpos = xsp;
+    if (jj_3R_293()) jj_scanpos = xsp;
     xsp = jj_scanpos;
-    if (jj_3R_295()) jj_scanpos = xsp;
+    if (jj_3R_294()) jj_scanpos = xsp;
     if (jj_scan_token(ID)) return true;
     xsp = jj_scanpos;
-    if (jj_3R_296()) jj_scanpos = xsp;
+    if (jj_3R_295()) jj_scanpos = xsp;
     return false;
   }
 
@@ -5053,7 +5053,7 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_290() {
+  static final private boolean jj_3R_289() {
     if (jj_scan_token(COMMA)) return true;
     if (jj_3R_222()) return true;
     return false;
@@ -5156,7 +5156,7 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_300() {
+  static final private boolean jj_3R_299() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_308()) {
@@ -5196,7 +5196,7 @@ void type_specifier() :
     if (jj_3R_92()) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_300()) jj_scanpos = xsp;
+    if (jj_3R_299()) jj_scanpos = xsp;
     return false;
   }
 
@@ -5229,7 +5229,7 @@ void type_specifier() :
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_290()) { jj_scanpos = xsp; break; }
+      if (jj_3R_289()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
@@ -5352,7 +5352,7 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_293() {
+  static final private boolean jj_3R_292() {
     if (jj_scan_token(LPARENTHESIS)) return true;
     if (jj_3R_99()) return true;
     if (jj_scan_token(RPARENTHESIS)) return true;
@@ -5367,7 +5367,7 @@ void type_specifier() :
     if (jj_scan_token(SIZEOF)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_293()) {
+    if (jj_3R_292()) {
     jj_scanpos = xsp;
     if (jj_3_112()) return true;
     }
@@ -5669,7 +5669,7 @@ void type_specifier() :
 
   static final private boolean jj_3R_310() {
     if (jj_scan_token(BITWISEOR)) return true;
-    if (jj_3R_297()) return true;
+    if (jj_3R_296()) return true;
     return false;
   }
 
@@ -5696,7 +5696,7 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_301() {
+  static final private boolean jj_3R_300() {
     if (jj_scan_token(AND)) return true;
     if (jj_3R_285()) return true;
     return false;
@@ -5738,7 +5738,7 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_291() {
+  static final private boolean jj_3R_290() {
     if (jj_scan_token(OR)) return true;
     if (jj_3R_264()) return true;
     return false;
@@ -5784,7 +5784,7 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_297() {
+  static final private boolean jj_3R_296() {
     if (jj_3R_306()) return true;
     Token xsp;
     while (true) {
@@ -5805,7 +5805,7 @@ void type_specifier() :
   }
 
   static final private boolean jj_3R_285() {
-    if (jj_3R_297()) return true;
+    if (jj_3R_296()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
@@ -5819,7 +5819,7 @@ void type_specifier() :
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_301()) { jj_scanpos = xsp; break; }
+      if (jj_3R_300()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
@@ -5829,7 +5829,7 @@ void type_specifier() :
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_291()) { jj_scanpos = xsp; break; }
+      if (jj_3R_290()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
@@ -6067,7 +6067,7 @@ void type_specifier() :
   }
 
   static final private boolean jj_3R_273() {
-    if (jj_3R_289()) return true;
+    if (jj_3R_288()) return true;
     return false;
   }
 
@@ -6161,13 +6161,13 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_299() {
+  static final private boolean jj_3R_298() {
     if (jj_scan_token(131)) return true;
     if (jj_3R_234()) return true;
     return false;
   }
 
-  static final private boolean jj_3R_298() {
+  static final private boolean jj_3R_297() {
     if (jj_scan_token(CATCH)) return true;
     if (jj_scan_token(LPARENTHESIS)) return true;
     if (jj_3R_307()) return true;
@@ -6176,12 +6176,12 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_289() {
+  static final private boolean jj_3R_288() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_298()) {
+    if (jj_3R_297()) {
     jj_scanpos = xsp;
-    if (jj_3R_299()) return true;
+    if (jj_3R_298()) return true;
     }
     return false;
   }
@@ -6983,7 +6983,7 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_302() {
+  static final private boolean jj_3R_301() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_311()) {
@@ -7029,8 +7029,8 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_292() {
-    if (jj_3R_302()) return true;
+  static final private boolean jj_3R_291() {
+    if (jj_3R_301()) return true;
     return false;
   }
 
@@ -7052,10 +7052,10 @@ void type_specifier() :
     if (jj_3R_175()) return true;
     if (jj_scan_token(RPARENTHESIS)) return true;
     Token xsp;
-    if (jj_3R_292()) return true;
+    if (jj_3R_291()) return true;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_292()) { jj_scanpos = xsp; break; }
+      if (jj_3R_291()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
@@ -7124,7 +7124,7 @@ void type_specifier() :
     return false;
   }
 
-  static final private boolean jj_3R_288() {
+  static final private boolean jj_3R_304() {
     if (jj_scan_token(ASSIGNEQUAL)) return true;
     if (jj_3R_95()) return true;
     return false;
@@ -7149,7 +7149,7 @@ void type_specifier() :
     if (jj_3R_287()) return true;
     }
     xsp = jj_scanpos;
-    if (jj_3R_288()) jj_scanpos = xsp;
+    if (jj_3R_304()) jj_scanpos = xsp;
     return false;
   }
 
@@ -7923,6 +7923,9 @@ void type_specifier() :
   static private int jj_gc = 0;
 
   public CPPParser(java.io.InputStream stream) {
+     this(stream, null);
+  }
+  public CPPParser(java.io.InputStream stream, String encoding) {
     if (jj_initialized_once) {
       System.out.println("ERROR: Second call to constructor of static parser.  You must");
       System.out.println("       either use ReInit() or set the JavaCC option STATIC to false");
@@ -7930,7 +7933,7 @@ void type_specifier() :
       throw new Error();
     }
     jj_initialized_once = true;
-    jj_input_stream = new SimpleCharStream(stream, 1, 1);
+    try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source = new CPPParserTokenManager(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
@@ -7940,7 +7943,10 @@ void type_specifier() :
   }
 
   static public void ReInit(java.io.InputStream stream) {
-    jj_input_stream.ReInit(stream, 1, 1);
+     ReInit(stream, null);
+  }
+  static public void ReInit(java.io.InputStream stream, String encoding) {
+    try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
     token_source.ReInit(jj_input_stream);
     token = new Token();
     jj_ntk = -1;
@@ -8163,6 +8169,7 @@ void type_specifier() :
   static final private void jj_rescan_token() {
     jj_rescan = true;
     for (int i = 0; i < 138; i++) {
+    try {
       JJCalls p = jj_2_rtns[i];
       do {
         if (p.gen > jj_gen) {
@@ -8310,6 +8317,7 @@ void type_specifier() :
         }
         p = p.next;
       } while (p != null);
+      } catch(LookaheadSuccess ls) { }
     }
     jj_rescan = false;
   }

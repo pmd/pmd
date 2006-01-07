@@ -1449,14 +1449,12 @@ static protected SimpleCharStream input_stream;
 static private final int[] jjrounds = new int[82];
 static private final int[] jjstateSet = new int[164];
 static protected char curChar;
-public CPPParserTokenManager(SimpleCharStream stream)
-{
+public CPPParserTokenManager(SimpleCharStream stream){
    if (input_stream != null)
       throw new TokenMgrError("ERROR: Second call to constructor of static lexer. You must use ReInit() to initialize the static variables.", TokenMgrError.STATIC_LEXER_ERROR);
    input_stream = stream;
 }
-public CPPParserTokenManager(SimpleCharStream stream, int lexState)
-{
+public CPPParserTokenManager(SimpleCharStream stream, int lexState){
    this(stream);
    SwitchTo(lexState);
 }
