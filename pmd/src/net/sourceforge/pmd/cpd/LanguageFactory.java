@@ -9,6 +9,7 @@ public class LanguageFactory {
 
     public static final String JAVA_KEY = "java";
     public static final String CPP_KEY = "cpp";
+    public static final String C_KEY = "c";
     public static final String PHP_KEY = "php";
     public static final String RUBY_KEY = "ruby";
     public static final String EXTENSION = "extension";
@@ -19,7 +20,7 @@ public class LanguageFactory {
     }
     
     public Language createLanguage(String language, Properties properties) {
-        if (language.equals(CPP_KEY)) {
+        if (language.equals(CPP_KEY) || language.equals(C_KEY)) {
             return new CPPLanguage();
         } else if (language.equals(JAVA_KEY)) {
             return new JavaLanguage(properties);

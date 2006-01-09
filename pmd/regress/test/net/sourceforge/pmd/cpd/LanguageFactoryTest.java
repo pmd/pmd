@@ -15,6 +15,7 @@ public class LanguageFactoryTest extends TestCase {
         LanguageFactory f = new LanguageFactory();
         assertTrue(f.createLanguage(LanguageFactory.JAVA_KEY) instanceof JavaLanguage);
         assertTrue(f.createLanguage(LanguageFactory.CPP_KEY) instanceof CPPLanguage);
+        assertTrue(f.createLanguage(LanguageFactory.C_KEY) instanceof CPPLanguage);
         assertTrue(f.createLanguage(LanguageFactory.PHP_KEY) instanceof PHPLanguage);
         try {
             f.createLanguage("fiddlesticks");

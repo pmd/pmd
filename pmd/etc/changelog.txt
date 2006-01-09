@@ -26,6 +26,7 @@ Fixed bug 1394808 - Fewer missed hits for AppendCharacterWithChar and Inefficien
 Fixed bug 1400754 - A NPE is no longer thrown on certain JDK 1.5 enum usages.
 Partially fixed bug 1371753 - UnnecessaryLocalBeforeReturn message now reflects the fact that that rule flags all types
 Fixed a bug in UseStringBufferLength; it no longers fails with an exception on expressions like StringBuffer.toString.equals(x)
+Fixed a bug in CPD's C/C++ parser so that it no longer fails on multi-line literals; thx to Tom Judge for the nice patch.
 Modified renderers to support disabling printing of suppressed warnings.  Introduced a new AbstractRenderer class that all Renderers can extends to get the current behavior - that is, suppressed violations are printed.
 Implemented RFE 1375435 - you can now embed regular expressions inside XPath rules, i.e., //ClassOrInterfaceDeclaration[matches(@Image, 'F?o')].
 Added current CLASSPATH to pmd.bat.
