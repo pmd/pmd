@@ -7,6 +7,7 @@ These are new rules that are still in progress
   </description>
 
 
+
     <!--
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"
@@ -68,27 +69,6 @@ public class Foo {
        </example>
        </rule>
 
-    <rule name="StringConcatenation"
-           message="Consider replacing String concatenation inside loops with a StringBuffer"
-               class="net.sourceforge.pmd.rules.StringConcatenationRule">
-       <description>
-       Consider replacing String concatenation inside loops with a StringBuffer
-       </description>
-
-       <example>
-   <![CDATA[
-   public class Bar {
-    public String foo(Object[] someArray) {
-     String list = "" ;
-     for( int i = 0; i < someArray.length; i++ ){
-      list = list + "," + someArray[i];
-     }
-     return list;
-    }
-   }
-   ]]>
-       </example>
-       </rule>
        -->
 
 </ruleset>

@@ -6,7 +6,7 @@ New rules:
  Basic ruleset: UselessOperationOnImmutable, MisplacedNullCheck, UnusedNullCheckInEquals
  Migration ruleset: IntegerInstantiation
  JUnit ruleset: UseAssertNullInsteadOfAssertTrue
- Strings ruleset: AppendCharacterWithChar
+ Strings ruleset: AppendCharacterWithChar, ConsecutiveLiteralAppends
  Design ruleset: AvoidConstantsInterface
  Optimizations ruleset: UseArraysAsList, AvoidArrayLoops, BooleanInversion
 Fixed bug 1277373 - InefficientStringBuffering now catches more cases.

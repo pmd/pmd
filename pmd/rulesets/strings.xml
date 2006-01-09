@@ -10,7 +10,7 @@ These rules deal with different problems that can occur with manipulation of the
     <rule name="AvoidDuplicateLiterals"
         message="The String literal {0} appears {1} times in this file; the first occurrence is on line {2}"
         class="net.sourceforge.pmd.rules.strings.AvoidDuplicateLiteralsRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AvoidDuplicateLiterals">
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AvoidDuplicateLiterals">
     <description>
 Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
     </description>
@@ -36,7 +36,7 @@ public class Foo {
     <rule name="StringInstantiation"
         message="Avoid instantiating String objects; this is usually unnecessary."
         class="net.sourceforge.pmd.rules.strings.StringInstantiation"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringInstantiation">
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringInstantiation">
     <description>
 Avoid instantiating String objects; this is usually unnecessary.
     </description>
@@ -53,7 +53,7 @@ public class Foo {
    <rule name="StringToString"
         message="Avoid calling toString() on String objects; this is unnecessary"
         class="net.sourceforge.pmd.rules.strings.StringToStringRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringToString">
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringToString">
     <description>
     Avoid calling toString() on String objects; this is unnecessary
     </description>
@@ -73,7 +73,7 @@ public class Foo {
     <rule name="InefficientStringBuffering"
         message="Avoid concatenating nonliterals in a StringBuffer constructor or append()"
         class="net.sourceforge.pmd.rules.strings.InefficientStringBuffering"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InefficientStringBuffering">
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InefficientStringBuffering">
     <description>
 Avoid concatenating non literals in a StringBuffer constructor or append().
     </description>
@@ -143,7 +143,8 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
 
     <rule name="AppendCharacterWithChar"
         message="Avoid appending characters as strings in StringBuffer.append"
-        class="net.sourceforge.pmd.rules.strings.AppendCharacterWithChar">
+        class="net.sourceforge.pmd.rules.strings.AppendCharacterWithChar"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AppendCharacterWithChar">
     <description>
 Avoid concatenating characters as strings in StringBuffer.append
     </description>
@@ -164,6 +165,31 @@ public class Foo {
 ]]>
     </example>
     </rule>
+
+        <rule name="ConsecutiveLiteralAppends"
+        message="StringBuffer.append is called {0} times consecutively, always using String literals"
+        class="net.sourceforge.pmd.rules.strings.ConsecutiveLiteralAppends"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#ConsecutiveLiteralAppends">
+    <description>
+Consecutively calling StringBuffer.append with String literals
+    </description>
+        <priority>3</priority>
+   <properties>
+    <property name="threshold" description="The report threshold" value="1"/>
+   </properties>
+    <example>
+<![CDATA[
+public class Foo {
+ private void bar() {
+   StringBuffer buf = new StringBuffer();
+   buf.append("Hello").append(" ").append("World"); //bad
+   buf.append("Hello World");//good
+ }
+}
+]]>
+    </example>
+  </rule>
+
 
 </ruleset>
 
