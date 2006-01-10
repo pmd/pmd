@@ -36,3 +36,16 @@ Add the 2 zip files
 Classify the file
 
 Submit some news saying "hey, new release of the JEdit plugin!"
+
+
+Life saving commands :)
+
+To retag a file to a new version.
+To move a symbolic tag to a different version (using the numeric number), use the following:
+
+    cvs tag -r new-number -F symbolic-name filename
+
+For example, if you needed to update foo.c after testing, and the symbolic tag MPICH2_1_0_3_rc1 originally pointed at version 1.16 for this file but the corrected version was 1.17, use
+
+    cvs tag -r 1.17 -F MPICH2_1_0_3_rc1 foo.c
+
