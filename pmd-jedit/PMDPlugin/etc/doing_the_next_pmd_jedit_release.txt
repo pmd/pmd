@@ -28,7 +28,7 @@ cd ~/tmp
 zip -q -r pmd-jedit-src-2.6.zip pmd-jedit
 rm -rf pmd-jedit
 
-ncftpput upload.sourceforge.net incoming/ pmd-jedit-src-2.5.zip pmd-jedit-bin-2.5.zip
+ncftpput upload.sourceforge.net incoming/ pmd-jedit-src-2.6.zip pmd-jedit-bin-2.6.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
