@@ -6,8 +6,6 @@
 These are new rules that are still in progress
   </description>
 
-
-
     <!--
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"

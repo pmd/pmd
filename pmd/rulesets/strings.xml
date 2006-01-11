@@ -128,14 +128,16 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
         <priority>2</priority>
       <example>
   <![CDATA[
-    public class A {
-        public  class fooinner {
-            StringBuffer sb = new StringBuffer();
-            if(sb.toString().equals("")){
-                // this is bad
-            }
-        }
-    }
+public class Foo {
+ void bar() {
+  StringBuffer sb = new StringBuffer();
+  // this is bad
+  if(sb.toString().equals("")) {}
+  // this is good
+  if(sb.length() == 0) {}
+ }
+}
+
   ]]>
       </example>
     </rule>
@@ -190,6 +192,29 @@ public class Foo {
     </example>
   </rule>
 
+
+    <rule name="UseIndexOfChar"
+        message="String.indexOf(char) is faster than String.indexOf(String)"
+        class="net.sourceforge.pmd.rules.strings.UseIndexOfChar"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseIndexOfChar">
+    <description>
+Use String.indexOf(char) when checking for the index of a single character; it's faster.
+    </description>
+       <priority>2</priority>
+    <example>
+<![CDATA[
+public class Foo {
+ void bar() {
+  String s = "hello world";
+  // avoid this
+  if (s.indexOf("d") {}
+  // instead do this
+  if (s.indexOf('d') {}
+ }
+}
+]]>
+    </example>
+    </rule>
 
 </ruleset>
 
