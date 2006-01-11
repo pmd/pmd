@@ -77,7 +77,7 @@ public class Foo {
     <description>
 Avoid concatenating non literals in a StringBuffer constructor or append().
     </description>
-       <priority>2</priority>
+       <priority>3</priority>
     <example>
 <![CDATA[
 public class Foo {
@@ -125,7 +125,7 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
       </description>
       <properties>
       </properties>
-        <priority>2</priority>
+        <priority>3</priority>
       <example>
   <![CDATA[
 public class Foo {
@@ -150,7 +150,7 @@ public class Foo {
     <description>
 Avoid concatenating characters as strings in StringBuffer.append
     </description>
-       <priority>2</priority>
+       <priority>3</priority>
     <example>
 <![CDATA[
 public class Foo {
@@ -200,7 +200,7 @@ public class Foo {
     <description>
 Use String.indexOf(char) when checking for the index of a single character; it's faster.
     </description>
-       <priority>2</priority>
+       <priority>3</priority>
     <example>
 <![CDATA[
 public class Foo {
