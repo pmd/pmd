@@ -551,11 +551,6 @@ Installer Tasks For Ant:
   unix_name: instant
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/instant"
   srcdir: src/main
-Chiba: 
-  module: chiba1
-  unix_name: chiba
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/chiba"
-  srcdir: chiba1/src
 Jalopy: 
   module: main
   unix_name: jalopy
@@ -609,5 +604,10 @@ ArgoUML:
 BioClipse: 
   module: bioclipse
   unix_name: bioclipse
-  cvsroot: ":pserver::anonymous@cvs.sourceforge.net:/cvsroot/bioclipse"
+  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/bioclipse"
   srcdir: bioclipse/src
+FindBugs-Contrib: 
+  module: fb-contrib
+  unix_name: fb-contrib
+  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/fb-contrib"
+  srcdir: fb-contrib/src

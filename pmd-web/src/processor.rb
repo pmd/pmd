@@ -3,7 +3,7 @@
 require 'rubygems'
 require_gem 'ikko'
 require 'yaml'
-require '/home/tom/rubyforge/ruby-doom/lib/doom.rb'
+require '/home/tom/rubyforge/ruby-doom/trunk/ruby-doom/lib/doom.rb'
 
 # add timeout thingy to the Thread class, thx to Rich Kilmer for the code
 class MyThread < Thread
@@ -218,7 +218,7 @@ if __FILE__ == $0
 	
 	jobs.each {|j| 
     puts "Copying up #{j}"
-    j.copy_up 
+    j.copy_up
   } if ARGV.include?("-copy")
 
 	fm = Ikko::FragmentManager.new
