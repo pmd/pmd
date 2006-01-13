@@ -290,37 +290,6 @@ public class Test {
     </rule>
 
 
-    <rule name="BooleanInversion"
-          message="Use bitwise inversion to invert boolean values"
-          class="net.sourceforge.pmd.rules.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#BooleanInversion">
-      <description>
-Use bitwise inversion to invert boolean values - it's the fastest way to do this.
-See http://www.javaspecialists.co.za/archive/newsletter.do?issue=042&amp;locale=en_US for specific details
-      </description>
-      <properties>
-          <property name="xpath">
-              <value>
-    <![CDATA[
-//AssignmentOperator[@Image="="]/../Expression/UnaryExpressionNotPlusMinus[@Image="!"]
-]]>
-             </value>
-          </property>
-      </properties>
-        <priority>3</priority>
-      <example>
-  <![CDATA[
-public class Foo {
- public void main(bar) {
-  boolean b = true;
-  b = !b; // slow
-  b ^= true; // fast
- }
-}
-]]>
-      </example>
-    </rule>
-
 
     <!--
     other optimization should be like avoiding
