@@ -18,6 +18,7 @@ public class UseIndexOfCharTest extends SimpleAggregatorTst  {
            new TestDescriptor(TEST1, "failure case", 1, rule),
            new TestDescriptor(TEST2, "using single quotes, OK", 0, rule),
            new TestDescriptor(TEST3, "indexOf multi-character literal, OK", 0, rule),
+           new TestDescriptor(TEST4, "using indexOf(singleCharString, int)", 1, rule),
        });
     }
 
@@ -42,6 +43,14 @@ public class UseIndexOfCharTest extends SimpleAggregatorTst  {
     " void bar() {" + PMD.EOL +
     "  String x = \"hello\";" + PMD.EOL +
     "  if (x.indexOf(\"ello\") == -1) {}" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    "  String x = \"hello world\";" + PMD.EOL +
+    "  if (x.indexOf(\"e\", 5) == -1) {}" + PMD.EOL +
     " }" + PMD.EOL +
     "}";
 
