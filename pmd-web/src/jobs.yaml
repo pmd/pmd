@@ -530,12 +530,6 @@ Cañamo:
   unix_name: canyamo
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/canyamo"
   srcdir: canyamo/src
-Vector Visuals: 
-  module: vectors
-  unix_name: vectors
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/vectors"
-  srcdir: vectors/src
-  jdk15: true
 "SUSHI - Universal Student Help Interface": 
   module: sushi
   unix_name: fugu
@@ -606,8 +600,3 @@ BioClipse:
   unix_name: bioclipse
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/bioclipse"
   srcdir: bioclipse/src
-FindBugs-Contrib: 
-  module: fb-contrib
-  unix_name: fb-contrib
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/fb-contrib"
-  srcdir: fb-contrib/src
