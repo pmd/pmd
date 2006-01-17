@@ -68,6 +68,9 @@ import org.eclipse.jdt.core.JavaCore;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/01/17 21:27:37  phherlin
+ * Create a fake node instead of using SimpleNode
+ *
  * Revision 1.4  2005/12/30 17:30:21  phherlin
  * Upgrade to PMD v3.4 -> RuleViolation interface has changed!
  *
@@ -199,8 +202,8 @@ public class RenderReportCmd extends AbstractDefaultCommand {
             final RuleContext ruleContext = new RuleContext();
             ruleContext.setSourceCodeFilename(markers[i].getResource().getProjectRelativePath().toString());
 
-            final SimpleNode fakeNode = new SimpleNode(0);
-            fakeNode.testingOnly__setBeginLine(lineNumber);  // TODO ask PMD Core dev team to add a legal setter operation
+            final FakeNode fakeNode = new FakeNode();
+            fakeNode.setBeginLine(lineNumber);
             
             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
             final FakeRuleViolation ruleViolation = new FakeRuleViolation(rule, ruleContext, fakeNode);
@@ -248,6 +251,28 @@ public class RenderReportCmd extends AbstractDefaultCommand {
          */
         public void setPackageName(String packageName) {
             this.packageName = packageName;
+        }
+        
+    }
+    
+    /**
+     * Inner class to fake a node necessary for report violation.
+     * This is a consequence of PMD v3.4 evolutions that a RuleViolation object now needs a Node object to be constructed.
+     * 
+     */
+    private class FakeNode extends SimpleNode {
+        private int beginLine;
+        
+        public FakeNode() {
+            super(0);
+        }
+
+        public int getBeginLine() {
+            return this.beginLine;
+        }
+        
+        public void setBeginLine(int line) {
+            this.beginLine = line;
         }
         
     }
