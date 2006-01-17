@@ -42,6 +42,10 @@ package net.sourceforge.pmd.core;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/01/17 21:23:20  phherlin
+ * Update the PMD 3.4 librairy.
+ * Add jakarta ORO for Regexp support.
+ *
  * Revision 1.3  2005/10/24 22:35:20  phherlin
  * Upgrading to PMD v3.3
  *
@@ -68,6 +72,7 @@ public interface PluginConstants {
             "rulesets/junit.xml",
             "rulesets/logging-jakarta-commons.xml",
             "rulesets/logging-java.xml",
+            "rulesets/migrating.xml", 
             "rulesets/naming.xml",
             "rulesets/optimizations.xml",
             "rulesets/strictexception.xml",

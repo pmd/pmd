@@ -17,6 +17,9 @@
       <library name="lib/xmlParserAPIs-2.6.2.jar">
          <export name="*"/>
       </library>
+      <library name="lib/jakarta-oro-2.0.8.jar">
+         <export name="*"/>
+      </library>
       <library name="lib/pmd-3.4.jar">
          <export name="*"/>
       </library>
