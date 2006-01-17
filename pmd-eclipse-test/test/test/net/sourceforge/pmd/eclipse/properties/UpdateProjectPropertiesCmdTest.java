@@ -30,15 +30,20 @@ public class UpdateProjectPropertiesCmdTest extends TestCase {
     }
 
     protected void tearDown() throws Exception {
-        // 1. Delete the test project
-        if (this.testProject != null) {
-            if (this.testProject.exists() && this.testProject.isAccessible()) {
-                this.testProject.delete(true, true, null);
-                this.testProject = null;
+        try {
+            // 1. Delete the test project
+            if (this.testProject != null) {
+                if (this.testProject.exists() && this.testProject.isAccessible()) {
+                    this.testProject.delete(true, true, null);
+                    this.testProject = null;
+                }
             }
+
+            super.tearDown();
+
+        } catch (Exception e) {
+            System.out.println("Exception " + e.getClass().getName() + " when tearing down. Ignored.");
         }
-        
-        super.tearDown();
     }
 
 

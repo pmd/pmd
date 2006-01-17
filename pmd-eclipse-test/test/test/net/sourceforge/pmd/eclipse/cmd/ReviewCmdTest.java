@@ -56,6 +56,9 @@ import test.net.sourceforge.pmd.eclipse.EclipseUtils;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/01/17 21:26:24  phherlin
+ * Ignore exceptions occuring inside the teardown operation
+ *
  * Revision 1.2  2005/12/30 16:29:15  phherlin
  * Implement a new preferences model and review some tests
  *
@@ -144,16 +147,20 @@ public class ReviewCmdTest extends TestCase {
      * @see junit.framework.TestCase#tearDown()
      */
     protected void tearDown() throws Exception {
-        if (this.testProject != null) {
-            if (this.testProject.exists() && this.testProject.isAccessible()) {
-                EclipseUtils.removePMDNature(this.testProject);
+        try {
+            if (this.testProject != null) {
+                if (this.testProject.exists() && this.testProject.isAccessible()) {
+                    EclipseUtils.removePMDNature(this.testProject);
 //                this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
 //                Thread.sleep(500);
 //                this.testProject.delete(true, true, null);
 //                this.testProject = null;
+                }
             }
-        }
 
-        super.tearDown();
+            super.tearDown();
+        } catch (Exception e) {
+            System.out.println("Exception " + e.getClass().getName() + " when tearing down. Ignored.");
+        }
     }
 }
