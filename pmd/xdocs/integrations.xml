@@ -149,6 +149,14 @@ To run the duplicate code detector, right-click on a project node and
  select "PMD"->"Find suspect cut and paste".  The report will be placed in a "reports" directory
     in a file called "cpd-report.txt".
 </p>
+<p>
+To find additional help for other features, please read included help by selecting
+Help->Help Contents and browse the "How to..." section in the "PMD Plugin Documentation" book.
+</p>
+<p>
+After installing an update, if you get an Exception such as "java.lang.RuntimeException: Couldn't find that class xxxxx",
+try deleting the ruleset.xml file in the .metadata/plugins/net.sourceforge.pmd.eclipse directory in your workspace.
+</p>
       </subsection>
 
 
