@@ -65,6 +65,9 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2006/01/19 22:00:14  phherlin
+ * Fix BUG#1357798 Source file utf-8 charset problem
+ *
  * Revision 1.6  2005/12/30 17:30:21  phherlin
  * Upgrade to PMD v3.4 -> RuleViolation interface has changed!
  *
@@ -239,7 +242,7 @@ public class BaseVisitor {
                     context.setSourceCodeFilename(file.getName());
                     context.setReport(new Report());
 
-                    final Reader input = new InputStreamReader(file.getContents());
+                    final Reader input = new InputStreamReader(file.getContents(), file.getCharset());
                     getPmdEngine().processFile(input, getRuleSet(), context);
                     input.close();
 
