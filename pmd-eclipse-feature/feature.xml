@@ -2,7 +2,7 @@
 <feature
       id="net.sourceforge.pmd.eclipse"
       label="%feature.label"
-      version="3.1.3"
+      version="3.1.4"
       provider-name="%feature.provider_name"
       image="pmd_logo_small.jpg">
 
@@ -17,6 +17,10 @@
    <license>
       %license.text
    </license>
+
+   <url>
+      <update label="%feature.update_site_name" url="http://pmd.sourceforge.net/eclipse"/>
+   </url>
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
