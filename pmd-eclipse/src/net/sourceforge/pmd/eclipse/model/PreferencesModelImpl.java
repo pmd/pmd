@@ -70,6 +70,9 @@ import org.eclipse.core.runtime.IPath;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/01/19 22:49:59  phherlin
+ * Fix BUG#1365407 Problems with PMD in Eclipse/Issue 1
+ *
  * Revision 1.4  2005/12/30 16:26:30  phherlin
  * Implement a new preferences model
  *
@@ -257,12 +260,16 @@ public class PreferencesModelImpl extends AbstractModel implements PreferencesMo
         
     }
     
+    /**
+     * Load a default configuration
+     * @throws ModelException
+     */
     private void loadDefaultConfiguration() throws ModelException {
         final RuleSet oldRuleSet = loadDefaultConfigurationForCompatibility();
         if (oldRuleSet == null) {
             final IRuleSetManager ruleSetManager = PMDCorePlugin.getDefault().getRuleSetManager();
             final Set defaultRuleSets = ruleSetManager.getDefaultRuleSets();
-            RuleSetProxy proxy = null;
+            RuleSetProxy proxy = new RuleSetProxyImpl();
             for (Iterator i = defaultRuleSets.iterator(); i.hasNext();) {
                 RuleSet ruleSet = (RuleSet) i.next();
                 proxy.setOverride(true);
