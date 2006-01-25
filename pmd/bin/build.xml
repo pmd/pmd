@@ -64,6 +64,7 @@
         <manifest>
             <attribute name="Main-Class" value="net.sourceforge.pmd.PMD"/>
             <attribute name="Class-Path" value="jaxen-1.1-beta-7.jar"/>
+            <attribute name="Class-Path" value="jakarta-oro-2.0.8.jar"/>
         </manifest>
     </jar>
 </target>

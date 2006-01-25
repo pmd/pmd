@@ -205,7 +205,7 @@ try deleting the ruleset.xml file in the .metadata/plugins/net.sourceforge.pmd.e
   <li>Menu: Select the "Main menu", "Project views", "Editor menu", and "Search results" checkboxes.</li>
   <li>Program: $JDKPath$\bin\java.exe</li>
   <li>For the next parameter you'll need to plug in the location of your PMD installation and the rulesets you want to use</li>
-  <li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-3.5.jar;c:\pmd\lib\jaxen-1.1-beta-7.jar net.sourceforge.pmd.PMD $FilePath$ ideaj unusedcode,imports $Sourcepath$ $FileClass$.method $FileName$ </li>
+  <li>Parameters: -cp %CLASSPATH%;c:\pmd\lib\pmd-3.5.jar;c:\pmd\lib\jakarta-oro-2.0.8.jar;c:\pmd\lib\jaxen-1.1-beta-7.jar net.sourceforge.pmd.PMD $FilePath$ ideaj unusedcode,imports $Sourcepath$ $FileClass$.method $FileName$ </li>
   </ul>
   </ul>
   <p>That's pretty much it.  Now you can right click on a source directory and select PMD, it'll run recursively on the source files, and the results should
@@ -335,7 +335,7 @@ selecting the "Ask for Directory" checkbox.</p>
         <LI>In the expanded list, select <B>PMD directory</B>.  This changes the right side of this dialog to the "tool" form.</LI>
         <LI>In the "tool" form, enter these parameters:<UL>
             <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-3.5\lib\pmd-3.5.jar;D:\java\pmd-3.5\lib\jakarta-oro-2.0.8.kar;D:\java\pmd-3.5\lib\jaxen-1.1-beta-7.jar;D:\java\pmd-3.5\lib\xmlParserAPIs-2.6.2.jar; D:\java\pmd-3.5\lib\xercesImpl-2.6.2.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
-            <BR/>(<I>Eliminate the spaces following both '<CODE>jaxen-1.1-beta-7.jar;</CODE>' and '<CODE>xmlParserAPIs-2.6.2.jar;</CODE>'.  They are there to prevent the text from exceeding the right side of your screen</I>)</LI>
+            <BR/>(<I>Eliminate the spaces following both '<CODE>jaxen-1.1-beta-7.jar;</CODE>' and '<CODE>xmlParserAPIs-2.6.2.jar;</CODE>' and '<CODE>jakarta-oro-2.0.8.jar;</CODE>'.  They are there to prevent the text from exceeding the right side of your screen</I>)</LI>
             <LI><B>Initial Folder:</B>  <CODE>$FileDir</CODE></LI>
             <LI><B>Save all documents first:</B>  <CODE>Checked</CODE></LI>
             <LI><B>Capture output:</B>  <CODE>Checked</CODE></LI>
