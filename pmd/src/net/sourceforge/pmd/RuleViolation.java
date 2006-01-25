@@ -57,13 +57,6 @@ public class RuleViolation {
         this.description = specificMsg;
     }
 
-    /**
-     * @deprecated use getNode().getBeginLine() instead
-     */
-    public int getLine() {
-        return node.getBeginLine();
-    }
-
     public Rule getRule() {
         return rule;
     }

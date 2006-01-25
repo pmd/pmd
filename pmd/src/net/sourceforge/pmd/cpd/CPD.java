@@ -135,64 +135,31 @@ public class CPD {
 
     public static void main(String[] args) {
         if (args.length == 0) {
-            new_usage();
+            usage();
         }
 
         try {
-            try {
-                Integer.parseInt(args[0]);
-                // old style
-                System.out.println("****");
-                System.out.println("**** WARNING - This way of passing command line arguments is deprecated ****");
-                System.out.println("**** Here's the new way, might as well start using it now ****");
-                new_usage();
-                System.out.println("****");
-                System.out.println("**** Continuing with old-style argument processing ****");
-                System.out.println("****");
-
-                if (args.length > 4 || args.length < 2) {
-                    usage();
-                }
-                String lang = LanguageFactory.JAVA_KEY;
-                if (args.length > 2) {
-                    lang = args[2];
-                }
-                LanguageFactory f = new LanguageFactory();
-                Language language = f.createLanguage(lang);
-                Renderer renderer = new SimpleRenderer();
-                if (args.length > 3) {
-                    renderer = CPD.getRendererFromString(args[3]);
-                }
-                 CPD cpd = new CPD(Integer.parseInt(args[0]), language);
-                 cpd.addRecursively(args[1]);
-                 cpd.go();
-                 System.out.println(renderer.render(cpd.getMatches()));
-            } catch (NumberFormatException nfe) {
-                // new style
-                boolean skipDuplicateFiles = findBooleanSwitch(args, "--skip-duplicate-files");
-                String pathToFiles = findRequiredStringValue(args, "--files");
-                String languageString = findOptionalStringValue(args, "--language", "java");
-                String formatString = findOptionalStringValue(args, "--format", "text");
-                int minimumTokens = Integer.parseInt(findRequiredStringValue(args, "--minimum-tokens"));
-                LanguageFactory f = new LanguageFactory();
-                Language language = f.createLanguage(languageString);
-                Renderer renderer = CPD.getRendererFromString(formatString);
-                CPD cpd = new CPD(minimumTokens, language);
-                if (skipDuplicateFiles) {
-                    cpd.skipDuplicates();
-                }
-                cpd.addRecursively(pathToFiles);
-                cpd.go();
-                System.out.println(renderer.render(cpd.getMatches()));
+            boolean skipDuplicateFiles = findBooleanSwitch(args, "--skip-duplicate-files");
+            String pathToFiles = findRequiredStringValue(args, "--files");
+            String languageString = findOptionalStringValue(args, "--language", "java");
+            String formatString = findOptionalStringValue(args, "--format", "text");
+            int minimumTokens = Integer.parseInt(findRequiredStringValue(args, "--minimum-tokens"));
+            LanguageFactory f = new LanguageFactory();
+            Language language = f.createLanguage(languageString);
+            Renderer renderer = CPD.getRendererFromString(formatString);
+            CPD cpd = new CPD(minimumTokens, language);
+            if (skipDuplicateFiles) {
+                cpd.skipDuplicates();
             }
+            cpd.addRecursively(pathToFiles);
+            cpd.go();
+            System.out.println(renderer.render(cpd.getMatches()));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
-    private static void new_usage() {
+    private static void usage() {
         System.out.println("Usage:");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--format (xml|text|csv)] [--skip-duplicate-files] ");
         System.out.println("i.e: ");
@@ -201,19 +168,6 @@ public class CPD {
         System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/code --language c ");
         System.out.println("or: ");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/java/code --format xml");
-    }
-
-    private static void usage() {
-        System.out.println("Usage:");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD <tile size> <directory> [<language>] [<format>]");
-        System.out.println("i.e: ");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD 100 c:\\jdk14\\src\\java ");
-        System.out.println("or: ");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD 100 c:\\apache\\src\\ cpp");
-        System.out.println("Formats:");
-        System.out.println("Simple");
-        System.out.println("net.sourceforge.pmd.cpd.CSVRenderer");
-        System.out.println("net.sourceforge.pmd.cpd.XMLRenderer");
     }
 
 }

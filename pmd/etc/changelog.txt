@@ -1,14 +1,14 @@
 ????, 2006 - 3.6:
 ***** TODO: remove deprecated printToConsole element from PMDTask
 
-????, 2006 - 3.5:
+Jan 25, 2006 - 3.5:
 New rules:
  Basic ruleset: UselessOperationOnImmutable, MisplacedNullCheck, UnusedNullCheckInEquals
  Migration ruleset: IntegerInstantiation
  JUnit ruleset: UseAssertNullInsteadOfAssertTrue
  Strings ruleset: AppendCharacterWithChar, ConsecutiveLiteralAppends, UseIndexOfChar
  Design ruleset: AvoidConstantsInterface
- Optimizations ruleset: UseArraysAsList, AvoidArrayLoops 
+ Optimizations ruleset: UseArraysAsList, AvoidArrayLoops
  Controversial ruleset: BooleanInversion
 Fixed bug 1277373 - InefficientStringBuffering now catches more cases.
 Fixed bug 1371757 - Misleading example in AvoidSynchronizedAtMethodLevel
@@ -39,7 +39,6 @@ Ant task now supports a 'minimumPriority' attribute; only rules with this priori
 Renamed Ant task 'printToConsole' attribute to 'toConsole' and it can only be used inside a formatter element.
 Added David Corley's Javascript report, more details are here: http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html
 
-***** TODO: Remove old-style CPD command line options that were deprecated in 3.4.
 ***** TODO: Remove deprecated RuleViolation.getLine()
 
 November 30, 2005 - 3.4:

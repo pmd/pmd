@@ -1,5 +1,5 @@
-update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-3.4.jar
-update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-3.4
+update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-3.5.jar
+update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-3.5
 update the release date in the changelog
 update rulesets/rulesets.properties - add any new ruleset file names
 update release number and tag name in project.xml
@@ -23,57 +23,57 @@ cd ..
 cd etc
 
 Prepare binary release:
-rm -rf ~/tmp/pmd-3.4
-mkdir -p ~/tmp/pmd-3.4/etc
-mkdir ~/tmp/pmd-3.4/bin
-mkdir ~/tmp/pmd-3.4/lib
-cp ../LICENSE.txt changelog.txt ~/tmp/pmd-3.4/etc
+rm -rf ~/tmp/pmd-3.5
+mkdir -p ~/tmp/pmd-3.5/etc
+mkdir ~/tmp/pmd-3.5/bin
+mkdir ~/tmp/pmd-3.5/lib
+cp ../LICENSE.txt changelog.txt ~/tmp/pmd-3.5/etc
 cd ../bin/
-cp pmd.* cygwin-run.sh build.xml cpd.sh cpdgui.bat designer.* ~/tmp/pmd-3.4/bin
+cp pmd.* cygwin-run.sh build.xml cpd.sh cpdgui.bat designer.* ~/tmp/pmd-3.5/bin
 cd ../etc/
-cp ../lib/pmd-3.4.jar ../lib/jakarta-oro-2.0.8.jar ../lib/xmlParserAPIs-2.6.2.jar  ../lib/xercesImpl-2.6.2.jar ../lib/jaxen-1.1-beta-7.jar ~/tmp/pmd-3.4/lib/
-mkdir ~/tmp/pmd-3.4/etc/xslt
-cp xslt/*.xslt ~/tmp/pmd-3.4/etc/xslt/
-cp -R ../target/docs ~/tmp/pmd-3.4
+cp ../lib/pmd-3.5.jar ../lib/jakarta-oro-2.0.8.jar ../lib/xmlParserAPIs-2.6.2.jar  ../lib/xercesImpl-2.6.2.jar ../lib/jaxen-1.1-beta-7.jar ~/tmp/pmd-3.5/lib/
+mkdir ~/tmp/pmd-3.5/etc/xslt
+cp xslt/*.xslt ~/tmp/pmd-3.5/etc/xslt/
+cp -R ../target/docs ~/tmp/pmd-3.5
 cd ~/tmp
-zip -q -r pmd-bin-3.4.zip pmd-3.4/
+zip -q -r pmd-bin-3.5.zip pmd-3.5/
 cd -
 
 Time to tag:
 
 CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
 cd ../../
-cvs -q tag -D tomorrow "pmd_release_3_4" pmd
+cvs -q tag -D tomorrow "pmd_release_3_5" pmd
 
 Prepare source release:
-rm -rf ~/tmp/pmd-3.4
-rm -rf ~/tmp/pmd-src-3.4.zip
+rm -rf ~/tmp/pmd-3.5
+rm -rf ~/tmp/pmd-src-3.5.zip
 cd pmd/bin/
 ant jarsrc
 cd ../../
 rm -rf tmp/
 mkdir tmp
 cd tmp
-cvs -q export -r pmd_release_3_4 pmd
-mv pmd/ pmd-3.4/
+cvs -q export -r pmd_release_3_5 pmd
+mv pmd/ pmd-3.5/
 cd ..
-cp pmd/lib/pmd-src-3.4.jar tmp/pmd-3.4/lib/
-mv tmp/pmd-3.4/ ~/tmp/
-cp pmd/lib/pmd-3.4.jar ~/tmp/pmd-3.4/lib
-cp -R pmd/target/docs ~/tmp/pmd-3.4/
+cp pmd/lib/pmd-src-3.5.jar tmp/pmd-3.5/lib/
+mv tmp/pmd-3.5/ ~/tmp/
+cp pmd/lib/pmd-3.5.jar ~/tmp/pmd-3.5/lib
+cp -R pmd/target/docs ~/tmp/pmd-3.5/
 cd ~/tmp/
-zip -q -r pmd-src-3.4.zip pmd-3.4/
+zip -q -r pmd-src-3.5.zip pmd-3.5/
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_3_4 pmd
+cvs rtag -d pmd_release_3_5 pmd
 and then retag everything
 
-ncftpput upload.sourceforge.net incoming/ pmd-src-3.4.zip pmd-bin-3.4.zip
+ncftpput upload.sourceforge.net incoming/ pmd-src-3.5.zip pmd-bin-3.5.zip
 
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-3.4.zip file
-Add the pmd-src-3.4.zip file
+Add the pmd-bin-3.5.zip file
+Add the pmd-src-3.5.zip file
 Classify the file
 
 Redo the web site
