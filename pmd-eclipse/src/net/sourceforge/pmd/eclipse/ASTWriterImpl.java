@@ -27,6 +27,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -54,6 +55,9 @@ import org.w3c.dom.Element;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/01/26 23:57:55  phherlin
+ * Fix NullPointerException and InvocationTargetException
+ *
  * Revision 1.4  2003/12/18 23:58:37  phherlin
  * Fixing malformed UTF-8 characters in generated xml files
  *
@@ -136,10 +140,20 @@ public class ASTWriterImpl implements ASTWriter {
                 if (!attributeName.equals("class") && !attributeName.equals("scope")) {
                     log.debug("   processing attribute " + descriptors[i].getName());
                     Method getter = descriptors[i].getReadMethod();
-                    Object result = getter.invoke(simpleNode, null);
-                    if (result != null) {
-                        log.debug("      added");
-                        element.setAttribute(descriptors[i].getName(), result.toString());
+                    if (getter != null) {
+                        try {
+                            Object result = getter.invoke(simpleNode, null);
+                            if (result != null) {
+                                log.debug("      added");
+                                element.setAttribute(descriptors[i].getName(), result.toString());
+                            } else {
+                                log.debug("      not added attribute is null");
+                            }
+                        } catch (InvocationTargetException e) {
+                            log.debug("      not added calling getter has failed");
+                        }
+                    } else {
+                        log.debug("      not added getter is null");
                     }
                 }
             }
