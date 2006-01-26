@@ -2,5 +2,4 @@ build.properties
 build
 target
 velocity.log
-.classpath
-.project
+bin
