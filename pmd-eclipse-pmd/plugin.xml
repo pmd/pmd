@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.core"
    name="%plugin.name"
-   version="3.4.0"
+   version="3.5.0"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.core.PMDCorePlugin">
 
@@ -20,7 +20,7 @@
       <library name="lib/jakarta-oro-2.0.8.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd-3.4.jar">
+      <library name="lib/pmd-3.5.jar">
          <export name="*"/>
       </library>
       <library name="core.jar">

@@ -2,6 +2,16 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
+v3.1.4 - xx/xx/2006
+
+Runtime
+-------
+. Fix BUG#1357798 Source file utf-8 charset problem
+. Fix BUG#1365407 Problems with PMD in Eclipse/Issue 1
+. Update to PMD v3.5
+
+
+----------------------------------------------------------------------------------------
 v3.1.3 - 17/01/2006
 
 Runtime
