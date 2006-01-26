@@ -71,11 +71,14 @@ public class PriorityFilter extends ViewerFilter {
 				
 				// go through the List and search for Markers with the 
 				// given Priorities, if there is one, it is displayed
-				for (int i=0; i<priorityList.size(); i++) {
-					Integer priority = (Integer) priorityList.get(i);
-					if (markerPrio.equals(priority))
-						return true;
-				}
+                // ** PHR note ** for unknown reason, markerPrio may be null
+                if (markerPrio != null) {
+                    for (int i=0; i<priorityList.size(); i++) {
+                        Integer priority = (Integer) priorityList.get(i);
+                        if (markerPrio.equals(priority))
+                            return true;
+                    }                    
+                }
 			} catch (CoreException ce) {
 				PMDPlugin.getDefault().logError(
 					PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION + 
