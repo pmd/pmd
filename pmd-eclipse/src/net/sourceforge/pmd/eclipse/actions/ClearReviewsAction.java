@@ -1,24 +1,35 @@
-/*  
- * <copyright>  
- *  Copyright 1997-2003 PMD for Eclipse Development team
- *  under sponsorship of the Defense Advanced Research Projects  
- *  Agency (DARPA).  
- *   
- *  This program is free software; you can redistribute it and/or modify  
- *  it under the terms of the Cougaar Open Source License as published by  
- *  DARPA on the Cougaar Open Source Website (www.cougaar.org).   
- *   
- *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS   
- *  PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS OR   
- *  IMPLIED, INCLUDING (BUT NOT LIMITED TO) ALL IMPLIED WARRANTIES OF   
- *  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AND WITHOUT   
- *  ANY WARRANTIES AS TO NON-INFRINGEMENT.  IN NO EVENT SHALL COPYRIGHT   
- *  HOLDER BE LIABLE FOR ANY DIRECT, SPECIAL, INDIRECT OR CONSEQUENTIAL   
- *  DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE OF DATA OR PROFITS,   
- *  TORTIOUS CONDUCT, ARISING OUT OF OR IN CONNECTION WITH THE USE OR   
- *  PERFORMANCE OF THE COUGAAR SOFTWARE.   
- *   
- * </copyright>
+/*
+ * Copyright (c) 2005,2006 PMD for Eclipse Development Team
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ * 
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * The end-user documentation included with the redistribution, if
+ *       any, must include the following acknowledgement:
+ *       "This product includes software developed in part by support from
+ *        the Defense Advanced Research Project Agency (DARPA)"
+ *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
+ *       contributors may be used to endorse or promote products derived from
+ *       this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+ * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package net.sourceforge.pmd.eclipse.actions;
 
@@ -51,6 +62,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
@@ -63,43 +77,40 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.3  2005/10/24 22:39:00  phherlin
- * Integrating Sebastian Raffel's work
- * Refactor command processing
- * Revision 1.2 2003/11/30 22:57:37 phherlin
- * Merging from eclipse-v2 development branch
+ * Revision 1.4  2006/01/27 00:03:11  phherlin
+ * Fix BUG#1365407 Problems with PMD in Eclipse/Issue 3
+ * Revision 1.3 2005/10/24 22:39:00 phherlin Integrating Sebastian Raffel's work Refactor command
+ * processing Revision 1.2 2003/11/30 22:57:37 phherlin Merging from eclipse-v2 development branch
  * 
- * Revision 1.1.2.1 2003/11/04 16:27:19 phherlin Refactor to use the adaptable
- * framework instead of downcasting
+ * Revision 1.1.2.1 2003/11/04 16:27:19 phherlin Refactor to use the adaptable framework instead of downcasting
  * 
- * Revision 1.1 2003/08/14 16:10:41 phherlin Implementing Review feature
- * (RFE#787086)
+ * Revision 1.1 2003/08/14 16:10:41 phherlin Implementing Review feature (RFE#787086)
  * 
  */
 public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisitor, IViewActionDelegate {
     private static Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.actions.ClearReviewsAction");
-    private IWorkbenchPart activePart;
+    private IWorkbenchPart targetPart;
     private IProgressMonitor monitor;
 
     /**
      * @see org.eclipse.ui.IViewActionDelegate#init(org.eclipse.ui.IViewPart)
      */
     public void init(IViewPart view) {
-        this.activePart = view.getSite().getPage().getActivePart();
+        this.targetPart = view.getSite().getPage().getActivePart();
     }
 
     /**
-     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction,
-     *      org.eclipse.ui.IWorkbenchPart)
+     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
      */
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-        this.activePart = targetPart;
+        this.targetPart = targetPart;
     }
 
     /**
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
     public void run(IAction action) {
+        log.info("Remove violation reviews requested.");
         ProgressMonitorDialog monitorDialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
         try {
             monitorDialog.run(false, false, new IRunnableWithProgress() {
@@ -117,8 +128,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
     }
 
     /**
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
-     *      org.eclipse.jface.viewers.ISelection)
+     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged(IAction action, ISelection selection) {
     }
@@ -165,41 +175,62 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
      * Process the clear review action
      */
     protected void clearReviews() {
-        ISelection selection = activePart.getSite().getSelectionProvider().getSelection();
 
-        if ((selection != null) && (selection instanceof IStructuredSelection)) {
-            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-            if (getMonitor() != null) {
-                getMonitor().beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_REMOVE_REVIEWS),
-                        IProgressMonitor.UNKNOWN);
+        try {
+            // If action is started from a view, the process all selected resource
+            if (this.targetPart instanceof IViewPart) {
+                ISelection selection = targetPart.getSite().getSelectionProvider().getSelection();
 
-                Iterator i = structuredSelection.iterator();
-                try {
-                    while (i.hasNext()) {
-                        Object object = (Object) i.next();
-                        IResource resource = null;
+                if ((selection != null) && (selection instanceof IStructuredSelection)) {
+                    IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+                    if (getMonitor() != null) {
+                        getMonitor().beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_REMOVE_REVIEWS),
+                                IProgressMonitor.UNKNOWN);
 
-                        if (object instanceof IMarker) {
-                            resource = ((IMarker) object).getResource();
-                        } else if (object instanceof IAdaptable) {
-                            IAdaptable adaptable = (IAdaptable) object;
-                            resource = (IResource) adaptable.getAdapter(IResource.class);
-                        } else {
-                            log.warn("The selected object is not adaptable");
-                            log.debug("   -> selected object = " + object);
-                        }
+                        Iterator i = structuredSelection.iterator();
+                        while (i.hasNext()) {
+                            Object object = (Object) i.next();
+                            IResource resource = null;
 
-                        if (resource != null) {
-                            resource.accept(this);
-                        } else {
-                            log.warn("The selected object cannot adapt to a resource.");
-                            log.debug("   -> selected object" + object);
+                            if (object instanceof IMarker) {
+                                resource = ((IMarker) object).getResource();
+                            } else if (object instanceof IAdaptable) {
+                                IAdaptable adaptable = (IAdaptable) object;
+                                resource = (IResource) adaptable.getAdapter(IResource.class);
+                            } else {
+                                log.warn("The selected object is not adaptable");
+                                log.debug("   -> selected object = " + object);
+                            }
+
+                            if (resource != null) {
+                                resource.accept(this);
+                            } else {
+                                log.warn("The selected object cannot adapt to a resource.");
+                                log.debug("   -> selected object" + object);
+                            }
                         }
                     }
-                } catch (CoreException e) {
-                    PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION, e);
                 }
             }
+
+            // If action is started from an editor, process the file currently edited
+            if (this.targetPart instanceof IEditorPart) {
+                IEditorInput editorInput = ((IEditorPart) this.targetPart).getEditorInput();
+                if (editorInput instanceof IFileEditorInput) {
+                    ((IFileEditorInput) editorInput).getFile().accept(this);
+                } else {
+                    log.debug("The kind of editor input is not supported. The editor input if of type: "
+                            + editorInput.getClass().getName());
+                }
+            }
+
+            // else this is not supported
+            else {
+                log.debug("This action is not supported on this kind of part. This part type is: "
+                        + this.targetPart.getClass().getName());
+            }
+        } catch (CoreException e) {
+            PMDPlugin.getDefault().logError(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION, e);
         }
     }
 
