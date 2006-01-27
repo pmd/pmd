@@ -35,8 +35,8 @@ XXXXXXXXXXXXXXXXXXXXXXXX
 RULES
 ------------------------
 1) Start NetBeans 
-2) Goto Tools --> Options and click on Classic View 
-3) Navigate to Options/IDE Configuration/Server And External Tool Settings/PMD Settings
+2) Goto Tools --> Options 
+3) Navigate to Miscelaneous section and expand PMD node
 4) Click on "Rules"
 5) Click on the [...] button
 6) Select the different rules to see information and examples of the rule
@@ -47,9 +47,8 @@ RULES
 CUSTOM RULESETS
 ------------------------
 1) Start NetBeans 
-2) Goto Tools --> Options and click on Classic View
-3) Navigate to Options/IDE Configuration/Server And External Tool Settings/PMD Settings
-4) Click on the Expert tab
+2) Goto Tools --> Options 
+3) Navigate to Miscelaneous section and expand PMD node
 5) Click on "Rulesets"
 6) Click "Add RuleSet" to locate the ruleset xml file you want to include
 7) Click "Add Rule jar" to locate the jar containing the rules
@@ -61,8 +60,8 @@ CUSTOM RULESETS
 REALTIME SCANNING
 ------------------------
 1) Start NetBeans 
-2) Goto Tools --> Options and click on Classic View
-3) Navigate to Options/IDE Configuration/Server And External Tool Settings/PMD Settings
+2) Goto Tools --> Options 
+3) Navigate to Miscelaneous section and expand PMD node
 4) Click on "Enable scan"
 5) Choose true to enable scan, false otherwise.
 6) Click on "Scan interval"

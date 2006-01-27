@@ -2,8 +2,9 @@
 
     <import file="nbproject/build-impl.xml"/>
 
-    <property name="pmd.jar" value="pmd-3.4.jar"/>
-    <property name="VERSION" value="1.4"/>
+    <property name="pmd.jar" value="pmd-3.5.jar"/>
+    <property name="nb.version" value="5.0"/>
+    <property name="VERSION" value="1.5"/>
 
     <property file="build.ant.properties"/>
 
@@ -30,7 +31,7 @@
         <copy todir="${cluster}/modules/ext">
           <fileset dir="lib">
             <include name="${pmd.jar}"/>
-            <include name="jakarta-oro-2.0.jar"/>
+            <include name="jakarta-oro-2.0.8.jar"/>
             <include name="jaxen-1.1-beta-7.jar"/>
           </fileset>
         </copy>
@@ -38,8 +39,8 @@
 
 	<target depends="clean, nbm" description="Builds the distribution" name="distribution">
 		<fail unless="VERSION" message="Must define VERSION property with the version number for this distribution!"/>
-		<zip compress="true" destfile="build/pmd-netbeans50-${VERSION}-src.zip">
-			<zipfileset dir=".">
+		<zip compress="true" destfile="build/pmd-${nb.version}-${VERSION}-src.zip">
+			<zipfileset dir="." prefix="pmd-${nb.version}-${VERSION}">
 				<include name="*.txt"/>
 				<include name="manifest.mf"/>
 				<include name="build.xml"/>
@@ -48,15 +49,15 @@
 				<include name="libsrc/**/*"/>
 				<include name="lib/${pmd.jar}"/>
 				<include name="lib/jaxen-1.1-beta-7.jar"/>
-				<include name="lib/jakarta-oro-2.0.jar"/>
+				<include name="lib/jakarta-oro-2.0.8.jar"/>
 			</zipfileset>
-			<zipfileset dir="." fullpath="pmd.nbm" includes="build/pmd.nbm"/>
+			<zipfileset dir="." fullpath="pmd-${nb.version}-${VERSION}/pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>
-		<zip compress="true" destfile="build/pmd-netbeans50-${VERSION}-bin.zip">
-			<zipfileset dir=".">
+		<zip compress="true" destfile="build/pmd-${nb.version}-${VERSION}-bin.zip">
+			<zipfileset dir="." prefix="pmd-${nb.version}-${VERSION}">
 				<include name="*.txt"/>
 			</zipfileset>
-			<zipfileset dir="." fullpath="pmd.nbm" includes="build/pmd.nbm"/>
+			<zipfileset dir="." fullpath="pmd-${nb.version}-${VERSION}/pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>
 	</target>
 	

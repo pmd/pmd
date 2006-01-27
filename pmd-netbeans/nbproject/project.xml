@@ -8,21 +8,17 @@
             <standalone/>
             <class-path-extension>
                 <!-- Deployed path, relative to dir containing module: -->
-                <runtime-relative-path>ext/jakarta-oro-2.0.jar</runtime-relative-path>
+                <runtime-relative-path>ext/jakarta-oro-2.0.8.jar</runtime-relative-path>
                 <!-- Path of library in your own sources, relative to project basedir: -->
-                <binary-origin>lib/jakarta-oro-2.0.jar</binary-origin>
+                <binary-origin>lib/jakarta-oro-2.0.8.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <!-- Deployed path, relative to dir containing module: -->
                 <runtime-relative-path>ext/jaxen-1.1-beta-7.jar</runtime-relative-path>
-                <!-- Path of library in your own sources, relative to project basedir: -->
                 <binary-origin>lib/jaxen-1.1-beta-7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <!-- Deployed path, relative to dir containing module: -->
-                <runtime-relative-path>ext/pmd-3.4.jar</runtime-relative-path>
-                <!-- Path of library in your own sources, relative to project basedir: -->
-                <binary-origin>lib/pmd-3.4.jar</binary-origin>
+                <runtime-relative-path>ext/pmd-3.5.jar</runtime-relative-path>
+                <binary-origin>lib/pmd-3.5.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <!-- Deployed path, relative to dir containing module: -->
@@ -35,7 +31,7 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>1.4</specification-version>
+                        <specification-version>1.3.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -77,7 +73,7 @@
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>0</release-version>
-                        <specification-version>1.4</specification-version>
+                        <specification-version>1.3.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -93,7 +89,7 @@
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>6.6</specification-version>
+                        <specification-version>6.5.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -176,7 +172,7 @@
             <public-packages/>
             <extra-compilation-unit>
                 <package-root>libsrc</package-root>
-                <classpath>lib/pmd-3.4.jar</classpath>
+                <classpath>lib/pmd-3.5.jar</classpath>
                 <built-to>build/libclasses</built-to>
                 <built-to>${cluster}/modules/ext/nbpmdrules.jar</built-to>
             </extra-compilation-unit>

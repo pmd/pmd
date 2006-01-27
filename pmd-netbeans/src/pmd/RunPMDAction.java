@@ -238,7 +238,7 @@ public class RunPMDAction extends CookieAction {
 				StringBuffer buffer = new StringBuffer();
 				buffer.append( violation.getRule().getName() ).append( ", " );
 				buffer.append( violation.getDescription() );
-				Fault fault = new Fault( violation.getLine(),
+				Fault fault = new Fault( violation.getNode().getBeginLine(),
 					violation.getFilename(),
 					buffer.toString() );
 				list.add( fault );
