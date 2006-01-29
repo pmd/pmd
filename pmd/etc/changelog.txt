@@ -1,4 +1,6 @@
 ????, 2006 - 3.6:
+Fixed bug 1414985 - ConsecutiveLiteralAppends now checks for intervening references between appends. 
+
 ***** TODO: remove deprecated printToConsole element from PMDTask
 
 Jan 25, 2006 - 3.5:
@@ -10,12 +12,12 @@ New rules:
  Design ruleset: AvoidConstantsInterface
  Optimizations ruleset: UseArraysAsList, AvoidArrayLoops
  Controversial ruleset: BooleanInversion
-Fixed bug 1277373 - InefficientStringBuffering now catches more cases.
-Fixed bug 1371757 - Misleading example in AvoidSynchronizedAtMethodLevel
 Fixed bug 1371980 - InefficientStringBuffering no longer flags StringBuffer methods other than append().
+Fixed bug 1277373 - InefficientStringBuffering now catches more cases.
+Fixed bug 1376760 - InefficientStringBuffering no longer throws a NullPointerException when processing certain expressions.
+Fixed bug 1371757 - Misleading example in AvoidSynchronizedAtMethodLevel
 Fixed bug 1373510 - UseAssertSameInsteadOfAssertTrue no longer has a typo in its message, and its message is more clear.
 Fixed bug 1375290 - @SuppressWarnings annotations are now implemented correctly; they accept one blank argument to suppress all warnings.
-Fixed bug 1376760 - InefficientStringBuffering no longer throws a NullPointerException when processing certain expressions.
 Fixed bug 1376756 - UselessOverridingMethod no longer throws an exception on overloaded methods.
 Fixed bug 1378358 - StringInstantiation no longer throws ClassCastExceptions on certain allocation patterns.
 Fixed bug 1371741 - UncommentedEmptyConstructor no longer flags constructors that consist of a this() or a super() invocation.

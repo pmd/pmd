@@ -70,11 +70,12 @@ and then retag everything
 
 ncftpput upload.sourceforge.net incoming/ pmd-src-3.5.zip pmd-bin-3.5.zip
 
-Go to Admin, Edit/Release Files, click on Add new release
+Go to Admin, File Releases, Add release
 Paste stuff into the changelog/readme boxes
 Add the pmd-bin-3.5.zip file
 Add the pmd-src-3.5.zip file
 Classify the file
+Click File Releases, Edit Release, set previous version to 'hidden'.
 
 Redo the web site
 cd ~/pmd/pmd

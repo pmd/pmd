@@ -43,6 +43,7 @@ public class ConsecutiveLiteralAppendsTest extends SimpleAggregatorTst {
                 new TestDescriptor(TEST30, "30, Method call in append", 0, rule),
                 new TestDescriptor(TEST34, "34, Additive in the constructor", 0, rule),
                 new TestDescriptor(TEST35, "35, For block without braces", 0, rule),
+                new TestDescriptor(TEST36, "36, Appends broken up by method call", 0, rule),
        });
 
        // Then run the failure tests
@@ -61,6 +62,8 @@ public class ConsecutiveLiteralAppendsTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST31_FAIL, "31, Adding two strings together then another append", 1, rule),
                new TestDescriptor(TEST32_FAIL, "32, Including the constructor's string", 1, rule),
                new TestDescriptor(TEST33_FAIL, "33, Additive in the constructor", 1, rule),
+               new TestDescriptor(TEST37_FAIL, "37, Intervening method call not related to append", 1, rule),
+               new TestDescriptor(TEST38_FAIL, "38, Intervening method call not related to append", 1, rule),
        });
 
        // test threshold
@@ -516,6 +519,37 @@ public class ConsecutiveLiteralAppendsTest extends SimpleAggregatorTst {
         " " + PMD.EOL +
         " sb.append(\"World\");" + PMD.EOL +
         " }" + PMD.EOL +
+        "}";
+
+
+    private static final String TEST36 =
+        "public class Foo {" + PMD.EOL +
+        "    public void bar() {" + PMD.EOL +
+        "        StringBuffer sb = new StringBuffer();" + PMD.EOL +
+        "        sb.append(\"World\");" + PMD.EOL +
+        "        foo(sb);" + PMD.EOL +
+        "        sb.append(\"World\");" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "}";
+
+    private static final String TEST37_FAIL =
+        "public class Foo {" + PMD.EOL +
+        "    public void bar() {" + PMD.EOL +
+        "        StringBuffer sb = new StringBuffer();" + PMD.EOL +
+        "        sb.append(\"World\");" + PMD.EOL +
+        "        sb.toString();" + PMD.EOL +
+        "        sb.append(\"World\");" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "}";
+
+    private static final String TEST38_FAIL =
+        "public class Foo {" + PMD.EOL +
+        "    public void bar() {" + PMD.EOL +
+        "        StringBuffer sb = new StringBuffer();" + PMD.EOL +
+        "        sb.append(\"World\");" + PMD.EOL +
+        "        foo(sb.toString());" + PMD.EOL +
+        "        sb.append(\"World\");" + PMD.EOL +
+        "    }" + PMD.EOL +
         "}";
 
 }

@@ -29,7 +29,8 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 /**
  * This rule finds concurrent calls to StringBuffer.append where String literals
- * are used It would be much better to make these calls using one call to .append
+ * are used It would be much better to make these calls using one call to
+ * .append
  * 
  * example:
  * 
@@ -89,6 +90,10 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
 				currentBlock = getFirstParentBlock(n);
 
 				if (!InefficientStringBuffering.isInStringBufferAppend(n, 3)) {
+					if (!no.isPartOfQualifiedName()) {
+						checkForViolation(rootNode, data, concurrentCount);
+						concurrentCount = 0;
+					}
 					continue;
 				}
 				ASTPrimaryExpression s = (ASTPrimaryExpression) n
@@ -96,7 +101,8 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
 				int numChildren = s.jjtGetNumChildren();
 				for (int jx = 0; jx < numChildren; jx++) {
 					SimpleNode sn = (SimpleNode) s.jjtGetChild(jx);
-					if (!(sn instanceof ASTPrimarySuffix) || sn.getImage() != null) {
+					if (!(sn instanceof ASTPrimarySuffix)
+							|| sn.getImage() != null) {
 						continue;
 					}
 
@@ -142,10 +148,13 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
 	private int checkConstructor(ASTVariableDeclaratorId node, Object data) {
 		Node parent = node.jjtGetParent();
 		if (parent.jjtGetNumChildren() >= 2) {
-			ASTArgumentList list = (ASTArgumentList) ((SimpleNode) parent.jjtGetChild(1)).getFirstChildOfType(ASTArgumentList.class);
+			ASTArgumentList list = (ASTArgumentList) ((SimpleNode) parent
+					.jjtGetChild(1)).getFirstChildOfType(ASTArgumentList.class);
 			if (list != null) {
-				ASTLiteral literal = (ASTLiteral)list.getFirstChildOfType(ASTLiteral.class);
-				if (!isAdditive(list) && literal != null && literal.getImage().indexOf("\"") == 0) {
+				ASTLiteral literal = (ASTLiteral) list
+						.getFirstChildOfType(ASTLiteral.class);
+				if (!isAdditive(list) && literal != null
+						&& literal.getImage().indexOf("\"") == 0) {
 					return 1;
 				} else {
 					return processAdditive(data, 0, list, node);
@@ -212,11 +221,13 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
 		Node parentNode = node.jjtGetParent();
 
 		Node lastNode = node;
-		while (parentNode != null && !blockParents.contains(parentNode.getClass())) {
+		while (parentNode != null
+				&& !blockParents.contains(parentNode.getClass())) {
 			lastNode = parentNode;
 			parentNode = parentNode.jjtGetParent();
 		}
-		if (parentNode != null && parentNode.getClass().equals(ASTIfStatement.class)) {
+		if (parentNode != null
+				&& parentNode.getClass().equals(ASTIfStatement.class)) {
 			parentNode = lastNode;
 		} else if (parentNode != null
 				&& parentNode.getClass().equals(ASTSwitchStatement.class)) {
@@ -263,7 +274,8 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
 
 	private boolean isAppendingStringLiteral(SimpleNode node) {
 		SimpleNode n = node;
-		while (n.jjtGetNumChildren() != 0 && !n.getClass().equals(ASTLiteral.class)) {
+		while (n.jjtGetNumChildren() != 0
+				&& !n.getClass().equals(ASTLiteral.class)) {
 			n = (SimpleNode) n.jjtGetChild(0);
 		}
 		return n.getClass().equals(ASTLiteral.class);
@@ -274,7 +286,8 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
 		if (nn.jjtGetNumChildren() == 0) {
 			return false;
 		}
-		return "StringBuffer".equals(((SimpleNode) nn.jjtGetChild(0)).getImage());
+		return "StringBuffer".equals(((SimpleNode) nn.jjtGetChild(0))
+				.getImage());
 	}
 
 }
