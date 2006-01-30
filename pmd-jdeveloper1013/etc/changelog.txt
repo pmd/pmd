@@ -1,8 +1,8 @@
-????, 2005 - 1.8:
+January 30, 2005 - 1.8:
 Better presentation of the rule violations.
 PMD menu item now appears on Package node
 Cleaned up code examples in preferences panel.
-Upgraded to PMD 3.4.
+Upgraded to PMD 3.5.
 
 Oct 18, 2005 - 1.7:
 Merged in changes from Olaf Heimburger to update plugin to work with JDev 10.1.3 early access.

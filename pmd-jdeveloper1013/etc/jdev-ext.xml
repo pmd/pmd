@@ -6,7 +6,8 @@
         <extension>
             <addin>net.sourceforge.pmd.jdeveloper.Plugin</addin>
             <classpath>jaxen-1.1-beta-7.jar</classpath>
-            <classpath>pmd-3.4.jar</classpath>
+            <classpath>jakarta-oro-2.0.8.jar</classpath>
+            <classpath>pmd-3.5.jar</classpath>
             <gallery>
                 <name>net.sourceforge.pmd.jdeveloper.Plugin</name>
                 <category>General</category>

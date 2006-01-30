@@ -19,7 +19,6 @@ import java.io.File;
 
 public class SettingsPanel extends DefaultTraversablePanel {
 
-
     private class FindListener implements ActionListener {
         public void actionPerformed(ActionEvent evt){
             FileDialog fdlg = new FileDialog(new Frame(), "Find", FileDialog.LOAD);

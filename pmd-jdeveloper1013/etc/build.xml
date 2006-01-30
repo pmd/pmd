@@ -3,9 +3,10 @@
 	<property name="config" value="config/"/>
 	<property name="src" value="src/"/>
 	<property name="etc" value="etc/"/>
-	<property name="pmdjar" value="pmd-3.4.jar"/>
-	<property name="pluginversion" value="1.7"/>
-    <property name="bundle.jarname" value="net.sourceforge.pmd.jdeveloper.${pluginversion}.jar"/>
+	<property name="pmdjar" value="pmd-3.5.jar"/>
+	<property name="pluginversion" value="1.8"/>
+    <property name="bundle.dirname" value="net.sourceforge.pmd.jdeveloper.${pluginversion}"/>
+    <property name="bundle.jarname" value="${bundle.dirname}.jar"/>
 	<property name="jdeveloper.install.dir" value="c:/data/jdev1013/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
     <property name="linux.jdeveloper.install.dir" value="/home/tom/pmd/ides/jdev1013/jdev/extensions/"/>
 
@@ -48,19 +49,22 @@
         <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper.install.dir}/lib"/>
         <copy file="lib/${pmdjar}" todir="${jdeveloper.install.dir}/lib"/>
         <copy file="lib/jaxen-1.1-beta-7.jar" todir="${jdeveloper.install.dir}/lib"/>
+        <copy file="lib/jakarta-oro-2.0.8.jar" todir="${jdeveloper.install.dir}/lib"/>
 	</target>
 
     <target name="deploylinux" depends="delete,jar">
+        <mkdir dir="${linux.jdeveloper.install.dir}"/>
         <copy file="lib/${bundle.jarname}" todir="${linux.jdeveloper.install.dir}"/>
-        <copy file="lib/${pmdjar}" todir="${linux.jdeveloper.install.dir}/net.sourceforge.pmd.jdeveloper.1.7/lib"/>
-        <copy file="lib/jaxen-1.1-beta-7.jar" todir="${linux.jdeveloper.install.dir}/net.sourceforge.pmd.jdeveloper.1.7/lib"/>
+        <copy file="lib/${pmdjar}" todir="${linux.jdeveloper.install.dir}/net.sourceforge.pmd.jdeveloper.${pluginversion}/lib"/>
+        <copy file="lib/jaxen-1.1-beta-7.jar" todir="${linux.jdeveloper.install.dir}/net.sourceforge.pmd.jdeveloper.${pluginversion}/lib"/>
+        <copy file="lib/jakarta-oro-2.0.8.jar" todir="${linux.jdeveloper.install.dir}/net.sourceforge.pmd.jdeveloper.${pluginversion}/lib"/>
     </target>
 
     <target name="release" depends="clean,jar">
-        <mkdir dir="tmp/${ant.project.name}-${pluginversion}/lib"/>
-        <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
-        <copy file="lib/${pmdjar}" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
-        <copy file="lib/jaxen-1.1-beta-7.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+        <mkdir dir="tmp/${bundle.dirname}/lib"/>
+        <copy file="lib/${bundle.jarname}" todir="tmp/${bundle.dirname}/lib/"/>
+        <copy file="lib/jaxen-1.1-beta-7.jar" todir="tmp/${bundle.dirname}/lib"/>
+        <copy file="lib/jakarta-oro-2.0.8.jar" todir="tmp/${bundle.dirname}/lib"/>
         <zip zipfile="${ant.project.name}-bin-${pluginversion}.zip" basedir="tmp/"/>
         <move file="${ant.project.name}-bin-${pluginversion}.zip" todir="/home/tom/tmp"/>
         <delete dir="tmp"/>
@@ -80,7 +84,7 @@
      <delete>
          <fileset dir="/home/tom/jdev1013/jdev/extensions/" includes="jaxen*.jar,*pmd*"/>
      </delete>
-    <delete dir="/home/tom/jdev1013/jdev/extensions/net.sourceforge.pmd.jdeveloper.1.7"/>
+    <delete dir="/home/tom/jdev1013/jdev/extensions/net.sourceforge.pmd.jdeveloper.${pluginversion}"/>
 
     <delete dir="update-center-bundle/"/>
 
@@ -90,6 +94,7 @@
     <copy file="lib/${bundle.jarname}" todir="update-center-bundle/"/>
     <copy file="lib/${pmdjar}" todir="update-center-bundle/net.sourceforge.pmd.jdeveloper.${pluginversion}/lib/"/>
     <copy file="lib/jaxen-1.1-beta-7.jar" todir="update-center-bundle/net.sourceforge.pmd.jdeveloper.${pluginversion}/lib/"/>
+    <copy file="lib/jakarta-oro-2.0.8.jar" todir="update-center-bundle/net.sourceforge.pmd.jdeveloper.${pluginversion}/lib/"/>
     <zip destfile="update-center-bundle/pmd-jdeveloper1013-${pluginversion}.zip" basedir="update-center-bundle">
       <exclude name="center.xml"/>
     </zip>
