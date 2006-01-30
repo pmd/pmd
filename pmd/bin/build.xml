@@ -63,7 +63,7 @@
         basedir="${dir.build}">
         <manifest>
             <attribute name="Main-Class" value="net.sourceforge.pmd.PMD"/>
-            <attribute name="Class-Path" value="jaxen-1.1-beta-7.jar jakarta-oro-2.0.8.jar"/>
+            <attribute name="Class-Path" value="xmlParserAPIs-2.6.2.jar xercesImpl-2.6.2.jar jaxen-1.1-beta-7.jar jakarta-oro-2.0.8.jar"/>
         </manifest>
     </jar>
 </target>
