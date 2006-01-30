@@ -45,6 +45,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Erik Thauvin - reported IDEA integration problem</li>
             <li>Allan Caplan - nice bugfix patch (with tests!) for ConsecutiveLiteralAppends, ConsecutiveLiteralAppends, BooleanInversion, fixed missed hits for AppendCharacterWithChar and InefficientStringBuffering, wrote AppendCharacterWithChar, wrote IntegerInstantiation, wrote UseStringBufferLength, wrote AvoidEnumAsIdentifier, bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
             <li>John Kenny - reported bug in ConsecutiveLiteralAppends</li>
             <li>Tom Judge - patch for fix to C/C++ multiline literal support for CPD, patch for including .cc files in C++ CPD checks, patch for JDK compatibility problems</li>
