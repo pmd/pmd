@@ -62,7 +62,8 @@
 
     <target name="release" depends="clean,jar">
         <mkdir dir="tmp/${bundle.dirname}/lib"/>
-        <copy file="lib/${bundle.jarname}" todir="tmp/${bundle.dirname}/lib/"/>
+        <copy file="lib/${bundle.jarname}" todir="tmp/"/>
+        <copy file="lib/${pmdjar}" todir="tmp/${bundle.dirname}/lib"/>
         <copy file="lib/jaxen-1.1-beta-7.jar" todir="tmp/${bundle.dirname}/lib"/>
         <copy file="lib/jakarta-oro-2.0.8.jar" todir="tmp/${bundle.dirname}/lib"/>
         <zip zipfile="${ant.project.name}-bin-${pluginversion}.zip" basedir="tmp/"/>
@@ -118,3 +119,4 @@
     </target>
 
 </project>
+ 
