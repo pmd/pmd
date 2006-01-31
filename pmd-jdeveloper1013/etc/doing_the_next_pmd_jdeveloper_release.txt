@@ -11,6 +11,12 @@ TESTS:
 
 Check everything in
 
+ant deletedeployed
+Open JDev, install previous version
+Upload a new bundle to the release center
+ant uploadbundle
+Open JDev
+
 Create the src release:
 
 CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT

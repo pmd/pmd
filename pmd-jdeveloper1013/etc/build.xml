@@ -23,9 +23,13 @@
 
     <target name="delete">
         <delete file="lib/${ant.project.name}.jar"/>
-        <delete file="${jdeveloper.install.dir}/${ant.project.name}.jar"/>
 		<delete dir="build"/>
         <mkdir dir="build"/>
+    </target>
+
+    <target name="deletedeployed">
+        <delete dir="${linux.jdeveloper.install.dir}/${bundle.dirname}"/>
+        <delete file="${linux.jdeveloper.install.dir}/${bundle.jarname}"/>
     </target>
 
 	<target name="compile">
@@ -81,14 +85,8 @@
         </exec>
     </target>
 
- <target name="bundle" depends="clean,jar">
-     <delete>
-         <fileset dir="/home/tom/jdev1013/jdev/extensions/" includes="jaxen*.jar,*pmd*"/>
-     </delete>
-    <delete dir="/home/tom/jdev1013/jdev/extensions/net.sourceforge.pmd.jdeveloper.${pluginversion}"/>
-
+ <target name="bundle" depends="clean,jar,deletedeployed">
     <delete dir="update-center-bundle/"/>
-
     <mkdir dir="update-center-bundle/META-INF"/>
     <copy file="etc/bundle.xml" todir="update-center-bundle/META-INF/"/>
     <copy file="etc/center.xml" todir="update-center-bundle/"/>
@@ -119,4 +117,3 @@
     </target>
 
 </project>
- 
