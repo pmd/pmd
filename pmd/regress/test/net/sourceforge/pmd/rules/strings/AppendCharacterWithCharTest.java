@@ -24,6 +24,11 @@ public class AppendCharacterWithCharTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST4, "concatenates a three character int", 0, rule),
                new TestDescriptor(TEST5, "concatenates a string explicitly set to 1 character, not explicitly checking right now", 0, rule),
                new TestDescriptor(TEST6, "for statement", 1, rule),
+               new TestDescriptor(TEST7, "concatenates an escaped character", 1, rule),
+               new TestDescriptor(TEST8, "concatenates a single upper case", 1, rule),
+               new TestDescriptor(TEST9, "concatenates a single number", 1, rule),
+               new TestDescriptor(TEST10, "concatenates a single character &", 1, rule),
+               new TestDescriptor(TEST11, "concatenates two characters", 0, rule),
        });
     }
     private static final String TEST1 =
@@ -69,6 +74,41 @@ public class AppendCharacterWithCharTest extends SimpleAggregatorTst {
         " public void bar(StringBuffer sb) {" + PMD.EOL +
         "  for(int ix = 0; ix < 100; ix++) "+
         "      sb.append(\"a\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST7 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar(StringBuffer sb) {" + PMD.EOL +
+        "  sb.append(\"\\t\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST8 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar(StringBuffer sb) {" + PMD.EOL +
+        "  sb.append(\"A\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST9 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar(StringBuffer sb) {" + PMD.EOL +
+        "  sb.append(\"3\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST10 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar(StringBuffer sb) {" + PMD.EOL +
+        "  sb.append(\"&\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST11 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar(StringBuffer sb) {" + PMD.EOL +
+        "  sb.append(\"/t\");" + PMD.EOL +
         " }" + PMD.EOL +
         "}";
 
