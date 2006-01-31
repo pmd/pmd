@@ -2,7 +2,7 @@
 Fixed bug 1414985 - ConsecutiveLiteralAppends now checks for intervening references between appends.
 Fixed bug 1418424 - ConsecutiveLiteralAppends no longer flags appends in separate methods.
 Fixed bug 1416167 - AppendCharacterWithChar now catches cases involving escaped characters.
-Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset contains rules new to release 3.5.  Should retrofit previous releases as well.
+Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset contains rules new to PMD v3.5.  TODO: retrofit previous releases with this as well.
 
 ***** TODO: remove deprecated printToConsole element from PMDTask
 
