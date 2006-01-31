@@ -1,5 +1,6 @@
 ????, 2006 - 3.6:
-Fixed bug 1414985 - ConsecutiveLiteralAppends now checks for intervening references between appends. 
+Fixed bug 1414985 - ConsecutiveLiteralAppends now checks for intervening references between appends.
+Fixed bug 1418424 - ConsecutiveLiteralAppends no longer flags appends in separate methods.
 
 ***** TODO: remove deprecated printToConsole element from PMDTask
 
@@ -551,4 +552,4 @@ Added new HTML report format
 June 25 2002 - 0.1:
 Initial release
 
-Support PMD, get the book: http://pmdapplied.com/
+Support PMD, get the book! http://pmdapplied.com/

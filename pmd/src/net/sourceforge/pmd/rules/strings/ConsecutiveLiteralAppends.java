@@ -16,6 +16,7 @@ import net.sourceforge.pmd.ast.ASTDoStatement;
 import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
@@ -60,6 +61,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
 		blockParents.add(ASTDoStatement.class);
 		blockParents.add(ASTIfStatement.class);
 		blockParents.add(ASTSwitchStatement.class);
+		blockParents.add(ASTMethodDeclaration.class);
 	}
 
 	private int threshold = 1;

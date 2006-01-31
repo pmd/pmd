@@ -44,6 +44,7 @@ public class ConsecutiveLiteralAppendsTest extends SimpleAggregatorTst {
                 new TestDescriptor(TEST34, "34, Additive in the constructor", 0, rule),
                 new TestDescriptor(TEST35, "35, For block without braces", 0, rule),
                 new TestDescriptor(TEST36, "36, Appends broken up by method call", 0, rule),
+                new TestDescriptor(TEST39, "39, Buffer as class variable, accessed in 2 methods", 0, rule),
        });
 
        // Then run the failure tests
@@ -548,6 +549,17 @@ public class ConsecutiveLiteralAppendsTest extends SimpleAggregatorTst {
         "        StringBuffer sb = new StringBuffer();" + PMD.EOL +
         "        sb.append(\"World\");" + PMD.EOL +
         "        foo(sb.toString());" + PMD.EOL +
+        "        sb.append(\"World\");" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "}";
+
+    private static final String TEST39 =
+        "public class Foo {" + PMD.EOL +
+        "    StringBuffer sb = new StringBuffer();" + PMD.EOL +
+        "    public void foo() {" + PMD.EOL +
+        "        sb.append(\"World\");" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "    public void bar() {" + PMD.EOL +
         "        sb.append(\"World\");" + PMD.EOL +
         "    }" + PMD.EOL +
         "}";
