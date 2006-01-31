@@ -46,10 +46,16 @@
 
 <target name="copy" description="Copies the rulesets directory contents into the build directory">
     <mkdir dir="${dir.lib}"/>
+    <mkdir dir="${dir.lib}/rulesets/releases"/>
     <copy todir="${dir.build}rulesets">
         <fileset dir="${dir.rulesets}">
             <include name="*.xml"/>
             <include name="*.properties"/>
+        </fileset>
+    </copy>
+    <copy todir="${dir.build}rulesets/releases">
+        <fileset dir="${dir.rulesets}/releases">
+            <include name="*.xml"/>
         </fileset>
     </copy>
 </target>
