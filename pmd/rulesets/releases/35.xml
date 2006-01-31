@@ -10,6 +10,10 @@ This ruleset contains links to rules that are new in PMD v3.5
   <rule ref="rulesets/basic.xml/MisplacedNullCheck"/>
   <rule ref="rulesets/basic.xml/UnusedNullCheckInEquals"/>
 
+  <rule ref="rulesets/strings.xml/AppendCharacterWithChar"/>
+  <rule ref="rulesets/strings.xml/ConsecutiveLiteralAppends"/>
+  <rule ref="rulesets/strings.xml/UseIndexOfChar"/>
+
   <rule ref="rulesets/migrating.xml/IntegerInstantiation"/>
 
   <rule ref="rulesets/junit.xml/UseAssertNullInsteadOfAssertTrue"/>
