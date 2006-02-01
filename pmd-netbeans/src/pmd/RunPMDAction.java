@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2002-2003, the pmd-netbeans team
+ *  Copyright (c) 2002-2006, the pmd-netbeans team
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without modification,
@@ -146,109 +146,117 @@ public class RunPMDAction extends CookieAction {
 	}
 
 
-	/**
-	 * Runs PMD on the given list of DataObjects, with no callback.
-	 * This just calls {@link #checkCookies(List, RunPMDCallback)} with a default callback that displays
-	 * progress in the status bar.
-	 *
-	 * @param dataobjects the list of data objects to run PMD on, not null. Elements are instanceof
-	 *                    {@link DataObject}.
-	 * @return the list of rule violations found in the run, not null. Elements are instanceof {@link Fault}.
-	 * @throws IOException on failure to read one of the files or to write to the output window.
-	 */
-	public static List checkCookies( List dataobjects ) throws IOException {
-                SourceLevelQuery sourceLevelQuery =
-                        (SourceLevelQuery) Lookup.getDefault().lookup(SourceLevelQuery.class);
-		RuleSet set = constructRuleSets();
-                PMD pmd_1_3 = null;
-                PMD pmd_1_4 = null;
-                PMD pmd_1_5 = null;
-		ArrayList list = new ArrayList( 100 );
-                
-                CancelCallback cancel = new CancelCallback ();
-                ProgressHandle prgHdl = ProgressHandleFactory.createHandle("PMD check", cancel); // PENDING action to show output
-                prgHdl.start(dataobjects.size());
-		for( int i = 0; i < dataobjects.size(); i++ ) {
-                    if (cancel.isCancelled())
-                        break;
-                    DataObject dataobject = ( DataObject )dataobjects.get( i );
-                    prgHdl.progress(dataobject.getName(), i); // TODO: I18N 'name', x of y
-                    FileObject fobj = dataobject.getPrimaryFile();
-                    String name = ClassPath.getClassPath( fobj, ClassPath.SOURCE ).getResourceName( fobj, '.', false );
-			
-			//The file is not a java file
-			if( !dataobject.getPrimaryFile().hasExt( "java" ) || dataobject.getCookie( LineCookie.class ) == null ) {
-				continue;
-			}
-                        
-                        String sourceLevel = sourceLevelQuery.getSourceLevel(fobj);
-                        
-                        // choose the correct PMD to use according to the source level
-                        PMD pmd = null;
-                        if (sourceLevel != null) {
-                            if (sourceLevel.equals("1.5")) {
-                                if (pmd_1_5 == null)
-                                    pmd_1_5 = new PMD(new TargetJDK1_5());
-                                pmd = pmd_1_5;
-                            } else if (sourceLevel.equals("1.3")) {
-                                if (pmd_1_3 == null)
-                                    pmd_1_3 = new PMD(new TargetJDK1_3());
-                                pmd = pmd_1_3;
-                            }
-                        }
-                        // default to JDK 1.4 if we don't know any better...
-                        if (pmd == null) {
-                            if (pmd_1_4 == null)
-                                pmd_1_4 = new PMD(new TargetJDK1_4());
-                            pmd = pmd_1_4;
-                        }
+    /**
+     * Runs PMD on the given list of DataObjects, with no callback.
+     * This just calls {@link #checkCookies(List, RunPMDCallback)} with a default callback that displays
+     * progress in the status bar.
+     *
+     * @param dataobjects the list of data objects to run PMD on. Elements are instanceof
+     *                    {@link DataObject}.
+     * @return the list of rule violations found in the run, not null. Elements are instanceof {@link Fault}.
+     * @throws IOException on failure to read one of the files or to write to the output window.
+     */
+    public static List checkCookies( List/*<DataObject>*/ dataobjects ) throws IOException {
+        assert dataobjects != null: "Cannot pass null to RunPMDAction.checkCookies()";
+        SourceLevelQuery sourceLevelQuery =
+                (SourceLevelQuery) Lookup.getDefault().lookup(SourceLevelQuery.class);
+        RuleSet set = constructRuleSets();
+        PMD pmd_1_3 = null;
+        PMD pmd_1_4 = null;
+        PMD pmd_1_5 = null;
+        ArrayList list = new ArrayList( 100 );
 
-                        
-			Reader reader;
-			try {
-				reader = getSourceReader( dataobject );
-			}
-			catch( IOException ioe) {
-				Fault fault = new Fault( 1, name, "IOException reading file for class " + name + ": " + ioe.toString());
-				ErrorManager.getDefault().notify( ioe );
-				list.add( fault );
-				FaultRegistry.getInstance().registerFault( fault, dataobject );
-				continue;
-			}
-			
-			RuleContext ctx = new RuleContext();
-			Report report = new Report();
-			ctx.setReport( report );
-			ctx.setSourceCodeFilename( name );
-			try {
-				pmd.processFile( reader, set, ctx );
-			}
-			catch( PMDException e ) {
-				Fault fault = new Fault( 1, name, e );
-				ErrorManager.getDefault().log(ErrorManager.ERROR, "PMD threw exception " + e.toString());
-				ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
-                                // XXX why to report this ?
-				list.add( fault );
-				FaultRegistry.getInstance().registerFault( fault, dataobject );
-			}
+        CancelCallback cancel = new CancelCallback();
+        ProgressHandle prgHdl = ProgressHandleFactory.createHandle("PMD check", cancel); // PENDING action to show output
+        prgHdl.start(dataobjects.size());
+        try {
+            for( int i = 0; i < dataobjects.size(); i++ ) {
+                if (cancel.isCancelled())
+                    break;
+                DataObject dataobject = ( DataObject )dataobjects.get( i );
+                prgHdl.progress(dataobject.getName(), i); // TODO: I18N 'name', x of y
+                FileObject fobj = dataobject.getPrimaryFile();
+                ClassPath cp = ClassPath.getClassPath( fobj, ClassPath.SOURCE );
+                if (cp == null) {
+                    // not on any classpath, ignore
+                    continue;
+                }
+                String name = cp.getResourceName( fobj, '.', false );
 
-			Iterator iterator = ctx.getReport().iterator();
-			while( iterator.hasNext() ) {
-				RuleViolation violation = ( RuleViolation )iterator.next();
-				StringBuffer buffer = new StringBuffer();
-				buffer.append( violation.getRule().getName() ).append( ", " );
-				buffer.append( violation.getDescription() );
-				Fault fault = new Fault( violation.getNode().getBeginLine(),
-					violation.getFilename(),
-					buffer.toString() );
-				list.add( fault );
-				FaultRegistry.getInstance().registerFault( fault, dataobject );
-			}
-		}
-                prgHdl.finish();
-		Collections.sort( list );
-		return list;
-	}
+                //The file is not a java file
+                if( !dataobject.getPrimaryFile().hasExt( "java" ) || dataobject.getCookie( LineCookie.class ) == null ) {
+                    continue;
+                }
+
+                String sourceLevel = sourceLevelQuery.getSourceLevel(fobj);
+
+                // choose the correct PMD to use according to the source level
+                PMD pmd = null;
+                if (sourceLevel != null) {
+                    if (sourceLevel.equals("1.5")) {
+                        if (pmd_1_5 == null)
+                            pmd_1_5 = new PMD(new TargetJDK1_5());
+                        pmd = pmd_1_5;
+                    } else if (sourceLevel.equals("1.3")) {
+                        if (pmd_1_3 == null)
+                            pmd_1_3 = new PMD(new TargetJDK1_3());
+                        pmd = pmd_1_3;
+                    }
+                }
+                // default to JDK 1.4 if we don't know any better...
+                if (pmd == null) {
+                    if (pmd_1_4 == null)
+                        pmd_1_4 = new PMD(new TargetJDK1_4());
+                    pmd = pmd_1_4;
+                }
+
+
+                Reader reader;
+                try {
+                    reader = getSourceReader( dataobject );
+                } catch( IOException ioe) {
+                    Fault fault = new Fault( 1, name, "IOException reading file for class " + name + ": " + ioe.toString());
+                    ErrorManager.getDefault().notify( ioe );
+                    list.add( fault );
+                    FaultRegistry.getInstance().registerFault( fault, dataobject );
+                    continue;
+                }
+
+                RuleContext ctx = new RuleContext();
+                Report report = new Report();
+                ctx.setReport( report );
+                ctx.setSourceCodeFilename( name );
+                try {
+                    pmd.processFile( reader, set, ctx );
+                } catch( PMDException e ) {
+                    Fault fault = new Fault( 1, name, e );
+                    ErrorManager.getDefault().log(ErrorManager.ERROR, "PMD threw exception " + e.toString());
+                    ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
+                    // XXX why to report this ?
+                    list.add( fault );
+                    FaultRegistry.getInstance().registerFault( fault, dataobject );
+                }
+
+                Iterator iterator = ctx.getReport().iterator();
+                while( iterator.hasNext() ) {
+                    RuleViolation violation = ( RuleViolation )iterator.next();
+                    StringBuffer buffer = new StringBuffer();
+                    buffer.append( violation.getRule().getName() ).append( ", " );
+                    buffer.append( violation.getDescription() );
+                    Fault fault = new Fault( violation.getNode().getBeginLine(),
+                            violation.getFilename(),
+                            buffer.toString() );
+                    list.add( fault );
+                    FaultRegistry.getInstance().registerFault( fault, dataobject );
+                }
+            }
+        }
+        finally {
+            prgHdl.finish();
+        }
+        Collections.sort( list );
+        return list;
+    }
 
 
 	/**
