@@ -89,7 +89,7 @@ Lots of documentation improvements.
 
 September 15, 2005 - 3.3:
 New rules:
-    Design: PositionLiteralsFirstInComparisons,  UnnecessaryLocalBeforeReturn,
+    Design: PositionLiteralsFirstInComparisons,  UnnecessaryLocalBeforeReturn
     Logging-jakarta-commons: ProperLogger
     Basic: UselessOverridingMethod
     Naming: PackageCase, NoPackage
