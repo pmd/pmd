@@ -18,6 +18,7 @@
             <li>Ole-Martin Mork - NetBeans plugin</li>
             <li><a href="http://www.rose-hulman.edu/~gurganbl/">Brant Gurganus</a> - JCreator integration, Swing GUI work</li>
             <li>Miguel Griffa - over a dozen rules, lots of documentation, and other improvements all over the place</li>
+            <li>Allan Caplan - six rules, lots of bugfixes and improvements to the PMD core</li>
             <li>Radim Kubacki - Netbeans plugin, OptimizableToArrayCallRule suggestion, bug reports, pmd-netbeans feedback</li>
             <li>Colin Wilson-Salt - Eclipse plugin team</li>
             <li>Andrey Lumyanski - Gel plugin</li>
@@ -49,7 +50,6 @@
             <li>Didier Duquennoy - bug reports for ConsecutiveLiteralAppends and AppendCharacterWithChar, several bug reports for InefficientStringBuffering, bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li><a href="http://www.cafeaulait.org/">Elliotte Rusty Harold</a> - suggested creating a new ruleset containing rules in each release, UncommentedEmptyConstructor suggestions, noted missed case for UnusedFormalParameter, documentation suggestions, reported mistake in UnnecessaryLocalBeforeReturn message, bug report 1371757 for misleading AvoidSynchronizedAtMethodLevel example, bug report 1293277 for duplicated rule messages, bug report for ConstructorCallsOverridableMethod, suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>Erik Thauvin - reported IDEA integration problem</li>
-            <li>Allan Caplan - nice bugfix patches (with tests!) for ConsecutiveLiteralAppends and AppendCharacterWithChar, ConsecutiveLiteralAppends, BooleanInversion, fixed missed hits for AppendCharacterWithChar and InefficientStringBuffering, wrote AppendCharacterWithChar, wrote IntegerInstantiation, wrote UseStringBufferLength, wrote AvoidEnumAsIdentifier, bug report 1313216 for designer flaw, patch 1306999 to enhance CloseResource to check for more types, suggested including suppressed rule violations in the report</li>
             <li>John Kenny - reported bug in ConsecutiveLiteralAppends</li>
             <li>Tom Judge - patch for fix to C/C++ multiline literal support for CPD, patch for including .cc files in C++ CPD checks, patch for JDK compatibility problems</li>
             <li>Christopher Stach - bug report for JDK 1.5 enum handling</li>

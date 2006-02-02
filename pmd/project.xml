@@ -166,6 +166,16 @@
 		</developer>
 	</developers>
 
+    <developer>
+        <name>Allan Caplan</name>
+        <id>allancaplan</id>
+        <email>allancaplan@users.sourceforge.net</email>
+        <roles>
+            <role>Developer</role>
+        </roles>
+    </developer>
+
+
 	<contributors></contributors>
 
 	<!-- Need to mark these as compile-time/run-time -->
