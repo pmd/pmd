@@ -7,23 +7,24 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="InefficientStringBuffering"
-        message="Avoid concatenating nonliterals in a StringBuffer constructor or append()"
-        class="net.sourceforge.pmd.rules.strings.InefficientStringBuffering"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InefficientStringBuffering">
+    <rule name="UseIndexOfChar"
+        message="String.indexOf(char) is faster than String.indexOf(String)"
+        class="net.sourceforge.pmd.rules.strings.UseIndexOfChar"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseIndexOfChar">
     <description>
-Avoid concatenating non literals in a StringBuffer constructor or append().
+Use String.indexOf(char) when checking for the index of a single character; it's faster.  Same for
+        String.lastIndexOf().
     </description>
        <priority>3</priority>
     <example>
 <![CDATA[
 public class Foo {
  void bar() {
-  // Avoid this
-  StringBuffer sb=new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
-  // use instead something like this
-  StringBuffer sb = new StringBuffer("tmp = ");
-  sb.append(System.getProperty("java.io.tmpdir"));
+  String s = "hello world";
+  // avoid this
+  if (s.indexOf("d") {}
+  // instead do this
+  if (s.indexOf('d') {}
  }
 }
 ]]>

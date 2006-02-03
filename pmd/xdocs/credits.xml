@@ -46,6 +46,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Brian R - suggestions for improving UseIndexOfChar, documentation suggestion</li>
             <li>Didier Duquennoy - bug reports for InefficientStringBuffering/ConsecutiveLiteralAppends/AppendCharacterWithChar, several bug reports for InefficientStringBuffering, bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>
             <li>Paul Smith - patch to fix Ant task 'minimum priority' attribute</li>
             <li><a href="http://www.cafeaulait.org/">Elliotte Rusty Harold</a> - suggested creating a new ruleset containing rules in each release, UncommentedEmptyConstructor suggestions, noted missed case for UnusedFormalParameter, documentation suggestions, reported mistake in UnnecessaryLocalBeforeReturn message, bug report 1371757 for misleading AvoidSynchronizedAtMethodLevel example, bug report 1293277 for duplicated rule messages, bug report for ConstructorCallsOverridableMethod, suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
@@ -73,7 +74,6 @@
             <li>Noel Grandin - bug report for MissingStaticMethodInNonInstantiatableClass, bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Derek Hofmann - suggestion for adding --skip-duplicate-files option for CPD, bug report for CPD skipping header files when in C/C++ mode</li>
             <li>Mark Holczhammer - bug report for InefficientStringBuffering</li>
-            <li>Brian R - documentation suggestion</li>
             <li>Jeff Jensen - discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>Raja Rajan - 2 bug reports for CompareObjectswithEquals</li>
             <li>Jeff Chamblee - suggested better message for UnnecessaryCaseChange, bug report for CompareObjectsWithEquals</li>
