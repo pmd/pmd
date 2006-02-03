@@ -97,13 +97,9 @@ public class InefficientStringBuffering extends AbstractRule {
         // but, "for now" (tm):
         // if more than one arg to append(), skip it
         ASTArgumentList argList = (ASTArgumentList)s.getFirstChildOfType(ASTArgumentList.class);
-        if (argList == null) {
+        if (argList == null || argList.jjtGetNumChildren() > 1) {
             return false;
         }
-        if (argList.jjtGetNumChildren() > 1) {
-            return false;
-        }
-
 
         return ((VariableNameDeclaration)n.getNameDeclaration()).getTypeImage().equals("StringBuffer");
     }
