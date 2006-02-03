@@ -43,25 +43,17 @@ public class InefficientEmptyStringCheck extends AbstractRule {
             return data;
         }
 
-        Map mapDeclars = node.getScope().getVariableDeclarations();
-        for (Iterator i = mapDeclars.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration varNameDecl = (VariableNameDeclaration) i
-                    .next();
-            if (!varNameDecl.getImage().equals(node.getImage())) {
+        List declars = node.getUsages();
+        for (Iterator i = declars.iterator(); i.hasNext();) {
+            NameOccurrence occ = (NameOccurrence) i.next();
+            if (!isStringLength(occ)) {
                 continue;
             }
-            List usage = (List) mapDeclars.get(varNameDecl);
-            for (Iterator j = usage.iterator(); j.hasNext();) {
-                NameOccurrence occ = (NameOccurrence) j.next();
-                if (!isStringLength(occ)) {
-                    continue;
-                }
-                ASTEqualityExpression equality = (ASTEqualityExpression) occ
-                        .getLocation().getFirstParentOfType(
-                                ASTEqualityExpression.class);
-                if (equality != null && isCompareZero(equality)) {
-                    addViolation(data, occ.getLocation());
-                }
+            ASTEqualityExpression equality = (ASTEqualityExpression) occ
+                    .getLocation().getFirstParentOfType(
+                            ASTEqualityExpression.class);
+            if (equality != null && isCompareZero(equality)) {
+                addViolation(data, occ.getLocation());
             }
         }
         return data;
