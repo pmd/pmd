@@ -216,5 +216,52 @@ public class Foo {
     </example>
     </rule>
 
+
+    <rule name="UseIndexOfChar"
+        message="String.indexOf(char) is faster than String.indexOf(String)"
+        class="net.sourceforge.pmd.rules.strings.UseIndexOfChar"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseIndexOfChar">
+    <description>
+Use String.indexOf(char) when checking for the index of a single character; it's faster.
+    </description>
+       <priority>3</priority>
+    <example>
+<![CDATA[
+public class Foo {
+ void bar() {
+  String s = "hello world";
+  // avoid this
+  if (s.indexOf("d") {}
+  // instead do this
+  if (s.indexOf('d') {}
+ }
+}
+]]>
+    </example>
+    </rule>
+
+    <rule name="InefficientEmptyStringCheck"
+        message="String.trim().length() ==0 is an inefficient way to validate an empty String"
+        class="net.sourceforge.pmd.rules.strings.InefficientEmptyStringCheck"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InefficientEmptyStringCheck">
+    <description>
+	   String.trim().length() is an inefficient way to check if a String is really empty, as it 
+	   creates a new String object just to check its size. Looping through a string, checking Character.isWhitespace()
+	   on each character and returning false if a non-whitespace character is found is preferable
+    </description>
+       <priority>3</priority>
+    <example>
+<![CDATA[
+public class Foo {
+    void bar(String string) {
+        if (string != null && string.trim().size() > 0) { 
+		    doSomething();
+        } 
+    }
+}
+]]>
+    </example>
+    </rule>
+
 </ruleset>
 

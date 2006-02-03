@@ -1,4 +1,5 @@
 ????, 2006 - 3.6:
+New rule: InefficientEmptyStringCheck
 Fixed bug 1414985 - ConsecutiveLiteralAppends now checks for intervening references between appends.
 Fixed bug 1418424 - ConsecutiveLiteralAppends no longer flags appends in separate methods.
 Fixed bug 1416167 - AppendCharacterWithChar now catches cases involving escaped characters.

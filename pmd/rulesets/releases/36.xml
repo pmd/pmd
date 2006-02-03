@@ -6,6 +6,8 @@
 This ruleset contains links to rules that are new in PMD v3.6
   </description>
 
+  <rule ref="rulesets/strings.xml/InefficientEmptyStringCheck"/>
+
 
 </ruleset>
 
