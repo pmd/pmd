@@ -432,24 +432,26 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 		}
 	}//GEN-LAST:event_availableListMouseClicked
 
-	/**
-	 * Update text of example and information fields, and rule properties.
-	 */
-       private void updateTexts(Rule rule) {
-		if( rule != null ) {
-			String exampleText = REGEX.substitute( REGEX_EXAMPLE, rule.getExample() );
-			if (exampleText.startsWith( "\n" )) {
-				// Probably REGEX_EXAMPLE should have taken care of this, but it did not?!
-				exampleText = exampleText.substring( 1 );
-			}
-			example.setText( exampleText );
-			example.setCaretPosition( 0 );
-			information.setText( REGEX.substitute( REGEX_INFORMATION, rule.getDescription().trim() ) );
-			information.setCaretPosition( 0 );
-			updatePropertiesModel( rule );
-		}
-	}
-	
+        /**
+         * Update text of example and information fields, and rule properties.
+         */
+        private void updateTexts(Rule rule) {
+            if( rule != null ) {
+                String exampleText = rule.getExample() != null?
+                        REGEX.substitute( REGEX_EXAMPLE, rule.getExample() ):
+                        "";
+                if (exampleText.startsWith( "\n" )) {
+                    // Probably REGEX_EXAMPLE should have taken care of this, but it did not?!
+                    exampleText = exampleText.substring( 1 );
+                }
+                example.setText( exampleText );
+                example.setCaretPosition( 0 );
+                information.setText( REGEX.substitute( REGEX_INFORMATION, rule.getDescription().trim() ) );
+                information.setCaretPosition( 0 );
+                updatePropertiesModel( rule );
+            }
+        }
+        
 	/** Called when the user selects a value in the chosenList
 	 * @param evt the event fired
 	 */

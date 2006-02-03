@@ -1,4 +1,6 @@
-- fixed NPE when scanning is on (http://www.netbeans.org/issues/show_bug.cgi?id=72017)
+- fixed some bugs 
+  http://www.netbeans.org/issues/show_bug.cgi?id=72017
+  http://www.netbeans.org/issues/show_bug.cgi?id=72215
 
 Version 1.5
 - Updated pmd to version 3.5
