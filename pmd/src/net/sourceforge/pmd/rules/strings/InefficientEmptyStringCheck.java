@@ -2,7 +2,6 @@ package net.sourceforge.pmd.rules.strings;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
@@ -12,7 +11,6 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 /**
  * This rule finds code which inefficiently determines empty strings. This code

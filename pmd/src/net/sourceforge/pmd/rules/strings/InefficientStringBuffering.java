@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTArgumentList;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.Iterator;
@@ -85,11 +86,25 @@ public class InefficientStringBuffering extends AbstractRule {
         if (s == null) {
             return false;
         }
-        ASTName n = (ASTName) s.getFirstChildOfType(ASTName.class);
+        ASTName n = (ASTName)s.getFirstChildOfType(ASTName.class);
 
         if (n == null || n.getImage().indexOf("append") == -1 || !(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
             return false;
         }
+
+        // TODO having to hand-code this kind of dredging around is ridiculous
+        // we need something to support this in the framework
+        // but, "for now" (tm):
+        // if more than one arg to append(), skip it
+        ASTArgumentList argList = (ASTArgumentList)s.getFirstChildOfType(ASTArgumentList.class);
+        if (argList == null) {
+            return false;
+        }
+        if (argList.jjtGetNumChildren() > 1) {
+            return false;
+        }
+
+
         return ((VariableNameDeclaration)n.getNameDeclaration()).getTypeImage().equals("StringBuffer");
     }
 

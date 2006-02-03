@@ -37,6 +37,7 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST17, "skip additions involving static finals, compiler will do constant folding for these", 0, rule),
                new TestDescriptor(TEST18, "for statement without braces", 1, rule),
                new TestDescriptor(TEST19, "if statement without braces", 1, rule),
+               new TestDescriptor(TEST20, "3 args version of StringBuffer.append", 0, rule),
        });
     }
 
@@ -187,6 +188,13 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
         "  StringBuffer sb = new StringBuffer();" + PMD.EOL +
         "  if(true) "+
         "      sb.append(\"hello\"+ world()); "+
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST20 =
+        "public class Foo {" + PMD.EOL +
+        " private void baz(StringBuffer s, char[] chars, int start, int end) {" + PMD.EOL +
+        "  s.append(chars, start, start - end);" + PMD.EOL +
         " }" + PMD.EOL +
         "}";
 }

@@ -7,24 +7,27 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="UnnecessaryLocalBeforeReturn"
-          message="Consider simply returning the value vs storing it in local variable ''{0}''"
-          class="net.sourceforge.pmd.rules.design.UnnecessaryLocalBeforeReturn"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn">
-      <description>
-Avoid unnecessarily creating local variables
-      </description>
-        <priority>3</priority>
-      <example>
-  <![CDATA[
-  public class Foo {
-    public int foo() {
-      int x = doSomething();
-      return x;  // instead, just 'return doSomething();'
-    }
-  }
-  ]]>
-      </example>
+    <rule name="InefficientStringBuffering"
+        message="Avoid concatenating nonliterals in a StringBuffer constructor or append()"
+        class="net.sourceforge.pmd.rules.strings.InefficientStringBuffering"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InefficientStringBuffering">
+    <description>
+Avoid concatenating non literals in a StringBuffer constructor or append().
+    </description>
+       <priority>3</priority>
+    <example>
+<![CDATA[
+public class Foo {
+ void bar() {
+  // Avoid this
+  StringBuffer sb=new StringBuffer("tmp = "+System.getProperty("java.io.tmpdir"));
+  // use instead something like this
+  StringBuffer sb = new StringBuffer("tmp = ");
+  sb.append(System.getProperty("java.io.tmpdir"));
+ }
+}
+]]>
+    </example>
     </rule>
 
 

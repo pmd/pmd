@@ -4,7 +4,8 @@ Fixed bug 1414985 - ConsecutiveLiteralAppends now checks for intervening referen
 Fixed bug 1418424 - ConsecutiveLiteralAppends no longer flags appends in separate methods.
 Fixed bug 1416167 - AppendCharacterWithChar now catches cases involving escaped characters.
 Fixed bug 1421409 - Ant task now has setter to allow minimumPriority attribute to be used.
-Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset contains rules new to PMD v3.5.  TODO: retrofit previous releases with this as well.
+Fixed bug 1416164 - InefficientStringBuffering no longer reports false positives on the three argument version of StringBuffer.append().
+Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 
 ***** TODO: remove deprecated printToConsole element from PMDTask
 
