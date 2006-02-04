@@ -5,6 +5,7 @@ Fixed bug 1418424 - ConsecutiveLiteralAppends no longer flags appends in separat
 Fixed bug 1416167 - AppendCharacterWithChar now catches cases involving escaped characters.
 Fixed bug 1421409 - Ant task now has setter to allow minimumPriority attribute to be used.
 Fixed bug 1416164 - InefficientStringBuffering no longer reports false positives on the three argument version of StringBuffer.append().
+Fixed bug 1415326 - JUnitTestsShouldContainAsserts no longer errors out on JDK 1.5 generics.
 Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 UseIndexOfChar now catches cases involving lastIndexOf.
 
