@@ -46,6 +46,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jon Doh - Reported parser bug</li>
             <li>Jorn Stampehl - Reported and fixed bugs in JUnitTestsShouldContainAsserts/CyclomaticComplexity/TooManyFields, noticed redundancy of ExplicitCallToFinalize, reported bug in AvoidCallingFinalize, reported bug in JUnitAssertionsShouldIncludeMessage, reported bug in bug report on JUnitTestsShouldContainAsserts</li>
             <li>Brian R - suggestions for improving UseIndexOfChar, documentation suggestion</li>
             <li>Didier Duquennoy - bug reports for InefficientStringBuffering/ConsecutiveLiteralAppends/AppendCharacterWithChar, several bug reports for InefficientStringBuffering, bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>

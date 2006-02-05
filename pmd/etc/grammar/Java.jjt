@@ -1134,7 +1134,7 @@ jjtThis.setModifiers(modifiers);
 }
 {
 
-  ( /* See note about this optional final modifier in BlockStatement */ ["final"] "class" | "interface" { jjtThis.setInterface(); } )
+  ( /* See note about this optional final modifier in BlockStatement */ ["final"|"abstract"] "class" | "interface" { jjtThis.setInterface(); } )
   t=<IDENTIFIER> { jjtThis.setImage(t.image); }
   [ TypeParameters() ]
   [ ExtendsList() ]
@@ -1766,7 +1766,7 @@ void BlockStatement():
   ClassOrInterfaceDeclaration, but that seems like a hack that
   could break other things...
   */
-  LOOKAHEAD( ["final"] "class") ClassOrInterfaceDeclaration(0)
+  LOOKAHEAD( ["final"|"abstract"] "class") ClassOrInterfaceDeclaration(0)
 }
 
 void LocalVariableDeclaration() :

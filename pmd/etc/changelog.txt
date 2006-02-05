@@ -7,6 +7,7 @@ Fixed bug 1421409 - Ant task now has setter to allow minimumPriority attribute t
 Fixed bug 1416164 - InefficientStringBuffering no longer reports false positives on the three argument version of StringBuffer.append().
 Fixed bug 1415326 - JUnitTestsShouldContainAsserts no longer errors out on JDK 1.5 generics.
 Fixed bug 1415333 - CyclomaticComplexity no longer errors out on JDK 1.5 enums.
+Fixed bug 1415663 - PMD no longer fails to parse abstract classes declared in a method.
 Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 UseIndexOfChar now catches cases involving lastIndexOf.
 
