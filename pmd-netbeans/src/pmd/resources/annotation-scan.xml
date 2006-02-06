@@ -8,7 +8,7 @@
     visible="true" 
     type="linepart" 
     glyph="nbresloc:/pmd/resources/PMDOptionsSettingsIcon.gif" 
-    waveunderline="0xff0000"
+    waveunderline="0xc0c000"
     severity="warning"
     browseable="true"
 />
