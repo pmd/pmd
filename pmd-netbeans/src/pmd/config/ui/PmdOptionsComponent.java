@@ -104,9 +104,10 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
         jLblRulesets = new javax.swing.JLabel();
         jBtnRulesets = new javax.swing.JButton();
 
-        jLabel1.setText("Scan interval:");
+        jLabel1.setLabelFor(jTextField1);
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_ScanInterval"));
 
-        jCheckBox1.setText("Enable scan");
+        org.openide.awt.Mnemonics.setLocalizedText(jCheckBox1, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_EnableScan"));
         jCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -119,9 +120,9 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
         jTextField1.setText("0");
 
         jPanelRules.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesPanel")));
-        jLblRules.setText(org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesText"));
+        org.openide.awt.Mnemonics.setLocalizedText(jLblRules, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesText"));
 
-        jBtnRules.setText(org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesBtn"));
+        org.openide.awt.Mnemonics.setLocalizedText(jBtnRules, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesBtn"));
         jBtnRules.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtnRulesActionPerformed(evt);
@@ -149,9 +150,9 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
         );
 
         jPanelRulesets.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesetsPanel")));
-        jLblRulesets.setText("<html>Use this button to specify additional rulesets<br>and customize their properties.");
+        org.openide.awt.Mnemonics.setLocalizedText(jLblRulesets, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesetsText"));
 
-        jBtnRulesets.setText(org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesetBtn"));
+        org.openide.awt.Mnemonics.setLocalizedText(jBtnRulesets, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesetBtn"));
         jBtnRulesets.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtnRulesetsActionPerformed(evt);
@@ -206,7 +207,7 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
                 .add(jPanelRules, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(8, 8, 8)
                 .add(jPanelRulesets, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
