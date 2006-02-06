@@ -1,6 +1,21 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
 
+v3.1.4 06/02/2005
+-----------------
+
+UPDATED : PMD v3.5
+------------------
+This version includes the patched version 3.5 of the PMD engine.
+
+FIXED :
+-------
+Variuous bugs are fixed: #1357798, #1365407 and various internal bugs.
+
+Internal refactoring is still occurring.
+
+
+----------------------------------------------------------------------------------------
 v3.1.3 17/01/2005
 -----------------
 
