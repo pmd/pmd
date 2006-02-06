@@ -12,6 +12,8 @@ Runtime
 . Fix NullPointerException on PriorityFilter class
 . Fix NullPointerException and InvocationTargetException on ASTWriterImpl class
 . Fix BUG#1365407 Problems with PMD in Eclipse/Issue 3
+. Upgrade development environment to Eclipse 3.1.2
+. Apply a patch to PMD v3.5
 
 
 ----------------------------------------------------------------------------------------
