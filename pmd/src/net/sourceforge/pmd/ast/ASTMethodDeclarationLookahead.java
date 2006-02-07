@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTMethodDeclarationLookahead extends SimpleNode {
+public class ASTMethodDeclarationLookahead extends SimpleJavaNode {
     public ASTMethodDeclarationLookahead(int id) {
         super(id);
     }

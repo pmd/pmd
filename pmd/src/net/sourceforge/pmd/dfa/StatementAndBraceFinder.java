@@ -21,6 +21,7 @@ import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 /**
@@ -34,7 +35,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
     private Structure dataFlow;
 
-    public void buildDataFlowFor(SimpleNode node) {
+    public void buildDataFlowFor(SimpleJavaNode node) {
         if (!(node instanceof ASTMethodDeclaration) && !(node instanceof ASTConstructorDeclaration)) {
             throw new RuntimeException("Can't build a data flow for anything other than a method or a constructor");
         }

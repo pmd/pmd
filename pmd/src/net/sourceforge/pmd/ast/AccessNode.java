@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.ast;
 
-public class AccessNode extends SimpleNode {
+public class AccessNode extends SimpleJavaNode {
 
     public static final int PUBLIC = 0x0001;
     public static final int PROTECTED = 0x0002;

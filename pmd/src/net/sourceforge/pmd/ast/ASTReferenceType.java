@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTReferenceType extends SimpleNode implements Dimensionable {
+public class ASTReferenceType extends SimpleJavaNode implements Dimensionable {
   public ASTReferenceType(int id) {
     super(id);
   }

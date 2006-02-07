@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTEqualityExpression extends SimpleNode {
+public class ASTEqualityExpression extends SimpleJavaNode {
     public ASTEqualityExpression(int id) {
         super(id);
         this.setDiscardable();

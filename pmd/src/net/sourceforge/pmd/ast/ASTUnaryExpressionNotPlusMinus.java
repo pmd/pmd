@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTUnaryExpressionNotPlusMinus extends SimpleNode {
+public class ASTUnaryExpressionNotPlusMinus extends SimpleJavaNode {
     public ASTUnaryExpressionNotPlusMinus(int id) {
         super(id);
         setDiscardable();

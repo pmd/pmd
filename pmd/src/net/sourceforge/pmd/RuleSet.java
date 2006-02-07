@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+
 /**
  * This class represents a Set of rules.
  * @see Rule
@@ -17,6 +18,7 @@ public class RuleSet {
     private Set rules = new HashSet();
     private String name = "";
     private String description = "";
+    private Language language;
 
 	/**
 	 * Returns the number of rules in this ruleset
@@ -150,4 +152,18 @@ public class RuleSet {
     public int hashCode() {
         return this.getName().hashCode() + 13*this.getRules().hashCode();
     }
+
+	/**
+	 * @return Returns the language.
+	 */
+	public Language getLanguage() {
+		return language;
+	}
+
+	/**
+	 * @param language The language to set.
+	 */
+	public void setLanguage(Language language) {
+		this.language = language;
+	}
 }

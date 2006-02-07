@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTImplementsList extends SimpleNode {
+public class ASTImplementsList extends SimpleJavaNode {
   public ASTImplementsList(int id) {
     super(id);
   }

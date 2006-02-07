@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.SourceFileSelector;
+
 public class CPD {
 
     private Map source = new HashMap();
@@ -69,10 +71,11 @@ public class CPD {
             throw new FileNotFoundException("Couldn't find directory " + dir);
         }
         FileFinder finder = new FileFinder();
-        add(finder.findFilesFrom(dir, language.getFileFilter(), recurse));
+        add(finder.findFilesFrom(dir, new SourceFileOrDirectoryFilter(fileSelector), recurse));
     }
 
     private Set current = new HashSet();
+	private SourceFileSelector fileSelector = new SourceFileSelector();
 
     private void add(int fileCount, File file) throws IOException {
 

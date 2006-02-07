@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTFinallyStatement extends SimpleNode {
+public class ASTFinallyStatement extends SimpleJavaNode {
   public ASTFinallyStatement(int id) {
     super(id);
   }

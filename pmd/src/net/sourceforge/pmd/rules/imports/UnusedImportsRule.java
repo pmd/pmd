@@ -9,6 +9,7 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.HashSet;
@@ -62,7 +63,7 @@ public class UnusedImportsRule extends AbstractRule {
         } else {
             name = node.getImage().substring(0, node.getImage().indexOf('.'));
         }
-        ImportWrapper candidate = new ImportWrapper(node.getImage(), name, new SimpleNode(-1));
+        ImportWrapper candidate = new ImportWrapper(node.getImage(), name, new SimpleJavaNode(-1));
         if (imports.contains(candidate)) {
             imports.remove(candidate);
         }

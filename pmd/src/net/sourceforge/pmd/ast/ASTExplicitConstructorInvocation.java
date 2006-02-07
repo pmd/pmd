@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTExplicitConstructorInvocation extends SimpleNode {
+public class ASTExplicitConstructorInvocation extends SimpleJavaNode {
     public ASTExplicitConstructorInvocation(int id) {
         super(id);
     }

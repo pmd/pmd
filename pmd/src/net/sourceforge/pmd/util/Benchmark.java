@@ -8,11 +8,12 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
+import net.sourceforge.pmd.SourceFileSelector;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.cpd.FileFinder;
-import net.sourceforge.pmd.cpd.JavaLanguage;
+import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -67,7 +68,7 @@ public class Benchmark {
     public static void main(String[] args) throws RuleSetNotFoundException, IOException, PMDException {
 
         String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
-        List files = new FileFinder().findFilesFrom(srcDir, new JavaLanguage.JavaFileOrDirectoryFilter(), true);
+        List files = new FileFinder().findFilesFrom(srcDir, new SourceFileOrDirectoryFilter(new SourceFileSelector()), true);
         boolean debug = findBooleanSwitch(args, "--debug");
         boolean parseOnly = findBooleanSwitch(args, "--parse-only");
 

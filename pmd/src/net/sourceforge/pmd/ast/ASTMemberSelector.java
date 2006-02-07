@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTMemberSelector extends SimpleNode {
+public class ASTMemberSelector extends SimpleJavaNode {
   public ASTMemberSelector(int id) {
     super(id);
   }

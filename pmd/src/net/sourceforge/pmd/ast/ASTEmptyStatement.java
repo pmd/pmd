@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTEmptyStatement extends SimpleNode {
+public class ASTEmptyStatement extends SimpleJavaNode {
     public ASTEmptyStatement(int id) {
         super(id);
     }

@@ -15,17 +15,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class SimpleNode implements Node {
+public abstract class SimpleNode implements Node {
 
     protected Node parent;
     protected Node[] children;
     protected int id;
     protected JavaParser parser;
     private String image;
-    private int beginLine = -1;
-    private int endLine;
-    private int beginColumn = -1;
-    private int endColumn;
+    protected int beginLine = -1;
+    protected int endLine;
+    protected int beginColumn = -1;
+    protected int endColumn;
     private Scope scope;
     private boolean discardable;
 
@@ -69,24 +69,6 @@ public class SimpleNode implements Node {
     public SimpleNode(JavaParser p, int i) {
         this(i);
         parser = p;
-    }
-
-    public void jjtOpen() {
-        if (beginLine == -1 && parser.token.next != null) {
-            beginLine = parser.token.next.beginLine;
-            beginColumn = parser.token.next.beginColumn;
-        }
-    }
-
-    public void jjtClose() {
-        if (beginLine == -1 && (children == null || children.length == 0)) {
-            beginColumn = parser.token.beginColumn;
-        }
-        if (beginLine == -1) {
-            beginLine = parser.token.beginLine;
-        }
-        endLine = parser.token.endLine;
-        endColumn = parser.token.endColumn;
     }
 
     public void setScope(Scope scope) {
@@ -260,35 +242,6 @@ public class SimpleNode implements Node {
 
     public int jjtGetNumChildren() {
         return (children == null) ? 0 : children.length;
-    }
-
-    /**
-     * Accept the visitor. *
-     */
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
-    }
-
-    /**
-     * Accept the visitor. *
-     */
-    public Object childrenAccept(JavaParserVisitor visitor, Object data) {
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                children[i].jjtAccept(visitor, data);
-            }
-        }
-        return data;
-    }
-
-    /* You can override these two methods in subclasses of SimpleNode to
-       customize the way the node appears when the tree is dumped.  If
-       your output uses more than one line you should override
-       toString(String), otherwise overriding toString() is probably all
-       you need to do. */
-
-    public String toString() {
-        return JavaParserTreeConstants.jjtNodeName[id];
     }
 
     public String toString(String prefix) {

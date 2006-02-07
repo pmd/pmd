@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTBreakStatement extends SimpleNode {
+public class ASTBreakStatement extends SimpleJavaNode {
     public ASTBreakStatement(int id) {
         super(id);
     }

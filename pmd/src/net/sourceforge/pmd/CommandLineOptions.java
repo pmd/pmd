@@ -28,6 +28,9 @@ public class CommandLineOptions {
     private String reportFormat;
     private String ruleSets;
     private String encoding = new InputStreamReader(System.in).getEncoding();
+    
+    private boolean checkJavaFiles = true;
+    private boolean checkJspFiles = false;
 
     private String[] args;
 
@@ -54,6 +57,10 @@ public class CommandLineOptions {
                 targetJDK = args[i + 1];
             } else if (args[i].equals("-excludemarker")) {
                 excludeMarker = args[i + 1];
+            } else if (args[i].equals("-jsp")) {
+            	checkJspFiles = true;
+            } else if (args[i].equals("-nojava")) {
+            	checkJavaFiles = false;
             }
         }
     }
@@ -149,6 +156,20 @@ public class CommandLineOptions {
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code xml basic,design -encoding UTF-8" + PMD.EOL +
                 PMD.EOL;
     }
+
+	/**
+	 * @return Returns the checkJavaFiles.
+	 */
+	public boolean isCheckJavaFiles() {
+		return checkJavaFiles;
+	}
+
+	/**
+	 * @return Returns the checkJspFiles.
+	 */
+	public boolean isCheckJspFiles() {
+		return checkJspFiles;
+	}
 }
 
 

@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTAnnotationTypeMemberDeclaration extends SimpleNode {
+public class ASTAnnotationTypeMemberDeclaration extends SimpleJavaNode {
   public ASTAnnotationTypeMemberDeclaration(int id) {
     super(id);
   }

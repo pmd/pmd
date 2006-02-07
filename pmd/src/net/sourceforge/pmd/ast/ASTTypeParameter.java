@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTTypeParameter extends SimpleNode {
+public class ASTTypeParameter extends SimpleJavaNode {
   public ASTTypeParameter(int id) {
     super(id);
   }

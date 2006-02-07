@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTMarkerAnnotation extends SimpleNode {
+public class ASTMarkerAnnotation extends SimpleJavaNode {
   public ASTMarkerAnnotation(int id) {
     super(id);
   }

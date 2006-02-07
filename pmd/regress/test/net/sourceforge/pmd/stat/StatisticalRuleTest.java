@@ -27,6 +27,7 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
@@ -106,7 +107,7 @@ public class StatisticalRuleTest extends TestCase {
             for (int i = 0; i < POINTS; i++) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
-                SimpleNode s = new SimpleNode(1);
+                SimpleNode s = new SimpleJavaNode(1);
                 s.setScope(new SourceFileScope("foo"));
                 s.testingOnly__setBeginLine(i);
                 s.testingOnly__setBeginColumn(1);
@@ -119,7 +120,7 @@ public class StatisticalRuleTest extends TestCase {
             for (int i = POINTS-1; i >= 0; i--) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
-                SimpleNode s = new SimpleNode(1);
+                SimpleNode s = new SimpleJavaNode(1);
                 s.setScope(new SourceFileScope("foo"));
                 s.testingOnly__setBeginLine(i);
                 s.testingOnly__setBeginColumn(1);
@@ -133,7 +134,7 @@ public class StatisticalRuleTest extends TestCase {
             for (int i = 0; i < POINTS; i++) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
-                SimpleNode s = new SimpleNode(1);
+                SimpleNode s = new SimpleJavaNode(1);
                 s.setScope(new SourceFileScope("foo"));
                 s.testingOnly__setBeginLine(i);
                 s.testingOnly__setBeginColumn(1);
@@ -272,7 +273,7 @@ public class StatisticalRuleTest extends TestCase {
 
         DataPoint point = new DataPoint();
         point.setScore(POINTS + 1.0);
-        SimpleNode s = new SimpleNode(1);
+        SimpleNode s = new SimpleJavaNode(1);
         s.setScope(new SourceFileScope("foo"));
         s.testingOnly__setBeginLine(POINTS + 1);
         s.testingOnly__setBeginColumn(1);

@@ -3,28 +3,6 @@
  */
 package net.sourceforge.pmd.ant;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.PMDException;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.SimpleRuleSetNameMapper;
-import net.sourceforge.pmd.TargetJDK1_3;
-import net.sourceforge.pmd.TargetJDK1_5;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.TextRenderer;
-import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.Path;
-import org.apache.tools.ant.types.Reference;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,6 +15,29 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSetFactory;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.SimpleRuleSetNameMapper;
+import net.sourceforge.pmd.SourceType;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.renderers.TextRenderer;
+
+import org.apache.tools.ant.AntClassLoader;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Reference;
 
 public class PMDTask extends Task {
 
@@ -127,16 +128,16 @@ public class PMDTask extends Task {
         validate();
 
         ruleSetFiles = new SimpleRuleSetNameMapper(ruleSetFiles).getRuleSets();
-        RuleSet rules;
+        RuleSets rules;
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             ruleSetFactory.setMinimumPriority(minPriority);
             if (classpath == null) {
                 log("Using the normal ClassLoader", Project.MSG_VERBOSE);
-                rules = ruleSetFactory.createRuleSet(ruleSetFiles);
+                rules = ruleSetFactory.createRuleSets(ruleSetFiles);
             } else {
                 log("Using the AntClassLoader", Project.MSG_VERBOSE);
-                rules = ruleSetFactory.createRuleSet(ruleSetFiles, new AntClassLoader(getProject(), classpath));
+                rules = ruleSetFactory.createRuleSets(ruleSetFiles, new AntClassLoader(getProject(), classpath));
             }
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage());
@@ -146,10 +147,12 @@ public class PMDTask extends Task {
         PMD pmd;
         if (targetJDK.equals("1.3")) {
             log("Targeting Java language version 1.3", Project.MSG_VERBOSE);
-            pmd = new PMD(new TargetJDK1_3());
+            pmd = new PMD();
+            pmd.setJavaVersion(SourceType.JAVA_13);
         } else if (targetJDK.equals("1.5")) {
             log("Targeting Java language version 1.5", Project.MSG_VERBOSE);
-            pmd = new PMD(new TargetJDK1_5());
+            pmd = new PMD();
+            pmd.setJavaVersion(SourceType.JAVA_15);
         } else {
             log("Targeting Java language version 1.4", Project.MSG_VERBOSE);
             pmd = new PMD();
@@ -229,11 +232,17 @@ public class PMDTask extends Task {
         }
     }
 
-    private void logRulesUsed(net.sourceforge.pmd.RuleSet rules) {
+    private void logRulesUsed(net.sourceforge.pmd.RuleSets rules) {
         log("Using these rulesets: " + ruleSetFiles, Project.MSG_VERBOSE);
-        for (Iterator i = rules.getRules().iterator(); i.hasNext();) {
-            Rule rule = (Rule) i.next();
-            log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
+        
+        RuleSet[] ruleSets = rules.getAllRuleSets();
+        for( int j=0; j<ruleSets.length; j++) {
+        	RuleSet ruleSet = ruleSets[j];
+        	
+		    for (Iterator i = ruleSet.getRules().iterator(); i.hasNext();) {
+		        Rule rule = (Rule) i.next();
+		        log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
+		    }
         }
     }
 

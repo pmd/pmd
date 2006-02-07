@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTDefaultValue extends SimpleNode {
+public class ASTDefaultValue extends SimpleJavaNode {
   public ASTDefaultValue(int id) {
     super(id);
   }

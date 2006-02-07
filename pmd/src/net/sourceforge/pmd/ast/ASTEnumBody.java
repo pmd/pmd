@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTEnumBody extends SimpleNode {
+public class ASTEnumBody extends SimpleJavaNode {
   public ASTEnumBody(int id) {
     super(id);
   }

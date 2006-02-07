@@ -48,8 +48,4 @@ public interface Node {
      */
     public int jjtGetNumChildren();
 
-    /**
-     * Accept the visitor. *
-     */
-    public Object jjtAccept(JavaParserVisitor visitor, Object data);
 }

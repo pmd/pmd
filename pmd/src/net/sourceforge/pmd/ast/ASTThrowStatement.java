@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTThrowStatement extends SimpleNode {
+public class ASTThrowStatement extends SimpleJavaNode {
     public ASTThrowStatement(int id) {
         super(id);
     }

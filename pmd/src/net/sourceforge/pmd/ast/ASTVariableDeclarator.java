@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTVariableDeclarator extends SimpleNode {
+public class ASTVariableDeclarator extends SimpleJavaNode {
     public ASTVariableDeclarator(int id) {
         super(id);
     }

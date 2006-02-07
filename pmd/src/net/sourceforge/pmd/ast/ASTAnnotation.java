@@ -4,7 +4,7 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.Rule;
 
-public class ASTAnnotation extends SimpleNode {
+public class ASTAnnotation extends SimpleJavaNode {
   public ASTAnnotation(int id) {
     super(id);
   }

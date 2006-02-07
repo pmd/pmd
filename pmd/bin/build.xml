@@ -1,233 +1,250 @@
-<project name="pmd" default="pmd" basedir="../">
+<project name="pmd" default="test" basedir="../">
 
-<property file="bin/local.properties"/>
+	<property file="bin/local.properties" />
 
-<property name="dir.lib" value="lib\"/>
-<property name="dir.src" value="src\"/>
-<property name="dir.build" value="build\"/>
-<property name="dir.rulesets" value="rulesets\"/>
-<property name="dir.regress" value="regress\"/>
-<property name="version" value="3.5"/>
-<property name="keystore" value="${keystore.path}"/>
+	<property name="dir.lib" value="lib\" />
+	<property name="dir.src" value="src\" />
+	<property name="dir.build" value="build\" />
+	<property name="dir.rulesets" value="rulesets\" />
+	<property name="dir.regress" value="regress\" />
+	<property name="version" value="3.5" />
+	<property name="keystore" value="${keystore.path}" />
 
-<path id="dependencies.path">
-    <pathelement location="${dir.build}"/>
-    <fileset dir="${dir.lib}">
-        <include name="jaxen-1.1-beta-7.jar"/>
-        <include name="jakarta-oro-2.0.8.jar"/>
-        <include name="xercesImpl-2.6.2.jar"/>
-        <include name="xmlParserAPIs-2.6.2.jar"/>
-    </fileset>
-</path>
+	<path id="dependencies.path">
+		<pathelement location="${dir.build}" />
+		<fileset dir="${dir.lib}">
+			<include name="jaxen-1.1-beta-7.jar" />
+			<include name="jakarta-oro-2.0.8.jar" />
+			<include name="xercesImpl-2.6.2.jar" />
+			<include name="xmlParserAPIs-2.6.2.jar" />
+		</fileset>
+	</path>
 
-<target name="delete" description="Deletes the build directory and the pmd-x.x jar file.">
-    <delete dir="${dir.build}"/>
-    <delete file="${dir.lib}\pmd-${version}.jar"/>
-    <mkdir dir="${dir.build}"/>
-</target>
+	<target name="delete" description="Deletes the build directory and the pmd-x.x jar file.">
+		<delete dir="${dir.build}" />
+		<delete file="${dir.lib}\pmd-${version}.jar" />
+		<mkdir dir="${dir.build}" />
+	</target>
 
-<target name="compile" description="Compiles the code">
-    <mkdir dir="${dir.build}"/>
-    <javac  deprecation="false"
-            debug="true"
-            optimize="false"
-            srcdir="${dir.src}:${dir.regress}"
-            destdir="${dir.build}">
-    <classpath>
-    <path refid="dependencies.path"/>
-    </classpath>
-    </javac>
-    <copy todir="${dir.build}net/sourceforge/pmd/util/viewer/resources">
-        <fileset dir="${dir.src}net/sourceforge/pmd/util/viewer/resources">
-            <include name="*.properties"/>
-        </fileset>
-    </copy>
-</target>
-
-<target name="copy" description="Copies the rulesets directory contents into the build directory">
-    <mkdir dir="${dir.lib}"/>
-    <mkdir dir="${dir.lib}/rulesets/releases"/>
-    <copy todir="${dir.build}rulesets">
-        <fileset dir="${dir.rulesets}">
-            <include name="*.xml"/>
-            <include name="*.properties"/>
-        </fileset>
-    </copy>
-    <copy todir="${dir.build}rulesets/releases">
-        <fileset dir="${dir.rulesets}/releases">
-            <include name="*.xml"/>
-        </fileset>
-    </copy>
-</target>
-
-
-
-<target name="jar" depends="copy,compile" description="Jars up the classes and rulesets">
-    <jar
-        jarfile="${dir.lib}\pmd-${version}.jar"
-        includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**"
-        basedir="${dir.build}">
-        <manifest>
-            <attribute name="Main-Class" value="net.sourceforge.pmd.PMD"/>
-            <attribute name="Class-Path" value="xmlParserAPIs-2.6.2.jar xercesImpl-2.6.2.jar jaxen-1.1-beta-7.jar jakarta-oro-2.0.8.jar"/>
-        </manifest>
-    </jar>
-</target>
-
-<target name="jarsrc" depends="copy,compile"  description="Jars up the source directory">
-    <jar jarfile="${dir.lib}\pmd-src-${version}.jar" basedir="${dir.src}"/>
-</target>
-
-<target name="pmd" description="Runs PMD">
-    <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
-    <pmd rulesetfiles="unusedcode" shortFilenames="true">
-        <classpath>
-        <path refid="dependencies.path"/>
-        </classpath>
-      <formatter type="html" toFile="rpt.html" linkPrefix="http://pmd.sf.net/xref/"/>
-      <fileset dir="/home/tom/pmd/pmd/bin/">
-        <include name="Foo.java"/>
-       </fileset>
-    </pmd>
-</target>
-
-  <target name="requires-junit"  description="Ensures JUnit is available">
-    <available classname="junit.framework.Test" property="junit.available"/>
-    <fail unless="junit.available" message="Could find JUnit... please place a junit.jar file in the CLASSPATH."/>
-  </target>
-
-<target name="test" depends="requires-junit,compile,copy"  description="Runs the unit tests">
-    <junit printsummary="yes" haltonfailure="no" forkmode="perBatch">
-      <classpath><path refid="dependencies.path" /></classpath>
-      <batchtest fork="yes" todir="${dir.build}">
-        <fileset dir="${dir.regress}">
-          <include name="test/**/*Test.java" />
-        </fileset>
-      </batchtest>
-  <formatter type="plain" />
-    </junit>
-</target>
-
- <target name="symtabtest" depends="compile" description="Runs the unit tests for the symboltable package">
-    <junit printsummary="yes" haltonfailure="yes">
-      <classpath><path refid="dependencies.path" /></classpath>
-      <batchtest fork="no" todir="${dir.build}">
-        <fileset dir="${dir.regress}">
-          <include name="test/**/symboltable/**/*Test.java" />
-        </fileset>
-      </batchtest>
-  <formatter type="plain" />
-    </junit>
-</target>
- <target name="dfatest" depends="compile" description="Runs the unit tests for the dfa package">
-    <junit printsummary="yes" haltonfailure="yes">
-      <classpath><path refid="dependencies.path" /></classpath>
-      <batchtest fork="no" todir="${dir.build}">
-        <fileset dir="${dir.regress}">
-          <include name="test/**/dfa/**/*Test.java" />
-        </fileset>
-      </batchtest>
-  <formatter type="plain" />
-    </junit>
-</target>
-
- <target name="cpdtest" depends="compile" description="Runs the unit tests for the CPD package">
-    <junit printsummary="yes" haltonfailure="yes">
-      <classpath><path refid="dependencies.path" /></classpath>
-      <batchtest fork="no" todir="${dir.build}">
-        <fileset dir="${dir.regress}">
-          <include name="test/**/cpd/**/*Test.java" />
-        </fileset>
-      </batchtest>
-  <formatter type="plain" />
-    </junit>
-</target>
-
-<target name="jjtree" description="Generates the Java parser and AST source filesr">
-    <delete file="src/net/sourceforge/pmd/ast/Java.jj"/>
-    <delete file="src/net/sourceforge/pmd/ast/JavaParser.java"/>
-    <delete file="src/net/sourceforge/pmd/ast/JavaParserConstants.java"/>
-    <delete file="src/net/sourceforge/pmd/ast/JavaParserTreeConstants.java"/>
-    <delete file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java"/>
-    <jjtree target="etc/grammar/Java.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="${javacc-home.path}"/>
-    <javacc target="src/net/sourceforge/pmd/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="${javacc-home.path}"/>
-    <delete file="src/net/sourceforge/pmd/ast/Java.jj"/>
-    <replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException"/>
-    <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="(Error)" value="(RuntimeException)"/>
-    <replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="throw new Error" value="throw new RuntimeException"/>
-    <replace file="src/net/sourceforge/pmd/ast/JavaCharStream.java" token="throw new Error" value="throw new RuntimeException"/>
-    <replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException"/>
-    <replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException"/>
-</target>
-
-<target name="cppjavacc" description="Generates the C++ grammar">
-    <delete>
-        <fileset dir="src/net/sourceforge/pmd/cpd/cppast">
-            <include name="*.java"/>
-            <exclude name="ClassScope.java"/>
-            <exclude name="Declaration.java"/>
-            <exclude name="Scope.java"/>
-            <exclude name="SymtabManager.java"/>
-        </fileset>
-    </delete>
-    <javacc target="etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="${javacc-home.path}"/>
-    <replace file="src/net/sourceforge/pmd/cpd/cppast/ParseException.java" token="extends Exception" value="extends RuntimeException"/>
-</target>
-
-<target name="clean" depends="delete,compile,copy" description="Does a complete recompile"/>
-
-<target name="dist" depends="clean,jar" description="Recompiles and jars"/>
-
-<target name="cpdjnlp" depends="dist" description="Uploads a new CPD JNLP thingy to the PMD web site">
-    <signjar jar="${dir.lib}/pmd-${version}.jar" alias="myself" keystore="${keystore}" storepass="password"/>
-    <echo message="Uploading jar file"/>
-    <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/pmd/pmd/lib/pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
-    </exec>
-    <echo message="Uploading cpd.jnlp"/>
-    <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/pmd/pmd/etc/cpd.jnlp tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs"/>
-    </exec>
-</target>
-
-<target name="tomserver" depends="dist" description="Uploads the current PMD jar file to Tom's web site">
-    <echo message="Uploading jar file"/>
-    <exec executable="scp" os="Linux">
-        <arg line=" /home/tom/pmd/pmd/lib/pmd-${version}.jar tom@infoether.com:public_html/"/>
-    </exec>
-</target>
-
-    <target name="win32tomserver" depends="dist" description="Uploads the current PMD jar file to Tom's web site">
-    <echo message="Uploading jar file"/>
-    <exec executable="pscp" os="Windows">
-        <arg line=" c:/data/sourceforge/pmd/lib/pmd-${version}.jar tom@infoether.com:public_html/"/>
-    </exec>
-</target>
-
-<target name="cpd" description="Runs CPD">
-    <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
-    <!-- ignoreIdentifiers="true" -->
-    <cpd ignoreLiterals="true" minimumTokenCount="20" outputFile="cpd.txt" format="text">
-        <fileset dir="${java-source.path}/java/lang/ref">
-            <include name="**/*.java"/>
-        </fileset>
-    </cpd>
-</target>
-
-<target name="javadoc" description="Generates Javadocs">
-	<mkdir dir="docs/api"/>
-
-	<javadoc packagenames="com.*, net.*, org.*"
-		sourcepath="${dir.src}"
-		destdir="docs/api"
-		doctitle="PMD API">
-		<classpath>
-			<fileset dir="${dir.lib}">
-				<include name="*.jar"/>
+	<target name="compile" description="Compiles the code">
+		<mkdir dir="${dir.build}" />
+		<javac deprecation="false" debug="true" optimize="false" srcdir="${dir.src}:${dir.regress}" destdir="${dir.build}">
+			<classpath>
+				<path refid="dependencies.path" />
+			</classpath>
+		</javac>
+		<copy todir="${dir.build}net/sourceforge/pmd/util/viewer/resources">
+			<fileset dir="${dir.src}net/sourceforge/pmd/util/viewer/resources">
+				<include name="*.properties" />
 			</fileset>
-		</classpath>
-	</javadoc>
-</target>
+		</copy>
+	</target>
+
+	<target name="copy" description="Copies the rulesets directory contents into the build directory">
+		<mkdir dir="${dir.lib}" />
+		<copy todir="${dir.build}rulesets">
+			<fileset dir="${dir.rulesets}">
+				<include name="*.xml" />
+				<include name="*.properties" />
+			</fileset>
+		</copy>
+	</target>
+
+
+
+	<target name="jar" depends="copy,compile" description="Jars up the classes and rulesets">
+		<jar jarfile="${dir.lib}\pmd-${version}.jar" includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**" basedir="${dir.build}">
+			<manifest>
+				<attribute name="Main-Class" value="net.sourceforge.pmd.PMD" />
+				<attribute name="Class-Path" value="jaxen-1.1-beta-7.jar" />
+				<attribute name="Class-Path" value="jakarta-oro-2.0.8.jar" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="jarsrc" depends="copy,compile" description="Jars up the source directory">
+		<jar jarfile="${dir.lib}\pmd-src-${version}.jar" basedir="${dir.src}" />
+	</target>
+
+	<target name="pmd" description="Runs PMD">
+		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
+		<pmd rulesetfiles="unusedcode" shortFilenames="true">
+			<classpath>
+				<path refid="dependencies.path" />
+			</classpath>
+			<formatter type="html" toFile="rpt.html" linkPrefix="http://pmd.sf.net/xref/" />
+			<fileset dir="src">
+				<include name="Foo.java" />
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="requires-junit" description="Ensures JUnit is available">
+		<available classname="junit.framework.Test" property="junit.available" classpathref="dependencies.path" />
+		<fail unless="junit.available" message="Could find JUnit... please place a junit.jar file in the CLASSPATH." />
+	</target>
+
+	<target name="test" depends="requires-junit,compile,copy" description="Runs the unit tests">
+		<junit printsummary="yes" haltonfailure="no" forkmode="perBatch">
+			<classpath>
+				<path refid="dependencies.path" />
+			</classpath>
+			<batchtest fork="yes" todir="${dir.build}">
+				<fileset dir="${dir.regress}">
+					<include name="test/**/*Test.java" />
+				</fileset>
+			</batchtest>
+			<formatter type="xml" usefile="true" />
+
+		</junit>
+		<junitreport todir="${dir.build}">
+			<fileset dir="${dir.build}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${dir.build}/html" />
+		</junitreport>
+	</target>
+
+	<target name="symtabtest" depends="compile" description="Runs the unit tests for the symboltable package">
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath>
+				<path refid="dependencies.path" />
+			</classpath>
+			<batchtest fork="no" todir="${dir.build}">
+				<fileset dir="${dir.regress}">
+					<include name="test/**/symboltable/**/*Test.java" />
+				</fileset>
+			</batchtest>
+			<formatter type="plain" />
+		</junit>
+	</target>
+	<target name="dfatest" depends="compile" description="Runs the unit tests for the dfa package">
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath>
+				<path refid="dependencies.path" />
+			</classpath>
+			<batchtest fork="no" todir="${dir.build}">
+				<fileset dir="${dir.regress}">
+					<include name="test/**/dfa/**/*Test.java" />
+				</fileset>
+			</batchtest>
+			<formatter type="plain" />
+		</junit>
+	</target>
+
+	<target name="cpdtest" depends="compile" description="Runs the unit tests for the CPD package">
+		<junit printsummary="yes" haltonfailure="yes">
+			<classpath>
+				<path refid="dependencies.path" />
+			</classpath>
+			<batchtest fork="no" todir="${dir.build}">
+				<fileset dir="${dir.regress}">
+					<include name="test/**/cpd/**/*Test.java" />
+				</fileset>
+			</batchtest>
+			<formatter type="plain" />
+		</junit>
+	</target>
+
+	<target name="jjtree" description="Generates the Java parser and AST source filesr">
+		<delete file="src/net/sourceforge/pmd/ast/Java.jj" />
+		<delete file="src/net/sourceforge/pmd/ast/JavaParser.java" />
+		<delete file="src/net/sourceforge/pmd/ast/JavaParserConstants.java" />
+		<delete file="src/net/sourceforge/pmd/ast/JavaParserTreeConstants.java" />
+		<delete file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" />
+		<jjtree target="etc/grammar/Java.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="${javacc-home.path}" />
+		<javacc target="src/net/sourceforge/pmd/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="${javacc-home.path}" />
+		<delete file="src/net/sourceforge/pmd/ast/Java.jj" />
+		<replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="(Error)" value="(RuntimeException)" />
+		<replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="throw new Error" value="throw new RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/ast/JavaCharStream.java" token="throw new Error" value="throw new RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
+	</target>
+
+    <target name="jspjjtree" description="Generates the JSP parser and AST source filesr">
+        <delete file="src/net/sourceforge/pmd/ast/jsp/JspParser.jj" />
+        <delete file="src/net/sourceforge/pmd/ast/jsp/JspParser.java" />
+        <delete file="src/net/sourceforge/pmd/ast/jsp/JspParserConstants.java" />
+        <delete file="src/net/sourceforge/pmd/ast/jsp/JspParserTreeConstants.java" />
+        <delete file="src/net/sourceforge/pmd/ast/jsp/JspParserTokenManager.java" />
+        <jjtree target="etc/grammar/JspParser.jjt" outputdirectory="src/net/sourceforge/pmd/jsp/ast/" javacchome="${javacc-home.path}" />
+        <javacc target="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" outputdirectory="src/net/sourceforge/pmd/jsp/ast" javacchome="${javacc-home.path}" />
+        <delete file="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" />
+        <replace file="src/net/sourceforge/pmd/jsp/ast/JspParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
+        <replace file="src/net/sourceforge/pmd/jsp/ast/JspParser.java" token="(Error)" value="(RuntimeException)" />
+        <replace file="src/net/sourceforge/pmd/jsp/ast/JspParser.java" token="throw new Error" value="throw new RuntimeException" />
+        <replace file="src/net/sourceforge/pmd/jsp/ast/JspCharStream.java" token="throw new Error" value="throw new RuntimeException" />
+        <replace file="src/net/sourceforge/pmd/jsp/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException" />
+        <replace file="src/net/sourceforge/pmd/jsp/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
+    </target>
+
+	<target name="cppjavacc" description="Generates the C++ grammar">
+		<delete>
+			<fileset dir="src/net/sourceforge/pmd/cpd/cppast">
+				<include name="*.java" />
+				<exclude name="ClassScope.java" />
+				<exclude name="Declaration.java" />
+				<exclude name="Scope.java" />
+				<exclude name="SymtabManager.java" />
+			</fileset>
+		</delete>
+		<javacc target="etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="${javacc-home.path}" />
+		<replace file="src/net/sourceforge/pmd/cpd/cppast/ParseException.java" token="extends Exception" value="extends RuntimeException" />
+	</target>
+
+	<target name="clean" depends="delete,compile,copy" description="Does a complete recompile" />
+
+	<target name="dist" depends="clean,jar" description="Recompiles and jars" />
+
+	<target name="cpdjnlp" depends="dist" description="Uploads a new CPD JNLP thingy to the PMD web site">
+		<signjar jar="${dir.lib}/pmd-${version}.jar" alias="myself" keystore="${keystore}" storepass="password" />
+		<echo message="Uploading jar file" />
+		<exec executable="scp" os="Linux">
+			<arg line=" /home/tom/pmd/pmd/lib/pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs" />
+		</exec>
+		<echo message="Uploading cpd.jnlp" />
+		<exec executable="scp" os="Linux">
+			<arg line=" /home/tom/pmd/pmd/etc/cpd.jnlp tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs" />
+		</exec>
+	</target>
+
+	<target name="tomserver" depends="dist" description="Uploads the current PMD jar file to Tom's web site">
+		<echo message="Uploading jar file" />
+		<exec executable="scp" os="Linux">
+			<arg line=" /home/tom/pmd/pmd/lib/pmd-${version}.jar tom@infoether.com:public_html/" />
+		</exec>
+	</target>
+
+	<target name="win32tomserver" depends="dist" description="Uploads the current PMD jar file to Tom's web site">
+		<echo message="Uploading jar file" />
+		<exec executable="pscp" os="Windows">
+			<arg line=" c:/data/sourceforge/pmd/lib/pmd-${version}.jar tom@infoether.com:public_html/" />
+		</exec>
+	</target>
+
+	<target name="cpd" description="Runs CPD">
+		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
+		<!-- ignoreIdentifiers="true" -->
+		<cpd ignoreLiterals="true" minimumTokenCount="20" outputFile="cpd.txt" format="text">
+			<fileset dir="${java-source.path}/java/lang/ref">
+				<include name="**/*.java" />
+			</fileset>
+		</cpd>
+	</target>
+
+	<target name="javadoc" description="Generates Javadocs">
+		<mkdir dir="docs/api" />
+
+		<javadoc packagenames="com.*, net.*, org.*" sourcepath="${dir.src}" destdir="docs/api" doctitle="PMD API">
+			<classpath>
+				<fileset dir="${dir.lib}">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javadoc>
+	</target>
 
 </project>
 

@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTCatchStatement extends SimpleNode {
+public class ASTCatchStatement extends SimpleJavaNode {
   public ASTCatchStatement(int id) {
     super(id);
   }

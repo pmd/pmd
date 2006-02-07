@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTModifiers extends SimpleNode {
+public class ASTModifiers extends SimpleJavaNode {
   public ASTModifiers(int id) {
     super(id);
   }

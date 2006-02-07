@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.symboltable;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
@@ -21,7 +22,7 @@ public class VariableUsageFinderFunctionTest extends TestCase {
         variableDeclarationIdNode.setImage("x");
         NameDeclaration nameDeclaration = new VariableNameDeclaration(variableDeclarationIdNode);
         List nameOccurrences = new ArrayList();
-        nameOccurrences.add(new NameOccurrence(new SimpleNode(2), "x"));
+        nameOccurrences.add(new NameOccurrence(new SimpleJavaNode(2), "x"));
 
         Map declarations = new HashMap();
         declarations.put(nameDeclaration, nameOccurrences);

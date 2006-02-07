@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTPreIncrementExpression extends SimpleNode {
+public class ASTPreIncrementExpression extends SimpleJavaNode {
     public ASTPreIncrementExpression(int id) {
         super(id);
     }

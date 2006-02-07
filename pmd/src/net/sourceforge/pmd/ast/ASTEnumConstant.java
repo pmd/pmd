@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTEnumConstant extends SimpleNode {
+public class ASTEnumConstant extends SimpleJavaNode {
   public ASTEnumConstant(int id) {
     super(id);
   }

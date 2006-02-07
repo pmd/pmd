@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTArrayInitializer extends SimpleNode {
+public class ASTArrayInitializer extends SimpleJavaNode {
     public ASTArrayInitializer(int id) {
         super(id);
     }

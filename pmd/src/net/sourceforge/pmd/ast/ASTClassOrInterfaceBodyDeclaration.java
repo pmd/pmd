@@ -4,7 +4,7 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.Rule;
 
-public class ASTClassOrInterfaceBodyDeclaration extends SimpleNode  implements CanSuppressWarnings{
+public class ASTClassOrInterfaceBodyDeclaration extends SimpleJavaNode  implements CanSuppressWarnings{
     
   public ASTClassOrInterfaceBodyDeclaration(int id) {
     super(id);

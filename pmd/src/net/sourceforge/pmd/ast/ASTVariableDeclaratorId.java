@@ -6,7 +6,7 @@ import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.List;
 
-public class ASTVariableDeclaratorId extends SimpleNode {
+public class ASTVariableDeclaratorId extends SimpleJavaNode {
 
     public ASTVariableDeclaratorId(int id) {
         super(id);

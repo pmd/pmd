@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTRUNSIGNEDSHIFT extends SimpleNode {
+public class ASTRUNSIGNEDSHIFT extends SimpleJavaNode {
   public ASTRUNSIGNEDSHIFT(int id) {
     super(id);
   }

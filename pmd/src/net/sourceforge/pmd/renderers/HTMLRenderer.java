@@ -132,7 +132,7 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
         if (linkPrefix == null) {
             return filename;
         }
-        String newFileName = filename.substring(0, filename.indexOf(".java"));
+        String newFileName = filename.substring(0, filename.lastIndexOf("."));
         return "<a href=\"" + linkPrefix + newFileName + ".html#" + line + "\">" + newFileName + "</a>";
     }
 }

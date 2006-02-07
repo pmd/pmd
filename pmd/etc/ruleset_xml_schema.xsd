@@ -58,6 +58,9 @@
         <xs:element ref="rule" minOccurs="1" maxOccurs="unbounded" />
       </xs:sequence>
       <xs:attribute name="name" type="xs:string" use="required" />
+		 
+		 <!-- language on which this ruleset applies; e.g. "java" (default), "jsp" -->
+      <xs:attribute name="language" type="xs:string" use="optional" />
     </xs:complexType>
   </xs:element>
 

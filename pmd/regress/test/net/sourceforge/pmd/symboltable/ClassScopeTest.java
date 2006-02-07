@@ -7,6 +7,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.symboltable.ClassScope;
@@ -42,7 +43,7 @@ public class ClassScopeTest extends STBBaseTst {
 
     public void testCantContainsSuperToString() {
         ClassScope s = new ClassScope("Foo");
-        SimpleNode node = new SimpleNode(1);
+        SimpleNode node = new SimpleJavaNode(1);
         node.setImage("super.toString");
         assertTrue(!s.contains(new NameOccurrence(node, node.getImage())));
     }
@@ -53,7 +54,7 @@ public class ClassScopeTest extends STBBaseTst {
         node.setImage("X");
         s.addDeclaration(new VariableNameDeclaration(node));
 
-        SimpleNode node2 = new SimpleNode(2);
+        SimpleNode node2 = new SimpleJavaNode(2);
         node2.setImage("Foo.X");
         assertTrue(s.contains(new NameOccurrence(node2, node2.getImage())));
     }

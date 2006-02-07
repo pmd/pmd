@@ -27,6 +27,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 
@@ -62,7 +63,7 @@ public class AbstractRuleTest extends TestCase {
         r.setRuleSetName("foo");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
-        SimpleNode s = new SimpleNode(1);
+        SimpleNode s = new SimpleJavaNode(1);
         s.testingOnly__setBeginColumn(5);
         s.testingOnly__setBeginLine(5);
         s.setScope(new SourceFileScope("foo"));
@@ -78,7 +79,7 @@ public class AbstractRuleTest extends TestCase {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
-        SimpleNode s = new SimpleNode(1);
+        SimpleNode s = new SimpleJavaNode(1);
         s.testingOnly__setBeginColumn(5);
         s.testingOnly__setBeginLine(5);
         s.setScope(new SourceFileScope("foo"));
@@ -97,7 +98,7 @@ public class AbstractRuleTest extends TestCase {
         ctx.setReport(new Report());
         ctx.excludeLines(s);
         ctx.setSourceCodeFilename("filename");
-        SimpleNode n = new SimpleNode(1);
+        SimpleNode n = new SimpleJavaNode(1);
         n.testingOnly__setBeginColumn(5);
         n.testingOnly__setBeginLine(5);
         n.setScope(new SourceFileScope("foo"));
