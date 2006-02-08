@@ -8,6 +8,7 @@ import net.sourceforge.pmd.jsp.ast.ASTCommentTag;
 import net.sourceforge.pmd.jsp.ast.ASTDoctypeDeclaration;
 import net.sourceforge.pmd.jsp.ast.ASTDoctypeExternalId;
 import net.sourceforge.pmd.jsp.ast.ASTElement;
+import net.sourceforge.pmd.ast.ParseException;
 
 /**
  * Test parsing of a JSP in document style, by checking the generated AST.
@@ -61,19 +62,18 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	/**
 	 * Test correct parsing of CDATA.
 	 */
-	public void testCData() {
+	public void testCData() throws ParseException {
 		Set cdataNodes = getNodes(ASTCData.class, TEST_CDATA);
 
 		assertEquals("One CDATA node expected!", 1, cdataNodes.size());
 		ASTCData cdata = (ASTCData) cdataNodes.iterator().next();
-		assertEquals("Content incorrectly parsed!", " some <cdata> ]] ]> ", cdata
-				.getImage());
+		assertEquals("Content incorrectly parsed!", " some <cdata> ]] ]> ", cdata.getImage());
 	}
 
 	/**
 	 * Test parsing of Doctype declaration.
 	 */
-	public void testDoctype() {
+	public void testDoctype() throws ParseException {
 		Set nodes = getNodes(null, TEST_DOCTYPE);
 
 		Set docTypeDeclarations = getNodesOfType(ASTDoctypeDeclaration.class, nodes);
@@ -99,7 +99,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	 * Test parsing of a XML comment.
 	 *
 	 */
-	public void testComment() {
+	public void testComment() throws ParseException {
 		Set comments = getNodes(ASTCommentTag.class, TEST_COMMENT);
 		assertEquals("One comment expected!", 1, comments.size());
 		ASTCommentTag comment = (ASTCommentTag) comments.iterator().next();

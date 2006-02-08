@@ -6,6 +6,9 @@
 
 package net.sourceforge.pmd.jsp.ast;
 
+import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.ast.Token;
+
 public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspParserConstants {/*@bgen(jjtree)*/
   protected JJTJspParserState jjtree = new JJTJspParserState();
         /**

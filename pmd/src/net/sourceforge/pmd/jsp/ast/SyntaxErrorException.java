@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.jsp.ast;
 
+import net.sourceforge.pmd.ast.ParseException;
+
 /**
  * @author Pieter_Van_Raemdonck
  * Exception indicating that a syntactic error has been found. 
