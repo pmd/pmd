@@ -56,8 +56,7 @@
 		<jar jarfile="${dir.lib}\pmd-${version}.jar" includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**" basedir="${dir.build}">
 			<manifest>
 				<attribute name="Main-Class" value="net.sourceforge.pmd.PMD" />
-				<attribute name="Class-Path" value="jaxen-1.1-beta-7.jar" />
-				<attribute name="Class-Path" value="jakarta-oro-2.0.8.jar" />
+				<attribute name="Class-Path" value="jaxen-1.1-beta-7.jar jakarta-oro-2.0.8.jar" />
 			</manifest>
 		</jar>
 	</target>
