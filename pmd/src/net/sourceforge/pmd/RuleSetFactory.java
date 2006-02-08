@@ -233,9 +233,6 @@ public class RuleSetFactory {
 			}
 
 			return ruleSet;
-		} catch (IllegalArgumentException illae) {
-            illae.printStackTrace();
-            throw new RuntimeException("Couldn't find that class " + illae.getMessage());
 		} catch (ClassNotFoundException cnfe) {
 			cnfe.printStackTrace();
 			throw new RuntimeException("Couldn't find that class " + cnfe.getMessage());
