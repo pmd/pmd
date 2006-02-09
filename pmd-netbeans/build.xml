@@ -4,7 +4,7 @@
 
     <property name="pmd.jar" value="pmd-3.5.jar"/>
     <property name="nb.version" value="netbeans50"/>
-    <property name="VERSION" value="1.5"/>
+    <property name="VERSION" value="1.5.1"/>
 
     <property file="build.ant.properties"/>
 
