@@ -1,6 +1,8 @@
 - fixed some bugs 
   http://www.netbeans.org/issues/show_bug.cgi?id=72017
   http://www.netbeans.org/issues/show_bug.cgi?id=72215
+  http://www.netbeans.org/issues/show_bug.cgi?id=71141
+- few UI tweaks
 
 Version 1.5
 - Updated pmd to version 3.5

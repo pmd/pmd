@@ -36,6 +36,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
@@ -330,15 +332,19 @@ public class RunPMDAction extends CookieAction {
 	 * @exception IOException if the object can't be read
 	 */
 	private static Reader getSourceReader( DataObject dataobject ) throws IOException {
-		Reader reader;
+		Reader reader = null;
 		EditorCookie editor = ( EditorCookie )dataobject.getCookie( EditorCookie.class );
-
-		//If it's the currently open document that's being checked
-		if( editor != null && editor.getOpenedPanes() != null ) {
-			String text = editor.getOpenedPanes()[0].getText();
-			reader = new StringReader( text );
-		}
-		else {
+                if (editor != null) {
+                    StyledDocument doc = editor.getDocument();
+                    if (doc != null) {
+                        try {
+                            reader = new StringReader (doc.getText(0, doc.getLength()));
+                        } catch (BadLocationException ex) {
+                            // OK, fallback to read from FO
+                        }
+                    }
+                }
+		if (reader == null) {
 			Iterator iterator = dataobject.files().iterator();
 			FileObject file = ( FileObject )iterator.next();
 			reader = new BufferedReader( new InputStreamReader( file.getInputStream() ) );

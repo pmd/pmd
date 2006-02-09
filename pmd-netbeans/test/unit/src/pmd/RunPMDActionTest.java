@@ -26,10 +26,12 @@
  */
 package pmd;
 
+import java.io.PrintStream;
 import junit.framework.*;
 import java.util.Collections;
 import java.util.List;
 import org.netbeans.junit.NbTestCase;
+import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
@@ -87,6 +89,26 @@ public class RunPMDActionTest extends NbTestCase {
         assertNotNull("Cannot find a data object", d1);
         result = pmd.RunPMDAction.checkCookies(Collections.singletonList(d1));
         assertEquals("There should be no error for MANIFEST.MF file", 0, result.size());
+        
+        f1 = dir.createData("PMDSample.java");
+        assertNotNull("Cannot create file in work dir", f1);
+        FileLock l = null;
+        try {
+            l = f1.lock();
+            PrintStream ps = new PrintStream (f1.getOutputStream(l));
+            ps.print("public class PMDSample { PMDSample () {} }");
+            ps.close();
+        }
+        finally {
+            if (l != null) {
+                l.releaseLock();
+            }
+        }
+        d1 = DataObject.find(f1);
+        assertNotNull("Cannot find a data object", d1);
+        result = pmd.RunPMDAction.checkCookies(Collections.singletonList(d1));
+        assertEquals("There should be no error for PMDSample.java file", 0, result.size());
+        
     }
 
     /**
