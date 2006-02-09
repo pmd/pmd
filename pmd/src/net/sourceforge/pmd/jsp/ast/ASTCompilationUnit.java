@@ -2,7 +2,9 @@
 
 package net.sourceforge.pmd.jsp.ast;
 
-public class ASTCompilationUnit extends SimpleNode {
+import net.sourceforge.pmd.ast.CompilationUnit;
+
+public class ASTCompilationUnit extends SimpleNode implements CompilationUnit {
   public ASTCompilationUnit(int id) {
     super(id);
   }
