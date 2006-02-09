@@ -2,71 +2,54 @@
 
 package net.sourceforge.pmd.jsp.ast;
 
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.JavaParserVisitor;
-import net.sourceforge.pmd.ast.JavaNode;
 
 public class SimpleNode extends net.sourceforge.pmd.ast.SimpleNode implements Node {
+  protected JspParser parser;
 
-    protected JspParser parser;
-    protected Node parent;
-    protected Node[] children;
-
-    public SimpleNode(int i) {
-        super(i);
-    }
-
-    public SimpleNode(JspParser p, int i) {
-        this(i);
-        parser = p;
-    }
-
-    public Node jjtGetParent() {
-        return parent;
-    }
-
-  public void jjtOpen() {
+  public SimpleNode(int i) {
+	  super(i);
   }
 
-  public void jjtClose() {
+  public SimpleNode(JspParser p, int i) {
+    this(i);
+    parser = p;
   }
   
-    public Node jjtGetChild(int i) {
-        return children[i];
-    }
+	public void jjtOpen() {
+	    if (beginLine == -1 && parser.token.next != null) {
+	        beginLine = parser.token.next.beginLine;
+	        beginColumn = parser.token.next.beginColumn;
+	    }
+	}
 
-    public void jjtAddChild(Node n, int i) {
-        if (children == null) {
-            children = new Node[i + 1];
-        } else if (i >= children.length) {
-            Node c[] = new Node[i + 1];
-            System.arraycopy(children, 0, c, 0, children.length);
-            children = c;
-        }
-        children[i] = n;
-    }
+	public void jjtClose() {
+	    if (beginLine == -1 && (children == null || children.length == 0)) {
+	        beginColumn = parser.token.beginColumn;
+	    }
+	    if (beginLine == -1) {
+	        beginLine = parser.token.beginLine;
+	    }
+	    endLine = parser.token.endLine;
+	    endColumn = parser.token.endColumn;
+	}
 
-    public void jjtSetParent(Node n) {
-        parent = n;
-    }
-
+  /** Accept the visitor. **/
   public Object jjtAccept(JspParserVisitor visitor, Object data) {
     return visitor.visit(this, data);
   }
 
-    /**
-     * Accept the visitor. *
-     */
-    public Object childrenAccept(JspParserVisitor visitor, Object data) {
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                ((SimpleNode)children[i]).jjtAccept(visitor, data);
-            }
-        }
-        return data;
+  /** Accept the visitor. **/
+  public Object childrenAccept(JspParserVisitor visitor, Object data) {
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ((Node) children[i]).jjtAccept(visitor, data);
+      }
     }
-  public String toString() { return JspParserTreeConstants.jjtNodeName[id]; }
-  public String toString(String prefix) { return prefix + toString(); }
+    return data;
+  }
 
+	public String toString() {
+	   return JspParserTreeConstants.jjtNodeName[id];
+	}
 }
 

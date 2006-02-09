@@ -7,4 +7,4 @@ that contains that fix.
 Thanks,
 
 Tom
-Support PMD, get the book: http://pmdapplied.com/
+Using PMD?  Get the book!  http://pmdapplied.com/

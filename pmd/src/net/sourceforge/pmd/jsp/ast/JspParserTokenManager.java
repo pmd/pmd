@@ -6,8 +6,6 @@
 
 package net.sourceforge.pmd.jsp.ast;
 
-import net.sourceforge.pmd.ast.Token;
-
 public class JspParserTokenManager implements JspParserConstants
 {
   public  java.io.PrintStream debugStream = System.out;

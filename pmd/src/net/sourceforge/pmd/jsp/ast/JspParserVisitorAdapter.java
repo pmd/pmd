@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.jsp.ast;
 
-
 public class JspParserVisitorAdapter implements JspParserVisitor {
 
 	public Object visit(SimpleNode node, Object data) {

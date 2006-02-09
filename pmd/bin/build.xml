@@ -171,9 +171,6 @@
         <jjtree target="etc/grammar/JspParser.jjt" outputdirectory="src/net/sourceforge/pmd/jsp/ast/" javacchome="${javacc-home.path}" />
         <javacc target="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" outputdirectory="src/net/sourceforge/pmd/jsp/ast" javacchome="${javacc-home.path}" />
         <delete file="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" />
-        <delete file="src/net/sourceforge/pmd/jsp/ast/Token.java" />
-        <delete file="src/net/sourceforge/pmd/jsp/ast/Node.java" />
-        <delete file="src/net/sourceforge/pmd/jsp/ast/ParseException.java" />
         <replace file="src/net/sourceforge/pmd/jsp/ast/JspParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
         <replace file="src/net/sourceforge/pmd/jsp/ast/JspParser.java" token="(Error)" value="(RuntimeException)" />
         <replace file="src/net/sourceforge/pmd/jsp/ast/JspParser.java" token="throw new Error" value="throw new RuntimeException" />

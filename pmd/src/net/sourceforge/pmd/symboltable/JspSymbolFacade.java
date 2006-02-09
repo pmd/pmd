@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.jsp.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.sourcetypehandlers.VisitorStarter;
+import net.sourceforge.pmd.jsp.ast.ASTCompilationUnit;
 
 /**
  * Symbol Facade for JSP.
