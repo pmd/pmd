@@ -210,8 +210,7 @@
 		<sourceDirectory>src</sourceDirectory>
 		<unitTestSourceDirectory>regress</unitTestSourceDirectory>
 		<integrationUnitTestSourceDirectory/>
-		<aspectSourceDirectory></aspectSourceDirectory>
-
+		
 		<unitTest>
 			<includes>
 				<include>**/*Test.java</include>

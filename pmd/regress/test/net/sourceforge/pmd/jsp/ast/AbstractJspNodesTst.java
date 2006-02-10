@@ -5,15 +5,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.jsp.ast.JspCharStream;
 import net.sourceforge.pmd.jsp.ast.JspParser;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.ParseException;
 import junit.framework.TestCase;
 
 public class AbstractJspNodesTst extends TestCase {
 
-	public void assertNumberOfNodes(Class clazz, String source, int number) throws ParseException {
+	public void assertNumberOfNodes(Class clazz, String source, int number) {
 		Set nodes = getNodes(clazz, source);
 		assertEquals("Exactly " + number + " element(s) expected", number, nodes.size());
 	}
@@ -25,7 +24,7 @@ public class AbstractJspNodesTst extends TestCase {
 	 * @param source
 	 * @return
 	 */
-	public Set getNodes(Class clazz, String source) throws ParseException {
+	public Set getNodes(Class clazz, String source) {
 		JspParser parser = new JspParser(new JspCharStream(new StringReader(source)));
 		Node rootNode = parser.CompilationUnit();
 		Set nodes = new HashSet();

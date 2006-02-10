@@ -18,9 +18,7 @@ public class UseIndexOfChar extends AbstractRule {
         }
         for (Iterator i = node.getUsages().iterator(); i.hasNext();) {
             NameOccurrence occ = (NameOccurrence) i.next();
-            if (occ.getNameForWhichThisIsAQualifier() != null &&
-                (occ.getNameForWhichThisIsAQualifier().getImage().indexOf("indexOf") != -1 ||
-                occ.getNameForWhichThisIsAQualifier().getImage().indexOf("lastIndexOf") != -1)) {
+            if (occ.getNameForWhichThisIsAQualifier() != null && occ.getNameForWhichThisIsAQualifier().getImage().indexOf("indexOf") != -1) {
                 SimpleNode parent = (SimpleNode)occ.getLocation().jjtGetParent().jjtGetParent();
                 if (parent instanceof ASTPrimaryExpression) {
                     List literals = parent.findChildrenOfType(ASTLiteral.class);

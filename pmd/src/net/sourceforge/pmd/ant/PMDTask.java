@@ -56,10 +56,6 @@ public class PMDTask extends Task {
     private String excludeMarker;
     private final Collection nestedRules = new ArrayList();
 
-    public void setMinimumPriority(int minPriority) {
-        this.minPriority = minPriority;
-    }
-    
     public void setShortFilenames(boolean value) {
         this.shortFilenames = value;
     }

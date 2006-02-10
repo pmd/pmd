@@ -37,6 +37,9 @@ public class RenderersTests
 
 /*
  * $Log$
+ * Revision 1.4  2006/02/10 14:15:20  tomcopeland
+ * Latest source from Pieter, everything compiles and all the tests pass with the exception of a few missing rules in basic-jsp.xml
+ *
  * Revision 1.3  2003/11/20 16:53:10  tomcopeland
  * Changing over license headers in the source code, cleaned up a test
  *

@@ -3,14 +3,15 @@
  */
 package net.sourceforge.pmd.jaxen;
 
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import net.sourceforge.pmd.ast.CompilationUnit;
 import net.sourceforge.pmd.ast.Node;
+
 import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
 import org.jaxen.util.SingleObjectIterator;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * @author daniels
@@ -76,7 +77,7 @@ public class DocumentNavigator extends DefaultNavigator {
     }
 
     public boolean isDocument(Object arg0) {
-        return arg0 instanceof ASTCompilationUnit;
+        return arg0 instanceof CompilationUnit;
     }
 
     public boolean isElement(Object arg0) {

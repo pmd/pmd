@@ -2,8 +2,10 @@ package net.sourceforge.pmd;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Grouping of Rules per Language in a RuleSet.
@@ -58,8 +60,8 @@ public class RuleSets {
 	 * 
 	 * @return Set
 	 */
-	public Collection getAllRules() {
-		List result = new ArrayList();
+	public Set getAllRules() {
+		HashSet result = new HashSet();
 		for (Iterator i = ruleSets.iterator(); i.hasNext();) {
 			result.addAll(((RuleSet) i.next()).getRules());
 		}

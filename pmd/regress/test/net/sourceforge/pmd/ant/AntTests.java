@@ -36,6 +36,9 @@ public class AntTests
 
 /*
  * $Log$
+ * Revision 1.4  2006/02/10 14:15:19  tomcopeland
+ * Latest source from Pieter, everything compiles and all the tests pass with the exception of a few missing rules in basic-jsp.xml
+ *
  * Revision 1.3  2003/11/20 16:01:01  tomcopeland
  * Changing over license headers in the source code
  *

@@ -3,36 +3,46 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.jaxen.DocumentNavigator;
-import net.sourceforge.pmd.jaxen.Attribute;
-import net.sourceforge.pmd.jaxen.MatchesFunction;
-import org.jaxen.BaseXPath;
-import org.jaxen.JaxenException;
-import org.jaxen.SimpleVariableContext;
-import org.jaxen.XPath;
-import org.jaxen.SimpleFunctionContext;
-import org.jaxen.XPathFunctionContext;
-import org.jaxen.Function;
-import org.jaxen.Context;
-import org.jaxen.FunctionCallException;
-import org.apache.oro.text.perl.Perl5Util;
-
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
-public class XPathRule extends AbstractRule {
+import net.sourceforge.pmd.CommonAbstractRule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.jaxen.DocumentNavigator;
+import net.sourceforge.pmd.jaxen.MatchesFunction;
+
+import org.jaxen.BaseXPath;
+import org.jaxen.JaxenException;
+import org.jaxen.SimpleVariableContext;
+import org.jaxen.XPath;
+
+/**
+ * Rule that tries to match an XPath expression against a DOM
+ * view of the AST of a "compilation unit".
+ * 
+ * This rule needs a property "xpath". 
+ */
+public class XPathRule extends CommonAbstractRule {
 
     private XPath xpath;
     private boolean regexpFunctionRegistered;
 
-    public Object visit(ASTCompilationUnit compilationUnit, Object data) {
+    /**
+     * Evaluate the AST with compilationUnit as root-node, against
+     * the XPath expression found as property with name "xpath".
+     * All matches are reported as violations.
+     * 
+     * @param compilationUnit the Node that is the root of the AST to be checked
+     * @param data
+     * @return
+     */
+    public void evaluate(Node compilationUnit, RuleContext data) {
         try {
             initializeXPathExpression();
             List results = xpath.selectNodes(compilationUnit);
@@ -41,13 +51,12 @@ public class XPathRule extends AbstractRule {
                 if (n instanceof ASTVariableDeclaratorId && getBooleanProperty("pluginname")) {
                     addViolation(data, n, n.getImage());
                 } else {
-                    addViolation(data, n, getMessage());
+                    addViolation(data, (SimpleNode)n, getMessage());
                 }
             }
         } catch (JaxenException ex) {
             throwJaxenAsRuntime(ex);
         }
-        return data;
     }
 
     private void initializeXPathExpression() throws JaxenException {
@@ -92,4 +101,13 @@ public class XPathRule extends AbstractRule {
             }
         };
     }
+
+    /**
+     * Apply the rule to all compilation units.
+     */
+	public void apply(List astCompilationUnits, RuleContext ctx) {
+		for(Iterator i = astCompilationUnits.iterator(); i.hasNext(); ) {
+			evaluate((Node) i.next(), ctx);
+		}
+	}
 }

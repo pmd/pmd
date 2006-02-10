@@ -34,6 +34,9 @@ public class ASTTests
 
 /*
  * $Log$
+ * Revision 1.4  2006/02/10 14:15:19  tomcopeland
+ * Latest source from Pieter, everything compiles and all the tests pass with the exception of a few missing rules in basic-jsp.xml
+ *
  * Revision 1.3  2004/04/08 18:51:07  tomcopeland
  * Implemented RFE 925839 - Added some more detail to the UseSingletonRule.
  *

@@ -37,7 +37,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Collection;
 
 public class RuleSetTest extends TestCase {
 
@@ -90,7 +89,7 @@ public class RuleSetTest extends TestCase {
 
         assertEquals("Size of RuleSet isn't one.", 1, IUT.size());
 
-        Collection rules = IUT.getRules();
+        Set rules = IUT.getRules();
 
         Iterator i = rules.iterator();
         assertTrue("Empty Set", i.hasNext());

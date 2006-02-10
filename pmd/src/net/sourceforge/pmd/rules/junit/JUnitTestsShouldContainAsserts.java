@@ -13,7 +13,6 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.ASTTypeParameters;
 
 public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule {
 
@@ -29,11 +28,7 @@ public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule
             return data; // skip various inapplicable method variations
         }
 
-        Node node = method.jjtGetChild(0);
-        if (node instanceof ASTTypeParameters) {
-            node = method.jjtGetChild(1);
-        }
-        if (((ASTResultType)node).isVoid() && method.getMethodName().startsWith("test"))  {
+        if (((ASTResultType) method.jjtGetChild(0)).isVoid() && method.getMethodName().startsWith("test"))  {
             if (!containsAssert(method.getBlock(), false)) {
                 addViolation(data, method);
             }

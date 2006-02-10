@@ -33,6 +33,9 @@ public class StatTests
 
 /*
  * $Log$
+ * Revision 1.2  2006/02/10 14:15:22  tomcopeland
+ * Latest source from Pieter, everything compiles and all the tests pass with the exception of a few missing rules in basic-jsp.xml
+ *
  * Revision 1.1  2003/09/29 14:32:32  tomcopeland
  * Committed regression test suites, thanks to Boris Gruschko
  *

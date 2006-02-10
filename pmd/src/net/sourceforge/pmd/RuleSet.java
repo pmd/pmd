@@ -3,20 +3,19 @@
  */
 package net.sourceforge.pmd;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.Set;
 
 
 /**
- * This class represents a collection of rules.
+ * This class represents a Set of rules.
  * @see Rule
  */
 public class RuleSet {
 
-    private List rules = new ArrayList();
+    private Set rules = new HashSet();
     private String name = "";
     private String description = "";
     private Language language;
@@ -41,10 +40,10 @@ public class RuleSet {
     }
 
 	/**
-	 * Returns the rules in this ruleset
-	 * @return a Collection with the rules. All objects are of type {@link Rule}
+	 * Returns the actual Set of rules in this ruleset
+	 * @return a Set with the rules. All objects are of type {@link Rule}
 	 */
-    public Collection getRules() {
+    public Set getRules() {
         return rules;
     }
 
@@ -84,7 +83,7 @@ public class RuleSet {
 	 * @param ruleSet the RuleSet to add
 	 */
     public void addRuleSet(RuleSet ruleSet) {
-        rules.addAll(rules.size(), ruleSet.getRules());
+        rules.addAll(ruleSet.getRules());
     }
 
     public void apply(List acuList, RuleContext ctx) {

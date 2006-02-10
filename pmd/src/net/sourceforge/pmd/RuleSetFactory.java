@@ -8,7 +8,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -212,7 +211,8 @@ public class RuleSetFactory {
 	public RuleSet createRuleSet(InputStream inputStream, ClassLoader classLoader) {
 		try {
 			this.classLoader = classLoader;
-			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			DocumentBuilder builder = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder();
 			Document doc = builder.parse(inputStream);
 			Element root = doc.getDocumentElement();
 
@@ -233,6 +233,8 @@ public class RuleSetFactory {
 			}
 
 			return ruleSet;
+		} catch (IllegalArgumentException illae) {
+			throw illae; // this is hideous, but see not in catch Exception block...
 		} catch (ClassNotFoundException cnfe) {
 			cnfe.printStackTrace();
 			throw new RuntimeException("Couldn't find that class " + cnfe.getMessage());
@@ -245,13 +247,13 @@ public class RuleSetFactory {
 		} catch (ParserConfigurationException pce) {
 			pce.printStackTrace();
 			throw new RuntimeException("Couldn't find that class " + pce.getMessage());
-		} catch (RuleSetNotFoundException rsnfe) {
-			rsnfe.printStackTrace();
-			throw new RuntimeException("Couldn't find that class " + rsnfe.getMessage());
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-			throw new RuntimeException("Couldn't find that class " + ioe.getMessage());
-		} catch (SAXException e) {
+		} catch (Exception e) {
+			/*
+			 * I hate to catch Exception, but I need to catch SaxException, and I can't
+			 * figure out where it's declared. It's not in our pmd/lib jar files; it must
+			 * be buried in the JDK somewhere. If anyone knows how to fix this, pls let me
+			 * know.... thanks!
+			 */
 			e.printStackTrace();
 			throw new RuntimeException("Couldn't find that class " + e.getMessage());
 		}

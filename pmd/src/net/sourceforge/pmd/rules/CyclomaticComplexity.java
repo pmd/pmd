@@ -16,7 +16,6 @@ import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTEnumDeclaration;
 
 import java.util.Stack;
 
@@ -127,16 +126,6 @@ public class CyclomaticComplexity extends AbstractRule {
             addViolation(data, node, new String[]{"method", (methodDeclarator == null) ? "" : methodDeclarator.getImage(), String.valueOf(methodEntry.decisionPoints)});
         }
 
-        return data;
-    }
-
-    public Object visit(ASTEnumDeclaration node, Object data) {
-        entryStack.push(new Entry(node));
-        super.visit(node, data);
-        Entry classEntry = (Entry) entryStack.pop();
-        if ((classEntry.getComplexityAverage() >= getIntProperty("reportLevel")) || (classEntry.highestDecisionPoints >= getIntProperty("reportLevel"))) {
-            addViolation(data, node, new String[]{"class", node.getImage(), String.valueOf(classEntry.getComplexityAverage()) + "(Highest = " + String.valueOf(classEntry.highestDecisionPoints) + ")"});
-        }
         return data;
     }
 
