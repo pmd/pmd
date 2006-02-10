@@ -52,7 +52,7 @@ onload=calcDays;
 		class="net.sourceforge.pmd.rules.XPathRule">
 		<description> Scriptlets should be factored into Tag Libraries or JSP declarations,
 			rather than being part of JSP pages. </description>
-		<priority>1</priority>
+		<priority>3</priority>
 		<properties>
 			<property name="xpath">
 				<value>
@@ -82,7 +82,7 @@ response.setHeader("Pragma", "No-cache");
 		class="net.sourceforge.pmd.jsp.rules.NoInlineStyleInformation">
 		<description><![CDATA[ Style information should be put in CSS files, not in JSPs.
 			Therefore, don't use <B> or <FONT> tags, or attributes like "align='center'" ]]> </description>
-		<priority>2</priority>
+		<priority>3</priority>
 		<example>
 			<![CDATA[ 
 <html><body><p align='center'><b>text</b></p></body></html>
@@ -96,7 +96,7 @@ response.setHeader("Pragma", "No-cache");
 		class="net.sourceforge.pmd.rules.XPathRule">
 		<description>Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 			</description>
-		<priority>4</priority>
+		<priority>2</priority>
 		<properties>
 			<property name="xpath">
 				<value>
@@ -109,6 +109,26 @@ response.setHeader("Pragma", "No-cache");
 <HTML> <BODY>
 <P class="MajorHeading">Some text</P>
 </BODY> </HTML>
+			]]>
+		</example>
+	</rule>
+	
+	<rule name="NoJspForward"
+		message="Do not do a forward from within a JSP file."
+		class="net.sourceforge.pmd.rules.XPathRule">
+		<description>Do not do a forward from within a JSP file.
+			</description>
+		<priority>3</priority>
+		<properties>
+			<property name="xpath">
+				<value>
+					<![CDATA[ //Element[ @Name="jsp:forward" ]  ]]>
+				</value>
+			</property>
+		</properties>
+		<example>
+			<![CDATA[
+<jsp:forward page='UnderConstruction.jsp'/>
 			]]>
 		</example>
 	</rule>

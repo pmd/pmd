@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+
+<ruleset name="Basic JSF rules" language="jsp"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="../etc/ruleset_xml_schema.xml">
+	
+	<description>Rules concerning basic JSF guidelines.</description>
+	
+	<rule name="DontNestJsfInJstlIteration"
+		message="Do not nest JSF component custom actions inside a custom action that iterates over its body."
+		class="net.sourceforge.pmd.rules.XPathRule">
+		<description>Do not nest JSF component custom actions inside a custom action that iterates over its body.</description>
+		<priority>3</priority>
+		<properties>
+			<property name="xpath">
+				<value>
+					<![CDATA[  
+//Element[ @Name="c:forEach" ] // Element[ @NamespacePrefix="h" or @NamespacePrefix="f" ] 
+					]]>
+				</value>
+			</property>
+		</properties>
+		<example>
+			<![CDATA[
+<html> <body> <ul> 
+		<c:forEach items='${books}' var='b'>
+			<li> <h:outputText value='#{b}' /> </li>
+		</c:forEach> 
+</ul> </body> </html>
+			]]>
+		</example>
+	</rule>
+
+</ruleset>
