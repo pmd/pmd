@@ -27,11 +27,11 @@ public class ASTAnnotationTest extends ParserTst {
     }
 
     private static final String TEST1 =
-    "public class Foo extends Buz {"  + PMD.EOL +
-    " @Override"  + PMD.EOL +
-    " void bar() {"  + PMD.EOL +
-    "  // overrides a superclass method"  + PMD.EOL +
-    " }"  + PMD.EOL +
-    "}";
+            "public class Foo extends Buz {" + PMD.EOL +
+            " @Override" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  // overrides a superclass method" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
 }

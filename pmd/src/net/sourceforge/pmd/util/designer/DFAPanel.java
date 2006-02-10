@@ -46,7 +46,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
                 
                 // draw index number centered inside of node
                 String idx = String.valueOf(inode.getIndex());
-                int hack = 4*(idx.length() / 2); // eo - hack to get one and two digit numbers centered
+                int hack = 4 * (idx.length() / 2); // eo - hack to get one and two digit numbers centered
                 g.drawString(idx, x + NODE_RADIUS - 2 - hack, y + NODE_RADIUS + 4);
 
                 List access = inode.getVariableAccess();
@@ -135,12 +135,15 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 
     private static class ElementWrapper {
         private ASTMethodDeclaration node;
+
         public ElementWrapper(ASTMethodDeclaration node) {
             this.node = node;
         }
+
         public ASTMethodDeclaration getNode() {
             return node;
         }
+
         public String toString() {
             return node.getMethodName();
         }
@@ -167,7 +170,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
         dfaCanvas = new DFACanvas();
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setPreferredSize(new Dimension(800, 450));  // eo - it would be better to calculate the size based on the containing object's size
-        dfaCanvas.setSize(2000,4000);  // eo - these seem to give a big enough canvas
+        dfaCanvas.setSize(2000, 4000);  // eo - these seem to give a big enough canvas
         scrollPane.add(dfaCanvas);
         wrapperPanel = new JPanel();
         wrapperPanel.add(scrollPane);

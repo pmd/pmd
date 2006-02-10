@@ -29,12 +29,13 @@ public class ASTVariableDeclaratorId extends SimpleJavaNode {
     public VariableNameDeclaration getNameDeclaration() {
         return nameDeclaration;
     }
+
     public void setNameDeclaration(VariableNameDeclaration decl) {
         nameDeclaration = decl;
     }
 
     public List getUsages() {
-        return (List)getScope().getVariableDeclarations().get(nameDeclaration);
+        return (List) getScope().getVariableDeclarations().get(nameDeclaration);
     }
 
     public void bumpArrayDepth() {
@@ -66,8 +67,8 @@ public class ASTVariableDeclaratorId extends SimpleJavaNode {
         if (jjtGetParent() instanceof ASTFormalParameter) {
             return (ASTType) jjtGetParent().jjtGetChild(0);
         } else if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
-            SimpleNode n = (SimpleNode)jjtGetParent().jjtGetParent();
-            return (ASTType)n.getFirstChildOfType(ASTType.class);
+            SimpleNode n = (SimpleNode) jjtGetParent().jjtGetParent();
+            return (ASTType) n.getFirstChildOfType(ASTType.class);
         }
         throw new RuntimeException("Don't know how to get the type for anything other than ASTLocalVariableDeclaration/ASTFormalParameter/ASTFieldDeclaration");
     }

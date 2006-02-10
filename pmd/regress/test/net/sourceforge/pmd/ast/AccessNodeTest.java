@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
@@ -13,11 +13,11 @@ public class AccessNodeTest extends ParserTst {
 
     public void testModifiersOnClassDecl() throws Throwable {
         Set ops = getNodes(ASTClassOrInterfaceDeclaration.class, TEST1);
-        assertTrue(((ASTClassOrInterfaceDeclaration)(ops.iterator().next())).isPublic());
+        assertTrue(((ASTClassOrInterfaceDeclaration) (ops.iterator().next())).isPublic());
     }
 
     private static final String TEST1 =
-    "public class Foo {}";
+            "public class Foo {}";
 
 
     public void testStatic() {

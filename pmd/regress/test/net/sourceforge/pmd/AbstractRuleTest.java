@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2002 InfoEther, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency
-(DARPA).
+ (DARPA).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published
-by
+ by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
  *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
@@ -36,7 +36,7 @@ import java.util.Set;
 
 public class AbstractRuleTest extends TestCase {
 
-    private static class MyRule extends AbstractRule{
+    private static class MyRule extends AbstractRule {
         public MyRule() {
             setName("MyRule");
             setMessage("my rule msg");
@@ -45,7 +45,7 @@ public class AbstractRuleTest extends TestCase {
         }
     }
 
-    private static class MyOtherRule extends AbstractRule{
+    private static class MyOtherRule extends AbstractRule {
         public MyOtherRule() {
             setName("MyOtherRule");
             setMessage("my other rule");
@@ -106,36 +106,36 @@ public class AbstractRuleTest extends TestCase {
         ctx.getReport().addRuleViolation(rv);
         assertTrue(ctx.getReport().isEmpty());
     }
-    
+
     public void testEquals1() {
         MyRule r = new MyRule();
         assertFalse("A rule is never equals to null!", r.equals(null));
     }
-    
+
     public void testEquals2() {
         MyRule r = new MyRule();
         assertEquals("A rule must be equals to itself", r, r);
     }
-    
+
     public void testEquals3() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
         assertEquals("2 instances of the same rule are equals", r1, r2);
         assertEquals("hasCode for 2 instances of the same rule must be equals", r1.hashCode(), r2.hashCode());
     }
-    
+
     public void testEquals4() {
         MyRule myRule = new MyRule();
         assertFalse("A rule cannot be equals to an object of another class", myRule.equals("MyRule"));
     }
-    
+
     public void testEquals5() {
         MyRule myRule = new MyRule();
         MyOtherRule myOtherRule = new MyOtherRule();
         assertFalse("2 rules of different classes cannot be equals", myRule.equals(myOtherRule));
         assertFalse("Rules that are not equals should not have the same hashcode", myRule.hashCode() == myOtherRule.hashCode());
     }
-    
+
     public void testEquals6() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
@@ -143,7 +143,7 @@ public class AbstractRuleTest extends TestCase {
         assertFalse("Rules with different names cannot be equals", r1.equals(r2));
         assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
     }
-    
+
     public void testEquals7() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
@@ -151,7 +151,7 @@ public class AbstractRuleTest extends TestCase {
         assertFalse("Rules with different priority cannot be equals", r1.equals(r2));
         assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
     }
-    
+
     public void testEquals8() {
         MyRule r1 = new MyRule();
         r1.addProperty("xpath", "something");
@@ -160,7 +160,7 @@ public class AbstractRuleTest extends TestCase {
         assertFalse("Rules with different properties values cannot be equals", r1.equals(r2));
         assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
     }
-    
+
     public void testEquals9() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
@@ -168,7 +168,7 @@ public class AbstractRuleTest extends TestCase {
         assertFalse("Rules with different properties cannot be equals", r1.equals(r2));
         assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
     }
-    
+
     public void testEquals10() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();

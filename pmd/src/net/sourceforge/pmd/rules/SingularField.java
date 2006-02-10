@@ -18,34 +18,33 @@ import org.jaxen.JaxenException;
 import java.util.List;
 
 /**
- *
  * @author Eric Olander
  */
 public class SingularField extends AbstractRule {
-    
+
     public Object visit(ASTFieldDeclaration node, Object data) {
         if (node.isPrivate() && !node.isStatic()) {
             List list = node.findChildrenOfType(ASTVariableDeclaratorId.class);
-            ASTVariableDeclaratorId decl = (ASTVariableDeclaratorId)list.get(0);
+            ASTVariableDeclaratorId decl = (ASTVariableDeclaratorId) list.get(0);
             String name = decl.getImage();
-            String path = "//MethodDeclaration[.//PrimaryExpression[.//Name[@Image = \""+name+"\" or substring-before(@Image, \".\") = \""+name+"\"] or .//PrimarySuffix[@Image = \""+name+"\"]]] |" +
-                     "//ConstructorDeclaration[.//PrimaryExpression[.//Name[@Image = \""+name+"\" or substring-before(@Image, \".\") = \""+name+"\"] or .//PrimarySuffix[@Image = \""+name+"\"]]]";
+            String path = "//MethodDeclaration[.//PrimaryExpression[.//Name[@Image = \"" + name + "\" or substring-before(@Image, \".\") = \"" + name + "\"] or .//PrimarySuffix[@Image = \"" + name + "\"]]] |" +
+                    "//ConstructorDeclaration[.//PrimaryExpression[.//Name[@Image = \"" + name + "\" or substring-before(@Image, \".\") = \"" + name + "\"] or .//PrimarySuffix[@Image = \"" + name + "\"]]]";
             try {
                 List nodes = node.findChildNodesWithXPath(path);
                 if (nodes.size() == 1) {
                     String method;
                     if (nodes.get(0) instanceof ASTMethodDeclaration) {
-                        method = ((ASTMethodDeclarator)((ASTMethodDeclaration)nodes.get(0)).findChildrenOfType(ASTMethodDeclarator.class).get(0)).getImage();
+                        method = ((ASTMethodDeclarator) ((ASTMethodDeclaration) nodes.get(0)).findChildrenOfType(ASTMethodDeclarator.class).get(0)).getImage();
                     } else {
-                        method = ((ASTClassOrInterfaceDeclaration)((ASTConstructorDeclaration)nodes.get(0)).getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)).getImage();
+                        method = ((ASTClassOrInterfaceDeclaration) ((ASTConstructorDeclaration) nodes.get(0)).getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)).getImage();
                     }
                     addViolation(data, decl, new Object[]{name, method});
                 }
             } catch (JaxenException je) {
-                je.printStackTrace();   
+                je.printStackTrace();
             }
         }
         return data;
     }
-    
+
 }

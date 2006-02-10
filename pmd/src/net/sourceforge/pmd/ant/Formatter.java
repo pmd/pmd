@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.ant;
 
 import net.sourceforge.pmd.renderers.CSVRenderer;
+import net.sourceforge.pmd.renderers.EmacsRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.PapariTextRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -11,15 +12,14 @@ import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
-import net.sourceforge.pmd.renderers.EmacsRenderer;
 import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 import org.apache.tools.ant.BuildException;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.OutputStreamWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 public class Formatter {

@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * Base class with utility methods for optimization rules
- * 
+ *
  * @author mgriffa
  */
 public class AbstractOptimizationRule extends AbstractRule implements Rule {
@@ -35,7 +35,7 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
     // TODO - symbol table?
     protected final String getVarName(ASTLocalVariableDeclaration node) {
         List l = node.findChildrenOfType(ASTVariableDeclaratorId.class);
-        if (l != null && l.size()>0) {
+        if (l != null && l.size() > 0) {
             ASTVariableDeclaratorId vd = (ASTVariableDeclaratorId) l.get(0);
             return vd.getImage();
         }
@@ -44,7 +44,7 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
 
     /**
      * Check constructions like
-     * int i; 
+     * int i;
      * ++i;
      * --i;
      * i++;
@@ -54,10 +54,10 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
     private final boolean numericWithPrePost(ASTMethodDeclaration md, String varName) {
         // ++i
         List preinc = md.findChildrenOfType(ASTPreIncrementExpression.class);
-        if (preinc!=null && !preinc.isEmpty()) {
-            for (Iterator it = preinc.iterator() ; it.hasNext() ; ) {
+        if (preinc != null && !preinc.isEmpty()) {
+            for (Iterator it = preinc.iterator(); it.hasNext();) {
                 ASTPreIncrementExpression ie = (ASTPreIncrementExpression) it.next();
-                if (((ASTName)ie.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().equals(varName)) {
+                if (((ASTName) ie.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().equals(varName)) {
                     return true;
                 }
             }
@@ -65,27 +65,27 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         
         // --i
         List predec = md.findChildrenOfType(ASTPreDecrementExpression.class);
-        if (predec!=null && !predec.isEmpty()) {
-            for (Iterator it = predec.iterator() ; it.hasNext() ; ) {
+        if (predec != null && !predec.isEmpty()) {
+            for (Iterator it = predec.iterator(); it.hasNext();) {
                 ASTPreDecrementExpression de = (ASTPreDecrementExpression) it.next();
-                if (((ASTName)de.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().equals(varName)) {
+                if (((ASTName) de.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().equals(varName)) {
                     return true;
                 }
             }
         }
-        
+
         List pf = md.findChildrenOfType(ASTPostfixExpression.class);
-        if (pf!=null && !pf.isEmpty()) {
-            for (Iterator it = pf.iterator() ; it.hasNext() ; ) {
+        if (pf != null && !pf.isEmpty()) {
+            for (Iterator it = pf.iterator(); it.hasNext();) {
                 ASTPostfixExpression pe = (ASTPostfixExpression) it.next();
 
-                if (( pe.getImage().equals("++") || pe.getImage().equals("--"))) {
-                    SimpleNode first = (SimpleNode)pe.jjtGetChild(0);
-                    SimpleNode second = (SimpleNode)first.jjtGetChild(0);
+                if ((pe.getImage().equals("++") || pe.getImage().equals("--"))) {
+                    SimpleNode first = (SimpleNode) pe.jjtGetChild(0);
+                    SimpleNode second = (SimpleNode) first.jjtGetChild(0);
                     if (second.jjtGetNumChildren() == 0) {
                         continue;
                     }
-                    ASTName name = (ASTName)second.jjtGetChild(0);
+                    ASTName name = (ASTName) second.jjtGetChild(0);
                     if (name.getImage().equals(varName)) {
                         return true;
                     }
@@ -97,14 +97,14 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
 
 
     private final boolean variableAssigned(final String varName, final List assignments) {
-        if (assignments==null || assignments.isEmpty()) {
+        if (assignments == null || assignments.isEmpty()) {
             return false;
         }
-        for (Iterator it = assignments.iterator() ; it.hasNext() ; ) {
+        for (Iterator it = assignments.iterator(); it.hasNext();) {
             final ASTAssignmentOperator a = (ASTAssignmentOperator) it.next();
             // if node is assigned return true
-            SimpleNode firstChild = (SimpleNode)a.jjtGetParent().jjtGetChild(0);
-            SimpleNode otherChild =  (SimpleNode)firstChild.jjtGetChild(0);
+            SimpleNode firstChild = (SimpleNode) a.jjtGetParent().jjtGetChild(0);
+            SimpleNode otherChild = (SimpleNode) firstChild.jjtGetChild(0);
             if (otherChild.jjtGetNumChildren() == 0 || !(otherChild.jjtGetChild(0) instanceof ASTName)) {
                 continue;
             }
@@ -113,8 +113,8 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
 }

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.jaxen;
 
 import junit.framework.TestCase;
@@ -16,7 +16,7 @@ public class AttributeTest extends TestCase {
         p.testingOnly__setBeginLine(5);
         Method[] methods = p.getClass().getMethods();
         Method m = null;
-        for (int i=0;i<methods.length;i++) {
+        for (int i = 0; i < methods.length; i++) {
             if (methods[i].getName().equals("getBeginLine")) {
                 m = methods[i];
                 break;

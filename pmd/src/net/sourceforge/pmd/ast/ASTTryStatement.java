@@ -3,7 +3,6 @@
 package net.sourceforge.pmd.ast;
 
 
-
 public class ASTTryStatement extends SimpleJavaNode {
 
     public ASTTryStatement(int id) {
@@ -22,7 +21,7 @@ public class ASTTryStatement extends SimpleJavaNode {
     }
 
     public boolean hasFinally() {
-        for (int i =0; i<this.jjtGetNumChildren(); i++) {
+        for (int i = 0; i < this.jjtGetNumChildren(); i++) {
             if (jjtGetChild(i) instanceof ASTFinallyStatement) {
                 return true;
             }
@@ -31,9 +30,9 @@ public class ASTTryStatement extends SimpleJavaNode {
     }
 
     public ASTFinallyStatement getFinally() {
-        for (int i =0; i<this.jjtGetNumChildren(); i++) {
+        for (int i = 0; i < this.jjtGetNumChildren(); i++) {
             if (jjtGetChild(i) instanceof ASTFinallyStatement) {
-                return (ASTFinallyStatement)jjtGetChild(i);
+                return (ASTFinallyStatement) jjtGetChild(i);
             }
         }
         throw new RuntimeException("ASTTryStatement.getFinally called but this try stmt doesn't contain a finally block");

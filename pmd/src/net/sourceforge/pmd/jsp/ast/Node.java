@@ -9,6 +9,8 @@ package net.sourceforge.pmd.jsp.ast;
 public interface Node extends net.sourceforge.pmd.ast.Node {
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JspParserVisitor visitor, Object data);
+    /**
+     * Accept the visitor. *
+     */
+    public Object jjtAccept(JspParserVisitor visitor, Object data);
 }

@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.SourceFileSelector;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,8 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import net.sourceforge.pmd.SourceFileSelector;
 
 public class CPD {
 
@@ -75,7 +75,7 @@ public class CPD {
     }
 
     private Set current = new HashSet();
-	private SourceFileSelector fileSelector = new SourceFileSelector();
+    private SourceFileSelector fileSelector = new SourceFileSelector();
 
     private void add(int fileCount, File file) throws IOException {
 
@@ -108,7 +108,7 @@ public class CPD {
     }
 
     private static boolean findBooleanSwitch(String[] args, String name) {
-        for (int i=0; i<args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             if (args[i].equals(name)) {
                 return true;
             }
@@ -117,9 +117,9 @@ public class CPD {
     }
 
     private static String findRequiredStringValue(String[] args, String name) {
-        for (int i=0; i<args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             if (args[i].equals(name)) {
-                return args[i+1];
+                return args[i + 1];
             }
         }
         System.out.println("No " + name + " value passed in");
@@ -128,9 +128,9 @@ public class CPD {
     }
 
     private static String findOptionalStringValue(String[] args, String name, String defaultValue) {
-        for (int i=0; i<args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             if (args[i].equals(name)) {
-                return args[i+1];
+                return args[i + 1];
             }
         }
         return defaultValue;

@@ -5,8 +5,8 @@ import net.sourceforge.pmd.parsers.Parser;
 
 public class Java15Handler extends JavaTypeHandler {
 
-	public Parser getParser() {
-		return new Java15Parser();
-	}
+    public Parser getParser() {
+        return new Java15Parser();
+    }
 
 }

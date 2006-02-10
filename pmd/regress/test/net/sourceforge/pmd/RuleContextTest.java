@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2002 InfoEther, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency
-(DARPA).
+ (DARPA).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published
-by
+ by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
  *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS

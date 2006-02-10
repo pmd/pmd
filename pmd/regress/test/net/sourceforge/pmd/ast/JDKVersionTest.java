@@ -11,7 +11,7 @@ import net.sourceforge.pmd.ast.ParseException;
 
 import java.io.StringReader;
 
-public class JDKVersionTest extends TestCase  {
+public class JDKVersionTest extends TestCase {
 
     // enum keyword/identifier
     public void testEnumAsKeywordShouldFailWith14() throws Throwable {
@@ -19,7 +19,8 @@ public class JDKVersionTest extends TestCase  {
             JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_ENUM));
             p.CompilationUnit();
             throw new Error("JDK 1.4 parser should have failed to parse enum used as keyword");
-        } catch (ParseException e) {}    // cool
+        } catch (ParseException e) {
+        }    // cool
     }
 
     public void testEnumAsIdentifierShouldPassWith14() throws Throwable {
@@ -38,7 +39,8 @@ public class JDKVersionTest extends TestCase  {
             JavaParser p = jdk.createParser(new StringReader(JDK14_ENUM));
             p.CompilationUnit();
             throw new Error("JDK 1.5 parser should have failed to parse enum used as identifier");
-        } catch (ParseException e) {}    // cool
+        } catch (ParseException e) {
+        }    // cool
     }
     // enum keyword/identifier
 
@@ -181,168 +183,168 @@ public class JDKVersionTest extends TestCase  {
 
 
     private static final String ANNOTATED_LOCALS =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  @SuppressWarnings(\"foo\") int y = 5;" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  @SuppressWarnings(\"foo\") int y = 5;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String ANNOTATED_PARAMS =
-    "public class Foo {" + PMD.EOL +
-    " void bar(@SuppressWarnings(\"foo\") int x) {}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar(@SuppressWarnings(\"foo\") int x) {}" + PMD.EOL +
+            "}";
 
     private static final String ASSERT_TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  assert x == 2;" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  assert x == 2;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String ASSERT_TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  assert (x == 2);" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  assert (x == 2);" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String ASSERT_TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  assert (x==2) : \"hi!\";" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  assert (x==2) : \"hi!\";" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String ASSERT_TEST4 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  assert (x==2) : \"hi!\";" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  assert (x==2) : \"hi!\";" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String ASSERT_TEST5 =
-    "public class Foo {" + PMD.EOL +
-    "  int assert = 2;" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            "  int assert = 2;" + PMD.EOL +
+            "}";
 
 
     private static final String ASSERT_TEST5_a =
-    "public class Foo {" + PMD.EOL +
-    "  void bar() { assert(); }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            "  void bar() { assert(); }" + PMD.EOL +
+            "}";
 
     private static final String ASSERT_TEST6 =
-    "public class Foo {" + PMD.EOL +
-    " void foo() {" + PMD.EOL +
-    "  assert (x == 2) : \"hi!\";" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void foo() {" + PMD.EOL +
+            "  assert (x == 2) : \"hi!\";" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String ASSERT_TEST7 =
-    "public class Foo {" + PMD.EOL +
-    " void assert() {}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void assert() {}" + PMD.EOL +
+            "}";
 
     private static final String JDK15_ENUM =
-    "public class Test {" + PMD.EOL +
-    " enum Season { winter, spring, summer, fall };" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            " enum Season { winter, spring, summer, fall };" + PMD.EOL +
+            "}";
 
     private static final String JDK14_ENUM =
-    "public class Test {" + PMD.EOL +
-    " int enum;" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            " int enum;" + PMD.EOL +
+            "}";
 
     private static final String JDK15_VARARGS =
-    "public class Test {" + PMD.EOL +
-    " void bar(Object ... args) {}" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            " void bar(Object ... args) {}" + PMD.EOL +
+            "}";
 
     private static final String JDK15_FORLOOP =
-    "public class Test {" + PMD.EOL +
-    " void foo(List list) {" + PMD.EOL +
-    "  for (Integer i : list) {}" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            " void foo(List list) {" + PMD.EOL +
+            "  for (Integer i : list) {}" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String JDK15_FORLOOP_WITH_MODIFIER =
-    "public class Test {" + PMD.EOL +
-    " void foo(List list) {" + PMD.EOL +
-    "  for (final Integer i : list) {}" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            " void foo(List list) {" + PMD.EOL +
+            "  for (final Integer i : list) {}" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String JDK15_GENERICS =
-    "public class Test {" + PMD.EOL +
-    "  ArrayList<Integer> list =  new ArrayList<Integer>();" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            "  ArrayList<Integer> list =  new ArrayList<Integer>();" + PMD.EOL +
+            "}";
 
     private static final String FIELDS_BUG =
-    "public class Test {" + PMD.EOL +
-    "  private Foo bar;" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            "  private Foo bar;" + PMD.EOL +
+            "}";
 
     private static final String GT_BUG =
-    "public class Test {" + PMD.EOL +
-    "  int y = x > 32;" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            "  int y = x > 32;" + PMD.EOL +
+            "}";
 
     private static final String ANNOTATIONS_BUG =
-    "@Target(ElementType.METHOD)" + PMD.EOL +
-    "public @interface Foo {" + PMD.EOL +
-    "}";
+            "@Target(ElementType.METHOD)" + PMD.EOL +
+            "public @interface Foo {" + PMD.EOL +
+            "}";
 
     private static final String GENERIC_IN_FIELD =
-    "public class Foo {" + PMD.EOL +
-    " Class<Double> foo = (Class<Double>)clazz;" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Class<Double> foo = (Class<Double>)clazz;" + PMD.EOL +
+            "}";
 
     private static final String GENERIC_IN_ANNOTATION =
-    "public class Foo {" + PMD.EOL +
-    " public <A extends Annotation> A foo(Class<A> c) {"  + PMD.EOL +
-    "  return null;"  + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public <A extends Annotation> A foo(Class<A> c) {" + PMD.EOL +
+            "  return null;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String INNER_BUG =
-    "public class Test {" + PMD.EOL +
-    "  void bar() {" + PMD.EOL +
-    "   final class Inner {};" + PMD.EOL +
-    "   Inner i = new Inner();" + PMD.EOL +
-    "  }" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            "  void bar() {" + PMD.EOL +
+            "   final class Inner {};" + PMD.EOL +
+            "   Inner i = new Inner();" + PMD.EOL +
+            "  }" + PMD.EOL +
+            "}";
 
     private static final String INNER_BUG2 =
-    "public class Test {" + PMD.EOL +
-    "  void bar() {" + PMD.EOL +
-    "   class Inner {};" + PMD.EOL +
-    "   Inner i = new Inner();" + PMD.EOL +
-    "  }" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            "  void bar() {" + PMD.EOL +
+            "   class Inner {};" + PMD.EOL +
+            "   Inner i = new Inner();" + PMD.EOL +
+            "  }" + PMD.EOL +
+            "}";
 
     private static final String GENERIC_IN_METHOD_CALL =
-    "public class Test {" + PMD.EOL +
-    "  List<String> test() {" + PMD.EOL +
-    "   return Collections.<String>emptyList();" + PMD.EOL +
-    "  }" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            "  List<String> test() {" + PMD.EOL +
+            "   return Collections.<String>emptyList();" + PMD.EOL +
+            "  }" + PMD.EOL +
+            "}";
 
     private static final String GENERIC_RETURN_TYPE =
-    "public class Test {" + PMD.EOL +
-    "  public static <String> String test(String x) {" + PMD.EOL +
-    "   return x;" + PMD.EOL +
-    "  }" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            "  public static <String> String test(String x) {" + PMD.EOL +
+            "   return x;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            "}";
 
     // See java/lang/concurrent/ConcurrentHashMap
     private static final String MULTIPLE_GENERICS =
-    "public class Foo<K,V> {" + PMD.EOL +
-    "  public <A extends K, B extends V> Foo(Bar<A,B> t) {}" + PMD.EOL +
-    "}";
+            "public class Foo<K,V> {" + PMD.EOL +
+            "  public <A extends K, B extends V> Foo(Bar<A,B> t) {}" + PMD.EOL +
+            "}";
 
     // See java/lang/concurrent/CopyOnWriteArraySet
     private static final String FUNKY_GENERICS =
-    "public class Foo {" + PMD.EOL +
-    "  public <T extends E> Foo() {}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            "  public <T extends E> Foo() {}" + PMD.EOL +
+            "}";
 }

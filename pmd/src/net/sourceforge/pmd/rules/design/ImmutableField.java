@@ -27,7 +27,7 @@ import java.util.Set;
  * @author Olander
  */
 public class ImmutableField extends AbstractRule {
-    
+
     private static final int MUTABLE = 0;
     private static final int IMMUTABLE = 1;
     private static final int CHECKDECL = 2;
@@ -41,7 +41,7 @@ public class ImmutableField extends AbstractRule {
                 continue;
             }
 
-            int result = initializedInConstructor((List)vars.get(field), new HashSet(constructors));
+            int result = initializedInConstructor((List) vars.get(field), new HashSet(constructors));
             if (result == MUTABLE) {
                 continue;
             }
@@ -56,10 +56,10 @@ public class ImmutableField extends AbstractRule {
         int rc = MUTABLE, methodInitCount = 0;
         Set consSet = new HashSet();
         for (Iterator j = usages.iterator(); j.hasNext();) {
-            NameOccurrence occ = (NameOccurrence)j.next();
+            NameOccurrence occ = (NameOccurrence) j.next();
             if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
                 SimpleNode node = occ.getLocation();
-                SimpleNode constructor = (SimpleNode)node.getFirstParentOfType(ASTConstructorDeclaration.class);
+                SimpleNode constructor = (SimpleNode) node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
                     if (inLoopOrTry(node)) {
                         continue;
@@ -87,18 +87,19 @@ public class ImmutableField extends AbstractRule {
     }
 
     private boolean inLoopOrTry(SimpleNode node) {
-        return (SimpleNode)node.getFirstParentOfType(ASTTryStatement.class) != null ||
-               (SimpleNode)node.getFirstParentOfType(ASTForStatement.class) != null ||
-               (SimpleNode)node.getFirstParentOfType(ASTWhileStatement.class) != null ||
-               (SimpleNode)node.getFirstParentOfType(ASTDoStatement.class) != null;
+        return (SimpleNode) node.getFirstParentOfType(ASTTryStatement.class) != null ||
+                (SimpleNode) node.getFirstParentOfType(ASTForStatement.class) != null ||
+                (SimpleNode) node.getFirstParentOfType(ASTWhileStatement.class) != null ||
+                (SimpleNode) node.getFirstParentOfType(ASTDoStatement.class) != null;
     }
 
     private boolean inAnonymousInnerClass(SimpleNode node) {
-        ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration)node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
-        return parent != null && parent.isAnonymousInnerClass();    
+        ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+        return parent != null && parent.isAnonymousInnerClass();
     }
 
-    /** construct a set containing all ASTConstructorDeclaration nodes for this class
+    /**
+     * construct a set containing all ASTConstructorDeclaration nodes for this class
      */
     private Set findAllConstructors(ASTClassOrInterfaceDeclaration node) {
         Set set = new HashSet();

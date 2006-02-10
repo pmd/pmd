@@ -3,17 +3,19 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTDefaultValue extends SimpleJavaNode {
-  public ASTDefaultValue(int id) {
-    super(id);
-  }
+    public ASTDefaultValue(int id) {
+        super(id);
+    }
 
-  public ASTDefaultValue(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTDefaultValue(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /**
+     * Accept the visitor. *
+     */
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

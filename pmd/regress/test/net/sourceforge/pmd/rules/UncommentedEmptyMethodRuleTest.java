@@ -17,7 +17,7 @@ public class UncommentedEmptyMethodRuleTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-        runTests(new TestDescriptor[] {
+        runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "simple failure", 1, rule),
             new TestDescriptor(TEST2, "single-line comment is OK", 0, rule),
             new TestDescriptor(TEST3, "multiple-line comment is OK", 0, rule),

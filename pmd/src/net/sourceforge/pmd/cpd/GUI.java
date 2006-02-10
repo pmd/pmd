@@ -178,21 +178,21 @@ public class GUI implements CPDListener {
         languageBox.addItem("PHP");
         languageBox.addItem("Ruby");
         languageBox.addItem("by extension...");
-        languageBox.addActionListener(new ActionListener(){
+        languageBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 ignoreLiteralsCheckbox.setEnabled(languageBox.getSelectedItem().equals("Java"));
                 extensionField.setEnabled(languageBox.getSelectedItem().equals("by extension..."));
-            }}
-        );
+            }
+        });
         helper.add(languageBox);
         helper.nextRow();
         helper.addLabel("Also scan subdirectories?");
         helper.add(recurseCheckbox);
-        
+
         helper.addLabel("Extension:");
         helper.add(extensionField);
         extensionField.setEnabled(false);
-        
+
         helper.nextRow();
         helper.addLabel("Ignore literals and identifiers?");
         helper.add(ignoreLiteralsCheckbox);

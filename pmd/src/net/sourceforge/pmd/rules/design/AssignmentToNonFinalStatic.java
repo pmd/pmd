@@ -19,11 +19,10 @@ import java.util.Map;
 
 
 /**
- *
  * @author Eric Olander
  */
 public class AssignmentToNonFinalStatic extends AbstractRule {
-    
+
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Map vars = node.getScope().getVariableDeclarations();
         for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
@@ -31,29 +30,29 @@ public class AssignmentToNonFinalStatic extends AbstractRule {
             if (!decl.getAccessNodeParent().isStatic() || decl.getAccessNodeParent().isFinal()) {
                 continue;
             }
-            
-            if (initializedInConstructor((List)vars.get(decl))) {
+
+            if (initializedInConstructor((List) vars.get(decl))) {
                 addViolation(data, decl.getNode(), decl.getImage());
             }
         }
         return super.visit(node, data);
     }
-    
+
     private boolean initializedInConstructor(List usages) {
         boolean initInConstructor = false;
-        
+
         for (Iterator j = usages.iterator(); j.hasNext();) {
-            NameOccurrence occ = (NameOccurrence)j.next();
+            NameOccurrence occ = (NameOccurrence) j.next();
             if (occ.isOnLeftHandSide()) { // specifically omitting prefix and postfix operators as there are legitimate usages of these with static fields, e.g. typesafe enum pattern.
                 SimpleNode node = occ.getLocation();
-                SimpleNode constructor = (SimpleNode)node.getFirstParentOfType(ASTConstructorDeclaration.class);
+                SimpleNode constructor = (SimpleNode) node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
                     initInConstructor = true;
                 }
             }
         }
-        
+
         return initInConstructor;
     }
-    
+
 }

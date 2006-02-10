@@ -48,7 +48,7 @@ public class SimpleNodeTreeNodeAdapter
      */
     public TreeNode getChildAt(int childIndex) {
         checkChildren();
-       return (TreeNode) children.get(childIndex);
+        return (TreeNode) children.get(childIndex);
     }
 
 
@@ -73,7 +73,7 @@ public class SimpleNodeTreeNodeAdapter
      */
     public int getIndex(TreeNode node) {
         checkChildren();
-       return children.indexOf(node);
+        return children.indexOf(node);
     }
 
 

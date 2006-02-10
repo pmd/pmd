@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.util.viewer;
 
-import net.sourceforge.pmd.util.viewer.gui.MainFrame;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
+import net.sourceforge.pmd.util.viewer.gui.MainFrame;
 
 /**
  * viewer's starter

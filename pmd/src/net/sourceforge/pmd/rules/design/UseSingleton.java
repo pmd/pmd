@@ -58,8 +58,8 @@ public class UseSingleton extends AbstractRule {
 
         // TODO use symbol table
         if (decl.getMethodName().equals("suite")) {
-            ASTResultType res = (ASTResultType)decl.getFirstChildOfType(ASTResultType.class);
-            ASTClassOrInterfaceType c = (ASTClassOrInterfaceType)res.getFirstChildOfType(ASTClassOrInterfaceType.class);
+            ASTResultType res = (ASTResultType) decl.getFirstChildOfType(ASTResultType.class);
+            ASTClassOrInterfaceType c = (ASTClassOrInterfaceType) res.getFirstChildOfType(ASTClassOrInterfaceType.class);
             if (c != null && c.getImage().equals("Test")) {
                 isOK = true;
             }

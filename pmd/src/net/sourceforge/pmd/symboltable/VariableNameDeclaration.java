@@ -38,9 +38,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 
     public String getTypeImage() {
         if (isPrimitiveType()) {
-            return ((SimpleNode)(getAccessNodeParent().jjtGetChild(0).jjtGetChild(0))).getImage();
+            return ((SimpleNode) (getAccessNodeParent().jjtGetChild(0).jjtGetChild(0))).getImage();
         }
-        return ((SimpleNode)getAccessNodeParent().jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage();
+        return ((SimpleNode) getAccessNodeParent().jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage();
     }
 
     /**

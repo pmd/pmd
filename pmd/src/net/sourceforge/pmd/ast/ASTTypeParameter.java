@@ -3,17 +3,19 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTTypeParameter extends SimpleJavaNode {
-  public ASTTypeParameter(int id) {
-    super(id);
-  }
+    public ASTTypeParameter(int id) {
+        super(id);
+    }
 
-  public ASTTypeParameter(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTTypeParameter(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /**
+     * Accept the visitor. *
+     */
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

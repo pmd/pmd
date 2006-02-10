@@ -6,7 +6,7 @@ import net.sourceforge.pmd.cpd.CPPTokenizer;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.Tokens;
 
-public class CPPTokenizerTest extends TestCase{
+public class CPPTokenizerTest extends TestCase {
 
     public void testMultiLineMacros() throws Throwable {
         CPPTokenizer tokenizer = new CPPTokenizer();
@@ -17,14 +17,14 @@ public class CPPTokenizerTest extends TestCase{
     }
 
     private static final String TEST1 =
-    "#define FOO a +\\" + PMD.EOL +
-    "            b +\\" + PMD.EOL +
-    "            c +\\" + PMD.EOL +
-    "            d +\\" + PMD.EOL +
-    "            e +\\" + PMD.EOL +
-    "            f +\\" + PMD.EOL +
-    "            g"  + PMD.EOL +
-    " void main() {}";
+            "#define FOO a +\\" + PMD.EOL +
+            "            b +\\" + PMD.EOL +
+            "            c +\\" + PMD.EOL +
+            "            d +\\" + PMD.EOL +
+            "            e +\\" + PMD.EOL +
+            "            f +\\" + PMD.EOL +
+            "            g" + PMD.EOL +
+            " void main() {}";
 
 
 }

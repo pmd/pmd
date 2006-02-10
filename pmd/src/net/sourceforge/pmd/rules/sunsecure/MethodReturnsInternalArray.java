@@ -16,9 +16,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Implementation note: this rule currently ignores return types of y.x.z, 
+ * Implementation note: this rule currently ignores return types of y.x.z,
  * currently it handles only local type fields.
- * 
+ *
  * @author mgriffa
  */
 public class MethodReturnsInternalArray extends AbstractSunSecureRule {
@@ -36,7 +36,7 @@ public class MethodReturnsInternalArray extends AbstractSunSecureRule {
         }
         List returns = method.findChildrenOfType(ASTReturnStatement.class);
         ASTTypeDeclaration td = (ASTTypeDeclaration) method.getFirstParentOfType(ASTTypeDeclaration.class);
-        for (Iterator it = returns.iterator() ; it.hasNext() ; ) {
+        for (Iterator it = returns.iterator(); it.hasNext();) {
             final ASTReturnStatement ret = (ASTReturnStatement) it.next();
             final String vn = getReturnedVariableName(ret);
             if (!isField(vn, td)) {
@@ -47,10 +47,10 @@ public class MethodReturnsInternalArray extends AbstractSunSecureRule {
             }
             if (!isLocalVariable(vn, method)) {
                 addViolation(data, ret, vn);
-            }  else {
+            } else {
                 // This is to handle field hiding
                 final ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ret.getFirstChildOfType(ASTPrimaryPrefix.class);
-                if (pp!=null && pp.usesThisModifier()) {
+                if (pp != null && pp.usesThisModifier()) {
                     final ASTPrimarySuffix ps = (ASTPrimarySuffix) ret.getFirstChildOfType(ASTPrimarySuffix.class);
                     if (ps.getImage().equals(vn)) {
                         addViolation(data, ret, vn);

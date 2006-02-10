@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.ast.SimpleJavaNode;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.StatisticalRule;
 

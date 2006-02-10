@@ -8,20 +8,20 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 
 public class AvoidNonConstructorMethodsWithClassName extends AbstractRule {
-	
-	public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
-    		return data;
+            return data;
         }
         return super.visit(node, data);
-	}
-	
-	public Object visit(ASTMethodDeclaration node, Object data) {
-		String declaringType = getDeclaringType (node);
-		if (declaringType!=null && node.getMethodName().equals(declaringType)) {
+    }
+
+    public Object visit(ASTMethodDeclaration node, Object data) {
+        String declaringType = getDeclaringType(node);
+        if (declaringType != null && node.getMethodName().equals(declaringType)) {
             addViolation(data, node, node.getMethodName());
-		}
-		return data;
-	}
-	
+        }
+        return data;
+    }
+
 }

@@ -1,39 +1,40 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.ast;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-public class ASTTests
-{
-  /**
-   * test suite
-   *
-   * @return test suite
-   */
-  public static Test suite(  )
-  {
-    TestSuite suite = new TestSuite( "Test for test.net.sourceforge.pmd.ast" );
+public class ASTTests {
+    /**
+     * test suite
+     *
+     * @return test suite
+     */
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Test for test.net.sourceforge.pmd.ast");
 
-    //$JUnit-BEGIN$
-    suite.addTestSuite( ASTImportDeclarationTest.class );
-    suite.addTestSuite( ASTVariableDeclaratorIdTest.class );
-    suite.addTestSuite( AccessNodeTest.class );
-    suite.addTestSuite( ClassDeclTest.class );
-    suite.addTestSuite( FieldDeclTest.class );
-    suite.addTestSuite( MethodDeclTest.class );
-    suite.addTestSuite( SimpleNodeTest.class );
+        //$JUnit-BEGIN$
+        suite.addTestSuite(ASTImportDeclarationTest.class);
+        suite.addTestSuite(ASTVariableDeclaratorIdTest.class);
+        suite.addTestSuite(AccessNodeTest.class);
+        suite.addTestSuite(ClassDeclTest.class);
+        suite.addTestSuite(FieldDeclTest.class);
+        suite.addTestSuite(MethodDeclTest.class);
+        suite.addTestSuite(SimpleNodeTest.class);
 
-    //$JUnit-END$
-    return suite;
-  }
+        //$JUnit-END$
+        return suite;
+    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.5  2006/02/10 14:26:25  tomcopeland
+ * Huge reformatting checkin
+ *
  * Revision 1.4  2006/02/10 14:15:19  tomcopeland
  * Latest source from Pieter, everything compiles and all the tests pass with the exception of a few missing rules in basic-jsp.xml
  *

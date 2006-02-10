@@ -33,13 +33,13 @@ public class UnnecessaryCaseChange extends AbstractRule {
             return null;
         }
 
-        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix)exp.jjtGetChild(0);
+        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) exp.jjtGetChild(0);
         if (prefix.jjtGetNumChildren() != 1 || !(prefix.jjtGetChild(0) instanceof ASTName)) {
-           return null;
+            return null;
         }
 
-        ASTName name = (ASTName)prefix.jjtGetChild(0);
-        if (name.getImage() == null || !(name.getImage().endsWith("toUpperCase") || name.getImage().endsWith("toLowerCase"))){
+        ASTName name = (ASTName) prefix.jjtGetChild(0);
+        if (name.getImage() == null || !(name.getImage().endsWith("toUpperCase") || name.getImage().endsWith("toLowerCase"))) {
             return null;
         }
         return name.getImage();
@@ -51,8 +51,8 @@ public class UnnecessaryCaseChange extends AbstractRule {
             return null;
         }
 
-        ASTPrimarySuffix suffix = (ASTPrimarySuffix)exp.jjtGetChild(2);
-        if (suffix.getImage() == null || !(suffix.getImage().equals("equals") || suffix.getImage().equals("equalsIgnoreCase") )) {
+        ASTPrimarySuffix suffix = (ASTPrimarySuffix) exp.jjtGetChild(2);
+        if (suffix.getImage() == null || !(suffix.getImage().equals("equals") || suffix.getImage().equals("equalsIgnoreCase"))) {
             return null;
         }
         return suffix.getImage();

@@ -49,7 +49,7 @@ public class DaaRule extends AbstractRule implements Executable {
             counter = 0;
         }
         for (Iterator d = path.iterator(); d.hasNext();) {
-            IDataFlowNode inode = (IDataFlowNode)d.next();
+            IDataFlowNode inode = (IDataFlowNode) d.next();
             if (inode.getVariableAccess() != null) {
                 for (int g = 0; g < inode.getVariableAccess().size(); g++) {
                     VariableAccess va = (VariableAccess) inode.getVariableAccess().get(g);

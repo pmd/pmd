@@ -286,7 +286,7 @@ public class DAAPathFinder {
         for (int i = 0; i < childCount; i++) {
             DefaultMutableTreeNode tNode = (DefaultMutableTreeNode) treeNode.getParent().getChildAt(i);
             PathElement e = (PathElement) tNode.getUserObject();
-            if (e !=null && !e.isPseudoPathElement()) {
+            if (e != null && !e.isPseudoPathElement()) {
                 counter++;
             }
         }

@@ -12,7 +12,7 @@ import java.io.StringReader;
 import java.util.Properties;
 
 public class JavaTokenizer implements Tokenizer {
-    
+
     public static final String IGNORE_LITERALS = "ignore_literals";
     public static final String IGNORE_IDENTIFIERS = "ignore_identifiers";
 
@@ -74,6 +74,7 @@ public class JavaTokenizer implements Tokenizer {
     public void setIgnoreLiterals(boolean ignore) {
         this.ignoreLiterals = ignore;
     }
+
     public void setIgnoreIdentifiers(boolean ignore) {
         this.ignoreIdentifiers = ignore;
     }

@@ -36,9 +36,11 @@ public class VariableAccess {
     public boolean isDefinition() {
         return this.accessType == DEFINITION;
     }
+
     public boolean isReference() {
         return this.accessType == REFERENCING;
     }
+
     public boolean isUndefinition() {
         return this.accessType == UNDEFINITION;
     }

@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTPrimitiveType extends SimpleJavaNode  implements Dimensionable{
+public class ASTPrimitiveType extends SimpleJavaNode implements Dimensionable {
 
     public ASTPrimitiveType(int id) {
         super(id);
@@ -36,5 +36,5 @@ public class ASTPrimitiveType extends SimpleJavaNode  implements Dimensionable{
     public boolean isArray() {
         return arrayDepth > 0;
     }
-    
+
 }

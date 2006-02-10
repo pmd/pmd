@@ -8,7 +8,7 @@ import net.sourceforge.pmd.RuleViolation;
 
 import java.util.Iterator;
 
-public class EmacsRenderer extends AbstractRenderer  implements Renderer {
+public class EmacsRenderer extends AbstractRenderer implements Renderer {
 
     protected String EOL = System.getProperty("line.separator", "\n");
 

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SourceFileScope extends AbstractScope implements Scope  {
+public class SourceFileScope extends AbstractScope implements Scope {
 
     protected Map classNames = new HashMap();
     private String packageImage;

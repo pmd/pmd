@@ -15,22 +15,22 @@ public class AvoidConstantsInterfaceTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-               new TestDescriptor(TEST1, "clear rule violation", 1, rule),
-               new TestDescriptor(TEST2, "ok", 0, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "clear rule violation", 1, rule),
+            new TestDescriptor(TEST2, "ok", 0, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public interface Foo {" + PMD.EOL +
-    " public static final int FOO = 2;" + PMD.EOL +
-    " public static final String BAR = \"bar\";" + PMD.EOL +
-    "}";
+            "public interface Foo {" + PMD.EOL +
+            " public static final int FOO = 2;" + PMD.EOL +
+            " public static final String BAR = \"bar\";" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public interface Foo {" + PMD.EOL +
-    " public static final int FOO = 2;" + PMD.EOL +
-    " public void buz();" + PMD.EOL +
-    "}";
+            "public interface Foo {" + PMD.EOL +
+            " public static final int FOO = 2;" + PMD.EOL +
+            " public void buz();" + PMD.EOL +
+            "}";
 
 }

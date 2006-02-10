@@ -29,79 +29,89 @@ public class AccessNode extends SimpleJavaNode {
     }
 
     public boolean isPublic() {
-      return (modifiers & PUBLIC) != 0;
+        return (modifiers & PUBLIC) != 0;
     }
 
     public boolean isProtected() {
-      return (modifiers & PROTECTED) != 0;
+        return (modifiers & PROTECTED) != 0;
     }
 
     public boolean isPrivate() {
-      return (modifiers & PRIVATE) != 0;
+        return (modifiers & PRIVATE) != 0;
     }
 
     public boolean isStatic() {
-      return (modifiers & STATIC) != 0;
+        return (modifiers & STATIC) != 0;
     }
 
     public boolean isAbstract() {
-      return (modifiers & ABSTRACT) != 0;
+        return (modifiers & ABSTRACT) != 0;
     }
 
     public boolean isFinal() {
-      return (modifiers & FINAL) != 0;
+        return (modifiers & FINAL) != 0;
     }
 
     public boolean isNative() {
-      return (modifiers & NATIVE) != 0;
+        return (modifiers & NATIVE) != 0;
     }
 
     public boolean isStrictfp() {
-      return (modifiers & STRICTFP) != 0;
+        return (modifiers & STRICTFP) != 0;
     }
 
     public boolean isSynchronized() {
-      return (modifiers & SYNCHRONIZED) != 0;
+        return (modifiers & SYNCHRONIZED) != 0;
     }
 
     public boolean isTransient() {
-      return (modifiers & TRANSIENT) != 0;
+        return (modifiers & TRANSIENT) != 0;
     }
 
     public boolean isVolatile() {
-      return (modifiers & VOLATILE) != 0;
+        return (modifiers & VOLATILE) != 0;
     }
 
     public void setPublic() {
         modifiers |= PUBLIC;
     }
+
     public void setPrivate() {
         modifiers |= PRIVATE;
     }
+
     public void setProtected() {
         modifiers |= PROTECTED;
     }
+
     public void setSynchronized() {
         modifiers |= SYNCHRONIZED;
     }
+
     public void setVolatile() {
         modifiers |= VOLATILE;
     }
+
     public void setAbstract() {
         modifiers |= ABSTRACT;
     }
+
     public void setStatic() {
         modifiers |= STATIC;
     }
+
     public void setTransient() {
         modifiers |= TRANSIENT;
     }
+
     public void setFinal() {
         modifiers |= FINAL;
     }
+
     public void setNative() {
         modifiers |= NATIVE;
     }
+
     public void setStrictfp() {
         modifiers |= STRICTFP;
     }
@@ -110,7 +120,7 @@ public class AccessNode extends SimpleJavaNode {
      * Removes the given modifier.
      */
     static int removeModifier(int modifiers, int mod) {
-       return modifiers & ~mod;
+        return modifiers & ~mod;
     }
 
     public boolean isPackagePrivate() {

@@ -21,7 +21,7 @@ public class EmptyCatchBlockRuleTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-        runTests(new TestDescriptor[] {
+        runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "simple failure", 1, rule),
             new TestDescriptor(TEST2, "ok", 0, rule),
             new TestDescriptor(TEST3, "no catch with nested catch in finally", 1, rule),
@@ -33,7 +33,7 @@ public class EmptyCatchBlockRuleTest extends SimpleAggregatorTst {
     }
 
     public void testCommentedBlocksDisallowed() {
-        runTests(new TestDescriptor[] {
+        runTests(new TestDescriptor[]{
             new TestDescriptor(TEST8, "single-line comment is not OK", 1, rule),
             new TestDescriptor(TEST9, "multiple-line comment is not OK", 1, rule),
             new TestDescriptor(TEST10, "Javadoc comment is not OK", 1, rule),
@@ -41,7 +41,7 @@ public class EmptyCatchBlockRuleTest extends SimpleAggregatorTst {
     }
 
     public void testCommentedBlocksAllowed() {
-        runTests(new TestDescriptor[] {
+        runTests(new TestDescriptor[]{
             new TestDescriptor(TEST8, "single-line comment is OK", 0, commentsRule),
             new TestDescriptor(TEST9, "multiple-line comment is OK", 0, commentsRule),
             new TestDescriptor(TEST10, "Javadoc comment is OK", 0, commentsRule),

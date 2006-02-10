@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.PMD;
@@ -20,10 +20,10 @@ public class LongClassRuleTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST0, "short", 0, rule),
-           new TestDescriptor(TEST1, "long", 1, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST0, "short", 0, rule),
+            new TestDescriptor(TEST1, "long", 1, rule),
+        });
     }
 
     public void testLongClassWithLongerTest() throws Throwable {
@@ -33,26 +33,26 @@ public class LongClassRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST0 =
-    "public class Foo {" + PMD.EOL +
-    "    public static void main(String args[]) {" + PMD.EOL +
-    "	  int x;" + PMD.EOL +
-    "    }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            "    public static void main(String args[]) {" + PMD.EOL +
+            "	  int x;" + PMD.EOL +
+            "    }" + PMD.EOL +
+            "}";
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    "    public void bar() {" + PMD.EOL +
-    "	  bar();" + PMD.EOL +
-    "	  bar();" + PMD.EOL +
-    "	  bar();" + PMD.EOL +
-    "	  bar();" + PMD.EOL +
-    "	  bar();" + PMD.EOL +
-    "	  bar();" + PMD.EOL +
-    "	  bar();" + PMD.EOL +
-    "	  bar();" + PMD.EOL +
-    "	  bar();" + PMD.EOL +
-    "	  bar();" + PMD.EOL +
-    "    }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            "    public void bar() {" + PMD.EOL +
+            "	  bar();" + PMD.EOL +
+            "	  bar();" + PMD.EOL +
+            "	  bar();" + PMD.EOL +
+            "	  bar();" + PMD.EOL +
+            "	  bar();" + PMD.EOL +
+            "	  bar();" + PMD.EOL +
+            "	  bar();" + PMD.EOL +
+            "	  bar();" + PMD.EOL +
+            "	  bar();" + PMD.EOL +
+            "	  bar();" + PMD.EOL +
+            "    }" + PMD.EOL +
+            "}";
 }
 

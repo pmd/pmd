@@ -20,8 +20,9 @@ public class ASTBlockStatement extends SimpleJavaNode {
     }
 
     /**
-     * Tells if this BlockStatement is an allocation statement. 
-     * This is done by 
+     * Tells if this BlockStatement is an allocation statement.
+     * This is done by
+     *
      * @return the result of !findChildrenOfType(ASTAllocationExpression.class).isEmpty()
      */
     public final boolean isAllocation() {

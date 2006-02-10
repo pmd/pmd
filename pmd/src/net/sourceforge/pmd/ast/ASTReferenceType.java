@@ -3,19 +3,21 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTReferenceType extends SimpleJavaNode implements Dimensionable {
-  public ASTReferenceType(int id) {
-    super(id);
-  }
+    public ASTReferenceType(int id) {
+        super(id);
+    }
 
-  public ASTReferenceType(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTReferenceType(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /**
+     * Accept the visitor. *
+     */
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 
     private int arrayDepth;
 

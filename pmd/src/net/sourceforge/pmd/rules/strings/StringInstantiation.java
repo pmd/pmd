@@ -19,13 +19,13 @@ public class StringInstantiation extends AbstractRule {
             return data;
         }
 
-        ASTClassOrInterfaceType clz = (ASTClassOrInterfaceType)node.jjtGetChild(0);
+        ASTClassOrInterfaceType clz = (ASTClassOrInterfaceType) node.jjtGetChild(0);
         if (!clz.getImage().equals("String")) {
             return data;
         }
 
         List exp = node.findChildrenOfType(ASTExpression.class);
-        if (exp.size() >=2 ){
+        if (exp.size() >= 2) {
             return data;
         }
 
@@ -33,19 +33,19 @@ public class StringInstantiation extends AbstractRule {
             return data;
         }
 
-        ASTName name = (ASTName)node.getFirstChildOfType(ASTName.class);
+        ASTName name = (ASTName) node.getFirstChildOfType(ASTName.class);
         // Literal, i.e., new String("foo")
         if (name == null) {
             addViolation(data, node);
             return data;
         }
 
-        NameDeclaration nd = (NameDeclaration)name.getNameDeclaration();
+        NameDeclaration nd = (NameDeclaration) name.getNameDeclaration();
         if (!(nd instanceof VariableNameDeclaration)) {
             return data;
         }
 
-        VariableNameDeclaration vnd = (VariableNameDeclaration)nd;
+        VariableNameDeclaration vnd = (VariableNameDeclaration) nd;
         // nd == null in cases like: return new String("foo");
         if (vnd == null || vnd.getTypeImage().equals("String")) {
             addViolation(data, node);

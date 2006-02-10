@@ -3,21 +3,23 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTClassOrInterfaceDeclaration extends AccessNode {
-  public ASTClassOrInterfaceDeclaration(int id) {
-    super(id);
-  }
+    public ASTClassOrInterfaceDeclaration(int id) {
+        super(id);
+    }
 
-  public ASTClassOrInterfaceDeclaration(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTClassOrInterfaceDeclaration(JavaParser p, int id) {
+        super(p, id);
+    }
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /**
+     * Accept the visitor. *
+     */
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 
     public boolean isNested() {
-        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration;    
+        return jjtGetParent() instanceof ASTClassOrInterfaceBodyDeclaration;
     }
 
     private boolean isInterface;
@@ -33,7 +35,7 @@ public class ASTClassOrInterfaceDeclaration extends AccessNode {
     public void dump(String prefix) {
         String interfaceStr = isInterface ? "interface" : "class";
         String innerStr = isNested() ? "(nested)" : "";
-        System.out.println(toString(prefix) + "(" + getImage() + ")(" + interfaceStr  + ")" + innerStr);
+        System.out.println(toString(prefix) + "(" + getImage() + ")(" + interfaceStr + ")" + innerStr);
         dumpChildren(prefix);
     }
 

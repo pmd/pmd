@@ -9,10 +9,12 @@ import java.io.FilenameFilter;
 public class AnyLanguage implements Language {
 
     public static class AnyFileOrDirectoryFilter implements FilenameFilter {
-    	String extension;
-    	public AnyFileOrDirectoryFilter(String extension) {
-    		this.extension = extension;
-    	}
+        String extension;
+
+        public AnyFileOrDirectoryFilter(String extension) {
+            this.extension = extension;
+        }
+
         public boolean accept(File dir, String filename) {
             return filename.endsWith(extension) || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
         }
@@ -20,12 +22,12 @@ public class AnyLanguage implements Language {
 
     private AnyTokenizer tokenizer;
     private String extension;
-    
+
     public AnyLanguage(String extension) {
-    	this.extension = extension;
+        this.extension = extension;
         tokenizer = new AnyTokenizer();
     }
-    
+
     public Tokenizer getTokenizer() {
         return tokenizer;
     }

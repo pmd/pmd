@@ -38,7 +38,7 @@ public class MethodScope extends AbstractScope {
             ((List) variableNames.get(decl)).add(occurrence);
             SimpleNode n = occurrence.getLocation();
             if (n instanceof ASTName) {
-                ((ASTName)n).setNameDeclaration(decl);
+                ((ASTName) n).setNameDeclaration(decl);
             } // TODO what to do with PrimarySuffix case?
         }
         return decl;
@@ -64,7 +64,7 @@ public class MethodScope extends AbstractScope {
         if (node instanceof ASTConstructorDeclaration) {
             return this.getEnclosingClassScope().getClassName();
         }
-        return ((SimpleNode)node.jjtGetChild(1)).getImage();
+        return ((SimpleNode) node.jjtGetChild(1)).getImage();
     }
 
     public String toString() {

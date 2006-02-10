@@ -5,14 +5,13 @@ package net.sourceforge.pmd.ast;
 import net.sourceforge.pmd.Rule;
 
 public class ASTAnnotation extends SimpleJavaNode {
-  public ASTAnnotation(int id) {
-    super(id);
-  }
+    public ASTAnnotation(int id) {
+        super(id);
+    }
 
-  public ASTAnnotation(JavaParser p, int id) {
-    super(p, id);
-  }
-
+    public ASTAnnotation(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
     public boolean suppresses(Rule rule) {
@@ -24,8 +23,8 @@ public class ASTAnnotation extends SimpleJavaNode {
             Name:SuppressWarnings
         */
         if (jjtGetChild(0) instanceof ASTSingleMemberAnnotation) {
-            ASTSingleMemberAnnotation n = (ASTSingleMemberAnnotation)jjtGetChild(0);
-            if (n.jjtGetChild(0) instanceof ASTName && ((ASTName)n.jjtGetChild(0)).getImage().equals("SuppressWarnings")) {
+            ASTSingleMemberAnnotation n = (ASTSingleMemberAnnotation) jjtGetChild(0);
+            if (n.jjtGetChild(0) instanceof ASTName && ((ASTName) n.jjtGetChild(0)).getImage().equals("SuppressWarnings")) {
                 return true;
             }
             return false;
@@ -64,11 +63,10 @@ public class ASTAnnotation extends SimpleJavaNode {
     }
 
 
-
-
-
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /**
+     * Accept the visitor. *
+     */
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

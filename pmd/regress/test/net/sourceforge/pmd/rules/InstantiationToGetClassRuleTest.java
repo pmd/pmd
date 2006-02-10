@@ -15,25 +15,25 @@ public class InstantiationToGetClassRuleTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "simple failure case", 1, rule),
-           new TestDescriptor(TEST2, "ok", 0, rule),
-           new TestDescriptor(TEST3, "should catch param to constructor", 1, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "simple failure case", 1, rule),
+            new TestDescriptor(TEST2, "ok", 0, rule),
+            new TestDescriptor(TEST3, "should catch param to constructor", 1, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " Class clazz = new String().getClass();" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Class clazz = new String().getClass();" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " Class clazz = getFoo().getClass();" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Class clazz = getFoo().getClass();" + PMD.EOL +
+            "}";
 
     private static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " Class clazz = new Integer(10).getClass();" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Class clazz = new Integer(10).getClass();" + PMD.EOL +
+            "}";
 }

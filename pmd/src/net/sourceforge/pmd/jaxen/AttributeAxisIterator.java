@@ -17,10 +17,12 @@ public class AttributeAxisIterator implements Iterator {
     private static class MethodWrapper {
         public Method method;
         public String name;
+
         public MethodWrapper(Method m) {
             this.method = m;
             this.name = truncateMethodName(m.getName());
         }
+
         private String truncateMethodName(String n) {
             // about 70% of the methods start with 'get', so this case goes first
             if (n.startsWith("get")) {
@@ -48,14 +50,14 @@ public class AttributeAxisIterator implements Iterator {
         if (!methodCache.containsKey(contextNode.getClass())) {
             Method[] preFilter = contextNode.getClass().getMethods();
             List postFilter = new ArrayList();
-            for (int i = 0; i<preFilter.length; i++) {
+            for (int i = 0; i < preFilter.length; i++) {
                 if (isAttribute(preFilter[i])) {
                     postFilter.add(new MethodWrapper(preFilter[i]));
                 }
             }
-            methodCache.put(contextNode.getClass(), (MethodWrapper[])postFilter.toArray(new MethodWrapper[postFilter.size()]));
+            methodCache.put(contextNode.getClass(), (MethodWrapper[]) postFilter.toArray(new MethodWrapper[postFilter.size()]));
         }
-        this.methodWrappers = (MethodWrapper[])methodCache.get(contextNode.getClass());
+        this.methodWrappers = (MethodWrapper[]) methodCache.get(contextNode.getClass());
 
         this.position = 0;
         this.currObj = getNextAttribute();
@@ -89,7 +91,7 @@ public class AttributeAxisIterator implements Iterator {
 
     protected boolean isAttribute(Method method) {
         return (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType() || String.class == method.getReturnType())
-        && (method.getParameterTypes().length == 0)
+                && (method.getParameterTypes().length == 0)
                 && (Void.TYPE != method.getReturnType())
                 && !method.getName().startsWith("jjt")
                 && !method.getName().equals("toString")

@@ -12,19 +12,19 @@ public class SourceFileScopeTest extends STBBaseTst {
     public void testClassDeclAppears() {
         parseCode(TEST1);
         Map m = acu.getScope().getClassDeclarations();
-        ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration)m.keySet().iterator().next();
+        ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration) m.keySet().iterator().next();
         assertEquals(classNameDeclaration.getImage(), "Foo");
     }
 
     public void testPackageIsEmptyString() {
         parseCode(TEST1);
-        ASTCompilationUnit decl = (ASTCompilationUnit)(acu.findChildrenOfType(ASTCompilationUnit.class)).get(0);
+        ASTCompilationUnit decl = (ASTCompilationUnit) (acu.findChildrenOfType(ASTCompilationUnit.class)).get(0);
         assertEquals(decl.getScope().getEnclosingSourceFileScope().getPackageName(), "");
     }
 
     public void testPackageNameFound() {
         parseCode(TEST2);
-        ASTCompilationUnit decl = (ASTCompilationUnit)(acu.findChildrenOfType(ASTCompilationUnit.class)).get(0);
+        ASTCompilationUnit decl = (ASTCompilationUnit) (acu.findChildrenOfType(ASTCompilationUnit.class)).get(0);
         assertEquals(decl.getScope().getEnclosingSourceFileScope().getPackageName(), "foo.bar");
     }
 
@@ -32,23 +32,23 @@ public class SourceFileScopeTest extends STBBaseTst {
         parseCode(TEST3);
         Map m = acu.getScope().getClassDeclarations();
         Iterator iterator = m.keySet().iterator();
-        ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration)iterator.next();
+        ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration) iterator.next();
         assertEquals(classNameDeclaration.getImage(), "Foo");
         assertFalse(iterator.hasNext());
     }
 
     private static final String TEST1 =
-    "public class Foo {}" + PMD.EOL;
+            "public class Foo {}" + PMD.EOL;
 
     private static final String TEST2 =
-    "package foo.bar;" + PMD.EOL +
-    "public class Foo {" + PMD.EOL +
-    "}" + PMD.EOL;
+            "package foo.bar;" + PMD.EOL +
+            "public class Foo {" + PMD.EOL +
+            "}" + PMD.EOL;
 
     private static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " public class Bar {" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}" + PMD.EOL;
+            "public class Foo {" + PMD.EOL +
+            " public class Bar {" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}" + PMD.EOL;
 
 }

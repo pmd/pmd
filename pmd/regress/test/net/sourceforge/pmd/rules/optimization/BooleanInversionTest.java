@@ -15,38 +15,38 @@ public class BooleanInversionTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-               new TestDescriptor(TEST1, "failure, unary assignment", 1, rule),
-               new TestDescriptor(TEST2, "pass, bitwise assignment", 0, rule),
-               new TestDescriptor(TEST3, "pass, not a straight unary inversion", 0, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "failure, unary assignment", 1, rule),
+            new TestDescriptor(TEST2, "pass, bitwise assignment", 0, rule),
+            new TestDescriptor(TEST3, "pass, not a straight unary inversion", 0, rule),
+        });
     }
 
     private static final String TEST1 =
-        "public class Foo {" + PMD.EOL +
-        " public void bar() {" + PMD.EOL +
-        "   boolean b = false;" + PMD.EOL +
-        "   boolean c = false;" + PMD.EOL +
-        "   b = !c;" + PMD.EOL +
-        " }" + PMD.EOL +
-        "}";
+            "public class Foo {" + PMD.EOL +
+            " public void bar() {" + PMD.EOL +
+            "   boolean b = false;" + PMD.EOL +
+            "   boolean c = false;" + PMD.EOL +
+            "   b = !c;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-        "public class Foo {" + PMD.EOL +
-        " public void bar() {" + PMD.EOL +
-        "   boolean b = false;" + PMD.EOL +
-        "   boolean c = false;" + PMD.EOL +
-        "   b ^= c;" + PMD.EOL +
-        " }" + PMD.EOL +
-        "}";
+            "public class Foo {" + PMD.EOL +
+            " public void bar() {" + PMD.EOL +
+            "   boolean b = false;" + PMD.EOL +
+            "   boolean c = false;" + PMD.EOL +
+            "   b ^= c;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String TEST3 =
-        "public class Foo {" + PMD.EOL +
-        " public void bar() {" + PMD.EOL +
-        "   boolean b = false;" + PMD.EOL +
-        "   boolean c = false;" + PMD.EOL +
-        "   b &= !c;" + PMD.EOL +
-        " }" + PMD.EOL +
-        "}";
+            "public class Foo {" + PMD.EOL +
+            " public void bar() {" + PMD.EOL +
+            "   boolean b = false;" + PMD.EOL +
+            "   boolean c = false;" + PMD.EOL +
+            "   b &= !c;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
 }

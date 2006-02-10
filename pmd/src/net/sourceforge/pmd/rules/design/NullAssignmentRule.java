@@ -13,11 +13,12 @@ import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 // Would this be simplified by using DFA somehow?
+
 public class NullAssignmentRule extends AbstractRule {
 
     public Object visit(ASTNullLiteral node, Object data) {
         if (node.getNthParent(5) instanceof ASTStatementExpression) {
-            ASTStatementExpression n = (ASTStatementExpression)node.getNthParent(5);
+            ASTStatementExpression n = (ASTStatementExpression) node.getNthParent(5);
 
             if (isAssignmentToFinalField(n)) {
                 return data;
@@ -27,19 +28,19 @@ public class NullAssignmentRule extends AbstractRule {
                 addViolation(data, node);
             }
         } else if (node.getNthParent(4) instanceof ASTConditionalExpression) {
-            checkTernary((ASTConditionalExpression)node.getNthParent(4), data, node);
+            checkTernary((ASTConditionalExpression) node.getNthParent(4), data, node);
         } else if (node.getNthParent(5) instanceof ASTConditionalExpression) {
-            checkTernary((ASTConditionalExpression)node.getNthParent(5), data, node);
+            checkTernary((ASTConditionalExpression) node.getNthParent(5), data, node);
         }
 
         return data;
     }
 
     private boolean isAssignmentToFinalField(ASTStatementExpression n) {
-        ASTName name = (ASTName)n.getFirstChildOfType(ASTName.class);
+        ASTName name = (ASTName) n.getFirstChildOfType(ASTName.class);
         return name != null
                 && name.getNameDeclaration() instanceof VariableNameDeclaration
-                && ((VariableNameDeclaration)name.getNameDeclaration()).getAccessNodeParent().isFinal();
+                && ((VariableNameDeclaration) name.getNameDeclaration()).getAccessNodeParent().isFinal();
     }
 
     private void checkTernary(ASTConditionalExpression n, Object data, ASTNullLiteral node) {

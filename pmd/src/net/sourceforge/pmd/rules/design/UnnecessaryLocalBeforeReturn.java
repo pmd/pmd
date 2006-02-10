@@ -25,7 +25,7 @@ public class UnnecessaryLocalBeforeReturn extends AbstractRule {
 
     public Object visit(ASTReturnStatement rtn, Object data) {
         // skip returns of literals
-        ASTName name = (ASTName)rtn.getFirstChildOfType(ASTName.class);
+        ASTName name = (ASTName) rtn.getFirstChildOfType(ASTName.class);
         if (name == null) {
             return data;
         }
@@ -37,13 +37,13 @@ public class UnnecessaryLocalBeforeReturn extends AbstractRule {
 
         Map vars = name.getScope().getVariableDeclarations();
         for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration key = (VariableNameDeclaration)i.next();
-            List usages = (List)vars.get(key);
+            VariableNameDeclaration key = (VariableNameDeclaration) i.next();
+            List usages = (List) vars.get(key);
             for (Iterator j = usages.iterator(); j.hasNext();) {
-                NameOccurrence occ = (NameOccurrence)j.next();
+                NameOccurrence occ = (NameOccurrence) j.next();
                 if (occ.getLocation().equals(name)) {
                     // only check declarations that occur one line earlier
-                    if (key.getNode().getBeginLine() == name.getBeginLine()-1) {
+                    if (key.getNode().getBeginLine() == name.getBeginLine() - 1) {
                         String var = name.getImage();
                         if (var.indexOf('.') != -1) {
                             var = var.substring(0, var.indexOf('.'));

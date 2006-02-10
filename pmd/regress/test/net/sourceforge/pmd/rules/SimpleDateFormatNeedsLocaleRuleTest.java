@@ -15,23 +15,23 @@ public class SimpleDateFormatNeedsLocaleRuleTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "ok, uses a two arg constructor", 0, rule),
-           new TestDescriptor(TEST2, "bad, using the single-arg contructor", 1, rule),
-           new TestDescriptor(TEST3, "all quiet", 0, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "ok, uses a two arg constructor", 0, rule),
+            new TestDescriptor(TEST2, "bad, using the single-arg contructor", 1, rule),
+            new TestDescriptor(TEST3, "all quiet", 0, rule),
+        });
     }
 
     private static final String TEST1 =
-    "class Foo {" + PMD.EOL +
-    "  private SimpleDateFormat sdf = new SimpleDateFormat(\"pattern\", Locale.US);" + PMD.EOL +
-    "}";
+            "class Foo {" + PMD.EOL +
+            "  private SimpleDateFormat sdf = new SimpleDateFormat(\"pattern\", Locale.US);" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "class Foo {" + PMD.EOL +
-    "  private SimpleDateFormat sdf = new SimpleDateFormat(\"pattern\");" + PMD.EOL +
-    "}";
+            "class Foo {" + PMD.EOL +
+            "  private SimpleDateFormat sdf = new SimpleDateFormat(\"pattern\");" + PMD.EOL +
+            "}";
 
     private static final String TEST3 =
-    "class Foo {}";
+            "class Foo {}";
 }

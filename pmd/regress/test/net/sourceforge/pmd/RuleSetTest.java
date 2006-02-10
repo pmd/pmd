@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2002 InfoEther, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency
-(DARPA).
+ (DARPA).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published
-by
+ by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
  *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
@@ -110,23 +110,23 @@ public class RuleSetTest extends TestCase {
         RuleSet IUT = new RuleSet();
         verifyRuleSet(IUT, 0, new HashSet());
     }
-    
+
     public void testEquals1() {
         RuleSet s = new RuleSet();
         assertFalse("A ruleset cannot be equals to null", s.equals(null));
     }
-    
+
     public void testEquals2() {
         RuleSet s = new RuleSet();
         assertTrue("A rulset must be equals to itself", s.equals(s));
     }
-    
+
     public void testEquals3() {
         RuleSet s = new RuleSet();
         s.setName("basic rules");
         assertFalse("A ruleset cannot be equals to another kind of object", s.equals("basic rules"));
     }
-    
+
     public void testEquals4() {
         RuleSet s1 = new RuleSet();
         s1.setName("my ruleset");
@@ -135,11 +135,11 @@ public class RuleSetTest extends TestCase {
         RuleSet s2 = new RuleSet();
         s2.setName("my ruleset");
         s2.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
-        
+
         assertEquals("2 rulesets with same name and rules must be equals", s1, s2);
         assertEquals("Equals rulesets must have the same hashcode", s1.hashCode(), s2.hashCode());
     }
-    
+
     public void testEquals5() {
         RuleSet s1 = new RuleSet();
         s1.setName("my ruleset");
@@ -148,11 +148,11 @@ public class RuleSetTest extends TestCase {
         RuleSet s2 = new RuleSet();
         s2.setName("my other ruleset");
         s2.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
-        
+
         assertFalse("2 rulesets with different name but same rules must not be equals", s1.equals(s2));
         assertFalse("Rulesets that are not equals should not have the same hashcode", s1.hashCode() == s2.hashCode());
     }
-    
+
     public void testEquals6() {
         RuleSet s1 = new RuleSet();
         s1.setName("my ruleset");
@@ -161,7 +161,7 @@ public class RuleSetTest extends TestCase {
         RuleSet s2 = new RuleSet();
         s2.setName("my ruleset");
         s2.addRule(new MockRule("other rule", "desc", "msg", "rulesetname"));
-        
+
         assertFalse("2 rulesets with same name but different rules must not be equals", s1.equals(s2));
         assertFalse("Rulesets that are not equals should not have the same hashcode", s1.hashCode() == s2.hashCode());
     }

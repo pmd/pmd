@@ -54,7 +54,7 @@ public abstract class AbstractScope implements Scope {
             result.append(i.next().toString());
             result.append(",");
         }
-        return result.length() == 0 ? "" : result.toString().substring(0, result.length()-1);
+        return result.length() == 0 ? "" : result.toString().substring(0, result.length() - 1);
     }
 
 }

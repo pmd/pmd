@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.PMD;
@@ -57,11 +57,11 @@ public class AcceptanceTest extends STBBaseTst {
     public void testDemo() {
         parseCode(TEST_DEMO);
         System.out.println(TEST_DEMO);
-        ASTMethodDeclaration node = (ASTMethodDeclaration)acu.findChildrenOfType(ASTMethodDeclaration.class).get(0);
+        ASTMethodDeclaration node = (ASTMethodDeclaration) acu.findChildrenOfType(ASTMethodDeclaration.class).get(0);
         Scope s = node.getScope();
         Map m = s.getVariableDeclarations();
         for (Iterator i = m.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration d = (VariableNameDeclaration)i.next();
+            VariableNameDeclaration d = (VariableNameDeclaration) i.next();
             System.out.println("Variable: " + d.getImage());
             System.out.println("Type: " + d.getTypeImage());
         }
@@ -75,42 +75,42 @@ public class AcceptanceTest extends STBBaseTst {
 */
 
     private static final String TEST_DEMO =
-    "public class Foo  {" + PMD.EOL +
-    " void bar(ArrayList buz) { " + PMD.EOL +
-    " } " + PMD.EOL +
-    "}" + PMD.EOL;
+            "public class Foo  {" + PMD.EOL +
+            " void bar(ArrayList buz) { " + PMD.EOL +
+            " } " + PMD.EOL +
+            "}" + PMD.EOL;
 
     private static final String TEST_EQ =
-    "public class Foo  {" + PMD.EOL +
-    " boolean foo(String a, String b) { " + PMD.EOL +
-    "  return a == b; " + PMD.EOL +
-    " } " + PMD.EOL +
-    "}" + PMD.EOL;
+            "public class Foo  {" + PMD.EOL +
+            " boolean foo(String a, String b) { " + PMD.EOL +
+            "  return a == b; " + PMD.EOL +
+            " } " + PMD.EOL +
+            "}" + PMD.EOL;
 
     private static final String TEST1 =
-    "import java.io.*;" + PMD.EOL +
-    "public class Foo  {" + PMD.EOL +
-    " void buz( ) {" + PMD.EOL +
-    "  Object o = new Serializable() { int x; };" + PMD.EOL +
-    "  Object o1 = new Serializable() { int x; };" + PMD.EOL +
-    " }" + PMD.EOL  +
-    "}" + PMD.EOL;
+            "import java.io.*;" + PMD.EOL +
+            "public class Foo  {" + PMD.EOL +
+            " void buz( ) {" + PMD.EOL +
+            "  Object o = new Serializable() { int x; };" + PMD.EOL +
+            "  Object o1 = new Serializable() { int x; };" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}" + PMD.EOL;
 
     private static final String TEST_INITIALIZERS =
-    "public class Foo  {" + PMD.EOL +
-    " {} " + PMD.EOL +
-    " static {} " + PMD.EOL +
-    "}" + PMD.EOL;
+            "public class Foo  {" + PMD.EOL +
+            " {} " + PMD.EOL +
+            " static {} " + PMD.EOL +
+            "}" + PMD.EOL;
 
     private static final String TEST_CATCH_BLOCKS =
-    "public class Foo  {" + PMD.EOL +
-    " void foo() { " + PMD.EOL +
-    "  try { " + PMD.EOL +
-    "  } catch (Exception e) { " + PMD.EOL +
-    "   e.printStackTrace(); " + PMD.EOL +
-    "  } " + PMD.EOL +
-    " } " + PMD.EOL +
-    "}" + PMD.EOL;
+            "public class Foo  {" + PMD.EOL +
+            " void foo() { " + PMD.EOL +
+            "  try { " + PMD.EOL +
+            "  } catch (Exception e) { " + PMD.EOL +
+            "   e.printStackTrace(); " + PMD.EOL +
+            "  } " + PMD.EOL +
+            " } " + PMD.EOL +
+            "}" + PMD.EOL;
 
 
 }

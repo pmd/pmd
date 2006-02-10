@@ -58,7 +58,7 @@ public class ClassScope extends AbstractScope {
                 nameOccurrences.add(occurrence);
                 SimpleNode n = occurrence.getLocation();
                 if (n instanceof ASTName) {
-                    ((ASTName)n).setNameDeclaration(decl);
+                    ((ASTName) n).setNameDeclaration(decl);
                 } // TODO what to do with PrimarySuffix case?
             }
 
@@ -70,7 +70,7 @@ public class ClassScope extends AbstractScope {
                 nameOccurrences.add(occurrence);
                 SimpleNode n = occurrence.getLocation();
                 if (n instanceof ASTName) {
-                    ((ASTName)n).setNameDeclaration(decl);
+                    ((ASTName) n).setNameDeclaration(decl);
                 } // TODO what to do with PrimarySuffix case?
             }
         }
@@ -125,14 +125,14 @@ public class ClassScope extends AbstractScope {
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
             if (!variableNames.isEmpty()) {
-                return (NameDeclaration)variableNames.keySet().iterator().next();
+                return (NameDeclaration) variableNames.keySet().iterator().next();
             }
             return (NameDeclaration) methodNames.keySet().iterator().next();
         }
 
         if (occurrence.isMethodOrConstructorInvocation()) {
             for (Iterator i = methodNames.keySet().iterator(); i.hasNext();) {
-                MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
+                MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
                 if (mnd.getImage().equals(occurrence.getImage())) {
                     int args = occurrence.getArgumentCount();
                     if (args == mnd.getParameterCount()) {
@@ -163,9 +163,9 @@ public class ClassScope extends AbstractScope {
         if (!methodNames.isEmpty()) {
             Iterator i = methodNames.keySet().iterator();
             while (i.hasNext()) {
-                MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
+                MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
                 res += mnd.toString();
-                int usages =  ((List)methodNames.get(mnd)).size();
+                int usages = ((List) methodNames.get(mnd)).size();
                 res += "(begins at line " + mnd.getNode().getBeginLine() + ", " + usages + " usages)";
                 res += ",";
             }

@@ -44,62 +44,62 @@ public class UselessOverridingMethod extends AbstractRule {
 
         ASTBlock block = node.getBlock();
         //Only process functions with one BlockStatement
-        if (block.jjtGetNumChildren()!=1 || block.findChildrenOfType(ASTStatement.class).size()!=1)
+        if (block.jjtGetNumChildren() != 1 || block.findChildrenOfType(ASTStatement.class).size() != 1)
             return super.visit(node, data);
-        
-        ASTStatement statement = (ASTStatement)block.jjtGetChild(0).jjtGetChild(0);
+
+        ASTStatement statement = (ASTStatement) block.jjtGetChild(0).jjtGetChild(0);
         if (statement.jjtGetChild(0).jjtGetNumChildren() == 0) {
             return data;     // skips empty return statements
         }
-        SimpleNode statementGrandChild = (SimpleNode)statement.jjtGetChild(0).jjtGetChild(0);
+        SimpleNode statementGrandChild = (SimpleNode) statement.jjtGetChild(0).jjtGetChild(0);
         ASTPrimaryExpression primaryExpression;
-        
+
         if (statementGrandChild instanceof ASTPrimaryExpression)
             primaryExpression = (ASTPrimaryExpression) statementGrandChild;
         else {
             List primaryExpressions = findFirstDegreeChildrenOfType(statementGrandChild, ASTPrimaryExpression.class);
-            if (primaryExpressions.size()!=1)
+            if (primaryExpressions.size() != 1)
                 return super.visit(node, data);
-            primaryExpression = (ASTPrimaryExpression)primaryExpressions.get(0);
+            primaryExpression = (ASTPrimaryExpression) primaryExpressions.get(0);
         }
 
-        ASTPrimaryPrefix primaryPrefix = (ASTPrimaryPrefix)findFirstDegreeChildrenOfType(primaryExpression, ASTPrimaryPrefix.class).get(0);
+        ASTPrimaryPrefix primaryPrefix = (ASTPrimaryPrefix) findFirstDegreeChildrenOfType(primaryExpression, ASTPrimaryPrefix.class).get(0);
         if (!primaryPrefix.usesSuperModifier())
             return super.visit(node, data);
-            
-        ASTMethodDeclarator methodDeclarator = (ASTMethodDeclarator)findFirstDegreeChildrenOfType(node, ASTMethodDeclarator.class).get(0);
+
+        ASTMethodDeclarator methodDeclarator = (ASTMethodDeclarator) findFirstDegreeChildrenOfType(node, ASTMethodDeclarator.class).get(0);
         if (!primaryPrefix.getImage().equals(methodDeclarator.getImage()))
             return super.visit(node, data);
 
         //Process arguments
-        ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix)findFirstDegreeChildrenOfType(primaryExpression, ASTPrimarySuffix.class).get(0);
-        ASTArguments arguments = (ASTArguments)primarySuffix.jjtGetChild(0);
-        ASTFormalParameters formalParameters = (ASTFormalParameters)methodDeclarator.jjtGetChild(0);
+        ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) findFirstDegreeChildrenOfType(primaryExpression, ASTPrimarySuffix.class).get(0);
+        ASTArguments arguments = (ASTArguments) primarySuffix.jjtGetChild(0);
+        ASTFormalParameters formalParameters = (ASTFormalParameters) methodDeclarator.jjtGetChild(0);
         if (formalParameters.jjtGetNumChildren() != arguments.jjtGetNumChildren())
             return super.visit(node, data);
 
-        if (arguments.jjtGetNumChildren()==0) //No arguments to check
+        if (arguments.jjtGetNumChildren() == 0) //No arguments to check
             addViolation(data, node, getMessage());
         else {
-            ASTArgumentList argumentList = (ASTArgumentList)arguments.jjtGetChild(0);
+            ASTArgumentList argumentList = (ASTArgumentList) arguments.jjtGetChild(0);
             for (int i = 0; i < argumentList.jjtGetNumChildren(); i++) {
                 Node ExpressionChild = argumentList.jjtGetChild(i).jjtGetChild(0);
-                if (!(ExpressionChild instanceof ASTPrimaryExpression) || ExpressionChild.jjtGetNumChildren()!=1)
+                if (!(ExpressionChild instanceof ASTPrimaryExpression) || ExpressionChild.jjtGetNumChildren() != 1)
                     return super.visit(node, data); //The arguments are not simply passed through
 
-                ASTPrimaryExpression argumentPrimaryExpression = (ASTPrimaryExpression)ExpressionChild;
-                ASTPrimaryPrefix argumentPrimaryPrefix = (ASTPrimaryPrefix)argumentPrimaryExpression.jjtGetChild(0);
+                ASTPrimaryExpression argumentPrimaryExpression = (ASTPrimaryExpression) ExpressionChild;
+                ASTPrimaryPrefix argumentPrimaryPrefix = (ASTPrimaryPrefix) argumentPrimaryExpression.jjtGetChild(0);
                 Node argumentPrimaryPrefixChild = argumentPrimaryPrefix.jjtGetChild(0);
                 if (!(argumentPrimaryPrefixChild instanceof ASTName))
                     return super.visit(node, data); //The arguments are not simply passed through
 
-                if (formalParameters.jjtGetNumChildren() < i+1) {
+                if (formalParameters.jjtGetNumChildren() < i + 1) {
                     return super.visit(node, data); // different number of args
                 }
 
-                ASTName argumentName = (ASTName)argumentPrimaryPrefixChild;
-                ASTFormalParameter formalParameter = (ASTFormalParameter)formalParameters.jjtGetChild(i);
-                ASTVariableDeclaratorId variableId = (ASTVariableDeclaratorId)findFirstDegreeChildrenOfType(formalParameter, ASTVariableDeclaratorId.class).get(0);
+                ASTName argumentName = (ASTName) argumentPrimaryPrefixChild;
+                ASTFormalParameter formalParameter = (ASTFormalParameter) formalParameters.jjtGetChild(i);
+                ASTVariableDeclaratorId variableId = (ASTVariableDeclaratorId) findFirstDegreeChildrenOfType(formalParameter, ASTVariableDeclaratorId.class).get(0);
                 if (!argumentName.getImage().equals(variableId.getImage())) {
                     return super.visit(node, data); //The arguments are not simply passed through
                 }
@@ -117,23 +117,23 @@ public class UselessOverridingMethod extends AbstractRule {
     }
 
     private void lclFindChildrenOfType(Node node, Class targetType, List results) {
-         if (node.getClass().equals(targetType)) {
-             results.add(node);
-         }
+        if (node.getClass().equals(targetType)) {
+            results.add(node);
+        }
 
-         if (node instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) node).isNested()) {
-             return;
-         }
+        if (node instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) node).isNested()) {
+            return;
+        }
 
-         if (node instanceof ASTClassOrInterfaceBodyDeclaration && ((ASTClassOrInterfaceBodyDeclaration) node).isAnonymousInnerClass()) {
-             return;
-         }
+        if (node instanceof ASTClassOrInterfaceBodyDeclaration && ((ASTClassOrInterfaceBodyDeclaration) node).isAnonymousInnerClass()) {
+            return;
+        }
 
-         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-             Node child = node.jjtGetChild(i);
-             if (child.getClass().equals(targetType)) {
-                 results.add(child);
-             }
-         }
-     }
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+            Node child = node.jjtGetChild(i);
+            if (child.getClass().equals(targetType)) {
+                results.add(child);
+            }
+        }
+    }
 }

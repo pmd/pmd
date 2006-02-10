@@ -27,7 +27,7 @@ public class NameFinder {
             add(new NameOccurrence(prefix, "this"));
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            checkForNameChild((SimpleNode)node.jjtGetChild(i));
+            checkForNameChild((SimpleNode) node.jjtGetChild(i));
         }
     }
 
@@ -46,9 +46,9 @@ public class NameFinder {
             }
         }
         if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) node).isArguments()) {
-            NameOccurrence occurrence = (NameOccurrence)names.getLast();
+            NameOccurrence occurrence = (NameOccurrence) names.getLast();
             occurrence.setIsMethodOrConstructorInvocation();
-            ASTArguments args = (ASTArguments)((ASTPrimarySuffix) node).jjtGetChild(0);
+            ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).jjtGetChild(0);
             occurrence.setArgumentCount(args.getArgumentCount());
 
         }

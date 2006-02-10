@@ -36,7 +36,7 @@ public class XPathRuleTest extends RuleTst {
         RuleSet rules = new RuleSet();
         rules.addRule(rule);
         p.processFile(new StringReader(TEST1), rules, ctx);
-        RuleViolation rv = (RuleViolation)report.iterator().next();
+        RuleViolation rv = (RuleViolation) report.iterator().next();
         assertEquals("a", rv.getDescription());
     }
 
@@ -53,18 +53,18 @@ public class XPathRuleTest extends RuleTst {
         RuleSet rules = new RuleSet();
         rules.addRule(rule);
         p.processFile(new StringReader(TEST2), rules, ctx);
-        RuleViolation rv = (RuleViolation)report.iterator().next();
+        RuleViolation rv = (RuleViolation) report.iterator().next();
         assertEquals(3, rv.getNode().getBeginLine());
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " int a;" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " int a;" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " int faddle;" + PMD.EOL +
-    " int fiddle;" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " int faddle;" + PMD.EOL +
+            " int fiddle;" + PMD.EOL +
+            "}";
 }

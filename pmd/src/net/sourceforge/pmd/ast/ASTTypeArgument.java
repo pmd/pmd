@@ -3,17 +3,19 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTTypeArgument extends SimpleJavaNode {
-  public ASTTypeArgument(int id) {
-    super(id);
-  }
+    public ASTTypeArgument(int id) {
+        super(id);
+    }
 
-  public ASTTypeArgument(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTTypeArgument(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /**
+     * Accept the visitor. *
+     */
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

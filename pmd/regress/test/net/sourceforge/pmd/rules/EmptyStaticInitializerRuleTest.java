@@ -15,22 +15,22 @@ public class EmptyStaticInitializerRuleTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "bad", 1, rule),
-           new TestDescriptor(TEST2, "ok", 0, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "bad", 1, rule),
+            new TestDescriptor(TEST2, "ok", 0, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " static {}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " static {}" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " static {" + PMD.EOL +
-    "  x++;" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " static {" + PMD.EOL +
+            "  x++;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
 }

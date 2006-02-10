@@ -21,7 +21,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     }
 
     public ASTMethodDeclarator getMethodNameDeclaratorNode() {
-        return (ASTMethodDeclarator)node;
+        return (ASTMethodDeclarator) node;
     }
 
     public String getParameterDisplaySignature() {
@@ -29,11 +29,11 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
-            sb.append(((ASTType)p.getFirstChildOfType(ASTType.class)).getTypeImage());
+            sb.append(((ASTType) p.getFirstChildOfType(ASTType.class)).getTypeImage());
             sb.append(",");
         }
-        if (sb.charAt(sb.length()-1) == ',') {
-            sb.deleteCharAt(sb.length()-1);
+        if (sb.charAt(sb.length() - 1) == ',') {
+            sb.deleteCharAt(sb.length() - 1);
         }
         return sb.toString() + ")";
     }
@@ -76,8 +76,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
                 myTypeImg = myTypeNode.getImage();
                 otherTypeImg = otherTypeNode.getImage();
             } else {
-                myTypeImg = ((SimpleNode)(myTypeNode.jjtGetChild(0))).getImage();
-                otherTypeImg = ((SimpleNode)(otherTypeNode.jjtGetChild(0))).getImage();
+                myTypeImg = ((SimpleNode) (myTypeNode.jjtGetChild(0))).getImage();
+                otherTypeImg = ((SimpleNode) (otherTypeNode.jjtGetChild(0))).getImage();
             }
 
             if (!myTypeImg.equals(otherTypeImg)) {
@@ -94,6 +94,6 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     }
 
     public String toString() {
-        return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = " +  ((ASTMethodDeclarator) node).getParameterCount();
+        return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = " + ((ASTMethodDeclarator) node).getParameterCount();
     }
 }

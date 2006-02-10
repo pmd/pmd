@@ -79,14 +79,14 @@ public class RuleViolation {
             // This takes care of nodes which are outside a class definition - i.e., import declarations
             className = "";
         } else {
-             // default to symbol table lookup
+            // default to symbol table lookup
             className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : node.getScope().getEnclosingClassScope().getClassName();
         }
         return className;
     }
 
     public String getMethodName() {
-        return node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : ((MethodScope)node.getScope().getEnclosingMethodScope()).getName();
+        return node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : ((MethodScope) node.getScope().getEnclosingMethodScope()).getName();
     }
 
     public String getPackageName() {

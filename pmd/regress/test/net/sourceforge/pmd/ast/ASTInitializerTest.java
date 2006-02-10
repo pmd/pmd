@@ -17,10 +17,10 @@ public class ASTInitializerTest extends ParserTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " {" + PMD.EOL +
-    "   x = 5;" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " {" + PMD.EOL +
+            "   x = 5;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
 }

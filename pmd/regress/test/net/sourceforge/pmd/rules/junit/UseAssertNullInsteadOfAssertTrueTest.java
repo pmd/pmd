@@ -12,35 +12,36 @@ public class UseAssertNullInsteadOfAssertTrueTest extends SimpleAggregatorTst {
     public void setUp() throws RuleSetNotFoundException {
         rule = findRule("junit", "UseAssertNullInsteadOfAssertTrue");
     }
+
     public void testAll() throws Throwable {
 
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "assertTrue with null", 1, rule),
-           new TestDescriptor(TEST2, "assertFalse with != null", 1, rule),
-           new TestDescriptor(TEST3, "assertTrue with x == y", 0, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "assertTrue with null", 1, rule),
+            new TestDescriptor(TEST2, "assertFalse with != null", 1, rule),
+            new TestDescriptor(TEST3, "assertTrue with x == y", 0, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " public void test1() {" + PMD.EOL +
-    "  assertTrue(a==null);" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public void test1() {" + PMD.EOL +
+            "  assertTrue(a==null);" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " public void test1() {" + PMD.EOL +
-    "  assertFalse(a != null);" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public void test1() {" + PMD.EOL +
+            "  assertFalse(a != null);" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " public void test1() {" + PMD.EOL +
-    "  assertTrue(a == b);" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public void test1() {" + PMD.EOL +
+            "  assertTrue(a == b);" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
 }
 

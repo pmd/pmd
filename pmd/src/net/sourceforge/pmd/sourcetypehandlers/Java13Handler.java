@@ -5,8 +5,8 @@ import net.sourceforge.pmd.parsers.Parser;
 
 public class Java13Handler extends JavaTypeHandler {
 
-	public Parser getParser() {
-		return new Java13Parser();
-	}
+    public Parser getParser() {
+        return new Java13Parser();
+    }
 
 }

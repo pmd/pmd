@@ -1,8 +1,8 @@
 package test.net.sourceforge.pmd.jaxen;
 
-import test.net.sourceforge.pmd.testframework.RuleTst;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.XPathRule;
+import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class RegexpAcceptanceTest extends RuleTst {
 
@@ -16,11 +16,11 @@ public class RegexpAcceptanceTest extends RuleTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {}";
+            "public class Foo {}";
 
     private static final String TEST2 =
-    "public class Bar {}";
+            "public class Bar {}";
 
     private static final String TEST3 =
-    "public class Flo {}";
+            "public class Flo {}";
 }

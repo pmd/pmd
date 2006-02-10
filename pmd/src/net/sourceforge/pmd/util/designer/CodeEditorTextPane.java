@@ -45,7 +45,7 @@ public class CodeEditorTextPane extends JTextPane implements HasLines, ActionLis
                 if (fw != null)
                     fw.close();
             } catch (IOException ioe) {
-				ioe.printStackTrace();
+                ioe.printStackTrace();
             }
         }
     }

@@ -69,7 +69,7 @@ public class DiscardableNodeCleanerTest extends ParserTst {
         DiscardableNodeCleaner c = new DiscardableNodeCleaner();
         c.clean(cu);
         assertTrue(cu.findChildrenOfType(ASTModifiers.class).isEmpty());
-       assertFalse(cu.findChildrenOfType(ASTAnnotation.class).isEmpty());
+        assertFalse(cu.findChildrenOfType(ASTAnnotation.class).isEmpty());
     }
 
 }

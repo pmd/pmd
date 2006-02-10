@@ -21,7 +21,7 @@ public class UncommentedEmptyConstructorRuleTest extends SimpleAggregatorTst {
     }
 
     public void testDefault() {
-        runTests(new TestDescriptor[] {
+        runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "simple failure", 1, defaultRuleRule),
             new TestDescriptor(TEST2, "only 'this(...)' is OK", 0, defaultRuleRule),
             new TestDescriptor(TEST3, "only 'super(...)' is OK", 0, defaultRuleRule),
@@ -35,7 +35,7 @@ public class UncommentedEmptyConstructorRuleTest extends SimpleAggregatorTst {
     }
 
     public void testIgnoredConstructorInvocation() {
-        runTests(new TestDescriptor[] {
+        runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "simple failure", 1, ignoredConstructorInvocationRule),
             new TestDescriptor(TEST2, "only 'this(...)' failure", 1, ignoredConstructorInvocationRule),
             new TestDescriptor(TEST3, "only 'super(...)' failure", 1, ignoredConstructorInvocationRule),
@@ -55,18 +55,18 @@ public class UncommentedEmptyConstructorRuleTest extends SimpleAggregatorTst {
             "}";
 
     public static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " Foo() {" + PMD.EOL +
-    "  this();" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Foo() {" + PMD.EOL +
+            "  this();" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     public static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " Foo() {" + PMD.EOL +
-    "  super();" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Foo() {" + PMD.EOL +
+            "  super();" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     public static final String TEST4 =
             "public class Foo {" + PMD.EOL +
@@ -76,20 +76,20 @@ public class UncommentedEmptyConstructorRuleTest extends SimpleAggregatorTst {
             "}";
 
     public static final String TEST5 =
-    "public class Foo {" + PMD.EOL +
-    " Foo() {" + PMD.EOL +
-    "  this();" + PMD.EOL +
-    "  /* Comment */" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Foo() {" + PMD.EOL +
+            "  this();" + PMD.EOL +
+            "  /* Comment */" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     public static final String TEST6 =
-    "public class Foo {" + PMD.EOL +
-    " Foo() {" + PMD.EOL +
-    "  super();" + PMD.EOL +
-    "  /** Comment */" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Foo() {" + PMD.EOL +
+            "  super();" + PMD.EOL +
+            "  /** Comment */" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     public static final String TEST7 =
             "public class Foo {" + PMD.EOL +
@@ -99,18 +99,18 @@ public class UncommentedEmptyConstructorRuleTest extends SimpleAggregatorTst {
             "}";
 
     public static final String TEST8 =
-    "public class Foo {" + PMD.EOL +
-    " Foo() {" + PMD.EOL +
-    "  this();" + PMD.EOL +
-    "  bar();" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Foo() {" + PMD.EOL +
+            "  this();" + PMD.EOL +
+            "  bar();" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     public static final String TEST9 =
-    "public class Foo {" + PMD.EOL +
-    " Foo() {" + PMD.EOL +
-    "  super();" + PMD.EOL +
-    "  bar++;" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Foo() {" + PMD.EOL +
+            "  super();" + PMD.EOL +
+            "  bar++;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 }

@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2002 InfoEther, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency
-(DARPA).
+ (DARPA).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published
-by
+ by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
  *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
@@ -42,16 +42,16 @@ public class ExcessivePublicCountTest extends RuleTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " public int foo;" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public int foo;" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " public int foo;" + PMD.EOL +
-    " public int bif;" + PMD.EOL +
-    " public int baz;" + PMD.EOL +
-    " public int bof;" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public int foo;" + PMD.EOL +
+            " public int bif;" + PMD.EOL +
+            " public int baz;" + PMD.EOL +
+            " public int bof;" + PMD.EOL +
+            "}";
 
 }

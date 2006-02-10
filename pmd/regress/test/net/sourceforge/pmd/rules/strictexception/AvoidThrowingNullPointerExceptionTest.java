@@ -15,16 +15,16 @@ public class AvoidThrowingNullPointerExceptionTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "throwing various types", 1, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "throwing various types", 1, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  throw new NullPointerException();" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  throw new NullPointerException();" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
 }

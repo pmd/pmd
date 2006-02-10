@@ -2,12 +2,13 @@ package net.sourceforge.pmd.dfa.report;
 
 import net.sourceforge.pmd.RuleViolation;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
+
 public class ReportTree {
 
     private PackageNode rootNode = new PackageNode("");
@@ -119,20 +120,20 @@ public class ReportTree {
             try {
                 Method split = String.class.getMethod("split", new Class[]{String.class});
                 if (split != null) {
-            //        // Compatible with >= JDK 1.4
-                    Object[] tmp = (Object[])split.invoke(pack, new Object[] {"\\."});
+                    //        // Compatible with >= JDK 1.4
+                    Object[] tmp = (Object[]) split.invoke(pack, new Object[]{"\\."});
                     a = new String[tmp.length];
                     for (int i = 0; i < tmp.length; i++) {
-                        a[i] = (String)tmp[i];
+                        a[i] = (String) tmp[i];
                     }
                 }
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
-                throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken."); 
+                throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
                 throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
-           } catch (InvocationTargetException e) {
+            } catch (InvocationTargetException e) {
                 e.printStackTrace();
                 throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
             } catch (NoSuchMethodException nsme) {
@@ -142,7 +143,7 @@ public class ReportTree {
                 while (toker.hasMoreTokens()) {
                     parts.add(toker.nextToken());
                 }
-                a = (String[])parts.toArray(new String[parts.size()]);
+                a = (String[]) parts.toArray(new String[parts.size()]);
             }
         } else {
             a = new String[]{pack};
@@ -181,7 +182,7 @@ public class ReportTree {
             this.level.add(tmp);
         }
     }
-    
+
     /**
      * Checks if node is a child of the level node.
      */

@@ -18,9 +18,9 @@ public class ASTFormalParameter extends AccessNode implements Dimensionable, Can
     }
 
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i=0;i<jjtGetNumChildren(); i++) {
+        for (int i = 0; i < jjtGetNumChildren(); i++) {
             if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation)jjtGetChild(i);
+                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
                 if (a.suppresses(rule)) {
                     return true;
                 }

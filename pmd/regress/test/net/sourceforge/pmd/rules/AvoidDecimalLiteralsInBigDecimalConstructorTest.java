@@ -15,25 +15,25 @@ public class AvoidDecimalLiteralsInBigDecimalConstructorTest extends SimpleAggre
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "bad, new BigDecimal(.1)", 1, rule),
-           new TestDescriptor(TEST2, "ok, new BigDecimal(\".1\")", 0, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "bad, new BigDecimal(.1)", 1, rule),
+            new TestDescriptor(TEST2, "ok, new BigDecimal(\".1\")", 0, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  BigDecimal bd = new BigDecimal(.1);" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  BigDecimal bd = new BigDecimal(.1);" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  BigDecimal bd = new BigDecimal(\".1\");" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  BigDecimal bd = new BigDecimal(\".1\");" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
 
 }

@@ -14,35 +14,35 @@ public class NonCaseLabelInSwitchStatementRuleTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "label inside switch", 1, rule),
-           new TestDescriptor(TEST2, "ok", 0, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "label inside switch", 1, rule),
+            new TestDescriptor(TEST2, "ok", 0, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " void bar(int x) {" + PMD.EOL +
-    "  switch (x) {" + PMD.EOL +
-    "   case 2: int y=8;" + PMD.EOL +
-    "    break;" + PMD.EOL +
-    "   somelabel: " + PMD.EOL +
-    "    break;" + PMD.EOL +
-    "   default: " + PMD.EOL +
-    "    int j=8;" + PMD.EOL +
-    "  }" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar(int x) {" + PMD.EOL +
+            "  switch (x) {" + PMD.EOL +
+            "   case 2: int y=8;" + PMD.EOL +
+            "    break;" + PMD.EOL +
+            "   somelabel: " + PMD.EOL +
+            "    break;" + PMD.EOL +
+            "   default: " + PMD.EOL +
+            "    int j=8;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " void bar(int x) {" + PMD.EOL +
-    "  switch (x) {" + PMD.EOL +
-    "   case 2: int y=8;" + PMD.EOL +
-    "    break;" + PMD.EOL +
-    "   default: " + PMD.EOL +
-    "    int j=8;" + PMD.EOL +
-    "  }" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar(int x) {" + PMD.EOL +
+            "  switch (x) {" + PMD.EOL +
+            "   case 2: int y=8;" + PMD.EOL +
+            "    break;" + PMD.EOL +
+            "   default: " + PMD.EOL +
+            "    int j=8;" + PMD.EOL +
+            "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 }

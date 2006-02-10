@@ -10,20 +10,17 @@ import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDKVersion;
-import net.sourceforge.pmd.rules.XPathRule;
-import net.sourceforge.pmd.jaxen.MatchesFunction;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
+import net.sourceforge.pmd.jaxen.MatchesFunction;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
-import org.jaxen.SimpleFunctionContext;
-import org.jaxen.XPathFunctionContext;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -41,10 +38,11 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
-import java.lang.reflect.Method;
-import java.lang.reflect.InvocationTargetException;
+
 public class Designer implements ClipboardOwner {
 
     private JavaParser createParser() {
@@ -113,10 +111,10 @@ public class Designer implements ClipboardOwner {
                     StringBuffer sb = new StringBuffer();
                     Object obj = iter.next();
                     if (obj instanceof String) {
-                        System.out.println("Result was a string: " + ((String)obj));
+                        System.out.println("Result was a string: " + ((String) obj));
                     } else if (!(obj instanceof Boolean)) {
                         // if it's a Boolean and it's 'false', what does that mean?
-                        SimpleNode node = (SimpleNode)obj;
+                        SimpleNode node = (SimpleNode) obj;
                         String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
                         String line = " at line " + String.valueOf(node.getBeginLine());
                         sb.append(name).append(line).append(System.getProperty("line.separator"));
@@ -153,7 +151,7 @@ public class Designer implements ClipboardOwner {
         xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
         JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(codeEditorPane), createXPathQueryPanel());
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createASTPanel(), createXPathResultPanel());
-        
+
         JTabbedPane tabbed = new JTabbedPane();
         tabbed.addTab("Abstract Syntax Tree / XPath", resultsSplitPane);
         tabbed.addTab("Data Flow Analysis", dfaPanel);
@@ -161,11 +159,11 @@ public class Designer implements ClipboardOwner {
             // Remove when minimal runtime support is >= JDK 1.4
             Method setMnemonicAt = JTabbedPane.class.getMethod("setMnemonicAt", new Class[]{Integer.TYPE, Integer.TYPE});
             if (setMnemonicAt != null) {
-        //        // Compatible with >= JDK 1.4
-        //        tabbed.setMnemonicAt(0, KeyEvent.VK_A);
-        //        tabbed.setMnemonicAt(1, KeyEvent.VK_D);
-                setMnemonicAt.invoke(tabbed, new Object[] { new Integer(0), new Integer(KeyEvent.VK_A) });
-                setMnemonicAt.invoke(tabbed, new Object[] { new Integer(1), new Integer(KeyEvent.VK_D) });
+                //        // Compatible with >= JDK 1.4
+                //        tabbed.setMnemonicAt(0, KeyEvent.VK_A);
+                //        tabbed.setMnemonicAt(1, KeyEvent.VK_D);
+                setMnemonicAt.invoke(tabbed, new Object[]{new Integer(0), new Integer(KeyEvent.VK_A)});
+                setMnemonicAt.invoke(tabbed, new Object[]{new Integer(1), new Integer(KeyEvent.VK_D)});
             }
         } catch (NoSuchMethodException nsme) { // Runtime is < JDK 1.4
         } catch (IllegalAccessException e) { // Runtime is >= JDK 1.4 but there was an error accessing the function
@@ -189,7 +187,7 @@ public class Designer implements ClipboardOwner {
 
         int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-        frame.setSize(screenHeight - (screenHeight/4), screenHeight - (screenHeight/4));
+        frame.setSize(screenHeight - (screenHeight / 4), screenHeight - (screenHeight / 4));
         frame.setLocation((screenWidth / 2) - frame.getWidth() / 2, (screenHeight / 2) - frame.getHeight() / 2);
         frame.setVisible(true);
         frame.pack();
@@ -236,7 +234,6 @@ public class Designer implements ClipboardOwner {
     }
 
 
-
     private void createRuleXML() {
         JPanel rulenamePanel = new JPanel();
         rulenamePanel.setLayout(new FlowLayout());
@@ -266,7 +263,7 @@ public class Designer implements ClipboardOwner {
                 sb.append("  <description>" + PMD.EOL);
                 sb.append("  " + ruledescField.getText() + PMD.EOL);
                 sb.append("  </description>" + PMD.EOL);
-                if (xpathQueryArea.getText().length()!=0) {
+                if (xpathQueryArea.getText().length() != 0) {
                     sb.append("  <properties>" + PMD.EOL);
                     sb.append("    <property name=\"xpath\">" + PMD.EOL);
                     sb.append("    <value>" + PMD.EOL);
@@ -291,8 +288,8 @@ public class Designer implements ClipboardOwner {
 
         JPanel fieldsPanel = new JPanel();
         fieldsPanel.setLayout(new BorderLayout());
-        fieldsPanel.add(rulenamePanel,  BorderLayout.NORTH);
-        fieldsPanel.add(rulemsgPanel,  BorderLayout.CENTER);
+        fieldsPanel.add(rulenamePanel, BorderLayout.NORTH);
+        fieldsPanel.add(rulemsgPanel, BorderLayout.CENTER);
         fieldsPanel.add(ruledescPanel, BorderLayout.SOUTH);
 
         JPanel fieldBtnPanel = new JPanel();
@@ -305,7 +302,7 @@ public class Designer implements ClipboardOwner {
         outer.add(ruleXMLPanel, BorderLayout.SOUTH);
 
         JDialog d = new JDialog(frame);
-        d.setSize(200,300);
+        d.setSize(200, 300);
         d.getContentPane().add(outer);
         int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -339,11 +336,11 @@ public class Designer implements ClipboardOwner {
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         final JButton b = createGoButton();
-        
+
         p.add(new JLabel("XPath Query (if any)"), BorderLayout.NORTH);
         p.add(scrollPane, BorderLayout.CENTER);
         p.add(b, BorderLayout.SOUTH);
-        
+
         return p;
     }
 
@@ -362,19 +359,19 @@ public class Designer implements ClipboardOwner {
     }
 
     private final void copyXmlToClipboard() {
-        if (codeEditorPane.getText()!=null && codeEditorPane.getText().trim().length()>0) {
+        if (codeEditorPane.getText() != null && codeEditorPane.getText().trim().length() > 0) {
             ASTCompilationUnit cu = createParser().CompilationUnit();
             String xml = "";
-            if (cu!=null) {
+            if (cu != null) {
                 try {
-                    xml = getXmlString( cu );
+                    xml = getXmlString(cu);
                 } catch (IOException e) {
                     e.printStackTrace();
                     xml = "Error trying to construct XML representation";
                 }
             }
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(xml), this);
-        } 
+        }
     }
 
     /**
@@ -392,5 +389,6 @@ public class Designer implements ClipboardOwner {
         return writer.toString();
     }
 
-    public void lostOwnership(Clipboard clipboard, Transferable contents) {}
+    public void lostOwnership(Clipboard clipboard, Transferable contents) {
+    }
 }

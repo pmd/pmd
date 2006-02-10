@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2002 InfoEther, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency
-(DARPA).
+ (DARPA).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published
-by
+ by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
  *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
@@ -67,7 +67,7 @@ public class RuleSetFactoryTest extends TestCase {
     public void testSingleRule() {
         RuleSet rs = loadRuleSet(SINGLE_RULE);
         assertEquals(1, rs.size());
-        Rule r = (Rule)rs.getRules().iterator().next();
+        Rule r = (Rule) rs.getRules().iterator().next();
         assertEquals("MockRuleName", r.getName());
         assertEquals("avoid the mock rule", r.getMessage());
     }
@@ -315,7 +315,7 @@ public class RuleSetFactoryTest extends TestCase {
 
     private Rule loadFirstRule(String ruleSetName) {
         RuleSet rs = loadRuleSet(ruleSetName);
-        return ((Rule)(rs.getRules().iterator().next()));
+        return ((Rule) (rs.getRules().iterator().next()));
     }
 
     private RuleSet loadRuleSet(String ruleSetName) {

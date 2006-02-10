@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.testframework;
 
 import junit.framework.TestCase;
@@ -64,7 +64,7 @@ public class ParserTst extends TestCase {
         ASTCompilationUnit cu = parser.CompilationUnit();
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);
-        return (Set)coll.getCollection();
+        return (Set) coll.getCollection();
     }
 
     public List getOrderedNodes(Class clazz, String javaCode) throws Throwable {
@@ -77,7 +77,7 @@ public class ParserTst extends TestCase {
         sf.initializeWith(cu);
         DataFlowFacade dff = new DataFlowFacade();
         dff.initializeWith(cu);
-        return (List)coll.getCollection();
+        return (List) coll.getCollection();
     }
 
     public ASTCompilationUnit buildDFA(String javaCode) throws Throwable {

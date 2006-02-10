@@ -15,20 +15,20 @@ public class IntegerInstantiationTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "new Integer(), bad", 1, rule),
-           new TestDescriptor(TEST2, "Integer.valueOf(), ok", 0, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "new Integer(), bad", 1, rule),
+            new TestDescriptor(TEST2, "Integer.valueOf(), ok", 0, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    "  Integer i = new Integer(42);" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            "  Integer i = new Integer(42);" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    "  Integer i = Integer.valueOf(\"42\");" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            "  Integer i = Integer.valueOf(\"42\");" + PMD.EOL +
+            "}";
 
 }

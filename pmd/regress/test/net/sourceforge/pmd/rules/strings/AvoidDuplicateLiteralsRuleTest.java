@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.PMD;
@@ -21,11 +21,11 @@ public class AvoidDuplicateLiteralsRuleTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "duplicate literals in argument list", 1, rule),
-           new TestDescriptor(TEST2, "literal int argument, ok for now", 0, rule),
-           new TestDescriptor(TEST3, "duplicate literals in field decl", 1, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "duplicate literals in argument list", 1, rule),
+            new TestDescriptor(TEST2, "literal int argument, ok for now", 0, rule),
+            new TestDescriptor(TEST3, "duplicate literals in field decl", 1, rule),
+        });
     }
 
     public void testStringParserEmptyString() {
@@ -62,25 +62,25 @@ public class AvoidDuplicateLiteralsRuleTest extends SimpleAggregatorTst {
     }
 
     public static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " private void bar() {" + PMD.EOL +
-    "    buz(\"Howdy\");" + PMD.EOL +
-    "    buz(\"Howdy\");" + PMD.EOL +
-    "    buz(\"Howdy\");" + PMD.EOL +
-    "    buz(\"Howdy\");" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " private void bar() {" + PMD.EOL +
+            "    buz(\"Howdy\");" + PMD.EOL +
+            "    buz(\"Howdy\");" + PMD.EOL +
+            "    buz(\"Howdy\");" + PMD.EOL +
+            "    buz(\"Howdy\");" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     public static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " private void bar() {" + PMD.EOL +
-    "    buz(2);" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " private void bar() {" + PMD.EOL +
+            "    buz(2);" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     public static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " String[] FOO = {\"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\"};" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " String[] FOO = {\"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\", \"foo\"};" + PMD.EOL +
+            "}";
 
 }

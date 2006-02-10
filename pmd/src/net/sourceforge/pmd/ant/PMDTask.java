@@ -3,19 +3,6 @@
  */
 package net.sourceforge.pmd.ant;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
@@ -29,7 +16,6 @@ import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
-
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -38,6 +24,19 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 public class PMDTask extends Task {
 
@@ -230,15 +229,15 @@ public class PMDTask extends Task {
 
     private void logRulesUsed(net.sourceforge.pmd.RuleSets rules) {
         log("Using these rulesets: " + ruleSetFiles, Project.MSG_VERBOSE);
-        
+
         RuleSet[] ruleSets = rules.getAllRuleSets();
-        for( int j=0; j<ruleSets.length; j++) {
-        	RuleSet ruleSet = ruleSets[j];
-        	
-		    for (Iterator i = ruleSet.getRules().iterator(); i.hasNext();) {
-		        Rule rule = (Rule) i.next();
-		        log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
-		    }
+        for (int j = 0; j < ruleSets.length; j++) {
+            RuleSet ruleSet = ruleSets[j];
+
+            for (Iterator i = ruleSet.getRules().iterator(); i.hasNext();) {
+                Rule rule = (Rule) i.next();
+                log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
+            }
         }
     }
 
@@ -258,7 +257,7 @@ public class PMDTask extends Task {
             if (nestedRules.isEmpty()) {
                 throw new BuildException("No rulesets specified");
             }
-            ruleSetFiles = getNestedRuleSetFiles();            
+            ruleSetFiles = getNestedRuleSetFiles();
         }
 
         if (!targetJDK.equals("1.3") && !targetJDK.equals("1.4") && !targetJDK.equals("1.5")) {
@@ -268,7 +267,7 @@ public class PMDTask extends Task {
 
     private String getNestedRuleSetFiles() {
         final StringBuffer sb = new StringBuffer();
-        for (Iterator it = nestedRules.iterator() ; it.hasNext() ; ) {
+        for (Iterator it = nestedRules.iterator(); it.hasNext();) {
             RuleSetWrapper rs = (RuleSetWrapper) it.next();
             sb.append(rs.getFile());
             if (it.hasNext()) {
@@ -288,5 +287,5 @@ public class PMDTask extends Task {
     public void addRuleset(RuleSetWrapper r) {
         nestedRules.add(r);
     }
-    
+
 }

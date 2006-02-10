@@ -11,14 +11,14 @@ public class GlobalScopeTest extends STBBaseTst {
 
     public void testClassDeclAppears() {
         parseCode(TEST1);
-        ASTCompilationUnit decl = (ASTCompilationUnit)(acu.findChildrenOfType(ASTCompilationUnit.class)).get(0);
+        ASTCompilationUnit decl = (ASTCompilationUnit) (acu.findChildrenOfType(ASTCompilationUnit.class)).get(0);
         Scope scope = decl.getScope();
         Map m = scope.getClassDeclarations();
-        ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration)m.keySet().iterator().next();
+        ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration) m.keySet().iterator().next();
         assertEquals(classNameDeclaration.getImage(), "Foo");
     }
 
     private static final String TEST1 =
-    "public class Foo {}" + PMD.EOL;
+            "public class Foo {}" + PMD.EOL;
 
 }

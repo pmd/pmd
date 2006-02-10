@@ -19,11 +19,11 @@ public class LocalScope extends AbstractScope {
     public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
         NameDeclaration decl = findVariableHere(occurrence);
         if (decl != null && !occurrence.isThisOrSuper()) {
-            List nameOccurrences = (List)variableNames.get(decl);
+            List nameOccurrences = (List) variableNames.get(decl);
             nameOccurrences.add(occurrence);
             SimpleNode n = occurrence.getLocation();
             if (n instanceof ASTName) {
-                ((ASTName)n).setNameDeclaration(decl);
+                ((ASTName) n).setNameDeclaration(decl);
             } // TODO what to do with PrimarySuffix case?
         }
         return decl;

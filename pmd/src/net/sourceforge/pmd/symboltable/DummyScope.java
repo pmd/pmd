@@ -7,57 +7,57 @@ import java.util.Map;
  * Implementation of Scope for source types that are simpler than java sources.
  * It implements the methods only when necessary not to break at runtime
  * when Violations are handled.
- * 
+ *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public class DummyScope implements Scope {
-	private Map emptyMap = new HashMap();
-	
-	private Scope parent;
+    private Map emptyMap = new HashMap();
 
-	public Map getVariableDeclarations() {
-		return emptyMap;
-	}
+    private Scope parent;
 
-	public Map getClassDeclarations() {
-		return emptyMap;
-	}
+    public Map getVariableDeclarations() {
+        return emptyMap;
+    }
 
-	public void addDeclaration(ClassNameDeclaration decl) {
-	}
+    public Map getClassDeclarations() {
+        return emptyMap;
+    }
 
-	public void addDeclaration(VariableNameDeclaration decl) {
-	}
+    public void addDeclaration(ClassNameDeclaration decl) {
+    }
 
-	public void addDeclaration(MethodNameDeclaration decl) {
-	}
+    public void addDeclaration(VariableNameDeclaration decl) {
+    }
 
-	public boolean contains(NameOccurrence occ) {
-		return false;
-	}
+    public void addDeclaration(MethodNameDeclaration decl) {
+    }
 
-	public NameDeclaration addVariableNameOccurrence(NameOccurrence occ) {
-		return null;
-	}
+    public boolean contains(NameOccurrence occ) {
+        return false;
+    }
 
-	public void setParent(Scope parent) {
-		this.parent = parent;
-	}
+    public NameDeclaration addVariableNameOccurrence(NameOccurrence occ) {
+        return null;
+    }
 
-	public Scope getParent() {
-		return parent;
-	}
+    public void setParent(Scope parent) {
+        this.parent = parent;
+    }
 
-	public ClassScope getEnclosingClassScope() {
-		return new ClassScope();
-	}
+    public Scope getParent() {
+        return parent;
+    }
 
-	public SourceFileScope getEnclosingSourceFileScope() {
-		return new SourceFileScope();
-	}
+    public ClassScope getEnclosingClassScope() {
+        return new ClassScope();
+    }
 
-	public MethodScope getEnclosingMethodScope() {
-		return null;
-	}
+    public SourceFileScope getEnclosingSourceFileScope() {
+        return new SourceFileScope();
+    }
+
+    public MethodScope getEnclosingMethodScope() {
+        return null;
+    }
 
 }

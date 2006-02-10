@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
@@ -9,11 +9,11 @@ import net.sourceforge.pmd.cpd.TokenEntry;
 
 import java.util.Iterator;
 
-public class MatchTest extends TestCase  {
+public class MatchTest extends TestCase {
 
     public void testSimple() {
         TokenEntry mark1 = new TokenEntry("public", "/var/Foo.java", 1);
-		TokenEntry mark2 = new TokenEntry("class", "/var/Foo.java", 1);
+        TokenEntry mark2 = new TokenEntry("class", "/var/Foo.java", 1);
         Match match = new Match(1, mark1, mark2);
         match.setSourceCodeSlice("public class Foo {}");
         assertEquals("public class Foo {}", match.getSourceCodeSlice());

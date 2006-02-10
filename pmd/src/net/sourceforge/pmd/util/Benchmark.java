@@ -31,14 +31,14 @@ public class Benchmark {
         public long time;
 
         public int compareTo(Object o) {
-            Result other = (Result)o;
+            Result other = (Result) o;
             if (other.time < time) {
                 return -1;
             } else if (other.time > time) {
                 return 1;
             }
 
-            return rule.getName().compareTo(((Result)o).rule.getName());
+            return rule.getName().compareTo(((Result) o).rule.getName());
         }
 
         public Result(long elapsed, Rule rule) {
@@ -48,7 +48,7 @@ public class Benchmark {
     }
 
     private static boolean findBooleanSwitch(String[] args, String name) {
-        for (int i=0; i<args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             if (args[i].equals(name)) {
                 return true;
             }
@@ -57,9 +57,9 @@ public class Benchmark {
     }
 
     private static String findOptionalStringValue(String[] args, String name, String defaultValue) {
-        for (int i=0; i<args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             if (args[i].equals(name)) {
-                return args[i+1];
+                return args[i + 1];
             }
         }
         return defaultValue;
@@ -85,14 +85,14 @@ public class Benchmark {
             } else {
                 Iterator i = factory.getRegisteredRuleSets();
                 while (i.hasNext()) {
-                    stress((RuleSet)i.next(), files, results, debug);
+                    stress((RuleSet) i.next(), files, results, debug);
                 }
             }
             System.out.println("=========================================================");
             System.out.println("Rule\t\t\t\t\t\tTime in ms");
             System.out.println("=========================================================");
             for (Iterator j = results.iterator(); j.hasNext();) {
-                Result result = (Result)j.next();
+                Result result = (Result) j.next();
                 StringBuffer out = new StringBuffer(result.rule.getName());
                 while (out.length() < 48) {
                     out.append(' ');
@@ -109,7 +109,7 @@ public class Benchmark {
         TargetJDKVersion jdk = new TargetJDK1_4();
         long start = System.currentTimeMillis();
         for (Iterator k = files.iterator(); k.hasNext();) {
-            File file = (File)k.next();
+            File file = (File) k.next();
             JavaParser parser = jdk.createParser(new FileReader(file));
             parser.CompilationUnit();
         }
@@ -121,7 +121,7 @@ public class Benchmark {
     private static void stress(RuleSet ruleSet, List files, Set results, boolean debug) throws PMDException, IOException {
         Set rules = ruleSet.getRules();
         for (Iterator j = rules.iterator(); j.hasNext();) {
-            Rule rule = (Rule)j.next();
+            Rule rule = (Rule) j.next();
             if (debug) System.out.println("Starting " + rule.getName());
 
             RuleSet working = new RuleSet();
@@ -131,7 +131,7 @@ public class Benchmark {
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
             for (Iterator k = files.iterator(); k.hasNext();) {
-                File file = (File)k.next();
+                File file = (File) k.next();
                 FileReader reader = new FileReader(file);
                 ctx.setSourceCodeFilename(file.getName());
                 p.processFile(reader, working, ctx);

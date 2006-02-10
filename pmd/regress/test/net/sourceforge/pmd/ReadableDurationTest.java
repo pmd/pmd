@@ -3,7 +3,7 @@ package test.net.sourceforge.pmd;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.Report;
 
-public class ReadableDurationTest extends TestCase{
+public class ReadableDurationTest extends TestCase {
 
     public void testMillisSeconds() {
         assertEquals("0s", new Report.ReadableDuration(35).getTime());

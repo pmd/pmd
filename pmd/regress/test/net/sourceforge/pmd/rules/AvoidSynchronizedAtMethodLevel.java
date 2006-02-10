@@ -15,25 +15,25 @@ public class AvoidSynchronizedAtMethodLevel extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-        
-       runTests(new TestDescriptor[] {
-               new TestDescriptor(TEST1, "TEST1", 1, rule),
-               new TestDescriptor(TEST2, "TEST2", 0, rule),
-       });
+
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "TEST1", 1, rule),
+            new TestDescriptor(TEST2, "TEST2", 0, rule),
+        });
     }
 
     private static final String TEST1 =
-        "public class Foo {" + PMD.EOL +
-        " synchronized void foo () {" +
-        " }" + PMD.EOL +
-        "}";
+            "public class Foo {" + PMD.EOL +
+            " synchronized void foo () {" +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-        "public class Foo {" + PMD.EOL +
-        " void foo () {" +
-        " synchronized(mutex) {" +
-        " }" +
-        "}" + PMD.EOL +
-        "}";
+            "public class Foo {" + PMD.EOL +
+            " void foo () {" +
+            " synchronized(mutex) {" +
+            " }" +
+            "}" + PMD.EOL +
+            "}";
 
 }

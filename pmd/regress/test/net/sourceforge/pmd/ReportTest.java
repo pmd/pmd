@@ -2,11 +2,11 @@
  * <copyright>
  *  Copyright 1997-2002 InfoEther, LLC
  *  under sponsorship of the Defense Advanced Research Projects Agency
-(DARPA).
+ (DARPA).
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the Cougaar Open Source License as published
-by
+ by
  *  DARPA on the Cougaar Open Source Website (www.cougaar.org).
  *
  *  THE COUGAAR SOFTWARE AND ANY DERIVATIVE SUPPLIED BY LICENSOR IS
@@ -37,13 +37,25 @@ public class ReportTest extends RuleTst implements ReportListener {
 
     private static class FooRule extends AbstractRule {
         public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
-            if (c.getImage().equals("Foo")) addViolation(ctx,c);
+            if (c.getImage().equals("Foo")) addViolation(ctx, c);
             return ctx;
         }
-        public String getMessage() { return "blah"; }
-        public String getName() { return "Foo"; }
-        public String getRuleSetName() { return "RuleSet"; }
-        public String getDescription() { return "desc"; }
+
+        public String getMessage() {
+            return "blah";
+        }
+
+        public String getName() {
+            return "Foo";
+        }
+
+        public String getRuleSetName() {
+            return "RuleSet";
+        }
+
+        public String getDescription() {
+            return "desc";
+        }
     }
 
     private boolean violationSemaphore;
@@ -105,14 +117,14 @@ public class ReportTest extends RuleTst implements ReportListener {
     }
 
     private static final String TEST1 =
-    "public class Foo {}" + PMD.EOL;
+            "public class Foo {}" + PMD.EOL;
 
     private static final String TEST2 =
-    "@SuppressWarnings(\"\")" + PMD.EOL +
-    "public class Foo {}";
+            "@SuppressWarnings(\"\")" + PMD.EOL +
+            "public class Foo {}";
 
     private static final String TEST3 =
-    "public class Foo {} // NOPMD";
+            "public class Foo {} // NOPMD";
 /*
 
     // Files are grouped together now.

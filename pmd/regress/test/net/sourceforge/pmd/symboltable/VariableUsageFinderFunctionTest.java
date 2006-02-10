@@ -3,7 +3,6 @@ package test.net.sourceforge.pmd.symboltable;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleJavaNode;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;

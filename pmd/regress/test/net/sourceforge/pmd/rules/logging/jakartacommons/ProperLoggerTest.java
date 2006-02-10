@@ -15,28 +15,28 @@ public class ProperLoggerTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "ok", 0, rule),
-           new TestDescriptor(TEST2, "wrong class name", 1, rule),
-           new TestDescriptor(TEST3, "ok, special case", 0, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "ok", 0, rule),
+            new TestDescriptor(TEST2, "wrong class name", 1, rule),
+            new TestDescriptor(TEST3, "ok, special case", 0, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " private static final Log LOG = LogFactory.getLog(Foo.class);" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " private static final Log LOG = LogFactory.getLog(Foo.class);" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " private static final Log LOG = LogFactory.getLog(Bar.class);" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " private static final Log LOG = LogFactory.getLog(Bar.class);" + PMD.EOL +
+            "}";
 
     private static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " private final Log log;" + PMD.EOL +
-    " Foo(Log log) {" + PMD.EOL +
-    "  this.log = log;" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " private final Log log;" + PMD.EOL +
+            " Foo(Log log) {" + PMD.EOL +
+            "  this.log = log;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 }

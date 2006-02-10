@@ -18,7 +18,7 @@ public class LanguageFactory {
     public Language createLanguage(String language) {
         return createLanguage(language, new Properties());
     }
-    
+
     public Language createLanguage(String language, Properties properties) {
         if (language.equals(CPP_KEY) || language.equals(C_KEY)) {
             return new CPPLanguage();
@@ -31,6 +31,6 @@ public class LanguageFactory {
         } else if (language.equals(RUBY_KEY)) {
             return new RubyLanguage();
         }
-	    return new AnyLanguage(language);
+        return new AnyLanguage(language);
     }
 }

@@ -37,7 +37,7 @@ public class ASTImportDeclaration extends SimpleJavaNode {
     }
 
     public String getImportedName() {
-        return ((ASTName)jjtGetChild(0)).getImage();
+        return ((ASTName) jjtGetChild(0)).getImage();
     }
 
     public String getPackageName() {

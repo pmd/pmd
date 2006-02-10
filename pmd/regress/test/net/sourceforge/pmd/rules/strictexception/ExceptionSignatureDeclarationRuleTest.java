@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.rules.strictexception;
 
 import net.sourceforge.pmd.PMD;
@@ -19,13 +19,13 @@ public class ExceptionSignatureDeclarationRuleTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "method throws Exception", 1, rule),
-           new TestDescriptor(TEST2, "ok", 0, rule),
-           new TestDescriptor(TEST3, "constructor throws Exception", 1, rule),
-           new TestDescriptor(TEST4, "skip junit setUp method", 0, rule),
-           new TestDescriptor(TEST5, "skip junit tearDown method", 0, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "method throws Exception", 1, rule),
+            new TestDescriptor(TEST2, "ok", 0, rule),
+            new TestDescriptor(TEST3, "constructor throws Exception", 1, rule),
+            new TestDescriptor(TEST4, "skip junit setUp method", 0, rule),
+            new TestDescriptor(TEST5, "skip junit tearDown method", 0, rule),
+        });
     }
 
     public void testGenerics() throws Throwable {
@@ -35,35 +35,35 @@ public class ExceptionSignatureDeclarationRuleTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " void foo() throws Exception {}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void foo() throws Exception {}" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " void foo() {}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void foo() {}" + PMD.EOL +
+            "}";
 
     private static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " Foo() throws Exception {}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Foo() throws Exception {}" + PMD.EOL +
+            "}";
 
     private static final String TEST4 =
-    "import junit.framework.*;" + PMD.EOL +
-    "public class Foo {" + PMD.EOL +
-    " void setUp() throws Exception {}" + PMD.EOL +
-    "}";
+            "import junit.framework.*;" + PMD.EOL +
+            "public class Foo {" + PMD.EOL +
+            " void setUp() throws Exception {}" + PMD.EOL +
+            "}";
 
     private static final String TEST5 =
-    "import junit.framework.*;" + PMD.EOL +
-    "public class Foo {" + PMD.EOL +
-    " void tearDown() throws Exception {}" + PMD.EOL +
-    "}";
+            "import junit.framework.*;" + PMD.EOL +
+            "public class Foo {" + PMD.EOL +
+            " void tearDown() throws Exception {}" + PMD.EOL +
+            "}";
 
     private static final String TEST6 =
-    "public class Foo {" + PMD.EOL +
-    " public <T> Bar<T> foo() { /* blah */}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public <T> Bar<T> foo() { /* blah */}" + PMD.EOL +
+            "}";
 
 }

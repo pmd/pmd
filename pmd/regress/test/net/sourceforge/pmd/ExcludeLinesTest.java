@@ -13,7 +13,7 @@ public class ExcludeLinesTest extends RuleTst {
     public void testExcludeOne() throws Throwable {
         ExcludeLines e = new ExcludeLines(new StringReader(TEST1));
         assertFalse(e.getLinesToExclude().isEmpty());
-        Integer i = (Integer)e.getLinesToExclude().iterator().next();
+        Integer i = (Integer) e.getLinesToExclude().iterator().next();
         assertEquals(3, i.intValue());
     }
 
@@ -33,9 +33,9 @@ public class ExcludeLinesTest extends RuleTst {
         while ((tmp = br.readLine()) != null) {
             copyBuffer.append(tmp + PMD.EOL);
         }
-        copyBuffer.deleteCharAt(copyBuffer.length()-1);
+        copyBuffer.deleteCharAt(copyBuffer.length() - 1);
         if (PMD.EOL.length() == 2) {
-            copyBuffer.deleteCharAt(copyBuffer.length()-1);
+            copyBuffer.deleteCharAt(copyBuffer.length() - 1);
         }
         assertEquals(TEST1, copyBuffer.toString());
     }
@@ -57,33 +57,33 @@ public class ExcludeLinesTest extends RuleTst {
 
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " void foo() {" + PMD.EOL +
-    "  int x; //NOPMD " + PMD.EOL +
-    " } " + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void foo() {" + PMD.EOL +
+            "  int x; //NOPMD " + PMD.EOL +
+            " } " + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " void foo() {" + PMD.EOL +
-    "  int x; //NOPMD " + PMD.EOL +
-    "  int y; //NOPMD " + PMD.EOL +
-    "  int z; //NOPMD " + PMD.EOL +
-    " } " + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void foo() {" + PMD.EOL +
+            "  int x; //NOPMD " + PMD.EOL +
+            "  int y; //NOPMD " + PMD.EOL +
+            "  int z; //NOPMD " + PMD.EOL +
+            " } " + PMD.EOL +
+            "}";
 
     private static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " void foo() {" + PMD.EOL +
-    "  int x;" + PMD.EOL +
-    " } " + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void foo() {" + PMD.EOL +
+            "  int x;" + PMD.EOL +
+            " } " + PMD.EOL +
+            "}";
 
     private static final String TEST4 =
-    "public class Foo {" + PMD.EOL +
-    " void foo() {" + PMD.EOL +
-    "  int x; // FOOBAR" + PMD.EOL +
-    " } " + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void foo() {" + PMD.EOL +
+            "  int x; // FOOBAR" + PMD.EOL +
+            " } " + PMD.EOL +
+            "}";
 
 }

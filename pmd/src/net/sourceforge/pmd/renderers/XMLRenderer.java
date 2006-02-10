@@ -12,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
-public class XMLRenderer extends AbstractRenderer  implements Renderer {
+public class XMLRenderer extends AbstractRenderer implements Renderer {
 
     public String render(Report report) {
 
@@ -24,7 +24,7 @@ public class XMLRenderer extends AbstractRenderer  implements Renderer {
             RuleViolation rv = (RuleViolation) i.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {// Not first file ?
-                    buf.append("</file>"+PMD.EOL);
+                    buf.append("</file>" + PMD.EOL);
                 }
                 filename = rv.getFilename();
                 buf.append("<file name=\"");
@@ -54,7 +54,7 @@ public class XMLRenderer extends AbstractRenderer  implements Renderer {
             buf.append(PMD.EOL);
         }
         if (filename != null) { // Not first file ?
-            buf.append("</file>"+PMD.EOL);
+            buf.append("</file>" + PMD.EOL);
         }
 
         // errors
@@ -87,7 +87,7 @@ public class XMLRenderer extends AbstractRenderer  implements Renderer {
 
     private void maybeAdd(String attr, String value, StringBuffer buf) {
         if (value != null && value.length() > 0) {
-            buf.append(" " + attr +"=\"");
+            buf.append(" " + attr + "=\"");
             StringUtil.appendXmlEscaped(buf, value);
             buf.append("\"");
         }

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
@@ -55,79 +55,79 @@ public class CyclomaticComplexityTest extends RuleTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " public void foo() {}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public void foo() {}" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " public void example() {" + PMD.EOL +
-    "  int x = 0;" + PMD.EOL +
-    "  int a = 0;" + PMD.EOL +
-    "  int b = 0;" + PMD.EOL +
-    "  int c = 0;" + PMD.EOL +
-    "  int d = 0;" + PMD.EOL +
-    "  int a1 = 0;" + PMD.EOL +
-    "  int a2 = 0;" + PMD.EOL +
-    "  int b1 = 0;" + PMD.EOL +
-    "  int b2 = 0;" + PMD.EOL +
-    "  int z = 0;" + PMD.EOL +
-    "  int h = 0;" + PMD.EOL +
-    "  int e = 0;" + PMD.EOL +
-    "  int f = 0;" + PMD.EOL +
-    "" + PMD.EOL +
-    "  if (a == b) {" + PMD.EOL +
-    "   if (a1 == b1) {" + PMD.EOL +
-    "     x=2;" + PMD.EOL +
-    "   } else if (a2 == b2) {" + PMD.EOL +
-    "     x=2;" + PMD.EOL +
-    "   }" + PMD.EOL +
-    "            else" + PMD.EOL +
-    "            {" + PMD.EOL +
-    "                x=2;" + PMD.EOL +
-    "            }" + PMD.EOL +
-    "        }" + PMD.EOL +
-    "       else if (c == d)" + PMD.EOL +
-    "        {" + PMD.EOL +
-    "           while (c == d)" + PMD.EOL +
-    "            {" + PMD.EOL +
-    "                x=2;" + PMD.EOL +
-    "            }" + PMD.EOL +
-    "        }" + PMD.EOL +
-    "       else if (e == f)" + PMD.EOL +
-    "        {" + PMD.EOL +
-    "           for (int n = 0; n < h; n++)" + PMD.EOL +
-    "            {" + PMD.EOL +
-    "                x=2;" + PMD.EOL +
-    "            }" + PMD.EOL +
-    "        }" + PMD.EOL +
-    "        else" + PMD.EOL +
-    "        {" + PMD.EOL +
-    "            switch (z)" + PMD.EOL +
-    "            {" + PMD.EOL +
-    "               case 1:" + PMD.EOL +
-    "                x=2;" + PMD.EOL +
-    "                    break;" + PMD.EOL +
-    "" + PMD.EOL +
-    "              case 2:" + PMD.EOL +
-    "                x=2;" + PMD.EOL +
-    "                    break;" + PMD.EOL +
-    "" + PMD.EOL +
-    "              case 3:" + PMD.EOL +
-    "                x=2;" + PMD.EOL +
-    "                    break;" + PMD.EOL +
-    "" + PMD.EOL +
-    "              default:" + PMD.EOL +
-    "                x=2;" + PMD.EOL +
-    "                    break;" + PMD.EOL +
-    "            }" + PMD.EOL +
-    "        }" + PMD.EOL +
-    "    }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public void example() {" + PMD.EOL +
+            "  int x = 0;" + PMD.EOL +
+            "  int a = 0;" + PMD.EOL +
+            "  int b = 0;" + PMD.EOL +
+            "  int c = 0;" + PMD.EOL +
+            "  int d = 0;" + PMD.EOL +
+            "  int a1 = 0;" + PMD.EOL +
+            "  int a2 = 0;" + PMD.EOL +
+            "  int b1 = 0;" + PMD.EOL +
+            "  int b2 = 0;" + PMD.EOL +
+            "  int z = 0;" + PMD.EOL +
+            "  int h = 0;" + PMD.EOL +
+            "  int e = 0;" + PMD.EOL +
+            "  int f = 0;" + PMD.EOL +
+            "" + PMD.EOL +
+            "  if (a == b) {" + PMD.EOL +
+            "   if (a1 == b1) {" + PMD.EOL +
+            "     x=2;" + PMD.EOL +
+            "   } else if (a2 == b2) {" + PMD.EOL +
+            "     x=2;" + PMD.EOL +
+            "   }" + PMD.EOL +
+            "            else" + PMD.EOL +
+            "            {" + PMD.EOL +
+            "                x=2;" + PMD.EOL +
+            "            }" + PMD.EOL +
+            "        }" + PMD.EOL +
+            "       else if (c == d)" + PMD.EOL +
+            "        {" + PMD.EOL +
+            "           while (c == d)" + PMD.EOL +
+            "            {" + PMD.EOL +
+            "                x=2;" + PMD.EOL +
+            "            }" + PMD.EOL +
+            "        }" + PMD.EOL +
+            "       else if (e == f)" + PMD.EOL +
+            "        {" + PMD.EOL +
+            "           for (int n = 0; n < h; n++)" + PMD.EOL +
+            "            {" + PMD.EOL +
+            "                x=2;" + PMD.EOL +
+            "            }" + PMD.EOL +
+            "        }" + PMD.EOL +
+            "        else" + PMD.EOL +
+            "        {" + PMD.EOL +
+            "            switch (z)" + PMD.EOL +
+            "            {" + PMD.EOL +
+            "               case 1:" + PMD.EOL +
+            "                x=2;" + PMD.EOL +
+            "                    break;" + PMD.EOL +
+            "" + PMD.EOL +
+            "              case 2:" + PMD.EOL +
+            "                x=2;" + PMD.EOL +
+            "                    break;" + PMD.EOL +
+            "" + PMD.EOL +
+            "              case 3:" + PMD.EOL +
+            "                x=2;" + PMD.EOL +
+            "                    break;" + PMD.EOL +
+            "" + PMD.EOL +
+            "              default:" + PMD.EOL +
+            "                x=2;" + PMD.EOL +
+            "                    break;" + PMD.EOL +
+            "            }" + PMD.EOL +
+            "        }" + PMD.EOL +
+            "    }" + PMD.EOL +
+            "}";
 
     private static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " public Foo() {}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public Foo() {}" + PMD.EOL +
+            "}";
 
 }

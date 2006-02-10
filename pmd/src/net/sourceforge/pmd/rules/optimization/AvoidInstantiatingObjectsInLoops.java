@@ -37,13 +37,13 @@ public class AvoidInstantiatingObjectsInLoops extends AbstractOptimizationRule {
     }
 
     private boolean insideLoop(ASTAllocationExpression node) {
-        if (node.getFirstParentOfType(ASTDoStatement.class)!=null) {
+        if (node.getFirstParentOfType(ASTDoStatement.class) != null) {
             return true;
         }
-        if (node.getFirstParentOfType(ASTWhileStatement.class)!=null) {
+        if (node.getFirstParentOfType(ASTWhileStatement.class) != null) {
             return true;
         }
-        if (node.getFirstParentOfType(ASTForStatement.class)!=null) {
+        if (node.getFirstParentOfType(ASTForStatement.class) != null) {
             return true;
         }
         return false;

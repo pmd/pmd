@@ -30,8 +30,8 @@ public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
         Scope s = meth.getScope();
         Map decls = s.getVariableDeclarations();
         for (Iterator i = decls.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration var = (VariableNameDeclaration)i.next();
-            if (!var.getAccessNodeParent().isFinal() && (var.getAccessNodeParent() instanceof ASTFormalParameter) && !assigned((List)decls.get(var))) {
+            VariableNameDeclaration var = (VariableNameDeclaration) i.next();
+            if (!var.getAccessNodeParent().isFinal() && (var.getAccessNodeParent() instanceof ASTFormalParameter) && !assigned((List) decls.get(var))) {
                 addViolation(data, var.getAccessNodeParent(), var.getImage());
             }
         }
@@ -43,7 +43,7 @@ public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
             NameOccurrence occ = (NameOccurrence) j.next();
             if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
                 return true;
-            } 
+            }
             continue;
         }
         return false;

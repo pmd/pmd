@@ -24,8 +24,8 @@ public class EncodingTest extends TestCase {
     }
 
     private static final String TEST_UTF8 =
-    "class Foo {" + PMD.EOL +
-    " void é() {}" + PMD.EOL +
-    " void fiddle() {}" + PMD.EOL +
-    "}";
+            "class Foo {" + PMD.EOL +
+            " void é() {}" + PMD.EOL +
+            " void fiddle() {}" + PMD.EOL +
+            "}";
 }

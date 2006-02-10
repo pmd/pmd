@@ -25,9 +25,11 @@ public class Report {
 
     public static class ReadableDuration {
         private long duration;
+
         public ReadableDuration(long duration) {
             this.duration = duration;
         }
+
         public String getTime() {
             long seconds = 0;
             long minutes = 0;
@@ -80,13 +82,23 @@ public class Report {
     public static class SuppressedViolation {
         private RuleViolation rv;
         private boolean isNOPMD;
+
         public SuppressedViolation(RuleViolation rv, boolean isNOPMD) {
             this.isNOPMD = isNOPMD;
             this.rv = rv;
         }
-        public boolean suppressedByNOPMD() { return this.isNOPMD; }
-        public boolean suppressedByAnnotation() { return !this.isNOPMD; }
-        public RuleViolation getRuleViolation() { return this.rv; }
+
+        public boolean suppressedByNOPMD() {
+            return this.isNOPMD;
+        }
+
+        public boolean suppressedByAnnotation() {
+            return !this.isNOPMD;
+        }
+
+        public RuleViolation getRuleViolation() {
+            return this.rv;
+        }
     }
 
     /*
@@ -115,7 +127,7 @@ public class Report {
         Map summary = new HashMap();
         for (Iterator iter = violationTree.iterator(); iter.hasNext();) {
             RuleViolation rv = (RuleViolation) iter.next();
-            String key = (rv.getPackageName()  == "" ? "" : (rv.getPackageName() + ".")) + rv.getClassName();
+            String key = (rv.getPackageName() == "" ? "" : (rv.getPackageName() + ".")) + rv.getClassName();
             Object o = summary.get(key);
             if (o == null) {
                 Integer value = new Integer(1);
@@ -187,7 +199,7 @@ public class Report {
             parentTypes.add(node);
         }
         for (Iterator i = parentTypes.iterator(); i.hasNext();) {
-            CanSuppressWarnings t = (CanSuppressWarnings)i.next();
+            CanSuppressWarnings t = (CanSuppressWarnings) i.next();
             if (t.hasSuppressWarningsAnnotationFor(violation.getRule())) {
                 suppressedRuleViolations.add(new SuppressedViolation(violation, false));
                 return;
@@ -260,6 +272,6 @@ public class Report {
     }
 
     public long getElapsedTimeInMillis() {
-        return end-start;
+        return end - start;
     }
 }

@@ -19,7 +19,7 @@ public class SymbolTableTestRule extends AbstractRule implements Rule {
         Map methods = node.getScope().getEnclosingClassScope().getMethodDeclarations();
         Set suffixes = new HashSet();
         for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
-            MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
+            MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
             String suffix = findSuffix(mnd);
             if (suffix != null) {
                 if (suffixes.contains(suffix)) {

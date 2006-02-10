@@ -15,27 +15,27 @@ public class ClassCastExceptionWithToArrayTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "bad, toArray() with cast", 1, rule),
-           new TestDescriptor(TEST2, "ok, no cast", 0, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "bad, toArray() with cast", 1, rule),
+            new TestDescriptor(TEST2, "ok, no cast", 0, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  Collection c = new ArrayList();" + PMD.EOL +
-    "  c.add(new Integer(1));" + PMD.EOL +
-    "  Integer[] a=(Integer [])c.toArray();" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  Collection c = new ArrayList();" + PMD.EOL +
+            "  c.add(new Integer(1));" + PMD.EOL +
+            "  Integer[] a=(Integer [])c.toArray();" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  Collection c = new ArrayList();" + PMD.EOL +
-    "  c.add(new Integer(1));" + PMD.EOL +
-    "  Integer[] a = (Integer [])c.toArray(new Integer[c.size()]);;" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  Collection c = new ArrayList();" + PMD.EOL +
+            "  c.add(new Integer(1));" + PMD.EOL +
+            "  Integer[] a = (Integer [])c.toArray(new Integer[c.size()]);;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 }

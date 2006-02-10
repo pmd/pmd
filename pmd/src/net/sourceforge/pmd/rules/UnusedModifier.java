@@ -11,12 +11,12 @@ public class UnusedModifier extends AbstractRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (!node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
-            ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration)node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+            ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
             if (parent.isInterface()) {
                 addViolation(data, node, getMessage());
             }
         } else if (node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
-            ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration)node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+            ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
             if (parent.isInterface() || (!parent.isInterface() && node.isStatic())) {
                 addViolation(data, node, getMessage());
             }
@@ -42,7 +42,7 @@ public class UnusedModifier extends AbstractRule {
         // third ancestor could be an AllocationExpression
         // if this is a method in an anonymous inner class
         Node parent = fieldOrMethod.jjtGetParent().jjtGetParent().jjtGetParent();
-        if (parent instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration)parent).isInterface()) {
+        if (parent instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
             addViolation(data, fieldOrMethod);
         }
     }

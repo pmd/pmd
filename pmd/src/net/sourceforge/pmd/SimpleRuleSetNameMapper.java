@@ -27,7 +27,7 @@ public class SimpleRuleSetNameMapper {
 
     private void check(String name) {
         if (name.indexOf("rulesets") == -1 && nameMap.containsKey(name)) {
-            append((String)nameMap.get(name));
+            append((String) nameMap.get(name));
         } else {
             append(name);
         }

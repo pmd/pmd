@@ -3,26 +3,7 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.ast.ASTCatchStatement;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.ast.ASTFinallyStatement;
-import net.sourceforge.pmd.ast.ASTForStatement;
-import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.ASTPackageDeclaration;
-import net.sourceforge.pmd.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.ast.ASTTryStatement;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.*;
 
 import java.util.List;
 import java.util.Stack;
@@ -30,14 +11,14 @@ import java.util.Stack;
 /**
  * Visitor for scope creation.
  * Visits all nodes of an AST and creates scope objects for nodes representing
- * syntactic entities which may contain declarations. For example, a block 
- * may contain variable definitions (which are declarations) and 
- * therefore needs a scope object where these declarations can be associated, 
+ * syntactic entities which may contain declarations. For example, a block
+ * may contain variable definitions (which are declarations) and
+ * therefore needs a scope object where these declarations can be associated,
  * whereas an expression can't contain declarations and therefore doesn't need
  * a scope object.
  * With the exception of global scopes, each scope object is linked to its
- * parent scope, which is the scope object of the next embedding syntactic 
- * entity that has a scope. 
+ * parent scope, which is the scope object of the next embedding syntactic
+ * entity that has a scope.
  */
 public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
@@ -51,20 +32,22 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * Sets the scope of a node and adjustes the scope stack accordingly.
      * The scope on top of the stack is set as the parent of the given scope,
      * which is then also stored on the scope stack.
+     *
      * @param newScope the scope for the node.
-     * @param node the AST node for which the scope is to be set.
+     * @param node     the AST node for which the scope is to be set.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void addScope(Scope newScope, SimpleNode node) {
-        newScope.setParent((Scope)scopes.peek());
+        newScope.setParent((Scope) scopes.peek());
         scopes.push(newScope);
         node.setScope(newScope);
     }
-    
+
     /**
      * Creates a new local scope for an AST node.
      * The scope on top of the stack is set as the parent of the new scope,
      * which is then also stored on the scope stack.
+     *
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
@@ -76,6 +59,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * Creates a new method scope for an AST node.
      * The scope on top of the stack is set as the parent of the new scope,
      * which is then also stored on the scope stack.
+     *
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
@@ -87,21 +71,22 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * Creates a new class scope for an AST node.
      * The scope on top of the stack is set as the parent of the new scope,
      * which is then also stored on the scope stack.
+     *
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void createClassScope(SimpleNode node) {
-       if (node instanceof ASTClassOrInterfaceBodyDeclaration){
-           addScope(new ClassScope(), node);
-       }
-       else {
-           addScope(new ClassScope(node.getImage()), node);
-       }
+        if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
+            addScope(new ClassScope(), node);
+        } else {
+            addScope(new ClassScope(node.getImage()), node);
+        }
     }
 
     /**
      * Creates a new global scope for an AST node.
      * The new scope is stored on the scope stack.
+     *
      * @param node the AST node for which the scope has to be created.
      */
     private void createSourceFileScope(SimpleNode node) {
@@ -109,15 +94,15 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         Scope scope;
         List packages = node.findChildrenOfType(ASTPackageDeclaration.class);
         if (!packages.isEmpty()) {
-            Node n = (Node)packages.get(0);
-            scope = new SourceFileScope(((SimpleNode)n.jjtGetChild(0)).getImage());
+            Node n = (Node) packages.get(0);
+            scope = new SourceFileScope(((SimpleNode) n.jjtGetChild(0)).getImage());
         } else {
             scope = new SourceFileScope();
         }
         scopes.push(scope);
         node.setScope(scope);
     }
-    
+
     public Object visit(ASTCompilationUnit node, Object data) {
         createSourceFileScope(node);
         cont(node);
@@ -125,8 +110,8 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        createClassScope(node);     
-        Scope s = ((SimpleNode)node.jjtGetParent()).getScope();
+        createClassScope(node);
+        Scope s = ((SimpleNode) node.jjtGetParent()).getScope();
         s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
@@ -174,7 +159,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         createMethodScope(node);
-        ASTMethodDeclarator md = (ASTMethodDeclarator)node.getFirstChildOfType(ASTMethodDeclarator.class);
+        ASTMethodDeclarator md = (ASTMethodDeclarator) node.getFirstChildOfType(ASTMethodDeclarator.class);
         node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
         cont(node);
         return data;

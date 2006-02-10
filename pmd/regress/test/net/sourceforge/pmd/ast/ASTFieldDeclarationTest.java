@@ -13,12 +13,12 @@ import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.io.StringReader;
 
-public class ASTFieldDeclarationTest extends ParserTst{
+public class ASTFieldDeclarationTest extends ParserTst {
 
     public void testIsArray() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST1));
         ASTCompilationUnit cu = parser.CompilationUnit();
-        Dimensionable node = (Dimensionable)cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        Dimensionable node = (Dimensionable) cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
         assertTrue(node.isArray());
         assertEquals(1, node.getArrayDepth());
     }
@@ -26,14 +26,14 @@ public class ASTFieldDeclarationTest extends ParserTst{
     public void testMultiDimensionalArray() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST2));
         ASTCompilationUnit cu = parser.CompilationUnit();
-        Dimensionable node = (Dimensionable)cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        Dimensionable node = (Dimensionable) cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
         assertEquals(3, node.getArrayDepth());
     }
 
     public void testIsSyntacticallyPublic() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST3));
         ASTCompilationUnit cu = parser.CompilationUnit();
-        ASTFieldDeclaration node = (ASTFieldDeclaration)cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        ASTFieldDeclaration node = (ASTFieldDeclaration) cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
         assertFalse(node.isSyntacticallyPublic());
         assertFalse(node.isPackagePrivate());
         assertFalse(node.isPrivate());
@@ -44,32 +44,32 @@ public class ASTFieldDeclarationTest extends ParserTst{
     }
 
     private static final String TEST1 =
-    "class Foo {" + PMD.EOL +
-    " String[] foo;" + PMD.EOL +
-    "}";
+            "class Foo {" + PMD.EOL +
+            " String[] foo;" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "class Foo {" + PMD.EOL +
-    " String[][][] foo;" + PMD.EOL +
-    "}";
-    
+            "class Foo {" + PMD.EOL +
+            " String[][][] foo;" + PMD.EOL +
+            "}";
+
     private static final String TEST3 =
-    "interface Foo {" + PMD.EOL +
-    " int BAR = 6;" + PMD.EOL +
-    "}";
+            "interface Foo {" + PMD.EOL +
+            " int BAR = 6;" + PMD.EOL +
+            "}";
 
     public void testGetVariableName() {
-    	int id = 0;
-    	ASTFieldDeclaration n = new ASTFieldDeclaration(id++);
-    	ASTType t = new ASTType(id++);
-    	ASTVariableDeclarator decl = new ASTVariableDeclarator(id++);
-    	ASTVariableDeclaratorId declid = new ASTVariableDeclaratorId(id++);
-    	n.jjtAddChild(t, 0);
-    	t.jjtAddChild(decl, 0);
-    	decl.jjtAddChild(declid, 0);
-    	declid.setImage("foo");
-    	
-    	assertEquals("foo", n.getVariableName());
-    	
+        int id = 0;
+        ASTFieldDeclaration n = new ASTFieldDeclaration(id++);
+        ASTType t = new ASTType(id++);
+        ASTVariableDeclarator decl = new ASTVariableDeclarator(id++);
+        ASTVariableDeclaratorId declid = new ASTVariableDeclaratorId(id++);
+        n.jjtAddChild(t, 0);
+        t.jjtAddChild(decl, 0);
+        decl.jjtAddChild(declid, 0);
+        declid.setImage("foo");
+
+        assertEquals("foo", n.getVariableName());
+
     }
 }

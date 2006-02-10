@@ -15,19 +15,19 @@ public class AvoidThrowingRawExceptionTypesTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "throwing various types", 4, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "throwing various types", 4, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  throw new Throwable();" + PMD.EOL +
-    "  throw new Exception();" + PMD.EOL +
-    "  throw new Error();" + PMD.EOL +
-    "  throw new RuntimeException();" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  throw new Throwable();" + PMD.EOL +
+            "  throw new Exception();" + PMD.EOL +
+            "  throw new Error();" + PMD.EOL +
+            "  throw new RuntimeException();" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
 }

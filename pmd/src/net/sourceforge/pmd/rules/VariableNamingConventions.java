@@ -63,7 +63,7 @@ public class VariableNamingConventions extends AbstractRule {
             // non static final class fields are OK
             if (node.isFinal() && !node.isStatic()) {
                 if (node.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
-                    ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration)node.jjtGetParent().jjtGetParent().jjtGetParent();
+                    ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration) node.jjtGetParent().jjtGetParent().jjtGetParent();
                     if (!c.isInterface()) {
                         return data;
                     }
@@ -72,7 +72,7 @@ public class VariableNamingConventions extends AbstractRule {
 
             // static finals (and interface fields, which are implicitly static and final) are
             // checked for uppercase
-            if ((node.isStatic() && node.isFinal()) || (node.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration)node.jjtGetParent().jjtGetParent().jjtGetParent()).isInterface())) {
+            if ((node.isStatic() && node.isFinal()) || (node.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) node.jjtGetParent().jjtGetParent().jjtGetParent()).isInterface())) {
                 if (!varName.equals(varName.toUpperCase())) {
                     addViolation(data, childNodeName, "Variables that are final and static should be in all caps.");
                 }

@@ -21,10 +21,10 @@ public class AvoidAssertAsIdentifierTest extends SimpleAggregatorTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " void bar(String assert) {" + PMD.EOL +
-    "  String assert = \"hi\";" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar(String assert) {" + PMD.EOL +
+            "  String assert = \"hi\";" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
 }

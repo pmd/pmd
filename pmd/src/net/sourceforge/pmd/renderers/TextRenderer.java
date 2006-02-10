@@ -44,7 +44,7 @@ public class TextRenderer extends AbstractRenderer implements Renderer {
     private void addSuppressed(Report report, StringBuffer buf) {
         for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
             Report.SuppressedViolation excluded = (Report.SuppressedViolation) i.next();
-            buf.append(PMD.EOL + excluded.getRuleViolation().getRule().getName() + " rule violation suppressed by "  + (excluded.suppressedByNOPMD() ? "//NOPMD" : "Annotation") + " in " + excluded.getRuleViolation().getFilename());
+            buf.append(PMD.EOL + excluded.getRuleViolation().getRule().getName() + " rule violation suppressed by " + (excluded.suppressedByNOPMD() ? "//NOPMD" : "Annotation") + " in " + excluded.getRuleViolation().getFilename());
         }
     }
 }

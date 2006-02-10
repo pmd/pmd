@@ -11,9 +11,9 @@ public class RubyLanguage implements Language {
 
     public static class RubyFileOrDirectoryFilter implements FilenameFilter {
         public boolean accept(File dir, String filename) {
-            return filename.endsWith("rb") || filename.endsWith("cgi") || 
-		filename.endsWith("class") || 
-		(new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
+            return filename.endsWith("rb") || filename.endsWith("cgi") ||
+                    filename.endsWith("class") ||
+                    (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
         }
     }
 

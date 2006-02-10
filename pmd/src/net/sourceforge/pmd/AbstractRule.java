@@ -98,6 +98,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     public String getExternalInfoUrl() {
         return externalInfoUrl;
     }
+
     public void setExternalInfoUrl(String url) {
         this.externalInfoUrl = url;
     }
@@ -113,21 +114,21 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         if (o == null) {
             return false; // trivial
         }
-        
+
         if (this == o) {
             return true;  // trivial
         }
-        
+
         Rule rule = null;
         boolean equality = this.getClass().getName().equals(o.getClass().getName());
-        
+
         if (equality) {
             rule = (Rule) o;
             equality = this.getName().equals(rule.getName())
                     && this.getPriority() == rule.getPriority()
                     && this.getProperties().equals(rule.getProperties());
         }
-        
+
         return equality;
     }
 
@@ -186,59 +187,59 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     /**
      * Adds a violation to the report.
      *
-     * @param ctx the RuleContext
+     * @param ctx  the RuleContext
      * @param node the node that produces the violation
      */
     protected final void addViolation(Object data, SimpleNode node) {
-        RuleContext ctx = (RuleContext)data;
+        RuleContext ctx = (RuleContext) data;
         ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node));
     }
 
     /**
      * Adds a violation to the report.
      *
-     * @param ctx the RuleContext
+     * @param ctx  the RuleContext
      * @param node the node that produces the violation
-     * @param msg specific message to put in the report
+     * @param msg  specific message to put in the report
      */
     protected final void addViolationWithMessage(Object data, SimpleNode node, String msg) {
-        RuleContext ctx = (RuleContext)data;
+        RuleContext ctx = (RuleContext) data;
         ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, msg));
     }
 
     /**
      * Adds a violation to the report.
      *
-     * @param ctx the RuleContext
-     * @param node the node that produces the violation
+     * @param ctx   the RuleContext
+     * @param node  the node that produces the violation
      * @param embed a variable to embed in the rule violation message
      */
     protected final void addViolation(Object data, SimpleNode node, String embed) {
-        RuleContext ctx = (RuleContext)data;
+        RuleContext ctx = (RuleContext) data;
         ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, MessageFormat.format(getMessage(), new Object[]{embed})));
     }
 
     /**
      * Adds a violation to the report.
      *
-     * @param ctx the RuleContext
+     * @param ctx  the RuleContext
      * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
      * @param args objects to embed in the rule violation message
      */
     protected final void addViolation(Object data, Node node, Object[] args) {
-       RuleContext ctx = (RuleContext)data;
-        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, (SimpleNode)node, MessageFormat.format(getMessage(), args)));
+        RuleContext ctx = (RuleContext) data;
+        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, (SimpleNode) node, MessageFormat.format(getMessage(), args)));
     }
 
     /**
      * Gets the Image of the first parent node of type ASTClassOrInterfaceDeclaration or <code>null</code>
-     *  
+     *
      * @param node the node which will be searched
      */
-    protected final String getDeclaringType(SimpleNode  node) {
-		ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-		if (c!=null)
-			return c.getImage();
-		return null;
-	}
+    protected final String getDeclaringType(SimpleNode node) {
+        ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        if (c != null)
+            return c.getImage();
+        return null;
+    }
 }

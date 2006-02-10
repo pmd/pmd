@@ -19,16 +19,16 @@ public class ASTType extends SimpleJavaNode {
     }
 
     public String getTypeImage() {
-        ASTPrimitiveType prim = (ASTPrimitiveType)getFirstChildOfType(ASTPrimitiveType.class);
+        ASTPrimitiveType prim = (ASTPrimitiveType) getFirstChildOfType(ASTPrimitiveType.class);
         if (prim != null) {
             return prim.getImage();
         }
-        return ((ASTClassOrInterfaceType)getFirstChildOfType(ASTClassOrInterfaceType.class)).getImage();
+        return ((ASTClassOrInterfaceType) getFirstChildOfType(ASTClassOrInterfaceType.class)).getImage();
     }
 
     public int getArrayDepth() {
         if (jjtGetNumChildren() != 0 && (jjtGetChild(0) instanceof ASTReferenceType || jjtGetChild(0) instanceof ASTPrimitiveType)) {
-            return ((Dimensionable)jjtGetChild(0)).getArrayDepth();
+            return ((Dimensionable) jjtGetChild(0)).getArrayDepth();
         }
         throw new RuntimeException("ASTType.getArrayDepth called, but first child (of " + jjtGetNumChildren() + " total children) is neither a primitive nor a reference type.");
     }

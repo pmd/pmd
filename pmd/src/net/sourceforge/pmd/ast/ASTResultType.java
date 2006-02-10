@@ -12,7 +12,7 @@ public class ASTResultType extends SimpleJavaNode {
     }
 
     public boolean returnsArray() {
-        return !isVoid() && ((ASTType)jjtGetChild(0)).isArray();
+        return !isVoid() && ((ASTType) jjtGetChild(0)).isArray();
     }
 
     public boolean isVoid() {

@@ -15,19 +15,19 @@ public class ReplaceEnumerationWithIteratorTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "bad, implementing Enumeration", 1, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "bad, implementing Enumeration", 1, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo implements Enumeration {" + PMD.EOL +
-    " public boolean hasMoreElements() {" + PMD.EOL +
-    "  true;" + PMD.EOL +
-    " }" + PMD.EOL +
-    " public Object nextElement() {" + PMD.EOL +
-    "  return \"hello\";" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo implements Enumeration {" + PMD.EOL +
+            " public boolean hasMoreElements() {" + PMD.EOL +
+            "  true;" + PMD.EOL +
+            " }" + PMD.EOL +
+            " public Object nextElement() {" + PMD.EOL +
+            "  return \"hello\";" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
 }

@@ -7,5 +7,6 @@ import net.sourceforge.pmd.Report;
 
 public interface Renderer {
     void showSuppressedViolations(boolean show);
+
     String render(Report report);
 }

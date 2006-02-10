@@ -22,9 +22,9 @@ public class ASTLocalVariableDeclaration extends AccessNode implements Dimension
     }
 
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i=0;i<jjtGetNumChildren(); i++) {
+        for (int i = 0; i < jjtGetNumChildren(); i++) {
             if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation)jjtGetChild(i);
+                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
                 if (a.suppresses(rule)) {
                     return true;
                 }
@@ -67,9 +67,9 @@ public class ASTLocalVariableDeclaration extends AccessNode implements Dimension
             }
             out += ")";
         }
-         if (isFinal()) {
-             out += "(final)";
-         }
+        if (isFinal()) {
+            out += "(final)";
+        }
         System.out.println(toString(prefix) + out);
         dumpChildren(prefix);
     }

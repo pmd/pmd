@@ -4,21 +4,21 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.Rule;
 
-public class ASTClassOrInterfaceBodyDeclaration extends SimpleJavaNode  implements CanSuppressWarnings{
-    
-  public ASTClassOrInterfaceBodyDeclaration(int id) {
-    super(id);
-  }
+public class ASTClassOrInterfaceBodyDeclaration extends SimpleJavaNode implements CanSuppressWarnings {
 
-  public ASTClassOrInterfaceBodyDeclaration(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTClassOrInterfaceBodyDeclaration(int id) {
+        super(id);
+    }
+
+    public ASTClassOrInterfaceBodyDeclaration(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i=0;i<jjtGetNumChildren(); i++) {
+        for (int i = 0; i < jjtGetNumChildren(); i++) {
             if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation)jjtGetChild(i);
+                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
                 if (a.suppresses(rule)) {
                     return true;
                 }
@@ -27,10 +27,12 @@ public class ASTClassOrInterfaceBodyDeclaration extends SimpleJavaNode  implemen
         return false;
     }
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /**
+     * Accept the visitor. *
+     */
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 
     public boolean isAnonymousInnerClass() {
         return jjtGetParent().jjtGetParent() instanceof ASTAllocationExpression;

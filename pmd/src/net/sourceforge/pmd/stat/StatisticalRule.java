@@ -111,7 +111,7 @@ public abstract class StatisticalRule extends AbstractRule {
     protected SortedSet applyTopScore(SortedSet points, int topScore) {
         SortedSet s = new TreeSet();
         Object[] arr = points.toArray();
-        for (int i=arr.length-1; i>=(arr.length - topScore); i--) {
+        for (int i = arr.length - 1; i >= (arr.length - topScore); i--) {
             s.add(arr[i]);
         }
         return s;

@@ -67,21 +67,27 @@ public class AccessorClassGeneration extends AbstractRule {
         public void addInstantiation(AllocData ad) {
             m_Instantiations.add(ad);
         }
+
         public Iterator getInstantiationIterator() {
             return m_Instantiations.iterator();
         }
+
         public void addConstructor(ASTConstructorDeclaration cd) {
             m_PrivateConstructors.add(cd);
         }
+
         public Iterator getPrivateConstructorIterator() {
             return m_PrivateConstructors.iterator();
         }
+
         public String getClassName() {
             return m_ClassName;
         }
+
         public void addClassQualifyingName(String name) {
             m_ClassQualifyingNames.add(name);
         }
+
         public List getClassQualifyingNamesList() {
             return m_ClassQualifyingNames;
         }
@@ -102,7 +108,7 @@ public class AccessorClassGeneration extends AbstractRule {
                 if (!(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
                     throw new RuntimeException("BUG: Expected a ASTClassOrInterfaceType, got a " + node.jjtGetChild(0).getClass());
                 }
-                ASTClassOrInterfaceType an = (ASTClassOrInterfaceType)node.jjtGetChild(0);
+                ASTClassOrInterfaceType an = (ASTClassOrInterfaceType) node.jjtGetChild(0);
                 m_Name = stripString(aPackageName + ".", an.getImage());
 
                 //strip off outer class names
@@ -128,12 +134,15 @@ public class AccessorClassGeneration extends AbstractRule {
         public String getName() {
             return m_Name;
         }
+
         public int getArgumentCount() {
             return m_ArgumentCount;
         }
+
         public ASTAllocationExpression getASTAllocationExpression() {
             return m_ASTAllocationExpression;
         }
+
         public boolean isArray() {
             return isArray;
         }
@@ -179,7 +188,7 @@ public class AccessorClassGeneration extends AbstractRule {
             // this is a hack to bail out here
             // but I'm not sure why this is happening
             // TODO
-            if (formerID == -1 || formerID >= classDataList.size())  {
+            if (formerID == -1 || formerID >= classDataList.size()) {
                 return null;
             }
             //store the names of any outer classes of this class in the classQualifyingName List

@@ -4,13 +4,13 @@
 package net.sourceforge.pmd.rules.imports;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.rules.ImportWrapper;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.rules.ImportWrapper;
 
 import java.util.HashSet;
 import java.util.Iterator;

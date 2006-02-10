@@ -3,18 +3,19 @@
 package net.sourceforge.pmd.ast;
 
 
-
 public class ASTSingleMemberAnnotation extends SimpleJavaNode {
-  public ASTSingleMemberAnnotation(int id) {
-    super(id);
-  }
+    public ASTSingleMemberAnnotation(int id) {
+        super(id);
+    }
 
-  public ASTSingleMemberAnnotation(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTSingleMemberAnnotation(JavaParser p, int id) {
+        super(p, id);
+    }
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /**
+     * Accept the visitor. *
+     */
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

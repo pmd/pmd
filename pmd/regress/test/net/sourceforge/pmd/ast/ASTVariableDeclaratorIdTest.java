@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.PMD;
@@ -23,16 +23,16 @@ public class ASTVariableDeclaratorIdTest extends ParserTst {
     }
 
     public void testTypeNameNode() throws Throwable {
-        ASTCompilationUnit acu = (ASTCompilationUnit)(super.getNodes(ASTCompilationUnit.class, TYPE_NAME_NODE).iterator().next());
-        ASTVariableDeclaratorId id = (ASTVariableDeclaratorId)acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
+        ASTCompilationUnit acu = (ASTCompilationUnit) (super.getNodes(ASTCompilationUnit.class, TYPE_NAME_NODE).iterator().next());
+        ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
 
-        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType)id.getTypeNameNode().jjtGetChild(0);
+        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().jjtGetChild(0);
         assertEquals("String", name.getImage());
     }
 
     private static final String TYPE_NAME_NODE =
-    "public class Test {" + PMD.EOL +
-    "  private String bar;" + PMD.EOL +
-    "}";
+            "public class Test {" + PMD.EOL +
+            "  private String bar;" + PMD.EOL +
+            "}";
 
 }

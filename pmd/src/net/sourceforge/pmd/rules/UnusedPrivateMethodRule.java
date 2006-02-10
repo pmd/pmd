@@ -26,10 +26,10 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             return data;
         }
 
-        Map methods = ((ClassScope)node.getScope()).getMethodDeclarations();
+        Map methods = ((ClassScope) node.getScope()).getMethodDeclarations();
         for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
-            MethodNameDeclaration mnd = (MethodNameDeclaration)i.next();
-            List occs = (List)methods.get(mnd);
+            MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
+            List occs = (List) methods.get(mnd);
             if (!privateAndNotExcluded(mnd)) {
                 continue;
             }
@@ -48,29 +48,29 @@ public class UnusedPrivateMethodRule extends AbstractRule {
     private boolean calledFromOutsideItself(List occs, MethodNameDeclaration mnd) {
         int callsFromOutsideMethod = 0;
         for (Iterator i = occs.iterator(); i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence)i.next();
+            NameOccurrence occ = (NameOccurrence) i.next();
             SimpleNode occNode = occ.getLocation();
-            ASTConstructorDeclaration enclosingConstructor = (ASTConstructorDeclaration)occNode.getFirstParentOfType(ASTConstructorDeclaration.class);
+            ASTConstructorDeclaration enclosingConstructor = (ASTConstructorDeclaration) occNode.getFirstParentOfType(ASTConstructorDeclaration.class);
             if (enclosingConstructor != null) {
                 callsFromOutsideMethod++;
                 break; // Do we miss unused private constructors here?
             }
-            ASTInitializer enclosingInitializer = (ASTInitializer)occNode.getFirstParentOfType(ASTInitializer.class);
+            ASTInitializer enclosingInitializer = (ASTInitializer) occNode.getFirstParentOfType(ASTInitializer.class);
             if (enclosingInitializer != null) {
                 callsFromOutsideMethod++;
                 break;
             }
 
-            ASTMethodDeclaration enclosingMethod = (ASTMethodDeclaration)occNode.getFirstParentOfType(ASTMethodDeclaration.class);
+            ASTMethodDeclaration enclosingMethod = (ASTMethodDeclaration) occNode.getFirstParentOfType(ASTMethodDeclaration.class);
             if ((enclosingMethod == null) || (enclosingMethod != null && !mnd.getNode().jjtGetParent().equals(enclosingMethod))) {
-               callsFromOutsideMethod++;
+                callsFromOutsideMethod++;
             }
         }
         return callsFromOutsideMethod == 0;
     }
 
     private boolean privateAndNotExcluded(MethodNameDeclaration mnd) {
-        ASTMethodDeclarator node = (ASTMethodDeclarator)mnd.getNode();
+        ASTMethodDeclarator node = (ASTMethodDeclarator) mnd.getNode();
         return ((AccessNode) node.jjtGetParent()).isPrivate() && !node.getImage().equals("readObject") && !node.getImage().equals("writeObject") && !node.getImage().equals("readResolve") && !node.getImage().equals("writeReplace");
     }
 }

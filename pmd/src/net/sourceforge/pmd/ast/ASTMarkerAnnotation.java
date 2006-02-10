@@ -3,17 +3,19 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTMarkerAnnotation extends SimpleJavaNode {
-  public ASTMarkerAnnotation(int id) {
-    super(id);
-  }
+    public ASTMarkerAnnotation(int id) {
+        super(id);
+    }
 
-  public ASTMarkerAnnotation(JavaParser p, int id) {
-    super(p, id);
-  }
+    public ASTMarkerAnnotation(JavaParser p, int id) {
+        super(p, id);
+    }
 
 
-  /** Accept the visitor. **/
-  public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-    return visitor.visit(this, data);
-  }
+    /**
+     * Accept the visitor. *
+     */
+    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
+        return visitor.visit(this, data);
+    }
 }

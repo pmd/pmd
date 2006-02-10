@@ -34,14 +34,14 @@ public class UnusedFormalParameterRule extends AbstractRule {
 
     private void check(SimpleNode node, Object data) {
         Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
-        if (parent instanceof ASTClassOrInterfaceDeclaration && !((ASTClassOrInterfaceDeclaration)parent).isInterface()) {
+        if (parent instanceof ASTClassOrInterfaceDeclaration && !((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
             Map vars = node.getScope().getVariableDeclarations();
             for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
                 VariableNameDeclaration nameDecl = (VariableNameDeclaration) i.next();
                 if (!((List) vars.get(nameDecl)).isEmpty()) {
                     continue;
                 }
-                addViolation(data, node, new Object[] {node instanceof ASTMethodDeclaration ? "method" : "constructor", nameDecl.getImage()});
+                addViolation(data, node, new Object[]{node instanceof ASTMethodDeclaration ? "method" : "constructor", nameDecl.getImage()});
             }
         }
     }

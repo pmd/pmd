@@ -36,6 +36,7 @@ public class MetricTest extends TestCase {
 
     /**
      * Constructor for MetricTest.
+     *
      * @param arg0
      */
     public MetricTest(String arg0) {

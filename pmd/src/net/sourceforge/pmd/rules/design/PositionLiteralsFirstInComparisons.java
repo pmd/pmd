@@ -13,14 +13,14 @@ public class PositionLiteralsFirstInComparisons extends AbstractRule {
 
     public Object visit(ASTPrimaryExpression exp, Object data) {
         // the first prefix ends with a '.equals'
-        if (exp.jjtGetNumChildren() < 2 ||  !(exp.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
+        if (exp.jjtGetNumChildren() < 2 || !(exp.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
             return data;
         }
-        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix)exp.jjtGetChild(0);
+        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) exp.jjtGetChild(0);
         if (prefix.jjtGetNumChildren() != 1 || !(prefix.jjtGetChild(0) instanceof ASTName)) {
             return data;
         }
-        ASTName name = (ASTName)prefix.jjtGetChild(0);
+        ASTName name = (ASTName) prefix.jjtGetChild(0);
         if (name.getImage() == null || !name.getImage().endsWith(".equals")) {
             return data;
         }
@@ -29,7 +29,7 @@ public class PositionLiteralsFirstInComparisons extends AbstractRule {
         if (!(exp.jjtGetChild(1) instanceof ASTPrimarySuffix)) {
             return data;
         }
-        ASTPrimarySuffix suffix = (ASTPrimarySuffix)exp.jjtGetChild(1);
+        ASTPrimarySuffix suffix = (ASTPrimarySuffix) exp.jjtGetChild(1);
         List literals = suffix.findChildrenOfType(ASTLiteral.class);
         if (literals.isEmpty()) {
             return data;

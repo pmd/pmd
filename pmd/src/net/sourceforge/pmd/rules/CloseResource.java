@@ -64,9 +64,9 @@ public class CloseResource extends AbstractRule {
             ASTType type = (ASTType) var.jjtGetChild(0);
 
             if (type.jjtGetChild(0) instanceof ASTReferenceType) {
-                ASTReferenceType ref = (ASTReferenceType)type.jjtGetChild(0);
+                ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
                 if (ref.jjtGetChild(0) instanceof ASTClassOrInterfaceType) {
-                    ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType)ref.jjtGetChild(0);
+                    ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
                     if (types.contains(clazz.getImage())) {
                         ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) var.jjtGetChild(1).jjtGetChild(0);
                         ids.add(id);
@@ -90,7 +90,7 @@ public class CloseResource extends AbstractRule {
         String target = id.getImage() + ".close";
         Node n = var;
 
-        while (!((n = n.jjtGetParent()) instanceof ASTBlock));
+        while (!((n = n.jjtGetParent()) instanceof ASTBlock)) ;
 
         ASTBlock top = (ASTBlock) n;
 
@@ -106,7 +106,7 @@ public class CloseResource extends AbstractRule {
             ASTTryStatement t = (ASTTryStatement) it.next();
 
             if ((t.getBeginLine() > id.getBeginLine()) && (t.hasFinally())) {
-                ASTBlock f = (ASTBlock)t.getFinally().jjtGetChild(0);
+                ASTBlock f = (ASTBlock) t.getFinally().jjtGetChild(0);
                 List names = new ArrayList();
                 f.findChildrenOfType(ASTName.class, names, true);
                 for (Iterator it2 = names.iterator(); it2.hasNext();) {
@@ -120,8 +120,8 @@ public class CloseResource extends AbstractRule {
         // if all is not well, complain
         if (!closed) {
             ASTType type = (ASTType) var.jjtGetChild(0);
-            ASTReferenceType ref = (ASTReferenceType)type.jjtGetChild(0);
-            ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType)ref.jjtGetChild(0);
+            ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);
+            ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
             addViolation(data, id, clazz.getImage());
         }
     }
@@ -129,7 +129,7 @@ public class CloseResource extends AbstractRule {
     private boolean importsJavaSqlPackage(ASTCompilationUnit node) {
         List nodes = node.findChildrenOfType(ASTImportDeclaration.class);
         for (Iterator i = nodes.iterator(); i.hasNext();) {
-            ASTImportDeclaration n = (ASTImportDeclaration)i.next();
+            ASTImportDeclaration n = (ASTImportDeclaration) i.next();
             if (n.getPackageName().startsWith("java.sql")) {
                 return true;
             }

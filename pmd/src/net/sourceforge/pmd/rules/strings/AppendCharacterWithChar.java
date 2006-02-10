@@ -6,17 +6,16 @@ package net.sourceforge.pmd.rules.strings;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTLiteral;
-
 import org.apache.oro.text.perl.Perl5Util;
 
 /**
  * This rule finds the following:
- * 
+ * <p/>
  * <pre>
  *         StringBuffer.append(&quot;c&quot;); // appends a
  *         single character
  * </pre>
- * 
+ * <p/>
  * It is preferable to use StringBuffer.append('c'); // appends a single
  * character Implementation of PMD RFE 1373863
  */

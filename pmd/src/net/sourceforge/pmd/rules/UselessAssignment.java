@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class UselessAssignment extends AbstractRule implements Executable  {
+public class UselessAssignment extends AbstractRule implements Executable {
 
     private RuleContext rc;
 
@@ -43,10 +43,12 @@ public class UselessAssignment extends AbstractRule implements Executable  {
     private static class Usage {
         public int accessType;
         public IDataFlowNode node;
+
         public Usage(int accessType, IDataFlowNode node) {
             this.accessType = accessType;
             this.node = node;
         }
+
         public String toString() {
             return "accessType = " + accessType + ", line = " + node.getLine();
         }
@@ -57,7 +59,7 @@ public class UselessAssignment extends AbstractRule implements Executable  {
         //System.out.println("path size is " + path.size());
         for (Iterator i = path.iterator(); i.hasNext();) {
             //System.out.println("i = " + i);
-            IDataFlowNode inode = (IDataFlowNode)i.next();
+            IDataFlowNode inode = (IDataFlowNode) i.next();
             if (inode.getVariableAccess() == null) {
                 continue;
             }

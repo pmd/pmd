@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.renderers;
 
 import junit.framework.Test;
@@ -13,30 +13,31 @@ import junit.framework.TestSuite;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
-public class RenderersTests
-{
-  /**
-   * test suite
-   *
-   * @return test suite
-   */
-  public static Test suite(  )
-  {
-    TestSuite suite =
-      new TestSuite( "Test for test.net.sourceforge.pmd.renderers" );
+public class RenderersTests {
+    /**
+     * test suite
+     *
+     * @return test suite
+     */
+    public static Test suite() {
+        TestSuite suite =
+                new TestSuite("Test for test.net.sourceforge.pmd.renderers");
 
-    //$JUnit-BEGIN$
-    suite.addTestSuite( XMLRendererTest.class );
-    suite.addTestSuite( TextPadRendererTest.class );
+        //$JUnit-BEGIN$
+        suite.addTestSuite(XMLRendererTest.class);
+        suite.addTestSuite(TextPadRendererTest.class);
 
-    //$JUnit-END$
-    return suite;
-  }
+        //$JUnit-END$
+        return suite;
+    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.5  2006/02/10 14:26:25  tomcopeland
+ * Huge reformatting checkin
+ *
  * Revision 1.4  2006/02/10 14:15:20  tomcopeland
  * Latest source from Pieter, everything compiles and all the tests pass with the exception of a few missing rules in basic-jsp.xml
  *

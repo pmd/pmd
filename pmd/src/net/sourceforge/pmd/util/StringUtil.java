@@ -58,7 +58,7 @@ public class StringUtil {
      * @param src The String to append to the stream
      */
     public static void appendXmlEscaped(StringBuffer buf, String src) {
-        appendXmlEscaped(buf, src, System.getProperty("net.sourceforge.pmd.supportUTF8","no").equals("yes"));
+        appendXmlEscaped(buf, src, System.getProperty("net.sourceforge.pmd.supportUTF8", "no").equals("yes"));
     }
 
     private static void appendXmlEscaped(StringBuffer buf, String src, boolean supportUTF8) {

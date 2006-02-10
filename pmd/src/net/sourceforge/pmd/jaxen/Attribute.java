@@ -34,7 +34,7 @@ public class Attribute {
                 }
                 return String.valueOf(res);
             }
-        }  catch (IllegalAccessException iae) {
+        } catch (IllegalAccessException iae) {
             iae.printStackTrace();
         } catch (InvocationTargetException ite) {
             ite.printStackTrace();

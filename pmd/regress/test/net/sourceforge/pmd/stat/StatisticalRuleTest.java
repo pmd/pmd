@@ -42,30 +42,30 @@ import java.util.Random;
 
 /**
  * This class tests the Statistical Rules in PMD.
- *
+ * <p/>
  * The idea is, that we fill up 999 datapoints into
  * the Stat Rule, and then throw random parameters
  * at it.
- *
+ * <p/>
  * The three parameters which are checked are:
- * 		sigma - # Sigmas over the mean.
- * 		topscore - Only the top 5 or so items.
- * 		minimum - Only things of score 10 or better
- *
+ * sigma - # Sigmas over the mean.
+ * topscore - Only the top 5 or so items.
+ * minimum - Only things of score 10 or better
+ * <p/>
  * When more than one parameter is lumped together, then
  * we expect the one which would return the fewest to
  * determine what gets sent back.
- *
+ * <p/>
  * So, we throw each collection of parameters, where each
  * one is a different order into the system.  We check the
  * results off of what the smallest value should be.
- *
+ * <p/>
  * If you are going to work with StatisticalRule any, please
  * bump the "NUM_TESTS" number up to something like 128.  That
  * way you are more likely to identify problems.  It is set low
  * now to make building and running tests easier (when we aren't
  * touching the file.)
- *
+ * <p/>
  * Note also, that when verifying the Sigma, I wasn't quite able
  * to determine how many results it would return (it would vary
  * from -2 to 2 of what I expected.)  That is what the delta
@@ -117,7 +117,7 @@ public class StatisticalRuleTest extends TestCase {
                 IUT.addDataPoint(points[i]);
             }
         } else if (testName.endsWith("1")) {
-            for (int i = POINTS-1; i >= 0; i--) {
+            for (int i = POINTS - 1; i >= 0; i--) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
                 SimpleNode s = new SimpleJavaNode(1);
@@ -153,7 +153,8 @@ public class StatisticalRuleTest extends TestCase {
 
     }
 
-    /**                           * This test verifies that the Stat rule creates a Metric,
+    /**
+     * This test verifies that the Stat rule creates a Metric,
      * with the proper values.
      */
     public void testMetrics() throws Throwable {
@@ -169,7 +170,7 @@ public class StatisticalRuleTest extends TestCase {
         assertEquals("test.net.sourceforge.pmd.stat.MockStatisticalRule", m.getMetricName());
 
         assertEquals(0.0, m.getLowValue(), 0.05);
-        assertEquals(POINTS -1.0, m.getHighValue(), 0.05);
+        assertEquals(POINTS - 1.0, m.getHighValue(), 0.05);
         assertEquals(MEAN, m.getAverage(), 0.05);
         assertEquals(SIGMA, m.getStandardDeviation(), 0.05);
     }
@@ -187,7 +188,7 @@ public class StatisticalRuleTest extends TestCase {
      * is greater than the parameter.
      */
     public double randomSigma(int minimum) {
-        double minSigma = ((POINTS -1 - minimum) - MEAN) / SIGMA;
+        double minSigma = ((POINTS - 1 - minimum) - MEAN) / SIGMA;
 
         if ((minSigma <= 0) || (minSigma > 2))
             return randomSigma();
@@ -202,16 +203,16 @@ public class StatisticalRuleTest extends TestCase {
     public int expectedSigma(double sigma) {
         long expectedMin = Math.round(MEAN + (sigma * SIGMA));
 
-        if (((POINTS -1) - expectedMin) < 0)
+        if (((POINTS - 1) - expectedMin) < 0)
             return 0;
-        return (POINTS -1) - (int) expectedMin;
+        return (POINTS - 1) - (int) expectedMin;
     }
 
     /**
      * This generates a random minimum value for testing.
      */
     public double randomMinimum() {
-        return random.nextDouble() * (POINTS -1);
+        return random.nextDouble() * (POINTS - 1);
     }
 
     /**
@@ -219,25 +220,25 @@ public class StatisticalRuleTest extends TestCase {
      * results would be returned.
      */
     public double randomMinimum(int minimum) {
-        double diffTarget = 1.0 * (POINTS -1 - minimum);
+        double diffTarget = 1.0 * (POINTS - 1 - minimum);
         return (random.nextDouble() * minimum) + diffTarget;
     }
 
     /**
      * This returns the expected number of reports.
-     *
+     * <p/>
      * If the Minimum comes in at 521.569 then we expect
      * 522, 523, ... 999 will pass.
      */
     public int expectedMinimum(double minimum) {
         Double d = new Double(minimum);
-        return POINTS -1 - d.intValue();
+        return POINTS - 1 - d.intValue();
     }
 
     public void testExpectedMinimum() {
-        for (int i = 0; i < POINTS -1; i++) {
-            assertEquals("Integer Min", POINTS -1 - i, expectedMinimum(i * 1.0));
-            assertEquals("Double Min", POINTS -1 - i, expectedMinimum((i * 1.0) + 0.5));
+        for (int i = 0; i < POINTS - 1; i++) {
+            assertEquals("Integer Min", POINTS - 1 - i, expectedMinimum(i * 1.0));
+            assertEquals("Double Min", POINTS - 1 - i, expectedMinimum((i * 1.0) + 0.5));
         }
     }
 
@@ -245,7 +246,7 @@ public class StatisticalRuleTest extends TestCase {
      * This returns a random value for Top Score.
      */
     public int randomTopScore() {
-        return random.nextInt(POINTS -1);
+        return random.nextInt(POINTS - 1);
     }
 
     /**

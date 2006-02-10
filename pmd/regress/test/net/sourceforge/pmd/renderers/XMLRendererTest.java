@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -25,13 +25,25 @@ public class XMLRendererTest extends RuleTst {
 
     private static class FooRule extends AbstractRule {
         public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
-            if (c.getImage().equals("Foo")) addViolation(ctx,c);
+            if (c.getImage().equals("Foo")) addViolation(ctx, c);
             return ctx;
         }
-        public String getMessage() { return "blah"; }
-        public String getName() { return "Foo"; }
-        public String getRuleSetName() { return "RuleSet"; }
-        public String getDescription() { return "desc"; }
+
+        public String getMessage() {
+            return "blah";
+        }
+
+        public String getName() {
+            return "Foo";
+        }
+
+        public String getRuleSetName() {
+            return "RuleSet";
+        }
+
+        public String getDescription() {
+            return "desc";
+        }
     }
 
     public void testEmptyReport() throws Throwable {
@@ -58,12 +70,12 @@ public class XMLRendererTest extends RuleTst {
     }
 
     private static final String TEST1 =
-    "public class Foo {}" + PMD.EOL;
+            "public class Foo {}" + PMD.EOL;
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " public class Foo {}" + PMD.EOL +
-    "}" + PMD.EOL;
+            "public class Foo {" + PMD.EOL +
+            " public class Foo {}" + PMD.EOL +
+            "}" + PMD.EOL;
 
 
     public void testDoubleReport() throws Throwable {

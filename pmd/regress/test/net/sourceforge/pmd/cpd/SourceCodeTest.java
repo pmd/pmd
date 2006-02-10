@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
@@ -17,8 +17,8 @@ public class SourceCodeTest extends TestCase {
         assertEquals("Foo.java", sourceCode.getFileName());
         tokenizer.tokenize(sourceCode, new Tokens());
 
-        assertEquals(MatchAlgorithmTest.LINE_1, sourceCode.getSlice(1,1));
-        assertEquals(MatchAlgorithmTest.LINE_2, sourceCode.getSlice(2,2));
-        assertEquals(MatchAlgorithmTest.LINE_1 + PMD.EOL + MatchAlgorithmTest.LINE_2, sourceCode.getSlice(1,2));
+        assertEquals(MatchAlgorithmTest.LINE_1, sourceCode.getSlice(1, 1));
+        assertEquals(MatchAlgorithmTest.LINE_2, sourceCode.getSlice(2, 2));
+        assertEquals(MatchAlgorithmTest.LINE_1 + PMD.EOL + MatchAlgorithmTest.LINE_2, sourceCode.getSlice(1, 2));
     }
 }

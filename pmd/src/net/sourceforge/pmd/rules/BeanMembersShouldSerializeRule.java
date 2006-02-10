@@ -8,8 +8,8 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTResultType;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +27,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
         Map methods = node.getScope().getEnclosingClassScope().getMethodDeclarations();
         List getSetMethList = new ArrayList();
         for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
-            ASTMethodDeclarator mnd = ((MethodNameDeclaration)i.next()).getMethodNameDeclaratorNode();
+            ASTMethodDeclarator mnd = ((MethodNameDeclaration) i.next()).getMethodNameDeclaratorNode();
             if (isBeanAccessor(mnd)) {
                 getSetMethList.add(mnd);
             }

@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.rules.logging.java;
 
 import net.sourceforge.pmd.PMD;
@@ -18,21 +18,21 @@ public class MoreThanOneLoggerTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "ok", 0, rule),
-           new TestDescriptor(TEST2, "two loggers", 1, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "ok", 0, rule),
+            new TestDescriptor(TEST2, "two loggers", 1, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " Logger log;" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Logger log;" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " Logger log;" + PMD.EOL +
-    " Logger log2;" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " Logger log;" + PMD.EOL +
+            " Logger log2;" + PMD.EOL +
+            "}";
 
 }

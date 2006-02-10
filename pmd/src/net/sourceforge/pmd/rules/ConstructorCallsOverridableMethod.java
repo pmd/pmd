@@ -557,10 +557,12 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         //skip this class if it has no evaluation package
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {
             //evaluate danger of all methods in class
-            while (evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass)) {}
+            while (evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass)) {
+            }
             //evaluate danger of constructors
             evaluateDangerOfConstructors1(getCurrentEvalPackage().allPrivateConstructorsOfClass, getCurrentEvalPackage().allMethodsOfClass.keySet());
-            while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass)) {}
+            while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass)) {
+            }
 
             //get each method called on this object from a non-private constructor, if its dangerous flag it
             for (Iterator it = getCurrentEvalPackage().calledMethods.iterator(); it.hasNext();) {
@@ -572,7 +574,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         String methName = h.getASTMethodDeclarator().getImage();
                         int count = h.getASTMethodDeclarator().getParameterCount();
                         if (meth.getName().equals(methName) && meth.getArgumentCount() == count) {
-                            addViolation( data, meth.getASTPrimaryExpression(), "method '" + h.getCalled() + "'");
+                            addViolation(data, meth.getASTPrimaryExpression(), "method '" + h.getCalled() + "'");
                         }
                     }
                 }
@@ -597,6 +599,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         removeCurrentEvalPackage();
         return data;
     }
+
     /**
      * Check the methods called on this class by each of the methods on this
      * class.  If a method calls an unsafe method, mark the calling method as
@@ -788,7 +791,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
             MethodHolder h = new MethodHolder(node);
             if (!parent.isAbstract() && !parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) { //Skip abstract methods, have a separate rule for that
                 h.setDangerous();//this method is overridable
-                ASTMethodDeclaration decl = (ASTMethodDeclaration)node.getFirstParentOfType(ASTMethodDeclaration.class);
+                ASTMethodDeclaration decl = (ASTMethodDeclaration) node.getFirstParentOfType(ASTMethodDeclaration.class);
                 h.setCalledMethod(decl.getMethodName());
             }
             List l = new ArrayList();
@@ -797,7 +800,6 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         }
         return super.visit(node, data);
     }
-
 
 
     private static void addCalledMethodsOfNode(AccessNode node, List calledMethods, String className) {

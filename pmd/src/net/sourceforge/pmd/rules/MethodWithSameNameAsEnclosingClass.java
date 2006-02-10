@@ -12,7 +12,7 @@ public class MethodWithSameNameAsEnclosingClass extends AbstractRule {
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         List methods = node.findChildrenOfType(ASTMethodDeclarator.class);
         for (Iterator i = methods.iterator(); i.hasNext();) {
-            ASTMethodDeclarator m = (ASTMethodDeclarator)i.next();
+            ASTMethodDeclarator m = (ASTMethodDeclarator) i.next();
             if (m.getImage().equals(node.getImage())) {
                 addViolation(data, m);
             }

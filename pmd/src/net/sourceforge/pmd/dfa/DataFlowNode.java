@@ -29,7 +29,8 @@ public class DataFlowNode implements IDataFlowNode {
     protected LinkedList dataFlow;
     protected int line;
 
-    protected DataFlowNode() {}
+    protected DataFlowNode() {
+    }
 
     public DataFlowNode(SimpleNode node, LinkedList dataFlow) {
         this.dataFlow = dataFlow;
@@ -121,11 +122,11 @@ public class DataFlowNode implements IDataFlowNode {
         String res = "DataFlowNode: line " + this.getLine() + ", ";
         if (node instanceof ASTMethodDeclaration || node instanceof ASTConstructorDeclaration) {
             res += (node instanceof ASTMethodDeclaration) ? "(method)" : "(constructor)";
-       } else {
+        } else {
             String tmp = type.toString();
             String newTmp = "";
-            for (int i=0; i<tmp.length(); i++) {
-                if (tmp.charAt(i) != '{' && tmp.charAt(i) != '}'&& tmp.charAt(i) != ' ') {
+            for (int i = 0; i < tmp.length(); i++) {
+                if (tmp.charAt(i) != '{' && tmp.charAt(i) != '}' && tmp.charAt(i) != ' ') {
                     newTmp += tmp.charAt(i);
                 }
             }
@@ -133,7 +134,7 @@ public class DataFlowNode implements IDataFlowNode {
                 int newTmpInt = Integer.parseInt(st.nextToken());
                 res += "(" + stringFromType(newTmpInt) + ")";
             }
-            res += ", " + this.node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.')+1);
+            res += ", " + this.node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
             res += (node.getImage() == null ? "" : "(" + this.node.getImage() + ")");
         }
         return res;
@@ -165,7 +166,7 @@ public class DataFlowNode implements IDataFlowNode {
         if (!typeMap.containsKey(new Integer(intype))) {
             throw new RuntimeException("Couldn't find type id " + intype);
         }
-        return (String)typeMap.get(new Integer(intype));
+        return (String) typeMap.get(new Integer(intype));
     }
 
 }

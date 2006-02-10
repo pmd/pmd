@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;

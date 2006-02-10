@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * 
  * @author mgriffa
  */
 public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
@@ -38,18 +37,18 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
 
     public Object visit(ASTConstructorDeclaration node, Object data) {
         ASTFormalParameter[] arrs = getArrays((ASTFormalParameters) node.jjtGetChild(0));
-        if (arrs!=null) {
+        if (arrs != null) {
             //TODO check if one of these arrays is stored in a non local variable
             List bs = node.findChildrenOfType(ASTBlockStatement.class);
             checkAll(data, arrs, bs);
         }
         return data;
     }
-    
+
     public Object visit(ASTMethodDeclaration node, Object data) {
         final ASTFormalParameters params = (ASTFormalParameters) node.getFirstChildOfType(ASTFormalParameters.class);
         ASTFormalParameter[] arrs = getArrays(params);
-        if (arrs!=null) {
+        if (arrs != null) {
             List bs = node.findChildrenOfType(ASTBlockStatement.class);
             checkAll(data, arrs, bs);
         }
@@ -57,18 +56,18 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
     }
 
     private void checkAll(Object context, ASTFormalParameter[] arrs, List bs) {
-        for (int i=0;i<arrs.length;i++) {
+        for (int i = 0; i < arrs.length; i++) {
             checkForDirectAssignment(context, arrs[i], bs);
         }
     }
-    
+
     /**
      * Checks if the variable designed in parameter is written to a field (not local variable) in the statements.
      */
     private boolean checkForDirectAssignment(Object ctx, final ASTFormalParameter parameter, final List bs) {
         final ASTVariableDeclaratorId vid = (ASTVariableDeclaratorId) parameter.getFirstChildOfType(ASTVariableDeclaratorId.class);
         final String varName = vid.getImage();
-        for (Iterator it = bs.iterator() ; it.hasNext() ; ) {
+        for (Iterator it = bs.iterator(); it.hasNext();) {
             final ASTBlockStatement b = (ASTBlockStatement) it.next();
             if (b.containsChildOfType(ASTAssignmentOperator.class)) {
                 final ASTStatementExpression se = (ASTStatementExpression) b.getFirstChildOfType(ASTStatementExpression.class);
@@ -77,8 +76,8 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                 }
                 ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
                 String assignedVar = getFirstNameImage(pe);
-                if (assignedVar==null) {
-                    assignedVar = ((ASTPrimarySuffix)se.getFirstChildOfType(ASTPrimarySuffix.class)).getImage();
+                if (assignedVar == null) {
+                    assignedVar = ((ASTPrimarySuffix) se.getFirstChildOfType(ASTPrimarySuffix.class)).getImage();
                 }
 
                 ASTMethodDeclaration n = (ASTMethodDeclaration) pe.getFirstParentOfType(ASTMethodDeclaration.class);
@@ -94,8 +93,8 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                         continue;
                     }
                     String val = getFirstNameImage(e);
-                    if (val==null) {
-                        ASTPrimarySuffix foo = (ASTPrimarySuffix)se.getFirstChildOfType(ASTPrimarySuffix.class);
+                    if (val == null) {
+                        ASTPrimarySuffix foo = (ASTPrimarySuffix) se.getFirstChildOfType(ASTPrimarySuffix.class);
                         if (foo == null) {
                             continue;
                         }
@@ -112,16 +111,16 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                         }
                     }
                 }
-            }            
+            }
         }
         return false;
     }
 
     private final ASTFormalParameter[] getArrays(ASTFormalParameters params) {
         final List l = params.findChildrenOfType(ASTFormalParameter.class);
-        if (l!=null && !l.isEmpty()) {
+        if (l != null && !l.isEmpty()) {
             Vector v = new Vector();
-            for (Iterator it = l.iterator() ; it.hasNext() ; ) {
+            for (Iterator it = l.iterator(); it.hasNext();) {
                 ASTFormalParameter fp = (ASTFormalParameter) it.next();
                 if (fp.isArray())
                     v.add(fp);

@@ -65,7 +65,7 @@ public class SequenceChecker {
     }
 
     private static Status root;
-    
+
     static {
         root = new Status(Status.ROOT);
         Status ifNode = new Status(NodeType.IF_EXPR);
@@ -128,7 +128,7 @@ public class SequenceChecker {
         doSt.addStep(doExpr);
         doExpr.addStep(root);
     }
-    
+
     private Status aktStatus;
     private List bracesList;
 

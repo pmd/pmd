@@ -4,7 +4,7 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.Rule;
 
-public class ASTTypeDeclaration extends SimpleJavaNode implements CanSuppressWarnings{
+public class ASTTypeDeclaration extends SimpleJavaNode implements CanSuppressWarnings {
     public ASTTypeDeclaration(int id) {
         super(id);
     }
@@ -15,9 +15,9 @@ public class ASTTypeDeclaration extends SimpleJavaNode implements CanSuppressWar
 
 
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
-        for (int i=0;i<jjtGetNumChildren(); i++) {
+        for (int i = 0; i < jjtGetNumChildren(); i++) {
             if (jjtGetChild(i) instanceof ASTAnnotation) {
-                ASTAnnotation a = (ASTAnnotation)jjtGetChild(i);
+                ASTAnnotation a = (ASTAnnotation) jjtGetChild(i);
                 if (a.suppresses(rule)) {
                     return true;
                 }
@@ -25,6 +25,7 @@ public class ASTTypeDeclaration extends SimpleJavaNode implements CanSuppressWar
         }
         return false;
     }
+
     /**
      * Accept the visitor. *
      */

@@ -15,16 +15,16 @@ public class AvoidEnumAsIdentifierTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "variable and param named enum", 2, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "variable and param named enum", 2, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " void bar(String enum) {" + PMD.EOL +
-    "  String enum = \"hi\";" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar(String enum) {" + PMD.EOL +
+            "  String enum = \"hi\";" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
 }

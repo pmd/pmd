@@ -3,7 +3,7 @@ package test.net.sourceforge.pmd;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 
-public class SimpleRuleSetNameMapperTest extends TestCase{
+public class SimpleRuleSetNameMapperTest extends TestCase {
 
     public void testMultipleSimple() {
         SimpleRuleSetNameMapper s = new SimpleRuleSetNameMapper("unusedcode,basic");

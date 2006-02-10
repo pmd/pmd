@@ -59,9 +59,9 @@ public class CouplingBetweenObjects extends AbstractRule {
             if (tNode instanceof ASTType) {
                 SimpleNode reftypeNode = (SimpleNode) tNode.jjtGetChild(0);
                 if (reftypeNode instanceof ASTReferenceType) {
-                    SimpleNode classOrIntType = (SimpleNode)reftypeNode.jjtGetChild(0);
+                    SimpleNode classOrIntType = (SimpleNode) reftypeNode.jjtGetChild(0);
                     if (classOrIntType instanceof ASTClassOrInterfaceType) {
-                        SimpleNode nameNode = (ASTClassOrInterfaceType)classOrIntType;
+                        SimpleNode nameNode = (ASTClassOrInterfaceType) classOrIntType;
                         this.checkVariableType(nameNode, nameNode.getImage());
                     }
                 }

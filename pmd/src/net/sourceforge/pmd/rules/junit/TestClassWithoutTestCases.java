@@ -11,22 +11,22 @@ import java.util.Iterator;
 import java.util.List;
 
 public class TestClassWithoutTestCases extends AbstractRule {
-	
-	public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface() || node.isNested()) {
-		return data;
+            return data;
         }
 
         String className = node.getImage();
         if (className.endsWith("Test")) {
             List m = node.findChildrenOfType(ASTMethodDeclarator.class);
             boolean testsFound = false;
-            if (m!=null) {
-                for (Iterator it = m.iterator() ; it.hasNext() && !testsFound ; ) {
+            if (m != null) {
+                for (Iterator it = m.iterator(); it.hasNext() && !testsFound;) {
                     ASTMethodDeclarator md = (ASTMethodDeclarator) it.next();
                     if (!isInInnerClassOrInterface(md)
                             && md.getImage().startsWith("test")) {
-                                testsFound = true;
+                        testsFound = true;
                     }
                 }
             }
@@ -37,9 +37,10 @@ public class TestClassWithoutTestCases extends AbstractRule {
 
         }
         return data;
-	}
-	private boolean isInInnerClassOrInterface(ASTMethodDeclarator md) {
-		ASTClassOrInterfaceDeclaration p = (ASTClassOrInterfaceDeclaration)md.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+    }
+
+    private boolean isInInnerClassOrInterface(ASTMethodDeclarator md) {
+        ASTClassOrInterfaceDeclaration p = (ASTClassOrInterfaceDeclaration) md.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         return p != null && p.isNested();
-	}
+    }
 }

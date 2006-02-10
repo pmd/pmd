@@ -56,7 +56,7 @@ public class ASTModel
             if (node.jjtGetChild(i).equals(child)) {
                 return i;
             }
-         return -1;
+        return -1;
     }
 
     /**
@@ -87,7 +87,7 @@ public class ASTModel
      */
     public void addTreeModelListener(TreeModelListener l) {
         listeners.add(l);
-   }
+    }
 
 
     /**

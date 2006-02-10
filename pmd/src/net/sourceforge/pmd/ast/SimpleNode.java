@@ -257,14 +257,13 @@ public abstract class SimpleNode implements Node {
     protected void appendElement(org.w3c.dom.Node parentNode) {
         DocumentNavigator docNav = new DocumentNavigator();
         Document ownerDocument = parentNode.getOwnerDocument();
-        if( ownerDocument == null )
-        {
+        if (ownerDocument == null) {
             //If the parentNode is a Document itself, it's ownerDocument is null
             ownerDocument = (Document) parentNode;
         }
         String elementName = docNav.getElementName(this);
         Element element = ownerDocument.createElement(elementName);
-        parentNode.appendChild( element );
+        parentNode.appendChild(element);
         for (Iterator iter = docNav.getAttributeAxisIterator(this); iter.hasNext();) {
             Attribute attr = (Attribute) iter.next();
             element.setAttribute(attr.getName(), attr.getValue());

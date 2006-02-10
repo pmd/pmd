@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-*/
+ */
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
@@ -27,7 +27,7 @@ public class JavaTokensTokenizerTest extends TestCase {
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(data));
         Tokens tokens = new Tokens();
         t.tokenize(sourceCode, tokens);
-        assertEquals("public class Foo {" + PMD.EOL + "public void bar() {}", sourceCode.getSlice(1,2));
+        assertEquals("public class Foo {" + PMD.EOL + "public void bar() {}", sourceCode.getSlice(1, 2));
     }
 
     public void testDiscardSemicolons() throws Throwable {

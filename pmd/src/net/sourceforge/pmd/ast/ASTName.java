@@ -14,9 +14,11 @@ public class ASTName extends SimpleJavaNode {
     }
 
     private NameDeclaration nd;
+
     public void setNameDeclaration(NameDeclaration nd) {
         this.nd = nd;
     }
+
     public NameDeclaration getNameDeclaration() {
         return this.nd;
     }

@@ -78,7 +78,7 @@ public class NameOccurrence {
             throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent());
         }
 
-        if (isStandAlonePostfix(primaryExpression))  {
+        if (isStandAlonePostfix(primaryExpression)) {
             return true;
         }
 
@@ -110,7 +110,7 @@ public class NameOccurrence {
             return false;
         }
 
-        ASTPrimaryPrefix pf = (ASTPrimaryPrefix)((ASTPrimaryExpression)primaryExpression.jjtGetChild(0)).jjtGetChild(0);
+        ASTPrimaryPrefix pf = (ASTPrimaryPrefix) ((ASTPrimaryExpression) primaryExpression.jjtGetChild(0)).jjtGetChild(0);
         if (pf.usesThisModifier()) {
             return true;
         }
@@ -120,7 +120,7 @@ public class NameOccurrence {
 
     private boolean thirdChildHasDottedName(SimpleNode primaryExpression) {
         Node thirdChild = primaryExpression.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
-        return thirdChild instanceof ASTName && ((ASTName)thirdChild).getImage().indexOf(".") == -1;
+        return thirdChild instanceof ASTName && ((ASTName) thirdChild).getImage().indexOf(".") == -1;
     }
 
     public boolean isSelfAssignment() {
@@ -129,9 +129,9 @@ public class NameOccurrence {
         }
 
         if (location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTStatementExpression) {
-            ASTStatementExpression exp = (ASTStatementExpression)location.jjtGetParent().jjtGetParent().jjtGetParent();
+            ASTStatementExpression exp = (ASTStatementExpression) location.jjtGetParent().jjtGetParent().jjtGetParent();
             if (exp.jjtGetNumChildren() >= 2 && exp.jjtGetChild(1) instanceof ASTAssignmentOperator) {
-                ASTAssignmentOperator op = (ASTAssignmentOperator)exp.jjtGetChild(1);
+                ASTAssignmentOperator op = (ASTAssignmentOperator) exp.jjtGetChild(1);
                 if (op.isCompound()) {
                     return true;
                 }

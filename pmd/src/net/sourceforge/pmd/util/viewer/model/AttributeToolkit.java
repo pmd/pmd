@@ -23,7 +23,7 @@ public class AttributeToolkit {
         return "'" + attribute.getValue() + "'";
     }
 
-   /**
+    /**
      * constructs a predicate from the given attribute
      *
      * @param attribute attribute to be formatted as predicate

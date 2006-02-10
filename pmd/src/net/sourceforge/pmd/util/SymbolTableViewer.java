@@ -26,7 +26,7 @@ public class SymbolTableViewer extends JavaParserVisitorAdapter {
 
     private String spaces() {
         String s = "";
-        for (int i=0;i<depth;i++) {
+        for (int i = 0; i < depth; i++) {
             s += " ";
         }
         return s;

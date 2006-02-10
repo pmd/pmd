@@ -6,7 +6,7 @@ import net.sourceforge.pmd.cpd.AnyTokenizer;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.Tokens;
 
-public class AnyTokenizerTest extends TestCase{
+public class AnyTokenizerTest extends TestCase {
 
     public void testMultiLineMacros() throws Throwable {
         AnyTokenizer tokenizer = new AnyTokenizer();
@@ -17,14 +17,14 @@ public class AnyTokenizerTest extends TestCase{
     }
 
     private static final String TEST1 =
-    "using System;" 									+ PMD.EOL +
-    "namespace HelloNameSpace {" 						+ PMD.EOL +
-    "" 													+ PMD.EOL +
-    "    public class HelloWorld {" 					+ PMD.EOL +
-    "        static void Main(string[] args) {"			+ PMD.EOL +
-    "            Console.WriteLine(\"Hello World!\");" 	+ PMD.EOL +
-    "        }"											+ PMD.EOL +
-    "    }"												+ PMD.EOL +
-    "}"													+ PMD.EOL;
+            "using System;" + PMD.EOL +
+            "namespace HelloNameSpace {" + PMD.EOL +
+            "" + PMD.EOL +
+            "    public class HelloWorld {" + PMD.EOL +
+            "        static void Main(string[] args) {" + PMD.EOL +
+            "            Console.WriteLine(\"Hello World!\");" + PMD.EOL +
+            "        }" + PMD.EOL +
+            "    }" + PMD.EOL +
+            "}" + PMD.EOL;
 
 }

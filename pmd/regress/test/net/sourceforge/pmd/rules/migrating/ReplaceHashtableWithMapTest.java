@@ -15,22 +15,22 @@ public class ReplaceHashtableWithMapTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "bad, local variable of type Hashtable", 1, rule),
-           new TestDescriptor(TEST2, "bad, param of type Hashtable", 1, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "bad, local variable of type Hashtable", 1, rule),
+            new TestDescriptor(TEST2, "bad, param of type Hashtable", 1, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " void bar() {" + PMD.EOL +
-    "  Hashtable h = new Hashtable();" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  Hashtable h = new Hashtable();" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " void bar(Hashtable h) {" + PMD.EOL +
-    " }" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " void bar(Hashtable h) {" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
 }

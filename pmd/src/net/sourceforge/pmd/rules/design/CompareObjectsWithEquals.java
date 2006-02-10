@@ -16,13 +16,13 @@ public class CompareObjectsWithEquals extends AbstractRule {
 
     public Object visit(ASTEqualityExpression node, Object data) {
         // skip if either child is not a simple name
-        if (!hasName(((SimpleNode)node.jjtGetChild(0)).jjtGetChild(0)) || !hasName(((SimpleNode)node.jjtGetChild(1)).jjtGetChild(0))) {
+        if (!hasName(((SimpleNode) node.jjtGetChild(0)).jjtGetChild(0)) || !hasName(((SimpleNode) node.jjtGetChild(1)).jjtGetChild(0))) {
             return data;
         }
 
         // skip if either is a qualified name
-        if (((SimpleNode)node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf(".") != -1
-        || ((SimpleNode)node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf(".") != -1) {
+        if (((SimpleNode) node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf(".") != -1
+                || ((SimpleNode) node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf(".") != -1) {
             return data;
         }
 
@@ -31,12 +31,12 @@ public class CompareObjectsWithEquals extends AbstractRule {
             return data;
         }
 
-        ASTName n0 = (ASTName)node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
-        ASTName n1 = (ASTName)node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0);
+        ASTName n0 = (ASTName) node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+        ASTName n1 = (ASTName) node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0);
 
         if (n0.getNameDeclaration() instanceof VariableNameDeclaration && n1.getNameDeclaration() instanceof VariableNameDeclaration) {
-            VariableNameDeclaration nd0 = (VariableNameDeclaration)n0.getNameDeclaration();
-            VariableNameDeclaration nd1 = (VariableNameDeclaration)n1.getNameDeclaration();
+            VariableNameDeclaration nd0 = (VariableNameDeclaration) n0.getNameDeclaration();
+            VariableNameDeclaration nd1 = (VariableNameDeclaration) n1.getNameDeclaration();
 
             // skip array dereferences... this misses some cases
             // FIXME catch comparisons btwn array elements of reference types

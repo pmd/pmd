@@ -38,7 +38,7 @@ public class XMLRenderer implements Renderer {
             }
             String codeFragment = match.getSourceCodeSlice();
             if (codeFragment != null) {
-                buffer.append("<codefragment>"  + PMD.EOL + "<![CDATA[" + PMD.EOL + StringUtil.replaceString(codeFragment, "]]>", "]]&gt;") + PMD.EOL + "]]>"  + PMD.EOL + "</codefragment>" + PMD.EOL);
+                buffer.append("<codefragment>" + PMD.EOL + "<![CDATA[" + PMD.EOL + StringUtil.replaceString(codeFragment, "]]>", "]]&gt;") + PMD.EOL + "]]>" + PMD.EOL + "</codefragment>" + PMD.EOL);
             }
             buffer.append("</duplication>" + PMD.EOL);
         }

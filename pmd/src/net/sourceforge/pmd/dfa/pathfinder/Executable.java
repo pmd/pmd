@@ -4,8 +4,6 @@
 package net.sourceforge.pmd.dfa.pathfinder;
 
 
-
-
 /**
  * @author raik
  *         <p/>

@@ -14,7 +14,7 @@ public class ExcludeLines {
     private Set lines = new HashSet();
     private String copy;
 
-    public ExcludeLines(Reader r, String marker) throws IOException  {
+    public ExcludeLines(Reader r, String marker) throws IOException {
         BufferedReader br = new BufferedReader(r);
         StringBuffer copyBuffer = new StringBuffer();
         String tmp;

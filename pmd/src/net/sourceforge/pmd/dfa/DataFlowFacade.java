@@ -11,8 +11,8 @@ import net.sourceforge.pmd.dfa.variableaccess.VariableAccessVisitor;
 
 /**
  * @author raik
- *
- * TODO What about initializers?  This only processes methods and constructors
+ *         <p/>
+ *         TODO What about initializers?  This only processes methods and constructors
  */
 public class DataFlowFacade extends JavaParserVisitorAdapter {
 

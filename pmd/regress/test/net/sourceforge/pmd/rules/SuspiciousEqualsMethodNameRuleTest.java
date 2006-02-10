@@ -14,26 +14,26 @@ public class SuspiciousEqualsMethodNameRuleTest extends SimpleAggregatorTst {
     }
 
     public void testAll() {
-       runTests(new TestDescriptor[] {
-           new TestDescriptor(TEST1, "bad, equals(Foo foo)", 1, rule),
-           new TestDescriptor(TEST2, "ok, equals(Object foo)", 0, rule),
-           new TestDescriptor(TEST3, "bad, equal(Object foo)", 1, rule),
-       });
+        runTests(new TestDescriptor[]{
+            new TestDescriptor(TEST1, "bad, equals(Foo foo)", 1, rule),
+            new TestDescriptor(TEST2, "ok, equals(Object foo)", 0, rule),
+            new TestDescriptor(TEST3, "bad, equal(Object foo)", 1, rule),
+        });
     }
 
     private static final String TEST1 =
-    "public class Foo {" + PMD.EOL +
-    " public boolean equals(Foo foo) {return true;}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public boolean equals(Foo foo) {return true;}" + PMD.EOL +
+            "}";
 
     private static final String TEST2 =
-    "public class Foo {" + PMD.EOL +
-    " public boolean equals(Object foo) {return true;}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public boolean equals(Object foo) {return true;}" + PMD.EOL +
+            "}";
 
     private static final String TEST3 =
-    "public class Foo {" + PMD.EOL +
-    " public boolean equal(Object foo) {return true;}" + PMD.EOL +
-    "}";
+            "public class Foo {" + PMD.EOL +
+            " public boolean equal(Object foo) {return true;}" + PMD.EOL +
+            "}";
 
 }

@@ -162,6 +162,7 @@ public class JavaParserVisitorAdapter implements JavaParserVisitor {
     public Object visit(ASTMethodDeclarationLookahead node, Object data) {
         return visit((SimpleJavaNode) node, data);
     }
+
     public Object visit(ASTFieldDeclaration node, Object data) {
         return visit((SimpleJavaNode) node, data);
     }

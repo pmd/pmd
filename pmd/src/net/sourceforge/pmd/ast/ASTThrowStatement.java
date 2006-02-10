@@ -18,16 +18,16 @@ public class ASTThrowStatement extends SimpleJavaNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-    
+
     /**
      * Gets the image of the first ASTClassOrInterfaceType child or <code>null</code> if none is found.
-     * Note that when the statement is something like throw new Exception, this method 
+     * Note that when the statement is something like throw new Exception, this method
      * returns 'Exception' and if the throw statement is like throw e: this method returns 'e'.
-     * A special case of returning <code>null</code> is when the throws is like throw this.e or 
+     * A special case of returning <code>null</code> is when the throws is like throw this.e or
      * throw this.
-     *
+     * <p/>
      * TODO - use symbol table (?)
-     * 
+     *
      * @return the image of the first ASTClassOrInterfaceType node found or <code>null</code>
      */
     public final String getFirstClassOrInterfaceTypeImage() {
