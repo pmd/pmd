@@ -7,16 +7,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collection;
 
 
 /**
- * This class represents a Set of rules.
+ * This class represents a collectin of rules.
  *
  * @see Rule
  */
 public class RuleSet {
 
-    private Set rules = new HashSet();
+    private List rules = new ArrayList();
     private String name = "";
     private String description = "";
     private Language language;
@@ -43,11 +45,11 @@ public class RuleSet {
     }
 
     /**
-     * Returns the actual Set of rules in this ruleset
+     * Returns the actual Collection of rules in this ruleset
      *
-     * @return a Set with the rules. All objects are of type {@link Rule}
+     * @return a Collection with the rules. All objects are of type {@link Rule}
      */
-    public Set getRules() {
+    public Collection getRules() {
         return rules;
     }
 
@@ -87,7 +89,7 @@ public class RuleSet {
      * @param ruleSet the RuleSet to add
      */
     public void addRuleSet(RuleSet ruleSet) {
-        rules.addAll(ruleSet.getRules());
+        rules.addAll(rules.size(), ruleSet.getRules());
     }
 
     public void apply(List acuList, RuleContext ctx) {

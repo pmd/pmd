@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Collection;
 
 public class Benchmark {
 
@@ -119,7 +120,7 @@ public class Benchmark {
     }
 
     private static void stress(RuleSet ruleSet, List files, Set results, boolean debug) throws PMDException, IOException {
-        Set rules = ruleSet.getRules();
+        Collection rules = ruleSet.getRules();
         for (Iterator j = rules.iterator(); j.hasNext();) {
             Rule rule = (Rule) j.next();
             if (debug) System.out.println("Starting " + rule.getName());
