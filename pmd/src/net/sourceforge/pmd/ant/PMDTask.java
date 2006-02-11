@@ -92,6 +92,10 @@ public class PMDTask extends Task {
         this.failuresPropertyName = failuresPropertyName;
     }
 
+    public void setMinimumPriority(int minPriority) {
+        this.minPriority = minPriority;
+    }
+
     public void addFileset(FileSet set) {
         filesets.add(set);
     }

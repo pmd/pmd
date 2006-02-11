@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTArgumentList;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.Iterator;
@@ -27,7 +28,6 @@ import java.util.List;
  * 
  * @author mgriffa
  */
-
 public class InefficientStringBuffering extends AbstractRule {
 
     public Object visit(ASTAdditiveExpression node, Object data) {
@@ -38,8 +38,8 @@ public class InefficientStringBuffering extends AbstractRule {
 
         int immediateLiterals = 0;
         List nodes = node.findChildrenOfType(ASTLiteral.class);
-        for (Iterator i = nodes.iterator(); i.hasNext();) {
-            ASTLiteral literal = (ASTLiteral) i.next();
+        for (Iterator i = nodes.iterator();i.hasNext();) {
+            ASTLiteral literal = (ASTLiteral)i.next();
             if (literal.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTAdditiveExpression) {
                 immediateLiterals++;
             }
@@ -58,9 +58,9 @@ public class InefficientStringBuffering extends AbstractRule {
         // if literal + public static final, return
         List nameNodes = node.findChildrenOfType(ASTName.class);
         for (Iterator i = nameNodes.iterator(); i.hasNext();) {
-            ASTName name = (ASTName) i.next();
+            ASTName name = (ASTName)i.next();
             if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
-                VariableNameDeclaration vnd = (VariableNameDeclaration) name.getNameDeclaration();
+                VariableNameDeclaration vnd = (VariableNameDeclaration)name.getNameDeclaration();
                 if (vnd.getAccessNodeParent().isFinal() && vnd.getAccessNodeParent().isStatic()) {
                     return data;
                 }
@@ -86,18 +86,28 @@ public class InefficientStringBuffering extends AbstractRule {
         if (s == null) {
             return false;
         }
-        ASTName n = (ASTName) s.getFirstChildOfType(ASTName.class);
+        ASTName n = (ASTName)s.getFirstChildOfType(ASTName.class);
 
         if (n == null || n.getImage().indexOf("append") == -1 || !(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
             return false;
         }
-        return ((VariableNameDeclaration) n.getNameDeclaration()).getTypeImage().equals("StringBuffer");
+
+        // TODO having to hand-code this kind of dredging around is ridiculous
+        // we need something to support this in the framework
+        // but, "for now" (tm):
+        // if more than one arg to append(), skip it
+        ASTArgumentList argList = (ASTArgumentList)s.getFirstChildOfType(ASTArgumentList.class);
+        if (argList == null || argList.jjtGetNumChildren() > 1) {
+            return false;
+        }
+
+        return ((VariableNameDeclaration)n.getNameDeclaration()).getTypeImage().equals("StringBuffer");
     }
 
     // TODO move this method to SimpleNode
     private static boolean xParentIsStatementExpression(SimpleNode node, int length) {
         Node curr = node;
-        for (int i = 0; i < length; i++) {
+        for (int i=0; i<length; i++) {
             if (node.jjtGetParent() == null) {
                 return false;
             }
