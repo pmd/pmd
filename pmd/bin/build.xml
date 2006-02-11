@@ -93,8 +93,6 @@
 					<include name="test/**/*Test.java" />
 				</fileset>
 			</batchtest>
-			<formatter type="xml" usefile="true" />
-
 		</junit>
 		<junitreport todir="${dir.build}">
 			<fileset dir="${dir.build}">
