@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ASTTypeParameters;
 
 public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule {
 
@@ -28,25 +29,29 @@ public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule
             return data; // skip various inapplicable method variations
         }
 
-        if (((ASTResultType) method.jjtGetChild(0)).isVoid() && method.getMethodName().startsWith("test")) {
+        Node node = method.jjtGetChild(0);
+        if (node instanceof ASTTypeParameters) {
+            node = method.jjtGetChild(1);
+        }
+        if (((ASTResultType)node).isVoid() && method.getMethodName().startsWith("test"))  {
             if (!containsAssert(method.getBlock(), false)) {
                 addViolation(data, method);
             }
         }
-        return data;
-    }
+		return data;
+	}
 
     private boolean containsAssert(Node n, boolean assertFound) {
         if (!assertFound) {
             if (n instanceof ASTStatementExpression) {
-                if (isAssertOrFailStatement((ASTStatementExpression) n)) {
+                if (isAssertOrFailStatement((ASTStatementExpression)n)) {
                     return true;
                 }
             }
             if (!assertFound) {
-                for (int i = 0; i < n.jjtGetNumChildren() && !assertFound; i++) {
+                for (int i=0;i<n.jjtGetNumChildren() && ! assertFound;i++) {
                     Node c = n.jjtGetChild(i);
-                    if (containsAssert(c, assertFound))
+                    if (containsAssert(c, assertFound)) 
                         return true;
                 }
             }
@@ -58,16 +63,16 @@ public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule
      * Tells if the expression is an assert statement or not.
      */
     private boolean isAssertOrFailStatement(ASTStatementExpression expression) {
-        if (expression != null
-                && expression.jjtGetNumChildren() > 0
+        if (expression!=null 
+                && expression.jjtGetNumChildren()>0
                 && expression.jjtGetChild(0) instanceof ASTPrimaryExpression
-        ) {
+                ) {
             ASTPrimaryExpression pe = (ASTPrimaryExpression) expression.jjtGetChild(0);
-            if (pe.jjtGetNumChildren() > 0 && pe.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
+            if (pe.jjtGetNumChildren()> 0 && pe.jjtGetChild(0) instanceof ASTPrimaryPrefix) {
                 ASTPrimaryPrefix pp = (ASTPrimaryPrefix) pe.jjtGetChild(0);
-                if (pp.jjtGetNumChildren() > 0 && pp.jjtGetChild(0) instanceof ASTName) {
+                if (pp.jjtGetNumChildren()>0 && pp.jjtGetChild(0) instanceof ASTName) {
                     ASTName n = (ASTName) pp.jjtGetChild(0);
-                    if (n.getImage() != null && (n.getImage().startsWith("assert") || n.getImage().startsWith("fail"))) {
+                    if (n.getImage()!=null && (n.getImage().startsWith("assert") || n.getImage().startsWith("fail") )) {
                         return true;
                     }
                 }
