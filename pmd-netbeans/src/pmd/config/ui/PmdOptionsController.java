@@ -68,7 +68,7 @@ public class PmdOptionsController extends OptionsPanelController {
     public void applyChanges() {
         PMDOptionsSettings setting = PMDOptionsSettings.getDefault();
         setting.setScanEnabled(Boolean.valueOf(comp.isEnableScan()));
-        setting.setScanInterval(Integer.valueOf(comp.getScanInterval()));
+        setting.setScanInterval(new Integer(comp.getScanInterval()));
         RulesConfig data = comp.getRules();
         setting.setRules(data.getRules());
         setting.setRuleProperties(data.getProperties());
