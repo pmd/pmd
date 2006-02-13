@@ -5,7 +5,6 @@ package net.sourceforge.pmd.jsp.ast;
 public class ASTAttribute extends SimpleNode {
     /* BEGIN CUSTOM CODE */
     private String name;
-    private String value;
 
     /**
      * @return Returns the name.
@@ -54,23 +53,9 @@ public class ASTAttribute extends SimpleNode {
      * @see com.applicationengineers.pmd4jsp.ast.SimpleNode#toString(java.lang.String)
      */
     public String toString(String prefix) {
-        return super.toString(prefix) + " name=[" + name + "] value=[" + value + "]";
+        return super.toString(prefix) + " name=[" + name + "]";
     }
 
-
-    /**
-     * @return Returns the value.
-     */
-    public String getValue() {
-        return value;
-    }
-
-    /**
-     * @param value The value to set.
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
 /* END CUSTOM CODE */
 
 

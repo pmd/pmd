@@ -254,7 +254,7 @@ PARSER_END(JspParser)
 	<ENDING_DOUBLE_QUOTE: "\""> : InTagState
 |	<UNPARSED_TEXT_NO_DOUBLE_QUOTES: 
 		( (~["$", "#", "\""]) | (["$", "#"] ~["{", "\""]) | <EL_ESCAPE> )+ >
-|	<DOLLAR_OR_HASH_DOUBLE_QUOTE: ["$", "#"] "\"" >
+|	<DOLLAR_OR_HASH_DOUBLE_QUOTE: ["$", "#"] "\"" > : InTagState
 }
 
 <CommentState> TOKEN : 

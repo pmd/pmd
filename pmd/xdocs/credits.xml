@@ -38,6 +38,7 @@
         </subsection>
         <subsection name="Significant contributors">
         <ul>
+            <li>Pieter Vanraemdonck - JSP support, DontNestJsfInJstlIteration, NoLongScripts, NoScriptlets, NoInlineStyleInformation, NoClassAttribute, NoJspForward</li>
             <li>Raik Schroeder - data flow analyis layer, YAHTMLRenderer</li>
             <li><a href="http://www.ourhomestead.net/jststeve/">Steve Hawkins</a> - rewrite of CPD based on Karp-Rabin string matching</li>
             <li><a href="http://www.jroller.com/comments/soxbox/Weblog">Daniel Sheppard</a> - XPath engine integration concept and implementation, advice on Jaxen extension function naming</li>
