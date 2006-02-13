@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTType;
@@ -43,6 +44,13 @@ public class ASTFieldDeclarationTest extends ParserTst {
         assertTrue(node.isPublic());
     }
 
+    public void testWithEnum() {
+        JavaParser parser = (new TargetJDK1_5()).createParser(new StringReader(TEST4));
+        ASTCompilationUnit cu = parser.CompilationUnit();
+        ASTFieldDeclaration node = (ASTFieldDeclaration) cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        assertFalse(node.isInterfaceMember());
+    }
+
     private static final String TEST1 =
             "class Foo {" + PMD.EOL +
             " String[] foo;" + PMD.EOL +
@@ -56,6 +64,12 @@ public class ASTFieldDeclarationTest extends ParserTst {
     private static final String TEST3 =
             "interface Foo {" + PMD.EOL +
             " int BAR = 6;" + PMD.EOL +
+            "}";
+
+    private static final String TEST4 =
+            "public enum Foo {" + PMD.EOL +
+            " FOO(1);" + PMD.EOL +
+            " private int x;" + PMD.EOL +
             "}";
 
     public void testGetVariableName() {
