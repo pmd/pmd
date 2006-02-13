@@ -48,6 +48,12 @@
 				<include name="*.properties" />
 			</fileset>
 		</copy>
+        <mkdir dir="${dir.build}/rulesets/releases" />
+        <copy todir="${dir.build}rulesets/releases">
+            <fileset dir="${dir.rulesets}/releases">
+                <include name="*.xml" />
+            </fileset>
+        </copy>
 	</target>
 
 
