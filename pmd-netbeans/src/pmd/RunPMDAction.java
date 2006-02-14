@@ -231,15 +231,15 @@ public class RunPMDAction extends CookieAction {
                 try {
                     pmd.processFile( reader, set, ctx );
                 } catch( PMDException e ) {
-                    Fault fault = new Fault( 1, name, e );
-                    ErrorManager.getDefault().log(ErrorManager.ERROR, "PMD threw exception " + e.toString());
-                    ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
-                    // XXX why to report this ?
-                    list.add( fault );
-                    FaultRegistry.getInstance().registerFault( fault, dataobject );
+                    // want to log only short info about failure and stack only when -J-Dpmd=-1 or similar flag is on
+                    ErrorManager.getDefault().log(ErrorManager.INFORMATIONAL+1, "PMD threw exception " + e.toString());
+                    ErrorManager err = ErrorManager.getDefault().getInstance("pmd");
+                    if (err.isLoggable(err.INFORMATIONAL)) {
+                        err.notify(ErrorManager.INFORMATIONAL, e); // NOI18N
+                    }
                 }
 
-                Iterator iterator = ctx.getReport().iterator();
+                Iterator/*<RuleViolation>*/ iterator = ctx.getReport().iterator();
                 while( iterator.hasNext() ) {
                     RuleViolation violation = ( RuleViolation )iterator.next();
                     StringBuffer buffer = new StringBuffer();
