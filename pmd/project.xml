@@ -59,7 +59,7 @@
 		<version>
 			<id>3.5</id>
 			<name>3.5</name>
-			<tag>pmd_release_3_4</tag>
+			<tag>pmd_release_3_5</tag>
 		</version>
 		<version>
 			<id>dev</id>
@@ -170,6 +170,15 @@
         <name>Allan Caplan</name>
         <id>allancaplan</id>
         <email>allancaplan@users.sourceforge.net</email>
+        <roles>
+            <role>Developer</role>
+        </roles>
+    </developer>
+
+    <developer>
+        <name>Johan Nagels</name>
+        <id>bluejohn</id>
+        <email>bluejohn@users.sourceforge.net</email>
         <roles>
             <role>Developer</role>
         </roles>
