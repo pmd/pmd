@@ -20,8 +20,8 @@
             <li>Miguel Griffa - over a dozen rules, lots of documentation, and other improvements all over the place</li>
             <li>Allan Caplan - six rules, lots of bugfixes and improvements to the PMD core</li>
             <li>Radim Kubacki - Netbeans plugin, OptimizableToArrayCallRule suggestion, bug reports, pmd-netbeans feedback</li>
-            <li>Colin Wilson-Salt - Eclipse plugin team</li>
             <li>Andrey Lumyanski - Gel plugin</li>
+            <li>Johan Nagels - JSP support</li>
         </ul>
         </subsection>
         <subsection name="Committers emeritus">
@@ -34,6 +34,7 @@
             <li>Don Leckie - The PMD GUI</li>
             <li><a href="http://richkilmer.blogs.com/">Rich Kilmer</a> - logo design</li>
             <li>Paul Kendall - various bugfixes and features</li>
+            <li>Colin Wilson-Salt - NetBeans plugin team</li>
         </ul>
         </subsection>
         <subsection name="Significant contributors">
