@@ -169,28 +169,12 @@ public class Foo {
 
     <rule name="AvoidCallingFinalize"
           message="Avoid calling finalize() explicitly"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.AvoidCallingFinalize"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#AvoidCallingFinalize">
       <description>
 Object.finalize() is called by the garbage collector on an object when garbage collection determines
 that there are no more references to the object.
       </description>
-      <properties>
-          <property name="xpath">
-              <value>
-    <![CDATA[
-//Statement/StatementExpression/PrimaryExpression/PrimaryPrefix
-[
-./Name[
-	@Image='finalize' or ends-with(@Image,'.finalize')
-	]
-or @Image='finalize'
-]
-[ancestor::MethodDeclaration/MethodDeclarator[@Image != 'finalize']]
-    ]]>
-              </value>
-          </property>
-      </properties>
         <priority>3</priority>
       <example>
 <![CDATA[

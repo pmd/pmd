@@ -21,6 +21,7 @@ public class AvoidCallingFinalizeTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST3, "calling super.finalize", 1, rule),
             new TestDescriptor(TEST4, "no call to finalize", 0, rule),
             new TestDescriptor(TEST5, "it's ok in a finalizer", 0, rule),
+            new TestDescriptor(TEST6, "finalizer in anon inner class is OK too", 0, rule),
         });
     }
 
@@ -56,6 +57,17 @@ public class AvoidCallingFinalizeTest extends SimpleAggregatorTst {
             "public class Foo {" + PMD.EOL +
             " void finalize () {" +
             "  super.finalize(); " + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST6 =
+            "public class Foo {" + PMD.EOL +
+            " void foo () {" +
+            "  Foo myFoo = new Foo(new FooOtherInterface() { " + PMD.EOL +
+            "   protected void finalize() { " + PMD.EOL +
+            "    super.finalize(); " + PMD.EOL +
+            "   } " + PMD.EOL +
+            "  }); " + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 }

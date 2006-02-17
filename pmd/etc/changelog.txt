@@ -10,6 +10,7 @@ Fixed bug 1415333 - CyclomaticComplexity no longer errors out on JDK 1.5 enums.
 Fixed bug 1415663 - PMD no longer fails to parse abstract classes declared in a method.
 Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 Fixed release packaging; now entire xslt/ directory contents are included.
+Rewrote AvoidCallingFinalize in Java; fixed bug and runs much faster, too.
 UseIndexOfChar now catches cases involving lastIndexOf.
 Rules are now run in the order in which they're listed in a ruleset file.  Internally, they're now stored in a List vs a Set, and RuleSet.getRules() now returns a Collection.
 

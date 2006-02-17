@@ -7,29 +7,27 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="UseIndexOfChar"
-        message="String.indexOf(char) is faster than String.indexOf(String)"
-        class="net.sourceforge.pmd.rules.strings.UseIndexOfChar"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseIndexOfChar">
-    <description>
-Use String.indexOf(char) when checking for the index of a single character; it's faster.  Same for
-        String.lastIndexOf().
-    </description>
-       <priority>3</priority>
-    <example>
+    <rule name="AvoidCallingFinalize"
+          message="Avoid calling finalize() explicitly"
+          class="net.sourceforge.pmd.rules.AvoidCallingFinalize"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#AvoidCallingFinalize">
+      <description>
+Object.finalize() is called by the garbage collector on an object when garbage collection determines
+that there are no more references to the object.
+      </description>
+        <priority>3</priority>
+      <example>
 <![CDATA[
 public class Foo {
- void bar() {
-  String s = "hello world";
-  // avoid this
-  if (s.indexOf("d") {}
-  // instead do this
-  if (s.indexOf('d') {}
+ void foo() {
+  Bar b = new Bar();
+  b.finalize();
  }
 }
 ]]>
-    </example>
+      </example>
     </rule>
+
 
 
     <!--
