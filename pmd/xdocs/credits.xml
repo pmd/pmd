@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>David Corley - Reported release packaging problem, implemented nifty Javascript folding for XML report, <a href="http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html">demo is here</a></li>
             <li>Jon Doh - Reported parser bug</li>
             <li>Jorn Stampehl - Reported and fixed bugs in JUnitTestsShouldContainAsserts/CyclomaticComplexity/TooManyFields, noticed redundancy of ExplicitCallToFinalize, reported bug in AvoidCallingFinalize, reported bug in JUnitAssertionsShouldIncludeMessage, reported bug in bug report on JUnitTestsShouldContainAsserts</li>
             <li>Brian R - suggestions for improving UseIndexOfChar, documentation suggestion</li>
@@ -61,7 +62,6 @@
             <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - UnusedNullCheckInEquals, MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
             <li>Sean Mountcastle - reported documentation bug</li>
             <li>Greg Broderick - provided patch for 'minimum priority' support</li>
-            <li>David Corley - Nifty Javascript folding for XML report, <a href="http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html">demo is here</a></li>
             <li>George Sexton - Bug report 1379701 for CompareObjectsWithEquals, suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
             <li>Johan Stuyts - improvements to UncommentedEmptyConstructor, nice patch for UncommentedEmptyConstructor and UncommentedEmptyMethod, patch to allow empty catch blocks with comments in them, patch to clean up build environment</li>
             <li>Bruce Kelly - bug report 1378358 for StringInstantiation, bug report 1376756 for UselessOverridingMethod, bug report 1376760 for InefficientStringBuffering</li>
