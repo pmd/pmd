@@ -3,8 +3,8 @@ package net.sourceforge.pmd.rules.strings;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.AbstractRule;
 
@@ -23,6 +23,11 @@ public class UseIndexOfChar extends AbstractRule {
                 occ.getNameForWhichThisIsAQualifier().getImage().indexOf("lastIndexOf") != -1)) {
                 SimpleNode parent = (SimpleNode)occ.getLocation().jjtGetParent().jjtGetParent();
                 if (parent instanceof ASTPrimaryExpression) {
+                    // bail out if it's something like indexOf("a" + "b")
+                    List additives = parent.findChildrenOfType(ASTAdditiveExpression.class);
+                    if (!additives.isEmpty()) {
+                        return data;
+                    }
                     List literals = parent.findChildrenOfType(ASTLiteral.class);
                     for (Iterator j = literals.iterator(); j.hasNext();) {
                         ASTLiteral literal = (ASTLiteral)j.next();
