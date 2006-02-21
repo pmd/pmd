@@ -34,4 +34,9 @@ public class TargetJDK1_3 implements TargetJDKVersion {
         jp.setJDK13();
         return jp;
     }
+
+    public String getVersionString() {
+        return "1.3";
+    }
+
 }

@@ -41,4 +41,9 @@ public class TargetJDK1_4 implements TargetJDKVersion {
     public JavaParserTokenManager createJavaParserTokenManager(Reader in) {
         return new JavaParserTokenManager(new JavaCharStream(in));
     }
+
+    public String getVersionString() {
+        return "1.4";
+    }
+
 }

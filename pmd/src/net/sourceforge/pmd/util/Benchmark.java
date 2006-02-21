@@ -11,6 +11,7 @@ import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.SourceFileSelector;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDKVersion;
+import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
@@ -70,11 +71,17 @@ public class Benchmark {
 
         String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
         List files = new FileFinder().findFilesFrom(srcDir, new SourceFileOrDirectoryFilter(new SourceFileSelector()), true);
+
+        TargetJDKVersion jdk = new TargetJDK1_4();
+        if (findOptionalStringValue(args, "--targetjdk", "1.4").equals("1.5")) {
+            jdk = new TargetJDK1_5();
+        }
         boolean debug = findBooleanSwitch(args, "--debug");
         boolean parseOnly = findBooleanSwitch(args, "--parse-only");
 
+        if (debug) System.out.println("Using JDK " + jdk.getVersionString());
         if (parseOnly) {
-            parseStress(files);
+            parseStress(jdk, files);
         } else {
             String ruleset = findOptionalStringValue(args, "--ruleset", "");
             if (debug) System.out.println("Checking directory " + srcDir);
@@ -106,8 +113,7 @@ public class Benchmark {
         System.out.println("=========================================================");
     }
 
-    private static void parseStress(List files) throws FileNotFoundException {
-        TargetJDKVersion jdk = new TargetJDK1_4();
+    private static void parseStress(TargetJDKVersion jdk, List files) throws FileNotFoundException {
         long start = System.currentTimeMillis();
         for (Iterator k = files.iterator(); k.hasNext();) {
             File file = (File) k.next();

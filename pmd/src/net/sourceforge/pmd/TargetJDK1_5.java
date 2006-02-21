@@ -34,4 +34,9 @@ public class TargetJDK1_5 implements TargetJDKVersion {
         jp.setJDK15();
         return jp;
     }
+
+    public String getVersionString() {
+        return "1.5";
+    }
+
 }

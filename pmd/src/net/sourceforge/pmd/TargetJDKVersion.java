@@ -29,4 +29,6 @@ public interface TargetJDKVersion {
      * @return a parser for the stream read by the stream reader
      */
     public JavaParser createParser(Reader in);
+
+    public String getVersionString();
 }
