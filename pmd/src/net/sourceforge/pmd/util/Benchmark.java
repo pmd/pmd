@@ -89,11 +89,11 @@ public class Benchmark {
             RuleSetFactory factory = new RuleSetFactory();
             if (ruleset.length() > 0) {
                 SimpleRuleSetNameMapper mapper = new SimpleRuleSetNameMapper(ruleset);
-                stress(factory.createRuleSet(mapper.getRuleSets()), files, results, debug);
+                stress(jdk, factory.createRuleSet(mapper.getRuleSets()), files, results, debug);
             } else {
                 Iterator i = factory.getRegisteredRuleSets();
                 while (i.hasNext()) {
-                    stress((RuleSet) i.next(), files, results, debug);
+                    stress(jdk, (RuleSet) i.next(), files, results, debug);
                 }
             }
             System.out.println("=========================================================");
@@ -125,7 +125,7 @@ public class Benchmark {
         System.out.println("That took " + elapsed + " ms");
     }
 
-    private static void stress(RuleSet ruleSet, List files, Set results, boolean debug) throws PMDException, IOException {
+    private static void stress(TargetJDKVersion jdk, RuleSet ruleSet, List files, Set results, boolean debug) throws PMDException, IOException {
         Collection rules = ruleSet.getRules();
         for (Iterator j = rules.iterator(); j.hasNext();) {
             Rule rule = (Rule) j.next();
@@ -134,7 +134,7 @@ public class Benchmark {
             RuleSet working = new RuleSet();
             working.addRule(rule);
 
-            PMD p = new PMD();
+            PMD p = new PMD(jdk);
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
             for (Iterator k = files.iterator(); k.hasNext();) {

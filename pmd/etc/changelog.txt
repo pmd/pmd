@@ -13,6 +13,7 @@ Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar 
 Fixed release packaging; now entire xslt/ directory contents are included.
 Added more XSLT from Dave Corley - you can use them to filter PMD reports by priority level.
 Added a getVersionString method to the TargetJDKVersion interface.
+Added an option '--targetjdk' argument to the Benchmark utility.
 Rewrote AvoidCallingFinalize in Java; fixed bug and runs much faster, too.
 UseIndexOfChar now catches cases involving lastIndexOf.
 Rules are now run in the order in which they're listed in a ruleset file.  Internally, they're now stored in a List vs a Set, and RuleSet.getRules() now returns a Collection.
