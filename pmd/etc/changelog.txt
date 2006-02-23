@@ -10,6 +10,7 @@ Fixed bug 1415333 - CyclomaticComplexity no longer errors out on JDK 1.5 enums.
 Fixed bug 1415663 - PMD no longer fails to parse abstract classes declared in a method.
 Fixed bug 1433439 - UseIndexOfChar no longer reports false positives on case like indexOf('a' + getFoo()).
 Fixed bug 1435218 - LoggerIsNotStaticFinal no longer reports false positives for local variables.
+Fixed bug 1413745 - ArrayIsStoredDirectly no longer reports false positives for array deferences.
 Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 Fixed release packaging; now entire xslt/ directory contents are included.
 Added more XSLT from Dave Corley - you can use them to filter PMD reports by priority level.

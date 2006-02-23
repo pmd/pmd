@@ -49,8 +49,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
         final ASTFormalParameters params = (ASTFormalParameters) node.getFirstChildOfType(ASTFormalParameters.class);
         ASTFormalParameter[] arrs = getArrays(params);
         if (arrs != null) {
-            List bs = node.findChildrenOfType(ASTBlockStatement.class);
-            checkAll(data, arrs, bs);
+            checkAll(data, arrs, node.findChildrenOfType(ASTBlockStatement.class));
         }
         return data;
     }
@@ -85,6 +84,9 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                     continue;
                 }
                 if (!isLocalVariable(assignedVar, n)) {
+                    // TODO could this be more clumsy?  We really
+                    // need to build out the PMD internal framework more
+                    // to support simply queries like "isAssignedTo()" or something
                     if (se.jjtGetNumChildren() < 3) {
                         continue;
                     }
@@ -101,6 +103,10 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                         val = foo.getImage();
                     }
                     if (val == null) {
+                        continue;
+                    }
+                    ASTPrimarySuffix foo = (ASTPrimarySuffix) se.getFirstChildOfType(ASTPrimarySuffix.class);
+                    if (foo != null && foo.isArrayDereference()) {
                         continue;
                     }
 
