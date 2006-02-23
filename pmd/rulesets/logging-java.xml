@@ -50,6 +50,7 @@ In most cases, the Logger can be declared static and final.
              <value>
                  <![CDATA[
 //VariableDeclarator
+ [parent::FieldDeclaration]
  [../Type/ReferenceType
   /ClassOrInterfaceType[@Image='Logger']
    and

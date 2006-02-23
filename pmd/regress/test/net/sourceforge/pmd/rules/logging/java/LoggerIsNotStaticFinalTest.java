@@ -22,27 +22,35 @@ public class LoggerIsNotStaticFinalTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST1, "ok", 0, rule),
             new TestDescriptor(TEST2, "two bad loggers", 2, rule),
             new TestDescriptor(TEST3, "ok with internal class", 0, rule),
+            new TestDescriptor(TEST4, "ok with local var", 0, rule),
         });
     }
 
     private static final String TEST1 =
-            "public class Foo {" + PMD.EOL +
-            " static final Logger log;" + PMD.EOL +
-            "}";
+    "public class Foo {" + PMD.EOL +
+    " static final Logger log;" + PMD.EOL +
+    "}";
 
     private static final String TEST2 =
-            "public class Foo {" + PMD.EOL +
-            " static final Logger log;" + PMD.EOL +
-            " Logger log1;" + PMD.EOL +
-            " Logger log2;" + PMD.EOL +
-            "}";
+    "public class Foo {" + PMD.EOL +
+    " static final Logger log;" + PMD.EOL +
+    " Logger log1;" + PMD.EOL +
+    " Logger log2;" + PMD.EOL +
+    "}";
 
     private static final String TEST3 =
-            "public class Foo {" + PMD.EOL +
-            " static final Logger log;" + PMD.EOL +
-            " static class c { " + PMD.EOL +
-            "  static final Logger log;" + PMD.EOL +
-            " } " + PMD.EOL +
-            "}";
+    "public class Foo {" + PMD.EOL +
+    " static final Logger log;" + PMD.EOL +
+    " static class c { " + PMD.EOL +
+    "  static final Logger log;" + PMD.EOL +
+    " } " + PMD.EOL +
+    "}";
+
+    private static final String TEST4 =
+    "public class Foo {" + PMD.EOL +
+    " void bar() {" + PMD.EOL +
+    " Logger log1;" + PMD.EOL +
+    " }" + PMD.EOL +
+    "}";
 
 }
