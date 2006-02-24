@@ -14,6 +14,7 @@ Fixed bug 1413745 - ArrayIsStoredDirectly no longer reports false positives for 
 Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 Fixed release packaging; now entire xslt/ directory contents are included.
 Added more XSLT from Dave Corley - you can use them to filter PMD reports by priority level.
+PositionLiteralsFirstInComparisons was rewritten in XPath.
 Added a getVersionString method to the TargetJDKVersion interface.
 Added an option '--targetjdk' argument to the Benchmark utility.
 Rewrote AvoidCallingFinalize in Java; fixed bug and runs much faster, too.

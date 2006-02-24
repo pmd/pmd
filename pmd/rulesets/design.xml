@@ -1064,12 +1064,20 @@ class Foo {
 
 <rule  name="PositionLiteralsFirstInComparisons"
   message="Position literals first in String comparisons"
-  class="net.sourceforge.pmd.rules.design.PositionLiteralsFirstInComparisons"
+  class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PositionLiteralsFirstInComparisons">
   <description>
  Position literals first in String comparisons - that way if the String is null you won't get a NullPointerException, it'll just return false.
   </description>
-  <priority>3</priority>
+      <properties>
+        <property name="xpath">
+          <value><![CDATA[
+    //PrimaryExpression[PrimaryPrefix[Name[ends-with(@Image, '.equals')]][..//Literal]]
+    [not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
+    [not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
+          ]]></value>
+        </property>
+      </properties>  <priority>3</priority>
   <example>
 <![CDATA[
 class Foo {

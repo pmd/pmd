@@ -18,6 +18,7 @@ public class PositionLiteralsFirstInComparisonsTest extends SimpleAggregatorTst 
         runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "ok, literal comes first", 0, rule),
             new TestDescriptor(TEST2, "bad, literal comes last", 1, rule),
+            new TestDescriptor(TEST3, "ok", 0, rule),
         });
     }
 
@@ -32,6 +33,15 @@ public class PositionLiteralsFirstInComparisonsTest extends SimpleAggregatorTst 
             "public class Foo {" + PMD.EOL +
             " boolean bar(String x) {" + PMD.EOL +
             "  return x.equals(\"2\");" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST3 =
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  if((str == null) || (str.equals(\"\"))) {" + PMD.EOL +
+            "   str = \"snafu\";" + PMD.EOL +
+            "  }" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 
