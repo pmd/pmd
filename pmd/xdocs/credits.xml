@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jeff Jensen - Suggested posting XML schema on PMD site, discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>mhilpert - Reported bugs in UseIndexOfChar and LoggerIsNotStaticFinal</li>
             <li>David Corley - Priority filtering XSLT, reported release packaging problem, implemented nifty Javascript folding for XML report, <a href="http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html">demo is here</a></li>
             <li>Jon Doh - Reported parser bug</li>
@@ -79,7 +80,6 @@
             <li>Noel Grandin - bug report for MissingStaticMethodInNonInstantiatableClass, bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Derek Hofmann - suggestion for adding --skip-duplicate-files option for CPD, bug report for CPD skipping header files when in C/C++ mode</li>
             <li>Mark Holczhammer - bug report for InefficientStringBuffering</li>
-            <li>Jeff Jensen - discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>Raja Rajan - 2 bug reports for CompareObjectswithEquals</li>
             <li>Jeff Chamblee - suggested better message for UnnecessaryCaseChange, bug report for CompareObjectsWithEquals</li>
             <li>Dave Brosius - suggested MisleadingVariableName rule, a couple of nice patches to clean up some string handling inefficiencies, non-static class usages, and unclosed streams/readers - found with Findbugs, I daresay :-)</li>
