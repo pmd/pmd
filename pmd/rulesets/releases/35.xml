@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <ruleset name="35" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:noNamespaceSchemaLocation="../../etc/ruleset_xml_schema.xml">
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
   <description>
 This ruleset contains links to rules that are new in PMD v3.5
   </description>
