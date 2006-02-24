@@ -11,11 +11,14 @@ public class ASTLiteral extends SimpleJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    public boolean isStringLiteral() {
+        return getImage() != null && getImage().startsWith("\"") && getImage().endsWith("\"");
     }
 }
