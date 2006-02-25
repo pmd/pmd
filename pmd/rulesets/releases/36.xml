@@ -8,6 +8,7 @@ This ruleset contains links to rules that are new in PMD v3.6
 
   <rule ref="rulesets/strings.xml/InefficientEmptyStringCheck"/>
   <rule ref="rulesets/design.xml/UnsynchronizedStaticDateFormatter"/>
+  <rule ref="rulesets/strings.xml/InsufficientStringBufferDeclaration"/>
 
 </ruleset>
 
