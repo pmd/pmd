@@ -1253,4 +1253,29 @@ public Foo() {
       </example>
     </rule>
 
+  <rule name="UnsynchronizedStaticDateFormatter"
+      message="Static DateFormatter objects should be accessed in a synchronized manner"
+      class="net.sourceforge.pmd.rules.design.UnsynchronizedStaticDateFormatter">
+      <description>
+SimpleDateFormat is not synchronized. Sun recomends separate format instances 
+for each thread. If multiple threads must access a static formatter, the 
+formatter must be synchronized either on method or block level.
+      </description>
+      <properties></properties>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    void bar() {
+        sdf.format(); // bad
+    }
+    synchronized void foo() {
+        sdf.format(); // good
+    }
+}
+    ]]>
+      </example>
+    </rule>
+
 </ruleset>
