@@ -133,4 +133,65 @@ response.setHeader("Pragma", "No-cache");
 		</example>
 	</rule>
 
+	<rule name="IframeMissingSrcAttribute"
+		message="IFrames must have a src attribute."
+		class="net.sourceforge.pmd.rules.XPathRule">
+		<description>
+		  IFrames which are missing a src element can cause security information popups 
+		  in IE if you are accessing the page through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
+			</description>
+		<priority>2</priority>
+		<properties>
+			<property name="xpath">
+				<value>
+					<![CDATA[ 
+	//Element[@Name="iframe"][count(Attribute[string:upper-case(@Name)="SRC" ]) = 0]
+					 ]]>
+				</value>
+			</property>
+		</properties>
+		<example>
+			<![CDATA[
+<HTML><title>bad example><BODY>
+<iframe></iframe>
+</BODY> </HTML>
+
+<HTML><title>good example><BODY>
+<iframe src="foo"></iframe>
+</BODY> </HTML>
+			]]>
+		</example>
+	</rule>
+
+	<rule name="NoHtmlComments"
+		message="Use JSP comments instead of HTML comments"
+		class="net.sourceforge.pmd.rules.XPathRule">
+		<description>
+		  In a production system, HTML comments increase the payload between the application 
+		  server to the client, and serve little other purpose. Consider switching to 
+		  JSP comments.
+			</description>
+		<priority>2</priority>
+		<properties>
+			<property name="xpath">
+				<value>
+					<![CDATA[ 
+	//CommentTag
+					 ]]>
+				</value>
+			</property>
+		</properties>
+		<example>
+			<![CDATA[
+<HTML><title>bad example><BODY>
+<!-- HTML comment -->
+</BODY> </HTML>
+
+<HTML><title>good example><BODY>
+<%-- JSP comment --%>
+</BODY> </HTML>
+			]]>
+		</example>
+	</rule>
+
 </ruleset>
