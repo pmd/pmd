@@ -18,6 +18,7 @@ public class IframeMissingSrcAttributeTest extends SimpleAggregatorTst {
         runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1_OK, "1, iframe exists with src attribute", 0, rule),
             new TestDescriptor(TEST2_FAIL, "2, iframe is missing src attribute", 1, rule),
+            new TestDescriptor(TEST3_FAIL, "3, IFRAME is missing src attribute", 1, rule),
         }, SourceType.JSP);
     }
 
@@ -26,4 +27,7 @@ public class IframeMissingSrcAttributeTest extends SimpleAggregatorTst {
 
     private static final String TEST2_FAIL =
         "<html><body><iframe></iframe></body></html>";
+
+    private static final String TEST3_FAIL =
+        "<html><body><IFRAME></IFRAME></body></html>";
 }

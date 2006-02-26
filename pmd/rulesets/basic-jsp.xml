@@ -145,7 +145,7 @@ response.setHeader("Pragma", "No-cache");
 			<property name="xpath">
 				<value>
 					<![CDATA[ 
-	//Element[@Name="iframe"][count(Attribute[string:upper-case(@Name)="SRC" ]) = 0]
+	//Element[string:upper-case(@Name)="IFRAME"][count(Attribute[string:upper-case(@Name)="SRC" ]) = 0]
 					 ]]>
 				</value>
 			</property>
