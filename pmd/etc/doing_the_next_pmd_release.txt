@@ -81,6 +81,7 @@ Click File Releases, Edit Release, set previous version to 'hidden'.
 
 Redo the web site
 cd ~/pmd/pmd
+update the "what's new" link in navigation.xml
 ./docs.sh upload
 
 Submit some news saying "hey, new release!"

@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Chris Erskine - found bad link, documentation suggestions</li>
             <li>Wouter Zelle - Rewrote PositionLiteralsFirstInComparisons in XPath, Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Jeff Jensen - Suggested posting XML schema on PMD site, discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>mhilpert - Reported bugs in UseIndexOfChar and LoggerIsNotStaticFinal</li>
@@ -76,7 +77,6 @@
             <li>Jean-Marc Vanel - suggested enhancements to the PMD scoreboard</li>
             <li><a href="http://www.websoup.net/">Andriy Rozeluk</a> - suggested UseStringBufferLength, bug report 1306180 for AvoidConcatenatingNonLiteralsInStringBuffer, reported bug 1293157 for UnusedPrivateMethod, suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn, suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports, various other RFEs and thoughtful discussions as well</li>
             <li>Bruno Juillet - suggested reporting suppressed warnings, bug report for missing package/class/method names, patch for Ant task's excludeMarker attribute, bug report on ruleset overrides</li>
-            <li>Chris Erskine - documentation suggestions</li>
             <li>Noel Grandin - bug report for MissingStaticMethodInNonInstantiatableClass, bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Derek Hofmann - suggestion for adding --skip-duplicate-files option for CPD, bug report for CPD skipping header files when in C/C++ mode</li>
             <li>Mark Holczhammer - bug report for InefficientStringBuffering</li>
