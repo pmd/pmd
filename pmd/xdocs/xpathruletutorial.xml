@@ -145,7 +145,11 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
 	<p>I must recommend at this point that you experiment with Designer putting
 	the final modifier to the Factory and verifying that the results produced
 	are those expected.</p>
+
+     <p>Finally, for many more details on writing XPath rules, pick up <a href="http://pmdapplied.com/">PMD Applied</a>!</p>
 	</subsection>
+
+
    </section>
 
 </body>

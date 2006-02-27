@@ -190,6 +190,9 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
         <source>
 
         &lt;?xml version="1.0"?>
+          &lt;ruleset name="customruleset"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
             &lt;rule name="WhileLoopsMustUseBracesRule"
                   message="Avoid using 'while' statements without curly braces"
                   class="WhileLoopsMustUseBracesRule">
@@ -298,6 +301,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
     moved into one of the core rulesets.</p>
     <p>Or, if you can improve one of the existing rules, that'd be great too!  Thanks!
     </p>
+      <p>Finally, for many more details on writing rules, pick up <a href="http://pmdapplied.com/">PMD Applied</a>!</p>
     </subsection>
     </section>
 </body>
