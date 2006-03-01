@@ -11,7 +11,7 @@ public class NoHtmlCommentsTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() {
-        rule = findRule("basic-jsp.xml", "NoHtmlComments");
+        rule = findRule("jsp", "NoHtmlComments");
     }
 
     public void testAll() {

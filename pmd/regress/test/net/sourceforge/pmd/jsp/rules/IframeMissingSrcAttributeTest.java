@@ -11,7 +11,7 @@ public class IframeMissingSrcAttributeTest extends SimpleAggregatorTst {
     private Rule rule;
 
     public void setUp() {
-        rule = findRule("basic-jsp.xml", "IframeMissingSrcAttribute");
+        rule = findRule("jsp", "IframeMissingSrcAttribute");
     }
 
     public void testAll() {

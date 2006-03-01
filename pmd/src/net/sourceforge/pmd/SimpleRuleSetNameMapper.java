@@ -42,6 +42,8 @@ public class SimpleRuleSetNameMapper {
 
     private void populateNameMap() {
         nameMap.put("basic", "rulesets/basic.xml");
+        nameMap.put("jsp", "rulesets/basic-jsp.xml");
+        nameMap.put("jsf", "rulesets/basic-jsf.xml");
         nameMap.put("braces", "rulesets/braces.xml");
         nameMap.put("clone", "rulesets/clone.xml");
         nameMap.put("codesize", "rulesets/codesize.xml");
