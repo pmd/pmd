@@ -14,7 +14,7 @@ import java.util.Iterator;
 public class XMLRenderer implements Renderer {
     public String render(Iterator matches) {
         StringBuffer buffer = new StringBuffer();
-        buffer.append("<?xml version=\"1.0\"?>");
+        buffer.append("<?xml version=\"1.0\"  encoding=\"UTF-8\"?>");
         buffer.append("<pmd-cpd>" + PMD.EOL);
         for (; matches.hasNext();) {
             Match match = (Match) matches.next();
