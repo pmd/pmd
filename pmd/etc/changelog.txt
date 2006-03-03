@@ -15,6 +15,7 @@ Fixed bug 1435218 - LoggerIsNotStaticFinal no longer reports false positives for
 Fixed bug 1413745 - ArrayIsStoredDirectly no longer reports false positives for array deferences.
 Fixed bug 1435751 - Added encoding type of UTF-8 to the CPD XML file.
 Fixed bug 1441539 - ConsecutiveLiteralAppends no longer flags appends() involving method calls.
+Fixed bug 1339470 - PMD no longer fails to parse certain non-static initializers.
 Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 Fixed release packaging; now entire xslt/ directory contents are included.
 Added more XSLT from Dave Corley - you can use them to filter PMD reports by priority level.

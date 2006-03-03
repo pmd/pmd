@@ -1222,7 +1222,7 @@ void ClassOrInterfaceBodyDeclaration():
 {
    int modifiers;
 }
-{ LOOKAHEAD(3) Initializer()
+{ LOOKAHEAD(["static"] "{" ) Initializer()
 |  modifiers = Modifiers()
   ( LOOKAHEAD(3) ClassOrInterfaceDeclaration(modifiers)
     | LOOKAHEAD(3) EnumDeclaration(modifiers)
