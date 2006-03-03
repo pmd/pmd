@@ -7,7 +7,7 @@
   </properties>
 
   <body>
-<section name="Documentation of JSP support in PM">
+<section name="Documentation of JSP support in PMD">
     <subsection name="What is currently supported and what is not">
     <p>In short, JSP files that are XHTML-compliant, are supported.
     Except for files that contain inline DTDs; only references to external
