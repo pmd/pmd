@@ -157,11 +157,10 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
                 ASTLiteral literal = (ASTLiteral) list
                         .getFirstChildOfType(ASTLiteral.class);
                 if (!isAdditive(list) && literal != null
-                        && literal.getImage().indexOf("\"") == 0) {
+                        && literal.isStringLiteral()) {
                     return 1;
-                } else {
-                    return processAdditive(data, 0, list, node);
-                }
+                } 
+                return processAdditive(data, 0, list, node);
             }
         }
         return 0;
@@ -200,14 +199,31 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
     }
 
     /**
-     * Checks to see if there is string concatenation in the node
-     *
-     * @param n Node to check
+     * Checks to see if there is string concatenation in the node.
+     * 
+     * This method checks if it's additive with respect to the append method
+     * only.
+     * 
+     * @param n
+     *            Node to check
      * @return true if the node has an additive expression (i.e. "Hello " +
      *         Const.WORLD)
      */
     private boolean isAdditive(SimpleNode n) {
-        return n.findChildrenOfType(ASTAdditiveExpression.class).size() >= 1;
+        List lstAdditive = n.findChildrenOfType(ASTAdditiveExpression.class);
+        if (lstAdditive.size() == 0) {
+            return false;
+        }
+        // if there are more than 1 set of arguments above us we're not in the
+        // append
+        // but a sub-method call
+        for (int ix = 0; ix < lstAdditive.size(); ix++) {
+            ASTAdditiveExpression expr = (ASTAdditiveExpression) lstAdditive.get(ix);
+            if (expr.getParentsOfType(ASTArgumentList.class).size() != 1) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

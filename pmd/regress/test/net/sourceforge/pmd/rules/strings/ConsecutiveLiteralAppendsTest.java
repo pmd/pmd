@@ -45,6 +45,8 @@ public class ConsecutiveLiteralAppendsTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST35, "35, For block without braces", 0, rule),
             new TestDescriptor(TEST36, "36, Appends broken up by method call", 0, rule),
             new TestDescriptor(TEST39, "39, Buffer as class variable, accessed in 2 methods", 0, rule),
+            new TestDescriptor(TEST40, "40, Call to external method with subtraction", 0, rule),
+            new TestDescriptor(TEST41, "41, Call to external method with addition, not string appending", 0, rule),
         });
 
         // Then run the failure tests
@@ -560,6 +562,24 @@ public class ConsecutiveLiteralAppendsTest extends SimpleAggregatorTst {
             "        sb.append(\"World\");" + PMD.EOL +
             "    }" + PMD.EOL +
             "    public void bar() {" + PMD.EOL +
+            "        sb.append(\"World\");" + PMD.EOL +
+            "    }" + PMD.EOL +
+            "}";
+
+    private static final String TEST40 =
+            "public class Foo {" + PMD.EOL +
+            "    public void foo(int i) {" + PMD.EOL +
+            "        StringBuffer sb = new StringBuffer();" + PMD.EOL +
+            "        sb.append(foo(i-2));" + PMD.EOL +
+            "        sb.append(\"World\");" + PMD.EOL +
+            "    }" + PMD.EOL +
+            "}";
+
+    private static final String TEST41 =
+            "public class Foo {" + PMD.EOL +
+            "    public void foo() {" + PMD.EOL +
+            "        StringBuffer sb = new StringBuffer();" + PMD.EOL +
+            "        sb.append(foo(\"\".length()+2));" + PMD.EOL +
             "        sb.append(\"World\");" + PMD.EOL +
             "    }" + PMD.EOL +
             "}";
