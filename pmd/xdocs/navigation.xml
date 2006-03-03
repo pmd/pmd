@@ -34,6 +34,7 @@
       <item name="IDE plugin usage" href="/integrations.html" />
       <item name="Suppressing warnings" href="/suppressing.html" />
       <item name="Finding duplicated code" href="/cpd.html" />
+      <item name="JSP support" href="/jspsupport.html" />
     </menu>
     <menu name="Customizing PMD">
         <item name="Compiling PMD" href="/compiling.html" />

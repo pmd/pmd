@@ -14,6 +14,7 @@ Fixed bug 1433439 - UseIndexOfChar no longer reports false positives on case lik
 Fixed bug 1435218 - LoggerIsNotStaticFinal no longer reports false positives for local variables.
 Fixed bug 1413745 - ArrayIsStoredDirectly no longer reports false positives for array deferences.
 Fixed bug 1435751 - Added encoding type of UTF-8 to the CPD XML file.
+Fixed bug 1441539 - ConsecutiveLiteralAppends no longer flags appends() involving method calls.
 Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 Fixed release packaging; now entire xslt/ directory contents are included.
 Added more XSLT from Dave Corley - you can use them to filter PMD reports by priority level.
@@ -573,4 +574,4 @@ Added new HTML report format
 June 25 2002 - 0.1:
 Initial release
 
-Support PMD, get the book! http://pmdapplied.com/
+Using PMD?  Get the book!  http://pmdapplied.com/
