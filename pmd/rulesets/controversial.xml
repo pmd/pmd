@@ -255,9 +255,8 @@ It is a good practice to call super() in a constructor. If super() is not called
           <property name="xpath">
               <value>
     <![CDATA[
-//ConstructorDeclaration[
- count(.//ExplicitConstructorInvocation)=0
-]
+//ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
+//ConstructorDeclaration[ count (.//ExplicitConstructorInvocation)=0 ]
     ]]>
               </value>
           </property>

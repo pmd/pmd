@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Barak Naveh - Reported and fixed bug in CallSuperInConstructor</li>
             <li>Bhatia Saurabh - Reported a grammar bug, reported a bug in UseStringBufferLength</li>
             <li>Jeff Jensen - Reported missing schema refs in example rulesets, suggested posting XML schema on PMD site, discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>Chris Erskine - found bad link, documentation suggestions</li>
