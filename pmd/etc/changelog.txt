@@ -27,6 +27,7 @@ Rewrote AvoidCallingFinalize in Java; fixed bug and runs much faster, too.
 Uploaded ruleset schema to http://pmd.sf.net/ruleset_xml_schema.xsd
 UseIndexOfChar now catches cases involving lastIndexOf.
 Rules are now run in the order in which they're listed in a ruleset file.  Internally, they're now stored in a List vs a Set, and RuleSet.getRules() now returns a Collection.
+Upgraded to JUnit version 3.8.2. 
 
 ***** TODO: remove deprecated printToConsole element from PMDTask
 

@@ -10,7 +10,7 @@
   <section name="Compiling PMD">
 <p>
 First, you'll need to download and install <a href="http://ant.apache.org/bindownload.cgi">Ant</a> 1.6
-    and <a href="http://www.junit.org/">JUnit</a> 3.8.1.  I put the junit jar file in my ANT_HOME/lib/
+    and <a href="http://www.junit.org/">JUnit</a> 3.8.2.  I put the junit jar file in my ANT_HOME/lib/
     directory and all was well, your mileage may vary.</p>
 <p>
 Now you'll need to either check out the source code or download the latest source release.
