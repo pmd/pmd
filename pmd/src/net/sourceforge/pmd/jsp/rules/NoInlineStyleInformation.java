@@ -2,7 +2,6 @@ package net.sourceforge.pmd.jsp.rules;
 
 import net.sourceforge.pmd.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.jsp.ast.ASTElement;
-import net.sourceforge.pmd.jsp.ast.ASTCompilationUnit;
 
 import java.util.Arrays;
 import java.util.List;
