@@ -16,8 +16,7 @@ public class Java13Parser implements Parser {
     public Object parse(Reader source) throws ParseException {
         JavaParser parser = new JavaParser(new JavaCharStream(source));
         parser.setJDK13();
-        Object rootNode = parser.CompilationUnit();
-        return rootNode;
+        return parser.CompilationUnit();
     }
 
 }

@@ -95,7 +95,6 @@ public class RuleSets {
     public void apply(List acuList, RuleContext ctx, Language language) {
         for (Iterator i = ruleSets.iterator(); i.hasNext();) {
             RuleSet ruleSet = (RuleSet) i.next();
-
             if (applies(language, ruleSet.getLanguage())) {
                 ruleSet.apply(acuList, ctx);
             }

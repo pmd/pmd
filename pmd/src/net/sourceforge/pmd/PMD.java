@@ -92,8 +92,7 @@ public class PMD {
             // TODO - move SymbolFacade traversal inside JavaParser.CompilationUnit()
             sourceTypeHandler.getSymbolFacade().start(rootNode);
 
-            Language language = SourceTypeToRuleLanguageMapper
-                    .getMappedLanguage(sourceType);
+            Language language = SourceTypeToRuleLanguageMapper.getMappedLanguage(sourceType);
 
             if (ruleSets.usesDFA(language)) {
                 sourceTypeHandler.getDataFlowFacade().start(rootNode);

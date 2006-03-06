@@ -16,8 +16,7 @@ public class Java15Parser implements Parser {
     public Object parse(Reader source) throws ParseException {
         JavaParser parser = new JavaParser(new JavaCharStream(source));
         parser.setJDK15();
-        Object rootNode = parser.CompilationUnit();
-        return rootNode;
+        return parser.CompilationUnit();
     }
 
 }

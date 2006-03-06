@@ -14,9 +14,7 @@ import java.io.Reader;
 public class Java14Parser implements Parser {
 
     public Object parse(Reader source) throws ParseException {
-        JavaParser parser = new JavaParser(new JavaCharStream(source));
-        Object rootNode = parser.CompilationUnit();
-        return rootNode;
+        return new JavaParser(new JavaCharStream(source)).CompilationUnit();
     }
 
 }
