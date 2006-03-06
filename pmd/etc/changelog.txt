@@ -16,6 +16,7 @@ Fixed bug 1413745 - ArrayIsStoredDirectly no longer reports false positives for 
 Fixed bug 1435751 - Added encoding type of UTF-8 to the CPD XML file.
 Fixed bug 1441539 - ConsecutiveLiteralAppends no longer flags appends() involving method calls.
 Fixed bug 1339470 - PMD no longer fails to parse certain non-static initializers.
+Fixed bug 1425772 - PMD no longer fails with errors in ASTFieldDeclaration when parsing some JDK 1.5 code.
 Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 Fixed bug in CallSuperInConstructor; it no longer flag classes without extends clauses.
 Fixed release packaging; now entire xslt/ directory contents are included.
@@ -27,7 +28,7 @@ Rewrote AvoidCallingFinalize in Java; fixed bug and runs much faster, too.
 Uploaded ruleset schema to http://pmd.sf.net/ruleset_xml_schema.xsd
 UseIndexOfChar now catches cases involving lastIndexOf.
 Rules are now run in the order in which they're listed in a ruleset file.  Internally, they're now stored in a List vs a Set, and RuleSet.getRules() now returns a Collection.
-Upgraded to JUnit version 3.8.2. 
+Upgraded to JUnit version 3.8.2.
 
 ***** TODO: remove deprecated printToConsole element from PMDTask
 
