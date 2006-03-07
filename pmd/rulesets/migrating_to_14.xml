@@ -6,7 +6,7 @@
 Contains rules for migrating to JDK 1.4
   </description>
 
-    <rule ref="rulesets/migrating.xml/AvoidAssertAsIdentifierTest"/>
+    <rule ref="rulesets/migrating.xml/AvoidAssertAsIdentifier"/>
 
 </ruleset>
 

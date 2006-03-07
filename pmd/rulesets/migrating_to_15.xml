@@ -6,7 +6,7 @@
 Contains rules for migrating to JDK 1.5
   </description>
 
- <rule ref="rulesets/migrating.xml/AvoidEnumAsIdentifierTest"/>
+ <rule ref="rulesets/migrating.xml/AvoidEnumAsIdentifier"/>
  <rule ref="rulesets/migrating.xml/IntegerInstantiation"/>
 
 </ruleset>
