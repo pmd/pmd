@@ -999,5 +999,39 @@ if (method1().equals(a)) {
 </example>
 </rule>
 
+
+    <rule  name="AvoidThreadGroup"
+      message="Avoid using ThreadGroup; it is not thread safe"
+      class="net.sourceforge.pmd.rules.XPathRule"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
+      <description>
+Avoid using ThreadGroup; although it is intended to be used in a threaded environment
+ it contains methods that are not thread safe.
+      </description>
+      <properties>
+        <property name="xpath">
+        <value>
+<![CDATA[
+//AllocationExpression/ClassOrInterfaceType[contains(@Image,'ThreadGroup')] |
+//PrimarySuffix[contains(@Image, 'getThreadGroup')]
+]]>
+        </value>
+        </property>
+      </properties>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+    public class Bar {
+     void buz() {
+      ThreadGroup tg = new ThreadGroup("My threadgroup") ;
+      tg = new ThreadGroup(tg, "my thread group");
+      tg = Thread.currentThread().getThreadGroup();
+      tg = System.getSecurityManager().getThreadGroup();
+     }
+    }
+    ]]>
+      </example>
+    </rule>
+
 </ruleset>
 

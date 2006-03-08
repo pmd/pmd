@@ -1,5 +1,6 @@
 ????, 2006 - 3.6:
 New rules:
+    Basic ruleset: AvoidThreadGroup
     Design ruleset: UnsynchronizedStaticDateFormatter
     Strings ruleset: InefficientEmptyStringCheck, InsufficientStringBufferDeclaration
 Fixed bug 1414985 - ConsecutiveLiteralAppends now checks for intervening references between appends.

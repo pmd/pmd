@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li><a href="http://tersesystems.com/">Will Sargent</a> - Implemented AvoidThreadGroup, AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
             <li>Xavier Le Vourch - Patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
             <li>Benoit Xhenseval - noted Maven plugin bug (http://jira.codehaus.org/browse/MPPMD-24), bug report for UnusedPrivateMethod, suggestion to add elapsed time to XML report, bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Barak Naveh - Reported and fixed bug in CallSuperInConstructor</li>
@@ -165,7 +166,6 @@
             <li>Matt Inger - CloneMethodMustImplementCloneable, CloneThrowsCloneNotSupportedException</li>
             <li>Morgan Schweers - Javascript highlighter for the PMD scoreboard</li>
             <li>Brandon Franklin - bug report for BeanMembersShouldSerializeRule, many PMD scoreboard ideas</li>
-            <li><a href="http://tersesystems.com/">Will Sargent</a> - AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
             <li>Bertrand Mollinier Toublet - Bug report which led to platform character set encoding enhancement</li>
             <li>Choi Ki Soo - Found bug in XMLRenderer</li>
             <li><a href="http://www.fh-stralsund.de/mitarbeiter/powerslave,id,264,nodeid,75.html">Gero Wedemann</a> - Found bug in RuleSetFactory XPath message variable substitution</li>
