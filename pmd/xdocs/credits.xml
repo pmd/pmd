@@ -48,7 +48,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Xavier Le Vourch - Patch to fix rule name bugs in migration rulesets</li>
+            <li>Xavier Le Vourch - Patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
+            <li>Benoit Xhenseval - noted Maven plugin bug (http://jira.codehaus.org/browse/MPPMD-24), bug report for UnusedPrivateMethod, suggestion to add elapsed time to XML report, bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Barak Naveh - Reported and fixed bug in CallSuperInConstructor</li>
             <li>Bhatia Saurabh - Reported a grammar bug, reported a bug in UseStringBufferLength</li>
             <li>Jeff Jensen - Reported missing schema refs in example rulesets, suggested posting XML schema on PMD site, discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
@@ -99,7 +100,6 @@
             <li>Thomas Dudziak - bug report 1304739 for StringInstantiation</li>
             <li>Pieter Bloemendaal - reported JDK 1.3 parsing bug 1292609, command line docs bug report, bug report for UnusedPrivateMethod, found typo in ArrayIsStoredDirectly, bug report for AvoidReassigningParametersRule</li>
             <li>shawn2005 - documentation bug report</li>
-            <li>Benoit Xhenseval - bug report for UnusedPrivateMethod, suggestion to add elapsed time to XML report, bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Andrew Taylor - bug report for StringInstantiation</li>
             <li>S. David Pullara - bug report for AvoidConcateningNonLiteralsInStringBuffer, bug report for ImmutableField</li>
             <li>Maarten Bodewes - bug report for ImmutableField</li>
