@@ -1339,7 +1339,7 @@ void Initializer() :
  * Type, name and expression syntax follows.
  */
 void Type():
-{Token t;}
+{}
 {
    LOOKAHEAD(2) ReferenceType()
  |
