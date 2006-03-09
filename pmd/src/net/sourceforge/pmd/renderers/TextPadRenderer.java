@@ -38,7 +38,7 @@ public class TextPadRenderer extends AbstractRenderer implements Renderer {
             //Filename
             buf.append(PMD.EOL).append(rv.getFilename() + "(");
             //Line number
-            buf.append(Integer.toString(rv.getNode().getBeginLine())).append(",  ");
+            buf.append(Integer.toString(rv.getBeginLine())).append(",  ");
             //Name of violated rule
             buf.append(rv.getRule().getName()).append("):  ");
             //Specific violation message

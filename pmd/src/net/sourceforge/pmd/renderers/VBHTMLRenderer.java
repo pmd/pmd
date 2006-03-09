@@ -46,7 +46,7 @@ public class VBHTMLRenderer extends AbstractRenderer implements Renderer {
             }
 
             colorize = !colorize;
-            sb.append("<td width=\"50\" align=\"right\"><font class=body>" + rv.getNode().getBeginLine() + "&nbsp;&nbsp;&nbsp;</font></td>");
+            sb.append("<td width=\"50\" align=\"right\"><font class=body>" + rv.getBeginLine() + "&nbsp;&nbsp;&nbsp;</font></td>");
             sb.append("<td><font class=body>" + rv.getDescription() + "</font></td>");
             sb.append("</tr>");
             sb.append(lineSep);

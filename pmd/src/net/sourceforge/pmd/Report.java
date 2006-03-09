@@ -172,38 +172,14 @@ public class Report {
 
     public void addRuleViolation(RuleViolation violation) {
         // NOPMD excluder
-        if (linesToExclude.contains(new Integer(violation.getNode().getBeginLine()))) {
+        if (linesToExclude.contains(new Integer(violation.getBeginLine()))) {
             suppressedRuleViolations.add(new SuppressedViolation(violation, true));
             return;
         }
 
-        // Annotation excluder
-        SimpleNode node = violation.getNode();
-
-        // TODO combine this duplicated code
-        // TODO same for duplicated code in ASTTypeDeclaration && ASTClassOrInterfaceBodyDeclaration
-        List parentTypes = node.getParentsOfType(ASTTypeDeclaration.class);
-        if (node instanceof ASTTypeDeclaration) {
-            parentTypes.add(node);
-        }
-        parentTypes.addAll(node.getParentsOfType(ASTClassOrInterfaceBodyDeclaration.class));
-        if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
-            parentTypes.add(node);
-        }
-        parentTypes.addAll(node.getParentsOfType(ASTFormalParameter.class));
-        if (node instanceof ASTFormalParameter) {
-            parentTypes.add(node);
-        }
-        parentTypes.addAll(node.getParentsOfType(ASTLocalVariableDeclaration.class));
-        if (node instanceof ASTLocalVariableDeclaration) {
-            parentTypes.add(node);
-        }
-        for (Iterator i = parentTypes.iterator(); i.hasNext();) {
-            CanSuppressWarnings t = (CanSuppressWarnings) i.next();
-            if (t.hasSuppressWarningsAnnotationFor(violation.getRule())) {
-                suppressedRuleViolations.add(new SuppressedViolation(violation, false));
-                return;
-            }
+        if (violation.isSuppressed()) {
+            suppressedRuleViolations.add(new SuppressedViolation(violation, false));
+            return;
         }
 
 

@@ -92,10 +92,10 @@ public class PapariTextRenderer extends AbstractRenderer implements Renderer {
                 lastFile = rv.getFilename();
                 buf.append(this.yellowBold + "*" + this.colorReset + " file: " + this.whiteBold + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
             }
-            buf.append(this.green + "    src:  " + this.cyan + lastFile.substring(lastFile.lastIndexOf(File.separator) + 1) + this.colorReset + ":" + this.cyan + rv.getNode().getBeginLine() + (rv.getNode().getEndLine() == -1 ? "" : ":" + String.valueOf(rv.getNode().getEndLine())) + this.colorReset + PMD.EOL);
+            buf.append(this.green + "    src:  " + this.cyan + lastFile.substring(lastFile.lastIndexOf(File.separator) + 1) + this.colorReset + ":" + this.cyan + rv.getBeginLine() + (rv.getEndLine() == -1 ? "" : ":" + String.valueOf(rv.getEndLine())) + this.colorReset + PMD.EOL);
             buf.append(this.green + "    rule: " + this.colorReset + rv.getRule().getName() + PMD.EOL);
             buf.append(this.green + "    msg:  " + this.colorReset + rv.getDescription() + PMD.EOL);
-            buf.append(this.green + "    code: " + this.colorReset + this.getLine(lastFile, rv.getNode().getBeginLine()) + PMD.EOL + PMD.EOL);
+            buf.append(this.green + "    code: " + this.colorReset + this.getLine(lastFile, rv.getBeginLine()) + PMD.EOL + PMD.EOL);
         }
         buf.append(PMD.EOL + PMD.EOL);
         buf.append("Summary:" + PMD.EOL + PMD.EOL);

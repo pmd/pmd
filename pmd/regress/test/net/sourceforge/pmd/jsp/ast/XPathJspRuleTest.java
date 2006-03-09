@@ -41,7 +41,7 @@ public class XPathJspRuleTest extends RuleTst {
         assertEquals("One violation expected!", 1, report.size());
 
         RuleViolation rv = (RuleViolation) report.iterator().next();
-        assertEquals(1, rv.getNode().getBeginLine());
+        assertEquals(1, rv.getBeginLine());
     }
 
     private static final String MATCH

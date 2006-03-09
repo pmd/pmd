@@ -1776,9 +1776,9 @@ Token t;
  */
   final public void Type() throws ParseException {
  /*@bgen(jjtree) Type */
-  ASTType jjtn000 = new ASTType(this, JJTTYPE);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
+ ASTType jjtn000 = new ASTType(this, JJTTYPE);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);Token t;
     try {
       if (jj_2_13(2)) {
         ReferenceType();

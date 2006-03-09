@@ -68,7 +68,7 @@ public class AbstractRuleTest extends TestCase {
         s.testingOnly__setBeginLine(5);
         s.setScope(new SourceFileScope("foo"));
         RuleViolation rv = new RuleViolation(r, ctx, s);
-        assertEquals("Line number mismatch!", 5, rv.getNode().getBeginLine());
+        assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
         assertEquals("Rule msg mismatch!", "my rule msg", rv.getDescription());
@@ -84,7 +84,7 @@ public class AbstractRuleTest extends TestCase {
         s.testingOnly__setBeginLine(5);
         s.setScope(new SourceFileScope("foo"));
         RuleViolation rv = new RuleViolation(r, ctx, s, "specificdescription");
-        assertEquals("Line number mismatch!", 5, rv.getNode().getBeginLine());
+        assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
         assertEquals("Rule description mismatch!", "specificdescription", rv.getDescription());

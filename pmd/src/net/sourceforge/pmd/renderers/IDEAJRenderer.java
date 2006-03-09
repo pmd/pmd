@@ -59,7 +59,7 @@ public class IDEAJRenderer extends AbstractRenderer implements Renderer {
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append(rv.getDescription() + PMD.EOL);
-            buf.append(" at " + getFullyQualifiedClassName(rv.getFilename(), sourcePath) + ".method(" + getSimpleFileName(rv.getFilename()) + ":" + rv.getNode().getBeginLine() + ")" + PMD.EOL);
+            buf.append(" at " + getFullyQualifiedClassName(rv.getFilename(), sourcePath) + ".method(" + getSimpleFileName(rv.getFilename()) + ":" + rv.getBeginLine() + ")" + PMD.EOL);
         }
         return buf.toString();
     }
@@ -69,7 +69,7 @@ public class IDEAJRenderer extends AbstractRenderer implements Renderer {
         for (Iterator i = report.iterator(); i.hasNext();) {
             RuleViolation rv = (RuleViolation) i.next();
             buf.append(rv.getDescription() + PMD.EOL);
-            buf.append(" at " + classAndMethod + "(" + file + ":" + rv.getNode().getBeginLine() + ")" + PMD.EOL);
+            buf.append(" at " + classAndMethod + "(" + file + ":" + rv.getBeginLine() + ")" + PMD.EOL);
         }
         return buf.toString();
     }

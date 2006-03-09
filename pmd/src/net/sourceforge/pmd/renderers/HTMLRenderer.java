@@ -54,8 +54,8 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
             buf.append("<td align=\"center\">" + violationCount + "</td>" + PMD.EOL);
-            buf.append("<td width=\"*%\">" + maybeWrap(rv.getFilename(), Integer.toString(rv.getNode().getBeginLine())) + "</td>" + PMD.EOL);
-            buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getNode().getBeginLine()) + "</td>" + PMD.EOL);
+            buf.append("<td width=\"*%\">" + maybeWrap(rv.getFilename(), Integer.toString(rv.getBeginLine())) + "</td>" + PMD.EOL);
+            buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getBeginLine()) + "</td>" + PMD.EOL);
 
             String d = rv.getDescription();
             d = StringUtil.replaceString(d, '&', "&amp;");
@@ -118,7 +118,7 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
             buf.append("<td align=\"left\">" + sv.getRuleViolation().getFilename() + "</td>" + PMD.EOL);
-            buf.append("<td align=\"center\">" + sv.getRuleViolation().getNode().getBeginLine() + "</td>" + PMD.EOL);
+            buf.append("<td align=\"center\">" + sv.getRuleViolation().getBeginLine() + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + sv.getRuleViolation().getRule().getName() + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + (sv.suppressedByNOPMD() ? "NOPMD" : "Annotation") + "</td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
