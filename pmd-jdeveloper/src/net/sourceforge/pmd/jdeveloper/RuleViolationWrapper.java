@@ -15,6 +15,6 @@ public class RuleViolationWrapper {
     }
 
     public String toString() {
-        return ruleViolation.getFilename() + "; line " + ruleViolation.getLine() +"; ("+ ruleViolation.getRule().getName() + ") " + ruleViolation.getDescription();
+        return ruleViolation.getFilename() + "; line " + ruleViolation.getBeginLine() +"; ("+ ruleViolation.getRule().getName() + ") " + ruleViolation.getDescription();
     }
 }

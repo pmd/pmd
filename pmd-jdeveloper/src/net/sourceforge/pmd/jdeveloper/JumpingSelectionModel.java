@@ -30,7 +30,7 @@ public class JumpingSelectionModel extends DefaultListSelectionModel {
         if (oldIndex != newIndex) {
             RuleViolation rv = ((RuleViolationWrapper)model.getElementAt(newIndex)).getRuleViolation();
             EditorManager.getEditorManager().openDefaultEditorInFrame(URLFactory.newFileURL(rv.getFilename()));
-            ((CodeEditor)EditorManager.getEditorManager().getCurrentEditor()).gotoLine(rv.getLine(), 0, false);
+            ((CodeEditor)EditorManager.getEditorManager().getCurrentEditor()).gotoLine(rv.getBeginLine(), 0, false);
         }
     }
 }
