@@ -4,7 +4,7 @@
 	<property name="src" value="src/"/>
 	<property name="etc" value="etc/"/>
 	<property name="pmdjar" value="pmd-3.5.jar"/>
-	<property name="pluginversion" value="1.7"/>
+	<property name="pluginversion" value="1.8"/>
 	<property name="jdeveloper9052.install.dir" value="/home/tom/jdev9052/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 	<property name="jdeveloper1012.install.dir" value="c:/data/jdev1012/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 
@@ -53,6 +53,7 @@
         <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper1012.install.dir}/lib"/>
         <copy file="lib/${pmdjar}" todir="${jdeveloper1012.install.dir}/lib"/>
         <copy file="lib/jaxen-1.1-beta-7.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+        <copy file="lib/jakarta-oro-2.0.8.jar" todir="${jdeveloper1012.install.dir}/lib"/>
 	</target>
 
     <target name="deploy9052" depends="delete,jar9052">
@@ -60,6 +61,7 @@
         <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper9052.install.dir}/lib"/>
         <copy file="lib/${pmdjar}" todir="${jdeveloper9052.install.dir}/lib"/>
         <copy file="lib/jaxen-1.1-beta-7.jar" todir="${jdeveloper9052.install.dir}/lib"/>
+        <copy file="lib/jakarta-oro-2.0.8.jar" todir="${jdeveloper9052.install.dir}/lib"/>
     </target>
 
     <target name="releaseall">
@@ -67,6 +69,7 @@
         <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
         <copy file="lib/${pmdjar}" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
         <copy file="lib/jaxen-1.1-beta-7.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+        <copy file="lib/jakarta-oro-2.0.8.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
     </target>
 
     <target name="release1012" depends="clean,jar1012,releaseall">
