@@ -6,7 +6,7 @@
 	<property name="pmdjar" value="pmd-3.5.jar"/>
 	<property name="pluginversion" value="1.8"/>
 	<property name="jdeveloper9052.install.dir" value="/home/tom/pmd/ides/jdev9052/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
-	<property name="jdeveloper1012.install.dir" value="c:/data/jdev1012/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
+	<property name="jdeveloper1012.install.dir" value="/home/tom/pmd/ides/jdev1012/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 
 
 	<path id="project.class.path">
