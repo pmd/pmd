@@ -19,7 +19,7 @@ Fixed bug 1435751 - Added encoding type of UTF-8 to the CPD XML file.
 Fixed bug 1441539 - ConsecutiveLiteralAppends no longer flags appends() involving method calls.
 Fixed bug 1339470 - PMD no longer fails to parse certain non-static initializers.
 Fixed bug 1425772 - PMD no longer fails with errors in ASTFieldDeclaration when parsing some JDK 1.5 code.
-Fixed bug 1448123 - AvoidFieldNameMatchingTypeName no longer errors out on enumerations.
+Fixed bug 1448123 - AvoidFieldNameMatchingTypeName and AvoidFieldNameMatchingMethodName no longer error out on enumerations.
 Fixed bug 1444654 - migrating_to_14 and migrating_to_15 no longer refer to rule tests.
 Fixed bug 1445231 - TestClassWithoutTestCases: no longer flags abstract classes.
 Fixed bug 1445765 - PMD no longer uses huge amounts of memory.  However, you need to use RuleViolation.getBeginLine(); RuleViolation.getNode() is no more.
