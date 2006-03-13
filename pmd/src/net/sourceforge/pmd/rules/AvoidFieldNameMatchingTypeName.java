@@ -18,7 +18,7 @@ public class AvoidFieldNameMatchingTypeName extends AbstractRule {
 
     public Object visit(ASTFieldDeclaration node, Object data) {
         ASTClassOrInterfaceDeclaration cl = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        if (node.getVariableName().toLowerCase().equals(cl.getImage().toLowerCase())) {
+        if (cl != null && node.getVariableName().toLowerCase().equals(cl.getImage().toLowerCase())) {
             addViolation(data, node);
         }
         return data;

@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Christopher Stach - several bug reports for rules that didn't handle JDK 1.5 enums</li>
             <li>Wouter Zelle - A nice patch to clean up some of the Ant task properties and fix a TextRenderer bug, rewrote PositionLiteralsFirstInComparisons in XPath, Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Xavier Le Vourch - SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
             <li><a href="http://tersesystems.com/">Will Sargent</a> - Implemented AvoidThreadGroup, AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
@@ -67,7 +68,6 @@
             <li>Erik Thauvin - reported IDEA integration problem</li>
             <li>John Kenny - reported bug in ConsecutiveLiteralAppends</li>
             <li>Tom Judge - patch for fix to C/C++ multiline literal support for CPD, patch for including .cc files in C++ CPD checks, patch for JDK compatibility problems</li>
-            <li>Christopher Stach - bug report for JDK 1.5 enum handling</li>
             <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - UnusedNullCheckInEquals, MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
             <li>Sean Mountcastle - reported documentation bug</li>
             <li>Greg Broderick - provided patch for 'minimum priority' support</li>
