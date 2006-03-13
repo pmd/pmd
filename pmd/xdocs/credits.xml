@@ -48,8 +48,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Xavier Le Vourch - SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
             <li><a href="http://tersesystems.com/">Will Sargent</a> - Implemented AvoidThreadGroup, AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
-            <li>Xavier Le Vourch - Patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
             <li>Benoit Xhenseval - noted Maven plugin bug (http://jira.codehaus.org/browse/MPPMD-24), bug report for UnusedPrivateMethod, suggestion to add elapsed time to XML report, bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Barak Naveh - Reported and fixed bug in CallSuperInConstructor</li>
             <li>Bhatia Saurabh - Reported a grammar bug, reported a bug in UseStringBufferLength</li>

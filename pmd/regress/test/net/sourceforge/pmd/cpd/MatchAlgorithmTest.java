@@ -58,7 +58,7 @@ public class MatchAlgorithmTest extends TestCase {
         Iterator marks = match.iterator();
         TokenEntry mark1 = (TokenEntry) marks.next();
         TokenEntry mark2 = (TokenEntry) marks.next();
-        assertTrue(!marks.hasNext());
+        assertFalse(marks.hasNext());
 
         assertEquals(3, mark1.getBeginLine());
         assertEquals(4, mark2.getBeginLine());
@@ -87,6 +87,6 @@ public class MatchAlgorithmTest extends TestCase {
         marks.next();
         marks.next();
         marks.next();
-        assertTrue(!marks.hasNext());
+        assertFalse(marks.hasNext());
     }
 }

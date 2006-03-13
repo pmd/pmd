@@ -45,7 +45,7 @@ public class ClassScopeTest extends STBBaseTst {
         ClassScope s = new ClassScope("Foo");
         SimpleNode node = new SimpleJavaNode(1);
         node.setImage("super.toString");
-        assertTrue(!s.contains(new NameOccurrence(node, node.getImage())));
+        assertFalse(s.contains(new NameOccurrence(node, node.getImage())));
     }
 
     public void testContainsStaticVariablePrefixedWithClassName() {

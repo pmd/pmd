@@ -29,7 +29,7 @@ public class LocalScopeTest extends STBBaseTst {
         name.jjtAddChild(prefix, 1);
         NameOccurrence occ = new NameOccurrence(name, "foo");
         scope.addVariableNameOccurrence(occ);
-        assertTrue(!scope.getVariableDeclarations().keySet().iterator().hasNext());
+        assertFalse(scope.getVariableDeclarations().keySet().iterator().hasNext());
     }
 
     public void testNameWithSuperIsNotFlaggedAsUnused() {
@@ -41,7 +41,7 @@ public class LocalScopeTest extends STBBaseTst {
         name.jjtAddChild(prefix, 1);
         NameOccurrence occ = new NameOccurrence(name, "foo");
         scope.addVariableNameOccurrence(occ);
-        assertTrue(!scope.getVariableDeclarations().keySet().iterator().hasNext());
+        assertFalse(scope.getVariableDeclarations().keySet().iterator().hasNext());
     }
 
     public void testLocalVariableDeclarationFound() {

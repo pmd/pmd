@@ -25,8 +25,8 @@ public class DataFlowNodeTest extends TestCase {
         parent.addPathToChild(child);
 
         assertTrue(parent.removePathToChild(child));
-        assertTrue(!child.getParents().contains(parent));
-        assertTrue(!parent.getChildren().contains(child));
+        assertFalse(child.getParents().contains(parent));
+        assertFalse(parent.getChildren().contains(child));
     }
 
     public void testRemovePathWithNonChild() {

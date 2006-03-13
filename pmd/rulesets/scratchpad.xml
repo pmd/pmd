@@ -7,27 +7,48 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="AvoidCallingFinalize"
-          message="Avoid calling finalize() explicitly"
-          class="net.sourceforge.pmd.rules.AvoidCallingFinalize"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#AvoidCallingFinalize">
+    <rule name="SimplifyBooleanAssertion"
+	    message="assertTrue(!expr) can be replaced by assertFalse(expr)"
+        class="net.sourceforge.pmd.rules.XPathRule"
+       externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#SimplifyBooleanAssertion">
       <description>
-Object.finalize() is called by the garbage collector on an object when garbage collection determines
-that there are no more references to the object.
+Avoid negation in an assertTrue or assertFalse test.
+For example, rephrase:
+assertTrue(!expr);
+as:
+assertFalse(expr);
       </description>
+      <properties>
+          <property name="xpath">
+              <value>
+    <![CDATA[
+//StatementExpression
+[
+.//Name[@Image='assertTrue' or  @Image='assertFalse']
+and
+PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
+ /Expression/UnaryExpressionNotPlusMinus[@Image='!']
+/PrimaryExpression/PrimaryPrefix
+]
+]]>
+              </value>
+          </property>
+      </properties>
         <priority>3</priority>
       <example>
 <![CDATA[
-public class Foo {
- void foo() {
-  Bar b = new Bar();
-  b.finalize();
+public class SimpleTest extends TestCase {
+ public void testX() {
+  assertTrue("not empty", !r.isEmpty()); // replace with assertFalse("not empty", r.isEmpty())
+
+  assertFalse(!r.isEmpty()); // replace with assertFalse(r.isEmpty())
  }
 }
 ]]>
-      </example>
+          </example>
     </rule>
 
+ 
 
 
     <!--
