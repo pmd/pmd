@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.ant;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.EmacsRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
@@ -45,7 +47,34 @@ public class Formatter {
         this.toConsole = toConsole;
     }
 
-    public Renderer getRenderer() {
+    public void outputReport(Report report, String baseDir) {
+        try {
+            if (toConsole) {
+                outputReportTo(new BufferedWriter(new OutputStreamWriter(System.out)), report, true);
+            }
+            if (toFile != null) {
+                outputReportTo(getToFileWriter(baseDir), report, false);
+            }
+        } catch (IOException ioe) {
+            throw new BuildException(ioe.getMessage());
+        }
+    }
+
+    private void outputReportTo(Writer writer, Report report, boolean consoleRenderer) throws IOException {
+        String renderedReport = getRenderer(consoleRenderer).render(report) + PMD.EOL;
+        writer.write(renderedReport, 0, renderedReport.length());
+        writer.close();
+    }
+
+    public boolean isNoOutputSupplied() {
+        return toFile == null && !toConsole;
+    }
+
+    public String toString() {
+        return "file = " + toFile + "; renderer = " + type;
+    }
+
+    private Renderer getRenderer(boolean consoleRenderer) {
         Renderer renderer;
         if (type.equals("xml")) {
             renderer = new XMLRenderer();
@@ -74,25 +103,17 @@ public class Formatter {
         } else {
             throw new BuildException("Formatter type must be 'xml', 'text', 'html', 'emacs', 'summaryhtml', 'papari', 'csv', 'vbhtml', 'yahtml', or a class name; you specified " + type);
         }
+        if (consoleRenderer) {
+            renderer.showSuppressedViolations(false);
+        }
         return renderer;
     }
 
-    public boolean isToFileNull() {
-        return toFile == null && !toConsole;
-    }
-
-    public Writer getToFileWriter(String baseDir) throws IOException {
-        if (!toConsole) {
-            if (!toFile.isAbsolute()) {
-                return new BufferedWriter(new FileWriter(new File(baseDir + System.getProperty("file.separator") + toFile.getPath())));
-            }
-            return new BufferedWriter(new FileWriter(toFile));
-        } else {
-            return new BufferedWriter(new OutputStreamWriter(System.out));
+    private Writer getToFileWriter(String baseDir) throws IOException {
+        if (!toFile.isAbsolute()) {
+            return new BufferedWriter(new FileWriter(new File(baseDir + System.getProperty("file.separator") + toFile.getPath())));
         }
+        return new BufferedWriter(new FileWriter(toFile));
     }
 
-    public String toString() {
-        return "file = " + toFile + "; renderer = " + type;
-    }
 }

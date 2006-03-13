@@ -16,7 +16,9 @@ public class TextRenderer extends AbstractRenderer implements Renderer {
 
         if (report.isEmpty()) {
             buf.append("No problems found!");
-            addSuppressed(report, buf);
+            if (showSuppressedViolations) {
+                addSuppressed(report, buf);
+            }
             return buf.toString();
         }
 

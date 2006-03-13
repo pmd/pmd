@@ -205,14 +205,7 @@ public class PMDTask extends Task {
         for (Iterator i = formatters.iterator(); i.hasNext();) {
             Formatter formatter = (Formatter) i.next();
             log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-            String buffer = formatter.getRenderer().render(ctx.getReport()) + PMD.EOL;
-            try {
-                Writer writer = formatter.getToFileWriter(getProject().getBaseDir().toString());
-                writer.write(buffer, 0, buffer.length());
-                writer.close();
-            } catch (IOException ioe) {
-                throw new BuildException(ioe.getMessage());
-            }
+            formatter.outputReport(ctx.getReport(), getProject().getBaseDir().toString());
         }
 
         if (failuresPropertyName != null && ctx.getReport().size() > 0) {
@@ -252,7 +245,7 @@ public class PMDTask extends Task {
 
         for (Iterator i = formatters.iterator(); i.hasNext();) {
             Formatter f = (Formatter) i.next();
-            if (f.isToFileNull()) {
+            if (f.isNoOutputSupplied()) {
                 throw new BuildException("Formatter toFile attribute is required");
             }
         }

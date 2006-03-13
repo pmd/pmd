@@ -29,6 +29,7 @@ Added more XSLT from Dave Corley - you can use them to filter PMD reports by pri
 PositionLiteralsFirstInComparisons was rewritten in XPath.
 Added a getVersionString method to the TargetJDKVersion interface.
 Added an option '--targetjdk' argument to the Benchmark utility.
+Applied a patch from Wouter Zelle to clean up the Ant Formatter class, fix a TextRenderer bug, and make toConsole cleaner. 
 Rewrote AvoidCallingFinalize in Java; fixed bug and runs much faster, too.
 Uploaded ruleset schema to http://pmd.sf.net/ruleset_xml_schema.xsd
 UseIndexOfChar now catches cases involving lastIndexOf.
