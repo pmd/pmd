@@ -36,7 +36,12 @@ public class SingularField extends AbstractRule {
                     if (nodes.get(0) instanceof ASTMethodDeclaration) {
                         method = ((ASTMethodDeclarator) ((ASTMethodDeclaration) nodes.get(0)).findChildrenOfType(ASTMethodDeclarator.class).get(0)).getImage();
                     } else {
-                        method = ((ASTClassOrInterfaceDeclaration) ((ASTConstructorDeclaration) nodes.get(0)).getFirstParentOfType(ASTClassOrInterfaceDeclaration.class)).getImage();
+                        ASTConstructorDeclaration astConstructorDeclaration = (ASTConstructorDeclaration) nodes.get(0);
+                        ASTClassOrInterfaceDeclaration astClassOrInterfaceDeclaration = (ASTClassOrInterfaceDeclaration) astConstructorDeclaration.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+                        if (astClassOrInterfaceDeclaration == null) {
+                            return data;
+                        }
+                        method = astClassOrInterfaceDeclaration.getImage();
                     }
                     addViolation(data, decl, new Object[]{name, method});
                 }

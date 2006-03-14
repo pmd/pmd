@@ -37,7 +37,7 @@ public class TooManyFields extends AbstractRule {
                 continue;
             }
             ASTClassOrInterfaceDeclaration clazz = (ASTClassOrInterfaceDeclaration) fd.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            if (!clazz.isInterface()) {
+            if (clazz != null && !clazz.isInterface()) {
                 bumpCounterFor(clazz);
             }
         }
