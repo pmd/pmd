@@ -2003,9 +2003,9 @@ void MemberValuePairs():
 }
 
 void MemberValuePair():
-{}
+{Token t;}
 {
-    <IDENTIFIER> "=" MemberValue()
+    t=<IDENTIFIER> { jjtThis.setImage(t.image); } "=" MemberValue()
 }
 
 void MemberValue():

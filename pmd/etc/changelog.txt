@@ -27,6 +27,7 @@ Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar 
 Fixed bug in CallSuperInConstructor; it no longer flag classes without extends clauses.
 Fixed release packaging; now entire xslt/ directory contents are included.
 Added more XSLT from Dave Corley - you can use them to filter PMD reports by priority level.
+You can now access the name of a MemberValuePair node using getImage().
 PositionLiteralsFirstInComparisons was rewritten in XPath.
 Added a getVersionString method to the TargetJDKVersion interface.
 Added an option '--targetjdk' argument to the Benchmark utility.

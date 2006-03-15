@@ -5441,11 +5441,12 @@ jjtree.openNodeScope(jjtn000);Token t;
 
   final public void MemberValuePair() throws ParseException {
  /*@bgen(jjtree) MemberValuePair */
-  ASTMemberValuePair jjtn000 = new ASTMemberValuePair(this, JJTMEMBERVALUEPAIR);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
+ ASTMemberValuePair jjtn000 = new ASTMemberValuePair(this, JJTMEMBERVALUEPAIR);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);Token t;
     try {
-      jj_consume_token(IDENTIFIER);
+      t = jj_consume_token(IDENTIFIER);
+                     jjtn000.setImage(t.image);
       jj_consume_token(ASSIGN);
       MemberValue();
     } catch (Throwable jjte000) {
