@@ -28,7 +28,11 @@ package pmd.scan;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.StyledDocument;
+import org.netbeans.editor.BaseDocument;
+import org.netbeans.editor.Registry;
 
 import org.openide.ErrorManager;
 import org.openide.cookies.EditorCookie;
@@ -42,68 +46,47 @@ import pmd.config.PMDOptionsSettings;
  * Listener for changes in active document or PMD settings.
  * When either of these changes, this object makes PMD background scanning react accordingly.
  */
-public class EditorChangeListener implements PropertyChangeListener {
+public class EditorChangeListener implements PropertyChangeListener, ChangeListener {
 
-	private Scanner scanner;
-	private Node currentlyScannedNode;
-	
-	public static void initialize() {
-		EditorChangeListener ecl = new EditorChangeListener();
-		TopComponent.getRegistry().addPropertyChangeListener(ecl);
-		PMDOptionsSettings.getDefault().addPropertyChangeListener(ecl);
-	}
-	
+    private Scanner scanner;
+    
+    private BaseDocument active;
+    
+    public static void initialize() {
+        EditorChangeListener ecl = new EditorChangeListener();
+        PMDOptionsSettings settings = PMDOptionsSettings.getDefault();
+        settings.addPropertyChangeListener(ecl);
+        if (settings.isScanEnabled().booleanValue()) {
+            Registry.addChangeListener(ecl);
+        }
+    }
+    
 	private EditorChangeListener() {
 	}
  	
  	public void propertyChange(PropertyChangeEvent evt) {
-		tracelog("Got propchange in editorchangelistener: " + evt);
-		if(evt.getSource() instanceof PMDOptionsSettings) {
-			// settings changed, so chuck out current scanner if any.
-			if(scanner != null) {
-				tracelog("Stopping scanner " + scanner + " because of changed PMD settings");
-				scanner.cancel();
-				scanner = null;
-				currentlyScannedNode = null;
-			}
-		}
-		if( PMDOptionsSettings.getDefault().isScanEnabled().equals( Boolean.TRUE ) ) {
-			Node[] nodes = TopComponent.getRegistry().getActivatedNodes();
-			Node foundNode = null;
-			for(int i = 0; i < nodes.length; i++) {
-				if(nodes[i].getCookie(EditorCookie.class) != null) {
-					foundNode = nodes[i];
-					tracelog("  Found scannable node " + foundNode);
-					break;
-				} else {
-					tracelog("  Non-scannable node " + nodes[i] + " of class " + nodes[i].getClass().getName());
-				}
-			}
-			if(foundNode != null && (currentlyScannedNode == null || !foundNode.equals(currentlyScannedNode))) {
-				startScan(foundNode);
-			}
-		}
-	}
-	
-	private void startScan( Node node ) {
-		if( scanner != null ) {
-			// check whether it's the same one (if so, replacing the scanner is unnecessary work)
-			EditorCookie edtCookie = (EditorCookie)node.getCookie(EditorCookie.class);
-			if(edtCookie != null) {
-				StyledDocument doc = edtCookie.getDocument();
-				if(doc != null && doc == scanner.getSubscribedDocument()) {
-					// Same document, so we don't need to replace the scanner.
-					tracelog("  Cancelling scanner replacement, same document!");
-					return;
-				}
-			}
-			// not the same one, so we replace the scanner.
-			tracelog("  Stopping scanner " + scanner);
-			scanner.cancel();
-		}
-		scanner = new Scanner( node );
-		tracelog("  Starting scanner " + scanner);
-		this.currentlyScannedNode = node;
+            PMDOptionsSettings settings = PMDOptionsSettings.getDefault();
+            if (settings.PROP_ENABLE_SCAN.equals(evt.getPropertyName())) {
+                Registry.removeChangeListener(this);
+                if (settings.isScanEnabled().booleanValue()) {
+                    Registry.addChangeListener(this);
+                }
+                else {
+                    if(scanner != null) {
+                        tracelog("Stopping scanner " + scanner + " because of changed PMD settings");
+                        scanner.cancel();
+                        scanner = null;
+                    }
+                }
+            }
+        }
+         
+	private void startScan( BaseDocument doc ) {
+            if (scanner == null) {
+                scanner = new Scanner();
+            }
+            scanner.attachToDoc(doc);
+            active = doc;
 	}
 	
 	private void tracelog(String str) {
@@ -111,5 +94,16 @@ public class EditorChangeListener implements PropertyChangeListener {
 			ErrorManager.getDefault().log(ErrorManager.ERROR, str);
 		}
 	}
+
+    public void stateChanged(ChangeEvent e) {
+        BaseDocument doc = Registry.getMostActiveDocument();
+        if (doc == null) {
+            scanner.cancel();
+        }
+        else if (!doc.equals(active)) {
+            startScan (doc);
+        }
+        // else it is the same document
+    }
 	
 }

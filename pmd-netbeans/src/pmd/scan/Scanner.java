@@ -26,22 +26,20 @@
  */
 package pmd.scan;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.StyledDocument;
+import org.netbeans.editor.BaseDocument;
 import org.netbeans.editor.Settings;
 import org.netbeans.editor.SettingsNames;
+import org.netbeans.modules.editor.NbEditorUtilities;
 import org.netbeans.modules.editor.java.JavaKit;
 import org.openide.ErrorManager;
 import org.openide.loaders.DataObject;
-import org.openide.cookies.EditorCookie;
 import org.openide.cookies.LineCookie;
-import org.openide.nodes.Node;
+import org.openide.text.Annotatable;
 import org.openide.text.Line;
 import org.openide.text.Line.Part;
 import org.openide.util.RequestProcessor;
@@ -52,46 +50,49 @@ import pmd.config.PMDOptionsSettings;
 /**
  * PMD background scanner.
  */
-public class Scanner implements Runnable, DocumentListener, PropertyChangeListener {
+public class Scanner implements Runnable, DocumentListener {
 
     private static RequestProcessor PMD_RP = new RequestProcessor("PMD scanner", 1);
     
-    private final Node node;
-    private boolean running = true;
-    private StyledDocument subscribedDoc = null;
-    private EditorCookie.Observable subscribedObservable = null;
-    
     private RequestProcessor.Task task;
+
+    private BaseDocument doc;
     
     /** Creates a new instance of Scanner.
      *  This is created from EditorChangeListener only.
      */
-    Scanner( Node node ) {
-        this.node = node;
-        EditorCookie edtCookie = (EditorCookie)node.getCookie(EditorCookie.class);
-        if(edtCookie != null) {
-            StyledDocument doc = edtCookie.getDocument();
-            if(doc != null) {
-                doc.removeDocumentListener(this); // prevent duplicate listener registration
-                doc.addDocumentListener(this);
-                subscribedDoc = doc;
-            } // else document has probably been unloaded because the editor window was closed.
-            EditorCookie.Observable obs = (EditorCookie.Observable)node.getCookie(EditorCookie.Observable.class);
-            if(obs != null) {
-                obs.removePropertyChangeListener(this); // prevent duplicate listener registration
-                obs.addPropertyChangeListener(this);
-                subscribedObservable = obs;
-            }
+    Scanner() {
+    }
+	
+    /** Attaches listeners to a node.
+     */
+    void attachToDoc (BaseDocument doc) {
+        if (doc == null) {
+            return;
         }
+        if (doc.equals (this.doc)) {
+            tracelog("the same node detected");
+            return;
+        }
+        detachFromDoc();
+        
+        this.doc = doc;
+        doc.addDocumentListener(this);
         
         task = PMD_RP.post(this, PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000, Thread.MIN_PRIORITY);
     }
 	
-	public StyledDocument getSubscribedDocument() {
-		return subscribedDoc;
+    private void detachFromDoc() {
+        if (doc != null) {
+            doc.removeDocumentListener(this);
 	}
-	
+    }
+    
         public void run() {
+            if (doc == null) {
+                return;
+            }
+            
             try {
                 tracelog("started");
                     
@@ -100,7 +101,7 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
                 if (foo != null)
                     tabSize = foo.intValue();
 
-                DataObject object = ( DataObject )node.getCookie( DataObject.class ) ;
+                DataObject object = NbEditorUtilities.getDataObject(doc);
                 LineCookie cookie = ( LineCookie )object.getCookie( LineCookie.class );
                 Line.Set lineset = cookie.getLineSet();
                 List list = Collections.singletonList(object);
@@ -113,27 +114,32 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
                     if(line == null) {
                         tracelog("no original line found for line " + lineNum + " in lineset; probably document closed" );
                     } else {
-                        tracelog("Line class : " + line.getClass().getName());
-                        tracelog("Node: " + node + ", count: " + line.getAnnotationCount() );
+                        tracelog("Line class : " + line.getClass().getName() + ", count: " + line.getAnnotationCount() );
 
                         String text = line.getText();
                         if (text != null) {
-                            int firstNonWhiteSpaceCharIndex = findFirstNonWhiteSpaceCharIndex(text);
-                            if (firstNonWhiteSpaceCharIndex == -1)
-                                continue;
-                            int lastNonWhiteSpaceCharIndex = findLastNonWhiteSpaceCharIndex(text);
-                            String initialWhiteSpace = text.substring(0, firstNonWhiteSpaceCharIndex);
-                            String content = text.substring(firstNonWhiteSpaceCharIndex, lastNonWhiteSpaceCharIndex + 1);
-                            int start = expandedLength(0, initialWhiteSpace, tabSize);
-                            int length = expandedLength(start, content, tabSize);
+                            Annotatable anno = line;
+                            try {
+                                int firstNonWhiteSpaceCharIndex = findFirstNonWhiteSpaceCharIndex(text);
+                                if (firstNonWhiteSpaceCharIndex == -1)
+                                    continue;
+                                int lastNonWhiteSpaceCharIndex = findLastNonWhiteSpaceCharIndex(text);
+                                String initialWhiteSpace = text.substring(0, firstNonWhiteSpaceCharIndex);
+                                String content = text.substring(firstNonWhiteSpaceCharIndex, lastNonWhiteSpaceCharIndex + 1);
+                                int start = expandedLength(0, initialWhiteSpace, tabSize);
+                                int length = expandedLength(start, content, tabSize);
 
-                            Part part = line.createPart(start, length);
+                                anno = line.createPart(start, length);
+                            }
+                            catch (Exception ex) {
+                                // SIOOBE sometimes, wrong counting with tabs?, attach to whole line
+                            }
 
                             PMDScanAnnotation annotation = PMDScanAnnotation.getNewInstance();
                             String msg = fault.getMessage();
                             annotation.setErrorMessage( msg );
-                            annotation.attach( part );
-                            part.addPropertyChangeListener( annotation );
+                            annotation.attach( anno );
+                            anno.addPropertyChangeListener( annotation );
                         }
                     }
                 }
@@ -181,12 +187,15 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
         }
         
 	public void cancel() {
-            task.cancel();
-            task = null;
+            if (task != null) {
+                task.cancel();
+                task = null;
+            }
+            detachFromDoc();
 	}
 	
 	public String toString() {
-		return "PMDScanner[" + node + "]";
+		return "PMDScanner[" + doc + "]";
 	}
 	
 	public void changedUpdate(DocumentEvent evt) {
@@ -203,37 +212,6 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
             if (task != null) {
                 task.schedule(PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000);
             }
-	}
-	
-	public void propertyChange(PropertyChangeEvent evt) {
-		if(evt.getSource() instanceof EditorCookie) {
-			EditorCookie cookie = (EditorCookie)evt.getSource();
-			if(subscribedDoc != null) {
-				subscribedDoc.removeDocumentListener(this);
-				subscribedDoc = null;
-			}
-			StyledDocument doc = cookie.getDocument();
-			if(doc == null) {
-				// stop the scanner thread -- this document has ben closed.
-                            cancel();
-			} else {
-				doc.removeDocumentListener(this);
-				doc.addDocumentListener(this);
-				subscribedDoc = doc;
-				if(subscribedObservable != null) {
-					subscribedObservable.removePropertyChangeListener(this);
-					subscribedObservable = null;
-				}
-				EditorCookie.Observable obs = (EditorCookie.Observable)node.getCookie(EditorCookie.Observable.class);
-				if(obs != null) {
-					obs.removePropertyChangeListener(this); // prevent duplicate listener registration
-					obs.addPropertyChangeListener(this);
-					subscribedObservable = obs;
-				}
-			}
-		} else {
-			tracelog("Expected PropertyChangeEvent to come from EditorCookie, but it came from " + evt.getSource().getClass().getName());
-		}
 	}
 	
 	private void tracelog(String str) {
