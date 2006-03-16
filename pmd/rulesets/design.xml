@@ -892,15 +892,13 @@ one is chosen.  The thread chosen is arbitrary; thus it's usually safer to call 
           <property name="xpath">
               <value>
     <![CDATA[
-//Statement/StatementExpression/PrimaryExpression/PrimaryPrefix
+//Statement/StatementExpression/PrimaryExpression
+[count(PrimarySuffix/Arguments/ArgumentList) = 0]
 [
-./Name[
-	@Image='notify'
-	or ends-with(@Image,'.notify')
-	]
+PrimaryPrefix[./Name[@Image='notify' or ends-with(@Image,'.notify')]
 or @Image='notify'
-or (  ./AllocationExpression
-    and ../PrimarySuffix[@Image='notify'] )
+or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
+]
 ]
     ]]>
               </value>

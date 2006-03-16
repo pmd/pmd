@@ -21,6 +21,7 @@ public class UseNotifyAllInsteadOfNotifyTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST3, "TEST3", 1, rule),
             new TestDescriptor(TEST4, "TEST4", 1, rule),
             new TestDescriptor(TEST5, "TEST5", 1, rule),
+            new TestDescriptor(TEST6, "notify() with params is OK", 0, rule),
         });
     }
 
@@ -57,6 +58,13 @@ public class UseNotifyAllInsteadOfNotifyTest extends SimpleAggregatorTst {
             "public class Foo {" + PMD.EOL +
             " void foo () {" + PMD.EOL +
             " new Object().notify();" + PMD.EOL +
+            "}" + PMD.EOL +
+            "}";
+
+    private static final String TEST6 =
+            "public class Foo {" + PMD.EOL +
+            " void foo (int x) {" + PMD.EOL +
+            " foo.notify(x);" + PMD.EOL +
             "}" + PMD.EOL +
             "}";
 
