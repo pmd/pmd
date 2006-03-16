@@ -77,7 +77,7 @@ public class RunPMDActionTest extends NbTestCase {
         
         // try on empty list
         
-        result = pmd.RunPMDAction.checkCookies(Collections.EMPTY_LIST);
+        result = pmd.RunPMDAction.performScan(Collections.EMPTY_LIST);
 //        assertEquals(expResult, result);
         
         FileObject dir = FileUtil.toFileObject(getWorkDir());
@@ -87,7 +87,7 @@ public class RunPMDActionTest extends NbTestCase {
         assertNotNull("Cannot create file in work dir", f1);
         DataObject d1 = DataObject.find(f1);
         assertNotNull("Cannot find a data object", d1);
-        result = pmd.RunPMDAction.checkCookies(Collections.singletonList(d1));
+        result = pmd.RunPMDAction.performScan(Collections.singletonList(d1));
         assertEquals("There should be no error for MANIFEST.MF file", 0, result.size());
         
         f1 = dir.createData("PMDSample.java");
@@ -106,7 +106,7 @@ public class RunPMDActionTest extends NbTestCase {
         }
         d1 = DataObject.find(f1);
         assertNotNull("Cannot find a data object", d1);
-        result = pmd.RunPMDAction.checkCookies(Collections.singletonList(d1));
+        result = pmd.RunPMDAction.performScan(Collections.singletonList(d1));
         assertEquals("There should be no error for PMDSample.java file", 0, result.size());
         
     }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2002-2003, the pmd-netbeans team
+ *  Copyright (c) 2002-2006, the pmd-netbeans team
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without modification,
@@ -44,6 +44,7 @@ import org.openide.cookies.LineCookie;
 import org.openide.nodes.Node;
 import org.openide.text.Line;
 import org.openide.text.Line.Part;
+import org.openide.util.RequestProcessor;
 import pmd.Fault;
 import pmd.RunPMDAction;
 import pmd.config.PMDOptionsSettings;
@@ -53,114 +54,93 @@ import pmd.config.PMDOptionsSettings;
  */
 public class Scanner implements Runnable, DocumentListener, PropertyChangeListener {
 
-	private final Node node;
-	private boolean running = true;
-	private StyledDocument subscribedDoc = null;
-	private EditorCookie.Observable subscribedObservable = null;
-	
-	/**
-	 * If this is -1, scan constantly. Else, scan only when this has changed.
-	 */
-	private int modCount;
-	
-	/** Creates a new instance of Scanner */
-	public Scanner( Node node ) {
-		this.node = node;
-		EditorCookie edtCookie = (EditorCookie)node.getCookie(EditorCookie.class);
-		if(edtCookie != null) {
-			StyledDocument doc = edtCookie.getDocument();
-			if(doc != null) {
-				doc.removeDocumentListener(this); // prevent duplicate listener registration
-				doc.addDocumentListener(this);
-				subscribedDoc = doc;
-			} // else document has probably been unloaded because the editor window was closed.
-			EditorCookie.Observable obs = (EditorCookie.Observable)node.getCookie(EditorCookie.Observable.class);
-			if(obs != null) {
-				obs.removePropertyChangeListener(this); // prevent duplicate listener registration
-				obs.addPropertyChangeListener(this);
-				subscribedObservable = obs;
-			}
-			modCount = 0;
-		} else {
-			modCount = -1;
-		}
-		
-	}
+    private static RequestProcessor PMD_RP = new RequestProcessor("PMD scanner", 1);
+    
+    private final Node node;
+    private boolean running = true;
+    private StyledDocument subscribedDoc = null;
+    private EditorCookie.Observable subscribedObservable = null;
+    
+    private RequestProcessor.Task task;
+    
+    /** Creates a new instance of Scanner.
+     *  This is created from EditorChangeListener only.
+     */
+    Scanner( Node node ) {
+        this.node = node;
+        EditorCookie edtCookie = (EditorCookie)node.getCookie(EditorCookie.class);
+        if(edtCookie != null) {
+            StyledDocument doc = edtCookie.getDocument();
+            if(doc != null) {
+                doc.removeDocumentListener(this); // prevent duplicate listener registration
+                doc.addDocumentListener(this);
+                subscribedDoc = doc;
+            } // else document has probably been unloaded because the editor window was closed.
+            EditorCookie.Observable obs = (EditorCookie.Observable)node.getCookie(EditorCookie.Observable.class);
+            if(obs != null) {
+                obs.removePropertyChangeListener(this); // prevent duplicate listener registration
+                obs.addPropertyChangeListener(this);
+                subscribedObservable = obs;
+            }
+        }
+        
+        task = PMD_RP.post(this, PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000, Thread.MIN_PRIORITY);
+    }
 	
 	public StyledDocument getSubscribedDocument() {
 		return subscribedDoc;
 	}
 	
-	public void run() {
-		try {
-			tracelog("started");
-			while( running ) {
-                            
-                            int tabSize = 8;
-                            Integer foo = (Integer) Settings.getValue(JavaKit.class, SettingsNames.TAB_SIZE);
-                            if (foo != null)
-                                tabSize = foo.intValue();
-                            
-				int lastModCount = modCount;
-				tracelog("run starting at modcount: " + lastModCount);
-				DataObject object = ( DataObject )node.getCookie( DataObject.class ) ;
-				LineCookie cookie = ( LineCookie )object.getCookie( LineCookie.class );
-				Line.Set lineset = cookie.getLineSet();
-				List list = Collections.singletonList(object);
-				List faults = RunPMDAction.checkCookies(list );
-				PMDScanAnnotation.clearAll();
-				for( int i = 0; i < faults.size(); i++ ) {
-					Fault fault = (Fault)faults.get( i );
-					int lineNum = fault.getLine();
-					Line line = lineset.getCurrent( lineNum - 1 );
-					if(line == null)
-					{
-						tracelog("no original line found for line " + lineNum + " in lineset; probably document closed" );
-					}
-					else
-					{
-						tracelog("Line class : " + line.getClass().getName());
-						tracelog("Node: " + node + ", count: " + line.getAnnotationCount() );
-                                                
-                                                String text = line.getText();
-                                                if (text != null) {
-                                                    int firstNonWhiteSpaceCharIndex = findFirstNonWhiteSpaceCharIndex(text);
-                                                    if (firstNonWhiteSpaceCharIndex == -1)
-                                                        continue;
-                                                    int lastNonWhiteSpaceCharIndex = findLastNonWhiteSpaceCharIndex(text);
-                                                    String initialWhiteSpace = text.substring(0, firstNonWhiteSpaceCharIndex);
-                                                    String content = text.substring(firstNonWhiteSpaceCharIndex, lastNonWhiteSpaceCharIndex + 1);
-                                                    int start = expandedLength(0, initialWhiteSpace, tabSize);
-                                                    int length = expandedLength(start, content, tabSize);
+        public void run() {
+            try {
+                tracelog("started");
+                    
+                int tabSize = 8;
+                Integer foo = (Integer) Settings.getValue(JavaKit.class, SettingsNames.TAB_SIZE);
+                if (foo != null)
+                    tabSize = foo.intValue();
 
-                                                    Part part = line.createPart(start, length);
+                DataObject object = ( DataObject )node.getCookie( DataObject.class ) ;
+                LineCookie cookie = ( LineCookie )object.getCookie( LineCookie.class );
+                Line.Set lineset = cookie.getLineSet();
+                List list = Collections.singletonList(object);
+                List faults = RunPMDAction.performScan(list );
+                PMDScanAnnotation.clearAll();
+                for( int i = 0; i < faults.size(); i++ ) {
+                    Fault fault = (Fault)faults.get( i );
+                    int lineNum = fault.getLine();
+                    Line line = lineset.getCurrent( lineNum - 1 );
+                    if(line == null) {
+                        tracelog("no original line found for line " + lineNum + " in lineset; probably document closed" );
+                    } else {
+                        tracelog("Line class : " + line.getClass().getName());
+                        tracelog("Node: " + node + ", count: " + line.getAnnotationCount() );
 
-                                                    PMDScanAnnotation annotation = PMDScanAnnotation.getNewInstance();
-                                                    String msg = fault.getMessage();
-                                                    annotation.setErrorMessage( msg );
-                                                    annotation.attach( part );
-                                                    part.addPropertyChangeListener( annotation );
-                                                }
-					}
-				}
-				tracelog("run finished at modcount: " + lastModCount);
-				do {
-					try {
-						Thread.sleep( PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000 );
-					}
-					catch( InterruptedException e ) {
-						ErrorManager.getDefault().notify(e);
-					}
-				} while(running && modCount != -1 && modCount == lastModCount);
-			}
-		}
-		catch( IOException e ) {
-			ErrorManager.getDefault().notify(e);
-		}
-		finally {
-			tracelog("stopped");
-		}
-	}
+                        String text = line.getText();
+                        if (text != null) {
+                            int firstNonWhiteSpaceCharIndex = findFirstNonWhiteSpaceCharIndex(text);
+                            if (firstNonWhiteSpaceCharIndex == -1)
+                                continue;
+                            int lastNonWhiteSpaceCharIndex = findLastNonWhiteSpaceCharIndex(text);
+                            String initialWhiteSpace = text.substring(0, firstNonWhiteSpaceCharIndex);
+                            String content = text.substring(firstNonWhiteSpaceCharIndex, lastNonWhiteSpaceCharIndex + 1);
+                            int start = expandedLength(0, initialWhiteSpace, tabSize);
+                            int length = expandedLength(start, content, tabSize);
+
+                            Part part = line.createPart(start, length);
+
+                            PMDScanAnnotation annotation = PMDScanAnnotation.getNewInstance();
+                            String msg = fault.getMessage();
+                            annotation.setErrorMessage( msg );
+                            annotation.attach( part );
+                            part.addPropertyChangeListener( annotation );
+                        }
+                    }
+                }
+            } catch( IOException e ) {
+                ErrorManager.getDefault().notify(e);
+            }
+        }
 
         private int findFirstNonWhiteSpaceCharIndex(String text) {
             for (int i = 0; i < text.length(); i++) {
@@ -200,8 +180,9 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
             return length;
         }
         
-	public void stopThread() {
-		running = false;
+	public void cancel() {
+            task.cancel();
+            task = null;
 	}
 	
 	public String toString() {
@@ -213,11 +194,15 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
 	}
 	
 	public void insertUpdate(DocumentEvent evt) {
-		incrementModCount();
+            if (task != null) {
+                task.schedule(PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000);
+            }
 	}
 	
 	public void removeUpdate(DocumentEvent evt) {
-		incrementModCount();
+            if (task != null) {
+                task.schedule(PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000);
+            }
 	}
 	
 	public void propertyChange(PropertyChangeEvent evt) {
@@ -230,8 +215,7 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
 			StyledDocument doc = cookie.getDocument();
 			if(doc == null) {
 				// stop the scanner thread -- this document has ben closed.
-				running = false;
-				incrementModCount();
+                            cancel();
 			} else {
 				doc.removeDocumentListener(this);
 				doc.addDocumentListener(this);
@@ -250,10 +234,6 @@ public class Scanner implements Runnable, DocumentListener, PropertyChangeListen
 		} else {
 			tracelog("Expected PropertyChangeEvent to come from EditorCookie, but it came from " + evt.getSource().getClass().getName());
 		}
-	}
-	
-	private synchronized void incrementModCount() {
-		modCount++;
 	}
 	
 	private void tracelog(String str) {

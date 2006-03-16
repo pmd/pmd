@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2002-2003, the pmd-netbeans team
+ *  Copyright (c) 2002-2006, the pmd-netbeans team
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without modification,
@@ -38,6 +38,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import org.openide.ErrorManager;
+import pmd.NbRuleSetFactory;
 import pmd.config.ui.RuleComparator;
 import pmd.custom.RuleClassLoader;
 
@@ -46,34 +47,34 @@ import pmd.custom.RuleClassLoader;
  */
 public abstract class ConfigUtils {
 	
-	/**
-	 * Extra ruleset factories added by calling {@link #addRuleSetFactory}.
-	 * May be null (equivalent to empty).
-	 */
-	private static ArrayList extraFactories = null;
+    /**
+     * Extra ruleset factories added by calling {@link #addRuleSetFactory}.
+     * May be null (equivalent to empty).
+     */
+    private static ArrayList extraFactories;
 	
-	/**
-	 * Registers extra rules that are available.
-	 *
-	 * @param rules Collection of Rule objects.
-	 */
-	public static synchronized void addRuleSetFactory(RuleSetFactory fact) {
-		if (extraFactories == null) {
-			extraFactories = new ArrayList();
-		}
-		extraFactories.add(fact);
-	}
-	
-	/**
-	 * Unregisters extra rules previously registered.
-	 *
-	 * @param rules Collection of Rule objects.
-	 */
-	public static synchronized void removeRuleSetFactory(RuleSetFactory fact) {
-		if (extraFactories != null) {
-			extraFactories.remove(fact);
-		}
-	}
+    static {
+        extraFactories = new ArrayList();
+        extraFactories.add(NbRuleSetFactory.getDefault ());
+    }
+    
+    /**
+     * Registers extra rules that are available.
+     *
+     * @param rules Collection of Rule objects.
+     */
+    public static synchronized void addRuleSetFactory(RuleSetFactory fact) {
+        extraFactories.add(fact);
+    }
+
+    /**
+     * Unregisters extra rules previously registered.
+     *
+     * @param rules Collection of Rule objects.
+     */
+    public static synchronized void removeRuleSetFactory(RuleSetFactory fact) {
+        extraFactories.remove(fact);
+    }
 	
 	/**
 	 * Determines the list of rules to use. This is done by iterating over all

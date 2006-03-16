@@ -62,7 +62,7 @@ public class EditorChangeListener implements PropertyChangeListener {
 			// settings changed, so chuck out current scanner if any.
 			if(scanner != null) {
 				tracelog("Stopping scanner " + scanner + " because of changed PMD settings");
-				scanner.stopThread();
+				scanner.cancel();
 				scanner = null;
 				currentlyScannedNode = null;
 			}
@@ -99,14 +99,11 @@ public class EditorChangeListener implements PropertyChangeListener {
 			}
 			// not the same one, so we replace the scanner.
 			tracelog("  Stopping scanner " + scanner);
-			scanner.stopThread();
+			scanner.cancel();
 		}
 		scanner = new Scanner( node );
 		tracelog("  Starting scanner " + scanner);
-		Thread thread = new Thread( scanner );
-		thread.setPriority( Thread.MIN_PRIORITY );
 		this.currentlyScannedNode = node;
-		thread.start();
 	}
 	
 	private void tracelog(String str) {

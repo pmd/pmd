@@ -2,7 +2,6 @@ Manifest-Version: 1.0
 OpenIDE-Module-Specification-Version: 1.5.1
 Created-By: Ole-Martin Mørk and Gunnlaugur Þór Briem and Radim Kubacki
 OpenIDE-Module: pmd
-OpenIDE-Module-Install: pmd/PMDInstall.class
 OpenIDE-Module-Layer: pmd/mf-layer.xml
 OpenIDE-Module-Localizing-Bundle: pmd/Bundle.properties
 OpenIDE-Module-Requires: 
