@@ -31,6 +31,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.openide.text.Annotatable;
 import org.openide.text.Annotation;
 import org.openide.text.Line;
 import org.openide.text.Line.Part;
@@ -104,8 +105,8 @@ public class PMDScanAnnotation extends Annotation implements PropertyChangeListe
 	 * @param propertyChangeEvent the event fired
 	 */
 	public void propertyChange( PropertyChangeEvent propertyChangeEvent ) {
-		Part part = ( Part )propertyChangeEvent.getSource();
-		part.removePropertyChangeListener( this );
+		Annotatable anno = ( Annotatable )propertyChangeEvent.getSource();
+		anno.removePropertyChangeListener( this );
 		detach();
 	}
 }
