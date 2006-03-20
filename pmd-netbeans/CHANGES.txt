@@ -1,9 +1,11 @@
+Version 1.5.1
 - fixed some bugs 
   http://www.netbeans.org/issues/show_bug.cgi?id=72017
   http://www.netbeans.org/issues/show_bug.cgi?id=72215
   http://www.netbeans.org/issues/show_bug.cgi?id=72637
   http://www.netbeans.org/issues/show_bug.cgi?id=71141
   #1429406 - NoSuchMethodError while saving options
+- reworked autoscan mode that rescan only active editor now
 - few UI tweaks
 
 Version 1.5
