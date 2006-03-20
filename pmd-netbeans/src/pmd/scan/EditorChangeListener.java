@@ -98,7 +98,9 @@ public class EditorChangeListener implements PropertyChangeListener, ChangeListe
     public void stateChanged(ChangeEvent e) {
         BaseDocument doc = Registry.getMostActiveDocument();
         if (doc == null) {
-            scanner.cancel();
+            if (scanner != null) {
+                scanner.cancel();
+            }
         }
         else if (!doc.equals(active)) {
             startScan (doc);

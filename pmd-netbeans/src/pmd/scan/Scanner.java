@@ -102,6 +102,9 @@ public class Scanner implements Runnable, DocumentListener {
                     tabSize = foo.intValue();
 
                 DataObject object = NbEditorUtilities.getDataObject(doc);
+                if (object == null) {
+                    return;
+                }
                 LineCookie cookie = ( LineCookie )object.getCookie( LineCookie.class );
                 Line.Set lineset = cookie.getLineSet();
                 List list = Collections.singletonList(object);
