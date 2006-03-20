@@ -1125,14 +1125,16 @@ See Effective Java, item 48.
             <property name="xpath">
                 <value><![CDATA[
 //MethodDeclaration[$checkNonStaticMethods='true' or @Static='true'][@Synchronized='false']
-//IfStatement[not (ancestor::SynchronizedStatement)]/Expression
- /EqualityExpression
+//IfStatement[not (ancestor::SynchronizedStatement)]
+ [Expression/EqualityExpression
    [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-   [PrimaryExpression/PrimaryPrefix
-     /Name[@Image=
+   [PrimaryExpression/PrimaryPrefix/Name[@Image=
        //FieldDeclaration[$checkNonStaticFields='true' or @Static='true']
-       /VariableDeclarator/VariableDeclaratorId/@Image]
-]
+       /VariableDeclarator/VariableDeclaratorId/@Image]]]
+ [Statement//StatementExpression[AssignmentOperator]
+       [PrimaryExpression/PrimaryPrefix/Name/@Image=
+        ancestor::ClassOrInterfaceBody//FieldDeclaration[$checkNonStaticFields='true' or @Static='true']
+   /VariableDeclarator/VariableDeclaratorId/@Image]]
                 ]]></value>
             </property>
             <property name="checkNonStaticMethods">
