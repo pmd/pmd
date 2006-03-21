@@ -20,7 +20,7 @@
     tag without corresponding closing tag will result in a parsing error.</li>
     <li><span style="text-decoration: underline;">attribute values</span> must be <span style="text-decoration: underline;">surrounded by</span> single or double <span style="text-decoration: underline;">quotes</span>. This means that the following syntax will result in a parsing error:<br />
     &lt;MyTag myAttr1=true myAttr2=1024/&gt;</li>
-    <li>&lt; and &gt; characters must be <span style="text-decoration: underline;">escaped</span>, or put inside a CDATA section. This applies particularly to javascript.</li>
+    <li>&lt; and &gt; characters must be <span style="text-decoration: underline;">escaped</span>, or put inside a CDATA section.</li>
     <p>PMD creates a "Abstract Syntax Tree" representation of source code; the rules use such a tree as input.
     For JSP files, the following constructs are parsed into nodes of the tree:</p>
     <ul>
