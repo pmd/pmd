@@ -11,6 +11,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.ast.ASTAllocationExpression;
 
 import java.util.Iterator;
 import java.util.List;
@@ -43,6 +44,9 @@ public class MethodReturnsInternalArray extends AbstractSunSecureRule {
                 continue;
             }
             if (ret.findChildrenOfType(ASTPrimarySuffix.class).size() > 2) {
+                continue;
+            }
+            if (!ret.findChildrenOfType(ASTAllocationExpression.class).isEmpty()) {
                 continue;
             }
             if (!isLocalVariable(vn, method)) {

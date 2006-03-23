@@ -27,6 +27,7 @@ public class MethodReturnsInternalArrayTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST6, "returning a local array is ok", 0, rule),
             new TestDescriptor(TEST7, "returning a local array is ok part deux", 0, rule),
             new TestDescriptor(TEST8, "returning a cloned field", 0, rule),
+            new TestDescriptor(TEST9, "returning a new array", 0, rule),
         });
     }
 
@@ -80,6 +81,14 @@ public class MethodReturnsInternalArrayTest extends SimpleAggregatorTst {
             " private Object[] x;" + PMD.EOL +
             " Object[] getArr() {" + PMD.EOL +
             "  return this.x.clone();" + PMD.EOL +
+            " } ;" + PMD.EOL +
+            "}";
+
+    private static final String TEST9 =
+            "public class Foo {" + PMD.EOL +
+            " private Object x;" + PMD.EOL +
+            " Object[] getArr() {" + PMD.EOL +
+            "  return new Object[] {x};" + PMD.EOL +
             " } ;" + PMD.EOL +
             "}";
 

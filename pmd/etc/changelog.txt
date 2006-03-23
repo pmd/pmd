@@ -23,7 +23,8 @@ Fixed bugs 1448123 and 1449175 - AvoidFieldNameMatchingTypeName, SingularField, 
 Fixed bug 1444654 - migrating_to_14 and migrating_to_15 no longer refer to rule tests.
 Fixed bug 1445231 - TestClassWithoutTestCases: no longer flags abstract classes.
 Fixed bug 1445765 - PMD no longer uses huge amounts of memory.  However, you need to use RuleViolation.getBeginLine(); RuleViolation.getNode() is no more.
-Fixed bug 1447295 - UseNotifyAllInsteadOfNotify no longer flags notify() methods that have a parameter. 
+Fixed bug 1447295 - UseNotifyAllInsteadOfNotify no longer flags notify() methods that have a parameter.
+Fixed bug 1455965 - MethodReturnsInternalArray no longer flags variations on 'return new Object[] {}'.
 Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 Wouter Zelle fixed a false positive in NonThreadSafeSingleton.
 Fixed bug in CallSuperInConstructor; it no longer flag classes without extends clauses.
