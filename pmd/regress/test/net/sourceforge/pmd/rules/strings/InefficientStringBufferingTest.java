@@ -38,9 +38,8 @@ public class InefficientStringBufferingTest extends SimpleAggregatorTst {
                new TestDescriptor(TEST18, "for statement without braces", 1, rule),
                new TestDescriptor(TEST19, "if statement without braces", 1, rule),
                new TestDescriptor(TEST20, "3 args version of StringBuffer.append", 0, rule),
-               // see patch http://sourceforge.net/tracker/index.php?func=detail&aid=1455282&group_id=56262&atid=479923
-               //new TestDescriptor(TEST21, "compile-time concats are ok", 0, rule),
-               //new TestDescriptor(TEST22, "compile-time concats are ok, v2", 0, rule),
+               new TestDescriptor(TEST21, "compile-time concats are ok", 0, rule),
+               new TestDescriptor(TEST22, "compile-time concats are ok, v2", 0, rule),
        });
     }
 

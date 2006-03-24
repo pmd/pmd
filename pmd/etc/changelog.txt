@@ -27,6 +27,7 @@ Fixed bug 1447295 - UseNotifyAllInsteadOfNotify no longer flags notify() methods
 Fixed bug 1455965 - MethodReturnsInternalArray no longer flags variations on 'return new Object[] {}'.
 Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 Wouter Zelle fixed a false positive in NonThreadSafeSingleton.
+Wouter Zelle fixed a false positive in InefficientStringBuffering.
 Fixed bug in CallSuperInConstructor; it no longer flag classes without extends clauses.
 Fixed release packaging; now entire xslt/ directory contents are included.
 Added more XSLT from Dave Corley - you can use them to filter PMD reports by priority level.
