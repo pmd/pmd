@@ -51,7 +51,6 @@ public class InefficientStringBuffering extends AbstractRule {
             }
         }
 
-        //if (immediateLiterals > 1) { // see patch http://sourceforge.net/tracker/index.php?func=detail&aid=1455282&group_id=56262&atid=479923
         if (immediateLiterals > 1) {
             return data;
         }
