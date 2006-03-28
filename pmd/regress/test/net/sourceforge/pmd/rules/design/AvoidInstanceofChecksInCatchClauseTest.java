@@ -5,6 +5,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
+import junit.framework.Assert;
 
 public class AvoidInstanceofChecksInCatchClauseTest extends SimpleAggregatorTst {
     private Rule rule;

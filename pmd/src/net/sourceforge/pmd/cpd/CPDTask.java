@@ -25,7 +25,7 @@ import java.util.Properties;
  * <project name="CPDProj" default="main" basedir=".">
  * <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
  * <target name="main">
- * <cpd ignoreIdentifiers="true" ignoreLiterals="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
+ * <cpd language="java" ignoreIdentifiers="true" ignoreLiterals="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
  * <fileset dir="/path/to/my/src">
  * <include name="*.java"/>
  * </fileset>
@@ -42,6 +42,7 @@ public class CPDTask extends Task {
     private static final String CSV_FORMAT = "csv";
 
     private String format = TEXT_FORMAT;
+    private String language = LanguageFactory.JAVA_KEY;
     private int minimumTokenCount;
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
@@ -53,14 +54,7 @@ public class CPDTask extends Task {
             validateFields();
 
             log("Tokenizing files", Project.MSG_INFO);
-            Properties p = new Properties();
-            if (ignoreLiterals) {
-                p.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
-            }
-            if (ignoreIdentifiers) {
-                p.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
-            }
-            CPD cpd = new CPD(minimumTokenCount, new JavaLanguage(p));
+            CPD cpd = new CPD(minimumTokenCount, createLanguage());
             tokenizeFiles(cpd);
 
             log("Starting to analyze code", Project.MSG_INFO);
@@ -79,6 +73,17 @@ public class CPDTask extends Task {
         }
     }
 
+    private Language createLanguage() {
+        Properties p = new Properties();
+        if (ignoreLiterals) {
+            p.setProperty(JavaTokenizer.IGNORE_LITERALS, "true");
+        }
+        if (ignoreIdentifiers) {
+            p.setProperty(JavaTokenizer.IGNORE_IDENTIFIERS, "true");
+        }
+        return new LanguageFactory().createLanguage(language, p);
+    }
+
     private void report(CPD cpd) throws ReportException {
         if (!cpd.getMatches().hasNext()) {
             log("No duplicates over " + minimumTokenCount + " tokens found", Project.MSG_INFO);
@@ -90,7 +95,6 @@ public class CPDTask extends Task {
             new FileReporter(new File(getProject().getBaseDir(), outputFile.toString()));
         }
     }
-
 
     private void tokenizeFiles(CPD cpd) throws IOException {
         for (Iterator iterator = filesets.iterator(); iterator.hasNext();) {
@@ -155,11 +159,21 @@ public class CPDTask extends Task {
         format = formatAttribute.getValue();
     }
 
-    public static class FormatAttribute extends EnumeratedAttribute {
-        private String[] formats = new String[]{XML_FORMAT, TEXT_FORMAT, CSV_FORMAT};
+    public void setLanguage(LanguageAttribute languageAttribute) {
+        language = languageAttribute.getValue();
+    }
 
+    public static class FormatAttribute extends EnumeratedAttribute {
+        private static final String[] FORMATS = new String[]{XML_FORMAT, TEXT_FORMAT, CSV_FORMAT};
         public String[] getValues() {
-            return formats;
+            return FORMATS;
+        }
+    }
+
+    public static class LanguageAttribute extends EnumeratedAttribute {
+        private String[] LANGUAGES = new String[]{LanguageFactory.JAVA_KEY, LanguageFactory.CPP_KEY, LanguageFactory.C_KEY, LanguageFactory.PHP_KEY, LanguageFactory.RUBY_KEY };
+        public String[] getValues() {
+            return LANGUAGES;
         }
     }
 }

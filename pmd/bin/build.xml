@@ -231,9 +231,10 @@
 	<target name="cpd" description="Runs CPD">
 		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
 		<!-- ignoreIdentifiers="true" -->
-		<cpd ignoreLiterals="true" minimumTokenCount="20" outputFile="cpd.txt" format="text">
-			<fileset dir="${java-source.path}/java/lang/ref">
-				<include name="**/*.java" />
+		<cpd language="cpp" ignoreLiterals="true" minimumTokenCount="20" outputFile="cpd.txt" format="text">
+      <fileset dir="/usr/local/src/apache_1.3.33/">
+        <!--<fileset dir="${java-source.path}/java/lang/ref">-->
+				<include name="**/*.c" />
 			</fileset>
 		</cpd>
 	</target>

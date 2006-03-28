@@ -50,7 +50,8 @@
  will be seen as equivalent.  You may want to run PMD with this option off to start with and
            then switch it on to see what it turns up.   There's also a <code>ignoreIdentifiers="true"</code> option
            that does the same thing with identifiers; i.e., variable names, methods names, and so forth.
-           The same guidelines apply.
+           The same guidelines apply.  Finally, there's an optional <code>language="cpp|java|php|ruby"</code> flag
+           to select the appropriate language; the default language is "java".
  </p>
        <p>Also, you can get verbose output from this task by running ant with the <code>-v</code> flag; i.e.:</p>
   <source>
