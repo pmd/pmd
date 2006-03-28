@@ -188,7 +188,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -219,7 +219,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -268,7 +268,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -364,7 +364,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
    if (jjte000 instanceof ParseException) {
      {if (true) throw (ParseException)jjte000;}
    }
-   {if (true) throw (RuntimeException)jjte000;}
+   {if (true) throw (Error)jjte000;}
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
@@ -439,7 +439,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -529,7 +529,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -572,7 +572,7 @@ jjtn000.setModifiers(modifiers);
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -614,7 +614,7 @@ jjtn000.setModifiers(modifiers);
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -661,7 +661,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -762,7 +762,7 @@ jjtn000.setModifiers(modifiers);
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -806,7 +806,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -849,7 +849,7 @@ jjtn000.setModifiers(modifiers);
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -885,7 +885,7 @@ jjtn000.setModifiers(modifiers);
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -927,7 +927,7 @@ jjtn000.setModifiers(modifiers);
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -994,7 +994,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1090,7 +1090,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1133,7 +1133,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1170,7 +1170,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1268,7 +1268,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1350,7 +1350,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1408,7 +1408,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1453,7 +1453,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1513,7 +1513,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1576,7 +1576,7 @@ jjtn000.setModifiers(modifiers);
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -1642,7 +1642,7 @@ Token t;
       if (jjte000 instanceof ParseException) {
         {if (true) throw (ParseException)jjte000;}
       }
-      {if (true) throw (RuntimeException)jjte000;}
+      {if (true) throw (Error)jjte000;}
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -1726,7 +1726,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1763,7 +1763,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1813,7 +1813,7 @@ Token t;
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -1881,7 +1881,7 @@ Token t;
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -1935,7 +1935,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1978,7 +1978,7 @@ Token t;
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -2034,7 +2034,7 @@ Token t;
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -2075,7 +2075,7 @@ Token t;
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -2189,7 +2189,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2262,7 +2262,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2313,7 +2313,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2445,7 +2445,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2488,7 +2488,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2531,7 +2531,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2574,7 +2574,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2617,7 +2617,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2660,7 +2660,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2716,7 +2716,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2755,7 +2755,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2821,7 +2821,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2877,7 +2877,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2933,7 +2933,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -2994,7 +2994,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3076,7 +3076,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3105,7 +3105,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3134,7 +3134,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3217,7 +3217,7 @@ Token t;
    if (jjte000 instanceof ParseException) {
      {if (true) throw (ParseException)jjte000;}
    }
-   {if (true) throw (RuntimeException)jjte000;}
+   {if (true) throw (Error)jjte000;}
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
@@ -3304,7 +3304,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3354,7 +3354,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3400,7 +3400,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3437,7 +3437,7 @@ Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3470,7 +3470,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3548,7 +3548,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3615,7 +3615,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3680,7 +3680,7 @@ jjtree.openNodeScope(jjtn000);Token t;
   if (jjte000 instanceof ParseException) {
     {if (true) throw (ParseException)jjte000;}
   }
-  {if (true) throw (RuntimeException)jjte000;}
+  {if (true) throw (Error)jjte000;}
     } finally {
   if (jjtc000) {
     jjtree.closeNodeScope(jjtn000, true);
@@ -3785,7 +3785,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3826,7 +3826,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3897,7 +3897,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -3974,7 +3974,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4081,7 +4081,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4112,7 +4112,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4153,7 +4153,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4193,7 +4193,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4260,7 +4260,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4364,7 +4364,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4419,7 +4419,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4462,7 +4462,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4507,7 +4507,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4539,7 +4539,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4573,7 +4573,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4744,7 +4744,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4806,7 +4806,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4847,7 +4847,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4875,7 +4875,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -4986,7 +4986,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -5016,7 +5016,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -5048,7 +5048,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -5097,7 +5097,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -5129,7 +5129,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -5158,7 +5158,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       if (jjte000 instanceof ParseException) {
         {if (true) throw (ParseException)jjte000;}
       }
-      {if (true) throw (RuntimeException)jjte000;}
+      {if (true) throw (Error)jjte000;}
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -5199,7 +5199,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -5290,7 +5290,7 @@ jjtree.openNodeScope(jjtn000);Token t;
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -5329,7 +5329,7 @@ jjtree.openNodeScope(jjtn000);Token t;
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -5358,7 +5358,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -5390,7 +5390,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -5431,7 +5431,7 @@ jjtree.openNodeScope(jjtn000);Token t;
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -5462,7 +5462,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       if (jjte000 instanceof ParseException) {
         {if (true) throw (ParseException)jjte000;}
       }
-      {if (true) throw (RuntimeException)jjte000;}
+      {if (true) throw (Error)jjte000;}
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -5530,7 +5530,7 @@ jjtree.openNodeScope(jjtn000);Token t;
      if (jjte000 instanceof ParseException) {
        {if (true) throw (ParseException)jjte000;}
      }
-     {if (true) throw (RuntimeException)jjte000;}
+     {if (true) throw (Error)jjte000;}
     } finally {
      if (jjtc000) {
        jjtree.closeNodeScope(jjtn000, true);
@@ -5578,7 +5578,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -5612,7 +5612,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -5676,7 +5676,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -5787,7 +5787,7 @@ jjtn000.setModifiers(modifiers);
    if (jjte000 instanceof ParseException) {
      {if (true) throw (ParseException)jjte000;}
    }
-   {if (true) throw (RuntimeException)jjte000;}
+   {if (true) throw (Error)jjte000;}
     } finally {
    if (jjtc000) {
      jjtree.closeNodeScope(jjtn000, true);
@@ -5816,7 +5816,7 @@ jjtn000.setModifiers(modifiers);
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);

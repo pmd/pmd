@@ -60,7 +60,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -194,7 +194,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           if (jjte000 instanceof ParseException) {
             {if (true) throw (ParseException)jjte000;}
           }
-          {if (true) throw (RuntimeException)jjte000;}
+          {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -283,7 +283,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           if (jjte000 instanceof ParseException) {
             {if (true) throw (ParseException)jjte000;}
           }
-          {if (true) throw (RuntimeException)jjte000;}
+          {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -433,7 +433,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           if (jjte000 instanceof ParseException) {
             {if (true) throw (ParseException)jjte000;}
           }
-          {if (true) throw (RuntimeException)jjte000;}
+          {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -681,7 +681,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
       if (jjte000 instanceof ParseException) {
         {if (true) throw (ParseException)jjte000;}
       }
-      {if (true) throw (RuntimeException)jjte000;}
+      {if (true) throw (Error)jjte000;}
     } finally {
       if (jjtc000) {
         jjtree.closeNodeScope(jjtn000, true);
@@ -712,7 +712,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -845,7 +845,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           if (jjte000 instanceof ParseException) {
             {if (true) throw (ParseException)jjte000;}
           }
-          {if (true) throw (RuntimeException)jjte000;}
+          {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -964,7 +964,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
     if (jjte000 instanceof ParseException) {
       {if (true) throw (ParseException)jjte000;}
     }
-    {if (true) throw (RuntimeException)jjte000;}
+    {if (true) throw (Error)jjte000;}
     } finally {
     if (jjtc000) {
       jjtree.closeNodeScope(jjtn000, true);
@@ -1021,7 +1021,7 @@ public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspPar
           if (jjte000 instanceof ParseException) {
             {if (true) throw (ParseException)jjte000;}
           }
-          {if (true) throw (RuntimeException)jjte000;}
+          {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);

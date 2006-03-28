@@ -159,11 +159,11 @@
 		<javacc target="src/net/sourceforge/pmd/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="${javacc-home.path}" />
 		<delete file="src/net/sourceforge/pmd/ast/Java.jj" />
 		<replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
-		<replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="(Error)" value="(RuntimeException)" />
 		<replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/ast/JavaCharStream.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException" />
-		<replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
+        <replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="extends Exception" value="extends RuntimeException" />
+        <replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
         <replace file="src/net/sourceforge/pmd/ast/JavaParserVisitor.java" token="SimpleNode" value="SimpleJavaNode" />	
     </target>
 
@@ -177,7 +177,6 @@
         <javacc target="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" outputdirectory="src/net/sourceforge/pmd/jsp/ast" javacchome="${javacc-home.path}" />
         <delete file="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" />
         <replace file="src/net/sourceforge/pmd/jsp/ast/JspParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
-        <replace file="src/net/sourceforge/pmd/jsp/ast/JspParser.java" token="(Error)" value="(RuntimeException)" />
         <replace file="src/net/sourceforge/pmd/jsp/ast/JspParser.java" token="throw new Error" value="throw new RuntimeException" />
         <replace file="src/net/sourceforge/pmd/jsp/ast/JspCharStream.java" token="throw new Error" value="throw new RuntimeException" />
         <replace file="src/net/sourceforge/pmd/jsp/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException" />
