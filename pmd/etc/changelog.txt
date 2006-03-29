@@ -1,9 +1,13 @@
-????, 2006 - 3.6:
+????, 2006 - 3.7:
+
+March 29, 2006 - 3.6:
 New rules:
     Basic ruleset: AvoidThreadGroup
     Design ruleset: UnsynchronizedStaticDateFormatter
     Strings ruleset: InefficientEmptyStringCheck, InsufficientStringBufferDeclaration
     JUnit ruleset: SimplifyBooleanAssertion
+    Basic-JSF ruleset: DontNestJsfInJstlIteration
+    Basic-JSP ruleset: NoLongScripts, NoScriptlets, NoInlineStyleInformation, NoClassAttribute, NoJspForward, IframeMissingSrcAttribute, NoHtmlComments
 Fixed bug 1414985 - ConsecutiveLiteralAppends now checks for intervening references between appends.
 Fixed bug 1418424 - ConsecutiveLiteralAppends no longer flags appends in separate methods.
 Fixed bug 1416167 - AppendCharacterWithChar now catches cases involving escaped characters.
@@ -28,8 +32,8 @@ Fixed bug 1455965 - MethodReturnsInternalArray no longer flags variations on 're
 Implemented RFE 1415487 - Added a rulesets/releases/35.xml ruleset (and similar rulesets for previous releases) contains rules new to PMD v3.5
 Wouter Zelle fixed a false positive in NonThreadSafeSingleton.
 Wouter Zelle fixed a false positive in InefficientStringBuffering.
-The CPD Ant task now supports an optional language attribute.
-Removed some ill-advised casts from the grammars.
+The CPD Ant task now supports an optional 'language' attribute.
+Removed some ill-advised casts from the parsers.
 Fixed bug in CallSuperInConstructor; it no longer flag classes without extends clauses.
 Fixed release packaging; now entire xslt/ directory contents are included.
 Added more XSLT from Dave Corley - you can use them to filter PMD reports by priority level.
@@ -43,8 +47,6 @@ Uploaded ruleset schema to http://pmd.sf.net/ruleset_xml_schema.xsd
 UseIndexOfChar now catches cases involving lastIndexOf.
 Rules are now run in the order in which they're listed in a ruleset file.  Internally, they're now stored in a List vs a Set, and RuleSet.getRules() now returns a Collection.
 Upgraded to JUnit version 3.8.2.
-
-***** TODO: remove deprecated printToConsole element from PMDTask
 
 Jan 25, 2006 - 3.5:
 New rules:

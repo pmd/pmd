@@ -20,6 +20,7 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
+import org.apache.oro.text.perl.Perl5Util;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,8 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.oro.text.perl.Perl5Util;
 
 /**
  * This rule finds StringBuffers which may have been pre-sized incorrectly

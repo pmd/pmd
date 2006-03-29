@@ -1,8 +1,8 @@
 package test.net.sourceforge.pmd.ast;
 
-import test.net.sourceforge.pmd.testframework.ParserTst;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_4;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.io.StringReader;
 

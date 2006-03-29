@@ -33,11 +33,11 @@ import test.net.sourceforge.pmd.testframework.MockRule;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Collection;
 
 public class RuleSetTest extends TestCase {
 

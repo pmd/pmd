@@ -1,11 +1,5 @@
 package test.net.sourceforge.pmd.jsp.ast;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-
 import net.sourceforge.pmd.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.jsp.ast.ASTAttributeValue;
 import net.sourceforge.pmd.jsp.ast.ASTCData;
@@ -13,6 +7,12 @@ import net.sourceforge.pmd.jsp.ast.ASTCommentTag;
 import net.sourceforge.pmd.jsp.ast.ASTDoctypeDeclaration;
 import net.sourceforge.pmd.jsp.ast.ASTDoctypeExternalId;
 import net.sourceforge.pmd.jsp.ast.ASTElement;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Test parsing of a JSP in document style, by checking the generated AST.

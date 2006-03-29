@@ -10,8 +10,8 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.SourceFileSelector;
 import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
@@ -20,11 +20,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.Collection;
 
 public class Benchmark {
 

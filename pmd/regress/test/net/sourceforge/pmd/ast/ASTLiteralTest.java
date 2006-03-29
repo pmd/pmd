@@ -1,11 +1,10 @@
 package test.net.sourceforge.pmd.ast;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.ASTLiteral;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.util.Set;
-
-import net.sourceforge.pmd.ast.ASTLiteral;
-import net.sourceforge.pmd.PMD;
 
 public class ASTLiteralTest extends ParserTst {
 

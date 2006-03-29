@@ -1,10 +1,10 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.symboltable.MethodScope;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.symboltable.MethodScope;
 
 import java.util.HashSet;
 import java.util.Set;

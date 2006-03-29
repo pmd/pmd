@@ -14,8 +14,6 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.SourceType;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.renderers.TextRenderer;
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -29,10 +27,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -45,7 +41,6 @@ public class PMDTask extends Task {
     private List filesets = new ArrayList();
     private int minPriority = Rule.LOWEST_PRIORITY;
     private boolean shortFilenames;
-    private boolean printToConsole;
     private String ruleSetFiles;
     private String encoding = System.getProperty("file.encoding");
     private boolean failOnError;
@@ -73,11 +68,6 @@ public class PMDTask extends Task {
 
     public void setFailOnRuleViolation(boolean fail) {
         this.failOnRuleViolation = fail;
-    }
-
-    public void setPrintToConsole(boolean printToConsole) {
-        log("The 'printToConsole' ant task attribute has been deprecated.  Please use the 'toConsole' attribute of the 'formatter' element instead.", Project.MSG_INFO);
-        this.printToConsole = printToConsole;
     }
 
     public void setRuleSetFiles(String ruleSetFiles) {
@@ -213,12 +203,6 @@ public class PMDTask extends Task {
             log("Setting property " + failuresPropertyName + " to " + String.valueOf(ctx.getReport().size()), Project.MSG_VERBOSE);
         }
 
-        if (printToConsole) {
-            Renderer r = new TextRenderer();
-            r.showSuppressedViolations(false);
-            log(r.render(ctx.getReport()), Project.MSG_INFO);
-        }
-
         if (failOnRuleViolation && ctx.getReport().size() > 0) {
             throw new BuildException("Stopping build since PMD found " + ctx.getReport().size() + " rule violations in the code");
         }
@@ -239,14 +223,11 @@ public class PMDTask extends Task {
     }
 
     private void validate() throws BuildException {
-        if (formatters.isEmpty() && !printToConsole) {
-            throw new BuildException("No formatter specified; and printToConsole was false");
-        }
-
+        // TODO - check for empty Formatters List here?
         for (Iterator i = formatters.iterator(); i.hasNext();) {
             Formatter f = (Formatter) i.next();
             if (f.isNoOutputSupplied()) {
-                throw new BuildException("Formatter toFile attribute is required");
+                throw new BuildException("toFile or toConsole needs to be specified in Formatter");
             }
         }
 

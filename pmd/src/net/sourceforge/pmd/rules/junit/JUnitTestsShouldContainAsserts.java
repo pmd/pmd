@@ -12,8 +12,8 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ASTTypeParameters;
+import net.sourceforge.pmd.ast.Node;
 
 public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule {
 

@@ -1,12 +1,12 @@
 package net.sourceforge.pmd.rules.strings;
 
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTLiteral;
-import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.AbstractRule;
 
 import java.util.Iterator;
 import java.util.List;
