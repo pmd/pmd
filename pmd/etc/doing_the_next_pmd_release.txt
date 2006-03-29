@@ -57,7 +57,7 @@ rm -rf tmp/
 mkdir tmp
 cd tmp
 cvs -q export -r pmd_release_3_6 pmd
-mv pmd/ pmd-3.6/
+mv pmd/ pmd-3.6
 cd ..
 cp pmd/lib/pmd-src-3.6.jar tmp/pmd-3.6/lib/
 mv tmp/pmd-3.6/ ~/tmp/

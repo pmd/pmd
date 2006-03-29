@@ -15,7 +15,7 @@
 			<x:expr select="@name"/>
 		</j:set>
 		<properties>
-			<author email="tom@infoether.org">Tom Copeland</author>
+			<author email="tom@infoether.com">Tom Copeland</author>
 			<title>Rule Set: ${rulesetname}</title>
 		</properties>
 		<body>
