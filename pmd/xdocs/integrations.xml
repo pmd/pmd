@@ -69,6 +69,11 @@
         <td><a href="http://blogs.codehaus.org/people/vmassol/">Vincent Massol</a></td>
     </tr>
 
+    <tr><td><a href="#maven2">Maven 2</a></td>
+        <td>N/A</td>
+        <td><a href="http://blogs.codehaus.org/people/vmassol/">Vincent Massol</a></td>
+    </tr>
+
   <tr><td><a href="#netbeans">NetBeans/Sun Java Studio Enterprise/Creator</a></td>
       <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-netbeans/">pmd-netbeans</a></td>
       <td>Radim Kubacki</td>
@@ -300,6 +305,11 @@ selecting the "Ask for Directory" checkbox.</p>
 
         <a name="maven"/><subsection name="Maven">
 <p>Please see <a href="http://maven.apache.org/reference/plugins/pmd/">the Maven plugins web site</a> for more information.</p>
+</subsection>
+
+        <a name="maven2"/><subsection name="Maven 2">
+<p>Please see <a href="http://maven.apache.org/plugins/maven-pmd-plugin/project-info.html">the Maven 2 plugin
+ web site</a> for more information.  Also, the bug tracker for this plugin is <a href="http://jira.codehaus.org/browse/MPMD">here</a>.</p>
 </subsection>
 
 
