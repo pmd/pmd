@@ -1,6 +1,6 @@
 ---++ BUILDING 
 
-The trunk version of NetBeans IDE is used to develop the PMD plugin
+The NetBeans IDE version 5.0 or newer can be used to develop the PMD plugin
 using the new plugin development support.
 
 Read the documentation of this support to get details about the 
@@ -8,4 +8,4 @@ configuration. For a quick setup it should be enough to copy
 the 'pmdsuite.properties.template' file into pmdsuite.properties' edit its 
 content according to comments.
 
-
+Released plugin versions are built with JDK 1.4.2 and against NetBeans5.0.

@@ -46,9 +46,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.TargetJDK1_3;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.SourceType;
 
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.queries.SourceLevelQuery;
@@ -163,9 +161,6 @@ public class RunPMDAction extends CookieAction {
         SourceLevelQuery sourceLevelQuery =
                 (SourceLevelQuery) Lookup.getDefault().lookup(SourceLevelQuery.class);
         RuleSet set = constructRuleSets();
-        PMD pmd_1_3 = null;
-        PMD pmd_1_4 = null;
-        PMD pmd_1_5 = null;
         ArrayList/*<Fault>*/ list = new ArrayList( 100 );
 
         CancelCallback cancel = new CancelCallback();
@@ -193,25 +188,15 @@ public class RunPMDAction extends CookieAction {
                 String sourceLevel = sourceLevelQuery.getSourceLevel(fobj);
 
                 // choose the correct PMD to use according to the source level
-                PMD pmd = null;
-                if (sourceLevel != null) {
-                    if (sourceLevel.equals("1.5")) {
-                        if (pmd_1_5 == null)
-                            pmd_1_5 = new PMD(new TargetJDK1_5());
-                        pmd = pmd_1_5;
-                    } else if (sourceLevel.equals("1.3")) {
-                        if (pmd_1_3 == null)
-                            pmd_1_3 = new PMD(new TargetJDK1_3());
-                        pmd = pmd_1_3;
-                    }
+                PMD pmd = new PMD();
+                if ("1.5".equals(sourceLevel)) {
+                    pmd.setJavaVersion(SourceType.JAVA_15);
+                } else if ("1.3".equals(sourceLevel)) {
+                    pmd.setJavaVersion(SourceType.JAVA_13);
+                } else {
+                    // default to JDK 1.4 if we don't know any better...
+                    pmd.setJavaVersion(SourceType.JAVA_14);
                 }
-                // default to JDK 1.4 if we don't know any better...
-                if (pmd == null) {
-                    if (pmd_1_4 == null)
-                        pmd_1_4 = new PMD(new TargetJDK1_4());
-                    pmd = pmd_1_4;
-                }
-
 
                 Reader reader;
                 try {
@@ -245,7 +230,7 @@ public class RunPMDAction extends CookieAction {
                     StringBuffer buffer = new StringBuffer();
                     buffer.append( violation.getRule().getName() ).append( ", " );
                     buffer.append( violation.getDescription() );
-                    Fault fault = new Fault( violation.getNode().getBeginLine(),
+                    Fault fault = new Fault( violation.getBeginLine(),
                             violation.getFilename(),
                             buffer.toString() );
                     list.add( fault );
