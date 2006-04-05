@@ -57,6 +57,9 @@ public class RuleViolation {
     private String packageName;
     private int beginLine;
     private int endLine;
+
+    private int beginColumn;
+    private int endColumn;
     private boolean isSuppressed;
 
     public RuleViolation(Rule rule, RuleContext ctx, SimpleNode node) {
@@ -82,6 +85,8 @@ public class RuleViolation {
 
         beginLine = node.getBeginLine();
         endLine = node.getEndLine();
+        beginColumn = node.getBeginColumn();
+        endColumn = node.getEndColumn();
 
         // TODO combine this duplicated code
         // TODO same for duplicated code in ASTTypeDeclaration && ASTClassOrInterfaceBodyDeclaration
@@ -115,6 +120,14 @@ public class RuleViolation {
 
     public boolean isSuppressed() {
         return this.isSuppressed;
+    }
+
+    public int getBeginColumn() {
+        return beginColumn;
+    }
+
+    public int getEndColumn() {
+        return endColumn;
     }
 
     public String getDescription() {
