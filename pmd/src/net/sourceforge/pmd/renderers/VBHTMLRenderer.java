@@ -5,7 +5,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 
 import java.util.Iterator;
 
@@ -27,7 +27,7 @@ public class VBHTMLRenderer extends AbstractRenderer implements Renderer {
         boolean colorize = false;
 
         for (Iterator iter = report.iterator(); iter.hasNext();) {
-            RuleViolation rv = (RuleViolation) iter.next();
+            IRuleViolation rv = (IRuleViolation) iter.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {
                     sb.append("</table></br>");

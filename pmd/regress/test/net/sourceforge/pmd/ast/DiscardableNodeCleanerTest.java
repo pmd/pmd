@@ -17,6 +17,7 @@ public class DiscardableNodeCleanerTest extends ParserTst {
     public void testFoo() {}
 
 /*
+ * FIXME
     public void testRemoveDiscardNodes() throws Throwable {
         ASTCompilationUnit cu = new ASTCompilationUnit(1);
         ASTEqualityExpression ee = new ASTEqualityExpression(2);

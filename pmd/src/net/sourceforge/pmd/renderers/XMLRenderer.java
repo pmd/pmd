@@ -5,7 +5,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.util.StringUtil;
 
 import java.text.SimpleDateFormat;
@@ -21,7 +21,7 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
 
         // rule violations
         for (Iterator i = report.iterator(); i.hasNext();) {
-            RuleViolation rv = (RuleViolation) i.next();
+            IRuleViolation rv = (IRuleViolation) i.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {// Not first file ?
                     buf.append("</file>" + PMD.EOL);

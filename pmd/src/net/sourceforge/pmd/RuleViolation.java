@@ -17,7 +17,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-public class RuleViolation {
+public class RuleViolation implements IRuleViolation {
 
     public static class RuleViolationComparator implements Comparator {
         //
@@ -26,8 +26,8 @@ public class RuleViolation {
         // DDP 7/11/2002
         //
         public int compare(Object o1, Object o2) {
-            RuleViolation r1 = (RuleViolation) o1;
-            RuleViolation r2 = (RuleViolation) o2;
+            IRuleViolation r1 = (IRuleViolation) o1;
+            IRuleViolation r2 = (IRuleViolation) o2;
             if (!r1.getFilename().equals(r2.getFilename())) {
                 return r1.getFilename().compareTo(r2.getFilename());
             }

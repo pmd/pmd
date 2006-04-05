@@ -5,7 +5,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 
 import java.util.Iterator;
 
@@ -34,7 +34,7 @@ public class TextPadRenderer extends AbstractRenderer implements Renderer {
             throw new NullPointerException("ERROR in " + this.getClass().getName() + ".render:  Parameter report is null.");
         }
         while (i.hasNext()) {
-            RuleViolation rv = (RuleViolation) i.next();
+            IRuleViolation rv = (IRuleViolation) i.next();
             //Filename
             buf.append(PMD.EOL).append(rv.getFilename() + "(");
             //Line number

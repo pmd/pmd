@@ -8,6 +8,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.rules.design.UseSingleton;
 import net.sourceforge.pmd.stat.Metric;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
@@ -46,7 +47,7 @@ public class UseSingletonTest extends SimpleAggregatorTst implements ReportListe
         assertEquals(1, callbacks);
     }
 
-    public void ruleViolationAdded(RuleViolation ruleViolation) {
+    public void ruleViolationAdded(IRuleViolation ruleViolation) {
         callbacks++;
     }
 

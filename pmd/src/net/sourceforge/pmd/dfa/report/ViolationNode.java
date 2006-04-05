@@ -1,16 +1,17 @@
 package net.sourceforge.pmd.dfa.report;
 
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 
 public class ViolationNode extends AbstractReportNode {
 
-    private RuleViolation ruleViolation;
+    private IRuleViolation ruleViolation;
 
-    public ViolationNode(RuleViolation violation) {
+    public ViolationNode(IRuleViolation violation) {
         this.ruleViolation = violation;
     }
 
-    public RuleViolation getRuleViolation() {
+    public IRuleViolation getRuleViolation() {
         return ruleViolation;
     }
 

@@ -5,7 +5,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.util.StringUtil;
 
 import java.util.Iterator;
@@ -30,7 +30,7 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
     }
 
     public String renderBody(Report report) {
-        StringBuffer buf = glomRuleViolations(report);
+        StringBuffer buf = glomIRuleViolations(report);
         glomProcessingErrors(report, buf);
         if (showSuppressedViolations) {
             glomSuppressions(report, buf);
@@ -38,7 +38,7 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
         return buf.toString();
     }
 
-    private StringBuffer glomRuleViolations(Report report) {
+    private StringBuffer glomIRuleViolations(Report report) {
         boolean colorize = true;
         int violationCount = 1;
         StringBuffer buf = new StringBuffer();
@@ -46,7 +46,7 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
         buf.append("<center><h3>Problems found</h3></center>");
         buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
         for (Iterator i = report.iterator(); i.hasNext();) {
-            RuleViolation rv = (RuleViolation) i.next();
+            IRuleViolation rv = (IRuleViolation) i.next();
             buf.append("<tr");
             if (colorize) {
                 buf.append(" bgcolor=\"lightgrey\"");

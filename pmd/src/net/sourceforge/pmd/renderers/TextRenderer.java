@@ -5,7 +5,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 
 import java.util.Iterator;
 
@@ -23,7 +23,7 @@ public class TextRenderer extends AbstractRenderer implements Renderer {
         }
 
         for (Iterator i = report.iterator(); i.hasNext();) {
-            RuleViolation rv = (RuleViolation) i.next();
+            IRuleViolation rv = (IRuleViolation) i.next();
             buf.append(PMD.EOL + rv.getFilename());
             buf.append(":" + Integer.toString(rv.getBeginLine()));
             buf.append("\t" + rv.getDescription());

@@ -5,7 +5,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -87,7 +87,7 @@ public class PapariTextRenderer extends AbstractRenderer implements Renderer {
 
         for (Iterator i = report.iterator(); i.hasNext();) {
             numberOfWarnings++;
-            RuleViolation rv = (RuleViolation) i.next();
+            IRuleViolation rv = (IRuleViolation) i.next();
             if (!rv.getFilename().equals(lastFile)) {
                 lastFile = rv.getFilename();
                 buf.append(this.yellowBold + "*" + this.colorReset + " file: " + this.whiteBold + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);

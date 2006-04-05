@@ -27,6 +27,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.stat.Metric;
 import test.net.sourceforge.pmd.testframework.RuleTst;
@@ -61,7 +62,7 @@ public class ReportTest extends RuleTst implements ReportListener {
     private boolean violationSemaphore;
     private boolean metricSemaphore;
 
-    public void ruleViolationAdded(RuleViolation ruleViolation) {
+    public void ruleViolationAdded(IRuleViolation ruleViolation) {
         violationSemaphore = true;
     }
 

@@ -74,10 +74,10 @@ public class Report {
     }
 
     public static class SuppressedViolation {
-        private RuleViolation rv;
+        private IRuleViolation rv;
         private boolean isNOPMD;
 
-        public SuppressedViolation(RuleViolation rv, boolean isNOPMD) {
+        public SuppressedViolation(IRuleViolation rv, boolean isNOPMD) {
             this.isNOPMD = isNOPMD;
             this.rv = rv;
         }
@@ -90,7 +90,7 @@ public class Report {
             return !this.isNOPMD;
         }
 
-        public RuleViolation getRuleViolation() {
+        public IRuleViolation getRuleViolation() {
             return this.rv;
         }
     }
@@ -120,7 +120,7 @@ public class Report {
     public Map getCountSummary() {
         Map summary = new HashMap();
         for (Iterator iter = violationTree.iterator(); iter.hasNext();) {
-            RuleViolation rv = (RuleViolation) iter.next();
+            IRuleViolation rv = (IRuleViolation) iter.next();
             String key = (rv.getPackageName() == "" ? "" : (rv.getPackageName() + ".")) + rv.getClassName();
             Object o = summary.get(key);
             if (o == null) {
@@ -145,7 +145,7 @@ public class Report {
     public Map getSummary() {
         Map summary = new HashMap();
         for (Iterator i = violations.iterator(); i.hasNext();) {
-            RuleViolation rv = (RuleViolation) i.next();
+            IRuleViolation rv = (IRuleViolation) i.next();
             if (!summary.containsKey(rv.getRule().getName())) {
                 summary.put(rv.getRule().getName(), new Integer(0));
             }
@@ -164,7 +164,7 @@ public class Report {
         return this.suppressedRuleViolations;
     }
 
-    public void addRuleViolation(RuleViolation violation) {
+    public void addRuleViolation(IRuleViolation violation) {
         // NOPMD excluder
         if (linesToExclude.contains(new Integer(violation.getBeginLine()))) {
             suppressedRuleViolations.add(new SuppressedViolation(violation, true));

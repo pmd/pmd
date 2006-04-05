@@ -5,7 +5,7 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.util.StringUtil;
 
 import java.util.Iterator;
@@ -25,7 +25,7 @@ public class CSVRenderer extends AbstractRenderer implements Renderer {
 
         int violationCount = 1;
         for (Iterator i = report.iterator(); i.hasNext();) {
-            RuleViolation rv = (RuleViolation) i.next();
+            IRuleViolation rv = (IRuleViolation) i.next();
             buf.append(quoteAndCommify(Integer.toString(violationCount)));
             buf.append(quoteAndCommify(rv.getPackageName()));
             buf.append(quoteAndCommify(rv.getFilename()));

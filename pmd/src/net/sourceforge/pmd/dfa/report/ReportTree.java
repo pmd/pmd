@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.dfa.report;
 
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -110,7 +111,7 @@ public class ReportTree {
      * Adds the RuleViolation to the tree. Splits the package name. Each
      * package, class and violation gets there own tree node.
      */
-    public void addRuleViolation(RuleViolation violation) {
+    public void addRuleViolation(IRuleViolation violation) {
         String pack = violation.getPackageName();
         String[] a = {};
         if (pack == null) {
