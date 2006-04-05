@@ -6,6 +6,7 @@ import java.util.List;
 public class DiscardableNodeCleaner {
 
     private static final Class[] clazzes = new Class[]{
+/*
         ASTEqualityExpression.class,
         ASTAndExpression.class,
         ASTInstanceOfExpression.class,
@@ -16,12 +17,13 @@ public class DiscardableNodeCleaner {
         ASTExclusiveOrExpression.class,
         ASTConditionalExpression.class,
         ASTRelationalExpression.class,
-        ASTUnaryExpression.class,
-        ASTUnaryExpressionNotPlusMinus.class,
-        ASTPostfixExpression.class,
         ASTMultiplicativeExpression.class,
         ASTAdditiveExpression.class,
         ASTConditionalAndExpression.class,
+*/
+        ASTUnaryExpression.class,
+        ASTUnaryExpressionNotPlusMinus.class,
+        ASTPostfixExpression.class,
         ASTModifiers.class
     };
 

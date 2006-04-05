@@ -5,12 +5,10 @@ package net.sourceforge.pmd.ast;
 public class ASTEqualityExpression extends SimpleJavaNode {
     public ASTEqualityExpression(int id) {
         super(id);
-        this.setDiscardable();
     }
 
     public ASTEqualityExpression(JavaParser p, int id) {
         super(p, id);
-        this.setDiscardable();
     }
 
     /**

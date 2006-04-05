@@ -28,7 +28,6 @@ public abstract class SimpleNode implements Node {
     protected int endColumn;
     private Scope scope;
     private boolean discardable;
-
     private IDataFlowNode dataFlowNode;
 
     public IDataFlowNode getDataFlowNode() {

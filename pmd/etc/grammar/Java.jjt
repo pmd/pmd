@@ -1478,87 +1478,87 @@ void AssignmentOperator() :
     | "|="    {jjtThis.setImage("|="); jjtThis.setCompound();}
 }
 
-void ConditionalExpression() :
+void ConditionalExpression() #ConditionalExpression(>1) :
 {}
 {
-  ConditionalOrExpression() {checkForDiscard(jjtThis);} [ "?" {jjtThis.setUnDiscardable();jjtThis.setTernary();} Expression() ":" ConditionalExpression() ]
+  ConditionalOrExpression() [ "?" {jjtThis.setTernary();} Expression() ":" ConditionalExpression() ]
 }
 
-void ConditionalOrExpression() :
+void ConditionalOrExpression() #ConditionalOrExpression(>1):
 {}
 {
-  ConditionalAndExpression() {checkForDiscard(jjtThis);} ( "||" {jjtThis.setUnDiscardable();} ConditionalAndExpression() )*
+  ConditionalAndExpression() ( "||" ConditionalAndExpression() )*
 }
 
-void ConditionalAndExpression() :
+void ConditionalAndExpression() #ConditionalAndExpression(>1):
 {}
 {
-  InclusiveOrExpression() {checkForDiscard(jjtThis);}  ( "&&" {jjtThis.setUnDiscardable();} InclusiveOrExpression() )*
+  InclusiveOrExpression() ( "&&" InclusiveOrExpression() )*
 }
 
-void InclusiveOrExpression() :
+void InclusiveOrExpression() #InclusiveOrExpression(>1) :
 {}
 {
-  ExclusiveOrExpression() {checkForDiscard(jjtThis);} ( "|" {jjtThis.setUnDiscardable();} ExclusiveOrExpression() )*
+  ExclusiveOrExpression() ( "|" ExclusiveOrExpression() )*
 }
 
-void ExclusiveOrExpression() :
+void ExclusiveOrExpression() #ExclusiveOrExpression(>1) :
 {}
 {
-  AndExpression() {checkForDiscard(jjtThis);} ( "^" {jjtThis.setUnDiscardable();} AndExpression() )*
+  AndExpression()  ( "^" AndExpression() )*
 }
 
-void AndExpression() :
+void AndExpression() #AndExpression(>1):
 {}
 {
-  EqualityExpression() {checkForDiscard(jjtThis);} ( "&" {jjtThis.setUnDiscardable();} EqualityExpression() )*
+  EqualityExpression() ( "&" EqualityExpression() )*
 }
 
-void EqualityExpression() :
+void EqualityExpression() #EqualityExpression(>1):
 {}
 {
-  InstanceOfExpression() {checkForDiscard(jjtThis);} ( ( "==" {jjtThis.setImage("==");jjtThis.setUnDiscardable(); } | "!=" {jjtThis.setImage("!=");jjtThis.setUnDiscardable();} ) InstanceOfExpression()  )*
+  InstanceOfExpression()  ( ( "==" {jjtThis.setImage("==");} | "!=" {jjtThis.setImage("!=");} ) InstanceOfExpression()  )*
 }
 
-void InstanceOfExpression() :
+void InstanceOfExpression() #InstanceOfExpression(>1):
 {}
 {
-  RelationalExpression() {checkForDiscard(jjtThis);} [ "instanceof" {jjtThis.setUnDiscardable();} Type() ]
+  RelationalExpression() [ "instanceof" Type() ]
 }
 
-void RelationalExpression() :
+void RelationalExpression() #RelationalExpression(>1):
 {}
 {
-  ShiftExpression() {checkForDiscard(jjtThis);}
+  ShiftExpression()
    (
-    ( "<" {jjtThis.setImage("<");jjtThis.setUnDiscardable();}
-     | ">" {jjtThis.setImage(">");jjtThis.setUnDiscardable();}
-     | "<=" {jjtThis.setImage("<=");jjtThis.setUnDiscardable();}
-     | ">=" {jjtThis.setImage(">=");jjtThis.setUnDiscardable();}
+    ( "<" {jjtThis.setImage("<");}
+     | ">" {jjtThis.setImage(">");}
+     | "<=" {jjtThis.setImage("<=");}
+     | ">=" {jjtThis.setImage(">=");}
     ) ShiftExpression() )*
 }
 
-void ShiftExpression() :
+void ShiftExpression() #ShiftExpression(>1):
 {}
 {
-  AdditiveExpression() {checkForDiscard(jjtThis);}
+  AdditiveExpression() 
    (
-    ( "<<" {jjtThis.setImage("<<");jjtThis.setUnDiscardable();}
-     | RSIGNEDSHIFT() {jjtThis.setUnDiscardable();}
-     | RUNSIGNEDSHIFT() {jjtThis.setUnDiscardable();}
+    ( "<<" { jjtThis.setImage("<<");}
+     | RSIGNEDSHIFT()
+     | RUNSIGNEDSHIFT()
     ) AdditiveExpression() )*
 }
 
-void AdditiveExpression() :
+void AdditiveExpression() #AdditiveExpression(>1):
 {}
 {
-  MultiplicativeExpression() {checkForDiscard(jjtThis);} ( ( "+" {jjtThis.setImage("+");jjtThis.setUnDiscardable();} | "-" {jjtThis.setImage("-");jjtThis.setUnDiscardable();} ) MultiplicativeExpression() )*
+  MultiplicativeExpression() ( ( "+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");} ) MultiplicativeExpression() )*
 }
 
-void MultiplicativeExpression() :
+void MultiplicativeExpression() #MultiplicativeExpression(>1):
 {}
 {
-  UnaryExpression() {checkForDiscard(jjtThis);} ( ( "*" {jjtThis.setImage("*");jjtThis.setUnDiscardable();} | "/" {jjtThis.setImage("/");jjtThis.setUnDiscardable();} | "%" {jjtThis.setImage("%");jjtThis.setUnDiscardable();}) UnaryExpression() )*
+  UnaryExpression() ( ( "*" {jjtThis.setImage("*");} | "/" {jjtThis.setImage("/");} | "%" {jjtThis.setImage("%");}) UnaryExpression() )*
 }
 
 void UnaryExpression() :
@@ -1608,7 +1608,7 @@ void PostfixExpression() :
   PrimaryExpression() [ "++" {jjtThis.setImage("++");jjtThis.setUnDiscardable();} | "--" {jjtThis.setImage("--");jjtThis.setUnDiscardable();} ]
 }
 
-void CastExpression() :
+void CastExpression() #CastExpression(>1):
 {}
 { LOOKAHEAD("(" PrimitiveType()) "(" Type() ")" UnaryExpression()
 | "(" Type() ")" UnaryExpressionNotPlusMinus()
