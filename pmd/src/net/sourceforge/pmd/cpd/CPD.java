@@ -71,11 +71,11 @@ public class CPD {
             throw new FileNotFoundException("Couldn't find directory " + dir);
         }
         FileFinder finder = new FileFinder();
-        add(finder.findFilesFrom(dir, new SourceFileOrDirectoryFilter(fileSelector), recurse));
+        // TODO - could use SourceFileSelector here
+        add(finder.findFilesFrom(dir, language.getFileFilter(), recurse));
     }
 
     private Set current = new HashSet();
-    private SourceFileSelector fileSelector = new SourceFileSelector();
 
     private void add(int fileCount, File file) throws IOException {
 

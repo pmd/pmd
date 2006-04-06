@@ -1,4 +1,5 @@
 ????, 2006 - 3.7:
+Fixed major bug in CPD; it was not picking up files other than .java or .jsp.
 Added RuleViolation.getBeginColumn()/getEndColumn()
 Added an IRuleViolation interface and modified various code classes (include Renderer implementations and Report) to use it.
 Modified Java grammar to use conditional node descriptors for some expression nodes

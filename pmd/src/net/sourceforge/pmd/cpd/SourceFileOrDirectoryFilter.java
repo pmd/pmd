@@ -24,8 +24,7 @@ public class SourceFileOrDirectoryFilter implements FilenameFilter {
     }
 
     public boolean accept(File dir, String filename) {
-        return (fileSelector.isWantedFile(filename)
-                || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory())) && !filename.equals("SCCS");
+        return (fileSelector.isWantedFile(filename) || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory())) && !filename.equals("SCCS");
 // Remark: Why not use "new File(dir, filename).isDirectory()" ?
     }
 }
