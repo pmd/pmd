@@ -52,7 +52,7 @@ public class MethodScope extends AbstractScope {
     }
 
     public NameDeclaration findVariableHere(NameOccurrence occurrence) {
-        if (occurrence.isThisOrSuper()) {
+        if (occurrence.isThisOrSuper() || occurrence.isMethodOrConstructorInvocation()) {
             return null;
         }
         ImageFinderFunction finder = new ImageFinderFunction(occurrence.getImage());
