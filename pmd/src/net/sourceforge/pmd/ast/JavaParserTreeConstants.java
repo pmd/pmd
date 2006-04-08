@@ -7,7 +7,7 @@ public interface JavaParserTreeConstants
   public int JJTCOMPILATIONUNIT = 0;
   public int JJTPACKAGEDECLARATION = 1;
   public int JJTIMPORTDECLARATION = 2;
-  public int JJTMODIFIERS = 3;
+  public int JJTVOID = 3;
   public int JJTTYPEDECLARATION = 4;
   public int JJTCLASSORINTERFACEDECLARATION = 5;
   public int JJTEXTENDSLIST = 6;
@@ -119,7 +119,7 @@ public interface JavaParserTreeConstants
     "CompilationUnit",
     "PackageDeclaration",
     "ImportDeclaration",
-    "Modifiers",
+    "void",
     "TypeDeclaration",
     "ClassOrInterfaceDeclaration",
     "ExtendsList",

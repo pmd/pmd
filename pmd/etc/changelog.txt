@@ -3,7 +3,8 @@ Fixed bug 1465574 - UnusedPrivateMethod no longer reports false positives when a
 Fixed major bug in CPD; it was not picking up files other than .java or .jsp.
 Added RuleViolation.getBeginColumn()/getEndColumn()
 Added an IRuleViolation interface and modified various code classes (include Renderer implementations and Report) to use it.
-Modified Java grammar to use conditional node descriptors for some expression nodes
+Modified JJTree grammar to use conditional node descriptors for some expression nodes.
+Modified JJTree grammar to use node suppression for ASTModifier nodes; this replaces a bunch of DiscardableNodeCleaner hackery.
 
 March 29, 2006 - 3.6:
 New rules:

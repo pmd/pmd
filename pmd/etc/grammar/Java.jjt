@@ -1080,7 +1080,7 @@ void ImportDeclaration() :
  * syntax errors for simple modifier mistakes. It will also enable us to give
  * better error messages.
  */
-int Modifiers():
+int Modifiers() #void:
 {
    int modifiers = 0;
 }

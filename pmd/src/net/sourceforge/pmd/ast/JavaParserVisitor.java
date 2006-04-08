@@ -8,7 +8,6 @@ public interface JavaParserVisitor
   public Object visit(ASTCompilationUnit node, Object data);
   public Object visit(ASTPackageDeclaration node, Object data);
   public Object visit(ASTImportDeclaration node, Object data);
-  public Object visit(ASTModifiers node, Object data);
   public Object visit(ASTTypeDeclaration node, Object data);
   public Object visit(ASTClassOrInterfaceDeclaration node, Object data);
   public Object visit(ASTExtendsList node, Object data);

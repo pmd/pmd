@@ -6,25 +6,9 @@ import java.util.List;
 public class DiscardableNodeCleaner {
 
     private static final Class[] clazzes = new Class[]{
-/*
-        ASTEqualityExpression.class,
-        ASTAndExpression.class,
-        ASTInstanceOfExpression.class,
-        ASTUnaryExpression.class,
-        ASTShiftExpression.class,
-        ASTConditionalOrExpression.class,
-        ASTInclusiveOrExpression.class,
-        ASTExclusiveOrExpression.class,
-        ASTConditionalExpression.class,
-        ASTRelationalExpression.class,
-        ASTMultiplicativeExpression.class,
-        ASTAdditiveExpression.class,
-        ASTConditionalAndExpression.class,
-*/
         ASTUnaryExpression.class,
         ASTUnaryExpressionNotPlusMinus.class,
         ASTPostfixExpression.class,
-        ASTModifiers.class
     };
 
     public void clean(ASTCompilationUnit root) {

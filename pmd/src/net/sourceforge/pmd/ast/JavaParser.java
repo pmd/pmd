@@ -282,94 +282,69 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
  * better error messages.
  */
   final public int Modifiers() throws ParseException {
- /*@bgen(jjtree) Modifiers */
-   ASTModifiers jjtn000 = new ASTModifiers(this, JJTMODIFIERS);
-   boolean jjtc000 = true;
-   jjtree.openNodeScope(jjtn000);int modifiers = 0;
-    try {
-      label_3:
-      while (true) {
-        if (jj_2_1(2)) {
-          ;
-        } else {
-          break label_3;
-        }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case PUBLIC:
-          jj_consume_token(PUBLIC);
-              modifiers |= AccessNode.PUBLIC;
-          break;
-        case STATIC:
-          jj_consume_token(STATIC);
-               modifiers |= AccessNode.STATIC;
-          break;
-        case PROTECTED:
-          jj_consume_token(PROTECTED);
-                  modifiers |= AccessNode.PROTECTED;
-          break;
-        case PRIVATE:
-          jj_consume_token(PRIVATE);
-                modifiers |= AccessNode.PRIVATE;
-          break;
-        case FINAL:
-          jj_consume_token(FINAL);
-              modifiers |= AccessNode.FINAL;
-          break;
-        case ABSTRACT:
-          jj_consume_token(ABSTRACT);
-                 modifiers |= AccessNode.ABSTRACT;
-          break;
-        case SYNCHRONIZED:
-          jj_consume_token(SYNCHRONIZED);
-                     modifiers |= AccessNode.SYNCHRONIZED;
-          break;
-        case NATIVE:
-          jj_consume_token(NATIVE);
-               modifiers |= AccessNode.NATIVE;
-          break;
-        case TRANSIENT:
-          jj_consume_token(TRANSIENT);
-                  modifiers |= AccessNode.TRANSIENT;
-          break;
-        case VOLATILE:
-          jj_consume_token(VOLATILE);
-                 modifiers |= AccessNode.VOLATILE;
-          break;
-        case STRICTFP:
-          jj_consume_token(STRICTFP);
-                 modifiers |= AccessNode.STRICTFP;
-          break;
-        case AT:
-          Annotation();
-          break;
-        default:
-          jj_la1[7] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
+   int modifiers = 0;
+    label_3:
+    while (true) {
+      if (jj_2_1(2)) {
+        ;
+      } else {
+        break label_3;
       }
-   jjtree.closeNodeScope(jjtn000, true);
-   jjtc000 = false;
-    {if (true) return modifiers;}
-    } catch (Throwable jjte000) {
-   if (jjtc000) {
-     jjtree.clearNodeScope(jjtn000);
-     jjtc000 = false;
-   } else {
-     jjtree.popNode();
-   }
-   if (jjte000 instanceof RuntimeException) {
-     {if (true) throw (RuntimeException)jjte000;}
-   }
-   if (jjte000 instanceof ParseException) {
-     {if (true) throw (ParseException)jjte000;}
-   }
-   {if (true) throw (Error)jjte000;}
-    } finally {
-   if (jjtc000) {
-     jjtree.closeNodeScope(jjtn000, true);
-   }
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case PUBLIC:
+        jj_consume_token(PUBLIC);
+              modifiers |= AccessNode.PUBLIC;
+        break;
+      case STATIC:
+        jj_consume_token(STATIC);
+               modifiers |= AccessNode.STATIC;
+        break;
+      case PROTECTED:
+        jj_consume_token(PROTECTED);
+                  modifiers |= AccessNode.PROTECTED;
+        break;
+      case PRIVATE:
+        jj_consume_token(PRIVATE);
+                modifiers |= AccessNode.PRIVATE;
+        break;
+      case FINAL:
+        jj_consume_token(FINAL);
+              modifiers |= AccessNode.FINAL;
+        break;
+      case ABSTRACT:
+        jj_consume_token(ABSTRACT);
+                 modifiers |= AccessNode.ABSTRACT;
+        break;
+      case SYNCHRONIZED:
+        jj_consume_token(SYNCHRONIZED);
+                     modifiers |= AccessNode.SYNCHRONIZED;
+        break;
+      case NATIVE:
+        jj_consume_token(NATIVE);
+               modifiers |= AccessNode.NATIVE;
+        break;
+      case TRANSIENT:
+        jj_consume_token(TRANSIENT);
+                  modifiers |= AccessNode.TRANSIENT;
+        break;
+      case VOLATILE:
+        jj_consume_token(VOLATILE);
+                 modifiers |= AccessNode.VOLATILE;
+        break;
+      case STRICTFP:
+        jj_consume_token(STRICTFP);
+                 modifiers |= AccessNode.STRICTFP;
+        break;
+      case AT:
+        Annotation();
+        break;
+      default:
+        jj_la1[7] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
     }
+    {if (true) return modifiers;}
     throw new RuntimeException("Missing return statement in function");
   }
 
