@@ -5,6 +5,7 @@ Added RuleViolation.getBeginColumn()/getEndColumn()
 Added an IRuleViolation interface and modified various code classes (include Renderer implementations and Report) to use it.
 Modified JJTree grammar to use conditional node descriptors for some expression nodes.
 Modified JJTree grammar to use node suppression for ASTModifier nodes; this replaces a bunch of DiscardableNodeCleaner hackery.
+Modified C/CPP grammar to only build the lexical analyzer; we're not using the parser for CPD, just the token manager.  As a bonus, this reduces the PMD jar file size by about 50KB.
 
 March 29, 2006 - 3.6:
 New rules:

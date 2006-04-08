@@ -24,7 +24,8 @@
  *
  */
 options {
-  STATIC=true;
+  STATIC=false;
+  BUILD_PARSER=false;
 }
 
 PARSER_BEGIN(CPPParser)
