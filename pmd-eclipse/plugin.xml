@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.eclipse"
    name="%plugin.name"
-   version="3.1.4"
+   version="3.1.5"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.eclipse.PMDPlugin">
 
