@@ -45,9 +45,7 @@ import java.util.Set;
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.TargetJDK1_3;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.eclipse.MarkerInfo;
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
@@ -85,6 +83,9 @@ import org.eclipse.ui.WorkbenchException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2006/04/10 20:55:31  phherlin
+ * Update to PMD 3.6
+ *
  * Revision 1.7  2005/12/30 16:24:01  phherlin
  * Adding a null resource is illegal. Throw an IllegalArgumentException.
  *
@@ -236,17 +237,17 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     private PMD getPmdEngineForProject(final IProject project) throws CommandException {
         final IJavaProject javaProject = JavaCore.create(project);
-        PMD pmdEngine = null;
+        final PMD pmdEngine = new PMD();
 
         if (javaProject.exists()) {
             final String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
             log.debug("compilerCompliance = " + compilerCompliance);
             if (JavaCore.VERSION_1_3.equals(compilerCompliance)) {
-                pmdEngine = new PMD(new TargetJDK1_3());
+                pmdEngine.setJavaVersion(SourceType.JAVA_13);
             } else if (JavaCore.VERSION_1_4.equals(compilerCompliance)) {
-                pmdEngine = new PMD(new TargetJDK1_4());
+                pmdEngine.setJavaVersion(SourceType.JAVA_14);
             } else if (JavaCore.VERSION_1_5.equals(compilerCompliance)) {
-                pmdEngine = new PMD(new TargetJDK1_5());
+                pmdEngine.setJavaVersion(SourceType.JAVA_15);
             } else {
                 throw new CommandException("The target JDK, " + compilerCompliance + " is not yet supported"); // TODO:
                                                                                                                // NLS

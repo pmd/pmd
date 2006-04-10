@@ -35,7 +35,7 @@
  */
 package net.sourceforge.pmd.eclipse.properties;
 
-import java.util.Set;
+import java.util.Collection;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -48,6 +48,7 @@ import net.sourceforge.pmd.eclipse.preferences.RuleSetContentProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -74,6 +75,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.18  2006/04/10 20:57:32  phherlin
+ * Update to PMD 3.6
+ *
  * Revision 1.17  2005/05/10 21:49:27  phherlin
  * Fix new violations detected by PMD 3.1
  *
@@ -366,7 +370,7 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
         availableRulesTableViewer.setInput(controller.getAvailableRules());
         final RuleSet activeRuleSet = model.getProjectRuleSet();
         if (activeRuleSet != null) {
-            final Set activeRules = activeRuleSet.getRules();
+            final Collection activeRules = activeRuleSet.getRules();
 
             final TableItem[] itemList = availableRulesTableViewer.getTable().getItems();
             for (int i = 0; i < itemList.length; i++) {

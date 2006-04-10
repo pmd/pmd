@@ -33,6 +33,9 @@ import org.eclipse.swt.widgets.Shell;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/04/10 20:57:16  phherlin
+ * Update to PMD 3.6
+ *
  * Revision 1.3  2005/06/07 22:40:06  phherlin
  * Implementing extra ruleset declaration
  *
@@ -179,7 +182,7 @@ public class RuleSetSelectionDialog extends Dialog {
             if (!importedRuleSetName.equals("")) {
                 try {
                     final RuleSetFactory factory = new RuleSetFactory();
-                    this.selectedRuleSet = factory.createRuleSet(this.importedRuleSetName);
+                    this.selectedRuleSet = factory.createRuleSets(this.importedRuleSetName).getAllRuleSets()[0];
                 } catch (RuleSetNotFoundException e) {
                     PMDPlugin.getDefault().showError(getMessage(PMDConstants.MSGKEY_ERROR_RULESET_NOT_FOUND), e);
                 }

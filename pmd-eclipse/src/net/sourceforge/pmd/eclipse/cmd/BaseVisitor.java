@@ -65,6 +65,9 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2006/04/10 20:55:32  phherlin
+ * Update to PMD 3.6
+ *
  * Revision 1.7  2006/01/19 22:00:14  phherlin
  * Fix BUG#1357798 Source file utf-8 charset problem
  *
@@ -315,10 +318,10 @@ public class BaseVisitor {
         while (iter.hasNext()) {
             final RuleViolation violation = (RuleViolation) iter.next();
             review.ruleName = violation.getRule().getName();
-            review.lineNumber = violation.getNode().getBeginLine();
+            review.lineNumber = violation.getBeginLine();
 
             if (reviewsList.contains(review)) {
-                log.debug("Ignoring violation of rule " + violation.getRule().getName() + " at line " + violation.getNode().getBeginLine()
+                log.debug("Ignoring violation of rule " + violation.getRule().getName() + " at line " + violation.getBeginLine()
                         + " because of a review.");
             } else {
                 if (PMDPlugin.getDefault().useDFA() && violation.getRule().usesDFA()) {
@@ -326,7 +329,7 @@ public class BaseVisitor {
                 } else {
                     markerSet.add(getMarkerInfo(violation, fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER));
                 }
-                log.debug("Adding a violation for rule " + violation.getRule().getName() + " at line " + violation.getNode().getBeginLine());
+                log.debug("Adding a violation for rule " + violation.getRule().getName() + " at line " + violation.getBeginLine());
             }
         }
 
@@ -415,10 +418,10 @@ public class BaseVisitor {
         values.add(violation.getDescription());
 
         attributeNames.add(IMarker.LINE_NUMBER);
-        values.add(new Integer(violation.getNode().getBeginLine()));
+        values.add(new Integer(violation.getBeginLine()));
 
         attributeNames.add(PMDPlugin.KEY_MARKERATT_LINE2);
-        values.add(new Integer(violation.getNode().getEndLine()));
+        values.add(new Integer(violation.getEndLine()));
 
         attributeNames.add(PMDPlugin.KEY_MARKERATT_VARIABLE);
         values.add(violation.getVariableName());

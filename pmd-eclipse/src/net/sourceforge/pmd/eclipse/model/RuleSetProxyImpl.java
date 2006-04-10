@@ -47,6 +47,9 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/04/10 20:55:58  phherlin
+ * Update to PMD 3.6
+ *
  * Revision 1.1  2005/12/30 16:26:30  phherlin
  * Implement a new preferences model
  *
@@ -92,8 +95,8 @@ public class RuleSetProxyImpl implements RuleSetProxy {
     public RuleSet getRuleSet() throws ModelException {
         try {
             if ((this.ruleSet == null) && (!this.override)) {
-                RuleSetFactory factory = new RuleSetFactory();
-                this.ruleSet = factory.createRuleSet(this.ruleSetUrl);
+                final RuleSetFactory factory = new RuleSetFactory();
+                this.ruleSet = factory.createRuleSets(this.ruleSetUrl).getAllRuleSets()[0];
             }
             
             return this.ruleSet;
@@ -106,7 +109,7 @@ public class RuleSetProxyImpl implements RuleSetProxy {
     /**
      * @see net.sourceforge.pmd.eclipse.model.RuleSetProxy#setRuleSet(net.sourceforge.pmd.RuleSet)
      */
-    public void setRuleSet(RuleSet ruleSet) throws ModelException {
+    public void setRuleSet(final RuleSet ruleSet) throws ModelException {
         if (this.override) {
             this.ruleSet = ruleSet;
         }

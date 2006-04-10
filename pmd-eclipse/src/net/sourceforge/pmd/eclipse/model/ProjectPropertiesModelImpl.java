@@ -74,6 +74,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.13  2006/04/10 20:55:58  phherlin
+ * Update to PMD 3.6
+ *
  * Revision 1.12  2005/10/25 00:02:44  phherlin
  * Fix the update of the project rule set file.
  *
@@ -216,10 +219,8 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) throws ModelException {
         log.info("Set rule set stored in project for project " + this.project.getName() + ": " + ruleSetStoredInProject);
         this.ruleSetStoredInProject = ruleSetStoredInProject;
-        if (this.ruleSetStoredInProject) {
-            if (!isRuleSetFileExist()) {
-                throw new ModelException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
-            }
+        if ((this.ruleSetStoredInProject) && (!isRuleSetFileExist())) {
+            throw new ModelException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
         }
     }
 
@@ -436,7 +437,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
             try {
                 final RuleSetFactory factory = new RuleSetFactory();
                 final IFile ruleSetFile = this.project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);
-                this.projectRuleSet = factory.createRuleSet(ruleSetFile.getLocation().toOSString());
+                this.projectRuleSet = factory.createRuleSets(ruleSetFile.getLocation().toOSString()).getAllRuleSets()[0];
             } catch (RuleSetNotFoundException e) {
                 PMDPlugin.getDefault().logError("Project RuleSet cannot be loaded for project " + this.project.getName() + ". Using the rules from properties.", e);
             }

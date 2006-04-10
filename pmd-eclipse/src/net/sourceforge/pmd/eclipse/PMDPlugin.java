@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Properties;
@@ -55,6 +56,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.29  2006/04/10 20:55:06  phherlin
+ * Update to PMD 3.6
+ *
  * Revision 1.28  2005/10/24 22:47:41  phherlin
  * Integrating Sebastian Raffel's work
  *
@@ -562,7 +566,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
      */
     private Set getNewRules(RuleSet newRuleSet) {
         Set addedRules = new HashSet();
-        Set newRules = newRuleSet.getRules();
+        Collection newRules = newRuleSet.getRules();
         Iterator i = newRules.iterator();
         while (i.hasNext()) {
             Rule rule = (Rule) i.next();

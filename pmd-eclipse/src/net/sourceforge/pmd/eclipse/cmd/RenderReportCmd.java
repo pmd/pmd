@@ -68,6 +68,9 @@ import org.eclipse.jdt.core.JavaCore;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2006/04/10 20:55:32  phherlin
+ * Update to PMD 3.6
+ *
  * Revision 1.5  2006/01/17 21:27:37  phherlin
  * Create a fake node instead of using SimpleNode
  *
@@ -196,12 +199,12 @@ public class RenderReportCmd extends AbstractDefaultCommand {
             final String ruleName = markers[i].getAttribute(PMDPluginConstants.KEY_MARKERATT_RULENAME, "");
             final Rule rule = PMDPlugin.getDefault().getRuleSet().getRuleByName(ruleName);
             final int lineNumber = markers[i].getAttribute(IMarker.LINE_NUMBER, 0);
-            final String message = markers[i].getAttribute(IMarker.MESSAGE, "");
 
             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:15
             final RuleContext ruleContext = new RuleContext();
             ruleContext.setSourceCodeFilename(markers[i].getResource().getProjectRelativePath().toString());
 
+            // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
             final FakeNode fakeNode = new FakeNode();
             fakeNode.setBeginLine(lineNumber);
             
@@ -209,8 +212,8 @@ public class RenderReportCmd extends AbstractDefaultCommand {
             final FakeRuleViolation ruleViolation = new FakeRuleViolation(rule, ruleContext, fakeNode);
 
             if (markers[i].getResource() instanceof IFile) {
-                ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) markers[i].getResource());
-                IPackageDeclaration packages[] = unit.getPackageDeclarations();
+                final ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) markers[i].getResource());
+                final IPackageDeclaration packages[] = unit.getPackageDeclarations();
                 if (packages.length > 0) {
                     ruleViolation.setPackageName(packages[0].getElementName());
                 }
@@ -249,7 +252,7 @@ public class RenderReportCmd extends AbstractDefaultCommand {
          * Set the package name
          * @param packageName
          */
-        public void setPackageName(String packageName) {
+        public void setPackageName(final String packageName) {
             this.packageName = packageName;
         }
         
@@ -271,8 +274,16 @@ public class RenderReportCmd extends AbstractDefaultCommand {
             return this.beginLine;
         }
         
-        public void setBeginLine(int line) {
+        public void setBeginLine(final int line) {
             this.beginLine = line;
+        }
+
+        public void jjtClose() {
+            // do nothing            
+        }
+
+        public void jjtOpen() {
+            // do nothing            
         }
         
     }

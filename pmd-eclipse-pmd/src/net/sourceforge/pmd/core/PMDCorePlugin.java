@@ -53,6 +53,9 @@ import org.eclipse.core.runtime.Status;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/04/10 20:58:18  phherlin
+ * Update to PMD 3.6
+ *
  * Revision 1.2  2005/07/02 14:33:05  phherlin
  * Implement the RuleSets extension point
  *
@@ -108,7 +111,7 @@ public class PMDCorePlugin extends Plugin {
         final RuleSetFactory factory = new RuleSetFactory();
         for (int i = 0; i < PluginConstants.PMD_RULESETS.length; i++) {
             try {
-                final RuleSet ruleSet = factory.createRuleSet(PluginConstants.PMD_RULESETS[i]);
+                final RuleSet ruleSet = factory.createRuleSets(PluginConstants.PMD_RULESETS[i]).getAllRuleSets()[0];
                 getRuleSetManager().registerRuleSet(ruleSet);
                 getRuleSetManager().registerDefaultRuleSet(ruleSet);
             } catch (RuleSetNotFoundException e) {
