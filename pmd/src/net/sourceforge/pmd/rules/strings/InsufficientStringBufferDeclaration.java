@@ -6,6 +6,7 @@ package net.sourceforge.pmd.rules.strings;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
+import net.sourceforge.pmd.ast.ASTCastExpression;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTIfStatement;
@@ -20,7 +21,6 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-import org.apache.oro.text.perl.Perl5Util;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.oro.text.perl.Perl5Util;
 
 /**
  * This rule finds StringBuffers which may have been pre-sized incorrectly
@@ -122,8 +124,9 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
             // Else Ifs are their own subnode in AST. So we have to
             // look a little farther up the tree to find the IF statement
             Node possibleStatement = ((SimpleNode) statement).getFirstParentOfType(ASTIfStatement.class);
-            if (possibleStatement != null && possibleStatement.getClass().equals(ASTIfStatement.class)) {
+            while(possibleStatement != null && possibleStatement.getClass().equals(ASTIfStatement.class)) {
                 statement = possibleStatement;
+                possibleStatement = ((SimpleNode) possibleStatement).getFirstParentOfType(ASTIfStatement.class);
             }
         }
         Map thisBranch = (Map) blocks.get(statement);
@@ -175,15 +178,28 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
         int anticipatedLength = 0;
         ASTPrimaryPrefix xn = (ASTPrimaryPrefix) sn.getFirstChildOfType(ASTPrimaryPrefix.class);
         if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0).getClass().equals(ASTLiteral.class)) {
-
+/*
             String str = ((SimpleNode) xn.jjtGetChild(0)).getImage();
-            int i = (regexp.match("/^[\"']/", str)) ? 2 : 0;
-            anticipatedLength += str.length() - i;
+            if(regexp.match("/^[\"']/", str)){
+                anticipatedLength += str.length() - 2;
+            } else {
+                anticipatedLength += str.length();
+            }*/
+            
+            String str = ((SimpleNode) xn.jjtGetChild(0)).getImage();
+            if(regexp.match("/^[\"']/", str)){
+                anticipatedLength += str.length() - 2;
+            } else if(str.startsWith("0x")){
+                anticipatedLength += 1;
+            } else {
+                anticipatedLength += str.length();
+            }            
         }
         return anticipatedLength;
     }
 
     private int getConstructorLength(SimpleNode node, int constructorLength) {
+        int iConstructorLength = constructorLength;
         SimpleNode block = (SimpleNode) node.getFirstParentOfType(ASTBlockStatement.class);
         List literal;
 
@@ -193,29 +209,32 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
         if (block == null) {
             block = (ASTFormalParameter) node.getFirstParentOfType(ASTFormalParameter.class);
             if (block != null) {
-                constructorLength = -1;
+                iConstructorLength = -1;
             }
         }
         literal = (block.findChildrenOfType(ASTLiteral.class));
         if (literal.size() == 0) {
             List name = (block.findChildrenOfType(ASTName.class));
             if (name.size() != 0) {
-                constructorLength = -1;
+                iConstructorLength = -1;
             }
         } else if (literal.size() == 1) {
             String str = ((SimpleNode) literal.get(0)).getImage();
             if (str == null) {
-                constructorLength = 0;
+                iConstructorLength = 0;
             } else if (regexp.match("/^['\"]/", str)) {
                 // since it's not taken into account
                 // anywhere. only count the extra 16
                 // characters
-                constructorLength = 16; // don't add the constructor's length,
+                iConstructorLength = 16; // don't add the constructor's length,
             } else {
-                constructorLength = Integer.parseInt(str);
+                iConstructorLength = Integer.parseInt(str);
             }
+        } else {
+            iConstructorLength = -1;
         }
-        return constructorLength;
+
+        return iConstructorLength;
     }
 
     private boolean isAdditive(SimpleNode n) {

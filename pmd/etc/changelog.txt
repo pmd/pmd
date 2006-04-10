@@ -1,4 +1,6 @@
 ????, 2006 - 3.7:
+Fixed bug 1461426 InsufficientStringBufferDeclaration does not consider paths
+Fixed bug 1462184 False +: InsufficientStringBufferDeclaration - wrong size
 Fixed bug 1465574 - UnusedPrivateMethod no longer reports false positives when a private method is called from a method with a parameter of the same name.
 Fixed major bug in CPD; it was not picking up files other than .java or .jsp.
 Added RuleViolation.getBeginColumn()/getEndColumn()

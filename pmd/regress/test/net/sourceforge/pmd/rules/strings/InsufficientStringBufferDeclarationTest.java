@@ -19,7 +19,11 @@ public class InsufficientStringBufferDeclarationTest extends SimpleAggregatorTst
     public void testAll() {
 
         // first run the legal tests
-       runTests(new TestDescriptor[] {
+        runTests(new TestDescriptor[] {
+                new TestDescriptor(TEST32, "32, Constructor from math", 0, rule),
+        });
+
+        runTests(new TestDescriptor[] {
                 new TestDescriptor(TEST1, "1, StringBuffer allocated with enough space", 0, rule),
                 new TestDescriptor(TEST3, "3, StringBuffer allocated with space", 0, rule),
                 new TestDescriptor(TEST4, "4, StringBuffer allocated from variable", 0, rule),
@@ -38,6 +42,10 @@ public class InsufficientStringBufferDeclarationTest extends SimpleAggregatorTst
                 new TestDescriptor(TEST24, "24, appends inside if/else if/else statements", 1, rule),
                 new TestDescriptor(TEST25, "25, Compound ifs", 0, rule),
                 new TestDescriptor(TEST27, "27, Switch statement doesn't exceed 16 characters", 0, rule),
+                new TestDescriptor(TEST29, "29, Appending from a cast", 0, rule),
+                new TestDescriptor(TEST30, "30, Appending chars", 0, rule),
+                new TestDescriptor(TEST31, "31, Appending from a cast in ifs", 0, rule),
+                new TestDescriptor(TEST32, "32, Constructor from math", 0, rule),
        });
     
        // Then run the failure tests
@@ -381,6 +389,50 @@ public class InsufficientStringBufferDeclarationTest extends SimpleAggregatorTst
         "            sb.append(\"The default block exceeds 16 characters and will fail\");" + PMD.EOL +
         "    }" + PMD.EOL +
         " }" + PMD.EOL +
-        "}";
-
+        "}";    
+    
+    private static final String TEST29 =
+            "public class Foo {" + PMD.EOL +
+            " public void bar() {" + PMD.EOL +
+            "  StringBuffer sb = new StringBuffer(1);" + PMD.EOL +
+            "   sb.append((char) 0x0041);" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+    
+    private static final String TEST30 =
+            "public class Foo {" + PMD.EOL +
+            " public void bar(char longnamedchar) {" + PMD.EOL +
+            "  StringBuffer sb = new StringBuffer(1);" + PMD.EOL +
+            "   sb.append(longnamedchar);" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+    
+    private static final String TEST31 =
+            "public class Foo {" + PMD.EOL +
+            " public void bar(int i) {" + PMD.EOL +
+            "  StringBuffer sb = new StringBuffer(1);" + PMD.EOL +
+            "   if(i == 1){" + PMD.EOL +
+            "       sb.append((char) 0x0041);" + PMD.EOL +
+            "   } else if(i == 2){" + PMD.EOL +
+            "       sb.append((char) 0x0041);" + PMD.EOL +
+            "   } else if(i == 19){" + PMD.EOL +
+            "       sb.append((char) 0x0041);" + PMD.EOL +
+            "   } else {" + PMD.EOL +
+            "       sb.append((char) 0x0041);" + PMD.EOL +
+            "   } " + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+    
+    
+    private static final String TEST32 =
+            "public class Foo {" + PMD.EOL +
+            " public void bar(char longnamedchar) {" + PMD.EOL +
+            "  StringBuffer sb = new StringBuffer(132+42);" + PMD.EOL +
+            "   sb.append(\"Some string. At this point I'm not doing anything to count characters, assuming developer knows what they're doing\");" + PMD.EOL +
+            "  StringBuffer sb1 = new StringBuffer(132*42);" + PMD.EOL +
+            "   sb1.append(\"Some string. At this point I'm not doing anything to count characters, assuming developer knows what they're doing\");" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+    
+    
 }
