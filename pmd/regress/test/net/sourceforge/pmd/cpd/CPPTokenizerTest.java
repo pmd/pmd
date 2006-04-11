@@ -16,6 +16,13 @@ public class CPPTokenizerTest extends TestCase {
         assertEquals(7, tokens.size());
     }
 
+    public void testDollarSignInIdentifier() {
+        CPPTokenizer tokenizer = new CPPTokenizer();
+        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(TEST2));
+        Tokens tokens = new Tokens();
+        tokenizer.tokenize(code, tokens);
+    }
+
     private static final String TEST1 =
             "#define FOO a +\\" + PMD.EOL +
             "            b +\\" + PMD.EOL +
@@ -25,6 +32,9 @@ public class CPPTokenizerTest extends TestCase {
             "            f +\\" + PMD.EOL +
             "            g" + PMD.EOL +
             " void main() {}";
+
+    private static final String TEST2 =
+            " void main() { int x$y = 42; }";
 
 
 }
