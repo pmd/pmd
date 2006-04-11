@@ -42,9 +42,6 @@ import java.io.InputStream;
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -59,6 +56,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IPackageDeclaration;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaCore;
 
 /**
@@ -68,6 +66,10 @@ import org.eclipse.jdt.core.JavaCore;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2006/04/11 21:02:16  phherlin
+ * Use the new IRuleViolation interface to generate reports
+ * Fix default package issue
+ *
  * Revision 1.6  2006/04/10 20:55:32  phherlin
  * Update to PMD 3.6
  *
@@ -196,95 +198,40 @@ public class RenderReportCmd extends AbstractDefaultCommand {
         
         final IMarker[] markers = project.findMarkers(PMDPluginConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
         for (int i = 0; i < markers.length; i++) {
-            final String ruleName = markers[i].getAttribute(PMDPluginConstants.KEY_MARKERATT_RULENAME, "");
+            IMarker marker = markers[i];
+            final String ruleName = marker.getAttribute(PMDPluginConstants.KEY_MARKERATT_RULENAME, "");
             final Rule rule = PMDPlugin.getDefault().getRuleSet().getRuleByName(ruleName);
-            final int lineNumber = markers[i].getAttribute(IMarker.LINE_NUMBER, 0);
-
-            // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:15
-            final RuleContext ruleContext = new RuleContext();
-            ruleContext.setSourceCodeFilename(markers[i].getResource().getProjectRelativePath().toString());
-
-            // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
-            final FakeNode fakeNode = new FakeNode();
-            fakeNode.setBeginLine(lineNumber);
             
             // @PMD:REVIEWED:AvoidInstantiatingObjectsInLoops: by Herlin on 01/05/05 19:14
-            final FakeRuleViolation ruleViolation = new FakeRuleViolation(rule, ruleContext, fakeNode);
+            final FakeRuleViolation ruleViolation = new FakeRuleViolation(rule);
+
+            // Fill in the rule violation object before adding it to the report
+            ruleViolation.setBeginLine(marker.getAttribute(IMarker.LINE_NUMBER, 0));
+            ruleViolation.setEndLine(marker.getAttribute(PMDPluginConstants.KEY_MARKERATT_LINE2, 0));
+            ruleViolation.setVariableName(marker.getAttribute(PMDPluginConstants.KEY_MARKERATT_LINE2, ""));
+            ruleViolation.setFilename(marker.getResource().getProjectRelativePath().toString());
+            ruleViolation.setDescription(marker.getAttribute(IMarker.MESSAGE, rule.getMessage()));
 
             if (markers[i].getResource() instanceof IFile) {
                 final ICompilationUnit unit = JavaCore.createCompilationUnitFrom((IFile) markers[i].getResource());
                 final IPackageDeclaration packages[] = unit.getPackageDeclarations();
                 if (packages.length > 0) {
                     ruleViolation.setPackageName(packages[0].getElementName());
+                } else {
+                    ruleViolation.setPackageName("(default)");
                 }
-                packages[0].getElementName();
+                
+                IType types[] = unit.getAllTypes();
+                if (types.length > 0) {
+                    ruleViolation.setClassName(types[0].getElementName());
+                } else {
+                    ruleViolation.setClassName(marker.getResource().getName());
+                }
             }
+            
             report.addRuleViolation(ruleViolation);
         }
         
         return report;
-    }
-    
-    /**
-     * Inner class to fake rule violation necessary for report violation.
-     * This is a consequence of PMD v3.4 evolutions that a RuleViolation object cannot be instantiated outside a parsing process.
-     * 
-     */
-    private class FakeRuleViolation extends RuleViolation {
-        private String packageName;
-
-        public FakeRuleViolation(Rule arg0, RuleContext arg1, SimpleNode arg2, String arg3) {
-            super(arg0, arg1, arg2, arg3);
-        }
-
-        public FakeRuleViolation(Rule arg0, RuleContext arg1, SimpleNode arg2) {
-            super(arg0, arg1, arg2);
-        }
-
-        /**
-         * @see net.sourceforge.pmd.RuleViolation#getPackageName()
-         */
-        public String getPackageName() {
-            return this.packageName;
-        }
-        
-        /**
-         * Set the package name
-         * @param packageName
-         */
-        public void setPackageName(final String packageName) {
-            this.packageName = packageName;
-        }
-        
-    }
-    
-    /**
-     * Inner class to fake a node necessary for report violation.
-     * This is a consequence of PMD v3.4 evolutions that a RuleViolation object now needs a Node object to be constructed.
-     * 
-     */
-    private class FakeNode extends SimpleNode {
-        private int beginLine;
-        
-        public FakeNode() {
-            super(0);
-        }
-
-        public int getBeginLine() {
-            return this.beginLine;
-        }
-        
-        public void setBeginLine(final int line) {
-            this.beginLine = line;
-        }
-
-        public void jjtClose() {
-            // do nothing            
-        }
-
-        public void jjtOpen() {
-            // do nothing            
-        }
-        
     }
 }
