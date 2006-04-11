@@ -9,6 +9,9 @@ import org.eclipse.core.runtime.QualifiedName;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2006/04/11 21:00:58  phherlin
+ * Add new VBHTML report
+ *
  * Revision 1.7  2005/10/24 22:36:42  phherlin
  * Integrating Sebastian Raffel's work
  *
@@ -148,6 +151,7 @@ public interface PMDPluginConstants {
     
     public static final String REPORT_FOLDER = "reports";
     public static final String HTML_REPORT_NAME = "pmd-report.html";
+    public static final String VBHTML_REPORT_NAME = "pmd-report.vb.html";
     public static final String CSV_REPORT_NAME = "pmd-report.csv";
     public static final String XML_REPORT_NAME = "pmd-report.xml";
     public static final String TXT_REPORT_NAME = "pmd-report.txt";

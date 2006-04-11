@@ -8,6 +8,7 @@ import net.sourceforge.pmd.eclipse.cmd.RenderReportCmd;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
+import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 
 import org.apache.commons.logging.Log;
@@ -29,6 +30,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/04/11 21:01:17  phherlin
+ * Add new VBHTML report
+ *
  * Revision 1.2  2005/10/24 22:39:35  phherlin
  * Refactor command processing
  *
@@ -85,6 +89,13 @@ public class GenerateReportAction implements IObjectActionDelegate {
                     cmd4.setReportName(PMDPluginConstants.TXT_REPORT_NAME);
                     cmd1.setUserInitiated(true);
                     cmd4.performExecute();
+                    
+                    RenderReportCmd cmd5 = new RenderReportCmd();                    
+                    cmd5.setProject(project);
+                    cmd5.setRenderer(new VBHTMLRenderer());
+                    cmd5.setReportName(PMDPluginConstants.VBHTML_REPORT_NAME);
+                    cmd5.setUserInitiated(true);
+                    cmd5.performExecute();
                 }
             } catch (CommandException e) {
                 PMDPlugin.getDefault().showError(
