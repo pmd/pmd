@@ -41,7 +41,8 @@ done
 
 
 MINIMUM_SIZE=100
+LANGUAGE=cpp
 
 # echo "CLASSPATH: $classpath"
 
-java -cp $classpath net.sourceforge.pmd.cpd.CPD $MINIMUM_SIZE $DIRECTORY cpp
+java -cp $classpath net.sourceforge.pmd.cpd.CPD --minimum-tokens $MINIMUM_SIZE --files $DIRECTORY --language $LANGUAGE
