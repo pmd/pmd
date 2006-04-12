@@ -2,11 +2,13 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
-v3.1.5 - 30/03/2006
+v3.1.5 - xx/04/2006
 
 Runtime
 -------
 . Update to PMD v3.6
+. Fix the default package issue when generating reports
+. Fix BUG#1467817 Change the label of the rebuild_project question
 
 
 ----------------------------------------------------------------------------------------

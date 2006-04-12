@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.core"
    name="%plugin.name"
-   version="3.6.0"
+   version="3.6.1"
    provider-name="%plugin.provider"
    class="net.sourceforge.pmd.core.PMDCorePlugin">
 
