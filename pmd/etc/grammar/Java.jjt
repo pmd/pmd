@@ -118,24 +118,6 @@ public class JavaParser {
     return res;
   }
 
-  private boolean enumLookahead() {
-    int x = 1;
-    Token tok;
-    while (true) {
-      tok = getToken(x);
-      if (tok.image.equals("static") ||
-          tok.image.equals("final") ||
-          tok.image.equals("public") ||
-          tok.image.equals("protected") ||
-          tok.image.equals("private") ) {
-        x++;
-      } else {
-        break;
-      }
-    }
-    return tok.image.equals("enum");
-  }
-
   private void checkForDiscard(SimpleNode node) {
     if (node.getImage() == null) {
         node.setDiscardable();
