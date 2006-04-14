@@ -18,8 +18,11 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 public class UnusedPrivateMethodRule extends AbstractRule {
+
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
@@ -27,7 +30,22 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         }
 
         Map methods = ((ClassScope) node.getScope()).getMethodDeclarations();
+
+        // some rather hideous hackery here
+        // to work around the fact that PMD does not yet do full type analysis
+        // when it does, delete this
+        Set unique = new HashSet();
+        Set sigs = new HashSet();
         for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
+            MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
+            String sig = mnd.getImage() + String.valueOf(mnd.getParameterCount());
+            if (!sigs.contains(sig)) {
+                unique.add(mnd);
+            }
+            sigs.add(sig);
+        }
+
+        for (Iterator i = unique.iterator(); i.hasNext();) {
             MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
             List occs = (List) methods.get(mnd);
             if (!privateAndNotExcluded(mnd)) {
