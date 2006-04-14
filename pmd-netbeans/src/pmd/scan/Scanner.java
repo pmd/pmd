@@ -101,13 +101,17 @@ public class Scanner implements Runnable, DocumentListener {
                 if (foo != null)
                     tabSize = foo.intValue();
 
-                DataObject object = NbEditorUtilities.getDataObject(doc);
-                if (object == null) {
+                DataObject dobj = NbEditorUtilities.getDataObject(doc);
+                if (dobj == null) {
                     return;
                 }
-                LineCookie cookie = ( LineCookie )object.getCookie( LineCookie.class );
+                if (!dobj.getPrimaryFile().canWrite()) {
+                    return;
+                }
+
+                LineCookie cookie = ( LineCookie )dobj.getCookie( LineCookie.class );
                 Line.Set lineset = cookie.getLineSet();
-                List list = Collections.singletonList(object);
+                List list = Collections.singletonList(dobj);
                 List faults = RunPMDAction.performScan(list );
                 PMDScanAnnotation.clearAll();
                 for( int i = 0; i < faults.size(); i++ ) {

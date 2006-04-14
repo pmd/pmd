@@ -33,7 +33,9 @@ import java.util.List;
 import org.netbeans.junit.NbTestCase;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.XMLFileSystem;
 import org.openide.loaders.DataObject;
 
 /**
@@ -109,6 +111,41 @@ public class RunPMDActionTest extends NbTestCase {
         result = pmd.RunPMDAction.performScan(Collections.singletonList(d1));
         assertEquals("There should be no error for PMDSample.java file", 0, result.size());
         
+    }
+    
+    public void testShouldCheck() throws Exception {
+        clearWorkDir();
+        
+        FileObject dir = FileUtil.toFileObject(getWorkDir());
+        assertNotNull("Cannot find FileObject for work dir", dir);
+        FileObject f1;
+        f1 = dir.createData("MANIFEST.MF");
+        assertNotNull("Cannot create file in work dir", f1);
+        DataObject d1 = DataObject.find(f1);
+        assertNotNull("Cannot find a data object", d1);
+        assertFalse("MANIFEST.MF file should not be checked", RunPMDAction.shouldCheck(d1));
+        
+        f1 = dir.createData("PMDSample.java");
+        assertNotNull("Cannot create file in work dir", f1);
+        FileLock l = null;
+        try {
+            l = f1.lock();
+            PrintStream ps = new PrintStream (f1.getOutputStream(l));
+            ps.print("public class PMDSample { PMDSample () {} }");
+            ps.close();
+        }
+        finally {
+            if (l != null) {
+                l.releaseLock();
+            }
+        }
+        d1 = DataObject.find(f1);
+        assertTrue("Java file should be checked", RunPMDAction.shouldCheck(d1));
+        FileSystem fs = new XMLFileSystem(RunPMDActionTest.class.getResource("testfs.xml"));
+        f1 = fs.findResource("pkg/Sample.java");
+        assertFalse("expecting R/O file on XMLFileSystem", f1.canWrite());
+        d1 = DataObject.find(f1);
+        assertTrue("read only Java file "+d1+" should be checked too", RunPMDAction.shouldCheck(d1));
     }
 
     /**

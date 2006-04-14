@@ -181,7 +181,7 @@ public class RunPMDAction extends CookieAction {
                 String name = cp.getResourceName( fobj, '.', false );
 
                 //The file is not a java file
-                if( !dataobject.getPrimaryFile().hasExt( "java" ) || dataobject.getCookie( LineCookie.class ) == null ) {
+                if (!shouldCheck(dataobject)) {
                     continue;
                 }
 
@@ -243,6 +243,15 @@ public class RunPMDAction extends CookieAction {
         }
         Collections.sort( list );
         return list;
+    }
+    
+    // package private for testing purposes
+    static boolean shouldCheck(DataObject dobj) {
+        if (!dobj.getPrimaryFile().hasExt( "java" ) 
+        || dobj.getCookie( LineCookie.class ) == null) {
+            return false;
+        }
+        return true;
     }
 
 
