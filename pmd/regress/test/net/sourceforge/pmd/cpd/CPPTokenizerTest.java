@@ -17,8 +17,20 @@ public class CPPTokenizerTest extends TestCase {
     }
 
     public void testDollarSignInIdentifier() {
+        parse(TEST2);
+    }
+
+    public void testDollarSignStartingIdentifier() {
+        parse(TEST3);
+    }
+
+    public void testWideCharacters() {
+        parse(TEST4);
+    }
+
+    private void parse(String snippet) {
         CPPTokenizer tokenizer = new CPPTokenizer();
-        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(TEST2));
+        SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(snippet));
         Tokens tokens = new Tokens();
         tokenizer.tokenize(code, tokens);
     }
@@ -35,6 +47,12 @@ public class CPPTokenizerTest extends TestCase {
 
     private static final String TEST2 =
             " void main() { int x$y = 42; }";
+
+    private static final String TEST3 =
+            " void main() { int $x = 42; }";
+
+    private static final String TEST4 =
+            " void main() { char x = L'a'; }";
 
 
 }
