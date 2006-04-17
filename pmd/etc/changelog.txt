@@ -5,6 +5,7 @@ Fixed bug 1465574 - UnusedPrivateMethod no longer reports false positives when a
 Fixed bug 1114003 - UnusedPrivateMethod no longer reports false positives when two methods have the same name and number of arguments but different types.  The fix causes PMD to miss a few valid cases, but, c'est la vie.
 Fixed major bug in CPD; it was not picking up files other than .java or .jsp.
 Fixed bug in C/C++ parser; a '$' is now allowed in an identifier.  This is useful in VMS.
+Fixed a symbol table bug; PMD no longer crashes on enumeration declarations in the same scope containing the same field name
 Added RuleViolation.getBeginColumn()/getEndColumn()
 Added an IRuleViolation interface and modified various code classes (include Renderer implementations and Report) to use it.
 Modified JJTree grammar to use conditional node descriptors for some expression nodes.

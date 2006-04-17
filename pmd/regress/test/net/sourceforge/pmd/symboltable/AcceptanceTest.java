@@ -5,15 +5,20 @@ package test.net.sourceforge.pmd.symboltable;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTCatchStatement;
+import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.List;
 
 public class AcceptanceTest extends STBBaseTst {
 
-/*
     public void testClashingSymbols() {
         parseCode(TEST1);
     }
@@ -50,10 +55,9 @@ public class AcceptanceTest extends STBBaseTst {
             //System.out.println();
         }
         //System.out.println(m.size());
-
     }
-*/
 
+/*
     public void testDemo() {
         parseCode(TEST_DEMO);
         System.out.println(TEST_DEMO);
@@ -66,6 +70,7 @@ public class AcceptanceTest extends STBBaseTst {
             System.out.println("Type: " + d.getTypeImage());
         }
     }
+*/
 /*
             List u = (List)m.get(d);
             System.out.println("Usages: " + u.size());

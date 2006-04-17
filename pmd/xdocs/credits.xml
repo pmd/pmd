@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Christopher Stach - several bug reports for rules that didn't handle JDK 1.5 enums</li>
             <li>Jarkko Hietaniemin - reported missing flags in cpd.sh, tweaked C/CPP grammar to allow $ in identifiers, several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
             <li>Dawid Weiss - Reported bug in UnusedPrivateMethod</li>
             <li>Shao Lo - Reported bug in CPD</li>
@@ -57,7 +58,6 @@
             <li>Wouter Zelle - Fixed a false positive in InefficientStringBuffering, fixed a false positive in NonThreadSafeSingleton, a nice patch to clean up some of the Ant task properties and fix a TextRenderer bug, rewrote PositionLiteralsFirstInComparisons in XPath, Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Uroshnor - Reported bug in UseNotifyAllInsteadOfNotify</li>
             <li>Jan Koops - Noted missing data in MemberValuePair nodes, bug report for JBuilder plugin</li>
-            <li>Christopher Stach - several bug reports for rules that didn't handle JDK 1.5 enums</li>
             <li><a href="http://tersesystems.com/">Will Sargent</a> - Implemented AvoidThreadGroup, AvoidThrowingCertainExceptionTypesRule, AvoidCatchingNPERule, ExceptionAsFlowControlRule, URL updates for 'Similar projects' page</li>
             <li>Benoit Xhenseval - noted Maven plugin bug (http://jira.codehaus.org/browse/MPPMD-24), bug report for UnusedPrivateMethod, suggestion to add elapsed time to XML report, bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Barak Naveh - Reported and fixed bug in CallSuperInConstructor</li>

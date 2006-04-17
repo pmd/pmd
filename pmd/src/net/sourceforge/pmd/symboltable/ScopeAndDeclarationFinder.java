@@ -124,7 +124,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
-        if (node.isAnonymousInnerClass()) {
+        if (node.isAnonymousInnerClass() || node.isEnumChild()) {
             createClassScope(node);
             cont(node);
         } else {

@@ -18,7 +18,25 @@ public class GlobalScopeTest extends STBBaseTst {
         assertEquals(classNameDeclaration.getImage(), "Foo");
     }
 
+    public void testEnums() {
+        parseCode15(TEST2);
+
+    }
+
+
+
     private static final String TEST1 =
             "public class Foo {}" + PMD.EOL;
+
+    private static final String TEST2 =
+            "public enum Bar {" + PMD.EOL +
+            "  FOO1 {          " + PMD.EOL +
+            "    private static final String FIELD_NAME = \"\";" + PMD.EOL +
+            "  }," + PMD.EOL +
+            "  FOO2 {          " + PMD.EOL +
+            "    private static final String FIELD_NAME = \"\";" + PMD.EOL +
+            "  }" + PMD.EOL +
+            "}" + PMD.EOL;
+
 
 }

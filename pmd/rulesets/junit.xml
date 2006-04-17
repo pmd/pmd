@@ -327,8 +327,7 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
 public class SimpleTest extends TestCase {
  public void testX() {
   assertTrue("not empty", !r.isEmpty()); // replace with assertFalse("not empty", r.isEmpty())
-
-  assertFalse(!r.isEmpty()); // replace with assertFalse(r.isEmpty())
+  assertFalse(!r.isEmpty()); // replace with assertTrue(r.isEmpty())
  }
 }
 ]]>
