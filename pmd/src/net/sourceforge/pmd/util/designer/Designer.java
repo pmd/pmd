@@ -6,16 +6,19 @@ package net.sourceforge.pmd.util.designer;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDKVersion;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
+import net.sourceforge.pmd.jsp.ast.JspCharStream;
+import net.sourceforge.pmd.jsp.ast.JspParser;
+
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.jaxen.BaseXPath;
@@ -49,6 +52,18 @@ public class Designer implements ClipboardOwner {
         return getJDKVersion().createParser(new StringReader(codeEditorPane.getText()));
     }
 
+    private JspParser createJspParser() {
+        return new JspParser(new JspCharStream(new StringReader(codeEditorPane.getText())));
+    }
+
+    
+    private SimpleNode getCompilationUnit() {
+        if (getSourceType().equals(SourceType.JSP)) {
+            return createJspParser().CompilationUnit();
+        }
+        return createParser().CompilationUnit();
+    }
+
     private TargetJDKVersion getJDKVersion() {
         if (jdk14MenuItem.isSelected()) {
             return new TargetJDK1_4();
@@ -57,13 +72,24 @@ public class Designer implements ClipboardOwner {
         }
         return new TargetJDK1_5();
     }
-
+    
+    private SourceType getSourceType() {
+        if (jspMenuItem.isSelected()) {
+            return SourceType.JSP;
+        } else if (jdk14MenuItem.isSelected()) {
+            return SourceType.JAVA_14;
+        } else if (jdk13MenuItem.isSelected()) {
+            return SourceType.JAVA_13;
+        }
+        return SourceType.JAVA_15;
+    }
+    
     private class ShowListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
             MyPrintStream ps = new MyPrintStream();
             System.setOut(ps);
             try {
-                ASTCompilationUnit lastCompilationUnit = createParser().CompilationUnit();
+                SimpleNode lastCompilationUnit = getCompilationUnit();
                 lastCompilationUnit.dump("");
                 astArea.setText(ps.getString());
             } catch (ParseException pe) {
@@ -77,13 +103,18 @@ public class Designer implements ClipboardOwner {
             try {
                 DFAGraphRule dfaGraphRule = new DFAGraphRule();
                 RuleSet rs = new RuleSet();
-                rs.addRule(dfaGraphRule);
+                SourceType sourceType = getSourceType();
+                if(!sourceType.equals(SourceType.JSP)){
+                    rs.addRule(dfaGraphRule);
+                }
                 RuleContext ctx = new RuleContext();
                 ctx.setSourceCodeFilename("[no filename]");
                 StringReader reader = new StringReader(codeEditorPane.getText());
-                new PMD(getJDKVersion()).processFile(reader, rs, ctx);
+                PMD pmd = new PMD();
+                pmd.setJavaVersion(getSourceType());
+                pmd.processFile(reader, rs, ctx);
                 List methods = dfaGraphRule.getMethods();
-                if (!methods.isEmpty()) {
+                if (methods != null && !methods.isEmpty()) {
                     dfaPanel.resetTo(methods, codeEditorPane);
                     dfaPanel.repaint();
                 }
@@ -103,10 +134,9 @@ public class Designer implements ClipboardOwner {
                 codeEditorPane.requestFocus();
                 return;
             }
-            JavaParser parser = createParser();
+            SimpleNode c = getCompilationUnit();
             try {
                 XPath xpath = new BaseXPath(xpathQueryArea.getText(), new DocumentNavigator());
-                ASTCompilationUnit c = parser.CompilationUnit();
                 for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
                     StringBuffer sb = new StringBuffer();
                     Object obj = iter.next();
@@ -144,6 +174,7 @@ public class Designer implements ClipboardOwner {
     private JRadioButtonMenuItem jdk13MenuItem;
     private JRadioButtonMenuItem jdk14MenuItem;
     private JRadioButtonMenuItem jdk15MenuItem;
+    private JRadioButtonMenuItem jspMenuItem;
 
     public Designer() {
         MatchesFunction.registerSelfInSimpleContext();
@@ -212,6 +243,10 @@ public class Designer implements ClipboardOwner {
         jdk15MenuItem.setSelected(false);
         group.add(jdk15MenuItem);
         menu.add(jdk15MenuItem);
+        jspMenuItem = new JRadioButtonMenuItem("JSP");
+        jspMenuItem.setSelected(false);
+        group.add(jspMenuItem);
+        menu.add(jspMenuItem);
         menuBar.add(menu);
 
         JMenu actionsMenu = new JMenu("Actions");
@@ -229,7 +264,8 @@ public class Designer implements ClipboardOwner {
             }
         });
         actionsMenu.add(createRuleXMLItem);
-        menuBar.add(actionsMenu);
+        menuBar.add(actionsMenu);        
+        
         return menuBar;
     }
 
@@ -360,8 +396,8 @@ public class Designer implements ClipboardOwner {
 
     private final void copyXmlToClipboard() {
         if (codeEditorPane.getText() != null && codeEditorPane.getText().trim().length() > 0) {
-            ASTCompilationUnit cu = createParser().CompilationUnit();
             String xml = "";
+            SimpleNode cu = getCompilationUnit();
             if (cu != null) {
                 try {
                     xml = getXmlString(cu);
@@ -392,3 +428,4 @@ public class Designer implements ClipboardOwner {
     public void lostOwnership(Clipboard clipboard, Transferable contents) {
     }
 }
+
