@@ -63,6 +63,9 @@ import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2006/04/19 22:40:20  phherlin
+ * Reconfigure the rebuild command to better handle huge project (when changing PMD project properties, run the rebuild in background)
+ *
  * Revision 1.10  2005/10/24 22:43:54  phherlin
  * Refactor command processing
  * Revision 1.9 2005/06/11 22:11:32
@@ -95,6 +98,7 @@ public class PMDPropertyPageController implements PMDConstants {
     private final Shell shell;
     private IProject project;
     private PMDPropertyPageBean propertyPageBean;
+    private boolean pmdAlreadyActivated;
 
     /**
      * Contructor
@@ -141,6 +145,7 @@ public class PMDPropertyPageController implements PMDConstants {
                 this.propertyPageBean.setProjectWorkingSet(model.getProjectWorkingSet());
                 this.propertyPageBean.setProjectRuleSet(model.getProjectRuleSet());
                 this.propertyPageBean.setRuleSetStoredInProject(model.isRuleSetStoredInProject());
+                this.pmdAlreadyActivated = model.isPmdEnabled();
             } catch (ModelException e) {
                 PMDPlugin.getDefault().showError(e.getMessage(), e);
             }
@@ -179,7 +184,7 @@ public class PMDPropertyPageController implements PMDConstants {
 
             // If rebuild is needed, then rebuild the project
             log.debug("Updating command terminated, checking whether the project need to be rebuilt");
-            if (cmd.isNeedRebuild()) {
+            if (this.pmdAlreadyActivated && cmd.isNeedRebuild()) {
                 rebuildProject();
             }
         } catch (ModelException e) {
