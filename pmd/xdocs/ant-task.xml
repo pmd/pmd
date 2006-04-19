@@ -47,7 +47,7 @@
     </tr>
     <tr>
       <td valign="top">targetjdk</td>
-      <td valign="top">Target JDK 1.3, 1.4, or 1.5.  "1.4" is the default.</td>
+      <td valign="top">Target JDK 1.3, 1.4, 1.5, or jsp.  "1.4" is the default.</td>
       <td valign="top" align="center">No</td>
     </tr>
     <tr>
