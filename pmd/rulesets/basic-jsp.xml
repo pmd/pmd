@@ -203,5 +203,18 @@ response.setHeader("Pragma", "No-cache");
 			]]>
 		</example>
 	</rule>
+	
+	<rule name="DuplicateJspImports"
+        message="Avoid duplicate imports such as ''{0}''"
+		class="net.sourceforge.pmd.jsp.rules.DuplicateJspImports"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#DuplicateJspImports">
+		<description><![CDATA[Avoid duplicate import statements inside JSP's. ]]> </description>
+		<priority>3</priority>
+		<example>
+			<![CDATA[ 
+<%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>
+			 ]]>
+		</example>
+	</rule>
 
 </ruleset>
