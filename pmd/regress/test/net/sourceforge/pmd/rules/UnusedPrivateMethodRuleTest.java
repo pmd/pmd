@@ -37,6 +37,7 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST15, "private method with same name as param", 0, rule),
             new TestDescriptor(TEST16, "two methods, one private, one public, same name, same arg count, diff types", 0, rule),
             new TestDescriptor(TEST17, "two private methods, both used, same name, same arg count, diff types", 0, rule),
+            new TestDescriptor(TEST18, "private method same name as local", 0, rule),
         });
     }
 
@@ -184,6 +185,14 @@ public class UnusedPrivateMethodRuleTest extends SimpleAggregatorTst {
             " }" + PMD.EOL +
             " private void foo(String y) {}" + PMD.EOL +
             " private void foo(List y) {}" + PMD.EOL +
+            "}";
+
+    private static final String TEST18 =
+            "public class Foo {" + PMD.EOL +
+            " public void baz() {" + PMD.EOL +
+            "  int x = x();" + PMD.EOL +
+            " }" + PMD.EOL +
+            " private int x() { return 42;}" + PMD.EOL +
             "}";
 
 }

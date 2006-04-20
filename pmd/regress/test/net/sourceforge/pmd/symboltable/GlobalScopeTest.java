@@ -20,7 +20,6 @@ public class GlobalScopeTest extends STBBaseTst {
 
     public void testEnums() {
         parseCode15(TEST2);
-
     }
 
 

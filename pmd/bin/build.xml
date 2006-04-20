@@ -77,9 +77,9 @@
 			<classpath>
 				<path refid="dependencies.path" />
 			</classpath>
-			<formatter type="html" toFile="rpt.html" linkPrefix="http://pmd.sf.net/xref/" />
-			<fileset dir="src">
-				<include name="Foo.java" />
+			<formatter type="xml" toFile="rpt.xml" linkPrefix="http://pmd.sf.net/xref/" />
+			<fileset dir="bin/">
+				<include name="Bar.java" />
 			</fileset>
 		</pmd>
 	</target>

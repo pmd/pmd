@@ -10,7 +10,7 @@ public class Search {
     private NameDeclaration decl;
 
     public Search(NameOccurrence occ) {
-        if (TRACE) System.out.println("new search for " + occ);
+        if (TRACE) System.out.println("new search for " + (occ.isMethodOrConstructorInvocation() ? "method" : "variable") + " " + occ);
         this.occ = occ;
     }
 
