@@ -51,6 +51,11 @@
       <td valign="top" align="center">No</td>
     </tr>
     <tr>
+      <td valign="top">showSuppressed</td>
+      <td valign="top">Whether to show suppressed warnings; "false" is the default.</td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
       <td valign="top">failuresPropertyName</td>
       <td valign="top">A property name to plug the number of rule violations into when the task finishes</td>
       <td valign="top" align="center">No</td>

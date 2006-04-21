@@ -77,7 +77,7 @@
 			<classpath>
 				<path refid="dependencies.path" />
 			</classpath>
-			<formatter type="xml" toFile="rpt.xml" linkPrefix="http://pmd.sf.net/xref/" />
+			<formatter type="text" toConsole="true" linkPrefix="http://pmd.sf.net/xref/" />
 			<fileset dir="bin/">
 				<include name="Bar.java" />
 			</fileset>

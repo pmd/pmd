@@ -7,11 +7,12 @@ Fixed bug 1461426 InsufficientStringBufferDeclaration does not consider paths
 Fixed bug 1462184 False +: InsufficientStringBufferDeclaration - wrong size
 Fixed bug 1465574 - UnusedPrivateMethod no longer reports false positives when a private method is called from a method with a parameter of the same name.
 Fixed bug 1114003 - UnusedPrivateMethod no longer reports false positives when two methods have the same name and number of arguments but different types.  The fix causes PMD to miss a few valid cases, but, c'est la vie.
-Fixed bug 1472843 - UnusedPrivateMethod no longer reports false positives when a private method is only called from a method that contains a variable with the same name as that method. 
+Fixed bug 1472843 - UnusedPrivateMethod no longer reports false positives when a private method is only called from a method that contains a variable with the same name as that method.
 Fixed major bug in CPD; it was not picking up files other than .java or .jsp.
 Fixed bug in C/C++ parser; a '$' is now allowed in an identifier.  This is useful in VMS.
 Fixed a symbol table bug; PMD no longer crashes on enumeration declarations in the same scope containing the same field name
 Added RuleViolation.getBeginColumn()/getEndColumn()
+Added an optional 'showSuppressed' item to the Ant task; this is false by default and toggles whether or not suppressed items are shown in the report.
 Added an IRuleViolation interface and modified various code classes (include Renderer implementations and Report) to use it.
 Modified JJTree grammar to use conditional node descriptors for some expression nodes.
 Modified JJTree grammar to use node suppression for ASTModifier nodes; this replaces a bunch of DiscardableNodeCleaner hackery.  It also fixed bug 1445026.

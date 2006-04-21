@@ -30,6 +30,11 @@ public class Formatter {
     private String linkPrefix;
     private String type;
     private boolean toConsole;
+    private boolean showSuppressed;
+
+    public void setShowSuppressed(boolean value) {
+        this.showSuppressed = value;
+    }
 
     public void setType(String type) {
         this.type = type;
@@ -103,9 +108,7 @@ public class Formatter {
         } else {
             throw new BuildException("Formatter type must be 'xml', 'text', 'html', 'emacs', 'summaryhtml', 'papari', 'csv', 'vbhtml', 'yahtml', or a class name; you specified " + type);
         }
-        if (consoleRenderer) {
-            renderer.showSuppressedViolations(false);
-        }
+        renderer.showSuppressedViolations(showSuppressed);
         return renderer;
     }
 
