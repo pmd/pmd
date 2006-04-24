@@ -7,26 +7,33 @@
   </properties>
 
   <body>
-      <section name="Open source products">
+      <section name="Products/books related to PMD">
+      <subsection name="Open source products">
           <ul>
               <br/>
               <li><a href="http://qalab.sf.net">QALab</a> - Aggregates PMD + Checkstyle + FindBugs and tracks problems over time</li>
               <br/>
               <li><a href="http://xradar.sf.net">XRadar</a> - Using PMD, CPD, and lots of other projects to give measurements on standard software metrics such as package metrics and dependencies, code size and complexity, code duplications, coding violations and code-style violations.</li>
           </ul>
-      </section>
-      <section name="Commercial products">
+      </subsection>
+      <subsection name="Commercial products">
           <ul>
               <br/>
               <li><a href="http://www.vanwardtechnologies.com/products.php">Vanward Technology's Convergence</a> -  a quality management dashboard for the Java platform.  Thanks to Vanward Technologies for their support of PMD by buying copies of <a href="http://pmdapplied.com/">PMD Applied</a>!</li>
               <br/>
               <li><a href="http://javacentral.compuware.com/products/optimaladvisor/">Compuware's OptimalAdvisor</a> -  static code analysis and refactoring tool</li>
           </ul>
-      </section>
-      <section name="Books that mention PMD">
+      </subsection>
+      <subsection name="Books that mention PMD">
           <ul>
               <br/>
           <li><a href="http://pmdapplied.com">PMD Applied</a> - the official manual; get an extra copy for the home!  Or office!  Whatever!</li>
+              <br/>
+          <li><a href="http://www.amazon.com/gp/product/0321286081/qid=1145894533/sr=2-1/ref=pd_bbs_b_2_1/002-6820206-1468015?s=books&amp;v=glance&amp;n=283155">Sustainable Software Development: An Agile Perspective</a> - by Kevin Tate, discusses both PMD and CPD</li>
+              <br/>
+          <li><a href="http://www.amazon.com/gp/product/0321375777/sr=8-1/qid=1145894415/ref=pd_bbs_1/002-6820206-1468015?%5Fencoding=UTF8">High-Assurance Design: Architecting Secure and Reliable Enterprise Applications</a> - by Cliff Berg, mentions PMD in a discussion of static analysis utilities</li>
+              <br/>
+          <li><a href="http://www.amazon.com/gp/product/0321288157/002-6820206-1468015?v=glance&amp;n=283155">Eclipse Distilled</a> - by David Carlson, discusses the PMD plugin</li>
               <br/>
           <li><a href="http://www.oreilly.com/catalog/mavenadn/?CMP=EML-9NI711011430">Maven: A Developer's Notebook</a>, co-authored by Vincent Massol, who's done a bunch of work on PMD.  Thanks Vincent!</li>
               <br/>
@@ -34,6 +41,7 @@
               <br/>
           <li><a href="http://www.amazon.com/exec/obidos/tg/detail/-/0672325624/ref=ase_interncom-20/103-5706126-6692649?v=glance&amp;s=book">Extreme Programming With Ant</a></li>
           </ul>
+      </subsection>
       </section>
   </body>
 </document>
