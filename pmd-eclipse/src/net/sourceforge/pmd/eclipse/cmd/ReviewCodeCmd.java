@@ -83,34 +83,26 @@ import org.eclipse.ui.WorkbenchException;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.8  2006/04/10 20:55:31  phherlin
- * Update to PMD 3.6
- *
- * Revision 1.7  2005/12/30 16:24:01  phherlin
- * Adding a null resource is illegal. Throw an IllegalArgumentException.
- *
- * Revision 1.6  2005/10/24 22:40:54  phherlin
- * Refactor command processing
- *
- * Revision 1.5  2005/06/30 23:24:19  phherlin
- * Add the JDK 1.5 support
- *
- * Revision 1.4  2005/06/07 18:38:14  phherlin
- * Move classes to limit packages cycle dependencies
- *
- * Revision 1.3  2005/05/31 20:44:41  phherlin
- * Continuing refactoring
- *
- * Revision 1.2  2005/05/10 21:49:18  phherlin
- * Fix new violations detected by PMD 3.1
- *
- * Revision 1.1  2005/05/07 13:32:04  phherlin
- * Continuing refactoring
- * Fix some PMD violations
- * Fix Bug 1144793
- * Fix Bug 1190624 (at least try)
- *
- *  
+ * Revision 1.9  2006/04/24 19:35:01  phherlin
+ * Add performance mesures on commands and on pmd execution
+ * Revision 1.8 2006/04/10 20:55:31 phherlin Update to PMD 3.6
+ * 
+ * Revision 1.7 2005/12/30 16:24:01 phherlin Adding a null resource is illegal. Throw an IllegalArgumentException.
+ * 
+ * Revision 1.6 2005/10/24 22:40:54 phherlin Refactor command processing
+ * 
+ * Revision 1.5 2005/06/30 23:24:19 phherlin Add the JDK 1.5 support
+ * 
+ * Revision 1.4 2005/06/07 18:38:14 phherlin Move classes to limit packages cycle dependencies
+ * 
+ * Revision 1.3 2005/05/31 20:44:41 phherlin Continuing refactoring
+ * 
+ * Revision 1.2 2005/05/10 21:49:18 phherlin Fix new violations detected by PMD 3.1
+ * 
+ * Revision 1.1 2005/05/07 13:32:04 phherlin Continuing refactoring Fix some PMD violations Fix Bug 1144793 Fix Bug 1190624 (at
+ * least try)
+ * 
+ * 
  */
 public class ReviewCodeCmd extends AbstractDefaultCommand {
     private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.ReviewCodeCmd");
@@ -119,6 +111,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private Map markers = new HashMap();
     private boolean taskMarker = false;
     private boolean openPmdPerspective = false;
+    private int rulesCount;
+    private int filesCount;
+    private long pmdDuration;
 
     /**
      * Default constructor
@@ -137,6 +132,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     public void execute() throws CommandException {
         try {
+            this.filesCount = 0;
+            this.rulesCount = 0;
+            this.pmdDuration = 0;
+
             if (this.resources.size() == 0) {
                 this.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), this.getStepsCount());
                 this.processResourceDelta();
@@ -146,19 +145,28 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             }
 
             applyMarkers();
-            
+
             if (this.openPmdPerspective) {
                 Display.getDefault().asyncExec(new Runnable() {
                     public void run() {
-                        openPmdPerspective();
+                        switchToPmdPerspective();
                     }
                 });
             }
 
         } finally {
             this.setTerminated(true);
+            if (this.filesCount > 0) {
+                PMDPlugin.getDefault().logInformation(
+                        "Review code command terminated. " + this.rulesCount + " rules were executed against " + this.filesCount
+                                + " files. Actual PMD duration is about " + this.pmdDuration + "ms, that is about "
+                                + (this.pmdDuration / ((long) this.filesCount * (long) this.rulesCount)));
+            } else {
+                PMDPlugin.getDefault().logInformation(
+                        "Review code command terminated. " + this.rulesCount + " rules were executed against " + this.filesCount
+                                + " files. PMD was not executed.");
+            }
         }
-
     }
 
     /**
@@ -169,29 +177,28 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * @param resource
-     *            The resource to set.
+     * @param resource The resource to set.
      */
     public void setResources(final List resources) {
         this.resources.clear();
         this.resources.addAll(resources);
     }
-    
+
     /**
      * Add a resource to the list of resources to be reviewed.
+     * 
      * @param resource a workbench resource
      */
     public void addResource(final IResource resource) {
         if (resource == null) {
             throw new IllegalArgumentException("Resource parameter can not be null");
         }
-        
+
         this.resources.add(resource);
     }
 
     /**
-     * @param resourceDelta
-     *            The resourceDelta to set.
+     * @param resourceDelta The resourceDelta to set.
      */
     public void setResourceDelta(final IResourceDelta resourceDelta) {
         this.resourceDelta = resourceDelta;
@@ -203,7 +210,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     public void setTaskMarker(final boolean taskMarker) {
         this.taskMarker = taskMarker;
     }
-    
+
     /**
      * @param openPmdPerspective Tell whether the PMD perspective should be opened after processing.
      */
@@ -229,8 +236,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * Return a PMD Engine for that project. The engine is parameterized
-     * according to the target JDK of that project.
+     * Return a PMD Engine for that project. The engine is parameterized according to the target JDK of that project.
      * 
      * @param project
      * @return
@@ -250,17 +256,18 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 pmdEngine.setJavaVersion(SourceType.JAVA_15);
             } else {
                 throw new CommandException("The target JDK, " + compilerCompliance + " is not yet supported"); // TODO:
-                                                                                                               // NLS
+                // NLS
             }
         } else {
             throw new CommandException("The project " + project.getName() + " is not a Java project"); // TODO:
-                                                                                                       // NLS
+            // NLS
         }
         return pmdEngine;
     }
 
     /**
      * Process the list of workbench resources
+     * 
      * @throws CommandException
      */
     private void processResources() throws CommandException {
@@ -270,7 +277,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             processResource(resource);
         }
     }
-    
+
     /**
      * Review a single resource
      */
@@ -279,9 +286,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final IProject project = resource.getProject();
             final ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(project);
             final RuleSet ruleSet = model.getProjectRuleSet();
-            final PMD pmdEngine = this.getPmdEngineForProject(project);
-            this.setStepsCount(this.countResourceElement(resource));
-            log.debug("Visit of resource " + resource.getName() + " : " + this.getStepsCount());
+            final PMD pmdEngine = getPmdEngineForProject(project);
+            setStepsCount(countResourceElement(resource));
+            log.debug("Visit of resource " + resource.getName() + " : " + getStepsCount());
 
             final ResourceVisitor visitor = new ResourceVisitor();
             visitor.setMonitor(this.getMonitor());
@@ -290,6 +297,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             visitor.setAccumulator(this.markers);
             visitor.setUseTaskMarker(this.taskMarker);
             resource.accept(visitor);
+
+            this.rulesCount = ruleSet.getRules().size();
+            this.filesCount += visitor.getProcessedFilesCount();
+            this.pmdDuration += visitor.getActualPmdDuration();
+
         } catch (ModelException e) {
             throw new CommandException(e);
         } catch (CoreException e) {
@@ -305,9 +317,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final IProject project = this.resourceDelta.getResource().getProject();
             final ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(project);
             final RuleSet ruleSet = model.getProjectRuleSet();
-            final PMD pmdEngine = this.getPmdEngineForProject(project);
-            this.setStepsCount(this.countDeltaElement(this.resourceDelta));
-            log.debug("Visit of resource delta : " + this.getStepsCount());
+            final PMD pmdEngine = getPmdEngineForProject(project);
+            this.setStepsCount(countDeltaElement(this.resourceDelta));
+            log.debug("Visit of resource delta : " + getStepsCount());
 
             final DeltaVisitor visitor = new DeltaVisitor();
             visitor.setMonitor(this.getMonitor());
@@ -316,6 +328,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             visitor.setAccumulator(this.markers);
             visitor.setUseTaskMarker(this.taskMarker);
             this.resourceDelta.accept(visitor);
+
+            this.rulesCount = ruleSet.getRules().size();
+            this.filesCount += visitor.getProcessedFilesCount();
+            this.pmdDuration += visitor.getActualPmdDuration();
+
         } catch (ModelException e) {
             throw new CommandException(e);
         } catch (CoreException e) {
@@ -325,7 +342,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     /**
      * Apply PMD markers after the review
-     *
+     * 
      */
     private void applyMarkers() {
         log.info("Processing marker directives");
@@ -356,6 +373,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     /**
      * Count the number of sub-resources of a resource
+     * 
      * @param resource a project
      * @return the element count
      */
@@ -373,6 +391,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
     /**
      * Count the number of sub-resources of a delta
+     * 
      * @param delta a resource delta
      * @return the element count
      */
@@ -393,7 +412,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * 
      * @author SebastianRaffel ( 07.05.2005 )
      */
-    private void openPmdPerspective() {
+    private void switchToPmdPerspective() {
         String perspectiveId = PMDPlugin.ID_PERSPECTIVE;
         IAdaptable input = ResourcesPlugin.getWorkspace();
 
@@ -422,20 +441,20 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     private final class CountVisitor implements IResourceVisitor, IResourceDeltaVisitor {
         public int count = 0;
+
         public boolean visit(final IResource resource) {
             boolean fVisitChildren = true;
             count++;
 
-            if ((resource instanceof IFile)
-                && (((IFile) resource).getFileExtension() != null)
-                && ((IFile) resource).getFileExtension().equals("java")) {
+            if ((resource instanceof IFile) && (((IFile) resource).getFileExtension() != null)
+                    && ((IFile) resource).getFileExtension().equals("java")) {
 
                 fVisitChildren = false;
             }
 
             return fVisitChildren;
         }
-        
+
         // @PMD:REVIEWED:UnusedFormalParameter: by Herlin on 10/05/05 23:46
         public boolean visit(final IResourceDelta delta) {
             count++;

@@ -24,6 +24,9 @@ import org.eclipse.core.runtime.Status;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2006/04/24 19:35:01  phherlin
+ * Add performance mesures on commands and on pmd execution
+ *
  * Revision 1.11  2005/10/24 23:32:55  phherlin
  * Fix "markers not displayed if file editor is open"
  * Run the review code command synchronously
@@ -121,7 +124,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
                 cmd.setResourceDelta(resourceDelta);
                 cmd.setTaskMarker(false);
                 cmd.setMonitor(monitor);
-                cmd.execute(); // a builder is always asynchronous; execute a command synchronously whatever its processor
+                cmd.performExecute(); // a builder is always asynchronous; execute a command synchronously whatever its processor
             } else {
                 log.info("No change reported. Performing no build");
             }
@@ -139,7 +142,7 @@ public class PMDBuilder extends IncrementalProjectBuilder {
         cmd.addResource(project);
         cmd.setTaskMarker(false);
         cmd.setMonitor(monitor);
-        cmd.execute(); // a builder is always asynchronous; execute a command synchronously whatever its processor
+        cmd.performExecute(); // a builder is always asynchronous; execute a command synchronously whatever its processor
     }
 
 }

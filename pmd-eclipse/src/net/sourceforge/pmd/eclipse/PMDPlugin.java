@@ -56,6 +56,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.30  2006/04/24 19:34:18  phherlin
+ * Add performance mesures on commands and on pmd execution
+ *
  * Revision 1.29  2006/04/10 20:55:06  phherlin
  * Update to PMD 3.6
  *
@@ -559,6 +562,16 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
                         + String.valueOf(t));
             }
         });
+    }
+
+    /**
+     * Helper method to log information message
+     */
+    public void logInformation(String message) {
+        getLog().log(new Status(IStatus.INFO, getBundle().getSymbolicName(), 0, message, null));
+        if (log != null) {
+            log.info(message);
+        }
     }
 
     /**

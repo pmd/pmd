@@ -50,6 +50,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import name.herlin.command.CommandException;
 import name.herlin.command.CommandProcessor;
 import name.herlin.command.AbstractProcessableCommand;
+import name.herlin.command.Timer;
 import name.herlin.command.UnsetInputPropertiesException;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 
@@ -61,6 +62,9 @@ import net.sourceforge.pmd.eclipse.PMDPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/04/24 19:35:01  phherlin
+ * Add performance mesures on commands and on pmd execution
+ *
  * Revision 1.3  2005/10/24 22:40:54  phherlin
  * Refactor command processing
  *
@@ -97,7 +101,10 @@ public class JobCommandProcessor implements CommandProcessor {
                     if (aCommand instanceof AbstractDefaultCommand) {
                         ((AbstractDefaultCommand) aCommand).setMonitor(monitor);
                     }
+                    Timer timer = new Timer();
                     aCommand.execute();
+                    timer.stop();
+                    PMDPlugin.getDefault().logInformation("Command " + aCommand.getName() + " excecuted in " + timer.getDuration() + "ms");
                 } catch (CommandException e) {
                     PMDPlugin.getDefault().logError("Error executing command " + aCommand.getName(), e);
                 }

@@ -20,6 +20,8 @@
  */
 package name.herlin.command;
 
+import net.sourceforge.pmd.eclipse.PMDPlugin;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -42,7 +44,10 @@ public class DefaultCommandProcessor implements CommandProcessor {
     public void processCommand(final AbstractProcessableCommand aCommand) throws CommandException {
         log.debug("Beginning command " + aCommand.getName());
         if (aCommand.isReadyToExecute()) {
+            Timer timer = new Timer();
             aCommand.execute();
+            timer.stop();
+            PMDPlugin.getDefault().logInformation("Command " + aCommand.getName() + " excecuted in " + timer.getDuration() + "ms");
         } else {
             throw new UnsetInputPropertiesException();
         }

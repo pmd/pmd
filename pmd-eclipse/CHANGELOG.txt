@@ -2,7 +2,15 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
-v3.1.5 - xx/04/2006
+v3.1.6 - xx/xx/2006
+
+Runtime
+-------
+. Reconfigure the rebuild command to better handle huge projects
+
+
+----------------------------------------------------------------------------------------
+v3.1.5 - 12/04/2006
 
 Runtime
 -------

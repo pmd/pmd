@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 
+import name.herlin.command.Timer;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
@@ -65,6 +66,9 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.9  2006/04/24 19:35:01  phherlin
+ * Add performance mesures on commands and on pmd execution
+ *
  * Revision 1.8  2006/04/10 20:55:32  phherlin
  * Update to PMD 3.6
  *
@@ -95,6 +99,8 @@ public class BaseVisitor {
     private Map accumulator;
     private PMD pmdEngine;
     private RuleSet ruleSet;
+    private int filesCount;
+    private long pmdDuration;
     protected RuleSet hiddenRules;
 
     /**
@@ -226,7 +232,21 @@ public class BaseVisitor {
         ruleSet.addRuleSet(hiddenRules);
         this.ruleSet = ruleSet;
     }
-
+    
+    /**
+     * @return the number of files that has been processed
+     */
+    public int getProcessedFilesCount() {
+        return this.filesCount;
+    }
+    
+    /**
+     * @return actual PMD duration
+     */
+    public long getActualPmdDuration() {
+        return this.pmdDuration;
+    }
+    
     /**
      * Run PMD against a resource
      * 
@@ -241,6 +261,8 @@ public class BaseVisitor {
                 if (isFileInWorkingSet(file)) {
                     subTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_CHECKING_FILE) + " " + file.getName());
 
+                    Timer timer = new Timer();
+                    
                     final RuleContext context = new RuleContext();
                     context.setSourceCodeFilename(file.getName());
                     context.setReport(new Report());
@@ -248,11 +270,14 @@ public class BaseVisitor {
                     final Reader input = new InputStreamReader(file.getContents(), file.getCharset());
                     getPmdEngine().processFile(input, getRuleSet(), context);
                     input.close();
+                    
+                    timer.stop();
+                    this.pmdDuration += timer.getDuration();
 
-                    file.deleteMarkers(PMDPlugin.PMD_MARKER, true, IResource.DEPTH_INFINITE);
                     updateMarkers(file, context, isUseTaskMarker(), getAccumulator());
 
                     worked(1);
+                    this.filesCount++;
                 } else {
                     log.debug("The file " + file.getName() + " is not in the working set");
                 }
