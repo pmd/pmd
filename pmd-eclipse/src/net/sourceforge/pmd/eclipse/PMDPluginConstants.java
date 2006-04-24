@@ -9,6 +9,9 @@ import org.eclipse.core.runtime.QualifiedName;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.9  2006/04/24 21:18:11  phherlin
+ * Rulesets list are now managed in the core plugin
+ *
  * Revision 1.8  2006/04/11 21:00:58  phherlin
  * Add new VBHTML report
  *
@@ -37,27 +40,6 @@ import org.eclipse.core.runtime.QualifiedName;
 public interface PMDPluginConstants {
     public static final String PLUGIN_ID = "net.sourceforge.pmd.eclipse";
 
-    public static final String[] RULESET_ALLPMD = {
-            "rulesets/basic.xml", 
-            "rulesets/braces.xml", 
-            "rulesets/clone.xml",
-            "rulesets/codesize.xml",
-            "rulesets/controversial.xml", 
-            "rulesets/coupling.xml", 
-            "rulesets/design.xml", 
-            "rulesets/finalizers.xml",
-            "rulesets/imports.xml",
-            "rulesets/javabeans.xml",
-            "rulesets/junit.xml",
-            "rulesets/logging-java.xml",
-            "rulesets/naming.xml",
-            "rulesets/optimizations.xml",
-            "rulesets/strictexception.xml",
-            "rulesets/strings.xml",
-            "rulesets/sunsecure.xml",
-            "rulesets/unusedcode.xml"};
-
-    public static final String[] RULESET_DEFAULTLIST = RULESET_ALLPMD;
     public static final String RULESET_PREFERENCE = PLUGIN_ID + ".ruleset";
     public static final String RULESET_DEFAULT = "";
     public static final String PREFERENCE_RULESET_FILE = "/ruleset.xml";
