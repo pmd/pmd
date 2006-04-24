@@ -61,10 +61,16 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.IResourceRuleFactory;
 import org.eclipse.core.resources.IResourceVisitor;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -83,6 +89,9 @@ import org.eclipse.ui.WorkbenchException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2006/04/24 20:55:15  phherlin
+ * Batch markers update to try to gain performance
+ *
  * Revision 1.9  2006/04/24 19:35:01  phherlin
  * Add performance mesures on commands and on pmd execution
  * Revision 1.8 2006/04/10 20:55:31 phherlin Update to PMD 3.6
@@ -136,6 +145,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             this.rulesCount = 0;
             this.pmdDuration = 0;
 
+            // Lancer PMD
             if (this.resources.size() == 0) {
                 this.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PMD_PROCESSING), this.getStepsCount());
                 this.processResourceDelta();
@@ -144,8 +154,17 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 this.processResources();
             }
 
-            applyMarkers();
-
+            // Appliquer les marqueurs
+            IWorkspaceRunnable action = new IWorkspaceRunnable() {
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    applyMarkers();
+                }
+            };
+            
+            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            workspace.run(action, getschedulingRule(), IWorkspace.AVOID_UPDATE, getMonitor());
+            
+            // Switch to the PMD perspective if required
             if (this.openPmdPerspective) {
                 Display.getDefault().asyncExec(new Runnable() {
                     public void run() {
@@ -154,6 +173,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 });
             }
 
+        } catch (CoreException e) {
+            throw new CommandException("Core exception when reviewing code", e);
         } finally {
             this.setTerminated(true);
             if (this.filesCount > 0) {
@@ -233,6 +254,24 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     public boolean isReadyToExecute() {
         return (this.resources.size() != 0) || (this.resourceDelta != null);
+    }
+    
+    /**
+     * @return the scheduling rule needed to apply markers
+     */
+    private ISchedulingRule getschedulingRule() {
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
+        ISchedulingRule rule = null;
+        
+        if (this.resources.size() == 0) {
+            rule = ruleFactory.markerRule(this.resourceDelta.getResource().getProject());
+        } else {
+            ISchedulingRule rules[] = new ISchedulingRule[this.resources.size()];
+            rule = MultiRule.combine((ISchedulingRule[])this.resources.toArray(rules));
+        }
+        
+        return rule;
     }
 
     /**
