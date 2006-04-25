@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>David Karr - reported stale XPath documentation</li>
             <li>Christopher Stach - several bug reports for rules that didn't handle JDK 1.5 enums</li>
             <li>Jarkko Hietaniemin - rewrote most of cpd.sh, tweaked C/CPP grammar to allow $ in identifiers, several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
             <li>Dawid Weiss - Reported bug in UnusedPrivateMethod</li>

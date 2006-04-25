@@ -95,7 +95,11 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
 	<p>You'll quickly see that all three local variables are matched.  A possible
 	solution for this is to request that the parent of the local variable 
 	declaration is the MethodDeclaration node:</p>
-	<source><![CDATA[//LocalVariableDeclaration[name(../../..) = 'MethodDeclaration']]]></source>
+	<source>
+        <![CDATA[
+    //LocalVariableDeclaration[name(../../..) = 'MethodDeclaration']
+ ]]>
+    </source>
 	<subsection name="Matching variables by name">
 	<p>Let's consider that we are writing rules for logger. Let's assume we 
 	use the Java logging API and we want to find all classes that have more
@@ -141,7 +145,12 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
 }
 ]]></source>
 	<p>The following expression does the magic we need:</p>
-	<source><![CDATA[//VariableDeclarator[../Type/Name[@Image='Factory'] and ..[@Final='false'] ]]]></source>
+	<source><![CDATA[
+//VariableDeclarator
+ [../Type/ReferenceType/ClassOrInterfaceType
+  [@Image = 'Factory'] and ..[@Final='false']]
+ ]]>
+    </source>
 	<p>I must recommend at this point that you experiment with Designer putting
 	the final modifier to the Factory and verifying that the results produced
 	are those expected.</p>
