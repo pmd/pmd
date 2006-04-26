@@ -174,11 +174,6 @@ Octet:
   unix_name: octet
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/octet"
   srcdir: octet/src/
-JChemPaint: 
-  module: JCPCDK
-  unix_name: jchempaint
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jchempaint"
-  srcdir: JCPCDK/src
 CSVJdbc: 
   module: csvjdbc
   unix_name: csvjdbc
@@ -600,3 +595,8 @@ BioClipse:
   unix_name: bioclipse
   cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/bioclipse"
   srcdir: bioclipse/src
+JVoiceXML: 
+  module: JVoiceXML
+  unix_name: jvoicexml
+  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jvoicexml"
+  srcdir: JVoiceXML/src

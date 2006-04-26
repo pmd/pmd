@@ -63,7 +63,7 @@ class Job
    `#{cmd}`
   end
   def run_pmd
-		cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.4.jar net.sourceforge.pmd.PMD \"#{ROOT}/#{@src}\" html unusedcode -shortnames #{self.jdk15? ? "-targetjdk 1.5" : ""} > #{report}"
+		cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.6.jar net.sourceforge.pmd.PMD \"#{ROOT}/#{@src}\" html unusedcode -shortnames #{self.jdk15? ? "-targetjdk 1.5" : ""} > #{report}"
     puts cmd
    `#{cmd}`
    if File.exists?(report)
@@ -75,7 +75,7 @@ class Job
 	  puts "PMD report contains #{pmd_lines} violations"
   end
   def run_cpd
-   cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.4.jar net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files #{@src} > #{cpd_file}"
+   cmd="java -Xmx512m -cp /home/tom/pmd/pmd/lib/jaxen-1.1-beta-7.jar:/home/tom/pmd/pmd-web/src/pmd-3.6.jar net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files #{@src} > #{cpd_file}"
    `#{cmd}`
 	  puts "CPD report contains #{cpd_lines} violations"
   end
