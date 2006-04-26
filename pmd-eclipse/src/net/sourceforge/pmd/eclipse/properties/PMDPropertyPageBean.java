@@ -47,6 +47,9 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/04/26 21:16:06  phherlin
+ * Add the include derived files option
+ *
  * Revision 1.2  2005/05/07 13:32:05  phherlin
  * Continuing refactoring
  * Fix some PMD violations
@@ -66,6 +69,7 @@ public class PMDPropertyPageBean {
     private IWorkingSet projectWorkingSet;
     private RuleSet projectRuleSet;
     private boolean ruleSetStoredInProject;
+    private boolean includeDerivedFiles;
     
     /**
      * @return Returns the pmdEnabled.
@@ -73,46 +77,67 @@ public class PMDPropertyPageBean {
     public boolean isPmdEnabled() {
         return pmdEnabled;
     }
+    
     /**
      * @param pmdEnabled The pmdEnabled to set.
      */
     public void setPmdEnabled(final boolean pmdEnabled) {
         this.pmdEnabled = pmdEnabled;
     }
+    
     /**
      * @return Returns the projectRuleSet.
      */
     public RuleSet getProjectRuleSet() {
         return projectRuleSet;
     }
+    
     /**
      * @param projectRuleSet The projectRuleSet to set.
      */
     public void setProjectRuleSet(final RuleSet projectRuleSet) {
         this.projectRuleSet = projectRuleSet;
     }
+    
     /**
      * @return Returns the ruleSetStoredInProject.
      */
     public boolean isRuleSetStoredInProject() {
         return ruleSetStoredInProject;
     }
+    
     /**
      * @param ruleSetStoredInProject The ruleSetStoredInProject to set.
      */
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) {
         this.ruleSetStoredInProject = ruleSetStoredInProject;
     }
+    
     /**
      * @return Returns the projectWorkingSet.
      */
     public IWorkingSet getProjectWorkingSet() {
         return projectWorkingSet;
     }
+    
     /**
      * @param projectWorkingSet The projectWorkingSet to set.
      */
     public void setProjectWorkingSet(final IWorkingSet selectedWorkingSet) {
         this.projectWorkingSet = selectedWorkingSet;
+    }
+    
+    /**
+     * @return Returns the includeDerivedFiles.
+     */
+    public boolean isIncludeDerivedFiles() {
+        return includeDerivedFiles;
+    }
+    
+    /**
+     * @param includeDerivedFiles The includeDerivedFiles to set.
+     */
+    public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
+        this.includeDerivedFiles = includeDerivedFiles;
     }
 }

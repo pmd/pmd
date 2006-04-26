@@ -52,6 +52,9 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/04/26 21:16:06  phherlin
+ * Add the include derived files option
+ *
  * Revision 1.3  2005/06/07 18:38:13  phherlin
  * Move classes to limit packages cycle dependencies
  *
@@ -85,6 +88,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
     private boolean ruleSetStoredInProject;
     private boolean needRebuild;
     private boolean ruleSetFileExists;
+    private boolean includeDerivedFiles;
     
     /**
      * Default constructor. Initializes command attributes
@@ -111,6 +115,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
             projectPropertiesModel.setProjectRuleSet(this.projectRuleSet);
             projectPropertiesModel.setProjectWorkingSet(this.projectWorkingSet);
             projectPropertiesModel.setRuleSetStoredInProject(this.ruleSetStoredInProject);
+            projectPropertiesModel.setIncludeDerivedFiles(this.includeDerivedFiles);
             projectPropertiesModel.sync();
             this.needRebuild = projectPropertiesModel.isNeedRebuild();
             this.ruleSetFileExists = !projectPropertiesModel.isRuleSetFileExist();
@@ -158,6 +163,13 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
     }
 
     /**
+     * @param includeDerivedFiles The includeDerivedFiles to set.
+     */
+    public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
+        this.includeDerivedFiles = includeDerivedFiles;
+    }
+
+    /**
      * @return Returns the needRebuild.
      */
     public boolean isNeedRebuild() {
@@ -179,6 +191,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
         this.setPmdEnabled(false);
         this.setProjectRuleSet(null);
         this.setRuleSetStoredInProject(false);
+        this.setIncludeDerivedFiles(false);
         this.setTerminated(false);
     }
     

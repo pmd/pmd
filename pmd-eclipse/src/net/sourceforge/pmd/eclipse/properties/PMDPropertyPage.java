@@ -75,6 +75,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.19  2006/04/26 21:16:06  phherlin
+ * Add the include derived files option
+ *
  * Revision 1.18  2006/04/10 20:57:32  phherlin
  * Update to PMD 3.6
  *
@@ -153,6 +156,7 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
     private IWorkingSet selectedWorkingSet;
     private Label selectedWorkingSetLabel;
     private Button deselectWorkingSetButton;
+    private Button includeDerivedFilesButton;
     protected Button ruleSetStoredInProjectButton;
 
     /**
@@ -174,15 +178,23 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
             final GridLayout layout = new GridLayout();
             composite.setLayout(layout);
 
-            enablePMDButton = buildEnablePMDButton(composite);
+            this.enablePMDButton = buildEnablePMDButton(composite);
 
             Label separator = new Label(composite, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
             GridData data = new GridData();
             data.horizontalAlignment = GridData.FILL;
             data.grabExcessHorizontalSpace = true;
             separator.setLayoutData(data);
+            
+            this.includeDerivedFilesButton = buildIncludeDerivedFilesButton(composite);
 
-            selectedWorkingSetLabel = buildSelectedWorkingSetLabel(composite);
+            separator = new Label(composite, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
+            data = new GridData();
+            data.horizontalAlignment = GridData.FILL;
+            data.grabExcessHorizontalSpace = true;
+            separator.setLayoutData(data);
+
+            this.selectedWorkingSetLabel = buildSelectedWorkingSetLabel(composite);
             data = new GridData();
             data.horizontalAlignment = GridData.FILL;
             data.grabExcessHorizontalSpace = true;
@@ -196,7 +208,7 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
             rowLayout.wrap = false;
             workingSetPanel.setLayout(rowLayout);
             buildSelectWorkingSetButton(workingSetPanel);
-            deselectWorkingSetButton = buildDeselectWorkingSetButton(workingSetPanel);
+            this.deselectWorkingSetButton = buildDeselectWorkingSetButton(workingSetPanel);
 
             separator = new Label(composite, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
             data = new GridData();
@@ -214,7 +226,8 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
             data.heightHint = 50;
             availableRulesTable.setLayoutData(data);
 
-            ruleSetStoredInProjectButton = buildStoreRuleSetInProjectButton(composite);
+            this.ruleSetStoredInProjectButton = buildStoreRuleSetInProjectButton(composite);
+
         } else {
             setValid(false);
         }
@@ -230,6 +243,18 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
         final Button button = new Button(parent, SWT.CHECK);
         button.setText(this.getMessage(MSGKEY_PROPERTY_BUTTON_ENABLE));
         button.setSelection(model.isPmdEnabled());
+
+        return button;
+    }
+
+    /**
+     * Create the include derived files checkbox
+     * @param parent the parent composite
+     */
+    private Button buildIncludeDerivedFilesButton(final Composite parent) {
+        final Button button = new Button(parent, SWT.CHECK);
+        button.setText(this.getMessage(MSGKEY_PROPERTY_BUTTON_INCLUDE_DERIVED_FILES));
+        button.setSelection(model.isIncludeDerivedFiles());
 
         return button;
     }
@@ -391,6 +416,8 @@ public class PMDPropertyPage extends PropertyPage implements PMDConstants {
         this.model.setProjectWorkingSet(this.selectedWorkingSet);
         this.model.setProjectRuleSet(this.getProjectRuleSet());
         this.model.setRuleSetStoredInProject(this.ruleSetStoredInProjectButton.getSelection());
+        this.model.setIncludeDerivedFiles(this.includeDerivedFilesButton.getSelection());
+        
         return controller.performOk();
     }
 

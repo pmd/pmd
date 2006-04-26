@@ -74,6 +74,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.14  2006/04/26 21:13:14  phherlin
+ * Add the include derived files option
+ *
  * Revision 1.13  2006/04/10 20:55:58  phherlin
  * Update to PMD 3.6
  *
@@ -133,6 +136,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     private boolean ruleSetStoredInProject;
     private RuleSet projectRuleSet;
     private IWorkingSet projectWorkingSet;
+    private boolean includeDerivedFiles;
 
     /**
      * The default constructor takes a project as an argument
@@ -301,6 +305,21 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
     }
 
     /**
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#isIncludeDerivedFiles()
+     */
+    public boolean isIncludeDerivedFiles() {
+        return this.includeDerivedFiles;
+    }
+
+    /**
+     * @see net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel#setIncludeDerivedFiles(boolean)
+     */
+    public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
+        this.needRebuild |= this.includeDerivedFiles != includeDerivedFiles;
+        this.includeDerivedFiles = includeDerivedFiles;        
+    }
+
+    /**
      * @see net.sourceforge.pmd.eclipse.model.PMDPluginModel#sync()
      */
     public void sync() throws ModelException {
@@ -389,6 +408,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
             setWorkingSetFromProperties(projectProperties.getWorkingSetName());
             this.ruleSetStoredInProject = projectProperties.isRuleSetStoredInProject();
             this.pmdEnabled = this.project.hasNature(PMDNature.PMD_NATURE);
+            this.includeDerivedFiles = projectProperties.isIncludeDerivedFiles();
             if (this.ruleSetStoredInProject) {
                 loadRuleSetFromProject();
             } else {
@@ -453,6 +473,7 @@ public class ProjectPropertiesModelImpl extends AbstractModel implements Project
             final ProjectPropertiesTO bean = new ProjectPropertiesTO();
             bean.setRuleSetStoredInProject(this.ruleSetStoredInProject);
             bean.setWorkingSetName(this.projectWorkingSet == null ? null : this.projectWorkingSet.getName());
+            bean.setIncludeDerivedFiles(this.includeDerivedFiles);
 
             if (this.ruleSetStoredInProject) {
                 loadRuleSetFromProject();

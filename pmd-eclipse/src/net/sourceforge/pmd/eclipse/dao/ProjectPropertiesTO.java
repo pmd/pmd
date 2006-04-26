@@ -43,6 +43,9 @@ package net.sourceforge.pmd.eclipse.dao;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/04/26 21:13:38  phherlin
+ * Add the include derived files option
+ *
  * Revision 1.1  2005/06/07 18:38:14  phherlin
  * Move classes to limit packages cycle dependencies
  *
@@ -58,6 +61,7 @@ public class ProjectPropertiesTO {
     private RuleSpecTO[] rules;
     private String workingSetName;
     private boolean ruleSetStoredInProject;
+    private boolean includeDerivedFiles;
     
     /**
      * @return rules an array of RuleSpecTO objects that keep information of rules
@@ -106,6 +110,20 @@ public class ProjectPropertiesTO {
      */
     public void setWorkingSetName(final String workingSetName) {
         this.workingSetName = workingSetName;
+    }
+
+    /**
+     * @return Returns the includeDerivedFiles.
+     */
+    public boolean isIncludeDerivedFiles() {
+        return this.includeDerivedFiles;
+    }
+
+    /**
+     * @param includeDerivedFiles The includeDerivedFiles to set.
+     */
+    public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
+        this.includeDerivedFiles = includeDerivedFiles;
     }
 
 }

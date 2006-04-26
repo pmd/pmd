@@ -48,6 +48,9 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2006/04/26 21:13:14  phherlin
+ * Add the include derived files option
+ *
  * Revision 1.5  2005/06/11 22:11:31  phherlin
  * Fixing the project ruleset management
  *
@@ -137,4 +140,14 @@ public interface ProjectPropertiesModel extends PMDPluginModel {
      *
      */
     void createDefaultRuleSetFile() throws ModelException;
+    
+    /**
+     * @return whether derived files should be checked
+     */
+    boolean isIncludeDerivedFiles();
+    
+    /**
+     * @param excludeDerivedFiles whether derived files should be checked
+     */
+    void setIncludeDerivedFiles(boolean excludeDerivedFiles);
 }

@@ -66,6 +66,9 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2006/04/26 21:15:02  phherlin
+ * Add the include derived files option
+ *
  * Revision 1.9  2006/04/24 19:35:01  phherlin
  * Add performance mesures on commands and on pmd execution
  *
@@ -92,7 +95,7 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * 
  */
 public class BaseVisitor {
-    private static final Log log = LogFactory.getLog("net.sourceforce.pmd.cmd.BaseVisitor");
+    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.BaseVisitor");
     private final ModelFactory modelFactory = ModelFactory.getFactory();
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
@@ -101,6 +104,7 @@ public class BaseVisitor {
     private RuleSet ruleSet;
     private int filesCount;
     private long pmdDuration;
+    private boolean includeDerivedFiles;
     protected RuleSet hiddenRules;
 
     /**
@@ -248,6 +252,13 @@ public class BaseVisitor {
     }
     
     /**
+     * @param includeDerivedFiles The includeDerivedFiles to set.
+     */
+    public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
+        this.includeDerivedFiles = includeDerivedFiles;
+    }
+
+    /**
      * Run PMD against a resource
      * 
      * @param resource
@@ -258,7 +269,12 @@ public class BaseVisitor {
         if ((file != null) && (file.getFileExtension() != null) && (file.getFileExtension().equals("java"))) {
 
             try {
-                if (isFileInWorkingSet(file)) {
+                boolean included = (this.includeDerivedFiles || (!this.includeDerivedFiles && !file.isDerived()));
+                log.debug("Derived files included: " + this.includeDerivedFiles);
+                log.debug("file " + file.getName() + " is derived: " + file.isDerived());
+                log.debug("file checked: " + included);
+
+                if (isFileInWorkingSet(file) && (this.includeDerivedFiles || (!this.includeDerivedFiles && !file.isDerived()))) {
                     subTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_CHECKING_FILE) + " " + file.getName());
 
                     Timer timer = new Timer();

@@ -63,6 +63,9 @@ import org.eclipse.ui.dialogs.IWorkingSetSelectionDialog;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2006/04/26 21:16:06  phherlin
+ * Add the include derived files option
+ *
  * Revision 1.11  2006/04/19 22:40:20  phherlin
  * Reconfigure the rebuild command to better handle huge project (when changing PMD project properties, run the rebuild in background)
  *
@@ -145,6 +148,7 @@ public class PMDPropertyPageController implements PMDConstants {
                 this.propertyPageBean.setProjectWorkingSet(model.getProjectWorkingSet());
                 this.propertyPageBean.setProjectRuleSet(model.getProjectRuleSet());
                 this.propertyPageBean.setRuleSetStoredInProject(model.isRuleSetStoredInProject());
+                this.propertyPageBean.setIncludeDerivedFiles(model.isIncludeDerivedFiles());
                 this.pmdAlreadyActivated = model.isPmdEnabled();
             } catch (ModelException e) {
                 PMDPlugin.getDefault().showError(e.getMessage(), e);
@@ -179,6 +183,7 @@ public class PMDPropertyPageController implements PMDConstants {
             cmd.setProjectWorkingSet(this.propertyPageBean.getProjectWorkingSet());
             cmd.setProjectRuleSet(this.propertyPageBean.getProjectRuleSet());
             cmd.setRuleSetStoredInProject(this.propertyPageBean.isRuleSetStoredInProject());
+            cmd.setIncludeDerivedFiles(this.propertyPageBean.isIncludeDerivedFiles());
             cmd.setUserInitiated(true);
             cmd.performExecute();
 

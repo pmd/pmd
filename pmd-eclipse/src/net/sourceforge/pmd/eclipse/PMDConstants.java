@@ -6,6 +6,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.13  2006/04/26 21:16:28  phherlin
+ * Add the include derived files option
+ *
  * Revision 1.12  2005/10/24 22:36:42  phherlin
  * Integrating Sebastian Raffel's work
  *
@@ -58,6 +61,7 @@ public interface PMDConstants {
     public static final String MSGKEY_PROPERTY_LABEL_NO_WORKINGSET = "property.label.no_workingset";
     public static final String MSGKEY_PROPERTY_LABEL_SELECTED_WORKINGSET = "property.label.selected_workingset";
     public static final String MSGKEY_PROPERTY_BUTTON_STORE_RULESET_PROJECT = "property.button.store_ruleset_project";
+    public static final String MSGKEY_PROPERTY_BUTTON_INCLUDE_DERIVED_FILES = "property.button.include_derived_files";
     
     public static final String MSGKEY_PREF_GENERAL_HEADER = "preference.pmd.header";
     public static final String MSGKEY_PREF_GENERAL_TITLE = "preference.pmd.title";

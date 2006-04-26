@@ -89,6 +89,9 @@ import org.eclipse.ui.WorkbenchException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2006/04/26 21:15:02  phherlin
+ * Add the include derived files option
+ *
  * Revision 1.10  2006/04/24 20:55:15  phherlin
  * Batch markers update to try to gain performance
  *
@@ -335,6 +338,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             visitor.setPmdEngine(pmdEngine);
             visitor.setAccumulator(this.markers);
             visitor.setUseTaskMarker(this.taskMarker);
+            visitor.setIncludeDerivedFiles(model.isIncludeDerivedFiles());
             resource.accept(visitor);
 
             this.rulesCount = ruleSet.getRules().size();
@@ -366,6 +370,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             visitor.setPmdEngine(pmdEngine);
             visitor.setAccumulator(this.markers);
             visitor.setUseTaskMarker(this.taskMarker);
+            visitor.setIncludeDerivedFiles(model.isIncludeDerivedFiles());
             this.resourceDelta.accept(visitor);
 
             this.rulesCount = ruleSet.getRules().size();

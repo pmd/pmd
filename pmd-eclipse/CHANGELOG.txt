@@ -7,6 +7,7 @@ v3.1.6 - xx/xx/2006
 Runtime
 -------
 . Reconfigure the rebuild command to better handle huge projects
+. Add the include derived files option
 
 
 ----------------------------------------------------------------------------------------
