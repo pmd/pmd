@@ -147,11 +147,7 @@ PARSER_END(JavaParser)
 
 SPECIAL_TOKEN :
 {
-  " "
-| "\t"
-| "\n"
-| "\r"
-| "\f"
+  " " | "\t" | "\n" | "\r" | "\f"
 }
 
 SPECIAL_TOKEN :

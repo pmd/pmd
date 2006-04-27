@@ -614,6 +614,3 @@ Initial release
 
 Using PMD?  Get the book!  http://pmdapplied.com/
 controversial,basic,strings,design,naming,finalizers,braces,clone,codesize,coupling,imports,javabeans,junit,logging-jakarta-commons,logging-java,migrating,optimizations,strictexception,sunsecure,unusedcode
-
-
-

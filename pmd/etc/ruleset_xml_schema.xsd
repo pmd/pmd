@@ -1,25 +1,58 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!-- The schema this is being validated against is non-normative so if things
-    seem fishy when validating against it, then it probably is fishy. -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd">
-  <xs:element name="description">
-    <xs:complexType mixed="true" />
+<?xml version="1.0"?>
+<xs:schema
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  xmlns="http://pmd.sf.net/ruleset/1.0.0"
+  targetNamespace="http://pmd.sf.net/ruleset/1.0.0"
+  elementFormDefault="qualified">
+
+  <xs:element name="ruleset">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="description" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="rule" minOccurs="1" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="name" type="xs:string" use="required" />
+      <xs:attribute name="language" type="xs:string" use="optional">
+	    <xs:annotation>
+	      <xs:documentation source="version">1.0.0+</xs:documentation>
+	      <xs:documentation source="description">
+            Language on which this ruleset applies;
+            e.g. "java" (default), "jsp"
+	      </xs:documentation>
+	    </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
   </xs:element>
 
-  <xs:element name="example">
-    <xs:complexType mixed="true" />
+  <xs:element name="description" type="xs:string">
   </xs:element>
 
-  <xs:element name="priority">
-    <xs:complexType mixed="true" />
+  <xs:element name="rule">
+    <xs:complexType>
+      <xs:all>
+        <xs:element ref="description" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="example" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="priority" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="properties" minOccurs="0" maxOccurs="1" />
+      </xs:all>
+      <xs:attribute name="name" type="xs:ID" use="optional" />
+      <xs:attribute name="ref" type="xs:string" use="optional" />
+      <xs:attribute name="message" type="xs:string" use="optional" />
+      <xs:attribute name="externalInfoUrl" type="xs:string" use="optional" />
+      <xs:attribute name="class" type="xs:NMTOKEN" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="example" type="xs:string">
+  </xs:element>
+
+  <xs:element name="priority" type="xs:int">
   </xs:element>
 
   <xs:element name="properties">
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="property" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="property" minOccurs="0" maxOccurs="unbounded" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>
@@ -35,37 +68,7 @@
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="rule">
-    <xs:complexType>
-      <xs:choice>
-        <xs:element ref="description" minOccurs="1" maxOccurs="1" />
-        <xs:element ref="example" minOccurs="1" maxOccurs="1" />
-        <xs:element ref="priority" minOccurs="1" maxOccurs="1" />
-        <xs:element ref="properties" minOccurs="1" maxOccurs="1" />
-      </xs:choice>
-      <xs:attribute name="name" type="xs:ID" use="optional" />
-      <xs:attribute name="ref" type="xs:string" use="optional" />
-      <xs:attribute name="message" type="xs:string" use="optional" />
-	  <xs:attribute name="externalInfoUrl" type="xs:string" use="optional" />
-      <xs:attribute name="class" type="xs:NMTOKEN" use="optional" />
-    </xs:complexType>
-  </xs:element>
-
-  <xs:element name="ruleset">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="description" minOccurs="1" maxOccurs="1" />
-        <xs:element ref="rule" minOccurs="1" maxOccurs="unbounded" />
-      </xs:sequence>
-      <xs:attribute name="name" type="xs:string" use="required" />
-		 
-		 <!-- language on which this ruleset applies; e.g. "java" (default), "jsp" -->
-      <xs:attribute name="language" type="xs:string" use="optional" />
-    </xs:complexType>
-  </xs:element>
-
-  <xs:element name="value">
-    <xs:complexType mixed="true" />
+  <xs:element name="value" type="xs:string">
   </xs:element>
 
 </xs:schema>

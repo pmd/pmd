@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jeff Jensen - Wrote new XML schema, reported missing schema refs in example rulesets, suggested posting XML schema on PMD site, discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>David Karr - reported stale XPath documentation</li>
             <li>Christopher Stach - several bug reports for rules that didn't handle JDK 1.5 enums</li>
             <li>Jarkko Hietaniemin - rewrote most of cpd.sh, tweaked C/CPP grammar to allow $ in identifiers, several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
@@ -63,7 +64,6 @@
             <li>Benoit Xhenseval - noted Maven plugin bug (http://jira.codehaus.org/browse/MPPMD-24), bug report for UnusedPrivateMethod, suggestion to add elapsed time to XML report, bug report for ImmutableField, many bug reports (with good failure cases!), Ant task patch and bug report, XSLT patch, suggestion for improving XML report</li>
             <li>Barak Naveh - Reported and fixed bug in CallSuperInConstructor</li>
             <li>Bhatia Saurabh - Reported a grammar bug, reported a bug in UseStringBufferLength</li>
-            <li>Jeff Jensen - Reported missing schema refs in example rulesets, suggested posting XML schema on PMD site, discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>Chris Erskine - found bad link, documentation suggestions</li>
             <li>mhilpert - Reported bugs in UseIndexOfChar and LoggerIsNotStaticFinal</li>
             <li>David Corley - Priority filtering XSLT, reported release packaging problem, implemented nifty Javascript folding for XML report, <a href="http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html">demo is here</a></li>
