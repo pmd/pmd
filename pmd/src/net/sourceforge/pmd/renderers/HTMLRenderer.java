@@ -92,8 +92,8 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
             }
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
-            buf.append("<td align=\"center\">" + pe.getFile() + "</td>" + PMD.EOL);
-            buf.append("<td align=\"center\">" + pe.getMsg() + "</td>" + PMD.EOL);
+            buf.append("<td>" + pe.getFile() + "</td>" + PMD.EOL);
+            buf.append("<td>" + pe.getMsg() + "</td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
             violationCount++;
         }
