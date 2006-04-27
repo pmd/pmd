@@ -54,6 +54,9 @@ import net.sourceforge.pmd.core.PMDCorePlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/04/27 20:06:32  phherlin
+ * Fix the usage of PMD deprecated createRuleSet() method
+ *
  * Revision 1.1  2005/07/02 14:32:25  phherlin
  * Implement the RuleSets extension points new tests
  *
@@ -107,7 +110,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
     private RuleSet getRuleSet1() throws RuleSetNotFoundException {
         if (this.ruleSet1 == null) {
             RuleSetFactory factory = new RuleSetFactory();
-            this.ruleSet1 = factory.createRuleSet("rulesets/extra1.xml");
+            this.ruleSet1 = factory.createRuleSets("rulesets/extra1.xml").getAllRuleSets()[0];
         }
         
         return this.ruleSet1;
@@ -121,7 +124,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
     private RuleSet getRuleSet2() throws RuleSetNotFoundException {
         if (this.ruleSet2 == null) {
             RuleSetFactory factory = new RuleSetFactory();
-            this.ruleSet2 = factory.createRuleSet("rulesets/extra2.xml");
+            this.ruleSet2 = factory.createRuleSets("rulesets/extra2.xml").getAllRuleSets()[0];
         }
         
         return this.ruleSet2;
