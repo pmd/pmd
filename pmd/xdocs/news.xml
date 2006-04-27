@@ -10,6 +10,8 @@
     <section name="Sites/Articles about PMD">
     <ul>
         <br/>
+        <li>April 2006 - John Ferguson Smart's article "PMD Squashes Code Bugs" on <a href="http://www.devx.com/Java/Article/31286/0">DevX</a> discusses PMD and the Eclipse plugin.  Lots of screenshots!</li>
+        <br/>
         <li>November 2005 - Mike Clark's article "Staying Out of Code Debt" on <a href="http://www.stickyminds.com/sitewide.asp?Function=edetail&amp;ObjectType=ART&amp;ObjectId=9860&amp;tth=DYN&amp;tt=siteemail&amp;iDyn=2">StickyMinds</a> mentions both PMD and CPD as useful code-checking tools.</li>
         <br/>
         <li>October 2005 - Levent Gurses' article "Improving Code Quality with PMD and Eclipse" in <a href="http://www.eclipsezone.com/articles/pmd/">EclipseZone</a> talks about the PMD Eclipse plugin and explains many different facets of PMD - XPath, writing rules, the AST, all that.  Good stuff!</li>
