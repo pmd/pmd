@@ -46,41 +46,33 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * Implements a view to display violations with more details than
- * in the tasks view.
+ * Implements a view to display violations with more details than in the tasks view.
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.1  2005/10/24 22:45:58  phherlin
- * Integrating Sebastian Raffel's work
- * Move orginal Violations view to legacy
- *
- * Revision 1.7  2003/12/02 22:30:54  phherlin
- * Adapting to Eclipse v3M5
- *
- * Revision 1.6  2003/11/30 22:57:43  phherlin
- * Merging from eclipse-v2 development branch
- *
- * Revision 1.4.2.2  2003/11/05 13:11:47  phherlin
- * Add the Quick fix menu item to the violations view
- *
- * Revision 1.4.2.1  2003/11/03 14:40:14  phherlin
- * Refactoring to remove usage of Eclipse internal APIs
- *
- * Revision 1.4  2003/08/14 16:10:41  phherlin
- * Implementing Review feature (RFE#787086)
- *
- * Revision 1.3  2003/08/13 20:10:20  phherlin
- * Refactoring private->protected to remove warning about non accessible member access in enclosing types
- *
- * Revision 1.2  2003/08/05 19:27:41  phherlin
- * Fixing CoreException when refreshing (Eclipse v3)
- *
- * Revision 1.1  2003/07/07 19:24:54  phherlin
- * Adding PMD violations view
- *
+ * Revision 1.2  2006/04/27 20:35:54  phherlin
+ * On the legacy Violations View, add new sorting option on line numbers and add reverse sorting on all columns (contribution of Pablo Alba)
+ * Revision 1.1 2005/10/24 22:45:58 phherlin Integrating Sebastian Raffel's work Move orginal Violations view to legacy
+ * 
+ * Revision 1.7 2003/12/02 22:30:54 phherlin Adapting to Eclipse v3M5
+ * 
+ * Revision 1.6 2003/11/30 22:57:43 phherlin Merging from eclipse-v2 development branch
+ * 
+ * Revision 1.4.2.2 2003/11/05 13:11:47 phherlin Add the Quick fix menu item to the violations view
+ * 
+ * Revision 1.4.2.1 2003/11/03 14:40:14 phherlin Refactoring to remove usage of Eclipse internal APIs
+ * 
+ * Revision 1.4 2003/08/14 16:10:41 phherlin Implementing Review feature (RFE#787086)
+ * 
+ * Revision 1.3 2003/08/13 20:10:20 phherlin Refactoring private->protected to remove warning about non accessible member access in
+ * enclosing types
+ * 
+ * Revision 1.2 2003/08/05 19:27:41 phherlin Fixing CoreException when refreshing (Eclipse v3)
+ * 
+ * Revision 1.1 2003/07/07 19:24:54 phherlin Adding PMD violations view
+ * 
  */
 public class ViolationView extends ViewPart implements IOpenListener, ISelectionChangedListener {
     public static final int SORTER_PRIORITY = 1;
@@ -88,9 +80,11 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
     public static final int SORTER_CLASS = 3;
     public static final int SORTER_PACKAGE = 4;
     public static final int SORTER_PROJECT = 5;
+    public static final int SORTER_LINE = 6;
 
     private TableViewer violationTableViewer;
     private IResource focusResource;
+    protected boolean reverseSorterFlag = false;
     protected int sorterFlag = SORTER_PRIORITY;
     protected IAction projectSelectAction;
     protected IAction fileSelectAction;
@@ -185,6 +179,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
 
     /**
      * Returns the focusResource.
+     * 
      * @return IResource
      */
     public IResource getFocusResource() {
@@ -279,10 +274,20 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
 
     /**
      * Returns the sorterFlag.
+     * 
      * @return int
      */
     public int getSorterFlag() {
         return sorterFlag;
+    }
+
+    /**
+     * Returns the reverseSorterFlag.
+     * 
+     * @return int
+     */
+    public boolean getReverseSorterFlag() {
+        return reverseSorterFlag;
     }
 
     /**
@@ -293,8 +298,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
         try {
             IMarker[] markers = getSelectedViolations();
             if (markers != null) {
-                rule =
-                    PMDPlugin.getDefault().getRuleSet().getRuleByName(
+                rule = PMDPlugin.getDefault().getRuleSet().getRuleByName(
                         markers[0].getAttribute(PMDPlugin.KEY_MARKERATT_RULENAME, ""));
             }
         } catch (RuntimeException e) {
@@ -345,8 +349,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
     }
 
     /**
-     * Return the appropriate resource displayed in the view.
-     * Currently, it returns always the workspace root
+     * Return the appropriate resource displayed in the view. Currently, it returns always the workspace root
      */
     private IResource getTargetResource() {
         return ResourcesPlugin.getWorkspace().getRoot();
@@ -354,6 +357,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
 
     /**
      * Helper method to shorten message access
+     * 
      * @param key a message key
      * @return requested message
      */
@@ -378,6 +382,11 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
             public void widgetSelected(SelectionEvent e) {
                 if (sorterFlag != SORTER_PRIORITY) {
                     sorterFlag = SORTER_PRIORITY;
+                    reverseSorterFlag = false;
+                    refresh();
+                } else {
+                    // Reverse
+                    reverseSorterFlag = !reverseSorterFlag;
                     refresh();
                 }
             }
@@ -396,6 +405,11 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
             public void widgetSelected(SelectionEvent e) {
                 if (sorterFlag != SORTER_RULE) {
                     sorterFlag = SORTER_RULE;
+                    reverseSorterFlag = false;
+                    refresh();
+                } else {
+                    // Reverse
+                    reverseSorterFlag = !reverseSorterFlag;
                     refresh();
                 }
             }
@@ -409,6 +423,11 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
             public void widgetSelected(SelectionEvent e) {
                 if (sorterFlag != SORTER_CLASS) {
                     sorterFlag = SORTER_CLASS;
+                    reverseSorterFlag = false;
+                    refresh();
+                } else {
+                    // Reverse
+                    reverseSorterFlag = !reverseSorterFlag;
                     refresh();
                 }
             }
@@ -422,6 +441,11 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
             public void widgetSelected(SelectionEvent e) {
                 if (sorterFlag != SORTER_PACKAGE) {
                     sorterFlag = SORTER_PACKAGE;
+                    reverseSorterFlag = false;
+                    refresh();
+                } else {
+                    // Reverse
+                    reverseSorterFlag = !reverseSorterFlag;
                     refresh();
                 }
             }
@@ -435,6 +459,11 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
             public void widgetSelected(SelectionEvent e) {
                 if (sorterFlag != SORTER_PROJECT) {
                     sorterFlag = SORTER_PROJECT;
+                    reverseSorterFlag = false;
+                    refresh();
+                } else {
+                    // Reverse
+                    reverseSorterFlag = !reverseSorterFlag;
                     refresh();
                 }
             }
@@ -444,6 +473,19 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
         lineColumn.setResizable(false);
         lineColumn.setText(getMessage(PMDConstants.MSGKEY_VIEW_COLUMN_LOCATION));
         lineColumn.setWidth(50);
+        lineColumn.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+                if (sorterFlag != SORTER_LINE) {
+                    sorterFlag = SORTER_LINE;
+                    reverseSorterFlag = false;
+                    refresh();
+                } else {
+                    // Reverse
+                    reverseSorterFlag = !reverseSorterFlag;
+                    refresh();
+                }
+            }
+        });
 
         violationTable.setLinesVisible(true);
         violationTable.setHeaderVisible(true);
@@ -455,8 +497,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
     }
 
     /**
-     * Build the table context menu (essentially to enable other plugins to
-     * add items
+     * Build the table context menu (essentially to enable other plugins to add items
      */
     private void buildContextMenu() {
         MenuManager menuMgr = new MenuManager("#PopupMenu");
@@ -479,7 +520,7 @@ public class ViolationView extends ViewPart implements IOpenListener, ISelection
                 manager.add(showRuleAction);
                 manager.add(removeViolationAction);
                 manager.add(reviewAction);
-                
+
                 quickFixAction.setEnabled(quickFixAction.hasQuickFix());
                 manager.add(quickFixAction);
 

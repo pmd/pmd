@@ -8,6 +8,8 @@ Runtime
 -------
 . Reconfigure the rebuild command to better handle huge projects
 . Add the include derived files option
+. On legacy violations view, add new sorting option on line numbers and add reverse
+  sorting on all columns (contribution of Pablo Alba).
 
 
 ----------------------------------------------------------------------------------------
