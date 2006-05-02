@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -66,6 +67,9 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2006/05/02 20:10:26  phherlin
+ * Limit the number of reported violations per file and per rule
+ *
  * Revision 1.10  2006/04/26 21:15:02  phherlin
  * Add the include derived files option
  *
@@ -95,7 +99,7 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * 
  */
 public class BaseVisitor {
-    private static final Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.cmd.BaseVisitor");
+    private static final Log log = LogFactory.getLog(BaseVisitor.class);
     private final ModelFactory modelFactory = ModelFactory.getFactory();
     private IProgressMonitor monitor;
     private boolean useTaskMarker = false;
@@ -356,6 +360,9 @@ public class BaseVisitor {
         final List reviewsList = findReviewedViolations(file);
         final Review review = new Review();
         final Iterator iter = context.getReport().iterator();
+        final int maxViolationsPerFilePerRule = PMDPlugin.getDefault().getMaxViolationsPerFilePerRule();
+        final Map violationsCounter = new HashMap();
+        
         while (iter.hasNext()) {
             final RuleViolation violation = (RuleViolation) iter.next();
             review.ruleName = violation.getRule().getName();
@@ -365,12 +372,27 @@ public class BaseVisitor {
                 log.debug("Ignoring violation of rule " + violation.getRule().getName() + " at line " + violation.getBeginLine()
                         + " because of a review.");
             } else {
-                if (PMDPlugin.getDefault().useDFA() && violation.getRule().usesDFA()) {
-                    markerSet.add(getMarkerInfo(violation, PMDPlugin.PMD_DFA_MARKER));
-                } else {
-                    markerSet.add(getMarkerInfo(violation, fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER));
+                Integer counter = (Integer) violationsCounter.get(violation.getRule());
+                if (counter == null) {
+                    counter = new Integer(0);
+                    violationsCounter.put(violation.getRule(), counter);
                 }
-                log.debug("Adding a violation for rule " + violation.getRule().getName() + " at line " + violation.getBeginLine());
+                
+                if (counter.intValue() < maxViolationsPerFilePerRule) {
+                    if (PMDPlugin.getDefault().useDFA() && violation.getRule().usesDFA()) {
+                        markerSet.add(getMarkerInfo(violation, PMDPlugin.PMD_DFA_MARKER));
+                    } else {
+                        markerSet.add(getMarkerInfo(violation, fTask ? PMDPlugin.PMD_TASKMARKER : PMDPlugin.PMD_MARKER));
+                    }
+                    
+                    violationsCounter.put(violation.getRule(), new Integer(counter.intValue() + 1));
+
+                    log.debug("Adding a violation for rule " + violation.getRule().getName() + " at line " + violation.getBeginLine());
+                } else {
+                    log.debug("Ignoring violation of rule " + violation.getRule().getName() + " at line " + violation.getBeginLine()
+                            + " because maximum violations has been reached for file " + file.getName());
+                }
+                
             }
         }
 

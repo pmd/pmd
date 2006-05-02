@@ -21,6 +21,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
+import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 
 /**
  * Dummy page for PMD preference category
@@ -33,6 +34,9 @@ import net.sourceforge.pmd.eclipse.PMDPlugin;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2006/05/02 20:11:13  phherlin
+ * Limit the number of reported violations per file and per rule
+ *
  * Revision 1.9  2005/10/24 22:43:22  phherlin
  * Integrating Sebastian Raffel's work
  * Revision 1.8 2003/08/14 16:10:41
@@ -46,6 +50,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Label sampleLabel;
     private Button showPerspectiveBox;
     private Button useDFABox;
+    private Text maxViolationsPerFilePerRule;
 
     /**
      * Initialize the page
@@ -99,6 +104,8 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         // build the children
         this.showPerspectiveBox = buildShowPerspectiveBoxButton(group);
         this.useDFABox = buildUseDfaBoxButton(group);
+        Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
+        this.maxViolationsPerFilePerRule = buildMaxViolationsPerFilePerRuleText(group);
         
         // layout children
         GridData data = new GridData();
@@ -110,6 +117,16 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         this.useDFABox.setLayoutData(data);
+
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;
+        separator.setLayoutData(data);
+        
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;
+        this.maxViolationsPerFilePerRule.setLayoutData(data);
         
         return group;
     }
@@ -227,6 +244,27 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         
         return button;
     }
+
+    /**
+     * Build the text for maximum violations per file per rule
+     * 
+     * @param parent
+     * @return
+     */
+    private Text buildMaxViolationsPerFilePerRuleText(Composite parent) {
+        buildLabel(parent, PMDConstants.MSGKEY_PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR);
+        final Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+        text.setText(String.valueOf(PMDPlugin.getDefault().getMaxViolationsPerFilePerRule()));
+        text.setToolTipText(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR));
+
+        text.addModifyListener(new ModifyListener() {
+            public void modifyText(ModifyEvent e) {
+                validateTextIsNumeric(text);
+            }
+        });
+
+        return text;
+    }
     
     /**
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
@@ -242,6 +280,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         if (this.useDFABox != null) {
             this.useDFABox.setSelection(PMDPlugin.USE_DFA_DEFAULT == 1 ? true : false);
+        }
+        
+        if (this.maxViolationsPerFilePerRule != null) {
+            this.maxViolationsPerFilePerRule.setText(String.valueOf(PMDPluginConstants.MAX_VIOLATIONS_PER_FILE_PER_RULE_DEFAULT));
         }
     }
 
@@ -262,6 +304,21 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
             setValid(false);
         }
     }
+    
+    /**
+     * Check if the entry filed is a numeric value
+     *
+     */
+    protected void validateTextIsNumeric(Text text) {
+        try {
+            Integer value = Integer.valueOf(text.getText());
+            setMessage(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PREF_GENERAL_HEADER), NONE);
+            setValid(true);
+        } catch (NumberFormatException e) {
+            setMessage(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PREF_GENERAL_MESSAGE_INVALID_NUMERIC_VALUE), ERROR);
+            setValid(false);
+        }
+    }
 
     /**
      * @see org.eclipse.jface.preference.IPreferencePage#performOk()
@@ -279,6 +336,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         if (this.useDFABox != null) {
             PMDPlugin.getDefault().getPreferenceStore().setValue(PMDPlugin.USE_DFA_PREFERENCE,
                     this.useDFABox.getSelection() ? 1 : -1);
+        }
+        
+        if (this.maxViolationsPerFilePerRule != null) {
+            PMDPlugin.getDefault().setMaxViolationsPerFilePerRule(Integer.valueOf(this.maxViolationsPerFilePerRule.getText()).intValue());
         }
 
         return true;

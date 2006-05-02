@@ -50,6 +50,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.32  2006/05/02 20:10:49  phherlin
+ * Limit the number of reported violations per file and per rule
+ *
  * Revision 1.31  2006/05/02 18:47:10  phherlin
  * Remove dead code
  *
@@ -136,6 +139,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
     private RuleSet ruleSet;
     private String[] priorityLabels;
     private String reviewAdditionalComment;
+    private int maxViolationsPerFilePerRule;
 
     /**
      * Private constructor ensures it remains a singleton.
@@ -528,6 +532,30 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
     public void setReviewAdditionalComment(String string) {
         reviewAdditionalComment = string;
         getPreferenceStore().setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, reviewAdditionalComment);
+    }
+
+    /**
+     * Get the maximum number of violations per file per rule
+     * 
+     * @return
+     */
+    public int getMaxViolationsPerFilePerRule() {
+        if (this.maxViolationsPerFilePerRule == 0) {
+            getPreferenceStore().setDefault(MAX_VIOLATIONS_PER_FILE_PER_RULE_PREFERENCE, MAX_VIOLATIONS_PER_FILE_PER_RULE_DEFAULT);
+            this.maxViolationsPerFilePerRule = getPreferenceStore().getInt(MAX_VIOLATIONS_PER_FILE_PER_RULE_PREFERENCE);
+        }
+
+        return this.maxViolationsPerFilePerRule;
+    }
+
+    /**
+     * Set the maximum number of violations per file per rule
+     * 
+     * @param int
+     */
+    public void setMaxViolationsPerFilePerRule(int maxViolationsPerFilePerRule) {
+        this.maxViolationsPerFilePerRule = maxViolationsPerFilePerRule;
+        getPreferenceStore().setValue(MAX_VIOLATIONS_PER_FILE_PER_RULE_PREFERENCE, this.maxViolationsPerFilePerRule);
     }
 
 }

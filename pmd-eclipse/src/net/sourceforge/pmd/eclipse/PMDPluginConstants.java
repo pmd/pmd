@@ -8,6 +8,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2006/05/02 20:10:49  phherlin
+ * Limit the number of reported violations per file and per rule
+ *
  * Revision 1.10  2006/05/02 18:49:51  phherlin
  * Remove dead code
  *
@@ -124,6 +127,9 @@ public interface PMDPluginConstants {
     public static final String SHOW_PERSPECTIVE_ON_CHECK_PREFERENCE = PLUGIN_ID + ".show_perspective_on_check";
     public static final int USE_DFA_DEFAULT = -1;
     public static final String USE_DFA_PREFERENCE = PLUGIN_ID + ".use_dfa";
+    public static final String MAX_VIOLATIONS_PER_FILE_PER_RULE_PREFERENCE = PLUGIN_ID + ".max_violations_per_file_per_rule";
+    public static final int MAX_VIOLATIONS_PER_FILE_PER_RULE_DEFAULT = 5;
+    
     
     public static final String REPORT_FOLDER = "reports";
     public static final String HTML_REPORT_NAME = "pmd-report.html";

@@ -6,6 +6,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.14  2006/05/02 20:10:49  phherlin
+ * Limit the number of reported violations per file and per rule
+ *
  * Revision 1.13  2006/04/26 21:16:28  phherlin
  * Add the include derived files option
  *
@@ -73,6 +76,9 @@ public interface PMDConstants {
     public static final String MSGKEY_PREF_GENERAL_GROUP_GENERAL = "preference.pmd.group.general";
     public static final String MSGKEY_PREF_GENERAL_LABEL_SHOW_PERSPECTIVE = "preference.pmd.label.perspective_on_check";
     public static final String MSGKEY_PREF_GENERAL_LABEL_USE_DFA = "preference.pmd.label.use_dfa";
+    public static final String MSGKEY_PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR = "preference.pmd.label.max_violations_pfpr";
+    public static final String MSGKEY_PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR = "preference.pmd.tooltip.max_violations_pfpr";
+    public static final String MSGKEY_PREF_GENERAL_MESSAGE_INVALID_NUMERIC_VALUE ="preference.pmd.message.invalid_numeric_value";
     
     public static final String MSGKEY_PREF_RULESET_TITLE = "preference.ruleset.title";
     public static final String MSGKEY_PREF_RULESET_LIST = "preference.ruleset.list";

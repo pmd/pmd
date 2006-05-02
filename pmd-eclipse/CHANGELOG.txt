@@ -12,6 +12,7 @@ Runtime
   sorting on all columns (contribution of Pablo Alba).
 . make CPD "working set aware"
 . remove some dead code
+. limit the number of reported violations per file and per rule (default to 5)
 
 
 ----------------------------------------------------------------------------------------
