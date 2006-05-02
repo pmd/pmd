@@ -28,11 +28,8 @@ import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.xml.DOMConfigurator;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -43,9 +40,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IWorkingSet;
-import org.eclipse.ui.IWorkingSetManager;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -56,6 +50,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.31  2006/05/02 18:47:10  phherlin
+ * Remove dead code
+ *
  * Revision 1.30  2006/04/24 19:34:18  phherlin
  * Add performance mesures on commands and on pmd execution
  *
@@ -253,129 +250,6 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
         }
 
         return subRuleSet;
-    }
-
-    /**
-     * Get the rulset configured for the resouce. Currently, it is the one
-     * configured for the resource's project
-     */
-    public RuleSet getRuleSetForResource(IResource resource, boolean flCreateProperty) {
-        log.debug("Asking a ruleset for resource " + resource.getName());
-        IProject project = resource.getProject();
-
-        return isRuleSetStoredInProject(project) ? getRuleSetForResourceFromProject(project) : getRuleSetForResourceFromProperties(
-                resource, flCreateProperty);
-    }
-
-    /**
-     * Get the rulset configured for the resouce. Currently, it is the one
-     * configured for the resource's project
-     */
-    public RuleSet getRuleSetForResourceFromProperties(IResource resource, boolean flCreateProperty) {
-        log.debug("Searching a ruleset for resource " + resource.getName() + " in properties");
-        boolean flNeedSave = false;
-        RuleSet projectRuleSet = null;
-        RuleSet configuredRuleSet = getRuleSet();
-        IProject project = resource.getProject();
-        try {
-            projectRuleSet = (RuleSet) project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
-            if (projectRuleSet == null) {
-                String activeRulesList = project.getPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET);
-                if (activeRulesList != null) {
-                    projectRuleSet = getRuleSetFromRuleList(activeRulesList);
-                    flNeedSave = true;
-                } else {
-                    if (flCreateProperty) {
-                        projectRuleSet = configuredRuleSet;
-                        flNeedSave = true;
-                    } else {
-                        flNeedSave = false;
-                    }
-                }
-            }
-
-            // If meanwhile, rules have been deleted from preferences
-            // delete them also from the project ruleset
-            if ((projectRuleSet != null) && (projectRuleSet != configuredRuleSet)) {
-                Iterator i = projectRuleSet.getRules().iterator();
-                while (i.hasNext()) {
-                    Object rule = i.next();
-                    if (!configuredRuleSet.getRules().contains(rule)) {
-                        i.remove();
-                        flNeedSave = true;
-                    }
-                }
-            }
-
-            // If needed store modified ruleset
-            if (flNeedSave) {
-                storeRuleSetForResource(resource, projectRuleSet);
-            }
-        } catch (CoreException e) {
-            logError("Error when searching for project ruleset. Using the full ruleset.", e);
-            projectRuleSet = getRuleSet();
-        }
-
-        return projectRuleSet;
-    }
-
-    /**
-     * Retrieve a project ruleset from a ruleset file in the project instead of
-     * the plugin properties/preferences
-     * 
-     * @param project
-     * @return
-     */
-    public RuleSet getRuleSetForResourceFromProject(IProject project) {
-        log.debug("Searching a ruleset for project " + project.getName() + " in the project file");
-        RuleSet projectRuleSet = null;
-        IFile ruleSetFile = project.getFile(PMDPluginConstants.PROJECT_RULESET_FILE);
-        if (ruleSetFile.exists()) {
-            try {
-                projectRuleSet = (RuleSet) project.getSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET);
-                Long oldModificationStamp = (Long) project.getSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP);
-                long newModificationStamp = ruleSetFile.getModificationStamp();
-                if ((oldModificationStamp == null) || (oldModificationStamp.longValue() != newModificationStamp)) {
-                    RuleSetFactory ruleSetFactory = new RuleSetFactory();
-                    projectRuleSet = ruleSetFactory.createRuleSet(ruleSetFile.getContents());
-                    project.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET, projectRuleSet);
-                    project.setSessionProperty(SESSION_PROPERTY_RULESET_MODIFICATION_STAMP, new Long(newModificationStamp));
-                }
-            } catch (Exception e) {
-                showError(getMessage(PMDConstants.MSGKEY_ERROR_LOADING_RULESET), e);
-                log.debug("", e);
-                projectRuleSet = null;
-            }
-        }
-
-        // If ruleset cannot be loaded from project, try from properties.
-        if (projectRuleSet == null) {
-            log.debug("The project does not have a correct ruleset. Return a ruleset from the plugin properties");
-            projectRuleSet = getRuleSetForResourceFromProperties(project, false);
-        }
-
-        return projectRuleSet;
-    }
-
-    /**
-     * Store the rules selection in resource property
-     */
-    public void storeRuleSetForResource(IResource resource, RuleSet ruleSet) {
-        try {
-            StringBuffer ruleSelectionList = new StringBuffer();
-            Iterator i = ruleSet.getRules().iterator();
-            while (i.hasNext()) {
-                Rule rule = (Rule) i.next();
-                ruleSelectionList.append(rule.getName()).append(LIST_DELIMITER);
-            }
-            log.debug("Storing ruleset for resource " + resource.getName());
-            resource.setPersistentProperty(PERSISTENT_PROPERTY_ACTIVE_RULESET, ruleSelectionList.toString());
-            log.debug("   list : " + ruleSelectionList.toString());
-            resource.setSessionProperty(SESSION_PROPERTY_ACTIVE_RULESET, ruleSet);
-
-        } catch (CoreException e) {
-            showError(getMessage(PMDConstants.MSGKEY_ERROR_STORING_PROPERTY), e);
-        }
     }
 
     /**
@@ -654,101 +528,6 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
     public void setReviewAdditionalComment(String string) {
         reviewAdditionalComment = string;
         getPreferenceStore().setValue(REVIEW_ADDITIONAL_COMMENT_PREFERENCE, reviewAdditionalComment);
-    }
-
-    /**
-     * Get the current working set selected of a project Only one working set is
-     * allowed.
-     */
-    public IWorkingSet getProjectWorkingSet(IProject project) {
-        IWorkingSet workingSet = null;
-        boolean flNeedSave = false;
-
-        try {
-            workingSet = (IWorkingSet) project.getSessionProperty(SESSION_PROPERTY_WORKINGSET);
-            if (workingSet == null) {
-                String workingSetName = project.getPersistentProperty(PERSISTENT_PROPERTY_WORKINGSET);
-                if (workingSetName != null) {
-                    IWorkingSetManager workingSetManager = PlatformUI.getWorkbench().getWorkingSetManager();
-                    workingSet = workingSetManager.getWorkingSet(workingSetName);
-                    if (workingSet != null) {
-                        flNeedSave = true;
-                    }
-                }
-            }
-
-            // If needed store modified ruleset
-            if (flNeedSave) {
-                setProjectWorkingSet(project, workingSet);
-            }
-        } catch (CoreException e) {
-            logError("Error when searching for project workingset. No workingset returned", e);
-        }
-
-        return workingSet;
-    }
-
-    /**
-     * Store a workingset for a project
-     */
-    public void setProjectWorkingSet(IProject project, IWorkingSet workingSet) {
-        try {
-            project.setPersistentProperty(PERSISTENT_PROPERTY_WORKINGSET, workingSet == null ? null : workingSet.getName());
-            project.setSessionProperty(SESSION_PROPERTY_WORKINGSET, workingSet);
-
-        } catch (CoreException e) {
-            showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
-        }
-    }
-
-    /**
-     * Search the store_ruleset_project property
-     * 
-     * @param project
-     */
-    public boolean isRuleSetStoredInProject(IProject project) {
-        Boolean ruleSetStoredInProject = Boolean.FALSE;
-        boolean flNeedSave = false;
-
-        try {
-            ruleSetStoredInProject = (Boolean) project.getSessionProperty(SESSION_PROPERTY_STORE_RULESET_PROJECT);
-            if (ruleSetStoredInProject == null) {
-                String property = project.getPersistentProperty(PERSISTENT_PROPERTY_STORE_RULESET_PROJECT);
-                if (property != null) {
-                    ruleSetStoredInProject = Boolean.valueOf(property);
-                    flNeedSave = true;
-                }
-            }
-
-            // If needed store modified ruleset
-            if (flNeedSave) {
-                setRuleSetStoredInProject(project, ruleSetStoredInProject);
-            }
-        } catch (CoreException e) {
-            logError(
-                    "Error when searching for the store_ruleset_project property. Assuming the project doesn't store it's own ruleset",
-                    e);
-        }
-
-        return ruleSetStoredInProject == null ? false : ruleSetStoredInProject.booleanValue();
-    }
-    
-    /**
-     * Set the store_ruleset_project property
-     * 
-     * @param project
-     * @param ruleSetStoredInProject
-     */
-    public void setRuleSetStoredInProject(IProject project, Boolean ruleSetStoredInProject) {
-        try {
-            project.setPersistentProperty(PERSISTENT_PROPERTY_STORE_RULESET_PROJECT, ruleSetStoredInProject == null
-                    ? null
-                    : ruleSetStoredInProject.toString());
-            project.setSessionProperty(SESSION_PROPERTY_STORE_RULESET_PROJECT, ruleSetStoredInProject);
-
-        } catch (CoreException e) {
-            showError(getMessage(PMDConstants.MSGKEY_ERROR_CORE_EXCEPTION), e);
-        }
     }
 
 }

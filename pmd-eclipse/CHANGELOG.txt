@@ -10,6 +10,8 @@ Runtime
 . Add the include derived files option
 . On legacy violations view, add new sorting option on line numbers and add reverse
   sorting on all columns (contribution of Pablo Alba).
+. make CPD "working set aware"
+. remove some dead code
 
 
 ----------------------------------------------------------------------------------------

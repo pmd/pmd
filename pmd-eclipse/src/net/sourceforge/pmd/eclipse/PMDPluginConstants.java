@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.eclipse;
 
-import org.eclipse.core.runtime.QualifiedName;
 
 /**
  * This interface groups all plugin constants
@@ -9,6 +8,9 @@ import org.eclipse.core.runtime.QualifiedName;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2006/05/02 18:49:51  phherlin
+ * Remove dead code
+ *
  * Revision 1.9  2006/04/24 21:18:11  phherlin
  * Rulesets list are now managed in the core plugin
  *
@@ -51,14 +53,6 @@ public interface PMDPluginConstants {
     public static final String PMD_MARKER = PLUGIN_ID + ".pmdMarker";
     public static final String PMD_DFA_MARKER = PLUGIN_ID + ".pmdDFAMarker";
     public static final String PMD_TASKMARKER = PLUGIN_ID + ".pmdTaskMarker";
-
-    public static final QualifiedName SESSION_PROPERTY_ACTIVE_RULESET = new QualifiedName(PLUGIN_ID + ".sessprops", "active_rulset");
-    public static final QualifiedName PERSISTENT_PROPERTY_ACTIVE_RULESET = new QualifiedName(PLUGIN_ID + ".persprops", "active_rulset");
-    public static final QualifiedName SESSION_PROPERTY_WORKINGSET = new QualifiedName(PLUGIN_ID + ".sessprops", "workingset");
-    public static final QualifiedName PERSISTENT_PROPERTY_WORKINGSET = new QualifiedName(PLUGIN_ID + ".persprops", "workingset");
-    public static final QualifiedName SESSION_PROPERTY_STORE_RULESET_PROJECT = new QualifiedName(PLUGIN_ID + ".sessprops", "store_ruleset_project");
-    public static final QualifiedName PERSISTENT_PROPERTY_STORE_RULESET_PROJECT = new QualifiedName(PLUGIN_ID + ".persprops", "store_ruleset_project");
-    public static final QualifiedName SESSION_PROPERTY_RULESET_MODIFICATION_STAMP = new QualifiedName(PLUGIN_ID + ".sessprops", "ruleset_modification_stamp");
 
     public static final String LIST_DELIMITER = ";";
 
