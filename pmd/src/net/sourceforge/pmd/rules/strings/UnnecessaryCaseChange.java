@@ -23,6 +23,14 @@ public class UnnecessaryCaseChange extends AbstractRule {
             return data;
         }
 
+        if (!(exp.jjtGetChild(1) instanceof ASTPrimarySuffix)) {
+            return data;
+        }
+        ASTPrimarySuffix methodCall = (ASTPrimarySuffix)exp.jjtGetChild(1);
+        if (!methodCall.isArguments() || methodCall.getArgumentCount() > 0) {
+            return data;
+        }
+
         addViolation(data, exp);
         return data;
     }

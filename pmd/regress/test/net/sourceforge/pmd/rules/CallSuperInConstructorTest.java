@@ -5,6 +5,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.Report;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -22,6 +23,12 @@ public class CallSuperInConstructorTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST2, "TEST2", 0, rule),
             new TestDescriptor(TEST3, "don't flag classes w/o extends", 0, rule),
         });
+    }
+
+    public void testEnum() throws Throwable {
+        Report rpt = new Report();
+        runTestFromString15(TEST4, rule, rpt);
+        assertTrue(rpt.isEmpty());
     }
 
     private static final String TEST1 =
@@ -46,6 +53,13 @@ public class CallSuperInConstructorTest extends SimpleAggregatorTst {
             " public Foo() {" + PMD.EOL +
             "  int x = 2;" + PMD.EOL +
             "}" + PMD.EOL +
+            "}";
+
+    private static final String TEST4 =
+            "public enum Foo {" + PMD.EOL +
+            " BUZ(2);" + PMD.EOL +
+            " Foo(int x) {this.x = 5;}" + PMD.EOL +
+            " private int x;" + PMD.EOL +
             "}";
 
 }

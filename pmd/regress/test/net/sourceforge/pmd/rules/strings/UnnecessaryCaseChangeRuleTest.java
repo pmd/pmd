@@ -18,7 +18,8 @@ public class UnnecessaryCaseChangeRuleTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST1, "failure case with toUpperCase().equals()", 1, rule),
             new TestDescriptor(TEST2, "failure case with toLowerCase().equals()", 1, rule),
             new TestDescriptor(TEST3, "failure case with toUpperCase().equalsIgnoreCase()", 1, rule),
-            //new TestDescriptor(TEST4, "failure case with array", 1, rule),
+            new TestDescriptor(TEST4, "don't flag toUpperCase() invocations with Locale args", 0, rule),
+            //new TestDescriptor(TEST5, "failure case with array", 1, rule),
         });
     }
 
@@ -43,8 +44,15 @@ public class UnnecessaryCaseChangeRuleTest extends SimpleAggregatorTst {
             " }" + PMD.EOL +
             "}";
 
+    private static final String TEST4 =
+            "public class Foo {" + PMD.EOL +
+            " private boolean baz(String buz) {" + PMD.EOL +
+            "  return foo.toUpperCase(locale).equals(\"foo\");" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
 /*
-   private static final String TEST4 =
+   private static final String TEST5 =
     "public class Foo {" + PMD.EOL +
     " private boolean baz(String[] buz) {" + PMD.EOL +
     "  return buz[2].toUpperCase().equalsIgnoreCase(\"foo\");" + PMD.EOL +
