@@ -237,9 +237,12 @@ should be made by more specific methods, like assertSame, assertNotSame.
             <value>
                 <![CDATA[
 //PrimaryExpression [
-    PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
+    PrimaryPrefix/Name
+     [@Image = 'assertTrue' or @Image = 'assertFalse']
 ]
-[PrimarySuffix/Arguments/ArgumentList/Expression/EqualityExpression]
+[PrimarySuffix/Arguments
+ /ArgumentList/Expression
+ /EqualityExpression[count(//NullLiteral) = 0]]
  ]]>
             </value>
         </property>

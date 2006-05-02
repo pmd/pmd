@@ -23,6 +23,7 @@ public class UseAssertSameInsteadOfAssertTrueTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST2, "assert true a != b", 1, rule),
             new TestDescriptor(TEST3, "assert false a == b", 1, rule),
             new TestDescriptor(TEST4, "assert false a != b", 1, rule),
+            new TestDescriptor(TEST5, "skip assertTrue(x == null), UseAssertNullInsteadOfAssertTrue will pick those up", 0, rule),
         });
     }
 
@@ -51,6 +52,13 @@ public class UseAssertSameInsteadOfAssertTrueTest extends SimpleAggregatorTst {
             "public class Foo {" + PMD.EOL +
             " public void test1() {" + PMD.EOL +
             "  assertFalse(a!=b);" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST5 =
+            "public class Foo {" + PMD.EOL +
+            " public void test1() {" + PMD.EOL +
+            "  assertFalse(a == null);" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 
