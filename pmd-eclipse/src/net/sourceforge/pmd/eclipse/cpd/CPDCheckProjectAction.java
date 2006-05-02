@@ -1,6 +1,8 @@
 package net.sourceforge.pmd.eclipse.cpd;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
@@ -26,6 +28,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/05/02 18:34:23  phherlin
+ * Make CPD "working set aware"
+ *
  * Revision 1.1  2005/05/31 23:04:11  phherlin
  * Fix Bug 1190624: refactor CPD integration
  *
@@ -49,6 +54,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class CPDCheckProjectAction implements IObjectActionDelegate {
     private static Log log = LogFactory.getLog("net.sourceforge.pmd.eclipse.CPDCheckProjectAction");
     private IWorkbenchPart targetPart;
+    private Set projects = new HashSet();
 
     /**
      * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)

@@ -47,6 +47,9 @@ import net.sourceforge.pmd.cpd.Renderer;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
 import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 import net.sourceforge.pmd.eclipse.cmd.AbstractDefaultCommand;
+import net.sourceforge.pmd.eclipse.model.ModelException;
+import net.sourceforge.pmd.eclipse.model.ModelFactory;
+import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -63,6 +66,9 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/05/02 18:34:23  phherlin
+ * Make CPD "working set aware"
+ *
  * Revision 1.1  2005/05/31 23:04:11  phherlin
  * Fix Bug 1190624: refactor CPD integration
  *
@@ -121,6 +127,9 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
         } catch (IOException e) {
             log.debug("IO Exception: " + e.getMessage(), e);
             throw new CommandException(e);
+        } catch (ModelException e) {
+            log.debug("Model Exception: " + e.getMessage(), e);
+            throw new CommandException(e);
         } finally {
             this.setTerminated(true);
         }
@@ -171,11 +180,14 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
      * @return matches an iterator to CPD matches
      * @throws CoreException
      */
-    private Iterator detectCutAndPaste() throws CoreException {
+    private Iterator detectCutAndPaste() throws CoreException, ModelException {
         log.debug("Searching for project files");
         final int minTileSize = PMDPlugin.getDefault().getPreferenceStore().getInt(PMDPlugin.MIN_TILE_SIZE_PREFERENCE);
+        final ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(project);
         final CPD cpd = new CPD(minTileSize, new LanguageFactory().createLanguage(LanguageFactory.JAVA_KEY));
+        
         final CPDVisitor visitor = new CPDVisitor(cpd);
+        visitor.setIncludeDerivedFiles(model.isIncludeDerivedFiles());
         this.project.accept(visitor);
 
         log.debug("Performing CPD");
