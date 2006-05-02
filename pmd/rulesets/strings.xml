@@ -172,7 +172,7 @@ public class Foo {
     </rule>
 
         <rule name="ConsecutiveLiteralAppends"
-        message="StringBuffer.append is called {0} times consecutively, always using String literals"
+        message="StringBuffer.append is called {0} consecutive times with literal Strings. Use a single append with a single String."
         class="net.sourceforge.pmd.rules.strings.ConsecutiveLiteralAppends"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#ConsecutiveLiteralAppends">
     <description>
