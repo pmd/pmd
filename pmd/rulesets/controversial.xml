@@ -260,7 +260,9 @@ It is a good practice to call super() in a constructor. If super() is not called
               <value>
     <![CDATA[
 //ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
-//ConstructorDeclaration[ count (.//ExplicitConstructorInvocation)=0 ]
+/ClassOrInterfaceBody
+ /ClassOrInterfaceBodyDeclaration
+ /ConstructorDeclaration[ count (.//ExplicitConstructorInvocation)=0 ]
     ]]>
               </value>
           </property>

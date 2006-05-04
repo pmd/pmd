@@ -56,10 +56,11 @@ public class CallSuperInConstructorTest extends SimpleAggregatorTst {
             "}";
 
     private static final String TEST4 =
-            "public enum Foo {" + PMD.EOL +
-            " BUZ(2);" + PMD.EOL +
-            " Foo(int x) {this.x = 5;}" + PMD.EOL +
-            " private int x;" + PMD.EOL +
+            "public class Bar extends Buz {" + PMD.EOL +
+            " public static enum Foo {" + PMD.EOL +
+            "  ;" + PMD.EOL +
+            "  public Foo() {}" + PMD.EOL +
+            " }" + PMD.EOL +
             "}";
 
 }
