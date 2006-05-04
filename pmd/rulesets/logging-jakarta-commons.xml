@@ -28,6 +28,7 @@ concat(//ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]         ]]></value>
 			</property>
 		</properties>
+        <priority>3</priority>
 		<example><![CDATA[
 public class Main {
  private static final Log _LOG = LogFactory.getLog( Main.class );
