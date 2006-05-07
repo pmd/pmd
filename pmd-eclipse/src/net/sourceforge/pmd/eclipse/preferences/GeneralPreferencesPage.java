@@ -34,6 +34,9 @@ import net.sourceforge.pmd.eclipse.PMDPluginConstants;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.11  2006/05/07 12:03:08  phherlin
+ * Add the possibility to use the PMD violation review style
+ *
  * Revision 1.10  2006/05/02 20:11:13  phherlin
  * Limit the number of reported violations per file and per rule
  *
@@ -51,6 +54,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Button showPerspectiveBox;
     private Button useDFABox;
     private Text maxViolationsPerFilePerRule;
+    private Button reviewPmdStyleBox;
 
     /**
      * Initialize the page
@@ -144,9 +148,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         group.setLayout(new GridLayout(1, false));
 
         // build children
+        this.reviewPmdStyleBox = buildReviewPmdStyleBoxButton(group);
+        Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
         buildLabel(group, PMDConstants.MSGKEY_PREF_GENERAL_LABEL_ADDCOMMENT);
         this.additionalCommentText = buildAdditionalCommentText(group);
-        Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
         buildLabel(group, PMDConstants.MSGKEY_PREF_GENERAL_LABEL_SAMPLE);
         this.sampleLabel = buildSampleLabel(group);
         updateSampleLabel();
@@ -155,12 +160,17 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         GridData data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
-        this.additionalCommentText.setLayoutData(data);
+        this.reviewPmdStyleBox.setLayoutData(data);
 
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         separator.setLayoutData(data);
+
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;
+        this.additionalCommentText.setLayoutData(data);
 
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
@@ -267,6 +277,20 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     }
     
     /**
+     * Build the check box for enabling PMD review style
+     * @param viewGroup the parent composite
+     *
+     */
+    private Button buildReviewPmdStyleBoxButton(final Composite parent) {
+        Button button = new Button(parent, SWT.CHECK);
+        button.setText(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_PREF_GENERAL_REVIEW_PMD_STYLE));
+        button.setSelection(PMDPlugin.getDefault().isReviewPmdStyle());
+        
+        return button;
+    }
+
+    
+    /**
      * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
      */
     protected void performDefaults() {
@@ -329,17 +353,21 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         }
 
         if (this.showPerspectiveBox != null) {
-            PMDPlugin.getDefault().getPreferenceStore().setValue(PMDPlugin.SHOW_PERSPECTIVE_ON_CHECK_PREFERENCE,
+            PMDPlugin.getDefault().getPreferenceStore().setValue(PMDPluginConstants.SHOW_PERSPECTIVE_ON_CHECK_PREFERENCE,
                     this.showPerspectiveBox.getSelection() ? 1 : -1);
         }
 
         if (this.useDFABox != null) {
-            PMDPlugin.getDefault().getPreferenceStore().setValue(PMDPlugin.USE_DFA_PREFERENCE,
+            PMDPlugin.getDefault().getPreferenceStore().setValue(PMDPluginConstants.USE_DFA_PREFERENCE,
                     this.useDFABox.getSelection() ? 1 : -1);
         }
         
         if (this.maxViolationsPerFilePerRule != null) {
             PMDPlugin.getDefault().setMaxViolationsPerFilePerRule(Integer.valueOf(this.maxViolationsPerFilePerRule.getText()).intValue());
+        }
+
+        if (this.reviewPmdStyleBox != null) {
+            PMDPlugin.getDefault().setReviewPmdStyle(this.reviewPmdStyleBox.getSelection());
         }
 
         return true;

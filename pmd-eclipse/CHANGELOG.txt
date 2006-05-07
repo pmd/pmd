@@ -13,6 +13,7 @@ Runtime
 . make CPD "working set aware"
 . remove some dead code
 . limit the number of reported violations per file and per rule (default to 5)
+. Add the possibility to use the PMD violation review style
 
 
 ----------------------------------------------------------------------------------------

@@ -10,6 +10,7 @@ import java.util.Date;
 
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
+import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,6 +36,9 @@ import org.eclipse.swt.widgets.Shell;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/05/07 12:03:09  phherlin
+ * Add the possibility to use the PMD violation review style
+ *
  * Revision 1.1  2005/10/24 22:45:58  phherlin
  * Integrating Sebastian Raffel's work
  * Move orginal Violations view to legacy
@@ -72,11 +76,14 @@ public class ReviewAction extends Action {
      */
     public void run() {
         final IMarker[] markers = violationView.getSelectedViolations();
+        final boolean reviewPmdStyle = PMDPlugin.getDefault().isReviewPmdStyle();
+
         if (markers != null) {
 
             // Get confirmation if multiple markers are selected
+            // Not necessary when using PMD style
             boolean go = true;
-            if (markers.length > 1) {
+            if ((markers.length > 1) && (!reviewPmdStyle)) {
                 String title = PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_CONFIRM_TITLE);
                 String message = PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_CONFIRM_REVIEW_MULTIPLE_MARKERS);
                 Shell shell = Display.getCurrent().getActiveShell();
@@ -91,7 +98,7 @@ public class ReviewAction extends Action {
                         public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                             setMonitor(monitor);
                             monitor.beginTask(PMDPlugin.getDefault().getMessage(PMDConstants.MSGKEY_MONITOR_REVIEW, ""), 5);
-                            insertReview(markers[0]);
+                            insertReview(markers[0], reviewPmdStyle);
                             monitor.done();
                         }
                     });
@@ -108,7 +115,7 @@ public class ReviewAction extends Action {
      * Do the insertion of the review comment
      * @param marker
      */
-    protected void insertReview(IMarker marker) {
+    protected void insertReview(IMarker marker, boolean reviewPmdStyle) {
         try {
             IResource resource = marker.getResource();
             if (resource instanceof IFile) {
@@ -122,7 +129,11 @@ public class ReviewAction extends Action {
 
                     monitorWorked();
 
-                    sourceCode = addReviewComment(sourceCode, offset, marker);
+                    if (reviewPmdStyle) {
+                        sourceCode = addPmdReviewComment(sourceCode, offset, marker);
+                    } else {
+                        sourceCode = addPluginReviewComment(sourceCode, offset, marker);
+                    }
 
                     monitorWorked();
 
@@ -130,10 +141,9 @@ public class ReviewAction extends Action {
 
                     monitorWorked();
                 } else {
-                    MessageDialog.openError(
-                        Display.getCurrent().getActiveShell(),
-                        getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
-                        "The file " + file.getName() + " doesn't exists ! Review aborted. Try to refresh the workspace and retry.");
+                    MessageDialog.openError(Display.getCurrent().getActiveShell(), getMessage(PMDConstants.MSGKEY_ERROR_TITLE),
+                            "The file " + file.getName()
+                                    + " doesn't exists ! Review aborted. Try to refresh the workspace and retry.");
                 }
 
             }
@@ -205,23 +215,67 @@ public class ReviewAction extends Action {
     }
 
     /**
-     * Insère un commentaire de révision juste au dessus de la ligne du marker
+     * Insert a review comment with the Plugin style
      */
-    private String addReviewComment(String sourceCode, int offset, IMarker marker) {
+    private String addPluginReviewComment(String sourceCode, int offset, IMarker marker) {
         String additionalCommentPattern = PMDPlugin.getDefault().getReviewAdditionalComment();
-        String additionalComment =
-            MessageFormat.format(additionalCommentPattern, new Object[] { System.getProperty("user.name", ""), new Date()});
+        String additionalComment = MessageFormat.format(additionalCommentPattern, new Object[] {
+                System.getProperty("user.name", ""), new Date() });
 
+        // Copy the source code until the violation line not included
         StringBuffer sb = new StringBuffer(sourceCode.substring(0, offset));
+        
+        // Add the review comment
         sb.append(computeIndent(sourceCode, offset));
-        sb.append(PMDPlugin.REVIEW_MARKER);
-        sb.append(marker.getAttribute(PMDPlugin.KEY_MARKERATT_RULENAME, ""));
+        sb.append(PMDPluginConstants.PLUGIN_STYLE_REVIEW_COMMENT);
+        sb.append(marker.getAttribute(PMDPluginConstants.KEY_MARKERATT_RULENAME, ""));
         sb.append(": ");
         sb.append(additionalComment);
         sb.append(System.getProperty("line.separator"));
+        
+        // Copy the rest of the source code
         sb.append(sourceCode.substring(offset));
 
         return sb.toString();
+    }
+
+    /**
+     * Insert a review comment with the PMD style
+     */
+    private String addPmdReviewComment(String sourceCode, int offset, IMarker marker) {
+        String result = sourceCode;
+        String additionalCommentPattern = PMDPlugin.getDefault().getReviewAdditionalComment();
+        String additionalComment = MessageFormat.format(additionalCommentPattern, new Object[] {
+                System.getProperty("user.name", ""), new Date() });
+        
+        // Find the end of line
+        int index = sourceCode.substring(offset).indexOf('\r');
+        if (index == -1) {
+            index = sourceCode.substring(offset).indexOf('\n');
+            if (index == -1) {
+                index = sourceCode.substring(offset).length();
+            }
+        }
+        index += offset;
+
+        // Insert comment only if it does not already exist
+        if (sourceCode.substring(offset, index).indexOf(PMDPluginConstants.PMD_STYLE_REVIEW_COMMENT) == -1) {
+
+            // Copy the source code until the violation line included
+            StringBuffer sb = new StringBuffer(sourceCode.substring(0, index));
+            
+            // Add the review comment
+            sb.append(' ');
+            sb.append(PMDPlugin.PMD_STYLE_REVIEW_COMMENT);
+            sb.append(' ');
+            sb.append(additionalComment);
+            
+            // Copy the rest of the code
+            sb.append(sourceCode.substring(index));
+            result = sb.toString();
+        }
+
+        return result;
     }
 
     /**

@@ -8,6 +8,9 @@ package net.sourceforge.pmd.eclipse;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2006/05/07 12:01:50  phherlin
+ * Add the possibility to use the PMD violation review style
+ *
  * Revision 1.11  2006/05/02 20:10:49  phherlin
  * Limit the number of reported violations per file and per rule
  *
@@ -120,7 +123,8 @@ public interface PMDPluginConstants {
     public static final String SETTINGS_VIEW_WARNING_FILTER = "view.warning_filter";
     public static final String SETTINGS_VIEW_INFORMATION_FILTER = "view.information_filter";
 
-    public static final String REVIEW_MARKER = "// @PMD:REVIEWED:";
+    public static final String PLUGIN_STYLE_REVIEW_COMMENT = "// @PMD:REVIEWED:";
+    public static final String PMD_STYLE_REVIEW_COMMENT = "// NOPMD";
     public static final String REVIEW_ADDITIONAL_COMMENT_DEFAULT = "by {0} on {1}";
     public static final String REVIEW_ADDITIONAL_COMMENT_PREFERENCE = PLUGIN_ID + ".review_additional_comment";
     public static final int SHOW_PERSPECTIVE_ON_CHECK_DEFAULT = 1;
@@ -129,6 +133,7 @@ public interface PMDPluginConstants {
     public static final String USE_DFA_PREFERENCE = PLUGIN_ID + ".use_dfa";
     public static final String MAX_VIOLATIONS_PER_FILE_PER_RULE_PREFERENCE = PLUGIN_ID + ".max_violations_per_file_per_rule";
     public static final int MAX_VIOLATIONS_PER_FILE_PER_RULE_DEFAULT = 5;
+    public static final String REVIEW_PMD_STYLE_PREFERENCE = PLUGIN_ID + ".review_pmd_style";
     
     
     public static final String REPORT_FOLDER = "reports";

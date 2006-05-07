@@ -50,6 +50,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.33  2006/05/07 12:01:50  phherlin
+ * Add the possibility to use the PMD violation review style
+ *
  * Revision 1.32  2006/05/02 20:10:49  phherlin
  * Limit the number of reported violations per file and per rule
  *
@@ -140,6 +143,7 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
     private String[] priorityLabels;
     private String reviewAdditionalComment;
     private int maxViolationsPerFilePerRule;
+    private boolean reviewPmdStyle;
 
     /**
      * Private constructor ensures it remains a singleton.
@@ -556,6 +560,26 @@ public class PMDPlugin extends AbstractUIPlugin implements PMDPluginConstants {
     public void setMaxViolationsPerFilePerRule(int maxViolationsPerFilePerRule) {
         this.maxViolationsPerFilePerRule = maxViolationsPerFilePerRule;
         getPreferenceStore().setValue(MAX_VIOLATIONS_PER_FILE_PER_RULE_PREFERENCE, this.maxViolationsPerFilePerRule);
+    }
+
+    /**
+     * Get the style of violation reviews
+     * 
+     * @return
+     */
+    public boolean isReviewPmdStyle() {
+        this.reviewPmdStyle = getPreferenceStore().getBoolean(REVIEW_PMD_STYLE_PREFERENCE);
+        return this.reviewPmdStyle;
+    }
+
+    /**
+     * Set the style of violation reviews
+     * 
+     * @param int
+     */
+    public void setReviewPmdStyle(boolean reviewPmdStyle) {
+        this.reviewPmdStyle = reviewPmdStyle;
+        getPreferenceStore().setValue(REVIEW_PMD_STYLE_PREFERENCE, this.reviewPmdStyle);
     }
 
 }

@@ -44,6 +44,7 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.eclipse.PMDConstants;
 import net.sourceforge.pmd.eclipse.PMDPlugin;
+import net.sourceforge.pmd.eclipse.PMDPluginConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,6 +78,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/05/07 12:03:08  phherlin
+ * Add the possibility to use the PMD violation review style
+ *
  * Revision 1.4  2006/01/27 00:03:11  phherlin
  * Fix BUG#1365407 Problems with PMD in Eclipse/Issue 3
  * Revision 1.3 2005/10/24 22:39:00 phherlin Integrating Sebastian Raffel's work Refactor command
@@ -267,6 +271,8 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
             while (reader.ready()) {
                 String origLine = reader.readLine();
                 String line = origLine.trim();
+                int index = origLine.indexOf(PMDPluginConstants.PMD_STYLE_REVIEW_COMMENT);
+                
                 if (line.startsWith("/*")) {
                     if (line.indexOf("*/") == -1) {
                         comment = true;
@@ -275,8 +281,11 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
                 } else if (comment && (line.indexOf("*/") != -1)) {
                     comment = false;
                     out.println(origLine);
-                } else if (!comment && line.startsWith(PMDPlugin.REVIEW_MARKER)) {
+                } else if (!comment && line.startsWith(PMDPluginConstants.PLUGIN_STYLE_REVIEW_COMMENT)) {
                     noChange = false;
+                } else if (!comment && (index != -1)) {
+                    noChange = false;
+                    out.println(origLine.substring(0, index));
                 } else {
                     out.println(origLine);
                 }

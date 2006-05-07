@@ -67,6 +67,9 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2006/05/07 12:03:09  phherlin
+ * Add the possibility to use the PMD violation review style
+ *
  * Revision 1.11  2006/05/02 20:10:26  phherlin
  * Limit the number of reported violations per file and per rule
  *
@@ -424,7 +427,7 @@ public class BaseVisitor {
                         comment = line.indexOf("*/") == -1;
                     } else if (comment && (line.indexOf("*/") != -1)) {
                         comment = false;
-                    } else if (!comment && line.startsWith(PMDPlugin.REVIEW_MARKER)) {
+                    } else if (!comment && line.startsWith(PMDPlugin.PLUGIN_STYLE_REVIEW_COMMENT)) {
                         final String tail = line.substring(17);
                         final String ruleName = tail.substring(0, tail.indexOf(':'));
                         pendingReviews.push(ruleName);
