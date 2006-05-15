@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -108,15 +109,20 @@ public class CouplingBetweenObjects extends AbstractRule {
     }
 
     /**
-     * performs a check on the variable and updates the couter. Counter is
+     * performs a check on the variable and updates the counter. Counter is
      * instance for a class and is reset upon new class scan.
      *
      * @param String variableType
      */
     private void checkVariableType(SimpleNode nameNode, String variableType) {
+        // TODO - move this into the symbol table somehow?
+        if (nameNode.getParentsOfType(ASTClassOrInterfaceDeclaration.class).isEmpty()) {
+            return;
+        }
         //if the field is of any type other than the class type
         //increment the count
-        if (!nameNode.getScope().getEnclosingClassScope().getClassName().equals(variableType) && (!this.filterTypes(variableType)) && !this.typesFoundSoFar.contains(variableType)) {
+        ClassScope clzScope = nameNode.getScope().getEnclosingClassScope();
+        if (!clzScope.getClassName().equals(variableType) && (!this.filterTypes(variableType)) && !this.typesFoundSoFar.contains(variableType)) {
             this.couplingCount++;
             this.typesFoundSoFar.add(variableType);
         }

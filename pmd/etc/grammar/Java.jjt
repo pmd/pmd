@@ -118,17 +118,6 @@ public class JavaParser {
     return res;
   }
 
-  private void checkForDiscard(SimpleNode node) {
-    if (node.getImage() == null) {
-        node.setDiscardable();
-    }
-  }
-
-  private void discardNodes(ASTCompilationUnit node) {
-      DiscardableNodeCleaner c = new DiscardableNodeCleaner();
-      c.clean(node);
-  }
-
   private boolean isPrecededByComment(Token tok) {
       boolean res = false;
       while (!res && tok.specialToken != null) {
@@ -1036,7 +1025,6 @@ ASTCompilationUnit CompilationUnit() :
   ( < "~[]" > )?
   <EOF>
 {
- discardNodes(jjtThis);
  return jjtThis;
 }
 }
@@ -1539,10 +1527,10 @@ void MultiplicativeExpression() #MultiplicativeExpression(>1):
   UnaryExpression() ( ( "*" {jjtThis.setImage("*");} | "/" {jjtThis.setImage("/");} | "%" {jjtThis.setImage("%");}) UnaryExpression() )*
 }
 
-void UnaryExpression() :
+void UnaryExpression() #UnaryExpression((jjtn000.getImage() != null)):
 {}
 {
-  ("+" {jjtThis.setImage("+");jjtThis.setUnDiscardable();} | "-" {jjtThis.setImage("-");jjtThis.setUnDiscardable();}) UnaryExpression()
+  ("+" {jjtThis.setImage("+");} | "-" {jjtThis.setImage("-");}) UnaryExpression()
   | PreIncrementExpression()
   | PreDecrementExpression()
   | UnaryExpressionNotPlusMinus()
@@ -1560,11 +1548,10 @@ void PreDecrementExpression() :
   "--" PrimaryExpression()
 }
 
-void UnaryExpressionNotPlusMinus() :
+void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImage() != null)):
 {}
 {
- {checkForDiscard(jjtThis);}
- ( "~" {jjtThis.setImage("~");jjtThis.setUnDiscardable();} | "!" {jjtThis.setImage("!");jjtThis.setUnDiscardable();} ) UnaryExpression()
+ ( "~" {jjtThis.setImage("~");} | "!" {jjtThis.setImage("!");} ) UnaryExpression()
 | LOOKAHEAD( CastLookahead() ) CastExpression()
 | PostfixExpression()
 }
@@ -1580,10 +1567,10 @@ void CastLookahead() :
 | "(" Type() ")" ( "~" | "!" | "(" | <IDENTIFIER> | "this" | "super" | "new" | Literal() )
 }
 
-void PostfixExpression() :
+void PostfixExpression() #PostfixExpression((jjtn000.getImage() != null)):
 {}
 {
-  PrimaryExpression() [ "++" {jjtThis.setImage("++");jjtThis.setUnDiscardable();} | "--" {jjtThis.setImage("--");jjtThis.setUnDiscardable();} ]
+  PrimaryExpression() [ "++" {jjtThis.setImage("++");} | "--" {jjtThis.setImage("--");} ]
 }
 
 void CastExpression() #CastExpression(>1):
