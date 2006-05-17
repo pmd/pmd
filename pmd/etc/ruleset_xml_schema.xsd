@@ -29,12 +29,13 @@
 
   <xs:element name="rule">
     <xs:complexType>
-      <xs:all>
+      <xs:sequence>
         <xs:element ref="description" minOccurs="0" maxOccurs="1" />
         <xs:element ref="example" minOccurs="0" maxOccurs="1" />
         <xs:element ref="priority" minOccurs="0" maxOccurs="1" />
         <xs:element ref="properties" minOccurs="0" maxOccurs="1" />
-      </xs:all>
+        <xs:element ref="exclude" minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
       <xs:attribute name="name" type="xs:ID" use="optional" />
       <xs:attribute name="ref" type="xs:string" use="optional" />
       <xs:attribute name="message" type="xs:string" use="optional" />
@@ -63,12 +64,18 @@
         <xs:element ref="value" minOccurs="0" maxOccurs="1" />
       </xs:sequence>
       <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
-      <xs:attribute name="value" type="xs:NMTOKEN" use="optional" />
+      <xs:attribute name="value" type="xs:string" use="optional" />
       <xs:attribute name="pluginname" type="xs:NMTOKEN" use="optional" />
     </xs:complexType>
   </xs:element>
 
   <xs:element name="value" type="xs:string">
+  </xs:element>
+
+  <xs:element name="exclude">
+    <xs:complexType>
+      <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
   </xs:element>
 
 </xs:schema>
