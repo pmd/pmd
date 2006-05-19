@@ -2,601 +2,491 @@
 Polonius: 
   module: polonius
   unix_name: polonius
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/polonius"
   srcdir: polonius/src
 hipergate: 
   module: java
   unix_name: hipergate
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/hipergate"
   srcdir: backend/src/
 Maverick: 
   module: maverick
   unix_name: mav
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mav"
   srcdir: maverick/src/java
 Easy Explore Eclipse version: 
   module: easyexplore-plugin
   unix_name: easystruts
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/easystruts"
   srcdir: easyexplore-plugin/src
 Spring Framework: 
   module: spring
   unix_name: springframework
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/springframework"
   srcdir: spring/src
 MX4J: 
   module: mx4j
   unix_name: mx4j
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mx4j"
   srcdir: mx4j/src/core
 Breath: 
   module: breath
   unix_name: breath
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/breath"
   srcdir: breath/src/
 ChemicalMarkupLanguge: 
   module: jumbo
   unix_name: cml
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/cml"
   srcdir: jumbo/src
 XDoclet: 
   module: xdocletgui
   unix_name: xdoclet
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/xdoclet"
   srcdir: xdocletgui/src
 jcrontab: 
   module: jcrontab
   unix_name: jcrontab
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jcrontab"
   srcdir: jcrontab/src
 Jmol: 
   module: Jmol
   unix_name: jmol
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jmol"
   srcdir: Jmol/src
 Horst: 
   module: TrainGame
   unix_name: horst
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/horst"
   srcdir: TrainGame/src
 Kaprekar: 
   module: kaprekar-java
   unix_name: kaprekar
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/kaprekar"
   srcdir: kaprekar-java/com/
 Dexter: 
   module: dexter
   unix_name: jdexter
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jdexter"
   srcdir: dexter/net
 JavaServer: 
   module: javaserver
   unix_name: javaserver
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/javaserver"
   srcdir: javaserver/JavaServer/java/
 XmlWriter: 
   module: xmlwriter
   unix_name: xmlwriter
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/xmlwriter"
   srcdir: xmlwriter/src/java
 JasperReports: 
   module: jasperreports
   unix_name: jasperreports
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jasperreports"
   srcdir: jasperreports/src
 AJTools Configuration: 
   module: configuration
   unix_name: ajtools
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/ajtools"
   srcdir: configuration/src/java
 tftp4java: 
   module: tftp4java
   unix_name: tftp4java
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/tftp4java"
   srcdir: tftp4java
 JBoss-Common: 
   module: jboss-common
   unix_name: jboss
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jboss"
   srcdir: jboss-common/src
 MTAC: 
   module: mtac
   unix_name: mtac
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mtac"
   srcdir: mtac/net
 Chaperon: 
   module: chaperon
   unix_name: chaperon
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/chaperon"
   srcdir: chaperon/src
 Import Scrubber: 
   module: importscrubber
   unix_name: importscrubber
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/importscrubber"
   srcdir: importscrubber/src/net
 jEdit: 
   module: jEdit
   unix_name: jedit
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jedit"
   srcdir: jEdit/org/
 Hibernate: 
   module: Hibernate
   unix_name: hibernate
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/hibernate"
   srcdir: Hibernate/cirrus/
 JUnit Addons PMD rules: 
   module: junit-addons-pmd
   unix_name: junit-addons
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/junit-addons"
   srcdir: junit-addons-pmd/src
 Middlegen: 
   module: middlegen
   unix_name: middlegen
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/middlegen"
   srcdir: middlegen/src
 Freenet: 
   module: freenet
   unix_name: freenet
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/freenet"
   srcdir: freenet/src
 Matra: 
   module: matra-java
   unix_name: matra
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/matra"
   srcdir: matra-java/com/
 FreeTTS: 
   module: FreeTTS
   unix_name: freetts
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/freetts"
   srcdir: FreeTTS
 Megamek.NET: 
   module: MegaMekNET
   unix_name: megameknet
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/megameknet"
   srcdir: MegaMekNET/src
 JRoseViewer: 
   module: jroseviewer
   unix_name: jroseviewer
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jroseviewer"
   srcdir: jroseviewer/src
 CSVObjects: 
   module: CSVParser
   unix_name: csvparser
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/csvparser"
   srcdir: CSVParser/src/
 "Writer's Forge": 
   module: writersforge
   unix_name: writersforge
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/writersforge"
   srcdir: writersforge/src
 Octet: 
   module: octet
   unix_name: octet
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/octet"
   srcdir: octet/src/
 CSVJdbc: 
   module: csvjdbc
   unix_name: csvjdbc
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/csvjdbc"
   srcdir: csvjdbc/src/java
 Mirage: 
   module: mirage
   unix_name: blijf
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/blijf"
   srcdir: mirage/src
 Chemistry Development Kit: 
   module: cdk
   unix_name: cdk
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/cdk"
   srcdir: cdk/src/org
 ToscanaJ: 
   module: source
   unix_name: toscanaj
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/toscanaj"
   srcdir: source
 JBook: 
   module: source
   unix_name: jbook
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jbook"
   srcdir: source
 JBCcm: 
   module: jbccm
   unix_name: jbccm
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jbccm"
   srcdir: jbccm/src
 Woodward: 
   module: source
   unix_name: woodward
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/woodward"
   srcdir: source/com
 Scope: 
   module: scopemvc2
   unix_name: scope
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/scope"
   srcdir: scopemvc2/src
 EJP: 
   module: ejp
   unix_name: ejp
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/ejp"
   srcdir: ejp/presenter/src/
 Merkwelt: 
   module: merkwelt
   unix_name: merkwelt
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/merkwelt"
   srcdir: merkwelt/src
 pcgen: 
   module: pcgen
   unix_name: pcgen
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/pcgen"
   srcdir: pcgen/src/java
 Robugs3d: 
   module: src
   unix_name: robugs3d
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/robugs3d"
   srcdir: src
 Tamarin: 
   module: tamarin
   unix_name: tamarin
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/tamarin"
   srcdir: tamarin/src/
 EJBCA: 
   module: ejbca
   unix_name: ejbca
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/ejbca"
   srcdir: ejbca/src/java
 Checkstyle: 
   module: checkstyle
   unix_name: checkstyle
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/checkstyle"
   srcdir: checkstyle/src/checkstyle
 Time Track: 
   module: timetrack
   unix_name: timetrack
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/timetrack"
   srcdir: timetrack/src
 Semionic Network Toolkit: 
   module: sntool-dev
   unix_name: sntool
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/sntool"
   srcdir: sntool-dev/src
 Lipidia: 
   module: src
   unix_name: lipidia
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/lipidia"
   srcdir: src/
 JBidwatcher: 
   module: jbidwatcher
   unix_name: jbidwatcher
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jbidwatcher"
   srcdir: jbidwatcher
 MyPod: 
   module: myPod
   unix_name: mypod
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mypod"
   srcdir: myPod/src
 FreeMarker: 
   module: freemarker
   unix_name: freemarker
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/freemarker"
   srcdir: freemarker/src
 Bookmark Sync: 
   module: bookmarksyncro
   unix_name: bookmarksyncro
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/bookmarksyncro"
   srcdir: bookmarksyncro/src
 Jagzilla: 
   module: jagzilla
   unix_name: jagzilla
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jagzilla"
   srcdir: jagzilla/src/net
 htmlparser: 
   module: htmlparser
   unix_name: htmlparser
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/htmlparser"
   srcdir: htmlparser/src
 Foedus Mail: 
   module: foedus
   unix_name: foedus
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/foedus"
   srcdir: foedus/src/java
 e-xml: 
   module: e-xml
   unix_name: e-xml
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/e-xml"
   srcdir: e-xml/src
 joeq: 
   module: joeq_core
   unix_name: joeq
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/joeq"
   srcdir: joeq_core/joeq
 JGraphT: 
   module: src
   unix_name: jgrapht
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jgrapht"
   srcdir: src
   delete: src/org/_3pq/jgrapht/experimental
 Foundry: 
   module: foundry
   unix_name: foundry
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/foundry"
   srcdir: foundry/foundry
 Roller Weblogger: 
   module: roller
   unix_name: roller
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/roller"
   srcdir: roller/src
 Calliope: 
   module: calliope
   unix_name: calliope
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/calliope"
   srcdir: calliope/src
 JUnit addons Runner: 
   module: junit-addons-runner
   unix_name: junit-addons
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/junit-addons"
   srcdir: junit-addons-runner/src
 Abbot Java GUI Test Framework: 
   module: abbot
   unix_name: abbot
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/abbot"
   srcdir: abbot/src
 JUnit addons: 
   module: junit-addons
   unix_name: junit-addons
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/junit-addons"
   srcdir: junit-addons/src/main
 MP3 Tagmaster: 
   module: mp3tagmaster
   unix_name: mp3tagmaster
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mp3tagmaster"
   srcdir: mp3tagmaster/src
 jmx4ant: 
   module: jmx4ant
   unix_name: jmx4ant
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jmx4ant"
   srcdir: jmx4ant/src
 Secure Data Manager: 
   module: sdm
   unix_name: sdm
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/sdm"
   srcdir: sdm/src
 Metrics: 
   module: net.sourceforge.metrics
   unix_name: metrics
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/metrics"
   srcdir: net.sourceforge.metrics/src
 tn5250j: 
   module: tn5250j
   unix_name: tn5250j
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/tn5250j"
   srcdir: tn5250j/src
 WebOS: 
   module: WebOS
   unix_name: xtremesuite
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/xtremesuite"
   srcdir: WebOS/src/java
 Schemalizer: 
   module: schemalizer
   unix_name: schemalizer
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/schemalizer"
   srcdir: schemalizer/src/
 MC4J: 
   module: mc4j
   unix_name: mc4j
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mc4j"
   srcdir: mc4j/src
 Cayenne: 
   module: cayenne
   unix_name: cayenne
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/cayenne"
   srcdir: cayenne/src/cayenne/java
 Prevayler: 
   module: prevayler
   unix_name: prevayler
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/prevayler"
   srcdir: prevayler/src
 jGnash: 
   module: jgnash
   unix_name: jgnash
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jgnash"
   srcdir: jgnash/src
 Columba: 
   module: columba
   unix_name: columba
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/columba"
   srcdir: columba/src
 Geotools: 
   module: geotools2
   unix_name: geotools
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/geotools"
   srcdir: geotools2/geotools-src
 Tapestry: 
   module: Tapestry
   unix_name: tapestry
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/tapestry"
   srcdir: Tapestry/framework/src
 OneBook: 
   module: devel
   unix_name: onebook
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/onebook"
   srcdir: devel/onebook
 Active JMS: 
   module: core
   unix_name: active-jms
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/active-jms"
   srcdir: core/src
 JAIMBot: 
   module: jaimbot
   unix_name: jaimbot
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jaimbot"
   srcdir: jaimbot/src
 JHotDraw: 
   module: JHotDraw
   unix_name: jhotdraw
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jhotdraw"
   srcdir: JHotDraw/src
 JFCUnit: 
   module: main
   unix_name: jfcunit
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jfcunit"
   srcdir: main/src
 UML 2 EJB: 
   module: uml2ejb
   unix_name: uml2ejb
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/uml2ejb"
   srcdir: uml2ejb/simple2ejb/src
 eXist XML database: 
   module: eXist-1.0
   unix_name: exist
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/exist"
   srcdir: eXist-1.0/src
 Easy Struts: 
   module: easystruts-core
   unix_name: easystruts
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/easystruts"
   srcdir: easystruts-core/src
 Sorched Earth 2000: 
   module: src
   unix_name: scorch
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/scorch"
   srcdir: src
 Quizzer: 
   module: Source
   unix_name: quizzer
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/quizzer"
   srcdir: Source
 Easy Struts Eclipse version: 
   module: easystruts-plugin
   unix_name: easystruts
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/easystruts"
   srcdir: easystruts-plugin/src
 jgimp: 
   module: jgimp
   unix_name: jgimp
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jgimp"
   srcdir: jgimp/src/java
 Java Gui Builder: 
   module: jgb
   unix_name: jgb
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jgb"
   srcdir: jgb/src/java/core
 Dexter-plugins: 
   module: plugins
   unix_name: jdexter
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jdexter"
   srcdir: plugins
 Multi-Lingual Crosswords: 
   module: mlcrosswords
   unix_name: mlcrosswords
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mlcrosswords"
   srcdir: mlcrosswords/src
 jRevProxy: 
   module: jRevProxy
   unix_name: jrevproxy
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jrevproxy"
   srcdir: jRevProxy/src
 attrib4j: 
   module: attrib4j
   unix_name: attrib4j
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/attrib4j"
   srcdir: attrib4j/src
 JUnit: 
   module: junit
   unix_name: junit
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/junit"
   srcdir: junit
 Thought River Commons: 
   module: commons
   unix_name: commons
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/commons"
   srcdir: commons/src
 Tyrant: 
   module: tyrant
   unix_name: tyrant
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/tyrant"
   srcdir: tyrant/mikera/
 MFlow: 
   module: mflow
   unix_name: mflow
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/mflow"
   srcdir: mflow/src
 Cañamo: 
   module: canyamo
   unix_name: canyamo
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/canyamo"
   srcdir: canyamo/src
 "SUSHI - Universal Student Help Interface": 
   module: sushi
   unix_name: fugu
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/fugu"
   srcdir: sushi/WEB-INF/src
 Hermes JMS: 
   module: Hermes4
   unix_name: hermesjms
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/hermesjms"
   srcdir: Hermes4/src/java
 Installer Tasks For Ant: 
   module: src
   unix_name: instant
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/instant"
   srcdir: src/main
 Jalopy: 
   module: main
   unix_name: jalopy
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jalopy"
   srcdir: main/src/java
 SkinLF: 
   module: skinlf2
   unix_name: skinlf
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/skinlf"
   srcdir: skinlf2/src
 Structure: 
   module: structure
   unix_name: structure
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/structure"
   srcdir: structure/src/
 CGLIB: 
   module: cglib
   unix_name: cglib
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/cglib"
   srcdir: cglib/src/proxy
 DbUnit: 
   module: dbunit
   unix_name: dbunit
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/dbunit"
   srcdir: dbunit/src/java
 JPublish: 
   module: jpublish
   unix_name: jpublish
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jpublish"
   srcdir: jpublish/src
 P6spy: 
   module: p6spy
   unix_name: p6spy
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/p6spy"
   srcdir: p6spy/com
 Wrapper: 
   module: wrapper
   unix_name: wrapper
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/wrapper"
   srcdir: wrapper/src/java
 Cobertura: 
   module: cobertura
   unix_name: cobertura
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/cobertura"
   srcdir: cobertura/src
 ArgoUML: 
   module: argouml
   unix_name: argouml
-  cvsroot: ":pserver:guest@cvs.tigris.org:/cvs"
   srcdir: argouml/src/model/src/org/argouml/model/
 BioClipse: 
   module: bioclipse
   unix_name: bioclipse
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/bioclipse"
   srcdir: bioclipse/src
 JVoiceXML: 
   module: JVoiceXML
   unix_name: jvoicexml
-  cvsroot: ":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jvoicexml"
   srcdir: JVoiceXML/src
+Vector Visuals: 
+  module: vectors
+  unix_name: vectors
+  srcdir: vectors/src
+  jdk15: true
+FindBugs-Contrib: 
+  module: fb-contrib
+  unix_name: fb-contrib
+  srcdir: fb-contrib/src
+  jdk15: true

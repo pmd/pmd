@@ -33,6 +33,12 @@ class PMDMap
 	end
 end
 
+class SFCVSROOTPattern
+  def munge(name)
+    ":pserver:anonymous@#{name}.cvs.sourceforge.net:/cvsroot/#{name}"
+  end
+end
+
 class Job
 	JAVANCSS_BINARY="/usr/local/javancss/bin/javancss"
 	ROOT="/home/tom/pmd/pmd-web/src"
@@ -40,7 +46,8 @@ class Job
 	attr_reader :unix_name, :mod, :title, :src
 	attr_accessor :barrels
 	def initialize(title, data)
-    @title, @unix_name, @mod, @src,  @cvsroot = title, data["unix_name"], data["module"], data["srcdir"], data["cvsroot"]
+    @title, @unix_name, @mod, @src,  @cvsroot = title, data["unix_name"], data["module"], data["srcdir"]
+    @cvsroot = SFCVSROOTPattern.new.munge(@unix_name)
     @data = data
 	end
   def jdk15?
