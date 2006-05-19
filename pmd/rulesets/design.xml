@@ -1282,4 +1282,36 @@ public class Foo {
       </example>
     </rule>
 
+  <rule name="PreserveStackTrace"
+      message="Caught exception is rethrown, original stack trace may be lost"
+      class="net.sourceforge.pmd.rules.design.PreserveStackTrace">
+      <description>
+Throwing a new exception from a catch block without passing the original exception into the 
+new Exception will cause the true stack trace to be lost, and can cause problems
+debugging problems
+      </description>
+      <properties></properties>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+public class Foo {
+    void good() {
+        try{
+            Integer.parseInt("a");
+        } catch(Exception e){
+            throw new Exception(e);
+        }
+    }
+    void bad() {
+        try{
+            Integer.parseInt("a");
+        } catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+}
+    ]]>
+      </example>
+    </rule>
+
 </ruleset>

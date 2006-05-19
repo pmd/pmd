@@ -1,6 +1,7 @@
 ????, 2006 - 3.7:
 New rules:
     Basic-JSP ruleset: DuplicateJspImport
+    Design ruleset: PreserveStackTrace
 Implemented RFE 1462019 - Add JSPs to Ant Task
 Implemented RFE 1462020 - Add JSPs to Designer
 Fixed bug 1461426 InsufficientStringBufferDeclaration does not consider paths
