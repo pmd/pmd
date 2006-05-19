@@ -8,6 +8,7 @@ This ruleset contains links to rules that are new in PMD v3.7
 
   <rule ref="rulesets/basic-jsp.xml/DuplicateJspImports"/>
   <rule ref="rulesets/design.xml/PreserveStackTrace"/>
+  <rule ref="rulesets/j2ee.xml/UseProperClassLoader"/>
 </ruleset>
 
 

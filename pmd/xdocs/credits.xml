@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li><a href="http://www.orablogs.com/olaf/">Olaf Heimburger</a> - wrote the UseProperClassLoader rule, code changes to get JDeveloper plugin working under JDev 10.1.3 EA, reported a possible NPE in ReportTree</li>
             <li>Mohammad Farooq - Reported new JavaNCSS URL</li>
             <li>Jeff Jensen - Reported missing XML schema references in documentation, wrote new XML schema, reported missing schema refs in example rulesets, suggested posting XML schema on PMD site, discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>Christopher Stach - bug report for VariableNamingConventions, bug report for CallSuperInConstructor, many bug reports for rules that didn't handle JDK 1.5 constructs</li>
@@ -103,7 +104,6 @@
             <li>Eduard Naum - fixed JDK 1.3 runtime problems in Eclipse plugin</li>
             <li>Jacques Lebourgeois - fix for UTF8 characters in Eclipse plugin</li>
             <li>dvholten - suggestions for improving OverrideBothEqualsAndHashcode, formatting suggestions for HTML report, test cases for ConstructorCallsOverridableMethod, reported several NullAssignment bugs</li>
-            <li><a href="http://www.orablogs.com/olaf/">Olaf Heimburger</a> - code changes to get JDeveloper plugin working under JDev 10.1.3 EA, reported a possible NPE in ReportTree</li>
             <li><a href="http://www.orablogs.com/duffblog/">Brian Duff</a> - helped get Oracle JDeveloper plugin working</li>
             <li>Sivakumar Mambakkam - bug report 1314086 for missing name in SimpleRuleSetNameMapper</li>
             <li>Rodrigo Ruiz - bug report 1312723 for FieldDeclaration nodes inside interfaces, bug report 1312754 for pmd.bat option handling, bug report 1312720 (and code fix!) for DefaultPackage, bug report 1309235 for TooManyFields</li>
