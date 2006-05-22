@@ -16,3 +16,4 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text
 Eclipse-AutoStart: true
 Export-Package: net.sourceforge.pmd.ui
+Bundle-ClassPath: pmd-ui.jar

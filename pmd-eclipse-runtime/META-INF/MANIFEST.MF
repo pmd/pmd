@@ -23,4 +23,5 @@ Export-Package: name.herlin.command,
  org.apache.log4j.xml
 Bundle-ClassPath: lib/castor-0.9.6-xml.jar,
  lib/log4j-1.2.8.jar,
- lib/commons-logging.jar
+ lib/commons-logging.jar,
+ pmd-runtime.jar

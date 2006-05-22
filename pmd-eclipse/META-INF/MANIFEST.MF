@@ -7,4 +7,5 @@ Bundle-Vendor: PMD Development Team
 Bundle-Localization: plugin
 Eclipse-AutoStart: true
 Require-Bundle: net.sourceforge.pmd.core,
- net.sourceforge.pmd.runtime
+ net.sourceforge.pmd.runtime,
+ net.sourceforge.pmd.ui
