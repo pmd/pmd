@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PMD For Eclipse
+Bundle-SymbolicName: net.sourceforge.pmd.eclipse; singleton:=true
+Bundle-Version: 3.1.6
+Bundle-Vendor: PMD Development Team
+Bundle-Localization: plugin
+Eclipse-AutoStart: true
+Require-Bundle: net.sourceforge.pmd.core,
+ net.sourceforge.pmd.runtime

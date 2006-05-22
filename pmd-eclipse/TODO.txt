@@ -1,7 +1,0 @@
-Plans
------
-- improving CPD support (develop a cpd view for cpd reports)
-- checking files only under project source directories
-- provide a multiline editor to modify rules properties
-- force user to enter comments when reviewing a violation
-
