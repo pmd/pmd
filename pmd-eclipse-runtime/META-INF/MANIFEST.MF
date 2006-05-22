@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PMD For Eclipse Runtime Plug-in
+Bundle-SymbolicName: net.sourceforge.pmd.runtime; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: net.sourceforge.pmd.runtime.PMDRuntimePlugin
+Bundle-Vendor: PMD Development Team
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.core.resources,
+ net.sourceforge.pmd.core,
+ org.eclipse.ui.ide,
+ org.eclipse.jdt.core
+Eclipse-AutoStart: true
+Export-Package: name.herlin.command,
+ net.sourceforge.pmd.runtime,
+ net.sourceforge.pmd.runtime.cmd,
+ net.sourceforge.pmd.runtime.preferences,
+ net.sourceforge.pmd.runtime.properties,
+ net.sourceforge.pmd.runtime.writer,
+ org.apache.log4j,
+ org.apache.log4j.xml
+Bundle-ClassPath: lib/castor-0.9.6-xml.jar,
+ lib/log4j-1.2.8.jar,
+ lib/commons-logging.jar

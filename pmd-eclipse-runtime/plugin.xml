@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="pmdMarker"
+         name="%marker.pmd"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+      <attribute
+            name="rulename">
+      </attribute>
+   </extension>
+
+   <extension
+         id="pmdTaskMarker"
+         name="%marker.task"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="net.sourceforge.pmd.runtime.pmdMarker">
+      </super>
+      <super
+            type="org.eclipse.core.resources.taskmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+   </extension>
+  
+   <extension
+         id="pmdDFAMarker"
+         name="%marker.dfa"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <persistent value="false"/>
+   </extension>
+
+   <extension
+         id="pmdBuilder"
+         name="%builder.name"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="net.sourceforge.pmd.runtime.builder.PMDBuilder">
+         </run>
+      </builder>
+   </extension>
+
+   <extension
+         id="pmdNature"
+         name="%nature.name"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="net.sourceforge.pmd.runtime.builder.PMDNature">
+         </run>
+      </runtime>
+      <builder
+            id="net.sourceforge.pmd.runtime.pmdBuilder">
+      </builder>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
+
+</plugin>

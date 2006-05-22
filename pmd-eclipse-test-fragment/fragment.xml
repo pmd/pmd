@@ -4,9 +4,9 @@
    id="pmd_eclipse_test_fragment"
    name="Pmd_eclipse_test_fragment Fragment"
    version="1.0.0"
-   provider-name=""
+
    plugin-id="net.sourceforge.pmd.core"
-   plugin-version="3.1.0"
+   plugin-version="1.0.0"
    match="greaterOrEqual">
 
    <runtime>

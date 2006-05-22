@@ -2,7 +2,7 @@
 <feature
       id="net.sourceforge.pmd.eclipse"
       label="%feature.label"
-      version="3.1.5"
+      version="3.1.6"
       provider-name="%feature.provider_name"
       image="pmd_logo_small.jpg">
 
@@ -23,28 +23,40 @@
    </url>
 
    <requires>
+      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.jface.text"/>
    </requires>
-
-   <plugin
-         id="net.sourceforge.pmd.core"
-         download-size="0"
-         install-size="0"
-         version="3.6.1"/>
 
    <plugin
          id="net.sourceforge.pmd.eclipse"
          download-size="0"
          install-size="0"
-         version="3.1.5"/>
+         version="3.1.6"
+         unpack="false"/>
+
+   <plugin
+         id="net.sourceforge.pmd.ui"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.sourceforge.pmd.runtime"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="net.sourceforge.pmd.core"
+         download-size="0"
+         install-size="0"
+         version="3.6.1"
+         unpack="false"/>
 
 </feature>
