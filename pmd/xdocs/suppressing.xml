@@ -44,7 +44,23 @@ No problems found!
 UnusedLocalVariable rule violation suppressed by //NOPMD in /home/tom/pmd/pmd/bin/Foo.java
 </source>
            
-           <p>There's an additional note on NOPMD usage <a href="http://sourceforge.net/forum/message.php?msg_id=3041261">here</a></p>
+           <p>Note that PMD expects the //NOPMD marker to be on the same line as the violation.  So, for
+           example, if you want to suppress an "empty if statement" warning, you'll need to place it on
+ the line containing the "if" keyword, e.g.:</p>
+<source>
+$ cat ~/tmp/Foo.java
+public class Foo {
+ void bar() {
+  int x = 42;
+  if (x &gt; 5) { // NOPMD
+  }
+ }
+}
+
+$ java net.sourceforge.pmd.PMD ~/tmp/Foo.java text basic
+No problems found!
+$
+</source>
        </subsection>
 
      <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</p>
