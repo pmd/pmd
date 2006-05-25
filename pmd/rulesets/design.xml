@@ -654,7 +654,7 @@ public class Foo {
     </rule>
 
     <rule name="ImmutableField"
-          message="Private field could be made final.  It is only initialized in the declaration or constructor."
+          message="Private field ''{0}'' could be made final; it is only initialized in the declaration or constructor."
           class="net.sourceforge.pmd.rules.design.ImmutableField"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ImmutableField">
       <description>

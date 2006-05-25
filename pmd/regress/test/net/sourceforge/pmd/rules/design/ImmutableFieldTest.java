@@ -168,7 +168,7 @@ public class ImmutableFieldTest extends SimpleAggregatorTst {
 
     private static final String TEST16 =
             "public class Foo {" + PMD.EOL +
-            " private int x;" + PMD.EOL +
+            " private int x = 2 ;" + PMD.EOL +
             " public Foo() {" + PMD.EOL +
             "   mouseListener = new MouseAdapter() {" + PMD.EOL +
             "      public void mouseClicked(MouseEvent e) {" + PMD.EOL +

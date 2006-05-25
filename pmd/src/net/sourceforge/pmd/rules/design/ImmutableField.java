@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.ArrayList;
 
 /**
  * @author Olander
@@ -34,7 +35,7 @@ public class ImmutableField extends AbstractRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Map vars = node.getScope().getVariableDeclarations();
-        Set constructors = findAllConstructors(node);
+        List constructors = findAllConstructors(node);
         for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration field = (VariableNameDeclaration) i.next();
             if (field.getAccessNodeParent().isStatic() || !field.getAccessNodeParent().isPrivate() || field.getAccessNodeParent().isFinal()) {
@@ -45,15 +46,19 @@ public class ImmutableField extends AbstractRule {
             if (result == MUTABLE) {
                 continue;
             }
-            if (result == IMMUTABLE || ((result == CHECKDECL) && !field.getAccessNodeParent().findChildrenOfType(ASTVariableInitializer.class).isEmpty())) {
+            if (result == IMMUTABLE || (result == CHECKDECL && initializedWhenDeclared(field))) {
                 addViolation(data, field.getNode(), field.getImage());
             }
         }
         return super.visit(node, data);
     }
 
+    private boolean initializedWhenDeclared(VariableNameDeclaration field) {
+        return !field.getAccessNodeParent().findChildrenOfType(ASTVariableInitializer.class).isEmpty();
+    }
+
     private int initializedInConstructor(List usages, Set allConstructors) {
-        int rc = MUTABLE, methodInitCount = 0;
+        int result = MUTABLE, methodInitCount = 0;
         Set consSet = new HashSet();
         for (Iterator j = usages.iterator(); j.hasNext();) {
             NameOccurrence occ = (NameOccurrence) j.next();
@@ -65,9 +70,10 @@ public class ImmutableField extends AbstractRule {
                         continue;
                     }
                     if (inAnonymousInnerClass(node)) {
-                        continue;
+                        methodInitCount++;
+                    } else {
+                        consSet.add(constructor);
                     }
-                    consSet.add(constructor);
                 } else {
                     if (node.getFirstParentOfType(ASTMethodDeclaration.class) != null) {
                         methodInitCount++;
@@ -76,14 +82,14 @@ public class ImmutableField extends AbstractRule {
             }
         }
         if (usages.isEmpty() || ((methodInitCount == 0) && consSet.isEmpty())) {
-            rc = CHECKDECL;
+            result = CHECKDECL;
         } else {
             allConstructors.removeAll(consSet);
             if (allConstructors.isEmpty() && (methodInitCount == 0)) {
-                rc = IMMUTABLE;
+                result = IMMUTABLE;
             }
         }
-        return rc;
+        return result;
     }
 
     private boolean inLoopOrTry(SimpleNode node) {
@@ -98,12 +104,9 @@ public class ImmutableField extends AbstractRule {
         return parent != null && parent.isAnonymousInnerClass();
     }
 
-    /**
-     * construct a set containing all ASTConstructorDeclaration nodes for this class
-     */
-    private Set findAllConstructors(ASTClassOrInterfaceDeclaration node) {
-        Set set = new HashSet();
-        set.addAll(node.findChildrenOfType(ASTConstructorDeclaration.class));
-        return set;
+    private List findAllConstructors(ASTClassOrInterfaceDeclaration node) {
+        List cons = new ArrayList();
+        node.findChildrenOfType(ASTConstructorDeclaration.class, cons, false);
+        return cons;
     }
 }
