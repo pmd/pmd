@@ -1,4 +1,4 @@
-????, 2006 - 3.7:
+May 26, 2006 - 3.7:
 New rules:
     Basic-JSP ruleset: DuplicateJspImport
     Design ruleset: PreserveStackTrace

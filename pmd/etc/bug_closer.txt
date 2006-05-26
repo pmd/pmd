@@ -1,6 +1,6 @@
-Fixed in CVS, and you can download a new pmd-3.6.jar file here:
+Fixed in CVS, and you can download a new pmd-3.7.jar file here:
 
-http://infoether.com/~tom/pmd-3.6.jar
+http://infoether.com/~tom/pmd-3.7.jar
 
 that contains that fix.
 
