@@ -57,6 +57,7 @@
         <item name="Design" href="/rules/design.html" />
         <item name="Finalizers" href="/rules/finalizers.html" />
         <item name="Import Statements" href="/rules/imports.html" />
+        <item name="J2EE" href="/rules/j2ee.html" />
         <item name="Javabeans" href="/rules/javabeans.html" />
         <item name="JUnit Tests" href="/rules/junit.html" />
         <item name="Logging (Java)" href="/rules/logging-java.html" />
