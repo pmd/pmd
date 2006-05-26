@@ -20,11 +20,14 @@
  ]]>
               </value>
           </property>
-      </properties>   <priority>3</priority>
+      </properties>
+      <priority>3</priority>
    <example>
-    <![CDATA[
-            SomeClass.class.getClassLoader();
-    ]]>
+<![CDATA[
+public class Foo {
+ ClassLoader cl = Bar.class.getClassLoader();
+}
+]]>
   </example>
  </rule>
 
