@@ -33,7 +33,9 @@
 	</j:set>
 	<subsection name="${rulename}">
 		<p><x:expr select="./description"/></p>
-		<j:set trim="true" var="isxpath"><x:expr select="count(properties/property[@name='xpath'])"/></j:set>
+		<j:set trim="true" var="isxpath">
+            <x:expr select="count(properties/property[@name='xpath'])"/>
+        </j:set>
 		<j:choose>
 		    <j:when test="${isxpath != 0}">
     			<p>This rule is defined by the following XPath expression:</p>

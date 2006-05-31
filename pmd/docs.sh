@@ -4,14 +4,24 @@ option="${1}"
 
 if [ -z $option ]; then
 	echo "Generating from pom, regenerating ruleset docs, and transforming"
-	maven pmd:rulesets-index xdoc:generate-from-pom pmd:ruleset-docs xdoc:transform 
+	maven pmd:rulesets-index xdoc:generate-from-pom 
+  `./munge_rulesets.rb`
+  maven pmd:ruleset-docs 
+  rm -f rulesets/*.xml
+  cvs -q up rulesets
+  maven xdoc:transform 
 elif [ $option = "all" ]; then
 	echo "Running maven site"
 	rm -rf target
 	maven -qb site
 elif [ $option = "uploadcurrent" ]; then
 	echo "Generating xdocs and uploading"
-	maven pmd:rulesets-index xdoc:generate-from-pom pmd:ruleset-docs xdoc:transform 
+	maven pmd:rulesets-index xdoc:generate-from-pom 
+  `./munge_rulesets.rb`
+  maven pmd:ruleset-docs 
+  rm -f rulesets/*.xml
+  cvs -q up rulesets
+  maven xdoc:transform 
 	DOCS_FILE=docs.tar.gz
 	cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
 	cd target
