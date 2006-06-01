@@ -53,6 +53,15 @@ public class ASTImportDeclaration extends SimpleJavaNode {
     }
 
 
+    public void dump(String prefix) {
+        String out = "";
+        if (isStatic()) {
+            out += "(static)";
+        }
+        System.out.println(toString(prefix) + out);
+        dumpChildren(prefix);
+    }
+
     /**
      * Accept the visitor. *
      */

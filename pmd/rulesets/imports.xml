@@ -39,6 +39,7 @@ Avoid importing anything from the package 'java.lang'.  These classes are automa
               <value>
                   <![CDATA[
 //ImportDeclaration
+ [@Static = 'false']
  [starts-with(Name/@Image, 'java.lang')]
  [not(starts-with(Name/@Image, 'java.lang.ref'))]
  [not(starts-with(Name/@Image, 'java.lang.reflect'))]

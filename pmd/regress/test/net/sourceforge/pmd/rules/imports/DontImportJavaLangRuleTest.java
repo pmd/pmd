@@ -6,6 +6,7 @@ package test.net.sourceforge.pmd.rules.imports;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.Report;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -21,8 +22,14 @@ public class DontImportJavaLangRuleTest extends SimpleAggregatorTst {
         runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "import java.lang.String", 1, rule),
             new TestDescriptor(TEST2, "import java.lang.*", 1, rule),
-            new TestDescriptor(TEST3, "import java.lang.ref/reflect/annotation/instrument/management", 0, rule),
+            new TestDescriptor(TEST3, "import java.lang.ref/reflect/annotation/instrument/management", 0, rule)
         });
+    }
+
+    public void testStaticImportsAreOK() throws Throwable {
+        Report rpt = new Report();
+        runTestFromString15(TEST4, rule, rpt);
+        assertEquals(0, rpt.size());
     }
 
     private static final String TEST1 =
@@ -40,5 +47,10 @@ public class DontImportJavaLangRuleTest extends SimpleAggregatorTst {
             "import java.lang.instrument.*;" + PMD.EOL +
             "import java.lang.management.*;" + PMD.EOL +
             "public class Foo {}";
+
+    private static final String TEST4 =
+            "import static java.lang.*;" + PMD.EOL +
+            "public class Foo {}";
+
 
 }

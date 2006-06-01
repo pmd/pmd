@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Paul Field - Reported a bug in DontImportJavaLang</li>
             <li>Neil Cafferkey - Reported a typo in AssignmentInOperand</li>
             <li>Noel Grandin - bug report for ImmutableField, bug report for MissingStaticMethodInNonInstantiatableClass, bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
             <li><a href="http://www.orablogs.com/olaf/">Olaf Heimburger</a> - wrote the UseProperClassLoader rule, code changes to get JDeveloper plugin working under JDev 10.1.3 EA, reported a possible NPE in ReportTree</li>
