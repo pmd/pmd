@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: PMD For Eclipse Core Plug-in
 Bundle-SymbolicName: net.sourceforge.pmd.core; singleton:=true
-Bundle-Version: 3.6.1
+Bundle-Version: 3.7.0
 Bundle-Activator: net.sourceforge.pmd.core.PMDCorePlugin
 Bundle-Vendor: PMD Development Team
 Bundle-Localization: plugin
@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime
 Eclipse-AutoStart: true
 Bundle-ClassPath: lib/jakarta-oro-2.0.8.jar,
  lib/jaxen-1.1-beta-7.jar,
- lib/pmd-3.6.jar,
+ lib/pmd-3.7.jar,
  lib/xercesImpl-2.6.2.jar,
  lib/xmlParserAPIs-2.6.2.jar,
  pmd-core.jar
