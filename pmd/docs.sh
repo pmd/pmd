@@ -28,7 +28,7 @@ elif [ $option = "uploadcurrent" ]; then
 	DOCS_FILE=docs.tar.gz
 	cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
 	cd target
-	rm $DOCS_FILE
+	rm -f $DOCS_FILE
 	tar zcf $DOCS_FILE docs/
 	scp -i ~/.ssh/identity $DOCS_FILE tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/current/
 	cd ../
@@ -38,8 +38,9 @@ elif [ $option = "upload" ]; then
 	DOCS_FILE=docs.tar.gz
 	cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
 	cd target
-	rm $DOCS_FILE
+	rm -f $DOCS_FILE
 	tar zcf $DOCS_FILE docs/
+    echo "Starting secure copy"
 	scp -i ~/.ssh/identity $DOCS_FILE tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/
 	cd ../
 	ssh -l tomcopeland pmd.sourceforge.net "cd /home/groups/p/pm/pmd/ &&  rm -rf xref && rm -rf apidocs && ./update_docs.sh"

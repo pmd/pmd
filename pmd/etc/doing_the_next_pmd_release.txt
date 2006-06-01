@@ -84,7 +84,8 @@ cd ~/pmd/pmd
 update the "what's new" link in navigation.xml
 ./docs.sh upload
 
-Submit some news saying "hey, new release!"
-Go to http://freshmeat.net/, say "hey, new release!"
+Submit news to SF
+Go to http://freshmeat.net/
+Submit news to java.net
 Post note to JCreator Tips and Tricks forum - http://www.jcreator.com/forums/index.php?showforum=3
 Do a blog entry

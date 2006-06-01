@@ -128,11 +128,11 @@ public class Bar {
      </rule>
 
     <rule name="AssignmentInOperand"
-      message="Avoid assigments in operands"
+      message="Avoid assignments in operands"
       class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AssignmentInOperand">
   <description>
-Avoid assigments in operands; this can make code more complicated and harder to read.
+Avoid assignments in operands; this can make code more complicated and harder to read.
   </description>
         <properties>
             <property name="xpath">

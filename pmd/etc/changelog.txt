@@ -1,4 +1,5 @@
 ????, 2006 - 3.8:
+Fixed bug 1498910 - AssignmentInOperand no longer has a typo in the message.
 
 June 1, 2006 - 3.7:
 New rules:
