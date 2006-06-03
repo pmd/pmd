@@ -2,9 +2,9 @@
 
     <import file="nbproject/build-impl.xml"/>
 
-    <property name="pmd.jar" value="pmd-3.6.jar"/>
+    <property name="pmd.jar" value="pmd-3.7.jar"/>
     <property name="nb.version" value="netbeans50"/>
-    <property name="VERSION" value="1.6.0.1"/>
+    <property name="VERSION" value="1.7"/>
 
     <property file="build.ant.properties"/>
 
