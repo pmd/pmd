@@ -41,15 +41,13 @@
          id="net.sourceforge.pmd.ui"
          download-size="0"
          install-size="0"
-         version="1.0.0"
-         unpack="false"/>
+         version="1.0.0"/>
 
    <plugin
          id="net.sourceforge.pmd.runtime"
          download-size="0"
          install-size="0"
-         version="1.0.0"
-         unpack="false"/>
+         version="1.0.0"/>
 
    <plugin
          id="net.sourceforge.pmd.core"

@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin>
-
+<plugin
+   id="net.sourceforge.pmd.eclipse"
+   name="PMD For Eclipse"
+   version="3.1.6"
+   provider-name="PMD Development Team">
+   <requires>
+      <import plugin="net.sourceforge.pmd.core"/>
+      <import plugin="net.sourceforge.pmd.runtime"/>
+      <import plugin="net.sourceforge.pmd.ui"/>
+   </requires>
 
    <extension
          point="org.eclipse.help.toc">

@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin>
+<plugin
+   id="net.sourceforge.pmd.runtime"
+   name="PMD For Eclipse Runtime Plug-in"
+   version="1.0.0"
+   provider-name="PMD Development Team"
+   class="net.sourceforge.pmd.runtime.PMDRuntimePlugin">
+
+   <runtime>
+      <library name="pmd-runtime.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/castor-0.9.6-xml.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/log4j-1.2.8.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/commons-logging.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="net.sourceforge.pmd.core"/>
+   </requires>
 
    <extension
          id="pmdMarker"

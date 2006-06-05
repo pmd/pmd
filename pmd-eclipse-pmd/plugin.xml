@@ -1,6 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin>
+<plugin
+   id="net.sourceforge.pmd.core"
+   name="PMD For Eclipse Core Plug-in"
+   version="3.7.0"
+   provider-name="PMD Development Team"
+   class="net.sourceforge.pmd.core.PMDCorePlugin">
+
+   <runtime>
+      <library name="pmd-core.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/jakarta-oro-2.0.8.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/jaxen-1.1-beta-7.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/pmd-3.7.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/xercesImpl-2.6.2.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/xmlParserAPIs-2.6.2.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+   </requires>
+
    <extension-point id="rulesets" name="rulesets" schema="schema/rulesets.exsd"/>
    
    <extension
