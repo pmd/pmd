@@ -8,6 +8,9 @@ package net.sourceforge.pmd.runtime;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/05 21:28:16  phherlin
+ * Fix the switch perspective NPE
+ *
  * Revision 1.1  2006/05/22 21:37:36  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -54,7 +57,7 @@ public class PMDRuntimeConstants {
     public static final String PMD_DFA_MARKER = PMDRuntimePlugin.PLUGIN_ID + ".pmdDFAMarker";
     public static final String PMD_TASKMARKER = PMDRuntimePlugin.PLUGIN_ID + ".pmdTaskMarker";
     
-    public static final String ID_PERSPECTIVE = "net.sourceforge.pmd.eclipse.views.pmdPerspective";
+    public static final String ID_PERSPECTIVE = "net.sourceforge.pmd.ui.views.pmdPerspective";
     
     public static final String KEY_MARKERATT_RULENAME = "rulename";
     public static final String KEY_MARKERATT_PRIORITY = "pmd_priority";
