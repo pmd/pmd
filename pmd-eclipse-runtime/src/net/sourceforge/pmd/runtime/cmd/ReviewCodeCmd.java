@@ -85,6 +85,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/05 22:25:21  phherlin
+ * Use the 3.0 SchedulingRule API to be compatible with Rational Products
+ *
  * Revision 1.1  2006/05/22 21:37:35  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  * Revision 1.11 2006/04/26 21:15:02 phherlin Add the include derived files option
@@ -271,7 +274,10 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             rule = ruleFactory.markerRule(this.resourceDelta.getResource().getProject());
         } else {
             ISchedulingRule rules[] = new ISchedulingRule[this.resources.size()];
-            rule = MultiRule.combine((ISchedulingRule[]) this.resources.toArray(rules));
+            for (int i = 0; i < rules.length; i++) {
+                rules[i] = ruleFactory.markerRule((IResource) this.resources.get(i));
+            }
+            rule = new MultiRule((ISchedulingRule[]) this.resources.toArray(rules));
         }
 
         return rule;
