@@ -107,7 +107,7 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
         if (!report.getSuppressedRuleViolations().isEmpty()) {
             buf.append("<hr/>");
             buf.append("<center><h3>Suppressed warnings</h3></center>");
-            buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th></tr>" + PMD.EOL);
+            buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>" + PMD.EOL);
         }
         for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
             Report.SuppressedViolation sv = (Report.SuppressedViolation) i.next();
@@ -121,6 +121,7 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
             buf.append("<td align=\"center\">" + sv.getRuleViolation().getBeginLine() + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + sv.getRuleViolation().getRule().getName() + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + (sv.suppressedByNOPMD() ? "NOPMD" : "Annotation") + "</td>" + PMD.EOL);
+            buf.append("<td align=\"center\">" + (sv.getUserMessage() == null ? "" : sv.getUserMessage()) + "</td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
         }
         if (!report.getSuppressedRuleViolations().isEmpty()) {
