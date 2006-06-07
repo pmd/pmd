@@ -76,10 +76,12 @@ public class Report {
     public static class SuppressedViolation {
         private IRuleViolation rv;
         private boolean isNOPMD;
+        private String userMessage;
 
-        public SuppressedViolation(IRuleViolation rv, boolean isNOPMD) {
+        public SuppressedViolation(IRuleViolation rv, boolean isNOPMD, String userMessage) {
             this.isNOPMD = isNOPMD;
             this.rv = rv;
+            this.userMessage = userMessage;
         }
 
         public boolean suppressedByNOPMD() {
@@ -92,6 +94,10 @@ public class Report {
 
         public IRuleViolation getRuleViolation() {
             return this.rv;
+        }
+
+        public String getUserMessage() {
+            return userMessage;
         }
     }
 
@@ -107,13 +113,13 @@ public class Report {
     private Set metrics = new HashSet();
     private List listeners = new ArrayList();
     private List errors = new ArrayList();
-    private Set linesToExclude = new HashSet();
+    private Map linesToExclude = new HashMap();
     private long start;
     private long end;
 
     private List suppressedRuleViolations = new ArrayList();
 
-    public void exclude(Set lines) {
+    public void exclude(Map lines) {
         linesToExclude = lines;
     }
 
@@ -165,14 +171,16 @@ public class Report {
     }
 
     public void addRuleViolation(IRuleViolation violation) {
+
         // NOPMD excluder
-        if (linesToExclude.contains(new Integer(violation.getBeginLine()))) {
-            suppressedRuleViolations.add(new SuppressedViolation(violation, true));
+        Integer line = new Integer(violation.getBeginLine());
+        if (linesToExclude.keySet().contains(line)) {
+            suppressedRuleViolations.add(new SuppressedViolation(violation, true, (String)linesToExclude.get(line)));
             return;
         }
 
         if (violation.isSuppressed()) {
-            suppressedRuleViolations.add(new SuppressedViolation(violation, false));
+            suppressedRuleViolations.add(new SuppressedViolation(violation, false, null));
             return;
         }
 

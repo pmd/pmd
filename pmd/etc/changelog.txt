@@ -1,6 +1,12 @@
 ????, 2006 - 3.8:
+BEFORE RELEASE:
+- remove deprecated methods from PMD.java, RuleSetFactory
+
 Fixed bug 1498910 - AssignmentInOperand no longer has a typo in the message.
 Fixed bug 1498960 - DontImportJavaLang no longer reports static imports of java.lang members.
+Applied patch 1481024 - NOPMD messages can now be reported with a user specified msg, e.g., //NOPMD - this is expected
+
+
 
 June 1, 2006 - 3.7:
 New rules:

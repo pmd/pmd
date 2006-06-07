@@ -3,20 +3,22 @@
  */
 package test.net.sourceforge.pmd.cpd;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import junit.framework.TestCase;
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.Renderer;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.XMLRenderer;
+import net.sourceforge.pmd.PMD;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Philippe T'Seyen

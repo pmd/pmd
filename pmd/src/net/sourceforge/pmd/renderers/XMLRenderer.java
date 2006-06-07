@@ -77,6 +77,8 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
                 StringUtil.appendXmlEscaped(buf, suppressed.suppressedByNOPMD() ? "nopmd" : "annotation");
                 buf.append("\" msg=\"");
                 StringUtil.appendXmlEscaped(buf, suppressed.getRuleViolation().getDescription());
+                buf.append("\" usermsg=\"");
+                StringUtil.appendXmlEscaped(buf, suppressed.getUserMessage());
                 buf.append("\"/>").append(PMD.EOL);
             }
         }

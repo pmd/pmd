@@ -4,6 +4,7 @@
 package net.sourceforge.pmd;
 
 import java.util.Set;
+import java.util.Map;
 
 public class RuleContext {
 
@@ -26,7 +27,7 @@ public class RuleContext {
         this.sourceCodeFilename = filename;
     }
 
-    public void excludeLines(Set lines) {
+    public void excludeLines(Map lines) {
         report.exclude(lines);
     }
 }

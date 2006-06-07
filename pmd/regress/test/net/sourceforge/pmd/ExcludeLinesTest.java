@@ -13,16 +13,16 @@ public class ExcludeLinesTest extends RuleTst {
     public void testExcludeOne() throws Throwable {
         ExcludeLines e = new ExcludeLines(new StringReader(TEST1));
         assertFalse(e.getLinesToExclude().isEmpty());
-        Integer i = (Integer) e.getLinesToExclude().iterator().next();
+        Integer i = (Integer) e.getLinesToExclude().keySet().iterator().next();
         assertEquals(3, i.intValue());
     }
 
     public void testExcludeMultiple() throws Throwable {
         ExcludeLines e = new ExcludeLines(new StringReader(TEST2));
         assertEquals(3, e.getLinesToExclude().size());
-        assertTrue(e.getLinesToExclude().contains(new Integer(3)));
-        assertTrue(e.getLinesToExclude().contains(new Integer(4)));
-        assertTrue(e.getLinesToExclude().contains(new Integer(5)));
+        assertTrue(e.getLinesToExclude().keySet().contains(new Integer(3)));
+        assertTrue(e.getLinesToExclude().keySet().contains(new Integer(4)));
+        assertTrue(e.getLinesToExclude().keySet().contains(new Integer(5)));
     }
 
     public void testCopyMatches() throws Throwable {

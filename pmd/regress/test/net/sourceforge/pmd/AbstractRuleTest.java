@@ -33,6 +33,8 @@ import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AbstractRuleTest extends TestCase {
 
@@ -93,10 +95,10 @@ public class AbstractRuleTest extends TestCase {
     public void testRuleExclusion() {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
-        Set s = new HashSet();
-        s.add(new Integer(5));
+        Map m = new HashMap();
+        m.put(new Integer(5), "");
         ctx.setReport(new Report());
-        ctx.excludeLines(s);
+        ctx.excludeLines(m);
         ctx.setSourceCodeFilename("filename");
         SimpleNode n = new SimpleJavaNode(1);
         n.testingOnly__setBeginColumn(5);
