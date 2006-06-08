@@ -1,7 +1,90 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
 
-v3.1.4 06/02/2005
+v3.1.6 09/06/2006
+-----------------
+
+UPDATED : Architecture refactoring
+----------------------------------
+This version is a major enhancement from previous ones.
+While this is not visible, it includes a complete refactoring of the
+plugin architecture necessary to ease future evolutions.
+
+The consequence is that any preferences customizations from older versions will be lost.
+Project properties should be kept.
+
+
+UPDATED : PMD v3.7
+------------------
+** JSP FILES ARE NOT SUPPORTED IN THIS VERSION YET **
+
+
+UPDATED : Performance issues
+----------------------------
+This version include major performances enhancements :
+ . process files that are only included in source directories
+ . by default, derived files are excluded
+   (this is an option of the project properties)
+ . heavy statistics computation has been shutdown (#violations/loc & #violations/method)
+ . refactor the markers application to use uptodate Eclipe features
+ . limit the number of reported violations per file per rule
+   the default is set to 5 and can be changed in the preferences.
+ 
+Now the plugin overhead to PMD should be only few hundreds of milliseconds (depends of
+the #files to process and #violations generated of course).
+
+
+UPDATED : The legacy Violation View has been removed
+----------------------------------------------------
+The old violation view has been removed to the benefit of the new PMD Perspective
+which is more efficient.
+
+To obtain the same kind of view, simply use the standard Problems view.
+
+
+UPDATED : Make CPD working set aware
+------------------------------------
+Running CPD now benefits of the working set selected for the project.
+
+
+UPDATED : Log files preferences
+-------------------------------
+Now the logging properties can be set in the preferences dialog.
+You can choose the logging level (default to WARN) and the logging file name and
+location (default to the standard pmd-eclipse.log file in the Eclipse install
+directory).
+
+
+UPDATED : Default review to PMD style
+-------------------------------------
+By default, the review comment style is the standard PMD style (// NOPMD comment) and
+no more the former Eclipse style (// @PMD:REVIEW...).
+
+This can be changed in the preferences dialog.
+
+Note that the Eclipse style is considered deprecated and will be removed in a next version.
+
+
+----------------------------------------------------------------------------------------
+v3.1.5 12/04/2006
+-----------------
+
+UPDATED : PMD v3.6
+------------------
+This version includes a patched version of PMD v3.6.
+The new VBHTML report has been included.
+
+** JSP FILES ARE NOT SUPPORTED IN THIS VERSION YET **
+
+FIXED :
+-------
+Generating reports with violations on classes in the default package now works correctly.
+
+Fix BUG#1467817 Change the label of the rebuild_project question.
+
+
+----------------------------------------------------------------------------------------
+v3.1.4 06/02/2006
 -----------------
 
 UPDATED : PMD v3.5

@@ -2,14 +2,12 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
-v3.1.6 - xx/xx/2006
+v3.1.6 - 09/04/2006
 
 Runtime
 -------
 . Reconfigure the rebuild command to better handle huge projects
 . Add the include derived files option
-. On legacy violations view, add new sorting option on line numbers and add reverse
-  sorting on all columns (contribution of Pablo Alba).
 . make CPD "working set aware"
 . remove some dead code
 . limit the number of reported violations per file and per rule (default to 5)
