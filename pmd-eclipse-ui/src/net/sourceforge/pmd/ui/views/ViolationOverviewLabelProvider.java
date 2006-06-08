@@ -51,7 +51,7 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
 
     /* @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int) */
     public String getColumnText(Object element, int columnIndex) {
-        String result = null;
+        String result = "";
 
         switch (columnIndex) {
         
