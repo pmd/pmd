@@ -13,6 +13,11 @@ plugin architecture necessary to ease future evolutions.
 The consequence is that any preferences customizations from older versions will be lost.
 Project properties should be kept.
 
+The suggested update procedure is to:
+1. disable PMD from all your projects
+2. disable then uninstall PMD from your Eclipse
+3. install new version
+
 
 UPDATED : PMD v3.7
 ------------------
