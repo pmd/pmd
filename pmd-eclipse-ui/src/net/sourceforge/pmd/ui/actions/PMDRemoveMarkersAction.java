@@ -62,6 +62,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/08 22:01:30  phherlin
+ * Fix marker deletion issue following the architecture refactoring
+ *
  * Revision 1.1  2006/05/22 21:23:56  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -78,8 +81,8 @@ import org.eclipse.ui.IWorkbenchPart;
  * 
  */
 public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActionDelegate {
-    private static final String VIEW_ACTION = "net.sourceforge.pmd.eclipse.pmdRemoveAllMarkersAction";
-    private static final String OBJECT_ACTION = "net.sourceforge.pmd.eclipse.pmdRemoveMarkersAction";
+    private static final String VIEW_ACTION = "net.sourceforge.pmd.ui.pmdRemoveAllMarkersAction";
+    private static final String OBJECT_ACTION = "net.sourceforge.pmd.ui.pmdRemoveMarkersAction";
     private static final Logger log = Logger.getLogger(PMDRemoveMarkersAction.class);
     private IViewPart viewPart;
     private IWorkbenchPart targetPart;
@@ -99,9 +102,12 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
         try {
             if (action.getId().equals(VIEW_ACTION)) {
                 ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                log.debug("Remove markers on the entire workspace");
             } else if (action.getId().equals(OBJECT_ACTION)) {
                 processResource();
-            } // else action id not supported
+            } else { // else action id not supported
+                log.warn("Cannot remove markers, action ID is not supported");
+            }
         } catch (CoreException e) {
             PMDUiPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
         }
@@ -124,6 +130,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
      * Process removing of makers on a resource selection (project or file)
      */
     private void processResource() {
+        log.debug("Processing a resource");
         try {
             // if action is run from a view, process the selected resources
             if (this.targetPart instanceof IViewPart) {
@@ -139,6 +146,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
                             IResource resource = (IResource) adaptable.getAdapter(IResource.class);
                             if (resource != null) {
                                 resource.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                                log.debug("Remove markers on resrouce " + resource.getName());
                             } else {
                                 log.warn("The selected object cannot adapt to a resource");
                                 log.debug("   -> selected object : " + element);
@@ -148,6 +156,8 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
                             log.debug("   -> selected object : " + element);
                         }
                     }
+                } else {
+                    log.warn("The view part selection is not a structured selection !");
                 }
             }
 
@@ -156,6 +166,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
                 IEditorInput editorInput = ((IEditorPart) this.targetPart).getEditorInput();
                 if (editorInput instanceof IFileEditorInput) {
                     ((IFileEditorInput) editorInput).getFile().deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                    log.debug("Remove markers " + PMDRuntimeConstants.PMD_MARKER + " on currently edited file " + ((IFileEditorInput) editorInput).getFile().getName());
                 } else {
                     log.debug("The kind of editor input is not supported. The editor input if of type: "
                             + editorInput.getClass().getName());
