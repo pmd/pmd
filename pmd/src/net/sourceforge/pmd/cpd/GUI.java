@@ -174,6 +174,7 @@ public class GUI implements CPDListener {
         helper.add(minimumLengthField);
         helper.addLabel("Language:");
         languageBox.addItem("Java");
+        languageBox.addItem("JSP");
         languageBox.addItem("C++");
         languageBox.addItem("PHP");
         languageBox.addItem("Ruby");
@@ -247,6 +248,8 @@ public class GUI implements CPDListener {
             p.setProperty(LanguageFactory.EXTENSION, extensionField.getText());
             if (languageBox.getSelectedItem().equals("Java")) {
                 language = lf.createLanguage(LanguageFactory.JAVA_KEY, p);
+            } else if (languageBox.getSelectedItem().equals("JSP")) {
+                language = lf.createLanguage(LanguageFactory.JSP_KEY);
             } else if (languageBox.getSelectedItem().equals("C++")) {
                 language = lf.createLanguage(LanguageFactory.CPP_KEY);
             } else if (languageBox.getSelectedItem().equals("Ruby")) {
@@ -264,6 +267,7 @@ public class GUI implements CPDListener {
                     || rootDirectoryField.getText().endsWith(".php")
                     || rootDirectoryField.getText().endsWith(".rb")
                     || rootDirectoryField.getText().endsWith(".java")
+                    || rootDirectoryField.getText().endsWith(".jsp")
                     || rootDirectoryField.getText().endsWith(".cpp")
                     || rootDirectoryField.getText().endsWith(".c")) {
                 cpd.add(new File(rootDirectoryField.getText()));

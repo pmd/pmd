@@ -8,6 +8,7 @@ import java.util.Properties;
 public class LanguageFactory {
 
     public static final String JAVA_KEY = "java";
+    public static final String JSP_KEY = "jsp";
     public static final String CPP_KEY = "cpp";
     public static final String C_KEY = "c";
     public static final String PHP_KEY = "php";
@@ -24,6 +25,8 @@ public class LanguageFactory {
             return new CPPLanguage();
         } else if (language.equals(JAVA_KEY)) {
             return new JavaLanguage(properties);
+        } else if (language.equals(JSP_KEY)) {
+            return new JSPLanguage();
         } else if (language.equals(BY_EXTENSION)) {
             return new AnyLanguage(properties.getProperty(EXTENSION));
         } else if (language.equals(PHP_KEY)) {

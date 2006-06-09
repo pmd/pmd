@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Levent Gurses - Suggested JSP support for the copy/paste detector</li>
             <li>Paul Field - Reported a bug in DontImportJavaLang</li>
             <li>Neil Cafferkey - Reported a typo in AssignmentInOperand</li>
             <li>Noel Grandin - bug report for ImmutableField, bug report for MissingStaticMethodInNonInstantiatableClass, bug report for MissingBreakInSwitch, EqualsNull rule, bug report for IfElseStmtsMustUseBracesRule</li>
