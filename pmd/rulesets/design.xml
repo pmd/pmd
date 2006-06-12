@@ -858,7 +858,9 @@ A switch statement without an enclosed break statement may be a bug.
 //SwitchStatement
 [count(.//BreakStatement)=0]
 [count(SwitchLabel) > 0]
-[count(BlockStatement/Statement/ReturnStatement) < count (SwitchLabel)]
+[count(BlockStatement/Statement/ReturnStatement)
+ + count(BlockStatement/Statement/ThrowStatement)
+     < count (SwitchLabel)]
     ]]>
               </value>
           </property>

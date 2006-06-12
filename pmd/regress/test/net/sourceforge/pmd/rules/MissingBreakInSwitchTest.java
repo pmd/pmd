@@ -22,6 +22,7 @@ public class MissingBreakInSwitchTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST2, "just skip empty switch", 0, rule),
             new TestDescriptor(TEST3, "one break", 0, rule),
             new TestDescriptor(TEST4, "each case stmt has a return", 0, rule),
+            new TestDescriptor(TEST5, "all cases have return or throw", 0, rule),
         });
     }
 
@@ -65,6 +66,20 @@ public class MissingBreakInSwitchTest extends SimpleAggregatorTst {
             "		 return 2;" + PMD.EOL +
             "		default:" + PMD.EOL +
             "		 return 3;" + PMD.EOL +
+            "		}" + PMD.EOL +
+            "	}" + PMD.EOL +
+            "}";
+
+    private static final String TEST5 =
+            "public class Foo {" + PMD.EOL +
+            "	int main() {" + PMD.EOL +
+            "		switch(i) {" + PMD.EOL +
+            "		case '1':" + PMD.EOL +
+            "		 return 1;" + PMD.EOL +
+            "		case '2':" + PMD.EOL +
+            "		 return 2;" + PMD.EOL +
+            "		default:" + PMD.EOL +
+            "		 throw new Exception(\"bad number\");" + PMD.EOL +
             "		}" + PMD.EOL +
             "	}" + PMD.EOL +
             "}";
