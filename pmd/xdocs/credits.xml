@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>D'Arcy Smith - Reported bug in UncommentedEmptyConstructor, reported missing RuleViolation methods</li>
             <li>Paul Field - Fixed bug in MissingBreakInSwitch, reported a bug in DontImportJavaLang</li>
             <li>Attila Korompai - A nice patch to add messages to the NOPMD feature</li>
             <li>Levent Gurses - Suggested JSP support for the copy/paste detector</li>
@@ -64,7 +65,6 @@
             <li>Jarkko Hietaniemin - rewrote most of cpd.sh, tweaked C/CPP grammar to allow $ in identifiers, several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
             <li>Dawid Weiss - Reported bug in UnusedPrivateMethod</li>
             <li>Shao Lo - Reported bug in CPD</li>
-            <li>D'Arcy Smith - Reported missing RuleViolation methods</li>
             <li>Xavier Le Vourch - Suggestions on cleaning up casts in grammar, SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
             <li>Mathieu Champlon - Added language support to the CPD Ant task</li>
             <li>Wouter Zelle - Fixed a false positive in InefficientStringBuffering, fixed a false positive in NonThreadSafeSingleton, a nice patch to clean up some of the Ant task properties and fix a TextRenderer bug, rewrote PositionLiteralsFirstInComparisons in XPath, Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>

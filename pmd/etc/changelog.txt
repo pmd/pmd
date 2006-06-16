@@ -4,7 +4,8 @@ BEFORE RELEASE:
 
 Fixed bug 1498910 - AssignmentInOperand no longer has a typo in the message.
 Fixed bug 1498960 - DontImportJavaLang no longer reports static imports of java.lang members.
-Fixed bug 1417106 - MissingBreakInSwitch no longer flags stmts where every case has either a return or a throw. 
+Fixed bug 1417106 - MissingBreakInSwitch no longer flags stmts where every case has either a return or a throw.
+Fixed bug 1412529 - UncommentedEmptyConstructor no longer flags private constructors. 
 Applied patch 1481024 (fulfilling RFE 1490181)- NOPMD messages can now be reported with a user specified msg, e.g., //NOPMD - this is expected
 Added JSP support to the copy/paste detector.
 

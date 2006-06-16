@@ -31,6 +31,7 @@ public class UncommentedEmptyConstructorRuleTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST7, "ok", 0, defaultRuleRule),
             new TestDescriptor(TEST8, "with 'this(...)' ok", 0, defaultRuleRule),
             new TestDescriptor(TEST9, "with 'super(...)' ok", 0, defaultRuleRule),
+            new TestDescriptor(TEST10, "private is ok", 0, defaultRuleRule),
         });
     }
 
@@ -111,6 +112,12 @@ public class UncommentedEmptyConstructorRuleTest extends SimpleAggregatorTst {
             " Foo() {" + PMD.EOL +
             "  super();" + PMD.EOL +
             "  bar++;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    public static final String TEST10 =
+            "public class Foo {" + PMD.EOL +
+            " private Foo() {" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 }

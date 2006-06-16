@@ -10,6 +10,24 @@ These are new rules that are still in progress
   </description>
 
 
+    <rule name="RowSetClose"
+           message="Avoid invoking the ''close'' method on the RowSet object ''{0}''"
+           class="net.sourceforge.pmd.rules.RowSetClose">
+       <description>
+Avoid invoking the 'close' method on a RowSet object
+       </description>
+         <priority>3</priority>
+       <example>
+   <![CDATA[
+public class Foo {
+ public void foo() {
+  RowSet rs = new RowSet();
+  rs.close(); // oops!
+ }
+}
+   ]]>
+       </example>
+     </rule>
 
     <!--
     <rule name="UselessAssignment"
