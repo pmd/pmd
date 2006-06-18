@@ -33,7 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package test.net.sourceforge.pmd.eclipse.cmd;
+package net.sourceforge.pmd.runtime.cmd;
 
 import java.io.InputStream;
 import java.util.Map;
@@ -41,13 +41,13 @@ import java.util.Map;
 import junit.framework.TestCase;
 import name.herlin.command.CommandException;
 import name.herlin.command.UnsetInputPropertiesException;
-import net.sourceforge.pmd.eclipse.cmd.ReviewCodeCmd;
+import net.sourceforge.pmd.eclipse.EclipseUtils;
+import net.sourceforge.pmd.runtime.cmd.ReviewCodeCmd;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 
-import test.net.sourceforge.pmd.eclipse.EclipseUtils;
 
 /**
  * This tests the PMD Processor command
@@ -56,6 +56,9 @@ import test.net.sourceforge.pmd.eclipse.EclipseUtils;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2006/06/18 22:29:51  phherlin
+ * Begin refactoring the unit tests for the plugin
+ *
  * Revision 1.3  2006/01/17 21:26:24  phherlin
  * Ignore exceptions occuring inside the teardown operation
  *

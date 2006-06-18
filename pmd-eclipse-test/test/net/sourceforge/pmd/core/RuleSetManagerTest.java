@@ -33,7 +33,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package test.net.sourceforge.pmd.core;
+package net.sourceforge.pmd.core;
 
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.core.IRuleSetManager;
@@ -47,6 +47,9 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2006/06/18 22:29:51  phherlin
+ * Begin refactoring the unit tests for the plugin
+ *
  * Revision 1.2  2005/07/02 14:32:01  phherlin
  * Implement the RuleSets extension points new tests
  *

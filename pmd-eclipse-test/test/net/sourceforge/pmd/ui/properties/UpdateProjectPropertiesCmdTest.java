@@ -1,4 +1,4 @@
-package test.net.sourceforge.pmd.eclipse.properties;
+package net.sourceforge.pmd.ui.properties;
 
 import java.util.Iterator;
 
@@ -7,15 +7,15 @@ import name.herlin.command.CommandException;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
-import net.sourceforge.pmd.eclipse.PMDPlugin;
-import net.sourceforge.pmd.eclipse.model.ModelException;
-import net.sourceforge.pmd.eclipse.model.ModelFactory;
-import net.sourceforge.pmd.eclipse.model.ProjectPropertiesModel;
-import net.sourceforge.pmd.eclipse.properties.UpdateProjectPropertiesCmd;
+import net.sourceforge.pmd.eclipse.EclipseUtils;
+import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.runtime.properties.IProjectProperties;
+import net.sourceforge.pmd.runtime.properties.IProjectPropertiesManager;
+import net.sourceforge.pmd.runtime.properties.PropertiesException;
+import net.sourceforge.pmd.ui.properties.UpdateProjectPropertiesCmd;
 
 import org.eclipse.core.resources.IProject;
 
-import test.net.sourceforge.pmd.eclipse.EclipseUtils;
 
 public class UpdateProjectPropertiesCmdTest extends TestCase {
     private IProject testProject;
@@ -46,18 +46,21 @@ public class UpdateProjectPropertiesCmdTest extends TestCase {
         }
     }
 
-
     /**
      * Bug: when a user deselect a project rule it is not saved
      */
-    public void testBug() throws CommandException, ModelException {
+    public void testBug() throws CommandException, PropertiesException {
         RuleSetFactory factory = new RuleSetFactory();
 
-        // First ensure that the plugin initial ruleset is equal to the project ruleset
-        ProjectPropertiesModel model = ModelFactory.getFactory().getProperiesModelForProject(this.testProject);
+        // First ensure that the plugin initial ruleset is equal to the project
+        // ruleset
+        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectProperties model = mgr.loadProjectProperties(this.testProject);
+
         RuleSet projectRuleSet = model.getProjectRuleSet();
-        assertEquals("The project ruleset is not equal to the plugin ruleset", PMDPlugin.getDefault().getRuleSet(), projectRuleSet);
-        
+        assertEquals("The project ruleset is not equal to the plugin ruleset", PMDRuntimePlugin.getDefault()
+                .getPreferencesManager().getRuleSet(), projectRuleSet);
+
         // 2. remove the first rule (keep its name for assertion)
         RuleSet newRuleSet = new RuleSet();
         newRuleSet.addRuleSet(projectRuleSet);

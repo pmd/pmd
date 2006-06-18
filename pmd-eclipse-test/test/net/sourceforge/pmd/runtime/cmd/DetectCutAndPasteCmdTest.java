@@ -33,80 +33,72 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package test.net.sourceforge.pmd.eclipse.cmd;
+package net.sourceforge.pmd.runtime.cmd;
 
 import java.io.InputStream;
 
 import junit.framework.TestCase;
 import name.herlin.command.CommandException;
 import name.herlin.command.UnsetInputPropertiesException;
-import net.sourceforge.pmd.eclipse.PMDPluginConstants;
-import net.sourceforge.pmd.eclipse.cmd.RenderReportCmd;
-import net.sourceforge.pmd.eclipse.cmd.ReviewCodeCmd;
-import net.sourceforge.pmd.renderers.HTMLRenderer;
+import net.sourceforge.pmd.cpd.SimpleRenderer;
+import net.sourceforge.pmd.eclipse.EclipseUtils;
+import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.runtime.cmd.DetectCutAndPasteCmd;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
-import test.net.sourceforge.pmd.eclipse.EclipseUtils;
 
 /**
- * Test the report rendering
+ * Test the CPD command
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/12/30 16:29:15  phherlin
- * Implement a new preferences model and review some tests
- *
- * Revision 1.1  2005/06/15 21:14:57  phherlin
- * Create the project for the Eclipse plugin unit tests
- *
- *
+ * Revision 1.1  2006/06/18 22:29:51  phherlin
+ * Begin refactoring the unit tests for the plugin
+ * Revision 1.1 2005/06/15 21:14:57
+ * phherlin Create the project for the Eclipse plugin unit tests
+ * 
+ * 
  */
-public class RenderReportCmdTest extends TestCase {
+public class DetectCutAndPasteCmdTest extends TestCase {
     private IProject testProject;
 
     /**
      * Default constructor
+     * 
      * @param name
      */
-    public RenderReportCmdTest(String name) {
+    public DetectCutAndPasteCmdTest(String name) {
         super(name);
     }
-    
+
     /**
      * Test the basic usage of the report rendering command
-     *
+     * 
      */
-    public void testRenderReportCmdBasic() throws CommandException, CoreException {
-        ReviewCodeCmd reviewCmd = new ReviewCodeCmd();
-        reviewCmd.addResource(this.testProject);
-        reviewCmd.performExecute();
-        
-        RenderReportCmd cmd = new RenderReportCmd();
+    public void testDetectCutAndPasteCmdBasic() throws CommandException, CoreException {
+        DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(this.testProject);
-        cmd.setRenderer(new HTMLRenderer());
-        cmd.setReportName(PMDPluginConstants.HTML_REPORT_NAME);
+        cmd.setRenderer(new SimpleRenderer());
+        cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
         cmd.performExecute();
         cmd.join();
-        
-        IFolder reportFolder = this.testProject.getFolder(PMDPluginConstants.REPORT_FOLDER);
+
+        IFolder reportFolder = this.testProject.getFolder(PMDRuntimeConstants.REPORT_FOLDER);
         assertTrue(reportFolder.exists());
-        
-        IFile reportFile = reportFolder.getFile(PMDPluginConstants.HTML_REPORT_NAME);
+
+        IFile reportFile = reportFolder.getFile(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
         assertTrue(reportFile.exists());
-        
-        this.testProject.deleteMarkers(PMDPluginConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-        
+
         if (reportFile.exists()) {
             reportFile.delete(true, false, null);
         }
-        
+
         if (reportFolder.exists()) {
             reportFolder.delete(true, false, null);
         }
@@ -114,14 +106,15 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #1
+     * 
      * @throws CommandException
      */
-    public void testRenderReportCmdNullArg1() throws CommandException {
+    public void testDetectCutAndPasteCmdNullArg1() throws CommandException {
         try {
-            RenderReportCmd cmd = new RenderReportCmd();
+            DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
             cmd.setProject(null);
-            cmd.setRenderer(new HTMLRenderer());
-            cmd.setReportName(PMDPluginConstants.HTML_REPORT_NAME);
+            cmd.setRenderer(new SimpleRenderer());
+            cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -131,14 +124,15 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #2
+     * 
      * @throws CommandException
      */
-    public void testRenderReportCmdNullArg2() throws CommandException {
+    public void testDetectCutAndPasteCmdNullArg2() throws CommandException {
         try {
-            RenderReportCmd cmd = new RenderReportCmd();
+            DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
             cmd.setProject(this.testProject);
             cmd.setRenderer(null);
-            cmd.setReportName(PMDPluginConstants.HTML_REPORT_NAME);
+            cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -148,13 +142,14 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #3
+     * 
      * @throws CommandException
      */
-    public void testRenderReportCmdNullArg3() throws CommandException {
+    public void testDetectCutAndPasteCmdNullArg3() throws CommandException {
         try {
-            RenderReportCmd cmd = new RenderReportCmd();
+            DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
             cmd.setProject(this.testProject);
-            cmd.setRenderer(new HTMLRenderer());
+            cmd.setRenderer(new SimpleRenderer());
             cmd.setReportName(null);
             cmd.performExecute();
             fail();
@@ -165,14 +160,15 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #4
+     * 
      * @throws CommandException
      */
-    public void testRenderReportCmdNullArg4() throws CommandException {
+    public void testDetectCutAndPasteCmdNullArg4() throws CommandException {
         try {
-            RenderReportCmd cmd = new RenderReportCmd();
+            DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
             cmd.setProject(null);
             cmd.setRenderer(null);
-            cmd.setReportName(PMDPluginConstants.HTML_REPORT_NAME);
+            cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -182,13 +178,14 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #5
+     * 
      * @throws CommandException
      */
-    public void testRenderReportCmdNullArg5() throws CommandException {
+    public void testDetectCutAndPasteCmdNullArg5() throws CommandException {
         try {
-            RenderReportCmd cmd = new RenderReportCmd();
+            DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
             cmd.setProject(null);
-            cmd.setRenderer(new HTMLRenderer());
+            cmd.setRenderer(new SimpleRenderer());
             cmd.setReportName(null);
             cmd.performExecute();
             fail();
@@ -199,11 +196,12 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #6
+     * 
      * @throws CommandException
      */
-    public void testRenderReportCmdNullArg6() throws CommandException {
+    public void testDetectCutAndPasteCmdNullArg6() throws CommandException {
         try {
-            RenderReportCmd cmd = new RenderReportCmd();
+            DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
             cmd.setProject(this.testProject);
             cmd.setRenderer(null);
             cmd.setReportName(null);
@@ -216,11 +214,12 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #7
+     * 
      * @throws CommandException
      */
-    public void testRenderReportCmdNullArg7() throws CommandException {
+    public void testDetectCutAndPasteCmdNullArg7() throws CommandException {
         try {
-            RenderReportCmd cmd = new RenderReportCmd();
+            DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
             cmd.setProject(null);
             cmd.setRenderer(null);
             cmd.setReportName(null);
@@ -257,10 +256,11 @@ public class RenderReportCmdTest extends TestCase {
         if (this.testProject != null) {
             if (this.testProject.exists() && this.testProject.isAccessible()) {
                 EclipseUtils.removePMDNature(this.testProject);
-//                this.testProject.refreshLocal(IResource.DEPTH_INFINITE, null);
-//                Thread.sleep(500);
-//                this.testProject.delete(true, true, null);
-//                this.testProject = null;
+                // this.testProject.refreshLocal(IResource.DEPTH_INFINITE,
+                // null);
+                // Thread.sleep(500);
+                // this.testProject.delete(true, true, null);
+                // this.testProject = null;
             }
         }
 

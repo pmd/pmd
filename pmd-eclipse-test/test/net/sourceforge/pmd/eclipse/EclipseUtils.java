@@ -33,17 +33,18 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package test.net.sourceforge.pmd.eclipse;
+package net.sourceforge.pmd.eclipse;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.eclipse.PMDPluginConstants;
-import net.sourceforge.pmd.eclipse.builder.PMDNature;
+import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.runtime.builder.PMDNature;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -62,13 +63,15 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2005/12/30 16:29:15  phherlin
+ * Revision 1.1  2006/06/18 22:29:51  phherlin
+ * Begin refactoring the unit tests for the plugin
+ * Revision 1.2 2005/12/30 16:29:15 phherlin
  * Implement a new preferences model and review some tests
- *
- * Revision 1.1  2005/06/15 21:14:57  phherlin
- * Create the project for the Eclipse plugin unit tests
- *
- *
+ * 
+ * Revision 1.1 2005/06/15 21:14:57 phherlin Create the project for the Eclipse
+ * plugin unit tests
+ * 
+ * 
  */
 public class EclipseUtils {
 
@@ -78,39 +81,40 @@ public class EclipseUtils {
     private EclipseUtils() {
         super();
     }
-    
-    
+
     /**
      * Create a new java project
+     * 
      * @param projectName a project name
      * @return newProject a new project resource handle
      */
     public static IProject createJavaProject(String projectName) throws CoreException {
-        
+
         // 1. Get the project from the workspace
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IProject newProject = root.getProject(projectName);
         IProjectDescription description = newProject.getWorkspace().newProjectDescription(projectName);
-        
+
         // 2. Create a project if it does not already exist
         if (!newProject.exists()) {
             description.setLocation(null);
             newProject.create(description, null);
             newProject.open(null);
         }
-        
+
         // 4. Make it a Java Project
         addJavaNature(newProject);
-        
+
         return newProject;
     }
-    
+
     /**
      * Create a test source file
-     * @param project a project where to create that file; this project is expected
-     * to be empty
+     * 
+     * @param project a project where to create that file; this project is
+     *            expected to be empty
      */
-    public static IFile createTestSourceFile(IProject project) throws JavaModelException, CoreException, IOException {        
+    public static IFile createTestSourceFile(IProject project) throws JavaModelException, CoreException, IOException {
 
         // 1. Locate the test java source template
         InputStream is = EclipseUtils.class.getResourceAsStream("/test.template");
@@ -125,17 +129,15 @@ public class EclipseUtils {
         is.close();
         sourceFile.setLocal(true, IResource.DEPTH_INFINITE, null);
         project.refreshLocal(IResource.DEPTH_INFINITE, null);
-        
+
         return sourceFile;
     }
-    
+
     /**
      * Get the content of a project resource.
      * 
-     * @param project
-     *            a project reference
-     * @param resourceName
-     *            the name of the resource (@see IProject)
+     * @param project a project reference
+     * @param resourceName the name of the resource (@see IProject)
      * @return the resource content as an InputStream or null
      * @throws CoreException
      */
@@ -143,49 +145,51 @@ public class EclipseUtils {
         IFile file = project.getFile(resourceName);
         return (file != null) && file.exists() && file.isAccessible() ? file.getContents(true) : null;
     }
-    
+
     /**
      * Remove the PMD Nature from a project
+     * 
      * @param project a project to remove the PMD Nature
      * @param monitor a progress monitor
      * @return success true if the nature has been removed; false means the
-     * project already had not the PMD Nature.
+     *         project already had not the PMD Nature.
      * @throws CoreException if any error occurs.
      */
     public static boolean removePMDNature(final IProject project) throws CoreException {
-       boolean success = false;
-       
-       if (project.hasNature(PMDNature.PMD_NATURE)) {
-           final IProjectDescription description = project.getDescription();
-           final String[] natureIds = description.getNatureIds();
-           String[] newNatureIds = new String[natureIds.length - 1];
-           for (int i = 0, j = 0; i < natureIds.length; i++) {
-               if (!natureIds[i].equals(PMDNature.PMD_NATURE)) {
-                   newNatureIds[j++] = natureIds[i];
-               }
-           }
-           description.setNatureIds(newNatureIds);
-           project.setDescription(description, null);
-           project.deleteMarkers(PMDPluginConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-           
-           IFile file = project.getFile(".pmd");
-           if (file.exists() && file.isAccessible()) {
-               file.delete(true, false, null);
-           }
-       }
-       
-       return success;
+        boolean success = false;
+
+        if (project.hasNature(PMDNature.PMD_NATURE)) {
+            final IProjectDescription description = project.getDescription();
+            final String[] natureIds = description.getNatureIds();
+            String[] newNatureIds = new String[natureIds.length - 1];
+            for (int i = 0, j = 0; i < natureIds.length; i++) {
+                if (!natureIds[i].equals(PMDNature.PMD_NATURE)) {
+                    newNatureIds[j++] = natureIds[i];
+                }
+            }
+            description.setNatureIds(newNatureIds);
+            project.setDescription(description, null);
+            project.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+
+            IFile file = project.getFile(".pmd");
+            if (file.exists() && file.isAccessible()) {
+                file.delete(true, false, null);
+            }
+        }
+
+        return success;
     }
-    
+
     /**
      * Test if 2 sets of rules are equals
+     * 
      * @param ruleSet1
      * @param ruleSet2
      * @return
      */
-    public static boolean assertRuleSetEquals(Set ruleSet1, Set ruleSet2) {
+    public static boolean assertRuleSetEquals(Collection ruleSet1, Collection ruleSet2) {
         boolean equals = true;
-        
+
         for (Iterator i = ruleSet1.iterator(); i.hasNext() && equals;) {
             Rule rule = (Rule) i.next();
             if (!searchRule(rule, ruleSet2)) {
@@ -193,7 +197,7 @@ public class EclipseUtils {
                 System.out.println("Rule " + rule.getName() + " is not in the second ruleset");
             }
         }
-        
+
         for (Iterator i = ruleSet2.iterator(); i.hasNext() && equals;) {
             Rule rule = (Rule) i.next();
             if (!searchRule(rule, ruleSet1)) {
@@ -201,40 +205,43 @@ public class EclipseUtils {
                 System.out.println("Rule " + rule.getName() + " is not in the first ruleset");
             }
         }
-        
+
         return equals;
     }
-    
+
     /**
      * Add a Java Nature to a project when creating
+     * 
      * @param project
      * @throws CoreException
      */
     private static void addJavaNature(IProject project) throws CoreException {
         if (!project.hasNature(JavaCore.NATURE_ID)) {
             IProjectDescription description = project.getDescription();
-            String[] prevNatures= description.getNatureIds();
-            String[] newNatures= new String[prevNatures.length + 1];
+            String[] prevNatures = description.getNatureIds();
+            String[] newNatures = new String[prevNatures.length + 1];
             System.arraycopy(prevNatures, 0, newNatures, 0, prevNatures.length);
-            newNatures[prevNatures.length]= JavaCore.NATURE_ID;
+            newNatures[prevNatures.length] = JavaCore.NATURE_ID;
             description.setNatureIds(newNatures);
             project.setDescription(description, null);
         }
     }
-    
+
     /**
      * Search a rule in a set of rules
+     * 
      * @param rule
      * @param set
      * @return
      */
-    private static boolean searchRule(Rule rule, Set set) {
+    private static boolean searchRule(Rule rule, Collection set) {
         boolean found = false;
-        
+
         for (Iterator i = set.iterator(); i.hasNext() && !found;) {
             Rule r = (Rule) i.next();
             if (r.getClass().getName().equals(rule.getClass().getName())) {
-                found = r.getName().equals(rule.getName()) && r.getProperties().equals(rule.getProperties()) && (r.getPriority() == rule.getPriority());
+                found = r.getName().equals(rule.getName()) && r.getProperties().equals(rule.getProperties())
+                        && (r.getPriority() == rule.getPriority());
                 if ((!found) && (r.getName().equals(rule.getName()))) {
                     System.out.println("Rules " + r.getName() + " are different because:");
                     System.out.println("Priorities are different: " + (r.getPriority() != rule.getPriority()));
@@ -249,12 +256,13 @@ public class EclipseUtils {
                 }
             }
         }
-        
+
         return found;
     }
-    
+
     /**
      * Print rule details
+     * 
      * @param rule
      */
     private static void dumpRule(Rule rule) {
@@ -267,5 +275,5 @@ public class EclipseUtils {
             System.out.println("   " + key + " = " + p.getProperty(key));
         }
     }
-    
+
 }

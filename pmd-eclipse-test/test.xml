@@ -6,7 +6,7 @@
   <property name="eclipse-home" value="c:/program files/eclipse.3"/>
 
   <!-- sets the properties eclipse-home, and library-file -->
-  <property name="plugin-name" value="test.net.sourceforge.pmd.eclipse"/>
+  <property name="plugin-name" value="net.sourceforge.pmd.eclipse"/>
   <property name="library-file" value="${eclipse-home}/plugins/org.eclipse.test/library.xml"/>
 
   <!-- This target holds all initialization code that needs to be done for -->
@@ -21,7 +21,7 @@
     <ant target="core-test" antfile="${library-file}" dir="${eclipse-home}">
       <property name="data-dir" value="${jdt-folder}"/>
       <property name="plugin-name" value="${plugin-name}"/>
-      <property name="classname" value="test.net.sourceforge.pmd.eclipse.AllTests"/>
+      <property name="classname" value="net.sourceforge.pmd.eclipse.AllTests"/>
     </ant>    
   </target>
     
