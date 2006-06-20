@@ -64,7 +64,7 @@ public class PackageRecord extends PMDRecord {
     }
 
     /* @see net.sourceforge.pmd.ui.model.PMDRecord#createChildren() */
-    protected PMDRecord[] createChildren() {
+    protected final PMDRecord[] createChildren() {
         ArrayList fileList = new ArrayList();
         try {
             ICompilationUnit[] javaUnits = packageFragment.getCompilationUnits();

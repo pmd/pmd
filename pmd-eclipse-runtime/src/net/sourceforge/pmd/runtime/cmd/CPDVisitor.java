@@ -23,6 +23,9 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/20 21:01:49  phherlin
+ * Enable PMD and fix error level violations
+ *
  * Revision 1.1  2006/05/22 21:37:35  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  * Revision 1.2 2006/05/02 18:34:23 phherlin Make CPD "working set aware" Revision 1.1 2005/05/31 23:04:11
@@ -32,8 +35,8 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * 
  */
 public class CPDVisitor implements IResourceVisitor {
-    private static Logger log = Logger.getLogger(CPDVisitor.class);
-    private CPD cpd;
+    private static final Logger log = Logger.getLogger(CPDVisitor.class);
+    private final CPD cpd;
     private boolean includeDerivedFiles;
 
     /**
@@ -59,7 +62,7 @@ public class CPDVisitor implements IResourceVisitor {
         boolean result = true;
 
         if (resource instanceof IFile) {
-            IFile file = (IFile) resource;
+            final IFile file = (IFile) resource;
             try {
                 if ((((IFile) resource).getFileExtension() != null)
                         && ((IFile) resource).getFileExtension().equals("java")

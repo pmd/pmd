@@ -28,6 +28,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/20 21:01:23  phherlin
+ * Enable PMD and fix error level violations
+ *
  * Revision 1.1  2006/05/22 21:23:56  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  * Revision 1.2 2006/05/02 18:34:23 phherlin Make CPD "working set aware"
@@ -46,7 +49,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * 
  */
 public class CPDCheckProjectAction implements IObjectActionDelegate {
-    private static Logger log = Logger.getLogger(CPDCheckProjectAction.class);
+    private static final Logger log = Logger.getLogger(CPDCheckProjectAction.class);
     private IWorkbenchPart targetPart;
     private Set projects = new HashSet();
 

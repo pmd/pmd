@@ -35,6 +35,9 @@ import org.w3c.dom.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/20 21:01:49  phherlin
+ * Enable PMD and fix error level violations
+ *
  * Revision 1.1  2006/05/22 21:37:35  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -78,7 +81,7 @@ import org.w3c.dom.Text;
  *
  */
 class RuleSetWriterImpl implements IRuleSetWriter {
-    private static Logger log = Logger.getLogger(RuleSetWriterImpl.class);
+    private static final Logger log = Logger.getLogger(RuleSetWriterImpl.class);
 
     /**
      * Write a ruleset as an XML stream

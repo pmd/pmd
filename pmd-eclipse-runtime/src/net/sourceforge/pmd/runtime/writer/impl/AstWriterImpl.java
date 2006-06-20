@@ -56,6 +56,9 @@ import org.w3c.dom.Element;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/20 21:01:49  phherlin
+ * Enable PMD and fix error level violations
+ *
  * Revision 1.1  2006/05/22 21:37:35  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -78,7 +81,7 @@ import org.w3c.dom.Element;
  *
  */
 class AstWriterImpl implements IAstWriter {
-    private static Logger log = Logger.getLogger(AstWriterImpl.class);
+    private static final Logger log = Logger.getLogger(AstWriterImpl.class);
 
     /**
      * @see net.sourceforge.pmd.runtime.writer.IAstWriter#write(java.io.Writer, net.sourceforge.pmd.ast.ASTCompilationUnit)

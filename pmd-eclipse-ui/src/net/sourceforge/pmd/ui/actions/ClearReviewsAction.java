@@ -77,6 +77,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/20 21:01:23  phherlin
+ * Enable PMD and fix error level violations
+ *
  * Revision 1.1  2006/05/22 21:23:56  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -94,7 +97,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * 
  */
 public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisitor, IViewActionDelegate {
-    private static Logger log = Logger.getLogger(ClearReviewsAction.class);
+    private static final Logger log = Logger.getLogger(ClearReviewsAction.class);
     private IWorkbenchPart targetPart;
     private IProgressMonitor monitor;
 

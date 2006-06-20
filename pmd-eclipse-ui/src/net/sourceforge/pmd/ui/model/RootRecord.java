@@ -45,7 +45,7 @@ public class RootRecord extends PMDRecord {
 	}
 	
 	/* @see net.sourceforge.pmd.ui.model.PMDRecord#createChildren() */
-	protected PMDRecord[] createChildren() {
+	protected final PMDRecord[] createChildren() {
 		// get the projects
 		IProject[] projects = workspaceRoot.getProjects();
 		ArrayList projectList = new ArrayList();

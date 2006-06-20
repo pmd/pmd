@@ -42,6 +42,9 @@ package net.sourceforge.pmd.core;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/06/20 21:04:49  phherlin
+ * Enable PMD and fix error level violations
+ *
  * Revision 1.4  2006/01/17 21:23:20  phherlin
  * Update the PMD 3.4 librairy.
  * Add jakarta ORO for Regexp support.
@@ -57,8 +60,8 @@ package net.sourceforge.pmd.core;
  *
  *
  */
-public interface PluginConstants {
-    String[] PMD_RULESETS = {
+public class PluginConstants {
+    public static final String[] PMD_RULESETS = {
             "rulesets/basic.xml", 
             "rulesets/braces.xml", 
             "rulesets/clone.xml",
@@ -79,4 +82,12 @@ public interface PluginConstants {
             "rulesets/strings.xml",
             "rulesets/sunsecure.xml",
             "rulesets/unusedcode.xml"};
+    
+    /**
+     * This class is not meant to be instanciated
+     *
+     */
+    private PluginConstants() {
+        super();
+    }
 }

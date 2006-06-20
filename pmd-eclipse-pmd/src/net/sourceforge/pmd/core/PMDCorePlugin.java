@@ -53,6 +53,9 @@ import org.eclipse.core.runtime.Status;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/06/20 21:04:49  phherlin
+ * Enable PMD and fix error level violations
+ *
  * Revision 1.3  2006/04/10 20:58:18  phherlin
  * Update to PMD 3.6
  *
@@ -89,7 +92,7 @@ public class PMDCorePlugin extends Plugin {
     /**
      * @return the ruleset manager instance
      */
-    public IRuleSetManager getRuleSetManager() {
+    public final IRuleSetManager getRuleSetManager() {
         return this.ruleSetManager;
     }
     
@@ -127,10 +130,10 @@ public class PMDCorePlugin extends Plugin {
      */
     private void registerAdditionalRuleSets() {
         try {
-            RuleSetsExtensionProcessor processor = new RuleSetsExtensionProcessor(getRuleSetManager());
+            final RuleSetsExtensionProcessor processor = new RuleSetsExtensionProcessor(getRuleSetManager());
             processor.process();
         } catch (CoreException e) {
-            this.log(IStatus.ERROR, "Error when processing RuleSets extensions", e);
+            log(IStatus.ERROR, "Error when processing RuleSets extensions", e);
         }
     }
 }

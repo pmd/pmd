@@ -54,6 +54,9 @@ import org.eclipse.core.runtime.Platform;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/06/20 21:04:24  phherlin
+ * Enable PMD and fix error level violations
+ *
  * Revision 1.2  2006/06/08 21:46:58  phherlin
  * Remove usage API unknown by RSA (no consequence as it was for logging only)
  *
@@ -66,7 +69,7 @@ import org.eclipse.core.runtime.Platform;
 public class RuleSetsExtensionProcessor {
     private static final String EXTENTION_POINT = "net.sourceforge.pmd.core.rulesets";
     private static final String CLASS_ATTRIBUTE = "class";
-    private IRuleSetManager ruleSetManager;
+    final private IRuleSetManager ruleSetManager;
     
     /**
      * Constructor
@@ -80,9 +83,9 @@ public class RuleSetsExtensionProcessor {
      * Process the extension point
      */
     public void process() throws CoreException {
-        IExtensionRegistry registry = Platform.getExtensionRegistry();
-        IExtensionPoint extensionPoint = registry.getExtensionPoint(EXTENTION_POINT);
-        IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
+        final IExtensionRegistry registry = Platform.getExtensionRegistry();
+        final IExtensionPoint extensionPoint = registry.getExtensionPoint(EXTENTION_POINT);
+        final IConfigurationElement[] elements = extensionPoint.getConfigurationElements();
         for (int i = 0; i < elements.length; i++) {
             processExecutableExtension(elements[i]);
         }
@@ -93,9 +96,9 @@ public class RuleSetsExtensionProcessor {
      * @param element the extension to process
      */
     private void processExecutableExtension(IConfigurationElement element) throws CoreException {
-        Object object = element.createExecutableExtension(CLASS_ATTRIBUTE);
+        final Object object = element.createExecutableExtension(CLASS_ATTRIBUTE);
         if (object instanceof IRuleSetsExtension) {
-            IRuleSetsExtension extension = (IRuleSetsExtension) object;
+            final IRuleSetsExtension extension = (IRuleSetsExtension) object;
             
             extension.registerRuleSets(this.ruleSetManager.getRegisteredRuleSets());            
             extension.registerDefaultRuleSets(this.ruleSetManager.getDefaultRuleSets());

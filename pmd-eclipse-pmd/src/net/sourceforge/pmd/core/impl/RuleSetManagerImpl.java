@@ -48,6 +48,9 @@ import net.sourceforge.pmd.core.IRuleSetManager;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/06/20 21:04:49  phherlin
+ * Enable PMD and fix error level violations
+ *
  * Revision 1.2  2005/07/02 14:33:05  phherlin
  * Implement the RuleSets extension point
  *
@@ -72,7 +75,7 @@ public class RuleSetManagerImpl implements IRuleSetManager {
      */
     public void registerRuleSet(final RuleSet ruleSet) {
         if (ruleSet == null) {
-            throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS
+            throw new IllegalArgumentException("ruleSet cannot be null"); // TODO NLS // NOPMD by Herlin on 20/06/06 22:56
         }
         
         this.ruleSets.add(ruleSet);

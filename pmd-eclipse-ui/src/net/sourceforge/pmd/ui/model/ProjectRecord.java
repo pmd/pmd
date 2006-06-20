@@ -54,7 +54,7 @@ public class ProjectRecord extends PMDRecord {
     }
 
     /* @see net.sourceforge.pmd.ui.model.PMDRecord#createChildren() */
-    protected PMDRecord[] createChildren() {
+    protected final PMDRecord[] createChildren() {
         ArrayList packageList = new ArrayList();
         try {
             // search for Project members
@@ -95,7 +95,7 @@ public class ProjectRecord extends PMDRecord {
      * @param root
      * @return
      */
-    protected ArrayList createPackagesFromFragmentRoot(IPackageFragmentRoot root) {
+    protected final ArrayList createPackagesFromFragmentRoot(IPackageFragmentRoot root) {
         ArrayList packages = new ArrayList();
         IJavaElement[] fragments = null;
         try {
