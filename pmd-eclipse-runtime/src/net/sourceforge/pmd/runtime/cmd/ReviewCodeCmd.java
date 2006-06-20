@@ -85,38 +85,45 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2006/06/05 22:25:21  phherlin
- * Use the 3.0 SchedulingRule API to be compatible with Rational Products
- *
- * Revision 1.1  2006/05/22 21:37:35  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- * Revision 1.11 2006/04/26 21:15:02 phherlin Add the include derived files option
+ * Revision 1.3  2006/06/20 20:48:24  phherlin
+ * Fix the issue where the whole project is processed instead of a single file.
+ * Revision 1.2 2006/06/05 22:25:21 phherlin Use the 3.0 SchedulingRule
+ * API to be compatible with Rational Products
  * 
- * Revision 1.10 2006/04/24 20:55:15 phherlin Batch markers update to try to gain performance
+ * Revision 1.1 2006/05/22 21:37:35 phherlin Refactor the plug-in architecture
+ * to better support future evolutions Revision 1.11 2006/04/26 21:15:02
+ * phherlin Add the include derived files option
  * 
- * Revision 1.9 2006/04/24 19:35:01 phherlin Add performance mesures on commands and on pmd execution Revision 1.8 2006/04/10
- * 20:55:31 phherlin Update to PMD 3.6
+ * Revision 1.10 2006/04/24 20:55:15 phherlin Batch markers update to try to
+ * gain performance
  * 
- * Revision 1.7 2005/12/30 16:24:01 phherlin Adding a null resource is illegal. Throw an IllegalArgumentException.
+ * Revision 1.9 2006/04/24 19:35:01 phherlin Add performance mesures on commands
+ * and on pmd execution Revision 1.8 2006/04/10 20:55:31 phherlin Update to PMD
+ * 3.6
+ * 
+ * Revision 1.7 2005/12/30 16:24:01 phherlin Adding a null resource is illegal.
+ * Throw an IllegalArgumentException.
  * 
  * Revision 1.6 2005/10/24 22:40:54 phherlin Refactor command processing
  * 
  * Revision 1.5 2005/06/30 23:24:19 phherlin Add the JDK 1.5 support
  * 
- * Revision 1.4 2005/06/07 18:38:14 phherlin Move classes to limit packages cycle dependencies
+ * Revision 1.4 2005/06/07 18:38:14 phherlin Move classes to limit packages
+ * cycle dependencies
  * 
  * Revision 1.3 2005/05/31 20:44:41 phherlin Continuing refactoring
  * 
- * Revision 1.2 2005/05/10 21:49:18 phherlin Fix new violations detected by PMD 3.1
+ * Revision 1.2 2005/05/10 21:49:18 phherlin Fix new violations detected by PMD
+ * 3.1
  * 
- * Revision 1.1 2005/05/07 13:32:04 phherlin Continuing refactoring Fix some PMD violations Fix Bug 1144793 Fix Bug 1190624 (at
- * least try)
+ * Revision 1.1 2005/05/07 13:32:04 phherlin Continuing refactoring Fix some PMD
+ * violations Fix Bug 1144793 Fix Bug 1190624 (at least try)
  * 
  * 
  */
 public class ReviewCodeCmd extends AbstractDefaultCommand {
     private static final Logger log = Logger.getLogger(ReviewCodeCmd.class);
-    private List resources = new ArrayList();
+    final private List resources = new ArrayList();
     private IResourceDelta resourceDelta;
     private Map markers = new HashMap();
     private boolean taskMarker = false;
@@ -157,13 +164,13 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             }
 
             // Appliquer les marqueurs
-            IWorkspaceRunnable action = new IWorkspaceRunnable() {
+            final IWorkspaceRunnable action = new IWorkspaceRunnable() {
                 public void run(IProgressMonitor monitor) throws CoreException {
                     applyMarkers();
                 }
             };
 
-            IWorkspace workspace = ResourcesPlugin.getWorkspace();
+            final IWorkspace workspace = ResourcesPlugin.getWorkspace();
             workspace.run(action, getschedulingRule(), IWorkspace.AVOID_UPDATE, getMonitor());
 
             // Switch to the PMD perspective if required
@@ -239,7 +246,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * @param openPmdPerspective Tell whether the PMD perspective should be opened after processing.
+     * @param openPmdPerspective Tell whether the PMD perspective should be
+     *            opened after processing.
      */
     public void setOpenPmdPerspective(boolean openPmdPerspective) {
         this.openPmdPerspective = openPmdPerspective;
@@ -266,8 +274,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * @return the scheduling rule needed to apply markers
      */
     private ISchedulingRule getschedulingRule() {
-        IWorkspace workspace = ResourcesPlugin.getWorkspace();
-        IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
+        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        final IResourceRuleFactory ruleFactory = workspace.getRuleFactory();
         ISchedulingRule rule = null;
 
         if (this.resources.size() == 0) {
@@ -284,7 +292,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     }
 
     /**
-     * Return a PMD Engine for that project. The engine is parameterized according to the target JDK of that project.
+     * Return a PMD Engine for that project. The engine is parameterized
+     * according to the target JDK of that project.
      * 
      * @param project
      * @return
@@ -319,10 +328,16 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * @throws CommandException
      */
     private void processResources() throws CommandException {
-        Iterator i = this.resources.iterator();
+        final Iterator i = this.resources.iterator();
         while (i.hasNext()) {
-            IResource resource = (IResource) i.next();
-            processResource(resource);
+            final IResource resource = (IResource) i.next();
+
+            // if resource is a project, visit only its source folders
+            if (resource instanceof IProject) {
+                processProject((IProject) resource);
+            } else {
+                processResource(resource);
+            }
         }
     }
 
@@ -336,35 +351,49 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final RuleSet ruleSet = properties.getProjectRuleSet();
             final PMD pmdEngine = getPmdEngineForProject(project);
             setStepsCount(countResourceElement(resource));
-            log.debug("Visit of resource " + resource.getName() + " : " + getStepsCount());
+            log.debug("Visiting resource " + resource.getName() + " : " + getStepsCount());
 
-            IJavaProject javaProject = JavaCore.create(project);
-            IClasspathEntry[] entries = javaProject.getRawClasspath();
+            final ResourceVisitor visitor = new ResourceVisitor();
+            visitor.setMonitor(this.getMonitor());
+            visitor.setRuleSet(ruleSet);
+            visitor.setPmdEngine(pmdEngine);
+            visitor.setAccumulator(this.markers);
+            visitor.setUseTaskMarker(this.taskMarker);
+            visitor.setProjectProperties(properties);
+            resource.accept(visitor);
+
+            this.rulesCount = ruleSet.getRules().size();
+            this.filesCount += visitor.getProcessedFilesCount();
+            this.pmdDuration += visitor.getActualPmdDuration();
+
+        } catch (PropertiesException e) {
+            throw new CommandException(e);
+        } catch (CoreException e) {
+            throw new CommandException(e);
+        }
+    }
+
+    /**
+     * Review an entire project
+     */
+    private void processProject(IProject project) throws CommandException {
+        try {
+            setStepsCount(countResourceElement(project));
+            log.debug("Visiting  project " + project.getName() + " : " + getStepsCount());
+
+            final IJavaProject javaProject = JavaCore.create(project);
+            final IClasspathEntry[] entries = javaProject.getRawClasspath();
             for (int i = 0; i < entries.length; i++) {
                 if (entries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-                    IFolder sourceFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(entries[i].getPath());
+                    final IFolder sourceFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(entries[i].getPath());
                     if (sourceFolder == null) {
                         log.warn("Source folder " + entries[i].getPath() + " for project " + project.getName() + " is not valid");
                     } else {
-                        log.debug("Visiting source folder " + sourceFolder.getName());
-                        final ResourceVisitor visitor = new ResourceVisitor();
-                        visitor.setMonitor(this.getMonitor());
-                        visitor.setRuleSet(ruleSet);
-                        visitor.setPmdEngine(pmdEngine);
-                        visitor.setAccumulator(this.markers);
-                        visitor.setUseTaskMarker(this.taskMarker);
-                        visitor.setProjectProperties(properties);
-                        sourceFolder.accept(visitor);
-
-                        this.rulesCount = ruleSet.getRules().size();
-                        this.filesCount += visitor.getProcessedFilesCount();
-                        this.pmdDuration += visitor.getActualPmdDuration();
+                        processResource(sourceFolder);
                     }
                 }
             }
 
-        } catch (PropertiesException e) {
-            throw new CommandException(e);
         } catch (CoreException e) {
             throw new CommandException(e);
         }
@@ -409,7 +438,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
     private void applyMarkers() {
         log.info("Processing marker directives");
         int violationsCount = 0;
-        Timer timer = new Timer();
+        final Timer timer = new Timer();
 
         String currentFile = ""; // for logging
         try {
@@ -436,7 +465,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
             }
         } catch (CoreException e) {
-            log.warn("CoreException when setting marker info for file " + currentFile + " : " + e.getMessage()); // TODO: NLS
+            log.warn("CoreException when setting marker info for file " + currentFile + " : " + e.getMessage()); // TODO:
+                                                                                                                    // NLS
         } finally {
             timer.stop();
             PMDRuntimePlugin.getDefault().logInformation(
@@ -490,9 +520,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      * @author SebastianRaffel ( 07.05.2005 )
      */
     private void switchToPmdPerspective() {
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IPerspectiveRegistry reg = workbench.getPerspectiveRegistry();
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IPerspectiveRegistry reg = workbench.getPerspectiveRegistry();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         window.getActivePage().setPerspective(reg.findPerspectiveWithId(PMDRuntimeConstants.ID_PERSPECTIVE));
     }
 
