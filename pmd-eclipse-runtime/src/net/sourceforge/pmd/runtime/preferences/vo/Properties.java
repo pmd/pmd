@@ -48,6 +48,9 @@ import java.util.Set;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/20 21:26:42  phherlin
+ * Fix/review PMD violations
+ *
  * Revision 1.1  2006/06/18 22:33:02  phherlin
  * Begin to implement a new model for the plugin to handle rules and rulesets.
  *
@@ -55,28 +58,28 @@ import java.util.Set;
  */
 
 public class Properties {
-    private Set properties = new HashSet();
+    private Set propertiesSet = new HashSet();
 
     /**
-     * Getter for the properties.
+     * Getter for the propertiesSet.
      * 
-     * @return Returns the properties.
+     * @return Returns the propertiesSet.
      */
     public Set getProperties() {
-        return properties;
+        return this.propertiesSet;
     }
 
     /**
-     * Setter for the properties
+     * Setter for the propertiesSet
      * 
-     * @param properties The properties to set.
+     * @param propertiesSet The propertiesSet to set.
      */
     public void setProperties(Set properties) {
         if (properties == null) {
-            throw new IllegalArgumentException("properties cannot be null");
+            throw new IllegalArgumentException("propertiesSet cannot be null");
         }
 
-        this.properties = properties;
+        this.propertiesSet = properties;
     }
 
     /**
@@ -86,8 +89,8 @@ public class Properties {
         boolean equal = false;
         
         if (arg0 instanceof Properties) {
-            Properties p = (Properties) arg0;
-            equal = this.properties.equals(p.properties);
+            final Properties p = (Properties) arg0;
+            equal = this.propertiesSet.equals(p.propertiesSet);
         }
         
         return equal;
@@ -97,16 +100,16 @@ public class Properties {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return this.properties.hashCode();
+        return this.propertiesSet.hashCode();
     }
 
     /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        StringBuffer buffer = new StringBuffer("Properties");
-        for (Iterator i = this.properties.iterator(); i.hasNext();) {
-            Property p = (Property) i.next();
+        final StringBuffer buffer = new StringBuffer("Properties");
+        for (final Iterator i = this.propertiesSet.iterator(); i.hasNext();) {
+            final Property p = (Property) i.next();
             buffer.append(' ');
             buffer.append(p);
         }

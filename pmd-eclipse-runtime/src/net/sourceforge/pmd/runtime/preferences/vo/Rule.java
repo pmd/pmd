@@ -45,6 +45,9 @@ package net.sourceforge.pmd.runtime.preferences.vo;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/20 21:26:42  phherlin
+ * Fix/review PMD violations
+ *
  * Revision 1.1  2006/06/18 22:33:02  phherlin
  * Begin to implement a new model for the plugin to handle rules and rulesets.
  *
@@ -135,7 +138,7 @@ public class Rule {
         if (ref == null) {
             throw new IllegalArgumentException("ref cannot be null");
         }
-        if (ref.trim().length() == 0) {
+        if (ref.trim().length() == 0) { // NOPMD by Herlin on 20/06/06 23:25
             throw new IllegalArgumentException("ref cannot be an empty string");
         }
 
@@ -149,7 +152,7 @@ public class Rule {
         boolean equal = false;
 
         if (arg0 instanceof Rule) {
-            Rule r = (Rule) arg0;
+            final Rule r = (Rule) arg0;
             equal = this.ref.equals(r.ref);
             equal = equal && (((this.priority == null) && (r.priority == null)) || (this.priority.equals(r.priority)));
             equal = equal && (((this.properties == null) && (r.properties == null)) || (this.properties.equals(r.properties)));

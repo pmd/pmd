@@ -38,7 +38,7 @@ package net.sourceforge.pmd.runtime.preferences.vo;
 
 /**
  * This class is a value objet that composes the structure of a rulesets object.
- * It holds a priority definition, ie a integer value that describes the level
+ * It holds a priorityValue definition, ie a integer value that describes the level
  * of a rule. This class if fundamentally an enumeration that is implemented as
  * a type safe enumeration, but with constraints of Java Beans to allow
  * serialization. (Note: we are still in JDK 1.5 and we don't use enum yet).
@@ -47,6 +47,9 @@ package net.sourceforge.pmd.runtime.preferences.vo;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/20 21:26:42  phherlin
+ * Fix/review PMD violations
+ *
  * Revision 1.1  2006/06/18 22:33:02  phherlin
  * Begin to implement a new model for the plugin to handle rules and rulesets.
  *
@@ -65,11 +68,11 @@ public class Priority {
     public static final int LEVEL5_LITTERAL = 5;
     public static final Priority LEVEL5 = new Priority(LEVEL5_LITTERAL);
 
-    private int priority = LEVEL3_LITTERAL;
+    private int priorityValue = LEVEL3_LITTERAL;
 
     /**
      * Default constructor to be compatible with Java Beans definition and to
-     * allow serialization. To be legal, the priority is set to default level 3.
+     * allow serialization. To be legal, the priorityValue is set to default level 3.
      * 
      */
     public Priority() {
@@ -79,36 +82,36 @@ public class Priority {
     /**
      * Enumeration constructor as defined by the Type Safe Enumeration idiom.
      * 
-     * @param priority the priority level
+     * @param priorityValue the priorityValue level
      */
     private Priority(int priority) {
         super();
-        this.priority = priority;
+        this.priorityValue = priority;
     }
 
     /**
-     * Getter for the priority value. Defined only to be compatible with Java
+     * Getter for the priorityValue value. Defined only to be compatible with Java
      * Beans
      * 
-     * @return Returns the priority.
+     * @return Returns the priorityValue.
      */
     public int getPriorityValue() {
-        return this.priority;
+        return this.priorityValue;
     }
 
     /**
-     * Setter for the priority value. Defined only to be compatible with Java
+     * Setter for the priorityValue value. Defined only to be compatible with Java
      * Beans
      * 
-     * @param priority The priority to set.
+     * @param priorityValue The priorityValue to set.
      */
     public void setPriority(int priority) {
         if ((priority < LEVEL1_LITTERAL) || (priority > LEVEL5_LITTERAL)) {
-            throw new IllegalArgumentException("priority value invalid ; was " + priority + " and should be between "
+            throw new IllegalArgumentException("priorityValue value invalid ; was " + priority + " and should be between "
                     + LEVEL1_LITTERAL + " and " + LEVEL5_LITTERAL);
         }
 
-        this.priority = priority;
+        this.priorityValue = priority;
     }
 
     /**
@@ -118,8 +121,8 @@ public class Priority {
         boolean equal = false;
 
         if (arg0 instanceof Priority) {
-            Priority p = (Priority) arg0;
-            equal = p.priority == this.priority;
+            final Priority p = (Priority) arg0;
+            equal = p.priorityValue == this.priorityValue;
         }
 
         return equal;
@@ -129,14 +132,14 @@ public class Priority {
      * @see java.lang.Object#hashCode()
      */
     public int hashCode() {
-        return new Integer(this.priority).hashCode();
+        return new Integer(this.priorityValue).hashCode();
     }
 
     /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        return "priority value=" + this.priority;
+        return "priorityValue value=" + this.priorityValue;
     }
 
 }

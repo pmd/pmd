@@ -49,6 +49,9 @@ import java.util.Iterator;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/20 21:26:42  phherlin
+ * Fix/review PMD violations
+ *
  * Revision 1.1  2006/06/18 22:33:02  phherlin
  * Begin to implement a new model for the plugin to handle rules and rulesets.
  *
@@ -112,7 +115,7 @@ public class RuleSet {
         if (name == null) {
             throw new IllegalArgumentException("name cannot be null");
         }
-        if (name.trim().length() == 0) {
+        if (name.trim().length() == 0) { // NOPMD by Herlin on 20/06/06 23:25
             throw new IllegalArgumentException("name cannot be empty");
         }
 
@@ -172,7 +175,7 @@ public class RuleSet {
         boolean equal = false;
 
         if (arg0 instanceof RuleSet) {
-            RuleSet rs = (RuleSet) arg0;
+            final RuleSet rs = (RuleSet) arg0;
             equal = this.name.equals(rs.name) && this.rules.equals(rs.rules) && this.language.equals(rs.language);
         }
 
@@ -190,9 +193,9 @@ public class RuleSet {
      * @see java.lang.Object#toString()
      */
     public String toString() {
-        StringBuffer buffer = new StringBuffer("RuleSet name=" + this.name + " description=" + " language=" + this.language
+        final StringBuffer buffer = new StringBuffer("RuleSet name=" + this.name + " description=" + " language=" + this.language
                 + " rules=");
-        for (Iterator i = this.rules.iterator(); i.hasNext();) {
+        for (final Iterator i = this.rules.iterator(); i.hasNext();) {
             buffer.append(' ').append(i.next());
         }
 

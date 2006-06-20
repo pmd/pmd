@@ -44,6 +44,9 @@ package net.sourceforge.pmd.runtime.preferences.vo;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/06/20 21:26:42  phherlin
+ * Fix/review PMD violations
+ *
  * Revision 1.1  2006/06/18 22:33:02  phherlin
  * Begin to implement a new model for the plugin to handle rules and rulesets.
  *
@@ -105,7 +108,7 @@ public class Property {
         boolean equal = false;
 
         if (arg0 instanceof Property) {
-            Property p = (Property) arg0;
+            final Property p = (Property) arg0;
             equal = this.name.equals(p.name) && this.value.equals(p.value);
         }
 
