@@ -239,7 +239,7 @@ public class PMDJEditPlugin extends EBPlugin
 				for (Iterator i = ctx.getReport().iterator(); i.hasNext();)
 				{
 					RuleViolation rv = (RuleViolation)i.next();
-					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getNode().getBeginLine()-1,0,0,rv.getDescription()));
+					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getBeginLine()-1,0,0,rv.getDescription()));
 				}
 
 				registerErrorSource();
@@ -331,7 +331,7 @@ public class PMDJEditPlugin extends EBPlugin
 				{
 					foundProblems = true;
 					RuleViolation rv = (RuleViolation)j.next();
-					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR,  file.getAbsolutePath(), rv.getNode().getBeginLine()-1,0,0,rv.getDescription()));
+					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR,  file.getAbsolutePath(), rv.getBeginLine()-1,0,0,rv.getDescription()));
 				}
 				if(!ctx.getReport().isEmpty())//That means Report contains some violations, so only cache such reports.
 				{

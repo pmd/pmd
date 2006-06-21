@@ -5,11 +5,11 @@
 	<property name="src" value="src/"/>
 	<property name="lib" value="lib"/>
 	<property name="build" value="build"/>
-	<property name="pmdjar" value="pmd-3.5.jar"/>
+	<property name="pmdjar" value="pmd-3.7.jar"/>
 	<property name="pluginversion" value="2.6"/>
 	<property name="jedit.install.dir" value="../.."/>
 	<property name="jedit.jars.dir" value="${jedit.install.dir}\jars"/>
-	<property name="install.dir"  value=".."/>
+	<property name="install.dir"  value="${jedit.jars.dir}"/>
 
 	<path id="project.class.path">
 		<pathelement location="${jedit.install.dir}/jedit.jar"/>
