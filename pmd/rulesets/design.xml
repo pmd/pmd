@@ -732,8 +732,9 @@ Clarify your intent by using private or package access modifiers instead.
              <property name="xpath">
                  <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
- [@Final='true']//FieldDeclaration[@Protected='true']
+//ClassOrInterfaceDeclaration[@Final='true']
+/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
+/FieldDeclaration[@Protected='true']
  ]]>
                  </value>
              </property>

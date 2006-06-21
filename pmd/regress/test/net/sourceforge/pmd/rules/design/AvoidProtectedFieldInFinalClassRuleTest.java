@@ -19,6 +19,7 @@ public class AvoidProtectedFieldInFinalClassRuleTest extends SimpleAggregatorTst
             new TestDescriptor(TEST1, "ok, protected field in non final class", 0, rule),
             new TestDescriptor(TEST2, "bad, protected field in final class", 1, rule),
             new TestDescriptor(TEST3, "ok, private field in final class", 0, rule),
+            new TestDescriptor(TEST4, "protected field in inner class is ok", 0, rule),
         });
     }
 
@@ -35,6 +36,11 @@ public class AvoidProtectedFieldInFinalClassRuleTest extends SimpleAggregatorTst
     private static final String TEST3 =
             "public final class Foo {" + PMD.EOL +
             " private int x;" + PMD.EOL +
+            "}";
+
+    private static final String TEST4 =
+            "public final class Foo {" + PMD.EOL +
+            " private class bar { protected int x; }" + PMD.EOL +
             "}";
 
 }

@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>John Redford - Reported bug in AvoidProtectedFieldInFinalClass</li>
             <li>D'Arcy Smith - Reported bug in UncommentedEmptyConstructor, reported missing RuleViolation methods</li>
             <li>Paul Field - Fixed bug in MissingBreakInSwitch, reported a bug in DontImportJavaLang</li>
             <li>Attila Korompai - A nice patch to add messages to the NOPMD feature</li>
