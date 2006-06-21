@@ -34,13 +34,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.runtime.preferences.vo;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
+package net.sourceforge.pmd.core.rulesets.vo;
 
 import junit.framework.TestCase;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 
 /**
  * Unit tests for the RuleSet class
@@ -49,9 +46,12 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.1  2006/06/18 22:29:50  phherlin
- * Begin refactoring the unit tests for the plugin
- *
+ * Revision 1.1  2006/06/21 23:06:52  phherlin
+ * Move the new rule sets management to the core plugin instead of the runtime.
+ * Continue the development.
+ * Revision 1.1 2006/06/18 22:29:50 phherlin Begin refactoring the unit
+ * tests for the plugin
+ * 
  * 
  */
 
@@ -267,30 +267,31 @@ public class RuleSetTest extends TestCase {
     }
 
     /**
-     * Setting rules to any collection is legal for now whatever it contains !
-     * wait for JDK 1.5 implementation to do better
+     * Adding a rule.
+     * 
+     * @throws RuleSetNotFoundException
      * 
      */
-    public void testSetRules1() {
+    public void testAddRule1() throws RuleSetNotFoundException {
         try {
-            Collection c = new HashSet();
-            c.add("foo");
             RuleSet rs = new RuleSet();
-            rs.setRules(c);
+            Rule rule = new Rule();
+            rule.setPmdRule(TestManager.getRule(0));
+            rs.addRule(rule);
         } catch (IllegalArgumentException e) {
-            fail("setting rules to any collection is legal !");
+            fail("adding any rule object is legal !");
         }
     }
 
     /**
-     * Setting rules to null is illegal.
+     * Adding a null rule is illegal.
      * 
      */
-    public void testSetRules2() {
+    public void testAddRule2() {
         try {
             RuleSet rs = new RuleSet();
-            rs.setRules(null);
-            fail("setting rules to null is illegal !");
+            rs.addRule(null);
+            fail("Adding a null rule is illegal !");
         } catch (IllegalArgumentException e) {
             // success
         }
@@ -320,33 +321,35 @@ public class RuleSetTest extends TestCase {
      * RuleSets are equal if they have the same name, language and rules
      * collection whatever the description.
      * 
+     * @throws RuleSetNotFoundException
+     * 
      */
-    public void testEquals3() {
+    public void testEquals3() throws RuleSetNotFoundException {
         Rule r1 = new Rule();
         r1.setRef("ref to a rule");
+        r1.setPmdRule(TestManager.getRule(0));
         Rule r2 = new Rule();
         r2.setRef("ref to another rule");
-        Collection c1 = new ArrayList();
-        c1.add(r1);
-        c1.add(r2);
+        r2.setPmdRule(TestManager.getRule(1));
 
         Rule r3 = new Rule();
         r3.setRef("ref to a rule");
+        r3.setPmdRule(TestManager.getRule(2));
         Rule r4 = new Rule();
         r4.setRef("ref to another rule");
-        Collection c2 = new ArrayList();
-        c2.add(r3);
-        c2.add(r4);
+        r4.setPmdRule(TestManager.getRule(3));
 
         RuleSet rs1 = new RuleSet();
         rs1.setName("default");
         rs1.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs1.setRules(c1);
+        rs1.addRule(r1);
+        rs1.addRule(r2);
 
         RuleSet rs2 = new RuleSet();
         rs2.setName("default");
         rs2.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs2.setRules(c2);
+        rs2.addRule(r3);
+        rs2.addRule(r4);
         rs2.setDescription("Description does not make the difference");
 
         assertEquals("These rule sets should be equals", rs1, rs2);
@@ -355,33 +358,35 @@ public class RuleSetTest extends TestCase {
     /**
      * Rule sets with different names are different
      * 
+     * @throws RuleSetNotFoundException
+     * 
      */
-    public void testEquals4() {
+    public void testEquals4() throws RuleSetNotFoundException {
         Rule r1 = new Rule();
         r1.setRef("ref to a rule");
+        r1.setPmdRule(TestManager.getRule(0));
         Rule r2 = new Rule();
         r2.setRef("ref to another rule");
-        Collection c1 = new ArrayList();
-        c1.add(r1);
-        c1.add(r2);
+        r2.setPmdRule(TestManager.getRule(1));
 
         Rule r3 = new Rule();
         r3.setRef("ref to a rule");
+        r3.setPmdRule(TestManager.getRule(2));
         Rule r4 = new Rule();
         r4.setRef("ref to another rule");
-        Collection c2 = new ArrayList();
-        c2.add(r3);
-        c2.add(r4);
+        r4.setPmdRule(TestManager.getRule(3));
 
         RuleSet rs1 = new RuleSet();
         rs1.setName("default");
         rs1.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs1.setRules(c1);
+        rs1.addRule(r1);
+        rs1.addRule(r2);
 
         RuleSet rs2 = new RuleSet();
         rs2.setName("custom");
         rs2.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs2.setRules(c2);
+        rs2.addRule(r3);
+        rs2.addRule(r4);
         rs2.setDescription("Description does not make the difference");
 
         assertFalse("Rule sets with different names are different", rs1.equals(rs2));
@@ -390,33 +395,35 @@ public class RuleSetTest extends TestCase {
     /**
      * Rule sets with different languages are different
      * 
+     * @throws RuleSetNotFoundException
+     * 
      */
-    public void testEquals5() {
+    public void testEquals5() throws RuleSetNotFoundException {
         Rule r1 = new Rule();
         r1.setRef("ref to a rule");
+        r1.setPmdRule(TestManager.getRule(0));
         Rule r2 = new Rule();
         r2.setRef("ref to another rule");
-        Collection c1 = new ArrayList();
-        c1.add(r1);
-        c1.add(r2);
+        r2.setPmdRule(TestManager.getRule(1));
 
         Rule r3 = new Rule();
         r3.setRef("ref to a rule");
+        r3.setPmdRule(TestManager.getRule(2));
         Rule r4 = new Rule();
         r4.setRef("ref to another rule");
-        Collection c2 = new ArrayList();
-        c2.add(r3);
-        c2.add(r4);
+        r4.setPmdRule(TestManager.getRule(3));
 
         RuleSet rs1 = new RuleSet();
         rs1.setName("default");
         rs1.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs1.setRules(c1);
+        rs1.addRule(r1);
+        rs1.addRule(r2);
 
         RuleSet rs2 = new RuleSet();
         rs2.setName("default");
         rs2.setLanguage(RuleSet.LANGUAGE_JAVA);
-        rs2.setRules(c2);
+        rs2.addRule(r3);
+        rs2.addRule(r4);
         rs2.setDescription("Description does not make the difference");
 
         assertFalse("Rule sets with different languages are different", rs1.equals(rs2));
@@ -425,33 +432,35 @@ public class RuleSetTest extends TestCase {
     /**
      * Rule sets with different rules collection are different
      * 
+     * @throws RuleSetNotFoundException
+     * 
      */
-    public void testEquals7() {
+    public void testEquals7() throws RuleSetNotFoundException {
         Rule r1 = new Rule();
         r1.setRef("ref to a rule");
+        r1.setPmdRule(TestManager.getRule(0));
         Rule r2 = new Rule();
         r2.setRef("ref to another rule");
-        Collection c1 = new ArrayList();
-        c1.add(r1);
-        c1.add(r2);
+        r2.setPmdRule(TestManager.getRule(1));
 
         Rule r3 = new Rule();
         r3.setRef("ref to a rule");
+        r3.setPmdRule(TestManager.getRule(2));
         Rule r4 = new Rule();
         r4.setRef("ref to yet another rule");
-        Collection c2 = new ArrayList();
-        c2.add(r3);
-        c2.add(r4);
+        r4.setPmdRule(TestManager.getRule(3));
 
         RuleSet rs1 = new RuleSet();
         rs1.setName("default");
         rs1.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs1.setRules(c1);
+        rs1.addRule(r1);
+        rs1.addRule(r2);
 
         RuleSet rs2 = new RuleSet();
         rs2.setName("default");
         rs2.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs2.setRules(c2);
+        rs2.addRule(r3);
+        rs2.addRule(r4);
         rs2.setDescription("Description does not make the difference");
 
         assertFalse("Rule sets with different rules collections are different", rs1.equals(rs2));
@@ -460,33 +469,35 @@ public class RuleSetTest extends TestCase {
     /**
      * Equal rule sets must have the same hash code
      * 
+     * @throws RuleSetNotFoundException
+     * 
      */
-    public void testHashCode1() {
+    public void testHashCode1() throws RuleSetNotFoundException {
         Rule r1 = new Rule();
         r1.setRef("ref to a rule");
+        r1.setPmdRule(TestManager.getRule(0));
         Rule r2 = new Rule();
         r2.setRef("ref to another rule");
-        Collection c1 = new ArrayList();
-        c1.add(r1);
-        c1.add(r2);
+        r2.setPmdRule(TestManager.getRule(1));
 
         Rule r3 = new Rule();
         r3.setRef("ref to a rule");
+        r3.setPmdRule(TestManager.getRule(2));
         Rule r4 = new Rule();
         r4.setRef("ref to another rule");
-        Collection c2 = new ArrayList();
-        c2.add(r3);
-        c2.add(r4);
+        r4.setPmdRule(TestManager.getRule(3));
 
         RuleSet rs1 = new RuleSet();
         rs1.setName("default");
         rs1.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs1.setRules(c1);
+        rs1.addRule(r1);
+        rs1.addRule(r2);
 
         RuleSet rs2 = new RuleSet();
         rs2.setName("default");
         rs2.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs2.setRules(c2);
+        rs2.addRule(r3);
+        rs2.addRule(r4);
         rs2.setDescription("Description does not make the difference");
 
         assertEquals("Equal rule sets must have the same hash code", rs1.hashCode(), rs2.hashCode());
@@ -495,33 +506,35 @@ public class RuleSetTest extends TestCase {
     /**
      * Different rule sets should have different hash codes
      * 
+     * @throws RuleSetNotFoundException
+     * 
      */
-    public void testHashCode2() {
+    public void testHashCode2() throws RuleSetNotFoundException {
         Rule r1 = new Rule();
         r1.setRef("ref to a rule");
+        r1.setPmdRule(TestManager.getRule(0));
         Rule r2 = new Rule();
         r2.setRef("ref to another rule");
-        Collection c1 = new ArrayList();
-        c1.add(r1);
-        c1.add(r2);
+        r2.setPmdRule(TestManager.getRule(1));
 
         Rule r3 = new Rule();
         r3.setRef("ref to a rule");
+        r3.setPmdRule(TestManager.getRule(2));
         Rule r4 = new Rule();
         r4.setRef("ref to another rule");
-        Collection c2 = new ArrayList();
-        c2.add(r3);
-        c2.add(r4);
+        r4.setPmdRule(TestManager.getRule(3));
 
         RuleSet rs1 = new RuleSet();
         rs1.setName("default");
         rs1.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs1.setRules(c1);
+        rs1.addRule(r1);
+        rs1.addRule(r2);
 
         RuleSet rs2 = new RuleSet();
         rs2.setName("custom");
         rs2.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs2.setRules(c2);
+        rs2.addRule(r3);
+        rs2.addRule(r4);
         rs2.setDescription("Description does not make the difference");
 
         assertFalse("Different rule sets should have different hash codes", rs1.hashCode() == rs2.hashCode());
@@ -530,33 +543,35 @@ public class RuleSetTest extends TestCase {
     /**
      * Different rule sets should have different hash codes
      * 
+     * @throws RuleSetNotFoundException
+     * 
      */
-    public void testHashCode3() {
+    public void testHashCode3() throws RuleSetNotFoundException {
         Rule r1 = new Rule();
         r1.setRef("ref to a rule");
+        r1.setPmdRule(TestManager.getRule(0));
         Rule r2 = new Rule();
         r2.setRef("ref to another rule");
-        Collection c1 = new ArrayList();
-        c1.add(r1);
-        c1.add(r2);
+        r2.setPmdRule(TestManager.getRule(1));
 
         Rule r3 = new Rule();
         r3.setRef("ref to a rule");
+        r3.setPmdRule(TestManager.getRule(2));
         Rule r4 = new Rule();
         r4.setRef("ref to another rule");
-        Collection c2 = new ArrayList();
-        c2.add(r3);
-        c2.add(r4);
+        r4.setPmdRule(TestManager.getRule(3));
 
         RuleSet rs1 = new RuleSet();
         rs1.setName("default");
         rs1.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs1.setRules(c1);
+        rs1.addRule(r1);
+        rs1.addRule(r2);
 
         RuleSet rs2 = new RuleSet();
         rs2.setName("default");
         rs2.setLanguage(RuleSet.LANGUAGE_JAVA);
-        rs2.setRules(c2);
+        rs2.addRule(r3);
+        rs2.addRule(r4);
         rs2.setDescription("Description does not make the difference");
 
         assertFalse("Different rule sets should have different hash codes", rs1.hashCode() == rs2.hashCode());
@@ -565,35 +580,55 @@ public class RuleSetTest extends TestCase {
     /**
      * Different rule sets should have different hash codes
      * 
+     * @throws RuleSetNotFoundException
+     * 
      */
-    public void testHashCode4() {
+    public void testHashCode4() throws RuleSetNotFoundException {
         Rule r1 = new Rule();
         r1.setRef("ref to a rule");
+        r1.setPmdRule(TestManager.getRule(0));
         Rule r2 = new Rule();
         r2.setRef("ref to another rule");
-        Collection c1 = new ArrayList();
-        c1.add(r1);
-        c1.add(r2);
+        r2.setPmdRule(TestManager.getRule(1));
 
         Rule r3 = new Rule();
         r3.setRef("ref to a rule");
+        r3.setPmdRule(TestManager.getRule(2));
         Rule r4 = new Rule();
         r4.setRef("ref to yet another rule");
-        Collection c2 = new ArrayList();
-        c2.add(r3);
-        c2.add(r4);
+        r4.setPmdRule(TestManager.getRule(3));
 
         RuleSet rs1 = new RuleSet();
         rs1.setName("default");
         rs1.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs1.setRules(c1);
+        rs1.addRule(r1);
+        rs1.addRule(r2);
 
         RuleSet rs2 = new RuleSet();
         rs2.setName("default");
         rs2.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs2.setRules(c2);
+        rs2.addRule(r3);
+        rs2.addRule(r4);
         rs2.setDescription("Description does not make the difference");
 
         assertFalse("Different rule sets should have different hash codes", rs1.hashCode() == rs2.hashCode());
+    }
+
+    /**
+     * The PMD Rule Set should contain the we have added
+     * 
+     * @throws RuleSetNotFoundException
+     * 
+     */
+    public void testGetPmdRuleSet() throws RuleSetNotFoundException {
+        Rule rule = new Rule();
+        rule.setPmdRule(TestManager.getRule(0));
+
+        RuleSet ruleSet = new RuleSet();
+        ruleSet.addRule(rule);
+
+        assertNotNull("The PMD Rule Set should not be null", ruleSet.getPmdRuleSet());
+        assertTrue("The added rule set should be present in the PMD rule set", ruleSet.getPmdRuleSet().getRules().contains(
+                TestManager.getRule(0)));
     }
 }

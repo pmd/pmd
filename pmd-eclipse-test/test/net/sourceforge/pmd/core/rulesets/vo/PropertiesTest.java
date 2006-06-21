@@ -34,7 +34,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.runtime.preferences.vo;
+package net.sourceforge.pmd.core.rulesets.vo;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,6 +48,10 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2006/06/21 23:06:52  phherlin
+ * Move the new rule sets management to the core plugin instead of the runtime.
+ * Continue the development.
+ *
  * Revision 1.1  2006/06/18 22:29:51  phherlin
  * Begin refactoring the unit tests for the plugin
  *

@@ -34,11 +34,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.runtime.preferences.vo;
+package net.sourceforge.pmd.core.rulesets.vo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+
+import net.sourceforge.pmd.RuleSetNotFoundException;
 
 import junit.framework.TestCase;
 
@@ -49,6 +50,10 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2006/06/21 23:06:52  phherlin
+ * Move the new rule sets management to the core plugin instead of the runtime.
+ * Continue the development.
+ *
  * Revision 1.1  2006/06/20 22:04:18  phherlin
  * Implement the last object of the rulesets structure
  *
@@ -126,34 +131,35 @@ public class RuleSetsTest extends TestCase {
 
     /**
      * A default rule set should belong to the rule sets list.
+     * @throws RuleSetNotFoundException 
      * 
      */
-    public void testSetDefaultRuleSet2() {
+    public void testSetDefaultRuleSet2() throws RuleSetNotFoundException {
         Rule r1 = new Rule();
         r1.setRef("ref to a rule");
+        r1.setPmdRule(TestManager.getRule(0));
         Rule r2 = new Rule();
         r2.setRef("ref to another rule");
-        Collection c1 = new ArrayList();
-        c1.add(r1);
-        c1.add(r2);
+        r2.setPmdRule(TestManager.getRule(1));
 
         Rule r3 = new Rule();
         r3.setRef("ref to a rule");
+        r3.setPmdRule(TestManager.getRule(2));
         Rule r4 = new Rule();
         r4.setRef("ref to another rule");
-        Collection c2 = new ArrayList();
-        c2.add(r3);
-        c2.add(r4);
+        r4.setPmdRule(TestManager.getRule(3));
 
         RuleSet rs1 = new RuleSet();
         rs1.setName("default");
         rs1.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs1.setRules(c1);
+        rs1.addRule(r1);
+        rs1.addRule(r2);
 
         RuleSet rs2 = new RuleSet();
         rs2.setName("custom");
         rs2.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs2.setRules(c2);
+        rs2.addRule(r3);
+        rs2.addRule(r4);
         rs2.setDescription("Description does not make the difference");
 
         try {
@@ -168,34 +174,35 @@ public class RuleSetsTest extends TestCase {
 
     /**
      * Test the definition of a default rule set.
+     * @throws RuleSetNotFoundException 
      * 
      */
-    public void testSetDefaultRuleSet3() {
+    public void testSetDefaultRuleSet3() throws RuleSetNotFoundException {
         Rule r1 = new Rule();
         r1.setRef("ref to a rule");
+        r1.setPmdRule(TestManager.getRule(0));
         Rule r2 = new Rule();
         r2.setRef("ref to another rule");
-        Collection c1 = new ArrayList();
-        c1.add(r1);
-        c1.add(r2);
+        r2.setPmdRule(TestManager.getRule(1));
 
         Rule r3 = new Rule();
         r3.setRef("ref to a rule");
+        r3.setPmdRule(TestManager.getRule(2));
         Rule r4 = new Rule();
         r4.setRef("ref to another rule");
-        Collection c2 = new ArrayList();
-        c2.add(r3);
-        c2.add(r4);
+        r4.setPmdRule(TestManager.getRule(3));
 
         RuleSet rs1 = new RuleSet();
         rs1.setName("default");
         rs1.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs1.setRules(c1);
+        rs1.addRule(r1);
+        rs1.addRule(r2);
 
         RuleSet rs2 = new RuleSet();
         rs2.setName("custom");
         rs2.setLanguage(RuleSet.LANGUAGE_JSP);
-        rs2.setRules(c2);
+        rs2.addRule(r3);
+        rs2.addRule(r4);
         rs2.setDescription("Description does not make the difference");
 
         RuleSets rs = new RuleSets();

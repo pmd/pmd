@@ -34,7 +34,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.runtime.preferences.vo;
+package net.sourceforge.pmd.core.rulesets.vo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +49,10 @@ import java.util.Iterator;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2006/06/21 23:06:41  phherlin
+ * Move the new rule sets management to the core plugin instead of the runtime.
+ * Continue the development.
+ *
  * Revision 1.2  2006/06/20 21:26:42  phherlin
  * Fix/review PMD violations
  *
@@ -71,8 +75,9 @@ public class RuleSet {
 
     private String name = "";
     private String description = "";
-    private Collection rules = new ArrayList();
     private String language = LANGUAGE_JAVA;
+    final private net.sourceforge.pmd.RuleSet pmdRuleSet = new net.sourceforge.pmd.RuleSet();
+    final private Collection rules = new ArrayList();
 
     /**
      * Getter for the description attribute. May be empty but never null.
@@ -133,16 +138,17 @@ public class RuleSet {
     }
 
     /**
-     * Setter for the rules collection attribute. Cannot be null.
+     * Add a rule to the rule set.
      * 
-     * @param rules The rules to set.
+     * @param rule The rule to add. Cannot be null
      */
-    public void setRules(Collection rules) {
-        if (rules == null) {
+    public void addRule(Rule rule) {
+        if (rule == null) {
             throw new IllegalArgumentException("rule cannot be null");
         }
 
-        this.rules = rules;
+        this.rules.add(rule);
+        this.pmdRuleSet.addRule(rule.getPmdRule());
     }
 
     /**
@@ -200,5 +206,16 @@ public class RuleSet {
         }
 
         return buffer.toString();
+    }
+
+    /**
+     * Getter for a PMD RuleSet object.
+     * This object is a native PMD Rule Set composed of all rules of this
+     * rule set.
+     * 
+     * @return Returns the pmdRuleSet.
+     */
+    public net.sourceforge.pmd.RuleSet getPmdRuleSet() {
+        return this.pmdRuleSet;
     }
 }

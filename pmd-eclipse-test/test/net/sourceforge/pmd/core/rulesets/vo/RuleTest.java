@@ -34,9 +34,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.runtime.preferences.vo;
+package net.sourceforge.pmd.core.rulesets.vo;
 
 import junit.framework.TestCase;
+import net.sourceforge.pmd.RuleSetNotFoundException;
 
 /**
  * Unit tests for class Rule
@@ -45,6 +46,10 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2006/06/21 23:06:52  phherlin
+ * Move the new rule sets management to the core plugin instead of the runtime.
+ * Continue the development.
+ *
  * Revision 1.1  2006/06/18 22:29:50  phherlin
  * Begin refactoring the unit tests for the plugin
  *
@@ -64,6 +69,7 @@ public class RuleTest extends TestCase {
         assertNull("The message attribute should be null", r.getMessage());
         assertNull("The priority attribute should be null", r.getPriority());
         assertNull("The properties attribute should be null", r.getProperties());
+        assertNull("The pmd rule attribute should be null", r.getPmdRule());
     }
     
     /**
@@ -119,6 +125,36 @@ public class RuleTest extends TestCase {
             r.setRef("any string");
         } catch (IllegalArgumentException e) {
             fail("It should be legal to set any string to ref attribute");
+        }
+    }
+    
+    /**
+     * Setting a null PMD Rule is illegal
+     *
+     */
+    public void testSetPmdRule1() {
+        try {
+            Rule r = new Rule();
+            r.setPmdRule(null);
+            fail("Setting a null PMD Rule is illegal");
+        } catch (IllegalArgumentException e) {
+            // success
+        }
+    }
+    
+    /**
+     * Setting a any PMD Rule is legal even if the reference is
+     * not the same (no check for now).
+     * 
+     * @throws RuleSetNotFoundException 
+     *
+     */
+    public void testSetPmdRule2() throws RuleSetNotFoundException {
+        try {
+            Rule r = new Rule();
+            r.setPmdRule(TestManager.getRule(0));
+        } catch (IllegalArgumentException e) {
+            fail("Setting any PMD Rule is legal");
         }
     }
     

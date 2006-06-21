@@ -1,5 +1,5 @@
 /*
- * Created on 17 juin 2006
+ * Created on 21 juin 2006
  *
  * Copyright (c) 2006, PMD for Eclipse Development Team
  * All rights reserved.
@@ -34,99 +34,66 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.runtime.preferences.vo;
+package net.sourceforge.pmd.core.rulesets;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.core.rulesets.vo.RuleSet;
+import net.sourceforge.pmd.core.rulesets.vo.RuleSets;
 
 /**
- * This class is a value objet that composes the structure of a rulesets object.
- * It holds a property definition, ie a name and a value pair.
+ * Interface of a rule sets manager. A rule sets manager is
+ * responsible to build a rule sets structure from PMD rulesets,
+ * to manage the persistence in the preferences store and finally
+ * to manage the export in the PMD ruleset format.
  * 
  * @author Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2006/06/20 21:26:42  phherlin
- * Fix/review PMD violations
+ * Revision 1.1  2006/06/21 23:06:41  phherlin
+ * Move the new rule sets management to the core plugin instead of the runtime.
+ * Continue the development.
  *
- * Revision 1.1  2006/06/18 22:33:02  phherlin
- * Begin to implement a new model for the plugin to handle rules and rulesets.
  *
- * 
  */
 
-public class Property {
-    private String name = "";
-    private String value = "";
+public interface IRuleSetsManager {
 
     /**
-     * Getter for name attribute. This is the name of the property.
+     * Build a plug-in rule set from PMD rule sets.
+     * The result is a single rule set (plug-in format) that is composed
+     * of the list of all rules from the input rule sets.
      * 
-     * @return Returns the name.
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
-     * Setter for the name attribute.
+     * @param ruleSetUrls an array of standard PMD rule sets.
+     * @return a plug-in specific rulesets structure.
      * 
-     * @param name The name to set.
+     * @throws RuleSetNotFoundException if one of the rule set url is incorrect.
      */
-    public void setName(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("name cannot be null");
-        }
-
-        this.name = name;
-    }
+    RuleSet valueOf(String[] ruleSetUrls) throws RuleSetNotFoundException;
 
     /**
-     * Getter for the value attributes. This is the value of the property.
+     * Serialize a rule sets structure to an output stream.
      * 
-     * @return Returns the value.
-     */
-    public String getValue() {
-        return this.value;
-    }
-
-    /**
-     * Setter for the value property.
+     * @param ruleSets a rule sets structure.
+     * @param output an open output stream.
      * 
-     * @param value The value to set.
+     * @throws IOException if an error occurs while writing the stream.
      */
-    public void setValue(String value) {
-        if (value == null) {
-            throw new IllegalArgumentException("value cannot be null");
-        }
-
-        this.value = value;
-    }
-
+    void writeToXml(RuleSets ruleSets, OutputStream output) throws IOException;
+    
     /**
-     * @see java.lang.Object#equals(java.lang.Object)
+     * Load a rule sets structure from an input stream than contains an XML
+     * rule sets specification.
+     * 
+     * @param input a valid XML input stream.
+     * @return a rulesets structure ; this is never null.
+     * 
+     * @throws IOException if an error occurs while reading from the stream.
      */
-    public boolean equals(Object arg0) {
-        boolean equal = false;
-
-        if (arg0 instanceof Property) {
-            final Property p = (Property) arg0;
-            equal = this.name.equals(p.name) && this.value.equals(p.value);
-        }
-
-        return equal;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        return (this.name + this.value).hashCode();
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return "property name=" + this.name + " value=" + this.value;
-    }
+    RuleSets readFromXml(InputStream input) throws IOException;
 
 }

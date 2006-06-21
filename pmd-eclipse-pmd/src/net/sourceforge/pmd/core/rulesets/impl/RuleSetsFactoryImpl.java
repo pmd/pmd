@@ -1,5 +1,5 @@
 /*
- * Created on 17 juin 2006
+ * Created on 21 juin 2006
  *
  * Copyright (c) 2006, PMD for Eclipse Development Team
  * All rights reserved.
@@ -34,87 +34,37 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.runtime.preferences.vo;
+package net.sourceforge.pmd.core.rulesets.impl;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import net.sourceforge.pmd.core.rulesets.IRuleSetsFactory;
+import net.sourceforge.pmd.core.rulesets.IRuleSetsManager;
 
 /**
- * This class is a value objet that composes the structure of a rulesets object.
- * It holds a collection of Property objects.
+ * Default implementation of a IRuleSetsFactory.
  * 
  * @author Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2006/06/20 21:26:42  phherlin
- * Fix/review PMD violations
+ * Revision 1.1  2006/06/21 23:06:41  phherlin
+ * Move the new rule sets management to the core plugin instead of the runtime.
+ * Continue the development.
  *
- * Revision 1.1  2006/06/18 22:33:02  phherlin
- * Begin to implement a new model for the plugin to handle rules and rulesets.
  *
- * 
  */
 
-public class Properties {
-    private Set propertiesSet = new HashSet();
+public class RuleSetsFactoryImpl implements IRuleSetsFactory {
+    private IRuleSetsManager ruleSetsManager; // NOPMD by Herlin on 21/06/06 23:14
 
     /**
-     * Getter for the propertiesSet.
-     * 
-     * @return Returns the propertiesSet.
+     * @see net.sourceforge.pmd.core.rulesets.IRuleSetsFactory#getRuleSetsManager()
      */
-    public Set getProperties() {
-        return this.propertiesSet;
-    }
-
-    /**
-     * Setter for the propertiesSet
-     * 
-     * @param propertiesSet The propertiesSet to set.
-     */
-    public void setProperties(Set properties) {
-        if (properties == null) {
-            throw new IllegalArgumentException("propertiesSet cannot be null");
-        }
-
-        this.propertiesSet = properties;
-    }
-
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object arg0) {
-        boolean equal = false;
-        
-        if (arg0 instanceof Properties) {
-            final Properties p = (Properties) arg0;
-            equal = this.propertiesSet.equals(p.propertiesSet);
+    public IRuleSetsManager getRuleSetsManager() {
+        if (this.ruleSetsManager == null) {
+            this.ruleSetsManager = new RuleSetsManagerImpl();
         }
         
-        return equal;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-        return this.propertiesSet.hashCode();
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        final StringBuffer buffer = new StringBuffer("Properties");
-        for (final Iterator i = this.propertiesSet.iterator(); i.hasNext();) {
-            final Property p = (Property) i.next();
-            buffer.append(' ');
-            buffer.append(p);
-        }
-        
-        return buffer.toString();
+        return this.ruleSetsManager;
     }
 
 }

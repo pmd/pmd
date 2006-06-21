@@ -34,7 +34,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.runtime.preferences.vo;
+package net.sourceforge.pmd.core.rulesets.vo;
 
 /**
  * This class is a value objet that composes the structure of a rulesets object.
@@ -45,6 +45,10 @@ package net.sourceforge.pmd.runtime.preferences.vo;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2006/06/21 23:06:41  phherlin
+ * Move the new rule sets management to the core plugin instead of the runtime.
+ * Continue the development.
+ *
  * Revision 1.2  2006/06/20 21:26:42  phherlin
  * Fix/review PMD violations
  *
@@ -59,6 +63,7 @@ public class Rule {
     private String message;
     private Priority priority;
     private Properties properties;
+    private net.sourceforge.pmd.Rule pmdRule;
 
     /**
      * Getter for the message attribute. A null value means the message is not
@@ -182,6 +187,29 @@ public class Rule {
     public String toString() {
         return "Rule ref=" + this.ref + " message=" + this.message + " priority=" + this.priority.toString() + " properties="
                 + this.properties.toString();
+    }
+
+    /**
+     * Getter for the pmdRule attribute.
+     * This is the PMD rule that is linked to this rule reference.
+     * 
+     * @return Returns the PMD Rule object.
+     */
+    public net.sourceforge.pmd.Rule getPmdRule() {
+        return this.pmdRule;
+    }
+
+    /**
+     * Setter for the PMD Rule associated with this rule reference.
+     * 
+     * @param pmdRule The PMD Rule to set. Cannot be null
+     */
+    public void setPmdRule(net.sourceforge.pmd.Rule pmdRule) {
+        if (pmdRule == null) {
+            throw new IllegalArgumentException("pmdRule cannot be null");
+        }
+
+        this.pmdRule = pmdRule;
     }
 
 }

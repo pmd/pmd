@@ -34,7 +34,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.runtime.preferences.vo;
+package net.sourceforge.pmd.core.rulesets.vo;
 
 /**
  * This class is a value objet that composes the structure of a rulesets object.
@@ -47,6 +47,10 @@ package net.sourceforge.pmd.runtime.preferences.vo;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.1  2006/06/21 23:06:41  phherlin
+ * Move the new rule sets management to the core plugin instead of the runtime.
+ * Continue the development.
+ *
  * Revision 1.2  2006/06/20 21:26:42  phherlin
  * Fix/review PMD violations
  *
