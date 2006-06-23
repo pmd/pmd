@@ -103,6 +103,7 @@ public class Report {
 
     private static final Integer ZERO = new Integer(0);
     private static final Integer ONE = new Integer(1);
+    private static final RuleViolation.RuleViolationComparator COMPARATOR = new RuleViolation.RuleViolationComparator();
 
     /*
      * The idea is to store the violations in a tree instead of a list, to do
@@ -112,7 +113,7 @@ public class Report {
     private ReportTree violationTree = new ReportTree();
 
     // Note that this and the above data structure are both being maintained for a bit
-    private Set violations = new TreeSet(new RuleViolation.RuleViolationComparator());
+    private Set violations = new TreeSet(COMPARATOR);
     private Set metrics = new HashSet();
     private List listeners = new ArrayList();
     private List errors = new ArrayList();
