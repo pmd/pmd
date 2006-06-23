@@ -140,7 +140,7 @@ SKIP :
 |
   "//" : IN_LINE_COMMENT
 |
-  "/*" : IN_COMMENT
+  "/*"  : IN_COMMENT
 |
   "#" : PREPROCESSOR_OUTPUT
 }
@@ -168,6 +168,7 @@ SKIP :
 <PREPROCESSOR_OUTPUT> SKIP:
 {
    "\n" : DEFAULT
+   | "/*" : IN_COMMENT
 }
 
 <PREPROCESSOR_OUTPUT> MORE:
