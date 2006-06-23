@@ -101,6 +101,9 @@ public class Report {
         }
     }
 
+    private static final Integer ZERO = new Integer(0);
+    private static final Integer ONE = new Integer(1);
+
     /*
      * The idea is to store the violations in a tree instead of a list, to do
      * better and faster sort and filter mechanism and to visualize the result
@@ -116,7 +119,6 @@ public class Report {
     private Map linesToExclude = new HashMap();
     private long start;
     private long end;
-    private static final Integer ONE = new Integer(1);
 
     private List suppressedRuleViolations = new ArrayList();
 
@@ -155,12 +157,12 @@ public class Report {
         Map summary = new HashMap();
         for (Iterator i = violations.iterator(); i.hasNext();) {
             IRuleViolation rv = (IRuleViolation) i.next();
-            if (!summary.containsKey(rv.getRule().getName())) {
-                summary.put(rv.getRule().getName(), new Integer(0));
+            String name = rv.getRule().getName();
+            if (!summary.containsKey(name)) {
+                summary.put(name, ZERO);
             }
-            Integer count = (Integer) summary.get(rv.getRule().getName());
-            count = new Integer(count.intValue() + 1);
-            summary.put(rv.getRule().getName(), count);
+            Integer count = (Integer) summary.get(name);
+            summary.put(name, new Integer(count.intValue() + 1));
         }
         return summary;
     }
