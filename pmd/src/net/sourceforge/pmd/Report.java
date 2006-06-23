@@ -116,6 +116,7 @@ public class Report {
     private Map linesToExclude = new HashMap();
     private long start;
     private long end;
+    private static final Integer ONE = new Integer(1);
 
     private List suppressedRuleViolations = new ArrayList();
 
@@ -127,11 +128,13 @@ public class Report {
         Map summary = new HashMap();
         for (Iterator iter = violationTree.iterator(); iter.hasNext();) {
             IRuleViolation rv = (IRuleViolation) iter.next();
-            String key = (rv.getPackageName() == "" ? "" : (rv.getPackageName() + ".")) + rv.getClassName();
+            String key = "";
+            if (rv.getPackageName() != null && rv.getPackageName().length() != 0) {
+                key = rv.getPackageName() + "." + rv.getClassName();
+            }
             Object o = summary.get(key);
             if (o == null) {
-                Integer value = new Integer(1);
-                summary.put(key, value);
+                summary.put(key, ONE);
             } else {
                 Integer value = (Integer) o;
                 summary.put(key, new Integer(value.intValue() + 1));
