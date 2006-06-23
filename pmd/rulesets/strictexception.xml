@@ -33,9 +33,9 @@ public class Foo {
     </rule>
 
    <rule name="SignatureDeclareThrowsException"
-         message="A signature (constructor or method) shouldn't have Exception in throws declaration"
+         message="A method/constructor shouldn't explicitly throw java.lang.Exception"
           class="net.sourceforge.pmd.rules.strictexception.ExceptionSignatureDeclaration"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#LocalVariableCouldBeFinal">
+          externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#SignatureDeclareThrowsException">
       <description>
 It is unclear which exceptions that can be thrown from the methods.
 It might be difficult to document and understand the vague interfaces.

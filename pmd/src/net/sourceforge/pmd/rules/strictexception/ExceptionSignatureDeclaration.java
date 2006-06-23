@@ -39,6 +39,10 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
             return super.visit(methodDeclaration, o);
         }
 
+        if (methodDeclaration.getMethodName().startsWith("test")) {
+            return super.visit(methodDeclaration, o);
+        }
+
         List exceptionList = methodDeclaration.findChildrenOfType(ASTName.class);
         if (!hasContent(exceptionList)) {
             return super.visit(methodDeclaration, o);

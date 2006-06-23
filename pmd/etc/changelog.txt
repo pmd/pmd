@@ -6,8 +6,9 @@ Fixed bug 1498910 - AssignmentInOperand no longer has a typo in the message.
 Fixed bug 1498960 - DontImportJavaLang no longer reports static imports of java.lang members.
 Fixed bug 1417106 - MissingBreakInSwitch no longer flags stmts where every case has either a return or a throw.
 Fixed bug 1412529 - UncommentedEmptyConstructor no longer flags private constructors.
+Fixed bug 1504842 - ExceptionSignatureDeclaration no longer flags methods starting with 'test'.
 Fixed a bug in AvoidProtectedFieldInFinalClass - it no longer reports false positives for protected fields in inner classes.
-Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro definitions which are followed by a multiline comment. 
+Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro definitions which are followed by a multiline comment.
 Applied patch 1481024 (fulfilling RFE 1490181)- NOPMD messages can now be reported with a user specified msg, e.g., //NOPMD - this is expected
 Added JSP support to the copy/paste detector.
 
