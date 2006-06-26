@@ -53,6 +53,7 @@ import net.sourceforge.pmd.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.runtime.properties.PropertiesException;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
@@ -67,6 +68,7 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -85,6 +87,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/06/26 21:23:08  phherlin
+ * Fix IllegalArgumentException issue when checking projects where root folder is source folder.
+ *
  * Revision 1.3  2006/06/20 20:48:24  phherlin
  * Fix the issue where the whole project is processed instead of a single file.
  * Revision 1.2 2006/06/05 22:25:21 phherlin Use the 3.0 SchedulingRule
@@ -385,11 +390,21 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             final IClasspathEntry[] entries = javaProject.getRawClasspath();
             for (int i = 0; i < entries.length; i++) {
                 if (entries[i].getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-                    final IFolder sourceFolder = ResourcesPlugin.getWorkspace().getRoot().getFolder(entries[i].getPath());
-                    if (sourceFolder == null) {
-                        log.warn("Source folder " + entries[i].getPath() + " for project " + project.getName() + " is not valid");
+                    
+                    // phherlin note: this code is ugly but I don't how to do otherwise.
+                    // The IWorkspaceRoot getContainerLocation(IPath) always return null.
+                    // Catching the IllegalArgumentException on getFolder is the only way I found
+                    // to know if the entry is a folder or a project !
+                    IContainer sourceContainer = null;
+                    try {
+                        sourceContainer = ResourcesPlugin.getWorkspace().getRoot().getFolder(entries[i].getPath());
+                    } catch (IllegalArgumentException e) {
+                        sourceContainer = ResourcesPlugin.getWorkspace().getRoot().getProject(entries[i].getPath().toString());
+                    }
+                    if (sourceContainer == null) {
+                        log.warn("Source container " + entries[i].getPath() + " for project " + project.getName() + " is not valid");
                     } else {
-                        processResource(sourceFolder);
+                        processResource(sourceContainer);
                     }
                 }
             }
