@@ -11,6 +11,7 @@ Fixed a bug in AvoidProtectedFieldInFinalClass - it no longer reports false posi
 Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro definitions which are followed by a multiline comment.
 Applied patch 1481024 (fulfilling RFE 1490181)- NOPMD messages can now be reported with a user specified msg, e.g., //NOPMD - this is expected
 Added JSP support to the copy/paste detector.
+Refactored UseIndexOfChar to extract common functionality into AbstractPoorMethodCall.
 
 June 1, 2006 - 3.7:
 New rules:
