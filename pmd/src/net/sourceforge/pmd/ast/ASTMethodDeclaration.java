@@ -71,7 +71,7 @@ public class ASTMethodDeclaration extends AccessNode {
     }
 
     public ASTBlock getBlock() {
-        // FIXME doesn't work for all methods that use generics
+        // FIXME doesn't work for all methods that use generics and declare exceptions
         if (this.jjtGetChild(2) instanceof ASTBlock) {
             return (ASTBlock) this.jjtGetChild(2);
         }
