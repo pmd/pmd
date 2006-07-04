@@ -43,6 +43,9 @@ public class UselessOverridingMethod extends AbstractRule {
         }
 
         ASTBlock block = node.getBlock();
+        if (block == null) {
+            return super.visit(node, data);
+        }
         //Only process functions with one BlockStatement
         if (block.jjtGetNumChildren() != 1 || block.findChildrenOfType(ASTStatement.class).size() != 1)
             return super.visit(node, data);

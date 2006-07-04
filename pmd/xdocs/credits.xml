@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Adam Zell - Reported bug in UselessOverridingMethod</li>
             <li>Daniel Serodio - Reported bug in ExceptionSignatureDeclaration</li>
             <li>John Redford - Reported bug in AvoidProtectedFieldInFinalClass</li>
             <li>D'Arcy Smith - Reported bug in UncommentedEmptyConstructor, reported missing RuleViolation methods</li>

@@ -1,4 +1,4 @@
-????, 2006 - 3.8:
+    ????, 2006 - 3.8:
 BEFORE RELEASE:
 - remove deprecated methods from PMD.java, RuleSetFactory
 
@@ -7,6 +7,7 @@ Fixed bug 1498960 - DontImportJavaLang no longer reports static imports of java.
 Fixed bug 1417106 - MissingBreakInSwitch no longer flags stmts where every case has either a return or a throw.
 Fixed bug 1412529 - UncommentedEmptyConstructor no longer flags private constructors.
 Fixed bug 1504842 - ExceptionSignatureDeclaration no longer flags methods starting with 'test'.
+Fixed bug 1516728 - UselessOverridingMethod no longer raises an NPE on methods that use generics.
 Fixed a bug in AvoidProtectedFieldInFinalClass - it no longer reports false positives for protected fields in inner classes.
 Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro definitions which are followed by a multiline comment.
 Applied patch 1481024 (fulfilling RFE 1490181)- NOPMD messages can now be reported with a user specified msg, e.g., //NOPMD - this is expected
@@ -635,5 +636,5 @@ Added new HTML report format
 June 25 2002 - 0.1:
 Initial release
 
-Using PMD?  Get the book!  http://pmdapplied.com/
+Using PMD?  Get the book - http://pmdapplied.com/
 controversial,basic,strings,design,naming,finalizers,braces,clone,codesize,coupling,imports,javabeans,junit,logging-jakarta-commons,logging-java,migrating,optimizations,strictexception,sunsecure,unusedcode
