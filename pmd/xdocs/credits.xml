@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Brian Remedios - code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, Created AbstractPoorMethodCall & Refactored UseIndexOfChar</li>
             <li>Adam Zell - Reported bug in UselessOverridingMethod</li>
             <li>Daniel Serodio - Reported bug in ExceptionSignatureDeclaration</li>
             <li>John Redford - Reported bug in AvoidProtectedFieldInFinalClass</li>
@@ -106,7 +107,6 @@
             <li>Raja Rajan - 2 bug reports for CompareObjectswithEquals</li>
             <li>Jeff Chamblee - suggested better message for UnnecessaryCaseChange, bug report for CompareObjectsWithEquals</li>
             <li>Dave Brosius - suggested MisleadingVariableName rule, a couple of nice patches to clean up some string handling inefficiencies, non-static class usages, and unclosed streams/readers - found with Findbugs, I daresay :-)</li>
-            <li>Brian Remedios - code improvements to Eclipse plugin, Created AbstractPoorMethodCall & Refactored UseIndexOfChar</li>
             <li>Chris Grindstaff - fixed SWTException when Eclipse plugin is run on a file with syntax error</li>
             <li>Eduard Naum - fixed JDK 1.3 runtime problems in Eclipse plugin</li>
             <li>Jacques Lebourgeois - fix for UTF8 characters in Eclipse plugin</li>

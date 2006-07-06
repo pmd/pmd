@@ -56,8 +56,6 @@
         </copy>
 	</target>
 
-
-
 	<target name="jar" depends="copy,compile" description="Jars up the classes and rulesets">
 		<jar jarfile="${dir.lib}\pmd-${version}.jar" includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**" basedir="${dir.build}">
 			<manifest>
@@ -78,8 +76,8 @@
 				<path refid="dependencies.path" />
 			</classpath>
 			<formatter type="text" toConsole="true" linkPrefix="http://pmd.sf.net/xref/" />
-			<fileset dir="bin/">
-				<include name="Bar.java" />
+			<fileset dir="/usr/local/java/src/java/net/">
+				<include name="**/*.java" />
 			</fileset>
 		</pmd>
 	</target>

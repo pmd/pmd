@@ -5,7 +5,6 @@ package net.sourceforge.pmd.ant;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.EmacsRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.PapariTextRenderer;
@@ -23,14 +22,54 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class Formatter {
+
+    private interface RendererBuilder {
+        Renderer build(Object optionalArg);
+    }	// factory template
 
     private File toFile;
     private String linkPrefix;
     private String type;
     private boolean toConsole;
     private boolean showSuppressed;
+
+    private static final Map renderersByCode = new HashMap(8);
+
+    static {
+        renderersByCode.put("xml", new RendererBuilder() {
+            public Renderer build(Object arg) { return new XMLRenderer(); }
+        });
+        renderersByCode.put("html", new RendererBuilder() {
+            public Renderer build(Object arg) { return new HTMLRenderer((String) arg); }
+        });
+        renderersByCode.put("summaryhtml", new RendererBuilder() {
+            public Renderer build(Object arg) { return new SummaryHTMLRenderer(); }
+        });
+        renderersByCode.put("papari", new RendererBuilder() {
+            public Renderer build(Object arg) { return new PapariTextRenderer(); }
+        });
+        renderersByCode.put("csv", new RendererBuilder() {
+            public Renderer build(Object arg) { return new TextRenderer(); }
+        });
+        renderersByCode.put("emacs", new RendererBuilder() {
+            public Renderer build(Object arg) { return new EmacsRenderer(); }
+        });
+        renderersByCode.put("vbhtml", new RendererBuilder() {
+            public Renderer build(Object arg) { return new VBHTMLRenderer(); }
+        });
+        renderersByCode.put("yahtml", new RendererBuilder() {
+            public Renderer build(Object arg) { return new YAHTMLRenderer(); }
+        });
+        renderersByCode.put("text", new RendererBuilder() {
+            public Renderer build(Object arg) { return new TextRenderer(); }
+        });
+        // add additional codes & factories here
+    }
 
     public void setShowSuppressed(boolean value) {
         this.showSuppressed = value;
@@ -65,12 +104,6 @@ public class Formatter {
         }
     }
 
-    private void outputReportTo(Writer writer, Report report, boolean consoleRenderer) throws IOException {
-        String renderedReport = getRenderer(consoleRenderer).render(report) + PMD.EOL;
-        writer.write(renderedReport, 0, renderedReport.length());
-        writer.close();
-    }
-
     public boolean isNoOutputSupplied() {
         return toFile == null && !toConsole;
     }
@@ -79,35 +112,48 @@ public class Formatter {
         return "file = " + toFile + "; renderer = " + type;
     }
 
-    private Renderer getRenderer(boolean consoleRenderer) {
-        Renderer renderer;
-        if (type.equals("xml")) {
-            renderer = new XMLRenderer();
-        } else if (type.equals("html")) {
-            renderer = new HTMLRenderer(linkPrefix);
-        } else if (type.equals("summaryhtml")) {
-            renderer = new SummaryHTMLRenderer();
-        } else if (type.equals("papari")) {
-            renderer = new PapariTextRenderer();
-        } else if (type.equals("csv")) {
-            renderer = new CSVRenderer();
-        } else if (type.equals("text")) {
-            renderer = new TextRenderer();
-        } else if (type.equals("emacs")) {
-            renderer = new EmacsRenderer();
-        } else if (type.equals("vbhtml")) {
-            renderer = new VBHTMLRenderer();
-        } else if (type.equals("yahtml")) {
-            renderer = new YAHTMLRenderer();
-        } else if (!type.equals("")) {
-            try {
-                renderer = (Renderer) Class.forName(type).newInstance();
-            } catch (Exception e) {
-                throw new BuildException("Unable to instantiate custom formatter: " + type);
-            }
-        } else {
-            throw new BuildException("Formatter type must be 'xml', 'text', 'html', 'emacs', 'summaryhtml', 'papari', 'csv', 'vbhtml', 'yahtml', or a class name; you specified " + type);
+    private static String[] validRendererCodes() {
+        Iterator iter = renderersByCode.keySet().iterator();
+        String[] validTypes = new String[renderersByCode.size()];
+        int i = 0;
+        while (iter.hasNext()) validTypes[i++] = (String) iter.next();
+        return validTypes;
+    }
+
+    private void outputReportTo(Writer writer, Report report, boolean consoleRenderer) throws IOException {
+        String renderedReport = getRenderer(consoleRenderer).render(report) + PMD.EOL;
+        writer.write(renderedReport, 0, renderedReport.length());
+        writer.close();
+    }
+
+
+    private static String unknownRendererMessage(String userSpecifiedType) {
+        StringBuffer sb = new StringBuffer(100);
+        sb.append("Formatter type must be one of: '");
+        String[] typeCodes = validRendererCodes();
+        sb.append(typeCodes[0]);
+        for (int i = 1; i < typeCodes.length; i++) {
+            sb.append("', '").append(typeCodes[i]);
         }
+        sb.append("', or a class name; you specified: ");
+        sb.append(userSpecifiedType);
+        return sb.toString();
+    }
+
+    private Renderer fromClassname(String rendererClassname) {
+        try {
+            return (Renderer) Class.forName(rendererClassname).newInstance();
+        } catch (Exception e) {
+            throw new BuildException(unknownRendererMessage(rendererClassname));
+        }
+    }
+
+    private Renderer getRenderer(boolean consoleRenderer) {
+        if ("".equals(type)) {
+            throw new BuildException(unknownRendererMessage("<unspecified>"));
+        }
+        RendererBuilder builder = (RendererBuilder) renderersByCode.get(type);
+        Renderer renderer = builder == null ? fromClassname(type) : builder.build(linkPrefix);
         renderer.showSuppressedViolations(showSuppressed);
         return renderer;
     }
@@ -118,5 +164,4 @@ public class Formatter {
         }
         return new BufferedWriter(new FileWriter(toFile));
     }
-
 }
