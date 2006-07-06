@@ -78,7 +78,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case PACKAGE:
         PackageDeclaration();
         break;
@@ -88,7 +88,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       }
       label_1:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case IMPORT:
           ;
           break;
@@ -100,7 +100,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       }
       label_2:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case ABSTRACT:
         case CLASS:
         case FINAL:
@@ -125,7 +125,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         }
         TypeDeclaration();
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case 122:
         jj_consume_token(122);
         break;
@@ -133,7 +133,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         jj_la1[3] = jj_gen;
         ;
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case 123:
         jj_consume_token(123);
         break;
@@ -204,7 +204,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(IMPORT);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case STATIC:
         jj_consume_token(STATIC);
                        checkForBadStaticImportUsage();jjtn000.setStatic();
@@ -214,7 +214,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
         ;
       }
       Name();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case DOT:
         jj_consume_token(DOT);
         jj_consume_token(STAR);
@@ -260,7 +260,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       } else {
         break label_3;
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case PUBLIC:
         jj_consume_token(PUBLIC);
               modifiers |= AccessNode.PUBLIC;
@@ -327,7 +327,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
    boolean jjtc000 = true;
    jjtree.openNodeScope(jjtn000);int modifiers;
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case SEMICOLON:
         jj_consume_token(SEMICOLON);
         break;
@@ -347,7 +347,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       case IDENTIFIER:
       case AT:
         modifiers = Modifiers();
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case ABSTRACT:
         case CLASS:
         case FINAL:
@@ -399,14 +399,14 @@ boolean jjtc000 = true;
 jjtree.openNodeScope(jjtn000);Token t = null;
 jjtn000.setModifiers(modifiers);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case ABSTRACT:
       case CLASS:
       case FINAL:
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case ABSTRACT:
         case FINAL:
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case FINAL:
             jj_consume_token(FINAL);
             break;
@@ -436,7 +436,7 @@ jjtn000.setModifiers(modifiers);
       }
       t = jj_consume_token(IDENTIFIER);
                    jjtn000.setImage(t.image);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case LT:
         TypeParameters();
         break;
@@ -444,7 +444,7 @@ jjtn000.setModifiers(modifiers);
         jj_la1[13] = jj_gen;
         ;
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case EXTENDS:
         ExtendsList();
         break;
@@ -452,7 +452,7 @@ jjtn000.setModifiers(modifiers);
         jj_la1[14] = jj_gen;
         ;
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case IMPLEMENTS:
         ImplementsList();
         break;
@@ -492,7 +492,7 @@ jjtn000.setModifiers(modifiers);
       ClassOrInterfaceType();
       label_4:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case COMMA:
           ;
           break;
@@ -535,7 +535,7 @@ jjtn000.setModifiers(modifiers);
       ClassOrInterfaceType();
       label_5:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case COMMA:
           ;
           break;
@@ -584,7 +584,7 @@ jjtn000.setModifiers(modifiers);
     }
       t = jj_consume_token(IDENTIFIER);
                   jjtn000.setImage(t.image);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case IMPLEMENTS:
         ImplementsList();
         break;
@@ -621,7 +621,7 @@ jjtn000.setModifiers(modifiers);
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(LBRACE);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case IDENTIFIER:
         EnumConstant();
         label_6:
@@ -639,7 +639,7 @@ jjtn000.setModifiers(modifiers);
         jj_la1[19] = jj_gen;
         ;
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case COMMA:
         jj_consume_token(COMMA);
         break;
@@ -647,12 +647,12 @@ jjtn000.setModifiers(modifiers);
         jj_la1[20] = jj_gen;
         ;
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case SEMICOLON:
         jj_consume_token(SEMICOLON);
         label_7:
         while (true) {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case ABSTRACT:
           case BOOLEAN:
           case BYTE:
@@ -722,7 +722,7 @@ jjtn000.setModifiers(modifiers);
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(IDENTIFIER);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case LPAREN:
         Arguments();
         break;
@@ -730,7 +730,7 @@ jjtn000.setModifiers(modifiers);
         jj_la1[23] = jj_gen;
         ;
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case LBRACE:
         ClassOrInterfaceBody();
         break;
@@ -769,7 +769,7 @@ jjtn000.setModifiers(modifiers);
       TypeParameter();
       label_8:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case COMMA:
           ;
           break;
@@ -809,7 +809,7 @@ jjtn000.setModifiers(modifiers);
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(IDENTIFIER);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case EXTENDS:
         TypeBound();
         break;
@@ -848,7 +848,7 @@ jjtn000.setModifiers(modifiers);
       ClassOrInterfaceType();
       label_9:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case BIT_AND:
           ;
           break;
@@ -889,7 +889,7 @@ jjtn000.setModifiers(modifiers);
       jj_consume_token(LBRACE);
       label_10:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case ABSTRACT:
         case BOOLEAN:
         case BYTE:
@@ -956,7 +956,7 @@ jjtn000.setModifiers(modifiers);
       if (jj_2_7(2147483647)) {
         Initializer();
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case ABSTRACT:
         case BOOLEAN:
         case BYTE:
@@ -992,7 +992,7 @@ jjtn000.setModifiers(modifiers);
           } else if (jj_2_6(2147483647)) {
             FieldDeclaration(modifiers);
           } else {
-            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            switch (jj_nt.kind) {
             case BOOLEAN:
             case BYTE:
             case CHAR:
@@ -1053,7 +1053,7 @@ jjtn000.setModifiers(modifiers);
       VariableDeclarator();
       label_11:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case COMMA:
           ;
           break;
@@ -1093,7 +1093,7 @@ jjtn000.setModifiers(modifiers);
   jjtree.openNodeScope(jjtn000);
     try {
       VariableDeclaratorId();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case ASSIGN:
         jj_consume_token(ASSIGN);
         VariableInitializer();
@@ -1132,7 +1132,7 @@ jjtn000.setModifiers(modifiers);
       t = jj_consume_token(IDENTIFIER);
       label_12:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case LBRACKET:
           ;
           break;
@@ -1162,7 +1162,7 @@ jjtn000.setModifiers(modifiers);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case LBRACE:
         ArrayInitializer();
         break;
@@ -1228,7 +1228,7 @@ jjtn000.setModifiers(modifiers);
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(LBRACE);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case BOOLEAN:
       case BYTE:
       case CHAR:
@@ -1273,7 +1273,7 @@ jjtn000.setModifiers(modifiers);
         jj_la1[35] = jj_gen;
         ;
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case COMMA:
         jj_consume_token(COMMA);
         break;
@@ -1309,7 +1309,7 @@ jjtn000.setModifiers(modifiers);
  boolean jjtc000 = true;
  jjtree.openNodeScope(jjtn000);jjtn000.setModifiers(modifiers);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case LT:
         TypeParameters();
         break;
@@ -1319,7 +1319,7 @@ jjtn000.setModifiers(modifiers);
       }
       ResultType();
       MethodDeclarator();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case THROWS:
         jj_consume_token(THROWS);
         NameList();
@@ -1328,7 +1328,7 @@ jjtn000.setModifiers(modifiers);
         jj_la1[38] = jj_gen;
         ;
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case LBRACE:
         Block();
         break;
@@ -1374,7 +1374,7 @@ jjtn000.setModifiers(modifiers);
       FormalParameters();
       label_14:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case LBRACKET:
           ;
           break;
@@ -1413,7 +1413,7 @@ jjtn000.setModifiers(modifiers);
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(LPAREN);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case BOOLEAN:
       case BYTE:
       case CHAR:
@@ -1428,7 +1428,7 @@ jjtn000.setModifiers(modifiers);
         FormalParameter();
         label_15:
         while (true) {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case COMMA:
             ;
             break;
@@ -1474,7 +1474,7 @@ jjtn000.setModifiers(modifiers);
     try {
       label_16:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case FINAL:
         case AT:
           ;
@@ -1483,7 +1483,7 @@ jjtn000.setModifiers(modifiers);
           jj_la1[43] = jj_gen;
           break label_16;
         }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case FINAL:
           jj_consume_token(FINAL);
               jjtn000.setFinal();
@@ -1498,7 +1498,7 @@ jjtn000.setModifiers(modifiers);
         }
       }
       Type();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case ELLIPSIS:
         jj_consume_token(ELLIPSIS);
             checkForBadVariableArgumentsUsage();
@@ -1536,7 +1536,7 @@ jjtn000.setModifiers(modifiers);
  jjtree.openNodeScope(jjtn000);jjtn000.setModifiers(modifiers);
 Token t;
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case LT:
         TypeParameters();
         break;
@@ -1546,7 +1546,7 @@ Token t;
       }
       jj_consume_token(IDENTIFIER);
       FormalParameters();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case THROWS:
         jj_consume_token(THROWS);
         NameList();
@@ -1607,7 +1607,7 @@ Token t;
         Arguments();
         jj_consume_token(SEMICOLON);
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case BOOLEAN:
         case BYTE:
         case CHAR:
@@ -1637,7 +1637,7 @@ Token t;
           } else {
             ;
           }
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case SUPER:
             jj_consume_token(SUPER);
             break;
@@ -1685,7 +1685,7 @@ Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case STATIC:
         jj_consume_token(STATIC);
               jjtn000.setStatic();
@@ -1728,7 +1728,7 @@ Token t;
       if (jj_2_13(2)) {
         ReferenceType();
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case BOOLEAN:
         case BYTE:
         case CHAR:
@@ -1772,7 +1772,7 @@ Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case BOOLEAN:
       case BYTE:
       case CHAR:
@@ -1898,7 +1898,7 @@ Token t;
       TypeArgument();
       label_21:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case COMMA:
           ;
           break;
@@ -1937,7 +1937,7 @@ Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case BOOLEAN:
       case BYTE:
       case CHAR:
@@ -1951,7 +1951,7 @@ Token t;
         break;
       case HOOK:
         jj_consume_token(HOOK);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case EXTENDS:
         case SUPER:
           WildcardBounds();
@@ -1993,7 +1993,7 @@ Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case EXTENDS:
         jj_consume_token(EXTENDS);
         ReferenceType();
@@ -2034,7 +2034,7 @@ Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case BOOLEAN:
         jj_consume_token(BOOLEAN);
               jjtree.closeNodeScope(jjtn000, true);
@@ -2101,7 +2101,7 @@ Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case VOID:
         jj_consume_token(VOID);
         break;
@@ -2183,7 +2183,7 @@ Token t;
       Name();
       label_23:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case COMMA:
           ;
           break;
@@ -2225,7 +2225,7 @@ Token t;
   jjtree.openNodeScope(jjtn000);
     try {
       ConditionalExpression();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case ASSIGN:
       case PLUSASSIGN:
       case MINUSASSIGN:
@@ -2272,7 +2272,7 @@ Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case ASSIGN:
         jj_consume_token(ASSIGN);
                 jjtree.closeNodeScope(jjtn000, true);
@@ -2364,7 +2364,7 @@ Token t;
   jjtree.openNodeScope(jjtn000);
     try {
       ConditionalOrExpression();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case HOOK:
         jj_consume_token(HOOK);
                                    jjtn000.setTernary();
@@ -2406,7 +2406,7 @@ Token t;
       ConditionalAndExpression();
       label_24:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case SC_OR:
           ;
           break;
@@ -2447,7 +2447,7 @@ Token t;
       InclusiveOrExpression();
       label_25:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case SC_AND:
           ;
           break;
@@ -2488,7 +2488,7 @@ Token t;
       ExclusiveOrExpression();
       label_26:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case BIT_OR:
           ;
           break;
@@ -2529,7 +2529,7 @@ Token t;
       AndExpression();
       label_27:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case XOR:
           ;
           break;
@@ -2570,7 +2570,7 @@ Token t;
       EqualityExpression();
       label_28:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case BIT_AND:
           ;
           break;
@@ -2611,7 +2611,7 @@ Token t;
       InstanceOfExpression();
       label_29:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case EQ:
         case NE:
           ;
@@ -2620,7 +2620,7 @@ Token t;
           jj_la1[68] = jj_gen;
           break label_29;
         }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case EQ:
           jj_consume_token(EQ);
                                     jjtn000.setImage("==");
@@ -2664,7 +2664,7 @@ Token t;
   jjtree.openNodeScope(jjtn000);
     try {
       RelationalExpression();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case INSTANCEOF:
         jj_consume_token(INSTANCEOF);
         Type();
@@ -2703,7 +2703,7 @@ Token t;
       ShiftExpression();
       label_30:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case LT:
         case LE:
         case GE:
@@ -2714,7 +2714,7 @@ Token t;
           jj_la1[71] = jj_gen;
           break label_30;
         }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case LT:
           jj_consume_token(LT);
            jjtn000.setImage("<");
@@ -2773,7 +2773,7 @@ Token t;
         } else {
           break label_31;
         }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case LSHIFT:
           jj_consume_token(LSHIFT);
              jjtn000.setImage("<<");
@@ -2821,7 +2821,7 @@ Token t;
       MultiplicativeExpression();
       label_32:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case PLUS:
         case MINUS:
           ;
@@ -2830,7 +2830,7 @@ Token t;
           jj_la1[74] = jj_gen;
           break label_32;
         }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case PLUS:
           jj_consume_token(PLUS);
                                       jjtn000.setImage("+");
@@ -2876,7 +2876,7 @@ Token t;
       UnaryExpression();
       label_33:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case STAR:
         case SLASH:
         case REM:
@@ -2886,7 +2886,7 @@ Token t;
           jj_la1[76] = jj_gen;
           break label_33;
         }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case STAR:
           jj_consume_token(STAR);
                              jjtn000.setImage("*");
@@ -2933,10 +2933,10 @@ Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case PLUS:
       case MINUS:
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case PLUS:
           jj_consume_token(PLUS);
         jjtn000.setImage("+");
@@ -3073,10 +3073,10 @@ Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case BANG:
       case TILDE:
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case TILDE:
           jj_consume_token(TILDE);
         jjtn000.setImage("~");
@@ -3097,7 +3097,7 @@ Token t;
         if (jj_2_23(2147483647)) {
           CastExpression();
         } else {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case BOOLEAN:
           case BYTE:
           case CHAR:
@@ -3167,12 +3167,12 @@ Token t;
         jj_consume_token(LBRACKET);
         jj_consume_token(RBRACKET);
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case LPAREN:
           jj_consume_token(LPAREN);
           Type();
           jj_consume_token(RPAREN);
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case TILDE:
             jj_consume_token(TILDE);
             break;
@@ -3243,10 +3243,10 @@ Token t;
   jjtree.openNodeScope(jjtn000);
     try {
       PrimaryExpression();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case INCR:
       case DECR:
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case INCR:
           jj_consume_token(INCR);
                               jjtn000.setImage("++");
@@ -3298,7 +3298,7 @@ Token t;
         jj_consume_token(RPAREN);
         UnaryExpression();
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case LPAREN:
           jj_consume_token(LPAREN);
           Type();
@@ -3408,7 +3408,7 @@ jjtree.openNodeScope(jjtn000);Token t;
  boolean jjtc000 = true;
  jjtree.openNodeScope(jjtn000);Token t;
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case FALSE:
       case NULL:
       case TRUE:
@@ -3448,7 +3448,7 @@ jjtree.openNodeScope(jjtn000);Token t;
           jj_consume_token(DOT);
           jj_consume_token(CLASS);
         } else {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case IDENTIFIER:
             Name();
             break;
@@ -3498,7 +3498,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       } else if (jj_2_32(3)) {
         MemberSelector();
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case LBRACKET:
           jj_consume_token(LBRACKET);
           Expression();
@@ -3553,7 +3553,7 @@ jjtree.openNodeScope(jjtn000);Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case INTEGER_LITERAL:
   Token t;
         t = jj_consume_token(INTEGER_LITERAL);
@@ -3618,7 +3618,7 @@ jjtree.openNodeScope(jjtn000);Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case TRUE:
         jj_consume_token(TRUE);
            jjtree.closeNodeScope(jjtn000, true);
@@ -3661,7 +3661,7 @@ jjtree.openNodeScope(jjtn000);Token t;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(LPAREN);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case BOOLEAN:
       case BYTE:
       case CHAR:
@@ -3726,7 +3726,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       Expression();
       label_35:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case COMMA:
           ;
           break;
@@ -3769,11 +3769,11 @@ jjtree.openNodeScope(jjtn000);Token t;
         PrimitiveType();
         ArrayDimsAndInits();
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case NEW:
           jj_consume_token(NEW);
           ClassOrInterfaceType();
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case LT:
             TypeArguments();
             break;
@@ -3781,13 +3781,13 @@ jjtree.openNodeScope(jjtn000);Token t;
             jj_la1[95] = jj_gen;
             ;
           }
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case LBRACKET:
             ArrayDimsAndInits();
             break;
           case LPAREN:
             Arguments();
-            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            switch (jj_nt.kind) {
             case LBRACE:
               ClassOrInterfaceBody();
               break;
@@ -3862,13 +3862,13 @@ jjtree.openNodeScope(jjtn000);Token t;
           jj_consume_token(RBRACKET);
         }
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case LBRACKET:
           label_38:
           while (true) {
             jj_consume_token(LBRACKET);
             jj_consume_token(RBRACKET);
-            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            switch (jj_nt.kind) {
             case LBRACKET:
               ;
               break;
@@ -3920,7 +3920,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       } else if (jj_2_37(2)) {
         LabeledStatement();
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case LBRACE:
           Block();
           break;
@@ -4133,7 +4133,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     try {
       label_40:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case FINAL:
         case AT:
           ;
@@ -4142,7 +4142,7 @@ jjtree.openNodeScope(jjtn000);Token t;
           jj_la1[102] = jj_gen;
           break label_40;
         }
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case FINAL:
           jj_consume_token(FINAL);
              jjtn000.setFinal();
@@ -4160,7 +4160,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       VariableDeclarator();
       label_41:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case COMMA:
           ;
           break;
@@ -4212,7 +4212,7 @@ jjtree.openNodeScope(jjtn000);Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case INCR:
         PreIncrementExpression();
         break;
@@ -4224,7 +4224,7 @@ jjtree.openNodeScope(jjtn000);Token t;
         if (jj_2_42(2147483647)) {
           PostfixExpression();
         } else {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case BOOLEAN:
           case BYTE:
           case CHAR:
@@ -4247,7 +4247,7 @@ jjtree.openNodeScope(jjtn000);Token t;
           case IDENTIFIER:
           case LPAREN:
             PrimaryExpression();
-            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+            switch (jj_nt.kind) {
             case ASSIGN:
             case PLUSASSIGN:
             case MINUSASSIGN:
@@ -4309,7 +4309,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       jj_consume_token(LBRACE);
       label_42:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case CASE:
         case _DEFAULT:
           ;
@@ -4357,7 +4357,7 @@ jjtree.openNodeScope(jjtn000);Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case CASE:
         jj_consume_token(CASE);
         Expression();
@@ -4405,7 +4405,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       Expression();
       jj_consume_token(RPAREN);
       Statement();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case ELSE:
         jj_consume_token(ELSE);
                                                                jjtn000.setHasElse();
@@ -4521,7 +4521,7 @@ jjtree.openNodeScope(jjtn000);Token t;
         jj_consume_token(COLON);
         Expression();
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case BOOLEAN:
         case BYTE:
         case CHAR:
@@ -4548,7 +4548,7 @@ jjtree.openNodeScope(jjtn000);Token t;
         case AT:
         case INCR:
         case DECR:
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case BOOLEAN:
           case BYTE:
           case CHAR:
@@ -4581,7 +4581,7 @@ jjtree.openNodeScope(jjtn000);Token t;
             ;
           }
           jj_consume_token(SEMICOLON);
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case BOOLEAN:
           case BYTE:
           case CHAR:
@@ -4616,7 +4616,7 @@ jjtree.openNodeScope(jjtn000);Token t;
             ;
           }
           jj_consume_token(SEMICOLON);
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case BOOLEAN:
           case BYTE:
           case CHAR:
@@ -4685,7 +4685,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       if (jj_2_45(2147483647)) {
         LocalVariableDeclaration();
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case BOOLEAN:
         case BYTE:
         case CHAR:
@@ -4747,7 +4747,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       StatementExpression();
       label_44:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case COMMA:
           ;
           break;
@@ -4814,7 +4814,7 @@ jjtree.openNodeScope(jjtn000);Token t;
  jjtree.openNodeScope(jjtn000);Token t;
     try {
       jj_consume_token(BREAK);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case IDENTIFIER:
         t = jj_consume_token(IDENTIFIER);
                             jjtn000.setImage(t.image);
@@ -4838,7 +4838,7 @@ jjtree.openNodeScope(jjtn000);Token t;
  jjtree.openNodeScope(jjtn000);Token t;
     try {
       jj_consume_token(CONTINUE);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case IDENTIFIER:
         t = jj_consume_token(IDENTIFIER);
                                jjtn000.setImage(t.image);
@@ -4862,7 +4862,7 @@ jjtree.openNodeScope(jjtn000);Token t;
   jjtree.openNodeScope(jjtn000);
     try {
       jj_consume_token(RETURN);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case BOOLEAN:
       case BYTE:
       case CHAR:
@@ -4990,7 +4990,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       Block();
       label_45:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case CATCH:
           ;
           break;
@@ -5000,7 +5000,7 @@ jjtree.openNodeScope(jjtn000);Token t;
         }
         CatchStatement();
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case FINALLY:
         FinallyStatement();
         break;
@@ -5100,7 +5100,7 @@ jjtree.openNodeScope(jjtn000);Token t;
     try {
       jj_consume_token(IDENTIFIER);
       Expression();
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case COLON:
         jj_consume_token(COLON);
         Expression();
@@ -5191,7 +5191,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       } else if (jj_2_47(2147483647)) {
         SingleMemberAnnotation();
       } else {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case AT:
           MarkerAnnotation();
           break;
@@ -5231,7 +5231,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       jj_consume_token(AT);
       Name();
       jj_consume_token(LPAREN);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case IDENTIFIER:
         MemberValuePairs();
         break;
@@ -5331,7 +5331,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       MemberValuePair();
       label_46:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case COMMA:
           ;
           break;
@@ -5400,7 +5400,7 @@ jjtree.openNodeScope(jjtn000);Token t;
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case AT:
         Annotation();
         break;
@@ -5480,7 +5480,7 @@ jjtree.openNodeScope(jjtn000);Token t;
         jj_consume_token(COMMA);
         MemberValue();
       }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case COMMA:
         jj_consume_token(COMMA);
         break;
@@ -5553,7 +5553,7 @@ jjtn000.setModifiers(modifiers);
       jj_consume_token(LBRACE);
       label_48:
       while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        switch (jj_nt.kind) {
         case ABSTRACT:
         case BOOLEAN:
         case BYTE:
@@ -5614,7 +5614,7 @@ jjtn000.setModifiers(modifiers);
    boolean jjtc000 = true;
    jjtree.openNodeScope(jjtn000);int modifiers;
     try {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      switch (jj_nt.kind) {
       case ABSTRACT:
       case BOOLEAN:
       case BYTE:
@@ -5644,7 +5644,7 @@ jjtn000.setModifiers(modifiers);
           jj_consume_token(IDENTIFIER);
           jj_consume_token(LPAREN);
           jj_consume_token(RPAREN);
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case _DEFAULT:
             DefaultValue();
             break;
@@ -5654,7 +5654,7 @@ jjtn000.setModifiers(modifiers);
           }
           jj_consume_token(SEMICOLON);
         } else {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          switch (jj_nt.kind) {
           case ABSTRACT:
           case CLASS:
           case FINAL:
@@ -5666,7 +5666,7 @@ jjtn000.setModifiers(modifiers);
             if (jj_2_50(2147483647)) {
               EnumDeclaration(modifiers);
             } else {
-              switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+              switch (jj_nt.kind) {
               case AT:
                 AnnotationTypeDeclaration(modifiers);
                 break;
@@ -9026,7 +9026,6 @@ jjtn000.setModifiers(modifiers);
 
   public JavaParserTokenManager token_source;
   public Token token, jj_nt;
-  private int jj_ntk;
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   public boolean lookingAhead = false;
@@ -9062,7 +9061,7 @@ jjtn000.setModifiers(modifiers);
   public JavaParser(CharStream stream) {
     token_source = new JavaParserTokenManager(stream);
     token = new Token();
-    jj_ntk = -1;
+    token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
     for (int i = 0; i < 133; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
@@ -9071,7 +9070,7 @@ jjtn000.setModifiers(modifiers);
   public void ReInit(CharStream stream) {
     token_source.ReInit(stream);
     token = new Token();
-    jj_ntk = -1;
+    token.next = jj_nt = token_source.getNextToken();
     jjtree.reset();
     jj_gen = 0;
     for (int i = 0; i < 133; i++) jj_la1[i] = -1;
@@ -9081,7 +9080,7 @@ jjtn000.setModifiers(modifiers);
   public JavaParser(JavaParserTokenManager tm) {
     token_source = tm;
     token = new Token();
-    jj_ntk = -1;
+    token.next = jj_nt = token_source.getNextToken();
     jj_gen = 0;
     for (int i = 0; i < 133; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
@@ -9090,7 +9089,7 @@ jjtn000.setModifiers(modifiers);
   public void ReInit(JavaParserTokenManager tm) {
     token_source = tm;
     token = new Token();
-    jj_ntk = -1;
+    token.next = jj_nt = token_source.getNextToken();
     jjtree.reset();
     jj_gen = 0;
     for (int i = 0; i < 133; i++) jj_la1[i] = -1;
@@ -9098,10 +9097,9 @@ jjtn000.setModifiers(modifiers);
   }
 
   final private Token jj_consume_token(int kind) throws ParseException {
-    Token oldToken;
-    if ((oldToken = token).next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
-    jj_ntk = -1;
+    Token oldToken = token;
+    if ((token = jj_nt).next != null) jj_nt = jj_nt.next;
+    else jj_nt = jj_nt.next = token_source.getNextToken();
     if (token.kind == kind) {
       jj_gen++;
       if (++jj_gc > 100) {
@@ -9116,6 +9114,7 @@ jjtn000.setModifiers(modifiers);
       }
       return token;
     }
+    jj_nt = token;
     token = oldToken;
     jj_kind = kind;
     throw generateParseException();
@@ -9145,9 +9144,8 @@ jjtn000.setModifiers(modifiers);
   }
 
   final public Token getNextToken() {
-    if (token.next != null) token = token.next;
-    else token = token.next = token_source.getNextToken();
-    jj_ntk = -1;
+    if ((token = jj_nt).next != null) jj_nt = jj_nt.next;
+    else jj_nt = jj_nt.next = token_source.getNextToken();
     jj_gen++;
     return token;
   }
@@ -9159,13 +9157,6 @@ jjtn000.setModifiers(modifiers);
       else t = t.next = token_source.getNextToken();
     }
     return t;
-  }
-
-  final private int jj_ntk() {
-    if ((jj_nt=token.next) == null)
-      return (jj_ntk = (token.next=token_source.getNextToken()).kind);
-    else
-      return (jj_ntk = jj_nt.kind);
   }
 
   private java.util.Vector jj_expentries = new java.util.Vector();

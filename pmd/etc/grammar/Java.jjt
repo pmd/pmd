@@ -53,13 +53,14 @@
 
 options {
   JAVA_UNICODE_ESCAPE = true;
+  CACHE_TOKENS = true;
+  STATIC = false;
   USER_CHAR_STREAM = true;
-  MULTI=true;
-  VISITOR=true;
-  NODE_USES_PARSER=true;
+  
+  MULTI = true;
+  VISITOR = true;
+  NODE_USES_PARSER = true;
   NODE_PACKAGE="net.sourceforge.pmd.ast";
-  DEBUG_TOKEN_MANAGER = false;
-  STATIC=false;
 }
 
 PARSER_BEGIN(JavaParser)
