@@ -148,6 +148,7 @@ public class Formatter {
         }
     }
 
+    // FIXME - hm, what about this consoleRenderer thing... need a test for this
     private Renderer getRenderer(boolean consoleRenderer) {
         if ("".equals(type)) {
             throw new BuildException(unknownRendererMessage("<unspecified>"));
