@@ -3,33 +3,14 @@
  */
 package net.sourceforge.pmd.util.designer;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.SourceType;
-import net.sourceforge.pmd.TargetJDK1_3;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDK1_5;
-import net.sourceforge.pmd.TargetJDKVersion;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.jaxen.DocumentNavigator;
-import net.sourceforge.pmd.jaxen.MatchesFunction;
-import net.sourceforge.pmd.jsp.ast.JspCharStream;
-import net.sourceforge.pmd.jsp.ast.JspParser;
-
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.jaxen.BaseXPath;
-import org.jaxen.JaxenException;
-import org.jaxen.XPath;
-
-import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -43,86 +24,359 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.SourceType;
+import net.sourceforge.pmd.TargetJDK1_3;
+import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.jaxen.DocumentNavigator;
+import net.sourceforge.pmd.jaxen.MatchesFunction;
+import net.sourceforge.pmd.jsp.ast.JspCharStream;
+import net.sourceforge.pmd.jsp.ast.JspParser;
+
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.jaxen.BaseXPath;
+import org.jaxen.JaxenException;
+import org.jaxen.XPath;
 
 public class Designer implements ClipboardOwner {
 
-    private JavaParser createParser() {
-        return getJDKVersion().createParser(new StringReader(codeEditorPane.getText()));
-    }
+	private static final char labelImageSeparator = ':';
+	private static final Color imageTextColour = Color.BLUE;
+	private static final String lineSeparator = System.getProperty("line.separator", "\n");
+	
+	private interface Parser { public SimpleNode parse(StringReader sr); };
 
-    private JspParser createJspParser() {
-        return new JspParser(new JspCharStream(new StringReader(codeEditorPane.getText())));
-    }
+	private static final Parser jdkParser1_3 = new Parser() {
+		public SimpleNode parse(StringReader sr) { return (new TargetJDK1_3()).createParser(sr).CompilationUnit(); };
+	};
+	
+	private static final Parser jdkParser1_4 = new Parser() {
+		public SimpleNode parse(StringReader sr) { return (new TargetJDK1_4()).createParser(sr).CompilationUnit(); };
+	};
+	
+	private static final Parser jdkParser1_5 = new Parser() {
+		public SimpleNode parse(StringReader sr) { return (new TargetJDK1_5()).createParser(sr).CompilationUnit(); };
+	};
+	
+	private static final Parser jspParser = new Parser() {
+		public SimpleNode parse(StringReader sr) { return (new JspParser(new JspCharStream(sr))).CompilationUnit(); };
+	};
+	
+	private static final Object[][] sourceTypeSets = new Object[][] {
+		{ "JDK 1.3", SourceType.JAVA_13, jdkParser1_3 },
+		{ "JDK 1.4", SourceType.JAVA_14, jdkParser1_4 },
+		{ "JDK 1.5", SourceType.JAVA_15, jdkParser1_5 },
+		{ "JSP", 	 SourceType.JSP, 	 jspParser }
+		};
+	
+	private static final int defaultSourceTypeSelectionIndex = 1; // JDK 1.4
+	
 
-    
     private SimpleNode getCompilationUnit() {
-        if (getSourceType().equals(SourceType.JSP)) {
-            return createJspParser().CompilationUnit();
-        }
-        return createParser().CompilationUnit();
-    }
-
-    private TargetJDKVersion getJDKVersion() {
-        if (jdk14MenuItem.isSelected()) {
-            return new TargetJDK1_4();
-        } else if (jdk13MenuItem.isSelected()) {
-            return new TargetJDK1_3();
-        }
-        return new TargetJDK1_5();
+    	    	
+    	Parser parser = (Parser)sourceTypeSets[selectedSourceTypeIndex()][2];
+    	return parser.parse(new StringReader(codeEditorPane.getText()));
     }
     
     private SourceType getSourceType() {
-        if (jspMenuItem.isSelected()) {
-            return SourceType.JSP;
-        } else if (jdk14MenuItem.isSelected()) {
-            return SourceType.JAVA_14;
-        } else if (jdk13MenuItem.isSelected()) {
-            return SourceType.JAVA_13;
+    	
+    	return (SourceType)sourceTypeSets[selectedSourceTypeIndex()][1];
+    }
+    
+    private int selectedSourceTypeIndex() {
+    	for (int i=0; i<sourceTypeMenuItems.length; i++) {
+    		if (sourceTypeMenuItems[i].isSelected()) return i;
+    	}
+    	throw new RuntimeException("Initial default source type not specified");
+    }
+    
+    private class ExceptionNode implements TreeNode {
+
+    	private Object 			item;    	
+    	private ExceptionNode[] kids;
+    	
+    	public ExceptionNode(Object theItem) {
+    		item = theItem;
+    		
+    		if (item instanceof ParseException) createKids();
+    	}
+    	
+    	// each line in the error message becomes a separate tree node
+    	private void createKids() {
+    		    		
+    		String message = ((ParseException)item).getMessage();    		
+			String[] lines = message.split(lineSeparator);
+			
+			kids = new ExceptionNode[lines.length];
+			for (int i=0; i<lines.length; i++) {
+				kids[i] = new ExceptionNode(lines[i]);
+			};
+    	}
+    	
+		public int getChildCount() { return kids == null ? 0 : kids.length; }
+		public boolean getAllowsChildren() {return false; }
+		public boolean isLeaf() { return kids == null; }
+		public TreeNode getParent() { return null; }
+		public TreeNode getChildAt(int childIndex) { return kids[childIndex]; }
+		public String label() {	return item.toString();	}
+		
+		public Enumeration children() {
+			Enumeration e = new Enumeration() {
+				int i = 0;
+				public boolean hasMoreElements() { 
+					return kids != null && i < kids.length;
+				}
+
+				public Object nextElement() { return kids[i++]; }
+				};
+			return e;
+		}
+		
+		public int getIndex(TreeNode node) {
+			for (int i=0; i<kids.length; i++) {
+				if (kids[i] == node) return i;
+			}
+			return -1;
+		}
+    }
+    
+    // Tree node that wraps the AST node for the tree widget and
+    // any possible children they may have.
+    private class ASTTreeNode implements TreeNode {
+
+    	private Node 			node;
+    	private ASTTreeNode 	parent;
+    	private ASTTreeNode[] 	kids;
+    	
+    	public ASTTreeNode(Node theNode) {
+    		node = theNode;
+    		
+    		Node prnt = node.jjtGetParent();
+    		if (prnt != null) parent = new ASTTreeNode(prnt);    		
+    	}
+    	
+		public int getChildCount() { return node.jjtGetNumChildren(); }
+		public boolean getAllowsChildren() { return false;	}
+		public boolean isLeaf() { return node.jjtGetNumChildren() == 0;	}
+		public TreeNode getParent() { return parent; }
+		
+		public Enumeration children() {
+			
+			if (getChildCount() > 0) getChildAt(0);	// force it to build kids
+			
+			Enumeration e = new Enumeration() {
+				int i = 0;
+				public boolean hasMoreElements() { 
+					return kids != null && i < kids.length;
+				}
+				public Object nextElement() { return kids[i++]; }
+				};
+			return e;
+		}
+
+		public TreeNode getChildAt(int childIndex) {
+			
+			if (kids == null) {
+				kids = new ASTTreeNode[node.jjtGetNumChildren()];
+    			for (int i=0; i<kids.length; i++) {
+    				kids[i] = new ASTTreeNode(node.jjtGetChild(i));
+    				}
+				}			
+			return kids[childIndex];
+		}
+
+		public int getIndex(TreeNode node) {
+
+			for (int i=0; i<kids.length; i++) {
+				if (kids[i] == node) return i;
+			}
+			return -1;
+		}
+    	
+		public String label() {
+			if (node instanceof SimpleNode) {
+				SimpleNode sn = (SimpleNode)node;
+				if (sn.getImage() == null) return node.toString();
+				return node.toString() + labelImageSeparator + sn.getImage();
+			}
+			return node.toString();
+		}
+    }
+    
+    // Create our own renderer to ensure we don't show the default icon
+    // and render any node image data in a different colour to hightlight 
+    // it.
+    
+    private class ASTCellRenderer extends DefaultTreeCellRenderer {
+    	
+    	private ASTTreeNode node;
+
+    	public Icon getIcon() { return null; };
+    	
+    	public Component getTreeCellRendererComponent(JTree tree, Object value,	boolean sel,boolean expanded,boolean leaf, int row,  boolean hasFocus) {
+
+    		if (value instanceof ASTTreeNode) {
+    			node = (ASTTreeNode)value;
+    		}
+    		return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+    	}
+    	
+    	// overwrite the image data (if present) in a different colour
+    	public void paint(Graphics g) {
+    		
+    		super.paint(g);
+    		
+    		if (node == null) return;
+    		
+    		String text = node.label();
+    		int separatorPos = text.indexOf(labelImageSeparator);
+    		if (separatorPos < 0) return;
+    		    		
+    		String label = text.substring(0, separatorPos+1);
+    		String image = text.substring(separatorPos+1);
+
+    		FontMetrics fm = g.getFontMetrics();
+    		int width = SwingUtilities.computeStringWidth(fm, label);
+    		
+    		g.setColor(imageTextColour);
+    		g.drawString(image, width, fm.getMaxAscent());
+    	}
+    }
+    
+    // Special tree variant that knows how to retrieve node labels and
+    // provides the ability to expand all nodes at once.
+    
+    private class ASTTreeWidget extends JTree {
+    	
+    	public ASTTreeWidget(Vector items) {
+    		super(items);
+    	}
+    	
+        public String convertValueToText(Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
+        	if (value == null) return "";
+        	if (value instanceof ASTTreeNode) {
+        		return ((ASTTreeNode)value).label();
+        	}        	
+        	if (value instanceof ExceptionNode) {
+        		return ((ExceptionNode)value).label();
+        	}        	
+        	return value.toString();
+    	}
+        
+        public void expandAll(boolean expand) {
+            TreeNode root = (TreeNode)getModel().getRoot();
+            expandAll(new TreePath(root), expand);
         }
-        return SourceType.JAVA_15;
+        
+        private void expandAll(TreePath parent, boolean expand) {
+            // Traverse children
+            TreeNode node = (TreeNode)parent.getLastPathComponent();
+            if (node.getChildCount() >= 0) {
+                for (Enumeration e=node.children(); e.hasMoreElements(); ) {
+                    TreeNode n = (TreeNode)e.nextElement();
+                    TreePath path = parent.pathByAddingChild(n);
+                    expandAll(path, expand);
+                }
+            }
+        
+            if (expand) {
+                expandPath(parent);
+            } else {
+                collapsePath(parent);
+            }
+        }        
+    }
+    
+    private void loadTreeData(TreeNode rootNode) {
+    	astWidget.setModel(new DefaultTreeModel(rootNode));
+    	astWidget.expandAll(true);
     }
     
     private class ShowListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
             MyPrintStream ps = new MyPrintStream();
             System.setOut(ps);
+            TreeNode tn;
             try {
                 SimpleNode lastCompilationUnit = getCompilationUnit();
-                lastCompilationUnit.dump("");
-                astArea.setText(ps.getString());
-            } catch (ParseException pe) {
-                astArea.setText(pe.fillInStackTrace().getMessage());
-            }
+                tn = new ASTTreeNode(lastCompilationUnit);
+            } catch (ParseException pe) {            	
+            	tn = new ExceptionNode(pe);
+            	}
+            
+            loadTreeData(tn);
         }
     }
 
     private class DFAListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
-            try {
-                DFAGraphRule dfaGraphRule = new DFAGraphRule();
-                RuleSet rs = new RuleSet();
-                SourceType sourceType = getSourceType();
-                if(!sourceType.equals(SourceType.JSP)){
-                    rs.addRule(dfaGraphRule);
-                }
-                RuleContext ctx = new RuleContext();
-                ctx.setSourceCodeFilename("[no filename]");
-                StringReader reader = new StringReader(codeEditorPane.getText());
-                PMD pmd = new PMD();
-                pmd.setJavaVersion(getSourceType());
-                pmd.processFile(reader, rs, ctx);
-                List methods = dfaGraphRule.getMethods();
-                if (methods != null && !methods.isEmpty()) {
-                    dfaPanel.resetTo(methods, codeEditorPane);
-                    dfaPanel.repaint();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
 
+           DFAGraphRule dfaGraphRule = new DFAGraphRule();
+           RuleSet rs = new RuleSet();
+           SourceType sourceType = getSourceType();
+           if (!sourceType.equals(SourceType.JSP)){
+               rs.addRule(dfaGraphRule);
+           }
+           RuleContext ctx = new RuleContext();
+           ctx.setSourceCodeFilename("[no filename]");
+           StringReader reader = new StringReader(codeEditorPane.getText());
+           PMD pmd = new PMD();
+           pmd.setJavaVersion(sourceType);
+           
+           try {
+                pmd.processFile(reader, rs, ctx);
+//           } catch (PMDException pmde) {
+//               loadTreeData(new ExceptionNode(pmde));
+           } catch (Exception e) {
+               e.printStackTrace();
+           		}
+           
+           List methods = dfaGraphRule.getMethods();
+           if (methods != null && !methods.isEmpty()) {
+               dfaPanel.resetTo(methods, codeEditorPane);
+               dfaPanel.repaint();
+           }
+        }
     }
 
     private class XPathListener implements ActionListener {
@@ -147,7 +401,7 @@ public class Designer implements ClipboardOwner {
                         SimpleNode node = (SimpleNode) obj;
                         String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
                         String line = " at line " + String.valueOf(node.getBeginLine());
-                        sb.append(name).append(line).append(System.getProperty("line.separator"));
+                        sb.append(name).append(line).append(lineSeparator);
                         xpathResults.addElement(sb.toString().trim());
                     }
                 }
@@ -165,17 +419,14 @@ public class Designer implements ClipboardOwner {
     }
 
     private final CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
-    private final JTextArea astArea = new JTextArea();
-    private DefaultListModel xpathResults = new DefaultListModel();
-    private final JList xpathResultList = new JList(xpathResults);
-    private final JTextArea xpathQueryArea = new JTextArea(15, 30);
-    private final JFrame frame = new JFrame("PMD Rule Designer");
-    private final DFAPanel dfaPanel = new DFAPanel();
-    private JRadioButtonMenuItem jdk13MenuItem;
-    private JRadioButtonMenuItem jdk14MenuItem;
-    private JRadioButtonMenuItem jdk15MenuItem;
-    private JRadioButtonMenuItem jspMenuItem;
-
+    private final ASTTreeWidget astWidget			= new ASTTreeWidget(new Vector());
+    private DefaultListModel xpathResults			= new DefaultListModel();
+    private final JList xpathResultList				= new JList(xpathResults);
+    private final JTextArea xpathQueryArea			= new JTextArea(15, 30);
+    private final JFrame frame 						= new JFrame("PMD Rule Designer");
+    private final DFAPanel dfaPanel					= new DFAPanel();
+    private final JRadioButtonMenuItem[] sourceTypeMenuItems = new JRadioButtonMenuItem[sourceTypeSets.length];
+    
     public Designer() {
         MatchesFunction.registerSelfInSimpleContext();
 
@@ -216,8 +467,10 @@ public class Designer implements ClipboardOwner {
         frame.getContentPane().add(containerSplitPane);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
-        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenHeight = screenSize.height;
+        int screenWidth = screenSize.width;
+        
         frame.setSize(screenHeight - (screenHeight / 4), screenHeight - (screenHeight / 4));
         frame.setLocation((screenWidth / 2) - frame.getWidth() / 2, (screenHeight / 2) - frame.getHeight() / 2);
         frame.setVisible(true);
@@ -231,22 +484,14 @@ public class Designer implements ClipboardOwner {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("JDK");
         ButtonGroup group = new ButtonGroup();
-        jdk13MenuItem = new JRadioButtonMenuItem("JDK 1.3");
-        jdk13MenuItem.setSelected(false);
-        group.add(jdk13MenuItem);
-        menu.add(jdk13MenuItem);
-        jdk14MenuItem = new JRadioButtonMenuItem("JDK 1.4");
-        jdk14MenuItem.setSelected(true);
-        group.add(jdk14MenuItem);
-        menu.add(jdk14MenuItem);
-        jdk15MenuItem = new JRadioButtonMenuItem("JDK 1.5");
-        jdk15MenuItem.setSelected(false);
-        group.add(jdk15MenuItem);
-        menu.add(jdk15MenuItem);
-        jspMenuItem = new JRadioButtonMenuItem("JSP");
-        jspMenuItem.setSelected(false);
-        group.add(jspMenuItem);
-        menu.add(jspMenuItem);
+                
+        for (int i=0; i<sourceTypeSets.length; i++) {
+        	JRadioButtonMenuItem button = new JRadioButtonMenuItem(sourceTypeSets[i][0].toString());
+        	sourceTypeMenuItems[i] = button;
+        	group.add(button);
+        	menu.add(button);
+        }
+        sourceTypeMenuItems[defaultSourceTypeSelectionIndex].setSelected(true);
         menuBar.add(menu);
 
         JMenu actionsMenu = new JMenu("Actions");
@@ -268,7 +513,6 @@ public class Designer implements ClipboardOwner {
         
         return menuBar;
     }
-
 
     private void createRuleXML() {
         JPanel rulenamePanel = new JPanel();
@@ -349,12 +593,10 @@ public class Designer implements ClipboardOwner {
     }
 
     private JComponent createASTPanel() {
-        astArea.setRows(10);
-        astArea.setColumns(20);
-        JScrollPane astScrollPane = new JScrollPane(astArea);
-        return astScrollPane;
+    	astWidget.setCellRenderer(new ASTCellRenderer());    	
+        return new JScrollPane(astWidget);
     }
-
+    
     private JComponent createXPathResultPanel() {
         xpathResults.addElement("No results yet");
         xpathResultList.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -414,7 +656,7 @@ public class Designer implements ClipboardOwner {
      * Returns an unformatted xml string (without the declaration)
      *
      * @param node
-     * @return
+     * @return String
      * @throws java.io.IOException
      */
     private String getXmlString(SimpleNode node) throws IOException {

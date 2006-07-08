@@ -88,32 +88,39 @@ public class StringUtil {
         }
     }
 
-/*    public static void appendXmlEscaped2(StringBuffer buf, String src) {
-        int l = src.length();
-        char c;
-        for (int i = 0; i < l; i++) {
-            c = src.charAt(i);
-            if (c <= 32) {
-                buf.append(c);
-            } else if (c > '~') {// 126
-                if (c <= 255)
-                    buf.append(ENTITIES[c - 126]);
-                else
+	/**
+	 * Parses the input source using the delimiter specified. This method is much
+	 * faster than using the StringTokenizer or String.split(char) approach and
+	 * serves as a replacement for String.split() for JDK1.3 that doesn't have it.
+	 *
+	 * @param source String
+	 * @param delimiter char
+	 * @return String[]
+	 */
+	public static String[] substringsOf(String source, char delimiter) {
 
-                    buf.append("&u").append(Integer.toHexString(c)).append(';');
-            } else if (c == 38)
-                buf.append("&amp;");
-            else if (c == 34)
-                buf.append("&quot;");
-            else if (c == 39)
-                buf.append("&apos;");
-            else if (c == 60)
-                buf.append("&lt;");
-            else if (c == 62)
-                buf.append("&gt;");
-            else
-                buf.append(c);
-        }
-    }
-*/
+		int delimiterCount = 0;
+		int length = source.length();
+		char[] chars = source.toCharArray();
+
+		for (int i=0; i<length; i++) {
+			if (chars[i] == delimiter) delimiterCount++;
+			}
+
+		if (delimiterCount == 0) return new String[] { source };
+
+		String results[] = new String[delimiterCount+1];
+
+		int i = 0;
+		int offset = 0;
+
+		while (offset <= length) {
+			int pos = source.indexOf(delimiter, offset);
+			if (pos < 0) pos = length;
+			results[i++] = pos == offset ? "" : source.substring(offset, pos);
+			offset = pos + 1;
+			}
+
+		return results;
+	}
 }

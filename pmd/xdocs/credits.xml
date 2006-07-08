@@ -48,7 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Brian Remedios - code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, Created AbstractPoorMethodCall & Refactored UseIndexOfChar</li>
+            <li>Brian Remedios - code cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, Created AbstractPoorMethodCall & Refactored UseIndexOfChar</li>
             <li>Adam Zell - Reported bug in UselessOverridingMethod</li>
             <li>Daniel Serodio - Reported bug in ExceptionSignatureDeclaration</li>
             <li>John Redford - Reported bug in AvoidProtectedFieldInFinalClass</li>

@@ -1,27 +1,38 @@
 package net.sourceforge.pmd.util.designer;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 import net.sourceforge.pmd.util.HasLines;
 
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.BorderLayout;
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.util.Iterator;
-import java.util.List;
-
 public class DFAPanel extends JComponent implements ListSelectionListener {
 
-    public static class DFACanvas extends Canvas {
+	public static final String[] emptyStringSet = new String[0];
 
-        private static final int NODE_RADIUS = 10;
+    public static class DFACanvas extends JPanel {
+
+        private static final int NODE_RADIUS = 12;
         private static final int NODE_DIAMETER = 2 * NODE_RADIUS;
 
         private SimpleNode node;
@@ -30,51 +41,113 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
         private int y = 50;
         private HasLines lines;
 
-        public void paint(Graphics g) {
-            super.paint(g);
-            if (node == null) {
-                return;
+        private void addAccessLabel(StringBuffer sb, VariableAccess va) {
+
+        	if (va.isDefinition()) {
+                sb.append("d(");
+            } else if (va.isReference()) {
+                sb.append("r(");
+            } else if (va.isUndefinition()) {
+                sb.append("u(");
+                //continue;  // eo - the u() entries add a lot of clutter to the report
+            } else {
+                sb.append("?(");
             }
+
+        	sb.append(va.getVariableName()).append(')');
+        }
+
+        private String childIndicesOf(IDataFlowNode node, String separator) {
+
+        	List kids = node.getChildren();
+        	if (kids.isEmpty()) return "";
+
+        	StringBuffer sb = new StringBuffer();
+        	sb.append(((IDataFlowNode)kids.get(0)).getIndex());
+
+        	for (int j = 1; j < node.getChildren().size(); j++) {
+        		sb.append(separator);
+        		sb.append(((IDataFlowNode)kids.get(j)).getIndex());
+        	 }
+        	return sb.toString();
+        }
+
+        private String[] deriveAccessLabels(List flow) {
+
+        	if (flow == null && flow.isEmpty()) return emptyStringSet;
+
+        	String[] labels = new String[flow.size()];
+
+        	for (int i=0; i<labels.length; i++) {
+        		List access = ((IDataFlowNode) flow.get(i)).getVariableAccess();
+
+        		if (access == null || access.isEmpty()) {
+        			continue;	// leave a null at this slot
+        		}
+
+        		StringBuffer exp = new StringBuffer();
+        		addAccessLabel(exp, (VariableAccess) access.get(0));
+
+        		for (int k = 1; k < access.size(); k++) {
+        			exp.append(", ");
+        			addAccessLabel(exp, (VariableAccess) access.get(k));
+                	}
+
+                labels[i] = exp.toString();
+            }
+        	return labels;
+        }
+
+        private int maxWidthOf(String[] strings, FontMetrics fm) {
+
+        	int max = 0;
+        	String str;
+
+        	for (int i=0; i<strings.length; i++) {
+        		str = strings[i];
+        		if (str == null) continue;
+        		max = Math.max(max, SwingUtilities.computeStringWidth(fm, str));
+        	}
+        	return max;
+        }
+
+
+        public void paintComponent(Graphics g) {
+            super.paintComponent(g);
+
+            if (node == null) return;
+
             List flow = node.getDataFlowNode().getFlow();
+            FontMetrics fm = g.getFontMetrics();
+            int halfFontHeight = fm.getAscent() / 2;
+
+            String[] accessLabels = deriveAccessLabels(flow);
+            int maxAccessLabelWidth = maxWidthOf(accessLabels, fm);
+
             for (int i = 0; i < flow.size(); i++) {
                 IDataFlowNode inode = (IDataFlowNode) flow.get(i);
 
                 y = computeDrawPos(inode.getIndex());
 
                 g.drawArc(x, y, NODE_DIAMETER, NODE_DIAMETER, 0, 360);
-                g.drawString(lines.getLine(inode.getLine()), x + 200, y + 15);
-                
+                g.drawString(lines.getLine(inode.getLine()), x + 100 + maxAccessLabelWidth, y + 15);
+
                 // draw index number centered inside of node
                 String idx = String.valueOf(inode.getIndex());
-                int hack = 4 * (idx.length() / 2); // eo - hack to get one and two digit numbers centered
-                g.drawString(idx, x + NODE_RADIUS - 2 - hack, y + NODE_RADIUS + 4);
+                int halfWidth = SwingUtilities.computeStringWidth(fm, idx) / 2;
+                g.drawString(idx, x + NODE_RADIUS - halfWidth, y + NODE_RADIUS + halfFontHeight);
 
-                List access = inode.getVariableAccess();
-                if (access != null) {
-                    StringBuffer exp = new StringBuffer();
-                    for (int k = 0; k < access.size(); k++) {
-                        VariableAccess va = (VariableAccess) access.get(k);
-                        if (va.isDefinition()) {
-                            exp.append("d(");
-                        } else if (va.isReference()) {
-                            exp.append("r(");
-                        } else if (va.isUndefinition()) {
-                            exp.append("u(");
-                            //continue;  // eo - the u() entries add a lot of clutter to the report
-                        } else {
-                            exp.append("?(");
-                        }
-                        exp.append(va.getVariableName() + "), ");
-                    }
-                    g.drawString(exp.toString(), x + 70, y + 15);
+                String accessLabel = accessLabels[i];
+                if (accessLabel != null) {
+                	g.drawString(accessLabel, x + 70, y + 15);
                 }
 
                 for (int j = 0; j < inode.getChildren().size(); j++) {
                     IDataFlowNode n = (IDataFlowNode) inode.getChildren().get(j);
-                    this.drawMyLine(inode.getIndex(), n.getIndex(), g);
-                    String output = (j == 0 ? "" : ",") + String.valueOf(n.getIndex());
-                    g.drawString(output, x - 3 * NODE_DIAMETER + (j * 20), y + NODE_RADIUS - 2);
+                    drawMyLine(inode.getIndex(), n.getIndex(), g);
                 }
+                String childIndices = childIndicesOf(inode, ", ");
+                g.drawString(childIndices, x - 3 * NODE_DIAMETER, y + NODE_RADIUS - 2);
             }
         }
 
@@ -91,17 +164,42 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
             return z + index * z;
         }
 
+        private void drawArrow(Graphics g, int x, int y, int direction) {
+
+        	final int height = NODE_RADIUS *  2/3;
+        	final int width = NODE_RADIUS *  2/3;
+
+        	switch (direction) {
+        	   case SwingConstants.NORTH :
+        		   g.drawLine(x, y, x - width/2, y + height);
+        		   g.drawLine(x, y, x + width/2, y + height);
+        		   break;
+        	   case SwingConstants.SOUTH :
+        		   g.drawLine(x, y, x - width/2, y - height);
+        		   g.drawLine(x, y, x + width/2, y - height);
+        		   break;
+        	   case SwingConstants.EAST :
+        		   g.drawLine(x, y, x - height, y - width/2);
+        		   g.drawLine(x, y, x - height, y + width/2);
+        		   break;
+        	   case SwingConstants.WEST :
+        		   g.drawLine(x, y, x + height, y - width/2);
+        		   g.drawLine(x, y, x + height, y + width/2);
+        	}
+        }
+
         private void drawMyLine(int index1, int index2, Graphics g) {
             int y1 = this.computeDrawPos(index1);
             int y2 = this.computeDrawPos(index2);
 
-            int arrow = 3;
+            int arrow = 6;
 
             if (index1 < index2) {
                 if (index2 - index1 == 1) {
                     x += NODE_RADIUS;
                     g.drawLine(x, y1 + NODE_DIAMETER, x, y2);
-                    g.fillRect(x - arrow, y2 - arrow, arrow * 2, arrow * 2);
+                  //  g.fillRect(x - arrow, y2 - arrow, arrow * 2, arrow * 2);
+                    drawArrow(g, x, y2, SwingConstants.SOUTH);
                     x -= NODE_RADIUS;
                 } else if (index2 - index1 > 1) {
                     y1 = y1 + NODE_RADIUS;
@@ -110,7 +208,8 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
                     g.drawLine(x, y1, x - n, y1);
                     g.drawLine(x - n, y1, x - n, y2);
                     g.drawLine(x - n, y2, x, y2);
-                    g.fillRect(x - arrow, y2 - arrow, arrow * 2, arrow * 2);
+                 //   g.fillRect(x - arrow, y2 - arrow, arrow * 2, arrow * 2);
+                    drawArrow(g, x,y2, SwingConstants.EAST);
                 }
 
             } else {
@@ -122,12 +221,14 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
                     g.drawLine(x, y1, x + n, y1);
                     g.drawLine(x + n, y1, x + n, y2);
                     g.drawLine(x + n, y2, x, y2);
-                    g.fillRect(x - arrow, y2 - arrow, arrow * 2, arrow * 2);
+              //      g.fillRect(x - arrow, y2 - arrow, arrow * 2, arrow * 2);
+                    drawArrow(g, x, y2, SwingConstants.WEST);
                     x = x - NODE_DIAMETER;
                 } else if (index1 - index2 == 1) {
                     y2 = y2 + NODE_DIAMETER;
                     g.drawLine(x + NODE_RADIUS, y2, x + NODE_RADIUS, y1);
-                    g.fillRect(x + NODE_RADIUS - arrow, y2 - arrow, arrow * 2, arrow * 2);
+                 //   g.fillRect(x + NODE_RADIUS - arrow, y2 - arrow, arrow * 2, arrow * 2);
+                    drawArrow(g, x + NODE_RADIUS, y2, SwingConstants.NORTH);
                 }
             }
         }
@@ -149,33 +250,32 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
         }
     }
 
-    private DFACanvas dfaCanvas;
-    private JList nodeList;
-    private DefaultListModel nodes = new DefaultListModel();
-    private JPanel wrapperPanel;
+    private DFACanvas			dfaCanvas;
+    private JList				nodeList;
+    private DefaultListModel 	nodes = new DefaultListModel();
 
     public DFAPanel() {
         super();
 
         setLayout(new BorderLayout());
         JPanel leftPanel = new JPanel();
+
         nodeList = new JList(nodes);
         nodeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         nodeList.setFixedCellWidth(150);
         nodeList.setBorder(BorderFactory.createLineBorder(Color.black));
         nodeList.addListSelectionListener(this);
+
         leftPanel.add(nodeList);
         add(leftPanel, BorderLayout.WEST);
 
         dfaCanvas = new DFACanvas();
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setPreferredSize(new Dimension(800, 450));  // eo - it would be better to calculate the size based on the containing object's size
-        dfaCanvas.setSize(2000, 4000);  // eo - these seem to give a big enough canvas
-        scrollPane.add(dfaCanvas);
-        wrapperPanel = new JPanel();
-        wrapperPanel.add(scrollPane);
-        wrapperPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-        add(wrapperPanel, BorderLayout.EAST);
+        dfaCanvas.setBackground(Color.WHITE);
+        dfaCanvas.setPreferredSize(new Dimension(900, 1400));
+
+        JScrollPane scrollPane = new JScrollPane(dfaCanvas);
+
+        add(scrollPane, BorderLayout.CENTER);
     }
 
     public void valueChanged(ListSelectionEvent event) {
@@ -204,4 +304,3 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
         repaint();
     }
 }
-

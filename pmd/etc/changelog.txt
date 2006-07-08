@@ -1,4 +1,4 @@
-    ????, 2006 - 3.8:
+ ????, 2006 - 3.8:
 BEFORE RELEASE:
 - remove deprecated methods from PMD.java, RuleSetFactory
 
@@ -13,6 +13,7 @@ Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro def
 Applied patch 1481024 (fulfilling RFE 1490181)- NOPMD messages can now be reported with a user specified msg, e.g., //NOPMD - this is expected
 Added JSP support to the copy/paste detector.
 Refactored UseIndexOfChar to extract common functionality into AbstractPoorMethodCall.
+Improved Designer look and functionality thanks to Brian Remedios.
 
 June 1, 2006 - 3.7:
 New rules:

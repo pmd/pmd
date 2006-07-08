@@ -16,6 +16,7 @@ import java.util.StringTokenizer;
 public class CodeEditorTextPane extends JTextPane implements HasLines, ActionListener {
 
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home") + System.getProperty("file.separator") + ".pmd_designer";
+    private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     public CodeEditorTextPane() {
         setPreferredSize(new Dimension(400, 200));
@@ -57,8 +58,7 @@ public class CodeEditorTextPane extends JTextPane implements HasLines, ActionLis
             StringBuffer text = new StringBuffer();
             String hold;
             while ((hold = br.readLine()) != null) {
-                text.append(hold);
-                text.append(System.getProperty("line.separator"));
+                text.append(hold).append(LINE_SEPARATOR);
             }
             return text.toString();
         } catch (IOException e) {
@@ -66,12 +66,10 @@ public class CodeEditorTextPane extends JTextPane implements HasLines, ActionLis
             return "";
         } finally {
             try {
-                if (br != null)
-                    br.close();
+                if (br != null) br.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
 }
-
