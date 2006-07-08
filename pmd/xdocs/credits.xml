@@ -49,6 +49,7 @@
         <subsection name="Contributors">
         <ul>
             <li>Brian Remedios - code cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, Created AbstractPoorMethodCall & Refactored UseIndexOfChar</li>
+            <li>Jarkko Hietaniemin - rewrote most of cpd.sh, many C grammar improvements, several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
             <li>Adam Zell - Reported bug in UselessOverridingMethod</li>
             <li>Daniel Serodio - Reported bug in ExceptionSignatureDeclaration</li>
             <li>John Redford - Reported bug in AvoidProtectedFieldInFinalClass</li>
@@ -66,7 +67,6 @@
             <li>Mike Kaufman - Reported a bug in UnnecessaryCaseChange</li>
             <li><a href="http://www.cafeaulait.org/">Elliotte Rusty Harold</a> - reported bug in UseAssertSameInsteadOfAssertTrue, suggested creating a new ruleset containing rules in each release, UncommentedEmptyConstructor suggestions, noted missed case for UnusedFormalParameter, documentation suggestions, reported mistake in UnnecessaryLocalBeforeReturn message, bug report 1371757 for misleading AvoidSynchronizedAtMethodLevel example, bug report 1293277 for duplicated rule messages, bug report for ConstructorCallsOverridableMethod, suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>David Karr - reported stale XPath documentation</li>
-            <li>Jarkko Hietaniemin - rewrote most of cpd.sh, tweaked C/CPP grammar to allow $ in identifiers, several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
             <li>Dawid Weiss - Reported bug in UnusedPrivateMethod</li>
             <li>Shao Lo - Reported bug in CPD</li>
             <li>Xavier Le Vourch - Suggestions on cleaning up casts in grammar, SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
