@@ -10,7 +10,8 @@ Fixed bug 1504842 - ExceptionSignatureDeclaration no longer flags methods starti
 Fixed bug 1516728 - UselessOverridingMethod no longer raises an NPE on methods that use generics.
 Fixed a bug in AvoidProtectedFieldInFinalClass - it no longer reports false positives for protected fields in inner classes.
 Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro definitions which are followed by a multiline comment.
-Applied patch 1481024 (fulfilling RFE 1490181)- NOPMD messages can now be reported with a user specified msg, e.g., //NOPMD - this is expected
+Implemented RFE 1501850 - UnusedFormalParameter now catches cases where a parameter is assigned to but not used.
+Applied patch 1481024 (implementing RFE 1490181)- NOPMD messages can now be reported with a user specified msg, e.g., //NOPMD - this is expected
 Added JSP support to the copy/paste detector.
 Refactored UseIndexOfChar to extract common functionality into AbstractPoorMethodCall.
 Improved Designer look and functionality thanks to Brian Remedios.

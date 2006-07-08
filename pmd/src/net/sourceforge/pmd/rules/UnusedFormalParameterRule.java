@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.Iterator;
 import java.util.List;
@@ -38,12 +39,25 @@ public class UnusedFormalParameterRule extends AbstractRule {
             Map vars = node.getScope().getVariableDeclarations();
             for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
                 VariableNameDeclaration nameDecl = (VariableNameDeclaration) i.next();
-                if (!((List) vars.get(nameDecl)).isEmpty()) {
+                if (nameDecl.isArray() || actuallyUsed((List)vars.get(nameDecl))) {
                     continue;
                 }
                 addViolation(data, node, new Object[]{node instanceof ASTMethodDeclaration ? "method" : "constructor", nameDecl.getImage()});
             }
         }
     }
+
+    private boolean actuallyUsed(List usages) {
+        for (Iterator j = usages.iterator(); j.hasNext();) {
+            NameOccurrence occ = (NameOccurrence) j.next();
+            if (occ.isOnLeftHandSide()) {
+                continue;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

@@ -20,12 +20,14 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
         runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "failure case", 1, rule),
             new TestDescriptor(TEST2, "method called on param", 0, rule),
-            new TestDescriptor(TEST3, "assignment to param", 0, rule),
+            new TestDescriptor(TEST3, "assignment to param", 1, rule),
             new TestDescriptor(TEST4, "interface", 0, rule),
             new TestDescriptor(TEST5, "don't flag public methods by default", 0, rule),
             new TestDescriptor(TEST6, "skip native/abstract methods", 0, rule),
             new TestDescriptor(TEST7, "anonymous inner class npe", 0, rule),
-            new TestDescriptor(TEST8, "unused constructor param", 1, rule)
+            new TestDescriptor(TEST8, "unused constructor param", 1, rule),
+            new TestDescriptor(TEST9, "assigned but not used", 1, rule),
+            new TestDescriptor(TEST10, "skip array types for now", 0, rule)
         });
     }
 
@@ -87,4 +89,19 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
             "class Foo {" + PMD.EOL +
             " public Foo(int s) {}" + PMD.EOL +
             "}";
+
+    private static final String TEST9 =
+            "class Foo {" + PMD.EOL +
+            " private void foo (String s) {" + PMD.EOL +
+            "  s = \"hello\";" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST10 =
+            "class Foo {" + PMD.EOL +
+            " private void foo (String[] s) {" + PMD.EOL +
+            "  s[2] = \"hello\";" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
 }
