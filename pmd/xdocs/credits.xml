@@ -48,7 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Brian Remedios - code cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, Created AbstractPoorMethodCall & Refactored UseIndexOfChar</li>
+            <li>Brian Remedios - code cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
             <li>Jarkko Hietaniemin - rewrote most of cpd.sh, many C grammar improvements, several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
             <li>Adam Zell - Reported bug in UselessOverridingMethod</li>
             <li>Daniel Serodio - Reported bug in ExceptionSignatureDeclaration</li>
@@ -64,7 +64,7 @@
             <li>Jeff Jensen - Reported missing XML schema references in documentation, wrote new XML schema, reported missing schema refs in example rulesets, suggested posting XML schema on PMD site, discussion of 'comments in catch block' feature, suggested description attribute in property element</li>
             <li>Christopher Stach - bug report for VariableNamingConventions, bug report for CallSuperInConstructor, many bug reports for rules that didn't handle JDK 1.5 constructs</li>
             <li>Matthew Harrah - noticed missing element in UseCorrectExceptionLogging definition, script bug report</li>
-            <li>Mike Kaufman - Reported a bug in UnnecessaryCaseChange</li>
+            <li>Mike Kaufman - Reported abug in UnnecessaryCaseChange</li>
             <li><a href="http://www.cafeaulait.org/">Elliotte Rusty Harold</a> - reported bug in UseAssertSameInsteadOfAssertTrue, suggested creating a new ruleset containing rules in each release, UncommentedEmptyConstructor suggestions, noted missed case for UnusedFormalParameter, documentation suggestions, reported mistake in UnnecessaryLocalBeforeReturn message, bug report 1371757 for misleading AvoidSynchronizedAtMethodLevel example, bug report 1293277 for duplicated rule messages, bug report for ConstructorCallsOverridableMethod, suggestion for improving command line interface, mispeling report, suggestion for improving Designer startup script, "how to make a ruleset" documentation suggestions, noticed outdated Xerces jars, script renaming suggestions, UseLocaleWithCaseConversions rule suggestion</li>
             <li>David Karr - reported stale XPath documentation</li>
             <li>Dawid Weiss - Reported bug in UnusedPrivateMethod</li>
