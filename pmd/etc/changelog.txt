@@ -15,6 +15,7 @@ Applied patch 1481024 (implementing RFE 1490181)- NOPMD messages can now be repo
 Added JSP support to the copy/paste detector.
 Refactored UseIndexOfChar to extract common functionality into AbstractPoorMethodCall.
 Improved Designer look and functionality thanks to Brian Remedios.
+Rewrote UselessOperationOnImmutable as Java rule - Large performance improvement
 
 June 1, 2006 - 3.7:
 New rules:
