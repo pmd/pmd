@@ -16,7 +16,10 @@ public class UseStringBufferForStringAppendsTest extends SimpleAggregatorTst {
     public void testAll() {
         runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "failure case", 1, rule),
-            new TestDescriptor(TEST2, "startsWith multiple chars", 0, rule),
+            new TestDescriptor(TEST2, "concat inside method call", 0, rule),
+            new TestDescriptor(TEST3, "3, startsWith", 0, rule),
+            new TestDescriptor(TEST4, "4, compound append, should only report 1 failure", 1, rule),
+            //new TestDescriptor(TEST5, "5, failure case", 1, rule),
         });
     }
 
@@ -36,4 +39,28 @@ public class UseStringBufferForStringAppendsTest extends SimpleAggregatorTst {
             " }" + PMD.EOL +
             "}";
 
+    private static final String TEST3 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar() {" + PMD.EOL +
+        "    foo(\"abc\" + def + \"hij\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+    
+    private static final String TEST4 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar() {" + PMD.EOL +
+        "  String x;" + PMD.EOL +
+        "  x = \"foo\";" + PMD.EOL +
+        "  x += \"bar\" + x;" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST5 =
+        "public class Foo {" + PMD.EOL +
+        " public Foo() {" + PMD.EOL +
+        "  String x;" + PMD.EOL +
+        "  x = \"foo\";" + PMD.EOL +
+        "  x += \"bar\";" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
 }
