@@ -306,36 +306,14 @@ public String convert(int x) {
 
     <rule name="OverrideBothEqualsAndHashcode"
           message="Ensure you override both equals() and hashCode()"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcode"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode">
       <description>
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
       </description>
       <properties>
-          <property name="xpath">
-              <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration
- [@Interface='false']
- [not (ImplementsList/ClassOrInterfaceType[@Image='Comparable'])]
-//MethodDeclarator
-[(@Image = 'equals' and count(FormalParameters/*) = 1
-and not(//MethodDeclarator[count(FormalParameters/*) = 0][@Image = 'hashCode']))
-or
-(@Image='hashCode' and count(FormalParameters/*) = 0
-and
-not
-(//MethodDeclarator
- [count(
-   FormalParameters//Type/ReferenceType/ClassOrInterfaceType
-    [@Image = 'Object' or @Image = 'java.lang.Object']) = 1]
-    [@Image = 'equals']))]
- ]]>
-              </value>
-          </property>
       </properties>
         <priority>3</priority>
-
       <example>
   <![CDATA[
 // this is bad

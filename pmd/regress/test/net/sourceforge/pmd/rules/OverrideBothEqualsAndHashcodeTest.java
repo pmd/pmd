@@ -27,6 +27,10 @@ public class OverrideBothEqualsAndHashcodeTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST6, "interface", 0, rule),
             new TestDescriptor(TEST7, "java.lang.Object", 0, rule),
             new TestDescriptor(TEST8, "skip Comparable implementations", 0, rule),
+            new TestDescriptor(TEST9, "implements equals but with 2 args", 0, rule),
+            new TestDescriptor(TEST10, "overloaded hashCode", 0, rule),
+            new TestDescriptor(TEST11, "overloaded both", 0, rule),
+            new TestDescriptor(TEST12, "overloaded hashCode, should fail on equals", 1, rule),
         });
     }
 
@@ -80,4 +84,29 @@ public class OverrideBothEqualsAndHashcodeTest extends SimpleAggregatorTst {
             " public int compareTo(Object other) { return 42; }" + PMD.EOL +
             "}";
 
+    private static final String TEST9 =
+        "public class Foo {" + PMD.EOL +
+        " public boolean equals(java.lang.Object o1, java.lang.Object o2) {" + PMD.EOL +
+        "  return true;" + PMD.EOL +
+        " }" + PMD.EOL +
+        " public int hashCode(java.lang.Object o) {" + PMD.EOL +
+        "  return 0;" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+    private static final String TEST10 =
+        "public class Foo  {" + PMD.EOL +
+        " public int hashCode(Object o1) { return false; }" + PMD.EOL +
+        "}";
+
+    private static final String TEST11 =
+        "public class Foo  {" + PMD.EOL +
+        " public boolean equals(Object o1,Object o2) { return false; }" + PMD.EOL +
+        " public int hashCode(Object o1) { return false; }" + PMD.EOL +
+        "}";
+
+    private static final String TEST12 =
+        "public class Foo  {" + PMD.EOL +
+        " public boolean equals(Object o1) { return false; }" + PMD.EOL +
+        " public int hashCode(Object o1) { return false; }" + PMD.EOL +
+        "}";
 }
