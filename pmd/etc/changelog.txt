@@ -18,6 +18,7 @@ Improved Designer look and functionality thanks to Brian Remedios.
 Performance Refactoring, XPath rules re-written as Java:
     UselessOperationOnImmutable
     OverrideBothEqualsAndHashcode
+    UnnecessaryReturn
 
 June 1, 2006 - 3.7:
 New rules:

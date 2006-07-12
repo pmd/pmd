@@ -24,6 +24,7 @@ public class UnnecessaryReturnTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST3, "ok since return is in sub block", 0, rule),
             new TestDescriptor(TEST4, "interface methods don't have return statements", 0, rule),
             new TestDescriptor(TEST5, "abstract methods don't have return statements", 0, rule),
+            new TestDescriptor(TEST6, "return inside a catch - ok", 0, rule),
         });
     }
 
@@ -58,4 +59,14 @@ public class UnnecessaryReturnTest extends SimpleAggregatorTst {
             "public class Foo {" + PMD.EOL +
             " abstract void bar();" + PMD.EOL +
             "}";
+    
+    private static final String TEST6 =
+        "public class Foo {" + PMD.EOL +
+        " void bar() {" + PMD.EOL +
+        "  try { " + PMD.EOL +
+        "  } catch(Exception e){" + PMD.EOL +
+        "     return;" + PMD.EOL +
+        "  }" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
 }

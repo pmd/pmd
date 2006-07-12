@@ -440,28 +440,12 @@ public class Foo {
 
     <rule name="UnnecessaryReturn"
           message="Avoid unnecessary return statements"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.basic.UnnecessaryReturn"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryReturn">
       <description>
 Avoid unnecessary return statements
       </description>
-      <properties>
-          <property name="xpath">
-              <value>
- <![CDATA[
-//ReturnStatement
- [parent::Statement
-  [parent::BlockStatement
-   [parent::Block
-    [parent::MethodDeclaration/ResultType[@Void='true']
-    ]
-   ]
-  ]
- ]
-]]>
-              </value>
-          </property>
-      </properties>
+      <properties></properties>
         <priority>3</priority>
       <example>
   <![CDATA[
