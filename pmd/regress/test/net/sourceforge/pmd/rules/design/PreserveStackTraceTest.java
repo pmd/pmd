@@ -30,6 +30,8 @@ public class PreserveStackTraceTest extends SimpleAggregatorTst {
                 new TestDescriptor(TEST7_OK, "7, No exception thrown, OK", 0, rule),
                 new TestDescriptor(TEST8_OK, "8, No exception thrown, OK", 0, rule),
                 new TestDescriptor(TEST9_OK, "9, Excetion is cast, OK", 0, rule),
+                new TestDescriptor(TEST10_OK, "10, Throwing new Exception, OK", 0, rule),
+                new TestDescriptor(TEST11_OK, "11, Throwing new Exception, OK", 0, rule),
             });
     }
 
@@ -138,6 +140,30 @@ public class PreserveStackTraceTest extends SimpleAggregatorTst {
         "            int i = Integer.parseInt(a);" + PMD.EOL +
         "        } catch(Exception e){" + PMD.EOL +
         "            throw (Error)e.fillInStackTrace();" + PMD.EOL +
+        "        }" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "}";
+
+    private static final String TEST10_OK =
+        "public class Foo {" + PMD.EOL +
+        "    public void foo(String a) {" + PMD.EOL +
+        "        try {" + PMD.EOL +
+        "            int i = Integer.parseInt(a);" + PMD.EOL +
+        "        } catch(Exception e){" + PMD.EOL +
+        "            Exception e1 = new Exception(e);" + PMD.EOL +
+        "            throw e1;" + PMD.EOL +
+        "        }" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "}";
+    
+    private static final String TEST11_OK =
+        "public class Foo {" + PMD.EOL +
+        "    public void foo(String a) {" + PMD.EOL +
+        "        try {" + PMD.EOL +
+        "            int i = Integer.parseInt(a);" + PMD.EOL +
+        "        } catch(Exception e){" + PMD.EOL +
+        "            Exception e1 = (Exception)e.fillInStackTrace();" + PMD.EOL +
+        "            throw e1;" + PMD.EOL +
         "        }" + PMD.EOL +
         "    }" + PMD.EOL +
         "}";
