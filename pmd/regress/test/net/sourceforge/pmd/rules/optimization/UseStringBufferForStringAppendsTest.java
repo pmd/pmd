@@ -17,9 +17,10 @@ public class UseStringBufferForStringAppendsTest extends SimpleAggregatorTst {
         runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "failure case", 1, rule),
             new TestDescriptor(TEST2, "concat inside method call", 0, rule),
-            new TestDescriptor(TEST3, "3, startsWith", 0, rule),
-            new TestDescriptor(TEST4, "4, compound append, should only report 1 failure", 1, rule),
-            //new TestDescriptor(TEST5, "5, failure case", 1, rule),
+            new TestDescriptor(TEST3, "startsWith", 0, rule),
+            new TestDescriptor(TEST4, "compound append, should only report 1 failure", 1, rule),
+            new TestDescriptor(TEST5, "failure case", 1, rule),
+            new TestDescriptor(TEST6, "static failure case", 1, rule),
         });
     }
 
@@ -58,6 +59,15 @@ public class UseStringBufferForStringAppendsTest extends SimpleAggregatorTst {
     private static final String TEST5 =
         "public class Foo {" + PMD.EOL +
         " public Foo() {" + PMD.EOL +
+        "  String x;" + PMD.EOL +
+        "  x = \"foo\";" + PMD.EOL +
+        "  x += \"bar\";" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST6 =
+        "public class Foo {" + PMD.EOL +
+        " static {" + PMD.EOL +
         "  String x;" + PMD.EOL +
         "  x = \"foo\";" + PMD.EOL +
         "  x += \"bar\";" + PMD.EOL +

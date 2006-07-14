@@ -138,24 +138,12 @@ public class Foo {
 
     <rule name="UseStringBufferForStringAppends"
           message="Prefer StringBuffer over += for concatenating strings"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.optimization.UseStringBufferForStringAppends"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseStringBufferForStringAppends">
            <description>
 Finds usages of += for appending strings.
            </description>
           <properties>
-              <property name="xpath">
-                  <value>
-                      <![CDATA[
-//StatementExpression
-    [PrimaryExpression/PrimaryPrefix/Name
-        [@Image = ancestor::MethodDeclaration//LocalVariableDeclaration
-            [./Type//ClassOrInterfaceType[@Image =
-'String']]/VariableDeclarator/VariableDeclaratorId/@Image]]
-    //AssignmentOperator[@Compound='true']
-                      ]]>
-                  </value>
-              </property>
           </properties>
             <priority>3</priority>
            <example>
