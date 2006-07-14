@@ -565,7 +565,7 @@ public class MyClass {
 
     <rule name="BooleanInstantiation"
        message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
-       class="net.sourceforge.pmd.rules.XPathRule"
+       class="net.sourceforge.pmd.rules.basic.BooleanInstantiation"
        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BooleanInstantiation">
    <description>
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.

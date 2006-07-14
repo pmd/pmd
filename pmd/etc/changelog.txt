@@ -8,6 +8,7 @@ Fixed bug 1417106 - MissingBreakInSwitch no longer flags stmts where every case 
 Fixed bug 1412529 - UncommentedEmptyConstructor no longer flags private constructors.
 Fixed bug 1504842 - ExceptionSignatureDeclaration no longer flags methods starting with 'test'.
 Fixed bug 1516728 - UselessOverridingMethod no longer raises an NPE on methods that use generics.
+Fixed bug 1522054 - BooleanInstantiation now detects instantiations inside method calls.
 Fixed a bug in AvoidProtectedFieldInFinalClass - it no longer reports false positives for protected fields in inner classes.
 Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro definitions which are followed by a multiline comment.
 Implemented RFE 1501850 - UnusedFormalParameter now catches cases where a parameter is assigned to but not used.
@@ -16,6 +17,7 @@ Added JSP support to the copy/paste detector.
 Refactored UseIndexOfChar to extract common functionality into AbstractPoorMethodCall.
 Improved Designer look and functionality thanks to Brian Remedios.
 Performance Refactoring, XPath rules re-written as Java:
+    BooleanInstantiation
     UselessOperationOnImmutable
     OverrideBothEqualsAndHashcode
     UnnecessaryReturn

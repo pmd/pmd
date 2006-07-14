@@ -24,6 +24,12 @@ public class BooleanInstantiationRuleTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST3, "ok", 0, rule),
             new TestDescriptor(TEST4, "don't use Boolean.valueOf() with literal", 2, rule),
             new TestDescriptor(TEST5, "valueOf() with variable is fine", 0, rule),
+            new TestDescriptor(TEST6, "don't use Boolean.valueOf() with string literal", 1, rule),
+            new TestDescriptor(TEST7, "don't use Boolean.valueOf() in method call", 1, rule),
+            new TestDescriptor(TEST8, "don't use new Boolean() in method call", 1, rule),
+            new TestDescriptor(TEST9, "ok", 0, rule),
+            new TestDescriptor(TEST10, "ok", 0, rule),
+            new TestDescriptor(TEST11, "don't use new Boolean() in static block", 1, rule),
         });
     }
 
@@ -53,4 +59,45 @@ public class BooleanInstantiationRuleTest extends SimpleAggregatorTst {
             " Boolean b = Boolean.valueOf(x);" + PMD.EOL +
             "}";
 
+    private static final String TEST6 =
+        "public class Foo {" + PMD.EOL +
+        " Boolean b = Boolean.valueOf(\"true\");" + PMD.EOL +
+        "}";
+
+    private static final String TEST7 =
+        "public class Foo {" + PMD.EOL +
+        "   public void go(){" + PMD.EOL +
+        "     foo(new Boolean(\"true\"));" + PMD.EOL +
+        "   }" + PMD.EOL +
+        "}";
+
+    private static final String TEST8 =
+        "public class Foo {" + PMD.EOL +
+        "   public void go(){" + PMD.EOL +
+        "      foo(Boolean.valueOf(\"true\"));" + PMD.EOL +
+        "   }" + PMD.EOL +
+        "}";
+
+    private static final String TEST9 =
+        "public class Foo {" + PMD.EOL +
+        "   public void go(){" + PMD.EOL +
+        " foo(Boolean.TRUE);" + PMD.EOL +
+        "   }" + PMD.EOL +
+        "}";
+
+    private static final String TEST10 =
+        "public class Foo {" + PMD.EOL +
+        "   static {" + PMD.EOL +
+        " foo(Boolean.TRUE);" + PMD.EOL +
+        "   }" + PMD.EOL +
+        "}";
+
+    private static final String TEST11 =
+        "public class Foo {" + PMD.EOL +
+        "   static {" + PMD.EOL +
+        "      foo(Boolean.valueOf(\"true\"));" + PMD.EOL +
+        "   }" + PMD.EOL +
+        "}";
+
+        
 }
