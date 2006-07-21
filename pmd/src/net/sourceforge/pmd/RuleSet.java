@@ -10,7 +10,7 @@ import java.util.List;
 
 
 /**
- * This class represents a collectin of rules.
+ * This class represents a collection of rules.
  *
  * @see Rule
  */
