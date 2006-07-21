@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
@@ -13,9 +14,6 @@ import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.AccessNode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class VariableNamingConventions extends AbstractRule {
 
@@ -32,10 +30,10 @@ public class VariableNamingConventions extends AbstractRule {
     }
 
     protected void init() {
-        staticPrefix = split(getStringProperty("staticPrefix"));
-        staticSuffix = split(getStringProperty("staticSuffix"));
-        memberPrefix = split(getStringProperty("memberPrefix"));
-        memberSuffix = split(getStringProperty("memberSuffix"));
+        staticPrefix = StringUtil.substringsOf(getStringProperty("staticPrefix"), SEPARATOR);
+        staticSuffix = StringUtil.substringsOf(getStringProperty("staticSuffix"), SEPARATOR);
+        memberPrefix = StringUtil.substringsOf(getStringProperty("memberPrefix"), SEPARATOR);
+        memberSuffix = StringUtil.substringsOf(getStringProperty("memberSuffix"), SEPARATOR);
     }
 
     public Object visit(ASTFieldDeclaration node, Object data) {
@@ -126,27 +124,5 @@ public class VariableNamingConventions extends AbstractRule {
             }
         }
         return varName;
-    }
-
-    protected String[] split(String str) {
-        if (str == null || str.length() == 0) {
-            return null;
-        }
-
-        int index = str.indexOf(SEPARATOR);
-        if (index == -1) {
-            return new String[]{str};
-        }
-
-        List list = new ArrayList();
-        int currPos = 0;
-        int len = SEPARATOR.length();
-        while (index != -1) {
-            list.add(str.substring(currPos, index));
-            currPos = index + len;
-            index = str.indexOf(SEPARATOR, currPos);
-        }
-        list.add(str.substring(currPos));
-        return (String[]) list.toArray(new String[list.size()]);
     }
 }

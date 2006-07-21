@@ -48,8 +48,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Brian Remedios - code cleanup of StringUtil and various rules, cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
             <li>Ulrich Kriegel - reported Ant task documentation bug</li>
-            <li>Brian Remedios - code cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
             <li>Jarkko Hietaniemin - rewrote most of cpd.sh, many C grammar improvements, several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
             <li>Adam Zell - Reported bug in UselessOverridingMethod</li>
             <li>Daniel Serodio - Reported bug in ExceptionSignatureDeclaration</li>

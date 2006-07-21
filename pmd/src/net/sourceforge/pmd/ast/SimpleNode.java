@@ -85,6 +85,10 @@ public abstract class SimpleNode implements Node {
         return beginLine;
     }
 
+    public boolean hasImageEqualTo(String arg) {
+    	return image != null && image.equals(arg);
+    }
+    
     public void testingOnly__setBeginLine(int i) {
         this.beginLine = i;
     }
@@ -331,4 +335,3 @@ public abstract class SimpleNode implements Node {
         return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
     }
 }
-

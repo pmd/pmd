@@ -86,9 +86,11 @@ public abstract class StatisticalRule extends AbstractRule {
             return Double.NaN;
         }
 
+        double scoreMinusMean;
+
         while (points.hasNext()) {
-            DataPoint point = (DataPoint) points.next();
-            deltaSq += ((point.getScore() - mean) * (point.getScore() - mean));
+            scoreMinusMean = ((DataPoint) points.next()).getScore() - mean;
+            deltaSq += (scoreMinusMean * scoreMinusMean);
         }
 
         return Math.sqrt(deltaSq / (dataPoints.size() - 1));
@@ -97,11 +99,12 @@ public abstract class StatisticalRule extends AbstractRule {
     protected SortedSet applyMinimumValue(SortedSet pointSet, double minValue) {
         Iterator points = pointSet.iterator();
         SortedSet RC = new TreeSet();
+        double threshold = minValue - DELTA;
 
         while (points.hasNext()) {
             DataPoint point = (DataPoint) points.next();
 
-            if (point.getScore() > (minValue - DELTA)) {
+            if (point.getScore() > threshold) {
                 RC.add(point);
             }
         }

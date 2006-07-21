@@ -64,6 +64,7 @@ import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -145,8 +146,8 @@ public class Designer implements ClipboardOwner {
     	private void createKids() {
     		    		
     		String message = ((ParseException)item).getMessage();    		
-			String[] lines = message.split(lineSeparator);
-			
+            String[] lines = StringUtil.substringsOf(message, lineSeparator);
+
 			kids = new ExceptionNode[lines.length];
 			for (int i=0; i<lines.length; i++) {
 				kids[i] = new ExceptionNode(lines[i]);

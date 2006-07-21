@@ -3,8 +3,13 @@
  */
 package net.sourceforge.pmd.util;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 public class StringUtil {
 
+	public static final String[] EMPTY_STRINGS = new String[0];
     private static final boolean supportsUTF8 = System.getProperty("net.sourceforge.pmd.supportUTF8", "no").equals("yes");
     private static final String[] ENTITIES;
 
@@ -100,6 +105,10 @@ public class StringUtil {
 	 */
 	public static String[] substringsOf(String source, char delimiter) {
 
+		if (source == null || source.length() == 0) {
+            return EMPTY_STRINGS;
+        }
+		
 		int delimiterCount = 0;
 		int length = source.length();
 		char[] chars = source.toCharArray();
@@ -123,5 +132,54 @@ public class StringUtil {
 			}
 
 		return results;
+	}
+	
+	/**
+	 * @param str String
+	 * @param separator char
+	 * @return String[]
+	 */
+	  public static String[] substringsOf(String str, String separator) {
+		  
+	        if (str == null || str.length() == 0) {
+	            return EMPTY_STRINGS;
+	        }
+
+	        int index = str.indexOf(separator);
+	        if (index == -1) {
+	            return new String[]{str};
+	        }
+
+	        List list = new ArrayList();
+	        int currPos = 0;
+	        int len = separator.length();
+	        while (index != -1) {
+	            list.add(str.substring(currPos, index));
+	            currPos = index + len;
+	            index = str.indexOf(separator, currPos);
+	        }
+	        list.add(str.substring(currPos));
+	        return (String[]) list.toArray(new String[list.size()]);
+	    }
+	
+	
+	/**
+	 * Copies the elements returned by the iterator onto the string buffer
+	 * each delimited by the separator.
+	 *
+	 * @param sb StringBuffer
+	 * @param iter Iterator
+	 * @param separator String
+	 */
+	public static void asStringOn(StringBuffer sb, Iterator iter, String separator) {
+		
+	    if (!iter.hasNext()) return;
+	    
+	    sb.append(iter.next());
+	    
+	    while (iter.hasNext()) {
+	    	sb.append(separator);
+	        sb.append(iter.next());
+	    }
 	}
 }
