@@ -78,14 +78,13 @@ public abstract class StatisticalRule extends AbstractRule {
     }
 
     protected double getStdDev() {
-        Iterator points = dataPoints.iterator();
-        double mean = getMean();
-        double deltaSq = 0.0;
-
         if (dataPoints.size() < 2) {
             return Double.NaN;
         }
 
+        Iterator points = dataPoints.iterator();
+        double mean = getMean();
+        double deltaSq = 0.0;
         double scoreMinusMean;
 
         while (points.hasNext()) {
