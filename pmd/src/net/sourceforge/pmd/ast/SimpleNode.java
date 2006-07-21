@@ -27,7 +27,6 @@ public abstract class SimpleNode implements Node {
     protected int beginColumn = -1;
     protected int endColumn;
     private Scope scope;
-    private boolean discardable;
     private IDataFlowNode dataFlowNode;
 
     public IDataFlowNode getDataFlowNode() {
@@ -40,25 +39,8 @@ public abstract class SimpleNode implements Node {
         return dataFlowNode;
     }
 
-    public void discardIfNecessary() {
-        if (discardable) {
-            SimpleNode parent = (SimpleNode) this.jjtGetParent();
-            SimpleNode kid = (SimpleNode) this.jjtGetChild(0);
-            kid.jjtSetParent(parent);
-            parent.jjtReplaceChild(this, kid);
-        }
-    }
-
     public void setDataFlowNode(IDataFlowNode dataFlowNode) {
         this.dataFlowNode = dataFlowNode;
-    }
-
-    public void setDiscardable() {
-        this.discardable = true;
-    }
-
-    public void setUnDiscardable() {
-        this.discardable = false;
     }
 
     public SimpleNode(int i) {
@@ -216,16 +198,6 @@ public abstract class SimpleNode implements Node {
 
     public Node jjtGetParent() {
         return parent;
-    }
-
-    public void jjtReplaceChild(Node old, Node newNode) {
-        for (int i = 0; i < children.length; i++) {
-            if (children[i] == old) {
-                children[i] = newNode;
-                return;
-            }
-        }
-        throw new RuntimeException("PMD INTERNAL ERROR: SimpleNode.jjtReplaceChild called to replace a node, but couldn't find the old node");
     }
 
     public void jjtAddChild(Node n, int i) {

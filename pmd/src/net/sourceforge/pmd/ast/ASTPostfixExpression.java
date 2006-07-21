@@ -6,14 +6,11 @@ public class ASTPostfixExpression extends SimpleJavaNode {
 
     public ASTPostfixExpression(int id) {
         super(id);
-        setDiscardable();
     }
 
     public ASTPostfixExpression(JavaParser p, int id) {
         super(p, id);
-        setDiscardable();
     }
-
 
     /**
      * Accept the visitor. *

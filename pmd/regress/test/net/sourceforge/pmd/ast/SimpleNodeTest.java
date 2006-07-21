@@ -144,19 +144,6 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals(1, nodes.size());
     }
 
-    public void testReplaceChild() {
-        ASTEqualityExpression ee = new ASTEqualityExpression(1);
-        ASTInstanceOfExpression io1 = new ASTInstanceOfExpression(2);
-        ASTRelationalExpression re = new ASTRelationalExpression(3);
-        ASTInstanceOfExpression io2 = new ASTInstanceOfExpression(2);
-        ee.jjtAddChild(io1, 0);
-        ee.jjtAddChild(io2, 1);
-        io1.jjtAddChild(re, 0);
-        ee.jjtReplaceChild(io1, re);
-        assertEquals(ee.jjtGetChild(0), re);
-        assertEquals(ee.jjtGetChild(1), io2);
-    }
-
     public void testGetFirstChild() {
         ASTBlock block = new ASTBlock(1);
         ASTStatement x = new ASTStatement(2);
