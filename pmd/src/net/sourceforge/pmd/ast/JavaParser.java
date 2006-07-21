@@ -717,11 +717,12 @@ jjtn000.setModifiers(modifiers);
 
   final public void EnumConstant() throws ParseException {
  /*@bgen(jjtree) EnumConstant */
-  ASTEnumConstant jjtn000 = new ASTEnumConstant(this, JJTENUMCONSTANT);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
+ ASTEnumConstant jjtn000 = new ASTEnumConstant(this, JJTENUMCONSTANT);
+ boolean jjtc000 = true;
+ jjtree.openNodeScope(jjtn000);Token t;
     try {
-      jj_consume_token(IDENTIFIER);
+      t = jj_consume_token(IDENTIFIER);
+                  jjtn000.setImage(t.image);
       switch (jj_nt.kind) {
       case LPAREN:
         Arguments();
@@ -7063,6 +7064,11 @@ jjtn000.setModifiers(modifiers);
     return false;
   }
 
+  final private boolean jj_3R_326() {
+    if (jj_3R_98()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_190() {
     if (jj_scan_token(LBRACE)) return true;
     if (jj_3R_91()) return true;
@@ -7181,6 +7187,11 @@ jjtn000.setModifiers(modifiers);
     return false;
   }
 
+  final private boolean jj_3R_325() {
+    if (jj_3R_71()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_279() {
     if (jj_3R_65()) return true;
     if (jj_3R_287()) return true;
@@ -7294,11 +7305,6 @@ jjtn000.setModifiers(modifiers);
     return false;
   }
 
-  final private boolean jj_3R_326() {
-    if (jj_3R_98()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_263() {
     if (jj_3R_269()) return true;
     return false;
@@ -7381,11 +7387,6 @@ jjtn000.setModifiers(modifiers);
 
   final private boolean jj_3R_154() {
     if (jj_3R_193()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_325() {
-    if (jj_3R_71()) return true;
     return false;
   }
 

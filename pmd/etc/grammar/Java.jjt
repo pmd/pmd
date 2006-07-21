@@ -1156,9 +1156,9 @@ void EnumBody():
 }
 
 void EnumConstant():
-{}
+{Token t;}
 {
-  <IDENTIFIER> [ Arguments() ] [ ClassOrInterfaceBody() ]
+  t=<IDENTIFIER> {jjtThis.setImage(t.image);} [ Arguments() ] [ ClassOrInterfaceBody() ]
 }
 
 void TypeParameters():
