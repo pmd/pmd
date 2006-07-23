@@ -10,6 +10,7 @@ Fixed bug 1504842 - ExceptionSignatureDeclaration no longer flags methods starti
 Fixed bug 1516728 - UselessOverridingMethod no longer raises an NPE on methods that use generics.
 Fixed bug 1522054 - BooleanInstantiation now detects instantiations inside method calls.
 Fixed bug 1522056 - UseStringBufferForStringAppends now flags appends which occur in static initializers and constructors
+Fixed bug 1526530 - SingularField now finds fields which are hidden at the method or static level
 Fixed a bug in AvoidProtectedFieldInFinalClass - it no longer reports false positives for protected fields in inner classes.
 Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro definitions which are followed by a multiline comment.
 Implemented RFE 1501850 - UnusedFormalParameter now catches cases where a parameter is assigned to but not used.
@@ -24,6 +25,7 @@ Performance Refactoring, XPath rules re-written as Java:
     OverrideBothEqualsAndHashcode
     UnnecessaryReturn
     UseStringBufferForStringAppends
+    SingularField
 
 June 1, 2006 - 3.7:
 New rules:
