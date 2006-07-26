@@ -6,6 +6,8 @@ Fixed bug 1498910 - AssignmentInOperand no longer has a typo in the message.
 Fixed bug 1498960 - DontImportJavaLang no longer reports static imports of java.lang members.
 Fixed bug 1417106 - MissingBreakInSwitch no longer flags stmts where every case has either a return or a throw.
 Fixed bug 1412529 - UncommentedEmptyConstructor no longer flags private constructors.
+Fixed bug 1462189 - InsufficientStringBufferDeclaration now resets when it reaches setLength the same way it does at a Constructor
+Fixed bug 1497815 - InsufficientStringBufferDeclaration rule now takes the length of the constructor into account, and adds the length of the initial string to its initial length
 Fixed bug 1504842 - ExceptionSignatureDeclaration no longer flags methods starting with 'test'.
 Fixed bug 1516728 - UselessOverridingMethod no longer raises an NPE on methods that use generics.
 Fixed bug 1522054 - BooleanInstantiation now detects instantiations inside method calls.

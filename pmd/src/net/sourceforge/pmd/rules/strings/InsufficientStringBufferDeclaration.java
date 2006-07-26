@@ -59,13 +59,15 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
         int constructorLength = 16;
 
         constructorLength = getConstructorLength(node, constructorLength);
+        anticipatedLength = getInitialLength(node);
         List usage = node.getUsages();
         Map blocks = new HashMap();
         for (int ix = 0; ix < usage.size(); ix++) {
             NameOccurrence no = (NameOccurrence) usage.get(ix);
             SimpleNode n = no.getLocation();
-            if (!InefficientStringBuffering.isInStringBufferAppend(n, 3)) {
-                if (!no.isOnLeftHandSide()) {
+            if (!InefficientStringBuffering.isInStringBufferOpperation(n, 3, "append")) {
+
+                if (!no.isOnLeftHandSide() && !InefficientStringBuffering.isInStringBufferOpperation(n, 3, "setLength")) {
                     continue;
                 }
                 if (constructorLength != -1 && anticipatedLength > constructorLength) {
@@ -75,7 +77,7 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
                 }
                 constructorLength = getConstructorLength(n, constructorLength);
                 rootNode = n;
-                anticipatedLength = 0;
+                anticipatedLength = getInitialLength(node);
             }
             ASTPrimaryExpression s = (ASTPrimaryExpression) n.getFirstParentOfType(ASTPrimaryExpression.class);
             int numChildren = s.jjtGetNumChildren();
@@ -226,15 +228,41 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
                 // since it's not taken into account
                 // anywhere. only count the extra 16
                 // characters
-                iConstructorLength = 16; // don't add the constructor's length,
+                iConstructorLength = 14 + str.length(); // don't add the constructor's length,
             } else {
                 iConstructorLength = Integer.parseInt(str);
             }
         } else {
             iConstructorLength = -1;
         }
+        
+        if(iConstructorLength == 0){
+            iConstructorLength = 16;
+        }
 
         return iConstructorLength;
+    }
+
+
+    private int getInitialLength(SimpleNode node) {
+        SimpleNode block = (SimpleNode) node.getFirstParentOfType(ASTBlockStatement.class);
+        List literal;
+
+        if (block == null) {
+            block = (ASTFieldDeclaration) node.getFirstParentOfType(ASTFieldDeclaration.class);
+            if (block == null) {
+                block = (ASTFormalParameter) node.getFirstParentOfType(ASTFormalParameter.class);
+            }
+        }
+        literal = (block.findChildrenOfType(ASTLiteral.class));
+        if (literal.size() == 1) {
+            String str = ((SimpleNode) literal.get(0)).getImage();
+            if (str!= null && regexp.match("/^['\"]/", str)) {
+                return str.length() - 2; // take off the quotes
+            }
+        }
+        
+        return 0;
     }
 
     private boolean isAdditive(SimpleNode n) {

@@ -92,7 +92,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
 
                 currentBlock = getFirstParentBlock(n);
 
-                if (!InefficientStringBuffering.isInStringBufferAppend(n, 3)) {
+                if (!InefficientStringBuffering.isInStringBufferOpperation(n, 3,"append")) {
                     if (!no.isPartOfQualifiedName()) {
                         checkForViolation(rootNode, data, concurrentCount);
                         concurrentCount = 0;

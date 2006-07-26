@@ -39,7 +39,7 @@ public class AppendCharacterWithChar extends AbstractRule {
         // http://jakarta.apache.org/oro/api/org/apache/oro/text/regex/package-summary.html#package_description
         Perl5Util regexp = new Perl5Util();
         if (regexp.match(REGEX, str)) {
-            if (!InefficientStringBuffering.isInStringBufferAppend(node, 8)) {
+            if (!InefficientStringBuffering.isInStringBufferOpperation(node, 8, "append")) {
                 return data;
             }
             addViolation(data, node);

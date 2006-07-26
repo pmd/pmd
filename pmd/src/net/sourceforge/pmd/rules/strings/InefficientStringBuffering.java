@@ -72,13 +72,13 @@ public class InefficientStringBuffering extends AbstractRule {
             if (isAllocatedStringBuffer(node)) {
                 addViolation(data, node);
             }
-        } else if (isInStringBufferAppend(node, 6)) {
+        } else if (isInStringBufferOpperation(node, 6, "append")) {
             addViolation(data, node);
         }
         return data;
     }
 
-    protected static boolean isInStringBufferAppend(SimpleNode node, int length) {
+    protected static boolean isInStringBufferOpperation(SimpleNode node, int length, String methodName) {
         if (!xParentIsStatementExpression(node, length)) {
             return false;
         }
@@ -87,8 +87,7 @@ public class InefficientStringBuffering extends AbstractRule {
             return false;
         }
         ASTName n = (ASTName)s.getFirstChildOfType(ASTName.class);
-
-        if (n == null || n.getImage().indexOf("append") == -1 || !(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
+        if (n == null || n.getImage().indexOf(methodName) == -1 || !(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
             return false;
         }
 

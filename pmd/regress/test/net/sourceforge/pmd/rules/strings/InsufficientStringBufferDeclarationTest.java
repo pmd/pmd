@@ -28,7 +28,6 @@ public class InsufficientStringBufferDeclarationTest extends SimpleAggregatorTst
                 new TestDescriptor(TEST3, "3, StringBuffer allocated with space", 0, rule),
                 new TestDescriptor(TEST4, "4, StringBuffer allocated from variable", 0, rule),
                 new TestDescriptor(TEST5, "5, creating a new StringBuffer", 0, rule),
-                new TestDescriptor(TEST6, "6, Initialize with a specific String", 1, rule),
                 new TestDescriptor(TEST7, "7, appends inside if statements", 0, rule),
                 new TestDescriptor(TEST8, "8, Field level variable", 0, rule),
                 new TestDescriptor(TEST10, "10, Appending non-literals", 0, rule),
@@ -46,11 +45,13 @@ public class InsufficientStringBufferDeclarationTest extends SimpleAggregatorTst
                 new TestDescriptor(TEST30, "30, Appending chars", 0, rule),
                 new TestDescriptor(TEST31, "31, Appending from a cast in ifs", 0, rule),
                 new TestDescriptor(TEST32, "32, Constructor from math", 0, rule),
+                new TestDescriptor(TEST33, "33, Uses setLength", 0, rule),
        });
     
        // Then run the failure tests
        runTests(new TestDescriptor[] {
                new TestDescriptor(TEST2_FAIL, "2, StringBuffer not allocated with enough space", 1, rule),
+               new TestDescriptor(TEST6_FAIL, "6, Initialize with a specific String", 1, rule),
                new TestDescriptor(TEST9_FAIL, "9, Field level variable", 1, rule),
                new TestDescriptor(TEST13_FAIL, "13, compound append", 1, rule),
                new TestDescriptor(TEST15_FAIL, "15, Append int, incorrect presize", 1, rule),
@@ -60,6 +61,7 @@ public class InsufficientStringBufferDeclarationTest extends SimpleAggregatorTst
                new TestDescriptor(TEST21_FAIL, "21, Incorrectly presized twice", 2, rule),
                new TestDescriptor(TEST26_FAIL, "26, Compound if, pushed over the edge", 1, rule),
                new TestDescriptor(TEST28_FAIL, "28, Compound if, pushed over the edge", 1, rule),
+               new TestDescriptor(TEST34_FAIL, "34, Uses setLength incorrectly", 1, rule),
        });
     }
 
@@ -115,7 +117,7 @@ public class InsufficientStringBufferDeclarationTest extends SimpleAggregatorTst
         " }" + PMD.EOL +
         "}";
 
-    private static final String TEST6 =
+    private static final String TEST6_FAIL =
         "public class Foo {" + PMD.EOL +
         " public void bar(List l) {" + PMD.EOL +
         "  int x = 3;" + PMD.EOL +
@@ -434,5 +436,26 @@ public class InsufficientStringBufferDeclarationTest extends SimpleAggregatorTst
             " }" + PMD.EOL +
             "}";
     
+    private static final String TEST33 =
+        "public class Foo {" + PMD.EOL +
+        " public void bar() {" + PMD.EOL +
+        "  StringBuffer sb = new StringBuffer();" + PMD.EOL +
+        "  sb.append(\"Hello\");" + PMD.EOL +
+        "  sb.append(\"World\");" + PMD.EOL +
+        "  sb.setLength(0);" + PMD.EOL +
+        "  sb.append(\"Hello world\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";    
     
+    private static final String TEST34_FAIL =
+            "public class Foo {" + PMD.EOL +
+            " public void bar() {" + PMD.EOL +
+            "  StringBuffer sb = new StringBuffer();" + PMD.EOL +
+            "  sb.append(\"Hello\");" + PMD.EOL +
+            "  sb.append(\"World\");" + PMD.EOL +
+            "  sb.setLength(5);" + PMD.EOL +
+            "  sb.append(\"Hello world\");" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+        
 }
