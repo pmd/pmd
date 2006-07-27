@@ -282,6 +282,9 @@
         </subsection>
         <subsection name="Organizations">
         <table>
+            <tr><td><center><img src="images/ae-logo.gif"/></center></td>
+                <td><a href="http://www.ae.be/">AE</a> for the JSP integration
+            and especially for writing the JSP grammar.</td></tr>
           <tr><td><center><img src="images/darpa.jpg"/></center></td>
               <td><a href="http://www.darpa.mil/">DARPA</a> for funding
                   the Ultra*Log and <a href="http://cougaar.org/">Cougaar</a>
