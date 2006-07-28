@@ -12,7 +12,7 @@ public class UnusedModifier extends AbstractRule {
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (!node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
             ASTClassOrInterfaceDeclaration parent = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-            if (parent.isInterface()) {
+            if (parent != null && parent.isInterface()) {
                 addViolation(data, node, getMessage());
             }
         } else if (node.isInterface() && node.isNested() && (node.isPublic() || node.isStatic())) {
