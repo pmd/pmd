@@ -10,6 +10,8 @@
     <section name="Sites/Articles about PMD">
     <ul>
         <br/>
+        <li>July 2006 - Paul Duvall's article "Automation for the people: Continuous Inspection" on <a href="http://www-128.ibm.com/developerworks/java/library/j-ap08016/index.html">developerWorks</a> discusses CPD.</li>
+        <br/>
         <li>June 2006 - Andrew Glover's article "In pursuit of code quality: Tame the chatterbox" on <a href="http://www-128.ibm.com/developerworks/java/library/j-cq06306/index.html?ca=drs-">developerWorks</a> discusses PMD and JavaNCSS.</li>
         <br/>
         <li>June 2006 - Tom Copeland's article "Static Electricity: Better Living with Static Code Analysis" in <a href="http://tomcopeland.blogs.com/juniordeveloper/2006/06/a_pmd_analysis_.html">Better Software</a> discusses PMD/CPD analyses of Azureus and Columba.</li>
