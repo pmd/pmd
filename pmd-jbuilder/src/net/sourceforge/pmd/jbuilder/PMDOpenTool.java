@@ -380,7 +380,7 @@ public class PMDOpenTool {
     }
 
     private static void addPMDWarningMessage(RuleViolation rv, JavaFileNode node) {
-        PMDMessage pmdMsg = new PMDMessage(node.getDisplayName() + ": " + rv.getRule().getName() + ": " + rv.getDescription() + " at line " + rv.getNode().getBeginLine(), rv.getNode().getBeginLine(), node);
+        PMDMessage pmdMsg = new PMDMessage(node.getDisplayName() + ": " + rv.getRule().getName() + ": " + rv.getDescription() + " at line " + rv.getBeginLine(), rv.getBeginLine(), node);
         pmdMsg.setForeground(Color.red);
         pmdMsg.setFont(stdMsgFont);
         Browser.getActiveBrowser().getMessageView().addMessage(msgCat, pmdMsg, false);
