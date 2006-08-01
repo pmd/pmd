@@ -19,6 +19,7 @@ Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro def
 Implemented RFE 1501850 - UnusedFormalParameter now catches cases where a parameter is assigned to but not used.
 Applied patch 1481024 (implementing RFE 1490181)- NOPMD messages can now be reported with a user specified msg, e.g., //NOPMD - this is expected
 Added JSP support to the copy/paste detector.
+Placed JSF/JSP ruleset names in rulesets/jsprulesets.properties
 Added the image to the ASTEnumConstant nodes.
 Refactored UseIndexOfChar to extract common functionality into AbstractPoorMethodCall.
 Improved Designer look and functionality thanks to Brian Remedios.
