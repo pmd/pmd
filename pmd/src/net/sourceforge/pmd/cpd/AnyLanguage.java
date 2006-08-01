@@ -16,7 +16,7 @@ public class AnyLanguage implements Language {
         }
 
         public boolean accept(File dir, String filename) {
-            return filename.endsWith(extension) || (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
+            return filename.endsWith(extension) || (new File(dir.getAbsolutePath() + fileSeparator + filename).isDirectory());
         }
     }
 

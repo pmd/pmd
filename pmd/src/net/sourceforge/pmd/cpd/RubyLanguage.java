@@ -13,7 +13,7 @@ public class RubyLanguage implements Language {
         public boolean accept(File dir, String filename) {
             return filename.endsWith("rb") || filename.endsWith("cgi") ||
                     filename.endsWith("class") ||
-                    (new File(dir.getAbsolutePath() + System.getProperty("file.separator") + filename).isDirectory());
+                    (new File(dir.getAbsolutePath() + fileSeparator + filename).isDirectory());
         }
     }
 

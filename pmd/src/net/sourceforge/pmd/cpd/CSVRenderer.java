@@ -7,19 +7,42 @@ import net.sourceforge.pmd.PMD;
 
 import java.util.Iterator;
 
+
 public class CSVRenderer implements Renderer {
 
+	private char separator;
+	
+	public static final char defaultSeparator = ',';
+	
+	public CSVRenderer() {
+		this(defaultSeparator);
+	}
+	
+	public CSVRenderer(char separatorChar) {
+		separator = separatorChar;
+	}
+	
     public String render(Iterator matches) {
-        StringBuffer rpt = new StringBuffer();
-        rpt.append("lines,tokens,occurrences" + PMD.EOL);
+        StringBuffer rpt = new StringBuffer(1000);
+        rpt.append("lines").append(separator);
+        rpt.append("tokens").append(separator);
+        rpt.append("occurrences");
+        rpt.append(PMD.EOL);
+        
+        Match match;
+        TokenEntry mark;
+        
         while (matches.hasNext()) {
-            Match match = (Match) matches.next();
-            rpt.append(match.getLineCount() + "," + match.getTokenCount() + "," + match.getMarkCount() + ",");
+            match = (Match) matches.next();
+            rpt.append(match.getLineCount()).append(separator);
+            rpt.append(match.getTokenCount()).append(separator);
+            rpt.append(match.getMarkCount()).append(separator);
             for (Iterator marks = match.iterator(); marks.hasNext();) {
-                TokenEntry mark = (TokenEntry) marks.next();
-                rpt.append(mark.getBeginLine() + "," + mark.getTokenSrcID());
+                mark = (TokenEntry) marks.next();
+                rpt.append(mark.getBeginLine()).append(separator);
+                rpt.append(mark.getTokenSrcID());
                 if (marks.hasNext()) {
-                    rpt.append(",");
+                    rpt.append(separator);
                 }
             }
             rpt.append(PMD.EOL);

@@ -22,7 +22,7 @@ Added JSP support to the copy/paste detector.
 Placed JSF/JSP ruleset names in rulesets/jsprulesets.properties
 Added the image to the ASTEnumConstant nodes.
 Refactored UseIndexOfChar to extract common functionality into AbstractPoorMethodCall.
-Improved Designer look and functionality thanks to Brian Remedios.
+Improved CPD GUI and Designer look/functionality; thanks to Brian Remedios for the changes!
 Performance Refactoring, XPath rules re-written as Java:
     BooleanInstantiation
     UselessOperationOnImmutable

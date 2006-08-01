@@ -3,11 +3,12 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.PMD;
-
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
+
+import net.sourceforge.pmd.PMD;
 
 public class Match implements Comparable {
 
@@ -17,7 +18,35 @@ public class Match implements Comparable {
     private TokenEntry[] marks = new TokenEntry[2];
     private String code;
     private MatchCode mc;
-
+    private String label;
+    
+    public static final Comparator MatchesComparator = new Comparator() {
+    	public int compare(Object a, Object b) {
+    		Match ma = (Match)a;
+    		Match mb = (Match)b;
+    		return mb.getMarkCount() - ma.getMarkCount();
+    	}
+    };
+    
+    public static final Comparator LinesComparator = new Comparator() {
+    	public int compare(Object a, Object b) {
+    		Match ma = (Match)a;
+    		Match mb = (Match)b;
+    		
+    		return mb.getLineCount() - ma.getLineCount();
+    	}
+    };
+    
+    public static final Comparator LabelComparator = new Comparator() {
+    	public int compare(Object a, Object b) {
+    		Match ma = (Match)a;
+    		Match mb = (Match)b;
+    		if (ma.getLabel() == null) return 1;
+    		if (mb.getLabel() == null) return -1;
+    		return mb.getLabel().compareTo(ma.getLabel());
+    	}
+    };
+    
     public static class MatchCode {
 
         private int first;
@@ -126,4 +155,11 @@ public class Match implements Comparable {
         this.markSet = markSet;
     }
 
+    public void setLabel(String aLabel) {
+    	label = aLabel;
+    }
+    
+    public String getLabel() {
+    	return label;
+    }
 }
