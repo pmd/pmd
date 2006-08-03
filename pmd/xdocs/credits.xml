@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Maarten Coene - bug report for UnnecessaryConversionTemporary</li>
             <li>Jorn Stampehl - Reported bug in UnusedModifier, reported and fixed bugs in JUnitTestsShouldContainAsserts/CyclomaticComplexity/TooManyFields, noticed redundancy of ExplicitCallToFinalize, reported bug in AvoidCallingFinalize, reported bug in JUnitAssertionsShouldIncludeMessage, reported bug in bug report on JUnitTestsShouldContainAsserts</li>
             <li>Brian Remedios - code cleanup of StringUtil and various rules, cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
             <li>Ulrich Kriegel - reported Ant task documentation bug</li>

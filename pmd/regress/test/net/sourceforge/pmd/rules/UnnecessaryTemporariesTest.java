@@ -19,18 +19,26 @@ public class UnnecessaryTemporariesTest extends SimpleAggregatorTst {
     public void testAll() {
         runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "all glommed together", 6, rule),
+            new TestDescriptor(TEST2, "called on String", 0, rule),
         });
     }
 
     private static final String TEST1 =
-            " public class Foo {" + PMD.EOL +
-            "     void method (int x) {" + PMD.EOL +
-            "        new Integer(x).toString(); " + PMD.EOL +
-            "        new Long(x).toString(); " + PMD.EOL +
-            "        new Float(x).toString(); " + PMD.EOL +
-            "        new Byte((byte)x).toString(); " + PMD.EOL +
-            "        new Double(x).toString(); " + PMD.EOL +
-            "        new Short((short)x).toString(); " + PMD.EOL +
-            "     }" + PMD.EOL +
-            " }";
+    " public class Foo {" + PMD.EOL +
+    "     void method (int x) {" + PMD.EOL +
+    "        new Integer(x).toString(); " + PMD.EOL +
+    "        new Long(x).toString(); " + PMD.EOL +
+    "        new Float(x).toString(); " + PMD.EOL +
+    "        new Byte((byte)x).toString(); " + PMD.EOL +
+    "        new Double(x).toString(); " + PMD.EOL +
+    "        new Short((short)x).toString(); " + PMD.EOL +
+    "     }" + PMD.EOL +
+    " }";
+
+    private static final String TEST2 =
+    " public class Foo {" + PMD.EOL +
+    "     Long method (Foo foo) {" + PMD.EOL +
+    "        return new Long(foo.get().toString()); " + PMD.EOL +
+    "     }" + PMD.EOL +
+    " }";
 }

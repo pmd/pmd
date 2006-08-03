@@ -17,6 +17,7 @@ import java.util.Set;
 public class UnnecessaryConversionTemporary extends AbstractRule implements Rule {
 
     private boolean inPrimaryExpressionContext;
+    private ASTPrimaryExpression primary;
     private boolean usingPrimitiveWrapperAllocation;
     private Set primitiveWrappers = new HashSet();
 
@@ -36,6 +37,7 @@ public class UnnecessaryConversionTemporary extends AbstractRule implements Rule
         }
         // TODO... hmmm... is this inPrimaryExpressionContext gibberish necessary?
         inPrimaryExpressionContext = true;
+        primary = node;
         super.visit(node, data);
         inPrimaryExpressionContext = false;
         usingPrimitiveWrapperAllocation = false;
@@ -54,11 +56,12 @@ public class UnnecessaryConversionTemporary extends AbstractRule implements Rule
     }
 
     public Object visit(ASTPrimarySuffix node, Object data) {
-        if (!inPrimaryExpressionContext || !usingPrimitiveWrapperAllocation) {
-            return super.visit(node, data);
-        }
-        if (node.getImage() != null && node.getImage().equals("toString")) {
-            addViolation(data, node);
+        if (inPrimaryExpressionContext && usingPrimitiveWrapperAllocation) {
+            if (node.getImage() != null && node.getImage().equals("toString")) {
+                if (node.jjtGetParent() == primary) {
+                    addViolation(data, node);
+                }
+            }
         }
         return super.visit(node, data);
     }

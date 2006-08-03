@@ -14,6 +14,7 @@ Fixed bug 1522054 - BooleanInstantiation now detects instantiations inside metho
 Fixed bug 1522056 - UseStringBufferForStringAppends now flags appends which occur in static initializers and constructors
 Fixed bug 1526530 - SingularField now finds fields which are hidden at the method or static level
 Fixed bug 1529805 - UnusedModifier no longer throws NPEs on JDK 1.5 enums.
+Fixed bug 1531593 - UnnecessaryConversionTemporary no longer reports false positives when toString() is invoked inside the call to 'new Long/Integer/etc()'.  
 Fixed a bug in AvoidProtectedFieldInFinalClass - it no longer reports false positives for protected fields in inner classes.
 Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro definitions which are followed by a multiline comment.
 Implemented RFE 1501850 - UnusedFormalParameter now catches cases where a parameter is assigned to but not used.
