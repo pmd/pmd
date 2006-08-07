@@ -12,7 +12,7 @@ cd ~/tmp/pmd-jbuilder-1.6
 zip -q -r ../pmd-jbuilder-bin-1.6.zip *
 cd -
 
-CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
+CVSROOT=:ext:tomcopeland@pmd.cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
 cd ../../
 cvs -q tag -D tomorrow "pmd_jbuilder_release_1_6" pmd-jbuilder
 
@@ -26,7 +26,7 @@ rm -rf tmp/
 mkdir tmp
 cd tmp
 cvs -q export -r pmd_jbuilder_release_1_6 pmd-jbuilder
-mv pmd-jbuilder/ pmd-jbuilder-1.6/
+mv pmd-jbuilder/ pmd-jbuilder-1.6
 cd ..
 cp pmd-jbuilder/lib/pmd-jbuilder-src-1.6.jar tmp/pmd-jbuilder-1.6/lib/
 mv tmp/pmd-jbuilder-1.6/ ~/tmp/
