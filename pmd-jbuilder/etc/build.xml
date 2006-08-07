@@ -5,8 +5,8 @@
 <property name="dir.build" value="build\"/>
 <property name="dir.rulesets" value="rulesets\"/>
 <property name="dir.regress" value="regress\"/>
-<property name="version" value="1.5"/>
-<property name="pmd.version" value="3.4"/>
+<property name="version" value="1.6"/>
+<property name="pmd.version" value="3.7"/>
 
 <path id="dependencies.path">
     <pathelement location="${dir.build}"/>
