@@ -100,20 +100,21 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     public void _init() {
         removeAll();
-
+		
+		setLayout(new FlowLayout(FlowLayout.LEADING));
         addComponent(new JLabel("Please see http://pmd.sf.net/ for more information"));
 
         JPanel rulesPanel = new JPanel(new BorderLayout());
         rulesPanel.setBorder(BorderFactory.createTitledBorder("Rules"));
         JList list = new CheckboxList(rules.getAllBoxes());
         list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        rulesPanel.add(new JScrollPane(list), BorderLayout.NORTH);
+        rulesPanel.add(new JScrollPane(list), BorderLayout.CENTER);
 		//Custom Rule Panel Defination.
 		JPanel pnlCustomRules = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		pnlCustomRules.add(new JLabel("Path to custom rules.xml files(seperated by comma)"));
 		pnlCustomRules.add((txtCustomRules = new JTextField(jEdit.getProperty(PMDJEditPlugin.CUSTOM_RULES_PATH_KEY,""),30)));
 
-		rulesPanel.add(pnlCustomRules, BorderLayout.CENTER);
+		rulesPanel.add(pnlCustomRules, BorderLayout.SOUTH);
 
         JPanel textPanel = new JPanel();
         textPanel.setBorder(BorderFactory.createTitledBorder("Example"));
@@ -142,14 +143,15 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(rulesPanel, BorderLayout.NORTH);
-        mainPanel.add(textPanel, BorderLayout.CENTER);
+        mainPanel.setLayout(new GridLayout(0,1));
+		
+        mainPanel.add(rulesPanel);
+        mainPanel.add(textPanel);
 
 		pnlSouth.add(chkRunPMDOnSave);
 		pnlSouth.add(chkIgnoreLiterals);
 		pnlSouth.add(pnlTileSize);
-        mainPanel.add(pnlSouth, BorderLayout.SOUTH);
+        mainPanel.add(pnlSouth);
         addComponent(mainPanel);
     }
 
