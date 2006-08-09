@@ -55,7 +55,7 @@ public class SelectedRules
 		for(Iterator i = rsf.getRegisteredRuleSets(); i.hasNext(); )
 		{
 			RuleSet rs = (RuleSet)i.next();
-			System.out.println("Added RuleSet " + rs.getName() + " descriprion "+ rs.getDescription() +" language "+ rs.getLanguage());
+			//System.out.println("Added RuleSet " + rs.getName() + " descriprion "+ rs.getDescription() +" language "+ rs.getLanguage());
 			addRuleSet2Rules(rs);
 		}
 
