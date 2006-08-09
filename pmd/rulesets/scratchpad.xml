@@ -10,24 +10,27 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="UnusedFormalParameter"
-          message="Avoid unused {0} parameters such as ''{1}''"
-          class="net.sourceforge.pmd.rules.UnusedFormalParameterRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter">
+    <rule name="IdempotentOperations"
+          message="Avoid idempotent operations (like assigning a variable to itself)"
+          class="net.sourceforge.pmd.rules.IdempotentOperations"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#IdempotentOperations">
       <description>
-  Avoid passing parameters to methods or constructors and then not using those parameters.
+Avoid idempotent operations - they are silly.
       </description>
         <priority>3</priority>
 
       <example>
-  <![CDATA[
-  public class Foo {
-   private void bar(String howdy) {
-    // howdy is not used
-   }
-  ]]>
+      <![CDATA[
+public class Foo {
+ public void bar() {
+  int x = 2;
+  x = x;
+ }
+}
+      ]]>
       </example>
     </rule>
+
 
     <!--
     <rule name="UselessAssignment"

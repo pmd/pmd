@@ -55,6 +55,10 @@ public class IdempotentOperations extends AbstractRule {
             }
         }
 
+        if (lhs.findChildrenOfType(ASTPrimarySuffix.class).size() != rhs.findChildrenOfType(ASTPrimarySuffix.class).size()) {
+            return super.visit(node, data);
+        }
+
         addViolation(data, node);
         return super.visit(node, data);
     }
