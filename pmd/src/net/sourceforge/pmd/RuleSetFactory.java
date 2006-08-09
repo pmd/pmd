@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.Collection;
+import java.util.Collections;
 
 // Note that ruleset parsing may fail on JDK 1.6 beta
 // due to this bug - http://www.netbeans.org/issues/show_bug.cgi?id=63257
@@ -80,15 +82,9 @@ public class RuleSetFactory {
     public Iterator getRegisteredRuleSets() throws RuleSetNotFoundException {
         try {
             Properties props = new Properties();
-            props.load(ResourceLoader
-                    .loadResourceAsStream("rulesets/rulesets.properties"));
+            props.load(ResourceLoader.loadResourceAsStream("rulesets/rulesets.properties"));
             String rulesetFilenames = props.getProperty("rulesets.filenames");
-            List ruleSets = new ArrayList();
-            for (StringTokenizer st = new StringTokenizer(rulesetFilenames, ","); st
-                    .hasMoreTokens();) {
-                ruleSets.add(createRuleSet(st.nextToken()));
-            }
-            return ruleSets.iterator();
+            return createRuleSets(rulesetFilenames).getRuleSetsIterator();
         } catch (IOException ioe) {
             throw new RuntimeException("Couldn't find rulesets.properties; please ensure that the rulesets directory is on the classpath.  Here's the current classpath: "
                     + System.getProperty("java.class.path"));
@@ -137,16 +133,13 @@ public class RuleSetFactory {
      *             single RuleSet object, and thus removes name and language of the
      *             originating rule set files.
      */
-    public RuleSet createRuleSet(String name, ClassLoader classLoader)
-            throws RuleSetNotFoundException {
+    public RuleSet createRuleSet(String name, ClassLoader classLoader) throws RuleSetNotFoundException {
         RuleSets ruleSets = createRuleSets(name, classLoader);
-
         RuleSet result = new RuleSet();
         RuleSet[] allRuleSets = ruleSets.getAllRuleSets();
         for (int i = 0; i < allRuleSets.length; i++) {
             result.addRuleSet(allRuleSets[i]);
         }
-
         return result;
     }
 
