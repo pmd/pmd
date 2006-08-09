@@ -9,10 +9,13 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSets;
+
 import org.gjt.sp.jedit.jEdit;
 
 import javax.swing.JCheckBox;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -52,6 +55,7 @@ public class SelectedRules
 		for(Iterator i = rsf.getRegisteredRuleSets(); i.hasNext(); )
 		{
 			RuleSet rs = (RuleSet)i.next();
+			System.out.println("Added RuleSet " + rs.getName() + " descriprion "+ rs.getDescription() +" language "+ rs.getLanguage());
 			addRuleSet2Rules(rs);
 		}
 
@@ -149,18 +153,38 @@ public class SelectedRules
 	 *
 	 * @return    The selectedRules value
 	 */
-	public RuleSet getSelectedRules()
+	public RuleSets getSelectedRules()
 	{
-		RuleSet newRuleSet = new RuleSet();
+		RuleSets newRuleSets = new RuleSets();
+		
+		Map rulesetmap = new HashMap();
+		
 		for(Iterator i = rules.keySet().iterator(); i.hasNext(); )
 		{
 			Rule rule = (Rule)i.next();
 			if(get(rule).isSelected())
 			{
-				newRuleSet.addRule(rule);
+				RuleSet rs = ((JEditPMDRule)rule).getRs();
+				if(rulesetmap.get(rs.getName()) != null)
+				{
+					RuleSet existingRs = (RuleSet) rulesetmap.get(rs.getName());
+					existingRs.addRule(rule);
+				}
+				else
+				{
+					//Create a new RuleSet and register in RuleSets and the Map. We copy critical attributes such as name, language which will be used for processing by PMD.
+					RuleSet newrs = new RuleSet();
+					newrs.setName(rs.getName());
+					newrs.setDescription(rs.getDescription());
+					newrs.setLanguage(rs.getLanguage());
+					
+					newrs.addRule(rule);
+					rulesetmap.put(rs.getName(), newrs);
+					newRuleSets.addRuleSet(newrs);
+				}
 			}
 		}
-		return newRuleSet;
+		return newRuleSets;
 	}
 
 
@@ -188,7 +212,7 @@ public class SelectedRules
 		for(Iterator j = rs.getRules().iterator(); j.hasNext(); )
 		{
 			Rule rule = (Rule)j.next();
-			rules.put(rule, createCheckBox(rule.getName()));
+			rules.put(new JEditPMDRule(rule, rs), createCheckBox(rule.getName()));
 		}
 	}
 }

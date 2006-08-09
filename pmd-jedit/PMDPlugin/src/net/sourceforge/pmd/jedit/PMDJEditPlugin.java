@@ -224,7 +224,10 @@ public class PMDJEditPlugin extends EBPlugin
 
 			VFS vfs = buffer.getVFS();
 
-			pmd.processFile(vfs._createInputStream(vfs.createVFSSession(buffer.getPath(),view),buffer.getPath(),false,view), selectedRuleSets.getSelectedRules(), ctx);
+			pmd.processFile(vfs._createInputStream(vfs.createVFSSession(buffer.getPath(),view),buffer.getPath(),false,view),
+					System.getProperty("file.encoding"),
+					selectedRuleSets.getSelectedRules(), 
+					ctx);
 
 			if (ctx.getReport().isEmpty())
 			{
@@ -326,7 +329,7 @@ public class PMDJEditPlugin extends EBPlugin
 
 			try
 			{
-				pmd.processFile(new FileInputStream(file), selectedRuleSets.getSelectedRules(), ctx);
+				pmd.processFile(new FileInputStream(file), System.getProperty("file.encoding"), selectedRuleSets.getSelectedRules(), ctx);
 				for (Iterator j = ctx.getReport().iterator(); j.hasNext();)
 				{
 					foundProblems = true;
