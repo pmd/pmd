@@ -15,9 +15,10 @@ Fixed bug 1522056 - UseStringBufferForStringAppends now flags appends which occu
 Fixed bug 1526530 - SingularField now finds fields which are hidden at the method or static level
 Fixed bug 1529805 - UnusedModifier no longer throws NPEs on JDK 1.5 enums.
 Fixed bug 1531593 - UnnecessaryConversionTemporary no longer reports false positives when toString() is invoked inside the call to 'new Long/Integer/etc()'.
+Fixed bug 1512871 - Improved C++ tokenizer error messages - now they include the filename.
 Fixed a bug in AvoidProtectedFieldInFinalClass - it no longer reports false positives for protected fields in inner classes.
 Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro definitions which are followed by a multiline comment.
-Modified C++ tokenizer to use the JavaCC STATIC option; this results in about a 30% speedup in tokenizing.  Also improved error messages.
+Modified C++ tokenizer to use the JavaCC STATIC option; this results in about a 30% speedup in tokenizing.
 Implemented RFE 1501850 - UnusedFormalParameter now catches cases where a parameter is assigned to but not used.
 Applied patch 1481024 (implementing RFE 1490181)- NOPMD messages can now be reported with a user specified msg, e.g., //NOPMD - this is expected
 Added JSP support to the copy/paste detector.

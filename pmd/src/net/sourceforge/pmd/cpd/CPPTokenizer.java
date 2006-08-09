@@ -16,16 +16,10 @@ public class CPPTokenizer implements Tokenizer {
     protected String EOL = System.getProperty("line.separator", "\n");
 
     private static SimpleCharStream charStream;
+
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuffer sb = sourceCode.getCodeBuffer();
         try {
-/*
-            if (c == null) {
-                c = new SimpleCharStream(new StringReader(sb.toString()));
-            } else {
-                c.ReInit(new StringReader(sb.toString()));
-            }
-*/
             if (charStream == null) {
                 charStream = new SimpleCharStream(new StringReader(sb.toString()));
             } else {
