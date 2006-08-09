@@ -185,10 +185,7 @@
 		<delete>
 			<fileset dir="src/net/sourceforge/pmd/cpd/cppast">
 				<include name="*.java" />
-				<exclude name="ClassScope.java" />
-				<exclude name="Declaration.java" />
-				<exclude name="Scope.java" />
-				<exclude name="SymtabManager.java" />
+                <exclude name="TokenMgrError.java" /> <!-- TokenMgrError customized to report filename, so don't delete it -->
 			</fileset>
 		</delete>
 		<javacc target="etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="${javacc-home.path}" />

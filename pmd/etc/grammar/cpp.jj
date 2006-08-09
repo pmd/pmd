@@ -24,7 +24,6 @@
  *
  */
 options {
-  STATIC=false;
   BUILD_PARSER=false;
   CACHE_TOKENS=true;
 }
@@ -128,6 +127,16 @@ public final class CPPParser {
 }
 
 PARSER_END(CPPParser)
+
+TOKEN_MGR_DECLS : {
+ private static String filename;
+ public static void setFileName(String name) {
+  filename = name;
+ }
+ public static String getFileName() {
+  return filename;
+ }
+}
 
 SKIP :
 {

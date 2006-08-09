@@ -99,42 +99,6 @@ public class RuleSet {
     }
 
     /**
-     * Gives the name of this ruleset
-     *
-     * @return a String representing the name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Set the name of this ruleset
-     *
-     * @param name a String representing the name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Gives the description of this ruleset
-     *
-     * @return a String representing the description
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Set the description of this ruleset
-     *
-     * @param description a String representing the description
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object o) {
@@ -157,17 +121,28 @@ public class RuleSet {
         return this.getName().hashCode() + 13 * this.getRules().hashCode();
     }
 
-    /**
-     * @return Returns the language.
-     */
     public Language getLanguage() {
         return language;
     }
 
-    /**
-     * @param language The language to set.
-     */
     public void setLanguage(Language language) {
         this.language = language;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
 }

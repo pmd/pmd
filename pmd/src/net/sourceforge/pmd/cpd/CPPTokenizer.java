@@ -15,14 +15,28 @@ import java.util.List;
 public class CPPTokenizer implements Tokenizer {
     protected String EOL = System.getProperty("line.separator", "\n");
 
+    private static SimpleCharStream charStream;
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
         StringBuffer sb = sourceCode.getCodeBuffer();
         try {
-            CPPParserTokenManager tokenManager = new CPPParserTokenManager(new SimpleCharStream(new StringReader(sb.toString())));
-            Token currToken = tokenManager.getNextToken();
+/*
+            if (c == null) {
+                c = new SimpleCharStream(new StringReader(sb.toString()));
+            } else {
+                c.ReInit(new StringReader(sb.toString()));
+            }
+*/
+            if (charStream == null) {
+                charStream = new SimpleCharStream(new StringReader(sb.toString()));
+            } else {
+                charStream.ReInit(new StringReader(sb.toString()));
+            }
+            CPPParserTokenManager.ReInit(charStream);
+            CPPParserTokenManager.setFileName(sourceCode.getFileName());
+            Token currToken = CPPParserTokenManager.getNextToken();
             while (currToken.image.length() > 0) {
                 tokenEntries.add(new TokenEntry(currToken.image, sourceCode.getFileName(), currToken.beginLine));
-                currToken = tokenManager.getNextToken();
+                currToken = CPPParserTokenManager.getNextToken();
             }
             tokenEntries.add(TokenEntry.getEOF());
             System.out.println("Added " + sourceCode.getFileName());
