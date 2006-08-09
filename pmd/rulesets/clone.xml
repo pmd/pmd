@@ -49,7 +49,7 @@ class Foo{
     <rule name="CloneThrowsCloneNotSupportedException"
          message="clone() method should throw CloneNotSupportedException"
          class="net.sourceforge.pmd.rules.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/clone.html#CloneThrowsCloneNotSupportedException">
+         externalInfoUrl="http://pmd.sourceforge.net/rules/clone.html#CloneThrowsCloneNotSupportedException">
          <description>
 The method clone() should throw a CloneNotSupportedException
          </description>
@@ -57,13 +57,16 @@ The method clone() should throw a CloneNotSupportedException
              <property name="xpath">
                  <value>
                      <![CDATA[
-//ClassOrInterfaceDeclaration
-[@Final = 'false']
-[.//MethodDeclaration[
+.//MethodDeclaration
+[
 MethodDeclarator/@Image = 'clone'
 and count(MethodDeclarator/FormalParameters/*) = 0
 and count(NameList/Name[contains
-(@Image,'CloneNotSupportedException')]) = 0]]
+(@Image,'CloneNotSupportedException')]) = 0
+]
+[
+../../../../ClassOrInterfaceDeclaration[@Final = 'false']
+]
                      ]]>
                  </value>
              </property>
@@ -72,9 +75,8 @@ and count(NameList/Name[contains
          <example>
              <![CDATA[
  public class MyClass implements Cloneable{
-     public Object clone() // will cause an error {
+     public Object clone() { // will cause an error
           MyClass clone = (MyClass)super.clone();
-          ...
           return clone;
      }
  }

@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Ernst Reissner - reported CloneThrowsCloneNotSupportedException bug, reported JDK 1.5 parsing bug, suggested InstantiationToGetClass, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>
             <li>Maarten Coene - bug report for UnnecessaryConversionTemporary</li>
             <li>Jorn Stampehl - Reported bug in UnusedModifier, reported and fixed bugs in JUnitTestsShouldContainAsserts/CyclomaticComplexity/TooManyFields, noticed redundancy of ExplicitCallToFinalize, reported bug in AvoidCallingFinalize, reported bug in JUnitAssertionsShouldIncludeMessage, reported bug in bug report on JUnitTestsShouldContainAsserts</li>
             <li>Brian Remedios - code cleanup of StringUtil and various rules, cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
@@ -130,7 +131,6 @@
             <li>Guillaume Boudreau - patches to fix problems with CPD's FileFinder and NTFS and SCCS</li>
             <li>Sylvain Veyrie - bug report for MethodReturnsInternalArray</li>
             <li>Randy Ray - bug report for ArrayIsStoredDirectly</li>
-            <li>Ernst Reissner - reported JDK 1.5 parsing bug, suggested InstantiationToGetClass, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>
             <li>Klaus - Suggestion for improving UseSingleton</li>
             <li>Nicolai Czempin - Bug report for UnnecessaryParentheses, various rule suggestions, additional PMD backronyms</li>
             <li>Kevin Routley - reported Ant task dependency problem, reported problems with RuleSetFactory unit tests</li>
