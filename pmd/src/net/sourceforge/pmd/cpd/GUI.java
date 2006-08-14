@@ -408,7 +408,7 @@ public class GUI implements CPDListener {
     	
     	int[] alignments = new int[matchColumns.length];
     	for (int i=0; i<alignments.length; i++) alignments[i] = matchColumns[i].alignment();
-    	
+
     	resultsTable.setDefaultRenderer(Object.class, new AlignmentRenderer(alignments));
     	
     	final JTableHeader header = resultsTable.getTableHeader();

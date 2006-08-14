@@ -225,13 +225,14 @@
 	<target name="cpd" description="Runs CPD">
 		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
 		<!-- ignoreIdentifiers="true" -->
-		<cpd language="cpp" ignoreLiterals="true" minimumTokenCount="20" outputFile="cpd.txt" format="text">
+		<cpd language="cpp" minimumTokenCount="100" outputFile="cpd.xml" format="xml">
       <fileset dir="/usr/local/src/apache_1.3.33/">
         <!--<fileset dir="${java-source.path}/java/lang/ref">-->
 				<include name="**/*.c" />
 			</fileset>
 		</cpd>
-	</target>
+        <xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
+    </target>
 
 	<target name="javadoc" description="Generates Javadocs">
 		<mkdir dir="docs/api" />

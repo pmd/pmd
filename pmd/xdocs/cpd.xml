@@ -57,6 +57,13 @@
   <source>
  ant -v -f mybuildfile.xml cpd
   </source>
+           <p>Also, you can get an HTML report from CPD by using the XSLT script in pmd/etc/xslt/cpdhtml.xslt.  Just run
+ the CPD task as usual and right after it invoke the Ant XSLT script like this:</p>
+<source>
+<![CDATA[
+<xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
+]]>
+</source>
        </subsection>
 
        <subsection name="Command line usage">

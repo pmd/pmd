@@ -17,7 +17,7 @@ Fixed bug 1529805 - UnusedModifier no longer throws NPEs on JDK 1.5 enums.
 Fixed bug 1531593 - UnnecessaryConversionTemporary no longer reports false positives when toString() is invoked inside the call to 'new Long/Integer/etc()'.
 Fixed bug 1512871 - Improved C++ tokenizer error messages - now they include the filename.
 Fixed bug 1531152 - CloneThrowsCloneNotSupportedException now reports the proper line number.
-Fixed bug 1531236 - IdempotentOperations reports fewer false positives. 
+Fixed bug 1531236 - IdempotentOperations reports fewer false positives.
 Fixed a bug in AvoidProtectedFieldInFinalClass - it no longer reports false positives for protected fields in inner classes.
 Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro definitions which are followed by a multiline comment.
 Modified C++ tokenizer to use the JavaCC STATIC option; this results in about a 30% speedup in tokenizing.
@@ -26,6 +26,7 @@ Applied patch 1481024 (implementing RFE 1490181)- NOPMD messages can now be repo
 Added JSP support to the copy/paste detector.
 Placed JSF/JSP ruleset names in rulesets/jsprulesets.properties
 Added the image to the ASTEnumConstant nodes.
+Added new XSLT stylesheet for CPD XML->HTML from Max Tardiveau.
 Refactored UseIndexOfChar to extract common functionality into AbstractPoorMethodCall.
 Improved CPD GUI and Designer look/functionality; thanks to Brian Remedios for the changes!
 Performance Refactoring, XPath rules re-written as Java:
