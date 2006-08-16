@@ -45,6 +45,7 @@ cpd-viewer.label=Copy/Paste Detector
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.option-pane=pmd
 options.pmd.label=PMD
 options.pmd.code=new net.sourceforge.pmd.jedit.PMDOptionPane()
+options.pmd.printRule=false
 
 #Dockables properties.
 cpd-viewer.title=Copy/Paste Detector

@@ -82,7 +82,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
     SelectedRules rules;
     JTextArea exampleTextArea= new JTextArea(10, 50);
-    private JCheckBox chkRunPMDOnSave, chkShowProgressBar, chkIgnoreLiterals;
+    private JCheckBox chkRunPMDOnSave, chkShowProgressBar, chkIgnoreLiterals, chkPrintRule;
 	JTextField txtMinTileSize;
 	JTextField txtCustomRules;
 	JComboBox comboRenderer;
@@ -123,6 +123,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         chkRunPMDOnSave = new JCheckBox("Run PMD on Save", jEdit.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE));
 		chkShowProgressBar = new JCheckBox("Show PMD Progress Bar", jEdit.getBooleanProperty(PMDJEditPlugin.SHOW_PROGRESS));
 		chkIgnoreLiterals = new JCheckBox("Ignore Literals & identifiers when detecting Duplicate Code", jEdit.getBooleanProperty(PMDJEditPlugin.IGNORE_LITERALS));
+		chkPrintRule = new JCheckBox("Print Rulename in ErrorList", jEdit.getBooleanProperty(PMDJEditPlugin.PRINT_RULE));
 
 		JPanel pnlSouth = new JPanel(new GridLayout(0,1));
 
@@ -150,6 +151,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
 		pnlSouth.add(chkRunPMDOnSave);
 		pnlSouth.add(chkIgnoreLiterals);
+		pnlSouth.add(chkPrintRule);
 		pnlSouth.add(pnlTileSize);
         mainPanel.add(pnlSouth);
         addComponent(mainPanel);
@@ -163,6 +165,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 		jEdit.setBooleanProperty(PMDJEditPlugin.IGNORE_LITERALS,(chkIgnoreLiterals.isSelected()));
 		jEdit.setProperty(PMDJEditPlugin.RENDERER, (String)comboRenderer.getSelectedItem());
 		jEdit.setBooleanProperty(PMDJEditPlugin.SHOW_PROGRESS, chkShowProgressBar.isSelected());
+		jEdit.setBooleanProperty(PMDJEditPlugin.PRINT_RULE, chkPrintRule.isSelected());
 
 		if(txtCustomRules != null)
 		{

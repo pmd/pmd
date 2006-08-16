@@ -22,14 +22,11 @@ import org.gjt.sp.util.*;
 import errorlist.*;
 import net.sourceforge.pmd.*;
 import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.cpd.CPPLanguage;
 import net.sourceforge.pmd.cpd.FileFinder;
-import net.sourceforge.pmd.cpd.JavaLanguage;
 import net.sourceforge.pmd.cpd.JavaTokenizer;
 import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Match;
-import net.sourceforge.pmd.cpd.PHPLanguage;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
@@ -47,6 +44,10 @@ public class PMDJEditPlugin extends EBPlugin
 	public static final String CUSTOM_RULES_PATH_KEY = "pmd.customRulesPath";
 	public static final String SHOW_PROGRESS = "pmd.showprogress";
 	public static final String IGNORE_LITERALS = "pmd.ignoreliterals";
+	public static final String PRINT_RULE = "pmd.printRule";
+	public static final String LAST_DIRECTORY = "pmd.cpd.lastDirectory";
+	public static final String CHECK_DIR_RECURSIVE = "pmd.checkDirRecursive";
+	
 	//private static RE re = new UncheckedRE("Starting at line ([0-9]*) of (\\S*)");
 
 	private static PMDJEditPlugin instance;
@@ -91,18 +92,15 @@ public class PMDJEditPlugin extends EBPlugin
 
 	public void handleMessage(EBMessage ebmess)
 	{
-		if (ebmess instanceof BufferUpdate)
+		if (ebmess instanceof BufferUpdate && jEdit.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE))
 		{
-			if(jEdit.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE))
-			{
-				BufferUpdate bu = (BufferUpdate)ebmess;
+			BufferUpdate bu = (BufferUpdate)ebmess;
 
-				if (bu.getWhat() == BufferUpdate.SAVED)
+			if (bu.getWhat() == BufferUpdate.SAVED)
+			{
+				if(bu.getBuffer().getMode().getName().equals("java")) //NOPMD
 				{
-					if(bu.getBuffer().getMode().getName().equals("java"))
-					{
-						check(bu.getBuffer(),bu.getView());
-					}
+					check(bu.getBuffer(),bu.getView());
 				}
 			}
 		}
@@ -126,11 +124,11 @@ public class PMDJEditPlugin extends EBPlugin
 
 	public void instanceCheckDirectory(View view)
 	{
-		JFileChooser chooser = new JFileChooser(jEdit.getProperty("pmd.cpd.lastDirectory"));
+		JFileChooser chooser = new JFileChooser(jEdit.getProperty(LAST_DIRECTORY));
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 		JPanel pnlAccessory = new JPanel();
-		JCheckBox chkRecursive = new JCheckBox("Recursive", jEdit.getBooleanProperty("pmd.checkDirRecursive"));
+		JCheckBox chkRecursive = new JCheckBox("Recursive", jEdit.getBooleanProperty(CHECK_DIR_RECURSIVE));
 		pnlAccessory.add(chkRecursive);
 		chooser.setAccessory(pnlAccessory);
 
@@ -146,12 +144,12 @@ public class PMDJEditPlugin extends EBPlugin
 
 				if(!selectedFile.isDirectory())
 				{
-					JOptionPane.showMessageDialog(view,"Selection not a directory.","PMD",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(view,"Selection not a directory.",NAME,JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
-				jEdit.setProperty("pmd.cpd.lastDirectory",selectedFile.getCanonicalPath());
-				jEdit.setBooleanProperty("pmd.checkDirRecursive",chkRecursive.isSelected());
+				jEdit.setProperty(LAST_DIRECTORY,selectedFile.getCanonicalPath());
+				jEdit.setBooleanProperty(CHECK_DIR_RECURSIVE,chkRecursive.isSelected());
 				process(findFiles(selectedFile.getCanonicalPath(), chkRecursive.isSelected()), view);
 			}
 			else
@@ -231,18 +229,27 @@ public class PMDJEditPlugin extends EBPlugin
 
 			if (ctx.getReport().isEmpty())
 			{
-				JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", "PMD", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(jEdit.getFirstView(), "No problems found", NAME, JOptionPane.INFORMATION_MESSAGE);
 				errorSource.clear();
 			}
 
 			else
 			{
 				String path = buffer.getPath();
-
+				String rulename="";
+				
+				final boolean isPrintRule = jEdit.getBooleanProperty(PMDJEditPlugin.PRINT_RULE);
+				
 				for (Iterator i = ctx.getReport().iterator(); i.hasNext();)
 				{
 					RuleViolation rv = (RuleViolation)i.next();
-					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getBeginLine()-1,0,0,rv.getDescription()));
+					if(isPrintRule)
+					{
+						rulename = rv.getRule().getName() +"->";
+					}
+					
+					
+					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getBeginLine()-1,0,0,rulename + rv.getDescription())); //NOPMD
 				}
 
 				registerErrorSource();
@@ -251,18 +258,19 @@ public class PMDJEditPlugin extends EBPlugin
 
 		catch (RuleSetNotFoundException rsne)
 		{
-			rsne.printStackTrace();
+			Log.log(Log.ERROR, this, "RuleSet not found", rsne); 
 		}
 
 		catch (PMDException pmde)
 		{
-			pmde.printStackTrace();
-			JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + buffer.getPath());
+			String msg="Error while processing " + buffer.getPath();
+			Log.log(Log.ERROR, this, msg, pmde);
+			JOptionPane.showMessageDialog(jEdit.getFirstView(), msg);
 		}
 
 		catch(Exception e)
 		{
-			e.printStackTrace();
+			Log.log(Log.ERROR, this, "Exception processing file "+ buffer.getPath(), e);
 		}
 	}// check current buffer
 
@@ -308,8 +316,7 @@ public class PMDJEditPlugin extends EBPlugin
 		catch (RuleSetNotFoundException rsne)
 		{
 			// should never happen since rulesets are fetched via getRegisteredRuleSet, nonetheless:
-			System.out.println("PMD ERROR: Couldn't find a ruleset");
-			rsne.printStackTrace();
+			Log.log(Log.ERROR, this, "PMD ERROR: Couldn't find a ruleset", rsne);
 			JOptionPane.showMessageDialog(jEdit.getFirstView(), "Unable to find rulesets, halting PMD", NAME, JOptionPane.ERROR_MESSAGE);
 			return;
 		}
@@ -324,17 +331,17 @@ public class PMDJEditPlugin extends EBPlugin
 		{
 			File file = (File)iter.next();
 			//ctx.setReport(new Report());
-			ctx.setReport(new Report());
+			ctx.setReport(new Report()); //NOPMD
 			ctx.setSourceCodeFilename(file.getAbsolutePath());
 
 			try
 			{
-				pmd.processFile(new FileInputStream(file), System.getProperty("file.encoding"), selectedRuleSets.getSelectedRules(), ctx);
+				pmd.processFile(new FileInputStream(file), System.getProperty("file.encoding"), selectedRuleSets.getSelectedRules(), ctx); //NOPMD
 				for (Iterator j = ctx.getReport().iterator(); j.hasNext();)
 				{
 					foundProblems = true;
 					RuleViolation rv = (RuleViolation)j.next();
-					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR,  file.getAbsolutePath(), rv.getBeginLine()-1,0,0,rv.getDescription()));
+					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR,  file.getAbsolutePath(), rv.getBeginLine()-1,0,0,rv.getDescription())); //NOPMD
 				}
 				if(!ctx.getReport().isEmpty())//That means Report contains some violations, so only cache such reports.
 				{
@@ -344,12 +351,13 @@ public class PMDJEditPlugin extends EBPlugin
 			catch (FileNotFoundException fnfe)
 			{
 				// should never happen, but if it does, carry on to the next file
-				System.out.println("PMD ERROR: Unable to open file " + file.getAbsolutePath());
+				Log.log(Log.ERROR, this, "PMD ERROR: Unable to open file " + file.getAbsolutePath(), fnfe);
 			}
 			catch (PMDException pmde)
 			{
-				pmde.printStackTrace();
-				JOptionPane.showMessageDialog(jEdit.getFirstView(), "Error while processing " + file.getAbsolutePath());
+				String msg = "Error while processing " + file.getAbsolutePath();
+				Log.log(Log.ERROR, this, msg, pmde);
+				JOptionPane.showMessageDialog(jEdit.getFirstView(), msg);
 			}
 
 			if(jEdit.getBooleanProperty(SHOW_PROGRESS))
@@ -459,7 +467,7 @@ public class PMDJEditPlugin extends EBPlugin
 
 	public static void cpdDir(View view)
 	{
-		JFileChooser chooser = new JFileChooser(jEdit.getProperty("pmd.cpd.lastDirectory"));
+		JFileChooser chooser = new JFileChooser(jEdit.getProperty(LAST_DIRECTORY));
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
 		JPanel pnlAccessory = new JPanel(new BorderLayout());
@@ -473,7 +481,7 @@ public class PMDJEditPlugin extends EBPlugin
 		pnlAccessory.add(BorderLayout.NORTH, pnlTile);
 
 		JPanel pnlRecursive = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JCheckBox chkRecursive = new JCheckBox("Recursive", jEdit.getBooleanProperty("pmd.checkDirRecursive"));
+		JCheckBox chkRecursive = new JCheckBox("Recursive", jEdit.getBooleanProperty(CHECK_DIR_RECURSIVE));
 		pnlRecursive.add(chkRecursive);
 		pnlAccessory.add(BorderLayout.CENTER, pnlRecursive);
 
@@ -488,7 +496,7 @@ public class PMDJEditPlugin extends EBPlugin
 
 			if(!selectedFile.isDirectory())
 			{
-				JOptionPane.showMessageDialog(view,"Selection not a directory.","PMD",JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(view,"Selection not a directory.",NAME,JOptionPane.ERROR_MESSAGE);
 				return;
 			}
 
@@ -506,12 +514,12 @@ public class PMDJEditPlugin extends EBPlugin
 
 			try
 			{
-				jEdit.setBooleanProperty("pmd.checkDirRecursive",chkRecursive.isSelected());
+				jEdit.setBooleanProperty(CHECK_DIR_RECURSIVE,chkRecursive.isSelected());
 				instance.instanceCPDDir(view, selectedFile.getCanonicalPath(), tilesize, chkRecursive.isSelected());
 			}
 			catch(IOException e)
 			{
-				e.printStackTrace();
+				Log.log(Log.ERROR, instance, "PMD ERROR: Unable to open file " + selectedFile, e);
 			}
 		}
 	}
@@ -540,7 +548,7 @@ public class PMDJEditPlugin extends EBPlugin
 	{
 		if(dir != null)
 		{
-			jEdit.setProperty("pmd.cpd.lastDirectory",dir);
+			jEdit.setProperty(LAST_DIRECTORY,dir);
 			instance.errorSource.clear();
 			CPD cpd = getCPD(tileSize, "java", view);
 
@@ -582,16 +590,16 @@ public class PMDJEditPlugin extends EBPlugin
 
 			Match match = (Match)i.next();
 
-			CPDDuplicateCodeViewer.Duplicates duplicates = dv.new Duplicates(match.getLineCount() + " duplicate lines", match.getSourceCodeSlice());
+			CPDDuplicateCodeViewer.Duplicates duplicates = dv.new Duplicates(match.getLineCount() + " duplicate lines", match.getSourceCodeSlice()); //NOPMD
 
 			for (Iterator occurrences = match.iterator(); occurrences.hasNext();)
 			{
 				TokenEntry mark = (TokenEntry)occurrences.next();
 
 				int lastLine = mark.getBeginLine()+match.getLineCount();
-				System.out.println("Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount() +" last line "+ lastLine);
+				Log.log(Log.DEBUG, this, "Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount() +" last line "+ lastLine);
 
-				CPDDuplicateCodeViewer.Duplicate duplicate =  dv.new Duplicate(mark.getTokenSrcID(),mark.getBeginLine(),lastLine);
+				CPDDuplicateCodeViewer.Duplicate duplicate =  dv.new Duplicate(mark.getTokenSrcID(),mark.getBeginLine(),lastLine); //NOPMD
 
 				//System.out.println("Adding Duplicate " + duplicate +" to Duplicates "+ duplicates);
 				duplicates.addDuplicate(duplicate);
@@ -632,7 +640,7 @@ public class PMDJEditPlugin extends EBPlugin
 			{
 				if(de[i].type == VFSFile.FILE)
 				{
-					files.add(new File(de[i].path));
+					files.add(new File(de[i].path)); //NOPMD
 				}
 			}
 
@@ -679,19 +687,19 @@ public class PMDJEditPlugin extends EBPlugin
 		{
 			net.sourceforge.pmd.renderers.Renderer renderer = null;
 
-			if (format.equals("XML"))
+			if ("XML".equals(format))
 			{
 				renderer = new XMLRenderer();
 			}
-			else if (format.equals("Html"))
+			else if ("Html".equals(format))
 			{
 				renderer = new HTMLRenderer();
 			}
-			else if (format.equals("CSV"))
+			else if ("CSV".equals(format))
 			{
 				renderer = new CSVRenderer();
 			}
-			else if (format.equals("Text"))
+			else if ("Text".equals(format))
 			{
 				renderer = new TextRenderer();
 			}
@@ -733,6 +741,7 @@ public class PMDJEditPlugin extends EBPlugin
 
 		public ProgressBar(View view, int min,int max)
 		{
+			super();
 			this.view = view;
 			setLayout(new BorderLayout());
 			pBar = new JProgressBar(min,max);
