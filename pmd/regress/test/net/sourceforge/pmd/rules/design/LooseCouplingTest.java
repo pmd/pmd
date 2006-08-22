@@ -27,6 +27,7 @@ public class LooseCouplingTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST7, "two fields", 2, rule),
             new TestDescriptor(TEST8, "method param is HashMap", 1, rule),
             new TestDescriptor(TEST9, "Vector could be List", 1, rule),
+            new TestDescriptor(TEST10, "ArrayList could be List", 1, rule),
         });
     }
 
@@ -86,6 +87,12 @@ public class LooseCouplingTest extends SimpleAggregatorTst {
             "import java.util.*;" + PMD.EOL +
             "public class Foo {" + PMD.EOL +
             " public void foo(Vector bar) {}" + PMD.EOL +
+            "}";
+
+    private static final String TEST10 =
+            "import java.util.*;" + PMD.EOL +
+            "public class Foo {" + PMD.EOL +
+            " public void foo(ArrayList bar) {}" + PMD.EOL +
             "}";
 
 }
