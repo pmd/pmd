@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Sven Jacob - Some fixes for the DFA layer.</li>
             <li>Max Tardiveau - A nice XML to HTML stylesheet for CPD.</li>
             <li>Ernst Reissner - reported IdempotentOperations bug, reported CloneThrowsCloneNotSupportedException bug, reported JDK 1.5 parsing bug, suggested InstantiationToGetClass, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>
             <li>Maarten Coene - bug report for UnnecessaryConversionTemporary</li>
