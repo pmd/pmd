@@ -6,7 +6,11 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,30 +19,13 @@ import java.util.Set;
 
 public class SymbolTableTestRule extends AbstractRule implements Rule {
 
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        Map methods = node.getScope().getEnclosingClassScope().getMethodDeclarations();
-        Set suffixes = new HashSet();
-        for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
-            MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
-            String suffix = findSuffix(mnd);
-            if (suffix != null) {
-                if (suffixes.contains(suffix)) {
-                    addViolation(data, mnd.getNode(), suffix);
-                }
-                suffixes.add(suffix);
-            }
+    public Object visit(ASTFieldDeclaration node,Object data) {
+        ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId)node.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
+        for (Iterator iter = declaration.getUsages().iterator();iter.hasNext();) {
+            NameOccurrence no = (NameOccurrence)iter.next();
+            SimpleNode location = no.getLocation();
+            System.out.println(declaration.getImage() + " is used here: " + location.getImage());
         }
         return data;
     }
-
-    private String findSuffix(MethodNameDeclaration mnd) {
-        String end = null;
-        if (mnd.getImage().startsWith("is")) {
-            end = mnd.getImage().substring(2);
-        } else if (mnd.getImage().startsWith("get")) {
-            end = mnd.getImage().substring(3);
-        }
-        return end;
-    }
-
 }

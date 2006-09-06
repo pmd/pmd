@@ -10,8 +10,10 @@ import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTCatchStatement;
 import net.sourceforge.pmd.ast.ASTInitializer;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -19,6 +21,7 @@ import java.util.List;
 
 public class AcceptanceTest extends STBBaseTst {
 
+/*
     public void testClashingSymbols() {
         parseCode(TEST1);
     }
@@ -55,6 +58,16 @@ public class AcceptanceTest extends STBBaseTst {
             //System.out.println();
         }
         //System.out.println(m.size());
+    }
+*/
+
+    public void testFieldFinder() {
+        System.out.println(TEST_FIELD);
+        parseCode(TEST_FIELD);
+        ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId)acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
+        NameOccurrence no = (NameOccurrence)declaration.getUsages().iterator().next();
+        SimpleNode location = no.getLocation();
+        System.out.println("variable " + declaration.getImage() + " is used here: " + location.getImage());
     }
 
 /*
@@ -116,6 +129,12 @@ public class AcceptanceTest extends STBBaseTst {
             "  } " + PMD.EOL +
             " } " + PMD.EOL +
             "}" + PMD.EOL;
+
+    private static final String TEST_FIELD =
+    "public class MyClass {" + PMD.EOL +
+    " private int a; " + PMD.EOL +
+    " boolean b = MyClass.ASCENDING; " + PMD.EOL +
+    "}" + PMD.EOL;
 
 
 }
