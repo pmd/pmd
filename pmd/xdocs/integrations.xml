@@ -84,6 +84,10 @@
         <td>Jeff Epstein</td>
     </tr>
 
+    <tr><td><a href="#wlw">WebLogic Workshop 8.1.x</a></td>
+        <td>N/A</td>
+        <td>Kevin Conaway</td>
+    </tr>
 
 </table>
       </subsection>
@@ -384,6 +388,12 @@ selecting the "Ask for Directory" checkbox.</p>
 </subsection>
 
 
+        <a name="wlw"/><subsection name="WebLogic Workshop 8.1.x">
+<p>Please see <a href="http://pmdwlw.sf.net/">the WebLogic Workshop plugin project home page</a> for more information.</p>
+</subsection>
+
       </section>
+
+
   </body>
 </document>
