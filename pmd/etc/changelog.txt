@@ -19,6 +19,7 @@ Fixed bug 1512871 - Improved C++ tokenizer error messages - now they include the
 Fixed bug 1531152 - CloneThrowsCloneNotSupportedException now reports the proper line number.
 Fixed bug 1531236 - IdempotentOperations reports fewer false positives.
 Fixed bug 1544564 - LooseCoupling rule now checks for ArrayLists
+Fixed bug 1544565 - NonThreadSafeSingleton now finds if's with compound statements
 Fixed a bug in AvoidProtectedFieldInFinalClass - it no longer reports false positives for protected fields in inner classes.
 Fixed a bug in the C++ grammar - the tokenizer now properly recognizes macro definitions which are followed by a multiline comment.
 Modified C++ tokenizer to use the JavaCC STATIC option; this results in about a 30% speedup in tokenizing.
@@ -37,6 +38,7 @@ Performance Refactoring, XPath rules re-written as Java:
     UnnecessaryReturn
     UseStringBufferForStringAppends
     SingularField
+    NonThreadSafeSingleton
 
 June 1, 2006 - 3.7:
 New rules:

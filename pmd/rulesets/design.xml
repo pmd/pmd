@@ -1117,7 +1117,7 @@ Avoid unnecessarily creating local variables
 
     <rule name="NonThreadSafeSingleton"
     message="Singleton is not thread safe"
-    class="net.sourceforge.pmd.rules.XPathRule"
+    class="net.sourceforge.pmd.rules.design.NonThreadSafeSingleton"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#NonThreadSafeSingleton">
         <description>
 Non-thread safe singletons can result in bad state changes. If possible,
@@ -1129,21 +1129,6 @@ initialize-on-demand holder class (do not use the double-check idiom).
 See Effective Java, item 48.
         </description>
         <properties>
-            <property name="xpath">
-                <value><![CDATA[
-//MethodDeclaration[$checkNonStaticMethods='true' or @Static='true'][@Synchronized='false']
-//IfStatement[not (ancestor::SynchronizedStatement)]
- [Expression/EqualityExpression
-   [PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
-   [PrimaryExpression/PrimaryPrefix/Name[@Image=
-       //FieldDeclaration[$checkNonStaticFields='true' or @Static='true']
-       /VariableDeclarator/VariableDeclaratorId/@Image]]]
- [Statement//StatementExpression[AssignmentOperator]
-       [PrimaryExpression/PrimaryPrefix/Name/@Image=
-        ancestor::ClassOrInterfaceBody//FieldDeclaration[$checkNonStaticFields='true' or @Static='true']
-   /VariableDeclarator/VariableDeclaratorId/@Image]]
-                ]]></value>
-            </property>
             <property name="checkNonStaticMethods">
                 <description>Do not set this to false and checkNonStaticFields to true</description>
                 <value>true</value>
