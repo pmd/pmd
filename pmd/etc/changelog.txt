@@ -2,6 +2,8 @@
 BEFORE RELEASE:
 - remove deprecated methods from PMD.java, RuleSetFactory
 
+New rules:
+    Basic ruleset: BrokenNullCheck
 Fixed bug 1498910 - AssignmentInOperand no longer has a typo in the message.
 Fixed bug 1498960 - DontImportJavaLang no longer reports static imports of java.lang members.
 Fixed bug 1417106 - MissingBreakInSwitch no longer flags stmts where every case has either a return or a throw.

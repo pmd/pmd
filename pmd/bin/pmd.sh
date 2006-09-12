@@ -38,4 +38,4 @@ RULESETFILES="$@"
 
 # echo "CLASSPATH: $classpath"
 
-java -cp $classpath net.sourceforge.pmd.PMD $FILE $FORMAT $RULESETFILES
+java -Xmx512m -cp $classpath net.sourceforge.pmd.PMD $FILE $FORMAT $RULESETFILES
