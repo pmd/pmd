@@ -48,6 +48,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Xavier Le Vourch - Patch to improve CloneMethodMustImplementCloneable, suggestions on cleaning up casts in grammar, SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
             <li>Jason Bennett - Patch to improve CyclomaticComplexity rule</li>
             <li>Wouter Zelle - Wrote BrokenNullCheck rule, fixed a false positive in InefficientStringBuffering, fixed a false positive in NonThreadSafeSingleton, a nice patch to clean up some of the Ant task properties and fix a TextRenderer bug, rewrote PositionLiteralsFirstInComparisons in XPath, Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Sven Jacob - Some fixes for the DFA layer.</li>
@@ -77,7 +78,6 @@
             <li>David Karr - reported stale XPath documentation</li>
             <li>Dawid Weiss - Reported bug in UnusedPrivateMethod</li>
             <li>Shao Lo - Reported bug in CPD</li>
-            <li>Xavier Le Vourch - Suggestions on cleaning up casts in grammar, SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
             <li>Mathieu Champlon - Added language support to the CPD Ant task</li>
             <li>Uroshnor - Reported bug in UseNotifyAllInsteadOfNotify</li>
             <li>Jan Koops - Noted missing data in MemberValuePair nodes, bug report for JBuilder plugin</li>
