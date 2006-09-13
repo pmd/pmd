@@ -5,8 +5,13 @@ package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
+import net.sourceforge.pmd.ast.ASTCatchStatement;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTConditionalAndExpression;
+import net.sourceforge.pmd.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.ast.ASTDoStatement;
 import net.sourceforge.pmd.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.ast.ASTIfStatement;
@@ -57,11 +62,23 @@ public class CyclomaticComplexity extends AbstractRule {
         super.visit(node, data);
         return data;
     }
+    
+    public Object visit(ASTCatchStatement node, Object data) {
+      ((Entry) entryStack.peek()).bumpDecisionPoints();
+      super.visit(node, data);
+      return data;
+    }
 
     public Object visit(ASTForStatement node, Object data) {
         ((Entry) entryStack.peek()).bumpDecisionPoints();
         super.visit(node, data);
         return data;
+    }
+    
+    public Object visit(ASTDoStatement node, Object data) {
+      ((Entry) entryStack.peek()).bumpDecisionPoints();
+      super.visit(node, data);
+      return data;
     }
 
     public Object visit(ASTSwitchStatement node, Object data) {
@@ -71,10 +88,14 @@ public class CyclomaticComplexity extends AbstractRule {
         for (int n = 0; n < lastIndex; n++) {
             Node childNode = node.jjtGetChild(n);
             if (childNode instanceof ASTSwitchLabel) {
+              // default is generally not considered a decision (same as "else")
+              ASTSwitchLabel sl = (ASTSwitchLabel) childNode;
+              if (!sl.isDefault()) {
                 childNode = node.jjtGetChild(n + 1);
                 if (childNode instanceof ASTBlockStatement) {
                     entry.bumpDecisionPoints();
                 }
+              }
             }
         }
         super.visit(node, data);
@@ -85,6 +106,24 @@ public class CyclomaticComplexity extends AbstractRule {
         ((Entry) entryStack.peek()).bumpDecisionPoints();
         super.visit(node, data);
         return data;
+    }
+    
+    public Object visit(ASTConditionalExpression node, Object data) {
+      ((Entry) entryStack.peek()).bumpDecisionPoints();
+      super.visit(node, data);
+      return data;
+    }
+    
+    public Object visit(ASTConditionalAndExpression node, Object data) {
+      ((Entry) entryStack.peek()).bumpDecisionPoints();
+      super.visit(node, data);
+      return data;
+    }
+    
+    public Object visit(ASTConditionalOrExpression node, Object data) {
+      ((Entry) entryStack.peek()).bumpDecisionPoints();
+      super.visit(node, data);
+      return data;
     }
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {

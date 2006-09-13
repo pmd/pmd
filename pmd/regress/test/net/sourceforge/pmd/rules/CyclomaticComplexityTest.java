@@ -35,7 +35,7 @@ public class CyclomaticComplexityTest extends RuleTst {
         runTestFromString(TEST2, rule, report);
         Iterator i = report.iterator();
         RuleViolation rv = (RuleViolation) i.next();
-        assertTrue(rv.getDescription().indexOf("Highest = 12") != -1);
+        assertTrue(rv.getDescription().indexOf("Highest = 11") != -1);
     }
 
     public void testConstructor() throws Throwable {

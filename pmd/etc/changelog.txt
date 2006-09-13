@@ -33,6 +33,7 @@ Added the image to the ASTEnumConstant nodes.
 Added new XSLT stylesheet for CPD XML->HTML from Max Tardiveau.
 Refactored UseIndexOfChar to extract common functionality into AbstractPoorMethodCall.
 Improved CPD GUI and Designer look/functionality; thanks to Brian Remedios for the changes!
+Applied patch from Jason Bennett to enhance CyclomaticComplexity rule to account for conditional or/and nodes, do stmts, and catch blocks.
 Performance Refactoring, XPath rules re-written as Java:
     BooleanInstantiation
     UselessOperationOnImmutable
