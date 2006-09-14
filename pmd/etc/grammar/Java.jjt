@@ -1713,7 +1713,7 @@ void LabeledStatement() :
 void Block() :
 {Token t;}
 {
-  "{" ( BlockStatement() )* t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); }; }
+      "{" ( BlockStatement() )* t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); }; }
 }
 
 void BlockStatement():
