@@ -1563,8 +1563,7 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 void CastLookahead() :
 {}
 { LOOKAHEAD(2) "(" PrimitiveType()
-| LOOKAHEAD("(" Type() "[")
-  "(" Type() "[" "]"
+| LOOKAHEAD("(" Type() "[")  "(" Type() "[" "]"
 | "(" Type() ")" ( "~" | "!" | "(" | <IDENTIFIER> | "this" | "super" | "new" | Literal() )
 }
 

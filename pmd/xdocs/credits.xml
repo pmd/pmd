@@ -18,7 +18,8 @@
             <li>Ole-Martin Mork - NetBeans plugin</li>
             <li>Miguel Griffa - over a dozen rules, lots of documentation, and other improvements all over the place</li>
             <li>Allan Caplan - six rules, lots of bugfixes and improvements to the PMD core</li>
-            <li>Radim Kubacki - Netbeans plugin, OptimizableToArrayCallRule suggestion, bug reports, pmd-netbeans feedback</li>
+            <li>Radim Kubacki - Netbeans plugin, OptimizableToArrayCallRule suggestion, bug reports</li>
+            <li>Tomasz Slota - Netbeans plugin</li>
             <li>Andrey Lumyanski - Gel plugin</li>
             <li>Johan Nagels - JSP support</li>
         </ul>
