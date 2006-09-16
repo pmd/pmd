@@ -27,7 +27,7 @@
         <subsection name="Committers emeritus">
         <ul>
             <li><a href="http://www.hi.is/~gthb/">Gunnlaugur Thor Briem</a> - NetBeans plugin, Maven build script fixes, bug report on JavaCC parser's use of java.lang.Error</li>
-            <li><a href="http://cougaar.org/users/dave/">David Craine</a> - JBuilder plugin</li>
+            <li><a href="http://dcraine.blogspot.com/">David Craine</a> - JBuilder plugin</li>
             <li>Tom Burke - Eclipse plugin</li>
             <li><a href="http://www.stinky.com/alex/">Alex Chaffee</a> - various bugfixes and features</li>
             <li>Siegfried Goeschl - original Maven plugin, various bugfixes and features</li>
