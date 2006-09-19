@@ -81,10 +81,9 @@ import org.jaxen.XPath;
 
 public class Designer implements ClipboardOwner {
 
-	private static final char labelImageSeparator = ':';
-	private static final Color imageTextColour = Color.BLUE;
-	private static final String lineSeparator = System.getProperty("line.separator", "\n");
-	
+	private static final char LABEL_IMAGE_SEPARATOR = ':';
+	private static final Color IMAGE_TEXT_COLOR = Color.BLUE;
+
 	private interface Parser { public SimpleNode parse(StringReader sr); };
 
 	private static final Parser jdkParser1_3 = new Parser() {
@@ -146,7 +145,7 @@ public class Designer implements ClipboardOwner {
     	private void createKids() {
     		    		
     		String message = ((ParseException)item).getMessage();    		
-            String[] lines = StringUtil.substringsOf(message, lineSeparator);
+            String[] lines = StringUtil.substringsOf(message, PMD.EOL);
 
 			kids = new ExceptionNode[lines.length];
 			for (int i=0; i<lines.length; i++) {
@@ -238,7 +237,7 @@ public class Designer implements ClipboardOwner {
 			if (node instanceof SimpleNode) {
 				SimpleNode sn = (SimpleNode)node;
 				if (sn.getImage() == null) return node.toString();
-				return node.toString() + labelImageSeparator + sn.getImage();
+				return node.toString() + LABEL_IMAGE_SEPARATOR + sn.getImage();
 			}
 			return node.toString();
 		}
@@ -270,7 +269,7 @@ public class Designer implements ClipboardOwner {
     		if (node == null) return;
     		
     		String text = node.label();
-    		int separatorPos = text.indexOf(labelImageSeparator);
+    		int separatorPos = text.indexOf(LABEL_IMAGE_SEPARATOR);
     		if (separatorPos < 0) return;
     		    		
     		String label = text.substring(0, separatorPos+1);
@@ -279,7 +278,7 @@ public class Designer implements ClipboardOwner {
     		FontMetrics fm = g.getFontMetrics();
     		int width = SwingUtilities.computeStringWidth(fm, label);
     		
-    		g.setColor(imageTextColour);
+    		g.setColor(IMAGE_TEXT_COLOR);
     		g.drawString(image, width, fm.getMaxAscent());
     	}
     }
@@ -402,7 +401,7 @@ public class Designer implements ClipboardOwner {
                         SimpleNode node = (SimpleNode) obj;
                         String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
                         String line = " at line " + String.valueOf(node.getBeginLine());
-                        sb.append(name).append(line).append(lineSeparator);
+                        sb.append(name).append(line).append(PMD.EOL);
                         xpathResults.addElement(sb.toString().trim());
                     }
                 }
