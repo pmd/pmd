@@ -67,6 +67,13 @@ public abstract class SimpleNode implements Node {
         return beginLine;
     }
 
+    // A label is a more visually useful image, e.g.
+    // int[[ for a primary suffix that's a 2D array of ints
+    // this is used only by the Designer to show nodes more helpfully
+    public String getLabel() {
+        return null;        
+    }
+
     public boolean hasImageEqualTo(String arg) {
     	return image != null && image.equals(arg);
     }

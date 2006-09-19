@@ -236,7 +236,12 @@ public class Designer implements ClipboardOwner {
 		public String label() {
 			if (node instanceof SimpleNode) {
 				SimpleNode sn = (SimpleNode)node;
-				if (sn.getImage() == null) return node.toString();
+                if (sn.getLabel() != null) {
+                    return node.toString() + LABEL_IMAGE_SEPARATOR + sn.getLabel();
+                }
+				if (sn.getImage() == null) {
+                    return node.toString();
+                }
 				return node.toString() + LABEL_IMAGE_SEPARATOR + sn.getImage();
 			}
 			return node.toString();
