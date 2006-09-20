@@ -1020,7 +1020,7 @@ No need to check for null before an instanceof; the instanceof keyword returns f
   UnaryExpressionNotPlusMinus
    [@Image='!']//InstanceOfExpression[PrimaryExpression
      //Name/@Image = ancestor::ConditionalOrExpression/EqualityExpression
-      //PrimaryPrefix/Name/@Image]]
+      /PrimaryExpression/PrimaryPrefix/Name/@Image]]
 or
 ConditionalAndExpression
  [EqualityExpression[@Image='!=']//NullLiteral
@@ -1028,7 +1028,7 @@ ConditionalAndExpression
 InstanceOfExpression
  [PrimaryExpression[count(PrimarySuffix[@ArrayDereference='true'])=0]
   //Name/@Image = ancestor::ConditionalAndExpression
-   /EqualityExpression//PrimaryPrefix/Name/@Image]]]
+   /EqualityExpression/PrimaryExpression/PrimaryPrefix/Name/@Image]]]
  ]]>
                   </value>
               </property>
