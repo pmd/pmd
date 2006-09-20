@@ -23,6 +23,7 @@ public class AvoidArrayLoopsTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST5, "copy involving method invocation on array element is ok", 0, rule),
             new TestDescriptor(TEST6, "using an offset, still bad", 1, rule),
             new TestDescriptor(TEST7, "nested arrays on LHS, ok", 0, rule),
+            new TestDescriptor(TEST8, "adding to array is ok", 0, rule),
         });
     }
 
@@ -89,6 +90,15 @@ public class AvoidArrayLoopsTest extends SimpleAggregatorTst {
             "  for (int i=0;i<10;i++) {" + PMD.EOL +
             "   b[c[i]] = a[i];" + PMD.EOL +
             "  }" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST8 =
+            "public class Foo {" + PMD.EOL +
+            " public void bar() {" + PMD.EOL +
+            "   for (int i=0;i<10;i++) {" + PMD.EOL +
+            "       a[i] += b[i];" + PMD.EOL +
+            "   }" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 }

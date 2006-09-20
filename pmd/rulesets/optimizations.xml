@@ -238,7 +238,7 @@ public class Foo {
         <value>
     <![CDATA[
 //Statement[(ForStatement or WhileStatement) and
-count(*//AssignmentOperator)=1
+count(*//AssignmentOperator[@Image = '='])=1
 and
 */Statement
 [
