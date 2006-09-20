@@ -11,7 +11,7 @@
   </description>
 
     <rule name="CouplingBetweenObjects"
-        message="High amount of different objects as memebers donotes a high coupling"
+        message="High amount of different objects as members denotes a high coupling"
         class="net.sourceforge.pmd.rules.CouplingBetweenObjects"
           externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#CouplingBetweenObjects">
     <description>

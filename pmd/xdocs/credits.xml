@@ -49,7 +49,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Xavier Le Vourch - Patch to improve CloneMethodMustImplementCloneable, suggestions on cleaning up casts in grammar, SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
+            <li>Xavier Le Vourch - Patch to fix speling in CouplingBetweenObjects message, patch to improve CloneMethodMustImplementCloneable, suggestions on cleaning up casts in grammar, SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
+            <li>Brian Remedios - display cleanup of CPD GUI, code cleanup of StringUtil and various rules, cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
             <li>Jason Bennett - Patch to improve CyclomaticComplexity rule</li>
             <li>Wouter Zelle - Wrote BrokenNullCheck rule, fixed a false positive in InefficientStringBuffering, fixed a false positive in NonThreadSafeSingleton, a nice patch to clean up some of the Ant task properties and fix a TextRenderer bug, rewrote PositionLiteralsFirstInComparisons in XPath, Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Sven Jacob - Some fixes for the DFA layer.</li>
@@ -57,7 +58,6 @@
             <li>Ernst Reissner - reported IdempotentOperations bug, reported CloneThrowsCloneNotSupportedException bug, reported JDK 1.5 parsing bug, suggested InstantiationToGetClass, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>
             <li>Maarten Coene - bug report for UnnecessaryConversionTemporary</li>
             <li>Jorn Stampehl - Reported bug in UnusedModifier, reported and fixed bugs in JUnitTestsShouldContainAsserts/CyclomaticComplexity/TooManyFields, noticed redundancy of ExplicitCallToFinalize, reported bug in AvoidCallingFinalize, reported bug in JUnitAssertionsShouldIncludeMessage, reported bug in bug report on JUnitTestsShouldContainAsserts</li>
-            <li>Brian Remedios - code cleanup of StringUtil and various rules, cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
             <li>Ulrich Kriegel - reported Ant task documentation bug</li>
             <li>Jarkko Hietaniemin - rewrote most of cpd.sh, many C grammar improvements, several CPD documentation suggestions, noted missing CPD scripts in binary release</li>
             <li>Adam Zell - Reported bug in UselessOverridingMethod</li>
