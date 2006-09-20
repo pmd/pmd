@@ -3,18 +3,33 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.PMD;
-
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.util.StringUtil;
+import org.apache.oro.text.regex.Pattern;
+import org.apache.oro.text.regex.MalformedPatternException;
+import org.apache.oro.text.regex.Perl5Compiler;
+import org.apache.oro.text.perl.Perl5Util;
 
 public class SimpleRenderer implements Renderer {
 
 	private String separator;
-	
+    private Perl5Util perl5Util;
+
 	public static final String defaultSeparator = "=====================================================================";
 	
 	public SimpleRenderer() {
+		this(false);
+	}
+	
+	public SimpleRenderer(boolean trimLeadingWhitespace) {
 		this(defaultSeparator);
+		if (trimLeadingWhitespace) {
+            perl5Util =  new Perl5Util();
+		}
 	}
 	
 	public SimpleRenderer(String theSeparator) {
@@ -31,7 +46,25 @@ public class SimpleRenderer implements Renderer {
               rpt.append("Starting at line ").append(mark.getBeginLine()).append(" of ").append(mark.getTokenSrcID()).append(PMD.EOL);
           }
           
-          rpt.append(match.getSourceCodeSlice()).append(PMD.EOL);
+          rpt.append(PMD.EOL);	// add a line to separate the source from the desc above
+          
+          String source = match.getSourceCodeSlice();
+          
+          if (perl5Util != null) {	// trimming wanted?
+              List list = new ArrayList();
+        	  perl5Util.split(list, PMD.EOL, source, 0);
+              String[] lines = (String[])list.toArray(new String[] {});
+        	  int trimDepth = StringUtil.maxCommonLeadingWhitespaceForAll(lines);
+        	  if (trimDepth > 0) {
+        		  lines = StringUtil.trimStartOn(lines, trimDepth);
+        	  }
+        	  for (int i=0; i<lines.length; i++) {
+        		  rpt.append(lines[i]).append(PMD.EOL);
+        	  }  
+        	  return;
+          }
+          
+          rpt.append(source).append(PMD.EOL);
 	}
 	
 	

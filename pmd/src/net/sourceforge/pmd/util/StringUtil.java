@@ -182,4 +182,70 @@ public class StringUtil {
 	        sb.append(iter.next());
 	    }
 	}
+	/**
+	 * Return the length of the shortest string in the array.
+	 * If any one of them is null then it returns 0.
+	 * 
+	 * @param strings String[]
+	 * @return int
+	 */
+	public static int lengthOfShortestIn(String[] strings) {
+		
+		int minLength = Integer.MAX_VALUE;
+		
+		for (int i=0; i<strings.length; i++) {
+			if (strings[i] == null) return 0;
+			minLength = Math.min(minLength, strings[i].length());
+		}
+		
+		return minLength;
+	}
+	
+	/**
+	 * Determine the maximum number of common leading whitespace characters
+	 * the strings share in the same sequence. Useful for determining how
+	 * many leading characters can be removed to shift all the text in the
+	 * strings to the left without misaligning them.
+	 * 
+	 * @param strings String[]
+	 * @return int
+	 */
+	public static int maxCommonLeadingWhitespaceForAll(String[] strings) {
+		
+		int shortest = lengthOfShortestIn(strings);
+		if (shortest == 0) return 0;
+		
+		char[] matches = new char[shortest];
+		
+		String str;
+		for (int m=0; m<matches.length; m++) {
+			matches[m] = strings[0].charAt(m);
+			if (!Character.isWhitespace(matches[m])) return m;
+			for (int i=0; i<strings.length; i++) {
+				str = strings[i];
+				if (str.charAt(m) != matches[m])  return m; 
+				}
+		}
+		
+		return shortest;
+	}
+	
+	/**
+	 * Trims off the leading characters off the strings up to the trimDepth 
+	 * specified. Returns the same strings if trimDepth = 0
+	 * 
+	 * @param strings
+	 * @param trimDepth
+	 * @return String[]
+	 */
+	public static String[] trimStartOn(String[] strings, int trimDepth) {
+		
+		if (trimDepth == 0) return strings;
+		
+		String[] results = new String[strings.length];
+		for (int i=0; i<strings.length; i++) {
+			results[i] = strings[i].substring(trimDepth);
+		}
+		return results;
+	}
 }

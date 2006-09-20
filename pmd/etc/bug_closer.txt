@@ -8,3 +8,12 @@ Thanks,
 
 Tom
 Using PMD?  Get the book - http://pmdapplied.com/
+
+
+        if (trimLeadingWhitespace) {
+            try {
+                splitterPattern = (new Perl5Compiler()).compile("\n");
+            } catch (MalformedPatternException mpe) {
+                mpe.printStackTrace();
+            }
+        }

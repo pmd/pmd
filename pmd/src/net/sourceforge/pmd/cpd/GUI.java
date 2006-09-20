@@ -14,6 +14,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,27 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelListener;
@@ -249,6 +231,7 @@ public class GUI implements CPDListener {
     private JButton cancelButton;
     private JPanel progressPanel;
     private JFrame frame;
+    private boolean trimLeadingWhitespace;
 
     private List matches = new ArrayList();
 
@@ -277,8 +260,19 @@ public class GUI implements CPDListener {
         exitItem.setMnemonic('x');
         exitItem.addActionListener(new CancelListener());
         fileMenu.add(exitItem);
+        JMenu viewMenu = new JMenu("View");
+        fileMenu.setMnemonic('v');
+        JMenuItem trimItem = new JCheckBoxMenuItem("Trim leading whitespace");
+        trimItem.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                AbstractButton button = (AbstractButton)e.getItem();
+                trimLeadingWhitespace = button.isSelected();
+            }
+        });
+        viewMenu.add(trimItem);
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(fileMenu);
+        menuBar.add(viewMenu);
         frame.setJMenuBar(menuBar);
 
         // first make all the buttons
@@ -392,7 +386,7 @@ public class GUI implements CPDListener {
     	for (int i=0; i<selectionIndices.length; i++) {
     		selections.add(model.getValueAt(selectionIndices[i], 99));
     	}
-    	String report = new SimpleRenderer().render(selections.iterator());
+    	String report = new SimpleRenderer(trimLeadingWhitespace).render(selections.iterator());
     	resultsTextArea.setText(report);
     	resultsTextArea.setCaretPosition(0);	// move to the top
     }
@@ -680,9 +674,8 @@ public class GUI implements CPDListener {
 
     
     public static void main(String[] args) {
-
     	//this should prevent the disk not found popup
-        System.setSecurityManager(null);
+        // System.setSecurityManager(null);
         new GUI();
     }
 
