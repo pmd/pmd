@@ -82,7 +82,7 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
                 if ((pe.getImage().equals("++") || pe.getImage().equals("--"))) {
                     SimpleNode first = (SimpleNode) pe.jjtGetChild(0);
                     SimpleNode second = (SimpleNode) first.jjtGetChild(0);
-                    if (second.jjtGetNumChildren() == 0) {
+                    if (second.jjtGetNumChildren() == 0 || !(second.jjtGetChild(0) instanceof ASTName)) {
                         continue;
                     }
                     ASTName name = (ASTName) second.jjtGetChild(0);
