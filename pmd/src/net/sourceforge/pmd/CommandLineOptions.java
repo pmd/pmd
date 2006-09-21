@@ -23,7 +23,7 @@ public class CommandLineOptions {
     private String targetJDK = "1.4";
     private boolean shortNamesEnabled;
 
-    private String excludeMarker = ExcludeLines.EXCLUDE_MARKER;
+    private String excludeMarker = PMD.EXCLUDE_MARKER;
     private String inputPath;
     private String reportFormat;
     private String ruleSets;

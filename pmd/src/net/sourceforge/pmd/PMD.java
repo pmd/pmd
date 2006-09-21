@@ -30,8 +30,10 @@ import java.util.zip.ZipFile;
 public class PMD {
     public static final String EOL = System.getProperty("line.separator", "\n");
     public static final String VERSION = "3.7";
+    public static final String EXCLUDE_MARKER = "NOPMD";
 
-    private String excludeMarker = ExcludeLines.EXCLUDE_MARKER;
+
+    private String excludeMarker = EXCLUDE_MARKER;
     private SourceTypeDiscoverer sourceTypeDiscoverer = new SourceTypeDiscoverer();
     private SourceTypeHandlerBroker sourceTypeHandlerBroker = new SourceTypeHandlerBroker();
 
@@ -79,16 +81,12 @@ public class PMD {
     public void processFile(Reader reader, RuleSets ruleSets, RuleContext ctx,
                             SourceType sourceType) throws PMDException {
         try {
-            SourceTypeHandler sourceTypeHandler = sourceTypeHandlerBroker
-                    .getVisitorsFactoryForSourceType(sourceType);
-
-            ExcludeLines excluder = new ExcludeLines(reader, excludeMarker);
-            ctx.excludeLines(excluder.getLinesToExclude());
-
+            SourceTypeHandler sourceTypeHandler = sourceTypeHandlerBroker.getVisitorsFactoryForSourceType(sourceType);
             Parser parser = sourceTypeHandler.getParser();
-            Object rootNode = parser.parse(excluder.getCopyReader());
+            parser.setExcludeMarker(excludeMarker);
+            Object rootNode = parser.parse(reader);
+            ctx.excludeLines(parser.getExcludeMap());
             Thread.yield();
-
             // TODO - move SymbolFacade traversal inside JavaParser.CompilationUnit()
             sourceTypeHandler.getSymbolFacade().start(rootNode);
 

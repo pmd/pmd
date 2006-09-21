@@ -65,6 +65,7 @@ options {
 
 PARSER_BEGIN(JavaParser)
 package net.sourceforge.pmd.ast;
+import java.util.*;
 public class JavaParser {
 
   private boolean isJDK13;
@@ -130,8 +131,28 @@ public class JavaParser {
       return res;
   }
 
+  public Map getExcludeMap() {
+    return token_source.getExcludeMap();
+  }
+
+  public void setExcludeMarker(String marker) {
+    token_source.setExcludeMarker(marker);
+  }
+
+
 }
 PARSER_END(JavaParser)
+TOKEN_MGR_DECLS : {
+    private Map excludeMap = new HashMap();
+    private String excludeMarker = "NOPMD";
+
+    public void setExcludeMarker(String marker) {
+        this.excludeMarker = marker;
+    }
+    public Map getExcludeMap() {
+        return excludeMap;
+    }
+}
 
 /* WHITE SPACE */
 
@@ -143,6 +164,12 @@ SPECIAL_TOKEN :
 SPECIAL_TOKEN :
 {
 < SINGLE_LINE_COMMENT: "//"(~["\n","\r"])* ("\n"|"\r"|"\r\n")? >
+    {
+        int startOfNOPMD = matchedToken.image.indexOf(excludeMarker);
+        if (startOfNOPMD != -1) {
+            excludeMap.put(new Integer(matchedToken.beginLine), matchedToken.image.substring(startOfNOPMD + excludeMarker.length()));
+        }
+    }
 }
 
 /* COMMENTS */

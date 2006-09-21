@@ -6,6 +6,8 @@ import net.sourceforge.pmd.parsers.Parser;
 import net.sourceforge.pmd.symboltable.JspSymbolFacade;
 
 import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implementation of SourceTypeHandler for the JSP parser.
@@ -21,6 +23,10 @@ public class JspTypeHandler implements SourceTypeHandler {
                 return new net.sourceforge.pmd.jsp.ast.JspParser(new JspCharStream(source))
                         .CompilationUnit();
             }
+            public Map getExcludeMap() {
+                return new HashMap();
+            }
+            public void setExcludeMarker(String marker) {}
         };
     }
 

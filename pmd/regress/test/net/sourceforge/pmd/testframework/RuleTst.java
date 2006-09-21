@@ -34,7 +34,7 @@ public class RuleTst extends TestCase {
             }
             return rule;
         } catch (RuleSetNotFoundException e) {
-            e.printStackTrace();
+            e.printStackTrace();        
             fail("Couldn't find ruleset " + rs);
             return null;
         }
