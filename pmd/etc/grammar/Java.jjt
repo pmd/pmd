@@ -66,6 +66,7 @@ options {
 PARSER_BEGIN(JavaParser)
 package net.sourceforge.pmd.ast;
 import java.util.*;
+import net.sourceforge.pmd.PMD;
 public class JavaParser {
 
   private boolean isJDK13;
@@ -144,7 +145,7 @@ public class JavaParser {
 PARSER_END(JavaParser)
 TOKEN_MGR_DECLS : {
     private Map excludeMap = new HashMap();
-    private String excludeMarker = "NOPMD";
+    private String excludeMarker = PMD.EXCLUDE_MARKER;
 
     public void setExcludeMarker(String marker) {
         this.excludeMarker = marker;
