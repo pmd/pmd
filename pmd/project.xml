@@ -143,6 +143,15 @@
 		</developer>
 
 		<developer>
+			<name>Alan Ezust</name>
+			<id>tomslot</id>
+			<email>ezust@users.sourceforge.net</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+
+		<developer>
 			<name>Nascif Abousalh Neto</name>
 			<id>nascif</id>
 			<email>nascif@users.sourceforge.net</email>
