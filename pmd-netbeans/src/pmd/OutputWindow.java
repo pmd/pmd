@@ -33,6 +33,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
 import org.openide.awt.StatusDisplayer;
 import org.openide.cookies.LineCookie;
@@ -107,8 +108,12 @@ public class OutputWindow extends TopComponent {
         tblMdlResults.setViolations(violations);
         
         if (violations.length > 0){
-            selectResultRow(0);
-            tblResults.getSelectionModel().setSelectionInterval(0, 0);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    selectResultRow(0);
+                    tblResults.getSelectionModel().setSelectionInterval(0, 0);
+                }
+            });
         }
     }
     
