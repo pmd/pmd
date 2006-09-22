@@ -59,33 +59,37 @@ public class DaaRule extends AbstractRule implements Executable {
                     if (o != null) {
                         List array = (List) o;
                         // get the last access type
-                        int last = ((Integer) array.get(0)).intValue();
-
-                        if (va.accessTypeMatches(last) && va.isDefinition()) { // DD
-                        	if (inode.getSimpleNode() != null) {
-                        		// preventing NullpointerException
-                        		addDaaViolation(rc, inode.getSimpleNode(), "DD", va.getVariableName());
-                        	}
-                        } else if (last == VariableAccess.UNDEFINITION && va.isReference()) { // UR
-                        	if (inode.getSimpleNode() != null) {
-                        		// preventing NullpointerException                        		
-                        		addDaaViolation(rc, inode.getSimpleNode(), "UR", va.getVariableName());
-                        	}
-                        } else if (last == VariableAccess.DEFINITION && va.isUndefinition()) { // DU
-                        	if (inode.getSimpleNode() != null) {
-                        		addDaaViolation(rc, inode.getSimpleNode(), "DU", va.getVariableName());
-                        	} else {
-                        		// undefinition outside, get the node of the definition
-                        		SimpleNode lastSimpleNode = (SimpleNode)array.get(1);
-                        		if (lastSimpleNode != null) {
-                            		addDaaViolation(rc, lastSimpleNode, "DU", va.getVariableName());                           		
-                            	}
-                        	}
+                        int lastAccessType = ((Integer) array.get(0)).intValue();
+                        // get the start and end line
+                        int startLine = ((Integer) array.get(2)).intValue();
+                        int endLine = inode.getLine();
+                        
+                        if (va.accessTypeMatches(lastAccessType) && va.isDefinition()) { // DD
+                            if (inode.getSimpleNode() != null) {
+                                // preventing NullpointerException
+                                addDaaViolation(rc, inode.getSimpleNode(), "DD", va.getVariableName(), startLine, endLine);
+                            }
+                        } else if (lastAccessType == VariableAccess.UNDEFINITION && va.isReference()) { // UR
+                            if (inode.getSimpleNode() != null) {
+                                // preventing NullpointerException                        		
+                                addDaaViolation(rc, inode.getSimpleNode(), "UR", va.getVariableName(), startLine, endLine);
+                            }
+                        } else if (lastAccessType == VariableAccess.DEFINITION && va.isUndefinition()) { // DU
+                            if (inode.getSimpleNode() != null) {
+                                addDaaViolation(rc, inode.getSimpleNode(), "DU", va.getVariableName(), startLine, endLine);
+                            } else {
+                        	// undefinition outside, get the node of the definition
+                                SimpleNode lastSimpleNode = (SimpleNode)array.get(1);
+                                if (lastSimpleNode != null) {
+                                    addDaaViolation(rc, lastSimpleNode, "DU", va.getVariableName(), startLine, endLine);                           		
+                                }
+                            }
                         }
                     }
                     List array = new ArrayList();
                     array.add(new Integer(va.getAccessType()));
                     array.add(inode.getSimpleNode());
+                    array.add(new Integer(inode.getLine()));
                     hash.put(va.getVariableName(), array);
                 }
             }
@@ -99,8 +103,8 @@ public class DaaRule extends AbstractRule implements Executable {
      * @param node the node that produces the violation
      * @param msg  specific message to put in the report
      */
-    private final void addDaaViolation(Object data, SimpleNode node, String msg, String var) {
+    private final void addDaaViolation(Object data, SimpleNode node, String msg, String var, int startLine, int endLine) {
         RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new DaaRuleViolation(this, ctx, node, msg, var));
+        ctx.getReport().addRuleViolation(new DaaRuleViolation(this, ctx, node, msg, var, startLine, endLine));
     }
 }
