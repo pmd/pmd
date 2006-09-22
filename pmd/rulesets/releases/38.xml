@@ -7,5 +7,6 @@ This ruleset contains links to rules that are new in PMD v3.8
   </description>
 
   <rule ref="rulesets/basic.xml/BrokenNullCheck"/>
+  <rule ref="rulesets/strictexception.xml/AvoidRethrowingException"/>
 </ruleset>
 

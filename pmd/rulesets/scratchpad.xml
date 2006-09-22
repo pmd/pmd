@@ -10,50 +10,38 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="BrokenNullCheck"
-          message="Method call on object which may be null"
-          class="net.sourceforge.pmd.rules.XPathRule"
-      externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BrokenNullCheck">
-        <description>
-The null check is broken since it will throw a Nullpointer itself.
-The reason is that a method is called on the object when it is null.
-It is likely that you used || instead of &amp;&amp; or vice versa.
-     </description>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-//IfStatement/Expression[.//NullLiteral]
-[
-.//ConditionalOrExpression/EqualityExpression[@Image='!=']
-[starts-with(../*[position()>1]//PrimaryPrefix/Name/@Image,
-concat(PrimaryExpression//PrimaryPrefix/Name/@Image, '.'))]
-or
-.//ConditionalAndExpression/EqualityExpression[@Image='==']
-[starts-with(../*[position()>1]//PrimaryPrefix/Name/@Image,
-concat(PrimaryExpression//PrimaryPrefix/Name/@Image, '.'))]
-]
-                ]]>
-                </value>
-            </property>
-        </properties>
-        <priority>2</priority>
-        <example>
-<![CDATA[
-class Foo {
- String munge(String string) {
-  // should be &&
-  if (string!=null || !string.equals(""))
-    return string;
-  // should be ||
-  if (string==null && string.equals(""))
-    return string;
- }
-}
-        ]]>
-        </example>
+    <rule name="AvoidRethrowingException"
+      message="A catch statement that catches an exception only to rethrow it should be avoided"
+       class="net.sourceforge.pmd.rules.XPathRule">
+      <description>
+       Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
+      </description>
+      <example>  <![CDATA[
+    public class Foo {
+     void bar() {
+      try {
+      // do something
+      }  catch (SomeException se) {
+         throw se;
+      }
+     }
+    }
+    ]]>
+      </example>
+      <priority> 3 </priority>
+      <properties>
+      <property name="xpath">
+        <value>
+          <![CDATA[
+  //CatchStatement[FormalParameter
+   /VariableDeclaratorId = Block/BlockStatement/Statement
+   /ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/Name
+   and count(Block/BlockStatement/Statement) =1]
+   ]]>
+        </value>
+      </property>
+      </properties>
     </rule>
-
-
 
 
     <!--

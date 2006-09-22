@@ -172,4 +172,36 @@ public class Foo {
       </properties>
     </rule>
 
+  <rule name="AvoidRethrowingException"
+    message="A catch statement that catches an exception only to rethrow it should be avoided"
+     class="net.sourceforge.pmd.rules.XPathRule">
+    <description>
+     Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
+    </description>
+    <example>  <![CDATA[
+  public class Foo {
+   void bar() {
+    try {
+    // do something
+    }  catch (SomeException se) {
+       throw se;
+    }
+   }
+  }
+  ]]>
+    </example>
+    <priority> 3 </priority>
+    <properties>
+    <property name="xpath">
+      <value>
+        <![CDATA[
+//CatchStatement[FormalParameter
+ /VariableDeclaratorId = Block/BlockStatement/Statement
+ /ThrowStatement/Expression/PrimaryExpression/PrimaryPrefix/Name
+ and count(Block/BlockStatement/Statement) =1]
+ ]]>
+      </value>
+    </property>
+    </properties>
+  </rule>
 </ruleset>
