@@ -23,6 +23,7 @@
             <li>Tomasz Slota - Netbeans plugin</li>
             <li>Andrey Lumyanski - Gel plugin</li>
             <li>Johan Nagels - JSP support</li>
+            <li>Brian Remedios - PMD core, lots of CPD UI improvements</li>
         </ul>
         </subsection>
         <subsection name="Committers emeritus">

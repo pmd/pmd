@@ -171,6 +171,15 @@
     </developer>
 
     <developer>
+        <name>Brian Remedios</name>
+        <id>hooperbloob</id>
+        <email>hooperbloob@users.sourceforge.net</email>
+        <roles>
+            <role>Developer</role>
+        </roles>
+    </developer>
+
+    <developer>
         <name>Johan Nagels</name>
         <id>bluejohn</id>
         <email>bluejohn@users.sourceforge.net</email>
