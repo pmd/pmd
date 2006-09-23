@@ -39,9 +39,8 @@ public class SourceTypeHandlerBroker {
 
         if (handler == null) {
             throw new IllegalArgumentException("No VisitorsFactory is registered for SourceType [" + sourceType + "].");
-        } else {
-            return handler;
-        }
+        } 
+        return handler;
     }
 
 }
