@@ -75,8 +75,8 @@ public class TypeSet {
                 String importStmt = (String) i.next();
                 if (importStmt.endsWith("*")) {
                     try {
-                        String importPkg = importStmt.substring(0, importStmt.indexOf("*") - 1);
-                        return Class.forName(importPkg + "." + name);
+                        String importPkg = importStmt.substring(0, importStmt.indexOf('*') - 1);
+                        return Class.forName(importPkg + '.' + name);
                     } catch (ClassNotFoundException cnfe) {
                     }
                 }
