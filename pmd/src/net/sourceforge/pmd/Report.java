@@ -3,9 +3,6 @@
  */
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.dfa.report.ReportTree;
-import net.sourceforge.pmd.stat.Metric;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import net.sourceforge.pmd.dfa.report.ReportTree;
+import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.util.NumericConstants;
 
 public class Report {
 
@@ -45,12 +46,12 @@ public class Report {
 
             StringBuffer res = new StringBuffer();
             if (hours > 0) {
-                res.append(hours + "h ");
+                res.append(hours).append("h ");
             }
             if (hours > 0 || minutes > 0) {
-                res.append(minutes + "m ");
+                res.append(minutes).append("m ");
             }
-            res.append(seconds + "s");
+            res.append(seconds).append('s');
             return res.toString();
         }
     }
@@ -101,8 +102,6 @@ public class Report {
         }
     }
 
-    private static final Integer ZERO = new Integer(0);
-    private static final Integer ONE = new Integer(1);
     private static final RuleViolation.RuleViolationComparator COMPARATOR = new RuleViolation.RuleViolationComparator();
 
     /*
@@ -133,11 +132,11 @@ public class Report {
             IRuleViolation rv = (IRuleViolation) iter.next();
             String key = "";
             if (rv.getPackageName() != null && rv.getPackageName().length() != 0) {
-                key = rv.getPackageName() + "." + rv.getClassName();
+                key = rv.getPackageName() + '.' + rv.getClassName();
             }
             Object o = summary.get(key);
             if (o == null) {
-                summary.put(key, ONE);
+                summary.put(key, NumericConstants.ONE);
             } else {
                 Integer value = (Integer) o;
                 summary.put(key, new Integer(value.intValue() + 1));
@@ -160,7 +159,7 @@ public class Report {
             IRuleViolation rv = (IRuleViolation) i.next();
             String name = rv.getRule().getName();
             if (!summary.containsKey(name)) {
-                summary.put(name, ZERO);
+                summary.put(name, NumericConstants.ZERO);
             }
             Integer count = (Integer) summary.get(name);
             summary.put(name, new Integer(count.intValue() + 1));
@@ -173,7 +172,7 @@ public class Report {
     }
 
     public List getSuppressedRuleViolations() {
-        return this.suppressedRuleViolations;
+        return suppressedRuleViolations;
     }
 
     public void addRuleViolation(IRuleViolation violation) {
