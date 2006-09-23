@@ -51,7 +51,7 @@ public class RuleSets {
      * @return RuleSet[]
      */
     public RuleSet[] getAllRuleSets() {
-        return (RuleSet[]) ruleSets.toArray(new RuleSet[0]);
+        return (RuleSet[]) ruleSets.toArray(new RuleSet[ruleSets.size()]);
     }
 
     public Iterator getRuleSetsIterator() {
