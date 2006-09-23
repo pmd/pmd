@@ -14,12 +14,15 @@ import java.util.StringTokenizer;
 
 public class IDEAJRenderer extends AbstractRenderer implements Renderer {
 
+	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+	private static final String PATH_SEPARATOR = System.getProperty("path.separator");
+	
     private static class SourcePath {
 
         private Set paths = new HashSet();
 
         public SourcePath(String sourcePathString) {
-            for (StringTokenizer st = new StringTokenizer(sourcePathString, System.getProperty("path.separator")); st.hasMoreTokens();) {
+            for (StringTokenizer st = new StringTokenizer(sourcePathString, PATH_SEPARATOR); st.hasMoreTokens();) {
                 paths.add(st.nextToken());
             }
         }
@@ -76,11 +79,11 @@ public class IDEAJRenderer extends AbstractRenderer implements Renderer {
 
     private String getFullyQualifiedClassName(String in, SourcePath sourcePath) {
         String classNameWithSlashes = sourcePath.clipPath(in);
-        String className = classNameWithSlashes.replace(System.getProperty("file.separator").charAt(0), '.');
+        String className = classNameWithSlashes.replace(FILE_SEPARATOR.charAt(0), '.');
         return className.substring(0, className.length() - 5);
     }
 
     private String getSimpleFileName(String in) {
-        return in.substring(in.lastIndexOf(System.getProperty("file.separator")) + 1);
+        return in.substring(in.lastIndexOf(FILE_SEPARATOR) + 1);
     }
 }
