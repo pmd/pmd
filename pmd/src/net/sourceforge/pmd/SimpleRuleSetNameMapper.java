@@ -35,7 +35,7 @@ public class SimpleRuleSetNameMapper {
 
     private void append(String name) {
         if (rulesets.length() > 0) {
-            rulesets.append(",");
+            rulesets.append(',');
         }
         rulesets.append(name);
     }
