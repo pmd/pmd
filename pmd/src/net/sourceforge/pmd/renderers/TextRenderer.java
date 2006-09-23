@@ -21,19 +21,19 @@ public class TextRenderer extends AbstractRenderer implements Renderer {
             }
             return buf.toString();
         }
-
-        for (Iterator i = report.iterator(); i.hasNext();) {
+        Iterator i;
+        
+        for (i = report.iterator(); i.hasNext();) {
             IRuleViolation rv = (IRuleViolation) i.next();
-            buf.append(PMD.EOL + rv.getFilename());
-            buf.append(":" + Integer.toString(rv.getBeginLine()));
-            buf.append("\t" + rv.getDescription());
+            buf.append(PMD.EOL).append(rv.getFilename());
+            buf.append(':').append(Integer.toString(rv.getBeginLine()));
+            buf.append('\t').append(rv.getDescription());
         }
 
-        for (Iterator i = report.errors(); i.hasNext();) {
+        for (i = report.errors(); i.hasNext();) {
             Report.ProcessingError error = (Report.ProcessingError) i.next();
-            buf.append(PMD.EOL + error.getFile());
-            buf.append("\t-");
-            buf.append("\t" + error.getMsg());
+            buf.append(PMD.EOL).append(error.getFile());
+            buf.append("\t-\t").append(error.getMsg());
         }
 
         if (showSuppressedViolations) {
@@ -44,9 +44,16 @@ public class TextRenderer extends AbstractRenderer implements Renderer {
     }
 
     private void addSuppressed(Report report, StringBuffer buf) {
+    	
+    	Report.SuppressedViolation excluded;
+    	
         for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
-            Report.SuppressedViolation excluded = (Report.SuppressedViolation) i.next();
-            buf.append(PMD.EOL + excluded.getRuleViolation().getRule().getName() + " rule violation suppressed by " + (excluded.suppressedByNOPMD() ? "//NOPMD" : "Annotation") + " in " + excluded.getRuleViolation().getFilename());
+            excluded = (Report.SuppressedViolation) i.next();
+            buf.append(PMD.EOL);
+            buf.append(excluded.getRuleViolation().getRule().getName());
+            buf.append(" rule violation suppressed by ");
+            buf.append(excluded.suppressedByNOPMD() ? "//NOPMD" : "Annotation");
+            buf.append(" in ").append(excluded.getRuleViolation().getFilename());
         }
     }
 }
