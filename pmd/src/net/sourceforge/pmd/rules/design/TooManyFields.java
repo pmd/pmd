@@ -8,6 +8,7 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.util.NumericConstants;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,7 +56,7 @@ public class TooManyFields extends AbstractRule {
     private void bumpCounterFor(ASTClassOrInterfaceDeclaration clazz) {
         String key = clazz.getImage();
         if (!stats.containsKey(key)) {
-            stats.put(key, new Integer(0));
+            stats.put(key, NumericConstants.ZERO);
             nodes.put(key, clazz);
         }
         Integer i = new Integer(((Integer) stats.get(key)).intValue() + 1);

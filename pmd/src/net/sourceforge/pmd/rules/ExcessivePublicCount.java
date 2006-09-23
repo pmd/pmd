@@ -8,6 +8,7 @@ import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.rules.design.ExcessiveNodeCountRule;
+import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * @author aglover
@@ -42,10 +43,9 @@ public class ExcessivePublicCount extends ExcessiveNodeCountRule {
      */
     public Object visit(ASTFieldDeclaration node, Object data) {
         if (node.isFinal() && node.isStatic()) {
-            return new Integer(0);
-        } else {
-            return this.getTallyOnAccessType(node);
-        }
+            return NumericConstants.ZERO;
+        } 
+        return this.getTallyOnAccessType(node);
     }
 
     /**
@@ -56,8 +56,8 @@ public class ExcessivePublicCount extends ExcessiveNodeCountRule {
      */
     private Integer getTallyOnAccessType(AccessNode node) {
         if (node.isPublic()) {
-            return new Integer(1);
+            return NumericConstants.ONE;
         }
-        return new Integer(0);
+        return NumericConstants.ZERO;
     }
 }

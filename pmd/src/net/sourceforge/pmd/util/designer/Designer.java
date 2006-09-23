@@ -64,6 +64,7 @@ import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ParseException;
@@ -449,8 +450,8 @@ public class Designer implements ClipboardOwner {
                 //        // Compatible with >= JDK 1.4
                 //        tabbed.setMnemonicAt(0, KeyEvent.VK_A);
                 //        tabbed.setMnemonicAt(1, KeyEvent.VK_D);
-                setMnemonicAt.invoke(tabbed, new Object[]{new Integer(0), new Integer(KeyEvent.VK_A)});
-                setMnemonicAt.invoke(tabbed, new Object[]{new Integer(1), new Integer(KeyEvent.VK_D)});
+                setMnemonicAt.invoke(tabbed, new Object[]{NumericConstants.ZERO, new Integer(KeyEvent.VK_A)});
+                setMnemonicAt.invoke(tabbed, new Object[]{NumericConstants.ONE, new Integer(KeyEvent.VK_D)});
             }
         } catch (NoSuchMethodException nsme) { // Runtime is < JDK 1.4
         } catch (IllegalAccessException e) { // Runtime is >= JDK 1.4 but there was an error accessing the function
