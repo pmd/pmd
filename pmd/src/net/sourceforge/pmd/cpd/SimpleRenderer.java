@@ -53,7 +53,7 @@ public class SimpleRenderer implements Renderer {
           if (perl5Util != null) {	// trimming wanted?
               List list = new ArrayList();
         	  perl5Util.split(list, PMD.EOL, source, 0);
-              String[] lines = (String[])list.toArray(new String[] {});
+              String[] lines = (String[])list.toArray(new String[list.size()]);
         	  int trimDepth = StringUtil.maxCommonLeadingWhitespaceForAll(lines);
         	  if (trimDepth > 0) {
         		  lines = StringUtil.trimStartOn(lines, trimDepth);

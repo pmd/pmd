@@ -51,7 +51,7 @@ public class AttributeAxisIterator implements Iterator {
             Method[] preFilter = contextNode.getClass().getMethods();
             List postFilter = new ArrayList();
             for (int i = 0; i < preFilter.length; i++) {
-                if (isAttribute(preFilter[i])) {
+                if (isAttributeAccessor(preFilter[i])) {
                     postFilter.add(new MethodWrapper(preFilter[i]));
                 }
             }
@@ -84,21 +84,23 @@ public class AttributeAxisIterator implements Iterator {
         if (position == methodWrappers.length) {
             return null;
         }
-        MethodWrapper m = methodWrappers[position];
-        position++;
+        MethodWrapper m = methodWrappers[position++];
         return new Attribute(node, m.name, m.method);
     }
 
-    protected boolean isAttribute(Method method) {
+    protected boolean isAttributeAccessor(Method method) {
+    	
+    	String methodName = method.getName();
+    	
         return (Integer.TYPE == method.getReturnType() || Boolean.TYPE == method.getReturnType() || String.class == method.getReturnType())
                 && (method.getParameterTypes().length == 0)
                 && (Void.TYPE != method.getReturnType())
-                && !method.getName().startsWith("jjt")
-                && !method.getName().equals("toString")
-                && !method.getName().equals("getScope")
-                && !method.getName().equals("getClass")
-                && !method.getName().equals("getTypeNameNode")
-                && !method.getName().equals("getImportedNameNode")
-                && !method.getName().equals("hashCode");
+                && !methodName.startsWith("jjt")
+                && !methodName.equals("toString")
+                && !methodName.equals("getScope")
+                && !methodName.equals("getClass")
+                && !methodName.equals("getTypeNameNode")
+                && !methodName.equals("getImportedNameNode")
+                && !methodName.equals("hashCode");
     }
 }
