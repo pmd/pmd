@@ -17,11 +17,10 @@ public class VariableAccess {
 
     public VariableAccess(int accessType, String varName) {
         this.accessType = accessType;
-        if (varName.indexOf(".") == -1) {
-            this.variableName = varName;
-        } else {
-            this.variableName = varName.substring(0, varName.indexOf("."));
-        }
+        int dotPos = varName.indexOf('.');
+        variableName = dotPos < 0 ? 
+        	varName :
+        	varName.substring(0, dotPos);
     }
 
     // TODO completely encapsulate this somehow?

@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 /**
  * @author raik
@@ -72,13 +71,15 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
     private Set collectDeclarations(IDataFlowNode inode) {
         Set decls = new HashSet();
+        Map varDecls;
         for (int i = 0; i < inode.getFlow().size(); i++) {
             IDataFlowNode n = (IDataFlowNode) inode.getFlow().get(i);
             if (n instanceof StartOrEndDataFlowNode) {
                 continue;
             }
-            if (!decls.contains(n.getSimpleNode().getScope().getVariableDeclarations())) {
-                decls.add(n.getSimpleNode().getScope().getVariableDeclarations());
+            varDecls = n.getSimpleNode().getScope().getVariableDeclarations();
+            if (!decls.contains(varDecls)) {
+                decls.add(varDecls);
             }
         }
         return decls;
@@ -97,7 +98,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
         for (int i = 1; i < flow.size(); i++) {
             IDataFlowNode inode = (IDataFlowNode) flow.get(i);
             if (line == inode.getLine()) {
-                Vector v = new Vector();
+                List v = new ArrayList();
                 v.add(va);
                 inode.setVariableAccess(v);
             }
