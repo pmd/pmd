@@ -27,15 +27,18 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     public String getParameterDisplaySignature() {
         StringBuffer sb = new StringBuffer("(");
         ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
+        // TODO - this can be optimized - add [0] then ,[n] in a loop.
+        //        no need to trim at the end
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
             sb.append(((ASTType) p.getFirstChildOfType(ASTType.class)).getTypeImage());
-            sb.append(",");
+            sb.append(',');
         }
         if (sb.charAt(sb.length() - 1) == ',') {
             sb.deleteCharAt(sb.length() - 1);
         }
-        return sb.toString() + ")";
+        sb.append(')');
+        return sb.toString();
     }
 
     public boolean equals(Object o) {
