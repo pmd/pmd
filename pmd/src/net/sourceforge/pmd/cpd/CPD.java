@@ -3,8 +3,6 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.SourceFileSelector;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -81,7 +79,7 @@ public class CPD {
 
         if (skipDuplicates) {
             // TODO refactor this thing into a separate class
-            String signature = file.getName() + "_" + String.valueOf(file.length());
+            String signature = file.getName() + '_' + String.valueOf(file.length());
             if (current.contains(signature)) {
                 System.out.println("Skipping " + file.getAbsolutePath() + " since it appears to be a duplicate file and --skip-duplicate-files is set");
                 return;
@@ -96,13 +94,13 @@ public class CPD {
     }
 
     public static Renderer getRendererFromString(String name) {
-        if (name.equals("text") || name.equals("")) {
+        if (name.equalsIgnoreCase("text") || name.equals("")) {
             return new SimpleRenderer();
         }
         try {
             return (Renderer) Class.forName(name).newInstance();
         } catch (Exception e) {
-            System.out.println("Can't find class '" + name + "' so defaulting to SimpleRenderer.");
+            System.out.println("Can't find class '" + name + "', defaulting to SimpleRenderer.");
         }
         return new SimpleRenderer();
     }
