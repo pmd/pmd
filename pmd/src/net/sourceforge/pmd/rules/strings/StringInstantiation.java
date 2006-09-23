@@ -40,7 +40,7 @@ public class StringInstantiation extends AbstractRule {
             return data;
         }
 
-        NameDeclaration nd = (NameDeclaration) name.getNameDeclaration();
+        NameDeclaration nd = name.getNameDeclaration();
         if (!(nd instanceof VariableNameDeclaration)) {
             return data;
         }
