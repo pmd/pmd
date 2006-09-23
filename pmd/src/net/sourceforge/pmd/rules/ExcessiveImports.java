@@ -6,6 +6,7 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.rules.design.ExcessiveNodeCountRule;
+import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * ExcessiveImports attempts to count all unique imports a class
@@ -30,6 +31,6 @@ public class ExcessiveImports extends ExcessiveNodeCountRule {
      * @return Object
      */
     public Object visit(ASTImportDeclaration node, Object data) {
-        return new Integer(1);
+        return NumericConstants.ONE;
     }
 }

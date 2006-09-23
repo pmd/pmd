@@ -5,6 +5,7 @@ package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTFormalParameters;
+import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * This rule detects an abnormally long parameter list.
@@ -19,6 +20,6 @@ public class LongParameterListRule extends ExcessiveNodeCountRule {
 
     // Count these nodes, but no others.
     public Object visit(ASTFormalParameter node, Object data) {
-        return new Integer(1);
+        return NumericConstants.ONE;
     }
 }
