@@ -25,10 +25,9 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 import net.sourceforge.pmd.util.HasLines;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class DFAPanel extends JComponent implements ListSelectionListener {
-
-	public static final String[] emptyStringSet = new String[0];
 
     public static class DFACanvas extends JPanel {
 
@@ -74,7 +73,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 
         private String[] deriveAccessLabels(List flow) {
 
-        	if (flow == null && flow.isEmpty()) return emptyStringSet;
+        	if (flow == null && flow.isEmpty()) return StringUtil.EMPTY_STRINGS;
 
         	String[] labels = new String[flow.size()];
 

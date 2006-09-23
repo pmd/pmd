@@ -20,39 +20,37 @@ public class StringUtil {
         }
     }
 
-    public static String replaceString(String d, char oldChar, String newString) {
-        String fixedNew = newString;
-        if (fixedNew == null) {
-            fixedNew = "";
-        }
+    public static String replaceString(String original, char oldChar, String newString) {
+        
+    	String fixedNew = newString == null ? "" : newString;
+
         StringBuffer desc = new StringBuffer();
-        int index = d.indexOf(oldChar);
+        int index = original.indexOf(oldChar);
         int last = 0;
         while (index != -1) {
-            desc.append(d.substring(last, index));
+            desc.append(original.substring(last, index));
             desc.append(fixedNew);
             last = index + 1;
-            index = d.indexOf(oldChar, last);
+            index = original.indexOf(oldChar, last);
         }
-        desc.append(d.substring(last));
+        desc.append(original.substring(last));
         return desc.toString();
     }
 
-    public static String replaceString(String inputString, String oldString, String newString) {
-        String fixedNew = newString;
-        if (fixedNew == null) {
-            fixedNew = "";
-        }
+    public static String replaceString(String original, String oldString, String newString) {
+    	
+    	String fixedNew = newString == null ? "" : newString;
+    	
         StringBuffer desc = new StringBuffer();
-        int index = inputString.indexOf(oldString);
+        int index = original.indexOf(oldString);
         int last = 0;
         while (index != -1) {
-            desc.append(inputString.substring(last, index));
+            desc.append(original.substring(last, index));
             desc.append(fixedNew);
             last = index + oldString.length();
-            index = inputString.indexOf(oldString, last);
+            index = original.indexOf(oldString, last);
         }
-        desc.append(inputString.substring(last));
+        desc.append(original.substring(last));
         return desc.toString();
     }
 
@@ -135,6 +133,8 @@ public class StringUtil {
 	}
 	
 	/**
+	 * Much more efficient than StringTokenizer.
+	 * 
 	 * @param str String
 	 * @param separator char
 	 * @return String[]
