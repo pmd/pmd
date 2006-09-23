@@ -8,6 +8,8 @@ package net.sourceforge.pmd.sourcetypehandlers;
  */
 public interface VisitorStarter {
 
+	VisitorStarter dummy = new VisitorStarter() { public void start(Object rootNode) {} };
+	
     /**
      * Start the visitor, given the root-node of the AST.
      *

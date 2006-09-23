@@ -15,8 +15,7 @@ import java.util.Map;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public class JspTypeHandler implements SourceTypeHandler {
-    DummyVisitorStarter dummyVisitor = new DummyVisitorStarter();
-
+    
     public Parser getParser() {
         return new Parser() {
             public Object parse(Reader source) throws ParseException {
@@ -31,7 +30,7 @@ public class JspTypeHandler implements SourceTypeHandler {
     }
 
     public VisitorStarter getDataFlowFacade() {
-        return dummyVisitor;
+        return VisitorStarter.dummy;
     }
 
     public VisitorStarter getSymbolFacade() {
