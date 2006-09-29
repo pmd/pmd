@@ -788,7 +788,7 @@ A class that has private constructors and does not have any static methods or fi
 and
 count(.//MethodDeclaration[@Static='true'])=0
 and
-count(.//FieldDeclaration[@Public='true'][@Static='true'])=0
+count(.//FieldDeclaration[@Private='false'][@Static='true'])=0
 ]
     ]]>
               </value>
