@@ -29,6 +29,7 @@ public class AvoidRethrowingExceptionTest extends SimpleAggregatorTst {
         runTests(new TestDescriptor[] {
             new TestDescriptor(FAILURE_TEST, "failure case", 1, rule),
             new TestDescriptor(OK_TEST, "doing something else before throwing it, ok", 0, rule),
+            new TestDescriptor(OK_GET_CAUSE, "throwing the return value of a method call on the exception, ok", 0, rule),
         });
     }
 
@@ -49,6 +50,16 @@ public class AvoidRethrowingExceptionTest extends SimpleAggregatorTst {
             + "   } catch (SomeException se) {" + PMD.EOL
             + "    System.out.println(\"something interesting\");" + PMD.EOL
             + "    throw se;" + PMD.EOL
+            + "   }" + PMD.EOL
+            + "  }" + PMD.EOL
+            + "} " + PMD.EOL;
+
+    private static final String OK_GET_CAUSE =
+            "public class Foo {" + PMD.EOL
+            + "  void bar() {" + PMD.EOL
+            + "   try {" + PMD.EOL
+            + "   } catch (SomeException se) {" + PMD.EOL
+            + "    throw se.getCause();" + PMD.EOL
             + "   }" + PMD.EOL
             + "  }" + PMD.EOL
             + "} " + PMD.EOL;
