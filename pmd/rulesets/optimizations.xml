@@ -280,6 +280,60 @@ public class Test {
       </example>
     </rule>
 
+    <rule name="UnnecessaryWrapperObjectCreation"
+          message="Unnecessary wrapper object creation"
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UnnecessaryWrapperObjectCreation">
+      <description>
+Parsing method should be called directy instead.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//PrimaryExpression[
+PrimaryPrefix/Name[
+@Image='Byte.valueOf' or
+@Image='Short.valueOf' or
+@Image='Integer.valueOf' or
+@Image='Long.valueOf' or
+@Image='Float.valueOf' or
+@Image='Double.valueOf' or
+@Image='Boolean.valueOf' or
+@Image='Character.valueOf'
+]
+and
+PrimarySuffix[
+@Image='byteValue' or
+@Image='shortValue' or
+@Image='intValue' or
+@Image='longValue' or
+@Image='floatValue' or
+@Image='doubleValue' or
+@Image='booleanValue' or
+@Image='charValue'
+]]
+]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public int convert(String s) {
+  int i, i2;
+
+  i = Integer.valueOf(s).intValue(); // this wastes an object
+  i = Integer.parseInt(s); // this is better
+
+  i2 = Integer.valueOf(i).intValue(); // this wastes an object
+  i2 = i; // this is better
+
+  return i2;
+}
+]]>
+          </example>
+    </rule>
 
 
     <!--
