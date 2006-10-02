@@ -519,7 +519,7 @@ PrimaryPrefix/Name[ends-with(@Image, 'equals')]
 or
 PrimarySuffix[ends-with(@Image, 'equals')]
 ]
-[PrimarySuffix/Arguments/ArgumentList
+[PrimarySuffix/Arguments/ArgumentList[count(Expression)=1]
   /Expression/PrimaryExpression/PrimaryPrefix
    /Literal/NullLiteral]
     ]]>
