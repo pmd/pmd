@@ -115,13 +115,13 @@ public class CyclomaticComplexity extends AbstractRule {
     }
     
     public Object visit(ASTConditionalAndExpression node, Object data) {
-      ((Entry) entryStack.peek()).bumpDecisionPoints();
+      ((Entry) entryStack.peek()).bumpDecisionPoints(node.jjtGetNumChildren() - 1);
       super.visit(node, data);
       return data;
     }
     
     public Object visit(ASTConditionalOrExpression node, Object data) {
-      ((Entry) entryStack.peek()).bumpDecisionPoints();
+      ((Entry) entryStack.peek()).bumpDecisionPoints(node.jjtGetNumChildren() - 1);
       super.visit(node, data);
       return data;
     }
