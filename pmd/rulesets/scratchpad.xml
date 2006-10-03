@@ -10,34 +10,7 @@ These are new rules that are still in progress
   </description>
 
 
-    <rule name="UselessStringValueOf"
-          message="No need to call String.valueOf to append to a string"
-          class="net.sourceforge.pmd.rules.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UselessStringValueOf">
-      <description>
-Use valueOf() argument directly.
-      </description>
-      <properties>
-          <property name="xpath">
-              <value>
-<![CDATA[
-//AdditiveExpression[@Image='+']
-[PrimaryExpression/PrimaryPrefix/Name[@Image='String.valueOf']]
-]]>
-              </value>
-          </property>
-      </properties>
-        <priority>3</priority>
-      <example>
-<![CDATA[
-public String convert(int i) {
-  String s;
-  s = "a" + String.valueOf(i); // Bad
-  s = "a" + i; // Better
-  return s;
-}
-]]>
-          </example>
+    <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
     </rule>
 
     <!--
