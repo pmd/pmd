@@ -40,6 +40,7 @@ Improved CPD GUI and Designer look/functionality; thanks to Brian Remedios for t
 Rewrote the NOPMD mechanism to collect NOPMD markers as the source file is tokenized.  This eliminates an entire scan of each source file.
 Applied patch from Jason Bennett to enhance CyclomaticComplexity rule to account for conditional or/and nodes, do stmts, and catch blocks.
 Applied patch from Xavier Le Vourch to reduce false postives from CloneMethodMustImplementCloneable.
+Updated Jaxen library to beta 10.
 Performance Refactoring, XPath rules re-written as Java:
     BooleanInstantiation
     UselessOperationOnImmutable

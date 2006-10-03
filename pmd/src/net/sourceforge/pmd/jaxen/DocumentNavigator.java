@@ -24,7 +24,7 @@ public class DocumentNavigator extends DefaultNavigator {
     }
 
     public String getAttributeNamespaceUri(Object arg0) {
-        return null;
+        return "";
     }
 
     public String getAttributeQName(Object arg0) {
@@ -36,7 +36,7 @@ public class DocumentNavigator extends DefaultNavigator {
     }
 
     public String getCommentStringValue(Object arg0) {
-        return null;
+        return "";
     }
 
     public String getElementName(Object node) {
@@ -44,7 +44,7 @@ public class DocumentNavigator extends DefaultNavigator {
     }
 
     public String getElementNamespaceUri(Object arg0) {
-        return null;
+        return "";
     }
 
     public String getElementQName(Object arg0) {
@@ -52,19 +52,19 @@ public class DocumentNavigator extends DefaultNavigator {
     }
 
     public String getElementStringValue(Object arg0) {
-        return null;
+        return "";
     }
 
     public String getNamespacePrefix(Object arg0) {
-        return null;
+        return "";
     }
 
     public String getNamespaceStringValue(Object arg0) {
-        return null;
+        return "";
     }
 
     public String getTextStringValue(Object arg0) {
-        return null;
+        return "";
     }
 
     public boolean isAttribute(Object arg0) {

@@ -15,16 +15,10 @@ public class AvoidRethrowingExceptionTest extends SimpleAggregatorTst {
 
     private Rule rule;
 
-    /**
-     * @see SimpleAggregatorTst#setUp()
-     */
     public void setUp() throws RuleSetNotFoundException {
         rule = findRule("strictexception", "AvoidRethrowingException");
     }
 
-    /**
-     * @see SimpleAggregatorTst#testAll()
-     */
     public void testAll() {
         runTests(new TestDescriptor[] {
             new TestDescriptor(FAILURE_TEST, "failure case", 1, rule),

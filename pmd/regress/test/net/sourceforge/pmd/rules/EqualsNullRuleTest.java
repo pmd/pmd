@@ -19,6 +19,7 @@ public class EqualsNullRuleTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST1, "object.equals(null), bad", 1, rule),
             new TestDescriptor(TEST2, "object == null, ok", 0, rule),
             new TestDescriptor(TEST3, "object.method().equals(null), bad", 1, rule),
+            new TestDescriptor(TEST4, "object.equals(null, other), ok", 0, rule),
         });
     }
 
@@ -40,6 +41,13 @@ public class EqualsNullRuleTest extends SimpleAggregatorTst {
             "public class Foo {" + PMD.EOL +
             " void bar() {" + PMD.EOL +
             "  if (foo.bar().equals(null)) {}" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST4 =
+            "public class Foo {" + PMD.EOL +
+            " void bar() {" + PMD.EOL +
+            "  if (foo.equals(null, other)) {}" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 

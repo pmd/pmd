@@ -46,16 +46,16 @@
             <li>Raik Schroeder - data flow analyis layer, YAHTMLRenderer</li>
             <li><a href="http://www.ourhomestead.net/jststeve/">Steve Hawkins</a> - rewrite of CPD based on Karp-Rabin string matching</li>
             <li><a href="http://www.jroller.com/comments/soxbox/Weblog">Daniel Sheppard</a> - XPath engine integration concept and implementation, advice on Jaxen extension function naming</li>
-            <li>Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform</li>
+            <li>Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform, fixed DocumentNavigator bug</li>
         </ul>
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Xavier Le Vourch - Wrote UselessStringValueOf, wrote UnnecessaryWrapperObjectCreation, patch to fix AvoidRethrowingException, patch to fix MissingStaticMethodInNonInstantiatableClass, patch to fix speling in CouplingBetweenObjects message, patch to improve CloneMethodMustImplementCloneable, suggestions on cleaning up casts in grammar, SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
+            <li>Xavier Le Vourch - Fixed bug in EqualsNull, wrote UselessStringValueOf, wrote UnnecessaryWrapperObjectCreation, patch to fix AvoidRethrowingException, patch to fix MissingStaticMethodInNonInstantiatableClass, patch to fix speling in CouplingBetweenObjects message, patch to improve CloneMethodMustImplementCloneable, suggestions on cleaning up casts in grammar, SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
+            <li>Jason Bennett - Patches to improve CyclomaticComplexity rule</li>
             <li>George Thomas - Wrote AvoidRethrowingException rule</li>
             <li>Robert Simmons - Reported bug in optimizations package along with suggestions for fix</li>
             <li>Brian Remedios - display cleanup of CPD GUI, code cleanup of StringUtil and various rules, cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
-            <li>Jason Bennett - Patch to improve CyclomaticComplexity rule</li>
             <li>Wouter Zelle - Wrote BrokenNullCheck rule, fixed a false positive in InefficientStringBuffering, fixed a false positive in NonThreadSafeSingleton, a nice patch to clean up some of the Ant task properties and fix a TextRenderer bug, rewrote PositionLiteralsFirstInComparisons in XPath, Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Sven Jacob - Some fixes for the DFA layer.</li>
             <li>Max Tardiveau - A nice XML to HTML stylesheet for CPD.</li>

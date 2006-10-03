@@ -23,8 +23,7 @@ public class SimpleAggregatorTst extends RuleTst {
                         tests[i].rule, sourceType);
             } catch (Throwable t) {
                 t.printStackTrace();
-                throw new RuntimeException("Test \"" + tests[i].description
-                        + "\" failed");
+                throw new RuntimeException("Test \"" + tests[i].description  + "\" failed");
             }
         }
     }
