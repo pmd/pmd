@@ -17,7 +17,7 @@ public class AttributeAxisIterator implements Iterator {
     private static class MethodWrapper {
         public Method method;
         public String name;
-
+        
         public MethodWrapper(Method m) {
             this.method = m;
             this.name = truncateMethodName(m.getName());
@@ -25,15 +25,11 @@ public class AttributeAxisIterator implements Iterator {
 
         private String truncateMethodName(String n) {
             // about 70% of the methods start with 'get', so this case goes first
-            if (n.startsWith("get")) {
-                n = n.substring("get".length());
-            } else if (n.startsWith("is")) {
-                n = n.substring("is".length());
-            } else if (n.startsWith("has")) {
-                n = n.substring("has".length());
-            } else if (n.startsWith("uses")) {
-                n = n.substring("uses".length());
-            }
+            if (n.startsWith("get")) return n.substring("get".length());
+            if (n.startsWith("is")) return n.substring("is".length());
+            if (n.startsWith("has")) return n.substring("has".length());
+            if (n.startsWith("uses")) return n.substring("uses".length());
+            
             return n;
         }
     }
@@ -55,7 +51,7 @@ public class AttributeAxisIterator implements Iterator {
                     postFilter.add(new MethodWrapper(preFilter[i]));
                 }
             }
-            methodCache.put(contextNode.getClass(), (MethodWrapper[]) postFilter.toArray(new MethodWrapper[postFilter.size()]));
+            methodCache.put(contextNode.getClass(), postFilter.toArray(new MethodWrapper[postFilter.size()]));
         }
         this.methodWrappers = (MethodWrapper[]) methodCache.get(contextNode.getClass());
 
