@@ -37,11 +37,11 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
         }
         return buf.toString();
     }
-
+    
     private StringBuffer glomIRuleViolations(Report report) {
         boolean colorize = true;
         int violationCount = 1;
-        StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer(500);
         buf.append("<center><h3>PMD report</h3></center>");
         buf.append("<center><h3>Problems found</h3></center>");
         buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
@@ -57,10 +57,8 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
             buf.append("<td width=\"*%\">" + maybeWrap(rv.getFilename(), Integer.toString(rv.getBeginLine())) + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getBeginLine()) + "</td>" + PMD.EOL);
 
-            String d = rv.getDescription();
-            d = StringUtil.replaceString(d, '&', "&amp;");
-            d = StringUtil.replaceString(d, '<', "&lt;");
-            d = StringUtil.replaceString(d, '>', "&gt;");
+            String d = StringUtil.htmlEncode(rv.getDescription());
+            
             if (rv.getRule().getExternalInfoUrl() != null && rv.getRule().getExternalInfoUrl().length() != 0) {
                 d = "<a href=\"" + rv.getRule().getExternalInfoUrl() + "\">" + d + "</a>";
             }
@@ -104,13 +102,15 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
 
     private void glomSuppressions(Report report, StringBuffer buf) {
         boolean colorize = true;
-        if (!report.getSuppressedRuleViolations().isEmpty()) {
+        boolean hasSuppressedViolations = !report.getSuppressedRuleViolations().isEmpty();
+        if (hasSuppressedViolations) {
             buf.append("<hr/>");
             buf.append("<center><h3>Suppressed warnings</h3></center>");
             buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>" + PMD.EOL);
         }
+        Report.SuppressedViolation sv;
         for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
-            Report.SuppressedViolation sv = (Report.SuppressedViolation) i.next();
+            sv = (Report.SuppressedViolation) i.next();
             buf.append("<tr");
             if (colorize) {
                 buf.append(" bgcolor=\"lightgrey\"");
@@ -124,7 +124,7 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
             buf.append("<td align=\"center\">" + (sv.getUserMessage() == null ? "" : sv.getUserMessage()) + "</td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
         }
-        if (!report.getSuppressedRuleViolations().isEmpty()) {
+        if (hasSuppressedViolations) {
             buf.append("</table>");
         }
     }
@@ -133,7 +133,7 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
         if (linkPrefix == null) {
             return filename;
         }
-        String newFileName = filename.substring(0, filename.lastIndexOf("."));
+        String newFileName = filename.substring(0, filename.lastIndexOf('.'));
         return "<a href=\"" + linkPrefix + newFileName + ".html#" + line + "\">" + newFileName + "</a>";
     }
 }

@@ -65,6 +65,12 @@ public class StringUtil {
         appendXmlEscaped(buf, src, supportsUTF8);
     }
 
+    public static String htmlEncode(String string) {
+        String encoded = StringUtil.replaceString(string, '&', "&amp;");
+        encoded = StringUtil.replaceString(encoded, '<', "&lt;");
+        return StringUtil.replaceString(encoded, '>', "&gt;");
+    }
+    
     private static void appendXmlEscaped(StringBuffer buf, String src, boolean supportUTF8) {
         char c;
         for (int i = 0; i < src.length(); i++) {
