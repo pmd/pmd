@@ -71,6 +71,8 @@ public class StringUtil {
         return StringUtil.replaceString(encoded, '>', "&gt;");
     }
     
+    // TODO - unify the method above with the one below
+    
     private static void appendXmlEscaped(StringBuffer buf, String src, boolean supportUTF8) {
         char c;
         for (int i = 0; i < src.length(); i++) {
