@@ -24,40 +24,42 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
     private StringBuffer classBuf = new StringBuffer();
     private int length;
 
+    private static final String fs = System.getProperty("file.separator");
+    
     /**
      * Writes the buffer to file.
      */
     private void write(String filename, StringBuffer buf) throws IOException {
-        String fs = System.getProperty("file.separator");
+        
         String baseDir = ".." + fs; // TODO output destination
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File(baseDir + fs + filename)));
         bw.write(buf.toString(), 0, buf.length());
         bw.close();
     }
-
+    
     /**
      * Generates a html table with violation information.
      */
     private String displayRuleViolation(IRuleViolation vio) {
-        String ret = "<table border=\"0\">";
-
-        ret += "<tr><td><b>Rule:</b></td><td>" + vio.getRule().getName() + "</td></tr>";
-
-        ret += "<tr><td><b>Description:</b></td><td>" + vio.getDescription() + "</td></tr>";
+ 
+    	StringBuffer sb = new StringBuffer(200);
+        sb.append("<table border=\"0\">");
+        sb.append("<tr><td><b>Rule:</b></td><td>").append(vio.getRule().getName()).append("</td></tr>");
+        sb.append("<tr><td><b>Description:</b></td><td>").append(vio.getDescription()).append("</td></tr>");
 
         if (vio.getVariableName().length() > 0) {
-            ret += "<tr><td><b>Variable:</b></td><td>" + vio.getVariableName() + "</td></tr>";
+        	sb.append("<tr><td><b>Variable:</b></td><td>").append(vio.getVariableName()).append("</td></tr>");
         }
 
         if (vio.getEndLine() > 0) {
-            ret += "<tr><td><b>Line:</b></td><td>" + vio.getEndLine() + " and " + vio.getBeginLine() + "</td></tr>";
+        	sb.append("<tr><td><b>Line:</b></td><td>").append(vio.getEndLine()).append(" and ").append(vio.getBeginLine()).append("</td></tr>");
         } else {
-            ret += "<tr><td><b>Line:</b></td><td>" + vio.getBeginLine() + "</td></tr>";
+        	sb.append("<tr><td><b>Line:</b></td><td>").append(vio.getBeginLine()).append("</td></tr>");
         }
 
-        ret += "</table>";
-        return ret;
+        sb.append("</table>");
+        return sb.toString();
     }
 
     /**

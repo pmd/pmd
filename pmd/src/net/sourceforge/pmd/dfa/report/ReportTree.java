@@ -116,7 +116,7 @@ public class ReportTree {
         String[] a = {};
         if (pack == null) {
             a = new String[]{""};
-        } else if (pack.indexOf(".") != -1) {
+        } else if (pack.indexOf('.') != -1) {
             // TODO Remove when minimal runtime support is >= JDK 1.4
             try {
                 Method split = String.class.getMethod("split", new Class[]{String.class});
@@ -155,7 +155,7 @@ public class ReportTree {
 
         for (int i = 0; i < a.length; i++) {
             String packageName = a[i];
-            plugedPackageName += packageName + ".";
+            plugedPackageName += packageName + '.';
 
             if (!this.isStringInLevel(plugedPackageName)) {
                 PackageNode node = new PackageNode(plugedPackageName);

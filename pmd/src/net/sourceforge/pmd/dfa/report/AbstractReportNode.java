@@ -1,9 +1,10 @@
 package net.sourceforge.pmd.dfa.report;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractReportNode {
-    private ArrayList childNodes = new ArrayList();
+    private List childNodes = new ArrayList();
     private AbstractReportNode parentNode = null;
 
     /*

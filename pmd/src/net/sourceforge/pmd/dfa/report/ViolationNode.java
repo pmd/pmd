@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.dfa.report;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.IRuleViolation;
 
 public class ViolationNode extends AbstractReportNode {
@@ -20,11 +19,11 @@ public class ViolationNode extends AbstractReportNode {
             return false;
         }
 
-        ViolationNode vn = (ViolationNode) arg0;
+        IRuleViolation rv = ((ViolationNode) arg0).getRuleViolation();
 
-        return vn.getRuleViolation().getFilename().equals(this.getRuleViolation().getFilename()) &&
-                vn.getRuleViolation().getBeginLine() == this.getRuleViolation().getBeginLine() &&
-                vn.getRuleViolation().getVariableName().equals(this.getRuleViolation().getVariableName());
+        return rv.getFilename().equals(getRuleViolation().getFilename()) &&
+        	rv.getBeginLine() == getRuleViolation().getBeginLine() &&
+        	rv.getVariableName().equals(getRuleViolation().getVariableName());
     }
 
 }
