@@ -44,14 +44,14 @@ public class RuleSetFactoryTest extends TestCase {
             throw new RuleSetNotFoundException("Can't find resource   Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: " + System.getProperty("java.class.path"));
         }
         RuleSetFactory rsf = new RuleSetFactory();
-        RuleSet rs = rsf.createRuleSet("rulesets/favorites.xml");
+        RuleSet rs = rsf.createSingleRuleSet("rulesets/favorites.xml");
         assertNotNull(rs.getRuleByName("WhileLoopsMustUseBraces"));
     }
 
     public void testRuleSetNotFound() {
         RuleSetFactory rsf = new RuleSetFactory();
         try {
-            rsf.createRuleSet("fooooo");
+            rsf.createSingleRuleSet("fooooo");
             fail("Should have thrown a RuleSetNotFoundException");
         } catch (RuleSetNotFoundException rsnfe) {
             // cool

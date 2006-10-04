@@ -37,20 +37,7 @@ public class PMD {
     private SourceTypeDiscoverer sourceTypeDiscoverer = new SourceTypeDiscoverer();
     private SourceTypeHandlerBroker sourceTypeHandlerBroker = new SourceTypeHandlerBroker();
 
-    public PMD() {
-    }
-
-    /**
-     * @param targetJDKVersion
-     * @deprecated Use the no-args constructor and the setJavaVersion method instead
-     */
-    public PMD(TargetJDKVersion targetJDKVersion) {
-        if (targetJDKVersion instanceof TargetJDK1_3) {
-            setJavaVersion(SourceType.JAVA_13);
-        } else if (targetJDKVersion instanceof TargetJDK1_5) {
-            setJavaVersion(SourceType.JAVA_15);
-        }
-    }
+    public PMD() {}
 
     /**
      * Processes the file read by the reader agains the rule set.

@@ -71,9 +71,9 @@ public class RuleTst extends TestCase {
      * @param rule
      * @throws Throwable
      */
-    public void runTestFromString(String code, Rule rule, Report report,
-                                  SourceType sourceType) throws Throwable {
+    public void runTestFromString(String code, Rule rule, Report report, SourceType sourceType) throws Throwable {
         PMD p = new PMD();
+        p.setJavaVersion(sourceType);
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         ctx.setSourceCodeFilename("n/a");
@@ -94,16 +94,5 @@ public class RuleTst extends TestCase {
 
     public void runTestFromString13(String code, Rule rule, Report report) throws Throwable {
         runTestFromString(code, rule, report, SourceType.JAVA_13);
-    }
-
-    public void runTestFromString(String code, Rule rule, Report report, TargetJDKVersion jdk)
-            throws Throwable {
-        PMD p = new PMD(jdk);
-        RuleContext ctx = new RuleContext();
-        ctx.setReport(report);
-        ctx.setSourceCodeFilename("n/a");
-        RuleSet rules = new RuleSet();
-        rules.addRule(rule);
-        p.processFile(new StringReader(code), rules, ctx);
     }
 }

@@ -144,21 +144,6 @@ public class RuleSetFactory {
     }
 
     /**
-     * Creates a ruleset. If passed a comma-delimited string
-     * (rulesets/basic.xml,rulesets/unusedcode.xml) it will parse that string and create a
-     * new ruleset for each item in the list. Same as createRuleSet(name,
-     * ruleSetFactory.getClassLoader()).
-     *
-     * @param name name of rule set file loaded as a resource
-     * @deprecated Use createRuleSets instead, because this method puts all rules in one
-     *             single RuleSet object, and thus removes name and language of the
-     *             originating rule set files.
-     */
-    public RuleSet createRuleSet(String name) throws RuleSetNotFoundException {
-        return createRuleSet(name, getClass().getClassLoader());
-    }
-
-    /**
      * Create a ruleset from a name
      *
      * @param name        name of rule set file loaded as a resource

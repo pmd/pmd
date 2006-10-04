@@ -9,6 +9,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import org.w3c.dom.Element;
@@ -91,7 +92,8 @@ public class XMLRendererTest extends RuleTst {
         Report report = new Report();
         FooRule rule = new FooRule();
         runTestFromString(TEST2, rule, report);
-        PMD p = new PMD(new TargetJDK1_4());
+        PMD p = new PMD();
+        p.setJavaVersion(SourceType.JAVA_14);
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         ctx.setSourceCodeFilename("bar");

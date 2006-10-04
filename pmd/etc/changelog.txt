@@ -1,7 +1,4 @@
- ????, 2006 - 3.8:
-BEFORE RELEASE:
-- remove deprecated methods from PMD.java, RuleSetFactory
-
+October 3, 2006 - 3.8:
 New rules:
     Basic ruleset: BrokenNullCheck
     Strict exceptions ruleset: AvoidRethrowingException
