@@ -29,7 +29,7 @@ import java.util.zip.ZipFile;
 
 public class PMD {
     public static final String EOL = System.getProperty("line.separator", "\n");
-    public static final String VERSION = "3.7";
+    public static final String VERSION = "3.8";
     public static final String EXCLUDE_MARKER = "NOPMD";
 
 

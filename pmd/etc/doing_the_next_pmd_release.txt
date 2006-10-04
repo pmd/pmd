@@ -1,10 +1,10 @@
-update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-3.7.jar
-update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-3.7
+update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-3.8.jar
+update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-3.8
 update the release date in the changelog
 update rulesets/rulesets.properties - add any new ruleset file names
 update release number and tag name in project.xml
 
-ensure all the new rules are listed in a rulesets/releases/37.xml file
+ensure all the new rules are listed in a rulesets/releases/38.xml file
 
 ant clean test
 Check in everything
@@ -25,57 +25,57 @@ cd ..
 cd etc
 
 Prepare binary release:
-rm -rf ~/tmp/pmd-3.7
-mkdir -p ~/tmp/pmd-3.7/etc
-mkdir ~/tmp/pmd-3.7/bin
-mkdir ~/tmp/pmd-3.7/lib
-cp ../LICENSE.txt changelog.txt ~/tmp/pmd-3.7/etc
+rm -rf ~/tmp/pmd-3.8
+mkdir -p ~/tmp/pmd-3.8/etc
+mkdir ~/tmp/pmd-3.8/bin
+mkdir ~/tmp/pmd-3.8/lib
+cp ../LICENSE.txt changelog.txt ~/tmp/pmd-3.8/etc
 cd ../bin/
-cp pmd.* cygwin-run.sh build.xml cpd.sh cpdgui.bat designer.* ~/tmp/pmd-3.7/bin
+cp pmd.* cygwin-run.sh build.xml cpd.sh cpdgui.bat designer.* ~/tmp/pmd-3.8/bin
 cd ../etc/
-cp ../lib/pmd-3.7.jar ../lib/jakarta-oro-2.0.8.jar ../lib/xmlParserAPIs-2.6.2.jar  ../lib/xercesImpl-2.6.2.jar ../lib/jaxen-1.1-beta-10.jar ~/tmp/pmd-3.7/lib/
-mkdir ~/tmp/pmd-3.7/etc/xslt
-cp xslt/*.xslt xslt/*.js xslt/*.gif xslt/*.css ~/tmp/pmd-3.7/etc/xslt/
-cp -R ../target/docs ~/tmp/pmd-3.7
+cp ../lib/pmd-3.8.jar ../lib/jakarta-oro-2.0.8.jar ../lib/xmlParserAPIs-2.6.2.jar  ../lib/xercesImpl-2.6.2.jar ../lib/jaxen-1.1-beta-10.jar ~/tmp/pmd-3.8/lib/
+mkdir ~/tmp/pmd-3.8/etc/xslt
+cp xslt/*.xslt xslt/*.js xslt/*.gif xslt/*.css ~/tmp/pmd-3.8/etc/xslt/
+cp -R ../target/docs ~/tmp/pmd-3.8
 cd ~/tmp
-zip -q -r pmd-bin-3.7.zip pmd-3.7/
+zip -q -r pmd-bin-3.8.zip pmd-3.8/
 cd -
 
 Time to tag:
 
 CVSROOT=:ext:tomcopeland@pmd.cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
 cd ../../
-cvs -q tag -D tomorrow "pmd_release_3_7" pmd
+cvs -q tag -D tomorrow "pmd_release_3_8" pmd
 
 Prepare source release:
-rm -rf ~/tmp/pmd-3.7
-rm -rf ~/tmp/pmd-src-3.7.zip
+rm -rf ~/tmp/pmd-3.8
+rm -rf ~/tmp/pmd-src-3.8.zip
 cd pmd/bin/
 ant jarsrc
 cd ../../
 rm -rf tmp/
 mkdir tmp
 cd tmp
-cvs -q export -r pmd_release_3_7 pmd
-mv pmd/ pmd-3.7
+cvs -q export -r pmd_release_3_8 pmd
+mv pmd/ pmd-3.8
 cd ..
-cp pmd/lib/pmd-src-3.7.jar tmp/pmd-3.7/lib/
-mv tmp/pmd-3.7/ ~/tmp/
-cp pmd/lib/pmd-3.7.jar ~/tmp/pmd-3.7/lib
-cp -R pmd/target/docs ~/tmp/pmd-3.7/
+cp pmd/lib/pmd-src-3.8.jar tmp/pmd-3.8/lib/
+mv tmp/pmd-3.8/ ~/tmp/
+cp pmd/lib/pmd-3.8.jar ~/tmp/pmd-3.8/lib
+cp -R pmd/target/docs ~/tmp/pmd-3.8/
 cd ~/tmp/
-zip -q -r pmd-src-3.7.zip pmd-3.7/
+zip -q -r pmd-src-3.8.zip pmd-3.8/
 
 if you see a bug and fix it, you can delete the release using:
-cvs rtag -d pmd_release_3_7 pmd
+cvs rtag -d pmd_release_3_8 pmd
 and then retag everything
 
-ncftpput upload.sourceforge.net incoming/ pmd-src-3.7.zip pmd-bin-3.7.zip
+ncftpput upload.sourceforge.net incoming/ pmd-src-3.8.zip pmd-bin-3.8.zip
 
 Go to Admin, File Releases, Add release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-3.7.zip file
-Add the pmd-src-3.7.zip file
+Add the pmd-bin-3.8.zip file
+Add the pmd-src-3.8.zip file
 Classify the file
 Click File Releases, Edit Release, set previous version to 'hidden'.
 
@@ -87,5 +87,4 @@ update the "what's new" link in navigation.xml
 Submit news to SF
 Go to http://freshmeat.net/
 Submit news to java.net
-Post note to JCreator Tips and Tricks forum - http://www.jcreator.com/forums/index.php?showforum=3
 Do a blog entry

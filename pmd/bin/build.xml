@@ -7,7 +7,7 @@
 	<property name="dir.build" value="build\" />
 	<property name="dir.rulesets" value="rulesets\" />
 	<property name="dir.regress" value="regress\" />
-	<property name="version" value="3.7" />
+	<property name="version" value="3.8" />
 	<property name="keystore" value="${keystore.path}" />
 
 	<path id="dependencies.path">
