@@ -1,4 +1,4 @@
-October 3, 2006 - 3.8:
+October 4, 2006 - 3.8:
 New rules:
     Basic ruleset: BrokenNullCheck
     Strict exceptions ruleset: AvoidRethrowingException
