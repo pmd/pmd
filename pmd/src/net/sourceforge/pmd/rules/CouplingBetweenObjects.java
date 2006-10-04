@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -15,6 +14,7 @@ import net.sourceforge.pmd.ast.ASTReferenceType;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.symboltable.ClassScope;
 
 import java.util.HashSet;
 import java.util.Set;

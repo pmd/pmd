@@ -31,8 +31,6 @@ import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.HashMap;
 import java.util.Map;
 

@@ -3,16 +3,13 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import java.util.Iterator;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.util.StringUtil;
-import org.apache.oro.text.regex.Pattern;
-import org.apache.oro.text.regex.MalformedPatternException;
-import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.perl.Perl5Util;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class SimpleRenderer implements Renderer {
 

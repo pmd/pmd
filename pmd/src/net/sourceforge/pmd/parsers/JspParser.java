@@ -4,8 +4,8 @@ import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.jsp.ast.JspCharStream;
 
 import java.io.Reader;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 public class JspParser implements Parser {
 

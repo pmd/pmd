@@ -3,9 +3,9 @@
  */
 package net.sourceforge.pmd.renderers;
 
+import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.util.StringUtil;
 
 import java.text.SimpleDateFormat;

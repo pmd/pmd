@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.dfa.report;
 
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.IRuleViolation;
 
 import java.lang.reflect.InvocationTargetException;

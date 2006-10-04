@@ -1,9 +1,5 @@
 package net.sourceforge.pmd.rules.design;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTArgumentList;
@@ -15,8 +11,11 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
 import org.jaxen.JaxenException;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class PreserveStackTrace extends AbstractRule {
 

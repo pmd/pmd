@@ -1,10 +1,5 @@
 package net.sourceforge.pmd.rules.migration;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTCastExpression;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
@@ -14,6 +9,11 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class UnnecessaryCast extends AbstractRule {
 

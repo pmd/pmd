@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd;
 
-import java.util.Set;
 import java.util.Map;
 
 public class RuleContext {

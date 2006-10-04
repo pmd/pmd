@@ -1,10 +1,10 @@
 package net.sourceforge.pmd.jsp.rules;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import net.sourceforge.pmd.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.jsp.ast.ASTElement;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This rule checks that no "style" elements (like <B>, <FONT>, ...) are used, and that no

@@ -1,8 +1,7 @@
 package net.sourceforge.pmd.dfa.report;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.PMD;
 
 import java.io.BufferedWriter;
 import java.io.File;

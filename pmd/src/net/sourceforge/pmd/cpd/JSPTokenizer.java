@@ -3,8 +3,8 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.jsp.ast.JspParserTokenManager;
 import net.sourceforge.pmd.jsp.ast.JspCharStream;
+import net.sourceforge.pmd.jsp.ast.JspParserTokenManager;
 import net.sourceforge.pmd.jsp.ast.Token;
 
 import java.io.StringReader;

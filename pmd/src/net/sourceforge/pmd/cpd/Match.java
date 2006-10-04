@@ -3,12 +3,12 @@
  */
 package net.sourceforge.pmd.cpd;
 
+import net.sourceforge.pmd.PMD;
+
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
-
-import net.sourceforge.pmd.PMD;
 
 public class Match implements Comparable {
 

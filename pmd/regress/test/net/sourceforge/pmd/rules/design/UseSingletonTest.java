@@ -3,12 +3,11 @@
  */
 package test.net.sourceforge.pmd.rules.design;
 
+import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.rules.design.UseSingleton;
 import net.sourceforge.pmd.stat.Metric;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;

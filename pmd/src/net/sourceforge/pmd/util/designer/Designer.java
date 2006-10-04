@@ -3,6 +3,33 @@
  */
 package net.sourceforge.pmd.util.designer;
 
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.SourceType;
+import net.sourceforge.pmd.TargetJDK1_3;
+import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.jaxen.DocumentNavigator;
+import net.sourceforge.pmd.jaxen.MatchesFunction;
+import net.sourceforge.pmd.jsp.ast.JspCharStream;
+import net.sourceforge.pmd.jsp.ast.JspParser;
+import net.sourceforge.pmd.util.NumericConstants;
+import net.sourceforge.pmd.util.StringUtil;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
+import org.jaxen.BaseXPath;
+import org.jaxen.JaxenException;
+import org.jaxen.XPath;
+
+import javax.swing.*;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -28,57 +55,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
-import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultListModel;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTree;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
-import javax.swing.tree.DefaultTreeCellRenderer;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.SourceType;
-import net.sourceforge.pmd.TargetJDK1_3;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDK1_5;
-import net.sourceforge.pmd.util.NumericConstants;
-import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.jaxen.DocumentNavigator;
-import net.sourceforge.pmd.jaxen.MatchesFunction;
-import net.sourceforge.pmd.jsp.ast.JspCharStream;
-import net.sourceforge.pmd.jsp.ast.JspParser;
-
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
-import org.jaxen.BaseXPath;
-import org.jaxen.JaxenException;
-import org.jaxen.XPath;
 
 public class Designer implements ClipboardOwner {
 

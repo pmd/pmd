@@ -5,8 +5,6 @@
  */
 package net.sourceforge.pmd.rules;
 
-import java.util.List;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
@@ -14,6 +12,8 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
+
+import java.util.List;
 
 /**
  * @author Eric Olander

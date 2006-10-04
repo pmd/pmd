@@ -1,12 +1,12 @@
 package test.net.sourceforge.pmd;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.SourceTypeToRuleLanguageMapper;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.SourceTypeToRuleLanguageMapper;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
 import java.io.StringReader;

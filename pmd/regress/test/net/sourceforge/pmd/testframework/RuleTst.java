@@ -15,7 +15,6 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.SourceTypeToRuleLanguageMapper;
-import net.sourceforge.pmd.TargetJDKVersion;
 
 import java.io.StringReader;
 

@@ -1,7 +1,5 @@
 package net.sourceforge.pmd.rules;
 
-import java.util.List;
-
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
@@ -10,6 +8,8 @@ import net.sourceforge.pmd.ast.ASTFormalParameters;
 import net.sourceforge.pmd.ast.ASTImplementsList;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.SimpleNode;
+
+import java.util.List;
 
 public class OverrideBothEqualsAndHashcode extends AbstractRule {
 

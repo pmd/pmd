@@ -3,6 +3,10 @@
  */
 package net.sourceforge.pmd;
 
+import net.sourceforge.pmd.dfa.report.ReportTree;
+import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.util.NumericConstants;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,10 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
-import net.sourceforge.pmd.dfa.report.ReportTree;
-import net.sourceforge.pmd.stat.Metric;
-import net.sourceforge.pmd.util.NumericConstants;
 
 public class Report {
 

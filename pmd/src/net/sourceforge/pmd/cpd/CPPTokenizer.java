@@ -4,9 +4,9 @@
 package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.cpd.cppast.CPPParserTokenManager;
+import net.sourceforge.pmd.cpd.cppast.SimpleCharStream;
 import net.sourceforge.pmd.cpd.cppast.Token;
 import net.sourceforge.pmd.cpd.cppast.TokenMgrError;
-import net.sourceforge.pmd.cpd.cppast.SimpleCharStream;
 
 import java.io.StringReader;
 import java.util.ArrayList;

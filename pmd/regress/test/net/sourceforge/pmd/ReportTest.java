@@ -23,11 +23,10 @@
 package test.net.sourceforge.pmd;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportListener;
-import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.stat.Metric;
 import test.net.sourceforge.pmd.testframework.RuleTst;
