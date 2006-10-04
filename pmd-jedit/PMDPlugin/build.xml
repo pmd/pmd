@@ -5,7 +5,7 @@
 	<property name="src" value="src/"/>
 	<property name="lib" value="lib"/>
 	<property name="build" value="build"/>
-	<property name="pmdjar" value="pmd-3.7.jar"/>
+	<property name="pmdjar" value="pmd-3.8.jar"/>
 	<property name="pluginversion" value="2.6"/>
 	<property name="jedit.install.dir" value="../.."/>
 	<property name="jedit.jars.dir" value="${jedit.install.dir}\jars"/>
@@ -40,7 +40,7 @@
 	</target>
 
     <target name="jar" depends="compile">
-		<jar jarfile="${install.dir}/${ant.project.name}.jar">
+		<jar jarfile="${jedit.jars.dir}/${ant.project.name}.jar">
 			<fileset dir="${build}"/>
 			<fileset dir="${config}">
 				<include name="*.props"/>
@@ -53,7 +53,7 @@
 
 	<target name="dist">
         <antcall target="jar"/>
-		<copy todir="${install.dir}" verbose="true">
+		<copy todir="${jedit.jars.dir}" verbose="true">
 			<fileset casesensitive="false" refid="pmd.libs"></fileset>
 			<!-- <fileset casesensitive="false" dir="${lib}" includes="*.jar"></fileset> -->
 		</copy>

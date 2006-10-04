@@ -65,11 +65,15 @@ public class SelectedRules
 
 		if(!(customRuleSetPath == null))
 		{
-			StringTokenizer strtok = new StringTokenizer(customRuleSetPath, ",");
-			while(strtok.hasMoreTokens())
+			RuleSets ruleSets = rsf.createRuleSets(customRuleSetPath);
+			
+			if(ruleSets.getAllRuleSets() != null)
 			{
-				RuleSet rs = rsf.createRuleSet(strtok.nextToken());
-				addRuleSet2Rules(rs);
+				for(int i=0;i<ruleSets.getAllRuleSets().length;i++)
+				{
+					RuleSet rs = ruleSets.getAllRuleSets()[i];
+					addRuleSet2Rules(rs);
+				}
 			}
 		}
 	}
