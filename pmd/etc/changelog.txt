@@ -1,3 +1,7 @@
+?????, 2006 - 3.9:
+New rules:
+
+
 October 4, 2006 - 3.8:
 New rules:
     Basic ruleset: BrokenNullCheck
