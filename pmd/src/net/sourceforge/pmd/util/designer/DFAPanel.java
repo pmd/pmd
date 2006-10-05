@@ -64,7 +64,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 
         private String[] deriveAccessLabels(List flow) {
 
-        	if (flow == null && flow.isEmpty()) return StringUtil.EMPTY_STRINGS;
+        	if (flow == null || flow.isEmpty()) return StringUtil.EMPTY_STRINGS;
 
         	String[] labels = new String[flow.size()];
 
