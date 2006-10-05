@@ -7,12 +7,22 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class SummaryHTMLRenderer extends AbstractRenderer implements Renderer {
+    private String linePrefix,linkPrefix;
+    public SummaryHTMLRenderer(String linkPrefix, String linePrefix) {
+        this.linePrefix = linePrefix;
+        this.linkPrefix = linkPrefix;
+    }
+    
+    public SummaryHTMLRenderer(){
+        this(null,null);
+    }
+
     public String render(Report report) {
         StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + PMD.EOL);
         buf.append(renderSummary(report));
         buf.append("<h2><center>Detail</h2></center>");
         buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
-        buf.append(new HTMLRenderer().renderBody(report));
+        buf.append(new HTMLRenderer(linkPrefix,linePrefix).renderBody(report));
         buf.append("</table></body></html>");
         return buf.toString();
     }

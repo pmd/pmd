@@ -286,6 +286,7 @@
             <li>Eduard Naum - Eclipse fix JDK 1.3 runtime problem</li>
             <li>Chris Grindstaff - Eclipse fix SWTException when PMD is run on a file with syntax error</li>
             <li>Brian Remedios - Eclipse improvements in the PMDPlugin class and preferences rule table have sortable columns</li>
+            <li>Brent Fisher - SummaryHTML report improvements</li>
 
         </ul>
         </subsection>

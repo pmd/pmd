@@ -28,6 +28,8 @@ public class CommandLineOptions {
     private String reportFormat;
     private String ruleSets;
     private String encoding = new InputStreamReader(System.in).getEncoding();
+    private String linePrefix;
+    private String linkPrefix;
 
     private boolean checkJavaFiles = true;
     private boolean checkJspFiles = false;
@@ -61,8 +63,13 @@ public class CommandLineOptions {
                 checkJspFiles = true;
             } else if (args[i].equals("-nojava")) {
                 checkJavaFiles = false;
+            } else if (args[i].equals("-lineprefix")) {
+                linePrefix = args[i + 1];
+            } else if (args[i].equals("-linkprefix")) {
+                linkPrefix = args[i + 1];
             }
         }
+        
     }
 
     public Renderer createRenderer() {
@@ -83,7 +90,7 @@ public class CommandLineOptions {
         } else if (reportFormat.equals("yahtml")) {
             return new YAHTMLRenderer();
         } else if (reportFormat.equals("summaryhtml")) {
-            return new SummaryHTMLRenderer();
+            return new SummaryHTMLRenderer(linkPrefix, linePrefix);
         } else if (reportFormat.equals("vbhtml")) {
             return new VBHTMLRenderer();
         }
@@ -150,6 +157,8 @@ public class CommandLineOptions {
                 "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
                 "-excludemarker: specifies the String that marks the a line which PMD should ignore; default is NOPMD" + PMD.EOL +
                 "-shortnames: prints shortened filenames in the report" + PMD.EOL +
+                "-linkprefix: path to HTML source, for summary html renderer only." + PMD.EOL +
+                "-lineprefix: custom anchor to affected line in the source file, for summary html renderer only." + PMD.EOL +
                 PMD.EOL +
                 "For example: " + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code text unusedcode,imports -targetjdk 1.5 -debug" + PMD.EOL +

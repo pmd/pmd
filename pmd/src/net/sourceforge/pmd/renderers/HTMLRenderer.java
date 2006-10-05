@@ -13,13 +13,16 @@ import java.util.Iterator;
 public class HTMLRenderer extends AbstractRenderer implements Renderer {
 
     private String linkPrefix;
+    private String linePrefix;
 
-    public HTMLRenderer(String linkPrefix) {
+    public HTMLRenderer(String linkPrefix, String linePrefix) {
         this.linkPrefix = linkPrefix;
+        this.linePrefix = linePrefix;
+        
     }
 
     public HTMLRenderer() {
-        this(null);
+        this(null, null);
     }
 
     public String render(Report report) {
@@ -54,7 +57,7 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
             colorize = !colorize;
             buf.append("> " + PMD.EOL);
             buf.append("<td align=\"center\">" + violationCount + "</td>" + PMD.EOL);
-            buf.append("<td width=\"*%\">" + maybeWrap(rv.getFilename(), Integer.toString(rv.getBeginLine())) + "</td>" + PMD.EOL);
+            buf.append("<td width=\"*%\">" + maybeWrap(rv.getFilename(),linePrefix==null?"":linePrefix + Integer.toString(rv.getBeginLine())) + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\" width=\"5%\">" + Integer.toString(rv.getBeginLine()) + "</td>" + PMD.EOL);
 
             String d = StringUtil.htmlEncode(rv.getDescription());

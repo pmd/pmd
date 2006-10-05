@@ -29,11 +29,12 @@ import java.util.Map;
 public class Formatter {
 
     private interface RendererBuilder {
-        Renderer build(Object optionalArg);
-    }	// factory template
+        Renderer build(Object[] optionalArg);
+    } // factory template
 
     private File toFile;
     private String linkPrefix;
+    private String linePrefix;
     private String type;
     private boolean toConsole;
     private boolean showSuppressed;
@@ -42,31 +43,31 @@ public class Formatter {
 
     static {
         renderersByCode.put("xml", new RendererBuilder() {
-            public Renderer build(Object arg) { return new XMLRenderer(); }
+            public Renderer build(Object[] arg) { return new XMLRenderer(); }
         });
         renderersByCode.put("html", new RendererBuilder() {
-            public Renderer build(Object arg) { return new HTMLRenderer((String) arg); }
+            public Renderer build(Object[] arg) { return new HTMLRenderer((String) arg[0], (String) arg[1]); }
         });
         renderersByCode.put("summaryhtml", new RendererBuilder() {
-            public Renderer build(Object arg) { return new SummaryHTMLRenderer(); }
+            public Renderer build(Object[] arg) { return new SummaryHTMLRenderer((String) arg[0], (String) arg[1]); }
         });
         renderersByCode.put("papari", new RendererBuilder() {
-            public Renderer build(Object arg) { return new PapariTextRenderer(); }
+            public Renderer build(Object[] arg) { return new PapariTextRenderer(); }
         });
         renderersByCode.put("csv", new RendererBuilder() {
-            public Renderer build(Object arg) { return new TextRenderer(); }
+            public Renderer build(Object[] arg) { return new TextRenderer(); }
         });
         renderersByCode.put("emacs", new RendererBuilder() {
-            public Renderer build(Object arg) { return new EmacsRenderer(); }
+            public Renderer build(Object[] arg) { return new EmacsRenderer(); }
         });
         renderersByCode.put("vbhtml", new RendererBuilder() {
-            public Renderer build(Object arg) { return new VBHTMLRenderer(); }
+            public Renderer build(Object[] arg) { return new VBHTMLRenderer(); }
         });
         renderersByCode.put("yahtml", new RendererBuilder() {
-            public Renderer build(Object arg) { return new YAHTMLRenderer(); }
+            public Renderer build(Object[] arg) { return new YAHTMLRenderer(); }
         });
         renderersByCode.put("text", new RendererBuilder() {
-            public Renderer build(Object arg) { return new TextRenderer(); }
+            public Renderer build(Object[] arg) { return new TextRenderer(); }
         });
         // add additional codes & factories here
     }
@@ -89,6 +90,10 @@ public class Formatter {
 
     public void setToConsole(boolean toConsole) {
         this.toConsole = toConsole;
+    }
+
+    public void setLinePrefix(String linePrefix) {
+        this.linePrefix = linePrefix;
     }
 
     public void outputReport(Report report, String baseDir) {
@@ -154,7 +159,7 @@ public class Formatter {
             throw new BuildException(unknownRendererMessage("<unspecified>"));
         }
         RendererBuilder builder = (RendererBuilder) renderersByCode.get(type);
-        Renderer renderer = builder == null ? fromClassname(type) : builder.build(linkPrefix);
+        Renderer renderer = builder == null ? fromClassname(type) : builder.build(new String[]{linkPrefix, linePrefix});
         renderer.showSuppressedViolations(showSuppressed);
         return renderer;
     }

@@ -1,6 +1,6 @@
 ?????, 2006 - 3.9:
 New rules:
-
+SummaryHTML Report changes from Brent Fisher - now contains linePrefix to support source output from javadoc using "linksource"
 
 October 4, 2006 - 3.8:
 New rules:

@@ -86,6 +86,10 @@
            <td>linkPrefix</td>
            <td>Used for linking to online HTMLized source (like <a href="http://pmd.sourceforge.net/xref/index.html">this</a>).  See example below.</td>
        </tr>
+       <tr>
+           <td>linePrefix</td>
+           <td>Used for linking to online HTMLized source (like <a href="http://pmd.sourceforge.net/xref/index.html#line102">this</a>).  See example below.</td>
+       </tr>
  </table>
 
      <p><code>classpath</code> nested element - useful for specifying custom rule.  More details on the <code>classpath</code>
@@ -248,6 +252,21 @@ Total time: 2 seconds
  <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
  <pmd rulesetfiles="basic" shortFilenames="true">
   <formatter type="html" toFile="pmd_report.html" linkPrefix="http://pmd.sourceforge.net/xref/"/>
+  <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
+   <include name="java/lang/*.java"/>
+  </fileset>
+ </pmd>
+</target>
+]]>
+</source>
+
+<p>An HTML report with the "linePrefix" gizmo</p>
+<source>
+<![CDATA[
+<target name="pmd">
+ <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"/>
+ <pmd rulesetfiles="basic" shortFilenames="true">
+  <formatter type="html" toFile="pmd_report.html" linePrefix=".line"/>
   <fileset dir="/usr/local/j2sdk1.4.1_01/src/">
    <include name="java/lang/*.java"/>
   </fileset>
