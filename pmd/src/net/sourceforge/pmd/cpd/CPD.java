@@ -79,7 +79,7 @@ public class CPD {
 
         if (skipDuplicates) {
             // TODO refactor this thing into a separate class
-            String signature = file.getName() + '_' + String.valueOf(file.length());
+            String signature = file.getName() + '_' + file.length();
             if (current.contains(signature)) {
                 System.out.println("Skipping " + file.getAbsolutePath() + " since it appears to be a duplicate file and --skip-duplicate-files is set");
                 return;

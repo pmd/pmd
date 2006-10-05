@@ -38,7 +38,7 @@ public class SummaryHTMLRenderer extends AbstractRenderer implements Renderer {
             String ruleName = (String) i.next();
             buf.append("<tr>");
             buf.append("<td>" + ruleName + "</td>");
-            buf.append("<td align=center>" + String.valueOf(((Integer) summary.get(ruleName)).intValue()) + "</td>");
+            buf.append("<td align=center>" + ((Integer) summary.get(ruleName)).intValue() + "</td>");
             buf.append("</tr>");
         }
         buf.append("</table>");

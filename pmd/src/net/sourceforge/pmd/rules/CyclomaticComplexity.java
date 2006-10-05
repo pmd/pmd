@@ -135,7 +135,7 @@ public class CyclomaticComplexity extends AbstractRule {
         super.visit(node, data);
         Entry classEntry = (Entry) entryStack.pop();
         if ((classEntry.getComplexityAverage() >= getIntProperty("reportLevel")) || (classEntry.highestDecisionPoints >= getIntProperty("reportLevel"))) {
-            addViolation(data, node, new String[]{"class", node.getImage(), String.valueOf(classEntry.getComplexityAverage()) + " (Highest = " + String.valueOf(classEntry.highestDecisionPoints) + ")"});
+            addViolation(data, node, new String[]{"class", node.getImage(), classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')'});
         }
         return data;
     }
@@ -174,7 +174,7 @@ public class CyclomaticComplexity extends AbstractRule {
         super.visit(node, data);
         Entry classEntry = (Entry) entryStack.pop();
         if ((classEntry.getComplexityAverage() >= getIntProperty("reportLevel")) || (classEntry.highestDecisionPoints >= getIntProperty("reportLevel"))) {
-            addViolation(data, node, new String[]{"class", node.getImage(), String.valueOf(classEntry.getComplexityAverage()) + "(Highest = " + String.valueOf(classEntry.highestDecisionPoints) + ")"});
+            addViolation(data, node, new String[]{"class", node.getImage(), classEntry.getComplexityAverage() + "(Highest = " + classEntry.highestDecisionPoints + ')'});
         }
         return data;
     }

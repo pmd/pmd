@@ -37,7 +37,7 @@ public class ClassScope extends AbstractScope {
      */
     public ClassScope() {
         //this.className = getParent().getEnclosingClassScope().getClassName() + "$" + String.valueOf(anonymousInnerClassCounter);
-        this.className = "Anonymous$" + String.valueOf(anonymousInnerClassCounter);
+        this.className = "Anonymous$" + anonymousInnerClassCounter;
         anonymousInnerClassCounter++;
     }
 

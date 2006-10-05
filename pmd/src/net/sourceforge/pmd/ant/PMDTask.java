@@ -204,7 +204,7 @@ public class PMDTask extends Task {
 
         if (failuresPropertyName != null && ctx.getReport().size() > 0) {
             getProject().setProperty(failuresPropertyName, String.valueOf(ctx.getReport().size()));
-            log("Setting property " + failuresPropertyName + " to " + String.valueOf(ctx.getReport().size()), Project.MSG_VERBOSE);
+            log("Setting property " + failuresPropertyName + " to " + ctx.getReport().size(), Project.MSG_VERBOSE);
         }
 
         if (failOnRuleViolation && ctx.getReport().size() > 0) {

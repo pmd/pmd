@@ -137,7 +137,7 @@ public abstract class AbstractJspRule extends JspParserVisitorAdapter implements
      * Return a hash code to conform to equality. Try with a string.
      */
     public int hashCode() {
-        String s = this.getClass().getName() + this.getName() + String.valueOf(this.getPriority()) + this.getProperties().toString();
+        String s = this.getClass().getName() + this.getName() + this.getPriority() + this.getProperties().toString();
         return s.hashCode();
     }
 

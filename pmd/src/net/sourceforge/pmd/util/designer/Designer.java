@@ -382,7 +382,7 @@ public class Designer implements ClipboardOwner {
                         // if it's a Boolean and it's 'false', what does that mean?
                         SimpleNode node = (SimpleNode) obj;
                         String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
-                        String line = " at line " + String.valueOf(node.getBeginLine());
+                        String line = " at line " + node.getBeginLine();
                         sb.append(name).append(line).append(PMD.EOL);
                         xpathResults.addElement(sb.toString().trim());
                     }
