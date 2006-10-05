@@ -1,6 +1,7 @@
 ?????, 2006 - 3.9:
 New rules:
 SummaryHTML Report changes from Brent Fisher - now contains linePrefix to support source output from javadoc using "linksource"
+Fixed bug 1570915 - AvoidRethrowingException no longer reports a false positive for certain nested exceptions.
 
 October 4, 2006 - 3.8:
 New rules:

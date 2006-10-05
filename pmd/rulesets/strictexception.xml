@@ -196,8 +196,8 @@ public class Foo {
       <value>
         <![CDATA[
 //CatchStatement[FormalParameter
- /VariableDeclaratorId = Block/BlockStatement/Statement
- /ThrowStatement/Expression/PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix/Name
+ /VariableDeclaratorId/@Image = Block/BlockStatement/Statement
+ /ThrowStatement/Expression/PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix/Name/@Image
  and count(Block/BlockStatement/Statement) =1]
  ]]>
       </value>

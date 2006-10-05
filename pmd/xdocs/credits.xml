@@ -51,8 +51,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Xavier Le Vourch - Fix to AvoidRethrowingException, fixed bug in EqualsNull, wrote UselessStringValueOf, wrote UnnecessaryWrapperObjectCreation, patch to fix AvoidRethrowingException, patch to fix MissingStaticMethodInNonInstantiatableClass, patch to fix speling in CouplingBetweenObjects message, patch to improve CloneMethodMustImplementCloneable, suggestions on cleaning up casts in grammar, SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
             <li>Brent Fisher - SummaryHTML report improvements</li>
-            <li>Xavier Le Vourch - Fixed bug in EqualsNull, wrote UselessStringValueOf, wrote UnnecessaryWrapperObjectCreation, patch to fix AvoidRethrowingException, patch to fix MissingStaticMethodInNonInstantiatableClass, patch to fix speling in CouplingBetweenObjects message, patch to improve CloneMethodMustImplementCloneable, suggestions on cleaning up casts in grammar, SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets</li>
             <li>Jason Bennett - Patches to improve CyclomaticComplexity rule</li>
             <li>George Thomas - Wrote AvoidRethrowingException rule</li>
             <li>Robert Simmons - Reported bug in optimizations package along with suggestions for fix</li>
