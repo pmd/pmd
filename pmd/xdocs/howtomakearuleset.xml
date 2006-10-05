@@ -82,7 +82,7 @@ Say you want to pick specific rules from various rule sets and customize them.  
   <description>Just the braces rules I like</description>
   <rule ref="rulesets/braces.xml">
     <exclude name="WhileLoopsMustUseBraces"/>
-    <exclude name="IfElseStmtsMustUseBracesRule"/>
+    <exclude name="IfElseStmtsMustUseBraces"/>
   </rule>
 </ruleset>]]></source>
             </subsection>
