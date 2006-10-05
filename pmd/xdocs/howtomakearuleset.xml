@@ -62,9 +62,9 @@ Say you want to pick specific rules from various rule sets and customize them.  
     </properties>
   </rule>
 
-  <!-- Note we want everything from braces.xml except the WhileLoopsMustUseBracesRule -->
+  <!-- Note we want everything from braces.xml except WhileLoopsMustUseBraces -->
   <rule ref="rulesets/braces.xml">
-    <exclude name="WhileLoopsMustUseBracesRule"/>
+    <exclude name="WhileLoopsMustUseBraces"/>
   </rule>
 </ruleset>]]></source>
                 <p>Notice that you can customize individual referenced rules.  Everything but the
@@ -81,7 +81,7 @@ Say you want to pick specific rules from various rule sets and customize them.  
     xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
   <description>Just the braces rules I like</description>
   <rule ref="rulesets/braces.xml">
-    <exclude name="WhileLoopsMustUseBracesRule"/>
+    <exclude name="WhileLoopsMustUseBraces"/>
     <exclude name="IfElseStmtsMustUseBracesRule"/>
   </rule>
 </ruleset>]]></source>
