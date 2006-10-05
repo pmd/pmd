@@ -32,7 +32,7 @@ import java.util.Set;
 /**
  * This rule finds StringBuffers which may have been pre-sized incorrectly
  * 
- * @see http://sourceforge.net/forum/forum.php?thread_id=1438119&forum_id=188194
+ * See http://sourceforge.net/forum/forum.php?thread_id=1438119&forum_id=188194
  * @author Allan Caplan
  */
 public class InsufficientStringBufferDeclaration extends AbstractRule {

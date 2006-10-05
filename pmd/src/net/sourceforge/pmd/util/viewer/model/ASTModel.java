@@ -46,9 +46,7 @@ public class ASTModel
     }
 
     /**
-     * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object,
-     *      <p/>
-     *      java.lang.Object)
+     * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object,java.lang.Object)
      */
     public int getIndexOfChild(Object parent, Object child) {
         SimpleNode node = ((SimpleNode) parent);
@@ -74,9 +72,7 @@ public class ASTModel
     }
 
     /**
-     * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath,
-     *      <p/>
-     *      java.lang.Object)
+     * @see javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath,java.lang.Object)
      */
     public void valueForPathChanged(TreePath path, Object newValue) {
         throw new UnsupportedOperationException();

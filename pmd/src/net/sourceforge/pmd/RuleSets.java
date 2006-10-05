@@ -79,7 +79,7 @@ public class RuleSets {
      *
      * @param languageOfSource language of a source; can not be null
      * @param languageOfRule   language of a ruleset; can be null
-     * @return
+     * @return  boolean true if the rule applies, else false
      */
     public boolean applies(Language languageOfSource, Language languageOfRule) {
         return (languageOfSource.equals(languageOfRule) || (languageOfSource

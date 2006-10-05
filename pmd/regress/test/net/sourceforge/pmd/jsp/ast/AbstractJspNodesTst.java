@@ -22,7 +22,7 @@ public class AbstractJspNodesTst extends TestCase {
      *
      * @param clazz
      * @param source
-     * @return
+     * @return Set 
      */
     public Set getNodes(Class clazz, String source) {
         JspParser parser = new JspParser(new JspCharStream(new StringReader(source)));
@@ -38,7 +38,7 @@ public class AbstractJspNodesTst extends TestCase {
      *
      * @param clazz
      * @param allNodes
-     * @return
+     * @return Set 
      */
     public Set getNodesOfType(Class clazz, Set allNodes) {
         Set result = new HashSet();

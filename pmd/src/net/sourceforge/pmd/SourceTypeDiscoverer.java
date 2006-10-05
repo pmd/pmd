@@ -49,7 +49,7 @@ public class SourceTypeDiscoverer {
     /**
      * Get the SourceType of a source file with given name.
      *
-     * @param sourceFile The File
+     * @param fileName The File
      * @return a SourceType ; null if the fileName is not recognized as a supported source type.
      */
     public SourceType getSourceTypeOfFile(String fileName) {

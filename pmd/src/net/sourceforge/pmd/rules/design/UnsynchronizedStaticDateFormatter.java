@@ -21,11 +21,11 @@ import java.util.Set;
  * unexpected results when used in a multi threaded environment. This rule will
  * find static (Simple)DateFormatters which are used in an unsynchronized
  * manner.
- * 
- * @link http://developer.java.sun.com/developer/bugParade/bugs/4093418.html
- * @link http://developer.java.sun.com/developer/bugParade/bugs/4228335.html
- * @link http://developer.java.sun.com/developer/bugParade/bugs/4261469.html
- * @see RFE1020790 - Check for SimpleDateFormat as singleton http://sourceforge.net/tracker/index.php?func=detail&aid=1020790&group_id=56262&atid=479924
+ * Refer to these Bug Parade issues:
+ * <a href="http://developer.java.sun.com/developer/bugParade/bugs/4093418.html">4093418</a>
+ * <a href="http://developer.java.sun.com/developer/bugParade/bugs/4228335.html">4228335</a>
+ * <a href="http://developer.java.sun.com/developer/bugParade/bugs/4261469.html">4261469</a>
+ * see RFE1020790 - Check for SimpleDateFormat as singleton http://sourceforge.net/tracker/index.php?func=detail&aid=1020790&group_id=56262&atid=479924
  * @author Allan Caplan
  */
 public class UnsynchronizedStaticDateFormatter extends AbstractRule {

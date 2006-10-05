@@ -91,7 +91,7 @@ public class RuleSetFactory {
      * Create a RuleSets from a list of names.
      *
      * @param ruleSetFileNames comma-separated list of rule set files.
-     * @param class            a RuleSets object
+     * @param classLoader the classloader to load the rulesets
      * @throws RuleSetNotFoundException
      */
     public RuleSets createRuleSets(String ruleSetFileNames, ClassLoader classLoader)
@@ -142,7 +142,7 @@ public class RuleSetFactory {
     /**
      * Create a ruleset from a name
      *
-     * @param name        name of rule set file loaded as a resource
+     * @param ruleSetFileName name of rule set file loaded as a resource
      * @param classLoader the classloader used to load the ruleset and subsequent rules
      * @return the new ruleset
      * @throws RuleSetNotFoundException
@@ -155,7 +155,7 @@ public class RuleSetFactory {
     /**
      * Create a ruleset from a name
      *
-     * @param name name of rule set file loaded as a resource
+     * @param ruleSetFileName name of rule set file loaded as a resource
      * @return the new ruleset
      * @throws RuleSetNotFoundException
      */

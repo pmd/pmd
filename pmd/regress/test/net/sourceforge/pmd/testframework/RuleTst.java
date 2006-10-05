@@ -66,8 +66,8 @@ public class RuleTst extends TestCase {
      * Run the rule on the given code, and put the violations in the given report.
      *
      * @param code
-     * @param expectedResults
      * @param rule
+     * @param report 
      * @throws Throwable
      */
     public void runTestFromString(String code, Rule rule, Report report, SourceType sourceType) throws Throwable {

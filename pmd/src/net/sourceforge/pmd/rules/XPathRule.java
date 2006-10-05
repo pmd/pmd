@@ -39,7 +39,6 @@ public class XPathRule extends CommonAbstractRule {
      *
      * @param compilationUnit the Node that is the root of the AST to be checked
      * @param data
-     * @return
      */
     public void evaluate(Node compilationUnit, RuleContext data) {
         try {

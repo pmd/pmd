@@ -13,21 +13,21 @@ public interface SourceTypeHandler {
     /**
      * Get the Parser.
      *
-     * @return
+     * @return Parser
      */
     Parser getParser();
 
     /**
      * Get the DataFlowFacade.
      *
-     * @return
+     * @return VisitorStarter
      */
     VisitorStarter getDataFlowFacade();
 
     /**
      * Get the SymbolFacade.
      *
-     * @return
+     * @return VisitorStarter 
      */
     VisitorStarter getSymbolFacade();
 }
