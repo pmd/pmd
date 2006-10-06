@@ -18,6 +18,7 @@ import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.util.designer.DFAGraphRule;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IMethod;
@@ -38,8 +39,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -321,13 +326,18 @@ public class DataflowView extends ViewPart implements ISelectionChangedListener,
         tempString = stringParts[1].trim();
         String stringParamList = tempString.substring(0, tempString.lastIndexOf(")")).trim();
 
+        // empty paramArray
+        String[] stringParamArray = {};
+        
         // everything between is a ","-seperated List of Params
-        String[] stringParamArray = stringParamList.split(",");
+        if (stringParamList.length() > 0) {
+            stringParamArray = stringParamList.split(",");
+        }
 
         // compare the number of Params (if there are Params)
         if ((methodParamTypes.length == 0) && (stringParamList.length() == 0))
             return true;
-
+   
         if (stringParamArray.length != methodParamTypes.length)
             return false;
 
@@ -434,7 +444,7 @@ public class DataflowView extends ViewPart implements ISelectionChangedListener,
         }
 
         // lay out to update the View
-        titleArea.layout();
+        dfaFrame.layout(true, true);
     }
 
     /* @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent) */
@@ -460,6 +470,16 @@ public class DataflowView extends ViewPart implements ISelectionChangedListener,
             // ... or it is a Marker for a Dataflow-Anomaly
             IMarker marker = (IMarker) element;
             if (marker != null) {
+                IEditorPart editor = getSite().getPage().getActiveEditor();
+                if (editor != null) {
+                    IEditorInput input = editor.getEditorInput();
+                    if (input instanceof IFileEditorInput) {
+                        IFile file = ((IFileEditorInput) input).getFile();
+                        if (marker.getResource().equals(file)) {
+                            IDE.gotoMarker(editor, marker);
+                        }
+                    }
+                }
                 int line1 = marker.getAttribute(IMarker.LINE_NUMBER, 0);
                 int line2 = marker.getAttribute(PMDUiConstants.KEY_MARKERATT_LINE2, 0);
                 String varName = marker.getAttribute(PMDUiConstants.KEY_MARKERATT_VARIABLE, "");

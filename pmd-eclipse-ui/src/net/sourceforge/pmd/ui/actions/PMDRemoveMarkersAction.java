@@ -62,6 +62,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/10/06 18:42:30  phherlin
+ * Fix 1554639 Clear markers in Project JAVA-files and other bugs related to dataflows
+ *
  * Revision 1.2  2006/06/08 22:01:30  phherlin
  * Fix marker deletion issue following the architecture refactoring
  *
@@ -102,6 +105,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
         try {
             if (action.getId().equals(VIEW_ACTION)) {
                 ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                ResourcesPlugin.getWorkspace().getRoot().deleteMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
                 log.debug("Remove markers on the entire workspace");
             } else if (action.getId().equals(OBJECT_ACTION)) {
                 processResource();

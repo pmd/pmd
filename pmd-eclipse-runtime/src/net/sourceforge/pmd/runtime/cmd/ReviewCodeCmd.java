@@ -87,6 +87,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/10/06 18:42:59  phherlin
+ * Fix 1554639 Clear markers in Project JAVA-files and other bugs related to dataflows
+ *
  * Revision 1.4  2006/06/26 21:23:08  phherlin
  * Fix IllegalArgumentException issue when checking projects where root folder is source folder.
  *
@@ -468,6 +471,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
 
                 final Set markerInfoSet = (Set) this.markers.get(file);
                 file.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                file.deleteMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
                 final Iterator j = markerInfoSet.iterator();
                 while (j.hasNext()) {
                     final MarkerInfo markerInfo = (MarkerInfo) j.next();

@@ -32,10 +32,15 @@ public class ProjectRecord extends PMDRecord {
      * @param proj, the Project
      * @param record, the RootRecord
      */
-    public ProjectRecord(IProject proj, RootRecord record) {
-        project = proj;
-        parent = record;
-        children = createChildren();
+    public ProjectRecord(IProject project, RootRecord record) {
+        super();
+        this.project = project;
+        this.parent = record;
+        
+        if (project.isAccessible()) {
+            this.children = createChildren();
+        }
+        
     }
 
     /* @see net.sourceforge.pmd.ui.model.PMDRecord#getParent() */

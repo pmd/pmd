@@ -18,6 +18,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/06 18:42:59  phherlin
+ * Fix 1554639 Clear markers in Project JAVA-files and other bugs related to dataflows
+ *
  * Revision 1.1  2006/05/22 21:37:35  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -132,6 +135,7 @@ public class PMDNature implements IProjectNature {
            description.setNatureIds(newNatureIds);
            project.setDescription(description, monitor);
            project.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+           project.deleteMarkers(PMDRuntimeConstants.PMD_DFA_MARKER, true, IResource.DEPTH_INFINITE);
        }
        
        return success;
