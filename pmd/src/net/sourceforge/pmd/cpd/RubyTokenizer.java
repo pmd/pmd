@@ -134,6 +134,6 @@ public class RubyTokenizer implements Tokenizer {
     }
 
     private boolean isIgnorableString(String token) {
-        return token == "do" || token == "end";
+        return "do".equals(token) || "end".equals(token);
     }
 }
