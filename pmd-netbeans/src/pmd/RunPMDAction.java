@@ -78,12 +78,12 @@ import pmd.scan.EditorChangeListener;
  * ({@link #performAction}),
  * and by the real-time scanner when a Java file needs to be scanned
  * ({@link #checkCookies}).
+ *
+ * Important side effect of this class is that it initializes
+ * EditorChangeListener so this has to be loaded during startup to 
+ * enable real-time scanning.
  */
 public class RunPMDAction extends CookieAction {
-    
-    /** True means verbose trace logging should be performed.
-     **/
-    public static final boolean TRACE_LOGGING = Boolean.getBoolean("pmd-netbeans.trace.logging");
     
     /**
      * Overridden to log that the action is being initialized, and to register an editor change listener for

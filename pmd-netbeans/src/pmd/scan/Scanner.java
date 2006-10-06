@@ -29,6 +29,7 @@ package pmd.scan;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.netbeans.editor.BaseDocument;
@@ -51,6 +52,8 @@ import pmd.config.PMDOptionsSettings;
  * PMD background scanner.
  */
 public class Scanner implements Runnable, DocumentListener {
+    
+    private static final Logger LOG = Logger.getLogger("pmd");
 
     private static RequestProcessor PMD_RP = new RequestProcessor("PMD scanner", 1);
     
@@ -71,7 +74,7 @@ public class Scanner implements Runnable, DocumentListener {
             return;
         }
         if (doc.equals (this.doc)) {
-            tracelog("the same node detected");
+            LOG.fine(toString() + "the same node detected");
             return;
         }
         detachFromDoc();
@@ -94,7 +97,7 @@ public class Scanner implements Runnable, DocumentListener {
             }
             
             try {
-                tracelog("started");
+                LOG.fine(toString() + "started");
                     
                 int tabSize = 8;
                 Integer foo = (Integer) Settings.getValue(JavaKit.class, SettingsNames.TAB_SIZE);
@@ -119,9 +122,9 @@ public class Scanner implements Runnable, DocumentListener {
                     int lineNum = fault.getLine();
                     Line line = lineset.getCurrent( lineNum - 1 );
                     if(line == null) {
-                        tracelog("no original line found for line " + lineNum + " in lineset; probably document closed" );
+                        LOG.fine(toString() + "no original line found for line " + lineNum + " in lineset; probably document closed" );
                     } else {
-                        tracelog("Line class : " + line.getClass().getName() + ", count: " + line.getAnnotationCount() );
+                        LOG.fine(toString() + "Line class : " + line.getClass().getName() + ", count: " + line.getAnnotationCount() );
 
                         String text = line.getText();
                         if (text != null) {
@@ -221,9 +224,4 @@ public class Scanner implements Runnable, DocumentListener {
             }
 	}
 	
-	private void tracelog(String str) {
-		if(RunPMDAction.TRACE_LOGGING) {
-			ErrorManager.getDefault().log(ErrorManager.ERROR, this.toString() + ": " + str);		
-		}
-	}
 }

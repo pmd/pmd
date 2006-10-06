@@ -28,6 +28,7 @@ package pmd.scan;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.logging.Logger;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.StyledDocument;
@@ -70,10 +71,12 @@ public class EditorChangeListener implements PropertyChangeListener, ChangeListe
                 Registry.removeChangeListener(this);
                 if (settings.isScanEnabled().booleanValue()) {
                     Registry.addChangeListener(this);
+                    stateChanged(new ChangeEvent(settings));
                 }
                 else {
                     if(scanner != null) {
-                        tracelog("Stopping scanner " + scanner + " because of changed PMD settings");
+                        Logger.getLogger("pmd").
+                                fine("Stopping scanner " + scanner + " because of changed PMD settings");
                         scanner.cancel();
                         scanner = null;
                     }
@@ -89,12 +92,6 @@ public class EditorChangeListener implements PropertyChangeListener, ChangeListe
             active = doc;
 	}
 	
-	private void tracelog(String str) {
-		if(RunPMDAction.TRACE_LOGGING) {
-			ErrorManager.getDefault().log(ErrorManager.ERROR, str);
-		}
-	}
-
     public void stateChanged(ChangeEvent e) {
         BaseDocument doc = Registry.getMostActiveDocument();
         if (doc == null) {
