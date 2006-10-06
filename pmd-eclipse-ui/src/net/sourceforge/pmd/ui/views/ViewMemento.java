@@ -250,7 +250,11 @@ public class ViewMemento {
         ArrayList valuelist = new ArrayList();
         String[] objects = valueString.split(LIST_SEPARATOR);
         for (int k = 0; k < objects.length; k++) {
-            valuelist.add(new Integer(objects[k]));
+            if (objects[k].trim().length() == 0) {
+                valuelist.add(new Integer(0));
+            } else {
+                valuelist.add(new Integer(objects[k]));
+            }
         }
         return valuelist;
     }
