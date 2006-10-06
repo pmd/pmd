@@ -53,7 +53,7 @@ public class FileRecord extends PMDRecord {
 
     /* @see net.sourceforge.pmd.ui.model.PMDRecord#getChildren() */
     public PMDRecord[] getChildren() {
-        return null;
+        return new PMDRecord[0];
     }
 
     /* @see net.sourceforge.pmd.ui.model.PMDRecord#getResource() */
