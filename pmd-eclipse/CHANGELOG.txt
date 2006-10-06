@@ -2,7 +2,24 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
-v3.1.6 - 09/04/2006
+v3.1.7 - 05/10/2006
+
+Runtime
+-------
+. Upgrade to PMD v3.8
+. Fix NPE when searching for quickfixes for rules from project rulesets
+. Fix 1541795 (at least it should)
+. Fix 1554639 (thanks to Sven Jacob)
+. Fix the refreshproblem of the dataflowanomalytable and a bug with overloaded methods in the dataflowview (Thanks to Sven Jacob)
+. Fix 1417291 CCE when adding report (eclipse)
+. Fix 1470054 Violation Details dlg has OK button which does nothing
+. Fix 1470080 NPE in PMDRecord.findResource
+. Fix 1481300 plugin throws NPE after move prjs to new workspace
+. Fix 1486390 Exception during execution
+
+
+----------------------------------------------------------------------------------------
+v3.1.6 - 09/06/2006
 
 Runtime
 -------

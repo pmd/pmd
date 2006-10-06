@@ -8,6 +8,7 @@ Chris Grindstaff             fix SWTException when PMD is run on a file with syn
 Brian Remedios               improvements in the PMDPlugin class
                              preferences rule table have sortable columns
 Pablo Alba                   enhancements to the Violations View (legacy)
+Sven Jacob                   bug fixes
 
 ------------------------------------------
 *** SPECIAL THANKS TO SEBASTIAN RAFFEL ***

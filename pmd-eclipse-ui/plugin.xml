@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.ui"
    name="PMD For Eclipse UI Plug-in"
-   version="1.0.1"
+   version="1.0.2"
    provider-name="PMD Development Team"
    class="net.sourceforge.pmd.ui.PMDUiPlugin">
 
@@ -275,13 +275,6 @@
             name="%view.category"
             id="net.sourceforge.pmd.ui.views">
       </category>
-      <view
-            allowMultiple="false"
-            name="%view.violation"
-            icon="icons/pmd-icon-16.gif"
-            category="net.sourceforge.pmd.ui.views"
-            class="net.sourceforge.pmd.ui.views.legacy.ViolationView"
-            id="net.sourceforge.pmd.ui.views.legacy.ViolationView"/>
       <view
             allowMultiple="false"
             icon="icons/icon_outline.gif"

@@ -35,24 +35,24 @@
          id="net.sourceforge.pmd.eclipse"
          download-size="0"
          install-size="0"
-         version="3.1.6"/>
+         version="3.1.7"/>
 
    <plugin
          id="net.sourceforge.pmd.ui"
          download-size="0"
          install-size="0"
-         version="1.0.1"/>
+         version="1.0.2"/>
 
    <plugin
          id="net.sourceforge.pmd.runtime"
          download-size="0"
          install-size="0"
-         version="1.0.2"/>
+         version="1.0.3"/>
 
    <plugin
          id="net.sourceforge.pmd.core"
          download-size="0"
          install-size="0"
-         version="3.7.1"/>
+         version="3.8.0"/>
 
 </feature>
