@@ -18,7 +18,7 @@ public class AvoidNonConstructorMethodsWithClassName extends AbstractRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         String declaringType = getDeclaringType(node);
-        if (declaringType != null && node.getMethodName().equals(declaringType)) {
+        if (node.getMethodName().equals(declaringType)) {
             addViolation(data, node, node.getMethodName());
         }
         return data;

@@ -29,7 +29,7 @@ public class DuplicateImportsRule extends AbstractRule {
             ImportWrapper thisImportOnDemand = (ImportWrapper) i.next();
             for (Iterator j = singleTypeImports.iterator(); j.hasNext();) {
                 ImportWrapper thisSingleTypeImport = (ImportWrapper) j.next();
-                String singleTypePkg = thisSingleTypeImport.getName().substring(0, thisSingleTypeImport.getName().lastIndexOf("."));
+                String singleTypePkg = thisSingleTypeImport.getName().substring(0, thisSingleTypeImport.getName().lastIndexOf('.'));
                 if (thisImportOnDemand.getName().equals(singleTypePkg)) {
                     addViolation(data, thisSingleTypeImport.getNode(), thisSingleTypeImport.getName());
                 }

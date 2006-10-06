@@ -21,7 +21,7 @@ public class SourceFileSelector {
      * @return True if the file must be checked; false otherwise
      */
     public boolean isWantedFile(String fileName) {
-        int lastDotIndex = fileName.lastIndexOf(".");
+        int lastDotIndex = fileName.lastIndexOf('.');
         if (lastDotIndex < 0) {
             return false;
         }

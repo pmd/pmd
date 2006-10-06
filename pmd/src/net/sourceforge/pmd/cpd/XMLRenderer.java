@@ -18,7 +18,7 @@ public class XMLRenderer implements Renderer {
         buffer.append("<?xml version=\"1.0\"  encoding=\"UTF-8\"?>");
         buffer.append("<pmd-cpd>").append(PMD.EOL);
         Match match;
-        for (; matches.hasNext();) {
+        while (matches.hasNext()) {
             match = (Match) matches.next();
             buffer.append("<duplication lines=\"");
             buffer.append(match.getLineCount());

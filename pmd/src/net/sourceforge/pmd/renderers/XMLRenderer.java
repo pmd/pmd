@@ -32,13 +32,13 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
                 buf.append("\">").append(PMD.EOL);
             }
 
-            buf.append("<violation line=\"").append(rv.getBeginLine()).append("\"");
+            buf.append("<violation line=\"").append(rv.getBeginLine()).append('"');
             buf.append(" rule=\"");
             StringUtil.appendXmlEscaped(buf, rv.getRule().getName());
-            buf.append("\"");
+            buf.append('"');
             buf.append(" ruleset=\"");
             StringUtil.appendXmlEscaped(buf, rv.getRule().getRuleSetName());
-            buf.append("\"");
+            buf.append('"');
             maybeAdd("package", rv.getPackageName(), buf);
             maybeAdd("class", rv.getClassName(), buf);
             maybeAdd("method", rv.getMethodName(), buf);
@@ -91,7 +91,7 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
         if (value != null && value.length() > 0) {
             buf.append(" " + attr + "=\"");
             StringUtil.appendXmlEscaped(buf, value);
-            buf.append("\"");
+            buf.append('"');
         }
     }
 

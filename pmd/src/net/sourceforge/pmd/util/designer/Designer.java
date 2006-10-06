@@ -64,19 +64,19 @@ public class Designer implements ClipboardOwner {
 	private interface Parser { public SimpleNode parse(StringReader sr); };
 
 	private static final Parser jdkParser1_3 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return (new TargetJDK1_3()).createParser(sr).CompilationUnit(); };
+		public SimpleNode parse(StringReader sr) { return new TargetJDK1_3().createParser(sr).CompilationUnit(); };
 	};
 	
 	private static final Parser jdkParser1_4 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return (new TargetJDK1_4()).createParser(sr).CompilationUnit(); };
+		public SimpleNode parse(StringReader sr) { return new TargetJDK1_4().createParser(sr).CompilationUnit(); };
 	};
 	
 	private static final Parser jdkParser1_5 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return (new TargetJDK1_5()).createParser(sr).CompilationUnit(); };
+		public SimpleNode parse(StringReader sr) { return new TargetJDK1_5().createParser(sr).CompilationUnit(); };
 	};
 	
 	private static final Parser jspParser = new Parser() {
-		public SimpleNode parse(StringReader sr) { return (new JspParser(new JspCharStream(sr))).CompilationUnit(); };
+		public SimpleNode parse(StringReader sr) { return new JspParser(new JspCharStream(sr)).CompilationUnit(); };
 	};
 	
 	private static final Object[][] sourceTypeSets = new Object[][] {
@@ -127,7 +127,7 @@ public class Designer implements ClipboardOwner {
 			kids = new ExceptionNode[lines.length];
 			for (int i=0; i<lines.length; i++) {
 				kids[i] = new ExceptionNode(lines[i]);
-			};
+			}
     	}
     	
 		public int getChildCount() { return kids == null ? 0 : kids.length; }

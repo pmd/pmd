@@ -12,7 +12,7 @@ public class MethodNamingConventions extends AbstractRule {
         if (Character.isUpperCase(node.getImage().charAt(0))) {
             addViolation(data, node);
         }
-        if (node.getImage().indexOf("_") >= 0) {
+        if (node.getImage().indexOf('_') >= 0) {
             addViolationWithMessage(data, node, "Method names should not contain underscores");
         }
         return data;

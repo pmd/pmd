@@ -474,7 +474,7 @@ public class GUI implements CPDListener {
     		label = "..." + sourceId.substring(separatorPos);
     		} else {
     	    	label = "(" + sourceIDs.size() + " separate files)";
-    		};
+    		}
     		
     	match.setLabel(label);
     	return label;

@@ -84,7 +84,7 @@ public class VariableNamingConventions extends AbstractRule {
                 strippedVarName = normalizeMemberVariableName(varName);
             }
 
-            if (strippedVarName.indexOf("_") >= 0) {
+            if (strippedVarName.indexOf('_') >= 0) {
                 addViolation(data, childNodeName, "Variables that are not final should not contain underscores (except for underscores in standard prefix/suffix).");
             }
             if (Character.isUpperCase(varName.charAt(0))) {

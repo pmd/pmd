@@ -55,7 +55,7 @@ public class SourceTypeDiscoverer {
     public SourceType getSourceTypeOfFile(String fileName) {
         SourceType sourceType = null;
 
-        int extensionIndex = 1 + fileName.lastIndexOf(".");
+        int extensionIndex = 1 + fileName.lastIndexOf('.');
         if (extensionIndex > 0) {
             String extensionUppercase = fileName.substring(extensionIndex).toUpperCase();
 

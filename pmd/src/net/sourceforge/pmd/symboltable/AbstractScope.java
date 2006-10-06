@@ -52,7 +52,7 @@ public abstract class AbstractScope implements Scope {
         StringBuffer result = new StringBuffer();
         while (i.hasNext()) {
             result.append(i.next().toString());
-            result.append(",");
+            result.append(',');
         }
         return result.length() == 0 ? "" : result.toString().substring(0, result.length() - 1);
     }

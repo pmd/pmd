@@ -63,7 +63,7 @@ public class FileReporterTest extends TestCase {
                 buffer.append(line);
                 line = reader.readLine();
                 if (line != null) {
-                    buffer.append("\n");
+                    buffer.append('\n');
                 }
             }
             return buffer.toString();

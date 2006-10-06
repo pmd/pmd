@@ -233,7 +233,7 @@ public class AccessorClassGeneration extends AbstractRule {
             return data;
         }
         AllocData ad = new AllocData(node, packageName, getCurrentClassData().getClassQualifyingNamesList());
-        if (ad.isArray() == false) {
+        if (!ad.isArray()) {
             getCurrentClassData().addInstantiation(ad);
         }
         return super.visit(node, data);

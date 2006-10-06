@@ -268,7 +268,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                                 for (int x = 1; x < i - 1; x++) {
                                     Node child = node.jjtGetChild(x);
                                     ASTPrimarySuffix ps = (ASTPrimarySuffix) child;
-                                    if (ps.isArguments() == false) {
+                                    if (!ps.isArguments()) {
                                         String name = ((ASTPrimarySuffix) child).getImage();
                                         if (x == i - 2) {//last node
                                             methodName = name;
@@ -295,7 +295,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                                 //this is at 1, the node 0 contains qualifiers
                                 for (int x = thisIndex + 1; x < i - 1; x++) {//everything after this is var name or method name
                                     ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
-                                    if (child.isArguments() == false) { //skip the () of method calls
+                                    if (!child.isArguments()) { //skip the () of method calls
                                         String name = child.getImage();
                                         //										System.out.println("Found suffix: " + suffixName);
                                         if (x == i - 2) {
@@ -330,7 +330,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                         OTHERNODES:{ //other methods called in this statement are grabbed here
                             for (int x = 1; x < i - 1; x++) {
                                 ASTPrimarySuffix child = (ASTPrimarySuffix) node.jjtGetChild(x);
-                                if (child.isArguments() == false) {
+                                if (!child.isArguments()) {
                                     String name = child.getImage();
                                     if (x == i - 2) {
                                         methodName = name;
@@ -443,7 +443,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         }
 
         public ConstructorInvocation getCalledConstructor() {
-            if (m_CiInitialized == false) {
+            if (!m_CiInitialized) {
                 initCI();
             }
             return m_Ci;
@@ -451,7 +451,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
 
         public ASTExplicitConstructorInvocation getASTExplicitConstructorInvocation() {
             ASTExplicitConstructorInvocation eci = null;
-            if (m_CiInitialized == false) {
+            if (!m_CiInitialized) {
                 initCI();
             }
             if (m_Ci != null) {
@@ -620,7 +620,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         for (Iterator methodsIter = classMethodMap.keySet().iterator(); methodsIter.hasNext();) {
             MethodHolder h = (MethodHolder) methodsIter.next();
             List calledMeths = (List) classMethodMap.get(h);
-            for (Iterator calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && (h.isDangerous() == false);) {
+            for (Iterator calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && !h.isDangerous();) {
                 //if this method matches one of our dangerous methods, mark it dangerous
                 MethodInvocation meth = (MethodInvocation) calledMethsIter.next();
                 //System.out.println("Called meth is " + meth);

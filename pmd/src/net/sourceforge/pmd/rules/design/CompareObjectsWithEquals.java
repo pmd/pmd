@@ -21,8 +21,8 @@ public class CompareObjectsWithEquals extends AbstractRule {
         }
 
         // skip if either is a qualified name
-        if (((SimpleNode) node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf(".") != -1
-                || ((SimpleNode) node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf(".") != -1) {
+        if (((SimpleNode) node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf('.') != -1
+                || ((SimpleNode) node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf('.') != -1) {
             return data;
         }
 
