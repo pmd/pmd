@@ -92,7 +92,9 @@ public class FileRecord extends PMDRecord {
         try {
             // this is the overwritten Function from PMDRecord
             // we simply call the IResource-function to find Markers
-            markers = resource.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+            if (this.resource.isAccessible()) {
+                markers = resource.findMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+            }
         } catch (CoreException ce) {
             PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FIND_MARKER + this.toString(), ce);
         }
