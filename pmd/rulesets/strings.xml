@@ -279,7 +279,7 @@ Use valueOf() argument directly.
               <value>
 <![CDATA[
 //AdditiveExpression[@Image='+']
-[PrimaryExpression/PrimaryPrefix/Name[@Image='String.valueOf']]
+[PrimaryExpression[not (count(./preceding-sibling::*)=0)]/PrimaryPrefix/Name[@Image='String.valueOf']]
 ]]>
               </value>
           </property>

@@ -17,6 +17,7 @@ public class UselessStringValueOfTest extends SimpleAggregatorTst {
 		runTests(new TestDescriptor[]{
 				new TestDescriptor(TEST1, "valueOf in concatenation", 1, rule),
 				new TestDescriptor(TEST2, "valueOf in String conversion", 0, rule),
+				new TestDescriptor(TEST3, "valueOf as first expression in concatenation", 0, rule),
 		});
 	}
 
@@ -31,6 +32,15 @@ public class UselessStringValueOfTest extends SimpleAggregatorTst {
             "public class Foo {" + PMD.EOL +
             "void bar(Object o) {" + PMD.EOL +
             "    String s = String.valueOf(o);" + PMD.EOL +
+            "}" + PMD.EOL +
+            "}";
+
+    private static final String TEST3 =
+            "public class Foo {" + PMD.EOL +
+            "void bar(int i) {" + PMD.EOL +
+            "    char c = 'A';" + PMD.EOL +
+            "    char low = 'B';" + PMD.EOL +
+            "    String s = String.valueOf(c) + low;" + PMD.EOL +
             "}" + PMD.EOL +
             "}";
 
