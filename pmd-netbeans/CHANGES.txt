@@ -1,3 +1,6 @@
+- Updated pmd to version 3.8
+- reported violations are displayed as a table
+
 Version 1.7
 - Updated pmd to version 3.7
 - ignore R/O files in scanner (http://www.netbeans.org/issues/show_bug.cgi?id=72197)

@@ -2,9 +2,9 @@
 
     <import file="nbproject/build-impl.xml"/>
 
-    <property name="pmd.jar" value="pmd-3.7.jar"/>
+    <property name="pmd.jar" value="pmd-3.8.jar"/>
     <property name="nb.version" value="netbeans50"/>
-    <property name="VERSION" value="1.7"/>
+    <property name="VERSION" value="1.8"/>
 
     <property file="build.ant.properties"/>
 
@@ -32,7 +32,7 @@
           <fileset dir="lib">
             <include name="${pmd.jar}"/>
             <include name="jakarta-oro-2.0.8.jar"/>
-            <include name="jaxen-1.1-beta-7.jar"/>
+            <include name="jaxen-1.1-beta-10.jar"/>
           </fileset>
         </copy>
     </target>
@@ -48,7 +48,7 @@
 				<include name="src/**/*"/>
 				<include name="libsrc/**/*"/>
 				<include name="lib/${pmd.jar}"/>
-				<include name="lib/jaxen-1.1-beta-7.jar"/>
+				<include name="lib/jaxen-1.1-beta-10.jar"/>
 				<include name="lib/jakarta-oro-2.0.8.jar"/>
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd-${nb.version}-${VERSION}/pmd.nbm" includes="build/pmd.nbm"/>
