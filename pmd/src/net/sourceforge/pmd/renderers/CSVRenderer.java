@@ -16,8 +16,8 @@ public class CSVRenderer extends AbstractRenderer implements Renderer {
         StringBuffer buf = new StringBuffer(quoteAndCommify("Problem"));
         buf.append(quoteAndCommify("Package"));
         buf.append(quoteAndCommify("File"));
-        buf.append(quoteAndCommify("Line"));
         buf.append(quoteAndCommify("Priority"));
+        buf.append(quoteAndCommify("Line"));
         buf.append(quoteAndCommify("Description"));
         buf.append(quoteAndCommify("Rule set"));
         buf.append(quote("Rule"));
