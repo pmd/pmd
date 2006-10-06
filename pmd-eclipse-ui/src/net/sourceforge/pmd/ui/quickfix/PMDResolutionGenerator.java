@@ -45,6 +45,9 @@ import org.eclipse.ui.IMarkerResolutionGenerator;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/06 16:51:02  phherlin
+ * Fix NullPointer exception when searching for quickfixes on rules from a project ruleset.
+ *
  * Revision 1.1  2006/05/22 21:23:59  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -61,17 +64,17 @@ public class PMDResolutionGenerator implements IMarkerResolutionGenerator {
      * @see org.eclipse.ui.IMarkerResolutionGenerator#getResolutions(org.eclipse.core.resources.IMarker)
      */
     public IMarkerResolution[] getResolutions(IMarker marker) {
-        List markerResolutionList = new ArrayList();
+        final List markerResolutionList = new ArrayList();
         try {
-            String ruleName = (String) marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME);
+            final String ruleName = (String) marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME);
             if (ruleName != null) {
-                RuleSet ruleSet = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet();
-                Rule rule = ruleSet.getRuleByName(ruleName);
+                final RuleSet ruleSet = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet();
+                final Rule rule = ruleSet.getRuleByName(ruleName);
             
                 // The final implementation should ask the rule to give a list of fixes
-                if (rule.getName().equals("DuplicateImports")) {
+                if ((rule != null) && (rule.getName().equals("DuplicateImports"))) {
                     markerResolutionList.add(new PMDResolution(new DeleteLineFix()));
-                }            
+                }
             }
         } catch (CoreException e) {
             PMDUiPlugin.getDefault().showError(PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e);
