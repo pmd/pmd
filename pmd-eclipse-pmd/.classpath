@@ -2,8 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/jakarta-oro-2.0.8.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jaxen-1.1-beta-7.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pmd-3.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxen-1.1-beta-10.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pmd-3.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.6.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlParserAPIs-2.6.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/castor-0.9.6-xml.jar"/>

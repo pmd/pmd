@@ -42,6 +42,9 @@ package net.sourceforge.pmd.core;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2006/10/06 17:07:39  phherlin
+ * Upgrade to PMD v3.8
+ *
  * Revision 1.5  2006/06/20 21:04:49  phherlin
  * Enable PMD and fix error level violations
  *
@@ -71,6 +74,7 @@ public class PluginConstants {
             "rulesets/design.xml", 
             "rulesets/finalizers.xml",
             "rulesets/imports.xml",
+            "rulesets/j2ee.xml",
             "rulesets/javabeans.xml",
             "rulesets/junit.xml",
             "rulesets/logging-jakarta-commons.xml",
