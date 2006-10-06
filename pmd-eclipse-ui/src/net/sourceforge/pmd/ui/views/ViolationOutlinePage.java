@@ -189,7 +189,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
                         PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, ce);
                     }
 
-                    return prio1.compareTo(prio2) * sortOrder;
+                    return prio1 == null ? 0 : prio1.compareTo(prio2) * sortOrder;
                 }
             };
         // sorts by the Message
@@ -206,7 +206,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
                         PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
                     }
 
-                    return message1.compareTo(message2) * sortOrder;
+                    return message1 == null ? 0 : message1.compareTo(message2) * sortOrder;
                 }
             };
         // sorts by the Line-Number
@@ -218,7 +218,7 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
                     try {
                         prio1 = (Integer) ((IMarker) e1).getAttribute(IMarker.LINE_NUMBER);
                         prio2 = (Integer) ((IMarker) e2).getAttribute(IMarker.LINE_NUMBER);
-                        return prio1.compareTo(prio2) * sortOrder;
+                        return prio1 == null ? 0 : prio1.compareTo(prio2) * sortOrder;
                     } catch (CoreException ce) {
                         ce.printStackTrace();
                     }
