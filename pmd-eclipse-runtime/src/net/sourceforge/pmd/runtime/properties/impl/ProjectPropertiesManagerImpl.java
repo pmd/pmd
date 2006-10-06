@@ -77,6 +77,9 @@ import org.exolab.castor.xml.ValidationException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/06 16:41:57  phherlin
+ * Continue refactoring of rullesets management
+ *
  * Revision 1.1  2006/05/22 21:37:35  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  * Revision 1.1 2005/06/07 18:38:14 phherlin Move classes to limit packages cycle
@@ -91,12 +94,12 @@ import org.exolab.castor.xml.ValidationException;
 public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private static final Logger log = Logger.getLogger(ProjectPropertiesManagerImpl.class);
 
-    static final String PROJECT_RULESET_FILE = ".ruleset";
+    static final String PROJECT_RULESET_FILE = ".ruleset"; // NOPMD by Herlin on 08/07/06 15:18
 
     private static final String PROPERTIES_FILE = ".pmd";
     private static final String PROPERTIES_MAPPING = "/net/sourceforge/pmd/runtime/properties/impl/mapping.xml";
 
-    private Map projectsProperties = new HashMap();
+    private final Map projectsProperties = new HashMap();
 
     /**
      * Load a project properties
@@ -109,7 +112,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             IProjectProperties projectProperties = (IProjectProperties) this.projectsProperties.get(project);
             if (projectProperties == null) {
                 projectProperties = new PropertiesFactoryImpl().newProjectProperties(project, this);
-                ProjectPropertiesTO to = readProjectProperties(project);
+                final ProjectPropertiesTO to = readProjectProperties(project);
                 fillProjectProperties(projectProperties, to);
                 this.projectsProperties.put(project, projectProperties);
             }
@@ -121,7 +124,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             
             // else resynchronize the ruleset
             else {
-                boolean needRebuild = synchronizeRuleSet(projectProperties);
+                final boolean needRebuild = synchronizeRuleSet(projectProperties);
                 projectProperties.setNeedRebuild(projectProperties.isNeedRebuild() || needRebuild);
             }
 
@@ -182,7 +185,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         ProjectPropertiesTO projectProperties = null;
 
         try {
-            final Mapping mapping = new Mapping();
+            final Mapping mapping = new Mapping(this.getClass().getClassLoader());
             final URL mappingSpecUrl = this.getClass().getResource(PROPERTIES_MAPPING);
             mapping.loadMapping(mappingSpecUrl);
 
@@ -242,7 +245,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      * @param rules array of selected rules
      */
     private void setRuleSetFromProperties(IProjectProperties projectProperties, RuleSpecTO[] rules) throws PropertiesException {
-        RuleSet ruleSet = new RuleSet();
+        final RuleSet ruleSet = new RuleSet();
         final RuleSet pluginRuleSet = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet();
         for (int i = 0; i < rules.length; i++) {
             try {
@@ -267,7 +270,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private void writeProjectProperties(final IProject project, final ProjectPropertiesTO projectProperties)
             throws PropertiesException {
         try {
-            final Mapping mapping = new Mapping();
+            final Mapping mapping = new Mapping(this.getClass().getClassLoader());
             final URL mappingSpecUrl = this.getClass().getResource(PROPERTIES_MAPPING);
             mapping.loadMapping(mappingSpecUrl);
 
@@ -331,8 +334,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private boolean synchronizeRuleSet(IProjectProperties projectProperties) throws PropertiesException {
         log.debug("Synchronizing the project ruleset with the plugin ruleset");
         final RuleSet pluginRuleSet = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet();
+        final RuleSet projectRuleSet = projectProperties.getProjectRuleSet();
         boolean flChanged = false;
-        RuleSet projectRuleSet = projectProperties.getProjectRuleSet();
 
         if (!projectRuleSet.getRules().equals(pluginRuleSet.getRules())) {
             log.debug("The project ruleset is different from the plugin ruleset ; synchronizing.");

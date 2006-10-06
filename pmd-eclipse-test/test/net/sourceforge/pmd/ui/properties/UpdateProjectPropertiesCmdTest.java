@@ -59,7 +59,7 @@ public class UpdateProjectPropertiesCmdTest extends TestCase {
 
         RuleSet projectRuleSet = model.getProjectRuleSet();
         assertEquals("The project ruleset is not equal to the plugin ruleset", PMDRuntimePlugin.getDefault()
-                .getPreferencesManager().getRuleSet(), projectRuleSet);
+                .getPreferencesManager().getRuleSet().getRules(), projectRuleSet.getRules());
 
         // 2. remove the first rule (keep its name for assertion)
         RuleSet newRuleSet = new RuleSet();

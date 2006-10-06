@@ -36,15 +36,24 @@
 
 package net.sourceforge.pmd.core.rulesets.impl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
+import junit.framework.TestCase;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.core.PMDCoreException;
 import net.sourceforge.pmd.core.rulesets.IRuleSetsManager;
 import net.sourceforge.pmd.core.rulesets.vo.RuleSet;
-import junit.framework.TestCase;
+import net.sourceforge.pmd.core.rulesets.vo.RuleSets;
 
 /**
  * RuleSetsManager unit tests
@@ -53,6 +62,9 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/06 16:42:04  phherlin
+ * Continue refactoring of rullesets management
+ *
  * Revision 1.1  2006/06/21 23:06:54  phherlin
  * Move the new rule sets management to the core plugin instead of the runtime.
  * Continue the development.
@@ -67,7 +79,7 @@ public class RuleSetsManagerImplTest extends TestCase {
      * 
      * @throws RuleSetNotFoundException
      */
-    public void testValueOf1() throws RuleSetNotFoundException {
+    public void testValueOf1() throws PMDCoreException, RuleSetNotFoundException {
         IRuleSetsManager rsm = new RuleSetsManagerImpl();
         RuleSet ruleSet = rsm.valueOf(new String[] { "rulesets/basic.xml" });
 
@@ -87,7 +99,7 @@ public class RuleSetsManagerImplTest extends TestCase {
      * @throws RuleSetNotFoundException
      * 
      */
-    public void testValueOf2() throws RuleSetNotFoundException {
+    public void testValueOf2() throws PMDCoreException {
         try {
             IRuleSetsManager rsm = new RuleSetsManagerImpl();
             RuleSet ruleSet = rsm.valueOf(null);
@@ -103,13 +115,62 @@ public class RuleSetsManagerImplTest extends TestCase {
      * @throws RuleSetNotFoundException
      * 
      */
-    public void testValueOf3() throws RuleSetNotFoundException {
+    public void testValueOf3() throws PMDCoreException {
         try {
             IRuleSetsManager rsm = new RuleSetsManagerImpl();
             RuleSet ruleSet = rsm.valueOf(new String[] {});
             fail("Getting a rule set from an empty array is not allowed");
         } catch (IllegalArgumentException e) {
             // Sucess
+        }
+    }
+    
+    /**
+     * Basically test the writeToXml operation.
+     *
+     */
+    public void testWriteToXml() throws PMDCoreException, UnsupportedEncodingException, IOException {
+        ByteArrayOutputStream out = null;
+        InputStream in = new FileInputStream("./test/testRuleSetsManager.rulesets");
+        if (in == null) {
+            throw new IllegalStateException("The test file testRuleSetsManager.rulesets cannot be found. The test cannot be performed.");
+        }
+        
+        byte[] bytes = new byte[in.available()];
+        in.read(bytes);
+        
+        String reference = new String(bytes, "UTF-8");
+        in.close();
+        
+        System.out.println("--reference");
+        System.out.println(reference);
+        
+        try {
+            IRuleSetsManager rsm = new RuleSetsManagerImpl();
+            RuleSet ruleSet = rsm.valueOf(new String[] { "rulesets/basic.xml" });
+            ruleSet.setName("basic");
+            ruleSet.setLanguage(RuleSet.LANGUAGE_JAVA);
+            
+            List ruleSetsList = new ArrayList();
+            ruleSetsList.add(ruleSet);
+            
+            RuleSets ruleSets = new RuleSets();
+            ruleSets.setRuleSets(ruleSetsList);
+            ruleSets.setDefaultRuleSet(ruleSet);
+
+            out = new ByteArrayOutputStream();
+            rsm.writeToXml(ruleSets, out);
+            
+            String result = new String(out.toByteArray(), "UTF-8");
+            
+            System.out.println("--result");
+            System.out.println(result);
+            
+            assertEquals("The outpout rulesets is not the expected one", reference, result);
+        } finally {
+            if (out != null) {
+                out.close();
+            }
         }
     }
 

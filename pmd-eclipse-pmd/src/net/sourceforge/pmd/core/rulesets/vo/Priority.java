@@ -47,6 +47,9 @@ package net.sourceforge.pmd.core.rulesets.vo;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/06 16:42:46  phherlin
+ * Continue refactoring of rullesets management
+ *
  * Revision 1.1  2006/06/21 23:06:41  phherlin
  * Move the new rule sets management to the core plugin instead of the runtime.
  * Continue the development.
@@ -109,7 +112,7 @@ public class Priority {
      * 
      * @param priorityValue The priorityValue to set.
      */
-    public void setPriority(int priority) {
+    public void setPriorityValue(int priority) {
         if ((priority < LEVEL1_LITTERAL) || (priority > LEVEL5_LITTERAL)) {
             throw new IllegalArgumentException("priorityValue value invalid ; was " + priority + " and should be between "
                     + LEVEL1_LITTERAL + " and " + LEVEL5_LITTERAL);

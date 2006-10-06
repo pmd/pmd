@@ -39,15 +39,26 @@ package net.sourceforge.pmd.core.rulesets.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.core.PMDCoreException;
 import net.sourceforge.pmd.core.rulesets.IRuleSetsManager;
 import net.sourceforge.pmd.core.rulesets.vo.Rule;
 import net.sourceforge.pmd.core.rulesets.vo.RuleSet;
 import net.sourceforge.pmd.core.rulesets.vo.RuleSets;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
 
 /**
  * Implementation of an IRuleSetsManager.
@@ -57,6 +68,9 @@ import net.sourceforge.pmd.core.rulesets.vo.RuleSets;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/06 16:42:46  phherlin
+ * Continue refactoring of rullesets management
+ *
  * Revision 1.1  2006/06/21 23:06:41  phherlin
  * Move the new rule sets management to the core plugin instead of the runtime.
  * Continue the development.
@@ -65,11 +79,13 @@ import net.sourceforge.pmd.core.rulesets.vo.RuleSets;
  */
 
 public class RuleSetsManagerImpl implements IRuleSetsManager {
+    private static final Log LOG = LogFactory.getLog(RuleSetsManagerImpl.class);
+    private static final String RULESETS_MAPPING = "/net/sourceforge/pmd/core/rulesets/impl/mapping.xml";
 
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.core.rulesets.IRuleSetsManager#readFromXml(java.io.InputStream)
      */
-    public RuleSets readFromXml(InputStream input) throws IOException {
+    public RuleSets readFromXml(InputStream input) throws PMDCoreException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -78,7 +94,8 @@ public class RuleSetsManagerImpl implements IRuleSetsManager {
      * @throws RuleSetNotFoundException 
      * @see net.sourceforge.pmd.core.rulesets.IRuleSetsManager#valueOf(java.lang.String[])
      */
-    public RuleSet valueOf(String[] ruleSetUrls) throws RuleSetNotFoundException {
+    public RuleSet valueOf(String[] ruleSetUrls) throws PMDCoreException {
+        LOG.debug("Compting value of a collection of rule set urls");
         if (ruleSetUrls == null) {
             throw new IllegalArgumentException("ruleSetUrls cannot be null");
         }
@@ -86,28 +103,61 @@ public class RuleSetsManagerImpl implements IRuleSetsManager {
             throw new IllegalArgumentException("ruleSetsUrls cannot be empty");
         }
 
-        final RuleSet ruleSet = new RuleSet();
-        
-        for (int i = 0; i < ruleSetUrls.length; i++) {
-            final RuleSetFactory factory = new RuleSetFactory(); // NOPMD by Herlin on 21/06/06 23:25
-            final Collection rules = factory.createSingleRuleSet(ruleSetUrls[i]).getRules();
-            for (final Iterator j = rules.iterator(); j.hasNext();) {
-                final net.sourceforge.pmd.Rule pmdRule = (net.sourceforge.pmd.Rule) j.next();
-                final Rule rule = new Rule(); // NOPMD by Herlin on 21/06/06 23:29
-                rule.setRef(ruleSetUrls[i] + '/' + pmdRule.getName());
-                rule.setPmdRule(pmdRule);
-                ruleSet.addRule(rule);
+        try {
+            final RuleSet ruleSet = new RuleSet();
+            
+            for (int i = 0; i < ruleSetUrls.length; i++) {
+                final RuleSetFactory factory = new RuleSetFactory(); // NOPMD by Herlin on 21/06/06 23:25
+                final Collection rules = factory.createSingleRuleSet(ruleSetUrls[i]).getRules();
+                for (final Iterator j = rules.iterator(); j.hasNext();) {
+                    final net.sourceforge.pmd.Rule pmdRule = (net.sourceforge.pmd.Rule) j.next();
+                    final Rule rule = new Rule(); // NOPMD by Herlin on 21/06/06 23:29
+                    rule.setRef(ruleSetUrls[i] + '/' + pmdRule.getName());
+                    rule.setPmdRule(pmdRule);
+                    ruleSet.addRule(rule);
+                }
             }
+            
+            return ruleSet;
+
+        } catch (RuleSetNotFoundException e) {
+            LOG.error("A RuleSetsNotFound Exception was thrown.");
+            throw new PMDCoreException("A RuleSetsNotFound Exception was thrown.", e);
         }
-        
-        return ruleSet;
     }
 
-    /* (non-Javadoc)
+    /**
      * @see net.sourceforge.pmd.core.rulesets.IRuleSetsManager#writeToXml(net.sourceforge.pmd.core.rulesets.vo.RuleSets, java.io.OutputStream)
      */
-    public void writeToXml(RuleSets ruleSets, OutputStream output) throws IOException {
-        // TODO Auto-generated method stub
-        
+    public void writeToXml(RuleSets ruleSets, OutputStream output) throws PMDCoreException {
+        LOG.debug("Storing plug-in rulesets");
+        try {
+            final Mapping mapping = new Mapping(this.getClass().getClassLoader());
+            final URL mappingSpecUrl = this.getClass().getResource(RULESETS_MAPPING);
+            mapping.loadMapping(mappingSpecUrl);
+
+            final StringWriter writer = new StringWriter();
+            final Marshaller marshaller = new Marshaller(writer);
+            marshaller.setMapping(mapping);
+            marshaller.marshal(ruleSets);
+            writer.flush();
+            writer.close();
+            
+            output.write(writer.getBuffer().toString().getBytes());
+            output.flush();
+
+        } catch (MarshalException e) {
+            LOG.error("A Marshal Exception was thrown.");
+            throw new PMDCoreException("A Marshal Exception was thrown.", e);
+        } catch (ValidationException e) {
+            LOG.error("A Validation Exception was thrown.");
+            throw new PMDCoreException("A Validation Exception was thrown.", e);
+        } catch (MappingException e) {
+            LOG.error("A Mapping Exception was thrown.");
+            throw new PMDCoreException("A Mapping Exception was thrown.", e);
+        } catch (IOException e) {
+            LOG.error("A IO Exception was thrown.");
+            throw new PMDCoreException("A IO Exception was thrown.", e);
+        }
     }
 }

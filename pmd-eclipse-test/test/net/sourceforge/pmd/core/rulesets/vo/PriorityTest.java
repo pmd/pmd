@@ -45,6 +45,9 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/06 16:42:03  phherlin
+ * Continue refactoring of rullesets management
+ *
  * Revision 1.1  2006/06/21 23:06:52  phherlin
  * Move the new rule sets management to the core plugin instead of the runtime.
  * Continue the development.
@@ -72,19 +75,19 @@ public class PriorityTest extends TestCase {
      */
     public void testSetPriority() {
         Priority p = new Priority();
-        p.setPriority(Priority.LEVEL1_LITTERAL);
+        p.setPriorityValue(Priority.LEVEL1_LITTERAL);
         assertEquals("Constructing a priority level 1 has failed!", Priority.LEVEL1, p);
 
-        p.setPriority(Priority.LEVEL2_LITTERAL);
+        p.setPriorityValue(Priority.LEVEL2_LITTERAL);
         assertEquals("Constructing a priority level 2 has failed!", Priority.LEVEL2, p);
 
-        p.setPriority(Priority.LEVEL3_LITTERAL);
+        p.setPriorityValue(Priority.LEVEL3_LITTERAL);
         assertEquals("Constructing a priority level 3 has failed!", Priority.LEVEL3, p);
 
-        p.setPriority(Priority.LEVEL4_LITTERAL);
+        p.setPriorityValue(Priority.LEVEL4_LITTERAL);
         assertEquals("Constructing a priority level 4 has failed!", Priority.LEVEL4, p);
 
-        p.setPriority(Priority.LEVEL5_LITTERAL);
+        p.setPriorityValue(Priority.LEVEL5_LITTERAL);
         assertEquals("Constructing a priority level 5 has failed!", Priority.LEVEL5, p);
 
     }
@@ -96,7 +99,7 @@ public class PriorityTest extends TestCase {
     public void testSetPriorityIllegal1() {
         try {
             Priority p = new Priority();
-            p.setPriority(0);
+            p.setPriorityValue(0);
             fail("Setting a priority level to 0 should raise an IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // this is correct
@@ -110,7 +113,7 @@ public class PriorityTest extends TestCase {
     public void testSetPriorityIllegal2() {
         try {
             Priority p = new Priority();
-            p.setPriority(-15);
+            p.setPriorityValue(-15);
             fail("Setting a priority level to a negative number should raise an IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // this is correct
@@ -124,7 +127,7 @@ public class PriorityTest extends TestCase {
     public void testSetPriorityIllegal3() {
         try {
             Priority p = new Priority();
-            p.setPriority(6);
+            p.setPriorityValue(6);
             fail("Setting a priority level to a high value should raise an IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // this is correct
@@ -137,7 +140,7 @@ public class PriorityTest extends TestCase {
      */
     public void testEquals1() {
         Priority p = new Priority();
-        p.setPriority(1);        
+        p.setPriorityValue(1);        
         assertFalse("2 priorities with different levels (1:2) are not equals", Priority.LEVEL2.equals(p));
         assertFalse("2 priorities with different levels (1:3) are not equals", Priority.LEVEL3.equals(p));
         assertFalse("2 priorities with different levels (1:4) are not equals", Priority.LEVEL4.equals(p));

@@ -49,6 +49,9 @@ import java.util.List;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/06 16:42:46  phherlin
+ * Continue refactoring of rullesets management
+ *
  * Revision 1.1  2006/06/21 23:06:41  phherlin
  * Move the new rule sets management to the core plugin instead of the runtime.
  * Continue the development.
@@ -115,6 +118,33 @@ public class RuleSets {
 
         }
         this.ruleSetsList = ruleSets;
+    }
+    
+    /**
+     * Return the name of the default ruleset
+     * @return the name of the default ruleset
+     */
+    public String getDefaultRuleSetName() {
+        return this.defaultRuleSet.getName();
+    }
+    
+    /**
+     * Sets the default ruleset by its name. If the ruleset does not exist, 
+     * the default ruleset is not set.
+     * @param ruleSetName a name of an already defined ruleset.
+     */
+    public void setDefaultRuleSetName(String ruleSetName) {
+        if (ruleSetName == null) {
+            throw new IllegalArgumentException("The default ruleset name must not ne null");
+        }
+        
+        for (final Iterator i = this.ruleSetsList.iterator(); i.hasNext();) {
+            final RuleSet ruleSet = (RuleSet) i.next();
+            if (ruleSet.getName().equals(ruleSetName)) {
+                setDefaultRuleSet(ruleSet);
+                break;
+            }
+        }
     }
 
     /**

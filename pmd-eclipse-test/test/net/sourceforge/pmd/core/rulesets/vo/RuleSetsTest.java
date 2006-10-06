@@ -50,6 +50,9 @@ import junit.framework.TestCase;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/06 16:42:03  phherlin
+ * Continue refactoring of rullesets management
+ *
  * Revision 1.1  2006/06/21 23:06:52  phherlin
  * Move the new rule sets management to the core plugin instead of the runtime.
  * Continue the development.
@@ -123,7 +126,7 @@ public class RuleSetsTest extends TestCase {
         try {
             RuleSets rs = new RuleSets();
             rs.setDefaultRuleSet(null);
-            fail("setting a defaulr rule set to null should be illegal");
+            fail("setting a default rule set to null should be illegal");
         } catch (IllegalArgumentException e) {
             // success
         }
@@ -265,5 +268,49 @@ public class RuleSetsTest extends TestCase {
         RuleSets rs2 = new RuleSets();
         
         assertFalse("Different rule sets should have different hash code", rs1.hashCode() == rs2.hashCode());
+    }
+    
+    /**
+     * Test the basic usage of the default ruleset setter
+     *
+     */
+    public void testSetDefaultRuleSetName() throws RuleSetNotFoundException {
+        Rule r1 = new Rule();
+        r1.setRef("ref to a rule");
+        r1.setPmdRule(TestManager.getRule(0));
+
+        Rule r2 = new Rule();
+        r2.setRef("ref to another rule");
+        r2.setPmdRule(TestManager.getRule(1));
+
+        RuleSet rs1 = new RuleSet();
+        rs1.setName("default");
+        rs1.setLanguage(RuleSet.LANGUAGE_JSP);
+        rs1.addRule(r1);
+        rs1.addRule(r2);
+        
+        List ruleSetsList = new ArrayList();
+        ruleSetsList.add(rs1);
+        
+        RuleSets ruleSets = new RuleSets();
+        ruleSets.setRuleSets(ruleSetsList);
+        
+        ruleSets.setDefaultRuleSetName("default");
+        
+        assertSame("The default ruleset has not been set correctly", rs1, ruleSets.getDefaultRuleSet());
+    }
+    
+    /**
+     * Test setting a default ruleset name to null
+     *
+     */
+    public void testSetDefaultRuleSetNameNull() {
+        try {
+            RuleSets ruleSets = new RuleSets();
+            ruleSets.setDefaultRuleSetName(null);
+            fail("Setting a default ruleset name to null is illegal");
+        } catch (IllegalArgumentException e) {
+            // success
+        }
     }
 }

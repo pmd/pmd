@@ -11,15 +11,6 @@
       <library name="pmd-runtime.jar">
          <export name="*"/>
       </library>
-      <library name="lib/castor-0.9.6-xml.jar">
-         <export name="*"/>
-      </library>
-      <library name="lib/log4j-1.2.8.jar">
-         <export name="*"/>
-      </library>
-      <library name="lib/commons-logging.jar">
-         <export name="*"/>
-      </library>
    </runtime>
    
    <requires>

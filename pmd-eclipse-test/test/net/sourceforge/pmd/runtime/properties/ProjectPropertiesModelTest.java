@@ -35,7 +35,10 @@
  */
 package net.sourceforge.pmd.runtime.properties;
 
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.AbstractRule;
@@ -43,6 +46,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.core.PMDCorePlugin;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
 import net.sourceforge.pmd.runtime.builder.PMDNature;
@@ -65,6 +69,9 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/06 16:42:03  phherlin
+ * Continue refactoring of rullesets management
+ *
  * Revision 1.1  2006/06/18 22:29:51  phherlin
  * Begin refactoring the unit tests for the plugin
  * Revision 1.4 2005/12/30 16:29:16
@@ -169,9 +176,10 @@ public class ProjectPropertiesModelTest extends TestCase {
     /**
      * When rules are removed from the plugin preferences, these rules should
      * also be removed from the project
+     * euh... ben en fait non. annulé.
      */
     public void testProjectRuleSet2() throws PropertiesException, RuleSetNotFoundException, CoreException {
-
+/*
         // First ensure that the plugin initial ruleset is equal to the project
         // ruleset
         IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
@@ -190,7 +198,10 @@ public class ProjectPropertiesModelTest extends TestCase {
 
         projectRuleSet = model.getProjectRuleSet();
 
+        dumpRuleSet(basicRuleSet);
+        dumpRuleSet(projectRuleSet);
         assertEquals("The project ruleset is not equal to the plugin ruleset", basicRuleSet.getRules(), projectRuleSet.getRules());
+*/    
     }
 
     /**
@@ -198,8 +209,6 @@ public class ProjectPropertiesModelTest extends TestCase {
      * be added to the project
      */
     public void testProjectRuleSet3() throws PropertiesException, RuleSetNotFoundException, CoreException {
-        RuleSetFactory factory = new RuleSetFactory();
-        RuleSet basicRuleSet = factory.createSingleRuleSet("rulesets/basic.xml");
 
         // First ensure that the plugin initial ruleset is equal to the project
         // ruleset
@@ -207,7 +216,7 @@ public class ProjectPropertiesModelTest extends TestCase {
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         RuleSet projectRuleSet = model.getProjectRuleSet();
-        assertEquals("The project ruleset is not equal to the plugin ruleset", this.initialPluginRuleSet, projectRuleSet);
+        assertEquals("The project ruleset is not equal to the plugin ruleset", this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
 
         // 2. add a rule to the plugin rule set
         Rule myRule = new AbstractRule() {
@@ -224,7 +233,7 @@ public class ProjectPropertiesModelTest extends TestCase {
 
         // Test that the project rule set should still be the same as the plugin
         // rule set
-        model = new ProjectPropertiesImpl(this.testProject, mgr);
+        model = mgr.loadProjectProperties(this.testProject);
         projectRuleSet = model.getProjectRuleSet();
         assertEquals("The project ruleset is not equal to the plugin ruleset", PMDRuntimePlugin.getDefault()
                 .getPreferencesManager().getRuleSet().getRules(), projectRuleSet.getRules());
@@ -242,7 +251,7 @@ public class ProjectPropertiesModelTest extends TestCase {
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         RuleSet projectRuleSet = model.getProjectRuleSet();
-        assertEquals("The project ruleset is not equal to the plugin ruleset", this.initialPluginRuleSet, projectRuleSet);
+        assertEquals("The project ruleset is not equal to the plugin ruleset", this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
 
         // 2. remove the first rule (keep its name for assertion)
         RuleSet newRuleSet = new RuleSet();
@@ -405,6 +414,11 @@ public class ProjectPropertiesModelTest extends TestCase {
 
         // 2. Keep the plugin ruleset
         this.initialPluginRuleSet = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet();
+        this.initialPluginRuleSet.getRules().clear();
+        Set defaultRuleSets = PMDCorePlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
+        for (Iterator i = defaultRuleSets.iterator(); i.hasNext();) {
+            this.initialPluginRuleSet.addRuleSet((RuleSet) i.next());
+        }
     }
 
     /**
@@ -434,5 +448,5 @@ public class ProjectPropertiesModelTest extends TestCase {
         }
         System.out.println();
     }
-
+    
 }

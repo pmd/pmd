@@ -1,5 +1,5 @@
 /*
- * Created on 21 juin 2006
+ * Created on 2 sept. 2006
  *
  * Copyright (c) 2006, PMD for Eclipse Development Team
  * All rights reserved.
@@ -34,68 +34,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.core.rulesets;
-
-import java.io.InputStream;
-import java.io.OutputStream;
-
-import net.sourceforge.pmd.core.PMDCoreException;
-import net.sourceforge.pmd.core.rulesets.vo.RuleSet;
-import net.sourceforge.pmd.core.rulesets.vo.RuleSets;
+package net.sourceforge.pmd.core;
 
 /**
- * Interface of a rule sets manager. A rule sets manager is
- * responsible to build a rule sets structure from PMD rulesets,
- * to manage the persistence in the preferences store and finally
- * to manage the export in the PMD ruleset format.
+ * Root exception of the CORE plug-in
  * 
  * @author Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2006/10/06 16:42:47  phherlin
+ * Revision 1.1  2006/10/06 16:42:47  phherlin
  * Continue refactoring of rullesets management
- *
- * Revision 1.1  2006/06/21 23:06:41  phherlin
- * Move the new rule sets management to the core plugin instead of the runtime.
- * Continue the development.
  *
  *
  */
 
-public interface IRuleSetsManager {
+public class PMDCoreException extends Exception {
 
     /**
-     * Build a plug-in rule set from PMD rule sets.
-     * The result is a single rule set (plug-in format) that is composed
-     * of the list of all rules from the input rule sets.
-     * 
-     * @param ruleSetUrls an array of standard PMD rule sets.
-     * @return a plug-in specific rulesets structure.
-     * 
-     * @throws PMDCoreException if an error occurred. Check the root cause for details.
+     * Default constructor.
      */
-    RuleSet valueOf(String[] ruleSetUrls) throws PMDCoreException;
+    public PMDCoreException() {
+        super();
+    }
 
     /**
-     * Serialize a rule sets structure to an output stream.
-     * 
-     * @param ruleSets a rule sets structure.
-     * @param output an open output stream.
-     * 
-     * @throws PMDCoreException if an error occurred. Check the root cause for details.
+     * Constructor with a message and a root cause.
+     * @param arg0 exception message.
+     * @param arg1 root cause exception.
      */
-    void writeToXml(RuleSets ruleSets, OutputStream output) throws PMDCoreException;
-    
+    public PMDCoreException(String arg0, Throwable arg1) {
+        super(arg0, arg1);
+    }
+
     /**
-     * Load a rule sets structure from an input stream than contains an XML
-     * rule sets specification.
-     * 
-     * @param input a valid XML input stream.
-     * @return a rulesets structure ; this is never null.
-     * 
-     * @throws PMDCoreException if an error occurred. Check the root cause for details.
+     * Constructor with only a message.
+     * @param arg0 exception message.
      */
-    RuleSets readFromXml(InputStream input) throws PMDCoreException;
+    public PMDCoreException(String arg0) {
+        super(arg0);
+    }
+
+    /**
+     * Constructor with a root cause exception only
+     * @param arg0 root cause exception
+     */
+    public PMDCoreException(Throwable arg0) {
+        super(arg0);
+    }
 
 }
