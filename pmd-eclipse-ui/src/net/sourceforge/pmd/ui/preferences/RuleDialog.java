@@ -29,6 +29,9 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/06 19:39:21  phherlin
+ * Fix 1470054 Violation Details dlg has OK button which does nothing
+ *
  * Revision 1.1  2006/05/22 21:23:40  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -324,8 +327,10 @@ public class RuleDialog extends Dialog {
      * @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     protected void okPressed() {
-        if (validateForm() && (mode != MODE_VIEW)) {
-            super.okPressed();
+        if (validateForm() && (this.mode != MODE_VIEW)) {
+            okPressed();
+        } else if (this.mode == MODE_VIEW) {
+            cancelPressed();
         }
     }
 
