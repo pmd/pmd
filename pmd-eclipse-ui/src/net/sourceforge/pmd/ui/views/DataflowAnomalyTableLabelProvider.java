@@ -55,9 +55,9 @@ public class DataflowAnomalyTableLabelProvider implements ITableLabelProvider {
         // show the Variable
         case 2:
             return marker.getAttribute(PMDUiConstants.KEY_MARKERATT_VARIABLE, "");
-        // show the File
+        // show the Method name
         case 3:
-            return marker.getResource().getName();
+            return marker.getAttribute(PMDUiConstants.KEY_MARKERATT_METHODNAME, "");
         }
 
         return "";

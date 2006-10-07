@@ -7,11 +7,12 @@ import java.util.List;
 import net.sourceforge.pmd.ui.PMDUiConstants;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.model.FileRecord;
-import net.sourceforge.pmd.ui.model.PMDRecord;
+import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.PackageRecord;
 import net.sourceforge.pmd.ui.model.ProjectRecord;
 import net.sourceforge.pmd.ui.model.RootRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
+import net.sourceforge.pmd.ui.views.actions.CalculateStatisticsAction;
 import net.sourceforge.pmd.ui.views.actions.CollapseAllAction;
 import net.sourceforge.pmd.ui.views.actions.PackageSwitchAction;
 import net.sourceforge.pmd.ui.views.actions.PriorityFilterAction;
@@ -65,7 +66,7 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
     private ProjectFilter projectFilter;
 
     private RootRecord root;
-    private PMDRecord currentProject;
+    private AbstractPMDRecord currentProject;
     private ViewMemento memento;
 
     private PriorityFilterAction[] priorityActions;
@@ -152,7 +153,7 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
             if (projectNames != null) {
                 ArrayList projectList = new ArrayList();
                 for (int k = 0; k < projectNames.size(); k++) {
-                    PMDRecord project = root.findResourceByName(projectNames.get(k).toString(), PMDRecord.TYPE_PROJECT);
+                    AbstractPMDRecord project = root.findResourceByName(projectNames.get(k).toString(), AbstractPMDRecord.TYPE_PROJECT);
                     if (project != null)
                         projectList.add(project);
                 }
@@ -176,7 +177,7 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
         ArrayList projects = projectFilter.getProjectFilterList();
         ArrayList projectNames = new ArrayList();
         for (int k = 0; k < projects.size(); k++) {
-            PMDRecord project = (PMDRecord) projects.get(k);
+            AbstractPMDRecord project = (AbstractPMDRecord) projects.get(k);
             projectNames.add(project.getName());
         }
         memento.putArrayList(PROJECT_LIST, projectNames);
@@ -298,6 +299,10 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
     private void createActionBars() {
         IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
 
+        // Action for calculating the #violations/loc
+        Action calculateStats = new CalculateStatisticsAction(this);
+        manager.add(calculateStats);
+        
         // Action for switching from Packages to Files only
         Action switchPackagesAction = new PackageSwitchAction(this);
         switchPackagesAction.setChecked(isPackageFiltered);
@@ -478,8 +483,8 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
         case 6:
             return new TableColumnSorter(column, sortOrder) {
                 public int compare(Viewer viewer, Object e1, Object e2) {
-                    PMDRecord project1 = null;
-                    PMDRecord project2 = null;
+                    AbstractPMDRecord project1 = null;
+                    AbstractPMDRecord project2 = null;
 
                     if ((e1 instanceof PackageRecord) && (e2 instanceof PackageRecord)) {
                         project1 = ((PackageRecord) e1).getParent();
@@ -523,7 +528,7 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
         final ArrayList projectList = new ArrayList();
         if (root != null) {
             // We get a List of all Projects
-            PMDRecord[] projects = root.getChildren();
+            AbstractPMDRecord[] projects = root.getChildren();
             for (int i = 0; i < projects.length; i++) {
                 ProjectRecord project = (ProjectRecord) projects[i];
                 // if the Project contains Errors,
@@ -649,7 +654,7 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
     public TableTreeViewer getViewer() {
         return treeViewer;
     }
-
+    
     /**
      * Refresh the View (and its Elements)
      */
@@ -695,7 +700,7 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
         // get the Project of the current Selection
         // this is used with the ProjectFilter
 
-        PMDRecord project = null;
+        AbstractPMDRecord project = null;
         if (object instanceof PackageRecord) {
             project = ((PackageRecord) object).getParent();
         } else if (object instanceof FileRecord) {

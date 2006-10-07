@@ -65,6 +65,9 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/07 16:01:51  phherlin
+ * Integrate Sven updates
+ *
  * Revision 1.1  2006/05/22 21:37:35  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -499,6 +502,9 @@ public class BaseVisitor {
         attributeNames.add(PMDRuntimeConstants.KEY_MARKERATT_PRIORITY);
         values.add(new Integer(violation.getRule().getPriority()));
 
+        attributeNames.add(PMDRuntimeConstants.KEY_MARKERATT_METHODNAME);
+        values.add(violation.getMethodName());
+        
         switch (violation.getRule().getPriority()) {
         case 1:
             attributeNames.add(IMarker.PRIORITY);

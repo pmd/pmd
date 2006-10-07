@@ -8,6 +8,9 @@ package net.sourceforge.pmd.runtime;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/10/07 16:01:51  phherlin
+ * Integrate Sven updates
+ *
  * Revision 1.2  2006/06/05 21:28:16  phherlin
  * Fix the switch perspective NPE
  *
@@ -63,7 +66,8 @@ public class PMDRuntimeConstants {
     public static final String KEY_MARKERATT_PRIORITY = "pmd_priority";
     public static final String KEY_MARKERATT_LINE2 = "line2";
     public static final String KEY_MARKERATT_VARIABLE = "variable";
-
+    public static final String KEY_MARKERATT_METHODNAME = "method";
+    
     public static final String PLUGIN_STYLE_REVIEW_COMMENT = "// @PMD:REVIEWED:";
     public static final String PMD_STYLE_REVIEW_COMMENT = "// NOPMD";
 

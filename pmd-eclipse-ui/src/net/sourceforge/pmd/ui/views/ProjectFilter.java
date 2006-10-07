@@ -3,7 +3,7 @@ package net.sourceforge.pmd.ui.views;
 import java.util.ArrayList;
 
 import net.sourceforge.pmd.ui.model.FileRecord;
-import net.sourceforge.pmd.ui.model.PMDRecord;
+import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.PackageRecord;
 
 import org.eclipse.jface.viewers.Viewer;
@@ -30,7 +30,7 @@ public class ProjectFilter extends ViewerFilter {
 	
 	/* @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object) */
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		PMDRecord projectRec = null;
+		AbstractPMDRecord projectRec = null;
 		if (element instanceof PackageRecord) {
 			projectRec = ((PackageRecord) element).getParent();
 		} else if (element instanceof FileRecord) {
@@ -66,7 +66,7 @@ public class ProjectFilter extends ViewerFilter {
 	 * 
 	 * @param project
 	 */
-	public void addProjectToList(PMDRecord project) {
+	public void addProjectToList(AbstractPMDRecord project) {
 		projectFilterList.add(project);
 	}
 	
@@ -75,7 +75,7 @@ public class ProjectFilter extends ViewerFilter {
 	 * 
 	 * @param project
 	 */
-	public void removeProjectFromList(PMDRecord project) {
+	public void removeProjectFromList(AbstractPMDRecord project) {
 		projectFilterList.remove(project);
 	}
 }

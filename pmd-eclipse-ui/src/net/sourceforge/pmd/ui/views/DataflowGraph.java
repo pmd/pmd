@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.ui.views;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -8,6 +9,9 @@ import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.PaintEvent;
 import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Color;
@@ -38,7 +42,7 @@ public class DataflowGraph extends Composite {
 	protected boolean marked;
 	protected Color markColor;
 	protected Color markColor2;
-	
+    protected Color markColor3;	
 	
 	/**
 	 * Inner Class for creating Nodes, 
@@ -448,10 +452,11 @@ public class DataflowGraph extends Composite {
 		
 		// Default Colors
 		bgColor = new Color(null,255,255,255);
-		nodeColor = new Color(null, 192,192,192);
+		nodeColor = new Color(null,192,192,192);
 		textColor = new Color(null,0,0,0);
 		markColor = new Color(null,192,0,0);
 		markColor2 = new Color(null,128,0,128);
+        markColor3 = new Color(null,0,0,96);
 		
 		setSize(parent.getSize());
 		setBackground(bgColor);
@@ -459,6 +464,23 @@ public class DataflowGraph extends Composite {
 		createDataflowGraph(node);
 	}
 	
+    public void addMouseListener(final MouseListener listener) {
+        if (nodes != null) {
+            Iterator nodeIterator = nodes.iterator();
+            for (int i=0; nodeIterator.hasNext(); i++) {
+                final int row = i;
+                NodeCanvas node = (NodeCanvas)nodeIterator.next();                
+                node.addMouseListener(new MouseAdapter() {
+                    public void mouseDown(MouseEvent e) {
+                        e.y += row * DataflowGraphViewer.rowHeight;
+                        listener.mouseDown(e);
+                    } 
+                });
+            }
+        }
+        super.addMouseListener(listener);
+    }
+    
 	/**
 	 * Set the Graph Node-Radius, and Length of the 
 	 * (direct) Lines from one Node to another
@@ -583,6 +605,15 @@ public class DataflowGraph extends Composite {
 		marked = false;
 	}
 	
+    /**
+     * Marks one single node.
+     * @param index index of the node
+     */
+    public void markNode(int index) {
+        NodeCanvas node = getNode(index);
+        node.mark(true, markColor3);
+    }
+    
 	/**
 	 * Marks a Path from the given first Line to the Second Line
 	 * <br>Given are two Lines in the Text and a Variable, 

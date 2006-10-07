@@ -1,10 +1,11 @@
 package net.sourceforge.pmd.ui.views;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.ui.model.FileRecord;
-import net.sourceforge.pmd.ui.model.PMDRecord;
+import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.PackageRecord;
 import net.sourceforge.pmd.ui.model.ProjectRecord;
 import net.sourceforge.pmd.ui.model.RootRecord;
@@ -72,7 +73,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider,
 			|| (parentElement instanceof RootRecord) )  {
 			
 			// ... we care about its Project's
-			ArrayList projects = root.getChildrenAsList();
+			List projects = root.getChildrenAsList();
 			ProjectRecord[] projectArray = new ProjectRecord[projects.size()];
 			projects.toArray(projectArray);
 			
@@ -90,7 +91,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider,
 				// ... or only Files
 				ArrayList files = new ArrayList();
 				for (int j=0; j<packages.size(); j++) {
-					PMDRecord packageRec = (PMDRecord) packages.get(j);
+					AbstractPMDRecord packageRec = (AbstractPMDRecord) packages.get(j);
 					files.addAll(packageRec.getChildrenAsList());
 				}
 				return files.toArray();
@@ -254,7 +255,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider,
     	
     	// if the project is deleted or closed
         if (!project.exists() || !project.isOpen()) {
-        	ArrayList packages = projectRec.getChildrenAsList();
+        	List packages = projectRec.getChildrenAsList();
         	// ... we add all Packages to the removals
         	// so they are not shown anymore
         	removals.addAll(packages);
@@ -275,7 +276,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider,
     			continue;
     		
     		// ... if so, we search for the corresponding Record to a File
-    		PMDRecord rec = projectRec.findResource(resource);
+    		AbstractPMDRecord rec = projectRec.findResource(resource);
     		FileRecord fileRec = null;
     		if ((rec!= null) && (rec.getResourceType() == IResource.FILE))
     			fileRec = (FileRecord) rec;
@@ -301,7 +302,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider,
     		} else {
     			// ... if not, it can be removed from the View
     			removals.add(fileRec);
-    			PMDRecord packageRec = fileRec.getParent();
+    			AbstractPMDRecord packageRec = fileRec.getParent();
     			if (!packageRec.hasMarkers()) {
         			removals.add(packageRec);
         		}
@@ -331,7 +332,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider,
         // perform additions
         if (additions.size() > 0) {
         	for (int i=0; i<additions.size(); i++) {
-        		PMDRecord addedRec = (PMDRecord) additions.get(i);
+        		AbstractPMDRecord addedRec = (AbstractPMDRecord) additions.get(i);
         		if (addedRec instanceof FileRecord)
         			treeViewer.add(addedRec.getParent(), addedRec);
         		else

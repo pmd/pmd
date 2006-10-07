@@ -1,13 +1,10 @@
 package net.sourceforge.pmd.ui.views;
 
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ui.PMDUiConstants;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
-import net.sourceforge.pmd.ui.model.DataflowMethodRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -28,30 +25,25 @@ import org.eclipse.swt.widgets.TableColumn;
  * @author SebastianRaffel ( 06.06.2005 )
  */
 public class DataflowAnomalyTableViewer extends TableViewer {
-
     protected Integer[] columnWidths;
     protected int[] columnSortOrder = { 1, 1, 1 };
     protected int currentSortedColumn;
 
-    public DataflowAnomalyTableViewer(Composite parent, int style, DataflowView view) {
+    public DataflowAnomalyTableViewer(Composite parent, int style) {
         super(parent, style | SWT.H_SCROLL | SWT.V_SCROLL | SWT.SINGLE | SWT.FULL_SELECTION);
         setUseHashlookup(true);
 
         getTable().setHeaderVisible(true);
         getTable().setLinesVisible(true);
 
+        createColumns(getTable());
         GridData tableData = new GridData(GridData.FILL_BOTH);
         getTable().setLayoutData(tableData);
-
-        createColumns(getTable());
-
         GridLayout tableLayout = new GridLayout(1, false);
         tableLayout.horizontalSpacing = tableLayout.verticalSpacing = 0;
         getTable().setLayout(tableLayout);
-
-        addSelectionChangedListener(view);
     }
-
+    
     /**
      * Cresate the Columns for th Table
      * 
@@ -72,6 +64,11 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         TableColumn varColumn = new TableColumn(table, SWT.RIGHT);
         varColumn.setWidth(70);
         varColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_VARIABLE));
+
+        // Method
+        TableColumn methodColumn = new TableColumn(table, SWT.RIGHT);
+        methodColumn.setWidth(100);
+        methodColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_METHOD));
 
         // set Sorter and ResizeListener
         createColumnAdapters(table);
@@ -179,25 +176,13 @@ public class DataflowAnomalyTableViewer extends TableViewer {
     }
 
     /**
-     * Gives an Input to the Table
-     * 
-     * @param pmdMethod
-     * @param javaMethod
-     */
-    public void setData(SimpleNode pmdMethod, IMethod javaMethod) {
-        setContentProvider(new DataflowAnomalyTableContentProvider());
-        setLabelProvider(new DataflowAnomalyTableLabelProvider());
-
-        setInput(new DataflowMethodRecord(javaMethod, pmdMethod));
-    }
-
-    /**
      * Shows or hides the Table
      * 
      * @param visible
      */
     public void setVisible(boolean visible) {
         getTable().setVisible(visible);
+        ((GridData)getTable().getLayoutData()).exclude = !visible;
     }
 
     /**

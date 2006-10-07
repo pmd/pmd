@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -41,8 +42,8 @@ public class DataflowGraphViewer extends Composite {
     /**
      * Constructor
      * 
-     * @param parent, the parent Composite
-     * @param style, the SWT Style
+     * @param parent the parent Composite
+     * @param style the SWT Style
      */
     public DataflowGraphViewer(Composite parent, int style) {
         super(parent, style);
@@ -55,9 +56,15 @@ public class DataflowGraphViewer extends Composite {
         mainLayout.horizontalSpacing = mainLayout.verticalSpacing = 0;
         setLayout(mainLayout);
     }
+    
+    public void addMouseListener(MouseListener mouseListener) {
+        if (graph != null) {
+            graph.addMouseListener(mouseListener);
+        }
+    }
 
     /**
-     * Inits the Table
+     * Inits the Table.
      * 
      * @param parent
      * @param style
@@ -85,10 +92,10 @@ public class DataflowGraphViewer extends Composite {
     }
 
     /**
-     * Sets the data for this Viewer, gives the Table Data to show
+     * Sets the data for this Viewer, gives the Table Data to show.
      * 
-     * @param node
-     * @param resString, the Node's Resource as String
+     * @param node 
+     * @param resString the Node's Resource as String
      */
     public void setData(SimpleNode node, String resString) {
         if (method != null) {

@@ -2,7 +2,7 @@ package net.sourceforge.pmd.ui.views.actions;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
-import net.sourceforge.pmd.ui.model.PMDRecord;
+import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.views.ProjectFilter;
 import net.sourceforge.pmd.ui.views.ViolationOverview;
@@ -19,7 +19,7 @@ public class ProjectFilterAction extends Action {
 
     private ViolationOverview violationView;
     private ProjectFilter projectFilter;
-    private PMDRecord project;
+    private AbstractPMDRecord project;
 
     /**
      * Constructor
@@ -27,7 +27,7 @@ public class ProjectFilterAction extends Action {
      * @param projectRecord, the project to show or hide
      * @param view, the Violation Overview
      */
-    public ProjectFilterAction(PMDRecord projectRecord, ViolationOverview view) {
+    public ProjectFilterAction(AbstractPMDRecord projectRecord, ViolationOverview view) {
         violationView = view;
         project = projectRecord;
 

@@ -22,6 +22,7 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="net.sourceforge.pmd.core"/>
       <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>      
    </requires>
 
    <extension
@@ -259,12 +260,6 @@
             objectClass="org.eclipse.jdt.core.IMethod"
             nameFilter="*"
             id="net.sourceforge.pmd.ui.pmdMethodContribution">
-         <action
-               label="%action.showdataflow"
-               icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.ShowDataflowAction"
-               menubarPath="additions"
-               id="net.sourceforge.pmd.ui.pmdShowDataflowAction"/>
       </objectContribution>
    </extension>
 

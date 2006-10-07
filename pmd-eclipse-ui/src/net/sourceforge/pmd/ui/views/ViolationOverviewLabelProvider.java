@@ -3,7 +3,7 @@ package net.sourceforge.pmd.ui.views;
 import net.sourceforge.pmd.ui.PMDUiConstants;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.model.FileRecord;
-import net.sourceforge.pmd.ui.model.PMDRecord;
+import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.PackageRecord;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -129,7 +129,7 @@ public class ViolationOverviewLabelProvider extends LabelProvider implements ITa
 
         // show the Project's Name
         case 6:
-            PMDRecord projectRec = null;
+            AbstractPMDRecord projectRec = null;
             if (element instanceof PackageRecord) {
                 projectRec = ((PackageRecord) element).getParent();
             } else if (element instanceof FileRecord) {

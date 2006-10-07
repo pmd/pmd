@@ -43,8 +43,9 @@ public class ShowDataflowAction implements IObjectActionDelegate {
 				dataflowView = (DataflowView)
 					workbenchPage.showView(PMDUiConstants.ID_DATAFLOWVIEW);
 				
-				if (method != null)
-					dataflowView.showMethod(method);
+				if (method != null) {
+					// dataflowView.showMethod(method);
+                }
 				
 			} catch (PartInitException pie) {
 				PMDUiPlugin.getDefault().logError(

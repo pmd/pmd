@@ -1,6 +1,48 @@
+/*
+ * Created on 7 mai 2005
+ *
+ * Copyright (c) 2006, PMD for Eclipse Development Team
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ * 
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * The end-user documentation included with the redistribution, if
+ *       any, must include the following acknowledgement:
+ *       "This product includes software developed in part by support from
+ *        the Defense Advanced Research Project Agency (DARPA)"
+ *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
+ *       contributors may be used to endorse or promote products derived from
+ *       this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+ * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package net.sourceforge.pmd.ui.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
 
 import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
@@ -16,15 +58,22 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 
 /**
- * PMDRecord for Projects creates Packages when instantiated
+ * AbstractPMDRecord for Projects creates Packages when instantiated
  * 
- * @author SebastianRaffel ( 16.05.2005 )
+ * @author SebastianRaffel ( 16.05.2005 ), Philippe Herlin, Sven Jacob
+ * @version $$Revision$$
+ * 
+ * $$Log$
+ * $Revision 1.4  2006/10/07 16:01:21  phherlin
+ * $Integrate Sven updates
+ * $$
+ * 
  */
-public class ProjectRecord extends PMDRecord {
+public class ProjectRecord extends AbstractPMDRecord {
 
     private IProject project;
     private RootRecord parent;
-    private PMDRecord[] children;
+    private AbstractPMDRecord[] children;
 
     /**
      * Constructor
@@ -43,24 +92,24 @@ public class ProjectRecord extends PMDRecord {
         
     }
 
-    /* @see net.sourceforge.pmd.ui.model.PMDRecord#getParent() */
-    public PMDRecord getParent() {
+    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getParent() */
+    public AbstractPMDRecord getParent() {
         return parent;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.PMDRecord#getChildren() */
-    public PMDRecord[] getChildren() {
+    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getChildren() */
+    public AbstractPMDRecord[] getChildren() {
         return children;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.PMDRecord#getResource() */
+    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResource() */
     public IResource getResource() {
         return (IResource) project;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.PMDRecord#createChildren() */
-    protected final PMDRecord[] createChildren() {
-        ArrayList packageList = new ArrayList();
+    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#createChildren() */
+    protected final AbstractPMDRecord[] createChildren() {
+        List packageList = new ArrayList();
         try {
             // search for Project members
             IResource[] members = project.members();
@@ -75,13 +124,24 @@ public class ProjectRecord extends PMDRecord {
                     // get all packages from it and add them to the list
                     // (e.g. for "org.eclipse.core.resources" and
                     // "org.eclipse.core" the root is "org.eclipse.core")
-                    packageList.addAll(createPackagesFromFragmentRoot((IPackageFragmentRoot) javaMember));
+                    List packages = createPackagesFromFragmentRoot((IPackageFragmentRoot) javaMember);
+                    for (int j=0; j < packages.size(); j++) {
+                        if (!packageList.contains(packages.get(j))) {
+                            packageList.add(packages.get(j));
+                        }
+                    }
                 } else if (javaMember instanceof IPackageFragment) {
                     // if the Element is a Package
                     IPackageFragment fragment = (IPackageFragment) javaMember;
                     // ... get its Root and do the same as above
-                    if (fragment.getParent() instanceof IPackageFragmentRoot)
-                        packageList.addAll(createPackagesFromFragmentRoot((IPackageFragmentRoot) fragment.getParent()));
+                    if (fragment.getParent() instanceof IPackageFragmentRoot) {
+                        List packages = createPackagesFromFragmentRoot((IPackageFragmentRoot) fragment.getParent());
+                        for (int j=0; j < packages.size(); j++) {
+                            if (!packageList.contains(packages.get(j))) {
+                                packageList.add(packages.get(j));
+                            }
+                        }
+                    }
                 }
             }
         } catch (CoreException ce) {
@@ -89,7 +149,7 @@ public class ProjectRecord extends PMDRecord {
         }
 
         // return the List as an Array of Packages
-        PMDRecord[] packageRecords = new PMDRecord[packageList.size()];
+        AbstractPMDRecord[] packageRecords = new AbstractPMDRecord[packageList.size()];
         packageList.toArray(packageRecords);
         return packageRecords;
     }
@@ -120,7 +180,7 @@ public class ProjectRecord extends PMDRecord {
         return packages;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.PMDRecord#getName() */
+    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getName() */
     public String getName() {
         return project.getName();
     }
@@ -134,13 +194,13 @@ public class ProjectRecord extends PMDRecord {
         return project.isOpen();
     }
 
-    /* @see net.sourceforge.pmd.ui.model.PMDRecord#getResourceType() */
+    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResourceType() */
     public int getResourceType() {
-        return PMDRecord.TYPE_PROJECT;
+        return AbstractPMDRecord.TYPE_PROJECT;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.PMDRecord#addResource(org.eclipse.core.resources.IResource) */
-    public PMDRecord addResource(IResource resource) {
+    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource) */
+    public AbstractPMDRecord addResource(IResource resource) {
         // we only care about Files
         if (resource instanceof IFile) {
             IPackageFragment fragment = (IPackageFragment) JavaCore.create(resource.getParent());
@@ -158,11 +218,11 @@ public class ProjectRecord extends PMDRecord {
 
             // ... else we create a new Record for the new Package
             packageRec = new PackageRecord(fragment, this);
-            ArrayList packages = getChildrenAsList();
+            List packages = getChildrenAsList();
             packages.add(packageRec);
 
             // ... and we add a new FileRecord to it
-            children = new PMDRecord[packages.size()];
+            children = new AbstractPMDRecord[packages.size()];
             packages.toArray(children);
             return packageRec.addResource(resource);
         }
@@ -170,8 +230,8 @@ public class ProjectRecord extends PMDRecord {
         return null;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.PMDRecord#removeResource(org.eclipse.core.resources.IResource) */
-    public PMDRecord removeResource(IResource resource) {
+    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource) */
+    public AbstractPMDRecord removeResource(IResource resource) {
         // we only care about Files
         if (resource instanceof IFile) {
             IPackageFragment fragment = (IPackageFragment) JavaCore.create(resource.getParent());
@@ -183,14 +243,14 @@ public class ProjectRecord extends PMDRecord {
                 if (packageRec.getFragment().equals(fragment)) {
 
                     // if we found it, we remove the File
-                    PMDRecord fileRec = packageRec.removeResource(resource);
+                    AbstractPMDRecord fileRec = packageRec.removeResource(resource);
                     if (packageRec.getChildren().length == 0) {
                         // ... and if the Package is empty too
                         // we also remove it
-                        ArrayList packages = getChildrenAsList();
+                        List packages = getChildrenAsList();
                         packages.remove(packageRec);
 
-                        children = new PMDRecord[packages.size()];
+                        children = new AbstractPMDRecord[packages.size()];
                         packages.toArray(children);
                     }
                     return fileRec;

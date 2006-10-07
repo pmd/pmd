@@ -8,6 +8,9 @@ package net.sourceforge.pmd.ui;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/07 16:01:21  phherlin
+ * Integrate Sven updates
+ *
  * Revision 1.1  2006/05/22 21:23:58  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -96,6 +99,8 @@ public class PMDUiConstants {
     public static final String ICON_BUTTON_REMVIO = "icons/btn_remvio.gif";
 	public static final String ICON_BUTTON_QUICKFIX = "icons/btn_quickfix.gif";
 	public static final String ICON_BUTTON_REVIEW = "icons/btn_review.gif";
+    public static final String ICON_BUTTON_REFRESH = "icons/btn_refresh.gif";
+    public static final String ICON_BUTTON_CALCULATE = "icons/btn_calculate.gif";
     
     public static final String ID_PERSPECTIVE = PLUGIN_ID + ".views.pmdPerspective";
     public static final String ID_OUTLINE = PLUGIN_ID + ".views.violationOutline";
@@ -108,6 +113,7 @@ public class PMDUiConstants {
     public static final String KEY_MARKERATT_PRIORITY = "pmd_priority";
     public static final String KEY_MARKERATT_LINE2 = "line2";
     public static final String KEY_MARKERATT_VARIABLE = "variable";
+    public static final String KEY_MARKERATT_METHODNAME = "method";
     
     public static final String SETTINGS_VIEW_FILE_SELECTION = "view.file_selection";
     public static final String SETTINGS_VIEW_PROJECT_SELECTION = "view.project_selection";

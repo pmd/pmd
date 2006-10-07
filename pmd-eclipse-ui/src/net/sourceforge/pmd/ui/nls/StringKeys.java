@@ -1,3 +1,39 @@
+/*
+ * Created on 18 mai 2006
+ *
+ * Copyright (c) 2006, PMD for Eclipse Development Team
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ * 
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * The end-user documentation included with the redistribution, if
+ *       any, must include the following acknowledgement:
+ *       "This product includes software developed in part by support from
+ *        the Defense Advanced Research Project Agency (DARPA)"
+ *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
+ *       contributors may be used to endorse or promote products derived from
+ *       this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+ * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package net.sourceforge.pmd.ui.nls;
 
 /**
@@ -6,6 +42,9 @@ package net.sourceforge.pmd.ui.nls;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/07 16:01:21  phherlin
+ * Integrate Sven updates
+ *
  * Revision 1.1  2006/05/22 21:23:55  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -137,6 +176,7 @@ public class StringKeys {
     public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_METHOD = "view.overview.column_vio_method";
     public static final String MSGKEY_VIEW_OVERVIEW_COLUMN_PROJECT = "view.overview.column_project";
     public static final String MSGKEY_VIEW_DATAFLOW_DEFAULT_TEXT = "view.dataflow.default_text";
+    public static final String MSGKEY_VIEW_DATAFLOW_CHOOSE_METHOD = "view.dataflow.choose_method";
     public static final String MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_LINE = "view.dataflow.graph.column_line";
     public static final String MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_GRAPH = "view.dataflow.graph.column_graph";
     public static final String MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_NEXT = "view.dataflow.graph.column_nextnodes";
@@ -144,9 +184,11 @@ public class StringKeys {
     public static final String MSGKEY_VIEW_DATAFLOW_GRAPH_COLUMN_CODE = "view.dataflow.graph.column_code";
     public static final String MSGKEY_VIEW_DATAFLOW_SWITCHBUTTON_SHOW = "view.dataflow.switchbutton.show";
     public static final String MSGKEY_VIEW_DATAFLOW_SWITCHBUTTON_HIDE = "view.dataflow.switchbutton.hide";
+    public static final String MSGKEY_VIEW_DATAFLOW_REFRESHBUTTON = "view.dataflow.refreshbutton";
     public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_TYPE = "view.dataflow.table.column_type";
     public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_LINE = "view.dataflow.table.column_line";
     public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_VARIABLE = "view.dataflow.table.column_variable";
+    public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_METHOD = "view.dataflow.table.column_method";
 
     public static final String MSGKEY_VIEW_FILTER_PRIORITY_1 = "view.filter.priority.1";
     public static final String MSGKEY_VIEW_FILTER_PRIORITY_2 = "view.filter.priority.2";
@@ -180,8 +222,10 @@ public class StringKeys {
     public static final String MSGKEY_VIEW_TOOLTIP_INFORMATION_FILTER = "view.tooltip.information_filter";
     public static final String MSGKEY_VIEW_TOOLTIP_SHOW_RULE = "view.tooltip.show_rule";
     public static final String MSGKEY_VIEW_TOOLTIP_REMOVE_VIOLATION = "view.tooltip.remove_violation";
+    public static final String MSGKEY_VIEW_TOOLTIP_REFRESH = "view.tooltip.refresh_resource";
     public static final String MSGKEY_VIEW_TOOLTIP_REVIEW = "view.tooltip.review";
     public static final String MSGKEY_VIEW_TOOLTIP_QUICKFIX = "view.tooltip.quickfix";
+    public static final String MSGKEY_VIEW_TOOLTIP_CALCULATE_STATS = "view.tooltip.calc_stats";
     public static final String MSGKEY_VIEW_ACTION_PROJECT = "view.action.project";
     public static final String MSGKEY_VIEW_ACTION_FILE = "view.action.file";
     public static final String MSGKEY_VIEW_ACTION_ERRORHIGH = "view.action.errorhigh";

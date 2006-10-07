@@ -54,6 +54,9 @@ import org.eclipse.core.runtime.Path;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/07 16:01:21  phherlin
+ * Integrate Sven updates
+ *
  * Revision 1.1  2006/05/22 21:23:55  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -70,7 +73,7 @@ public class StringTable {
      */
     public String getString(String key) {
         String string = null;
-        Properties table = getTable();
+        final Properties table = getTable();
         if (table != null) {
             string = table.getProperty(key, key);
         }
@@ -86,17 +89,15 @@ public class StringTable {
         try {
             if (this.table == null) {
                 this.table = new Properties();
-                URL messageTableUrl = PMDUiPlugin.getDefault().find(new Path("$nl$/messages.properties"));
+                final URL messageTableUrl = PMDUiPlugin.getDefault().find(new Path("$nl$/messages.properties"));
                 if (messageTableUrl != null) {
-                    this.table = new Properties();
-                    InputStream is = messageTableUrl.openStream();
+                    final InputStream is = messageTableUrl.openStream();
                     this.table.load(is);
                     is.close();
                 }
             }
         } catch (IOException e) {
             log.error("IO Exception when loading string table", e);
-            this.table = null;
         }
         
         return this.table;
