@@ -55,15 +55,14 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $$Revision$$
  * 
  * $$Log$
- * $Revision 1.3  2006/10/07 16:01:21  phherlin
- * $Integrate Sven updates
- * $$
+ * $Revision 1.4  2006/10/08 23:11:06  phherlin
+ * $Review Sebastian code... and fix most PMD warnings
+ * $ $Revision 1.3 2006/10/07 16:01:21 phherlin $Integrate Sven updates $$
  * 
  */
 public class PackageRecord extends AbstractPMDRecord {
-
-    private IPackageFragment packageFragment;
-    private ProjectRecord parent;
+    final private IPackageFragment packageFragment;
+    final private ProjectRecord parent;
     private AbstractPMDRecord[] children;
 
     /**
@@ -73,29 +72,46 @@ public class PackageRecord extends AbstractPMDRecord {
      * @param record, the Project
      */
     public PackageRecord(IPackageFragment fragment, ProjectRecord record) {
-        packageFragment = fragment;
-        parent = record;
-        children = createChildren();
+        super();
+
+        if (fragment == null) {
+            throw new IllegalArgumentException("fragment cannot be null");
+        }
+
+        if (record == null) {
+            throw new IllegalArgumentException("record cannot be null");
+        }
+
+        this.packageFragment = fragment;
+        this.parent = record;
+        this.children = createChildren();
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getParent() */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getParent()
+     */
     public AbstractPMDRecord getParent() {
-        return parent;
+        return this.parent;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getChildren() */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getChildren()
+     */
     public AbstractPMDRecord[] getChildren() {
-        return children;
+        return this.children; // NOPMD by Herlin on 09/10/06 00:22
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResource() */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResource()
+     */
     public IResource getResource() {
+        IResource resource = null;
         try {
-            return packageFragment.getCorrespondingResource();
+            resource = this.packageFragment.getCorrespondingResource();
         } catch (JavaModelException jme) {
             PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_JAVAMODEL_EXCEPTION + this.toString(), jme);
         }
-        return null;
+        return resource;
     }
 
     /**
@@ -104,94 +120,117 @@ public class PackageRecord extends AbstractPMDRecord {
      * @return the Fragment
      */
     public IPackageFragment getFragment() {
-        return packageFragment;
+        return this.packageFragment;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#createChildren() */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#createChildren()
+     */
     protected final AbstractPMDRecord[] createChildren() {
-        ArrayList fileList = new ArrayList();
+        final List fileList = new ArrayList();
         try {
-            ICompilationUnit[] javaUnits = packageFragment.getCompilationUnits();
+            final ICompilationUnit[] javaUnits = this.packageFragment.getCompilationUnits();
             for (int k = 0; k < javaUnits.length; k++) {
-                IResource javaResource = javaUnits[k].getCorrespondingResource();
+                final IResource javaResource = javaUnits[k].getCorrespondingResource();
                 if (javaResource != null) {
-                    FileRecord record = new FileRecord(javaResource, this);
-                    fileList.add(record);
+                    fileList.add(new FileRecord(javaResource, this)); // NOPMD
+                    // by
+                    // Herlin
+                    // on
+                    // 09/10/06
+                    // 00:25
                 }
             }
         } catch (CoreException ce) {
             PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
         }
 
-        AbstractPMDRecord[] fileRecords = new AbstractPMDRecord[fileList.size()];
-        fileList.toArray(fileRecords);
-        return fileRecords;
+        return (AbstractPMDRecord[]) fileList.toArray(new AbstractPMDRecord[fileList.size()]);
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource) */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
+     */
     public AbstractPMDRecord addResource(IResource resource) {
-        ICompilationUnit unit = packageFragment.getCompilationUnit(resource.getName());
+        final ICompilationUnit unit = this.packageFragment.getCompilationUnit(resource.getName());
+        FileRecord file = null;
 
         // we want the File to be a java-File
         if (unit != null) {
             // we create a new FileRecord and add it to the List
-            FileRecord file = new FileRecord(resource, this);
-            List files = getChildrenAsList();
+            file = new FileRecord(resource, this);
+            final List files = getChildrenAsList();
             files.add(file);
 
-            children = new AbstractPMDRecord[files.size()];
-            files.toArray(children);
-            return file;
+            this.children = new AbstractPMDRecord[files.size()];
+            files.toArray(this.children);
         }
-        return null;
+
+        return file;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource) */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
+     */
     public AbstractPMDRecord removeResource(IResource resource) {
-        List files = getChildrenAsList();
+        final List files = getChildrenAsList();
+        AbstractPMDRecord removedFile = null;
+        boolean removed = false;
 
-        for (int i = 0; i < files.size(); i++) {
-            AbstractPMDRecord file = (AbstractPMDRecord) files.get(i);
+        for (int i = 0; (i < files.size()) && !removed; i++) {
+            final AbstractPMDRecord file = (AbstractPMDRecord) files.get(i);
 
             // if the file is in here, remove it
             if (file.getResource().equals(resource)) {
                 files.remove(i);
 
-                children = new AbstractPMDRecord[files.size()];
-                files.toArray(children);
-                return file;
+                this.children = new AbstractPMDRecord[files.size()]; // NOPMD
+                // by
+                // Herlin
+                // on
+                // 09/10/06
+                // 00:31
+                files.toArray(this.children);
+                removed = true;
+                removedFile = file;
             }
         }
 
-        return null;
+        return removedFile;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getName() */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getName()
+     */
     public String getName() {
+        String name = this.packageFragment.getElementName();
+
         // for the default Package we return a String saying "default Package"
-        if (packageFragment.isDefaultPackage())
-            return PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_DEFAULT_PACKAGE);
-        return packageFragment.getElementName();
+        if (this.packageFragment.isDefaultPackage()) {
+            name = PMDUiPlugin.getDefault().getStringTable().getString(StringKeys.MSGKEY_VIEW_DEFAULT_PACKAGE);
+        }
+
+        return name;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResourceType() */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResourceType()
+     */
     public int getResourceType() {
         return AbstractPMDRecord.TYPE_PACKAGE;
     }
 
+    /**
+     * @see Object#equals(Object)
+     */
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final PackageRecord other = (PackageRecord) obj;
-        if (packageFragment == null) {
-            if (other.packageFragment != null)
-                return false;
-        } else if (!packageFragment.equals(other.packageFragment))
-            return false;
-        return true;
+        return obj instanceof PackageRecord ? this.packageFragment.equals(((PackageRecord) obj).packageFragment) : false;
+    }
+
+    /**
+     * @see Object#hashCode()
+     */
+    public int hashCode() {
+        return this.packageFragment.hashCode();
     }
 }

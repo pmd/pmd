@@ -59,6 +59,9 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $$Revision$$
  * 
  * $$Log$
+ * $Revision 1.6  2006/10/08 23:11:06  phherlin
+ * $Review Sebastian code... and fix most PMD warnings
+ * $
  * $Revision 1.5  2006/10/08 22:19:34  phherlin
  * $Fix last Java warnings
  * $
@@ -68,9 +71,8 @@ import org.eclipse.jdt.core.JavaModelException;
  * 
  */
 public class ProjectRecord extends AbstractPMDRecord {
-
-    private IProject project;
-    private RootRecord parent;
+    final private IProject project;
+    final private RootRecord parent;
     private AbstractPMDRecord[] children;
 
     /**
@@ -81,6 +83,16 @@ public class ProjectRecord extends AbstractPMDRecord {
      */
     public ProjectRecord(IProject project, RootRecord record) {
         super();
+        
+        if (project == null) {
+            throw new IllegalArgumentException("project cannot be null");
+        }
+        
+        if (record == null) {
+            throw new IllegalArgumentException("record cannot be null");
+            
+        }
+
         this.project = project;
         this.parent = record;
         
@@ -90,50 +102,58 @@ public class ProjectRecord extends AbstractPMDRecord {
         
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getParent() */
+    /**
+     *  @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getParent()
+     */
     public AbstractPMDRecord getParent() {
-        return parent;
+        return this.parent;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getChildren() */
+    /**
+     *  @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getChildren()
+     */
     public AbstractPMDRecord[] getChildren() {
-        return children;
+        return this.children; // NOPMD by Herlin on 09/10/06 00:43
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResource() */
+    /** @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResource()
+     */
     public IResource getResource() {
-        return (IResource) project;
+        return this.project;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#createChildren() */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#createChildren()
+     * */
     protected final AbstractPMDRecord[] createChildren() {
-        List packageList = new ArrayList();
+        final List packageList = new ArrayList();
         try {
             // search for Project members
-            IResource[] members = project.members();
+            final IResource[] members = this.project.members();
             for (int i = 0; i < members.length; i++) {
 
                 // create JavaElements for each member
-                IJavaElement javaMember = JavaCore.create(members[i]);
-                if (javaMember == null)
-                    continue;
-                else if (javaMember instanceof IPackageFragmentRoot) {
-                    // if the Element is the Root of all Packages
-                    // get all packages from it and add them to the list
-                    // (e.g. for "org.eclipse.core.resources" and
-                    // "org.eclipse.core" the root is "org.eclipse.core")
-                    List packages = createPackagesFromFragmentRoot((IPackageFragmentRoot) javaMember);
+                final IJavaElement javaMember = JavaCore.create(members[i]);
+
+                // if the Element is the Root of all Packages
+                // get all packages from it and add them to the list
+                // (e.g. for "org.eclipse.core.resources" and
+                // "org.eclipse.core" the root is "org.eclipse.core")
+                if (javaMember instanceof IPackageFragmentRoot) {
+                    final List packages = createPackagesFromFragmentRoot((IPackageFragmentRoot) javaMember);
                     for (int j=0; j < packages.size(); j++) {
                         if (!packageList.contains(packages.get(j))) {
                             packageList.add(packages.get(j));
                         }
                     }
-                } else if (javaMember instanceof IPackageFragment) {
-                    // if the Element is a Package
-                    IPackageFragment fragment = (IPackageFragment) javaMember;
+                }
+                
+                // if the Element is a Package
+                else if (javaMember instanceof IPackageFragment) {
+                    final IPackageFragment fragment = (IPackageFragment) javaMember;
                     // ... get its Root and do the same as above
                     if (fragment.getParent() instanceof IPackageFragmentRoot) {
-                        List packages = createPackagesFromFragmentRoot((IPackageFragmentRoot) fragment.getParent());
+                        final List packages = createPackagesFromFragmentRoot((IPackageFragmentRoot) fragment.getParent());
                         for (int j=0; j < packages.size(); j++) {
                             if (!packageList.contains(packages.get(j))) {
                                 packageList.add(packages.get(j));
@@ -147,9 +167,7 @@ public class ProjectRecord extends AbstractPMDRecord {
         }
 
         // return the List as an Array of Packages
-        AbstractPMDRecord[] packageRecords = new AbstractPMDRecord[packageList.size()];
-        packageList.toArray(packageRecords);
-        return packageRecords;
+        return (AbstractPMDRecord[]) packageList.toArray(new AbstractPMDRecord[packageList.size()]);
     }
 
     /**
@@ -158,8 +176,8 @@ public class ProjectRecord extends AbstractPMDRecord {
      * @param root
      * @return
      */
-    protected final ArrayList createPackagesFromFragmentRoot(IPackageFragmentRoot root) {
-        ArrayList packages = new ArrayList();
+    protected final List createPackagesFromFragmentRoot(IPackageFragmentRoot root) {
+        final List packages = new ArrayList();
         IJavaElement[] fragments = null;
         try {
             // search for all children
@@ -168,7 +186,7 @@ public class ProjectRecord extends AbstractPMDRecord {
                 if (fragments[k] instanceof IPackageFragment) {
                     // create a PackageRecord for the Fragment
                     // and add it to the list
-                    packages.add(new PackageRecord((IPackageFragment) fragments[k], this));
+                    packages.add(new PackageRecord((IPackageFragment) fragments[k], this)); // NOPMD by Herlin on 09/10/06 00:47
                 }
             }
         } catch (JavaModelException jme) {
@@ -178,9 +196,11 @@ public class ProjectRecord extends AbstractPMDRecord {
         return packages;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getName() */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getName()
+     */
     public String getName() {
-        return project.getName();
+        return this.project.getName();
     }
 
     /**
@@ -189,72 +209,86 @@ public class ProjectRecord extends AbstractPMDRecord {
      * @return true, if the Project is open, false otherwise
      */
     public boolean isProjectOpen() {
-        return project.isOpen();
+        return this.project.isOpen();
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResourceType() */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResourceType()
+     */
     public int getResourceType() {
         return AbstractPMDRecord.TYPE_PROJECT;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource) */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
+     * */
     public AbstractPMDRecord addResource(IResource resource) {
+        AbstractPMDRecord addedResource = null;
         // we only care about Files
         if (resource instanceof IFile) {
-            IPackageFragment fragment = (IPackageFragment) JavaCore.create(resource.getParent());
+            final IPackageFragment fragment = (IPackageFragment) JavaCore.create(resource.getParent());
             PackageRecord packageRec;
 
             // we search int the children Packages for the File's Package
             // by comparing their Fragments
-            for (int k = 0; k < children.length; k++) {
+            for (int k = 0; (k < this.children.length) && (addedResource == null); k++) {
                 packageRec = (PackageRecord) children[k];
-                if (packageRec.getFragment().equals(fragment))
+                if (packageRec.getFragment().equals(fragment)) {
                     // if the Package exists
                     // we delegate to its addResource-function
-                    return packageRec.addResource(resource);
+                    addedResource = packageRec.addResource(resource);
+                }
             }
 
             // ... else we create a new Record for the new Package
-            packageRec = new PackageRecord(fragment, this);
-            List packages = getChildrenAsList();
-            packages.add(packageRec);
+            if (addedResource == null) {
+                packageRec = new PackageRecord(fragment, this);
+                final List packages = getChildrenAsList();
+                packages.add(packageRec);
 
-            // ... and we add a new FileRecord to it
-            children = new AbstractPMDRecord[packages.size()];
-            packages.toArray(children);
-            return packageRec.addResource(resource);
+                // ... and we add a new FileRecord to it
+                this.children = new AbstractPMDRecord[packages.size()];
+                packages.toArray(children);
+                addedResource = packageRec.addResource(resource);
+            }
         }
 
-        return null;
+        return addedResource;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource) */
+    /**
+     *  @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
+     */
     public AbstractPMDRecord removeResource(IResource resource) {
+        AbstractPMDRecord removedResource = null;
+        
         // we only care about Files
         if (resource instanceof IFile) {
-            IPackageFragment fragment = (IPackageFragment) JavaCore.create(resource.getParent());
+            final IPackageFragment fragment = (IPackageFragment) JavaCore.create(resource.getParent());
             PackageRecord packageRec;
 
             // like above we compare Fragments to find the right Package
-            for (int k = 0; k < children.length; k++) {
-                packageRec = (PackageRecord) children[k];
+            for (int k = 0; (k < this.children.length) && (removedResource == null); k++) {
+                packageRec = (PackageRecord) this.children[k];
                 if (packageRec.getFragment().equals(fragment)) {
 
                     // if we found it, we remove the File
-                    AbstractPMDRecord fileRec = packageRec.removeResource(resource);
+                    final AbstractPMDRecord fileRec = packageRec.removeResource(resource);
                     if (packageRec.getChildren().length == 0) {
                         // ... and if the Package is empty too
                         // we also remove it
-                        List packages = getChildrenAsList();
+                        final List packages = getChildrenAsList();
                         packages.remove(packageRec);
 
-                        children = new AbstractPMDRecord[packages.size()];
-                        packages.toArray(children);
+                        this.children = new AbstractPMDRecord[packages.size()]; // NOPMD by Herlin on 09/10/06 00:54
+                        packages.toArray(this.children);
                     }
-                    return fileRec;
+                    
+                    removedResource = fileRec;
                 }
             }
         }
-        return null;
+        
+        return removedResource;
     }
 }
