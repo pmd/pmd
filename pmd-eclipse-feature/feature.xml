@@ -33,6 +33,7 @@
 
    <plugin
          id="net.sourceforge.pmd.eclipse"
+         unpack="false"
          download-size="0"
          install-size="0"
          version="3.1.7"/>
