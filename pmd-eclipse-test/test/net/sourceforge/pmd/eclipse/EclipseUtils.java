@@ -63,6 +63,9 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/08 22:19:16  phherlin
+ * Fix last Java warnings
+ *
  * Revision 1.1  2006/06/18 22:29:51  phherlin
  * Begin refactoring the unit tests for the plugin
  * Revision 1.2 2005/12/30 16:29:15 phherlin
@@ -127,7 +130,6 @@ public class EclipseUtils {
             sourceFile.create(is, true, null);
         }
         is.close();
-        sourceFile.setLocal(true, IResource.DEPTH_INFINITE, null);
         project.refreshLocal(IResource.DEPTH_INFINITE, null);
 
         return sourceFile;

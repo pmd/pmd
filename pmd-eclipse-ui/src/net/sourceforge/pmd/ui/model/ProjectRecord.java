@@ -37,12 +37,7 @@
 package net.sourceforge.pmd.ui.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.SortedSet;
 
 import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
@@ -64,6 +59,9 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $$Revision$$
  * 
  * $$Log$
+ * $Revision 1.5  2006/10/08 22:19:34  phherlin
+ * $Fix last Java warnings
+ * $
  * $Revision 1.4  2006/10/07 16:01:21  phherlin
  * $Integrate Sven updates
  * $$

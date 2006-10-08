@@ -66,6 +66,9 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $$Revision$$
  * 
  * $$Log$
+ * $Revision 1.5  2006/10/08 22:19:34  phherlin
+ * $Fix last Java warnings
+ * $
  * $Revision 1.4  2006/10/07 16:01:21  phherlin
  * $Integrate Sven updates
  * $$
@@ -333,25 +336,33 @@ public class FileRecord extends AbstractPMDRecord {
      * @return the Number of Methods
      */
     public int getNumberOfMethods() {
-        return numberOfMethods; // deactivate this method for now
+        return this.numberOfMethods; // deactivate this method for now
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource) */
+    /**
+     *  @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#addResource(org.eclipse.core.resources.IResource)
+     */
     public AbstractPMDRecord addResource(IResource resource) {
         return null;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource) */
+    /**
+     *  @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#removeResource(org.eclipse.core.resources.IResource)
+     */
     public AbstractPMDRecord removeResource(IResource resource) {
         return null;
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getName() */
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getName()
+     */
     public String getName() {
-        return resource.getName();
+        return this.resource.getName();
     }
 
-    /* @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResourceType() */
+    /**
+     *  @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getResourceType()
+     */
     public int getResourceType() {
         return AbstractPMDRecord.TYPE_FILE;
     }

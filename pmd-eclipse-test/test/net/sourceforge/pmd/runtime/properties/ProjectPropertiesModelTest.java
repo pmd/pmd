@@ -35,9 +35,7 @@
  */
 package net.sourceforge.pmd.runtime.properties;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -51,10 +49,6 @@ import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
 import net.sourceforge.pmd.runtime.builder.PMDNature;
 import net.sourceforge.pmd.runtime.preferences.IPreferencesManager;
-import net.sourceforge.pmd.runtime.properties.IProjectProperties;
-import net.sourceforge.pmd.runtime.properties.IProjectPropertiesManager;
-import net.sourceforge.pmd.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.runtime.properties.impl.ProjectPropertiesImpl;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -69,6 +63,9 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/10/08 22:19:16  phherlin
+ * Fix last Java warnings
+ *
  * Revision 1.2  2006/10/06 16:42:03  phherlin
  * Continue refactoring of rullesets management
  *

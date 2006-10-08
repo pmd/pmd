@@ -55,7 +55,6 @@ import net.sourceforge.pmd.runtime.properties.PropertiesException;
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -68,7 +67,6 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -87,6 +85,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2006/10/08 22:18:49  phherlin
+ * Fix last Java warnings
+ *
  * Revision 1.5  2006/10/06 18:42:59  phherlin
  * Fix 1554639 Clear markers in Project JAVA-files and other bugs related to dataflows
  *

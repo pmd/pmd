@@ -44,6 +44,7 @@ import java.util.Properties;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
 
 import org.apache.log4j.Logger;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 
 /**
@@ -54,6 +55,9 @@ import org.eclipse.core.runtime.Path;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/10/08 22:19:33  phherlin
+ * Fix last Java warnings
+ *
  * Revision 1.2  2006/10/07 16:01:21  phherlin
  * Integrate Sven updates
  *
@@ -89,7 +93,7 @@ public class StringTable {
         try {
             if (this.table == null) {
                 this.table = new Properties();
-                final URL messageTableUrl = PMDUiPlugin.getDefault().find(new Path("$nl$/messages.properties"));
+                final URL messageTableUrl = FileLocator.find(PMDUiPlugin.getDefault().getBundle(), new Path("$nl$/messages.properties"), null);
                 if (messageTableUrl != null) {
                     final InputStream is = messageTableUrl.openStream();
                     this.table.load(is);
