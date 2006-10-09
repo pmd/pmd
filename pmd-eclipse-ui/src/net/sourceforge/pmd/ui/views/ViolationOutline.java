@@ -2,6 +2,7 @@ package net.sourceforge.pmd.ui.views;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
@@ -79,7 +80,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
 
     public void dispose() {
         // save the current State in a Memento
-        memento.putArrayList(PRIORITY_LIST, priorityFilter.getPriorityFilterList());
+        memento.putList(PRIORITY_LIST, priorityFilter.getPriorityFilterList());
         memento.save(PMDUiConstants.MEMENTO_OUTLINE_FILE);
 
         super.dispose();
@@ -117,11 +118,11 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
         if (page != null) {
             Integer[] widthArray = page.getColumnWidths();
             ArrayList widthList = new ArrayList(Arrays.asList(widthArray));
-            memento.putArrayList(COLUMN_WIDTHS, widthList);
+            memento.putList(COLUMN_WIDTHS, widthList);
 
             Integer[] sorterProps = page.getSorterProperties();
             ArrayList sorterList = new ArrayList(Arrays.asList(sorterProps));
-            memento.putArrayList(COLUMN_SORTER, sorterList);
+            memento.putList(COLUMN_SORTER, sorterList);
 
             memento.save(PMDUiConstants.ID_OUTLINE);
             page.dispose();
@@ -135,7 +136,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
      */
     private void createDropDownMenu() {
         IMenuManager manager = getViewSite().getActionBars().getMenuManager();
-        ArrayList filterList = priorityFilter.getPriorityFilterList();
+        List filterList = priorityFilter.getPriorityFilterList();
 
         // we add the PriorityFilter-Actions to this Menu
         Integer[] priorities = PMDUiPlugin.getDefault().getPriorityValues();
@@ -251,12 +252,12 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
                 // we care about the Widths of the Columns
                 Integer[] widthArray = oldPage.getColumnWidths();
                 ArrayList widthList = new ArrayList(Arrays.asList(widthArray));
-                memento.putArrayList(COLUMN_WIDTHS, widthList);
+                memento.putList(COLUMN_WIDTHS, widthList);
 
                 // ... and what Element is sorted, and in which way
                 Integer[] sorterProps = oldPage.getSorterProperties();
                 ArrayList sorterList = new ArrayList(Arrays.asList(sorterProps));
-                memento.putArrayList(COLUMN_SORTER, sorterList);
+                memento.putList(COLUMN_SORTER, sorterList);
             }
 
             // we load the stuff into the new Page

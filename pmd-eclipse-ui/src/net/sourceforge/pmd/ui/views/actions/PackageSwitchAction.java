@@ -43,9 +43,9 @@ public class PackageSwitchAction extends Action {
         // we simply use Functions declared in the Violations Overview
         // the View itself does the Rest, when refreshed
         if (isChecked()) {
-            violationView.setIsPackageFiltered(true);
+            violationView.setPackageFiltered(true);
         } else {
-            violationView.setIsPackageFiltered(false);
+            violationView.setPackageFiltered(false);
         }
         violationView.refresh();
     }

@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
@@ -193,11 +194,12 @@ public class ViewMemento {
      * @param key
      * @param valueList
      */
-    public void putArrayList(String key, ArrayList valueList) {
+    public void putList(String key, List valueList) {
         String valueString = "";
         for (int k = 0; k < valueList.size(); k++) {
-            if (k > 0)
+            if (k > 0) {
                 valueString += LIST_SEPARATOR;
+            }
             valueString += valueList.get(k).toString();
         }
         putString(key, valueString);

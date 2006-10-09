@@ -1,3 +1,39 @@
+/*
+ * Created on may 2006
+ *
+ * Copyright (c) 2006, PMD for Eclipse Development Team
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are
+ * met:
+ * 
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * The end-user documentation included with the redistribution, if
+ *       any, must include the following acknowledgement:
+ *       "This product includes software developed in part by support from
+ *        the Defense Advanced Research Project Agency (DARPA)"
+ *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
+ *       contributors may be used to endorse or promote products derived from
+ *       this software without specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+ * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER
+ * OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ * EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+ * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package net.sourceforge.pmd.ui;
 
 import net.sourceforge.pmd.ui.nls.StringKeys;
@@ -16,6 +52,14 @@ import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
+ * 
+ * @author Philippe Herlin
+ * @version $Revision$
+ * 
+ * $Log$
+ * Revision 1.2  2006/10/09 13:26:40  phherlin
+ * Review Sebastian code... and fix most PMD warnings
+ *
  */
 public class PMDUiPlugin extends AbstractUIPlugin {
     private static final Logger log = Logger.getLogger(PMDUiPlugin.class);
@@ -30,14 +74,8 @@ public class PMDUiPlugin extends AbstractUIPlugin {
 	 * The constructor.
 	 */
 	public PMDUiPlugin() {
+        super();
 		plugin = this;
-	}
-
-	/**
-	 * This method is called upon plug-in activation
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
 	}
 
 	/**
@@ -70,10 +108,10 @@ public class PMDUiPlugin extends AbstractUIPlugin {
      * Get an image corresponding to the severity
      */
     public Image getImage(String key, String iconPath) {
-        ImageRegistry registry = getImageRegistry();
+        final ImageRegistry registry = getImageRegistry();
         Image image = registry.get(key);
         if (image == null) {
-            ImageDescriptor descriptor = getImageDescriptor(iconPath);
+            final ImageDescriptor descriptor = getImageDescriptor(iconPath);
             if (descriptor != null) {
                 registry.put(key, descriptor);
                 image = registry.get(key);
@@ -151,7 +189,7 @@ public class PMDUiPlugin extends AbstractUIPlugin {
      */
     public String[] getPriorityLabels() {
         if (this.priorityLabels == null) {
-            StringTable stringTable = getStringTable();
+            final StringTable stringTable = getStringTable();
             this.priorityLabels = new String[]{
                 stringTable.getString(StringKeys.MSGKEY_PRIORITY_ERROR_HIGH),
                 stringTable.getString(StringKeys.MSGKEY_PRIORITY_ERROR),

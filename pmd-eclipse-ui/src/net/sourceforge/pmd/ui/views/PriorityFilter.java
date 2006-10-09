@@ -2,6 +2,7 @@ package net.sourceforge.pmd.ui.views;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
@@ -20,8 +21,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
  * @author SebastianRaffel ( 17.05.2005 )
  */
 public class PriorityFilter extends ViewerFilter {
-
-    private ArrayList priorityList;
+    private List priorityList;
 
     /**
      * Constructor
@@ -84,8 +84,8 @@ public class PriorityFilter extends ViewerFilter {
      * 
      * @param newList, an ArrayLust of Integers
      */
-    public void setPriorityFilterList(ArrayList newList) {
-        priorityList = newList;
+    public void setPriorityFilterList(List newList) {
+        this.priorityList = newList;
     }
 
     /**
@@ -93,8 +93,8 @@ public class PriorityFilter extends ViewerFilter {
      * 
      * @return an ArrayList of Integers
      */
-    public ArrayList getPriorityFilterList() {
-        return priorityList;
+    public List getPriorityFilterList() {
+        return this.priorityList;
     }
 
     /**

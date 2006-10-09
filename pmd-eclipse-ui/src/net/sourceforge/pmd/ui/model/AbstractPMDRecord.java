@@ -50,12 +50,15 @@ import org.eclipse.core.resources.IResource;
  * contains: the Root -> Project(s) -> Package(s) -> File(s)
  * 
  * @author SebastianRaffel ( 16.05.2005 ), Philippe Herlin, Sven Jacob
- * @version $$Revision$$
+ * @version $Revision$
  * 
- * $$Log$
- * $Revision 1.1  2006/10/07 16:01:21  phherlin
- * $Integrate Sven updates
- * $$
+ * $Log$
+ * Revision 1.2  2006/10/09 13:26:41  phherlin
+ * Review Sebastian code... and fix most PMD warnings
+ *
+ * Revision 1.1  2006/10/07 16:01:21  phherlin
+ * Integrate Sven updates
+ * 
  * 
  */
 public abstract class AbstractPMDRecord {

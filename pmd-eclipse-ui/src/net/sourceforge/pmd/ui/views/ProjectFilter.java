@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.ui.views;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sourceforge.pmd.ui.model.FileRecord;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
@@ -16,8 +17,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
  * @author SebastianRaffel  ( 17.05.2005 )
  */
 public class ProjectFilter extends ViewerFilter {
-	
-	private ArrayList projectFilterList;
+	private List projectFilterList;
 	
 	
 	/**
@@ -50,15 +50,15 @@ public class ProjectFilter extends ViewerFilter {
 	 * 
 	 * @param newList
 	 */
-	public void setProjectFilterList(ArrayList newList) {
-		projectFilterList = newList;
+	public void setProjectFilterList(List newList) {
+		this.projectFilterList = newList;
 	}
 	
 	/**
 	 * @return the List of filtered Projects
 	 */
-	public ArrayList getProjectFilterList() {
-		return projectFilterList;
+	public List getProjectFilterList() {
+		return this.projectFilterList;
 	}
 	
 	/**
