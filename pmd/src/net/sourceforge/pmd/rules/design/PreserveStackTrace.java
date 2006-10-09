@@ -5,6 +5,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTArgumentList;
 import net.sourceforge.pmd.ast.ASTCastExpression;
 import net.sourceforge.pmd.ast.ASTCatchStatement;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 public class PreserveStackTrace extends AbstractRule {
 
-    public Object visit(ASTCatchStatement node, Object data) {
+	public Object visit(ASTCatchStatement node, Object data) {
         String target = (((SimpleNode) node.jjtGetChild(0).jjtGetChild(1)).getImage());
         List lstThrowStatements = node.findChildrenOfType(ASTThrowStatement.class);
         for (Iterator iter = lstThrowStatements.iterator(); iter.hasNext();) {
@@ -40,19 +41,22 @@ public class PreserveStackTrace extends AbstractRule {
             } else if (args == null) {
                 SimpleNode child = (SimpleNode) throwStatement.jjtGetChild(0);
                 while (child != null && child.jjtGetNumChildren() > 0
-                        && !child.getClass().getName().equals("net.sourceforge.pmd.ast.ASTName")) {
+                        && !child.getClass().equals(ASTName.class)) {
                     child = (SimpleNode) child.jjtGetChild(0);
                 }
-                if (child != null
-                        && (!target.equals(child.getImage()) && !child.getImage().equals(target + ".fillInStackTrace"))) {
-                    Map vars = ((ASTName) child).getScope().getVariableDeclarations();
-                    for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-                        VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
-                        args = (ASTArgumentList) ((SimpleNode) decl.getNode().jjtGetParent())
-                                .getFirstChildOfType(ASTArgumentList.class);
-                        if (args != null) {
-                            ck(data, target, throwStatement, args);
-                        }
+                if (child != null){
+                    if( child.getClass().equals(ASTName.class) && (!target.equals(child.getImage()) && !child.getImage().equals(target + ".fillInStackTrace"))) {
+	                    Map vars = ((ASTName) child).getScope().getVariableDeclarations();
+	                    for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
+	                        VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
+	                        args = (ASTArgumentList) ((SimpleNode) decl.getNode().jjtGetParent())
+	                                .getFirstChildOfType(ASTArgumentList.class);
+	                        if (args != null) {
+	                            ck(data, target, throwStatement, args);
+	                        }
+	                    }
+                    } else if(child.getClass().equals(ASTClassOrInterfaceType.class)){
+        				addViolation((RuleContext) data, throwStatement);
                     }
                 }
             }
@@ -60,15 +64,17 @@ public class PreserveStackTrace extends AbstractRule {
         return super.visit(node, data);
     }
 
-    private void ck(Object data, String target, ASTThrowStatement throwStatement, ASTArgumentList args) {
-        try {
-            List lst = args.findChildNodesWithXPath("//Name[@Image='" + target + "']");
-            if (lst.size() == 0) {
-                RuleContext ctx = (RuleContext) data;
-                addViolation(ctx, throwStatement);
-            }
-        } catch (JaxenException e) {
-            e.printStackTrace();
-        }
-    }
+	private void ck(Object data, String target,
+			ASTThrowStatement throwStatement, ASTArgumentList args) {
+		try {
+			List lst = args.findChildNodesWithXPath("//Name[@Image='" + target
+					+ "']");
+			if (lst.size() == 0) {
+				RuleContext ctx = (RuleContext) data;
+				addViolation(ctx, throwStatement);
+			}
+		} catch (JaxenException e) {
+			e.printStackTrace();
+		}
+	}
 }

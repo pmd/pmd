@@ -7,6 +7,7 @@ Fixed bug 1570915 - AvoidRethrowingException no longer reports a false positive 
 Fixed bug 1571324 - UselessStringValueOf no longer reports a false positive for additive expressions.
 Fixed CSVRenderer - had flipped line and priority columns
 Applied patch 1551189 - SingularField false + for initialization blocks
+Fixed bug 1573795 - PreserveStackTrace doesn't throw CastClassException on exception with 0 args
 
 October 4, 2006 - 3.8:
 New rules:

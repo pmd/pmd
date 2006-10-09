@@ -31,6 +31,8 @@ public class PreserveStackTraceTest extends SimpleAggregatorTst {
                 new TestDescriptor(TEST9_OK, "9, Excetion is cast, OK", 0, rule),
                 new TestDescriptor(TEST10_OK, "10, Throwing new Exception, OK", 0, rule),
                 new TestDescriptor(TEST11_OK, "11, Throwing new Exception, OK", 0, rule),
+                new TestDescriptor(TEST12_OK, "12, Catch and throw RuntimeException", 0, rule),
+                new TestDescriptor(TEST13_FAIL, "13, Catch and throw RuntimeException, fail", 1, rule),
             });
     }
 
@@ -166,4 +168,27 @@ public class PreserveStackTraceTest extends SimpleAggregatorTst {
         "        }" + PMD.EOL +
         "    }" + PMD.EOL +
         "}";
+
+    public static final String TEST12_OK = 
+        "public class B {" + PMD.EOL +
+        "public void bla(){" + PMD.EOL +
+        "try {" + PMD.EOL +
+        ";" + PMD.EOL +
+        "} catch (IllegalStateException e) {" + PMD.EOL +
+        "throw new RuntimeException(e);" + PMD.EOL +
+        "}" + PMD.EOL +
+        "}" + PMD.EOL +
+        "}";
+
+    public static final String TEST13_FAIL = 
+        "public class B {" + PMD.EOL +
+        "public void bla(){" + PMD.EOL +
+        "try {" + PMD.EOL +
+        ";" + PMD.EOL +
+        "} catch (IllegalStateException e) {" + PMD.EOL +
+        "throw new RuntimeException();" + PMD.EOL +
+        "}" + PMD.EOL +
+        "}" + PMD.EOL +
+        "}";
+    	
 }
