@@ -101,7 +101,7 @@
             <li>Erik Thauvin - reported IDEA integration problem</li>
             <li>John Kenny - reported bug in ConsecutiveLiteralAppends</li>
             <li>Tom Judge - patch for fix to C/C++ multiline literal support for CPD, patch for including .cc files in C++ CPD checks, patch for JDK compatibility problems</li>
-            <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - UnusedNullCheckInEquals, MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray</li>
+            <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - UnusedNullCheckInEquals, MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray, BigIntegerInstantiation_1.4, BigIntegerInstantiation_1.5</li>
             <li>Sean Mountcastle - reported documentation bug</li>
             <li>Greg Broderick - provided patch for 'minimum priority' support</li>
             <li>George Sexton - Bug report 1379701 for CompareObjectsWithEquals, suggested new rule for Additional String Concatenation Warnings in StringBuffer.</li>
