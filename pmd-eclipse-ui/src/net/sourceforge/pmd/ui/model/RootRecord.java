@@ -48,12 +48,17 @@ import org.eclipse.core.resources.IWorkspaceRoot;
  * instantiated
  * 
  * @author SebastianRaffel ( 16.05.2005 ), Philippe Herlin, Sven Jacob
- * @version $$Revision$$
+ * @version $Revision$
  * 
- * $$Log$
- * $Revision 1.4  2006/10/08 23:11:06  phherlin
- * $Review Sebastian code... and fix most PMD warnings
- * $ $Revision 1.3 2006/10/07 16:01:21 phherlin $Integrate Sven updates $$
+ * $Log$
+ * Revision 1.5  2006/10/09 13:32:47  phherlin
+ * Fix mistake in CVS tags (double $$)
+ *
+ * Revision 1.4  2006/10/08 23:11:06  phherlin
+ * Review Sebastian code... and fix most PMD warnings
+ * 
+ * Revision 1.3 2006/10/07 16:01:21 phherlin
+ * Integrate Sven updates
  * 
  */
 public class RootRecord extends AbstractPMDRecord {

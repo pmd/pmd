@@ -63,15 +63,18 @@ import org.eclipse.jdt.core.JavaModelException;
  * AbstractPMDRecord for Files
  * 
  * @author SebastianRaffel ( 16.05.2005 ), Philippe Herlin, Sven Jacob
- * @version $$Revision$$
+ * @version $Revision$
  * 
- * $$Log$
- * $Revision 1.5  2006/10/08 22:19:34  phherlin
- * $Fix last Java warnings
- * $
- * $Revision 1.4  2006/10/07 16:01:21  phherlin
- * $Integrate Sven updates
- * $$
+ * $Log$
+ * Revision 1.6  2006/10/09 13:32:47  phherlin
+ * Fix mistake in CVS tags (double $$)
+ *
+ * Revision 1.5  2006/10/08 22:19:34  phherlin
+ * Fix last Java warnings
+ * 
+ * Revision 1.4  2006/10/07 16:01:21  phherlin
+ * Integrate Sven updates
+ * 
  * 
  */
 public class FileRecord extends AbstractPMDRecord {
