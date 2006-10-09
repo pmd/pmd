@@ -284,7 +284,6 @@
             <li>Sebastian Raffel - Great job on the Eclipse PMD perspective, new views and dataflow analysis support</li>
             <li>Ebu - Eclipse smoothed icons</li>
             <li>Jacques Lebourgeois - Eclipse fix malformed UTF-8 characters</li>
-            <li>Eduard Naum - Eclipse fix JDK 1.3 runtime problem</li>
             <li>Chris Grindstaff - Eclipse fix SWTException when PMD is run on a file with syntax error</li>
         </ul>
         </subsection>

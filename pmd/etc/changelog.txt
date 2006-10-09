@@ -1,6 +1,7 @@
 ?????, 2006 - 3.9:
 New rules:
     Basic ruleset: BigIntegerInstantiation(1.4 and 1.5)
+PMD now requires JDK 1.4 to run.  Note that, however, PMD will still analyze code from earlier JDKs.    
 SummaryHTML Report changes from Brent Fisher - now contains linePrefix to support source output from javadoc using "linksource"
 Fixed bug 1570915 - AvoidRethrowingException no longer reports a false positive for certain nested exceptions.
 Fixed bug 1571324 - UselessStringValueOf no longer reports a false positive for additive expressions.
