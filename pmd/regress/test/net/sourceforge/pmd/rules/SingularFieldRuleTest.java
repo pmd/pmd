@@ -34,6 +34,7 @@ public class SingularFieldRuleTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST17, "failure, variable accessed twice in same method", 1, rule),
             new TestDescriptor(TEST18, "failure, static", 1, rule),
             new TestDescriptor(TEST19, "failure, second method re-uses class level name", 1, rule),
+            new TestDescriptor(TEST20, "initialized in static initialization block", 0, rule),
         });
     }
 
@@ -249,4 +250,17 @@ public class SingularFieldRuleTest extends SimpleAggregatorTst {
         " }" + PMD.EOL +
         "}";
     
+    private static final String TEST20 =
+            "public class Foo {" + PMD.EOL +
+            " private static Foo FOO = new Foo();" + PMD.EOL +
+            " private int x;" + PMD.EOL +
+            " static {" + PMD.EOL +
+            "  FOO.x = 5; " + PMD.EOL +
+            " }" + PMD.EOL +
+            " int bar(int y) {" + PMD.EOL +
+            "  x = y + 5; " + PMD.EOL +
+            "  return x;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
 }

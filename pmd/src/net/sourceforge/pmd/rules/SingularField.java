@@ -8,6 +8,7 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -35,7 +36,10 @@ public class SingularField extends AbstractRule {
                 if (method == null) {
                     method = (SimpleNode) location.getFirstParentOfType(ASTConstructorDeclaration.class);
                     if (method == null) {
-                        continue;
+                    	method = (SimpleNode) location.getFirstParentOfType(ASTInitializer.class);
+                    	if (method == null) {
+                    		continue;
+                    	}
                     }
                 }
 
