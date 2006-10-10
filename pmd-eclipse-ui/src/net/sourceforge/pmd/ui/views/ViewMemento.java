@@ -44,6 +44,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import net.sourceforge.pmd.ui.PMDUiPlugin;
@@ -62,14 +63,16 @@ import org.eclipse.ui.XMLMemento;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/10/10 22:19:59  phherlin
+ * Review Sebastian code... and fix most PMD warnings
+ *
  * Revision 1.4  2006/10/10 21:43:20  phherlin
  * Review Sebastian code... and fix most PMD warnings
  *
  */
 public class ViewMemento {
-
-    private IPath path;
-    private File file;
+    final private IPath path; // NOPMD by Herlin on 11/10/06 00:15
+    final private File file;
     private XMLMemento memento;
 
     protected final static String XML_PREFIX = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
@@ -85,27 +88,38 @@ public class ViewMemento {
      * @param type, a String identifying the View, used for the File's Name
      */
     public ViewMemento(String type) {
-        path = PMDUiPlugin.getDefault().getStateLocation();
-        file = new File(path.toString(), type);
+        this.path = PMDUiPlugin.getDefault().getStateLocation();
+        this.file = new File(this.path.toString(), type);
 
         // we check for an existing XML-File
         // and create one, if needed
-        if ((!file.exists()) || (checkForXMLFile(file) == false))
-            createNewFile(file);
+        if ((!this.file.exists()) || (!checkForXMLFile(this.file))) {
+            createNewFile(this.file);
+        }
 
         // then we create a ReadRoot for the Memento
-        memento = null;
+        FileReader reader = null;
         try {
-            FileReader reader = new FileReader(file);
-            memento = XMLMemento.createReadRoot(reader);
-            reader.close();
+            reader = new FileReader(file);
+            this.memento = XMLMemento.createReadRoot(reader);
         } catch (WorkbenchException wbe) {
             PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION + this.toString(), wbe);
         } catch (FileNotFoundException fnfe) {
             PMDUiPlugin.getDefault().logError(
                     StringKeys.MSGKEY_ERROR_FILE_NOT_FOUND + path.toString() + "/" + type + " in " + this.toString(), fnfe);
-        } catch (IOException ioe) {
-            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) { // NOPMD by Herlin on 10/10/06 23:55
+                    // Ignored
+                }
+            }
+        }
+        
+        // Validate that memento has correctly been build
+        if (this.memento == null) {
+            throw new IllegalStateException("Memento has not been built correctly. Check error log for details");
         }
     }
 
@@ -115,12 +129,20 @@ public class ViewMemento {
      * @param file
      */
     protected final void createNewFile(File file) {
+        FileWriter writer = null;
         try {
-            FileWriter writer = new FileWriter(file);
+            writer = new FileWriter(file);
             writer.write(XML_PREFIX + "\n" + "<" + MEMENTO_PREFIX + "/>");
-            writer.close();
         } catch (IOException ioe) {
             PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) { // NOPMD by Herlin on 10/10/06 23:55
+                    // ignored
+                }
+            }
         }
     }
 
@@ -131,28 +153,34 @@ public class ViewMemento {
      * @return true, if the File is a XML-File we can use, false otherwise
      */
     protected final boolean checkForXMLFile(File file) {
+        boolean isXmlFile = false;
+        BufferedReader contentReader = null;
         try {
-            BufferedReader contentReader = new BufferedReader(new FileReader(file));
+            contentReader = new BufferedReader(new FileReader(file));
 
             while (contentReader.ready()) {
-                String line = contentReader.readLine();
-                if (line.length() == 0)
-                    continue;
-
-                // the first Line of Text has to be the XML-Prefix
-                if (line.equalsIgnoreCase(XML_PREFIX))
-                    return true;
-                else
-                    return false;
+                final String line = contentReader.readLine();
+                if (line.length() != 0) {
+                    // the first Line of Text has to be the XML-Prefix
+                    isXmlFile = XML_PREFIX.equalsIgnoreCase(line);
+                }
             }
         } catch (FileNotFoundException fnfe) {
             PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_FILE_NOT_FOUND + file.toString() + " in " + this.toString(),
                     fnfe);
         } catch (IOException ioe) {
             PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
+        } finally {
+            if (contentReader != null) {
+                try {
+                    contentReader.close();
+                } catch (IOException e) { // NOPMD by Herlin on 10/10/06 23:57
+                    // Ignored
+                }
+            }
         }
 
-        return false;
+        return isXmlFile;
     }
 
     /**
@@ -161,13 +189,21 @@ public class ViewMemento {
      * @param type
      */
     public void save(String type) {
-        if (memento != null) {
+        if (this.memento != null) {
+            FileWriter writer = null;
             try {
-                FileWriter writer = new FileWriter(file);
-                memento.save(writer);
-                writer.close();
+                writer = new FileWriter(this.file);
+                this.memento.save(writer);
             } catch (IOException ioe) {
                 PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_IO_EXCEPTION + this.toString(), ioe);
+            } finally {
+                if (writer == null) {
+                    try {
+                        writer.close();
+                    } catch (IOException e) { // NOPMD by Herlin on 11/10/06 00:00
+                        // Ignored
+                    }
+                }
             }
         }
     }
@@ -179,18 +215,18 @@ public class ViewMemento {
      * @return a Memento
      */
     private IMemento getAttribute(String name) {
-        IMemento[] mementos = memento.getChildren(ATTRIBUTE_PREFIX);
+        final IMemento[] mementos = this.memento.getChildren(ATTRIBUTE_PREFIX);
         IMemento mem = null;
 
         for (int k = 0; k < mementos.length; k++) {
-            String attrName = mementos[k].getString(ATTR_NAME);
-            if (!name.equalsIgnoreCase(attrName))
-                continue;
-            mem = mementos[k];
+            final String attrName = mementos[k].getString(ATTR_NAME);
+            if (name.equalsIgnoreCase(attrName)) {
+                mem = mementos[k];
+            }
         }
 
         if (mem == null) {
-            mem = memento.createChild(ATTRIBUTE_PREFIX);
+            mem = this.memento.createChild(ATTRIBUTE_PREFIX);
             mem.putString(ATTR_NAME, name);
         }
 
@@ -204,7 +240,7 @@ public class ViewMemento {
      * @param value
      */
     public void putString(String key, String value) {
-        IMemento mem = getAttribute(key);
+        final IMemento mem = getAttribute(key);
         mem.putString(ATTR_VALUE, value);
     }
 
@@ -215,7 +251,7 @@ public class ViewMemento {
      * @param value
      */
     public void putInteger(String key, int value) {
-        IMemento mem = getAttribute(key);
+        final IMemento mem = getAttribute(key);
         mem.putInteger(ATTR_VALUE, value);
     }
 
@@ -226,7 +262,7 @@ public class ViewMemento {
      * @param value
      */
     public void putFloat(String key, float value) {
-        IMemento mem = getAttribute(key);
+        final IMemento mem = getAttribute(key);
         mem.putFloat(ATTR_VALUE, value);
     }
 
@@ -237,14 +273,15 @@ public class ViewMemento {
      * @param valueList
      */
     public void putList(String key, List valueList) {
-        String valueString = "";
+        final StringBuffer valueString = new StringBuffer();
         for (int k = 0; k < valueList.size(); k++) {
             if (k > 0) {
-                valueString += LIST_SEPARATOR;
+                valueString.append(LIST_SEPARATOR);
             }
-            valueString += valueList.get(k).toString();
+            valueString.append(valueList.get(k).toString());
         }
-        putString(key, valueString);
+
+        putString(key, valueString.toString());
     }
 
     /**
@@ -254,7 +291,7 @@ public class ViewMemento {
      * @return a String with the Value
      */
     public String getString(String key) {
-        IMemento mem = getAttribute(key);
+        final IMemento mem = getAttribute(key);
         return mem.getString(ATTR_VALUE);
     }
 
@@ -265,7 +302,7 @@ public class ViewMemento {
      * @return an Integer with the Value
      */
     public Integer getInteger(String key) {
-        IMemento mem = getAttribute(key);
+        final IMemento mem = getAttribute(key);
         return mem.getInteger(ATTR_VALUE);
     }
 
@@ -276,7 +313,7 @@ public class ViewMemento {
      * @return a Float with the Value
      */
     public Float getFloat(String key) {
-        IMemento mem = getAttribute(key);
+        final IMemento mem = getAttribute(key);
         return mem.getFloat(ATTR_VALUE);
     }
 
@@ -286,20 +323,20 @@ public class ViewMemento {
      * @param key
      * @return ArrayList of Integer-Values
      */
-    public ArrayList getIntegerList(String key) {
-        String valueString = getString(key);
-        if (valueString == null)
-            return null;
-
-        ArrayList valuelist = new ArrayList();
-        String[] objects = valueString.split(LIST_SEPARATOR);
-        for (int k = 0; k < objects.length; k++) {
-            if (objects[k].trim().length() == 0) {
-                valuelist.add(new Integer(0));
-            } else {
-                valuelist.add(new Integer(objects[k]));
+    public List getIntegerList(String key) {
+        final ArrayList valuelist = new ArrayList();
+        final String valueString = getString(key);
+        if (valueString != null) {
+            final String[] objects = valueString.split(LIST_SEPARATOR);
+            for (int k = 0; k < objects.length; k++) {
+                if (objects[k].trim().length() == 0) {
+                    valuelist.add(new Integer(0)); // NOPMD by Herlin on 11/10/06 00:13
+                } else {
+                    valuelist.add(new Integer(objects[k])); // NOPMD by Herlin on 11/10/06 00:14
+                }
             }
         }
+
         return valuelist;
     }
 
@@ -309,12 +346,13 @@ public class ViewMemento {
      * @param key
      * @return a ArrayList of String values
      */
-    public ArrayList getStringList(String key) {
-        String valueString = getString(key);
-        if (valueString == null)
-            return null;
+    public List getStringList(String key) {
+        List valuelist = Collections.EMPTY_LIST;
+        final String valueString = getString(key);
+        if (valueString != null) {
+            valuelist = new ArrayList(Arrays.asList(valueString.split(LIST_SEPARATOR)));
+        }
 
-        ArrayList valuelist = new ArrayList(Arrays.asList(valueString.split(LIST_SEPARATOR)));
         return valuelist;
     }
 }

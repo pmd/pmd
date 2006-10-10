@@ -71,7 +71,7 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
         memento = new ViewMemento(PMDUiConstants.MEMENTO_OUTLINE_FILE);
         priorityFilter = new PriorityFilter();
         if (memento != null) {
-            ArrayList priorityList = memento.getIntegerList(PRIORITY_LIST);
+            List priorityList = memento.getIntegerList(PRIORITY_LIST);
             if (priorityList != null)
                 // set the loaded List for the Priority Filter
                 priorityFilter.setPriorityFilterList(priorityList);
@@ -262,14 +262,14 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
 
             // we load the stuff into the new Page
             if (newPage != null) {
-                ArrayList widthList = memento.getIntegerList(COLUMN_WIDTHS);
+                List widthList = memento.getIntegerList(COLUMN_WIDTHS);
                 if (widthList != null) {
                     Integer[] widthArray = new Integer[widthList.size()];
                     widthList.toArray(widthArray);
                     newPage.setColumnWidths(widthArray);
                 }
 
-                ArrayList sorterList = memento.getIntegerList(COLUMN_SORTER);
+                List sorterList = memento.getIntegerList(COLUMN_SORTER);
                 if (sorterList != null) {
                     Integer[] sorterProps = new Integer[sorterList.size()];
                     sorterList.toArray(sorterProps);
