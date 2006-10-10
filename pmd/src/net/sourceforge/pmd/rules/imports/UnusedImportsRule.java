@@ -34,7 +34,7 @@ public class UnusedImportsRule extends AbstractRule {
         if (!node.isImportOnDemand()) {
             ASTName importedType = (ASTName) node.jjtGetChild(0);
             String className;
-            if (importedType.getImage().indexOf('.') != -1) {
+            if (isQualifiedName(importedType)) {
                 int lastDot = importedType.getImage().lastIndexOf('.') + 1;
                 className = importedType.getImage().substring(lastDot);
             } else {
@@ -58,7 +58,7 @@ public class UnusedImportsRule extends AbstractRule {
 
     private void check(SimpleNode node) {
         String name;
-        if (node.getImage().indexOf('.') == -1) {
+        if (!isQualifiedName(node)) {
             name = node.getImage();
         } else {
             name = node.getImage().substring(0, node.getImage().indexOf('.'));
