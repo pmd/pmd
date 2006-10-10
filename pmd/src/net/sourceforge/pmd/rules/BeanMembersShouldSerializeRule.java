@@ -3,29 +3,42 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.ast.ASTResultType;
-import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.ast.ASTResultType;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+
 public class BeanMembersShouldSerializeRule extends AbstractRule {
 
+	private String prefixProperty = getStringProperty("prefix");
+	
+	private static String[] imagesOf(List simpleNodes) {
+		
+        String[] imageArray = new String[simpleNodes.size()];
+        
+        for (int i = 0; i < simpleNodes.size(); i++) {
+        	imageArray[i] = ((SimpleNode) simpleNodes.get(i)).getImage();
+        }
+        return imageArray;
+	}
+	
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
             return data;
         }
 
         Map methods = node.getScope().getEnclosingClassScope().getMethodDeclarations();
-        List getSetMethList = new ArrayList();
+        List getSetMethList = new ArrayList(methods.size());
         for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
             ASTMethodDeclarator mnd = ((MethodNameDeclaration) i.next()).getMethodNameDeclaratorNode();
             if (isBeanAccessor(mnd)) {
@@ -33,11 +46,8 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             }
         }
 
-        String[] methNameArray = new String[getSetMethList.size()];
-        for (int i = 0; i < getSetMethList.size(); i++) {
-            methNameArray[i] = ((ASTMethodDeclarator) getSetMethList.get(i)).getImage();
-        }
-
+        String[] methNameArray = imagesOf(getSetMethList);
+        
         Arrays.sort(methNameArray);
 
         Map vars = node.getScope().getVariableDeclarations();
@@ -58,17 +68,20 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
     }
 
     private String trimIfPrefix(String img) {
-        if (getStringProperty("prefix") != null && img.startsWith(getStringProperty("prefix"))) {
-            return img.substring(getStringProperty("prefix").length());
+        if (prefixProperty != null && img.startsWith(prefixProperty)) {
+            return img.substring(prefixProperty.length());
         }
         return img;
     }
 
     private boolean isBeanAccessor(ASTMethodDeclarator meth) {
-        if (meth.getImage().startsWith("get") || meth.getImage().startsWith("set")) {
+    	
+    	String methodName = meth.getImage();
+    	
+        if (methodName.startsWith("get") || methodName.startsWith("set")) {
             return true;
         }
-        if (meth.getImage().startsWith("is")) {
+        if (methodName.startsWith("is")) {
             ASTResultType ret = (ASTResultType) meth.jjtGetParent().jjtGetChild(0);
             List primitives = ret.findChildrenOfType(ASTPrimitiveType.class);
             if (!primitives.isEmpty() && ((ASTPrimitiveType) primitives.get(0)).isBoolean()) {
