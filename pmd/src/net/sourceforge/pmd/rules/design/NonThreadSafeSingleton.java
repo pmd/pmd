@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
 
@@ -75,10 +76,17 @@ public class NonThreadSafeSingleton extends AbstractRule {
                     ASTStatementExpression expr = (ASTStatementExpression) oper.jjtGetParent();
                     if (expr.jjtGetChild(0).getClass().equals(ASTPrimaryExpression.class) && ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetChild(0).getClass().equals(ASTPrimaryPrefix.class)) {
                         ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetChild(0);
-                        ASTName name = (ASTName) pp.jjtGetChild(0);
-                        if (fieldDecls.containsKey(name.getImage())) {
-                            violation = true;
+                        String name = null;
+                        if (pp.usesThisModifier()) {
+                        	ASTPrimarySuffix priSuf = (ASTPrimarySuffix)expr.getFirstChildOfType(ASTPrimarySuffix.class); 
+                        	name = priSuf.getImage();
+						} else {
+							ASTName astName = (ASTName) pp.jjtGetChild(0);
+							name = astName.getImage();
                         }
+						if (fieldDecls.containsKey(name)) {
+							violation = true;
+						}
                     }
                 }
                 if (violation) {

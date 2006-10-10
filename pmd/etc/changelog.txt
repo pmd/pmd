@@ -8,6 +8,7 @@ Fixed bug 1571324 - UselessStringValueOf no longer reports a false positive for 
 Fixed CSVRenderer - had flipped line and priority columns
 Applied patch 1551189 - SingularField false + for initialization blocks
 Fixed bug 1573795 - PreserveStackTrace doesn't throw CastClassException on exception with 0 args
+Fixed bug 1573591 - NonThreadSafeSingleton doesn't throw NPE when using this keyword
 
 October 4, 2006 - 3.8:
 New rules:

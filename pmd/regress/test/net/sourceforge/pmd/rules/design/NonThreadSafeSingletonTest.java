@@ -23,6 +23,7 @@ public class NonThreadSafeSingletonTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST5, "failure case, two if statements", 1, rule),
             new TestDescriptor(TEST6, "failure case, compound if statement", 1, rule),
             new TestDescriptor(TEST7, "failure case 2", 1, rule),
+            new TestDescriptor(TEST8, "From defect 1573591", 0, rule),
         });
     }
 
@@ -99,5 +100,17 @@ public class NonThreadSafeSingletonTest extends SimpleAggregatorTst {
         "  return buz;" + PMD.EOL +
         " }" + PMD.EOL +
         "}";
+    
+    public static final String TEST8 = 
+    	"public class A {" + PMD.EOL +
+    	"public final static String FOO = \"0\";" + PMD.EOL +
+    	"private String bar;" + PMD.EOL +
+    	"public void bla() {" + PMD.EOL +
+    	"if (this.bar == null) {" + PMD.EOL +
+    	"this.bar = FOO;" + PMD.EOL +
+    	"}" + PMD.EOL +
+    	"}" + PMD.EOL +
+    	"}";
+
 }
 
