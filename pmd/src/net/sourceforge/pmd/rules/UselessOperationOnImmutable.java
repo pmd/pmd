@@ -1,5 +1,8 @@
 package net.sourceforge.pmd.rules;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
@@ -7,10 +10,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * An operation on an Immutable object (BigDecimal or BigInteger) won't change
@@ -22,12 +22,12 @@ public class UselessOperationOnImmutable extends AbstractRule {
     /**
      * These are the methods which are immutable
      */
-    private static final List targetMethods = Arrays.asList(new String[] { ".add", ".multiply", ".divide", ".subtract", ".setScale", ".negate", ".movePointLeft", ".movePointRight", ".pow", ".shiftLeft", ".shiftRight" });
+    private static final Set targetMethods = CollectionUtil.asSet(new String[] { ".add", ".multiply", ".divide", ".subtract", ".setScale", ".negate", ".movePointLeft", ".movePointRight", ".pow", ".shiftLeft", ".shiftRight" });
 
     /**
      * These are the classes that the rule can apply to
      */
-    private static final List targetClasses = Arrays.asList(new String[] { "java.math.BigDecimal", "BigDecimal", "java.math.BigInteger", "BigInteger" });
+    private static final Set targetClasses = CollectionUtil.asSet(new String[] { "java.math.BigDecimal", "BigDecimal", "java.math.BigInteger", "BigInteger" });
 
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
 
