@@ -62,7 +62,8 @@ public class IDEAJRenderer extends AbstractRenderer implements Renderer {
         for (Iterator i = report.iterator(); i.hasNext();) {
             IRuleViolation rv = (IRuleViolation) i.next();
             buf.append(rv.getDescription() + PMD.EOL);
-            buf.append(" at " + getFullyQualifiedClassName(rv.getFilename(), sourcePath) + ".method(" + getSimpleFileName(rv.getFilename()) + ":" + rv.getBeginLine() + ")" + PMD.EOL);
+            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFilename(), sourcePath)).append(".method(");
+            buf.append(getSimpleFileName(rv.getFilename())).append(':').append(rv.getBeginLine()).append(')').append(PMD.EOL);
         }
         return buf.toString();
     }
@@ -71,8 +72,8 @@ public class IDEAJRenderer extends AbstractRenderer implements Renderer {
         StringBuffer buf = new StringBuffer();
         for (Iterator i = report.iterator(); i.hasNext();) {
             IRuleViolation rv = (IRuleViolation) i.next();
-            buf.append(rv.getDescription() + PMD.EOL);
-            buf.append(" at " + classAndMethod + "(" + file + ":" + rv.getBeginLine() + ")" + PMD.EOL);
+            buf.append(rv.getDescription()).append(PMD.EOL);
+            buf.append(" at ").append(classAndMethod).append('(').append(file).append(':').append(rv.getBeginLine()).append(')').append(PMD.EOL);
         }
         return buf.toString();
     }
