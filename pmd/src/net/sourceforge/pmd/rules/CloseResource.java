@@ -125,16 +125,9 @@ public class CloseResource extends AbstractRule {
             addViolation(data, id, clazz.getImage());
         }
     }
-
+    
     private boolean importsJavaSqlPackage(ASTCompilationUnit node) {
-        List nodes = node.findChildrenOfType(ASTImportDeclaration.class);
-        for (Iterator i = nodes.iterator(); i.hasNext();) {
-            ASTImportDeclaration n = (ASTImportDeclaration) i.next();
-            if (n.getPackageName().startsWith("java.sql")) {
-                return true;
-            }
-        }
-        return false;
+        return importsPackage(node, "java.sql");
     }
 
 }

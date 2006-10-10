@@ -5,6 +5,7 @@ package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -245,5 +246,17 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     
     public static boolean isQualifiedName(SimpleNode node) {
     	return node.getImage().indexOf('.') != -1;
+    }
+    
+    public static boolean importsPackage(ASTCompilationUnit node, String packageName) {
+    	
+        List nodes = node.findChildrenOfType(ASTImportDeclaration.class);
+        for (Iterator i = nodes.iterator(); i.hasNext();) {
+            ASTImportDeclaration n = (ASTImportDeclaration) i.next();
+            if (n.getPackageName().startsWith(packageName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
