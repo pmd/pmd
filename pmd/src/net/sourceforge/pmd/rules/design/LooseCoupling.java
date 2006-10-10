@@ -3,38 +3,28 @@
  */
 package net.sourceforge.pmd.rules.design;
 
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.Node;
-
-import java.util.HashSet;
-import java.util.Set;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public class LooseCoupling extends AbstractRule {
 
-    private Set implClassNames = new HashSet();
+	// TODO - these should be brought in via external properties
+    private static final Set implClassNames = CollectionUtil.asSet( new Object[] {
+    	"ArrayList", "HashSet", "HashMap", "LinkedHashMap", "LinkedHashSet", "TreeSet", "TreeMap", "Vector",
+    	"java.util.ArrayList", "java.util.HashSet", "java.util.HashMap",
+    	"java.util.LinkedHashMap", "java.util.LinkedHashSet", "java.util.TreeSet",
+    	"java.util.TreeMap", "java.util.Vector" 
+    	});
 
     public LooseCoupling() {
         super();
-        implClassNames.add("ArrayList");
-        implClassNames.add("HashSet");
-        implClassNames.add("HashMap");
-        implClassNames.add("LinkedHashMap");
-        implClassNames.add("LinkedHashSet");
-        implClassNames.add("TreeSet");
-        implClassNames.add("TreeMap");
-        implClassNames.add("Vector");
-        implClassNames.add("java.util.ArrayList");
-        implClassNames.add("java.util.HashSet");
-        implClassNames.add("java.util.HashMap");
-        implClassNames.add("java.util.LinkedHashMap");
-        implClassNames.add("java.util.LinkedHashSet");
-        implClassNames.add("java.util.TreeSet");
-        implClassNames.add("java.util.TreeMap");
-        implClassNames.add("java.util.Vector");
     }
 
     public Object visit(ASTClassOrInterfaceType node, Object data) {
