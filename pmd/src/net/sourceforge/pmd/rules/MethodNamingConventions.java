@@ -9,10 +9,13 @@ import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 public class MethodNamingConventions extends AbstractRule {
 
     public Object visit(ASTMethodDeclarator node, Object data) {
-        if (Character.isUpperCase(node.getImage().charAt(0))) {
-            addViolation(data, node);
+    	
+    	String methodName = node.getImage();
+    	
+        if (Character.isUpperCase(methodName.charAt(0))) {
+        	addViolationWithMessage(data, node, "Method names should not start with capital letters");
         }
-        if (node.getImage().indexOf('_') >= 0) {
+        if (methodName.indexOf('_') >= 0) {
             addViolationWithMessage(data, node, "Method names should not contain underscores");
         }
         return data;
