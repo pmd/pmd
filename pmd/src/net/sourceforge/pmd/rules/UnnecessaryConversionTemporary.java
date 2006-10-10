@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
@@ -10,25 +12,19 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.HashSet;
-import java.util.Set;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public class UnnecessaryConversionTemporary extends AbstractRule implements Rule {
 
     private boolean inPrimaryExpressionContext;
     private ASTPrimaryExpression primary;
     private boolean usingPrimitiveWrapperAllocation;
-    private Set primitiveWrappers = new HashSet();
-
+    
+    private static final Set primitiveWrappers = CollectionUtil.asSet(
+    	new String[] {"Integer", "Boolean", "Double", "Long", "Short", "Byte", "Float"}
+    	);
+ 
     public UnnecessaryConversionTemporary() {
-        primitiveWrappers.add("Integer");
-        primitiveWrappers.add("Boolean");
-        primitiveWrappers.add("Double");
-        primitiveWrappers.add("Long");
-        primitiveWrappers.add("Short");
-        primitiveWrappers.add("Byte");
-        primitiveWrappers.add("Float");
     }
 
     public Object visit(ASTPrimaryExpression node, Object data) {
