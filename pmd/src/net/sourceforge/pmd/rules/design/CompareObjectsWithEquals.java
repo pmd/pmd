@@ -13,7 +13,7 @@ public class CompareObjectsWithEquals extends AbstractRule {
     private boolean hasName(Node n) {
         return n.jjtGetNumChildren() > 0 && n.jjtGetChild(0) instanceof ASTName;
     }
-
+    
     public Object visit(ASTEqualityExpression node, Object data) {
         // skip if either child is not a simple name
         if (!hasName(((SimpleNode) node.jjtGetChild(0)).jjtGetChild(0)) || !hasName(((SimpleNode) node.jjtGetChild(1)).jjtGetChild(0))) {
@@ -21,8 +21,8 @@ public class CompareObjectsWithEquals extends AbstractRule {
         }
 
         // skip if either is a qualified name
-        if (((SimpleNode) node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf('.') != -1
-                || ((SimpleNode) node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0)).getImage().indexOf('.') != -1) {
+        if (isQualifiedName((SimpleNode) node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0))
+            || isQualifiedName((SimpleNode) node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0))) {
             return data;
         }
 

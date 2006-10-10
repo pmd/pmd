@@ -242,4 +242,8 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
             return c.getImage();
         return null;
     }
+    
+    public static boolean isQualifiedName(SimpleNode node) {
+    	return node.getImage().indexOf('.') != -1;
+    }
 }

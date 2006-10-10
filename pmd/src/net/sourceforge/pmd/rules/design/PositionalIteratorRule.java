@@ -49,7 +49,7 @@ public class PositionalIteratorRule extends AbstractRule {
             if (child.jjtGetNumChildren() > 0) {
                 collectNames(target, names, child);
             } else {
-                if (child instanceof ASTName && child.getImage().indexOf('.') != -1 && target.equals(getVariableName(child.getImage()))) {
+                if (child instanceof ASTName && isQualifiedName(child) && target.equals(getVariableName(child.getImage()))) {
                     names.add(child.getImage());
                 }
             }
