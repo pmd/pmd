@@ -12,7 +12,6 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
   }
 
   public void setJDK15() {
-   System.out.println("JDK 1.5 was SET");
    this.isJDK15 = true;
   }
 
@@ -6110,6 +6109,11 @@ jjtn000.setModifiers(modifiers);
     finally { jj_save(49, xla); }
   }
 
+  final private boolean jj_3R_294() {
+    if (jj_scan_token(GT)) return true;
+    return false;
+  }
+
   final private boolean jj_3R_293() {
     if (jj_scan_token(LT)) return true;
     return false;
@@ -9028,11 +9032,6 @@ jjtn000.setModifiers(modifiers);
 
   final private boolean jj_3R_295() {
     if (jj_scan_token(LE)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_294() {
-    if (jj_scan_token(GT)) return true;
     return false;
   }
 
