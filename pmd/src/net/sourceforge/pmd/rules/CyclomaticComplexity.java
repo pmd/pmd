@@ -32,6 +32,8 @@ import java.util.Stack;
  */
 public class CyclomaticComplexity extends AbstractRule {
 
+	private int reportLevel = getIntProperty("reportLevel");
+	
     private static class Entry {
         private SimpleNode node;
         private int decisionPoints = 1;
@@ -134,7 +136,7 @@ public class CyclomaticComplexity extends AbstractRule {
         entryStack.push(new Entry(node));
         super.visit(node, data);
         Entry classEntry = (Entry) entryStack.pop();
-        if ((classEntry.getComplexityAverage() >= getIntProperty("reportLevel")) || (classEntry.highestDecisionPoints >= getIntProperty("reportLevel"))) {
+        if ((classEntry.getComplexityAverage() >= reportLevel) || (classEntry.highestDecisionPoints >= reportLevel)) {
             addViolation(data, node, new String[]{"class", node.getImage(), classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')'});
         }
         return data;
@@ -162,7 +164,7 @@ public class CyclomaticComplexity extends AbstractRule {
             }
         }
 
-        if (methodEntry.decisionPoints >= getIntProperty("reportLevel")) {
+        if (methodEntry.decisionPoints >= reportLevel) {
             addViolation(data, node, new String[]{"method", (methodDeclarator == null) ? "" : methodDeclarator.getImage(), String.valueOf(methodEntry.decisionPoints)});
         }
 
@@ -173,7 +175,7 @@ public class CyclomaticComplexity extends AbstractRule {
         entryStack.push(new Entry(node));
         super.visit(node, data);
         Entry classEntry = (Entry) entryStack.pop();
-        if ((classEntry.getComplexityAverage() >= getIntProperty("reportLevel")) || (classEntry.highestDecisionPoints >= getIntProperty("reportLevel"))) {
+        if ((classEntry.getComplexityAverage() >= reportLevel) || (classEntry.highestDecisionPoints >= reportLevel)) {
             addViolation(data, node, new String[]{"class", node.getImage(), classEntry.getComplexityAverage() + "(Highest = " + classEntry.highestDecisionPoints + ')'});
         }
         return data;
@@ -190,7 +192,7 @@ public class CyclomaticComplexity extends AbstractRule {
         if (constructorDecisionPointCount > classEntry.highestDecisionPoints) {
             classEntry.highestDecisionPoints = constructorDecisionPointCount;
         }
-        if (constructorEntry.decisionPoints >= getIntProperty("reportLevel")) {
+        if (constructorEntry.decisionPoints >= reportLevel) {
             addViolation(data, node, new String[]{"constructor", classEntry.node.getImage(), String.valueOf(constructorDecisionPointCount)});
         }
         return data;
