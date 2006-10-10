@@ -47,7 +47,6 @@ import net.sourceforge.pmd.ui.preferences.RuleSetContentProvider;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -74,6 +73,9 @@ import org.eclipse.ui.dialogs.PropertyPage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/10 22:31:02  phherlin
+ * Fix other PMD warnings
+ *
  * Revision 1.1  2006/05/22 21:23:58  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -162,7 +164,7 @@ public class PMDPropertyPage extends PropertyPage {
     protected Button ruleSetStoredInProjectButton;
 
     /**
-     * @see PreferencePage#createContents(Composite)
+     * @see PropertyPage#createContents(Composite)
      */
     protected Control createContents(final Composite parent) {
         log.info("PMD properties editing requested");

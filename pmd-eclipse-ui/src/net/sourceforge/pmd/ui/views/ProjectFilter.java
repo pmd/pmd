@@ -24,6 +24,7 @@ public class ProjectFilter extends ViewerFilter {
 	 * Constructor
 	 */
 	public ProjectFilter() {
+        super();
 		projectFilterList = new ArrayList();
 	}
 	

@@ -34,6 +34,9 @@ import org.eclipse.jface.text.Document;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/10/10 22:31:01  phherlin
+ * Fix other PMD warnings
+ *
  * Revision 1.1  2006/05/22 21:23:59  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -53,13 +56,13 @@ public class DeleteLineFix implements Fix {
      * @see net.sourceforge.pmd.eclipse.Fix#fix(java.lang.String, int)
      */
     public String fix(String sourceCode, int lineNumber) {
-        Document document = new Document(sourceCode);
+        final Document document = new Document(sourceCode);
         try {
-            int offset = document.getLineOffset(lineNumber - 1);
-            int length = document.getLineLength(lineNumber - 1);
+            final int offset = document.getLineOffset(lineNumber - 1);
+            final int length = document.getLineLength(lineNumber - 1);
             document.replace(offset, length, "");
-        } catch (BadLocationException e) {
-            ; //ignoring that exception
+        } catch (BadLocationException e) { // NOPMD by Herlin on 11/10/06 00:20
+            //ignoring that exception
         }
         
         return document.get();

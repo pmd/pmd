@@ -62,6 +62,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/10/10 22:31:01  phherlin
+ * Fix other PMD warnings
+ *
  * Revision 1.3  2006/10/06 18:42:30  phherlin
  * Fix 1554639 Clear markers in Project JAVA-files and other bugs related to dataflows
  *
@@ -87,14 +90,13 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
     private static final String VIEW_ACTION = "net.sourceforge.pmd.ui.pmdRemoveAllMarkersAction";
     private static final String OBJECT_ACTION = "net.sourceforge.pmd.ui.pmdRemoveMarkersAction";
     private static final Logger log = Logger.getLogger(PMDRemoveMarkersAction.class);
-    private IViewPart viewPart;
     private IWorkbenchPart targetPart;
 
     /**
      * @see org.eclipse.ui.IViewActionDelegate#init(IViewPart)
      */
     public void init(IViewPart view) {
-        this.viewPart = view;
+        // no initialization for now
     }
 
     /**
@@ -121,6 +123,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
      * @see org.eclipse.ui.IActionDelegate#selectionChanged(IAction, ISelection)
      */
     public void selectionChanged(IAction action, ISelection selection) {
+        // nothing to do
     }
 
     /**
@@ -138,22 +141,22 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
         try {
             // if action is run from a view, process the selected resources
             if (this.targetPart instanceof IViewPart) {
-                ISelection sel = targetPart.getSite().getSelectionProvider().getSelection();
+                final ISelection sel = targetPart.getSite().getSelectionProvider().getSelection();
 
                 if (sel instanceof IStructuredSelection) {
-                    IStructuredSelection structuredSel = (IStructuredSelection) sel;
-                    for (Iterator i = structuredSel.iterator(); i.hasNext();) {
-                        Object element = i.next();
+                    final IStructuredSelection structuredSel = (IStructuredSelection) sel;
+                    for (final Iterator i = structuredSel.iterator(); i.hasNext();) {
+                        final Object element = i.next();
 
                         if (element instanceof IAdaptable) {
-                            IAdaptable adaptable = (IAdaptable) element;
-                            IResource resource = (IResource) adaptable.getAdapter(IResource.class);
-                            if (resource != null) {
-                                resource.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                                log.debug("Remove markers on resrouce " + resource.getName());
-                            } else {
+                            final IAdaptable adaptable = (IAdaptable) element;
+                            final IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+                            if (resource == null) {
                                 log.warn("The selected object cannot adapt to a resource");
                                 log.debug("   -> selected object : " + element);
+                            } else {
+                                resource.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                                log.debug("Remove markers on resrouce " + resource.getName());
                             }
                         } else {
                             log.warn("The selected object is not adaptable");
@@ -167,7 +170,7 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
 
             // if action is run from an editor, process the file currently edited
             else if (this.targetPart instanceof IEditorPart) {
-                IEditorInput editorInput = ((IEditorPart) this.targetPart).getEditorInput();
+                final IEditorInput editorInput = ((IEditorPart) this.targetPart).getEditorInput();
                 if (editorInput instanceof IFileEditorInput) {
                     ((IFileEditorInput) editorInput).getFile().deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
                     log.debug("Remove markers " + PMDRuntimeConstants.PMD_MARKER + " on currently edited file " + ((IFileEditorInput) editorInput).getFile().getName());

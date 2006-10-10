@@ -1,8 +1,6 @@
 package net.sourceforge.pmd.ui.actions;
 
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.cpd.SimpleRenderer;
@@ -28,6 +26,9 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/10/10 22:31:01  phherlin
+ * Fix other PMD warnings
+ *
  * Revision 1.2  2006/06/20 21:01:23  phherlin
  * Enable PMD and fix error level violations
  *
@@ -51,7 +52,6 @@ import org.eclipse.ui.IWorkbenchPart;
 public class CPDCheckProjectAction implements IObjectActionDelegate {
     private static final Logger log = Logger.getLogger(CPDCheckProjectAction.class);
     private IWorkbenchPart targetPart;
-    private Set projects = new HashSet();
 
     /**
      * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)

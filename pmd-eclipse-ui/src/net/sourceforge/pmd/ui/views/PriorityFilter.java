@@ -29,6 +29,7 @@ public class PriorityFilter extends ViewerFilter {
      * @author SebastianRaffel ( 29.06.2005 )
      */
     public PriorityFilter() {
+        super();
         priorityList = new ArrayList(Arrays.asList(PMDUiPlugin.getDefault().getPriorityValues()));
     }
 

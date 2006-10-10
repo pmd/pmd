@@ -57,6 +57,9 @@ import org.osgi.framework.BundleContext;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/10/10 22:31:01  phherlin
+ * Fix other PMD warnings
+ *
  * Revision 1.2  2006/10/09 13:26:40  phherlin
  * Review Sebastian code... and fix most PMD warnings
  *
@@ -65,10 +68,10 @@ public class PMDUiPlugin extends AbstractUIPlugin {
     private static final Logger log = Logger.getLogger(PMDUiPlugin.class);
 
 	//The shared instance.
-	private static PMDUiPlugin plugin;
+	private static PMDUiPlugin plugin; // NOPMD by Herlin on 11/10/06 00:21
     
-    private StringTable stringTable;
-    private String[] priorityLabels;
+    private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
+    private String[] priorityLabels; // NOPMD by Herlin on 11/10/06 00:22
 	
 	/**
 	 * The constructor.
@@ -81,9 +84,9 @@ public class PMDUiPlugin extends AbstractUIPlugin {
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
-	public void stop(BundleContext context) throws Exception {
+	public void stop(BundleContext context) throws Exception { // NOPMD by Herlin on 11/10/06 00:21
 		super.stop(context);
-		plugin = null;
+		plugin = null; // NOPMD by Herlin on 11/10/06 00:21
 	}
 
 	/**
@@ -199,6 +202,6 @@ public class PMDUiPlugin extends AbstractUIPlugin {
             };
         }
 
-        return this.priorityLabels;
+        return this.priorityLabels; // NOPMD by Herlin on 11/10/06 00:22
     }
 }
