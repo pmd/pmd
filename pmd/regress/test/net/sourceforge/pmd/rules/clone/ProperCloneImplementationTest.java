@@ -22,6 +22,7 @@ public class ProperCloneImplementationTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST1, "ok, calls super.clone", 0, rule),
             new TestDescriptor(TEST2, "bad, Foo.clone() calls new Foo();", 1, rule),
             new TestDescriptor(TEST3, "clone([whatever]) is fine", 0, rule),
+            new TestDescriptor(TEST4, "bad, Foo.clone() calls new Foo();", 1, rule),
         });
     }
 
@@ -43,6 +44,15 @@ public class ProperCloneImplementationTest extends SimpleAggregatorTst {
             "public class Foo {" + PMD.EOL +
             " void clone(String fiddle) {" + PMD.EOL +
             "  Foo f = new Foo();" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST4 =
+            "public class Bar {" + PMD.EOL +
+            " class Foo {" + PMD.EOL +
+            "  void clone() {" + PMD.EOL +
+            "   Foo f = new Foo();" + PMD.EOL +
+            "  }" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 }

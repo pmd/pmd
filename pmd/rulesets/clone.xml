@@ -26,7 +26,7 @@ Object clone() should be implemented with super.clone()
 [count(../Block//*[
     (self::AllocationExpression) and
     (./ClassOrInterfaceType/@Image = ancestor::
-ClassOrInterfaceDeclaration[position()=last()]/@Image)
+ClassOrInterfaceDeclaration[1]/@Image)
   ])> 0
 ]
                 ]]>
