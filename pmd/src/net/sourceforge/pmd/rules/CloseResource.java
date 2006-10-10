@@ -3,11 +3,17 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
@@ -17,13 +23,6 @@ import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.Vector;
 
 
 /**
@@ -56,7 +55,7 @@ public class CloseResource extends AbstractRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         List vars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
-        List ids = new Vector();
+        List ids = new ArrayList();
 
         // find all variable references to Connection objects
         for (Iterator it = vars.iterator(); it.hasNext();) {
@@ -94,7 +93,7 @@ public class CloseResource extends AbstractRule {
 
         ASTBlock top = (ASTBlock) n;
 
-        List tryblocks = new Vector();
+        List tryblocks = new ArrayList();
         top.findChildrenOfType(ASTTryStatement.class, tryblocks, true);
 
         boolean closed = false;
