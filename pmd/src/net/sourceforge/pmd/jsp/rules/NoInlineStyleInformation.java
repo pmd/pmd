@@ -1,10 +1,10 @@
 package net.sourceforge.pmd.jsp.rules;
 
+import java.util.Set;
+
 import net.sourceforge.pmd.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.jsp.ast.ASTElement;
-
-import java.util.HashSet;
-import java.util.Set;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * This rule checks that no "style" elements (like <B>, <FONT>, ...) are used, and that no
@@ -19,14 +19,14 @@ public class NoInlineStyleInformation extends AbstractJspRule {
     /**
      * List of HTML element-names that define style.
      */
-    private static final Set STYLE_ELEMENT_NAMES = asSet(
+    private static final Set STYLE_ELEMENT_NAMES = CollectionUtil.asSet(
     		new String[]{"B", "I", "FONT", "BASEFONT", "U", "CENTER"}
     		);
 
     /**
      * List of HTML element-names that can have attributes defining style.
      */
-    private static final Set ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES = asSet(
+    private static final Set ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES = CollectionUtil.asSet(
     		new String[]{"P", "TABLE", "THEAD", "TBODY", "TFOOT", "TR", "TD", "COL", "COLGROUP"}
     		);
 
@@ -34,17 +34,9 @@ public class NoInlineStyleInformation extends AbstractJspRule {
      * List of attributes that define style when they are attributes of HTML elements with
      * names in ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES.
      */
-    private static final Set STYLE_ATTRIBUTES = asSet(
+    private static final Set STYLE_ATTRIBUTES = CollectionUtil.asSet(
     		new String[]{"STYLE", "FONT", "SIZE", "COLOR", "FACE", "ALIGN", "VALIGN", "BGCOLOR"}
     		);
-
-    private static Set asSet(Object[] items) {
-    	Set set = new HashSet(items.length);
-    	for (int i=0; i<items.length; i++) {
-    		set.add(items[i]);
-    	}
-    	return set;
-    }
     
     public Object visit(ASTAttribute node, Object data) {
         if (isStyleAttribute(node)) {
