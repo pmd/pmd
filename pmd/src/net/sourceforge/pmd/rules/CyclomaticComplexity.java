@@ -32,7 +32,7 @@ import java.util.Stack;
  */
 public class CyclomaticComplexity extends AbstractRule {
 
-	private int reportLevel = getIntProperty("reportLevel");
+	private int reportLevel;
 	
     private static class Entry {
         private SimpleNode node;
@@ -59,6 +59,10 @@ public class CyclomaticComplexity extends AbstractRule {
 
     private Stack entryStack = new Stack();
 
+    public CyclomaticComplexity() {
+    	reportLevel = getIntProperty("reportLevel");
+    }
+    
     public Object visit(ASTIfStatement node, Object data) {
         ((Entry) entryStack.peek()).bumpDecisionPoints();
         super.visit(node, data);
