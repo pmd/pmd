@@ -23,8 +23,6 @@ import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 
-
-
 /**
  * Makes sure you close your database connections. It does this by
  * looking for code patterned like this:
@@ -42,9 +40,7 @@ public class CloseResource extends AbstractRule {
     private Set types = new HashSet();
 
     public Object visit(ASTCompilationUnit node, Object data) {
-        if (!importsJavaSqlPackage(node)) {
-            return data;
-        }
+
         if (types.isEmpty()) {
             for (StringTokenizer st = new StringTokenizer(getStringProperty("types"), ","); st.hasMoreTokens();) {
                 types.add(st.nextToken());
@@ -124,9 +120,4 @@ public class CloseResource extends AbstractRule {
             addViolation(data, id, clazz.getImage());
         }
     }
-    
-    private boolean importsJavaSqlPackage(ASTCompilationUnit node) {
-        return importsPackage(node, "java.sql");
-    }
-
 }
