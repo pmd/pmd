@@ -10,20 +10,21 @@
     <section name="Credits">
         <subsection name="Committers">
         <ul>
-            <li>David Dixon-Peugh - much of the early work on the grammar, initial Emacs plugin</li>
+            <li>David Dixon-Peugh - PMD core, much of the early work on the grammar, initial Emacs plugin</li>
             <li>Philippe Herlin - Eclipse plugin, fixed bugs in RuleSetFactory</li>
             <li>Nascif Abousalh Neto - Emacs plugin</li>
-            <li><a href="http://tomcopeland.blogs.com/">Tom Copeland</a> - lead developer, JDeveloper plugin, initial Gel plugin, initial jEdit plugin, IDEAJ integration, BlueJ extension</li>
+            <li><a href="http://tomcopeland.blogs.com/">Tom Copeland</a> - PMD core, lead developer, JDeveloper plugin, initial Gel plugin, initial jEdit plugin, IDEAJ integration, BlueJ extension</li>
             <li>Jiger Patel - jEdit plugin</li>
             <li>Alan Ezust - jEdit plugin</li>
             <li>Ole-Martin Mork - NetBeans plugin</li>
-            <li>Miguel Griffa - over a dozen rules, lots of documentation, and other improvements all over the place</li>
-            <li>Allan Caplan - six rules, lots of bugfixes and improvements to the PMD core</li>
+            <li>Miguel Griffa - PMD core, over a dozen rules, lots of documentation, and other improvements all over the place</li>
+            <li>Allan Caplan - PMD core, six rules, lots of bugfixes and improvements to the PMD core</li>
             <li>Radim Kubacki - Netbeans plugin, OptimizableToArrayCallRule suggestion, bug reports</li>
             <li>Tomasz Slota - Netbeans plugin</li>
             <li>Andrey Lumyanski - Gel plugin</li>
-            <li>Johan Nagels - JSP support</li>
+            <li>Johan Nagels - PMD core, JSP support</li>
             <li>Brian Remedios - PMD core, lots of CPD UI improvements, Eclipse plugin improvements</li>
+            <li>Xavier Le Vourch - PMD core, numerous bug fixes, UselessStringValueOf, UnnecessaryWrapperObjectCreation, SimplifyBooleanAssertion</li>
         </ul>
         </subsection>
         <subsection name="Committers emeritus">
@@ -51,7 +52,6 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Xavier Le Vourch - Fix for ProperCloneImplementation, fix to AvoidRethrowingException, fixed bug in EqualsNull, wrote UselessStringValueOf, wrote UnnecessaryWrapperObjectCreation, patch to fix AvoidRethrowingException, patch to fix MissingStaticMethodInNonInstantiatableClass, patch to fix speling in CouplingBetweenObjects message, patch to improve CloneMethodMustImplementCloneable, suggestions on cleaning up casts in grammar, SimplifyBooleanAssertion, patch to fix problem with TestClassWithoutTestCases, patch to fix rule name bugs in migration rulesets, fix to SingularField</li>
             <li>Brent Fisher - SummaryHTML report improvements</li>
             <li>Jason Bennett - Patches to improve CyclomaticComplexity rule</li>
             <li>George Thomas - Wrote AvoidRethrowingException rule</li>
