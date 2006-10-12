@@ -60,11 +60,11 @@ public class OverrideBothEqualsAndHashcode extends AbstractRule {
             if (sn.getClass().equals(ASTFormalParameters.class)) {
                 List allParams = ((ASTFormalParameters) sn).findChildrenOfType(ASTFormalParameter.class);
                 for (int i = 0; i < allParams.size(); i++) {
+                    iFormalParams++;
                     ASTFormalParameter formalParam = (ASTFormalParameter) allParams.get(i);
                     ASTClassOrInterfaceType param = (ASTClassOrInterfaceType) formalParam.getFirstChildOfType(ASTClassOrInterfaceType.class);
                     if (param != null) {
                         paramName = param.getImage();
-                        iFormalParams++;
                     }
                 }
             }

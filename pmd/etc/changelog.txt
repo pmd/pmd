@@ -11,6 +11,7 @@ Fixed bug 1573795 - PreserveStackTrace doesn't throw CastClassException on excep
 Fixed bug 1573591 - NonThreadSafeSingleton doesn't throw NPE when using this keyword
 CloseResource rule now checks code without java.sql import.
 Applied patch 1573981 - false + in CloneMethodMustImplementCloneable
+Applied patch 1574988 - false + in OverrideBothEqualsAndHashcode
 
 October 4, 2006 - 3.8:
 New rules:

@@ -31,6 +31,7 @@ public class OverrideBothEqualsAndHashcodeTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST10, "overloaded hashCode", 0, rule),
             new TestDescriptor(TEST11, "overloaded both", 0, rule),
             new TestDescriptor(TEST12, "overloaded hashCode, should fail on equals", 1, rule),
+            new TestDescriptor(TEST13, "implements hashCode but with args", 0, rule),
         });
     }
 
@@ -108,5 +109,12 @@ public class OverrideBothEqualsAndHashcodeTest extends SimpleAggregatorTst {
         "public class Foo  {" + PMD.EOL +
         " public boolean equals(Object o1) { return false; }" + PMD.EOL +
         " public int hashCode(Object o1) { return false; }" + PMD.EOL +
+        "}";
+
+    private static final String TEST13 =
+        "public class Foo {" + PMD.EOL +
+        " public int hashCode(double a[]) {" + PMD.EOL +
+        "  return 0;" + PMD.EOL +
+        " }" + PMD.EOL +
         "}";
 }
