@@ -12,6 +12,7 @@ import java.util.Map;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -20,7 +21,13 @@ import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 public class BeanMembersShouldSerializeRule extends AbstractRule {
 
-	private String prefixProperty = getStringProperty("prefix");
+	private String prefixProperty;
+
+  public Object visit(ASTCompilationUnit node, Object data) {
+	  prefixProperty = getStringProperty("prefix");
+    super.visit(node, data);
+    return data;
+  }
 	
 	private static String[] imagesOf(List simpleNodes) {
 		
