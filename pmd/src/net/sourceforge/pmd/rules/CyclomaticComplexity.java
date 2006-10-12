@@ -22,6 +22,7 @@ import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 
 import java.util.Stack;
 
@@ -59,8 +60,10 @@ public class CyclomaticComplexity extends AbstractRule {
 
     private Stack entryStack = new Stack();
 
-    public CyclomaticComplexity() {
+    public Object visit(ASTCompilationUnit node, Object data) {
     	reportLevel = getIntProperty("reportLevel");
+        super.visit(node, data);
+        return data;
     }
     
     public Object visit(ASTIfStatement node, Object data) {
