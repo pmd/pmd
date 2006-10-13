@@ -65,7 +65,7 @@ public class XMLRendererTest extends TestCase {
 
             assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
             Node actualCode = doc.getElementsByTagName("codefragment").item(0).getFirstChild().getNextSibling();
-            assertEquals(PMD.EOL + "code fragment" + PMD.EOL, actualCode.getNodeValue());
+            assertEquals("\ncode fragment\n", actualCode.getNodeValue());
         } catch (Exception e) {
             e.printStackTrace();
             fail(e.getMessage());
