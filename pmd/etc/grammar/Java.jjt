@@ -1160,7 +1160,7 @@ Token t;
 jjtThis.setModifiers(modifiers);
 }
 {
-  t = <IDENTIFIER> {;
+  t = <IDENTIFIER> {
     if (!t.image.equals("enum")) {
       throw new ParseException("ERROR: expecting enum");
     }
@@ -1312,7 +1312,7 @@ Token t;}
   "{"
     [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
     ( BlockStatement() )*
-  t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); }; }
+  t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
 }
 
 void ExplicitConstructorInvocation() :
@@ -1740,7 +1740,7 @@ void LabeledStatement() :
 void Block() :
 {Token t;}
 {
-      "{" ( BlockStatement() )* t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); }; }
+      "{" ( BlockStatement() )* t = "}" { if (isPrecededByComment(t)) { jjtThis.setContainsComment(); } }
 }
 
 void BlockStatement():

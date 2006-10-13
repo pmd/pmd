@@ -585,7 +585,6 @@ jjtree.openNodeScope(jjtn000);Token t;
 jjtn000.setModifiers(modifiers);
     try {
       t = jj_consume_token(IDENTIFIER);
-                    ;
     if (!t.image.equals("enum")) {
       {if (true) throw new ParseException("ERROR: expecting enum");}
     }
@@ -1584,7 +1583,7 @@ Token t;
       t = jj_consume_token(RBRACE);
             jjtree.closeNodeScope(jjtn000, true);
             jjtc000 = false;
-            if (isPrecededByComment(t)) { jjtn000.setContainsComment(); };
+            if (isPrecededByComment(t)) { jjtn000.setContainsComment(); }
     } catch (Throwable jjte000) {
       if (jjtc000) {
         jjtree.clearNodeScope(jjtn000);
@@ -4074,7 +4073,7 @@ jjtree.openNodeScope(jjtn000);Token t;
       t = jj_consume_token(RBRACE);
                                           jjtree.closeNodeScope(jjtn000, true);
                                           jjtc000 = false;
-                                          if (isPrecededByComment(t)) { jjtn000.setContainsComment(); };
+                                          if (isPrecededByComment(t)) { jjtn000.setContainsComment(); }
     } catch (Throwable jjte000) {
         if (jjtc000) {
           jjtree.clearNodeScope(jjtn000);
