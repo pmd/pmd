@@ -24,6 +24,8 @@ public class RenderersTests {
                 new TestSuite("Test for test.net.sourceforge.pmd.renderers");
 
         //$JUnit-BEGIN$
+        suite.addTestSuite(CSVRendererTest.class);
+        suite.addTestSuite(EmacsRendererTest.class);
         suite.addTestSuite(XMLRendererTest.class);
         suite.addTestSuite(TextPadRendererTest.class);
 
@@ -35,6 +37,11 @@ public class RenderersTests {
 
 /*
  * $Log$
+ * Revision 1.6  2006/10/13 23:49:38  allancaplan
+ * Improving JUnit tests
+ *
+ * I went over the output, it looks correct. For many, having a test will help down the road to throw a flag if anything changes
+ *
  * Revision 1.5  2006/02/10 14:26:25  tomcopeland
  * Huge reformatting checkin
  *
