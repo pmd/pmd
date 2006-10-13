@@ -28,6 +28,8 @@ public class MethodReturnsInternalArrayTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST7, "returning a local array is ok part deux", 0, rule),
             new TestDescriptor(TEST8, "returning a cloned field", 0, rule),
             new TestDescriptor(TEST9, "returning a new array", 0, rule),
+            new TestDescriptor(TEST10, "Doesn't return array", 0, rule),
+            new TestDescriptor(TEST11, "Interface with array declaration", 0, rule),
         });
     }
 
@@ -92,4 +94,14 @@ public class MethodReturnsInternalArrayTest extends SimpleAggregatorTst {
             " } ;" + PMD.EOL +
             "}";
 
+    private static final String TEST10 =
+            "public class Foo {" + PMD.EOL +
+            " String [] arr;" + PMD.EOL +
+            " String getArr() {return arr[0];} ;" + PMD.EOL +
+            "}";
+
+    private static final String TEST11 =
+        "public interface Foo {" + PMD.EOL +
+        " public String[] getArr();" + PMD.EOL +
+        "}";
 }
