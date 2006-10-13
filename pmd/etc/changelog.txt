@@ -10,6 +10,7 @@ Fixed CSVRenderer - had flipped line and priority columns
 Applied patch 1551189 - SingularField false + for initialization blocks
 Fixed bug 1573795 - PreserveStackTrace doesn't throw CastClassException on exception with 0 args
 Fixed bug 1573591 - NonThreadSafeSingleton doesn't throw NPE when using this keyword
+Fixed bug 1371753 - UnnecessaryLocalBeforeReturn is now less aggressive in its reporting.
 CloseResource rule now checks code without java.sql import.
 Applied patch 1573981 - false + in CloneMethodMustImplementCloneable
 Applied patch 1574988 - false + in OverrideBothEqualsAndHashcode

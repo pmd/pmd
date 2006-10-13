@@ -1,17 +1,18 @@
 package net.sourceforge.pmd.rules.design;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class UnnecessaryLocalBeforeReturn extends AbstractRule {
 
@@ -31,7 +32,7 @@ public class UnnecessaryLocalBeforeReturn extends AbstractRule {
         }
 
         // skip 'complicated' expressions
-        if (rtn.findChildrenOfType(ASTExpression.class).size() > 1 || rtn.findChildrenOfType(ASTPrimaryExpression.class).size() > 1) {
+        if (rtn.findChildrenOfType(ASTExpression.class).size() > 1 || rtn.findChildrenOfType(ASTPrimaryExpression.class).size() > 1 || isMethodCall(rtn)) {
             return data;
         }
 
@@ -54,5 +55,23 @@ public class UnnecessaryLocalBeforeReturn extends AbstractRule {
             }
         }
         return data;
+    }
+    
+    /**
+     * Determine if the given return statement has any embedded method calls.
+     * 
+     * @param rtn
+     *          return statement to analyze
+     * @return true if any method calls are made within the given return
+     */
+    private boolean isMethodCall(ASTReturnStatement rtn) {
+     List suffix = rtn.findChildrenOfType( ASTPrimarySuffix.class );
+     for ( Iterator iter = suffix.iterator(); iter.hasNext(); ) {
+        ASTPrimarySuffix element = (ASTPrimarySuffix) iter.next();
+        if ( element.isArguments() ) {
+          return true;
+        }
+      }
+      return false;
     }
 }

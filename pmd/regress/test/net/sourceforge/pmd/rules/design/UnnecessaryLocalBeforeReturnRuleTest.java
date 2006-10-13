@@ -19,6 +19,7 @@ public class UnnecessaryLocalBeforeReturnRuleTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST2, "skip literal returns", 0, rule),
             new TestDescriptor(TEST3, "simple failure case", 1, rule),
             new TestDescriptor(TEST4, "skip complicated returns", 0, rule),
+            new TestDescriptor(TEST5, "skip method calls", 0, rule),
         });
     }
 
@@ -47,6 +48,13 @@ public class UnnecessaryLocalBeforeReturnRuleTest extends SimpleAggregatorTst {
             " public int bar() {" + PMD.EOL +
             "  int x = doSomething();" + PMD.EOL +
             "  return x == null ? foo : bar;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST5 =
+            "public class Foo {" + PMD.EOL +
+            " public int bar() {" + PMD.EOL +
+            "  return doSomething(a, b, c);" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 
