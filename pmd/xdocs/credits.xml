@@ -52,8 +52,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jason Bennett - Wrote NPathPatches to improve CyclomaticComplexity rule</li>
             <li>Brent Fisher - SummaryHTML report improvements</li>
-            <li>Jason Bennett - Patches to improve CyclomaticComplexity rule</li>
             <li>George Thomas - Wrote AvoidRethrowingException rule</li>
             <li>Robert Simmons - Reported bug in optimizations package along with suggestions for fix</li>
             <li>Brian Remedios - display cleanup of CPD GUI, code cleanup of StringUtil and various rules, cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
