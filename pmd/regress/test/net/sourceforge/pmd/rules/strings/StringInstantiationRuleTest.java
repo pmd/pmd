@@ -23,7 +23,10 @@ public class StringInstantiationRuleTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST2, "new String array", 0, rule),
             new TestDescriptor(TEST3, "using multiple parameter constructor", 0, rule),
             new TestDescriptor(TEST4, "using 4 parameter constructor", 0, rule),
-            new TestDescriptor(TEST5, "byte array constructor is ok", 0, rule)
+            new TestDescriptor(TEST5, "byte array constructor is ok", 0, rule),
+            new TestDescriptor(TEST6, "Method returning new String", 1, rule),
+            new TestDescriptor(TEST7, "Not a new String", 0, rule),
+            new TestDescriptor(TEST8, "Returns new String(str)", 1, rule)
         });
     }
 
@@ -62,5 +65,25 @@ public class StringInstantiationRuleTest extends SimpleAggregatorTst {
             " }" + PMD.EOL +
             "}";
 
+    private static final String TEST6 =
+            "public class Foo {" + PMD.EOL +
+            " String foo() {" + PMD.EOL +
+            "  return new String(\"foo\");" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+    
+    private static final String TEST7 =
+        "public class Foo {" + PMD.EOL +
+        " STRING foo() {" + PMD.EOL +
+        "  return new STRING(\"foo\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+    
+    private static final String TEST8 =
+        "public class Foo {" + PMD.EOL +
+        " String foo(String str) {" + PMD.EOL +
+        "  return new String(str);" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
 
 }
