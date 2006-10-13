@@ -18,6 +18,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.Iterator;
 import java.util.List;
@@ -79,10 +80,13 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                     assignedVar = ((ASTPrimarySuffix) se.getFirstChildOfType(ASTPrimarySuffix.class)).getImage();
                 }
 
-                ASTMethodDeclaration n = (ASTMethodDeclaration) pe.getFirstParentOfType(ASTMethodDeclaration.class);
+                SimpleNode n = (ASTMethodDeclaration) pe.getFirstParentOfType(ASTMethodDeclaration.class);
                 if (n == null) {
-                    continue;
-                }
+					n = (ASTConstructorDeclaration) pe.getFirstParentOfType(ASTConstructorDeclaration.class);
+					if (n == null) {
+						continue;
+					}
+				}
                 if (!isLocalVariable(assignedVar, n)) {
                     // TODO could this be more clumsy?  We really
                     // need to build out the PMD internal framework more
@@ -111,7 +115,10 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                     }
 
                     if (val.equals(varName)) {
-                        ASTMethodDeclaration md = (ASTMethodDeclaration) parameter.getFirstParentOfType(ASTMethodDeclaration.class);
+                        SimpleNode md = (ASTMethodDeclaration) parameter.getFirstParentOfType(ASTMethodDeclaration.class);
+                        if (md == null) {
+                        	md = (ASTConstructorDeclaration) pe.getFirstParentOfType(ASTConstructorDeclaration.class);
+        				}
                         if (!isLocalVariable(varName, md)) {
                             addViolation(ctx, parameter, varName);
                         }

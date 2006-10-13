@@ -27,6 +27,9 @@ public class ArrayIsStoredDirectlyTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST6, "skip abstract, native", 0, rule),
             new TestDescriptor(TEST7, "equality expression, not assignment", 0, rule),
             new TestDescriptor(TEST8, "assignment of array element", 0, rule),
+            new TestDescriptor(TEST9, "Constructor clear violation", 1, rule),
+            new TestDescriptor(TEST10, "Constructor no violation", 0, rule),
+            new TestDescriptor(TEST11, "No reassignment", 0, rule),
         });
     }
 
@@ -77,6 +80,25 @@ public class ArrayIsStoredDirectlyTest extends SimpleAggregatorTst {
             " void bar(String[] buf) {" + PMD.EOL +
             "   x = buf[0];" + PMD.EOL +
             " }" + PMD.EOL +
+            "}";
+
+
+    private static final String TEST9 =
+            "public class Foo {" + PMD.EOL +
+            " String [] arr;" + PMD.EOL +
+            " Foo (String[] x) {arr = x;}" + PMD.EOL +
+            "}";
+
+    private static final String TEST10 =
+            "public class Foo {" + PMD.EOL +
+            " String [] arr;" + PMD.EOL +
+            " Foo (String[] x) {arr = x.clone();}" + PMD.EOL +
+            "}";
+
+    private static final String TEST11 =
+            "public class Foo {" + PMD.EOL +
+            " String [] arr;" + PMD.EOL +
+            " void foo() {String[] bar = {\"\"};arr = bar;}" + PMD.EOL +
             "}";
 
 

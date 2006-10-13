@@ -12,6 +12,7 @@ Fixed bug 1573591 - NonThreadSafeSingleton doesn't throw NPE when using this key
 CloseResource rule now checks code without java.sql import.
 Applied patch 1573981 - false + in CloneMethodMustImplementCloneable
 Applied patch 1574988 - false + in OverrideBothEqualsAndHashcode
+ArrayIsStoredDirectly rule now checks Constructors
 
 October 4, 2006 - 3.8:
 New rules:
