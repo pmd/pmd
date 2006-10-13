@@ -76,7 +76,7 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
      * @param node the ASTMethodDeclaration where the local variable name will be searched
      * @return <code>true</code> if the method declaration contains any local variable named vn and <code>false</code> in other case
      */
-    protected boolean isLocalVariable(String vn, ASTMethodDeclaration node) {
+    protected boolean isLocalVariable(String vn, SimpleNode node) {
         final List lvars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
         if (lvars != null) {
             for (Iterator it = lvars.iterator(); it.hasNext();) {
