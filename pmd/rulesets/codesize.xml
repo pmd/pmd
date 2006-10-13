@@ -10,8 +10,10 @@
 The Code Size Ruleset contains a collection of rules that find code size related problems.
   </description>
 
-<rule name="NPathComplexity" message="The method {0}() has an NPath complexity of {1}"
-   class="net.sourceforge.pmd.rules.design.NpathComplexity">
+<rule name="NPathComplexity"
+      message="The method {0}() has an NPath complexity of {1}"
+      class="net.sourceforge.pmd.rules.design.NpathComplexity"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NPathComplexityh">
    <description>
    The NPath complexity of a method is the number of acyclic execution paths through that method.
    A threshold of 200 is generally considered the point where measures should be taken to reduce complexity.
@@ -19,12 +21,21 @@ The Code Size Ruleset contains a collection of rules that find code size related
    <properties>
     <property name="minimum" description="The npath reporting threshold" value="200"/>
    </properties>
+    <example>
+ <![CDATA[
+ public class Foo {
+  void bar() {
+   // lots of complicated code
+  }
+ }
+ ]]>
+    </example>
 </rule>
 
  <rule name="ExcessiveMethodLength"
        message="Avoid really long methods."
        class="net.sourceforge.pmd.rules.design.LongMethodRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#ExcessiveMethodLength">
+       externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#ExcessiveMethodLength">
    <description>
 Violations of this rule usually indicate that the method is doing
 too much.  Try to reduce the method size by creating helper methods and removing any copy/pasted code.
