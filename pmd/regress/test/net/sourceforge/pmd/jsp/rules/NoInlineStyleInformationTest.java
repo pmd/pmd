@@ -24,5 +24,5 @@ public class NoInlineStyleInformationTest extends SimpleAggregatorTst {
             "<html><body><p font='arial' align='center'>text</p></body></html>";
 
     private static final String JSP_NO_VIOLATION1 =
-            "<html><body><p>text</p></body></html>";
+            "<html><body><p id='p_tag'>text</p></body></html>";
 }

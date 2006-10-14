@@ -33,5 +33,5 @@ public class DuplicateJspImportTest extends SimpleAggregatorTst {
     private static final String TEST5_FAIL =
         "<%@ page import=\"com.foo.MyClass,com.foo.MyClass\"%><%@ page import=\"com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>";
     private static final String TEST6_OK =
-        "<%@ page import=\"com.foo.AClass\"%><%@ page import=\"com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>";
+        "<%@ page errorPage=\"error.jsp\" %><%@ page import=\"com.foo.AClass\"%><%@ page import=\"com.foo.MyClass\"%><html><body><b><img src=\"<%=Some.get()%>/foo\">xx</img>text</b></body></html>";
 }
