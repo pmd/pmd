@@ -370,6 +370,7 @@ public class GUI implements CPDListener {
         JPanel resultsPanel = new JPanel();
         resultsPanel.setLayout(new BorderLayout());
         JScrollPane areaScrollPane = new JScrollPane(resultsTextArea);
+        resultsTextArea.setEditable(false);
         areaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         areaScrollPane.setPreferredSize(new Dimension(600, 300));
         
