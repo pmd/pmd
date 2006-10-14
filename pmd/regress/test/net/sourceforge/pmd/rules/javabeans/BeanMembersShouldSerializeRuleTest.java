@@ -3,6 +3,8 @@
  */
 package test.net.sourceforge.pmd.rules.javabeans;
 
+import java.util.Properties;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
@@ -27,6 +29,7 @@ public class BeanMembersShouldSerializeRuleTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST7, "setFoo and isFoo is OK for booleans", 0, rule),
             new TestDescriptor(TEST8, "setFoo and isFoo is not OK for Strings", 1, rule),
             new TestDescriptor(TEST9, "prefix is off by default", 1, rule),
+            new TestDescriptor(TEST11, "interface", 0, rule),
         });
     }
 
@@ -34,6 +37,11 @@ public class BeanMembersShouldSerializeRuleTest extends SimpleAggregatorTst {
         Rule lclrule = findRule("javabeans", "BeanMembersShouldSerialize");
         lclrule.addProperty("prefix", "m_");
         runTestFromString(TEST10, 0, lclrule);
+
+        Properties properties = new Properties();
+        properties.put("prefix", "xxxxxx");
+        lclrule.addProperties(properties);
+        runTestFromString(TEST10, 1, lclrule);
     }
 
     private static final String TEST1 =
@@ -103,5 +111,11 @@ public class BeanMembersShouldSerializeRuleTest extends SimpleAggregatorTst {
             " public void setFoo(String foo) {m_foo = foo;}" + PMD.EOL +
             " public String getFoo() {return m_foo;}" + PMD.EOL +
             "}";
+
+    private static final String TEST11 =
+        "public interface Foo {" + PMD.EOL +
+        " public String foo;" + PMD.EOL +
+        " public String bar = foo;" + PMD.EOL +
+        "}";
 
 }
