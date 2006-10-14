@@ -32,6 +32,7 @@ public class OverrideBothEqualsAndHashcodeTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST11, "overloaded both", 0, rule),
             new TestDescriptor(TEST12, "overloaded hashCode, should fail on equals", 1, rule),
             new TestDescriptor(TEST13, "implements hashCode but with args", 0, rule),
+            new TestDescriptor(TEST14, "implements interface other than Comparable", 1, rule),
         });
     }
 
@@ -117,4 +118,11 @@ public class OverrideBothEqualsAndHashcodeTest extends SimpleAggregatorTst {
         "  return 0;" + PMD.EOL +
         " }" + PMD.EOL +
         "}";
+
+    private static final String TEST14 =
+        "public class Foo implements C {" + PMD.EOL +
+        " public boolean equals(Object other) { return false; }" + PMD.EOL +
+        " public int compareTo(Object other) { return 42; }" + PMD.EOL +
+        "}";
+
 }
