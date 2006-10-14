@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
   <description>
-These are new rules that are still in progress
+These are new rules that are still in progress.
   </description>
 
 
@@ -19,7 +19,7 @@ These are new rules that are still in progress
            class="net.sourceforge.pmd.rules.UselessAssignment"
            dfa="true">
        <description>
-This assignment is useless
+This assignment is useless.
        </description>
          <priority>3</priority>
        <example>

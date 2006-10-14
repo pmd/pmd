@@ -10,7 +10,7 @@ These rules provide some strict guidelines about throwing and catching exception
   </description>
 
    <rule name="AvoidCatchingThrowable"
-         message="A catch statement should never catch throwable since it includes errors"
+         message="A catch statement should never catch throwable since it includes errors."
           class="net.sourceforge.pmd.rules.strictexception.AvoidCatchingThrowable"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#LocalVariableCouldBeFinal">
       <description>
@@ -51,11 +51,11 @@ public void methodThrowingException() throws Exception {
     </rule>
 
     <rule name="ExceptionAsFlowControl"
-          message="Avoid using exceptions as flow control"
+          message="Avoid using exceptions as flow control."
           class="net.sourceforge.pmd.rules.design.ExceptionAsFlowControl"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#ExceptionAsFlowControl">
       <description>
-          Using Exceptions as flow control leads to GOTOish code.
+          Using Exceptions as flow control leads to GOTOish code and obscures true exceptions when debugging.
       </description>
         <priority>3</priority>
       <example>
@@ -109,7 +109,7 @@ public class Foo {
   </rule>
 
   <rule name="AvoidThrowingRawExceptionTypes"
-      message="Avoid throwing raw exception types"
+      message="Avoid throwing raw exception types."
       class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidThrowingRawExceptionTypes">
     <description>
@@ -143,13 +143,13 @@ public void bar() throws Exception {
   </rule>
 
     <rule name="AvoidThrowingNullPointerException"
-        message="Avoid throwing null pointer exceptions"
+        message="Avoid throwing null pointer exceptions."
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidThrowingNullPointerException">
       <description>
 Avoid throwing a NullPointerException - it's confusing because most people will assume that the
  virtual machine threw it.  Consider using an IllegalArgumentException instead; this will be
- clearly seen as a programmer initiated exception.
+ clearly seen as a programmer-initiated exception.
       </description>
    <example>
         <![CDATA[
@@ -173,7 +173,7 @@ public class Foo {
     </rule>
 
   <rule name="AvoidRethrowingException"
-    message="A catch statement that catches an exception only to rethrow it should be avoided"
+    message="A catch statement that catches an exception only to rethrow it should be avoided."
      class="net.sourceforge.pmd.rules.XPathRule">
     <description>
      Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.

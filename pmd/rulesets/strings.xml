@@ -54,11 +54,11 @@ public class Foo {
     </rule>
 
    <rule name="StringToString"
-        message="Avoid calling toString() on String objects; this is unnecessary"
+        message="Avoid calling toString() on String objects; this is unnecessary."
         class="net.sourceforge.pmd.rules.strings.StringToStringRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringToString">
     <description>
-    Avoid calling toString() on String objects; this is unnecessary
+    Avoid calling toString() on String objects; this is unnecessary.
     </description>
        <priority>3</priority>
     <example>
@@ -74,7 +74,7 @@ public class Foo {
     </rule>
 
     <rule name="InefficientStringBuffering"
-        message="Avoid concatenating nonliterals in a StringBuffer constructor or append()"
+        message="Avoid concatenating nonliterals in a StringBuffer constructor or append()."
         class="net.sourceforge.pmd.rules.strings.InefficientStringBuffering"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InefficientStringBuffering">
     <description>
@@ -97,7 +97,7 @@ public class Foo {
     </rule>
 
     <rule name="UnnecessaryCaseChange"
-          message="Using equalsIgnoreCase() is cleaner than using toUpperCase/toLowerCase().equals()"
+          message="Using equalsIgnoreCase() is cleaner than using toUpperCase/toLowerCase().equals()."
            class="net.sourceforge.pmd.rules.strings.UnnecessaryCaseChange"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UnnecessaryCaseChange">
        <description>
@@ -119,12 +119,12 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
      </rule>
 
     <rule name="UseStringBufferLength"
-          message="This is an inefficient use of StringBuffer.toString; just call StringBuffer.length instead"
+          message="This is an inefficient use of StringBuffer.toString; call StringBuffer.length instead."
           class="net.sourceforge.pmd.rules.strings.UseStringBufferLength"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseStringBufferLength">
       <description>
  Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
-          or StringBuffer.toString().length() ==
+          or StringBuffer.toString().length() ==.
       </description>
       <properties>
       </properties>
@@ -147,11 +147,11 @@ public class Foo {
 
 
     <rule name="AppendCharacterWithChar"
-        message="Avoid appending characters as strings in StringBuffer.append"
+        message="Avoid appending characters as strings in StringBuffer.append."
         class="net.sourceforge.pmd.rules.strings.AppendCharacterWithChar"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AppendCharacterWithChar">
     <description>
-Avoid concatenating characters as strings in StringBuffer.append
+Avoid concatenating characters as strings in StringBuffer.append.
     </description>
        <priority>3</priority>
     <example>
@@ -197,11 +197,11 @@ public class Foo {
 
 
     <rule name="UseIndexOfChar"
-        message="String.indexOf(char) is faster than String.indexOf(String)"
+        message="String.indexOf(char) is faster than String.indexOf(String)."
         class="net.sourceforge.pmd.rules.strings.UseIndexOfChar"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseIndexOfChar">
     <description>
-Use String.indexOf(char) when checking for the index of a single character; it's faster.
+Use String.indexOf(char) when checking for the index of a single character; it executes faster.
     </description>
        <priority>3</priority>
     <example>
@@ -220,13 +220,14 @@ public class Foo {
     </rule>
 
     <rule name="InefficientEmptyStringCheck"
-        message="String.trim().length() ==0 is an inefficient way to validate an empty String"
+        message="String.trim().length()==0 is an inefficient way to validate an empty String."
         class="net.sourceforge.pmd.rules.strings.InefficientEmptyStringCheck"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InefficientEmptyStringCheck">
     <description>
-	   String.trim().length() is an inefficient way to check if a String is really empty, as it 
-	   creates a new String object just to check its size. Looping through a string, checking Character.isWhitespace()
-	   on each character and returning false if a non-whitespace character is found is preferable
+String.trim().length() is an inefficient way to check if a String is really empty, as it 
+creates a new String object just to check its size. Consider creating a static function that
+loops through a string, checking Character.isWhitespace() on each character and returning
+false if a non-whitespace character is found.
     </description>
        <priority>3</priority>
     <example>
@@ -243,7 +244,7 @@ public class Foo {
     </rule>
 
     <rule name="InsufficientStringBufferDeclaration"
-        message="StringBuffer constructor is initialized with size {0}, but has at least {1} characters appended"
+        message="StringBuffer constructor is initialized with size {0}, but has at least {1} characters appended."
         class="net.sourceforge.pmd.rules.strings.InsufficientStringBufferDeclaration">
     <description>
 Failing to pre-size a StringBuffer properly could cause it to re-size many times 
@@ -268,7 +269,7 @@ public class Foo {
     </rule>
 
     <rule name="UselessStringValueOf"
-          message="No need to call String.valueOf to append to a string"
+          message="No need to call String.valueOf to append to a string."
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UselessStringValueOf">
       <description>
