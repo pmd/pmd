@@ -16,6 +16,7 @@ Fixed CSVRenderer - had flipped line and priority columns
 Fixed bug in Ant task - CSV reports were being output as text.
 CloseResource rule now checks code without java.sql import.
 ArrayIsStoredDirectly rule now checks Constructors
+undo/redo added to text areas in designer.
 
 October 4, 2006 - 3.8:
 New rules:

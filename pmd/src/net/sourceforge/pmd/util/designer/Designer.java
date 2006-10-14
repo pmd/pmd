@@ -26,10 +26,13 @@ import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 
 import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.text.JTextComponent;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.undo.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -413,6 +416,7 @@ public class Designer implements ClipboardOwner {
         MatchesFunction.registerSelfInSimpleContext();
 
         xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
+        makeTextComponentUndoable(codeEditorPane);
         JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(codeEditorPane), createXPathQueryPanel());
         JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createASTPanel(), createXPathResultPanel());
 
@@ -514,6 +518,7 @@ public class Designer implements ClipboardOwner {
         ruledescPanel.add(ruledescField);
         JPanel ruleXMLPanel = new JPanel();
         final JTextArea ruleXMLArea = new JTextArea(30, 50);
+        makeTextComponentUndoable(ruleXMLArea);
         ruleXMLPanel.add(ruleXMLArea);
         JButton go = new JButton("Create rule XML");
         go.addActionListener(new ActionListener() {
@@ -592,6 +597,7 @@ public class Designer implements ClipboardOwner {
         JPanel p = new JPanel();
         p.setLayout(new BorderLayout());
         xpathQueryArea.setBorder(BorderFactory.createLineBorder(Color.black));
+        makeTextComponentUndoable(xpathQueryArea);
         JScrollPane scrollPane = new JScrollPane(xpathQueryArea);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -612,6 +618,41 @@ public class Designer implements ClipboardOwner {
         b.addActionListener(new XPathListener());
         b.addActionListener(new DFAListener());
         return b;
+    }
+
+    private static void makeTextComponentUndoable(JTextComponent textConponent) {
+        final UndoManager undoManager = new UndoManager();
+        textConponent.getDocument().addUndoableEditListener(new UndoableEditListener() {
+			     public void undoableEditHappened(
+			       UndoableEditEvent evt) {
+			         undoManager.addEdit(evt.getEdit());
+			     }
+  			 });
+        ActionMap actionMap = textConponent.getActionMap();
+        InputMap inputMap = textConponent.getInputMap();
+        actionMap.put("Undo", new AbstractAction("Undo") {
+		         public void actionPerformed(ActionEvent evt) {
+		             try {
+		                 if (undoManager.canUndo()) {
+		                     undoManager.undo();
+		                 }
+		             } catch (CannotUndoException e) {
+		             }
+		         }
+        	 });
+        inputMap.put(KeyStroke.getKeyStroke("control Z"), "Undo");
+          
+        actionMap.put("Redo", new AbstractAction("Redo") {
+			    public void actionPerformed(ActionEvent evt) {
+			        try {
+			            if (undoManager.canRedo()) {
+			                undoManager.redo();
+			            } 
+			        } catch (CannotRedoException e) {
+			        }
+			    }
+            });
+        inputMap.put(KeyStroke.getKeyStroke("control Y"), "Redo");
     }
 
     public static void main(String[] args) {
