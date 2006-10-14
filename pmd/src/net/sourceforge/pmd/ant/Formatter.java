@@ -14,6 +14,7 @@ import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.YAHTMLRenderer;
+import net.sourceforge.pmd.renderers.CSVRenderer;
 import org.apache.tools.ant.BuildException;
 
 import java.io.BufferedWriter;
@@ -55,7 +56,7 @@ public class Formatter {
             public Renderer build(Object[] arg) { return new PapariTextRenderer(); }
         });
         renderersByCode.put("csv", new RendererBuilder() {
-            public Renderer build(Object[] arg) { return new TextRenderer(); }
+            public Renderer build(Object[] arg) { return new CSVRenderer(); }
         });
         renderersByCode.put("emacs", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new EmacsRenderer(); }

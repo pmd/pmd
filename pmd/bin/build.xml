@@ -75,7 +75,7 @@
 			<classpath>
 				<path refid="dependencies.path" />
 			</classpath>
-			<formatter type="text" toConsole="true" linkPrefix="http://pmd.sf.net/xref/" />
+			<formatter type="csv" toFile="rpt.csv" toConsole="true" linkPrefix="http://pmd.sf.net/xref/" />
 			<fileset dir="/usr/local/java/src/java/net/">
 				<include name="**/*.java" />
 			</fileset>
