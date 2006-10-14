@@ -23,7 +23,8 @@ public class AccessorClassGenerationTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST2, "inner class has public constructor", 0, rule),
             new TestDescriptor(TEST3, "outer class has public constructor", 1, rule),
             new TestDescriptor(TEST4, "final inner class", 0, rule),
-
+            new TestDescriptor(TEST5, "interface inner class has private constructor", 1, rule),
+            new TestDescriptor(TEST6, "there's a check for int declaration - not sure right now why", 1, rule),
         });
     }
 
@@ -67,4 +68,28 @@ public class AccessorClassGenerationTest extends SimpleAggregatorTst {
             "   Inner i = new Inner();" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
+
+    private static final String TEST5 =
+        " package foo;" + PMD.EOL +
+        "public interface Foo1 {" + PMD.EOL +
+        " public class InnerClass {" + PMD.EOL +
+        "   private InnerClass(){" + PMD.EOL +
+        "   }" + PMD.EOL +
+        " }" + PMD.EOL +
+        " void method(){" + PMD.EOL +
+        "   new InnerClass();//Causes generation of accessor" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
+    private static final String TEST6 =
+        "public class Foo1 {" + PMD.EOL +
+        " public class InnerClass {" + PMD.EOL +
+        "   private InnerClass(int[] a){" + PMD.EOL +
+        "   }" + PMD.EOL +
+        " }" + PMD.EOL +
+        " void method(){" + PMD.EOL +
+        "   new InnerClass(new int[]{1});//Causes generation of accessor" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+
 }
