@@ -5,7 +5,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 
-public class TextRendererTest extends AbstractRendererTest {
+public class TextRendererTest extends AbstractRendererTst {
 
     public AbstractRenderer getRenderer() {
         return new TextRenderer();

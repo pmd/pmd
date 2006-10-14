@@ -7,7 +7,7 @@ import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 
-public class HTMLRendererTest extends AbstractRendererTest {
+public class HTMLRendererTest extends AbstractRendererTst {
 
     public AbstractRenderer getRenderer() {
         return new HTMLRenderer();

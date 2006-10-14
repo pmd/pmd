@@ -5,7 +5,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 
-public class VBHTMLRendererTest extends AbstractRendererTest {
+public class VBHTMLRendererTest extends AbstractRendererTst {
 
     public AbstractRenderer getRenderer() {
         return new VBHTMLRenderer();

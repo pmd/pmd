@@ -4,7 +4,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 
-public class YAHTMLRendererTest extends AbstractRendererTest {
+public class YAHTMLRendererTest extends AbstractRendererTst {
 
     public AbstractRenderer getRenderer() {
         return new YAHTMLRenderer();

@@ -8,7 +8,7 @@ import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.TextPadRenderer;
 
 
-public class TextPadRendererTest extends AbstractRendererTest{
+public class TextPadRendererTest extends AbstractRendererTst{
 
     public AbstractRenderer getRenderer() {
         return new TextPadRenderer();

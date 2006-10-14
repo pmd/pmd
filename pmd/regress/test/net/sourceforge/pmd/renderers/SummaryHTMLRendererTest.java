@@ -5,7 +5,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 
-public class SummaryHTMLRendererTest extends AbstractRendererTest {
+public class SummaryHTMLRendererTest extends AbstractRendererTst {
 
     public AbstractRenderer getRenderer() {
         return new SummaryHTMLRenderer();

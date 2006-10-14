@@ -8,7 +8,7 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 
-public class CSVRendererTest extends AbstractRendererTest {
+public class CSVRendererTest extends AbstractRendererTst {
 
     public AbstractRenderer getRenderer() {
         return new CSVRenderer();

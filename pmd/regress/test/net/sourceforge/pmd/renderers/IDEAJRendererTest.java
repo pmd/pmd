@@ -4,7 +4,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.IDEAJRenderer;
 
-public class IDEAJRendererTest extends AbstractRendererTest {
+public class IDEAJRendererTest extends AbstractRendererTst {
 
     public AbstractRenderer getRenderer() {
         return new IDEAJRenderer(new String[]{"","","","","Foo <init>","Foo.java"});

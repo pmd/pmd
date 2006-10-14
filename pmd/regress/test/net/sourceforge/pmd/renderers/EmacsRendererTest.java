@@ -4,7 +4,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.EmacsRenderer;
 
-public class EmacsRendererTest extends AbstractRendererTest {
+public class EmacsRendererTest extends AbstractRendererTst {
 
     public AbstractRenderer getRenderer() {
         return new EmacsRenderer();

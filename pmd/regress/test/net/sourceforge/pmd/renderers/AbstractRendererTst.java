@@ -12,7 +12,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
-public abstract class AbstractRendererTest extends RuleTst {
+public abstract class AbstractRendererTst extends RuleTst {
 
     private static class FooRule extends AbstractRule {
         public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
