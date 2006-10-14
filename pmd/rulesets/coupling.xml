@@ -15,7 +15,7 @@
         class="net.sourceforge.pmd.rules.CouplingBetweenObjects"
           externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#CouplingBetweenObjects">
     <description>
-Rule counts unique attributes, local variables and return types within an object. An amount
+This rule counts unique attributes, local variables and return types within an object. A number
  higher than specified threshold can indicate a high degree of coupling.
     </description>
     <priority>3</priority>

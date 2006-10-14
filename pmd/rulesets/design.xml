@@ -37,7 +37,7 @@ public class MaybeASingleton {
         class="net.sourceforge.pmd.rules.SimplifyBooleanReturns"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyBooleanReturns">
     <description>
-Avoid unnecessary if..then..else statements when returning a boolean
+Avoid unnecessary if..then..else statements when returning a boolean.
     </description>
       <priority>3</priority>
     <example>
@@ -64,7 +64,7 @@ public class Foo {
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyBooleanExpressions">
       <description>
-Avoid unnecessary comparisons in boolean expressions - this makes simple code seem complicated.
+Avoid unnecessary comparisons in boolean expressions - this complicates simple code.
       </description>
       <properties>
           <property name="xpath">
@@ -175,7 +175,7 @@ public class Foo {
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SwitchDensity">
       <description>
  A high ratio of statements to labels in a switch statement implies that the switch
- statement is doing too much work.  Consider moving the statements either into new
+ statement is doing too much work.  Consider moving the statements into new
  methods, or creating subclasses based on the switch variable.
       </description>
         <priority>3</priority>
@@ -207,13 +207,13 @@ public class Foo {
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ConstructorCallsOverridableMethod">
       <description>
 Calling overridable methods during construction poses a risk of invoking methods on an
-incompletely constructed object.  This situation can be difficult to discern.
+incompletely constructed object and can be difficult to discern.
 It may leave the sub-class unable to construct its superclass or forced to
 replicate the construction process completely within itself, losing the ability to call
 super().  If the default constructor contains a call to an overridable method,
 the subclass may be completely uninstantiable.   Note that this includes method calls
 throughout the control flow graph - i.e., if a constructor Foo() calls a private method
-bar() that calls a public method buz(), there's a problem.
+bar() that calls a public method buz(), this denotes a problem.
       </description>
         <priority>1</priority>
       <example>
@@ -249,7 +249,7 @@ Instantiation by way of private constructors from outside of the constructor's c
 A factory method, or non-privitization of the constructor can eliminate this situation.
 The generated class file is actually an interface.  It gives the accessing class the ability to invoke a new hidden package
 scope constructor that takes the interface as a supplementary parameter.  This turns a private constructor effectively into
-one with package scope, though not visible to the naked eye.
+one with package scope, and is challenging to discern.
       </description>
       <priority>3</priority>
       <example>
@@ -272,7 +272,7 @@ public class Outer {
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#FinalFieldCouldBeStatic">
       <description>
 If a final field is assigned to a compile-time constant, it could be
-made static, thus saving overhead in each object
+made static, thus saving overhead in each object at runtime.
       </description>
         <properties>
             <property name="xpath">
@@ -303,7 +303,7 @@ public class Foo {
         class="net.sourceforge.pmd.rules.CloseResource"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource">
     <description>
-Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use
+Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
     </description>
       <properties>
           <property name="types" value="Connection,Statement,ResultSet"/>
@@ -477,8 +477,7 @@ class Foo {
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#BadComparison">
       <description>
-Avoid equality comparisons with Double.NaN - these are
-likely to be logic errors.
+Avoid equality comparisons with Double.NaN - these are likely to be logic errors.
       </description>
       <properties>
           <property name="xpath">
@@ -506,7 +505,7 @@ public class Bar {
             class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#EqualsNull">
         <description>
-Newbie programmers sometimes get the comparison concepts confused
+Inexperienced programmers sometimes confuse comparison concepts
 and use equals() to compare to null.
         </description>
         <properties>
@@ -573,7 +572,7 @@ public class Foo {
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#InstantiationToGetClass">
       <description>
-Avoid instantiating an object just to call getClass() on it; use the .class public member instead
+Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
       </description>
         <example>
     <![CDATA[
@@ -603,11 +602,11 @@ public class Foo {
       </rule>
 
     <rule name="IdempotentOperations"
-          message="Avoid idempotent operations (like assigning a variable to itself)"
+          message="Avoid idempotent operations (like assigning a variable to itself)."
           class="net.sourceforge.pmd.rules.IdempotentOperations"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#IdempotentOperations">
       <description>
-Avoid idempotent operations - they are silly.
+Avoid idempotent operations - they are have no effect.
       </description>
         <priority>3</priority>
 
@@ -1120,8 +1119,8 @@ Avoid unnecessarily creating local variables
     class="net.sourceforge.pmd.rules.design.NonThreadSafeSingleton"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#NonThreadSafeSingleton">
         <description>
-Non-thread safe singletons can result in bad state changes. If possible,
-get rid of static singletons by directly instantiating the object. Static
+Non-thread safe singletons can result in bad state changes. Eliminate
+static singletons if possible by instantiating the object directly. Static
 singletons are usually not needed as only a single instance exists anyway.
 Other possible fixes are to synchronize the entire method or to use an
 initialize-on-demand holder class (do not use the double-check idiom).
@@ -1275,8 +1274,8 @@ public class Foo {
       class="net.sourceforge.pmd.rules.design.PreserveStackTrace">
       <description>
 Throwing a new exception from a catch block without passing the original exception into the 
-new Exception will cause the true stack trace to be lost, and can cause problems
-debugging problems
+new Exception will cause the true stack trace to be lost, and can make it difficult to
+debug effectively.
       </description>
       <properties></properties>
       <priority>3</priority>

@@ -14,7 +14,7 @@ The Braces Ruleset contains a collection of braces rules.
          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#IfStmtsMustUseBraces">
      <description>
-Avoid using if statements without using curly braces
+Avoid using if statements without using curly braces.
      </description>
        <properties>
            <property name="xpath">
@@ -44,7 +44,7 @@ Avoid using if statements without using curly braces
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#WhileLoopsMustUseBraces">
       <description>
-Avoid using 'while' statements without using curly braces
+Avoid using 'while' statements without using curly braces.
       </description>
         <properties>
             <property name="xpath">
@@ -72,7 +72,7 @@ public void doSomething() {
            class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#IfElseStmtsMustUseBraces">
        <description>
-Avoid using if..else statements without using curly braces
+Avoid using if..else statements without using curly braces.
        </description>
          <properties>
              <property name="xpath">
@@ -108,7 +108,7 @@ Avoid using if..else statements without using curly braces
            class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#ForLoopsMustUseBraces">
        <description>
-Avoid using 'for' statements without using curly braces
+Avoid using 'for' statements without using curly braces.
        </description>
          <properties>
              <property name="xpath">

@@ -85,11 +85,11 @@ public class Foo {}
     </rule>
 
     <rule name="ImportFromSamePackage"
-         message="No need to import a type that's in the same package"
+         message="No need to import a type that lives in the same package"
          class="net.sourceforge.pmd.rules.imports.ImportFromSamePackageRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#ImportFromSamePackage">
      <description>
- No need to import a type that's in the same package.
+ No need to import a type that lives in the same package.
      </description>
         <priority>3</priority>
      <example>

@@ -14,7 +14,7 @@ The Clone Implementation ruleset contains a collection of rules that find questi
          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/clone.html#ProperCloneImplementation">
      <description>
-Object clone() should be implemented with super.clone()
+Object clone() should be implemented with super.clone().
      </description>
      <properties>
          <property name="xpath">
@@ -51,7 +51,7 @@ class Foo{
          class="net.sourceforge.pmd.rules.XPathRule"
          externalInfoUrl="http://pmd.sourceforge.net/rules/clone.html#CloneThrowsCloneNotSupportedException">
          <description>
-The method clone() should throw a CloneNotSupportedException
+The method clone() should throw a CloneNotSupportedException.
          </description>
          <properties>
              <property name="xpath">
@@ -89,7 +89,7 @@ and count(NameList/Name[contains
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/clone.html#CloneMethodMustImplementCloneable">
         <description>
-The method clone() should only be implemented if the class implements the Cloneable interface with the exception of a final method that only throws CloneNotSupportedException
+The method clone() should only be implemented if the class implements the Cloneable interface with the exception of a final method that only throws CloneNotSupportedException.
         </description>
         <properties>
             <property name="xpath">

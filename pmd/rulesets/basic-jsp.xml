@@ -89,7 +89,7 @@ response.setHeader("Pragma", "No-cache");
 		class="net.sourceforge.pmd.jsp.rules.NoInlineStyleInformation"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoInlineStyleInformation">
 		<description><![CDATA[ Style information should be put in CSS files, not in JSPs.
-			Therefore, don't use <B> or <FONT> tags, or attributes like "align='center'" ]]> </description>
+			Therefore, don't use <B> or <FONT> tags, or attributes like "align='center'". ]]> </description>
 		<priority>3</priority>
 		<example>
 			<![CDATA[ 

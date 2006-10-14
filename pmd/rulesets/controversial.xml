@@ -322,7 +322,7 @@ making them look like a function call.
               class="net.sourceforge.pmd.rules.SingularField"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SingularField">
           <description>
-A field that's only used by one method could perhaps be replaced by a local variable
+A field that's only used by one method could perhaps be replaced by a local variable.
           </description>
           <priority>3</priority>
           <example>
@@ -344,7 +344,7 @@ public class Foo {
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DefaultPackage">
         <description>
-Use explicit scoping instead of the default package private level
+Use explicit scoping instead of the default package private level.
         </description>
         <properties>
             <property name="xpath">

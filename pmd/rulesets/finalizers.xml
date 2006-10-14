@@ -107,7 +107,7 @@ public class Foo {
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#FinalizeDoesNotCallSuperFinalize">
        <description>
-If the finalize() is implemented, its last action should be to call super.finalize
+If the finalize() is implemented, its last action should be to call super.finalize.
        </description>
         <properties>
             <property name="xpath">
