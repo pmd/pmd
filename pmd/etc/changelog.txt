@@ -2,18 +2,19 @@
 New rules:
     Basic ruleset: BigIntegerInstantiation(1.4 and 1.5)
     Codesize ruleset: NPathComplexity
-PMD now requires JDK 1.4 to run.  Note that, however, PMD will still analyze code from earlier JDKs.    
-SummaryHTML Report changes from Brent Fisher - now contains linePrefix to support source output from javadoc using "linksource"
 Fixed bug 1570915 - AvoidRethrowingException no longer reports a false positive for certain nested exceptions.
 Fixed bug 1571324 - UselessStringValueOf no longer reports a false positive for additive expressions.
-Fixed CSVRenderer - had flipped line and priority columns
-Applied patch 1551189 - SingularField false + for initialization blocks
 Fixed bug 1573795 - PreserveStackTrace doesn't throw CastClassException on exception with 0 args
 Fixed bug 1573591 - NonThreadSafeSingleton doesn't throw NPE when using this keyword
 Fixed bug 1371753 - UnnecessaryLocalBeforeReturn is now less aggressive in its reporting.
-CloseResource rule now checks code without java.sql import.
+Applied patch 1551189 - SingularField false + for initialization blocks
 Applied patch 1573981 - false + in CloneMethodMustImplementCloneable
 Applied patch 1574988 - false + in OverrideBothEqualsAndHashcode
+PMD now requires JDK 1.4 to run.  Note that, however, PMD will still analyze code from earlier JDKs.    
+SummaryHTML Report changes from Brent Fisher - now contains linePrefix to support source output from javadoc using "linksource"
+Fixed CSVRenderer - had flipped line and priority columns
+Fixed bug in Ant task - CSV reports were being output as text.
+CloseResource rule now checks code without java.sql import.
 ArrayIsStoredDirectly rule now checks Constructors
 
 October 4, 2006 - 3.8:
