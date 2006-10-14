@@ -15,7 +15,7 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ShortVariable">
     <description>
-Detects when a field, local or parameter has a short name.
+Detects when a field, local, or parameter has a very short name.
     </description>
       <properties>
           <property name="xpath" pluginname="true">
@@ -111,8 +111,8 @@ public class ShortMethod {
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#VariableNamingConventions">
         <description>
 A variable naming conventions rule - customize this to your liking.  Currently, it
- checks that final variables should be all caps and non-final variables
- should not include underscores.
+ checks for final variables that should be fully capitalized and non-final variables
+ that should not include underscores.
         </description>
         <priority>1</priority>
         <properties>
@@ -362,7 +362,7 @@ public class Foo {
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidFieldNameMatchingTypeName">
       <description>
 It is somewhat confusing to have a field name matching the declaring class name.
-This proabably means that type and or field names could be more precise.
+This probably means that type and or field names could be more precise.
       </description>
         <priority>3</priority>
       <example>

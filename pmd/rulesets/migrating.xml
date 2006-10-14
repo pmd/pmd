@@ -16,7 +16,7 @@ Contains rules about migrating from one JDK version to another.  Don't use these
   class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ReplaceVectorWithList">
   <description>
-  Consider replacing this Vector with the newer java.util.List
+  Consider replacing Vector usages with the newer java.util.ArrayList if expensive threadsafe operation is not required.
   </description>
   <properties>
     <property name="xpath">
@@ -103,7 +103,7 @@ public class Foo implements Enumeration {
           message="Avoid using enum as an identifier; it's a reserved word in JDK 1.5"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#AvoidEnumAsIdentifier">
-      <description>Finds all places 'enum' is used as an identifier is used</description>
+      <description>Finds all places 'enum' is used as an identifier is used.</description>
       <properties>
           <property name="xpath">
               <value>
@@ -129,7 +129,7 @@ public class Foo implements Enumeration {
           message="Avoid using assert as an identifier; it's a reserved word in JDK 1.4"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#AvoidAssertAsIdentifier">
-      <description>Finds all places 'assert' is used as an identifier is used</description>
+      <description>Finds all places 'assert' is used as an identifier is used.</description>
       <properties>
           <property name="xpath">
               <value>
@@ -152,7 +152,7 @@ public class Foo implements Enumeration {
     </rule>
 
     <rule name="IntegerInstantiation"
-          message="Avoid instantiating Integer objects. Call Integer.valueOf() instead"
+          message="Avoid instantiating Integer objects. Call Integer.valueOf() instead."
           class="net.sourceforge.pmd.rules.XPathRule">
       <description>In JDK 1.5, calling new Integer() causes memory allocation.  Integer.valueOf() is more memory friendly.</description>
       <properties>
