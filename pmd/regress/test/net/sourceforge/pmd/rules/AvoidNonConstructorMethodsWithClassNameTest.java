@@ -23,6 +23,7 @@ public class AvoidNonConstructorMethodsWithClassNameTest extends SimpleAggregato
             new TestDescriptor(TEST2, "TEST2", 1, rule),
             new TestDescriptor(TEST3, "TEST3", 2, rule),
             new TestDescriptor(TEST4, "TEST4", 1, rule),
+            new TestDescriptor(TEST5, "interface", 0, rule),
         });
     }
 
@@ -51,5 +52,10 @@ public class AvoidNonConstructorMethodsWithClassNameTest extends SimpleAggregato
             "		void Bar(){}" +
             "   }" + PMD.EOL +
             "} ";
+
+    private static final String TEST5 =
+        "public interface Foo {" + PMD.EOL +
+        "   public int Foo();" + PMD.EOL +
+        "} ";
 
 }

@@ -23,6 +23,7 @@ public class AvoidFieldNameMatchingTypeNameTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST2, "TEST2", 1, rule),
             new TestDescriptor(TEST3, "TEST3", 0, rule),
             new TestDescriptor(TEST4, "TEST4", 1, rule),
+            new TestDescriptor(TEST5, "interface", 0, rule),
         });
     }
 
@@ -49,4 +50,10 @@ public class AvoidFieldNameMatchingTypeNameTest extends SimpleAggregatorTst {
             "		String bar;" + PMD.EOL +
             "   }" + PMD.EOL +
             "} ";
+
+    private static final String TEST5 =
+        "public interface Foo {" + PMD.EOL +
+        "   public String foo();" + PMD.EOL +
+        "} ";
+
 }
