@@ -10,6 +10,8 @@ public class SuspiciousOctalEscapeTest extends SimpleAggregatorTst {
         runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "ok use of octal", 0, new SuspiciousOctalEscape()),
             new TestDescriptor(TEST2, "should be flagged", 1, new SuspiciousOctalEscape()),
+            new TestDescriptor(TEST3, "should be flagged - different octal", 1, new SuspiciousOctalEscape()),
+            new TestDescriptor(TEST4, "should be flagged - different octal", 1, new SuspiciousOctalEscape()),
         });
     }
 
@@ -26,4 +28,19 @@ public class SuspiciousOctalEscapeTest extends SimpleAggregatorTst {
             "  System.out.println(\"foo = \\128\");" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
+
+    private static final String TEST3 =
+        "public class Foo {" + PMD.EOL +
+        " void bar() {" + PMD.EOL +
+        "  System.out.println(\"foo = \\0008\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+    
+    private static final String TEST4 =
+        "public class Foo {" + PMD.EOL +
+        " void bar() {" + PMD.EOL +
+        "  System.out.println(\"foo = \\4008\");" + PMD.EOL +
+        " }" + PMD.EOL +
+        "}";
+    
 }
