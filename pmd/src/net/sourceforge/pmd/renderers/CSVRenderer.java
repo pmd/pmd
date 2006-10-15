@@ -13,39 +13,45 @@ import java.util.Iterator;
 public class CSVRenderer extends AbstractRenderer implements Renderer {
 
     public String render(Report report) {
-        StringBuffer buf = new StringBuffer(quoteAndCommify("Problem"));
-        buf.append(quoteAndCommify("Package"));
-        buf.append(quoteAndCommify("File"));
-        buf.append(quoteAndCommify("Priority"));
-        buf.append(quoteAndCommify("Line"));
-        buf.append(quoteAndCommify("Description"));
-        buf.append(quoteAndCommify("Rule set"));
-        buf.append(quote("Rule"));
+        StringBuffer buf = new StringBuffer(300);
+        quoteAndCommify(buf, "Problem");
+        quoteAndCommify(buf, "Package");
+        quoteAndCommify(buf, "File");
+        quoteAndCommify(buf, "Priority");
+        quoteAndCommify(buf, "Line");
+        quoteAndCommify(buf, "Description");
+        quoteAndCommify(buf, "Rule set");
+        quote(buf, "Rule");
         buf.append(PMD.EOL);
 
-        int violationCount = 1;
-        for (Iterator i = report.iterator(); i.hasNext();) {
-            IRuleViolation rv = (IRuleViolation) i.next();
-            buf.append(quoteAndCommify(Integer.toString(violationCount)));
-            buf.append(quoteAndCommify(rv.getPackageName()));
-            buf.append(quoteAndCommify(rv.getFilename()));
-            buf.append(quoteAndCommify(Integer.toString(rv.getRule().getPriority())));
-            buf.append(quoteAndCommify(Integer.toString(rv.getBeginLine())));
-            buf.append(quoteAndCommify(StringUtil.replaceString(rv.getDescription(), '\"', "'")));
-            buf.append(quoteAndCommify(rv.getRule().getRuleSetName()));
-            buf.append(quote(rv.getRule().getName()));
-            buf.append(PMD.EOL);
-            violationCount++;
-        }
+        addViolations(report, buf);
         return buf.toString();
     }
 
-    private String quote(String d) {
-        return "\"" + d + "\"";
+	private void addViolations(Report report, StringBuffer buf) {
+		int violationCount = 1;
+		IRuleViolation rv;
+        for (Iterator i = report.iterator(); i.hasNext();) {
+            rv = (IRuleViolation) i.next();
+            quoteAndCommify(buf, Integer.toString(violationCount));
+            quoteAndCommify(buf, rv.getPackageName());
+            quoteAndCommify(buf, rv.getFilename());
+            quoteAndCommify(buf, Integer.toString(rv.getRule().getPriority()));
+            quoteAndCommify(buf, Integer.toString(rv.getBeginLine()));
+            quoteAndCommify(buf, StringUtil.replaceString(rv.getDescription(), '\"', "'"));
+            quoteAndCommify(buf, rv.getRule().getRuleSetName());
+            quote(buf, rv.getRule().getName());
+            buf.append(PMD.EOL);
+            violationCount++;
+        }
+	}
+
+    private void quote(StringBuffer sb, String d) {
+        sb.append('"').append(d).append('"');
     }
 
-    private String quoteAndCommify(String d) {
-        return quote(d) + ",";
+    private void quoteAndCommify(StringBuffer sb, String d) {
+    	quote(sb, d);
+        sb.append(',');
     }
-
 }
