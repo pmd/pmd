@@ -3,6 +3,14 @@
  */
 package net.sourceforge.pmd;
 
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
@@ -10,15 +18,10 @@ import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-
 public abstract class AbstractRule extends JavaParserVisitorAdapter implements Rule {
 
     protected String name = getClass().getName();
-    protected Properties properties = new Properties();
+    protected Properties properties = new Properties();		// TODO - remove when ready
     protected String message;
     protected String description;
     protected String example;
@@ -28,6 +31,22 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     protected int priority = LOWEST_PRIORITY;
     protected String externalInfoUrl;
 
+    private static final boolean inOldPropertyMode = true;	// temporary flag during conversion
+    
+	protected static Map asFixedMap(PropertyDescriptor[] descriptors) {
+		
+		Map descsById = new HashMap(descriptors.length);
+		
+		for (int i=0; i<descriptors.length; i++) {
+			descsById.put(descriptors[i].name(), descriptors[i]);
+		}
+		return Collections.unmodifiableMap(descsById);
+	}	
+	
+	protected static Map asFixedMap(PropertyDescriptor descriptor) {
+		return asFixedMap(new PropertyDescriptor[] {descriptor});
+	}
+    
     public String getRuleSetName() {
         return ruleSetName;
     }
@@ -53,33 +72,157 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     }
 
     public boolean hasProperty(String name) {
-        return properties.containsKey(name);
+    	
+        return inOldPropertyMode ?	// TODO -remove 
+        	properties.containsKey(name) :
+        	propertiesByName().containsKey(name);
     }
-
+    
+    /**
+     * @deprecated 
+     */
     public void addProperty(String name, String value) {
         properties.setProperty(name, value);
     }
 
+    /**
+     * @deprecated 
+     */
     public void addProperties(Properties properties) {
         this.properties.putAll(properties);
     }
-
+    
+    public double[] getDoubleProperties(String name) {
+    	
+        Number[] values = (Number[])getProperties(name, properties.getProperty(name));
+        
+        double[] doubles = new double[values.length];
+        for (int i=0; i<doubles.length; i++) doubles[i] = values[i].doubleValue();
+        return doubles;
+    }
+    
     public double getDoubleProperty(String name) {
-        return Double.parseDouble(properties.getProperty(name));
+    	
+    	return inOldPropertyMode ?	// TODO - remove when tested ok
+        	Double.parseDouble(properties.getProperty(name)) :
+            ((Double)getProperty(name, properties.getProperty(name))).doubleValue();
     }
 
+    public int[] getIntProperties(String name) {
+    	
+        Number[] values = (Number[])getProperties(name, properties.getProperty(name));
+        
+        int[] ints = new int[values.length];
+        for (int i=0; i<ints.length; i++) ints[i] = values[i].intValue();
+        return ints;
+    }
+    
     public int getIntProperty(String name) {
-        return Integer.parseInt(properties.getProperty(name));
+    	
+    	return inOldPropertyMode ?	// TODO - remove when tested ok
+    		Integer.parseInt(properties.getProperty(name)) :
+        	((Integer)getProperty(name, properties.getProperty(name))).intValue();
+    }
+
+    public Class[] getTypeProperties(String name) {
+    	
+        return (Class[])getProperties(name, properties.getProperty(name));
+    }
+    
+    public Class getTypeProperty(String name) {
+    	
+    	return (Class)getProperty(name, properties.getProperty(name));
+    }
+    
+    public boolean[] getBooleanProperties(String name) {
+    	
+        Boolean[] values = (Boolean[])getProperties(name, properties.getProperty(name));
+        
+        boolean[] bools = new boolean[values.length];
+        for (int i=0; i<bools.length; i++) bools[i] = values[i].booleanValue();
+        return bools;
     }
 
     public boolean getBooleanProperty(String name) {
-        return Boolean.valueOf(properties.getProperty(name)).booleanValue();
+    	
+    	return inOldPropertyMode ?	// TODO - remove when tested ok
+    		Boolean.valueOf(properties.getProperty(name)).booleanValue() :
+            ((Boolean)getProperty(name, properties.getProperty(name))).booleanValue();
     }
 
+    public void setBooleanProperty(String name, boolean flag) {
+    	
+    	//properties.setProperty(name, value)
+    }
+    
+    public String[] getStringProperties(String name) {
+    	
+        return (String[])getProperties(name, properties.getProperty(name));
+    }
+    
     public String getStringProperty(String name) {
-        return properties.getProperty(name);
+    	    	
+    	return inOldPropertyMode ?	// TODO - remove when tested ok
+    		properties.getProperty(name) :
+    		(String)getProperty(name, properties.getProperty(name));
     }
-
+    
+    private Object getProperty(String propertyName, String rawValue) {
+    	
+    	PropertyDescriptor descriptor = propertyDescriptorFor(propertyName);
+    	
+    	if (descriptor.maxValueCount() > 1) propertyGetError(descriptor, true);
+    	
+        return rawValue == null || rawValue.length() == 0 ?
+        	descriptor.defaultValue() :
+        	descriptor.valueFrom(rawValue);
+    }
+    
+    public void setProperty(String propertyName, Object value) {
+    	
+    	PropertyDescriptor descriptor = propertyDescriptorFor(propertyName);
+    	
+    	if (descriptor.maxValueCount() > 1) propertySetError(descriptor, true);
+    	
+    	properties.setProperty(propertyName, descriptor.asDelimitedString(value));
+    }
+    
+    private Object[] getProperties(String propertyName, String rawValue) {
+    	
+    	PropertyDescriptor descriptor = propertyDescriptorFor(propertyName);
+    	
+    	if (descriptor.maxValueCount() == 1) propertyGetError(descriptor, false);
+    	
+        return rawValue == null || rawValue.length() == 0 ?
+           	(Object[])descriptor.defaultValue() :
+           	(Object[])descriptor.valueFrom(rawValue);
+    }
+    
+    public void setProperties(String propertyName, Object[] values) {
+    	
+    	PropertyDescriptor descriptor = propertyDescriptorFor(propertyName);
+    	
+    	if (descriptor.maxValueCount() == 1) propertySetError(descriptor, false);
+    	
+    	properties.setProperty(propertyName, descriptor.asDelimitedString(values));
+    }
+    
+    private void propertyGetError(PropertyDescriptor descriptor, boolean requestedSingleValue) {
+    	
+    	if (requestedSingleValue) {
+    		throw new RuntimeException("Cannot retrieve a single value from a multi-value property field");
+    		}
+    	throw new RuntimeException("Cannot retrieve multiple values from a single-value property field");
+    }
+    
+    private void propertySetError(PropertyDescriptor descriptor, boolean setSingleValue) {
+    	
+    	if (setSingleValue) {
+    		throw new RuntimeException("Cannot set a single value within a multi-value property field");
+    		}
+    	throw new RuntimeException("Cannot set multiple values within a single-value property field");
+    }
+    
     public String getName() {
         return name;
     }
@@ -137,7 +280,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      * Return a hash code to conform to equality. Try with a string.
      */
     public int hashCode() {
-        String s = this.getClass().getName() + this.getName() + this.getPriority() + this.getProperties().toString();
+        String s = getClass().getName() + getName() + getPriority() + getProperties().toString();
         return s.hashCode();
     }
 
@@ -145,7 +288,9 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         visitAll(acus, ctx);
     }
 
-
+    /**
+     * @deprecated - retrieve by name using get<type>Property or get<type>Properties
+     */
     public Properties getProperties() {
         return properties;
     }
@@ -258,5 +403,27 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
             }
         }
         return false;
+    }
+    
+    /**
+     * Return all the relevant properties for the receiver by
+     * overriding in subclasses as necessary.
+     * 
+     * @return Map
+     */
+    protected Map propertiesByName() {
+    	return Collections.EMPTY_MAP;
+    }
+    
+    /**
+     * Return the indicated property descriptor or null if not found.
+     * 
+     * @param propertyName String
+     * @return PropertyDescriptor
+     */
+    public PropertyDescriptor propertyDescriptorFor(String propertyName) {
+    	PropertyDescriptor desc = (PropertyDescriptor)propertiesByName().get(propertyName);
+    	if (desc == null) throw new IllegalArgumentException("unknown property: " + propertyName);
+    	return desc;
     }
 }

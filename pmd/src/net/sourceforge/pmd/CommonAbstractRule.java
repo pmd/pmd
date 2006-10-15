@@ -1,10 +1,10 @@
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
-
 import java.text.MessageFormat;
 import java.util.Properties;
+
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.SimpleNode;
 
 /**
  * Basic abstract implementation of all parser-independent methods of the
@@ -219,4 +219,7 @@ public abstract class CommonAbstractRule implements Rule {
         ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, (SimpleNode) node, MessageFormat.format(getMessage(), args)));
     }
 
+    public PropertyDescriptor propertyDescriptorFor(String name) {
+    	return null;	// TODO not implemented yet
+    }
 }

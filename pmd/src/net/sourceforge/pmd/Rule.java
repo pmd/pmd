@@ -66,4 +66,6 @@ public interface Rule {
     void setUsesDFA();
 
     boolean usesDFA();
+    
+    PropertyDescriptor propertyDescriptorFor(String name);
 }

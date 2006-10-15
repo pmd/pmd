@@ -3,17 +3,19 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.util.NumericConstants;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.util.NumericConstants;
 
 
 public class TooManyFields extends AbstractRule {
@@ -24,7 +26,18 @@ public class TooManyFields extends AbstractRule {
     private Map nodes;
     private int maxFields;
 
+    private static final PropertyDescriptor maxFieldsDescriptor = new IntegerProperty(
+    		"maxfields", 
+    		"Maximum allowable fields per class",
+    		DEFAULT_MAXFIELDS,
+    		1.0f
+    		);
+    
+    private static final Map propertyDescriptorsByName = asFixedMap(maxFieldsDescriptor);
+    
     public Object visit(ASTCompilationUnit node, Object data) {
+    	
+    	// TODO - remove hasProperty check once new system is in place, default supplied automatically
         maxFields = hasProperty("maxfields") ? getIntProperty("maxfields") : DEFAULT_MAXFIELDS;
 
         stats = new HashMap(5);
@@ -63,4 +76,10 @@ public class TooManyFields extends AbstractRule {
         stats.put(key, i);
     }
 
+    /**
+     * @return Map
+     */
+    protected Map propertiesByName() {
+    	return propertyDescriptorsByName;
+    }
 }

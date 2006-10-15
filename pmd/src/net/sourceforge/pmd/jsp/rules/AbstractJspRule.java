@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.jsp.rules;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
@@ -230,5 +231,9 @@ public abstract class AbstractJspRule extends JspParserVisitorAdapter implements
     protected final void addViolation(Object data, Node node, Object[] args) {
         RuleContext ctx = (RuleContext) data;
         ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, (SimpleNode) node, MessageFormat.format(getMessage(), args)));
+    }
+    
+    public PropertyDescriptor propertyDescriptorFor(String name) {
+    	return null;	// TODO not implemented yet
     }
 }
