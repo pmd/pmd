@@ -52,7 +52,8 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>A.M. Berg - Reported bug in Ant task</li>
+            <li>Josh Devins - Reported bug with annotation parsing</li>
+            <li>Alan Berg - Reported bug in Ant task</li>
             <li>Jason Bennett - Fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule, patches to improve CyclomaticComplexity rule</li>
             <li>Brent Fisher - SummaryHTML report improvements</li>
             <li>George Thomas - Wrote AvoidRethrowingException rule</li>
