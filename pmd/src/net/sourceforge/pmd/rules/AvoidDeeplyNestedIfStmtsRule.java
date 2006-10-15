@@ -3,16 +3,31 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.util.Map;
+
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.properties.IntegerProperty;
 
 public class AvoidDeeplyNestedIfStmtsRule extends AbstractRule {
 
     private int depth;
-
+    private int depthLimit;
+    
+    private static final PropertyDescriptor problemDepthDescriptor = new IntegerProperty(
+    		"problemDepth", 
+    		"Maximum allowable statement depth",
+    		0,
+    		1.0f
+    		);
+    
+    private static final Map propertyDescriptorsByName = asFixedMap(problemDepthDescriptor);
+        
     public Object visit(ASTCompilationUnit node, Object data) {
         depth = 0;
+        depthLimit = getIntProperty("problemDepth");
         return super.visit(node, data);
     }
 
@@ -21,11 +36,17 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractRule {
             depth++;
         }
         super.visit(node, data);
-        if (depth == getIntProperty("problemDepth")) {
+        if (depth == depthLimit) {
             addViolation(data, node);
         }
         depth--;
         return data;
     }
 
+    /**
+     * @return Map
+     */
+    protected Map propertiesByName() {
+    	return propertyDescriptorsByName;
+    }
 }

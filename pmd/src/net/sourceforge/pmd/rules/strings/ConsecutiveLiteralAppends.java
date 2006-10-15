@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTArgumentList;
 import net.sourceforge.pmd.ast.ASTDoStatement;
@@ -20,6 +21,7 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.properties.IntegerProperty;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.HashSet;
@@ -64,6 +66,16 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
         blockParents.add(ASTSwitchStatement.class);
         blockParents.add(ASTMethodDeclaration.class);
     }
+    
+    private static final PropertyDescriptor thresholdDescriptor = new IntegerProperty(
+    		"threshold", 
+    		"?",
+    		1,
+    		1.0f
+    		);
+    
+    private static final Map propertyDescriptorsByName = asFixedMap(thresholdDescriptor);
+ 
 
     private int threshold = 1;
 
@@ -297,12 +309,14 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
     }
 
     private static boolean isStringBuffer(ASTVariableDeclaratorId node) {
-        SimpleNode nn = (SimpleNode) node.getTypeNameNode();
+        SimpleNode nn = node.getTypeNameNode();
         if (nn.jjtGetNumChildren() == 0) {
             return false;
         }
-        return "StringBuffer".equals(((SimpleNode) nn.jjtGetChild(0))
-                .getImage());
+        return "StringBuffer".equals(((SimpleNode) nn.jjtGetChild(0)).getImage());
     }
 
+    protected Map propertiesByName() {
+    	return propertyDescriptorsByName;
+    }
 }
