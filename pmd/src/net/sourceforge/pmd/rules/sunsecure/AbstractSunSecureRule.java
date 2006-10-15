@@ -8,7 +8,6 @@ package net.sourceforge.pmd.rules.sunsecure;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
