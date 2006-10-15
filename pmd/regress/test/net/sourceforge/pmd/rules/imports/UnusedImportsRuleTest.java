@@ -24,6 +24,8 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST3, "2 unused single-type imports", 2, rule),
             new TestDescriptor(TEST4, "1 used single type import", 0, rule),
             new TestDescriptor(TEST5, "1 import stmt, used only in throws clause", 0, rule),
+            new TestDescriptor(TEST10, "import from default package", 0, rule),
+            new TestDescriptor(TEST11, "import from default package", 1, rule),
         });
     }
 
@@ -108,5 +110,17 @@ public class UnusedImportsRuleTest extends SimpleAggregatorTst {
             "@FooAnnotation1" + PMD.EOL +
             "@FooAnnotation2" + PMD.EOL +
             "public class Foo {}";
+
+    private static final String TEST10 =
+        "import Bar;" + PMD.EOL +
+        "public class Foo {" + PMD.EOL +
+        " public Bar foo() {}" + PMD.EOL +
+        "}";
+
+    private static final String TEST11 =
+        "import Bar;" + PMD.EOL +
+        "public class Foo {" + PMD.EOL +
+        " public void foo() {}" + PMD.EOL +
+        "}";
 
 }
