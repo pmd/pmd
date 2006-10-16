@@ -30,8 +30,8 @@ public class BooleanInstantiation extends AbstractRule {
         if (node.findChildrenOfType(ASTArrayDimsAndInits.class).size() > 0) {
             return super.visit(node, data);
         }
-        ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0);
-        if ("Boolean".equals(type.getImage()) || "java.lang.Boolean".equals(type.getImage())) {
+        String typeName = ((ASTClassOrInterfaceType) node.jjtGetChild(0)).getImage();
+        if ("Boolean".equals(typeName) || "java.lang.Boolean".equals(typeName)) {
             super.addViolation(data, node);
             return data;
         }
