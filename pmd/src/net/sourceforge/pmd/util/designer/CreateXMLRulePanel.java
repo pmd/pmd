@@ -16,14 +16,14 @@ import net.sourceforge.pmd.PMD;
 
 /**
  * This class is responsible for creating the
- * content panel for the Create Rule XML Frame.
+ * contentpanel for the Create Rule XML Frame.
  */
 public class CreateXMLRulePanel extends JPanel implements ActionListener{
 	
-	private static final JTextField rulenameField = new JTextField(30);
-	private static final JTextField rulemsgField = new JTextField(30);
-	private static final JTextArea ruledescField = new JTextArea(5,30);
-	private static final JTextArea ruleXMLArea = new JTextArea(30, 30);
+	private JTextField rulenameField = new JTextField(30);
+	private JTextField rulemsgField = new JTextField(30);
+	private JTextArea ruledescField = new JTextArea(5,30);
+	private JTextArea ruleXMLArea = new JTextArea(30, 30);
 	private JTextArea xpathQueryArea = new JTextArea();
 	private CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
 	
