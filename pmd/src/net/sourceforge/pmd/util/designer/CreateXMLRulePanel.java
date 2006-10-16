@@ -16,7 +16,7 @@ import net.sourceforge.pmd.PMD;
 
 /**
  * This class is responsible for creating the
- * contentpanel for the Create Rule XML Frame.
+ * content panel for the Create Rule XML Frame.
  */
 public class CreateXMLRulePanel extends JPanel implements ActionListener{
 	
