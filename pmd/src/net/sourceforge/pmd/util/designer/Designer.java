@@ -48,6 +48,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.StringReader;
@@ -457,13 +458,12 @@ public class Designer implements ClipboardOwner {
         int screenHeight = screenSize.height;
         int screenWidth = screenSize.width;
         
-        frame.setSize(screenHeight - (screenHeight / 4), screenHeight - (screenHeight / 4));
-        frame.setLocation((screenWidth / 2) - frame.getWidth() / 2, (screenHeight / 2) - frame.getHeight() / 2);
-        frame.setVisible(true);
         frame.pack();
-        frame.show();
+        frame.setSize((screenWidth*3/4),(screenHeight*3/4));
+        frame.setLocation((screenWidth -frame.getWidth()) / 2, (screenHeight  - frame.getHeight()) / 2);
+        frame.setVisible(true);    
         resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation() / 2));
-        //containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
+        containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
     }
 
     private JMenuBar createMenuBar() {
@@ -501,82 +501,24 @@ public class Designer implements ClipboardOwner {
     }
 
     private void createRuleXML() {
-        JPanel rulenamePanel = new JPanel();
-        rulenamePanel.setLayout(new FlowLayout());
-        rulenamePanel.add(new JLabel("Rule name"));
-        final JTextField rulenameField = new JTextField(30);
-        rulenamePanel.add(rulenameField);
-        JPanel rulemsgPanel = new JPanel();
-        rulemsgPanel.setLayout(new FlowLayout());
-        rulemsgPanel.add(new JLabel("Rule msg"));
-        final JTextField rulemsgField = new JTextField(60);
-        rulemsgPanel.add(rulemsgField);
-        JPanel ruledescPanel = new JPanel();
-        ruledescPanel.setLayout(new FlowLayout());
-        ruledescPanel.add(new JLabel("Rule desc"));
-        final JTextField ruledescField = new JTextField(60);
-        ruledescPanel.add(ruledescField);
-        JPanel ruleXMLPanel = new JPanel();
-        final JTextArea ruleXMLArea = new JTextArea(30, 50);
-        makeTextComponentUndoable(ruleXMLArea);
-        ruleXMLPanel.add(ruleXMLArea);
-        JButton go = new JButton("Create rule XML");
-        go.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                StringBuffer sb = new StringBuffer();
-                sb.append("<rule  name=\"" + rulenameField.getText() + "\"" + PMD.EOL);
-                sb.append("  message=\"" + rulemsgField.getText() + "\"" + PMD.EOL);
-                sb.append("  class=\"" + (xpathQueryArea.getText().length() == 0 ? "" : "net.sourceforge.pmd.rules.XPathRule") + "\">" + PMD.EOL);
-                sb.append("  <description>" + PMD.EOL);
-                sb.append("  " + ruledescField.getText() + PMD.EOL);
-                sb.append("  </description>" + PMD.EOL);
-                if (xpathQueryArea.getText().length() != 0) {
-                    sb.append("  <properties>" + PMD.EOL);
-                    sb.append("    <property name=\"xpath\">" + PMD.EOL);
-                    sb.append("    <value>" + PMD.EOL);
-                    sb.append("<![CDATA[" + PMD.EOL);
-                    sb.append(xpathQueryArea.getText() + PMD.EOL);
-                    sb.append("]]>" + PMD.EOL);
-                    sb.append("    </value>" + PMD.EOL);
-                    sb.append("    </property>" + PMD.EOL);
-                    sb.append("  </properties>" + PMD.EOL);
-                }
-                sb.append("  <priority>3</priority>" + PMD.EOL);
-                sb.append("  <example>" + PMD.EOL);
-                sb.append("<![CDATA[" + PMD.EOL);
-                sb.append(codeEditorPane.getText());
-                sb.append("]]>" + PMD.EOL);
-                sb.append("  </example>" + PMD.EOL);
-                sb.append("</rule>" + PMD.EOL);
-
-                ruleXMLArea.setText(sb.toString());
-            }
-        });
-
-        JPanel fieldsPanel = new JPanel();
-        fieldsPanel.setLayout(new BorderLayout());
-        fieldsPanel.add(rulenamePanel, BorderLayout.NORTH);
-        fieldsPanel.add(rulemsgPanel, BorderLayout.CENTER);
-        fieldsPanel.add(ruledescPanel, BorderLayout.SOUTH);
-
-        JPanel fieldBtnPanel = new JPanel();
-        fieldBtnPanel.setLayout(new BorderLayout());
-        fieldBtnPanel.add(fieldsPanel, BorderLayout.NORTH);
-        fieldBtnPanel.add(go, BorderLayout.SOUTH);
-
-        JPanel outer = new JPanel(new BorderLayout());
-        outer.add(fieldBtnPanel, BorderLayout.NORTH);
-        outer.add(ruleXMLPanel, BorderLayout.SOUTH);
-
-        JDialog d = new JDialog(frame);
-        d.setSize(200, 300);
-        d.getContentPane().add(outer);
+    	CreateXMLRulePanel rulePanel = new CreateXMLRulePanel(xpathQueryArea, codeEditorPane);
+    	JFrame xmlframe = new JFrame("Create XML Rule");
+    	xmlframe.setContentPane(rulePanel);
+    	xmlframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        xmlframe.setSize(new Dimension(600, 700));
+        xmlframe.addComponentListener(new java.awt.event.ComponentAdapter() {
+        	  public void componentResized(ComponentEvent e) {
+        	    JFrame tmp = (JFrame)e.getSource();
+        	    if (tmp.getWidth()<600 || tmp.getHeight()<700) {
+        	      tmp.setSize(600, 700);
+        	    }
+        	  }
+        	});
         int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-        d.setLocation((screenWidth / 2) - frame.getWidth() / 2, (screenHeight / 2) - frame.getHeight() / 2);
-        d.setVisible(true);
-        d.pack();
-        d.show();
+        xmlframe.pack();
+        xmlframe.setLocation((screenWidth - xmlframe.getWidth()) / 2, (screenHeight - xmlframe.getHeight()) / 2);
+        xmlframe.setVisible(true);
     }
 
     private JComponent createASTPanel() {
