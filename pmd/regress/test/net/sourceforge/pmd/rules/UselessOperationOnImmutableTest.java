@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd.rules;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.SourceType;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
@@ -20,6 +21,10 @@ public class UselessOperationOnImmutableTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST3, "using the result, so OK", 0, rule),
             new TestDescriptor(TEST4, "using the result in a method call, so OK", 0, rule),
         });
+
+        runTests(new TestDescriptor[]{
+                new TestDescriptor(TEST5, "Using generics on List, OK", 0, rule),
+            },SourceType.JAVA_15);
     }
 
     private static final String TEST1 =
@@ -54,4 +59,14 @@ public class UselessOperationOnImmutableTest extends SimpleAggregatorTst {
             " }" + PMD.EOL +
             "}";
 
+    private static final String TEST5 =
+        "public class Foo {" + PMD.EOL +
+        "    List<BigDecimal> getSolution() {" + PMD.EOL +
+        "        List<BigDecimal> result = new ArrayList<BigDecimal>();" + PMD.EOL +
+        "        for (int i = 0; i < size(); i++) {" + PMD.EOL +
+        "           result.add(entry(size(),i).negate());" + PMD.EOL +
+        "           result.add(this.equations[i].check(solution));" + PMD.EOL +
+        "        }" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "}";
 }
