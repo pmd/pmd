@@ -82,7 +82,7 @@ public abstract class AbstractNcssCount extends StatisticalRule {
           this, data );
       lineCount += nodeCount.intValue();
     }
-    return Integer.valueOf( ++lineCount );
+    return new Integer( ++lineCount );
   }
 
   public Object visit(ASTForStatement node, Object data) {
@@ -100,7 +100,7 @@ public abstract class AbstractNcssCount extends StatisticalRule {
     if ( node.hasElse() ) {
       int lines = lineCount.intValue();
       lines++;
-      lineCount = Integer.valueOf( lines );
+      lineCount = new Integer( lines );
     }
 
     return lineCount;
@@ -111,7 +111,7 @@ public abstract class AbstractNcssCount extends StatisticalRule {
   }
 
   public Object visit(ASTBreakStatement node, Object data) {
-    return Integer.valueOf( 1 );
+    return new Integer( 1 );
   }
 
   public Object visit(ASTCatchStatement node, Object data) {
@@ -119,7 +119,7 @@ public abstract class AbstractNcssCount extends StatisticalRule {
   }
 
   public Object visit(ASTContinueStatement node, Object data) {
-    return Integer.valueOf( 1 );
+    return new Integer( 1 );
   }
 
   public Object visit(ASTFinallyStatement node, Object data) {
@@ -139,17 +139,17 @@ public abstract class AbstractNcssCount extends StatisticalRule {
   }
 
   public Object visit(ASTThrowStatement node, Object data) {
-    return Integer.valueOf( 1 );
+    return new Integer( 1 );
   }
 
   public Object visit(ASTStatementExpression node, Object data) {
 
     // "For" update expressions do not count as separate lines of code
     if ( node.jjtGetParent() instanceof ASTStatementExpressionList ) {
-      return Integer.valueOf( 0 );
+      return new Integer( 0 );
     }
 
-    return Integer.valueOf( 1 );
+    return new Integer( 1 );
   }
 
   public Object visit(ASTLabeledStatement node, Object data) {
@@ -160,7 +160,7 @@ public abstract class AbstractNcssCount extends StatisticalRule {
 
     // "For" init declarations do not count as separate lines of code
     if ( node.jjtGetParent() instanceof ASTForInit ) {
-      return Integer.valueOf( 0 );
+      return new Integer( 0 );
     }
 
     /*
