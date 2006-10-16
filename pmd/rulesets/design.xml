@@ -1271,7 +1271,8 @@ public class Foo {
 
   <rule name="PreserveStackTrace"
       message="Caught exception is rethrown, original stack trace may be lost"
-      class="net.sourceforge.pmd.rules.design.PreserveStackTrace">
+      class="net.sourceforge.pmd.rules.design.PreserveStackTrace"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PreserveStackTrace">
       <description>
 Throwing a new exception from a catch block without passing the original exception into the 
 new Exception will cause the true stack trace to be lost, and can make it difficult to
@@ -1297,6 +1298,37 @@ public class Foo {
         }
     }
 }
+    ]]>
+      </example>
+    </rule>
+    
+    <rule name="UseCollectionIsEmpty" 
+         message="Substitute calls to size() == 0 (or size() != 0) with calls to isEmpty()"
+         class="net.sourceforge.pmd.rules.design.UseCollectionIsEmpty"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseCollectionIsEmpty">
+         <description>
+The isEmpty() method on java.util.Collection is provided to see if a collection has any elements.
+Comparing the value of size() to 0 merely duplicates existing behavior.
+      </description>
+      <properties></properties>
+      <priority>3</priority>
+      <example>
+    <![CDATA[
+	public class Foo {
+		void good() {
+        	List foo = getList();
+			if (foo.isEmpty()) {
+				// blah
+			}
+    	}
+
+	    void bad() {
+    	    List foo = getList();
+				if (foo.size() == 0) {
+					// blah
+				}
+	    	}
+	}
     ]]>
       </example>
     </rule>

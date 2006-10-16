@@ -2,6 +2,7 @@
 New rules:
     Basic ruleset: BigIntegerInstantiation(1.4 and 1.5)
     Codesize ruleset: NPathComplexity
+    Design ruleset: UseCollectionIsEmpty
 Fixed bug 1570915 - AvoidRethrowingException no longer reports a false positive for certain nested exceptions.
 Fixed bug 1571324 - UselessStringValueOf no longer reports a false positive for additive expressions.
 Fixed bug 1573795 - PreserveStackTrace doesn't throw CastClassException on exception with 0 args
