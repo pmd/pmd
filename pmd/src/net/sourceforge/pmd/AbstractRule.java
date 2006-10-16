@@ -92,119 +92,145 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         this.properties.putAll(properties);
     }
     
-    public double[] getDoubleProperties(String name) {
+    public double[] getDoubleProperties(PropertyDescriptor descriptor) {
     	
-        Number[] values = (Number[])getProperties(name, properties.getProperty(name));
+        Number[] values = (Number[])getProperties(descriptor);
         
         double[] doubles = new double[values.length];
         for (int i=0; i<doubles.length; i++) doubles[i] = values[i].doubleValue();
         return doubles;
     }
     
+    /**
+     * @deprecated - use getDoubleProperty(PropertyDescriptor) instead
+     */
     public double getDoubleProperty(String name) {
     	
-    	return inOldPropertyMode ?	// TODO - remove when tested ok
-        	Double.parseDouble(properties.getProperty(name)) :
-            ((Double)getProperty(name, properties.getProperty(name))).doubleValue();
+    	return Double.parseDouble(properties.getProperty(name));
     }
 
-    public int[] getIntProperties(String name) {
+    public double getDoubleProperty(PropertyDescriptor descriptor) {
     	
-        Number[] values = (Number[])getProperties(name, properties.getProperty(name));
+    	return ((Number)getProperty(descriptor)).doubleValue();
+    }
+    
+    public int[] getIntProperties(PropertyDescriptor descriptor) {
+    	
+        Number[] values = (Number[])getProperties(descriptor);
         
         int[] ints = new int[values.length];
         for (int i=0; i<ints.length; i++) ints[i] = values[i].intValue();
         return ints;
     }
     
+    /**
+     * @deprecated - use getIntProperty(PropertyDescriptor) instead
+     */
     public int getIntProperty(String name) {
     	
-    	return inOldPropertyMode ?	// TODO - remove when tested ok
-    		Integer.parseInt(properties.getProperty(name)) :
-        	((Integer)getProperty(name, properties.getProperty(name))).intValue();
+    	return Integer.parseInt(properties.getProperty(name));
     }
 
-    public Class[] getTypeProperties(String name) {
+    public int getIntProperty(PropertyDescriptor descriptor) {
     	
-        return (Class[])getProperties(name, properties.getProperty(name));
+    	return ((Number)getProperty(descriptor)).intValue();
     }
     
-    public Class getTypeProperty(String name) {
+    public Class[] getTypeProperties(PropertyDescriptor descriptor) {
     	
-    	return (Class)getProperty(name, properties.getProperty(name));
+        return (Class[])getProperties(descriptor);
     }
     
-    public boolean[] getBooleanProperties(String name) {
+    public Class getTypeProperty(PropertyDescriptor descriptor) {
     	
-        Boolean[] values = (Boolean[])getProperties(name, properties.getProperty(name));
+    	return (Class)getProperty(descriptor);
+    }
+    
+    public boolean[] getBooleanProperties(PropertyDescriptor descriptor) {
+    	
+        Boolean[] values = (Boolean[])getProperties(descriptor);
         
         boolean[] bools = new boolean[values.length];
         for (int i=0; i<bools.length; i++) bools[i] = values[i].booleanValue();
         return bools;
     }
-
+    
+    public boolean getBooleanProperty(PropertyDescriptor descriptor) {
+    	
+    	return ((Boolean)getProperty(descriptor)).booleanValue();  
+    }
+    
+    /**
+     * @deprecated - use getBooleanProperty(PropertyDescriptor) instead
+     */
     public boolean getBooleanProperty(String name) {
     	
-    	return inOldPropertyMode ?	// TODO - remove when tested ok
-    		Boolean.valueOf(properties.getProperty(name)).booleanValue() :
-            ((Boolean)getProperty(name, properties.getProperty(name))).booleanValue();
+    	return Boolean.valueOf(properties.getProperty(name)).booleanValue();        
     }
-
+    
+    /**
+     * @deprecated - use setProperty(PropertyDescriptor, Object) instead
+     * 
+     * @param name
+     * @param flag
+     */
     public void setBooleanProperty(String name, boolean flag) {
     	
-    	//properties.setProperty(name, value)
+    	properties.setProperty(name, Boolean.toString(flag));
     }
     
-    public String[] getStringProperties(String name) {
+    public String[] getStringProperties(PropertyDescriptor descriptor) {
     	
-        return (String[])getProperties(name, properties.getProperty(name));
+        return (String[])getProperties(descriptor);
     }
     
-    public String getStringProperty(String name) {
+
+    /**
+     * @deprecated - use getStringProperty(PropertyDescriptor) instead
+     * 
+     */
+    public String getStringProperty(String name) {    	    	
+    	return properties.getProperty(name);
+    }
+    
+    public String getStringProperty(PropertyDescriptor descriptor) {
+    	return (String)getProperty(descriptor);
+    }
+    
+    private Object getProperty(PropertyDescriptor descriptor) {
     	    	
-    	return inOldPropertyMode ?	// TODO - remove when tested ok
-    		properties.getProperty(name) :
-    		(String)getProperty(name, properties.getProperty(name));
-    }
-    
-    private Object getProperty(String propertyName, String rawValue) {
-    	
-    	PropertyDescriptor descriptor = propertyDescriptorFor(propertyName);
-    	
     	if (descriptor.maxValueCount() > 1) propertyGetError(descriptor, true);
+    	
+    	String rawValue = properties.getProperty(descriptor.name());
     	
         return rawValue == null || rawValue.length() == 0 ?
         	descriptor.defaultValue() :
         	descriptor.valueFrom(rawValue);
     }
     
-    public void setProperty(String propertyName, Object value) {
-    	
-    	PropertyDescriptor descriptor = propertyDescriptorFor(propertyName);
-    	
+    public void setProperty(PropertyDescriptor descriptor, Object value) {
+    	    	
     	if (descriptor.maxValueCount() > 1) propertySetError(descriptor, true);
     	
-    	properties.setProperty(propertyName, descriptor.asDelimitedString(value));
+    	properties.setProperty(descriptor.name(), descriptor.asDelimitedString(value));
     }
     
-    private Object[] getProperties(String propertyName, String rawValue) {
-    	
-    	PropertyDescriptor descriptor = propertyDescriptorFor(propertyName);
-    	
+    private Object[] getProperties(PropertyDescriptor descriptor) {
+    	    	
     	if (descriptor.maxValueCount() == 1) propertyGetError(descriptor, false);
+    	
+    	String rawValue = properties.getProperty(descriptor.name());
     	
         return rawValue == null || rawValue.length() == 0 ?
            	(Object[])descriptor.defaultValue() :
            	(Object[])descriptor.valueFrom(rawValue);
     }
     
-    public void setProperties(String propertyName, Object[] values) {
-    	
-    	PropertyDescriptor descriptor = propertyDescriptorFor(propertyName);
-    	
+    public void setProperties(PropertyDescriptor descriptor, Object[] values) {
+    	    	
     	if (descriptor.maxValueCount() == 1) propertySetError(descriptor, false);
     	
-    	properties.setProperty(propertyName, descriptor.asDelimitedString(values));
+    	properties.setProperty(descriptor.name(), descriptor.asDelimitedString(values));
     }
     
     private void propertyGetError(PropertyDescriptor descriptor, boolean requestedSingleValue) {

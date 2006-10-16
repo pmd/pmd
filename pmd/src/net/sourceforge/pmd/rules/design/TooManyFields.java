@@ -37,8 +37,7 @@ public class TooManyFields extends AbstractRule {
     
     public Object visit(ASTCompilationUnit node, Object data) {
     	
-    	// TODO - remove hasProperty check once new system is in place, default supplied automatically
-        maxFields = hasProperty("maxfields") ? getIntProperty("maxfields") : DEFAULT_MAXFIELDS;
+        maxFields = getIntProperty(maxFieldsDescriptor);
 
         stats = new HashMap(5);
         nodes = new HashMap(5);

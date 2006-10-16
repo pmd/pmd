@@ -27,7 +27,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractRule {
         
     public Object visit(ASTCompilationUnit node, Object data) {
         depth = 0;
-        depthLimit = getIntProperty("problemDepth");
+        depthLimit = getIntProperty(problemDepthDescriptor);
         return super.visit(node, data);
     }
 
