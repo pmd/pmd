@@ -68,7 +68,7 @@ public class NpathComplexity extends StatisticalRule {
   public Object visit(ASTIfStatement node, Object data) {
     // (npath of if + npath of else (or 1) + bool_comp of if) * npath of next
 
-    int boolCompIf = sumNpathExpression( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompIf = sumExpressionComplexity( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
 
     int complexity = 0;
 
@@ -101,7 +101,7 @@ public class NpathComplexity extends StatisticalRule {
   public Object visit(ASTWhileStatement node, Object data) {
     // (npath of while + bool_comp of while + 1) * npath of next
 
-    int boolCompWhile = sumNpathExpression( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompWhile = sumExpressionComplexity( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
 
     Integer nPathWhile = (Integer) ( (SimpleJavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
         this, data );
@@ -112,7 +112,7 @@ public class NpathComplexity extends StatisticalRule {
   public Object visit(ASTDoStatement node, Object data) {
     // (npath of do + bool_comp of do + 1) * npath of next
 
-    int boolCompDo = sumNpathExpression( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompDo = sumExpressionComplexity( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
 
     Integer nPathDo = (Integer) ( (SimpleJavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
         this, data );
@@ -123,7 +123,7 @@ public class NpathComplexity extends StatisticalRule {
   public Object visit(ASTForStatement node, Object data) {
     // (npath of for + bool_comp of for + 1) * npath of next
 
-    int boolCompFor = sumNpathExpression( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompFor = sumExpressionComplexity( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
 
     Integer nPathFor = (Integer) ( (SimpleJavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
         this, data );
@@ -153,7 +153,7 @@ public class NpathComplexity extends StatisticalRule {
   public Object visit(ASTSwitchStatement node, Object data) {
     // bool_comp of switch + sum(npath(case_range))
 
-    int boolCompSwitch = sumNpathExpression( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompSwitch = sumExpressionComplexity( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
 
     int npath = 0;
     int caseRange = 0;
@@ -214,12 +214,14 @@ public class NpathComplexity extends StatisticalRule {
    * complexity is the sum of && and || tokens. This is calculated by summing
    * the number of children of the &&'s (minus one) and the children of the ||'s
    * (minus one).
+   * <p>
+   * Note that this calculation applies to Cyclomatic Complexity as well.
    * 
    * @param expr
    *          control structure expression
    * @return complexity of the boolean expression
    */
-  private int sumNpathExpression(ASTExpression expr) {
+  public static int sumExpressionComplexity(ASTExpression expr) {
     List andNodes = expr.findChildrenOfType( ASTConditionalAndExpression.class );
     List orNodes = expr.findChildrenOfType( ASTConditionalOrExpression.class );
 
