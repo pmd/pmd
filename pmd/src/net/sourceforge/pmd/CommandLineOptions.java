@@ -16,6 +16,7 @@ import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 
 import java.io.InputStreamReader;
+import java.text.MessageFormat;
 
 public class CommandLineOptions {
 
@@ -30,6 +31,8 @@ public class CommandLineOptions {
     private String encoding = new InputStreamReader(System.in).getEncoding();
     private String linePrefix;
     private String linkPrefix;
+    private int minPriority = Rule.LOWEST_PRIORITY;
+
 
     private boolean checkJavaFiles = true;
     private boolean checkJspFiles = false;
@@ -67,6 +70,14 @@ public class CommandLineOptions {
                 linePrefix = args[i + 1];
             } else if (args[i].equals("-linkprefix")) {
                 linkPrefix = args[i + 1];
+            } else if (args[i].equals("-minimumpriority")) {
+                try {
+                    minPriority = Integer.parseInt(args[i + 1]);
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException(MessageFormat.format(
+                            "minimumpriority parameter must be a whole number, {0} recieved",
+                            new String[] { args[i + 1] }));
+                }
             }
         }
         
@@ -141,6 +152,10 @@ public class CommandLineOptions {
         return shortNamesEnabled;
     }
 
+    public int getMinPriority() {
+        return minPriority;
+    }
+
     public String usage() {
         return PMD.EOL + PMD.EOL +
                 "Mandatory arguments:" + PMD.EOL +
@@ -159,6 +174,7 @@ public class CommandLineOptions {
                 "-shortnames: prints shortened filenames in the report" + PMD.EOL +
                 "-linkprefix: path to HTML source, for summary html renderer only." + PMD.EOL +
                 "-lineprefix: custom anchor to affected line in the source file, for summary html renderer only." + PMD.EOL +
+                "-minimumpriority: The rule priority threshold; rules with lower priority than they will not be used." + PMD.EOL +
                 PMD.EOL +
                 "For example: " + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code text unusedcode,imports -targetjdk 1.5 -debug" + PMD.EOL +

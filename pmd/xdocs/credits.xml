@@ -96,7 +96,7 @@
             <li>Bhatia Saurabh - Reported a grammar bug, reported a bug in UseStringBufferLength</li>
             <li>Chris Erskine - found bad link, documentation suggestions</li>
             <li>mhilpert - Reported bugs in UseIndexOfChar and LoggerIsNotStaticFinal</li>
-            <li>David Corley - Priority filtering XSLT, reported release packaging problem, implemented nifty Javascript folding for XML report, <a href="http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html">demo is here</a></li>
+            <li>David Corley - Priority filtering XSLT, reported release packaging problem, implemented nifty Javascript folding for XML report, <a href="http://tomcopeland.blogs.com/juniordeveloper/2005/12/demo_of_some_ni.html">demo is here</a>, suggestion for min priority on the command line</li>
             <li>Jon Doh - Reported parser bug</li>
             <li>Brian R - suggestions for improving UseIndexOfChar, documentation suggestion</li>
             <li>Didier Duquennoy - bug reports for InefficientStringBuffering/ConsecutiveLiteralAppends/AppendCharacterWithChar, several bug reports for InefficientStringBuffering, bug report for ImmutableField, suggestions for improving Benchmark utility, bug report for InefficientStringBuffering, bug report for AvoidConcateningNonLiteralsInStringBuffer, reported a missed hit for EqualsNull, bug report for MissingStaticMethodInNonInstantiatableClass, pmd-netbeans feedback</li>

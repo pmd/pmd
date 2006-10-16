@@ -12,6 +12,7 @@ Fixed bug 1566547 - Annotations with an empty MemberValueArrayInitializer are no
 Applied patch 1551189 - SingularField false + for initialization blocks
 Applied patch 1573981 - false + in CloneMethodMustImplementCloneable
 Applied patch 1574988 - false + in OverrideBothEqualsAndHashcode
+Implemented RFE 1566313 - Command Line now takes minimumpriority attribute to filter out rulesets
 PMD now requires JDK 1.4 to run.  Note that, however, PMD will still analyze code from earlier JDKs.    
 SummaryHTML Report changes from Brent Fisher - now contains linePrefix to support source output from javadoc using "linksource"
 Fixed CSVRenderer - had flipped line and priority columns

@@ -247,6 +247,7 @@ public class PMD {
 
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
+            ruleSetFactory.setMinimumPriority(opts.getMinPriority());
             RuleSets rulesets = ruleSetFactory.createRuleSets(opts.getRulesets());
             printRuleNamesInDebug(opts.debugEnabled(), rulesets);
 
@@ -336,7 +337,7 @@ public class PMD {
      * @param inputFileName a file name
      * @param fileSelector  Filtering of wanted source files
      * @return the list of files collected from the <code>inputFileName</code>
-     * @see #collect(String)
+     * @see #collect(String, SourceFileSelector)
      */
     private static List collectFilesFromOneName(String inputFileName,
                                                 SourceFileSelector fileSelector) {
