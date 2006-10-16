@@ -7,6 +7,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.stat.DataPoint;
+import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Non-commented source statement counter for constructors.
@@ -23,7 +24,7 @@ public class NcssConstructorCount extends AbstractNcssCount {
   }
 
   public Object visit(ASTExplicitConstructorInvocation node, Object data) {
-    return new Integer( 1 );
+    return NumericConstants.ONE;
   }
 
   protected void makeViolations(RuleContext ctx, Set p) {

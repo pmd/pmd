@@ -21,6 +21,7 @@ import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.StatisticalRule;
+import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Abstract superclass for NCSS counting methods. Counts tokens according to <a
@@ -111,7 +112,7 @@ public abstract class AbstractNcssCount extends StatisticalRule {
   }
 
   public Object visit(ASTBreakStatement node, Object data) {
-    return new Integer( 1 );
+    return NumericConstants.ONE;
   }
 
   public Object visit(ASTCatchStatement node, Object data) {
@@ -119,7 +120,7 @@ public abstract class AbstractNcssCount extends StatisticalRule {
   }
 
   public Object visit(ASTContinueStatement node, Object data) {
-    return new Integer( 1 );
+    return NumericConstants.ONE;
   }
 
   public Object visit(ASTFinallyStatement node, Object data) {
@@ -139,17 +140,17 @@ public abstract class AbstractNcssCount extends StatisticalRule {
   }
 
   public Object visit(ASTThrowStatement node, Object data) {
-    return new Integer( 1 );
+    return NumericConstants.ONE;
   }
 
   public Object visit(ASTStatementExpression node, Object data) {
 
     // "For" update expressions do not count as separate lines of code
     if ( node.jjtGetParent() instanceof ASTStatementExpressionList ) {
-      return new Integer( 0 );
+      return NumericConstants.ZERO;
     }
 
-    return new Integer( 1 );
+    return NumericConstants.ONE;
   }
 
   public Object visit(ASTLabeledStatement node, Object data) {
@@ -160,7 +161,7 @@ public abstract class AbstractNcssCount extends StatisticalRule {
 
     // "For" init declarations do not count as separate lines of code
     if ( node.jjtGetParent() instanceof ASTForInit ) {
-      return new Integer( 0 );
+      return NumericConstants.ZERO;
     }
 
     /*

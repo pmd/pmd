@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.stat.DataPoint;
+import net.sourceforge.pmd.util.NumericConstants;
 
 /**
  * Non-commented source statement counter for type declarations.
@@ -43,7 +44,7 @@ public class NcssTypeCount extends AbstractNcssCount {
   }
 
   public Object visit(ASTExplicitConstructorInvocation node, Object data) {
-    return new Integer( 1 );
+    return NumericConstants.ONE;
   }
 
   public Object visit(ASTEnumDeclaration node, Object data) {
@@ -68,7 +69,7 @@ public class NcssTypeCount extends AbstractNcssCount {
   }
 
   public Object visit(ASTFieldDeclaration node, Object data) {
-    return new Integer( 1 );
+    return NumericConstants.ONE;
   }
 
   protected void makeViolations(RuleContext ctx, Set p) {
