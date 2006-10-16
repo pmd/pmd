@@ -3,7 +3,13 @@
  */
 package net.sourceforge.pmd.rules.design;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
@@ -16,27 +22,35 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import net.sourceforge.pmd.properties.BooleanProperty;
 
 public class NonThreadSafeSingleton extends AbstractRule {
 
     private Map fieldDecls = new HashMap();
 
     private boolean checkNonStaticMethods = true;
-
     private boolean checkNonStaticFields = true;
 
-    public NonThreadSafeSingleton() {
-        checkNonStaticMethods = super.getBooleanProperty("checkNonStaticMethods");
-        checkNonStaticFields = super.getBooleanProperty("checkNonStaticFields");
-    }
+    private static final PropertyDescriptor checkNonStaticMethodsDescriptor = new BooleanProperty(
+    	"checkNonStaticMethods", "Check for non-static methods.", true, 1.0f
+    	);
+    private static final PropertyDescriptor checkNonStaticFieldsDescriptor = new BooleanProperty(
+    	"checkNonStaticFields", "Check for non-static fields.",	true, 2.0f
+    	);
+    
+    private static final Map propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] {
+    	checkNonStaticMethodsDescriptor, checkNonStaticFieldsDescriptor
+    	});
+    
+//    public NonThreadSafeSingleton() {
+//        checkNonStaticMethods = super.getBooleanProperty("checkNonStaticMethods");
+//        checkNonStaticFields = super.getBooleanProperty("checkNonStaticFields");
+//    }
 
     public Object visit(ASTCompilationUnit node, Object data) {
         fieldDecls.clear();
+        checkNonStaticMethods = getBooleanProperty("checkNonStaticMethods");
+        checkNonStaticFields = getBooleanProperty("checkNonStaticFields");        
         return super.visit(node, data);
     }
 
@@ -95,5 +109,12 @@ public class NonThreadSafeSingleton extends AbstractRule {
             }
         }
         return super.visit(node, data);
+    }
+    
+    /**
+     * @return Map
+     */
+    protected Map propertiesByName() {
+    	return propertyDescriptorsByName;
     }
 }
