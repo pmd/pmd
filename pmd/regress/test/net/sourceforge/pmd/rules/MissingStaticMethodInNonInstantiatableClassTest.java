@@ -29,6 +29,7 @@ public class MissingStaticMethodInNonInstantiatableClassTest extends SimpleAggre
             new TestDescriptor(TEST9, "not ok, non-public static field", 1, rule),
             new TestDescriptor(TEST10, "ok, protected static field", 0, rule),
             new TestDescriptor(TEST11, "ok, package private static field", 0, rule),
+            new TestDescriptor(TEST12, "ok, checking for bug 1432595", 0, rule),
         });
     }
 
@@ -98,5 +99,20 @@ public class MissingStaticMethodInNonInstantiatableClassTest extends SimpleAggre
             " static Foo INSTANCE = new Foo();" + PMD.EOL +
             "  private Foo() {}" + PMD.EOL +
             "}";
+    
+    private static final String TEST12 =
+        "public class Suit {" + PMD.EOL +
+        "   private final String name;" + PMD.EOL +
+        "        private Suit(String name) {" + PMD.EOL +
+        "        this.name = name;" + PMD.EOL +
+        "  }" + PMD.EOL +
+        "  public String toString() {" + PMD.EOL +
+        "      return name;" + PMD.EOL +
+        "  }" + PMD.EOL +
+        "  public static final Suit CLUBS = new Suit(\"Clubs\");" + PMD.EOL +
+        "  public static final Suit DIAMONDS = new Suit(\"Diamonds\");" + PMD.EOL +
+        "  public static final Suit HEARTS = new Suit(\"Hearts\");" + PMD.EOL +
+        "  public static final Suit SPADES = new Suit(\"Spades\");" + PMD.EOL +
+        "}";
 
 }
