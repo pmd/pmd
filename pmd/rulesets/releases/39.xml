@@ -9,4 +9,7 @@ This ruleset contains links to rules that are new in PMD v3.9
   <rule ref="rulesets/basic.xml/BigIntegerInstantiation_1.5"/>
   <rule ref="rulesets/codesize.xml/NPathComplexity"/>
   <rule ref="rulesets/design.xml/UseCollectionIsEmpty"/>
+  <rule ref="rulesets/codesize.xml/NcssMethodCount"/>
+  <rule ref="rulesets/codesize.xml/NcssTypeCount"/>
+  <rule ref="rulesets/codesize.xml/NcssConstructorCount"/>
 </ruleset>

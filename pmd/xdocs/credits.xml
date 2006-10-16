@@ -55,7 +55,7 @@
             <li>Peter Van de Voorde - Rewrote the 'create rule XML' functionality in the designer utility</li>
             <li>Josh Devins - Reported bug with annotation parsing</li>
             <li>Alan Berg - Reported bug in Ant task</li>
-            <li>Jason Bennett - Fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule, patches to improve CyclomaticComplexity rule, Implemented UseCollectionIsEmpty</li>
+            <li>Jason Bennett - Fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule, patches to improve CyclomaticComplexity rule, Implemented: UseCollectionIsEmpty, NcssTypeCount, NcssMethodCount, NcssConstructor</li>
             <li>Brent Fisher - SummaryHTML report improvements</li>
             <li>George Thomas - Wrote AvoidRethrowingException rule</li>
             <li>Robert Simmons - Reported bug in optimizations package along with suggestions for fix</li>
