@@ -23,7 +23,7 @@ public class NcssConstructorCount extends AbstractNcssCount {
   }
 
   public Object visit(ASTExplicitConstructorInvocation node, Object data) {
-    return Integer.valueOf( 1 );
+    return new Integer( 1 );
   }
 
   protected void makeViolations(RuleContext ctx, Set p) {

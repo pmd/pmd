@@ -43,7 +43,7 @@ public class NcssTypeCount extends AbstractNcssCount {
   }
 
   public Object visit(ASTExplicitConstructorInvocation node, Object data) {
-    return Integer.valueOf( 1 );
+    return new Integer( 1 );
   }
 
   public Object visit(ASTEnumDeclaration node, Object data) {
@@ -54,7 +54,7 @@ public class NcssTypeCount extends AbstractNcssCount {
     if ( node.jjtGetParent() instanceof ASTTypeDeclaration ) {
       Integer nodeCount = countNodeChildren( node, data );
       int count = nodeCount.intValue() - 1;
-      return Integer.valueOf( count );
+      return new Integer( count );
     }
     return countNodeChildren( node, data );
   }
@@ -68,7 +68,7 @@ public class NcssTypeCount extends AbstractNcssCount {
   }
 
   public Object visit(ASTFieldDeclaration node, Object data) {
-    return Integer.valueOf( 1 );
+    return new Integer( 1 );
   }
 
   protected void makeViolations(RuleContext ctx, Set p) {
