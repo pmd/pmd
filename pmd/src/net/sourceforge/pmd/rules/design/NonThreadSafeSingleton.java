@@ -49,8 +49,8 @@ public class NonThreadSafeSingleton extends AbstractRule {
 
     public Object visit(ASTCompilationUnit node, Object data) {
         fieldDecls.clear();
-        checkNonStaticMethods = getBooleanProperty("checkNonStaticMethods");
-        checkNonStaticFields = getBooleanProperty("checkNonStaticFields");        
+        checkNonStaticMethods = getBooleanProperty(checkNonStaticMethodsDescriptor);
+        checkNonStaticFields = getBooleanProperty(checkNonStaticFieldsDescriptor);        
         return super.visit(node, data);
     }
 
