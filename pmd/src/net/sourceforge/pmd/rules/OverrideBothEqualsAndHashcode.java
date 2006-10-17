@@ -40,7 +40,7 @@ public class OverrideBothEqualsAndHashcode extends AbstractRule {
     public Object visit(ASTImplementsList node, Object data) {
         for (int ix = 0; ix < node.jjtGetNumChildren(); ix++) {
             if (node.jjtGetChild(ix).getClass().equals(ASTClassOrInterfaceType.class)
-                    && ((SimpleNode) node.jjtGetChild(ix)).getImage().equals("Comparable")) {
+                    && ((SimpleNode) node.jjtGetChild(ix)).hasImageEqualTo("Comparable")) {
                 implementsComparable = true;
                 return data;
             }
@@ -70,10 +70,10 @@ public class OverrideBothEqualsAndHashcode extends AbstractRule {
             }
         }
 
-        if (iFormalParams == 0 && node.getImage().equals("hashCode")) {
+        if (iFormalParams == 0 && node.hasImageEqualTo("hashCode")) {
             containsHashCode = true;
             nodeFound = node;
-        } else if (iFormalParams == 1 && node.getImage().equals("equals") && (paramName.equals("Object") || paramName.equals("java.lang.Object"))) {
+        } else if (iFormalParams == 1 && node.hasImageEqualTo("equals") && (paramName.equals("Object") || paramName.equals("java.lang.Object"))) {
             containsEquals = true;
             nodeFound = node;
         }
