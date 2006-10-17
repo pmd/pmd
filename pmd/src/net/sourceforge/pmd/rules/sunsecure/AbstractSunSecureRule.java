@@ -38,7 +38,7 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
             for (Iterator it = fds.iterator(); it.hasNext();) {
                 final ASTFieldDeclaration fd = (ASTFieldDeclaration) it.next();
                 final ASTVariableDeclaratorId vid = (ASTVariableDeclaratorId) fd.getFirstChildOfType(ASTVariableDeclaratorId.class);
-                if (vid != null && vid.getImage().equals(varName)) {
+                if (vid != null && vid.hasImageEqualTo(varName)) {
                     return true;
                 }
             }
@@ -81,7 +81,7 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
             for (Iterator it = lvars.iterator(); it.hasNext();) {
                 final ASTLocalVariableDeclaration lvd = (ASTLocalVariableDeclaration) it.next();
                 final ASTVariableDeclaratorId vid = (ASTVariableDeclaratorId) lvd.getFirstChildOfType(ASTVariableDeclaratorId.class);
-                if (vid != null && vid.getImage().equals(vn)) {
+                if (vid != null && vid.hasImageEqualTo(vn)) {
                     return true;
                 }
             }
