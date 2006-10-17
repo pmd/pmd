@@ -3,14 +3,18 @@
  */
 package net.sourceforge.pmd.stat;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.RuleContext;
-
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.properties.DoubleProperty;
+import net.sourceforge.pmd.properties.IntegerProperty;
 
 /**
  * @author David Dixon-Peugh
@@ -25,6 +29,23 @@ public abstract class StatisticalRule extends AbstractRule {
     private int count = 0;
     private double total = 0.0;
 
+    private static final PropertyDescriptor sigmaDescriptor = new DoubleProperty(
+    	"sigma", "Sigma value",	0,	1.0f
+    	);
+   
+    private static final PropertyDescriptor minimumDescriptor = new DoubleProperty(
+        "minimum", "Minimum value",	0,	1.0f
+        );
+    
+    private static final PropertyDescriptor topScoreDescriptor = new IntegerProperty(
+        "topscore", "Top score value",	0,	1.0f
+        );    
+    
+    private static final Map propertyDescriptorsByName = asFixedMap( new PropertyDescriptor[] {
+    	sigmaDescriptor, minimumDescriptor, topScoreDescriptor
+    	});
+  
+    
     public void addDataPoint(DataPoint point) {
         count++;
         total += point.getScore();
@@ -37,14 +58,14 @@ public abstract class StatisticalRule extends AbstractRule {
         double deviation;
         double minimum = 0.0;
 
-        if (hasProperty("sigma")) {
+        if (hasProperty("sigma")) {	// TODO - need to come up with a good default value
             deviation = getStdDev();
-            double sigma = getDoubleProperty("sigma");
+            double sigma = getDoubleProperty(sigmaDescriptor);
             minimum = getMean() + (sigma * deviation);
         }
 
-        if (hasProperty("minimum")) {
-            double mMin = getDoubleProperty("minimum");
+        if (hasProperty("minimum")) {	// TODO - need to come up with a good default value
+            double mMin = getDoubleProperty(minimumDescriptor);
             if (mMin > minimum) {
                 minimum = mMin;
             }
@@ -52,8 +73,8 @@ public abstract class StatisticalRule extends AbstractRule {
 
         SortedSet newPoints = applyMinimumValue(dataPoints, minimum);
 
-        if (hasProperty("topscore")) {
-            int topScore = getIntProperty("topscore");
+        if (hasProperty("topscore")) { // TODO - need to come up with a good default value
+            int topScore = getIntProperty(topScoreDescriptor);
             if (newPoints.size() >= topScore) {
                 newPoints = applyTopScore(newPoints, topScore);
             }
@@ -125,5 +146,9 @@ public abstract class StatisticalRule extends AbstractRule {
             DataPoint point = (DataPoint) points.next();
             addViolationWithMessage(ctx, point.getNode(), point.getMessage());
         }
+    }
+    
+    protected Map propertiesByName() {
+    	return propertyDescriptorsByName;
     }
 }
