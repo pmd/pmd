@@ -16,7 +16,7 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
 
     public String render(Report report) {
 
-        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + createVersionAttr() + createTimestampAttr() + createTimeElapsedAttr(report) + ">" + PMD.EOL);
+        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + createVersionAttr() + createTimestampAttr() + createTimeElapsedAttr(report) + '>' + PMD.EOL);
         String filename = null;
 
         // rule violations
@@ -24,7 +24,7 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
             IRuleViolation rv = (IRuleViolation) i.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {// Not first file ?
-                    buf.append("</file>" + PMD.EOL);
+                    buf.append("</file>").append(PMD.EOL);
                 }
                 filename = rv.getFilename();
                 buf.append("<file name=\"");
@@ -32,11 +32,10 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
                 buf.append("\">").append(PMD.EOL);
             }
 
-            buf.append("<violation line=\"").append(rv.getBeginLine()).append('"');
-            buf.append(" rule=\"");
+            buf.append("<violation line=\"").append(rv.getBeginLine());
+            buf.append("\" rule=\"");
             StringUtil.appendXmlEscaped(buf, rv.getRule().getName());
-            buf.append('"');
-            buf.append(" ruleset=\"");
+            buf.append("\" ruleset=\"");
             StringUtil.appendXmlEscaped(buf, rv.getRule().getRuleSetName());
             buf.append('"');
             maybeAdd("package", rv.getPackageName(), buf);
@@ -45,8 +44,7 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
             maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl(), buf);
             buf.append(" priority=\"");
             buf.append(rv.getRule().getPriority());
-            buf.append("\">");
-            buf.append(PMD.EOL);
+            buf.append("\">").append(PMD.EOL);
             StringUtil.appendXmlEscaped(buf, rv.getDescription());
 
             buf.append(PMD.EOL);
@@ -54,7 +52,7 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
             buf.append(PMD.EOL);
         }
         if (filename != null) { // Not first file ?
-            buf.append("</file>" + PMD.EOL);
+            buf.append("</file>").append(PMD.EOL);
         }
 
         // errors
@@ -89,7 +87,7 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
 
     private void maybeAdd(String attr, String value, StringBuffer buf) {
         if (value != null && value.length() > 0) {
-            buf.append(" " + attr + "=\"");
+            buf.append(' ').append(attr).append("=\"");
             StringUtil.appendXmlEscaped(buf, value);
             buf.append('"');
         }
