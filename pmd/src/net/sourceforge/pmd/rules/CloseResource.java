@@ -57,13 +57,13 @@ public class CloseResource extends AbstractRule {
     };
 
     public Object visit(ASTCompilationUnit node, Object data) {
-        if (closeTargets.isEmpty() && getStringProperty("closeTargets") != null) {
-            for (StringTokenizer st = new StringTokenizer(getStringProperty("closeTargets"), ","); st.hasMoreTokens();) {
+        if (closeTargets.isEmpty() && getStringProperty(closeTargetsDescriptor) != null) {
+            for (StringTokenizer st = new StringTokenizer(getStringProperty(closeTargetsDescriptor), ","); st.hasMoreTokens();) {
                 closeTargets.add(st.nextToken());
             }
         }
-        if (types.isEmpty() && getStringProperty("types") != null) {
-            for (StringTokenizer st = new StringTokenizer(getStringProperty("types"), ","); st.hasMoreTokens();) {
+        if (types.isEmpty() && getStringProperty(typesDescriptor) != null) {
+            for (StringTokenizer st = new StringTokenizer(getStringProperty(typesDescriptor), ","); st.hasMoreTokens();) {
                 types.add(st.nextToken());
             }
         }
