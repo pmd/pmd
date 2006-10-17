@@ -84,7 +84,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
         if (!isStringBuffer(node)) {
             return data;
         }
-        threshold = getIntProperty("threshold");
+        threshold = getIntProperty(thresholdDescriptor);
 
         int concurrentCount = checkConstructor(node, data);
         Node lastBlock = getFirstParentBlock(node);

@@ -56,7 +56,7 @@ public class MethodReturnsInternalArray extends AbstractSunSecureRule {
                 final ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ret.getFirstChildOfType(ASTPrimaryPrefix.class);
                 if (pp != null && pp.usesThisModifier()) {
                     final ASTPrimarySuffix ps = (ASTPrimarySuffix) ret.getFirstChildOfType(ASTPrimarySuffix.class);
-                    if (ps.getImage().equals(vn)) {
+                    if (ps.hasImageEqualTo(vn)) {
                         addViolation(data, ret, vn);
                     }
                 }

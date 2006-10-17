@@ -71,7 +71,7 @@ public class UselessOverridingMethod extends AbstractRule {
             return super.visit(node, data);
 
         ASTMethodDeclarator methodDeclarator = (ASTMethodDeclarator) findFirstDegreeChildrenOfType(node, ASTMethodDeclarator.class).get(0);
-        if (!primaryPrefix.getImage().equals(methodDeclarator.getImage()))
+        if (!primaryPrefix.hasImageEqualTo(methodDeclarator.getImage()))
             return super.visit(node, data);
 
         //Process arguments
@@ -103,7 +103,7 @@ public class UselessOverridingMethod extends AbstractRule {
                 ASTName argumentName = (ASTName) argumentPrimaryPrefixChild;
                 ASTFormalParameter formalParameter = (ASTFormalParameter) formalParameters.jjtGetChild(i);
                 ASTVariableDeclaratorId variableId = (ASTVariableDeclaratorId) findFirstDegreeChildrenOfType(formalParameter, ASTVariableDeclaratorId.class).get(0);
-                if (!argumentName.getImage().equals(variableId.getImage())) {
+                if (!argumentName.hasImageEqualTo(variableId.getImage())) {
                     return super.visit(node, data); //The arguments are not simply passed through
                 }
 

@@ -45,7 +45,7 @@ public class PreserveStackTrace extends AbstractRule {
                     child = (SimpleNode) child.jjtGetChild(0);
                 }
                 if (child != null){
-                    if( child.getClass().equals(ASTName.class) && (!target.equals(child.getImage()) && !child.getImage().equals(target + ".fillInStackTrace"))) {
+                    if( child.getClass().equals(ASTName.class) && (!target.equals(child.getImage()) && !child.hasImageEqualTo(target + ".fillInStackTrace"))) {
 	                    Map vars = ((ASTName) child).getScope().getVariableDeclarations();
 	                    for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
 	                        VariableNameDeclaration decl = (VariableNameDeclaration) i.next();

@@ -57,7 +57,7 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         if (preinc != null && !preinc.isEmpty()) {
             for (Iterator it = preinc.iterator(); it.hasNext();) {
                 ASTPreIncrementExpression ie = (ASTPreIncrementExpression) it.next();
-                if (((ASTName) ie.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().equals(varName)) {
+                if (((ASTName) ie.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).hasImageEqualTo(varName)) {
                     return true;
                 }
             }
@@ -68,7 +68,7 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         if (predec != null && !predec.isEmpty()) {
             for (Iterator it = predec.iterator(); it.hasNext();) {
                 ASTPreDecrementExpression de = (ASTPreDecrementExpression) it.next();
-                if (((ASTName) de.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage().equals(varName)) {
+                if (((ASTName) de.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).hasImageEqualTo(varName)) {
                     return true;
                 }
             }
@@ -79,14 +79,14 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
             for (Iterator it = pf.iterator(); it.hasNext();) {
                 ASTPostfixExpression pe = (ASTPostfixExpression) it.next();
 
-                if ((pe.getImage().equals("++") || pe.getImage().equals("--"))) {
+                if ((pe.hasImageEqualTo("++") || pe.hasImageEqualTo("--"))) {
                     SimpleNode first = (SimpleNode) pe.jjtGetChild(0);
                     SimpleNode second = (SimpleNode) first.jjtGetChild(0);
                     if (second.jjtGetNumChildren() == 0 || !(second.jjtGetChild(0) instanceof ASTName)) {
                         continue;
                     }
                     ASTName name = (ASTName) second.jjtGetChild(0);
-                    if (name.getImage().equals(varName)) {
+                    if (name.hasImageEqualTo(varName)) {
                         return true;
                     }
                 }
@@ -109,7 +109,7 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
                 continue;
             }
             ASTName n = (ASTName) otherChild.jjtGetChild(0);
-            if (n.getImage().equals(varName)) {
+            if (n.hasImageEqualTo(varName)) {
                 return true;
             }
         }

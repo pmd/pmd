@@ -17,7 +17,7 @@ public class AvoidCatchingThrowable extends AbstractRule {
     public Object visit(ASTCatchStatement node, Object data) {
         ASTType type = (ASTType) node.findChildrenOfType(ASTType.class).get(0);
         ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) type.findChildrenOfType(ASTClassOrInterfaceType.class).get(0);
-        if (name.getImage().equals("Throwable")) {
+        if (name.hasImageEqualTo("Throwable")) {
             addViolation(data, name);
         }
         return super.visit(node, data);

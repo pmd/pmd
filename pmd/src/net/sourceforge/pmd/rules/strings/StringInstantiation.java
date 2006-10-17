@@ -20,7 +20,7 @@ public class StringInstantiation extends AbstractRule {
         }
 
         ASTClassOrInterfaceType clz = (ASTClassOrInterfaceType) node.jjtGetChild(0);
-        if (!clz.getImage().equals("String")) {
+        if (!clz.hasImageEqualTo("String")) {
             return data;
         }
 

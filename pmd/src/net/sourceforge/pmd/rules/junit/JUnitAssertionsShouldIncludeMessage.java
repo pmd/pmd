@@ -49,7 +49,7 @@ public class JUnitAssertionsShouldIncludeMessage extends AbstractRule {
             ASTPrimaryExpression primary = (ASTPrimaryExpression) node.jjtGetParent().jjtGetParent();
             if (primary.jjtGetChild(0) instanceof ASTPrimaryPrefix && primary.jjtGetChild(0).jjtGetNumChildren() > 0 && primary.jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
                 ASTName name = (ASTName) primary.jjtGetChild(0).jjtGetChild(0);
-                if (name.getImage().equals(targetMethodName)) {
+                if (name.hasImageEqualTo(targetMethodName)) {
                     addViolation(ctx, name);
                 }
             }

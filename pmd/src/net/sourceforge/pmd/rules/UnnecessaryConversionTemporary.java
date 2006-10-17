@@ -53,7 +53,7 @@ public class UnnecessaryConversionTemporary extends AbstractRule implements Rule
 
     public Object visit(ASTPrimarySuffix node, Object data) {
         if (inPrimaryExpressionContext && usingPrimitiveWrapperAllocation) {
-            if (node.getImage() != null && node.getImage().equals("toString")) {
+            if (node.hasImageEqualTo("toString")) {
                 if (node.jjtGetParent() == primary) {
                     addViolation(data, node);
                 }

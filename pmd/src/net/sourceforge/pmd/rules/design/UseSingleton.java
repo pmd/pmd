@@ -60,7 +60,7 @@ public class UseSingleton extends AbstractRule {
         if (decl.getMethodName().equals("suite")) {
             ASTResultType res = (ASTResultType) decl.getFirstChildOfType(ASTResultType.class);
             ASTClassOrInterfaceType c = (ASTClassOrInterfaceType) res.getFirstChildOfType(ASTClassOrInterfaceType.class);
-            if (c != null && c.getImage().equals("Test")) {
+            if (c != null && c.hasImageEqualTo("Test")) {
                 isOK = true;
             }
         }

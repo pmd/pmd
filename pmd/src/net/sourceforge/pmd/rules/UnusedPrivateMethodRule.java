@@ -91,6 +91,6 @@ public class UnusedPrivateMethodRule extends AbstractRule {
 
     private boolean privateAndNotExcluded(MethodNameDeclaration mnd) {
         ASTMethodDeclarator node = (ASTMethodDeclarator) mnd.getNode();
-        return ((AccessNode) node.jjtGetParent()).isPrivate() && !node.getImage().equals("readObject") && !node.getImage().equals("writeObject") && !node.getImage().equals("readResolve") && !node.getImage().equals("writeReplace");
+        return ((AccessNode) node.jjtGetParent()).isPrivate() && !node.hasImageEqualTo("readObject") && !node.hasImageEqualTo("writeObject") && !node.hasImageEqualTo("readResolve") && !node.hasImageEqualTo("writeReplace");
     }
 }

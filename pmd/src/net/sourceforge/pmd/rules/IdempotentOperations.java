@@ -37,7 +37,7 @@ public class IdempotentOperations extends AbstractRule {
             return super.visit(node, data);
         }
 
-        if (!lhs.getImage().equals(rhs.getImage())) {
+        if (!lhs.hasImageEqualTo(rhs.getImage())) {
             return super.visit(node, data);
         }
 

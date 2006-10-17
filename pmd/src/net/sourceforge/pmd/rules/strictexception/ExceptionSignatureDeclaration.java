@@ -87,7 +87,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
      * @return true if <code>Exception</code> is declared and has proper parents
      */
     private boolean hasDeclaredExceptionInSignature(ASTName exception) {
-        return exception.getImage().equals("Exception") && isParentSignatureDeclaration(exception);
+        return exception.hasImageEqualTo("Exception") && isParentSignatureDeclaration(exception);
     }
 
     /**
