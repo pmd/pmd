@@ -32,7 +32,7 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
     public void testIntegers() throws ReportException {
 
     	rule.setProperty(NonRuleWithAllPropertyTypes.singleInt, new Integer(0));
-        assertTrue(rule.getIntProperty("singleInt") == 0);
+        assertTrue(rule.getIntProperty(NonRuleWithAllPropertyTypes.singleInt) == 0);
         
     	rule.setProperties(NonRuleWithAllPropertyTypes.multiInt, new Object[] {new Integer(0), new Integer(1)});
         assertTrue(areEqual(rule.getIntProperties(NonRuleWithAllPropertyTypes.multiInt), new int[]{0, 1}));
@@ -57,7 +57,7 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
     public void testBooleans() throws ReportException {
 
     	rule.setProperty(NonRuleWithAllPropertyTypes.singleBool, Boolean.FALSE);
-        assertFalse(rule.getBooleanProperty("singleBool"));
+        assertFalse(rule.getBooleanProperty(NonRuleWithAllPropertyTypes.singleBool));
         
     	rule.setProperties(NonRuleWithAllPropertyTypes.multiBool, new Boolean[] {Boolean.TRUE, Boolean.FALSE});
         assertTrue(areEqual(rule.getBooleanProperties(NonRuleWithAllPropertyTypes.multiBool), new boolean[]{true, false}));
@@ -107,7 +107,7 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
     public void testStrings() throws ReportException {
 
     	rule.setProperty(NonRuleWithAllPropertyTypes.singleStr, "brian");
-        assertEquals(rule.getStringProperty("singleStr"), "brian");
+        assertEquals(rule.getStringProperty(NonRuleWithAllPropertyTypes.singleStr), "brian");
         
     	rule.setProperties(NonRuleWithAllPropertyTypes.multiStr, new String[] {"hello", "world"});
     	assertTrue(CollectionUtil.arraysAreEqual(rule.getStringProperties(NonRuleWithAllPropertyTypes.multiStr),  new String[] {"hello", "world"}));
