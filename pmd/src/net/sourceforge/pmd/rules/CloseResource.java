@@ -3,14 +3,8 @@
  */
 package net.sourceforge.pmd.rules;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.StringTokenizer;
-
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -22,6 +16,15 @@ import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.properties.StringProperty;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 /**
  * Makes sure you close your database connections. It does this by
@@ -38,10 +41,28 @@ import net.sourceforge.pmd.ast.Node;
 public class CloseResource extends AbstractRule {
 
     private Set types = new HashSet();
+    
+
+    private Set closeTargets = new HashSet();
+    private static final PropertyDescriptor closeTargetsDescriptor = new StringProperty("closeTargets",
+            "Methods which may close this resource", "", 1.0f);
+
+    private static final PropertyDescriptor typesDescriptor = new StringProperty("types",
+            "Types that are affected by this rule", "", 2.0f);
+
+    private static final Map propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { typesDescriptor, closeTargetsDescriptor });
+
+    protected Map propertiesByName() {
+        return propertyDescriptorsByName;
+    };
 
     public Object visit(ASTCompilationUnit node, Object data) {
-
-        if (types.isEmpty()) {
+        if (closeTargets.isEmpty() && getStringProperty("closeTargets") != null) {
+            for (StringTokenizer st = new StringTokenizer(getStringProperty("closeTargets"), ","); st.hasMoreTokens();) {
+                closeTargets.add(st.nextToken());
+            }
+        }
+        if (types.isEmpty() && getStringProperty("types") != null) {
             for (StringTokenizer st = new StringTokenizer(getStringProperty("types"), ","); st.hasMoreTokens();) {
                 types.add(st.nextToken());
             }
@@ -105,7 +126,8 @@ public class CloseResource extends AbstractRule {
                 List names = new ArrayList();
                 f.findChildrenOfType(ASTName.class, names, true);
                 for (Iterator it2 = names.iterator(); it2.hasNext();) {
-                    if (((ASTName) it2.next()).getImage().equals(target)) {
+                    String name = ((ASTName) it2.next()).getImage();
+                    if (name.equals(target) || closeTargets.contains(name)) {
                         closed = true;
                     }
                 }
