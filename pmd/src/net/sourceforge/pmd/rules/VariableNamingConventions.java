@@ -3,7 +3,10 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.util.Map;
+
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
@@ -13,27 +16,53 @@ import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.AccessNode;
-import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.properties.StringProperty;
 
 public class VariableNamingConventions extends AbstractRule {
 
-    public static final String SEPARATOR = ",";
+    private String[] staticPrefixes;
+    private String[] staticSuffixes;
+    private String[] memberPrefixes;
+    private String[] memberSuffixes;
 
-    private String[] staticPrefix;
-    private String[] staticSuffix;
-    private String[] memberPrefix;
-    private String[] memberSuffix;
-
+    private static final PropertyDescriptor staticPrefixesDescriptor = new StringProperty(
+    	"staticPrefix", "Static prefixes", new String[] {""},	1.0f , ','
+    	);
+ 
+    private static final PropertyDescriptor staticSuffixesDescriptor = new StringProperty(
+       	"staticSuffix", "Static suffixes", new String[] {""},	2.0f , ','
+       	);    
+ 
+    private static final PropertyDescriptor memberPrefixesDescriptor = new StringProperty(
+       	"memberPrefix", "Member prefixes", new String[] {""},	3.0f , ','
+       	);
+    
+    private static final PropertyDescriptor memberSuffixesDescriptor = new StringProperty(
+       	"memberSuffix", "Member suffixes", new String[] {""},	4.0f , ','
+       	);
+    
+    private static final Map propertyDescriptorsByName = asFixedMap( new PropertyDescriptor[] {
+    	staticPrefixesDescriptor, staticSuffixesDescriptor, 
+    	memberPrefixesDescriptor, memberSuffixesDescriptor
+		});
+    
+    /**
+     * @return Map
+     */
+    protected Map propertiesByName() {
+    	return propertyDescriptorsByName;
+    }    
+    
     public Object visit(ASTCompilationUnit node, Object data) {
         init();
         return super.visit(node, data);
     }
 
     protected void init() {
-        staticPrefix = StringUtil.substringsOf(getStringProperty("staticPrefix"), SEPARATOR);
-        staticSuffix = StringUtil.substringsOf(getStringProperty("staticSuffix"), SEPARATOR);
-        memberPrefix = StringUtil.substringsOf(getStringProperty("memberPrefix"), SEPARATOR);
-        memberSuffix = StringUtil.substringsOf(getStringProperty("memberSuffix"), SEPARATOR);
+        staticPrefixes = getStringProperties(staticPrefixesDescriptor);
+        staticSuffixes = getStringProperties(staticSuffixesDescriptor);
+        memberPrefixes = getStringProperties(memberPrefixesDescriptor);
+        memberSuffixes = getStringProperties(memberSuffixesDescriptor);
     }
 
     public Object visit(ASTFieldDeclaration node, Object data) {
@@ -95,11 +124,11 @@ public class VariableNamingConventions extends AbstractRule {
     }
 
     private String normalizeMemberVariableName(String varName) {
-        return stripSuffix(stripPrefix(varName, memberPrefix), memberSuffix);
+        return stripSuffix(stripPrefix(varName, memberPrefixes), memberSuffixes);
     }
 
     private String normalizeStaticVariableName(String varName) {
-        return stripSuffix(stripPrefix(varName, staticPrefix), staticSuffix);
+        return stripSuffix(stripPrefix(varName, staticPrefixes), staticSuffixes);
     }
 
     private String stripSuffix(String varName, String[] suffix) {
