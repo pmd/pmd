@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
@@ -23,11 +25,18 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
 
 	private String prefixProperty;
 
-  public Object visit(ASTCompilationUnit node, Object data) {
-	  prefixProperty = getStringProperty("prefix");
-    super.visit(node, data);
-    return data;
-  }
+    private static final PropertyDescriptor prefixDescriptor = new StringProperty(
+    	"prefix", "Prefix somethingorother?", "", 1.0f
+    	);
+    
+    private static final Map propertyDescriptorsByName = asFixedMap(prefixDescriptor);
+    	
+	
+	public Object visit(ASTCompilationUnit node, Object data) {
+		prefixProperty = getStringProperty(prefixDescriptor);
+		super.visit(node, data);
+		return data;
+	}
 	
 	private static String[] imagesOf(List simpleNodes) {
 		
@@ -96,5 +105,12 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             }
         }
         return false;
+    }
+    
+    /**
+     * @return Map
+     */
+    protected Map propertiesByName() {
+    	return propertyDescriptorsByName;
     }
 }
