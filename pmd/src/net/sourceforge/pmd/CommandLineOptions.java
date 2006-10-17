@@ -75,7 +75,7 @@ public class CommandLineOptions {
                     minPriority = Integer.parseInt(args[i + 1]);
                 } catch (NumberFormatException e) {
                     throw new RuntimeException(MessageFormat.format(
-                            "minimumpriority parameter must be a whole number, {0} recieved",
+                            "minimumpriority parameter must be a whole number, {0} received",
                             new String[] { args[i + 1] }));
                 }
             }
