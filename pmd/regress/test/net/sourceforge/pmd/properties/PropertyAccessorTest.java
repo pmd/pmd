@@ -31,15 +31,15 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
     
     public void testIntegers() throws ReportException {
 
-    	rule.setProperty("singleInt", new Integer(0));
+    	rule.setProperty(NonRuleWithAllPropertyTypes.singleInt, new Integer(0));
         assertTrue(rule.getIntProperty("singleInt") == 0);
         
-    	rule.setProperties("multiInt", new Object[] {new Integer(0), new Integer(1)});
-        assertTrue(areEqual(rule.getIntProperties("multiInt"), new int[]{0, 1}));
+    	rule.setProperties(NonRuleWithAllPropertyTypes.multiInt, new Object[] {new Integer(0), new Integer(1)});
+        assertTrue(areEqual(rule.getIntProperties(NonRuleWithAllPropertyTypes.multiInt), new int[]{0, 1}));
         
         boolean exceptionOccurred = false;
         try {
-        	rule.setProperties("singleInt", new Object[] {new Integer(0), new Integer(1)});
+        	rule.setProperties(NonRuleWithAllPropertyTypes.singleInt, new Object[] {new Integer(0), new Integer(1)});
         	} catch (Exception ex) {
         		exceptionOccurred = true;
         	}
@@ -47,7 +47,7 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
         
         exceptionOccurred = false;
         try {
-        	rule.setProperty("multiInt", new Integer(0));
+        	rule.setProperty(NonRuleWithAllPropertyTypes.multiInt, new Integer(0));
         	} catch (Exception ex) {
         		exceptionOccurred = true;
         	}
@@ -56,15 +56,15 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
      
     public void testBooleans() throws ReportException {
 
-    	rule.setProperty("singleBool", Boolean.FALSE);
+    	rule.setProperty(NonRuleWithAllPropertyTypes.singleBool, Boolean.FALSE);
         assertFalse(rule.getBooleanProperty("singleBool"));
         
-    	rule.setProperties("multiBool", new Boolean[] {Boolean.TRUE, Boolean.FALSE});
-        assertTrue(areEqual(rule.getBooleanProperties("multiBool"), new boolean[]{true, false}));
+    	rule.setProperties(NonRuleWithAllPropertyTypes.multiBool, new Boolean[] {Boolean.TRUE, Boolean.FALSE});
+        assertTrue(areEqual(rule.getBooleanProperties(NonRuleWithAllPropertyTypes.multiBool), new boolean[]{true, false}));
         
         boolean exceptionOccurred = false;
         try {
-        	rule.setProperties("singleBool", new Boolean[] {Boolean.TRUE, Boolean.FALSE});
+        	rule.setProperties(NonRuleWithAllPropertyTypes.singleBool, new Boolean[] {Boolean.TRUE, Boolean.FALSE});
         	} catch (Exception ex) {
         		exceptionOccurred = true;
         	}
@@ -72,7 +72,7 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
         
         exceptionOccurred = false;
         try {
-        	rule.setProperty("multiBool", Boolean.TRUE);
+        	rule.setProperty(NonRuleWithAllPropertyTypes.multiBool, Boolean.TRUE);
         	} catch (Exception ex) {
         		exceptionOccurred = true;
         	}
@@ -106,15 +106,15 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
     
     public void testStrings() throws ReportException {
 
-    	rule.setProperty("singleStr", "brian");
+    	rule.setProperty(NonRuleWithAllPropertyTypes.singleStr, "brian");
         assertEquals(rule.getStringProperty("singleStr"), "brian");
         
-    	rule.setProperties("multiStr", new String[] {"hello", "world"});
-    	assertTrue(CollectionUtil.arraysAreEqual(rule.getStringProperties("multiStr"),  new String[] {"hello", "world"}));
+    	rule.setProperties(NonRuleWithAllPropertyTypes.multiStr, new String[] {"hello", "world"});
+    	assertTrue(CollectionUtil.arraysAreEqual(rule.getStringProperties(NonRuleWithAllPropertyTypes.multiStr),  new String[] {"hello", "world"}));
         
         boolean exceptionOccurred = false;
         try {
-        	rule.setProperties("singleStr", new String[] {"hello", "world"});
+        	rule.setProperties(NonRuleWithAllPropertyTypes.singleStr, new String[] {"hello", "world"});
         	} catch (Exception ex) {
         		exceptionOccurred = true;
         	}
@@ -122,7 +122,7 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
         
         exceptionOccurred = false;
         try {
-        	rule.setProperty("multiStr", "brian");
+        	rule.setProperty(NonRuleWithAllPropertyTypes.multiStr, "brian");
         	} catch (Exception ex) {
         		exceptionOccurred = true;
         	}
