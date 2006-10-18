@@ -15,30 +15,55 @@ import java.util.Map.Entry;
  */
 public class CollectionUtil {
 
-	public static final Map collectionTypesByShortName = mapFrom( new Object[][] {
-			{"List",		java.util.List.class },
-			{"Collection",	java.util.Collection.class },
-			{"Map",			java.util.Map.class },
-			{"ArrayList",	java.util.ArrayList.class },
-			{"LinkedList",	java.util.LinkedList.class },
-			{"Vector",		java.util.Vector.class },
-			{"HashMap",		java.util.HashMap.class },
-			{"TreeMap",		java.util.TreeMap.class },
-			{"Set", 		java.util.Set.class },
-			{"HashSet",		java.util.HashSet.class }
-			});
+	public static final TypeMap collectionInterfacesByNames = new TypeMap( new Class[] {
+		java.util.List.class,
+		java.util.Collection.class,
+		java.util.Map.class,
+		java.util.Set.class,
+		});
+		
+	public static final TypeMap collectionClassesByNames = new TypeMap( new Class[] {
+		java.util.ArrayList.class,
+		java.util.LinkedList.class,
+		java.util.Vector.class,
+		java.util.HashMap.class,
+		java.util.LinkedHashMap.class,
+		java.util.TreeMap.class,
+		java.util.TreeSet.class,
+		java.util.HashSet.class,
+		java.util.LinkedHashSet.class
+		});
 	
 	private CollectionUtil() {};
 	
 	/**
-	 * Returns the collection type if we know it by its short name.
+	 * Returns the collection type if we recognize it by its short name.
 	 * 
-	 * @param name String
+	 * @param shortName String
 	 * @return Class
 	 */
-	public static Class getCollectionTypeFor(String name) {
-		return (Class)collectionTypesByShortName.get(name);
+	public static Class getCollectionTypeFor(String shortName) {
+		Class cls = collectionClassesByNames.typeFor(shortName);
+		if (cls != null) return cls;
+		
+		return collectionInterfacesByNames.typeFor(shortName);
 	}
+	
+	/**
+	 * Return whether we can identify the typeName as a java.util collection class
+	 * or interface as specified.
+	 * 
+	 * @param typeName String
+	 * @param includeInterfaces boolean
+	 * @return boolean
+	 */
+	public static boolean isCollectionType(String typeName, boolean includeInterfaces) {
+		
+		if (collectionClassesByNames.contains(typeName)) return true;
+
+		return includeInterfaces && collectionInterfacesByNames.contains(typeName);
+	}
+	
 	
     /**
      * Returns the items as a populated set.

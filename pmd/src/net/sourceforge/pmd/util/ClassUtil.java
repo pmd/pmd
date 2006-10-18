@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.util;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 
 /**
@@ -13,39 +12,40 @@ public class ClassUtil {
 
 	private ClassUtil() {};
 	
-	private static final Map primitiveTypesByName = CollectionUtil.mapFrom( new Object[][] {
-			{"int",		int.class },
-			{"byte",	byte.class },
-			{"long",	long.class },
-			{"short",	short.class },
-			{"float",	float.class },
-			{"double",	double.class },
-			{"char",	char.class },
-			{"boolean", boolean.class },
+	private static final TypeMap primitiveTypesByName = new TypeMap( new Class[] {
+			int.class,
+			byte.class,
+			long.class,
+			short.class,
+			float.class,
+			double.class,
+			char.class,
+			boolean.class,
 			});
 	
-	private static final Map typesByShortName = CollectionUtil.mapFrom( new Object[][] {
-			{"Integer",		Integer.class },
-			{"Byte",		Byte.class },
-			{"Long",		Long.class },
-			{"Short",		Short.class },
-			{"Float",		Float.class },
-			{"Double",		Double.class },
-			{"Character",	Character.class },
-			{"Boolean", 	Boolean.class },
-			{"BigDecimal",	BigDecimal.class },
-			{"String",		String.class },
-			{"Object",		Object.class },
-			{"Object[]",	Object[].class }
+	private static final TypeMap typesByNames = new TypeMap( new Class[] {
+			Integer.class,
+			Byte.class,
+			Long.class,
+			Short.class,
+			Float.class,
+			Double.class,
+			Character.class,
+			Boolean.class,
+			BigDecimal.class,
+			String.class,
+			Object.class,
 			});
 	
 	/**
-	 * Method getPrimitiveTypeFor.
+	 * Returns the type(class) for the name specified
+	 * or null if not found.
+	 * 
 	 * @param name String
 	 * @return Class
 	 */
 	public static Class getPrimitiveTypeFor(String name) {
-		return (Class)primitiveTypesByName.get(name);
+		return primitiveTypesByName.typeFor(name);
 	}
 	
 	/**
@@ -56,13 +56,28 @@ public class ClassUtil {
 	 */
 	public static Class getTypeFor(String shortName) {
 		
-		Class cls = (Class)typesByShortName.get(shortName);
-		if (cls != null) return cls;
+		Class type = typesByNames.typeFor(shortName);
+		if (type != null) return type;
 		
-		cls = (Class)primitiveTypesByName.get(shortName);
-		if (cls != null) return cls;
+		type = primitiveTypesByName.typeFor(shortName);
+		if (type != null) return type;
 		
 		return CollectionUtil.getCollectionTypeFor(shortName);
 	}
-	
+	/**
+	 * Returns the abbreviated name of the type,
+	 * without the package name
+	 * 
+	 * @param fullTypeName
+	 * @return String
+	 */
+			
+	public static String withoutPackageName(String fullTypeName) {
+		
+		int dotPos = fullTypeName.lastIndexOf('.');
+		
+		return dotPos > 0 ?
+			fullTypeName.substring(dotPos+1) :
+			fullTypeName;
+	}
 }
