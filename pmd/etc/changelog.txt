@@ -10,6 +10,7 @@ Fixed bug 1573591 - NonThreadSafeSingleton doesn't throw NPE when using this key
 Fixed bug 1371753 - UnnecessaryLocalBeforeReturn is now less aggressive in its reporting.
 Fixed bug 1566547 - Annotations with an empty MemberValueArrayInitializer are now parsed properly.
 Fixed bugs 1060761 / 1433119 & RFE 1196954 - CloseResource now takes an optional parameter to identify closure methods
+Fixed bug 1579615 - OverrideBothEqualsAndHashcode no longer throws an Exception on equals methods that don't have Object as a parameter type.
 Applied patch 1551189 - SingularField false + for initialization blocks
 Applied patch 1573981 - false + in CloneMethodMustImplementCloneable
 Applied patch 1574988 - false + in OverrideBothEqualsAndHashcode

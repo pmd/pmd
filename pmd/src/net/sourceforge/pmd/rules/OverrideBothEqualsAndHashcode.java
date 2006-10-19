@@ -73,7 +73,7 @@ public class OverrideBothEqualsAndHashcode extends AbstractRule {
         if (iFormalParams == 0 && node.hasImageEqualTo("hashCode")) {
             containsHashCode = true;
             nodeFound = node;
-        } else if (iFormalParams == 1 && node.hasImageEqualTo("equals") && (paramName.equals("Object") || paramName.equals("java.lang.Object"))) {
+        } else if (iFormalParams == 1 && node.hasImageEqualTo("equals") && ("Object".equals(paramName) || "java.lang.Object".equals(paramName))) {
             containsEquals = true;
             nodeFound = node;
         }
