@@ -52,6 +52,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Aaron Optimizer Digulla - Tweaks to pmd.bat</li>
             <li>Peter Van de Voorde - Rewrote the 'create rule XML' functionality in the designer utility</li>
             <li>Josh Devins - Reported bug with annotation parsing</li>
             <li>Alan Berg - Reported bug in Ant task</li>
