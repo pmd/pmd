@@ -52,6 +52,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Stefan Seidel - Reported JDK 1.5 parsing bug</li>
             <li>Wouter Zelle - Fixed bug in OverrideBothEqualsAndHashcode, wrote BrokenNullCheck rule, fixed a false positive in InefficientStringBuffering, fixed a false positive in NonThreadSafeSingleton, a nice patch to clean up some of the Ant task properties and fix a TextRenderer bug, rewrote PositionLiteralsFirstInComparisons in XPath, Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Aaron Optimizer Digulla - Tweaks to pmd.bat</li>
             <li>Peter Van de Voorde - Rewrote the 'create rule XML' functionality in the designer utility</li>

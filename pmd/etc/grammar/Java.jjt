@@ -1224,6 +1224,7 @@ void ClassOrInterfaceBodyDeclaration():
     | LOOKAHEAD( [ TypeParameters() ] <IDENTIFIER> "(" ) ConstructorDeclaration(modifiers)
     | LOOKAHEAD( Type() <IDENTIFIER> ( "[" "]" )* ( "," | "=" | ";" ) )  FieldDeclaration(modifiers)
     | MethodDeclaration(modifiers)
+    | AnnotationTypeDeclaration(modifiers)
   )
 |
   ";"

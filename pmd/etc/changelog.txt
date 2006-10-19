@@ -19,6 +19,7 @@ PMD now requires JDK 1.4 to run.  Note that, however, PMD will still analyze cod
 SummaryHTML Report changes from Brent Fisher - now contains linePrefix to support source output from javadoc using "linksource"
 Fixed CSVRenderer - had flipped line and priority columns
 Fixed bug in Ant task - CSV reports were being output as text.
+Fixed several JDK 1.5 parsing bugs.
 CloseResource rule now checks code without java.sql import.
 ArrayIsStoredDirectly rule now checks Constructors
 undo/redo added to text areas in Designer.
