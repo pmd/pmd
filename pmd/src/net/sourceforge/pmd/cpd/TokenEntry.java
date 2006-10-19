@@ -71,6 +71,9 @@ public class TokenEntry implements Comparable {
     }
 
     public boolean equals(Object o) {
+        if (!(o instanceof TokenEntry)) {
+            return false;
+        }
         TokenEntry other = (TokenEntry) o;
         return other.hashCode == hashCode;
     }
