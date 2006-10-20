@@ -28,7 +28,7 @@
 
 	<target name="compile" description="Compiles the code">
 		<mkdir dir="${dir.build}" />
-		<javac deprecation="false" debug="true" optimize="false" srcdir="${dir.src}:${dir.regress}" destdir="${dir.build}">
+		<javac source="1.4" target="1.4" deprecation="false" debug="true" optimize="false" srcdir="${dir.src}:${dir.regress}" destdir="${dir.build}">
 			<classpath>
 				<path refid="dependencies.path" />
 			</classpath>
