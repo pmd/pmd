@@ -4,7 +4,7 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
-import net.sourceforge.pmd.util.HasLines;
+import net.sourceforge.pmd.util.LineGetter;
 import net.sourceforge.pmd.util.StringUtil;
 
 import javax.swing.*;
@@ -29,7 +29,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 
         private int x = 150;
         private int y = 50;
-        private HasLines lines;
+        private LineGetter lines;
 
         private void addAccessLabel(StringBuffer sb, VariableAccess va) {
 
@@ -141,7 +141,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
             }
         }
 
-        public void setCode(HasLines h) {
+        public void setCode(LineGetter h) {
             this.lines = h;
         }
 
@@ -283,7 +283,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
         dfaCanvas.repaint();
     }
 
-    public void resetTo(List newNodes, HasLines lines) {
+    public void resetTo(List newNodes, LineGetter lines) {
         dfaCanvas.setCode(lines);
         nodes.clear();
         for (Iterator i = newNodes.iterator(); i.hasNext();) {

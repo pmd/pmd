@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.util.designer;
 
-import net.sourceforge.pmd.util.HasLines;
+import net.sourceforge.pmd.util.LineGetter;
 
 import javax.swing.*;
 import java.awt.Dimension;
@@ -13,7 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-public class CodeEditorTextPane extends JTextPane implements HasLines, ActionListener {
+public class CodeEditorTextPane extends JTextPane implements LineGetter, ActionListener {
 
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home") + System.getProperty("file.separator") + ".pmd_designer";
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
