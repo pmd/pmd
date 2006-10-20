@@ -18,6 +18,7 @@ public class AvoidDecimalLiteralsInBigDecimalConstructorTest extends SimpleAggre
         runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "bad, new BigDecimal(.1)", 1, rule),
             new TestDescriptor(TEST2, "ok, new BigDecimal(\".1\")", 0, rule),
+            new TestDescriptor(TEST3, "bad, same as #1 but outside an initializer context", 1, rule),
         });
     }
 
@@ -32,6 +33,13 @@ public class AvoidDecimalLiteralsInBigDecimalConstructorTest extends SimpleAggre
             "public class Foo {" + PMD.EOL +
             " void bar() {" + PMD.EOL +
             "  BigDecimal bd = new BigDecimal(\".1\");" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST3 =
+            "public class Foo {" + PMD.EOL +
+            " BigDecimal bar() {" + PMD.EOL +
+            "  return new BigDecimal(1.0);" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 

@@ -759,14 +759,13 @@ if executed)
     <property name="xpath">
     <value>
 <![CDATA[
-//VariableInitializer/Expression
-/PrimaryExpression/PrimaryPrefix
-/AllocationExpression[ClassOrInterfaceType[@Image="BigDecimal"]
+//AllocationExpression[ClassOrInterfaceType[@Image="BigDecimal"]
 and
 ./Arguments/ArgumentList
-/Expression/PrimaryExpression/PrimaryPrefix/Literal[(not (ends-with
+/Expression/PrimaryExpression/PrimaryPrefix/Literal[(not
+(ends-with
 (@Image,'"'))) and contains(@Image,".")]]
-]]>
+ ]]>
     </value>
     </property>
   </properties>

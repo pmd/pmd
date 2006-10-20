@@ -52,6 +52,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Ryan Gustafson - Patch to fix bug in AvoidDecimalLiteralsInBigDecimalConstructor, patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0</li>
             <li>Stefan Seidel - Reported JDK 1.5 parsing bug</li>
             <li>Wouter Zelle - Fixed bug in OverrideBothEqualsAndHashcode, wrote BrokenNullCheck rule, fixed a false positive in InefficientStringBuffering, fixed a false positive in NonThreadSafeSingleton, a nice patch to clean up some of the Ant task properties and fix a TextRenderer bug, rewrote PositionLiteralsFirstInComparisons in XPath, Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional</li>
             <li>Aaron Optimizer Digulla - Tweaks to pmd.bat</li>
@@ -178,7 +179,6 @@
             <li>Matthias Kerkhoff - CPD suggestions, several bug reports</li>
             <li>Chris Riesbeck - identified some dead code in RuleSet</li>
             <li>Lars Gregori - reported a bug in the Ant task docs</li>
-            <li>Ryan Gustafson - patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0</li>
             <li><a href="http://freshmeat.net/~toddwright/">Todd Wright</a> - reported bug in EmptyStatementNotInLoop, XPath port of AtLeastOneConstructorRule, ConfusingTernaryExpression rule, reported missing ASTUnaryExpressionNotPlusMinus nodes</li>
             <li><a href="http://derupe.blogspot.com/">Conrad Roche</a> - UnusedModifier bug report, other bug reports</li>
             <li>Mike Thome - NOPMD implementation concept, BadComparisonRule suggestion</li>
