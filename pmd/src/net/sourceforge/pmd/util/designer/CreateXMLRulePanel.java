@@ -98,6 +98,9 @@ public class CreateXMLRulePanel extends JPanel implements ActionListener{
 	    repaint();
 	}
 
+	private void appendLn(StringBuffer sb, String text) {
+		sb.append(text).append(PMD.EOL);
+	}
 
 	/**
 	 * We let our class implement the ActionListener interface
@@ -106,31 +109,31 @@ public class CreateXMLRulePanel extends JPanel implements ActionListener{
 	 * 
 	 */
 	public void actionPerformed(ActionEvent exception) {
-	    StringBuffer buffer = new StringBuffer();
-	    buffer.append("<rule  name=\"" + rulenameField.getText() + "\"" + PMD.EOL);
-	    buffer.append("  message=\"" + rulemsgField.getText() + "\"" + PMD.EOL);
-	    buffer.append("  class=\"" + (xpathQueryArea.getText().length() == 0 ? "" : "net.sourceforge.pmd.rules.XPathRule") + "\">" + PMD.EOL);
-	    buffer.append("  <description>" + PMD.EOL);
-	    buffer.append("  " + ruledescField.getText() + PMD.EOL);
-	    buffer.append("  </description>" + PMD.EOL);
+	    StringBuffer buffer = new StringBuffer(200);
+	    appendLn(buffer, "<rule  name=\"" + rulenameField.getText() + '\"');
+	    appendLn(buffer, "  message=\"" + rulemsgField.getText() + '\"');
+	    appendLn(buffer, "  class=\"" + (xpathQueryArea.getText().length() == 0 ? "" : "net.sourceforge.pmd.rules.XPathRule") + "\">");
+	    appendLn(buffer, "  <description>");
+	    appendLn(buffer, "  " + ruledescField.getText());
+	    appendLn(buffer, "  </description>");
 	    if (xpathQueryArea.getText().length() != 0) {
-	    	buffer.append("  <properties>" + PMD.EOL);
-	    	buffer.append("    <property name=\"xpath\">" + PMD.EOL);
-	    	buffer.append("    <value>" + PMD.EOL);
-	    	buffer.append("<![CDATA[" + PMD.EOL);
-	    	buffer.append(xpathQueryArea.getText() + PMD.EOL);
-	    	buffer.append("]]>" + PMD.EOL);
-	    	buffer.append("    </value>" + PMD.EOL);
-	    	buffer.append("    </property>" + PMD.EOL);
-	    	buffer.append("  </properties>" + PMD.EOL);
+	    	appendLn(buffer, "  <properties>");
+	    	appendLn(buffer, "    <property name=\"xpath\">");
+	    	appendLn(buffer, "    <value>");
+	    	appendLn(buffer, "<![CDATA[");
+	    	appendLn(buffer, xpathQueryArea.getText());
+	    	appendLn(buffer, "]]>");
+	    	appendLn(buffer, "    </value>");
+	    	appendLn(buffer, "    </property>");
+	    	appendLn(buffer, "  </properties>");
 	    }
-	    buffer.append("  <priority>3</priority>" + PMD.EOL);
-	    buffer.append("  <example>" + PMD.EOL);
-	    buffer.append("<![CDATA[" + PMD.EOL);
-	    buffer.append(codeEditorPane.getText());
-	    buffer.append("]]>" + PMD.EOL);
-	    buffer.append("  </example>" + PMD.EOL);
-	    buffer.append("</rule>" + PMD.EOL);
+	    appendLn(buffer, "  <priority>3</priority>");
+	    appendLn(buffer, "  <example>");
+	    appendLn(buffer, "<![CDATA[");
+	    appendLn(buffer, codeEditorPane.getText());
+	    appendLn(buffer, "]]>");
+	    appendLn(buffer, "  </example>");
+	    appendLn(buffer, "</rule>");
 	
 	    ruleXMLArea.setText(buffer.toString());
 	    repaint();
