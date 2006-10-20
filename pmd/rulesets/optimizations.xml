@@ -283,41 +283,11 @@ public class Test {
 
     <rule name="UnnecessaryWrapperObjectCreation"
           message="Unnecessary wrapper object creation"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.optimization.UnnecessaryWrapperObjectCreation"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UnnecessaryWrapperObjectCreation">
       <description>
 Parsing method should be called directy instead.
       </description>
-      <properties>
-          <property name="xpath">
-              <value>
-<![CDATA[
-//PrimaryExpression[
-PrimaryPrefix/Name[
-@Image='Byte.valueOf' or
-@Image='Short.valueOf' or
-@Image='Integer.valueOf' or
-@Image='Long.valueOf' or
-@Image='Float.valueOf' or
-@Image='Double.valueOf' or
-@Image='Boolean.valueOf' or
-@Image='Character.valueOf'
-]
-and
-PrimarySuffix[
-@Image='byteValue' or
-@Image='shortValue' or
-@Image='intValue' or
-@Image='longValue' or
-@Image='floatValue' or
-@Image='doubleValue' or
-@Image='booleanValue' or
-@Image='charValue'
-]]
-]]>
-              </value>
-          </property>
-      </properties>
         <priority>3</priority>
       <example>
 <![CDATA[
