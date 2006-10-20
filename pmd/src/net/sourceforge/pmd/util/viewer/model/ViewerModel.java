@@ -1,25 +1,27 @@
 package net.sourceforge.pmd.util.viewer.model;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
+
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 
-import java.io.StringReader;
-import java.util.List;
-import java.util.Vector;
-
 public class ViewerModel {
-    private Vector listeners;
-    private SimpleNode rootNode;
-    private List evaluationResults;
+	
+    private List		listeners;
+    private SimpleNode	rootNode;
+    private List		evaluationResults;
 
     public ViewerModel() {
-        listeners = new Vector(5);
+        listeners = new ArrayList(5);
     }
 
     public SimpleNode getRootNode() {
@@ -99,7 +101,7 @@ public class ViewerModel {
 
     protected void fireViewerModelEvent(ViewerModelEvent e) {
         for (int i = 0; i < listeners.size(); i++) {
-            ((ViewerModelListener) listeners.elementAt(i)).viewerModelChanged(e);
+            ((ViewerModelListener) listeners.get(i)).viewerModelChanged(e);
         }
     }
 }

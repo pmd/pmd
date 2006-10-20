@@ -17,8 +17,8 @@ import java.util.List;
  * @version $Id$
  */
 
-public class SimpleNodeTreeNodeAdapter
-        implements TreeNode {
+public class SimpleNodeTreeNodeAdapter implements TreeNode {
+	
     private SimpleNode node;
     private List children;
     private SimpleNodeTreeNodeAdapter parent;
@@ -91,7 +91,7 @@ public class SimpleNodeTreeNodeAdapter
 
     public boolean isLeaf() {
         checkChildren();
-        return children.size() == 0;
+        return children.isEmpty();
     }
 
 

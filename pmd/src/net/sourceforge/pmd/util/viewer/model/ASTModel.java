@@ -1,13 +1,15 @@
 package net.sourceforge.pmd.util.viewer.model;
 
 
-import net.sourceforge.pmd.ast.SimpleNode;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-import java.util.Vector;
+
+import net.sourceforge.pmd.ast.SimpleNode;
 
 
 /**
@@ -17,10 +19,10 @@ import java.util.Vector;
  * @version $Id$
  */
 
-public class ASTModel
-        implements TreeModel {
+public class ASTModel implements TreeModel {
+	
     private SimpleNode root;
-    private Vector listeners = new Vector(1);
+    private List listeners = new ArrayList(1);
 
     /**
      * creates the tree model
@@ -96,7 +98,7 @@ public class ASTModel
 
     protected void fireTreeModelEvent(TreeModelEvent e) {
         for (int i = 0; i < listeners.size(); i++) {
-            ((TreeModelListener) listeners.elementAt(i)).treeNodesChanged(e);
+            ((TreeModelListener) listeners.get(i)).treeNodesChanged(e);
         }
     }
 

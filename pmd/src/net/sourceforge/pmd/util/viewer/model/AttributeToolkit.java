@@ -20,7 +20,7 @@ public class AttributeToolkit {
      * @return formmated value
      */
     public static String formatValueForXPath(Attribute attribute) {
-        return "'" + attribute.getValue() + "'";
+        return '\'' + attribute.getValue() + '\'';
     }
 
     /**
@@ -30,7 +30,7 @@ public class AttributeToolkit {
      * @return predicate
      */
     public static String constructPredicate(Attribute attribute) {
-        return "[@" + attribute.getName() + "=" +
-                formatValueForXPath(attribute) + "]";
+        return "[@" + attribute.getName() + '=' +
+                formatValueForXPath(attribute) + ']';
     }
 }
