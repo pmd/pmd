@@ -9,6 +9,7 @@ public class RuleContext {
 
     private Report report = new Report();
     private String sourceCodeFilename;
+    private SourceType sourceType;
 
     public Report getReport() {
         return report;
@@ -28,5 +29,13 @@ public class RuleContext {
 
     public void excludeLines(Map lines) {
         report.exclude(lines);
+    }
+
+    public SourceType getSourceType() {
+        return this.sourceType;
+    }
+
+    public void setSourceType(SourceType t) {
+        this.sourceType = t;
     }
 }

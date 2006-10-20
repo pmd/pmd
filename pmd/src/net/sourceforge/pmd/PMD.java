@@ -56,7 +56,7 @@ public class PMD {
     }
 
     /**
-     * Processes the file read by the reader agains the rule set.
+     * Processes the file read by the reader against the rule set.
      *
      * @param reader     input stream reader
      * @param ruleSets   set of rules to process against the file
@@ -69,12 +69,12 @@ public class PMD {
                             SourceType sourceType) throws PMDException {
         try {
             SourceTypeHandler sourceTypeHandler = sourceTypeHandlerBroker.getVisitorsFactoryForSourceType(sourceType);
+            ctx.setSourceType(sourceType);
             Parser parser = sourceTypeHandler.getParser();
             parser.setExcludeMarker(excludeMarker);
             Object rootNode = parser.parse(reader);
             ctx.excludeLines(parser.getExcludeMap());
             Thread.yield();
-            // TODO - move SymbolFacade traversal inside JavaParser.CompilationUnit()
             sourceTypeHandler.getSymbolFacade().start(rootNode);
 
             Language language = SourceTypeToRuleLanguageMapper.getMappedLanguage(sourceType);
