@@ -181,9 +181,10 @@ public class Foo {
    ]
    //StatementExpression[
     PrimaryExpression/PrimaryPrefix/Name[
-     @Image = concat(ancestor::MethodDeclaration//LocalVariableDeclaration[
+	 substring-before(@Image,'.add') = ancestor::MethodDeclaration//LocalVariableDeclaration[
       ./Type//ClassOrInterfaceType[
-       @Image = 'List' or @Image ='ArrayList'
+       @Image = 'Collection' or 
+       @Image = 'List' or @Image='ArrayList'
       ]
      ]
      /VariableDeclarator/VariableDeclaratorId[
@@ -191,7 +192,7 @@ public class Foo {
        @Image="ArrayList"
       ]
       )=1
-     ]/@Image,".add")
+     ]/@Image
     ]
    and
    PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
