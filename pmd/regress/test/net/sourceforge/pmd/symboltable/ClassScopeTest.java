@@ -134,12 +134,14 @@ public class ClassScopeTest extends STBBaseTst {
         parseCode(METHOD_USAGE_SEEN);
         ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration) acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
-        Iterator i = m.keySet().iterator();
-        MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
+        Iterator i = m.entrySet().iterator();
+        Map.Entry entry = (Map.Entry) i.next();
+        
+        MethodNameDeclaration mnd = (MethodNameDeclaration) entry.getKey();
         if (!mnd.getImage().equals("bar")) {
             mnd = (MethodNameDeclaration) i.next();
         }
-        List usages = (List) m.get(mnd);
+        List usages = (List) entry.getValue();
         assertEquals(1, usages.size());
         assertEquals("bar", ((NameOccurrence) usages.get(0)).getImage());
     }
@@ -148,12 +150,13 @@ public class ClassScopeTest extends STBBaseTst {
         parseCode(METHOD_USAGE_SEEN_WITH_THIS);
         ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration) acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
-        Iterator i = m.keySet().iterator();
-        MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
+        Iterator i = m.entrySet().iterator();
+        Map.Entry entry = (Map.Entry) i.next();
+        MethodNameDeclaration mnd = (MethodNameDeclaration) entry.getKey();
         if (!mnd.getImage().equals("bar")) {
             mnd = (MethodNameDeclaration) i.next();
         }
-        List usages = (List) m.get(mnd);
+        List usages = (List) entry.getValue();
         assertEquals(1, usages.size());
         assertEquals("bar", ((NameOccurrence) usages.get(0)).getImage());
     }
@@ -162,10 +165,11 @@ public class ClassScopeTest extends STBBaseTst {
         parseCode(METHOD_USAGE_SEEN2);
         ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration) acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
-        Iterator i = m.keySet().iterator();
-        MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
+        Iterator i = m.entrySet().iterator();
+        Map.Entry entry = (Map.Entry) i.next();
+        MethodNameDeclaration mnd = (MethodNameDeclaration) entry.getKey();
         if (mnd.getNode().getBeginLine() == 2) {
-            List usages = (List) m.get(mnd);
+            List usages = (List) entry.getValue();
             System.out.println(usages.size());
             System.out.println(mnd);
             mnd = (MethodNameDeclaration) i.next();

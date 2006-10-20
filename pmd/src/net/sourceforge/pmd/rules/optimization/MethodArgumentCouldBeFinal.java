@@ -29,9 +29,10 @@ public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
         }
         Scope s = meth.getScope();
         Map decls = s.getVariableDeclarations();
-        for (Iterator i = decls.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration var = (VariableNameDeclaration) i.next();
-            if (!var.getAccessNodeParent().isFinal() && (var.getAccessNodeParent() instanceof ASTFormalParameter) && !assigned((List) decls.get(var))) {
+        for (Iterator i = decls.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            VariableNameDeclaration var = (VariableNameDeclaration) entry.getKey();
+            if (!var.getAccessNodeParent().isFinal() && (var.getAccessNodeParent() instanceof ASTFormalParameter) && !assigned((List) entry.getValue())) {
                 addViolation(data, var.getAccessNodeParent(), var.getImage());
             }
         }

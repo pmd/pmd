@@ -100,9 +100,10 @@ public class PapariTextRenderer extends AbstractRenderer implements Renderer {
         buf.append(PMD.EOL + PMD.EOL);
         buf.append("Summary:" + PMD.EOL + PMD.EOL);
         Map summary = report.getCountSummary();
-        for (Iterator i = summary.keySet().iterator(); i.hasNext();) {
-            String key = (String) i.next();
-            buf.append(key + " : " + ((Integer) summary.get(key)).intValue() + PMD.EOL);
+        for (Iterator i = summary.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            String key = (String) entry.getKey();
+            buf.append(key + " : " + ((Integer) entry.getValue()).intValue() + PMD.EOL);
         }
 
         for (Iterator i = report.errors(); i.hasNext();) {

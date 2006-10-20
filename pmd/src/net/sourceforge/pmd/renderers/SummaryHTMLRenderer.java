@@ -34,11 +34,12 @@ public class SummaryHTMLRenderer extends AbstractRenderer implements Renderer {
         buf.append("<th>Rule name</th>");
         buf.append("<th>Number of violations</th>");
         Map summary = report.getSummary();
-        for (Iterator i = summary.keySet().iterator(); i.hasNext();) {
-            String ruleName = (String) i.next();
+        for (Iterator i = summary.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            String ruleName = (String) entry.getKey();
             buf.append("<tr>");
             buf.append("<td>" + ruleName + "</td>");
-            buf.append("<td align=center>" + ((Integer) summary.get(ruleName)).intValue() + "</td>");
+            buf.append("<td align=center>" + ((Integer) entry.getValue()).intValue() + "</td>");
             buf.append("</tr>");
         }
         buf.append("</table>");

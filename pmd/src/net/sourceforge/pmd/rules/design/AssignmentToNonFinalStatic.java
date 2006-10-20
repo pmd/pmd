@@ -25,13 +25,14 @@ public class AssignmentToNonFinalStatic extends AbstractRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Map vars = node.getScope().getVariableDeclarations();
-        for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
+        for (Iterator i = vars.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            VariableNameDeclaration decl = (VariableNameDeclaration) entry.getKey();
             if (!decl.getAccessNodeParent().isStatic() || decl.getAccessNodeParent().isFinal()) {
                 continue;
             }
 
-            if (initializedInConstructor((List) vars.get(decl))) {
+            if (initializedInConstructor((List) entry.getValue())) {
                 addViolation(data, decl.getNode(), decl.getImage());
             }
         }

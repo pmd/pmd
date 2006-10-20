@@ -16,9 +16,11 @@ public class AvoidReassigningParameters extends AbstractRule {
 
     public Object visit(ASTMethodDeclarator node, Object data) {
         Map params = node.getScope().getVariableDeclarations();
-        for (Iterator i = params.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
-            List usages = (List) params.get(decl);
+        for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+ 
+            VariableNameDeclaration decl = (VariableNameDeclaration) entry.getKey();
+            List usages = (List) entry.getValue();
             for (Iterator j = usages.iterator(); j.hasNext();) {
                 NameOccurrence occ = (NameOccurrence) j.next();
                 if ((occ.isOnLeftHandSide() || occ.isSelfAssignment()) && occ.getNameForWhichThisIsAQualifier() == null && !decl.isArray()) {

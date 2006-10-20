@@ -37,9 +37,10 @@ public class UnnecessaryLocalBeforeReturn extends AbstractRule {
         }
 
         Map vars = name.getScope().getVariableDeclarations();
-        for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration key = (VariableNameDeclaration) i.next();
-            List usages = (List) vars.get(key);
+        for (Iterator i = vars.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            VariableNameDeclaration key = (VariableNameDeclaration) entry.getKey();
+            List usages = (List) entry.getValue();
             for (Iterator j = usages.iterator(); j.hasNext();) {
                 NameOccurrence occ = (NameOccurrence) j.next();
                 if (occ.getLocation().equals(name)) {

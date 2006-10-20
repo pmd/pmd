@@ -617,9 +617,11 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
     private boolean evaluateDangerOfMethods(Map classMethodMap) {
         //check each method if it calls overridable method
         boolean found = false;
-        for (Iterator methodsIter = classMethodMap.keySet().iterator(); methodsIter.hasNext();) {
-            MethodHolder h = (MethodHolder) methodsIter.next();
-            List calledMeths = (List) classMethodMap.get(h);
+        for (Iterator methodsIter = classMethodMap.entrySet().iterator(); methodsIter.hasNext();) {
+            Map.Entry entry = (Map.Entry) methodsIter.next();
+ 
+            MethodHolder h = (MethodHolder) entry.getKey();
+            List calledMeths = (List) entry.getValue();
             for (Iterator calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && !h.isDangerous();) {
                 //if this method matches one of our dangerous methods, mark it dangerous
                 MethodInvocation meth = (MethodInvocation) calledMethsIter.next();
@@ -651,11 +653,12 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
      */
     private void evaluateDangerOfConstructors1(Map classConstructorMap, Set evaluatedMethods) {
         //check each constructor in the class
-        for (Iterator constIter = classConstructorMap.keySet().iterator(); constIter.hasNext();) {
-            ConstructorHolder ch = (ConstructorHolder) constIter.next();
+        for (Iterator constIter = classConstructorMap.entrySet().iterator(); constIter.hasNext();) {
+            Map.Entry entry = (Map.Entry) constIter.next();
+            ConstructorHolder ch = (ConstructorHolder) entry.getKey();
             if (!ch.isDangerous()) {//if its not dangerous then evaluate if it should be
                 //if it calls dangerous method mark it as dangerous
-                List calledMeths = (List) classConstructorMap.get(ch);
+                List calledMeths = (List) entry.getValue();
                 //check each method it calls
                 for (Iterator calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && !ch.isDangerous();) {//but thee are diff objects which represent same thing but were never evaluated, they need reevaluation
                     MethodInvocation meth = (MethodInvocation) calledMethsIter.next();//CCE

@@ -36,13 +36,14 @@ public class ImmutableField extends AbstractRule {
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Map vars = node.getScope().getVariableDeclarations();
         List constructors = findAllConstructors(node);
-        for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration field = (VariableNameDeclaration) i.next();
+        for (Iterator i = vars.entrySet().iterator(); i.hasNext();) {
+            Map.Entry entry = (Map.Entry) i.next();
+            VariableNameDeclaration field = (VariableNameDeclaration) entry.getKey();
             if (field.getAccessNodeParent().isStatic() || !field.getAccessNodeParent().isPrivate() || field.getAccessNodeParent().isFinal()) {
                 continue;
             }
 
-            int result = initializedInConstructor((List) vars.get(field), new HashSet(constructors));
+            int result = initializedInConstructor((List) entry.getValue(), new HashSet(constructors));
             if (result == MUTABLE) {
                 continue;
             }
