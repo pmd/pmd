@@ -26,7 +26,7 @@
           <p>
           Prerequisites:
               <ul>
-                  <li>JDK 1.3 or higher</li>
+                  <li>JDK 1.4 or higher</li>
                   <li>The Unix "zip" utility <a href="http://www.info-zip.org/pub/infozip/">InfoZip</a></li>
               </ul>
           </p>

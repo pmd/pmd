@@ -333,7 +333,7 @@ selecting the "Ask for Directory" checkbox.</p>
         <a name="textpad"/><subsection name="TextPad">
     <H5><U>Assumptions</U></H5>
     <P><UL>
-        <LI>The Java Development Kit, version 1.3.1 (versions 1.3 and higher are acceptable) is properly installed into your machine, and exists in <CODE>D:\java\jdk_131\</CODE>.  This means that <CODE>D:\java\jdk_131\bin\java.exe</CODE> exists.</LI>
+        <LI>The Java Development Kit, version 1.4.2 (versions 1.4 and higher are acceptable) is properly installed into your machine, and exists in <CODE>D:\java\jdk_142\</CODE>.  This means that <CODE>D:\java\jdk_142\bin\java.exe</CODE> exists.</LI>
         <LI>PMD version 3.8 exists in <CODE>D:\java\pmd-3.8\</CODE>.  This means that <CODE>D:\java\pmd-3.8\lib\pmd-3.8.jar</CODE> (among other jar files in the same directory) exist.</LI>
     </UL></P>
     <H5><U>To integrate into TextPad</U></H5>
@@ -341,7 +341,7 @@ selecting the "Ask for Directory" checkbox.</p>
         <LI>In the <B>Configure</B> menu, choose <B>Preferences...</B>.  This opens the Preferences dialog</LI>
         <LI>In the left pane of the Preferences dialog, choose the <B>Tools</B> branch by clicking on the <I>word</I> "Tools".</LI>
         <LI>On the far right of the dialog, click on the <B>Add</B> button, and then select <B>Program...</B> from the drop-down.  This opens the standard Windows Open File dialog.</LI>
-        <LI>Type <CODE>D:\java\jdk_131\bin\java.exe</CODE> and click the <B>Open</B> button.  In the center pane of the Preferences dialog, an item "Java" has now been added, and is currently selected.</LI>
+        <LI>Type <CODE>D:\java\jdk_142\bin\java.exe</CODE> and click the <B>Open</B> button.  In the center pane of the Preferences dialog, an item "Java" has now been added, and is currently selected.</LI>
         <LI>Click the word Java, which makes the word editable.  Select the entire word, and type "PMD directory".  Press Return</LI>
         <LI>Repeat steps three through five, but type "PMD file", instead of "PMD directory".</LI>
         <LI>Click <B>Apply</B>.</LI>
