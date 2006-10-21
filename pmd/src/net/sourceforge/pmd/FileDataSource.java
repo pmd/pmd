@@ -12,6 +12,9 @@ import java.io.InputStream;
  * DataSource implementation to read data from a file.
  */
 public class FileDataSource implements DataSource {
+	
+	private static final String fileSeparator = System.getProperty("file.separator");
+	
     private File file;
 
     /**
@@ -34,22 +37,20 @@ public class FileDataSource implements DataSource {
             if ((new File(inputFileName)).isDirectory()) {
                 return trimAnyPathSep(file.getAbsolutePath().substring(inputFileName.length()));
             } else {
-                if (inputFileName.indexOf(System.getProperty("file.separator").charAt(0)) == -1) {
+                if (inputFileName.indexOf(fileSeparator.charAt(0)) == -1) {
                     return inputFileName;
                 }
                 return trimAnyPathSep(inputFileName.substring(inputFileName.lastIndexOf(System.getProperty("file.separator"))));
             }
-        } else {
-            return file.getAbsolutePath();
-        }
+        } 
+
+        return file.getAbsolutePath();
     }
 
     private String trimAnyPathSep(String name) {
-        if (name.startsWith(System.getProperty("file.separator"))) {
-            return name.substring(1);
-        }
-        return name;
+
+    	return name.startsWith(fileSeparator) ?
+            name.substring(1) :
+            name;
     }
-
-
 }
