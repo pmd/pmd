@@ -21,7 +21,7 @@ public class SourceTypeHandlerBroker {
     	});
 
     /**
-     * Public constructor.
+     * Never create one
      */
     private SourceTypeHandlerBroker() {  }
 
