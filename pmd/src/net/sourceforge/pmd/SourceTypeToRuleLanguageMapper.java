@@ -18,6 +18,7 @@ public class SourceTypeToRuleLanguageMapper {
         mapSourceTypeOnRuleLanguage.put(SourceType.JAVA_13, Language.JAVA);
         mapSourceTypeOnRuleLanguage.put(SourceType.JAVA_14, Language.JAVA);
         mapSourceTypeOnRuleLanguage.put(SourceType.JAVA_15, Language.JAVA);
+        mapSourceTypeOnRuleLanguage.put(SourceType.JAVA_16, Language.JAVA);
 
         mapSourceTypeOnRuleLanguage.put(SourceType.JSP, Language.JSP);
     }
