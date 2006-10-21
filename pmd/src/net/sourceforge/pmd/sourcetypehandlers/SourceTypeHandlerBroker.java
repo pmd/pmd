@@ -1,9 +1,9 @@
 package net.sourceforge.pmd.sourcetypehandlers;
 
-import net.sourceforge.pmd.SourceType;
-
-import java.util.HashMap;
 import java.util.Map;
+
+import net.sourceforge.pmd.SourceType;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Broker for SourceTypeHandler instances for specific SourceTypes.
@@ -12,30 +12,20 @@ import java.util.Map;
  */
 public class SourceTypeHandlerBroker {
 
-    /**
-     * Map of SourceType on SourceTypeHandler.
-     */
-    private Map mapSourceTypeOnSourceTypeHandler = new HashMap();
+    private static final Map mapSourceTypeOnSourceTypeHandler = CollectionUtil.mapFrom( new Object[][] {
+    	{ SourceType.JAVA_13, new Java13Handler()},
+    	{ SourceType.JAVA_14, new Java14Handler()},
+    	{ SourceType.JAVA_15, new Java15Handler()},
+    	{ SourceType.JAVA_16, new Java16Handler()},
+    	{ SourceType.JSP, new JspTypeHandler()},
+    	});
 
     /**
      * Public constructor.
      */
-    public SourceTypeHandlerBroker() {
-        initialize();
-    }
+    private SourceTypeHandlerBroker() {  }
 
-    /**
-     * Initialize the mapSourceTypeOnVisitorsFactory.
-     */
-    private void initialize() {
-        mapSourceTypeOnSourceTypeHandler.put(SourceType.JAVA_13, new Java13Handler());
-        mapSourceTypeOnSourceTypeHandler.put(SourceType.JAVA_14, new Java14Handler());
-        mapSourceTypeOnSourceTypeHandler.put(SourceType.JAVA_15, new Java15Handler());
-        mapSourceTypeOnSourceTypeHandler.put(SourceType.JAVA_16, new Java16Handler());
-        mapSourceTypeOnSourceTypeHandler.put(SourceType.JSP, new JspTypeHandler());
-    }
-
-    public SourceTypeHandler getVisitorsFactoryForSourceType(SourceType sourceType) {
+    public static SourceTypeHandler getVisitorsFactoryForSourceType(SourceType sourceType) {
         SourceTypeHandler handler = (SourceTypeHandler) mapSourceTypeOnSourceTypeHandler.get(sourceType);
 
         if (handler == null) {

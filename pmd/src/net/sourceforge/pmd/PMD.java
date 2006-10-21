@@ -35,7 +35,6 @@ public class PMD {
 
     private String excludeMarker = EXCLUDE_MARKER;
     private SourceTypeDiscoverer sourceTypeDiscoverer = new SourceTypeDiscoverer();
-    private SourceTypeHandlerBroker sourceTypeHandlerBroker = new SourceTypeHandlerBroker();
 
     public PMD() {}
 
@@ -68,7 +67,7 @@ public class PMD {
     public void processFile(Reader reader, RuleSets ruleSets, RuleContext ctx,
                             SourceType sourceType) throws PMDException {
         try {
-            SourceTypeHandler sourceTypeHandler = sourceTypeHandlerBroker.getVisitorsFactoryForSourceType(sourceType);
+            SourceTypeHandler sourceTypeHandler = SourceTypeHandlerBroker.getVisitorsFactoryForSourceType(sourceType);
             ctx.setSourceType(sourceType);
             Parser parser = sourceTypeHandler.getParser();
             parser.setExcludeMarker(excludeMarker);
