@@ -3,7 +3,8 @@ package net.sourceforge.pmd.rules.optimization;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.*;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
