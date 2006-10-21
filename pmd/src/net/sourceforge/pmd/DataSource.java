@@ -24,8 +24,8 @@ public interface DataSource {
      * Return a nice version of the filename.
      *
      * @param shortNames    true if short names are being used
-     * @param inputFileName name of a "master" file this file
-     *                      is relative to
+     * @param inputFileName name of a "master" file this file is relative to
+     * @return String
      */
     public String getNiceFileName(boolean shortNames, String inputFileName);
 }
