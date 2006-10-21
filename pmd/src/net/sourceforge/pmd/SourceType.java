@@ -9,6 +9,7 @@ public final class SourceType implements Comparable {
     public static final SourceType JAVA_13 = new SourceType("java 1.3");
     public static final SourceType JAVA_14 = new SourceType("java 1.4");
     public static final SourceType JAVA_15 = new SourceType("java 1.5");
+    public static final SourceType JAVA_16 = new SourceType("java 1.6");
     public static final SourceType JSP = new SourceType("jsp");
 
     private String id;

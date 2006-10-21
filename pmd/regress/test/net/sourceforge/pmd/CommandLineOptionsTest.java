@@ -43,6 +43,8 @@ public class CommandLineOptionsTest extends TestCase {
         assertEquals("1.3", opt.getTargetJDK());
         opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-targetjdk", "1.5"});
         assertEquals("1.5", opt.getTargetJDK());
+        opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-targetjdk", "1.6"});
+        assertEquals("1.6", opt.getTargetJDK());
     }
 
     public void testDebug() {

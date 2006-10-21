@@ -3,6 +3,7 @@ package net.sourceforge.pmd.util.viewer.gui;
 import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.TargetJDK1_6;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
@@ -37,6 +38,7 @@ public class MainFrame
     private JRadioButtonMenuItem jdk13MenuItem;
     private JRadioButtonMenuItem jdk14MenuItem;
     private JRadioButtonMenuItem jdk15MenuItem;
+    private JRadioButtonMenuItem jdk16MenuItem;
 
     /**
      * constructs and shows the frame
@@ -89,6 +91,10 @@ public class MainFrame
         jdk15MenuItem.setSelected(false);
         group.add(jdk15MenuItem);
         menu.add(jdk15MenuItem);
+        jdk16MenuItem = new JRadioButtonMenuItem("JDK 1.6");
+        jdk16MenuItem.setSelected(false);
+        group.add(jdk16MenuItem);
+        menu.add(jdk16MenuItem);
         menuBar.add(menu);
         setJMenuBar(menuBar);
 
@@ -103,6 +109,8 @@ public class MainFrame
             return new TargetJDK1_4();
         } else if (jdk13MenuItem.isSelected()) {
             return new TargetJDK1_3();
+        } else if (jdk16MenuItem.isSelected()) {
+            return new TargetJDK1_6();
         }
         return new TargetJDK1_5();
     }

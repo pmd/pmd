@@ -62,10 +62,10 @@ public class PMDTaskTest extends TestCase {
 
     public void testInvalidJDK() {
         PMDTask task = new PMDTask();
-        task.setTargetJDK("1.6");
+        task.setTargetJDK("1.7");
         try {
             task.execute();
-            throw new RuntimeException("Should have thrown a BuildException - JDK 1.6 targeted");
+            throw new RuntimeException("Should have thrown a BuildException - JDK 1.7 targeted");
         } catch (BuildException be) {
             // cool
         }

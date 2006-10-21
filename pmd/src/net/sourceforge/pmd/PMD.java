@@ -233,6 +233,10 @@ public class PMD {
             if (opts.debugEnabled())
                 System.out.println("In JDK 1.5 mode");
             pmd.setJavaVersion(SourceType.JAVA_15);
+        } else if (opts.getTargetJDK().equals("1.6")) {
+            if (opts.debugEnabled())
+                System.out.println("In JDK 1.6 mode");
+            pmd.setJavaVersion(SourceType.JAVA_16);
         } else {
             if (opts.debugEnabled())
                 System.out.println("In JDK 1.4 mode");

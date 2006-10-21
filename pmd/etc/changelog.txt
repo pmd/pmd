@@ -28,6 +28,7 @@ ArrayIsStoredDirectly rule now checks Constructors
 undo/redo added to text areas in Designer.
 Better 'create rule XML' panel in Designer.
 use of entrySet to iterate over Maps.
+1.6 added as a valid option for targetjdk.
 
 October 4, 2006 - 3.8:
 New rules:

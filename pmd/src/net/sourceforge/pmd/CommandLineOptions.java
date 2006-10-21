@@ -168,7 +168,7 @@ public class CommandLineOptions {
                 PMD.EOL +
                 "Optional arguments that may be put after the mandatory arguments are: " + PMD.EOL +
                 "-debug: prints debugging information " + PMD.EOL +
-                "-targetjdk: specifies a language version to target - 1.3, 1.4, or 1.5" + PMD.EOL +
+                "-targetjdk: specifies a language version to target - 1.3, 1.4, 1.5 or 1.6" + PMD.EOL +
                 "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
                 "-excludemarker: specifies the String that marks the a line which PMD should ignore; default is NOPMD" + PMD.EOL +
                 "-shortnames: prints shortened filenames in the report" + PMD.EOL +

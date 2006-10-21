@@ -142,6 +142,10 @@ public class PMDTask extends Task {
             log("Targeting Java language version 1.5", Project.MSG_VERBOSE);
             pmd = new PMD();
             pmd.setJavaVersion(SourceType.JAVA_15);
+        } else if (targetJDK.equals("1.6")) {
+            log("Targeting Java language version 1.6", Project.MSG_VERBOSE);
+            pmd = new PMD();
+            pmd.setJavaVersion(SourceType.JAVA_16);
         } else if(targetJDK.equals("jsp")){
             log("Targeting JSP", Project.MSG_VERBOSE);
             pmd = new PMD();
@@ -242,8 +246,8 @@ public class PMDTask extends Task {
             ruleSetFiles = getNestedRuleSetFiles();
         }
 
-        if (!targetJDK.equals("1.3") && !targetJDK.equals("1.4") && !targetJDK.equals("1.5") && !targetJDK.equals("jsp")) {
-            throw new BuildException("The targetjdk attribute, if used, must be set to either '1.3', '1.4', or '1.5', or 'jsp'");
+        if (!targetJDK.equals("1.3") && !targetJDK.equals("1.4") && !targetJDK.equals("1.5") && !targetJDK.equals("1.6") && !targetJDK.equals("jsp")) {
+            throw new BuildException("The targetjdk attribute, if used, must be set to either '1.3', '1.4', '1.5', '1.6' or 'jsp'");
         }
     }
 

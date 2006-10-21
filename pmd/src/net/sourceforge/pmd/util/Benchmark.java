@@ -13,6 +13,7 @@ import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.TargetJDK1_6;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.cpd.FileFinder;
@@ -75,8 +76,13 @@ public class Benchmark {
         List files = new FileFinder().findFilesFrom(srcDir, new SourceFileOrDirectoryFilter(new SourceFileSelector()), true);
 
         SourceType jdk = SourceType.JAVA_14;
-        if (findOptionalStringValue(args, "--targetjdk", "1.4").equals("1.5")) {
+        String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
+        if (targetjdk.equals("1.3")) {
+            jdk = SourceType.JAVA_13;
+        } else if (targetjdk.equals("1.5")) {
             jdk = SourceType.JAVA_15;
+        } else if (targetjdk.equals("1.6")) {
+            jdk = SourceType.JAVA_16;
         }
         boolean debug = findBooleanSwitch(args, "--debug");
         boolean parseOnly = findBooleanSwitch(args, "--parse-only");
@@ -124,8 +130,10 @@ public class Benchmark {
                 jdk = new TargetJDK1_3();
             } else if (t.equals(SourceType.JAVA_14)) {
                 jdk = new TargetJDK1_4();
-            } else {
+            } else if (t.equals(SourceType.JAVA_15)) {
                 jdk = new TargetJDK1_5();
+            } else {
+                jdk = new TargetJDK1_6();
             }
             JavaParser parser = jdk.createParser(new FileReader(file));
             parser.CompilationUnit();

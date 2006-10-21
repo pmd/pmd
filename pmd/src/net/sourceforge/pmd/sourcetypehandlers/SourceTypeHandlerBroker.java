@@ -31,6 +31,7 @@ public class SourceTypeHandlerBroker {
         mapSourceTypeOnSourceTypeHandler.put(SourceType.JAVA_13, new Java13Handler());
         mapSourceTypeOnSourceTypeHandler.put(SourceType.JAVA_14, new Java14Handler());
         mapSourceTypeOnSourceTypeHandler.put(SourceType.JAVA_15, new Java15Handler());
+        mapSourceTypeOnSourceTypeHandler.put(SourceType.JAVA_16, new Java16Handler());
         mapSourceTypeOnSourceTypeHandler.put(SourceType.JSP, new JspTypeHandler());
     }
 
