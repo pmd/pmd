@@ -71,6 +71,9 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         this.example = example;
     }
 
+    /**
+     * @deprecated - property values will be guaranteed available via default values
+     */
     public boolean hasProperty(String name) {
     	
         return inOldPropertyMode ?	// TODO -remove 
