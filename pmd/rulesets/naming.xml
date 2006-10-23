@@ -194,24 +194,11 @@ public abstract class Foo { // should be AbstractFoo
 
     <rule name="AvoidDollarSigns"
            message="Avoid using dollar signs in variable/method/class/interface names"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.rules.naming.AvoidDollarSigns"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidDollarSigns">
        <description>
 Avoid using dollar signs in variable/method/class/interface names.
        </description>
-         <properties>
-             <property name="xpath">
-                 <value>
-<![CDATA[
-//ClassOrInterfaceDeclaration[contains(@Image, '$')]
-|
-//VariableDeclaratorId[contains(@Image, '$')]
-|
-//MethodDeclarator[contains(@Image, '$')]
- ]]>
-                 </value>
-             </property>
-         </properties>
          <priority>3</priority>
        <example>
    <![CDATA[
@@ -243,27 +230,12 @@ public class MyClass {
 
     <rule name="SuspiciousHashcodeMethodName"
           message="The method name and return type are suspiciously close to hashCode()"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.naming.SuspiciousHashcodeMethodName"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#SuspiciousHashcodeMethodName">
        <description>
 The method name and return type are suspiciously close to hashCode(), which
 may mean you are intending to override the hashCode() method.
        </description>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodDeclaration
- [ResultType
-  //PrimitiveType
-   [@Image='int']
-   [//MethodDeclarator
-    [@Image='hashcode' or @Image='HashCode' or @Image='Hashcode']
-    [not(FormalParameters/*)]]]
-]]>
-                </value>
-            </property>
-        </properties>
         <priority>3</priority>
        <example>
     <![CDATA[

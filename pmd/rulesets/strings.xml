@@ -270,21 +270,11 @@ public class Foo {
 
     <rule name="UselessStringValueOf"
           message="No need to call String.valueOf to append to a string."
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.strings.UselessStringValueOf"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UselessStringValueOf">
       <description>
 Use valueOf() argument directly.
       </description>
-      <properties>
-          <property name="xpath">
-              <value>
-<![CDATA[
-//AdditiveExpression[@Image='+']
-[PrimaryExpression[not (count(./preceding-sibling::*)=0)]/PrimaryPrefix/Name[@Image='String.valueOf']]
-]]>
-              </value>
-          </property>
-      </properties>
         <priority>3</priority>
       <example>
 <![CDATA[

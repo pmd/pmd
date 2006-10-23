@@ -129,21 +129,11 @@ public class Bar {
 
     <rule name="AssignmentInOperand"
       message="Avoid assignments in operands"
-      class="net.sourceforge.pmd.rules.XPathRule"
+      class="net.sourceforge.pmd.rules.AssignmentInOperand"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AssignmentInOperand">
   <description>
 Avoid assignments in operands; this can make code more complicated and harder to read.
   </description>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//*[name()='WhileStatement' or name()='IfStatement']
- [Expression//AssignmentOperator]
-                    ]]>
-                </value>
-            </property>
-         </properties>
     <priority>3</priority>
   <example>
   <![CDATA[
