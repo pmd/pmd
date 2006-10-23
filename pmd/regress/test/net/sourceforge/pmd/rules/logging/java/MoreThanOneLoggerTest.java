@@ -21,6 +21,7 @@ public class MoreThanOneLoggerTest extends SimpleAggregatorTst {
         runTests(new TestDescriptor[]{
             new TestDescriptor(TEST1, "ok", 0, rule),
             new TestDescriptor(TEST2, "two loggers", 1, rule),
+            new TestDescriptor(TEST3, "different logger for inner class", 0, rule),
         });
     }
 
@@ -33,6 +34,14 @@ public class MoreThanOneLoggerTest extends SimpleAggregatorTst {
             "public class Foo {" + PMD.EOL +
             " Logger log;" + PMD.EOL +
             " Logger log2;" + PMD.EOL +
+            "}";
+
+    private static final String TEST3 =
+            "public class Foo {" + PMD.EOL +
+            " Logger log;" + PMD.EOL +
+            " class Bar {" + PMD.EOL +
+            "  Logger log2;" + PMD.EOL +
+            " }" + PMD.EOL +
             "}";
 
 }

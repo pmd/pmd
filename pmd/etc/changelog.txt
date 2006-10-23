@@ -32,6 +32,7 @@ use of entrySet to iterate over Maps.
 Performance Refactoring, XPath rules re-written as Java:
     AssignmentInOperand
     AvoidDollarSigns
+    MoreThanOneLogger
     SuspiciousHashcodeMethodName
     UselessStringValueOf
 

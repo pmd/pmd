@@ -12,23 +12,11 @@ The Java Logging ruleset contains a collection of rules that find questionable u
 
     <rule name="MoreThanOneLogger"
          message="Class contains more than one logger."
-         class="net.sourceforge.pmd.rules.XPathRule"
+         class="net.sourceforge.pmd.rules.MoreThanOneLogger"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#MoreThanOneLogger">
      <description>
 Normally only one logger is used in each class.
      </description>
-     <properties>
-         <property name="xpath">
-             <value>
-                 <![CDATA[
-//ClassOrInterfaceBody [
- count(
-  //VariableDeclarator[../Type/ReferenceType/ClassOrInterfaceType[@Image='Logger']]
-  )>1
-]                ]]>
-             </value>
-         </property>
-     </properties>
         <priority>2</priority>
      <example>
  <![CDATA[
