@@ -573,7 +573,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                     if (h.isDangerous()) {
                         String methName = h.getASTMethodDeclarator().getImage();
                         int count = h.getASTMethodDeclarator().getParameterCount();
-                        if (meth.getName().equals(methName) && meth.getArgumentCount() == count) {
+                        if (methName.equals(meth.getName()) && meth.getArgumentCount() == count) {
                             addViolation(data, meth.getASTPrimaryExpression(), "method '" + h.getCalled() + "'");
                         }
                     }

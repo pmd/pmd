@@ -23,6 +23,7 @@ Fixed CSVRenderer - had flipped line and priority columns
 Fixed bug in Ant task - CSV reports were being output as text.
 Fixed false negatives in UseArraysAsList.
 Fixed several JDK 1.5 parsing bugs.
+Fixed several rules (exceptions on jdk 1.5 source code).
 CloseResource rule now checks code without java.sql import.
 ArrayIsStoredDirectly rule now checks Constructors
 undo/redo added to text areas in Designer.

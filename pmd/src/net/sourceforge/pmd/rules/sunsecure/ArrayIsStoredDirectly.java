@@ -77,7 +77,11 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                 ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
                 String assignedVar = getFirstNameImage(pe);
                 if (assignedVar == null) {
-                    assignedVar = ((ASTPrimarySuffix) se.getFirstChildOfType(ASTPrimarySuffix.class)).getImage();
+                    ASTPrimarySuffix suffix = (ASTPrimarySuffix) se.getFirstChildOfType(ASTPrimarySuffix.class);
+                    if (suffix == null) {
+                        continue;
+                    }
+                    assignedVar = suffix.getImage();
                 }
 
                 SimpleNode n = (ASTMethodDeclaration) pe.getFirstParentOfType(ASTMethodDeclaration.class);

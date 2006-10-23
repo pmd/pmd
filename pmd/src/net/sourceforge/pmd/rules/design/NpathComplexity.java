@@ -222,6 +222,10 @@ public class NpathComplexity extends StatisticalRule {
    * @return complexity of the boolean expression
    */
   public static int sumExpressionComplexity(ASTExpression expr) {
+    if (expr == null) {
+      return 0;
+    }
+
     List andNodes = expr.findChildrenOfType( ASTConditionalAndExpression.class );
     List orNodes = expr.findChildrenOfType( ASTConditionalOrExpression.class );
 
