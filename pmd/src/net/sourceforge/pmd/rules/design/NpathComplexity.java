@@ -33,16 +33,45 @@ import net.sourceforge.pmd.util.NumericConstants;
  */
 public class NpathComplexity extends StatisticalRule {
 
+	
+	private int complexityMultipleOf(SimpleJavaNode node, int npathStart, Object data) {
+		
+		int npath = npathStart;		
+		SimpleJavaNode simpleNode;
+		
+	    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
+	        simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
+	        npath *= ((Integer) simpleNode.jjtAccept( this, data )).intValue();
+	      }
+	    
+	    return npath;
+	}
+	
+	private int complexitySumOf(SimpleJavaNode node, int npathStart, Object data) {
+		
+		int npath = npathStart;		
+		SimpleJavaNode simpleNode;
+		
+	    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
+	        simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
+	        npath += ((Integer) simpleNode.jjtAccept( this, data )).intValue();
+	      }
+	    
+	    return npath;
+	}
+	
   public Object visit(ASTMethodDeclaration node, Object data) {
 
-    int npath = 1;
-
-    // Basic NPath functionality multiplies the complexity of peer nodes
-    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-      SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
-      Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
-      npath *= complexity.intValue();
-    }
+//    int npath = 1;
+//
+//    // Basic NPath functionality multiplies the complexity of peer nodes
+//    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
+//      SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
+//      Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
+//      npath *= complexity.intValue();
+//    }
+	  
+	  int npath = complexityMultipleOf(node, 1, data);
 
     DataPoint point = new DataPoint();
     point.setNode( node );
@@ -54,14 +83,16 @@ public class NpathComplexity extends StatisticalRule {
   }
 
   public Object visit(SimpleJavaNode node, Object data) {
-    int npath = 1;
+//    int npath = 1;
+//
+//    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
+//      SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
+//      Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
+//      npath *= complexity.intValue();
+//    }
 
-    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-      SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
-      Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
-      npath *= complexity.intValue();
-    }
-
+	 int npath = complexityMultipleOf(node, 1, data);
+	 
     return new Integer( npath );
   }
 
@@ -182,27 +213,31 @@ public class NpathComplexity extends StatisticalRule {
      * complexities of the catch and finally blocks.
      */
 
-    int npath = 0;
+//    int npath = 0;
+//
+//    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
+//      SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
+//      Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
+//      npath += complexity.intValue();
+//    }
 
-    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-      SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
-      Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
-      npath += complexity.intValue();
-    }
-
+	  int npath = complexitySumOf(node, 0, data);
+	  
     return new Integer( npath );
 
   }
 
   public Object visit(ASTConditionalExpression node, Object data) {
     if ( node.isTernary() ) {
-      int npath = 0;
-
-      for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-        SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
-        Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
-        npath += complexity.intValue();
-      }
+//      int npath = 0;
+//
+//      for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
+//        SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
+//        Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
+//        npath += complexity.intValue();
+//      }
+    	int npath = complexitySumOf(node, 0, data);
+    	
       npath += 2;
       return new Integer( npath );
     }
