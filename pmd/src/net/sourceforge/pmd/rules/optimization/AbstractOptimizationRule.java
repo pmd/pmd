@@ -15,6 +15,7 @@ import net.sourceforge.pmd.ast.ASTPostfixExpression;
 import net.sourceforge.pmd.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.Iterator;
@@ -57,7 +58,8 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         if (preinc != null && !preinc.isEmpty()) {
             for (Iterator it = preinc.iterator(); it.hasNext();) {
                 ASTPreIncrementExpression ie = (ASTPreIncrementExpression) it.next();
-                if (((ASTName) ie.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).hasImageEqualTo(varName)) {
+                Node prefix = ie.jjtGetChild(0).jjtGetChild(0);
+                if (prefix.jjtGetNumChildren() > 0 && ((ASTName) prefix.jjtGetChild(0)).hasImageEqualTo(varName)) {
                     return true;
                 }
             }
@@ -68,7 +70,8 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         if (predec != null && !predec.isEmpty()) {
             for (Iterator it = predec.iterator(); it.hasNext();) {
                 ASTPreDecrementExpression de = (ASTPreDecrementExpression) it.next();
-                if (((ASTName) de.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).hasImageEqualTo(varName)) {
+                Node prefix = de.jjtGetChild(0).jjtGetChild(0);
+                if (prefix.jjtGetNumChildren() > 0 && ((ASTName) prefix.jjtGetChild(0)).hasImageEqualTo(varName)) {
                     return true;
                 }
             }
