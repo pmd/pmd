@@ -153,7 +153,8 @@ public class AccessorClassGeneration extends AbstractRule {
      */
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
-            if (node.isNested()) {
+            if (!(node.jjtGetParent().jjtGetParent() instanceof ASTCompilationUnit)) {
+                // not a top level interface
                 String interfaceName = node.getImage();
                 int formerID = getClassID();
                 setClassID(classDataList.size());
@@ -179,7 +180,8 @@ public class AccessorClassGeneration extends AbstractRule {
                 setClassID(-1);
                 return o;
             }
-        } else if (node.isNested()) {
+        } else if (!(node.jjtGetParent().jjtGetParent() instanceof ASTCompilationUnit)) {
+            // not a top level class
             String className = node.getImage();
             int formerID = getClassID();
             setClassID(classDataList.size());
