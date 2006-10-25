@@ -110,6 +110,12 @@ public class JavaParser {
     }
   }
 
+  private void checkForBadHexFloatingPointLiteral() {
+    if (!isJDK15) {
+      throw new ParseException("ERROR: Can't use hexadecimal floating point literals in pre-JDK 1.5 target");
+    }
+  }
+
   // This is a semantic LOOKAHEAD to determine if we're dealing with an assert
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
@@ -278,6 +284,10 @@ TOKEN :
       | "." (["0"-"9"])+ (<EXPONENT>)? (["f","F","d","D"])?
       | (["0"-"9"])+ <EXPONENT> (["f","F","d","D"])?
       | (["0"-"9"])+ (<EXPONENT>)? ["f","F","d","D"]
+  >
+|
+  < HEX_FLOATING_POINT_LITERAL:
+      (<HEX_LITERAL> (".")? | "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])* "." (["0"-"9","a"-"f","A"-"F"])+) ["p","P"] (["+","-"])? (["0"-"9"])+ (["f","F","d","D"])?
   >
 |
   < #EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+ >
@@ -1177,7 +1187,7 @@ void EnumBody():
 {}
 {
    "{"
-   [ EnumConstant() ( LOOKAHEAD(2) "," EnumConstant() )* ]
+   [( Annotation() )* EnumConstant() ( LOOKAHEAD(2) "," ( Annotation() )* EnumConstant() )* ]
 	[ "," ]
    [ ";" ( ClassOrInterfaceBodyDeclaration() )* ]
    "}"
@@ -1651,6 +1661,7 @@ void Literal() :
 { Token t;}
   t=<INTEGER_LITERAL> {jjtThis.setImage(t.image);}
 | t=<FLOATING_POINT_LITERAL> {jjtThis.setImage(t.image);}
+| t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); jjtThis.setImage(t.image);}
 | t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image);}
 | t=<STRING_LITERAL> {jjtThis.setImage(t.image);}
 | BooleanLiteral()
