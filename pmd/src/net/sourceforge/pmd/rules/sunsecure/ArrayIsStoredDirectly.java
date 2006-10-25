@@ -37,7 +37,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
     }
 
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        ASTFormalParameter[] arrs = getArrays((ASTFormalParameters) node.jjtGetChild(0));
+        ASTFormalParameter[] arrs = getArrays(node.getParameters());
         if (arrs != null) {
             //TODO check if one of these arrays is stored in a non local variable
             List bs = node.findChildrenOfType(ASTBlockStatement.class);

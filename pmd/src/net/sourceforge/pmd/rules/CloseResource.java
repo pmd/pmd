@@ -77,7 +77,7 @@ public class CloseResource extends AbstractRule {
         // find all variable references to Connection objects
         for (Iterator it = vars.iterator(); it.hasNext();) {
             ASTLocalVariableDeclaration var = (ASTLocalVariableDeclaration) it.next();
-            ASTType type = (ASTType) var.jjtGetChild(0);
+            ASTType type = var.getTypeNode();
 
             if (type.jjtGetChild(0) instanceof ASTReferenceType) {
                 ASTReferenceType ref = (ASTReferenceType) type.jjtGetChild(0);

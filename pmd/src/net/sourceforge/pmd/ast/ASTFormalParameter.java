@@ -40,18 +40,25 @@ public class ASTFormalParameter extends AccessNode implements Dimensionable, Can
         return checkType() + checkDecl();
     }
 
-    private int checkType() {
-        if (jjtGetNumChildren() == 0 || !(jjtGetChild(0) instanceof ASTType)) {
-            return 0;
+    public ASTType getTypeNode() {
+        for (int i = 0; i < jjtGetNumChildren(); i++) {
+            if (jjtGetChild(i) instanceof ASTType) {
+                return (ASTType) jjtGetChild(i);
+            }
         }
-        return ((ASTType) jjtGetChild(0)).getArrayDepth();
+        throw new IllegalStateException("ASTType not found");
+    }
+
+    private int checkType() {
+        return getTypeNode().getArrayDepth();
+    }
+
+    private ASTVariableDeclaratorId getDecl() {
+        return (ASTVariableDeclaratorId) jjtGetChild(jjtGetNumChildren()-1);
     }
 
     private int checkDecl() {
-        if (jjtGetNumChildren() < 2 || !(jjtGetChild(1) instanceof ASTVariableDeclarator)) {
-            return 0;
-        }
-        return ((ASTVariableDeclaratorId) (jjtGetChild(1).jjtGetChild(0))).getArrayDepth();
+        return getDecl().getArrayDepth();
     }
 
     public void dump(String prefix) {

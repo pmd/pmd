@@ -11,8 +11,12 @@ public class ASTConstructorDeclaration extends AccessNode {
         super(p, id);
     }
 
+    public ASTFormalParameters getParameters() {
+        return (ASTFormalParameters) (jjtGetChild(0) instanceof ASTFormalParameters?jjtGetChild(0):jjtGetChild(1));
+    }
+
     public int getParameterCount() {
-        return ((ASTFormalParameters) jjtGetChild(0)).getParameterCount();
+        return getParameters().getParameterCount();
     }
 
 

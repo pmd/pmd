@@ -31,7 +31,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         //        no need to trim at the end
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
-            sb.append(((ASTType) p.getFirstChildOfType(ASTType.class)).getTypeImage());
+            sb.append(p.getTypeNode().getTypeImage());
             sb.append(',');
         }
         if (sb.charAt(sb.length() - 1) == ',') {
@@ -61,8 +61,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
             ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
             ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.jjtGetChild(i);
 
-            SimpleNode myTypeNode = (SimpleNode) myParam.jjtGetChild(0).jjtGetChild(0);
-            SimpleNode otherTypeNode = (SimpleNode) otherParam.jjtGetChild(0).jjtGetChild(0);
+            SimpleNode myTypeNode = (SimpleNode) myParam.getTypeNode().jjtGetChild(0);
+            SimpleNode otherTypeNode = (SimpleNode) otherParam.getTypeNode().jjtGetChild(0);
 
             // compare primitive vs reference type
             if (myTypeNode.getClass() != otherTypeNode.getClass()) {
