@@ -1,80 +1,103 @@
+### Eclipse Workspace Patch 1.0
+#P pmd
+Index: src/net/sourceforge/pmd/util/CollectionUtil.java
+===================================================================
+RCS file: /cvsroot/pmd/pmd/src/net/sourceforge/pmd/util/CollectionUtil.java,v
+retrieving revision 1.3
+diff -u -r1.3 CollectionUtil.java
+--- src/net/sourceforge/pmd/util/CollectionUtil.java	18 Oct 2006 13:26:10 -0000	1.3
++++ src/net/sourceforge/pmd/util/CollectionUtil.java	25 Oct 2006 01:45:01 -0000
+@@ -64,7 +64,23 @@
+ 		return includeInterfaces && collectionInterfacesByNames.contains(typeName);
+ 	}
+ 	
+-	
++    /**
++     * Return whether we can identify the typeName as a java.util collection class
++     * or interface as specified.
++     * 
++     * @param clazzType Class
++     * @param includeInterfaces boolean
++     * @return boolean
++     */
++    public static boolean isCollectionType(Class clazzType, boolean includeInterfaces) {
++
++        if (collectionClassesByNames.contains(clazzType)) {
++            return true;
++        }
++
++        return includeInterfaces && collectionInterfacesByNames.contains(clazzType);
++    }
++
+     /**
+      * Returns the items as a populated set.
+      * 
+@@ -145,7 +161,7 @@
+ 		}
+ 		return true;
+ 	}
+-	
++
+ 	/**
+ 	 * A comprehensive isEqual method that handles nulls and arrays safely.
+ 	 * 
 Index: src/net/sourceforge/pmd/rules/design/LooseCoupling.java
 ===================================================================
 RCS file: /cvsroot/pmd/pmd/src/net/sourceforge/pmd/rules/design/LooseCoupling.java,v
-retrieving revision 1.9
-diff -u -r1.9 LooseCoupling.java
---- src/net/sourceforge/pmd/rules/design/LooseCoupling.java	10 Oct 2006 05:36:05 -0000	1.9
-+++ src/net/sourceforge/pmd/rules/design/LooseCoupling.java	18 Oct 2006 00:19:15 -0000
-@@ -1,7 +1,7 @@
- /**
-  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
-  */
--package net.sourceforge.pmd.rules.design;
-+/*package net.sourceforge.pmd.rules.design;
+retrieving revision 1.10
+diff -u -r1.10 LooseCoupling.java
+--- src/net/sourceforge/pmd/rules/design/LooseCoupling.java	18 Oct 2006 13:26:10 -0000	1.10
++++ src/net/sourceforge/pmd/rules/design/LooseCoupling.java	25 Oct 2006 01:45:01 -0000
+@@ -13,13 +13,16 @@
  
- import java.util.Set;
+ public class LooseCoupling extends AbstractRule {
  
-@@ -35,3 +35,49 @@
-         return data;
-     }
- }
-+
-+
-+*/
-+
-+package net.sourceforge.pmd.rules.design;
-+
-+import net.sourceforge.pmd.AbstractRule;
-+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-+import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-+import net.sourceforge.pmd.ast.ASTFormalParameter;
-+import net.sourceforge.pmd.ast.ASTResultType;
-+import net.sourceforge.pmd.ast.Node;
-+import net.sourceforge.pmd.util.CollectionUtil;
-+
-+import java.util.ArrayList;
-+import java.util.HashMap;
-+import java.util.HashSet;
-+import java.util.LinkedHashMap;
-+import java.util.LinkedHashSet;
-+import java.util.Set;
-+import java.util.TreeMap;
-+import java.util.TreeSet;
-+import java.util.Vector;
-+
-+public class LooseCoupling extends AbstractRule {
-+
-+    private static final Set implClasses = CollectionUtil.asSet(new Object[] { ArrayList.class, HashSet.class,
-+            HashMap.class, LinkedHashMap.class, LinkedHashSet.class, TreeSet.class, TreeMap.class, Vector.class });
-+
-+    public LooseCoupling() {
-+        super();
-+    }
-+
-+    public Object visit(ASTClassOrInterfaceType node, Object data) {
-+        Class clazz = node.getType();
-+        if(clazz == null){
-+            System.err.println(node.getImage() + " not found in classpath??");
-+        }
-+        Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
-+        if (implClasses.contains(clazz)
+-	// TODO - these should be brought in via external properties
+-//    private static final Set implClassNames = CollectionUtil.asSet( new Object[] {
+-//    	"ArrayList", "HashSet", "HashMap", "LinkedHashMap", "LinkedHashSet", "TreeSet", "TreeMap", "Vector",
+-//    	"java.util.ArrayList", "java.util.HashSet", "java.util.HashMap",
+-//    	"java.util.LinkedHashMap", "java.util.LinkedHashSet", "java.util.TreeSet",
+-//    	"java.util.TreeMap", "java.util.Vector" 
+-//    	});
++    // TODO - these should be brought in via external properties
++    // private static final Set implClassNames = CollectionUtil.asSet( new
++    // Object[] {
++    // "ArrayList", "HashSet", "HashMap", "LinkedHashMap", "LinkedHashSet",
++    // "TreeSet", "TreeMap", "Vector",
++    // "java.util.ArrayList", "java.util.HashSet", "java.util.HashMap",
++    // "java.util.LinkedHashMap", "java.util.LinkedHashSet",
++    // "java.util.TreeSet",
++    // "java.util.TreeMap", "java.util.Vector"
++    // });
+ 
+     public LooseCoupling() {
+         super();
+@@ -28,7 +31,12 @@
+     public Object visit(ASTClassOrInterfaceType node, Object data) {
+         Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
+         String typeName = node.getImage();
+-        if (CollectionUtil.isCollectionType(typeName, false) && (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter || parent instanceof ASTResultType)) {
++        Class clazzType = node.getType();
++        boolean isType = clazzType == null ? CollectionUtil.isCollectionType(typeName, false) : CollectionUtil
++                .isCollectionType(clazzType, false);
++        System.err.println(clazzType + " " + typeName);
++        if (isType
 +                && (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter || parent instanceof ASTResultType)) {
-+            addViolation(data, node, node.getImage());
-+        }
-+        return data;
-+    }
-+}
+             addViolation(data, node, typeName);
+         }
+         return data;
 Index: src/net/sourceforge/pmd/PMD.java
 ===================================================================
 RCS file: /cvsroot/pmd/pmd/src/net/sourceforge/pmd/PMD.java,v
 retrieving revision 1.148
 diff -u -r1.148 PMD.java
 --- src/net/sourceforge/pmd/PMD.java	16 Oct 2006 19:10:42 -0000	1.148
-+++ src/net/sourceforge/pmd/PMD.java	18 Oct 2006 00:19:15 -0000
-@@ -79,8 +79,13 @@
++++ src/net/sourceforge/pmd/PMD.java	25 Oct 2006 01:45:01 -0000
+@@ -78,9 +78,13 @@
+             sourceTypeHandler.getSymbolFacade().start(rootNode);
  
              Language language = SourceTypeToRuleLanguageMapper.getMappedLanguage(sourceType);
- 
+-
 -            if (ruleSets.usesDFA(language)) {
 +/*            if (ruleSets.usesDFA(language)) {
                  sourceTypeHandler.getDataFlowFacade().start(rootNode);
@@ -86,7 +109,7 @@ diff -u -r1.148 PMD.java
              }
  
              List acus = new ArrayList();
-@@ -209,6 +214,8 @@
+@@ -209,6 +213,8 @@
      }
  
      public static void main(String[] args) {
@@ -95,7 +118,7 @@ diff -u -r1.148 PMD.java
          CommandLineOptions opts = new CommandLineOptions(args);
  
          SourceFileSelector fileSelector = new SourceFileSelector();
-@@ -275,6 +282,11 @@
+@@ -275,6 +281,11 @@
                  e.printStackTrace();
              }
          }
@@ -113,7 +136,7 @@ RCS file: /cvsroot/pmd/pmd/src/net/sourceforge/pmd/ast/ASTClassOrInterfaceType.j
 retrieving revision 1.5
 diff -u -r1.5 ASTClassOrInterfaceType.java
 --- src/net/sourceforge/pmd/ast/ASTClassOrInterfaceType.java	10 Feb 2006 14:26:28 -0000	1.5
-+++ src/net/sourceforge/pmd/ast/ASTClassOrInterfaceType.java	18 Oct 2006 00:19:15 -0000
++++ src/net/sourceforge/pmd/ast/ASTClassOrInterfaceType.java	25 Oct 2006 01:45:01 -0000
 @@ -1,22 +1,31 @@
 -/* Generated By:JJTree: Do not edit this line. ASTClassOrInterfaceType.java */
 -
@@ -174,7 +197,7 @@ RCS file: /cvsroot/pmd/pmd/regress/test/net/sourceforge/pmd/rules/design/LooseCo
 retrieving revision 1.5
 diff -u -r1.5 LooseCouplingTest.java
 --- regress/test/net/sourceforge/pmd/rules/design/LooseCouplingTest.java	22 Aug 2006 13:25:32 -0000	1.5
-+++ regress/test/net/sourceforge/pmd/rules/design/LooseCouplingTest.java	18 Oct 2006 00:19:15 -0000
++++ regress/test/net/sourceforge/pmd/rules/design/LooseCouplingTest.java	25 Oct 2006 01:45:01 -0000
 @@ -28,10 +28,12 @@
              new TestDescriptor(TEST8, "method param is HashMap", 1, rule),
              new TestDescriptor(TEST9, "Vector could be List", 1, rule),
@@ -249,35 +272,14 @@ diff -u -r1.5 LooseCouplingTest.java
 +            "}";
 +
  }
-Index: src/net/sourceforge/pmd/sourcetypehandlers/SourceTypeHandler.java
-===================================================================
-RCS file: /cvsroot/pmd/pmd/src/net/sourceforge/pmd/sourcetypehandlers/SourceTypeHandler.java,v
-retrieving revision 1.4
-diff -u -r1.4 SourceTypeHandler.java
---- src/net/sourceforge/pmd/sourcetypehandlers/SourceTypeHandler.java	5 Oct 2006 00:25:59 -0000	1.4
-+++ src/net/sourceforge/pmd/sourcetypehandlers/SourceTypeHandler.java	18 Oct 2006 00:19:15 -0000
-@@ -30,4 +30,13 @@
-      * @return VisitorStarter 
-      */
-     VisitorStarter getSymbolFacade();
-+    
-+    /**
-+     * Get the getTypeResolutionFacade.
-+     *
-+     * @return VisitorStarter 
-+     */
-+    VisitorStarter getTypeResolutionFacade();
-+    
-+        
- }
 Index: src/net/sourceforge/pmd/sourcetypehandlers/JavaTypeHandler.java
 ===================================================================
 RCS file: /cvsroot/pmd/pmd/src/net/sourceforge/pmd/sourcetypehandlers/JavaTypeHandler.java,v
 retrieving revision 1.3
 diff -u -r1.3 JavaTypeHandler.java
 --- src/net/sourceforge/pmd/sourcetypehandlers/JavaTypeHandler.java	10 Feb 2006 14:26:31 -0000	1.3
-+++ src/net/sourceforge/pmd/sourcetypehandlers/JavaTypeHandler.java	18 Oct 2006 00:19:15 -0000
-@@ -1,33 +1,45 @@
++++ src/net/sourceforge/pmd/sourcetypehandlers/JavaTypeHandler.java	25 Oct 2006 01:45:01 -0000
+@@ -1,33 +1,44 @@
 -package net.sourceforge.pmd.sourcetypehandlers;
 -
 -import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -329,7 +331,6 @@ diff -u -r1.3 JavaTypeHandler.java
 +    private SymbolFacade stb = new SymbolFacade();
 +    private TypeResolutionFacade tr = new TypeResolutionFacade();
 +
-+
 +    public VisitorStarter getDataFlowFacade() {
 +        return new VisitorStarter() {
 +            public void start(Object rootNode) {
@@ -356,13 +357,34 @@ diff -u -r1.3 JavaTypeHandler.java
 +    
 +    
 +}
+Index: src/net/sourceforge/pmd/sourcetypehandlers/SourceTypeHandler.java
+===================================================================
+RCS file: /cvsroot/pmd/pmd/src/net/sourceforge/pmd/sourcetypehandlers/SourceTypeHandler.java,v
+retrieving revision 1.4
+diff -u -r1.4 SourceTypeHandler.java
+--- src/net/sourceforge/pmd/sourcetypehandlers/SourceTypeHandler.java	5 Oct 2006 00:25:59 -0000	1.4
++++ src/net/sourceforge/pmd/sourcetypehandlers/SourceTypeHandler.java	25 Oct 2006 01:45:01 -0000
+@@ -30,4 +30,13 @@
+      * @return VisitorStarter 
+      */
+     VisitorStarter getSymbolFacade();
++    
++    /**
++     * Get the getTypeResolutionFacade.
++     *
++     * @return VisitorStarter 
++     */
++    VisitorStarter getTypeResolutionFacade();
++    
++        
+ }
 Index: src/net/sourceforge/pmd/sourcetypehandlers/JspTypeHandler.java
 ===================================================================
 RCS file: /cvsroot/pmd/pmd/src/net/sourceforge/pmd/sourcetypehandlers/JspTypeHandler.java,v
 retrieving revision 1.5
 diff -u -r1.5 JspTypeHandler.java
 --- src/net/sourceforge/pmd/sourcetypehandlers/JspTypeHandler.java	23 Sep 2006 21:26:27 -0000	1.5
-+++ src/net/sourceforge/pmd/sourcetypehandlers/JspTypeHandler.java	18 Oct 2006 00:19:15 -0000
++++ src/net/sourceforge/pmd/sourcetypehandlers/JspTypeHandler.java	25 Oct 2006 01:45:01 -0000
 @@ -37,4 +37,8 @@
          return new JspSymbolFacade();
      }
@@ -372,496 +394,517 @@ diff -u -r1.5 JspTypeHandler.java
 +    }
 +
  }
-Index: src/net/sourceforge/pmd/util/PMDClassLoader.java
-===================================================================
-RCS file: src/net/sourceforge/pmd/util/PMDClassLoader.java
-diff -N src/net/sourceforge/pmd/util/PMDClassLoader.java
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/net/sourceforge/pmd/util/PMDClassLoader.java	1 Jan 1970 00:00:00 -0000
-@@ -0,0 +1,231 @@
-+package net.sourceforge.pmd.util;
-+
-+import java.io.File;
-+import java.io.FileInputStream;
-+import java.io.IOException;
-+import java.io.InputStream;
-+import java.util.ArrayList;
-+import java.util.Enumeration;
-+import java.util.HashMap;
-+import java.util.Iterator;
-+import java.util.List;
-+import java.util.Map;
-+import java.util.StringTokenizer;
-+import java.util.TreeMap;
-+import java.util.jar.JarFile;
-+import java.util.zip.ZipEntry;
-+import java.util.zip.ZipFile;
-+
-+public class PMDClassLoader extends ClassLoader {
-+
-+    private Object objMutex = new Object();
-+
-+    private Map cachedClasses = new HashMap();
-+
-+    private Map classToJarMap = new HashMap();
-+
-+    public PMDClassLoader() {
-+        super();
-+        preload(System.getProperty("sun.boot.class.path", "."));
-+        preload(System.getProperty("java.class.path", "."));
-+    }
-+
-+    private void preload(String cp) {
-+        StringTokenizer tok = new StringTokenizer(cp, File.pathSeparator);
-+        while (tok.hasMoreTokens()) {
-+            String path = tok.nextToken();
-+            Descriptor descriptor = DescriptorFactory.getDescriptor(path);
-+            try {
-+                List lst = descriptor.getEntries();
-+                classToJarMap.put(path, lst);
-+            } catch (IOException e) {
-+                // e.printStackTrace();
-+            }
-+        }
-+    }
-+
-+    public Class findClass(String name) throws ClassNotFoundException {
-+        if (cachedClasses.containsKey(name)) {
-+            return (Class) cachedClasses.get(name);
-+        }
-+        synchronized (objMutex) {
-+            try {
-+                Class clazz = null;
-+                if (name.startsWith("java.")) {
-+                    clazz = Class.forName(name);
-+                    cachedClasses.put(name, clazz);
-+                    // System.err.println("Loaded: " + clazz);
-+                    return clazz;
-+                }
-+
-+                clazz = super.findLoadedClass(name);
-+                if (clazz != null) {
-+                    cachedClasses.put(name, clazz);
-+                    // System.err.println("Loaded: " + clazz);
-+                    return clazz;
-+                }
-+                byte[] b = loadClassData(name);
-+                if (b == null) {
-+                    throw new ClassNotFoundException(name);
-+                }
-+                clazz = defineClass(name, b, 0, b.length);
-+                cachedClasses.put(name, clazz);
-+                // System.err.println("Loaded: " + clazz);
-+                return clazz;
-+            } catch (ClassFormatError e) {
-+                throw new ClassNotFoundException(name);
-+            } catch (ClassNotFoundException e) {
-+                throw new ClassNotFoundException(name);
-+            }
-+        }
-+    }
-+
-+    private byte[] loadClassData(String name) {
-+
-+        byte[] classData = findClass(name, System.getProperty("sun.boot.class.path", "."));
-+        if (classData == null) {
-+            classData = findClass(name, System.getProperty("java.class.path", "."));
-+        }
-+        return classData;
-+    }
-+
-+    private byte[] findClass(String name, String cp) {
-+        StringTokenizer tok = new StringTokenizer(cp, File.pathSeparator);
-+        while (tok.hasMoreTokens()) {
-+            String path = tok.nextToken();
-+            List cachedClasses = (List) classToJarMap.get(path);
-+            Descriptor descriptor = DescriptorFactory.getDescriptor(path);
-+            if (cachedClasses == null) {
-+                cachedClasses = new ArrayList();
-+                classToJarMap.put(path, cachedClasses);
-+            }
-+            try {
-+                if (cachedClasses.contains(name)) {
-+                    byte[] bytes = descriptor.getBytes(name);
-+                    if (bytes != null) {
-+                        return bytes;
-+                    }
-+                } else if (descriptor instanceof PathDescriptor) {
-+                    byte[] bytes = descriptor.getBytes(name);
-+                    if (bytes != null) {
-+                        cachedClasses.add(name);
-+                        return bytes;
-+                    }
-+                }
-+            } catch (IOException e) {
-+                // This is OK - we didn't find the class, keep going
-+            }
-+        }
-+        return null;
-+    }
-+
-+    public static interface Descriptor {
-+        public byte[] getBytes(String name) throws IOException;
-+
-+        public List getEntries() throws IOException;
-+    }
-+
-+    public static class DescriptorFactory {
-+        public static Descriptor getDescriptor(String path) {
-+            if (path.endsWith(".jar")) {
-+                return new JarDescriptor(path);
-+            } else if (path.endsWith(".zip")) {
-+                return new ZipDescriptor(path);
-+            } else {
-+                return new PathDescriptor(path);
-+            }
-+        }
-+    }
-+
-+    public static class ZipDescriptor implements Descriptor {
-+        private String fileName;
-+
-+        private ZipDescriptor() {
-+        }
-+
-+        public ZipDescriptor(String fileName) {
-+            this.fileName = fileName;
-+        }
-+
-+        public byte[] getBytes(String name) throws IOException {
-+            ZipFile zipFile = new ZipFile(fileName);
-+            ZipEntry zipEntry = zipFile.getEntry(name.replace('.', '/') + ".class");
-+            if (zipEntry != null) {
-+                return readBytes(zipFile.getInputStream(zipEntry));
-+            }
-+            return null;
-+        }
-+
-+        public List getEntries() throws IOException {
-+            ZipFile zipFile = new ZipFile(fileName);
-+            List lstEntries = new ArrayList();
-+            for (Enumeration entries = zipFile.entries(); entries.hasMoreElements();) {
-+                ZipEntry entry = (ZipEntry) entries.nextElement();
-+                // System.err.println(entry.getName());
-+                lstEntries.add(entry.getName());
-+            }
-+            return lstEntries;
-+        }
-+    }
-+
-+    public static class JarDescriptor implements Descriptor {
-+        private String fileName;
-+
-+        public JarDescriptor(String fileName) {
-+            this.fileName = fileName;
-+        }
-+
-+        public byte[] getBytes(String name) throws IOException {
-+            JarFile jarFile = new JarFile(fileName);
-+            ZipEntry zipEntry = jarFile.getEntry(name.replace('.', '/') + ".class");
-+            if (zipEntry != null) {
-+                return readBytes(jarFile.getInputStream(zipEntry));
-+            }
-+            return null;
-+        }
-+
-+        public List getEntries() throws IOException {
-+            JarFile jarFile = new JarFile(fileName);
-+            List lstEntries = new ArrayList();
-+            for (Enumeration entries = jarFile.entries(); entries.hasMoreElements();) {
-+                ZipEntry entry = (ZipEntry) entries.nextElement();
-+                // System.err.println(entry.getName());
-+                lstEntries.add(entry.getName());
-+            }
-+            return lstEntries;
-+        }
-+    }
-+
-+    public static class PathDescriptor implements Descriptor {
-+        private String fileName;
-+
-+        public PathDescriptor(String fileName) {
-+            this.fileName = fileName;
-+        }
-+
-+        public byte[] getBytes(String name) throws IOException {
-+            return readBytes(new FileInputStream(fileName + '\\' + name.replace('.', '\\') + ".class"));
-+        }
-+
-+        public List getEntries() throws IOException {
-+            List lstEntries = new ArrayList();
-+            return lstEntries;
-+        }
-+
-+    }
-+
-+    public static byte[] readBytes(InputStream in) throws IOException {
-+        byte[] classBytes = new byte[in.available()];
-+        in.read(classBytes);
-+        return classBytes;
-+    }
-+
-+    public static void main(String[] args) throws ClassNotFoundException {
-+        PMDClassLoader l = new PMDClassLoader();
-+        Class c = l.findClass("net.sourceforge.pmd.PMD");
-+        System.err.println(c);
-+        Class c2 = l.findClass("java.lang.String");
-+        System.err.println(c2);
-+    }
-+
-+}
-Index: src/net/sourceforge/pmd/util/StaticOne.java
-===================================================================
-RCS file: src/net/sourceforge/pmd/util/StaticOne.java
-diff -N src/net/sourceforge/pmd/util/StaticOne.java
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/net/sourceforge/pmd/util/StaticOne.java	1 Jan 1970 00:00:00 -0000
-@@ -0,0 +1,7 @@
-+package net.sourceforge.pmd.util;
-+
-+public class StaticOne {
-+    static {
-+        System.err.println("This should print out");
-+    }
-+}
 Index: src/net/sourceforge/pmd/typeres/ClassTypeResolver.java
 ===================================================================
 RCS file: src/net/sourceforge/pmd/typeres/ClassTypeResolver.java
 diff -N src/net/sourceforge/pmd/typeres/ClassTypeResolver.java
 --- /dev/null	1 Jan 1970 00:00:00 -0000
 +++ src/net/sourceforge/pmd/typeres/ClassTypeResolver.java	1 Jan 1970 00:00:00 -0000
-@@ -0,0 +1,198 @@
+@@ -0,0 +1,114 @@
++/**
++ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
++ */
 +package net.sourceforge.pmd.typeres;
 +
++import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 +import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 +import net.sourceforge.pmd.ast.ASTCompilationUnit;
 +import net.sourceforge.pmd.ast.ASTImportDeclaration;
++import net.sourceforge.pmd.ast.ASTName;
++import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 +import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
-+import net.sourceforge.pmd.util.PMDClassLoader;
 +
 +import java.util.Collections;
 +import java.util.HashMap;
-+import java.util.HashSet;
 +import java.util.Iterator;
 +import java.util.List;
 +import java.util.Map;
-+import java.util.Set;
 +
 +public class ClassTypeResolver extends JavaParserVisitorAdapter {
 +
-+    private static final String myJavaLangPackage = "java.lang";
++	private static Map myPrimitiveTypes;
 +
-+    private static Map myPrimitiveTypes = null;
++	private static PMDASMClassLoader pmdClassLoader = new PMDASMClassLoader();
 +
-+    private static PMDClassLoader pmdClassLoader = new PMDClassLoader();
++	static {
++		Map thePrimitiveTypes = new HashMap();
++		thePrimitiveTypes.put("short", Short.TYPE);
++		thePrimitiveTypes.put("byte", Byte.TYPE);
++		thePrimitiveTypes.put("char", Character.TYPE);
++		thePrimitiveTypes.put("int", Integer.TYPE);
++		thePrimitiveTypes.put("long", Long.TYPE);
++		thePrimitiveTypes.put("float", Float.TYPE);
++		thePrimitiveTypes.put("double", Double.TYPE);
++		thePrimitiveTypes.put("boolean", Boolean.TYPE);
++		thePrimitiveTypes.put("void", Void.TYPE);
++		myPrimitiveTypes = Collections.unmodifiableMap(thePrimitiveTypes);
++	}
 +
-+    static {
++	private Map importedClasses;
 +
-+        Map thePrimitiveTypes = new HashMap();
++	private String className;
 +
-+        thePrimitiveTypes.put("short", Short.TYPE);
-+        thePrimitiveTypes.put("byte", Byte.TYPE);
-+        thePrimitiveTypes.put("char", Character.TYPE);
-+        thePrimitiveTypes.put("int", Integer.TYPE);
-+        thePrimitiveTypes.put("long", Long.TYPE);
-+        thePrimitiveTypes.put("float", Float.TYPE);
-+        thePrimitiveTypes.put("double", Double.TYPE);
-+        thePrimitiveTypes.put("boolean", Boolean.TYPE);
-+        thePrimitiveTypes.put("void", Void.TYPE);
++	public Object visit(ASTCompilationUnit node, Object data) {
++		try {
++			populateClassName(node);
++		} catch (ClassNotFoundException e) {
++			populateImports(node);
++		}
++		return super.visit(node, data);
++	}
 +
-+        myPrimitiveTypes = Collections.unmodifiableMap(thePrimitiveTypes);
++	/**
++	 * If the outer class wasn't found then we'll get in here
++	 * @param node
++	 */
++	private void populateImports(ASTCompilationUnit node) {
++		List theImportDeclarations = node.findChildrenOfType(ASTImportDeclaration.class);
++		importedClasses = new HashMap();
 +
-+    }
++		// go through the imports
++		for (Iterator anIterator = theImportDeclarations.iterator(); anIterator.hasNext();) {
++			ASTImportDeclaration anImportDeclaration = (ASTImportDeclaration) anIterator.next();
++			if (!anImportDeclaration.isImportOnDemand()) {
++				String strPackage = anImportDeclaration.getPackageName();
++				String strName = anImportDeclaration.getImportedName();
++				importedClasses.put(strName, strName);
++				importedClasses.put(strName.substring(strPackage.length() + 1), strName);
++			}
++		}
 +
-+    List theImportDeclarations;
++		importedClasses.put("String", "java.lang.String");
++	}
 +
-+    Set thePackages = new HashSet();
++	private void populateClassName(ASTCompilationUnit node) throws ClassNotFoundException {
++		ASTClassOrInterfaceDeclaration decl = (ASTClassOrInterfaceDeclaration) node
++				.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
++		if (decl != null) {
++			ASTPackageDeclaration pkgDecl = (ASTPackageDeclaration) node
++					.getFirstChildOfType(ASTPackageDeclaration.class);
++			className = pkgDecl == null ? decl.getImage() : ((ASTName) pkgDecl.jjtGetChild(0)).getImage() + "."
++					+ decl.getImage();
++			pmdClassLoader.loadClass(className);
++			importedClasses = pmdClassLoader.getImportedClasses(className);
++		}
++	}
 +
-+    Map packageNameMap = new HashMap();
++	// TODO - the map right now contains just class names. if we use
++	// a map of classname/class then we don't have to hit the class loader for
++	// every type - much faster
++	public Object visit(ASTClassOrInterfaceType node, Object data) {
 +
-+    public Object visit(ASTCompilationUnit node, Object data) {
-+        // Find the list of imports ...
-+        theImportDeclarations = node.findChildrenOfType(ASTImportDeclaration.class);
-+
-+        // Build the list of packages to check. We do this separtely to account
-+        // for default imports ...
-+        thePackages = new HashSet();
-+        packageNameMap = new HashMap();
-+
-+        for (Iterator anIterator = theImportDeclarations.iterator(); anIterator.hasNext();) {
-+            ASTImportDeclaration anImportDeclaration = (ASTImportDeclaration) anIterator.next();
-+
-+            String strPackage = anImportDeclaration.getPackageName();
-+            String strName = anImportDeclaration.getImportedName();
-+            if (thePackages.contains(strPackage) == false && strPackage != null) {
-+                if (anImportDeclaration.isImportOnDemand()) {
-+                    thePackages.add(strPackage);
-+                } else {
-+                    packageNameMap.put(strName.substring(strPackage.length() + 1), strName);
-+                }
-+            }
-+        }
-+        // Add java.lang last
-+        thePackages.add(myJavaLangPackage);
-+        packageNameMap.put("String", "java.lang.String");
-+        packageNameMap.put("StringBuffer", "java.lang.StringBuffer");
-+        return super.visit(node, data);
-+    }
-+
-+    public Object visit(ASTClassOrInterfaceType node, Object data) {
-+
-+        Class type = getType(node);
-+        if (type != null) {
-+            node.setType(type);
-+        }
-+        return data;
-+    }
-+
-+    /**
-+     * 
-+     * Accessor for the java.lang.Class represented by this type node. It works
-+     * on the presumption that a type symbol (e.g. <codeMap</code) resolves to
-+     * one and only one class within the context of a class.
-+     * 
-+     * This method does not handle type symbols that occur in multiple packages
-+     * or type declared using fully qualified names. Since the PMD parse tree
-+     * does not capture a fully qualified type name of a local variable,
-+     * parameter, return type, or field declaration, it is impossible to resolve
-+     * types from two packages (e.g. a class that uses both <codejava.util.Date</code
-+     * and <codejava.sql.Date</code). In such a scenario, this method will
-+     * resolve the class that appears first in the list of imports. In the
-+     * scenario where the class is not in an imported package, this method will
-+     * return <codejava.lang.Void.Type</code.
-+     * 
-+     * For primitive types, this method will return the TYPE constant it
-+     * associated class in java.lang (e.g. <codeboolean</code will be returned
-+     * as <codejava.lang.Boolean.TYPE</code).
-+     * 
-+     * @return The java.lang.Class instance of the type represent by this node
-+     * 
-+     */
-+    public Class getType(ASTClassOrInterfaceType type) {
-+
-+        String strType = type.getImage();
-+        Class myType = (Class) myPrimitiveTypes.get(strType);
-+
-+        // The type wasn't a primitive, so we need to go mucking through the
-+        // imports to find it ...
-+        if (myType == null) {
-+
-+            // Cycle through the list of imports, attempting to load a class
-+            // of the name a package name + "." + the class name. Since many
-+            // developers declare imports on a per class basis, we use a set
-+            // to ensure we only attempt to load a class in a package once
-+            if (packageNameMap.containsKey(strType)) {
-+                try {
-+                    // System.err.println("Fastpath to: " + strType);
-+                    myType = pmdClassLoader.findClass((String) packageNameMap.get(strType));
-+                } catch (ClassNotFoundException e) {
-+                    // ignore: The exception indicates that the class was
-+                    // not found in the current package, so move onto the
-+                    // next package ...
-+                } catch (IllegalAccessError e) {
-+
-+                } catch (NoClassDefFoundError e) {
-+                    // investigate this one!
-+                }
-+            } else {
-+                for (Iterator anIterator = thePackages.iterator(); anIterator.hasNext();) {
-+                    String aPackage = (String) anIterator.next();
-+                    try {
-+                        // System.err.println("Looking for " + strType + " in "
-+                        // + aPackage);
-+                        myType = pmdClassLoader.findClass(aPackage + "." + strType);
-+                        // Now that we've found it, let's add it to the class'
-+                        // cache to make lookup faster for this class
-+                        packageNameMap.put(strType, aPackage + "." + strType);
-+                        break;
-+                    } catch (ClassNotFoundException e) {
-+                        // ignore: The exception indicates that the class was
-+                        // not found in the current package, so move onto the
-+                        // next package ...
-+                    } catch (IllegalAccessError e) {
-+
-+                    } catch (NoClassDefFoundError e) {
-+                        // investigate this one!
-+                    }
-+                }
-+            }
-+        }
-+
-+        // We didn't find the class, so we will assume the type is void ...
-+        if (myType == null) {
-+            try {
-+                // is it base package
-+                myType = pmdClassLoader.findClass(strType);
-+                // Now that we've found it, let's add it to the class'
-+                // cache to make lookup faster for this class
-+                packageNameMap.put(strType, strType);
-+            } catch (ClassNotFoundException e) {
-+                // ignore: The exception indicates that the class was
-+                // not found in the current package, so move onto the
-+                // next package ...
-+            } catch (IllegalAccessError e) {
-+
-+            } catch (NoClassDefFoundError e) {
-+                // investigate this one!
-+            }
-+            if (myType == null) {
-+                myType = NullSymbolType.class;
-+            }
-+        }
-+
-+        return myType;
-+    }
-+
-+    public static final class NullSymbolType {
-+
-+        public static boolean isTypeNull(Class aClass) {
-+
-+            return NullSymbolType.class.equals(aClass);
-+        }
-+
-+        private NullSymbolType() {
-+            super();
-+        }
-+
-+    }
-+
++		String className = node.getImage();
++		String qualifiedName = className;
++		Class myType = (Class) myPrimitiveTypes.get(className);
++		if (myType == null && importedClasses != null) {
++			if (importedClasses.containsKey(className)) {
++				qualifiedName = (String) importedClasses.get(className);
++			} else if (importedClasses.containsValue(className)) {
++				qualifiedName = className;
++			}
++			if (qualifiedName != null) {
++				try {
++					myType = pmdClassLoader.loadClass(qualifiedName);
++				} catch (ClassNotFoundException e) {
++				}
++			}
++		}
++		if (myType != null) {
++			node.setType(myType);
++		}
++		return data;
++	}
 +}
-Index: src/net/sourceforge/pmd/util/ClassLoaderTest.java
+Index: src/net/sourceforge/pmd/typeres/visitors/PMDASMVisitor.java
 ===================================================================
-RCS file: src/net/sourceforge/pmd/util/ClassLoaderTest.java
-diff -N src/net/sourceforge/pmd/util/ClassLoaderTest.java
+RCS file: src/net/sourceforge/pmd/typeres/visitors/PMDASMVisitor.java
+diff -N src/net/sourceforge/pmd/typeres/visitors/PMDASMVisitor.java
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/net/sourceforge/pmd/util/ClassLoaderTest.java	1 Jan 1970 00:00:00 -0000
-@@ -0,0 +1,11 @@
-+package net.sourceforge.pmd.util;
-+
-+/*
-+ * This class shows how the PMDClassLoader does *NOT* fire the static initializers
++++ src/net/sourceforge/pmd/typeres/visitors/PMDASMVisitor.java	1 Jan 1970 00:00:00 -0000
+@@ -0,0 +1,384 @@
++/**
++ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
 + */
-+public class ClassLoaderTest {
-+    public static void main(String[] args) throws ClassNotFoundException {
-+        System.err.println(Class.forName("net.sourceforge.pmd.util.StaticOne"));
-+        System.err.println(new PMDClassLoader().findClass("net.sourceforge.pmd.util.StaticTwo"));
-+    }
-+}
-Index: src/net/sourceforge/pmd/util/StaticTwo.java
-===================================================================
-RCS file: src/net/sourceforge/pmd/util/StaticTwo.java
-diff -N src/net/sourceforge/pmd/util/StaticTwo.java
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/net/sourceforge/pmd/util/StaticTwo.java	1 Jan 1970 00:00:00 -0000
-@@ -0,0 +1,9 @@
-+package net.sourceforge.pmd.util;
++package net.sourceforge.pmd.typeres.visitors;
 +
-+public class StaticTwo {
++import org.objectweb.asm.AnnotationVisitor;
++import org.objectweb.asm.Attribute;
++import org.objectweb.asm.ClassVisitor;
++import org.objectweb.asm.FieldVisitor;
++import org.objectweb.asm.Label;
++import org.objectweb.asm.MethodVisitor;
++import org.objectweb.asm.Type;
++import org.objectweb.asm.signature.SignatureReader;
++import org.objectweb.asm.signature.SignatureVisitor;
 +
-+    static {
-+        System.err.println("This should not print out");
-+    }
-+    
++import java.util.ArrayList;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++
++public class PMDASMVisitor implements ClassVisitor {
++
++	public Map packages = new HashMap();
++
++	private AnnotationVisitor annotationVisitor = new PMDAnnotationVisitor(this);
++
++	private FieldVisitor fieldVisitor = new PMDFieldVisitor(this);
++
++	private SignatureVisitor sigVisitor = new PMDSignatureVisitor(this);
++
++	private MethodVisitor methodVisitor = new PMDMethodVisitor(this);
++
++	public List innerClasses;
++
++	public Map getPackages() {
++		return packages;
++	}
++
++	public List getInnerClasses() {
++		return innerClasses;
++	}
++
++	private String parseClassName(String name) {
++		if (name == null) {
++			return null;
++		}
++
++		String className = name;
++		int n = name.lastIndexOf('/');
++		if (n > -1) {
++			className = name.substring(n + 1);
++		}
++		name = name.replace('/', '.');
++		packages.put(className, name);
++		n = className.indexOf('$');
++		if (n > -1) {
++			packages.put(className.substring(n + 1), name);
++		}
++
++		return name;
++	}
++
++	private void parseClassName(String[] names) {
++		if (names != null) {
++			for (int i = 0; i < names.length; i++) {
++				parseClassName(names[i]);
++			}
++		}
++	}
++
++	private void extractSignature(String sig) {
++		if (sig != null) {
++			new SignatureReader(sig).acceptType(sigVisitor);
++		}
++	}
++
++	/* Start ClassVisitor implementations */
++
++	public void visit(int version, int access, String name, String sig, String superName, String[] interfaces) {
++		parseClassName(name);
++		parseClassName(interfaces);
++		if (sig != null) {
++			extractSignature(sig);
++		}
++	}
++
++	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
++		addType(Type.getType(desc));
++		return annotationVisitor;
++	}
++
++	public FieldVisitor visitField(int access, String name, String desc, String sig, Object value) {
++		if (sig != null) {
++			extractSignature(sig);
++		}
++
++		addType(Type.getType(desc));
++		if (value instanceof Type) {
++			addType((Type) value);
++		}
++		return fieldVisitor;
++	}
++
++	public MethodVisitor visitMethod(int access, String name, String desc, String sig, String[] exceptions) {
++		if (sig != null) {
++			extractSignature(sig);
++		}
++		addMethodDesc(desc);
++		parseClassName(exceptions);
++		return methodVisitor;
++	}
++
++	public void visitSource(String source, String debug) {
++	}
++
++	public void visitInnerClass(String name, String outerName, String innerName, int access) {
++		if (innerClasses == null) {
++			innerClasses = new ArrayList();
++		}
++		if (!innerClasses.contains(name.replace('/', '.'))) {
++			innerClasses.add(name.replace('/', '.'));
++		}
++		packages.put(innerName, name.replace('/', '.'));
++	}
++
++	public void visitOuterClass(String owner, String name, String desc) {
++	}
++
++	public void visitEnd() {
++	}
++
++	private void addMethodDesc(String desc) {
++		addTypes(desc);
++		addType(Type.getReturnType(desc));
++	}
++
++	private void addTypes(String desc) {
++		Type[] types = Type.getArgumentTypes(desc);
++		for (int i = 0; i < types.length; i++) {
++			addType(types[i]);
++		}
++	}
++
++	private void addType(Type t) {
++		switch (t.getSort()) {
++		case Type.ARRAY:
++			addType(t.getElementType());
++			break;
++		case Type.OBJECT:
++			parseClassName(t.getClassName().replace('.', '/'));
++			break;
++		}
++	}
++
++	public void visitAttribute(Attribute attr) {
++	}
++
++	/*
++	 * Start visitors
++	 */
++
++	private class PMDFieldVisitor implements FieldVisitor {
++
++		private PMDASMVisitor parent;
++
++		public PMDFieldVisitor(PMDASMVisitor visitor) {
++			parent = visitor;
++		}
++
++		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
++			parent.addType(Type.getType(desc));
++			return parent.annotationVisitor;
++		}
++
++		public void visitAttribute(Attribute attr) {
++		}
++
++		public void visitEnd() {
++		}
++	}
++
++	private class PMDAnnotationVisitor implements AnnotationVisitor {
++		private PMDASMVisitor parent;
++
++		public PMDAnnotationVisitor(PMDASMVisitor visitor) {
++			parent = visitor;
++		}
++
++		public AnnotationVisitor visitAnnotation(String name, String desc) {
++			parent.addType(Type.getType(desc));
++			return this;
++		}
++
++		public void visitEnum(String name, String desc, String value) {
++			parent.addType(Type.getType(desc));
++		}
++
++		public AnnotationVisitor visitArray(String name) {
++			return this;
++		}
++
++		public void visitEnd() {
++		}
++
++		public void visit(String name, Object value) {
++			if (value instanceof Type) {
++				parent.addType((Type) value);
++			}
++		}
++	}
++
++	private class PMDSignatureVisitor implements SignatureVisitor {
++		private PMDASMVisitor parent;
++
++		public PMDSignatureVisitor(PMDASMVisitor visitor) {
++			this.parent = visitor;
++		}
++
++		public void visitFormalTypeParameter(String name) {
++		}
++
++		public SignatureVisitor visitClassBound() {
++			return this;
++		}
++
++		public SignatureVisitor visitInterfaceBound() {
++			return this;
++		}
++
++		public SignatureVisitor visitSuperclass() {
++			return this;
++		}
++
++		public SignatureVisitor visitInterface() {
++			return this;
++		}
++
++		public SignatureVisitor visitParameterType() {
++			return this;
++		}
++
++		public SignatureVisitor visitReturnType() {
++			return this;
++		}
++
++		public SignatureVisitor visitExceptionType() {
++			return this;
++		}
++
++		public void visitBaseType(char descriptor) {
++		}
++
++		public void visitTypeVariable(String name) {
++		}
++
++		public SignatureVisitor visitArrayType() {
++			return this;
++		}
++
++		public void visitClassType(String name) {
++			parent.parseClassName(name);
++		}
++
++		public void visitInnerClassType(String name) {
++			parent.parseClassName(name);
++		}
++
++		public void visitTypeArgument() {
++		}
++
++		public SignatureVisitor visitTypeArgument(char wildcard) {
++			return this;
++		}
++
++		public void visitEnd() {
++		}
++	}
++
++	private class PMDMethodVisitor implements MethodVisitor {
++		private PMDASMVisitor parent;
++
++		public PMDMethodVisitor(PMDASMVisitor visitor) {
++			parent = visitor;
++		}
++
++		public AnnotationVisitor visitParameterAnnotation(int parameter, String desc, boolean visible) {
++			parent.addType(Type.getType(desc));
++			return parent.annotationVisitor;
++		}
++
++		public AnnotationVisitor visitAnnotation(String name, String desc) {
++			parent.addType(Type.getType(desc));
++			return parent.annotationVisitor;
++		}
++
++		public void visitTypeInsn(int opcode, String desc) {
++			if (desc.charAt(0) == '[') {
++				parent.addType(Type.getType(desc));
++			} else {
++				parent.parseClassName(desc);
++			}
++		}
++
++		public void visitFieldInsn(int opcode, String owner, String name, String desc) {
++			parent.parseClassName(owner);
++			parent.addType(Type.getType(desc));
++		}
++
++		public void visitMethodInsn(int opcode, String owner, String name, String desc) {
++			parent.parseClassName(owner);
++			parent.addMethodDesc(desc);
++		}
++
++		public void visitLdcInsn(Object cst) {
++			if (cst instanceof Type) {
++				parent.addType((Type) cst);
++			}
++		}
++
++		public void visitMultiANewArrayInsn(String desc, int dims) {
++			parent.addType(Type.getType(desc));
++		}
++
++		public void visitLocalVariable(String name, String desc, String sig, Label start, Label end, int index) {
++			parent.extractSignature(sig);
++		}
++
++		public void visitCode() {
++		}
++
++		public void visitFrame(int type, int nLocal, Object[] local, int nStack, Object[] stack) {
++		}
++
++		public void visitInsn(int opcode) {
++		}
++
++		public void visitIntInsn(int opcode, int operand) {
++		}
++
++		public void visitVarInsn(int opcode, int var) {
++		}
++
++		public void visitJumpInsn(int opcode, Label label) {
++		}
++
++		public void visitLabel(Label label) {
++		}
++
++		public void visitIincInsn(int var, int increment) {
++		}
++
++		public void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels) {
++		}
++
++		public void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels) {
++		}
++
++		public void visitTryCatchBlock(Label start, Label end, Label handler, String type) {
++			parent.parseClassName(type);
++		}
++
++		public void visitLineNumber(int line, Label start) {
++		}
++
++		public void visitMaxs(int maxStack, int maxLocals) {
++		}
++
++		public AnnotationVisitor visitAnnotationDefault() {
++			return parent.annotationVisitor;
++		}
++
++		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
++			parent.addType(Type.getType(desc));
++			return annotationVisitor;
++		}
++
++		public void visitEnd() {
++		}
++
++		public void visitAttribute(Attribute attr) {
++		}
++
++	}
 +}
 Index: src/net/sourceforge/pmd/typeres/TypeResolutionFacade.java
 ===================================================================
@@ -870,8 +913,8 @@ diff -N src/net/sourceforge/pmd/typeres/TypeResolutionFacade.java
 --- /dev/null	1 Jan 1970 00:00:00 -0000
 +++ src/net/sourceforge/pmd/typeres/TypeResolutionFacade.java	1 Jan 1970 00:00:00 -0000
 @@ -0,0 +1,19 @@
-+/*
-+ * Created on 10.07.2004
++/**
++ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
 + */
 +package net.sourceforge.pmd.typeres;
 +
@@ -889,16 +932,86 @@ diff -N src/net/sourceforge/pmd/typeres/TypeResolutionFacade.java
 +    }
 +
 +}
-Index: src/net/sourceforge/pmd/typeres/TypeResolver.java
+Index: src/net/sourceforge/pmd/typeres/PMDASMClassLoader.java
 ===================================================================
-RCS file: src/net/sourceforge/pmd/typeres/TypeResolver.java
-diff -N src/net/sourceforge/pmd/typeres/TypeResolver.java
+RCS file: src/net/sourceforge/pmd/typeres/PMDASMClassLoader.java
+diff -N src/net/sourceforge/pmd/typeres/PMDASMClassLoader.java
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/net/sourceforge/pmd/typeres/TypeResolver.java	1 Jan 1970 00:00:00 -0000
-@@ -0,0 +1,6 @@
++++ src/net/sourceforge/pmd/typeres/PMDASMClassLoader.java	1 Jan 1970 00:00:00 -0000
+@@ -0,0 +1,76 @@
++/**
++ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
++ */
 +package net.sourceforge.pmd.typeres;
 +
++import net.sourceforge.pmd.typeres.visitors.PMDASMVisitor;
 +
-+public class TypeResolver {
++import org.objectweb.asm.ClassReader;
++import org.objectweb.asm.ClassWriter;
 +
++import java.io.IOException;
++import java.util.HashMap;
++import java.util.HashSet;
++import java.util.List;
++import java.util.Map;
++import java.util.Set;
++
++public class PMDASMClassLoader extends ClassLoader {
++
++	public PMDASMClassLoader() {
++	}
++
++	public synchronized Class loadClass(String name) throws ClassNotFoundException {
++		return defineClass(name);
++	}
++
++	private Map importedClasses = new HashMap();
++
++	private Set dontBother = new HashSet();
++
++	public Map getImportedClasses(String className) {
++		Map ret = (Map) importedClasses.get(className);
++		return ret == null ? new HashMap() : ret;
++	}
++
++	private Class defineClass(String name) throws ClassNotFoundException {
++
++		if (dontBother.contains(name)) {
++			throw new ClassNotFoundException(name);
++		}
++		try {
++			if (name.startsWith("java.")) {
++				return Class.forName(name);
++			}
++			if (importedClasses.containsKey(name)) {
++				if (super.findLoadedClass(name) != null) {
++					return super.findLoadedClass(name);
++				}
++			}
++			ClassReader reader = new ClassReader(getResourceAsStream(name.replace('.', '/') + ".class"));
++			PMDASMVisitor asmVisitor = new PMDASMVisitor();
++			reader.accept(asmVisitor, 0);
++
++			List inner = asmVisitor.getInnerClasses();
++			if (inner != null && !inner.isEmpty()) {
++				for (int ix = 0; ix < inner.size(); ix++) {
++					String str = (String) inner.get(ix);
++					ClassReader innerReader = new ClassReader(getResourceAsStream(str.replace('.', '/') + ".class"));
++					innerReader.accept(asmVisitor, 0);
++				}
++			}
++			importedClasses.put(name, asmVisitor.packages);
++			ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
++			reader.accept(writer, 0);
++
++			byte[] byteCode = writer.toByteArray();
++			return defineClass(name, byteCode, 0, byteCode.length);
++		} catch (ClassNotFoundException e) {
++			dontBother.add(name);
++			throw e;
++		} catch (IOException e) {
++			dontBother.add(name);
++			throw new ClassNotFoundException(name, e);
++		}
++	}
 +}
