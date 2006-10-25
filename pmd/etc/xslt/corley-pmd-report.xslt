@@ -62,7 +62,6 @@
 			z-index: 100;
 		}
     </style>
-    <script type="text/javascript" src="../../Common/floatmenu.js"></script>
 </head>
 <body>
     <H1><div class="top"><div class="left">PMD <xsl:value-of select="//pmd/@version"/> Report</div><div class="right"><xsl:call-template name="timestamp"/></div></div></H1>

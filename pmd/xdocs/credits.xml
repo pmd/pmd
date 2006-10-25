@@ -52,6 +52,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Jason Bennett - Noticed useless line in XSLT scripts, fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule, patches to improve CyclomaticComplexity rule, Implemented: UseCollectionIsEmpty, NcssTypeCount, NcssMethodCount, NcssConstructor</li>
             <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - Improvement for UseArraysAsList, UnusedNullCheckInEquals, MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray, BigIntegerInstantiation_1.4, BigIntegerInstantiation_1.5</li>
             <li>Ryan Gustafson - Patch to fix bug in AvoidDecimalLiteralsInBigDecimalConstructor, patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0</li>
             <li>Stefan Seidel - Reported JDK 1.5 parsing bug</li>
@@ -60,7 +61,6 @@
             <li>Peter Van de Voorde - Rewrote the 'create rule XML' functionality in the designer utility</li>
             <li>Josh Devins - Reported bug with annotation parsing</li>
             <li>Alan Berg - Reported bug in Ant task</li>
-            <li>Jason Bennett - Fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule, patches to improve CyclomaticComplexity rule, Implemented: UseCollectionIsEmpty, NcssTypeCount, NcssMethodCount, NcssConstructor</li>
             <li>Brent Fisher - SummaryHTML report improvements</li>
             <li>George Thomas - Wrote AvoidRethrowingException rule</li>
             <li>Robert Simmons - Reported bug in optimizations package along with suggestions for fix</li>
