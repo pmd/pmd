@@ -92,6 +92,9 @@ public class UselessOverridingMethod extends AbstractRule {
 
                 ASTPrimaryExpression argumentPrimaryExpression = (ASTPrimaryExpression) ExpressionChild;
                 ASTPrimaryPrefix argumentPrimaryPrefix = (ASTPrimaryPrefix) argumentPrimaryExpression.jjtGetChild(0);
+                if (argumentPrimaryPrefix.jjtGetNumChildren() == 0) {
+                    return super.visit(node, data); //The arguments are not simply passed through (using "this" for instance)
+                }
                 Node argumentPrimaryPrefixChild = argumentPrimaryPrefix.jjtGetChild(0);
                 if (!(argumentPrimaryPrefixChild instanceof ASTName))
                     return super.visit(node, data); //The arguments are not simply passed through

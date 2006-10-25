@@ -26,7 +26,8 @@ public class UselessOverridingMethodTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST10, "do not crash on abstract methods", 0, rule),
             new TestDescriptor(TEST11, "do not crash on interfaces", 0, rule),
             new TestDescriptor(TEST12, "do not crash on empty returns", 0, rule),
-            new TestDescriptor(TEST13, "do not crash on super", 0, rule)
+            new TestDescriptor(TEST13, "do not crash on super", 0, rule),
+            new TestDescriptor(TEST14, "call super with different argument 4", 0, rule)
         });
     }
 
@@ -116,6 +117,13 @@ public class UselessOverridingMethodTest extends SimpleAggregatorTst {
             "public void init(String[] args) {" + PMD.EOL +
             "    super.init( args, Application.NO_MODULES );" + PMD.EOL +
             "}" + PMD.EOL +
+            "}";
+
+    private static final String TEST14 =
+            "public class Buz{" + PMD.EOL +
+            " public String foo(Object bar) {" + PMD.EOL +
+            "    super.foo(this); " + PMD.EOL +
+            " }" + PMD.EOL +
             "}";
 
 }
