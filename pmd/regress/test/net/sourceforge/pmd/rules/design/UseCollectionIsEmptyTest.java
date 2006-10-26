@@ -33,6 +33,7 @@ public class UseCollectionIsEmptyTest extends SimpleAggregatorTst{
                 new TestDescriptor(TEST4, "ok, !isEmpty", 0, rule),
                 new TestDescriptor(TEST5, "fail, != 0", 1, rule),
                 new TestDescriptor(TEST6, "ok, !isEmpty", 0, rule),
+                new TestDescriptor(TEST7, "fail, 0 ==", 1, rule),
         });
     }
 
@@ -96,5 +97,14 @@ public class UseCollectionIsEmptyTest extends SimpleAggregatorTst{
         "    }" + PMD.EOL +
         "}";
     
-}
+
+    private static final String TEST7 =
+        "public class Foo {" + PMD.EOL +
+        "    public static boolean bar(List lst) {" + PMD.EOL +
+        "        if(0 == lst.size()){" + PMD.EOL +
+        "            return true;" + PMD.EOL +
+        "        }" + PMD.EOL +
+        "        return false;" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "}";}
 
