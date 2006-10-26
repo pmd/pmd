@@ -27,7 +27,9 @@ public class UselessOverridingMethodTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST11, "do not crash on interfaces", 0, rule),
             new TestDescriptor(TEST12, "do not crash on empty returns", 0, rule),
             new TestDescriptor(TEST13, "do not crash on super", 0, rule),
-            new TestDescriptor(TEST14, "call super with different argument 4", 0, rule)
+            new TestDescriptor(TEST14, "call super with different argument 4", 0, rule),
+            new TestDescriptor(TEST15, "adding final is OK", 0, rule),
+            new TestDescriptor(TEST16, "adding synchronized is OK", 0, rule),
         });
     }
 
@@ -124,6 +126,20 @@ public class UselessOverridingMethodTest extends SimpleAggregatorTst {
             " public String foo(Object bar) {" + PMD.EOL +
             "    super.foo(this); " + PMD.EOL +
             " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST15 =
+            "public class Foo extends Bar {" + PMD.EOL +
+            "public final String foo() {" + PMD.EOL +
+            "    return super.foo();" + PMD.EOL +
+            "}" + PMD.EOL +
+            "}";
+
+    private static final String TEST16 =
+            "public class Foo extends Bar {" + PMD.EOL +
+            "public synchronized String foo() {" + PMD.EOL +
+            "    return super.foo();" + PMD.EOL +
+            "}" + PMD.EOL +
             "}";
 
 }

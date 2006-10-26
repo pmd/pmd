@@ -38,7 +38,7 @@ public class UselessOverridingMethod extends AbstractRule {
         // Can skip abstract methods and methods whose only purpose is to
         // guarantee that the inherited method is not changed by finalizing
         // them.
-        if (node.isAbstract() || node.isFinal() || node.isNative()) {
+        if (node.isAbstract() || node.isFinal() || node.isNative() || node.isSynchronized()) {
             return super.visit(node, data);
         }
 
