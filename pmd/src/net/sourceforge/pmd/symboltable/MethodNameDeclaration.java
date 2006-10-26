@@ -7,7 +7,6 @@ import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTFormalParameters;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {

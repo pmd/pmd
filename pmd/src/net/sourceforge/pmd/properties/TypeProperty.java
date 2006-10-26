@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.util.ClassUtil;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**

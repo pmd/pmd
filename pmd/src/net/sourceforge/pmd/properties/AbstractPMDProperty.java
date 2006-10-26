@@ -1,9 +1,5 @@
 package net.sourceforge.pmd.properties;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 

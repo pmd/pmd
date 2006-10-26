@@ -4,7 +4,6 @@
 package test.net.sourceforge.pmd.cpd;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.Renderer;
 import net.sourceforge.pmd.cpd.TokenEntry;
