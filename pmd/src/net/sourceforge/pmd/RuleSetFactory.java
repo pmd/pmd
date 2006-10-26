@@ -292,6 +292,11 @@ public class RuleSetFactory {
             rule.setUsesDFA();
         }
 
+        if (ruleElement.hasAttribute("typeResolution")
+                && ruleElement.getAttribute("typeResolution").equals("true")) {
+            rule.setUsesTypeResolution();
+        }
+
         for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
             Node node = ruleElement.getChildNodes().item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {

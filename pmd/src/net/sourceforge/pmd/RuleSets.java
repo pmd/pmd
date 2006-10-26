@@ -136,4 +136,14 @@ public class RuleSets {
         }
         return rule;
     }
+
+	public boolean usesTypeResolution(Language language) {
+		for (Iterator i = ruleSets.iterator(); i.hasNext();) {
+			RuleSet ruleSet = (RuleSet) i.next();
+			if (applies(language, ruleSet.getLanguage()) && ruleSet.usesTypeResolution()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

@@ -145,4 +145,14 @@ public class RuleSet {
         this.description = description;
     }
 
+	public boolean usesTypeResolution() {
+        for (Iterator i = rules.iterator(); i.hasNext();) {
+            Rule r = (Rule) i.next();
+            if (r.usesTypeResolution()) {
+                return true;
+            }
+        }
+        return false;
+	}
+
 }

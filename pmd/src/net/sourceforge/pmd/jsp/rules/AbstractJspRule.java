@@ -26,6 +26,7 @@ public abstract class AbstractJspRule extends JspParserVisitorAdapter implements
     protected String ruleSetName;
     protected boolean include;
     protected boolean usesDFA;
+    protected boolean usesTypeResolution;
     protected int priority = LOWEST_PRIORITY;
     protected String externalInfoUrl;
 
@@ -177,6 +178,13 @@ public abstract class AbstractJspRule extends JspParserVisitorAdapter implements
 
     public boolean usesDFA() {
         return this.usesDFA;
+    }
+
+    public void setUsesTypeResolution() {
+    }
+
+    public boolean usesTypeResolution() {
+        return false;
     }
 
     protected void visitAll(List acus, RuleContext ctx) {

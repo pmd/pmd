@@ -64,7 +64,23 @@ public class CollectionUtil {
 		return includeInterfaces && collectionInterfacesByNames.contains(typeName);
 	}
 	
-	
+    /**
+     * Return whether we can identify the typeName as a java.util collection class
+     * or interface as specified.
+     * 
+     * @param clazzType Class
+     * @param includeInterfaces boolean
+     * @return boolean
+     */
+    public static boolean isCollectionType(Class clazzType, boolean includeInterfaces) {
+
+        if (collectionClassesByNames.contains(clazzType)) {
+            return true;
+        }
+
+        return includeInterfaces && collectionInterfacesByNames.contains(clazzType);
+    }
+
     /**
      * Returns the items as a populated set.
      * 
@@ -145,7 +161,7 @@ public class CollectionUtil {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * A comprehensive isEqual method that handles nulls and arrays safely.
 	 * 

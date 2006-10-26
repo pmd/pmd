@@ -3,6 +3,7 @@ New rules:
     Basic ruleset: BigIntegerInstantiation(1.4 and 1.5)
     Codesize ruleset: NPathComplexity, NcssTypeCount, NcssMethodCount, NcssConstructorCount
     Design ruleset: UseCollectionIsEmpty
+    Typeresolution ruleset: Loose Coupling - This is a re-implementation using the new Type Resolution facility
 Fixed bug 1570915 - AvoidRethrowingException no longer reports a false positive for certain nested exceptions.
 Fixed bug 1571324 - UselessStringValueOf no longer reports a false positive for additive expressions.
 Fixed bug 1573795 - PreserveStackTrace doesn't throw CastClassException on exception with 0 args
@@ -31,6 +32,7 @@ undo/redo added to text areas in Designer.
 Better 'create rule XML' panel in Designer.
 use of entrySet to iterate over Maps.
 1.6 added as a valid option for targetjdk.
+PMD now allows rules to use Type Resolution. This was referenced in patch 1257259.
 Performance Refactoring, XPath rules re-written as Java:
     AssignmentInOperand
     AvoidDollarSigns

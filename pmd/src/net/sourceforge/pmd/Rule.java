@@ -68,4 +68,8 @@ public interface Rule {
     boolean usesDFA();
     
     PropertyDescriptor propertyDescriptorFor(String name);
+
+	void setUsesTypeResolution();
+
+	boolean usesTypeResolution();
 }

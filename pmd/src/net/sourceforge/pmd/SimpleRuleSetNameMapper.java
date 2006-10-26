@@ -65,6 +65,7 @@ public class SimpleRuleSetNameMapper {
         nameMap.put("strictexception", "rulesets/strictexception.xml");
         nameMap.put("strings", "rulesets/strings.xml");
         nameMap.put("sunsecure", "rulesets/sunsecure.xml");
+        nameMap.put("typeresolution", "rulesets/typeresolution.xml");
         nameMap.put("unusedcode", "rulesets/unusedcode.xml");
         nameMap.put("33", "rulesets/releases/33.xml");
         nameMap.put("34", "rulesets/releases/34.xml");

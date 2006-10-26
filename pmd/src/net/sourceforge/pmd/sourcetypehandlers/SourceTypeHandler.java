@@ -30,4 +30,13 @@ public interface SourceTypeHandler {
      * @return VisitorStarter 
      */
     VisitorStarter getSymbolFacade();
+    
+    /**
+     * Get the getTypeResolutionFacade.
+     *
+     * @return VisitorStarter 
+     */
+    VisitorStarter getTypeResolutionFacade();
+    
+        
 }

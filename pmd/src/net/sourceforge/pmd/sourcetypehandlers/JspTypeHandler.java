@@ -37,4 +37,8 @@ public class JspTypeHandler implements SourceTypeHandler {
         return new JspSymbolFacade();
     }
 
+    public VisitorStarter getTypeResolutionFacade() {
+        return VisitorStarter.dummy;
+    }
+
 }

@@ -82,6 +82,10 @@ public class PMD {
                 sourceTypeHandler.getDataFlowFacade().start(rootNode);
             }
 
+            if (ruleSets.usesTypeResolution(language)) {
+                sourceTypeHandler.getTypeResolutionFacade().start(rootNode);
+            }
+
             List acus = new ArrayList();
             acus.add(rootNode);
 

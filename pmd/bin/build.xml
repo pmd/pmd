@@ -17,6 +17,7 @@
 			<include name="jakarta-oro-2.0.8.jar" />
 			<include name="xercesImpl-2.6.2.jar" />
 			<include name="xmlParserAPIs-2.6.2.jar" />
+			<include name="asm-3.0_RC1.jar" />
 		</fileset>
 	</path>
 

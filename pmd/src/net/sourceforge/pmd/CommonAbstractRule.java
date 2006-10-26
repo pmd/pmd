@@ -22,6 +22,7 @@ public abstract class CommonAbstractRule implements Rule {
     protected String ruleSetName;
     protected boolean include;
     protected boolean usesDFA;
+    protected boolean usesTypeResolution;
     protected int priority = LOWEST_PRIORITY;
     protected String externalInfoUrl;
 
@@ -169,6 +170,14 @@ public abstract class CommonAbstractRule implements Rule {
 
     public boolean usesDFA() {
         return this.usesDFA;
+    }
+
+    public void setUsesTypeResolution() {
+        this.usesTypeResolution= true;
+    }
+
+    public boolean usesTypeResolution() {
+        return this.usesTypeResolution;
     }
 
 
