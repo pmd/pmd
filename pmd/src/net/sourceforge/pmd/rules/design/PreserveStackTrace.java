@@ -69,7 +69,7 @@ public class PreserveStackTrace extends AbstractRule {
 		try {
 			List lst = args.findChildNodesWithXPath("//Name[@Image='" + target
 					+ "']");
-			if (lst.size() == 0) {
+			if (lst.isEmpty()) {
 				RuleContext ctx = (RuleContext) data;
 				addViolation(ctx, throwStatement);
 			}

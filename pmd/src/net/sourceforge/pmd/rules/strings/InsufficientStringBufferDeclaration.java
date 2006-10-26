@@ -213,9 +213,9 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
             }
         }
         literal = (block.findChildrenOfType(ASTLiteral.class));
-        if (literal.size() == 0) {
+        if (literal.isEmpty()) {
             List name = (block.findChildrenOfType(ASTName.class));
-            if (name.size() != 0) {
+            if (!name.isEmpty()) {
                 iConstructorLength = -1;
             }
         } else if (literal.size() == 1) {

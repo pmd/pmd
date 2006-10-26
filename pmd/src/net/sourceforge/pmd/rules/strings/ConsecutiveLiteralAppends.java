@@ -223,7 +223,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
      */
     private boolean isAdditive(SimpleNode n) {
         List lstAdditive = n.findChildrenOfType(ASTAdditiveExpression.class);
-        if (lstAdditive.size() == 0) {
+        if (lstAdditive.isEmpty()) {
             return false;
         }
         // if there are more than 1 set of arguments above us we're not in the

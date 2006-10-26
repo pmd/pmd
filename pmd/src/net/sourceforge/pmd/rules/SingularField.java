@@ -52,7 +52,7 @@ public class SingularField extends AbstractRule {
                 }
             }
 
-            if (violation && usages.size() != 0) {
+            if (violation && !usages.isEmpty()) {
                 addViolation(data, node, new Object[] { declaration.getImage() });
             }
         }
