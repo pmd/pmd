@@ -24,7 +24,7 @@ public class ASTAnnotation extends SimpleJavaNode {
         */
         if (jjtGetChild(0) instanceof ASTSingleMemberAnnotation) {
             ASTSingleMemberAnnotation n = (ASTSingleMemberAnnotation) jjtGetChild(0);
-            if (n.jjtGetChild(0) instanceof ASTName && ((ASTName) n.jjtGetChild(0)).getImage().equals("SuppressWarnings")) {
+            if (n.jjtGetChild(0) instanceof ASTName && ((ASTName) n.jjtGetChild(0)).hasImageEqualTo("SuppressWarnings")) {
                 return true;
             }
             return false;
@@ -53,7 +53,7 @@ public class ASTAnnotation extends SimpleJavaNode {
             return false;
         }
         ASTName n = (ASTName)jjtGetChild(0);
-        if (n.getImage() == null || n.getImage().equals("SuppressWarnings")) {
+        if (n.getImage() == null || n.hasImageEqualTo("SuppressWarnings")) {
             return false;
         }
 
