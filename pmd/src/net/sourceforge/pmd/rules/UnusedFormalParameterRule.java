@@ -40,7 +40,7 @@ public class UnusedFormalParameterRule extends AbstractRule {
             for (Iterator i = vars.entrySet().iterator(); i.hasNext();) {
                 Map.Entry entry = (Map.Entry) i.next();
                 VariableNameDeclaration nameDecl = (VariableNameDeclaration) entry.getKey();
-                if (nameDecl.isArray() || actuallyUsed((List) entry.getValue())) {
+                if (actuallyUsed(nameDecl, (List) entry.getValue())) {
                     continue;
                 }
                 addViolation(data, node, new Object[]{node instanceof ASTMethodDeclaration ? "method" : "constructor", nameDecl.getImage()});
@@ -48,10 +48,14 @@ public class UnusedFormalParameterRule extends AbstractRule {
         }
     }
 
-    private boolean actuallyUsed(List usages) {
+    private boolean actuallyUsed(VariableNameDeclaration nameDecl, List usages) {
         for (Iterator j = usages.iterator(); j.hasNext();) {
             NameOccurrence occ = (NameOccurrence) j.next();
             if (occ.isOnLeftHandSide()) {
+                if (nameDecl.isArray() && occ.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
+                    // array element access
+                    return true;
+                }
                 continue;
             } else {
                 return true;

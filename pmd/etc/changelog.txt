@@ -25,7 +25,7 @@ Fixed bug in Ant task - CSV reports were being output as text.
 Fixed false negatives in UseArraysAsList.
 Fixed several JDK 1.5 parsing bugs.
 Fixed several rules (exceptions on jdk 1.5 and jdk 1.6 source code).
-Fixed array handling in AvoidReassigningParameters.
+Fixed array handling in AvoidReassigningParameters and UnusedFormalParameter.
 Rules can now call RuleContext.getSourceType() if they need to make different checks on JDK 1.4 and 1.5 code.
 CloseResource rule now checks code without java.sql import.
 ArrayIsStoredDirectly rule now checks Constructors

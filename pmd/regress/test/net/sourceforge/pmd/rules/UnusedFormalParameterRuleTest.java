@@ -27,7 +27,9 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST7, "anonymous inner class npe", 0, rule),
             new TestDescriptor(TEST8, "unused constructor param", 1, rule),
             new TestDescriptor(TEST9, "assigned but not used", 1, rule),
-            new TestDescriptor(TEST10, "skip array types for now", 0, rule)
+            new TestDescriptor(TEST10, "array element is set", 0, rule),
+            new TestDescriptor(TEST11, "unused array in constructor", 1, rule),
+            new TestDescriptor(TEST12, "unused array in method", 1, rule)
         });
     }
 
@@ -101,6 +103,20 @@ public class UnusedFormalParameterRuleTest extends SimpleAggregatorTst {
             "class Foo {" + PMD.EOL +
             " private void foo (String[] s) {" + PMD.EOL +
             "  s[2] = \"hello\";" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST11 =
+            "class Foo {" + PMD.EOL +
+            " int type;" + PMD.EOL +
+            " public Foo (int type, String[] s) {" + PMD.EOL +
+            "  this.type = type;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST12 =
+            "class Foo {" + PMD.EOL +
+            " private final void setLang(final String lang[]){" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 
