@@ -27,7 +27,8 @@ public class AvoidReassigningParametersTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST7, "assignment to array parameter slot", 0, rule),
             new TestDescriptor(TEST8, "throws a stacktrace", 1, rule),
             new TestDescriptor(TEST9, "postfix increment in array dereference is bad", 1, rule),
-            // FIXME new TestDescriptor(TEST10, "assignment to array slot", 0, rule),
+            new TestDescriptor(TEST10, "assignment to array slot", 0, rule),
+            new TestDescriptor(TEST11, "assignment to array", 1, rule),
         });
     }
 
@@ -105,6 +106,14 @@ public class AvoidReassigningParametersTest extends SimpleAggregatorTst {
             "public class Foo {" + PMD.EOL +
             " void foo(int x[]) {" + PMD.EOL +
             "  x[2] = 2;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    public static final String TEST11 =
+            "public class Foo {" + PMD.EOL +
+            " int y[];" + PMD.EOL +
+            " void foo(int x[]) {" + PMD.EOL +
+            "  x = y;" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 }
