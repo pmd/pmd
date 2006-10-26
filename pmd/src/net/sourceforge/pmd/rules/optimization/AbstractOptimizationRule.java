@@ -36,7 +36,7 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
     // TODO - symbol table?
     protected final String getVarName(ASTLocalVariableDeclaration node) {
         List l = node.findChildrenOfType(ASTVariableDeclaratorId.class);
-        if (l != null && l.size() > 0) {
+        if (l != null && !l.isEmpty()) {
             ASTVariableDeclaratorId vd = (ASTVariableDeclaratorId) l.get(0);
             return vd.getImage();
         }

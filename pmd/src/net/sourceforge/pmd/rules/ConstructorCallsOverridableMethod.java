@@ -378,7 +378,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
             m_Eci = eci;
             List l = new ArrayList();
             eci.findChildrenOfType(ASTArguments.class, l);
-            if (l.size() > 0) {
+            if (!l.isEmpty()) {
                 ASTArguments aa = (ASTArguments) l.get(0);
                 count = aa.getArgumentCount();
             }
@@ -854,7 +854,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                 //if this list does not contain our class name, then its not referencing our class
                 //this is a cheezy test... but it errs on the side of less false hits.
                 List packClass = meth.getQualifierNames();
-                if (packClass.size() > 0) {
+                if (!packClass.isEmpty()) {
                     for (Iterator it = packClass.iterator(); it.hasNext();) {
                         String name = (String) it.next();
                         if (name.equals(className)) {

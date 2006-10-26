@@ -100,6 +100,6 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
     }
 
     private boolean hasContent(List nameList) {
-        return nameList != null && nameList.size() > 0;
+        return nameList != null && !nameList.isEmpty();
     }
 }
