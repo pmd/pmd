@@ -4,6 +4,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
@@ -39,9 +40,10 @@ public abstract class AbstractInefficientZeroCheck extends AbstractRule {
             if (!isTargetMethod(occ)) {
                 continue;
             }
-            ASTEqualityExpression equality = (ASTEqualityExpression) occ.getLocation().getFirstParentOfType(
-                    ASTEqualityExpression.class);
-            if (equality != null && isCompareZero(equality)) {
+            SimpleNode expr = (SimpleNode) occ.getLocation().jjtGetParent().jjtGetParent().jjtGetParent();
+            if ((expr instanceof ASTEqualityExpression ||
+                    (expr instanceof ASTRelationalExpression && ">".equals(expr.getImage())))
+                && isCompareZero(expr)) {
                 addViolation(data, occ.getLocation());
             }
         }
@@ -54,7 +56,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractRule {
      * @param equality
      * @return true if this is comparing to 0 else false
      */
-    private boolean isCompareZero(ASTEqualityExpression equality) {
+    private boolean isCompareZero(SimpleNode equality) {
         return (checkComparison(equality, 0) || checkComparison(equality, 1));
 
     }
@@ -68,8 +70,12 @@ public abstract class AbstractInefficientZeroCheck extends AbstractRule {
      *            The ordinal in the equality expression to check
      * @return true if the value in position i is 0, else false
      */
-    private boolean checkComparison(ASTEqualityExpression equality, int i) {
-        SimpleNode target = (SimpleNode) equality.jjtGetChild(i).jjtGetChild(0).jjtGetChild(0);
+    private boolean checkComparison(SimpleNode equality, int i) {
+        SimpleNode target = (SimpleNode) equality.jjtGetChild(i).jjtGetChild(0);
+        if (target.jjtGetNumChildren() == 0) {
+            return false;
+        }
+        target = (SimpleNode) target.jjtGetChild(0);
         return (target instanceof ASTLiteral && "0".equals(target.getImage()));
     }
 
