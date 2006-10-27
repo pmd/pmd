@@ -50,8 +50,4 @@ public class ASTImportDeclarationTest extends ParserTst {
             "import static foo.bar.Baz;" + PMD.EOL +
             "public class Foo {}";
 
-    private static final String TEST4 =
-            "import foo.bar.Baz;" + PMD.EOL +
-            "public class Foo {}";
-
 }
