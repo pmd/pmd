@@ -3,9 +3,14 @@
  */
 package test.net.sourceforge.pmd.testframework;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.SourceType;
 
 public class SimpleAggregatorTst extends RuleTst {
+    
+    public void runTests(Rule rule) {
+        runTests(extractTestsFromXml(rule));
+    }
 
     public void runTests(TestDescriptor[] tests) {
         runTests(tests, DEFAULT_SOURCE_TYPE);
@@ -19,11 +24,10 @@ public class SimpleAggregatorTst extends RuleTst {
     public void runTests(TestDescriptor[] tests, SourceType sourceType) {
         for (int i = 0; i < tests.length; i++) {
             try {
-                runTestFromString(tests[i].code, tests[i].numberOfProblemsExpected,
-                        tests[i].rule, sourceType);
+                runTestFromString(tests[i], sourceType);
             } catch (Throwable t) {
                 t.printStackTrace();
-                throw new RuntimeException("Test \"" + tests[i].description  + "\" failed");
+                throw new RuntimeException("Test \"" + tests[i].getDescription()  + "\" failed");
             }
         }
     }

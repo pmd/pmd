@@ -17,6 +17,7 @@ Fixed bug 1581123 - False +: UnnecessaryWrapperObjectCreation.
 Applied patch 1551189 - SingularField false + for initialization blocks
 Applied patch 1573981 - false + in CloneMethodMustImplementCloneable
 Applied patch 1574988 - false + in OverrideBothEqualsAndHashcode
+Applied patch 1583167 - Better test code management. Internal JUnits can now be written in XML's
 Implemented RFE 1566313 - Command Line now takes minimumpriority attribute to filter out rulesets
 PMD now requires JDK 1.4 to run.  Note that, however, PMD will still analyze code from earlier JDKs.    
 SummaryHTML Report changes from Brent Fisher - now contains linePrefix to support source output from javadoc using "linksource"
