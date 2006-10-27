@@ -27,17 +27,27 @@ import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportListener;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.SimpleJavaNode;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.symboltable.SourceFileScope;
+import test.net.sourceforge.pmd.testframework.MockRule;
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
 import java.util.Iterator;
+import java.util.Map;
 
 public class ReportTest extends RuleTst implements ReportListener {
 
     private static class FooRule extends AbstractRule {
         public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
-            if (c.getImage().equals("Foo")) addViolation(ctx, c);
+            if ("Foo".equals(c.getImage())) addViolation(ctx, c);
             return ctx;
         }
 
@@ -125,19 +135,16 @@ public class ReportTest extends RuleTst implements ReportListener {
 
     private static final String TEST3 =
             "public class Foo {} // NOPMD";
-/*
 
     // Files are grouped together now.
     public void testSortedReport_File() {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo");
-        SimpleNode s = new SimpleJavaNode(1);
-        s.testingOnly__setBeginLine(10);
+        SimpleNode s = getNode(10, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s));
         ctx.setSourceCodeFilename("bar");
-        SimpleNode s1 = new SimpleJavaNode(1);
-        s1.testingOnly__setBeginLine(20);
+        SimpleNode s1 = getNode(10, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s1));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
@@ -148,13 +155,11 @@ public class ReportTest extends RuleTst implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
-        SimpleNode s = new SimpleJavaNode(1);
-        s.testingOnly__setBeginLine(10);
+        SimpleNode s = getNode(10, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2", "msg", "rulesetname"), ctx, s));
         ctx.setSourceCodeFilename("foo2");
-        SimpleNode s1 = new SimpleJavaNode(1);
-        s1.testingOnly__setBeginLine(20);
-        r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2", "msg", "rulesetname"), ctx, s1));
+        SimpleNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
+        r.addRuleViolation(new RuleViolation(new MockRule("rule1", "rule1", "msg", "rulesetname"), ctx, s1));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
@@ -166,8 +171,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         violationSemaphore = false;
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("file");
-        SimpleNode s = new SimpleJavaNode(1);
-        s.testingOnly__setBeginLine(5);
+        SimpleNode s = getNode(5, 5, ctx.getSourceCodeFilename());
         rpt.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s));
         assertTrue(violationSemaphore);
 
@@ -181,15 +185,13 @@ public class ReportTest extends RuleTst implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
-        SimpleNode s = new SimpleJavaNode(1);
-        s.testingOnly__setBeginLine(10);
-        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s));
+        SimpleNode s = getNode(5, 5, ctx.getSourceCodeFilename());
+        Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
+        r.addRuleViolation(new RuleViolation(rule, ctx, s));
         ctx.setSourceCodeFilename("foo2");
         Rule mr = new MockRule("rule1", "rule1", "msg", "rulesetname");
-        SimpleNode s1 = new SimpleJavaNode(1);
-        s1.testingOnly__setBeginLine(20);
-        SimpleNode s2 = new SimpleJavaNode(1);
-        s2.testingOnly__setBeginLine(30);
+        SimpleNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
+        SimpleNode s2 = getNode(30, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new RuleViolation(mr, ctx, s1));
         r.addRuleViolation(new RuleViolation(mr, ctx, s2));
         Map summary = r.getSummary();
@@ -197,5 +199,16 @@ public class ReportTest extends RuleTst implements ReportListener {
         assertTrue(summary.values().contains(new Integer(1)));
         assertTrue(summary.values().contains(new Integer(2)));
     }
-*/
+    
+    private SimpleNode getNode(int line, int column, String scopeName){
+        SimpleNode s = new SimpleJavaNode(2);
+        SimpleNode parent = new SimpleJavaNode(1);
+        parent.testingOnly__setBeginLine(line);
+        parent.testingOnly__setBeginColumn(column);
+        s.jjtSetParent(parent);
+        s.setScope(new SourceFileScope(scopeName));
+        s.testingOnly__setBeginLine(10);
+        s.testingOnly__setBeginColumn(5);
+        return s;
+    }
 }
