@@ -1057,7 +1057,7 @@ TOKEN :
 ASTCompilationUnit CompilationUnit() :
 {}
 {
-  [ PackageDeclaration() ]
+  [ LOOKAHEAD( ( Annotation() )* "package" ) PackageDeclaration() ]
   ( ImportDeclaration() )*
   ( TypeDeclaration() )*
   ( < "\u001a" > )?
@@ -1071,7 +1071,7 @@ ASTCompilationUnit CompilationUnit() :
 void PackageDeclaration() :
 {}
 {
-  "package" Name() ";"
+  ( Annotation() )* "package" Name() ";"
 }
 
 void ImportDeclaration() :
