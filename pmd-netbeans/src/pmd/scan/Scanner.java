@@ -114,11 +114,11 @@ public class Scanner implements Runnable, DocumentListener {
 
                 LineCookie cookie = ( LineCookie )dobj.getCookie( LineCookie.class );
                 Line.Set lineset = cookie.getLineSet();
-                List list = Collections.singletonList(dobj);
-                List faults = RunPMDAction.performScan(list );
+                List<DataObject> list = Collections.singletonList(dobj);
+                List<Fault> faults = RunPMDAction.performScan(list );
                 PMDScanAnnotation.clearAll();
                 for( int i = 0; i < faults.size(); i++ ) {
-                    Fault fault = (Fault)faults.get( i );
+                    Fault fault = faults.get( i );
                     int lineNum = fault.getLine();
                     Line line = lineset.getCurrent( lineNum - 1 );
                     if(line == null) {

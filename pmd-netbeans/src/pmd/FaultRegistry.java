@@ -37,7 +37,7 @@ import org.openide.loaders.DataObject;
 public class FaultRegistry {
 
 	/** The registered faults */
-	private Map faults = new HashMap();
+	private Map<String, DataObject> faults = new HashMap<String, DataObject>();
 	
 	/** The singleton instance of this class. */
 	private static FaultRegistry instance = new FaultRegistry();

@@ -29,12 +29,9 @@ package pmd.scan;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.openide.text.Annotatable;
 import org.openide.text.Annotation;
-import org.openide.text.Line;
-import org.openide.text.Line.Part;
 
 /**
  * Just a class whose mission is to mark the line where the error is. It's using
@@ -46,7 +43,7 @@ public class PMDScanAnnotation extends Annotation implements PropertyChangeListe
 
 	/** The error message shown on mouseover on the pmd icon */
 	private String errormessage = null;
-	private static List annotations = new ArrayList();
+	private static List<Annotation> annotations = new ArrayList<Annotation>();
 	
 	private PMDScanAnnotation() {}
 	
@@ -60,9 +57,8 @@ public class PMDScanAnnotation extends Annotation implements PropertyChangeListe
 	
 	public static final void clearAll() {
 		synchronized(annotations) {
-			Iterator iterator = annotations.iterator();
-			while( iterator.hasNext() ) {
-				((Annotation)iterator.next()).detach();
+            for (Annotation anno: annotations) {
+				anno.detach();
 			}
 			annotations.clear();
 		}

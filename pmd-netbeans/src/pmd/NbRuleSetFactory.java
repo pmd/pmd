@@ -71,8 +71,8 @@ public class NbRuleSetFactory extends RuleSetFactory {
     /**
      * Returns an Iterator of RuleSet objects
      */
-    public Iterator getRegisteredRuleSets() throws RuleSetNotFoundException {
-        List ruleSets = new ArrayList();
+    public Iterator<RuleSet> getRegisteredRuleSets() throws RuleSetNotFoundException {
+        List<RuleSet> ruleSets = new ArrayList<RuleSet>();
         ruleSets.add (createRuleSet (BUNDLE_RULESET));
         ruleSets.add (createRuleSet (CLASSES_RULESET));
 

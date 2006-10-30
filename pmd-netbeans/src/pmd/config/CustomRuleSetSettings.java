@@ -38,7 +38,7 @@ public class CustomRuleSetSettings implements Serializable {
 	private final static long serialVersionUID = 8418202279212345678L;
 	
 	/** Holds value of property ruleSets. */
-	private List ruleSets;
+	private List<String> ruleSets;
 	
 	/** Holds value of property classPath. */
 	private List classPath;
@@ -47,14 +47,14 @@ public class CustomRuleSetSettings implements Serializable {
 	private boolean includeStdRules;
 	
 	/** Creates a new instance of CustomRuleSetSettings */
-	public CustomRuleSetSettings( List ruleSets, List classPath, boolean include) {
+	public CustomRuleSetSettings( List<String> ruleSets, List classPath, boolean include) {
 		this.ruleSets = ruleSets;
 		this.classPath = classPath;
 		this.includeStdRules = includeStdRules;
 	}
 	
 	public CustomRuleSetSettings() {
-		ruleSets = new ArrayList();
+		ruleSets = new ArrayList<String>();
 		classPath = new ArrayList();
 		includeStdRules = true;
 	}
@@ -63,7 +63,7 @@ public class CustomRuleSetSettings implements Serializable {
 	 * @return Value of property ruleSets.
 	 *
 	 */
-	public List getRuleSets() {
+	public List<String> getRuleSets() {
 		return this.ruleSets;
 	}
 	
@@ -71,7 +71,7 @@ public class CustomRuleSetSettings implements Serializable {
 	 * @param ruleSets New value of property ruleSets.
 	 *
 	 */
-	public void setRuleSets(List ruleSets) {
+	public void setRuleSets(List<String> ruleSets) {
 		this.ruleSets = ruleSets;
 	}
 	

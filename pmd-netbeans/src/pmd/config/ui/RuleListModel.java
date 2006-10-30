@@ -40,11 +40,11 @@ import net.sourceforge.pmd.Rule;
 public class RuleListModel extends AbstractListModel {
 	
 	/** The data in the list. */
-	private List/*<Rule>*/ list;
+	private List<Rule> list;
 	
 	/** Constructor for use by subclasses. */
 	protected RuleListModel() {
-		list = new ArrayList();
+		list = new ArrayList<Rule>();
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class RuleListModel extends AbstractListModel {
 	 *
 	 * @param list The new list value, not null.
 	 */
-	public void setList(List list) {
+	public void setList(List<Rule> list) {
 		this.list = list;
 	}
 
@@ -112,7 +112,7 @@ public class RuleListModel extends AbstractListModel {
 	 *
 	 * @param coll The collection of rules to add. Each element in this collection must be a Rule.
 	 */
-	public void addAll(Collection coll) {
+	public void addAll(Collection<Rule> coll) {
 		int ind = list.size();
 		list.addAll(coll);
 		Collections.sort(list, new RuleComparator() );

@@ -34,18 +34,18 @@ import java.util.Map;
 public class RulesConfig {
 
     private String rules;
-    private Map/*<String,<String,Object>>*/ props;
+    private Map<String, Map<String,String>> props;
     
-    RulesConfig (String rules, Map props) {
+    RulesConfig (String rules, Map<String, Map<String,String>> props) {
         this.rules = rules;
         this.props = props;
     }
     
-    public void setProperties (Map props) {
+    public void setProperties (Map<String, Map<String,String>> props) {
         this.props = props;
     }
 
-    public Map getProperties () {
+    public Map<String, Map<String,String>> getProperties () {
         return props;
     }
     

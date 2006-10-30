@@ -72,14 +72,14 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         private void initListModels() {
                 RulesConfig data = (RulesConfig)editor.getValue();
                 // init selected rules
-                List l = ConfigUtils.createRuleList( data.getRules(), data.getProperties() );
+                List<Rule> l = ConfigUtils.createRuleList( data.getRules(), data.getProperties() );
                 Collections.sort (l, new RuleComparator());
                 selectedRulesModel.removeAllElements();
                 for (int i = 0; i < l.size(); i++) {
                     selectedRulesModel.addElement(l.get(i));
                 }
                 // available rules now 
-                List available = ConfigUtils.getAllAvailableRules();
+                List<Rule> available = ConfigUtils.getAllAvailableRules();
                 available.removeAll(l);
                 Collections.sort (available, new RuleComparator());
                 availableRulesModel.removeAllElements();
@@ -473,7 +473,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 	 */
 	private void removeAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeAllActionPerformed
 
-            editor.setValue(new RulesConfig ("", Collections.EMPTY_MAP));
+            editor.setValue(new RulesConfig ("", Collections.<String, Map<String, String>>emptyMap()));
             initListModels();
 	}//GEN-LAST:event_removeAllActionPerformed
 
@@ -519,7 +519,7 @@ public class RuleEnabler extends JPanel implements TableModelListener {
             Object rules[] = availableList.getSelectedValues();
             if( rules != null ) {
                 RulesConfig data = (RulesConfig)editor.getValue();
-                List l = ConfigUtils.createRuleList( data.getRules(), data.getProperties() ); 
+                List/*<Rule>*/ l = ConfigUtils.createRuleList( data.getRules(), data.getProperties() ); 
                 for( int i = 0; i < rules.length; i++ ) {
                     l.add (rules[i]);
                 }
@@ -546,10 +546,10 @@ public class RuleEnabler extends JPanel implements TableModelListener {
 			String newValue = (String)model.getValueAt(row, 1);
                         
                         RulesConfig data = (RulesConfig)editor.getValue();
-			Map allRulesPropOverrides = data.getProperties();
-			Map rulePropOverrides = (Map)allRulesPropOverrides.get(this.currentRuleName);
+			Map<String, Map<String, String>> allRulesPropOverrides = data.getProperties();
+			Map<String, String> rulePropOverrides = allRulesPropOverrides.get(this.currentRuleName);
 			if(rulePropOverrides == null) {
-				rulePropOverrides = new HashMap();
+				rulePropOverrides = new HashMap<String, String>();
 			}
 			rulePropOverrides.put(propName, newValue);
 			allRulesPropOverrides.put(this.currentRuleName, rulePropOverrides);

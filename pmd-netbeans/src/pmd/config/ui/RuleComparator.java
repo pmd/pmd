@@ -33,7 +33,7 @@ import net.sourceforge.pmd.Rule;
 /**
  * A comparator used to sort the rules in the listbox in the option panel.
  */
-public class RuleComparator implements Comparator{
+public class RuleComparator implements Comparator<Rule> {
 	
 	/**
 	 * Compares the name of the first rule to the second
@@ -41,11 +41,7 @@ public class RuleComparator implements Comparator{
 	 * @param rule2 the second rule
 	 * @return rule1.compareTo( rule2 )
 	 */
-	public int compare(Object rule1, Object rule2) {
-		int compared = 0;
-		if( rule1 instanceof Rule && rule2 instanceof Rule ) {
-			compared =  ( (Rule)rule1).getName().compareTo( ( (Rule)rule2).getName() );
-		}
-		return compared;
+	public int compare(Rule rule1, Rule rule2) {
+		return rule1.getName().compareTo( rule2.getName() );
 	}	
 }

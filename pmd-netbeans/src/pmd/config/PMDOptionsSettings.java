@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import org.openide.options.SystemOption;
@@ -102,7 +101,7 @@ public class PMDOptionsSettings extends SystemOption {
 		super.initialize();
 		setRules(DEFAULT_RULES);
 		// OK to initialize with an empty map, we'll never expose it (always return a HashMap copy)
-		setRuleProperties(Collections.EMPTY_MAP);
+		setRuleProperties(Collections.<String, Map<String, String>>emptyMap());
 		setRulesets(new CustomRuleSetSettings());
 		setScanEnabled(Boolean.FALSE);
 		setScanInterval(new Integer(DEFAULT_SCAN_INTERVAL));
@@ -177,8 +176,8 @@ public class PMDOptionsSettings extends SystemOption {
 	 *
 	 * @return the rule properties, not null.
 	 */
-	public Map getRuleProperties() {
-		return deepMapCopy((Map)getProperty(PROP_RULE_PROPERTIES));
+	public Map<String, Map<String, String>> getRuleProperties() {
+		return deepMapCopy((Map<String, Map<String, String>>)getProperty(PROP_RULE_PROPERTIES));
 	}
 
 	/**
@@ -190,7 +189,7 @@ public class PMDOptionsSettings extends SystemOption {
 	 * a String, the name of a PMD rule, and each value must be a Map, specifying the properties
 	 * for that rule.
 	 */
-	public void setRuleProperties(Map ruleProperties) {
+	public void setRuleProperties(Map<String, Map<String, String>> ruleProperties) {
 		putProperty( PROP_RULE_PROPERTIES, ruleProperties, true );
 	}
 
@@ -250,19 +249,15 @@ public class PMDOptionsSettings extends SystemOption {
 	 *
 	 * @param map the Map to copy, not null.
 	 */
-	private Map deepMapCopy(Map map) {
-		HashMap copy = new HashMap(map.size() * 2 + 2);
-		Iterator iterator = map.entrySet().iterator();
-		Map.Entry entry;
-		Object key, value;
-		while(iterator.hasNext()) {
-			entry = (Map.Entry)iterator.next();
-			key = entry.getKey();
-			value = entry.getValue();
+	private <K, V> Map<K, V> deepMapCopy(Map<K, V> map) {
+		HashMap<K, V> copy = new HashMap<K, V>(map.size() * 2 + 2);
+        for (Map.Entry<K, V> entry: map.entrySet()) {
+			K key = entry.getKey();
+			V value = entry.getValue();
 			if(value instanceof Map) {
-				copy.put(key, deepMapCopy((Map)value));
+				copy.put(key, (V)deepMapCopy((Map)value));
 			} else if(value instanceof Collection) {
-				copy.put(key, deepCollectionCopy((Collection)value));
+				copy.put(key, (V)deepCollectionCopy((Collection)value));
 			} else {
 				copy.put(key, value);
 			}
@@ -278,21 +273,18 @@ public class PMDOptionsSettings extends SystemOption {
 	 *
 	 * @param coll the Collection to copy, not null.
 	 */
-	private Collection deepCollectionCopy(Collection coll) {
-		Collection copy;
+	private <M> Collection<M> deepCollectionCopy(Collection<M> coll) {
+		Collection<M> copy;
 		if(coll instanceof Set) {
-			copy = new HashSet(coll.size() * 2 + 2);
+			copy = new HashSet<M>(coll.size() * 2 + 2);
 		} else {
-			copy = new ArrayList(coll.size());
+			copy = new ArrayList<M>(coll.size());
 		}
-		Iterator iterator = coll.iterator();
-		Object elem;
-		while(iterator.hasNext()) {
-			elem = iterator.next();
+		for (M elem: coll) {
 			if(elem instanceof Map) {
-				copy.add(deepMapCopy((Map)elem));
+				copy.add((M)deepMapCopy((Map)elem));
 			} else if(elem instanceof Collection) {
-				copy.add(deepCollectionCopy((Collection)elem));
+				copy.add((M)deepCollectionCopy((Collection)elem));
 			} else {
 				copy.add(elem);
 			}

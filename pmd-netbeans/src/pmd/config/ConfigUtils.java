@@ -51,10 +51,10 @@ public abstract class ConfigUtils {
      * Extra ruleset factories added by calling {@link #addRuleSetFactory}.
      * May be null (equivalent to empty).
      */
-    private static ArrayList extraFactories;
+    private static ArrayList<RuleSetFactory> extraFactories;
 	
     static {
-        extraFactories = new ArrayList();
+        extraFactories = new ArrayList<RuleSetFactory>();
         extraFactories.add(NbRuleSetFactory.getDefault ());
     }
     
@@ -85,21 +85,19 @@ public abstract class ConfigUtils {
 	 * {@link PMDOptionsSettings}.{@link PMDOptionsSettings#getDefault getDefault()}.{@link PMDOptionsSettings#getRuleProperties getRuleProperties()}.
 	 *
 	 * @param rules a string containing the names of the rules to use, with a comma-and-space after each one (including the last).
-	 * @return a list containing the rules to use. Each element of the list is an instance of {@link Rule}.
+	 * @return a list containing the rules to use.
 	 */
-	public static List createRuleList( String rules, Map propOverrides ) {
-		Iterator iterator = getAllAvailableRules().iterator();
-		List list = new ArrayList();
+	public static List<Rule> createRuleList( String rules, Map<String, Map<String, String>> propOverrides ) {
+		Iterator<Rule> iterator = getAllAvailableRules().iterator();
+		List<Rule> list = new ArrayList<Rule>();
 		while( iterator.hasNext() ) {
-			Rule rule = ( Rule )iterator.next();
+			Rule rule = iterator.next();
 			if( rules.indexOf( rule.getName() + ", " ) > -1 ) {
 				// add it, but first check for property overrides.
-				Map rulePropOverrides = (Map)propOverrides.get( rule.getName() );
+				Map<String, String> rulePropOverrides = propOverrides.get( rule.getName() );
 				if(rulePropOverrides != null) {
-					Iterator iter = rulePropOverrides.entrySet().iterator();
-					while( iter.hasNext() ) {
-						Map.Entry entry = (Map.Entry)iter.next();
-						rule.addProperty( (String)entry.getKey(), (String)entry.getValue() );
+                    for (Map.Entry<String, String> entry: rulePropOverrides.entrySet()) {
+						rule.addProperty( entry.getKey(), entry.getValue() );
 					}
 				}
 				list.add( rule );
@@ -151,27 +149,24 @@ public abstract class ConfigUtils {
 	 *
 	 * @return a list of all known PMD rules, not null. Each element is an instance of {@link Rule}.
 	 */
-	public static List getAllAvailableRules() {
-		List list = new ArrayList();
+	public static List<Rule> getAllAvailableRules() {
+		List<Rule> list = new ArrayList<Rule>();
 		CustomRuleSetSettings settings = PMDOptionsSettings.getDefault().getRulesets();
 		RuleSetFactory ruleSetFactory = new RuleSetFactory();
 		try {
 			if( settings.isIncludeStdRules() ) {
 				try {
-					Iterator iterator = ruleSetFactory.getRegisteredRuleSets();
+					Iterator<RuleSet> iterator = ruleSetFactory.getRegisteredRuleSets();
 					while( iterator.hasNext() ) {
-						RuleSet ruleset = ( RuleSet )iterator.next();
+						RuleSet ruleset = iterator.next();
 						list.addAll( ruleset.getRules() );
 					}
 					synchronized(ConfigUtils.class) {
 						if (extraFactories != null) {
-							iterator = extraFactories.iterator();
-							while (iterator.hasNext() ) {
-								ruleSetFactory = (RuleSetFactory)iterator.next();
-								Iterator iter = ruleSetFactory.getRegisteredRuleSets();
+                            for (RuleSetFactory ruleSetFact: extraFactories) {
+								Iterator<RuleSet> iter = ruleSetFact.getRegisteredRuleSets();
 								while( iter.hasNext() ) {
-									RuleSet ruleset = ( RuleSet )iter.next();
-									list.addAll( ruleset.getRules() );
+									list.addAll( iter.next().getRules() );
 								}
 							}
 						}
@@ -181,9 +176,9 @@ public abstract class ConfigUtils {
 					ErrorManager.getDefault().notify(e);
 				}
 			}
-			Iterator rulesets = settings.getRuleSets().iterator();
+			Iterator<String> rulesets = settings.getRuleSets().iterator();
 			while( rulesets.hasNext() ) {
-				String ruleSetXml = (String)rulesets.next();
+				String ruleSetXml = rulesets.next();
 				try {
 					RuleSet ruleset = ruleSetFactory.createRuleSet(
 					new FileInputStream( ruleSetXml ),

@@ -154,12 +154,12 @@ public class RunPMDAction extends CookieAction {
      * @return the list of rule violations found in the run, not null. Elements are instanceof {@link Fault}.
      * @throws IOException on failure to read one of the files or to write to the output window.
      */
-    public static List/*<Fault>*/ performScan( List/*<DataObject>*/ dataobjects ) throws IOException {
+    public static List<Fault> performScan( List<DataObject> dataobjects ) throws IOException {
         assert dataobjects != null: "Cannot pass null to RunPMDAction.checkCookies()";
         SourceLevelQuery sourceLevelQuery =
                 (SourceLevelQuery) Lookup.getDefault().lookup(SourceLevelQuery.class);
         RuleSet set = constructRuleSets();
-        ArrayList/*<Fault>*/ list = new ArrayList( 100 );
+        ArrayList<Fault> list = new ArrayList<Fault>( 100 );
         
         CancelCallback cancel = new CancelCallback();
         ProgressHandle prgHdl = ProgressHandleFactory.createHandle("PMD check", cancel); // PENDING action to show output
@@ -168,7 +168,7 @@ public class RunPMDAction extends CookieAction {
             for( int i = 0; i < dataobjects.size(); i++ ) {
                 if (cancel.isCancelled())
                     break;
-                DataObject dataobject = ( DataObject )dataobjects.get( i );
+                DataObject dataobject = dataobjects.get( i );
                 prgHdl.progress(dataobject.getName(), i); // TODO: I18N 'name', x of y
                 FileObject fobj = dataobject.getPrimaryFile();
                 ClassPath cp = ClassPath.getClassPath( fobj, ClassPath.SOURCE );
@@ -266,8 +266,8 @@ public class RunPMDAction extends CookieAction {
         OutputWriter out = null;
         try {
             StatusDisplayer.getDefault().setStatusText("PMD checking for rule violations");
-            List list = getDataObjects(node);
-            final List violations = performScan(list);
+            List<DataObject> list = getDataObjects(node);
+            final List<Fault> violations = performScan(list);
             
             if(violations.isEmpty()) {
                 StatusDisplayer.getDefault().setStatusText("PMD found no rule violations");  
@@ -275,7 +275,7 @@ public class RunPMDAction extends CookieAction {
             else {
                 StatusDisplayer.getDefault().setStatusText("PMD found rule violations");
                 final OutputWindow wnd = OutputWindow.getInstance();
-                wnd.setViolations((Fault[]) violations.toArray(new Fault[violations.size()]));
+                wnd.setViolations(violations.toArray(new Fault[violations.size()]));
                 
                 SwingUtilities.invokeLater(new Runnable(){
                     public void run(){
@@ -345,10 +345,10 @@ public class RunPMDAction extends CookieAction {
      * Gets the data objects associated with the given nodes.
      *
      * @param node the nodes to get data objects for
-     * @return a list of the data objects. Each element is instanceof DataObject.
+     * @return a list of the data objects.
      */
-    private List getDataObjects( Node[] node ) {
-        ArrayList list = new ArrayList();
+    private List<DataObject> getDataObjects( Node[] node ) {
+        ArrayList<DataObject> list = new ArrayList<DataObject>();
         for( int i = 0; i < node.length; i++ ) {
             DataObject data = (DataObject)node[i].getCookie( DataObject.class );
             
@@ -358,10 +358,10 @@ public class RunPMDAction extends CookieAction {
             }
             //Or if it's a folder
             else {
-                DataFolder folder = ( DataFolder )node[i].getCookie( DataFolder.class );
-                Enumeration enumeration = folder.children( true );
+                DataFolder folder = node[i].getCookie( DataFolder.class );
+                Enumeration<DataObject> enumeration = folder.children( true );
                 while( enumeration.hasMoreElements() ) {
-                    DataObject dataobject = ( DataObject )enumeration.nextElement();
+                    DataObject dataobject = enumeration.nextElement();
                     if( dataobject.getPrimaryFile().hasExt( "java" ) ) {
                         list.add( dataobject );
                     }
