@@ -57,7 +57,6 @@ import org.openide.ErrorManager;
 import org.openide.awt.StatusDisplayer;
 import org.openide.cookies.EditorCookie;
 import org.openide.cookies.LineCookie;
-import org.openide.cookies.SourceCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataObject;
@@ -130,7 +129,7 @@ public class RunPMDAction extends CookieAction {
      * @return an array of the two elements DataFolder.class and SourceCookie.class
      */
     protected Class[] cookieClasses() {
-        return new Class[]{DataFolder.class, SourceCookie.class};
+        return new Class[]{DataFolder.class, DataObject.class};
     }
     
     
