@@ -265,7 +265,7 @@ public class GUI implements CPDListener {
         trimItem.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 AbstractButton button = (AbstractButton)e.getItem();
-                trimLeadingWhitespace = button.isSelected();
+                GUI.this.trimLeadingWhitespace = button.isSelected();
             }
         });
         viewMenu.add(trimItem);

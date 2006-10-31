@@ -5,16 +5,13 @@ package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.util.StringUtil;
-import org.apache.oro.text.perl.Perl5Util;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 public class SimpleRenderer implements Renderer {
 
 	private String separator;
-    private Perl5Util perl5Util;
+	private boolean trimLeadingWhitespace;
 
 	public static final String defaultSeparator = "=====================================================================";
 	
@@ -24,9 +21,7 @@ public class SimpleRenderer implements Renderer {
 	
 	public SimpleRenderer(boolean trimLeadingWhitespace) {
 		this(defaultSeparator);
-		if (trimLeadingWhitespace) {
-            perl5Util =  new Perl5Util();
-		}
+        this.trimLeadingWhitespace = trimLeadingWhitespace;
 	}
 	
 	public SimpleRenderer(String theSeparator) {
@@ -46,11 +41,9 @@ public class SimpleRenderer implements Renderer {
           rpt.append(PMD.EOL);	// add a line to separate the source from the desc above
           
           String source = match.getSourceCodeSlice();
-          
-          if (perl5Util != null) {	// trimming wanted?
-              List list = new ArrayList();
-        	  perl5Util.split(list, PMD.EOL, source, 0);
-              String[] lines = (String[])list.toArray(new String[list.size()]);
+
+          if (trimLeadingWhitespace) {
+              String[] lines = source.split("[" + PMD.EOL + "]");
         	  int trimDepth = StringUtil.maxCommonLeadingWhitespaceForAll(lines);
         	  if (trimDepth > 0) {
         		  lines = StringUtil.trimStartOn(lines, trimDepth);

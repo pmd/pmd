@@ -14,7 +14,6 @@
 		<pathelement location="${dir.build}" />
 		<fileset dir="${dir.lib}">
 			<include name="jaxen-1.1-beta-10.jar" />
-			<include name="jakarta-oro-2.0.8.jar" />
 			<include name="xercesImpl-2.6.2.jar" />
 			<include name="xmlParserAPIs-2.6.2.jar" />
 			<include name="asm-3.0_RC1.jar" />
@@ -49,6 +48,11 @@
 				<include name="*.properties" />
 			</fileset>
 		</copy>
+		<copy todir="${dir.build}/test/net/sourceforge/pmd/rules/xml/">
+			<fileset dir="${dir.regress}/test/net/sourceforge/pmd/rules/xml/">
+				<include name="*.xml" />
+			</fileset>
+		</copy>
         <mkdir dir="${dir.build}/rulesets/releases" />
         <copy todir="${dir.build}rulesets/releases">
             <fileset dir="${dir.rulesets}/releases">
@@ -61,7 +65,7 @@
 		<jar jarfile="${dir.lib}\pmd-${version}.jar" includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**" basedir="${dir.build}">
 			<manifest>
 				<attribute name="Main-Class" value="net.sourceforge.pmd.PMD" />
-				<attribute name="Class-Path" value="jaxen-1.1-beta-10.jar jakarta-oro-2.0.8.jar" />
+				<attribute name="Class-Path" value="jaxen-1.1-beta-10.jar asm-3.0_RC1.jar" />
 			</manifest>
 		</jar>
 	</target>

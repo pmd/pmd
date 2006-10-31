@@ -20,7 +20,6 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-import org.apache.oro.text.perl.Perl5Util;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -28,6 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 /**
  * This rule finds StringBuffers which may have been pre-sized incorrectly
@@ -44,8 +45,6 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
         blockParents.add(ASTIfStatement.class);
         blockParents.add(ASTSwitchStatement.class);
     }
-
-    private final Perl5Util regexp = new Perl5Util();
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
 
@@ -185,9 +184,13 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
             } else {
                 anticipatedLength += str.length();
             }*/
-            
+
+
             String str = ((SimpleNode) xn.jjtGetChild(0)).getImage();
-            if(regexp.match("/^[\"']/", str)){
+            Pattern pattern = Pattern.compile("^[\"']");
+            Matcher matcher = pattern.matcher(str);
+            //if(regexp.match("//", str)){
+            if(matcher.find()){
                 anticipatedLength += str.length() - 2;
             } else if(str.startsWith("0x")){
                 anticipatedLength += 1;
@@ -220,9 +223,11 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
             }
         } else if (literal.size() == 1) {
             String str = ((SimpleNode) literal.get(0)).getImage();
+            Pattern pattern = Pattern.compile("^[\"']");
+            Matcher matcher = pattern.matcher(str);
             if (str == null) {
                 iConstructorLength = 0;
-            } else if (regexp.match("/^['\"]/", str)) {
+            } else if (matcher.find()) {
                 // since it's not taken into account
                 // anywhere. only count the extra 16
                 // characters
@@ -255,7 +260,9 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
         literal = (block.findChildrenOfType(ASTLiteral.class));
         if (literal.size() == 1) {
             String str = ((SimpleNode) literal.get(0)).getImage();
-            if (str!= null && regexp.match("/^['\"]/", str)) {
+            Pattern pattern = Pattern.compile("^[\"']");
+            Matcher matcher = pattern.matcher(str);
+            if (str!= null && matcher.find()) {
                 return str.length() - 2; // take off the quotes
             }
         }

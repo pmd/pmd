@@ -6,7 +6,9 @@ package net.sourceforge.pmd.rules.strings;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTLiteral;
-import org.apache.oro.text.perl.Perl5Util;
+
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 /**
  * This rule finds the following:
@@ -21,7 +23,7 @@ import org.apache.oro.text.perl.Perl5Util;
  */
 public class AppendCharacterWithChar extends AbstractRule {
 
-    private static final String REGEX = "/\"[\\\\]?[\\s\\S]\"/i";
+    private static final Pattern REGEX = Pattern.compile("\"[\\\\]?[\\s\\S]\"");
 
     public Object visit(ASTLiteral node, Object data) {
         ASTBlockStatement bs = (ASTBlockStatement) node
@@ -35,10 +37,8 @@ public class AppendCharacterWithChar extends AbstractRule {
             return data;
         }
 
-        // see
-        // http://jakarta.apache.org/oro/api/org/apache/oro/text/regex/package-summary.html#package_description
-        Perl5Util regexp = new Perl5Util();
-        if (regexp.match(REGEX, str)) {
+        Matcher matcher = REGEX.matcher(str);
+        if (matcher.find()) {
             if (!InefficientStringBuffering.isInStringBufferOpperation(node, 8, "append")) {
                 return data;
             }
