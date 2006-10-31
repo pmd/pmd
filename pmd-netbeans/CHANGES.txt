@@ -1,3 +1,5 @@
+- JDK1.5 or newer is required now
+
 Version 1.8
 - Updated pmd to version 3.8
 - reported violations are displayed as a table
