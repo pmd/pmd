@@ -31,7 +31,7 @@ import net.sourceforge.pmd.PMDException;
 /**
  * Represents a PMD rule violation.
  */
-public class Fault implements Comparable {
+public class Fault implements Comparable<Fault> {
 
 	private int line;
 	private String clazz;
@@ -79,15 +79,12 @@ public class Fault implements Comparable {
 	 * @param object the other object
 	 * @return this.linenumber - that.linenumber
 	 */
-	public int compareTo( Object object ) {
+	public int compareTo( Fault object ) {
 		int compared = 0;
-		if( object instanceof Fault ) {
-			Fault other = (Fault)object;
-			compared = clazz.compareTo( other.clazz );
-			if (compared == 0 ) {
-				compared = line - ( ( Fault )object ).line;
-			}
-		}
+        compared = clazz.compareTo( object.clazz );
+        if (compared == 0 ) {
+            compared = line - object.line;
+        }
 		return compared;
 	}
 
