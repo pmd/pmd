@@ -92,6 +92,12 @@ public class JavaParser {
     }
   }
 
+  private void checkForBadGenericsUsage() {
+    if (!isJDK15) {
+      throw new ParseException("Can't use generics unless running in JDK 1.5 mode!");
+    }
+  }
+
   private void checkForBadVariableArgumentsUsage() {
     if (!isJDK15) {
       throw new ParseException("Can't use variable arguments (varargs) when running in JDK 1.4 mode!");
@@ -1202,7 +1208,7 @@ void EnumConstant():
 void TypeParameters():
 {}
 {
-   "<" TypeParameter() ( "," TypeParameter() )* ">"
+   "<" {checkForBadGenericsUsage();} TypeParameter() ( "," TypeParameter() )* ">"
 }
 
 void TypeParameter():
@@ -1375,7 +1381,7 @@ void ClassOrInterfaceType():
 void TypeArguments():
 {}
 {
-   "<" TypeArgument() ( "," TypeArgument() )* ">"
+   "<" {checkForBadGenericsUsage();} TypeArgument() ( "," TypeArgument() )* ">"
 }
 
 void TypeArgument():
