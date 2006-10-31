@@ -159,7 +159,7 @@ public class RunPMDAction extends CookieAction {
         SourceLevelQuery sourceLevelQuery =
                 (SourceLevelQuery) Lookup.getDefault().lookup(SourceLevelQuery.class);
         RuleSet set = constructRuleSets();
-        ArrayList<Fault> list = new ArrayList<Fault>( 100 );
+        List<Fault> list = new ArrayList<Fault>( 100 );
         
         CancelCallback cancel = new CancelCallback();
         ProgressHandle prgHdl = ProgressHandleFactory.createHandle("PMD check", cancel); // PENDING action to show output
@@ -358,7 +358,7 @@ public class RunPMDAction extends CookieAction {
             }
             //Or if it's a folder
             else {
-                DataFolder folder = node[i].getCookie( DataFolder.class );
+                DataFolder folder = (DataFolder) node[i].getCookie( DataFolder.class );
                 Enumeration<DataObject> enumeration = folder.children( true );
                 while( enumeration.hasMoreElements() ) {
                     DataObject dataobject = enumeration.nextElement();
