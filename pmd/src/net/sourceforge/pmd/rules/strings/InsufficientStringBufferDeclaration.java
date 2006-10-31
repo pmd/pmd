@@ -27,8 +27,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
 
 /**
  * This rule finds StringBuffers which may have been pre-sized incorrectly
@@ -173,24 +171,20 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
         return anticipatedLength;
     }
 
+    private static final boolean isLiteral(String str) {
+        if (str.length() == 0) {
+            return false;
+        }
+        char c = str.charAt(0);
+        return (c == '"' || c == '\'');
+    }
+
     private int processNode(SimpleNode sn) {
         int anticipatedLength = 0;
         ASTPrimaryPrefix xn = (ASTPrimaryPrefix) sn.getFirstChildOfType(ASTPrimaryPrefix.class);
         if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0).getClass().equals(ASTLiteral.class)) {
-/*
             String str = ((SimpleNode) xn.jjtGetChild(0)).getImage();
-            if(regexp.match("/^[\"']/", str)){
-                anticipatedLength += str.length() - 2;
-            } else {
-                anticipatedLength += str.length();
-            }*/
-
-
-            String str = ((SimpleNode) xn.jjtGetChild(0)).getImage();
-            Pattern pattern = Pattern.compile("^[\"']");
-            Matcher matcher = pattern.matcher(str);
-            //if(regexp.match("//", str)){
-            if(matcher.find()){
+            if(isLiteral(str)){
                 anticipatedLength += str.length() - 2;
             } else if(str.startsWith("0x")){
                 anticipatedLength += 1;
@@ -223,11 +217,9 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
             }
         } else if (literal.size() == 1) {
             String str = ((SimpleNode) literal.get(0)).getImage();
-            Pattern pattern = Pattern.compile("^[\"']");
-            Matcher matcher = pattern.matcher(str);
             if (str == null) {
                 iConstructorLength = 0;
-            } else if (matcher.find()) {
+            } else if (isLiteral(str)) {
                 // since it's not taken into account
                 // anywhere. only count the extra 16
                 // characters
@@ -260,9 +252,7 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
         literal = (block.findChildrenOfType(ASTLiteral.class));
         if (literal.size() == 1) {
             String str = ((SimpleNode) literal.get(0)).getImage();
-            Pattern pattern = Pattern.compile("^[\"']");
-            Matcher matcher = pattern.matcher(str);
-            if (str!= null && matcher.find()) {
+            if (str != null && isLiteral(str)) {
                 return str.length() - 2; // take off the quotes
             }
         }
