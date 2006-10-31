@@ -39,7 +39,7 @@ public class AppendCharacterWithChar extends AbstractRule {
 
         Matcher matcher = REGEX.matcher(str);
         if (matcher.find()) {
-            if (!InefficientStringBuffering.isInStringBufferOpperation(node, 8, "append")) {
+            if (!InefficientStringBuffering.isInStringBufferOperation(node, 8, "append")) {
                 return data;
             }
             addViolation(data, node);

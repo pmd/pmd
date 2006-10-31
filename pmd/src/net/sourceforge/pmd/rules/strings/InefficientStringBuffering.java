@@ -72,13 +72,13 @@ public class InefficientStringBuffering extends AbstractRule {
             if (isAllocatedStringBuffer(node)) {
                 addViolation(data, node);
             }
-        } else if (isInStringBufferOpperation(node, 6, "append")) {
+        } else if (isInStringBufferOperation(node, 6, "append")) {
             addViolation(data, node);
         }
         return data;
     }
 
-    protected static boolean isInStringBufferOpperation(SimpleNode node, int length, String methodName) {
+    protected static boolean isInStringBufferOperation(SimpleNode node, int length, String methodName) {
         if (!xParentIsStatementExpression(node, length)) {
             return false;
         }
