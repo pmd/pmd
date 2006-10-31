@@ -44,7 +44,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
         }
 
         List exceptionList = methodDeclaration.findChildrenOfType(ASTName.class);
-        if (!hasContent(exceptionList)) {
+        if (exceptionList.isEmpty()) {
             return super.visit(methodDeclaration, o);
         }
 
@@ -55,7 +55,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
 
     public Object visit(ASTConstructorDeclaration constructorDeclaration, Object o) {
         List exceptionList = constructorDeclaration.findChildrenOfType(ASTName.class);
-        if (!hasContent(exceptionList)) {
+        if (exceptionList.isEmpty()) {
             return super.visit(constructorDeclaration, o);
         }
 
@@ -99,7 +99,4 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
         return parent instanceof ASTMethodDeclaration || parent instanceof ASTConstructorDeclaration;
     }
 
-    private boolean hasContent(List nameList) {
-        return nameList != null && !nameList.isEmpty();
-    }
 }
