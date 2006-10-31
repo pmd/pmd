@@ -2,7 +2,7 @@
 <project xmlns="http://www.netbeans.org/ns/project/1">
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
-        <data xmlns="http://www.netbeans.org/ns/nb-module-project/2">
+        <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
             <code-name-base>pmd</code-name-base>
             <path>pmd-netbeans</path>
             <standalone/>
@@ -172,6 +172,19 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
+          <test-dependencies>
+              <test-type>
+                  <name>unit</name>
+                  <test-dependency>
+                      <code-name-base>pmd</code-name-base>
+                      <recursive/>
+                      <compile-dependency/>
+                  </test-dependency>
+                  <test-dependency>
+                      <code-name-base>org.netbeans.modules.masterfs</code-name-base>
+                  </test-dependency>
+              </test-type>
+            </test-dependencies>
             <public-packages/>
             <extra-compilation-unit>
                 <package-root>libsrc</package-root>
