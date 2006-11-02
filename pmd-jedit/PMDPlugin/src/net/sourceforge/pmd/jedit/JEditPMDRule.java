@@ -6,6 +6,7 @@ import java.util.Properties;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.PropertyDescriptor;
 
 
 public class JEditPMDRule implements Rule
@@ -249,6 +250,21 @@ public class JEditPMDRule implements Rule
 	public RuleSet getRs()
 	{
 		return rs;
+	}
+	
+	public boolean usesTypeResolution()
+	{
+		return rule.usesTypeResolution();
+	}
+	
+	public void setUsesTypeResolution()
+	{
+		rule.setUsesTypeResolution();
+	}
+	
+	public PropertyDescriptor propertyDescriptorFor(String propDesc)
+	{
+		return rule.propertyDescriptorFor(propDesc);
 	}
 }
 

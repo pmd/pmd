@@ -67,6 +67,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
                 box.setFocusPainted(false);
                 box.setBorderPainted(true);
                 box.setBorder(isSelected ? UIManager.getBorder("List.focusCellHighlightBorder") : new EmptyBorder(1,1,1,1));
+				box.setToolTipText(rules.getRule(box).getRuleSetName());
                 return box;
             }
         }
