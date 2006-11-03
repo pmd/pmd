@@ -5,7 +5,6 @@ import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.jaxen.Attribute;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.symboltable.Scope;
-//import org.apache.xerces.dom.DocumentImpl;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
