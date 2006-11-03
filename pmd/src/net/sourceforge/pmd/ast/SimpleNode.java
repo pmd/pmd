@@ -5,12 +5,15 @@ import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.jaxen.Attribute;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.symboltable.Scope;
-import org.apache.xerces.dom.DocumentImpl;
+//import org.apache.xerces.dom.DocumentImpl;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -231,9 +234,15 @@ public abstract class SimpleNode implements Node {
     }
 
     public Document asXml() {
-        Document document = new DocumentImpl();
-        appendElement(document);
-        return document;
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document document = db.newDocument();
+            appendElement(document);
+            return document;
+        } catch (ParserConfigurationException pce) {
+            throw new RuntimeException(pce);
+        }
     }
 
     protected void appendElement(org.w3c.dom.Node parentNode) {

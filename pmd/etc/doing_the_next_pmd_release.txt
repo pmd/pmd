@@ -33,7 +33,7 @@ cp ../LICENSE.txt changelog.txt ~/tmp/pmd-3.8/etc
 cd ../bin/
 cp pmd.* cygwin-run.sh build.xml cpd.sh cpdgui.bat designer.* ~/tmp/pmd-3.8/bin
 cd ../etc/
-cp ../lib/pmd-3.8.jar ../lib/asm-3.0.jar ../lib/xmlParserAPIs-2.6.2.jar  ../lib/xercesImpl-2.6.2.jar ../lib/jaxen-1.1-beta-10.jar ~/tmp/pmd-3.8/lib/
+cp ../lib/pmd-3.8.jar ../lib/asm-3.0.jar ../lib/jaxen-1.1-beta-10.jar ~/tmp/pmd-3.8/lib/
 mkdir ~/tmp/pmd-3.8/etc/xslt
 cp xslt/*.xslt xslt/*.js xslt/*.gif xslt/*.css ~/tmp/pmd-3.8/etc/xslt/
 cp -R ../target/docs ~/tmp/pmd-3.8

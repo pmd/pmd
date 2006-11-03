@@ -31,8 +31,7 @@ C:\tmp\pmd-3.8\pmd\bin&gt;
 
        <li>If you are want to run PMD without the batch file, you can do a:</li>
        <source>
-C:\data\pmd\pmd>java -cp lib\pmd-3.8.jar;lib\xercesImpl-2.6.2.jar;
-                    lib\xmlParserAPIs-2.6.2.jar;lib\jaxen-1.1-beta-10.jar;lib\asm-3.0.jar
+C:\data\pmd\pmd>java -cp lib\pmd-3.8.jar;lib\jaxen-1.1-beta-10.jar;lib\asm-3.0.jar
                      net.sourceforge.pmd.PMD
                      c:\j2sdk1.4.1_01\src\java\lang xml
                      rulesets/imports.xml

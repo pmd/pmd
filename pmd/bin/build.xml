@@ -14,8 +14,6 @@
 		<pathelement location="${dir.build}" />
 		<fileset dir="${dir.lib}">
 			<include name="jaxen-1.1-beta-10.jar" />
-			<include name="xercesImpl-2.6.2.jar" />
-			<include name="xmlParserAPIs-2.6.2.jar" />
 			<include name="asm-3.0.jar" />
 		</fileset>
 	</path>

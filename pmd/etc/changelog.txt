@@ -21,7 +21,8 @@ Applied patch 1583167 - Better test code management. Internal JUnits can now be 
 Implemented RFE 1566313 - Command Line now takes minimumpriority attribute to filter out rulesets
 PMD now requires JDK 1.4 to run
 - PMD will still analyze code from earlier JDKs
-- PMD now uses the built-in JDK 1.4 regex utils vs Jakarta ORO    
+- PMD now uses the built-in JDK 1.4 regex utils vs Jakarta ORO
+- PMD now uses the JDK javax.xml APIs rather than being hardcoded to use Xalan    
 SummaryHTML Report changes from Brent Fisher - now contains linePrefix to support source output from javadoc using "linksource"
 Fixed CSVRenderer - had flipped line and priority columns
 Fixed bug in Ant task - CSV reports were being output as text.

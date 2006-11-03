@@ -20,8 +20,6 @@ import net.sourceforge.pmd.jsp.ast.JspCharStream;
 import net.sourceforge.pmd.jsp.ast.JspParser;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
@@ -630,11 +628,14 @@ public class Designer implements ClipboardOwner {
      * @throws java.io.IOException
      */
     private String getXmlString(SimpleNode node) throws IOException {
+/*
         StringWriter writer = new StringWriter();
         XMLSerializer xmlSerializer = new XMLSerializer(writer, new OutputFormat("XML", "UTF-8", true));
         xmlSerializer.asDOMSerializer();
         xmlSerializer.serialize(node.asXml());
         return writer.toString();
+*/
+        return "FIXME"; // FIXME
     }
 
     public void lostOwnership(Clipboard clipboard, Transferable contents) {

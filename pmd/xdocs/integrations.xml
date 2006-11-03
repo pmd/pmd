@@ -348,8 +348,8 @@ selecting the "Ask for Directory" checkbox.</p>
         <LI>Expand the <B>Tools</B> branch (if not already) by clicking on the '<CODE>+</CODE>' directly to its left.</LI>
         <LI>In the expanded list, select <B>PMD directory</B>.  This changes the right side of this dialog to the "tool" form.</LI>
         <LI>In the "tool" form, enter these parameters:<UL>
-            <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-3.8\lib\pmd-3.8.jar;D:\java\pmd-3.8\lib\asm-3.0.jar;D:\java\pmd-3.8\lib\jaxen-1.1-beta-10.jar;D:\java\pmd-3.8\lib\xmlParserAPIs-2.6.2.jar; D:\java\pmd-3.8\lib\xercesImpl-2.6.2.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
-            <BR/>(<I>Eliminate the spaces following both '<CODE>jaxen-1.1-beta-10.jar;</CODE>' and '<CODE>xmlParserAPIs-2.6.2.jar;</CODE>' and '<CODE>asm-3.0.jar;</CODE>'.  They are there to prevent the text from exceeding the right side of your screen</I>)</LI>
+            <LI><B>Parameters:</B>  <CODE>-classpath D:\java\pmd-3.8\lib\pmd-3.8.jar;D:\java\pmd-3.8\lib\asm-3.0.jar;D:\java\pmd-3.8\lib\jaxen-1.1-beta-10.jar net.sourceforge.pmd.PMD <I><B>$FileDir</B></I> net.sourceforge.pmd.renderers.TextPadRenderer E:\directory\my_pmd_ruleset.xml -debug</CODE>
+            <BR/>(<I>Eliminate the spaces following both '<CODE>jaxen-1.1-beta-10.jar;</CODE>' and '<CODE>asm-3.0.jar;</CODE>'.  They are there to prevent the text from exceeding the right side of your screen</I>)</LI>
             <LI><B>Initial Folder:</B>  <CODE>$FileDir</CODE></LI>
             <LI><B>Save all documents first:</B>  <CODE>Checked</CODE></LI>
             <LI><B>Capture output:</B>  <CODE>Checked</CODE></LI>
