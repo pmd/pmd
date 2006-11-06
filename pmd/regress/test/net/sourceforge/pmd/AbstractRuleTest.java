@@ -24,33 +24,53 @@ package test.net.sourceforge.pmd;
 
 import junit.framework.TestCase;
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class AbstractRuleTest extends TestCase {
-
+	
     private static class MyRule extends AbstractRule {
+    	private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
+
+    	private static final PropertyDescriptor xpath = new StringProperty("xpath", "xpath property", "", 2.0f);
+
+        private static final Map propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { pd, xpath });
+
+        protected Map propertiesByName() {
+        	return propertyDescriptorsByName;
+        }
+
         public MyRule() {
             setName("MyRule");
             setMessage("my rule msg");
             setPriority(3);
-            addProperty("foo", "value");
+            setProperty(pd, "value");
         }
     }
 
     private static class MyOtherRule extends AbstractRule {
-        public MyOtherRule() {
+    	private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
+
+		private static final Map propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { pd });
+
+        protected Map propertiesByName() {
+        	return propertyDescriptorsByName;
+        }
+
+		public MyOtherRule() {
             setName("MyOtherRule");
             setMessage("my other rule");
             setPriority(3);
-            addProperty("foo", "value");
+            setProperty(pd, "value");
         }
     }
 
@@ -154,9 +174,9 @@ public class AbstractRuleTest extends TestCase {
 
     public void testEquals8() {
         MyRule r1 = new MyRule();
-        r1.addProperty("xpath", "something");
+        r1.setProperty(MyRule.xpath, "something");
         MyRule r2 = new MyRule();
-        r2.addProperty("xpath", "something else");
+        r2.setProperty(MyRule.xpath, "something else");
         assertFalse("Rules with different properties values cannot be equals", r1.equals(r2));
         assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
     }
@@ -164,7 +184,7 @@ public class AbstractRuleTest extends TestCase {
     public void testEquals9() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
-        r2.addProperty("xpath", "something else");
+        r2.setProperty(MyRule.xpath, "something else");
         assertFalse("Rules with different properties cannot be equals", r1.equals(r2));
         assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
     }
