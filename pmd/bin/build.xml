@@ -48,7 +48,7 @@
 		</copy>
 		<copy todir="${dir.build}/test/net/sourceforge/pmd/rules/xml/">
 			<fileset dir="${dir.regress}/test/net/sourceforge/pmd/rules/xml/">
-				<include name="*.xml" />
+				<include name="**/*.xml" />
 			</fileset>
 		</copy>
         <mkdir dir="${dir.build}/rulesets/releases" />
