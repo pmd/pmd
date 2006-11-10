@@ -3,8 +3,8 @@
     <import file="nbproject/build-impl.xml"/>
 
     <property name="pmd.jar" value="pmd-3.8.jar"/>
-    <property name="nb.version" value="netbeans50"/>
-    <property name="VERSION" value="1.8"/>
+    <property name="nb.version" value="netbeans55"/>
+    <property name="VERSION" value="1.8.1"/>
 
     <property file="build.ant.properties"/>
 
@@ -12,7 +12,7 @@
         
     <target name="nblib" depends="init">
         <mkdir dir="build/libclasses"/>
-        <javac srcdir="libsrc" destdir="build/libclasses" source="1.4" debug="${build.compiler.debug}" deprecation="${build.compiler.deprecation}">
+        <javac srcdir="libsrc" destdir="build/libclasses" source="${javac.source}" debug="${build.compiler.debug}" deprecation="${build.compiler.deprecation}">
             <classpath>
                 <pathelement location="lib/${pmd.jar}"/>
             </classpath>
