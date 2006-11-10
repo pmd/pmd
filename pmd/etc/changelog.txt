@@ -14,7 +14,7 @@ Fixed bugs 1060761 / 1433119 & RFE 1196954 - CloseResource now takes an optional
 Fixed bug 1579615 - OverrideBothEqualsAndHashcode no longer throws an Exception on equals methods that don't have Object as a parameter type.
 Fixed bug 1580859 - AvoidDecimalLiteralsInBigDecimalConstructor now catches more cases.
 Fixed bug 1581123 - False +: UnnecessaryWrapperObjectCreation.
-Fixed bug 1592710 - VariableNamingConventions no longers reports false positives on certain enum declarations.
+Fixed bug 1592710 - VariableNamingConventions no longer reports false positives on certain enum declarations.
 Applied patch 1551189 - SingularField false + for initialization blocks
 Applied patch 1573981 - false + in CloneMethodMustImplementCloneable
 Applied patch 1574988 - false + in OverrideBothEqualsAndHashcode
