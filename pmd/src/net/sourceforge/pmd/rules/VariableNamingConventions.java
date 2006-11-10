@@ -69,7 +69,7 @@ public class VariableNamingConventions extends AbstractRule {
         return checkNames(node, data);
     }
 
-    public Object checkNames(AccessNode node, Object data) {
+    private Object checkNames(ASTFieldDeclaration node, Object data) {
         ASTType childNodeType = (ASTType) node.jjtGetChild(0);
         String varType = "";
         if (childNodeType.jjtGetChild(0) instanceof ASTName) {
@@ -83,25 +83,15 @@ public class VariableNamingConventions extends AbstractRule {
             ASTVariableDeclaratorId childNodeId = (ASTVariableDeclaratorId) childNodeName.jjtGetChild(0);
             String varName = childNodeId.getImage();
 
-            if (varName.equals("serialVersionUID")) {
+            if (varName.equals("serialVersionUID") || (node.isFinal() && !node.isStatic() && !node.isInterfaceMember())) {
                 return data;
-            }
-
-            // non static final class fields are OK
-            if (node.isFinal() && !node.isStatic()) {
-                if (node.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTClassOrInterfaceDeclaration) {
-                    ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration) node.jjtGetParent().jjtGetParent().jjtGetParent();
-                    if (!c.isInterface()) {
-                        return data;
-                    }
-                }
             }
 
             // static finals (and interface fields, which are implicitly static and final) are
             // checked for uppercase
             if ((node.isStatic() && node.isFinal()) || (node.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) node.jjtGetParent().jjtGetParent().jjtGetParent()).isInterface())) {
                 if (!varName.equals(varName.toUpperCase())) {
-                    addViolation(data, childNodeName, "Variables that are final and static should be in all caps.");
+                    addViolationWithMessage(data, childNodeName, "Variables that are final and static should be in all caps.");
                 }
                 return data;
             }
@@ -114,10 +104,10 @@ public class VariableNamingConventions extends AbstractRule {
             }
 
             if (strippedVarName.indexOf('_') >= 0) {
-                addViolation(data, childNodeName, "Variables that are not final should not contain underscores (except for underscores in standard prefix/suffix).");
+                addViolationWithMessage(data, childNodeName, "Variables that are not final should not contain underscores (except for underscores in standard prefix/suffix).");
             }
             if (Character.isUpperCase(varName.charAt(0))) {
-                addViolation(data, childNodeName, "Variables should start with a lowercase character");
+                addViolationWithMessage(data, childNodeName, "Variables should start with a lowercase character");
             }
         }
         return data;
