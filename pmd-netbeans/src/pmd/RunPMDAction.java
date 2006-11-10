@@ -79,11 +79,11 @@ import pmd.scan.EditorChangeListener;
  * ({@link #checkCookies}).
  *
  * Important side effect of this class is that it initializes
- * EditorChangeListener so this has to be loaded during startup to 
+ * EditorChangeListener so this has to be loaded during startup to
  * enable real-time scanning.
  */
 public class RunPMDAction extends CookieAction {
-    
+
     /**
      * Overridden to log that the action is being initialized, and to register an editor change listener for
      * scanning.
@@ -101,8 +101,8 @@ public class RunPMDAction extends CookieAction {
     public String getName() {
         return NbBundle.getMessage( RunPMDAction.class, "LBL_Action" );
     }
-    
-    
+
+
     /**
      * Gets the filename of the icon associated with this action
      *
@@ -111,8 +111,8 @@ public class RunPMDAction extends CookieAction {
     protected String iconResource() {
         return "pmd/resources/PMDOptionsSettingsIcon.gif";
     }
-    
-    
+
+
     /**
      * Returns default help
      *
@@ -121,8 +121,8 @@ public class RunPMDAction extends CookieAction {
     public HelpCtx getHelpCtx() {
         return HelpCtx.DEFAULT_HELP;
     }
-    
-    
+
+
     /**
      * Returns the cookies that can use this action
      *
@@ -131,8 +131,8 @@ public class RunPMDAction extends CookieAction {
     protected Class[] cookieClasses() {
         return new Class[]{DataFolder.class, DataObject.class};
     }
-    
-    
+
+
     /**
      * Returns the mode of this action
      *
@@ -142,8 +142,8 @@ public class RunPMDAction extends CookieAction {
     protected int mode() {
         return MODE_ALL;
     }
-    
-    
+
+
     /**
      * Runs PMD on the given list of DataObjects, with no callback.
      * This just calls {@link #checkCookies(List, RunPMDCallback)} with a default callback that displays
@@ -160,7 +160,7 @@ public class RunPMDAction extends CookieAction {
                 (SourceLevelQuery) Lookup.getDefault().lookup(SourceLevelQuery.class);
         RuleSet set = constructRuleSets();
         List<Fault> list = new ArrayList<Fault>( 100 );
-        
+
         CancelCallback cancel = new CancelCallback();
         ProgressHandle prgHdl = ProgressHandleFactory.createHandle("PMD check", cancel); // PENDING action to show output
         prgHdl.start(dataobjects.size());
@@ -177,14 +177,14 @@ public class RunPMDAction extends CookieAction {
                     continue;
                 }
                 String name = cp.getResourceName( fobj, '.', false );
-                
+
                 //The file is not a java file
                 if (!shouldCheck(dataobject)) {
                     continue;
                 }
-                
+
                 String sourceLevel = sourceLevelQuery.getSourceLevel(fobj);
-                
+
                 // choose the correct PMD to use according to the source level
                 PMD pmd = new PMD();
                 if ("1.5".equals(sourceLevel)) {
@@ -195,7 +195,7 @@ public class RunPMDAction extends CookieAction {
                     // default to JDK 1.4 if we don't know any better...
                     pmd.setJavaVersion(SourceType.JAVA_14);
                 }
-                
+
                 Reader reader;
                 try {
                     reader = getSourceReader( dataobject );
@@ -206,7 +206,7 @@ public class RunPMDAction extends CookieAction {
                     FaultRegistry.getInstance().registerFault( fault, dataobject );
                     continue;
                 }
-                
+
                 RuleContext ctx = new RuleContext();
                 Report report = new Report();
                 ctx.setReport( report );
@@ -221,14 +221,14 @@ public class RunPMDAction extends CookieAction {
                         err.notify(ErrorManager.INFORMATIONAL, e); // NOI18N
                     }
                 }
-                
-                
-                
+
+
+
                 Iterator/*<RuleViolation>*/ iterator = ctx.getReport().iterator();
                 while( iterator.hasNext() ) {
                     RuleViolation violation = ( RuleViolation )iterator.next();
-                    
-                    
+
+
                     StringBuffer buffer = new StringBuffer();
                     buffer.append( violation.getRule().getName() ).append( ", " );
                     buffer.append( violation.getDescription() );
@@ -245,7 +245,7 @@ public class RunPMDAction extends CookieAction {
         Collections.sort( list );
         return list;
     }
-    
+
     // package private for testing purposes
     static boolean shouldCheck(DataObject dobj) {
         if (!dobj.getPrimaryFile().hasExt( "java" )
@@ -254,8 +254,8 @@ public class RunPMDAction extends CookieAction {
         }
         return true;
     }
-    
-    
+
+
     /**
      * Performs the action this action is set up to do on the specified nodes
      *
@@ -268,23 +268,24 @@ public class RunPMDAction extends CookieAction {
             StatusDisplayer.getDefault().setStatusText("PMD checking for rule violations");
             List<DataObject> list = getDataObjects(node);
             final List<Fault> violations = performScan(list);
-            
+
             if(violations.isEmpty()) {
-                StatusDisplayer.getDefault().setStatusText("PMD found no rule violations");  
-            } 
+                StatusDisplayer.getDefault().setStatusText("PMD found no rule violations");
+            }
             else {
                 StatusDisplayer.getDefault().setStatusText("PMD found rule violations");
-                final OutputWindow wnd = OutputWindow.getInstance();
-                wnd.setViolations(violations.toArray(new Fault[violations.size()]));
-                
-                SwingUtilities.invokeLater(new Runnable(){
-                    public void run(){
-                        wnd.setDisplayName("PMD Output: found " + violations.size() + " violations");
-                        wnd.open();
-                        wnd.requestActive();
-                    }
-                });
             }
+            
+            final OutputWindow wnd = OutputWindow.getInstance();
+            wnd.setViolations(violations.toArray(new Fault[violations.size()]));
+            
+            SwingUtilities.invokeLater(new Runnable(){
+                public void run(){
+                    wnd.setDisplayName("PMD Output: found " + violations.size() + " violations");
+                    wnd.open();
+                    wnd.requestActive();
+                }
+            });
         } catch(IOException e) {
             ErrorManager.getDefault().notify(e);
         } finally {
@@ -293,8 +294,8 @@ public class RunPMDAction extends CookieAction {
             }
         }
     }
-    
-    
+
+
     /**
      * Constructs the ruleset.
      *
@@ -310,8 +311,8 @@ public class RunPMDAction extends CookieAction {
         }
         return rules;
     }
-    
-    
+
+
     /**
      * Get the reader for the specified dataobject
      *
@@ -339,8 +340,8 @@ public class RunPMDAction extends CookieAction {
         }
         return reader;
     }
-    
-    
+
+
     /**
      * Gets the data objects associated with the given nodes.
      *
@@ -351,7 +352,7 @@ public class RunPMDAction extends CookieAction {
         ArrayList<DataObject> list = new ArrayList<DataObject>();
         for( int i = 0; i < node.length; i++ ) {
             DataObject data = (DataObject)node[i].getCookie( DataObject.class );
-            
+
             //Checks to see if it's a java source file
             if( data.getPrimaryFile().hasExt( "java" ) ) {
                 list.add( data );
@@ -370,25 +371,25 @@ public class RunPMDAction extends CookieAction {
         }
         return list;
     }
-    
+
     protected boolean asynchronous() {
         // PENDING need to rewriet to synchronous action
         return true;
     }
-    
+
     private static class CancelCallback implements Cancellable {
         private boolean cancelled = false;
-        
+
         public CancelCallback() {}
-        
+
         public boolean cancel() {
             cancelled = true;
             return true;
         }
-        
+
         public boolean isCancelled() {
             return cancelled;
         }
     }
-    
+
 }
