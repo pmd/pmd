@@ -300,7 +300,7 @@ public class GUI implements CPDListener {
         frame.getContentPane().add(resultsPanel, BorderLayout.CENTER);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
-        frame.show();
+        frame.setVisible(true);
     }
 
     private void adjustLanguageControlsFor(LanguageConfig current) {
