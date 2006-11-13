@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
- <folder name="OptionsDialog">
+ <folder name="Menu">
+        <folder name="Edit">
+            <file name="pmd-GotoPreviousPMDProblemAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Edit/pmd-GotoPreviousPMDProblemAction.instance"/>
+            </file>
+            <attr name="pmd-GotoPreviousPMDProblemAction.shadow/pmd-GotoNextPMDProblemAction.shadow" boolvalue="true"/>
+            <file name="pmd-GotoNextPMDProblemAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Edit/pmd-GotoNextPMDProblemAction.instance"/>
+            </file>
+            <attr name="pmd-GotoNextPMDProblemAction.shadow/org-openide-actions-UndoAction.instance" boolvalue="true"/>
+        </folder>
+    </folder>
+    <folder name="OptionsDialog">
      <folder name="Advanced">
          <attr name="FormEditor.instance/PmdOptionsPanel.instance" boolvalue="true"/>
             <file name="PmdOptionsPanel.instance">
@@ -16,6 +28,12 @@
         </file>
     </folder>
     <folder name="Actions">
+        <folder name="Edit">
+            <file name="pmd-GotoPreviousPMDProblemAction.instance"/>
+        </folder>
+        <folder name="Edit">
+            <file name="pmd-GotoNextPMDProblemAction.instance"/>
+        </folder>
         <folder name="Tools">
             <file name="pmd-RunPMDAction.instance"/>
         </folder>
@@ -29,6 +47,12 @@
     <folder name="Shortcuts">
         <file name="D-O-P.instance">
             <attr name="instanceClass" stringvalue="pmd.RunPMDAction"/>
+        </file>
+        <file name="F12.shadow">
+            <attr name="originalFile" stringvalue="Actions/Edit/pmd-GotoNextPMDProblemAction.instance"/>
+        </file>
+        <file name="S-F12.shadow">
+            <attr name="originalFile" stringvalue="Actions/Edit/pmd-GotoPreviousPMDProblemAction.instance"/>
         </file>
     </folder>
 </filesystem>

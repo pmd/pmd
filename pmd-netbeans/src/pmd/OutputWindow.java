@@ -80,6 +80,42 @@ public class OutputWindow extends TopComponent {
         });
     }
     
+    public boolean selectNextResult(){
+        int selectedRow = tblResults.getSelectedRow();
+        
+        if (selectedRow == -1){
+            return false;
+        }
+        
+        selectedRow ++;
+        
+        if (selectedRow == tblResults.getRowCount()){
+            selectedRow = 0;
+        }
+        
+        tblResults.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
+        selectResultRow(selectedRow);
+        return true;
+    }
+    
+    public boolean selectPreviousResult(){
+        int selectedRow = tblResults.getSelectedRow();
+        
+        if (selectedRow == -1){
+            return false;
+        }
+        
+        selectedRow --;
+        
+        if (selectedRow == -1){
+            selectedRow = tblResults.getRowCount() - 1;
+        }
+        
+        tblResults.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
+        selectResultRow(selectedRow);
+        return true;
+    }
+    
     public static OutputWindow getInstance(){
         if (instance == null){
             instance = new OutputWindow();
