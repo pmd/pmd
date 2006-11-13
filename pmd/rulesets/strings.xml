@@ -288,5 +288,41 @@ public String convert(int i) {
           </example>
     </rule>
 
+
+<rule   name="StringBufferInstantiationWithChar"
+        message="Do not instantiate a StringBuffer with a char"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringBufferInstantiationWithChar">
+    <description>
+StringBuffer sb = new StringBuffer('c'); The
+char will be converted into int to intialize
+StringBuffer size.
+    </description>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//AllocationExpression/ClassOrInterfaceType
+[@Image='StringBuffer']
+/../Arguments/ArgumentList/Expression/PrimaryExpression
+/PrimaryPrefix/
+Literal [(starts-with(@Image, "'"))][(ends-with
+(@Image, "'"))]
+
+]]>
+            </value>
+        </property>
+    </properties>
+    <priority>4</priority>
+    <example>
+<![CDATA[
+class Foo {
+  StringBuffer sb1 = new StringBuffer('c'); //Bad
+  StringBuffer sb2 = new StringBuffer("c"); //Better
+}
+]]>
+    </example>
+    </rule>
+
 </ruleset>
 

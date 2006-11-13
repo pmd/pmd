@@ -72,7 +72,7 @@ public class RuleTst extends TestCase {
     public void runTestFromString(TestDescriptor test,
                                   SourceType sourceType) throws Throwable {
         int res = processUsingStringReader(test.getCode(), test.getRule(), sourceType).size();
-        assertEquals("\"" + test.getDescription() + "\" test resulted in wrong amount of failures,",
+        assertEquals("\"" + test.getDescription() + "\" test resulted in wrong number of failures,",
             test.getNumberOfProblemsExpected(), res);
     }
 

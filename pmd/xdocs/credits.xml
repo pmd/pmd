@@ -52,6 +52,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>piair - Implemented StringBufferInstantiationWithChar</li>
             <li>Christopher Eagan - Reported bug in VariableNamingConventions</li>
             <li>Jason Bennett - Noticed useless line in XSLT scripts, fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule, patches to improve CyclomaticComplexity rule, Implemented: UseCollectionIsEmpty, NcssTypeCount, NcssMethodCount, NcssConstructor</li>
             <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - Improvement for UseArraysAsList, UnusedNullCheckInEquals, MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray, BigIntegerInstantiation_1.4, BigIntegerInstantiation_1.5</li>

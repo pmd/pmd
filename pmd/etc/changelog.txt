@@ -3,6 +3,7 @@ New rules:
     Basic ruleset: BigIntegerInstantiation(1.4 and 1.5)
     Codesize ruleset: NPathComplexity, NcssTypeCount, NcssMethodCount, NcssConstructorCount
     Design ruleset: UseCollectionIsEmpty
+    Strings ruleset: StringBufferInstantiationWithChar
     Typeresolution ruleset: Loose Coupling - This is a re-implementation using the new Type Resolution facility
 Fixed bug 1570915 - AvoidRethrowingException no longer reports a false positive for certain nested exceptions.
 Fixed bug 1571324 - UselessStringValueOf no longer reports a false positive for additive expressions.
