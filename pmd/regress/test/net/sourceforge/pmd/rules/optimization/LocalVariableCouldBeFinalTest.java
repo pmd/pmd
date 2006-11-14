@@ -35,6 +35,7 @@ public class LocalVariableCouldBeFinalTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST7, "TEST7", 0, rule),
             new TestDescriptor(TEST8, "TEST8", 0, rule),
             new TestDescriptor(TEST9, "TEST9", 1, rule),
+            new TestDescriptor(TEST10, "TEST10", 0, rule),
         });
     }
 
@@ -113,6 +114,18 @@ public class LocalVariableCouldBeFinalTest extends SimpleAggregatorTst {
             "  int b = 0;" + PMD.EOL +
             "  a++;" + PMD.EOL +
             "  a+=b;" + PMD.EOL +
+            " }" + PMD.EOL +
+            "}";
+
+    private static final String TEST10 =
+            "public class Foo {" + PMD.EOL +
+            " public void test1() {" + PMD.EOL +
+            "  int a = 0;" + PMD.EOL +
+            "  int b = 0;" + PMD.EOL +
+            "  int c = 0;" + PMD.EOL +
+            "  ++(a);" + PMD.EOL +
+            "  --(b);" + PMD.EOL +
+            "  (c)++;" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
 

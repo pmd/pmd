@@ -33,6 +33,7 @@ Fixed several JDK 1.5 parsing bugs.
 Fixed several rules (exceptions on jdk 1.5 and jdk 1.6 source code).
 Fixed array handling in AvoidReassigningParameters and UnusedFormalParameter.
 Fixed bug in UselessOverridingMethod: false + when adding synchronization.
+Fixed false positives in LocalVariableCouldBeFinal.
 Rules can now call RuleContext.getSourceType() if they need to make different checks on JDK 1.4 and 1.5 code.
 CloseResource rule now checks code without java.sql import.
 ArrayIsStoredDirectly rule now checks Constructors

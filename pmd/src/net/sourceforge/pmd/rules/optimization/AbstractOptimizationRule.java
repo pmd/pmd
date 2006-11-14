@@ -5,21 +5,24 @@
  */
 package net.sourceforge.pmd.rules.optimization;
 
+import java.util.Iterator;
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPostfixExpression;
 import net.sourceforge.pmd.ast.ASTPreDecrementExpression;
 import net.sourceforge.pmd.ast.ASTPreIncrementExpression;
+import net.sourceforge.pmd.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Base class with utility methods for optimization rules
@@ -57,9 +60,7 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         List preinc = md.findChildrenOfType(ASTPreIncrementExpression.class);
         if (preinc != null && !preinc.isEmpty()) {
             for (Iterator it = preinc.iterator(); it.hasNext();) {
-                ASTPreIncrementExpression ie = (ASTPreIncrementExpression) it.next();
-                Node prefix = ie.jjtGetChild(0).jjtGetChild(0);
-                if (prefix.jjtGetNumChildren() > 0 && ((ASTName) prefix.jjtGetChild(0)).hasImageEqualTo(varName)) {
+                if (isName((Node)it.next(), varName)) {
                     return true;
                 }
             }
@@ -69,9 +70,7 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         List predec = md.findChildrenOfType(ASTPreDecrementExpression.class);
         if (predec != null && !predec.isEmpty()) {
             for (Iterator it = predec.iterator(); it.hasNext();) {
-                ASTPreDecrementExpression de = (ASTPreDecrementExpression) it.next();
-                Node prefix = de.jjtGetChild(0).jjtGetChild(0);
-                if (prefix.jjtGetNumChildren() > 0 && ((ASTName) prefix.jjtGetChild(0)).hasImageEqualTo(varName)) {
+                if (isName((Node)it.next(), varName)) {
                     return true;
                 }
             }
@@ -81,15 +80,8 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         if (pf != null && !pf.isEmpty()) {
             for (Iterator it = pf.iterator(); it.hasNext();) {
                 ASTPostfixExpression pe = (ASTPostfixExpression) it.next();
-
                 if ((pe.hasImageEqualTo("++") || pe.hasImageEqualTo("--"))) {
-                    SimpleNode first = (SimpleNode) pe.jjtGetChild(0);
-                    SimpleNode second = (SimpleNode) first.jjtGetChild(0);
-                    if (second.jjtGetNumChildren() == 0 || !(second.jjtGetChild(0) instanceof ASTName)) {
-                        continue;
-                    }
-                    ASTName name = (ASTName) second.jjtGetChild(0);
-                    if (name.hasImageEqualTo(varName)) {
+                    if (isName(pe, varName)) {
                         return true;
                     }
                 }
@@ -98,6 +90,31 @@ public class AbstractOptimizationRule extends AbstractRule implements Rule {
         return false;
     }
 
+    private final boolean isName(Node node, String varName) {
+        Node first = node.jjtGetChild(0);
+        Node second = first.jjtGetChild(0);
+        if (second.jjtGetNumChildren() == 0) {
+            return false;
+        }
+        
+        Node third = second.jjtGetChild(0);
+        if (!(third instanceof ASTName)) {
+            if (first instanceof ASTPrimaryExpression) {
+                // deals with extra parenthesis:
+                // "(varName)++" instead of "varName++" for instance
+                if (first.jjtGetNumChildren() != 1) {
+                    return false;
+                }
+                if (second instanceof ASTPrimaryPrefix && second.jjtGetNumChildren() == 1 &&
+                        third instanceof ASTExpression && third.jjtGetNumChildren() == 1) {
+                    return isName(third, varName);
+                }    
+            }
+            return false;
+        }
+        ASTName name = (ASTName) third;
+        return name.hasImageEqualTo(varName);
+    }
 
     private final boolean variableAssigned(final String varName, final List assignments) {
         if (assignments == null || assignments.isEmpty()) {
