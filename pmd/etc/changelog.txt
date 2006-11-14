@@ -1,6 +1,6 @@
 ?????, 2006 - 3.9:
 New rules:
-    Basic ruleset: BigIntegerInstantiation(1.4 and 1.5)
+    Basic ruleset: BigIntegerInstantiation(1.4 and 1.5), AvoidUsingOctalValues
     Codesize ruleset: NPathComplexity, NcssTypeCount, NcssMethodCount, NcssConstructorCount
     Design ruleset: UseCollectionIsEmpty
     Strings ruleset: StringBufferInstantiationWithChar

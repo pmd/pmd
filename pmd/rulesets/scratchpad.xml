@@ -10,41 +10,44 @@ These are new rules that are still in progress.
   </description>
 
 
-    <rule   name="StringBufferInstantiationWithChar"
-            message="Do not instantiate a StringBuffer with a char"
-            class="net.sourceforge.pmd.rules.XPathRule"
-            externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringBufferInstantiationWithChar">
-        <description>
-    StringBuffer sb = new StringBuffer('c'); The
-    char will be converted into int to intialize
-    StringBuffer size.
-        </description>
-        <properties>
-            <property name="xpath">
-                <value>
-    <![CDATA[
-    //AllocationExpression/ClassOrInterfaceType
-    [@Image='StringBuffer']
-    /../Arguments/ArgumentList/Expression/PrimaryExpression
-    /PrimaryPrefix/
-    Literal [(starts-with(@Image, "'"))][(ends-with
-    (@Image, "'"))]
+<rule   name="AvoidUsingOctalValues"
+        message="Do not start a literal by 0 unless it's an octal value"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingOctalValues">
+<description>
+Integers literals should not start with zero.
+Zero means that the rest of literal have to be
+interprated as an octal.
+</description>
+<properties>
+<property name="xpath">
+<value>
+<![CDATA[
 
-    ]]>
-                </value>
-            </property>
-        </properties>
-        <priority>4</priority>
-        <example>
-    <![CDATA[
-    class Foo {
-      StringBuffer sb1 = new StringBuffer('c'); //Bad
-      StringBuffer sb2 = new StringBuffer("c"); //Better
-    }
-    ]]>
-        </example>
-        </rule>
-  
+//Literal
+ [(starts-with(@Image, 0))]
+ [not(substring(@Image, 2, 1) = 'x')]
+ [not(substring(@Image, 2, 1) = 'L')]
+ [string-length(@Image)>1]
+
+]]>
+</value>
+</property>
+</properties>
+<priority>3</priority>
+<example>
+<![CDATA[
+...
+int i = 012; // set i with 10 not 12
+int j = 010; // set j with 8 not 10
+...
+k = i * j; // set k with 80 not 120
+..
+}
+]]>
+</example>
+</rule>
+
     <!--
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"

@@ -1073,14 +1073,10 @@ or @Image='"1"' or @Image=0 or
   <example>
 <![CDATA[
 public class Test {
-
  public static void main(String[] args) {
    BigInteger bi=new BigInteger(1);
-
    BigInteger bi2=new BigInteger("0");
-
    BigInteger bi3=new BigInteger(0.0);
-
    BigInteger bi4;
    bi4=new BigInteger(0);
  }
@@ -1088,5 +1084,39 @@ public class Test {
 ]]>
   </example>
 </rule>
+
+    <rule   name="AvoidUsingOctalValues"
+            message="Do not start a literal by 0 unless it's an octal value"
+            class="net.sourceforge.pmd.rules.XPathRule"
+            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingOctalValues">
+    <description>
+    Integer literals should not start with zero.
+    Zero means that the rest of literal will be interpreted as an octal value.
+    </description>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//Literal
+ [(starts-with(@Image, 0))]
+ [string-length(@Image)>1]
+ [not(substring(@Image, 2, 1) = 'x')]
+ [not(substring(@Image, 2, 1) = 'L')]
+]]>
+            </value>
+        </property>
+    </properties>
+    <priority>3</priority>
+    <example>
+    <![CDATA[
+public class Foo {
+  int i = 012; // set i with 10 not 12
+  int j = 010; // set j with 8 not 10
+  k = i * j; // set k with 80 not 120
+}
+    ]]>
+    </example>
+    </rule>
+
 </ruleset>
 

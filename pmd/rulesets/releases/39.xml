@@ -7,6 +7,8 @@ This ruleset contains links to rules that are new in PMD v3.9
   </description>
 
   <rule ref="rulesets/basic.xml/BigIntegerInstantiation_1.5"/>
+  <rule ref="rulesets/basic.xml/AvoidUsingOctalValues"/>
+  <rule ref="rulesets/strings.xml/StringBufferInstantiationWithChar"/>
   <rule ref="rulesets/codesize.xml/NPathComplexity"/>
   <rule ref="rulesets/design.xml/UseCollectionIsEmpty"/>
   <rule ref="rulesets/codesize.xml/NcssMethodCount"/>
