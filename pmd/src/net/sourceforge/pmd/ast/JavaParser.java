@@ -1564,6 +1564,7 @@ jjtn000.setModifiers(modifiers);
       case ELLIPSIS:
         jj_consume_token(ELLIPSIS);
             checkForBadVariableArgumentsUsage();
+                                                   jjtn000.setVarargs();
         break;
       default:
         jj_la1[47] = jj_gen;

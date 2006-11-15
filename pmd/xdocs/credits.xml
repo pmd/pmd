@@ -52,6 +52,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>classens - Noted missing varargs setting in ASTFormalParameter</li>
             <li>piair - Implemented StringBufferInstantiationWithChar, AvoidUsingOctalValues</li>
             <li>Christopher Eagan - Reported bug in VariableNamingConventions</li>
             <li>Jason Bennett - Noticed useless line in XSLT scripts, fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule, patches to improve CyclomaticComplexity rule, Implemented: UseCollectionIsEmpty, NcssTypeCount, NcssMethodCount, NcssConstructor</li>

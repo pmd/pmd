@@ -1316,7 +1316,7 @@ void FormalParameter() :
 {
    ( "final" {jjtThis.setFinal();} | Annotation() )*
    Type()
-   [ "..." {checkForBadVariableArgumentsUsage();} ]
+   [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
 }
 

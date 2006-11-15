@@ -5,6 +5,18 @@ package net.sourceforge.pmd.ast;
 import net.sourceforge.pmd.Rule;
 
 public class ASTFormalParameter extends AccessNode implements Dimensionable, CanSuppressWarnings {
+
+    private boolean isVarargs;
+
+
+    public void setVarargs() {
+        isVarargs = true;
+    }
+
+    public boolean isVarargs() {
+        return isVarargs;
+    }
+    
     public ASTFormalParameter(int id) {
         super(id);
     }
