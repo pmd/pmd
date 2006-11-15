@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+should be ||
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ List bar(List list) {
+  if (list != null || !list.equals(buz)) {
+   return list;
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+should be &&
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ List bar(List list) {
+  if (list == null && list.equals(buz)) {
+   return list;
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

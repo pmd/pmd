@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+simple failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public final int BAR = 42;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+already static, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static final int BAR = 42;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+non-final, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int BAR = 42;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+non-primitive failure case - only works for String
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public final String BAR = "42";
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+final field that's a thread, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public final Thread BAR = new Thread();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't flag interfaces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public final int BAR = 42;
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+param
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String a[]) { // a should trigger it.
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+none
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+       int bugleDeWump = -1;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+local
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    public static void main(String args[]) {
+       int ab = -1; 
+       // Should trigger ShortVariable rule.
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+for
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+       for (int i = 0; i < 10; i++) { } // Should NOT!! trigger.
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private int qx; // Should cause a problem.
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+catch(Exception e) is OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+     try {} catch (Exception e) {}
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

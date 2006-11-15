@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+in field assignment
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private boolean foo = (isFoo() == true);
+ boolean isFoo() {return foo;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+in method body
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  boolean bar = (new String().length() >2) == false;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar = true;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+two cases in an && expression
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (getFoo() == false && isBar() == true) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+simple use of BooleanLiteral, should not be flagged
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (true) {}
+  if (false) {}
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

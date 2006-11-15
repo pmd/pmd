@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+unused local with assignment
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+   String fr = new String();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unused local w/o assignment
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  int x;
+ }
+}
+
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unused local in constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    public Foo() {
+       List a = new ArrayList();
+    }
+}
+
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+local used on rhs
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    public Foo() {
+       List a = new ArrayList();
+       if (true) {
+               a.size();
+       }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unused local in static initializer
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+ static {
+  String x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unused field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int x;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+loop indexes are not unused locals
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  for (int i=0;i<10; i++);
+  for (int i=0;i<10; i++);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+local used in anonymous inner class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  final int x = 2;
+   new Runnable() {
+    public void run() {
+     System.out.println(x);
+    }
+   };  
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+two unused locals of same name, one in nested class
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  int x = 2;
+  class Bar {
+   void buz() {
+    int x = 4;
+   }
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+two locals declared on same line
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  int x,y=0;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+an assignment does not a usage make
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   int x;
+   x = 4;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+a compound assignment operator doth a usage make
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   int x = 0;
+   x += 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment to a member field means used
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   Bar b = new Bar();
+   b.buz = 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+make sure scopes are working
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   int x = 2;
+   if (true) {int y =2;int j =3;} 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+another scope test
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   int x = 2;
+   if (true) {int y =2;foo(y);int j =3;foo(j);} 
+ }
+ void bar2() {
+   int x = 2;
+   fiddle(x);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment to an array member will be treated as a usage
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   int[] x = {2};
+   x[1] = 2; 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+local variable used in postfix expression as child of StatementExpression
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   int x = 2;
+   x++; 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+local variable used in postfix expression on right hand side
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   int x = 2;
+   foo(x++); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+local variable, object ref, public field of which is incremented via in postfix expression
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   Baz b = getBaz();
+   b.x++; 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+local used in right shift
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   int x = 2;
+   int y = 4 >> x;
+   foo(y);
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

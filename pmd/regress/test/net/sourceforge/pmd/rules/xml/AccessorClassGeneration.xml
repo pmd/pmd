@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+inner class has private constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo1 {
+ public class InnerClass {
+   private InnerClass(){
+   }
+ }
+ void method(){
+   new InnerClass();//Causes generation of accessor
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+inner class has public constructor
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo2 {
+ public class InnerClass {
+   public InnerClass(){
+   }
+ }
+ void method(){
+   new InnerClass(); //OK, due to public constructor
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+outer class has public constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo3 {
+    public class InnerClass {
+      void method(){
+        new Foo3();//Causes generation of accessor
+      }
+    }
+    private Foo3() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+final inner class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void method() {
+   final class Inner {}; 
+   Inner i = new Inner();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+interface inner class has private constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+ package foo;
+public interface Foo1 {
+ public class InnerClass {
+   private InnerClass(){
+   }
+ }
+ void method(){
+   new InnerClass();//Causes generation of accessor
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+there's a check for int declaration - not sure right now why
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo1 {
+ public class InnerClass {
+   private InnerClass(int[] a){
+   }
+ }
+ void method(){
+   new InnerClass(new int[]{1});//Causes generation of accessor
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+private method called by public method
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  foo();
+ }
+ private void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+simple unused private method
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+anonymous inner class calls private method
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  new Runnable() {
+   public void run() {
+    foo();
+   }
+  };
+ }
+ private void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+two private methods with same name but different parameters
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void foo() {}
+ private void foo(String baz) {}
+ public void bar() {
+  foo();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+calling private method after instantiating new copy of myself
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void foo(String[] args) {}
+ public static void main(String[] args) {
+  Foo u = new Foo();
+  u.foo(args); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+calling private method using 'this' modifier
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  this.foo();
+ }
+ private void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+simple unused private static method
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+readResolve/writeReplace/etc are OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void readResolve() {}
+ private void writeReplace() {}
+ private void readObject() {}
+ private void writeObject() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Private methods called only by themselves, BUG 1038229
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+  bar(); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private with same name as public, different method signature
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int x) {
+  bar(); 
+ }
+ private void bar() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+False +, BUG 1114754
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public void methodFlagged(Object[] arrayObj) {
+       for(int i=0; i<arrayObj.length; i++) {
+           methodFlagged(arrayObj[i]);
+       }
+   }
+   private void methodFlagged(Object a) {
+       a.toString();
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+called from constructor
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo() {
+  bar();
+ }
+ private void bar() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private method with same name but diff arg count than public method
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void baz() {
+  baz(x, y);
+ }
+ private void baz(int x, int y) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+static private called from initializer
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static { foo(); }
+ private static void foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+static private invoked in static context - i.e., Foo.hi()
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static boolean BUZ = Foo.bar(); 
+ private static boolean bar() { return true; }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private method with same name as param
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar(boolean buz) { 
+  buz();
+ }
+ private void buz() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+two methods, one private, one public, same name, same arg count, diff types
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void baz() {
+  foo("hi");
+ }
+ private void foo(String y) {}
+ public void foo(List y) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+two private methods, both used, same name, same arg count, diff types
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void baz() {
+  foo(getBuz());
+ }
+ private void foo(String y) {}
+ private void foo(List y) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+private method same name as local
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void baz() {
+  int x = x();
+ }
+ private int x() { return 42;}
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+useless operation on BigDecimal
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  BigDecimal bd = new BigDecimal(5);
+  bd.add(new BigDecimal(5));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+useless operation on BigInteger
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  BigInteger bi = new BigInteger(5);
+  bi.add(new BigInteger(5));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using the result, so OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  BigInteger bi = new BigInteger(5);
+  bi = bi.add(new BigInteger(5));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using the result in a method call, so OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  BigInteger bi = new BigInteger(5);
+  bar(bi.add(new BigInteger(5)));
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Using generics on List, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    List<BigDecimal> getSolution() {
+        List<BigDecimal> result = new ArrayList<BigDecimal>();
+        for (int i = 0; i < size(); i++) {
+           result.add(entry(size(),i).negate());
+           result.add(this.equations[i].check(solution));
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

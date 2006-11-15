@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, default constructor
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {} 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+simple failure
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Foo() {}
+ public void bar() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure with multiple constructors
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Foo(){}
+ private Foo(Object o){}
+ public void bar() {} 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+protected constructor is ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Foo(){}
+ protected Foo(Object o){}
+ public void bar() {} 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, one static method
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Foo(){}
+ private Foo(Object o){}
+ public static void bar() {} 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+nested class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static class Bar {
+  private Bar() {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, public static field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static int BUZ = 2;
+  private Foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+not ok, non-public static field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static int BUZ = 2;
+  private Foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, protected static field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ protected static Foo INSTANCE = new Foo();
+  private Foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, package private static field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static Foo INSTANCE = new Foo();
+  private Foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, checking for bug 1432595
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Suit {
+   private final String name;
+        private Suit(String name) {
+        this.name = name;
+  }
+  public String toString() {
+      return name;
+  }
+  public static final Suit CLUBS = new Suit("Clubs");
+  public static final Suit DIAMONDS = new Suit("Diamonds");
+  public static final Suit HEARTS = new Suit("Hearts");
+  public static final Suit SPADES = new Suit("Spades");
+}
+     ]]></code>
+    </test-code>
+</test-data>

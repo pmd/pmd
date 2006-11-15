@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+bad, toArray() with cast
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  Collection c = new ArrayList();
+  c.add(new Integer(1));
+  Integer[] a=(Integer [])c.toArray();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, no cast
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  Collection c = new ArrayList();
+  c.add(new Integer(1));
+  Integer[] a = (Integer [])c.toArray(new Integer[c.size()]);;
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+final statics should be all caps
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static final int foo = 2;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+non-finals shouldn't have underscores
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int foo_bar = 2;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+variables names should start with lowercase character
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int Ubar = 2;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+all is well
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int bar = 2;
+ private static final int FOO_BAR = 2;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+local finals are ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+  final int STATE_READING = 0;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+serialVersionUID is OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  static final long serialVersionUID = 423343L;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+interface fields are tested
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+  int foo = 42;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+final non-statics need not be all caps
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  final int foo = 42;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+staticPrefix
+     ]]></description>
+        <rule-property name="staticPrefix">s_</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  static int s_foo = 42;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+staticSuffix
+     ]]></description>
+        <rule-property name="staticSuffix">_s</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  static int foo_s = 42;
+}
+     ]]></code>
+    </test-code>
+</test-data>

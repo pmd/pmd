@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+ok, abstract class AbstractFoo
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class AbstractFoo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, abstract class named Foo
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, concrete class named AbstractFoo
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class AbstractFoo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, concrete class named Foo
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {}
+     ]]></code>
+    </test-code>
+</test-data>

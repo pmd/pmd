@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+local variable useless assignment
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo(){
+  int x = 2; 
+  x = 5; 
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

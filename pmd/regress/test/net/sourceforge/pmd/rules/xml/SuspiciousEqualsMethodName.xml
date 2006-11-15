@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+bad, equals(Foo foo)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean equals(Foo foo) {return true;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, equals(Object foo)
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean equals(Object foo) {return true;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bad, equal(Object foo)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public boolean equal(Object foo) {return true;}
+}
+     ]]></code>
+    </test-code>
+</test-data>

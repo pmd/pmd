@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+       while (true == true) {
+       }
+       while (true == true) {
+               String x = "";
+       }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+while(true); 
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+       while (true) 
+          ; 
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>
