@@ -4,31 +4,35 @@
 package test.net.sourceforge.pmd.testframework;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.SourceType;
 
+/**
+ * Standard methods for (simple) testcases.
+ */
 public class SimpleAggregatorTst extends RuleTst {
-    
+    /**
+     * Run a set of tests defined in an XML test-data file for a rule. The file
+     * should be ./xml/RuleName.xml relative to the test-class. The format is
+     * defined in test-data.xsd.
+     */
     public void runTests(Rule rule) {
         runTests(extractTestsFromXml(rule));
     }
 
-    public void runTests(TestDescriptor[] tests) {
-        runTests(tests, DEFAULT_SOURCE_TYPE);
-    }
-
     /**
-     * Run a set of tests.
-     *
-     * @param tests
+     * Run a set of tests defined in a XML test-data file. The file should be
+     * ./xml/[testsFileName].xml relative to the test-class. The format is
+     * defined in test-data.xsd.
      */
-    public void runTests(TestDescriptor[] tests, SourceType sourceType) {
+    public void runTests(Rule rule, String testsFileName) {
+        runTests(extractTestsFromXml(rule, testsFileName));
+    }
+    
+    /**
+     * Run a set of tests of a certain sourceType.
+     */
+    public void runTests(TestDescriptor[] tests) {
         for (int i = 0; i < tests.length; i++) {
-            try {
-                runTestFromString(tests[i], sourceType);
-            } catch (Throwable t) {
-                t.printStackTrace();
-                throw new RuntimeException("Test \"" + tests[i].getDescription()  + "\" failed");
-            }
+            runTest(tests[i]);
         }
     }
 

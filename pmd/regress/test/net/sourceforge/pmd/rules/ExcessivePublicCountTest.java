@@ -22,75 +22,18 @@
  */
 package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.rules.ExcessivePublicCount;
-import test.net.sourceforge.pmd.testframework.RuleTst;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-public class ExcessivePublicCountTest extends RuleTst {
-
-    private Rule rule = new ExcessivePublicCount();
-
-    public void testSimpleOK() throws Throwable {
-        rule.addProperty("minimum", "50");
-        runTestFromString(TEST1, 0, rule);
-        runTestFromString(TEST4, 0, rule);
-        runTestFromString(TEST5, 0, rule);
-        runTestFromString(TEST6, 0, rule);
+public class ExcessivePublicCountTest extends SimpleAggregatorTst {
+    private Rule rule;
+    
+    public void setUp() {
+        rule = new ExcessivePublicCount();
     }
-
-    public void testSimpleBad() throws Throwable {
-        rule.addProperty("minimum", "2");
-        runTestFromString(TEST2, 1, rule);
-        runTestFromString(TEST4, 1, rule);
+    
+    public void testAll() {
+        runTests(rule);
     }
-
-    public void testStaticFinal() throws Throwable {
-        rule.addProperty("minimum", "1");
-        runTestFromString(TEST3, 0, rule);
-    }
-
-    private static final String TEST1 =
-            "public class Foo {" + PMD.EOL +
-            " public int foo;" + PMD.EOL +
-            "}";
-
-    private static final String TEST2 =
-            "public class Foo {" + PMD.EOL +
-            " public int foo;" + PMD.EOL +
-            " public int bif;" + PMD.EOL +
-            " public int baz;" + PMD.EOL +
-            " public int bof;" + PMD.EOL +
-            "}";
-
-    private static final String TEST3 =
-        "public class Foo {" + PMD.EOL +
-        " public static final int foo;" + PMD.EOL +
-        " public static final int foo1;" + PMD.EOL +
-        " public static final int foo2;" + PMD.EOL +
-        " public static final int foo3;" + PMD.EOL +
-        "}";
-
-    private static final String TEST4 =
-        "public class Foo {" + PMD.EOL +
-        " public int foo1() {return 1;}" + PMD.EOL +
-        " public int foo2() {return 1;}" + PMD.EOL +
-        " public int foo3() {return 1;}" + PMD.EOL +
-        "}";
-
-    private static final String TEST5 =
-        "public class Foo {" + PMD.EOL +
-        " private static final int foo;" + PMD.EOL +
-        " private static final int foo1;" + PMD.EOL +
-        " private static final int foo2;" + PMD.EOL +
-        " private static final int foo3;" + PMD.EOL +
-        "}";
-
-    private static final String TEST6 =
-        "public class Foo {" + PMD.EOL +
-        " private int foo1() {return 1;}" + PMD.EOL +
-        " private int foo2() {return 1;}" + PMD.EOL +
-        " private int foo3() {return 1;}" + PMD.EOL +
-        "}";
-
 }

@@ -1,133 +1,57 @@
-/**
- * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- */
-package test.net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleViolation;
-import test.net.sourceforge.pmd.testframework.RuleTst;
-
-import java.util.Iterator;
-
-public class CyclomaticComplexityTest extends RuleTst {
-
-    private Rule rule;
-
-    public void setUp() throws RuleSetNotFoundException {
-        rule = findRule("codesize", "CyclomaticComplexity");
-    }
-
-    public void testOneMethod() throws Throwable {
-        rule.addProperty("reportLevel", "1");
-        Report report = new Report();
-        runTestFromString(TEST1, rule, report);
-        Iterator i = report.iterator();
-        RuleViolation rv = (RuleViolation) i.next();
-        assertTrue(rv.getDescription().indexOf("Highest = 1") != -1);
-    }
-
-    public void testNastyComplicatedMethod() throws Throwable {
-        rule.addProperty("reportLevel", "10");
-        Report report = new Report();
-        runTestFromString(TEST2, rule, report);
-        Iterator i = report.iterator();
-        RuleViolation rv = (RuleViolation) i.next();
-        assertTrue(rv.getDescription().indexOf("Highest = 11") != -1);
-    }
-
-    public void testConstructor() throws Throwable {
-        rule.addProperty("reportLevel", "1");
-        Report report = new Report();
-        runTestFromString(TEST3, rule, report);
-        Iterator i = report.iterator();
-        RuleViolation rv = (RuleViolation) i.next();
-        assertTrue(rv.getDescription().indexOf("Highest = 1") != -1);
-    }
-
-    public void testLessComplicatedThanReportLevel() throws Throwable {
-        rule.addProperty("reportLevel", "10");
-        Report report = new Report();
-        runTestFromString(TEST1, rule, report);
-        assertEquals(0, report.size());
-    }
-
-    private static final String TEST1 =
-            "public class Foo {" + PMD.EOL +
-            " public void foo() {}" + PMD.EOL +
-            "}";
-
-    private static final String TEST2 =
-            "public class Foo {" + PMD.EOL +
-            " public void example() {" + PMD.EOL +
-            "  int x = 0;" + PMD.EOL +
-            "  int a = 0;" + PMD.EOL +
-            "  int b = 0;" + PMD.EOL +
-            "  int c = 0;" + PMD.EOL +
-            "  int d = 0;" + PMD.EOL +
-            "  int a1 = 0;" + PMD.EOL +
-            "  int a2 = 0;" + PMD.EOL +
-            "  int b1 = 0;" + PMD.EOL +
-            "  int b2 = 0;" + PMD.EOL +
-            "  int z = 0;" + PMD.EOL +
-            "  int h = 0;" + PMD.EOL +
-            "  int e = 0;" + PMD.EOL +
-            "  int f = 0;" + PMD.EOL +
-            "" + PMD.EOL +
-            "  if (a == b) {" + PMD.EOL +
-            "   if (a1 == b1) {" + PMD.EOL +
-            "     x=2;" + PMD.EOL +
-            "   } else if (a2 == b2) {" + PMD.EOL +
-            "     x=2;" + PMD.EOL +
-            "   }" + PMD.EOL +
-            "            else" + PMD.EOL +
-            "            {" + PMD.EOL +
-            "                x=2;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "       else if (c == d)" + PMD.EOL +
-            "        {" + PMD.EOL +
-            "           while (c == d)" + PMD.EOL +
-            "            {" + PMD.EOL +
-            "                x=2;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "       else if (e == f)" + PMD.EOL +
-            "        {" + PMD.EOL +
-            "           for (int n = 0; n < h; n++)" + PMD.EOL +
-            "            {" + PMD.EOL +
-            "                x=2;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "        else" + PMD.EOL +
-            "        {" + PMD.EOL +
-            "            switch (z)" + PMD.EOL +
-            "            {" + PMD.EOL +
-            "               case 1:" + PMD.EOL +
-            "                x=2;" + PMD.EOL +
-            "                    break;" + PMD.EOL +
-            "" + PMD.EOL +
-            "              case 2:" + PMD.EOL +
-            "                x=2;" + PMD.EOL +
-            "                    break;" + PMD.EOL +
-            "" + PMD.EOL +
-            "              case 3:" + PMD.EOL +
-            "                x=2;" + PMD.EOL +
-            "                    break;" + PMD.EOL +
-            "" + PMD.EOL +
-            "              default:" + PMD.EOL +
-            "                x=2;" + PMD.EOL +
-            "                    break;" + PMD.EOL +
-            "            }" + PMD.EOL +
-            "        }" + PMD.EOL +
-            "    }" + PMD.EOL +
-            "}";
-
-    private static final String TEST3 =
-            "public class Foo {" + PMD.EOL +
-            " public Foo() {}" + PMD.EOL +
-            "}";
-
-}
+ /**
+  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+  */
+ package test.net.sourceforge.pmd.rules;
+ 
+ import java.util.Iterator;
+ 
+ import net.sourceforge.pmd.Report;
+ import net.sourceforge.pmd.Rule;
+ import net.sourceforge.pmd.RuleViolation;
+ import test.net.sourceforge.pmd.testframework.RuleTst;
+ import test.net.sourceforge.pmd.testframework.TestDescriptor;
+ 
+ public class CyclomaticComplexityTest extends RuleTst {
+     private Rule rule;
+     private TestDescriptor[] tests;
+ 
+     public void setUp() {
+         rule = findRule("codesize", "CyclomaticComplexity");
+         tests = extractTestsFromXml(rule);
+     }
+ 
+     public void testOneMethod() throws Throwable {
+         rule.addProperty("reportLevel", "1");
+         Report report = new Report();
+         runTestFromString(tests[0].getCode(), rule, report);
+         Iterator i = report.iterator();
+         RuleViolation rv = (RuleViolation) i.next();
+         assertTrue(rv.getDescription().indexOf("Highest = 1") != -1);
+     }
+ 
+     public void testNastyComplicatedMethod() throws Throwable {
+         rule.addProperty("reportLevel", "10");
+         Report report = new Report();
+         runTestFromString(tests[1].getCode(), rule, report);
+         Iterator i = report.iterator();
+         RuleViolation rv = (RuleViolation) i.next();
+         assertTrue(rv.getDescription().indexOf("Highest = 11") != -1);
+     }
+ 
+     public void testConstructor() throws Throwable {
+         rule.addProperty("reportLevel", "1");
+         Report report = new Report();
+         runTestFromString(tests[2].getCode(), rule, report);
+         Iterator i = report.iterator();
+         RuleViolation rv = (RuleViolation) i.next();
+         assertTrue(rv.getDescription().indexOf("Highest = 1") != -1);
+     }
+ 
+     public void testLessComplicatedThanReportLevel() throws Throwable {
+         rule.addProperty("reportLevel", "10");
+         Report report = new Report();
+         runTestFromString(tests[0].getCode(), rule, report);
+         assertEquals(0, report.size());
+     }
+ }

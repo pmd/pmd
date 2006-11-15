@@ -3,24 +3,48 @@
  */
 package test.net.sourceforge.pmd.testframework;
 
+import java.util.Properties;
+
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.SourceType;
 
+/**
+ * Stores the information required to run a complete test.
+ */
 public class TestDescriptor {
-
-    private String code;
+    private Rule rule;
+    private Properties properties;
     private String description;
     private int numberOfProblemsExpected;
-    private Rule rule;
+    private String code;
+    private SourceType sourceType;
 
     public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule) {
+        this(code, description, numberOfProblemsExpected, rule, RuleTst.DEFAULT_SOURCE_TYPE);
+    }
+    
+    public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule, SourceType sourceType) {
         this.rule = rule;
         this.code = code;
         this.description = description;
         this.numberOfProblemsExpected = numberOfProblemsExpected;
+        this.sourceType = sourceType;
     }
 
+    public void setProperties(Properties properties) {
+        this.properties = properties;
+    }
+    
+    public Properties getProperties() {
+        return properties;
+    }
+    
     public String getCode() {
         return code;
+    }
+
+    public SourceType getSourceType() {
+        return sourceType;
     }
 
     public String getDescription() {

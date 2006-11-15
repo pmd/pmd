@@ -14,7 +14,7 @@
 		<pathelement location="${dir.build}" />
 		<fileset dir="${dir.lib}">
 			<include name="jaxen-1.1-beta-10.jar" />
-			<include name="asm-3.0.jar" />
+			<include name="asm-3.0.jar" />     
 		</fileset>
 	</path>
 
@@ -46,10 +46,10 @@
 				<include name="*.properties" />
 			</fileset>
 		</copy>
-		<copy todir="${dir.build}/test/net/sourceforge/pmd/rules/xml/">
-			<fileset dir="${dir.regress}/test/net/sourceforge/pmd/rules/xml/">
-				<include name="**/*.xml" />
-			</fileset>
+   <copy todir="${dir.build}/test/net/sourceforge/pmd">
+     <fileset dir="${dir.regress}/test/net/sourceforge/pmd">
+       <include name="**/xml/*.xml" />
+     </fileset>
 		</copy>
         <mkdir dir="${dir.build}/rulesets/releases" />
         <copy todir="${dir.build}rulesets/releases">

@@ -23,8 +23,8 @@ public class UselessOperationOnImmutableTest extends SimpleAggregatorTst {
         });
 
         runTests(new TestDescriptor[]{
-                new TestDescriptor(TEST5, "Using generics on List, OK", 0, rule),
-            },SourceType.JAVA_15);
+                new TestDescriptor(TEST5, "Using generics on List, OK", 0, rule,SourceType.JAVA_15),
+            });
     }
 
     private static final String TEST1 =

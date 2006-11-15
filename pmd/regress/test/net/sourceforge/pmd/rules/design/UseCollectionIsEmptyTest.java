@@ -3,10 +3,8 @@
  */
 package test.net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
-import test.net.sourceforge.pmd.testframework.TestDescriptor;
 
 /**
  * Adding this test to validate current working code doesn't break I've been
@@ -15,7 +13,6 @@ import test.net.sourceforge.pmd.testframework.TestDescriptor;
  * fail.
  * 
  * @author Allan Caplan
- * 
  */
 public class UseCollectionIsEmptyTest extends SimpleAggregatorTst{
 
@@ -26,122 +23,8 @@ public class UseCollectionIsEmptyTest extends SimpleAggregatorTst{
     }
 
     public void testAll() {
-        runTests(new TestDescriptor[]{
-                new TestDescriptor(TEST1, "fail, == 0", 1, rule),
-                new TestDescriptor(TEST2, "ok, isEmpty", 0, rule),
-                new TestDescriptor(TEST3, "fail, != 0", 1, rule),
-                new TestDescriptor(TEST4, "ok, !isEmpty", 0, rule),
-                new TestDescriptor(TEST5, "fail, != 0", 1, rule),
-                new TestDescriptor(TEST6, "ok, !isEmpty", 0, rule),
-                new TestDescriptor(TEST7, "fail, 0 ==", 1, rule),
-                new TestDescriptor(TEST8, "fail, > 0", 1, rule),
-                new TestDescriptor(TEST9, "ok, in expression", 0, rule),
-                new TestDescriptor(TEST10, "ok, in expression", 0, rule),
-        });
+        runTests(rule);
     }
-
-    private static final String TEST1 =
-        "public class Foo {" + PMD.EOL +
-        "    public static boolean bar(List lst) {" + PMD.EOL +
-        "        if(lst.size() == 0){" + PMD.EOL +
-        "            return true;" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "        return false;" + PMD.EOL +
-        "    }" + PMD.EOL +
-        "}";
-
-    private static final String TEST2 =
-        "public class Foo {" + PMD.EOL +
-        "    public static boolean bar(List lst) {" + PMD.EOL +
-        "        if(lst.isEmpty()){" + PMD.EOL +
-        "            return true;" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "        return false;" + PMD.EOL +
-        "    }" + PMD.EOL +
-        "}";
-    
-    private static final String TEST3 =
-        "public class Foo {" + PMD.EOL +
-        "    public static boolean bar(List lst) {" + PMD.EOL +
-        "        if(lst.size() != 0){" + PMD.EOL +
-        "            return true;" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "        return false;" + PMD.EOL +
-        "    }" + PMD.EOL +
-        "}";
-    
-    private static final String TEST4 =
-        "public class Foo {" + PMD.EOL +
-        "    public static boolean bar(List lst) {" + PMD.EOL +
-        "        if(!lst.isEmpty()){" + PMD.EOL +
-        "            return true;" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "        return false;" + PMD.EOL +
-        "    }" + PMD.EOL +
-        "}";
-    
-    private static final String TEST5 =
-        "public class Foo {" + PMD.EOL +
-        "    public static boolean bar(List lst, boolean b) {" + PMD.EOL +
-        "        if(lst.size() == 0 && b){" + PMD.EOL +
-        "            return true;" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "        return false;" + PMD.EOL +
-        "    }" + PMD.EOL +
-        "}";
-    
-    private static final String TEST6 =
-        "public class Foo {" + PMD.EOL +
-        "    public static boolean bar(List lst, boolean b) {" + PMD.EOL +
-        "        if(lst.isEmpty() && b){" + PMD.EOL +
-        "            return true;" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "        return false;" + PMD.EOL +
-        "    }" + PMD.EOL +
-        "}";
-    
-
-    private static final String TEST7 =
-        "public class Foo {" + PMD.EOL +
-        "    public static boolean bar(List lst) {" + PMD.EOL +
-        "        if(0 == lst.size()){" + PMD.EOL +
-        "            return true;" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "        return false;" + PMD.EOL +
-        "    }" + PMD.EOL +
-        "}";
-
-    private static final String TEST8 =
-        "public class Foo {" + PMD.EOL +
-        "    public static boolean bar(List lst) {" + PMD.EOL +
-        "        if(lst.size() > 0){" + PMD.EOL +
-        "            return true;" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "        return false;" + PMD.EOL +
-        "    }" + PMD.EOL +
-        "}";
-
-    private static final String TEST9 =
-        "public class Foo {" + PMD.EOL +
-        "    public static int modulo = 2;" + PMD.EOL +
-        "    public static boolean bar(List lst) {" + PMD.EOL +
-        "        if(lst.size() % modulo == 0){" + PMD.EOL +
-        "            return true;" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "        return false;" + PMD.EOL +
-        "    }" + PMD.EOL +
-        "}";
-
-    private static final String TEST10 =
-        "public class Foo {" + PMD.EOL +
-        "    final Map map;" + PMD.EOL +
-        "    public boolean bar(Foo other) {" + PMD.EOL +
-        "        if (this.map.size() != other.map.size()){" + PMD.EOL +
-        "            return true;" + PMD.EOL +
-        "        }" + PMD.EOL +
-        "        return false;" + PMD.EOL +
-        "    }" + PMD.EOL +
-        "}";
 
 }
 

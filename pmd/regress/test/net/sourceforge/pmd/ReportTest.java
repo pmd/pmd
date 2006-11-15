@@ -22,6 +22,9 @@
  */
 package test.net.sourceforge.pmd;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.PMD;
@@ -30,6 +33,7 @@ import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -39,9 +43,6 @@ import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 import test.net.sourceforge.pmd.testframework.MockRule;
 import test.net.sourceforge.pmd.testframework.RuleTst;
-
-import java.util.Iterator;
-import java.util.Map;
 
 public class ReportTest extends RuleTst implements ReportListener {
 
@@ -114,7 +115,7 @@ public class ReportTest extends RuleTst implements ReportListener {
 
     public void testExclusionsInReportWithAnnotations() throws Throwable {
         Report rpt = new Report();
-        runTestFromString15(TEST2, new FooRule(), rpt);
+        runTestFromString(TEST2, new FooRule(), rpt, SourceType.JAVA_15);
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }
