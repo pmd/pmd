@@ -52,8 +52,15 @@ public class RemoveViolationAction extends ViolationSelectionAction {
                     }
                 }, null);
             } catch (CoreException ce) {
-                PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION, ce);
+                PMDUiPlugin.getDefault().logError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), ce);
             }
         }
+    }
+    
+    /**
+     * Helper method to return an NLS string from its key
+     */
+    private String getString(String key) {
+        return PMDUiPlugin.getDefault().getStringTable().getString(key);
     }
 }

@@ -37,7 +37,9 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
+import net.sourceforge.pmd.ui.views.ViolationOverview;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IResource;
@@ -62,6 +64,12 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/11/16 17:09:40  holobender
+ * Some major changes:
+ * - new CPD View
+ * - changed and refactored ViolationOverview
+ * - some minor changes to dataflowview to work with PMD
+ *
  * Revision 1.4  2006/10/10 22:31:01  phherlin
  * Fix other PMD warnings
  *
@@ -139,29 +147,15 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
     private void processResource() {
         log.debug("Processing a resource");
         try {
-            // if action is run from a view, process the selected resources
             if (this.targetPart instanceof IViewPart) {
+                // if action is run from a view, process the selected resources                
                 final ISelection sel = targetPart.getSite().getSelectionProvider().getSelection();
 
                 if (sel instanceof IStructuredSelection) {
                     final IStructuredSelection structuredSel = (IStructuredSelection) sel;
                     for (final Iterator i = structuredSel.iterator(); i.hasNext();) {
                         final Object element = i.next();
-
-                        if (element instanceof IAdaptable) {
-                            final IAdaptable adaptable = (IAdaptable) element;
-                            final IResource resource = (IResource) adaptable.getAdapter(IResource.class);
-                            if (resource == null) {
-                                log.warn("The selected object cannot adapt to a resource");
-                                log.debug("   -> selected object : " + element);
-                            } else {
-                                resource.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
-                                log.debug("Remove markers on resrouce " + resource.getName());
-                            }
-                        } else {
-                            log.warn("The selected object is not adaptable");
-                            log.debug("   -> selected object : " + element);
-                        }
+                        processElement(element);
                     }
                 } else {
                     log.warn("The view part selection is not a structured selection !");
@@ -189,6 +183,31 @@ public class PMDRemoveMarkersAction implements IViewActionDelegate, IObjectActio
         }
     }
     
+    private void processElement(Object element) throws CoreException {
+        if (element instanceof AbstractPMDRecord) {
+            final AbstractPMDRecord record = (AbstractPMDRecord) element;
+            final IResource resource = record.getResource();
+            if (this.targetPart instanceof ViolationOverview) {
+                ((ViolationOverview)targetPart).deleteMarkers(record);
+            }
+            
+            log.debug("Remove markers on resource " + resource.getName());
+        } else if (element instanceof IAdaptable) {
+            final IAdaptable adaptable = (IAdaptable) element;
+            final IResource resource = (IResource) adaptable.getAdapter(IResource.class);
+            if (resource == null) {
+                log.warn("The selected object cannot adapt to a resource");
+                log.debug("   -> selected object : " + element);
+            } else {
+                resource.deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE);
+                log.debug("Remove markers on resrouce " + resource.getName());
+            }
+        } else {
+            log.warn("The selected object is not adaptable");
+            log.debug("   -> selected object : " + element);
+        }
+    }
+
     /**
      * Helper method to return an NLS string from its key
      */

@@ -42,6 +42,12 @@ package net.sourceforge.pmd.ui.nls;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/11/16 17:11:09  holobender
+ * Some major changes:
+ * - new CPD View
+ * - changed and refactored ViolationOverview
+ * - some minor changes to dataflowview to work with PMD
+ *
  * Revision 1.2  2006/10/07 16:01:21  phherlin
  * Integrate Sven updates
  *
@@ -240,7 +246,20 @@ public class StringKeys {
     public static final String MSGKEY_VIEW_MENU_RESOURCE_FILTER = "view.menu.resource_filter";
     public static final String MSGKEY_VIEW_MENU_PRIORITY_FILTER = "view.menu.priority_filter";
     public static final String MSGKEY_VIEW_DEFAULT_PACKAGE = "view.default_package";
+    public static final String MSGKEY_VIEW_MENU_FILEMARKERS = "view.menu.show_file_markers";
+    public static final String MSGKEY_VIEW_MENU_MARKERFILES = "view.menu.show_marker_files";
+    public static final String MSGKEY_VIEW_MENU_PACKFILES = "view.menu.show_pack_files";
+    public static final String MSGKEY_VIEW_MENU_PRESENTATION_TYPE = "view.menu.show_type";
     
+    public static final String MSGKEY_DIALOG_CPD_TITLE = "dialog.cpd.title";
+    public static final String MSGKEY_DIALOG_CPD_MIN_TILESIZE_LABEL = "dialog.cpd.min_tilesize.label";
+    public static final String MSGKEY_DIALOG_CPD_CREATEREPORT = "dialog.cpd.create_report";
+    public static final String MSGKEY_DIALOG_CPD_REPORT = "dialog.cpd.report";
+    public static final String MSGKEY_DIALOG_CPD_FORMAT_LABEL = "dialog.cpd.format.label";
+    public static final String MSGKEY_DIALOG_CPD_LANGUAGE_LABEL = "dialog.cpd.language.label";
+    public static final String MSGKEY_DIALOG_TOOLTIP_CPD_FORMAT = "dialog.tooltip.cpd.format";
+    public static final String MSGKEY_DIALOG_TOOLTIP_CPD_MIN_TILESIZE = "dialog.tooltip.cpd.tilesize";
+    public static final String MSGKEY_DIALOG_TOOLTIP_CPD_LANGUAGE = "dialog.tooltip.cpd.language";
     public static final String MSGKEY_ERROR_TITLE = "message.error.title";
     public static final String MSGKEY_ERROR_CORE_EXCEPTION = "message.error.core_exception";
     public static final String MSGKEY_ERROR_PMD_EXCEPTION = "message.error.pmd_exception";
@@ -259,6 +278,7 @@ public class StringKeys {
     public static final String MSGKEY_ERROR_LOADING_RULESET = "message.error.loading_ruleset";
     public static final String MSGKEY_ERROR_VIEW_EXCEPTION = "message.error.view_exception";
     public static final String MSGKEY_ERROR_FILE_NOT_FOUND = "message.error.file_not_found";
+    public static final String MSGKEY_ERROR_CREATING_REPORT = "message.error.creating_report";
     
     public static final String MSGKEY_QUESTION_TITLE = "message.question.title";
     public static final String MSGKEY_QUESTION_RULES_CHANGED = "message.question.rules_changed";
@@ -290,6 +310,8 @@ public class StringKeys {
     public static final String MSGKEY_MONITOR_UPDATING_PROJECTS = "monitor.updating_projects";
     public static final String MSGKEY_MONITOR_REVIEW = "monitor.review";
     public static final String MSGKEY_MONITOR_REMOVE_REVIEWS = "monitor.remove_reviews";
+    public static final String MSGKEY_MONITOR_CALC_STATS_TASK = "monitor.calc_stats";
+    public static final String MSGKEY_MONITOR_CALC_STATS_OF_PACKAGE = "monitor.calc_stats.package";
     
     /**
      * This class is not meant to be instanciated

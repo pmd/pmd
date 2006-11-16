@@ -37,11 +37,16 @@
 package net.sourceforge.pmd.ui.views;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.FileRecord;
+import net.sourceforge.pmd.ui.model.FileToMarkerRecord;
+import net.sourceforge.pmd.ui.model.MarkerRecord;
 import net.sourceforge.pmd.ui.model.PackageRecord;
 import net.sourceforge.pmd.ui.model.ProjectRecord;
 import net.sourceforge.pmd.ui.model.RootRecord;
@@ -60,13 +65,19 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 
 /**
- * Provides the Violation Overview with Content Content Elements can be
+ * Provides the Violation Overview with Content Elements can be
  * PackageRecords or FileRecords
  * 
  * @author SebastianRaffel ( 09.05.2005 ), Philppe Herlin, Sven Jacob
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/11/16 17:11:08  holobender
+ * Some major changes:
+ * - new CPD View
+ * - changed and refactored ViolationOverview
+ * - some minor changes to dataflowview to work with PMD
+ *
  * Revision 1.4  2006/10/10 21:43:20  phherlin
  * Review Sebastian code... and fix most PMD warnings
  * Revision 1.3 2006/10/09 13:26:40 phherlin Review Sebastian code... and
@@ -118,58 +129,147 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
     public Object[] getChildren(Object parentElement) {
         Object[] children = NO_CHILDREN;
 
-        // if we got a WorkspaceRoot
         if ((parentElement instanceof IWorkspaceRoot) || (parentElement instanceof RootRecord)) {
-
-            // ... we care about its Project's
-            final List projects = root.getChildrenAsList();
-            final ProjectRecord[] projectArray = new ProjectRecord[projects.size()];
-            projects.toArray(projectArray);
-
-            // we make a List of all Packages
-            final List packages = new ArrayList();
-            for (int i = 0; i < projectArray.length; i++) {
-                if (projectArray[i].isProjectOpen()) {
-                    packages.addAll(projectArray[i].getChildrenAsList());
-                }
-            }
-
-            if (this.violationView.isPackageFiltered()) {
-                // we can show Files
-                final List files = new ArrayList();
-                for (int j = 0; j < packages.size(); j++) {
-                    final AbstractPMDRecord packageRec = (AbstractPMDRecord) packages.get(j);
-                    files.addAll(packageRec.getChildrenAsList());
-                }
-                children = files.toArray();
-            } else {
-                // ... or only Packages
-                children = packages.toArray();
-            }
+            children = getChildrenOfRoot();
         } else if (parentElement instanceof PackageRecord) {
-            // here we show the Files contained in a Package
-            children = ((PackageRecord) parentElement).getChildren();
+            children = getChildrenOfPackage((PackageRecord)parentElement);            
+        } else if (parentElement instanceof FileRecord) {
+            children = getChildrenOfFile((FileRecord)parentElement);
+        } else if (parentElement instanceof MarkerRecord) {
+            children = getChildrenOfMarker((MarkerRecord)parentElement);
         }
-
         return children;
     }
 
     /**
+     * Gets the children of a file record.
+     * @param record FileRecord
+     * @return children as array
+     */
+    private Object[] getChildrenOfFile(FileRecord record) {
+        return record.getChildren();
+    }
+
+    /**
+     * Gets the children of a marker record.
+     * @param record MarkerRecord
+     * @return children as array
+     */
+    private Object[] getChildrenOfMarker(MarkerRecord record) {
+        record.updateChildren();
+        return record.getChildren();
+    }
+
+    /**
+     * Gets the children of a PackageRecord.
+     * If the presentation type is {@link ViolationOverview#SHOW_MARKERS_FILES} the children (MarkerRecord)
+     * of the children (FileRecord) will be get. 
+     * 
+     * @param record PackageRecord
+     * @return children as array
+     */
+    private Object[] getChildrenOfPackage(PackageRecord record) {
+        Object[] children = NO_CHILDREN;
+        
+        if (this.violationView.getShowType() == ViolationOverview.SHOW_MARKERS_FILES) {
+            final Map markers = new HashMap();
+            final List files = record.getChildrenAsList();
+            for (int i = 0; i < files.size(); i++) {
+                final AbstractPMDRecord fileRec = (AbstractPMDRecord) files.get(i);
+                final List newMarkers = fileRec.getChildrenAsList();
+                
+                for (int j = 0; j < newMarkers.size(); j++) {
+                    final AbstractPMDRecord markerRec = (AbstractPMDRecord) newMarkers.get(j);
+                    markers.put(markerRec.getName(), markerRec);
+                }                
+            }
+            
+            children = markers.values().toArray(new MarkerRecord[markers.size()]);
+        } else {
+            children = record.getChildren();    
+        }
+        return children;
+    }
+
+    /**
+     * Gets the children of the root depending on the show type.
+     * @return children
+     */
+    private Object[] getChildrenOfRoot() {
+        Object[] children = NO_CHILDREN;
+        
+        // ... we care about its Project's
+        final List projects = root.getChildrenAsList();
+        final ProjectRecord[] projectArray = new ProjectRecord[projects.size()];
+        projects.toArray(projectArray);
+
+        // we make a List of all Packages
+        final List packages = new ArrayList();
+        for (int i = 0; i < projectArray.length; i++) {
+            if (projectArray[i].isProjectOpen()) {
+                packages.addAll(projectArray[i].getChildrenAsList());
+            }
+        }
+       
+        switch (this.violationView.getShowType()) {
+        case ViolationOverview.SHOW_MARKERS_FILES:
+        case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
+            // show packages
+            children = packages.toArray();
+            break;               
+            
+        case ViolationOverview.SHOW_FILES_MARKERS:
+            // show files
+            final List files = new ArrayList();
+            for (int j = 0; j < packages.size(); j++) {
+                final AbstractPMDRecord packageRec = (AbstractPMDRecord) packages.get(j);
+                files.addAll(packageRec.getChildrenAsList());
+            }
+            
+            children = files.toArray();
+            break;
+                    
+        default:
+            // do nothing
+        }             
+        return children;
+    }
+
+     /**
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
      */
     public Object getParent(Object element) {
         Object parent = null;
-
-        if (element instanceof FileRecord) {
-            // the Parent to a FileRecord is its PackageRecord
-            if (this.violationView.isPackageFiltered()) {
+        final AbstractPMDRecord record = (AbstractPMDRecord) element;
+        
+        switch (violationView.getShowType()) {
+        case ViolationOverview.SHOW_FILES_MARKERS:
+            if (element instanceof FileRecord) {
                 parent = this.root;
             } else {
-                parent = ((FileRecord) element).getParent();
+                parent = record.getParent();
             }
-        } else if (element instanceof PackageRecord) {
-            // the Parent to a PackageRecord is the Root
-            parent = this.root;
+            break;
+        case ViolationOverview.SHOW_MARKERS_FILES:
+            if (element instanceof FileToMarkerRecord) {
+                parent = record.getParent();
+            } else if (element instanceof PackageRecord) {
+                parent = this.root;
+            } else if (element instanceof MarkerRecord) {
+                parent = record.getParent().getParent();
+            }
+            
+            break;
+        case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
+            if (element instanceof PackageRecord) {
+                parent = this.root;
+            } else {
+                parent = record.getParent();
+            }
+
+            break;
+        default:
+            // do nothing
         }
 
         return parent;
@@ -179,14 +279,25 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
      */
     public boolean hasChildren(Object element) {
-        boolean result = false;
-
-        if ((element instanceof IWorkspaceRoot) && (this.root.getChildren().length > 0)) {
-            result = true;
-        } else if ((element instanceof PackageRecord) && (((PackageRecord) element).hasMarkers())) {
-            result = true;
+        boolean hasChildren = true;
+        
+        // find out if this is the last level in the tree (to avaoid recursion)
+        switch (violationView.getShowType()) {
+        case ViolationOverview.SHOW_PACKAGES_FILES_MARKERS:
+        case ViolationOverview.SHOW_FILES_MARKERS:
+            hasChildren ^= element instanceof MarkerRecord;
+            break;
+        case ViolationOverview.SHOW_MARKERS_FILES:
+            hasChildren ^= element instanceof FileToMarkerRecord;
+            break;
+        default:
+            // do nothing
         }
-        return result;
+        
+        if (hasChildren) {
+            hasChildren = getChildren(element).length > 0;
+        }
+        return hasChildren;
     }
 
     /**
@@ -268,7 +379,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
 
             // if the Project is closed or deleted,
             // we also delete it from the Model and go on
-            if ((!project.isOpen()) || (!project.isAccessible())) {
+            if (!(project.isOpen() && project.isAccessible())) { // NOPMD by Sven on 09.11.06 22:17
                 LOG.debug("The project is not open or not accessible. Remove it");
                 final List[] array = updateFiles(project, changedFiles);
                 removals.addAll(array[1]);
@@ -362,6 +473,7 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
                 final AbstractPMDRecord rec = projectRec.findResource(resource);
                 if ((rec != null) && (rec.getResourceType() == IResource.FILE)) {
                     final FileRecord fileRec = (FileRecord) rec;
+                    fileRec.updateChildren();
                     if ((fileRec.getResource().isAccessible()) && (fileRec.hasMarkers())) {
                         LOG.debug("The file has changed");
                         changes.add(fileRec);
@@ -400,11 +512,12 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      * @param changes
      */
     protected void updateViewer(List additions, List removals, List changes) {
-
+        final List refreshList = new ArrayList();
+        
         // perform removals
         if (removals.size() > 0) {
-            this.treeViewer.cancelEditing();
-            this.treeViewer.remove(removals.toArray());
+            this.treeViewer.remove(removals.toArray(new AbstractPMDRecord[removals.size()]));
+            refreshList.addAll(removals);
         }
 
         // perform additions
@@ -417,13 +530,33 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
                     this.treeViewer.add(this.root, addedRec);
                 }
             }
+            refreshList.addAll(additions);
         }
 
         // perform changes
         if (changes.size() > 0) {
-            this.treeViewer.update(changes.toArray(), null);
+            for (int i = 0; i < changes.size(); i++) {
+                final AbstractPMDRecord changedRec = (AbstractPMDRecord) changes.get(i);
+                if (changedRec instanceof FileRecord) {
+                    this.treeViewer.update(changedRec, null);
+                    this.treeViewer.update(changedRec.getChildren(), null);
+                }
+            }
+            refreshList.addAll(changes);
         }
-
-        this.violationView.refresh();
+        
+        refreshViewer(refreshList);
+    }
+    
+    /**
+     * Refresh the viewer with the parent elements of each element in the list.
+     * @param elements list of changes, removals or additions (AbstractPMDRecord)
+     */
+    protected void refreshViewer(List elements) {
+        final Iterator elementIterator = elements.iterator();
+        while (elementIterator.hasNext()) {
+            final AbstractPMDRecord record = (AbstractPMDRecord)elementIterator.next();
+            this.treeViewer.refresh(record.getParent());
+        }
     }
 }

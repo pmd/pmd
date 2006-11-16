@@ -6,7 +6,10 @@ import java.util.List;
 
 import net.sourceforge.pmd.ui.PMDUiConstants;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.FileRecord;
+import net.sourceforge.pmd.ui.model.FileToMarkerRecord;
+import net.sourceforge.pmd.ui.model.MarkerRecord;
 import net.sourceforge.pmd.ui.model.PackageRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
@@ -35,50 +38,68 @@ public class PriorityFilter extends ViewerFilter {
 
     /* @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object) */
     public boolean select(Viewer viewer, Object parentElement, Object element) {
-        // the Element can be ...
+        boolean select = false;
+        
         if (element instanceof PackageRecord) {
-            // a Package (Overview)
-            PackageRecord packageRec = (PackageRecord) element;
-
-            // go through the List and search for Markers with the
-            // given Priorities, if there is one, it is displayed
-            for (int i = 0; i < priorityList.size(); i++) {
-                Integer priority = (Integer) priorityList.get(i);
-                if (packageRec.findMarkersByAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY, priority) != null)
-                    return true;
-            }
+            // ViolationOverview
+            select = hasMarkersToShow((PackageRecord)element);
         } else if (element instanceof FileRecord) {
-            // ... a File (Overview)
-            FileRecord fileRec = (FileRecord) element;
-            for (int i = 0; i < priorityList.size(); i++) {
-                Integer priority = (Integer) priorityList.get(i);
-
-                // go through the List and search for Markers with the
-                // given Priorities, if there is one, it is displayed
-                if (fileRec.findMarkersByAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY, priority) != null)
-                    return true;
-            }
-        } else if (element instanceof IMarker) {
-            // ... or a Marker (Outline)
-            try {
-                Integer markerPrio = (Integer) ((IMarker) element).getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);
-
-                // go through the List and search for Markers with the
-                // given Priorities, if there is one, it is displayed
-                // ** PHR note ** for unknown reason, markerPrio may be null
-                if (markerPrio != null) {
-                    for (int i = 0; i < priorityList.size(); i++) {
-                        Integer priority = (Integer) priorityList.get(i);
-                        if (markerPrio.equals(priority))
-                            return true;
-                    }
-                }
+            // ViolationOverview            
+            select = hasMarkersToShow((FileRecord)element);
+        } else if (element instanceof IMarker) {           
+            // ViolationOutline
+            try {                
+                final IMarker marker = (IMarker) element;
+                final Integer markerPrio = (Integer) marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY);
+                select = isPriorityEnabled(markerPrio);
             } catch (CoreException ce) {
                 PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
             }
+        } else if (element instanceof MarkerRecord) {
+            // ViolationOverview
+            final MarkerRecord markerRec = (MarkerRecord) element;
+            for (int i = 0; i < priorityList.size(); i++) {
+                final Integer priority = (Integer) priorityList.get(i);
+
+                if (markerRec.getPriority() == priority.intValue()) {
+                    select = true;
+                    break;
+                }
+            }
+        } else if (element instanceof FileToMarkerRecord) {
+            select = true;
         }
-        return false;
+        return select;
     }
+
+    private boolean isPriorityEnabled(Integer markerPrio) {
+        boolean isEnabled = false;
+        // for some unknown reasons markerPrio may be null.
+        if (markerPrio != null) {
+            for (int i = 0; i < priorityList.size(); i++) {
+                final Integer priority = (Integer) priorityList.get(i);
+                if (markerPrio.equals(priority)) {
+                    isEnabled = true;
+                    break;
+                }
+            }
+        }
+        return isEnabled;
+    }
+
+    private boolean hasMarkersToShow(AbstractPMDRecord record) {
+        boolean hasMarkers = false;
+        for (int i = 0; i < priorityList.size(); i++) {
+            final Integer priority = (Integer) priorityList.get(i);
+            final IMarker[] markers = record.findMarkersByAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY, priority);
+            if (markers.length > 0) {
+                hasMarkers = true;
+                break;
+            }
+        }
+        return hasMarkers;
+    }
+
 
     /**
      * Sets the List of Priorities to filter
@@ -123,17 +144,16 @@ public class PriorityFilter extends ViewerFilter {
      * @param splitter, the List splitter (in general ",")
      */
     public void setPriorityFilterListFromString(String newList, String splitter) {
-        if (newList == null)
-            return;
-
-        String[] newArray = newList.split(splitter);
-        ArrayList priorities = new ArrayList();
-
-        for (int i = 0; i < newArray.length; i++) {
-            priorities.add(new Integer(newArray[i]));
+        if (newList != null) {
+            final String[] newArray = newList.split(splitter);
+            final ArrayList priorities = new ArrayList();
+    
+            for (int i = 0; i < newArray.length; i++) {
+                priorities.add(new Integer(newArray[i])); // NOPMD by Sven on 13.11.06 11:53
+            }
+    
+            priorityList = priorities;
         }
-
-        priorityList = priorities;
     }
 
     /**
@@ -144,12 +164,13 @@ public class PriorityFilter extends ViewerFilter {
      * @return the List-String
      */
     public String getPriorityFilterListAsString(String splitter) {
-        String listString = "";
+        final StringBuffer listString = new StringBuffer();
         for (int i = 0; i < priorityList.size(); i++) {
-            if (i > 0)
-                listString += splitter;
-            listString += priorityList.get(i).toString();
+            if (i > 0) {
+                listString.append(splitter);
+            }
+            listString.append(priorityList.get(i));
         }
-        return listString;
+        return listString.toString();
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.ui.model.FileRecord;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
+import net.sourceforge.pmd.ui.model.MarkerRecord;
 import net.sourceforge.pmd.ui.model.PackageRecord;
 
 import org.eclipse.jface.viewers.Viewer;
@@ -31,19 +32,24 @@ public class ProjectFilter extends ViewerFilter {
 	
 	/* @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object) */
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
-		AbstractPMDRecord projectRec = null;
+		boolean select = true;
+        
+        AbstractPMDRecord projectRec = null;
 		if (element instanceof PackageRecord) {
 			projectRec = ((PackageRecord) element).getParent();
 		} else if (element instanceof FileRecord) {
 			projectRec = ((FileRecord) element).getParent().getParent();
-		}
+		} else if (element instanceof MarkerRecord) {
+            projectRec = ((MarkerRecord) element).getParent().getParent().getParent();
+        }
 		
 		// if the Project to a File or Package is in the List
 		// we don't want the Element to be shown
-		if (projectFilterList.contains(projectRec))
-			return false;
-		
-		return true;
+		if (projectFilterList.contains(projectRec)) {
+			select = false;
+        }
+        
+		return select;
 	}
 	
 	/**

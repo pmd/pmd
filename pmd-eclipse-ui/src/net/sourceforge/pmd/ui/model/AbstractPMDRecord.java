@@ -53,6 +53,12 @@ import org.eclipse.core.resources.IResource;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/11/16 17:11:08  holobender
+ * Some major changes:
+ * - new CPD View
+ * - changed and refactored ViolationOverview
+ * - some minor changes to dataflowview to work with PMD
+ *
  * Revision 1.2  2006/10/09 13:26:41  phherlin
  * Review Sebastian code... and fix most PMD warnings
  *
@@ -66,7 +72,8 @@ public abstract class AbstractPMDRecord {
     public final static int TYPE_PROJECT = IResource.PROJECT;
     public final static int TYPE_PACKAGE = IResource.FOLDER;
     public final static int TYPE_FILE = IResource.FILE;
-
+    public final static int TYPE_MARKER = 16;
+    
     /**
      * @return the Name of the Element
      */
@@ -131,6 +138,30 @@ public abstract class AbstractPMDRecord {
      */
     public abstract AbstractPMDRecord removeResource(IResource resource);
 
+    /**
+     * Gets the number of violations (markers) that belong to a priority.
+     * 
+     * @param prio priority to search for
+     * @return number of found violations
+     */
+    public abstract int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords);
+    
+    /**
+     * Gets the counted lines of code (loc).
+     * This works recursive.
+     * 
+     * @return loc lines of code
+     */
+    public abstract int getLOC();
+    
+    /**
+     * Gets the number of methods.
+     * This works recursive.
+     * 
+     * @return number of counted methods
+     */
+    public abstract int getNumberOfMethods();
+    
     /**
      * Creates the children Elements. This method should be called in every
      * Constructor to create a Model recursively.
@@ -204,12 +235,10 @@ public abstract class AbstractPMDRecord {
             final IMarker[] childrenMarkers = children[i].findMarkersByAttribute(attributeName, value);
 
             // ... and add their Markers to the List
-            if (childrenMarkers != null) {
-                markerList.addAll(Arrays.asList(childrenMarkers));
-            }
+            markerList.addAll(Arrays.asList(childrenMarkers));
         }
 
-        return markerList.isEmpty() ? null : (IMarker[]) markerList.toArray(new IMarker[markerList.size()]); // NOPMD by Herlin on 07/10/06 15:51
+        return (IMarker[])markerList.toArray(new IMarker[markerList.size()]);
     }
 
     /**
@@ -277,5 +306,35 @@ public abstract class AbstractPMDRecord {
         }
 
         return record;
+    }
+    
+    /**
+     * Finds all Resources with a given Name and Type. Checks children recursively
+     * (needs to be stopped by overwriting).
+     * 
+     * @param name, the Name of the Resource
+     * @param type, the Type, one of ROOT, PROJECT, PACKAGE or FILE
+     * @return all resources that match the name and type
+     */
+    public List findResourcesByName(String name, int type) {
+        final List records = new ArrayList();
+        final List thisChildren = getChildrenAsList();
+
+        for (int l = 0; l < thisChildren.size(); l++) {
+            final AbstractPMDRecord thisChild = (AbstractPMDRecord) thisChildren.get(l);
+
+            // If type and name are equals, then the record is the one we search
+            if ((thisChild.getResourceType() == type) && thisChild.getName().equalsIgnoreCase(name)) {
+                records.add(thisChild);
+            }
+            
+            // else we check the childs children the same way
+            else {
+                final List grandChilds = thisChild.findResourcesByName(name, type);
+                records.addAll(grandChilds);
+            }
+        }
+
+        return records;
     }
 }

@@ -263,14 +263,14 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
             // we load the stuff into the new Page
             if (newPage != null) {
                 List widthList = memento.getIntegerList(COLUMN_WIDTHS);
-                if (widthList != null) {
+                if (!widthList.isEmpty()) {
                     Integer[] widthArray = new Integer[widthList.size()];
                     widthList.toArray(widthArray);
                     newPage.setColumnWidths(widthArray);
                 }
 
                 List sorterList = memento.getIntegerList(COLUMN_SORTER);
-                if (sorterList != null) {
+                if (!sorterList.isEmpty()) {
                     Integer[] sorterProps = new Integer[sorterList.size()];
                     sorterList.toArray(sorterProps);
                     newPage.setSorterProperties(sorterProps);

@@ -51,6 +51,12 @@ import org.eclipse.core.resources.IWorkspaceRoot;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2006/11/16 17:11:08  holobender
+ * Some major changes:
+ * - new CPD View
+ * - changed and refactored ViolationOverview
+ * - some minor changes to dataflowview to work with PMD
+ *
  * Revision 1.5  2006/10/09 13:32:47  phherlin
  * Fix mistake in CVS tags (double $$)
  *
@@ -212,5 +218,41 @@ public class RootRecord extends AbstractPMDRecord {
         }
 
         return removedProject;
+    }
+    
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getNumberOfViolationsToPriority(int)
+     */
+    public int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords) {
+        int number = 0;
+        for (int i=0; i<children.length; i++) {
+            number += children[i].getNumberOfViolationsToPriority(prio, invertMarkerAndFileRecords);
+        }
+        
+        return number;
+    }
+
+    /* (non-Javadoc)
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getLOC()
+     */
+    public int getLOC() {
+        int number = 0;
+        for (int i=0; i<children.length; i++) {
+            number += children[i].getLOC();
+        }
+        
+        return number;
+    }
+    
+    /* (non-Javadoc)
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getNumberOfMethods()
+     */
+    public int getNumberOfMethods() {
+        int number = 0;
+        for (int i=0; i<children.length; i++) {
+            number += children[i].getNumberOfMethods();
+        }
+        
+        return number;
     }
 }

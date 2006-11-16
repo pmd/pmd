@@ -63,6 +63,12 @@ import org.eclipse.ui.XMLMemento;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2006/11/16 17:11:08  holobender
+ * Some major changes:
+ * - new CPD View
+ * - changed and refactored ViolationOverview
+ * - some minor changes to dataflowview to work with PMD
+ *
  * Revision 1.5  2006/10/10 22:19:59  phherlin
  * Review Sebastian code... and fix most PMD warnings
  *
@@ -163,6 +169,7 @@ public class ViewMemento {
                 if (line.length() != 0) {
                     // the first Line of Text has to be the XML-Prefix
                     isXmlFile = XML_PREFIX.equalsIgnoreCase(line);
+                    break;
                 }
             }
         } catch (FileNotFoundException fnfe) {
@@ -336,7 +343,6 @@ public class ViewMemento {
                 }
             }
         }
-
         return valuelist;
     }
 

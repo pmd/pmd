@@ -39,6 +39,7 @@ import name.herlin.command.CommandException;
 import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
 import net.sourceforge.pmd.runtime.cmd.ReviewCodeCmd;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
+import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.apache.log4j.Logger;
@@ -64,6 +65,12 @@ import org.eclipse.ui.IWorkbenchPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/11/16 17:09:40  holobender
+ * Some major changes:
+ * - new CPD View
+ * - changed and refactored ViolationOverview
+ * - some minor changes to dataflowview to work with PMD
+ *
  * Revision 1.1  2006/05/22 21:23:56  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -181,8 +188,15 @@ public class PMDCheckAction implements IObjectActionDelegate {
         // Add selected resources to the list of resources to be reviewed
         for (Iterator i = selection.iterator(); i.hasNext();) {
             Object element = i.next();
-
-            if (element instanceof IAdaptable) {
+            if (element instanceof AbstractPMDRecord) {
+                final IResource resource = ((AbstractPMDRecord) element).getResource();
+                if (resource != null) {
+                    cmd.addResource(resource);
+                } else {
+                    log.warn("The selected object has no resource");
+                    log.debug("  -> selected object : " + element);
+                }
+            } else if (element instanceof IAdaptable) {
                 IAdaptable adaptable = (IAdaptable) element;
                 IResource resource = (IResource) adaptable.getAdapter(IResource.class);
                 if (resource != null) {

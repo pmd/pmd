@@ -22,7 +22,7 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="net.sourceforge.pmd.core"/>
       <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>      
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
    </requires>
 
    <extension
@@ -216,33 +216,22 @@
             id="net.sourceforge.pmd.ui.pmdTaskListContribution"
             targetID="org.eclipse.ui.views.TaskList">
          <action
-               label="%action.clearall"
-               icon="icons/pmd-icon-16.gif"
                class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
-               menubarPath="additions"
-               id="net.sourceforge.pmd.ui.pmdRemoveAllMarkersAction">
+               icon="icons/pmd-icon-16.gif"
+               id="net.sourceforge.pmd.ui.pmdRemoveAllMarkersAction"
+               label="%action.clearall"
+               menubarPath="additions">
          </action>
       </viewerContribution>
       <viewerContribution
             id="net.sourceforge.pmd.ui.pmdVioaltionViewContribution"
             targetID="net.sourceforge.pmd.ui.views.ViolationView">
          <action
+               class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
+               icon="icons/pmd-icon-16.gif"
+               id="net.sourceforge.pmd.ui.pmdRemoveAllMarkersAction"
                label="%action.clearall"
-               icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
-               menubarPath="additions"
-               id="net.sourceforge.pmd.ui.pmdRemoveAllMarkersAction">
-         </action>
-      </viewerContribution>
-      <viewerContribution
-            id="net.sourceforge.pmd.ui.pmdOverviewContribution"
-            targetID="net.sourceforge.pmd.ui.views.violationOverview">
-         <action
-               label="%action.clearpmd"
-               icon="icons/pmd-icon-16.gif"
-               class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
-               menubarPath="additions"
-               id="net.sourceforge.pmd.ui.pmdRemoveMarkersAction">
+               menubarPath="additions">
          </action>
       </viewerContribution>
       <viewerContribution
@@ -261,6 +250,42 @@
             nameFilter="*"
             id="net.sourceforge.pmd.ui.pmdMethodContribution">
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="net.sourceforge.pmd.ui.pmdOverviewContribution"
+            objectClass="net.sourceforge.pmd.ui.model.AbstractPMDRecord">
+         <action
+               class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
+               enablesFor="+"
+               icon="icons/pmd-icon-16.gif"
+               id="net.sourceforge.pmd.ui.pmdRemoveMarkersAction"
+               label="%action.clearpmd"
+               menubarPath="additions"/>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="net.sourceforge.pmd.ui.pmdOverviewContribution"
+            objectClass="net.sourceforge.pmd.ui.model.PackageRecord">
+         <action
+               class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
+               enablesFor="+"
+               icon="icons/pmd-icon-16.gif"
+               id="net.sourceforge.pmd.ui.pmdCheckProjectAction"
+               label="%action.checkpmd"
+               menubarPath="additions"/>
+      </objectContribution>                 
+      <objectContribution
+            adaptable="false"
+            id="net.sourceforge.pmd.ui.pmdOverviewContribution"
+            objectClass="net.sourceforge.pmd.ui.model.FileRecord">
+         <action
+               class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
+               enablesFor="+"
+               icon="icons/pmd-icon-16.gif"
+               id="net.sourceforge.pmd.ui.pmdCheckProjectAction"
+               label="%action.checkpmd"
+               menubarPath="additions"/>
+      </objectContribution>                               
    </extension>
 
    <extension
@@ -291,6 +316,13 @@
             category="net.sourceforge.pmd.ui.views"
             name="%view.dataflowview"
             id="net.sourceforge.pmd.ui.views.dataflowView"/>
+      <view
+            allowMultiple="false"
+            category="net.sourceforge.pmd.ui.views"
+            class="net.sourceforge.pmd.ui.views.CPDView"
+            icon="icons/icon_cpd.gif"
+            id="net.sourceforge.pmd.ui.views.CPDView"
+            name="%view.cpd"/>
    </extension>
 
    <extension

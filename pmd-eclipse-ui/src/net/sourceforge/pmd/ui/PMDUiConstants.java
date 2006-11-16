@@ -44,6 +44,12 @@ package net.sourceforge.pmd.ui;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/11/16 17:09:24  holobender
+ * Some major changes:
+ * - new CPD View
+ * - changed and refactored ViolationOverview
+ * - some minor changes to dataflowview to work with PMD
+ *
  * Revision 1.3  2006/10/09 13:26:40  phherlin
  * Review Sebastian code... and fix most PMD warnings
  *
@@ -131,7 +137,9 @@ public class PMDUiConstants {
     public static final String ICON_BUTTON_PRIO4 = "icons/btn_prio4.gif";
     public static final String ICON_BUTTON_PRIO5 = "icons/btn_prio5.gif";
     
-	public static final String ICON_BUTTON_PACKFILES = "icons/btn_packfiles.gif";
+    public static final String ICON_BUTTON_PACKFILES = "icons/btn_packfiles.gif";
+    public static final String ICON_BUTTON_FILEMARKERS = "icons/btn_filemarkers.gif";
+	public static final String ICON_BUTTON_MARKERFILES = "icons/btn_markerfiles.gif";
 	public static final String ICON_BUTTON_FILES = "icons/btn_files.gif";
 	
     public static final String ICON_BUTTON_COLLAPSE = "icons/btn_collapse.gif";
@@ -145,6 +153,8 @@ public class PMDUiConstants {
     public static final String ID_OUTLINE = PLUGIN_ID + ".views.violationOutline";
     public static final String ID_OVERVIEW = PLUGIN_ID + ".views.violationOverview";
     public static final String ID_DATAFLOWVIEW = PLUGIN_ID + ".views.dataflowView";
+    public static final String ID_CPDVIEW = PLUGIN_ID + ".views.CPDView";
+    
     public static final String MEMENTO_OUTLINE_FILE = "/violationOutline_memento.xml";
     public static final String MEMENTO_OVERVIEW_FILE = "/violationOverview_memento.xml";
     

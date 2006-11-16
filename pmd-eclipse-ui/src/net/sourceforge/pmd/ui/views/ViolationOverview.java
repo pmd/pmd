@@ -34,42 +34,34 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.sourceforge.pmd.ui.views;
+package net.sourceforge.pmd.ui.views; // NOPMD by Sven on 13.11.06 11:45
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import name.herlin.command.CommandException;
+import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.runtime.cmd.DeleteMarkersCommand;
 import net.sourceforge.pmd.ui.PMDUiConstants;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.model.AbstractPMDRecord;
 import net.sourceforge.pmd.ui.model.FileRecord;
+import net.sourceforge.pmd.ui.model.FileToMarkerRecord;
+import net.sourceforge.pmd.ui.model.MarkerRecord;
 import net.sourceforge.pmd.ui.model.PackageRecord;
-import net.sourceforge.pmd.ui.model.ProjectRecord;
 import net.sourceforge.pmd.ui.model.RootRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
-import net.sourceforge.pmd.ui.views.actions.CalculateStatisticsAction;
-import net.sourceforge.pmd.ui.views.actions.CollapseAllAction;
-import net.sourceforge.pmd.ui.views.actions.PackageSwitchAction;
-import net.sourceforge.pmd.ui.views.actions.PriorityFilterAction;
-import net.sourceforge.pmd.ui.views.actions.ProjectFilterAction;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.ITreeViewerListener;
+import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -79,12 +71,11 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
 
 /**
@@ -95,32 +86,51 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/11/16 17:11:08  holobender
+ * Some major changes:
+ * - new CPD View
+ * - changed and refactored ViolationOverview
+ * - some minor changes to dataflowview to work with PMD
+ *
  * Revision 1.3  2006/10/09 13:26:40  phherlin
  * Review Sebastian code... and fix most PMD warnings
  *
  */
-public class ViolationOverview extends ViewPart implements IDoubleClickListener, ISelectionChangedListener, ISelectionProvider {
+public class ViolationOverview extends ViewPart implements ISelectionProvider, ITreeViewerListener { // NOPMD by Sven on 13.11.06 11:45
     private TreeViewer treeViewer;
     private ViolationOverviewContentProvider contentProvider;
     private ViolationOverviewLabelProvider labelProvider;
     private PriorityFilter priorityFilter;
     private ProjectFilter projectFilter;
-
+    private ViolationOverviewDoubleClickListener doubleClickListener;
+    private ViolationOverviewMenuManager menuManager;
+    
     private RootRecord root;
-    private AbstractPMDRecord currentProject;
     private ViewMemento memento;
 
-    private PriorityFilterAction[] priorityActions;
-    private boolean packageFiltered;
     protected Integer[] columnWidths;
-    protected int[] columnSortOrder = { 0, 0, 1, -1, -1, -1, 1 };
+    protected int[] columnSortOrder = { 1, -1, -1, -1, 1 };
     protected int currentSortedColumn;
+    private int showType;
 
     protected final static String PACKAGE_SWITCH = "packageSwitch";
     protected final static String PRIORITY_LIST = "priorityFilterList";
     protected final static String PROJECT_LIST = "projectFilterList";
     protected final static String COLUMN_WIDTHS = "tableColumnWidths";
     protected final static String COLUMN_SORTER = "tableColumnSorter";
+    
+    /**
+     * Shows packages -> files -> markers.
+     */
+    public final static int SHOW_PACKAGES_FILES_MARKERS = 1;
+    /**
+     * Shows files -> markers without packages.
+     */
+    public final static int SHOW_FILES_MARKERS = 2;
+    /**
+     * Shows markers -> files without packages.
+     */
+    public final static int SHOW_MARKERS_FILES = 3;
 
     /**
      * @see org.eclipse.ui.ViewPart#init(org.eclipse.ui.IViewSite)
@@ -135,7 +145,11 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
         this.labelProvider = new ViolationOverviewLabelProvider(this);
         this.priorityFilter = new PriorityFilter();
         this.projectFilter = new ProjectFilter();
+        this.doubleClickListener = new ViolationOverviewDoubleClickListener(this);
+        this.menuManager = new ViolationOverviewMenuManager(this);
 
+        this.showType = SHOW_PACKAGES_FILES_MARKERS;
+        
         // we can load the Memento here
         this.memento = new ViewMemento(PMDUiConstants.MEMENTO_OVERVIEW_FILE);
         if (this.memento != null) {
@@ -148,8 +162,7 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
      * @see org.eclipse.ui.IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
      */
     public void createPartControl(Composite parent) {
-        final int treeStyle = SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION;
-        this.treeViewer = new TreeViewer(parent, treeStyle);
+        this.treeViewer = new TreeViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         this.treeViewer.setUseHashlookup(true);
         this.treeViewer.getTree().setHeaderVisible(true);
         this.treeViewer.getTree().setLinesVisible(true);
@@ -159,19 +172,19 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
         this.treeViewer.setLabelProvider(labelProvider);
         this.treeViewer.addFilter(priorityFilter);
         this.treeViewer.addFilter(projectFilter);
-
+        this.treeViewer.addTreeListener(this);
+        
         // create the necessary Stuff
-        setupActions();
+        menuManager.setupActions();
         createColumns(this.treeViewer.getTree());
-        createActionBars();
-        createDropDownMenu();
-        createContextMenu();
+        menuManager.createActionBars(getViewSite().getActionBars().getToolBarManager());
+        menuManager.createDropDownMenu(getViewSite().getActionBars().getMenuManager());
+        menuManager.createContextMenu();
 
         // put in the Input
         // and add Listeners
         this.treeViewer.setInput(root);
-        this.treeViewer.addDoubleClickListener(this);
-        this.treeViewer.addSelectionChangedListener(this);
+        this.treeViewer.addDoubleClickListener(doubleClickListener);
         getSite().setSelectionProvider(this);
 
         // load the State from a Memento into the View if there is one
@@ -208,8 +221,8 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
         memento.putList(COLUMN_SORTER, sorterList);
 
         // ... and how we should display the Elements
-        this.memento.putInteger(PACKAGE_SWITCH, this.packageFiltered ? 1 : 0);
-
+        this.memento.putInteger(PACKAGE_SWITCH, getShowType());
+        
         this.memento.save(PMDUiConstants.MEMENTO_OVERVIEW_FILE);
 
         super.dispose();
@@ -232,37 +245,27 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
      */
     private void createColumns(Tree tree) {
         // the "+"-Sign for expanding Packages
-        final TreeColumn plusColumn = new TreeColumn(tree, SWT.RIGHT);
-        plusColumn.setWidth(20);
-        plusColumn.setResizable(false);
-
-        // shows the Image
-        final TreeColumn imageColumn = new TreeColumn(tree, SWT.CENTER);
-        imageColumn.setWidth(20);
-        imageColumn.setResizable(false);
-
-        // shows the Elements Name
-        final TreeColumn elementColumn = new TreeColumn(tree, SWT.LEFT);
-        elementColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_ELEMENT));
-        elementColumn.setWidth(200);
+        final TreeColumn plusColumn = new TreeColumn(tree, SWT.LEFT);
+        plusColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_ELEMENT));
+        plusColumn.setWidth(260);
 
         // Number of Violations
-        final TreeColumn vioTotalColumn = new TreeColumn(tree, SWT.LEFT);
+        final TreeColumn vioTotalColumn = new TreeColumn(tree, SWT.RIGHT);
         vioTotalColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_TOTAL));
         vioTotalColumn.setWidth(100);
 
         // Violations / Lines of code
-        final TreeColumn vioLocColumn = new TreeColumn(tree, SWT.LEFT);
+        final TreeColumn vioLocColumn = new TreeColumn(tree, SWT.RIGHT);
         vioLocColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_LOC));
         vioLocColumn.setWidth(100);
 
         // Violations / Number of Methods
-        final TreeColumn vioMethodColumn = new TreeColumn(tree, SWT.LEFT);
+        final TreeColumn vioMethodColumn = new TreeColumn(tree, SWT.RIGHT);
         vioMethodColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_VIO_METHOD));
         vioMethodColumn.setWidth(100);
 
         // Projects Name
-        final TreeColumn projectColumn = new TreeColumn(tree, SWT.LEFT);
+        final TreeColumn projectColumn = new TreeColumn(tree, SWT.CENTER);
         projectColumn.setText(getString(StringKeys.MSGKEY_VIEW_OVERVIEW_COLUMN_PROJECT));
         projectColumn.setWidth(100);
 
@@ -280,9 +283,7 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
         final TreeColumn[] columns = tree.getColumns();
         this.columnWidths = new Integer[columns.length];
 
-        this.columnWidths[0] = new Integer(columns[0].getWidth());
-        this.columnWidths[1] = new Integer(columns[1].getWidth());
-        for (int k = 2; k < columns.length; k++) {
+        for (int k = 0; k < columns.length; k++) {
             this.columnWidths[k] = new Integer(columns[k].getWidth()); // NOPMD by Herlin on 09/10/06 15:02
             final int i = k;
 
@@ -307,78 +308,6 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
     }
 
     /**
-     * Creates the ActionBars
-     */
-    private void createActionBars() {
-        final IToolBarManager manager = getViewSite().getActionBars().getToolBarManager();
-
-        // Action for calculating the #violations/loc
-        final Action calculateStats = new CalculateStatisticsAction(this);
-        manager.add(calculateStats);
-
-        // Action for switching from Packages to Files only
-        final Action switchPackagesAction = new PackageSwitchAction(this);
-        switchPackagesAction.setChecked(this.packageFiltered);
-        manager.add(switchPackagesAction);
-        manager.add(new Separator());
-
-        // the PriorityFilter-Actions
-        for (int i = 0; i < this.priorityActions.length; i++) {
-            manager.add(this.priorityActions[i]);
-        }
-        manager.add(new Separator());
-
-        // the CollapseAll-Action
-        final Action collapseAllAction = new CollapseAllAction(this);
-        manager.add(collapseAllAction);
-    }
-
-    /**
-     * Creates the DropDownMenu
-     */
-    private void createDropDownMenu() {
-        final IMenuManager manager = getViewSite().getActionBars().getMenuManager();
-        manager.removeAll();
-
-        // both, Context- and DropDownMenu contain the same
-        // SubMenu for filtering Projects
-        createProjectFilterMenu(manager);
-    }
-
-    /**
-     * Creates the Context Menu
-     */
-    private void createContextMenu() {
-        final MenuManager manager = new MenuManager();
-        manager.setRemoveAllWhenShown(true);
-        manager.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(IMenuManager manager) {
-                MenuManager submenuManager;
-
-                // one SubMenu for filtering Projects
-                submenuManager = new MenuManager(getString(StringKeys.MSGKEY_VIEW_MENU_RESOURCE_FILTER));
-                createProjectFilterMenu(submenuManager);
-                manager.add(submenuManager);
-
-                // ... another one for filtering Priorities
-                submenuManager = new MenuManager(getString(StringKeys.MSGKEY_VIEW_MENU_PRIORITY_FILTER));
-                for (int i = 0; i < priorityActions.length; i++) {
-                    submenuManager.add(priorityActions[i]);
-                }
-                manager.add(submenuManager);
-
-                // addtions Action: Clear PMD Violations
-                manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-                manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS + "-end"));
-            }
-        });
-
-        final Tree tree = this.treeViewer.getTree();
-        tree.setMenu(manager.createContextMenu(tree));
-        getSite().registerContextMenu(manager, this.treeViewer);
-    }
-
-    /**
      * Return the ViewerSorter for a Column
      * 
      * @param column, the Number of the Column in the Table
@@ -392,95 +321,33 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
         switch (columnNr) {
 
         // sorts by Number of Violations
-        case 3:
+        case 1:
             viewerSorter = newViolationsCountSorter(column, sortOrder);
             break;
 
         // sorts by Violations per LOC
-        case 4:
+        case 2:
             viewerSorter = newViolationsPerLOCSorter(column, sortOrder);
             break;
 
         // sorts by Violations per Number of Methods
-        case 5:
+        case 3:
             viewerSorter = newViolationsPerMethodsCount(column, sortOrder);
             break;
 
         // sorts by Name of Project
-        case 6:
+        case 4:
             viewerSorter = newProjectNameSorter(column, sortOrder);
             break;
 
         // sorts the Packages and Files by Name
-        case 2:
+        case 0:
         default:
             viewerSorter = newPackagesSorter(column, sortOrder);
             break;
         }
 
         return viewerSorter;
-    }
-
-    /**
-     * Setup the Actions for the ActionBars
-     */
-    protected void setupActions() {
-        final Integer[] priorities = PMDUiPlugin.getDefault().getPriorityValues();
-        this.priorityActions = new PriorityFilterAction[priorities.length];
-
-        // create the Actions for the PriorityFilter
-        for (int i = 0; i < priorities.length; i++) {
-            this.priorityActions[i] = new PriorityFilterAction(priorities[i], this); // NOPMD by Herlin on 09/10/06 15:02
-
-            if (this.priorityFilter.getPriorityFilterList().contains(priorities[i])) {
-                this.priorityActions[i].setChecked(true);
-            }
-        }
-    }
-
-    /**
-     * Create the Menu for filtering Projects
-     * 
-     * @param manager, the MenuManager
-     */
-    protected void createProjectFilterMenu(IMenuManager manager) {
-        final List projectFilterList = this.projectFilter.getProjectFilterList();
-        final List projectList = new ArrayList();
-        if (this.root != null) {
-            // We get a List of all Projects
-            final AbstractPMDRecord[] projects = this.root.getChildren();
-            for (int i = 0; i < projects.length; i++) {
-                final ProjectRecord project = (ProjectRecord) projects[i];
-                // if the Project contains Errors,
-                // we add a FilterAction for it
-                if (project.hasMarkers()) {
-                    final Action projectFilterAction = new ProjectFilterAction(project, this); // NOPMD by Herlin on 09/10/06 15:03
-
-                    // if it is not already in the List,
-                    // we set it as "visible"
-                    if (!projectFilterList.contains(projects[i])) { // NOPMD by Herlin on 09/10/06 15:04
-                        projectFilterAction.setChecked(true);
-                    }
-
-                    manager.add(projectFilterAction);
-                    projectList.add(project);
-                }
-            }
-            manager.add(new Separator());
-
-            // this Action filters the Project the
-            // currently selected Element belongs to
-            final Action currentProjectAction = new Action() {
-                public void run() {
-                    projectFilter.setProjectFilterList(projectList);
-                    projectFilter.removeProjectFromList(currentProject);
-                    refresh();
-                }
-            };
-            currentProjectAction.setText(getString(StringKeys.MSGKEY_VIEW_ACTION_CURRENT_PROJECT));
-
-            manager.add(currentProjectAction);
-        }
     }
 
     /**
@@ -491,57 +358,52 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
      * @param element
      * @return the Number of visible Violations for the given Element
      */
-    public int getFilteredViolations(Object element) {
-        IMarker[] markers;
-        int violations = 0;
+    public int getNumberOfFilteredViolations(AbstractPMDRecord record) {
+        int number = 0;
+
         final List filterList = this.priorityFilter.getPriorityFilterList();
-
-        // for both, PackageRecord and FileRecord
-        // we go through the FilterList and get every Marker
-        // of every Priority in the List, and add them
-
-        if (element instanceof PackageRecord) {
-            final PackageRecord packageRec = (PackageRecord) element;
-            for (int i = 0; i < filterList.size(); i++) {
-                final Integer priority = (Integer) filterList.get(i);
-                markers = packageRec.findMarkersByAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY, priority);
-                if (markers != null) {
-                    violations += markers.length;
-                }
-            }
-        } else if (element instanceof FileRecord) {
-            final FileRecord fileRec = (FileRecord) element;
-            for (int i = 0; i < filterList.size(); i++) {
-                final Integer priority = (Integer) filterList.get(i);
-                markers = fileRec.findMarkersByAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY, priority);
-                if (markers != null) {
-                    violations += markers.length;
-                }
-            }
+        for (int i = 0; i < filterList.size(); i++) {
+            final Integer priority = (Integer) filterList.get(i);
+            number += record.getNumberOfViolationsToPriority(
+                    priority.intValue(), getShowType() == SHOW_MARKERS_FILES);
         }
-
-        return violations;
+        return number;
     }
-
+    
     /**
-     * Sets the View to show Packages and files (false) or Files only (true)
-     * 
-     * @param packageFiltered
+     * Sets the show type of packages/files and markers.
+     * @param type
+     * @see #SHOW_FILES_MARKERS
+     * @see #SHOW_MARKERS_FILES
+     * @see #SHOW_PACKAGES_FILES_MARKERS
      */
-    public void setPackageFiltered(boolean packageFiltered) {
-        this.packageFiltered = packageFiltered;
+    public void setShowType(int type) {
+        this.showType = type;
     }
-
+    
     /**
-     * Returns the State, if Packages are to filter
-     * 
-     * @return true, if only Files should be seen, false if Packages and Files
-     *         should be displayed
+     * @return show type
      */
-    public boolean isPackageFiltered() {
-        return this.packageFiltered;
+    public int getShowType() {
+        return this.showType;
     }
-
+    
+    /**
+     * Delegate method for {@link ProjectFilter#getProjectFilterList()}.
+     * @return project filter list
+     */
+    public List getProjectFilterList() {
+        return this.projectFilter.getProjectFilterList();
+    }
+    
+    /**
+     * Delegate method for {@link ProjectFilter#getProjectFilterList()}.
+     * @return project filter list
+     */
+    public List getPriorityFilterList() {
+        return this.priorityFilter.getPriorityFilterList();
+    }
+    
     /**
      * Sets the Widths of the Columns
      */
@@ -582,6 +444,14 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
         return this.treeViewer;
     }
 
+    public AbstractPMDRecord[] getAllProjects() {
+        AbstractPMDRecord[] projects = new AbstractPMDRecord[0];
+        if (this.root != null) {
+            projects = this.root.getChildren();
+        }
+        return projects;
+    }
+    
     /**
      * Refresh the View (and its Elements)
      */
@@ -589,59 +459,9 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
         if (!this.treeViewer.getControl().isDisposed()) {
             this.treeViewer.getControl().setRedraw(false);
             this.treeViewer.refresh();
-            createDropDownMenu();
+            this.menuManager.createDropDownMenu(getViewSite().getActionBars().getMenuManager());
             this.treeViewer.getControl().setRedraw(true);
         }
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
-     */
-    public void doubleClick(DoubleClickEvent event) {
-        final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-        final Object object = selection.getFirstElement();
-
-        // on DoubleClick on a PackageRecord
-        // it displays the underlying FileRecords
-        if (object instanceof PackageRecord) {
-            final PackageRecord packageRec = (PackageRecord) object;
-            if (this.treeViewer.getExpandedState(packageRec)) {
-                this.treeViewer.collapseToLevel(packageRec, TreeViewer.ALL_LEVELS);
-            } else {
-                this.treeViewer.expandToLevel(packageRec, 1);
-            }
-        } else if (object instanceof FileRecord) {
-            try {
-                // ... on a FileRecord, it opens the corresponding File
-                final IFile file = (IFile) ((FileRecord) object).getResource();
-                IDE.openEditor(getSite().getPage(), file);
-            } catch (PartInitException pie) {
-                PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_VIEW_EXCEPTION + this.toString(), pie);
-            }
-        }
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
-     */
-    public void selectionChanged(SelectionChangedEvent event) {
-        final IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-        final Object object = selection.getFirstElement();
-
-        // get the Project of the current Selection
-        // this is used with the ProjectFilter
-
-        AbstractPMDRecord project = null;
-        if (object instanceof PackageRecord) {
-            project = ((PackageRecord) object).getParent();
-        } else if (object instanceof FileRecord) {
-            project = ((FileRecord) object).getParent().getParent();
-        }
-
-        if (project != null) {
-            this.currentProject = project;
-        }
-
     }
 
     /**
@@ -706,9 +526,9 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
             this.projectFilter.setProjectFilterList(projectList);
         }
 
-        final Integer packageFiltered = this.memento.getInteger(PACKAGE_SWITCH);
-        if ((packageFiltered != null) && (packageFiltered.intValue() == 1)) {
-            this.packageFiltered = true;
+        final Integer type = this.memento.getInteger(PACKAGE_SWITCH);
+        if (type != null) {
+            setShowType(type.intValue());
         }
     }
 
@@ -721,7 +541,7 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
 
         // the Memento sets the Widths of Columns
         final List widthList = this.memento.getIntegerList(COLUMN_WIDTHS);
-        if (widthList != null) {
+        if (!widthList.isEmpty()) {
             this.columnWidths = new Integer[widthList.size()];
             widthList.toArray(this.columnWidths);
             setColumnWidths();
@@ -729,7 +549,7 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
 
         // ... and also the Sorter
         final List sorterList = this.memento.getIntegerList(COLUMN_SORTER);
-        if (sorterList != null) {
+        if (!sorterList.isEmpty()) {
             final Integer[] sorterProps = new Integer[sorterList.size()];
             sorterList.toArray(sorterProps);
             setSorterProperties(sorterProps);
@@ -769,12 +589,18 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
      * @param sortOrder
      * @return
      */
-    private ViewerSorter newViolationsCountSorter(TreeColumn column, final int sortOrder) {
+    private ViewerSorter newViolationsCountSorter(TreeColumn column, final int sortOrder) { // NOPMD by Sven on 13.11.06 11:45
         return new TableColumnSorter(column, sortOrder) {
             public int compare(Viewer viewer, Object e1, Object e2) {
-                final int vio1 = getFilteredViolations(e1);
-                final int vio2 = getFilteredViolations(e2);
-
+                int vio1 = 0;
+                int vio2 = 0;
+                if ((e1 instanceof PackageRecord && e2 instanceof PackageRecord)
+                        || (e1 instanceof FileRecord && e2 instanceof FileRecord) 
+                        || (e1 instanceof MarkerRecord && e2 instanceof MarkerRecord)
+                        || (e1 instanceof FileToMarkerRecord && e2 instanceof FileToMarkerRecord)){
+                    vio1 = getNumberOfFilteredViolations((AbstractPMDRecord)e1);
+                    vio2 = getNumberOfFilteredViolations((AbstractPMDRecord)e2);
+                }
                 return new Integer(vio1).compareTo(new Integer(vio2)) * sortOrder;
             }
         };
@@ -787,37 +613,31 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
      * @param sortOrder
      * @return
      */
-    private ViewerSorter newViolationsPerLOCSorter(TreeColumn column, final int sortOrder) {
+    private ViewerSorter newViolationsPerLOCSorter(TreeColumn column, final int sortOrder) { // NOPMD by Sven on 13.11.06 11:45
         return new TableColumnSorter(column, sortOrder) {
-            public int compare(Viewer viewer, Object e1, Object e2) {
-                final int vio1 = getFilteredViolations(e1);
-                final int vio2 = getFilteredViolations(e2);
-                int loc1 = 0;
-                int loc2 = 0;
-
-                if ((e1 instanceof PackageRecord) && (e2 instanceof PackageRecord)) {
-                    final PackageRecord pack1 = ((PackageRecord) e1);
-                    final PackageRecord pack2 = ((PackageRecord) e2);
-
-                    final Object[] files1 = pack1.getChildren();
-                    for (int i = 0; i < files1.length; i++) {
-                        loc1 += ((FileRecord) files1[i]).getLinesOfCode();
+            public int compare(Viewer viewer, Object e1, Object e2) { // NOPMD by Sven on 13.11.06 11:45
+                Float vioPerLoc1 = new Float(0.0f);
+                Float vioPerLoc2 = new Float(0.0f);
+                if ((e1 instanceof PackageRecord && e2 instanceof PackageRecord)
+                        || (e1 instanceof FileRecord && e2 instanceof FileRecord) 
+                        || (e1 instanceof MarkerRecord && e2 instanceof MarkerRecord)
+                        || (e1 instanceof FileToMarkerRecord && e2 instanceof FileToMarkerRecord)){                        
+                    final int vio1 = getNumberOfFilteredViolations((AbstractPMDRecord)e1);
+                    final int vio2 = getNumberOfFilteredViolations((AbstractPMDRecord)e2);
+                    final int loc1 = getLOC((AbstractPMDRecord)e1);
+                    final int loc2 = getLOC((AbstractPMDRecord)e2);
+                    if (loc1 > 0) {
+                        vioPerLoc1 = new Float((float) vio1 / loc1);
                     }
-
-                    final Object[] files2 = pack2.getChildren();
-                    for (int j = 0; j < files2.length; j++) {
-                        loc2 += ((FileRecord) files2[j]).getLinesOfCode();
+                    if (loc2 > 0) {
+                        vioPerLoc2 = new Float((float) vio2 / loc2);
                     }
-                } else if ((e1 instanceof FileRecord) && (e2 instanceof FileRecord)) {
-                    loc1 = ((FileRecord) e1).getLinesOfCode();
-                    loc2 = ((FileRecord) e2).getLinesOfCode();
                 }
-
-                final Float vioPerLoc1 = new Float((float) vio1 / loc1);
-                final Float vioPerLoc2 = new Float((float) vio2 / loc2);
 
                 return vioPerLoc1.compareTo(vioPerLoc2) * sortOrder;
             }
+            
+     
         };
     }
 
@@ -828,44 +648,26 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
      * @param sortOrder
      * @return
      */
-    private ViewerSorter newViolationsPerMethodsCount(TreeColumn column, final int sortOrder) {
+    private ViewerSorter newViolationsPerMethodsCount(TreeColumn column, final int sortOrder) { // NOPMD by Sven on 13.11.06 11:45
         return new TableColumnSorter(column, sortOrder) {
-            public int compare(Viewer viewer, Object e1, Object e2) {
-                final int vio1 = getFilteredViolations(e1);
-                final int vio2 = getFilteredViolations(e2);
-                int numMethods1 = 0;
-                int numMethods2 = 0;
-
-                if ((e1 instanceof PackageRecord) && (e2 instanceof PackageRecord)) {
-                    final PackageRecord pack1 = ((PackageRecord) e1);
-                    final PackageRecord pack2 = ((PackageRecord) e2);
-
-                    final Object[] files1 = pack1.getChildren();
-                    for (int i = 0; i < files1.length; i++) {
-                        numMethods1 += ((FileRecord) files1[i]).getNumberOfMethods();
+            public int compare(Viewer viewer, Object e1, Object e2) { // NOPMD by Sven on 13.11.06 11:45
+                
+                Float vioPerMethod1 = new Float(0.0f);
+                Float vioPerMethod2 = new Float(0.0f);
+                if ((e1 instanceof PackageRecord && e2 instanceof PackageRecord)
+                        || (e1 instanceof FileRecord && e2 instanceof FileRecord) 
+                        || (e1 instanceof MarkerRecord && e2 instanceof MarkerRecord)
+                        || (e1 instanceof FileToMarkerRecord && e2 instanceof FileToMarkerRecord)){                        
+                    final int vio1 = getNumberOfFilteredViolations((AbstractPMDRecord)e1);
+                    final int vio2 = getNumberOfFilteredViolations((AbstractPMDRecord)e2);
+                    final int numMethods1 = getNumberOfMethods((AbstractPMDRecord) e1);
+                    final int numMethods2 = getNumberOfMethods((AbstractPMDRecord) e2);
+                    if (numMethods1 > 0) {
+                        vioPerMethod1 = new Float((float) vio1 / numMethods1);
                     }
-
-                    final Object[] files2 = pack2.getChildren();
-                    for (int j = 0; j < files2.length; j++) {
-                        numMethods2 += ((FileRecord) files2[j]).getNumberOfMethods();
+                    if (numMethods2 > 0) {
+                        vioPerMethod2 = new Float((float) vio2 / numMethods2);
                     }
-                } else if ((e1 instanceof FileRecord) && (e2 instanceof FileRecord)) {
-                    numMethods1 = ((FileRecord) e1).getNumberOfMethods();
-                    numMethods2 = ((FileRecord) e2).getNumberOfMethods();
-                }
-
-                Float vioPerMethod1;
-                if (numMethods1 == 0) {
-                    vioPerMethod1 = new Float(0.0f);
-                } else {
-                    vioPerMethod1 = new Float((float) vio1 / numMethods1);
-                }
-
-                Float vioPerMethod2;
-                if (numMethods2 == 0) {
-                    vioPerMethod2 = new Float(0.0f);
-                } else {
-                    vioPerMethod2 = new Float((float) vio2 / numMethods2);
                 }
 
                 return vioPerMethod1.compareTo(vioPerMethod2) * sortOrder;
@@ -885,17 +687,129 @@ public class ViolationOverview extends ViewPart implements IDoubleClickListener,
             public int compare(Viewer viewer, Object e1, Object e2) {
                 AbstractPMDRecord project1 = null;
                 AbstractPMDRecord project2 = null;
-
+                int result = 0;
                 if ((e1 instanceof PackageRecord) && (e2 instanceof PackageRecord)) {
                     project1 = ((PackageRecord) e1).getParent();
                     project2 = ((PackageRecord) e2).getParent();
-                } else if ((e1 instanceof FileRecord) && (e2 instanceof FileRecord)) {
-                    project1 = ((FileRecord) e1).getParent().getParent();
-                    project2 = ((FileRecord) e2).getParent().getParent();
-                }
-
-                return (project1.getName()).compareToIgnoreCase(project2.getName()) * sortOrder;
+                    result = (project1.getName()).compareToIgnoreCase(project2.getName()) * sortOrder;
+                } 
+                return result;
             }
         };
+    }
+
+    
+    /**
+     * @see org.eclipse.jface.viewers.ITreeViewerListener#treeCollapsed(org.eclipse.jface.viewers.TreeExpansionEvent)
+     */
+    public void treeCollapsed(TreeExpansionEvent event) {
+        // do nothing
+    }
+
+    /**
+     * Calculates the LOC of the expanded file record.
+     * 
+     * @see org.eclipse.jface.viewers.ITreeViewerListener#treeExpanded(org.eclipse.jface.viewers.TreeExpansionEvent)
+     */
+    public void treeExpanded(TreeExpansionEvent event) {
+        final Object object = event.getElement();
+        if (object instanceof PackageRecord) {
+            final PackageRecord record = (PackageRecord) object;
+            final AbstractPMDRecord[] children = record.getChildren();
+            for (int j=0; j<children.length; j++) {
+                if (children[j] instanceof FileRecord) {
+                    final FileRecord fileRecord = (FileRecord) children[j];
+                    fileRecord.calculateLinesOfCode();
+                    fileRecord.calculateNumberOfMethods();
+                }
+            }
+        }
+
+        // refresh the labels in the table
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                getViewer().refresh();
+            }
+        });
+    }
+
+    /**
+     * Deletes markers of an AbstractPMDRecord. This is performed after the action 
+     * Clear PMD Markers of the contextmenu was called.
+     * 
+     * @param element
+     * @throws CoreException
+     */
+    public void deleteMarkers(AbstractPMDRecord element) throws CoreException {
+        if (element instanceof MarkerRecord) {
+            final MarkerRecord record = (MarkerRecord) element;
+            IMarker[] markers = new IMarker[0];
+
+            switch (getShowType()) {
+            case SHOW_PACKAGES_FILES_MARKERS:
+            case SHOW_FILES_MARKERS:
+                // simply get the markers of the markerrecord
+                markers = record.findMarkers();
+                break;
+            case SHOW_MARKERS_FILES:
+                final AbstractPMDRecord packRec = record.getParent().getParent();
+                markers = packRec.findMarkersByAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME, record.getName());
+                break;
+            default:
+                // do nothing
+            }
+            deleteMarkers(markers);
+        } else if (element instanceof FileToMarkerRecord) {
+            final FileToMarkerRecord record = (FileToMarkerRecord) element;
+            IMarker[] markers = new IMarker[0];
+            markers = record.findMarkers();
+            deleteMarkers(markers);
+        } else if (element instanceof AbstractPMDRecord) {
+            // simply delete markers from resource
+            final AbstractPMDRecord record = (AbstractPMDRecord) element;
+            record.getResource().deleteMarkers(PMDRuntimeConstants.PMD_MARKER, true, IResource.DEPTH_INFINITE); 
+        }
+    }
+
+    private void deleteMarkers(IMarker[] markers) {
+        if (markers.length > 0) {
+            final DeleteMarkersCommand cmd = new DeleteMarkersCommand();
+            cmd.setMarkers(markers);
+            try {
+                cmd.performExecute();
+            } catch (CommandException e) {
+                PMDUiPlugin.getDefault().showError(getString(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION), e.getCause());                    
+            }
+        }
+    }
+
+    /**
+     * Gets the correct lines of code depending on the presentation type.
+     * @param element AbstractPMDRecord
+     * @return lines of code
+     */
+    public int getLOC(AbstractPMDRecord element) {
+        int loc = 0;
+        if (element instanceof MarkerRecord && getShowType() == SHOW_MARKERS_FILES) {
+            loc = element.getParent().getParent().getLOC();
+        } else {
+            loc = element.getLOC();
+        }
+        return loc;
+    }
+    
+    /**
+     * Gets the correct number of methods depending on the presentation type.
+     * @param element AbstractPMDRecord
+     * @return number of methods
+     */
+    public int getNumberOfMethods(AbstractPMDRecord element) {
+        int numberOfMethods = 0;
+        if (element instanceof MarkerRecord && getShowType() == SHOW_MARKERS_FILES) {
+            numberOfMethods = element.getParent().getParent().getNumberOfMethods();
+        } else {
+            numberOfMethods = element.getNumberOfMethods();
+        }
+        return numberOfMethods;
     }
 }

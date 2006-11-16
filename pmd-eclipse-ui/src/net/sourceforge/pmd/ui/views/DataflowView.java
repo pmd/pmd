@@ -12,6 +12,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -105,11 +106,16 @@ public class DataflowView extends PageBookView implements IResourceChangeListene
     public void resourceChanged(IResourceChangeEvent event) {        
         try {
             event.getDelta().accept(new IResourceDeltaVisitor() {
-                public boolean visit(IResourceDelta delta) throws CoreException {
+                public boolean visit(final IResourceDelta delta) throws CoreException {
                     // find the resource for the path of the current page
                     IPath path = getCurrentDataflowViewPage().getFileRecord().getResource().getFullPath();
                     if(delta.getFullPath().equals(path)) {
-                        refresh(delta.getResource());
+                        Display.getDefault().asyncExec(new Runnable() {
+                            public void run() {
+                                refresh(delta.getResource());
+                            }
+                        });
+                        
                         return false;
                     }
                     return true;

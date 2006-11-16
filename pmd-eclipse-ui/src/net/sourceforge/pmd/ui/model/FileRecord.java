@@ -42,14 +42,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.ui.PMDUiConstants;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -66,6 +69,12 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2006/11/16 17:11:08  holobender
+ * Some major changes:
+ * - new CPD View
+ * - changed and refactored ViolationOverview
+ * - some minor changes to dataflowview to work with PMD
+ *
  * Revision 1.6  2006/10/09 13:32:47  phherlin
  * Fix mistake in CVS tags (double $$)
  *
@@ -78,11 +87,12 @@ import org.eclipse.jdt.core.JavaModelException;
  * 
  */
 public class FileRecord extends AbstractPMDRecord {
+    private AbstractPMDRecord[] children;
     private IResource resource;
     private PackageRecord parent;
     private int numberOfLOC;
     private int numberOfMethods;
-
+    
     /**
      * Constructor (not for use with the Model, no PackageRecord is provided here)
      * 
@@ -109,6 +119,7 @@ public class FileRecord extends AbstractPMDRecord {
         this.parent = record;
         this.numberOfLOC = 0;
         this.numberOfMethods = 0;
+        this.children = createChildren();
     }
 
     /**
@@ -122,7 +133,7 @@ public class FileRecord extends AbstractPMDRecord {
      * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getChildren()
      */
     public AbstractPMDRecord[] getChildren() {
-        return new AbstractPMDRecord[0]; // getChildren should never return null!
+        return children;  // NOPMD by Sven on 13.11.06 11:57
     }
 
     /**
@@ -133,10 +144,47 @@ public class FileRecord extends AbstractPMDRecord {
     }
 
     /**
+     * Updates all children.
+     *
+     */
+    public void updateChildren() {
+        this.children = createChildren();
+    }
+    
+    /**
      * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#createChildren()
      */
-    protected AbstractPMDRecord[] createChildren() {
-        return new AbstractPMDRecord[0]; // no children so return an empty array, not null!
+    protected final AbstractPMDRecord[] createChildren() {
+        AbstractPMDRecord[] children = new AbstractPMDRecord[0];
+
+        try {           
+            // get all markers
+            final List markers = Arrays.asList(this.findMarkers());
+            final Iterator markerIterator = markers.iterator();
+            
+            // put all markers in a map with key = rulename
+            final Map allMarkerMap = new HashMap();
+            while (markerIterator.hasNext()) {
+                final IMarker marker = (IMarker) markerIterator.next();
+
+                MarkerRecord markerRecord = (MarkerRecord) allMarkerMap.get(marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME));
+                if (markerRecord == null) {
+                    markerRecord = new MarkerRecord(this,  // NOPMD by Sven on 13.11.06 11:57
+                            (String)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME),
+                            ((Integer)marker.getAttribute(PMDUiConstants.KEY_MARKERATT_PRIORITY)).intValue());
+                    markerRecord.addViolation(marker);
+                    allMarkerMap.put(marker.getAttribute(PMDUiConstants.KEY_MARKERATT_RULENAME), markerRecord);
+                } else {
+                    markerRecord.addViolation(marker);
+                }
+            }
+
+            children = (AbstractPMDRecord[]) allMarkerMap.values().toArray(new MarkerRecord[allMarkerMap.size()]);
+        } catch (CoreException e) {
+            PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), e);
+        }       
+        
+        return children; // no children so return an empty array, not null!
     }
 
     /**
@@ -154,7 +202,7 @@ public class FileRecord extends AbstractPMDRecord {
      * 
      * @return an Array of markers
      */
-    public IMarker[] findMarkers() {
+    public final IMarker[] findMarkers() {
         IMarker[] markers = new IMarker[0]; // to avoid returning null
         try {
             // this is the overwritten Function from AbstractPMDRecord
@@ -241,7 +289,7 @@ public class FileRecord extends AbstractPMDRecord {
                         while (trimmed.indexOf("*/") == -1) {
                             trimmed = lines.nextToken().trim();
                         }
-                        if (lines.hasMoreTokens()) {
+                        if (lines.hasMoreTokens()) { // NOPMD by Sven on 13.11.06 12:04
                             trimmed = lines.nextToken().trim();
                         }
                     }
@@ -261,8 +309,8 @@ public class FileRecord extends AbstractPMDRecord {
      * 
      * @return the Lines of Code
      */
-    public int getLinesOfCode() {
-        return this.resource instanceof IFile ? this.numberOfLOC : 0; // deactivate this method for now
+    public int getLOC() {
+        return this.numberOfLOC;
     }
 
     /**
@@ -368,5 +416,17 @@ public class FileRecord extends AbstractPMDRecord {
      */
     public int getResourceType() {
         return AbstractPMDRecord.TYPE_FILE;
+    }
+    
+    /**
+     * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getNumberOfViolationsToPriority(int)
+     */
+    public int getNumberOfViolationsToPriority(int prio, boolean invertMarkerAndFileRecords) {
+        int number = 0;
+        
+        for (int i=0; i<children.length; i++) {            
+            number += children[i].getNumberOfViolationsToPriority(prio, false);
+        }
+        return number;
     }
 }

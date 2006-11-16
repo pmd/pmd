@@ -1,10 +1,9 @@
 package net.sourceforge.pmd.ui.views;
 
-import net.sourceforge.pmd.ui.PMDUiConstants;
+import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -51,22 +50,22 @@ public class DataflowAnomalyTableViewer extends TableViewer {
      */
     private void createColumns(Table table) {
         // type of Anomaly
-        TableColumn typeColumn = new TableColumn(table, SWT.LEFT);
+        final TableColumn typeColumn = new TableColumn(table, SWT.LEFT);
         typeColumn.setWidth(80);
         typeColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_TYPE));
 
         // Line(s) where the Anomaly occures
-        TableColumn lineColumn = new TableColumn(table, SWT.RIGHT);
+        final TableColumn lineColumn = new TableColumn(table, SWT.RIGHT);
         lineColumn.setWidth(100);
         lineColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_LINE));
 
         // Variable
-        TableColumn varColumn = new TableColumn(table, SWT.RIGHT);
+        final TableColumn varColumn = new TableColumn(table, SWT.RIGHT);
         varColumn.setWidth(70);
         varColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_VARIABLE));
 
         // Method
-        TableColumn methodColumn = new TableColumn(table, SWT.RIGHT);
+        final TableColumn methodColumn = new TableColumn(table, SWT.RIGHT);
         methodColumn.setWidth(100);
         methodColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_METHOD));
 
@@ -81,7 +80,7 @@ public class DataflowAnomalyTableViewer extends TableViewer {
      * @param table
      */
     private void createColumnAdapters(Table table) {
-        TableColumn[] columns = table.getColumns();
+        final TableColumn[] columns = table.getColumns();
         columnWidths = new Integer[columns.length];
 
         for (int k = 0; k < columns.length; k++) {
@@ -109,70 +108,87 @@ public class DataflowAnomalyTableViewer extends TableViewer {
      * @return the ViewerSorter for a Column
      */
     private ViewerSorter getViewerSorter(int columnNr) {
-        TableColumn column = getTable().getColumn(columnNr);
+        final TableColumn column = getTable().getColumn(columnNr);
         final int sortOrder = columnSortOrder[columnNr];
-
+        TableColumnSorter sorter = null;
+        
         switch (columnNr) {
         // sort by Anomaly-Type-Name
         case 0:
-            return new TableColumnSorter(column, sortOrder) {
+            sorter = new TableColumnSorter(column, sortOrder) {
                 public int compare(Viewer viewer, Object e1, Object e2) {
-                    String message1 = ((IMarker) e1).getAttribute(IMarker.MESSAGE, "");
-                    String message2 = ((IMarker) e2).getAttribute(IMarker.MESSAGE, "");
+                    int result = 0;
+                    if (e1 instanceof IRuleViolation && e2 instanceof IRuleViolation) {
+                        final IRuleViolation violation1 = (IRuleViolation) e1;
+                        final IRuleViolation violation2 = (IRuleViolation) e2;
+                        final String message1 = violation1.getDescription();
+                        final String message2 = violation2.getDescription();
 
-                    if (message1.equalsIgnoreCase(message2)) {
-                        int m1_l1 = 0;
-                        int m1_l2 = 0;
-                        int m2_l1 = 0;
-                        int m2_l2 = 0;
+                        if (message1.equalsIgnoreCase(message2)) {
+                            final int m1_l1 = violation1.getBeginLine();
+                            final int m1_l2 = violation2.getBeginLine();
+                            final int m2_l1 = violation1.getEndLine();
+                            final int m2_l2 = violation2.getEndLine();
 
-                        m1_l1 = ((IMarker) e1).getAttribute(IMarker.LINE_NUMBER, 0);
-                        m1_l2 = ((IMarker) e1).getAttribute(PMDUiConstants.KEY_MARKERATT_LINE2, 0);
-                        m2_l1 = ((IMarker) e2).getAttribute(IMarker.LINE_NUMBER, 0);
-                        m2_l2 = ((IMarker) e2).getAttribute(PMDUiConstants.KEY_MARKERATT_LINE2, 0);
+                            final Integer line1 = new Integer((m1_l1 < m1_l2) ? (m1_l1) : (m1_l2));
+                            final Integer line2 = new Integer((m2_l1 < m2_l2) ? (m2_l1) : (m2_l2));
 
-                        Integer line1 = new Integer((m1_l1 < m1_l2) ? (m1_l1) : (m1_l2));
-                        Integer line2 = new Integer((m2_l1 < m2_l2) ? (m2_l1) : (m2_l2));
-
-                        return line1.compareTo(line2) * sortOrder;
-                    }
-
-                    return message1.compareToIgnoreCase(message2) * sortOrder;
+                            result = line1.compareTo(line2) * sortOrder;
+                        } else {
+                            result = message1.compareToIgnoreCase(message2) * sortOrder;
+                        }    
+                    } 
+                    return result;
                 }
             };
-        // sort by the Line(s) where the anomaly occures
+            break;
+
         case 1:
-            return new TableColumnSorter(column, sortOrder) {
+            // sort by the Line(s) where the anomaly occures
+            sorter = new TableColumnSorter(column, sortOrder) {
                 public int compare(Viewer viewer, Object e1, Object e2) {
-                    int m1_l1 = 0;
-                    int m1_l2 = 0;
-                    int m2_l1 = 0;
-                    int m2_l2 = 0;
+                    int result = 0;
+                    if (e1 instanceof IRuleViolation && e2 instanceof IRuleViolation) {
+                        final IRuleViolation violation1 = (IRuleViolation) e1;
+                        final IRuleViolation violation2 = (IRuleViolation) e2;
 
-                    m1_l1 = ((IMarker) e1).getAttribute(IMarker.LINE_NUMBER, 0);
-                    m1_l2 = ((IMarker) e1).getAttribute(PMDUiConstants.KEY_MARKERATT_LINE2, 0);
-                    m2_l1 = ((IMarker) e2).getAttribute(IMarker.LINE_NUMBER, 0);
-                    m2_l2 = ((IMarker) e2).getAttribute(PMDUiConstants.KEY_MARKERATT_LINE2, 0);
-
-                    Integer line1 = new Integer((m1_l1 < m1_l2) ? (m1_l1) : (m1_l2));
-                    Integer line2 = new Integer((m2_l1 < m2_l2) ? (m2_l1) : (m2_l2));
-
-                    return line1.compareTo(line2) * sortOrder;
+                        final int m1_l1 = violation1.getBeginLine();
+                        final int m1_l2 = violation2.getBeginLine();
+                        final int m2_l1 = violation1.getEndLine();
+                        final int m2_l2 = violation2.getEndLine();
+    
+                        final Integer line1 = new Integer((m1_l1 < m1_l2) ? (m1_l1) : (m1_l2));
+                        final Integer line2 = new Integer((m2_l1 < m2_l2) ? (m2_l1) : (m2_l2));
+                        result = line1.compareTo(line2) * sortOrder;
+                    }
+                    return result;
                 }
             };
-        // sort by the Variable's Name
+            break;
+
         case 2:
-            return new TableColumnSorter(column, sortOrder) {
+            // sort by the Variable's Name
+            sorter =  new TableColumnSorter(column, sortOrder) {
                 public int compare(Viewer viewer, Object e1, Object e2) {
-                    String var1 = ((IMarker) e1).getAttribute(PMDUiConstants.KEY_MARKERATT_VARIABLE, "");
-                    String var2 = ((IMarker) e2).getAttribute(PMDUiConstants.KEY_MARKERATT_VARIABLE, "");
-
-                    return var1.compareToIgnoreCase(var2) * sortOrder;
+                    int result = 0;
+                    if (e1 instanceof IRuleViolation && e2 instanceof IRuleViolation) {
+                        final IRuleViolation violation1 = (IRuleViolation) e1;
+                        final IRuleViolation violation2 = (IRuleViolation) e2;
+    
+                        final String var1 = violation1.getVariableName();
+                        final String var2 = violation2.getVariableName();
+                        result = var1.compareToIgnoreCase(var2) * sortOrder;
+                    }
+                    return result;
                 }
             };
+            break;
+        
+        default:
+            // do nothing
         }
 
-        return null;
+        return sorter;
     }
 
     /**

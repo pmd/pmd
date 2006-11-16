@@ -58,6 +58,12 @@ import org.eclipse.core.runtime.CoreException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/11/16 17:14:34  holobender
+ * Some major changes:
+ * - new CPD View
+ * - changed and refactored ViolationOverview
+ * - some minor changes to dataflowview to work with PMD
+ *
  * Revision 1.1  2006/06/18 22:29:51  phherlin
  * Begin refactoring the unit tests for the plugin
  * Revision 1.1 2005/06/15 21:14:57
@@ -78,14 +84,18 @@ public class DetectCutAndPasteCmdTest extends TestCase {
     }
 
     /**
-     * Test the basic usage of the report rendering command
+     * Test the basic usage of the cpd command
      * 
      */
-    public void testDetectCutAndPasteCmdBasic() throws CommandException, CoreException {
+    public void testDetectCutAndPasteCmdBasic1() throws CommandException, CoreException {
+        int i;
         DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
         cmd.setProject(this.testProject);
         cmd.setRenderer(new SimpleRenderer());
         cmd.setReportName(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
+        cmd.setCreateReport(true);
+        cmd.setLanguage("java");
+        cmd.setMinTileSize(10);
         cmd.performExecute();
         cmd.join();
 
@@ -103,13 +113,34 @@ public class DetectCutAndPasteCmdTest extends TestCase {
             reportFolder.delete(true, false, null);
         }
     }
+    
+    /**
+     * Test the basic usage of the cpd command
+     * 
+     */
+    public void testDetectCutAndPasteCmdBasic2() throws CommandException, CoreException {
+        DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
+        cmd.setProject(this.testProject);
+        cmd.setCreateReport(false);
+        cmd.setLanguage("java");
+        cmd.setMinTileSize(10);
+        cmd.performExecute();
+        cmd.join();
 
+        IFolder reportFolder = this.testProject.getFolder(PMDRuntimeConstants.REPORT_FOLDER);
+        assertFalse(reportFolder.exists());
+
+        IFile reportFile = reportFolder.getFile(PMDRuntimeConstants.SIMPLE_CPDREPORT_NAME);
+        assertFalse(reportFile.exists());
+    }
+    
     /**
      * Test robustness #1
      * 
      * @throws CommandException
      */
     public void testDetectCutAndPasteCmdNullArg1() throws CommandException {
+        
         try {
             DetectCutAndPasteCmd cmd = new DetectCutAndPasteCmd();
             cmd.setProject(null);
@@ -246,7 +277,6 @@ public class DetectCutAndPasteCmdTest extends TestCase {
         InputStream is = EclipseUtils.getResourceStream(this.testProject, "/Test.java");
         assertNotNull("Cannot find the test source file", is);
         is.close();
-
     }
 
     /**
