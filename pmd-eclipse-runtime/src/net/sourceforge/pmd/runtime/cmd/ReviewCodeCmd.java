@@ -85,6 +85,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2006/11/16 16:47:42  holobender
+ * division by zero fix
+ *
  * Revision 1.6  2006/10/08 22:18:49  phherlin
  * Fix last Java warnings
  *
@@ -199,7 +202,7 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
             done();
 
             // Log performances information
-            if (this.filesCount > 0) {
+            if (this.filesCount > 0 && this.rulesCount > 0) {
                 PMDRuntimePlugin.getDefault().logInformation(
                         "Review code command terminated. " + this.rulesCount + " rules were executed against " + this.filesCount
                                 + " files. Actual PMD duration is about " + this.pmdDuration + "ms, that is about "
