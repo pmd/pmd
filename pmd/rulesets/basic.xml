@@ -1100,6 +1100,7 @@ public class Test {
 //Literal
  [(starts-with(@Image, 0))]
  [string-length(@Image)>1]
+ [not(contains(@Image, '.'))]
  [not(substring(@Image, 2, 1) = 'x')]
  [not(substring(@Image, 2, 1) = 'L')]
 ]]>
