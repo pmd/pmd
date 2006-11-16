@@ -42,7 +42,6 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.dfa.DaaRule;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
 import net.sourceforge.pmd.runtime.preferences.IPreferences;
@@ -65,6 +64,10 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/11/16 16:54:40  holobender
+ * - changed command for the new cpd view
+ * - possibility to set the number of maxviolations per file over the rule-properties
+ *
  * Revision 1.2  2006/10/07 16:01:51  phherlin
  * Integrate Sven updates
  *
@@ -125,11 +128,11 @@ public class BaseVisitor {
         super();
 
         this.hiddenRules = new RuleSet();
-        if (PMDRuntimePlugin.getDefault().loadPreferences().isDfaEnabled()) {
+/*        if (PMDRuntimePlugin.getDefault().loadPreferences().isDfaEnabled()) {
             DaaRule daaRule = new DaaRule();
             daaRule.setUsesDFA();
             this.hiddenRules.addRule(daaRule);
-        }
+        }*/
     }
 
     /**
@@ -384,14 +387,21 @@ public class BaseVisitor {
                     counter = new Integer(0);
                     violationsCounter.put(violation.getRule(), counter);
                 }
+        
                 
-                if (counter.intValue() < maxViolationsPerFilePerRule) {
+                int maxViolations = maxViolationsPerFilePerRule;
+                if (violation.getRule().hasProperty(PMDRuntimeConstants.RULE_PROPERTY_MAXVIOLATIONS)) {
+                    maxViolations = violation.getRule().getIntProperty(PMDRuntimeConstants.RULE_PROPERTY_MAXVIOLATIONS);
+                }
+                if (counter.intValue() < maxViolations) {
+                    markerSet.add(getMarkerInfo(violation, fTask ? PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER));
+                    /*
                     if (isDfaEnabled && violation.getRule().usesDFA()) {
                         markerSet.add(getMarkerInfo(violation, PMDRuntimeConstants.PMD_DFA_MARKER));
                     } else {
                         markerSet.add(getMarkerInfo(violation, fTask ? PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER));
                     }
-                    
+                    */
                     violationsCounter.put(violation.getRule(), new Integer(counter.intValue() + 1));
 
                     log.debug("Adding a violation for rule " + violation.getRule().getName() + " at line " + violation.getBeginLine());
@@ -493,18 +503,12 @@ public class BaseVisitor {
         attributeNames.add(PMDRuntimeConstants.KEY_MARKERATT_LINE2);
         values.add(new Integer(violation.getEndLine()));
 
-        attributeNames.add(PMDRuntimeConstants.KEY_MARKERATT_VARIABLE);
-        values.add(violation.getVariableName());
-
         attributeNames.add(PMDRuntimeConstants.KEY_MARKERATT_RULENAME);
         values.add(violation.getRule().getName());
 
         attributeNames.add(PMDRuntimeConstants.KEY_MARKERATT_PRIORITY);
         values.add(new Integer(violation.getRule().getPriority()));
 
-        attributeNames.add(PMDRuntimeConstants.KEY_MARKERATT_METHODNAME);
-        values.add(violation.getMethodName());
-        
         switch (violation.getRule().getPriority()) {
         case 1:
             attributeNames.add(IMarker.PRIORITY);

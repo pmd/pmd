@@ -1,10 +1,9 @@
 package net.sourceforge.pmd.runtime.cmd;
 
-import java.io.IOException;
+import java.io.File;
+import java.util.List;
 
-import net.sourceforge.pmd.cpd.CPD;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
-import net.sourceforge.pmd.runtime.properties.IProjectProperties;
+import net.sourceforge.pmd.cpd.Language;
 import net.sourceforge.pmd.runtime.properties.PropertiesException;
 
 import org.apache.log4j.Logger;
@@ -23,6 +22,10 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/11/16 16:54:40  holobender
+ * - changed command for the new cpd view
+ * - possibility to set the number of maxviolations per file over the rule-properties
+ *
  * Revision 1.2  2006/06/20 21:01:49  phherlin
  * Enable PMD and fix error level violations
  *
@@ -36,16 +39,11 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  */
 public class CPDVisitor implements IResourceVisitor {
     private static final Logger log = Logger.getLogger(CPDVisitor.class);
-    private final CPD cpd;
     private boolean includeDerivedFiles;
-
-    /**
-     * Constructor for CPDVisitor.
-     */
-    public CPDVisitor(CPD cpd) {
-        super();
-        this.cpd = cpd;
-    }
+    private ResourceWorkingSetFilter workingSetFilter;
+    private Language language;
+    private int filesCount;
+    private List files;
 
     /**
      * @param includeDerivedFiles The includeDerivedFiles to set.
@@ -53,7 +51,43 @@ public class CPDVisitor implements IResourceVisitor {
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
         this.includeDerivedFiles = includeDerivedFiles;
     }
+    
+    /**
+     * @param workingSet WorkingSet of the visited project.
+     */
+    public void setWorkingSet(IWorkingSet workingSet) {
+        this.workingSetFilter = new ResourceWorkingSetFilter();
+        this.workingSetFilter.setWorkingSet(workingSet);
+    }
+    
+    /**
+     * @param language Only add files with that language
+     */
+    public void setLanguage(Language language) {
+        this.language = language;   
+    }
 
+    /**
+     * @return the number of files that has been processed
+     */
+    public int getAddedFilesCount() {
+        return this.filesCount;
+    }
+    
+    /**
+     * @return the list of files
+     */
+    public List getFiles() {
+        return this.files;
+    }
+    
+    /**
+     * @param files the list of files to set
+     */
+    public void setFiles(List files) {
+        this.files = files;
+    }
+    
     /**
      * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource) Add java files into the CPD object
      */
@@ -63,17 +97,18 @@ public class CPDVisitor implements IResourceVisitor {
 
         if (resource instanceof IFile) {
             final IFile file = (IFile) resource;
+            final File ioFile = ((IFile) resource).getLocation().toFile();
             try {
-                if ((((IFile) resource).getFileExtension() != null)
-                        && ((IFile) resource).getFileExtension().equals("java")
-                        && (isFileInWorkingSet(file) && (this.includeDerivedFiles || (!this.includeDerivedFiles && !file
-                                .isDerived())))) {
+                if ((((IFile) resource).getFileExtension() != null)                        
+                        && (this.language.getFileFilter().accept(ioFile, file.getName()))
+                        && (isFileInWorkingSet(file) 
+                                && (this.includeDerivedFiles 
+                                        || (!this.includeDerivedFiles && !file.isDerived())))) {
                     log.debug("Add file " + resource.getName());
-                    cpd.add(((IFile) resource).getLocation().toFile());
+                    this.files.add(ioFile);
+                    this.filesCount++;
                     result = false;
                 }
-            } catch (IOException e) {
-                log.warn("IOException when adding file " + resource.getName() + " to CPD. Continuing.", e);
             } catch (PropertiesException e) {
                 log.warn("ModelException when adding file " + resource.getName() + " to CPD. Continuing.", e);
             }
@@ -91,12 +126,9 @@ public class CPDVisitor implements IResourceVisitor {
      */
     private boolean isFileInWorkingSet(final IFile file) throws PropertiesException {
         boolean fileInWorkingSet = true;
-        final IProjectProperties properties = PMDRuntimePlugin.getDefault().loadProjectProperties(file.getProject());
-        final IWorkingSet workingSet = properties.getProjectWorkingSet();
-        if (workingSet != null) {
-            final ResourceWorkingSetFilter filter = new ResourceWorkingSetFilter();
-            filter.setWorkingSet(workingSet);
-            fileInWorkingSet = filter.select(null, null, file);
+        
+        if (this.workingSetFilter != null) {
+            fileInWorkingSet = this.workingSetFilter.select(null, null, file);
         }
 
         return fileInWorkingSet;
