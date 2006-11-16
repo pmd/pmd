@@ -25,6 +25,8 @@
             <li>Johan Nagels - PMD core, JSP support</li>
             <li>Brian Remedios - PMD core, lots of CPD UI improvements, Eclipse plugin improvements</li>
             <li>Xavier Le Vourch - PMD core, numerous bug fixes, UselessStringValueOf, UnnecessaryWrapperObjectCreation, SimplifyBooleanAssertion</li>
+            <li>Sven Jacob - DFA subsystem, Eclipse plugin</li>
+            <li>Wouter Zelle - Lots of bugfixes and cleanups, JUnit test XML design, BrokenNullCheck, NonThreadSafeSingleton, DefaultPackage rule, UselessOverridingMethod, ProperLogger, AvoidPrintStackTrace, SimplifyConditionalk</li>
         </ul>
         </subsection>
         <subsection name="Committers emeritus">
@@ -59,7 +61,6 @@
             <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - Improvement for UseArraysAsList, UnusedNullCheckInEquals, MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray, BigIntegerInstantiation_1.4, BigIntegerInstantiation_1.5</li>
             <li>Ryan Gustafson - Patch to fix bug in AvoidDecimalLiteralsInBigDecimalConstructor, patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0</li>
             <li>Stefan Seidel - Reported JDK 1.5 parsing bug</li>
-            <li>Wouter Zelle - Fixed bug in OverrideBothEqualsAndHashcode, wrote BrokenNullCheck rule, fixed a false positive in InefficientStringBuffering, fixed a false positive in NonThreadSafeSingleton, a nice patch to clean up some of the Ant task properties and fix a TextRenderer bug, rewrote PositionLiteralsFirstInComparisons in XPath, Renderer improvement suggestions, wrote NonThreadSafeSingleton rule, wrote DefaultPackage rule, worked thru ASTMethodDeclaration.isSyntacticallyX design, reported docs bug 1292689 for UnnecessaryLocalBeforeReturn, reported leftover ExceptionTypeChecking source file, rewrote UselessOverridingMethod in Java, UselessOverridingMethod rule, ProperLogger rule, nifty code to allow variables in XPath rules, externalInfoUrl data for all rules in basic and unusedcode rulesets, some very nifty XSLT, improvements to UseCorrectExceptionLogging, designed and implemented the "externalInfoUrl" feature in the rule definitions, fixed a devious bug in RuleSetFactory, AvoidPrintStackTrace, initial implementation of SimplifyConditional, Implemented JUnit XML framework</li>
             <li>Aaron Optimizer Digulla - Tweaks to pmd.bat</li>
             <li>Peter Van de Voorde - Rewrote the 'create rule XML' functionality in the designer utility</li>
             <li>Josh Devins - Reported bug with annotation parsing</li>
@@ -68,7 +69,6 @@
             <li>George Thomas - Wrote AvoidRethrowingException rule</li>
             <li>Robert Simmons - Reported bug in optimizations package along with suggestions for fix</li>
             <li>Brian Remedios - display cleanup of CPD GUI, code cleanup of StringUtil and various rules, cleanup of rule designer, code cleanup of net.sourceforge.pmd.ant.Formatter.java, code improvements to Eclipse plugin, created AbstractPoorMethodCall and refactored UseIndexOfChar</li>
-            <li>Sven Jacob - Some fixes for the DFA layer.</li>
             <li>Max Tardiveau - A nice XML to HTML stylesheet for CPD.</li>
             <li>Ernst Reissner - reported IdempotentOperations bug, reported CloneThrowsCloneNotSupportedException bug, reported JDK 1.5 parsing bug, suggested InstantiationToGetClass, bug reports for UnusedPrivateField/CloseConnectionRule/ConstructorCallsOverridableMethodRule, and bug report and documentation suggestions for UseSingletonRule</li>
             <li>Maarten Coene - bug report for UnnecessaryConversionTemporary</li>

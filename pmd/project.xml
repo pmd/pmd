@@ -171,6 +171,24 @@
     </developer>
 
     <developer>
+        <name>Sven Jacob</name>
+        <id>holobender</id>
+        <email>holobender@users.sourceforge.net</email>
+        <roles>
+            <role>Developer</role>
+        </roles>
+    </developer>
+
+    <developer>
+        <name>Wouter Zelle</name>
+        <id>wfzelle</id>
+        <email>wfzelle@users.sourceforge.net</email>
+        <roles>
+            <role>Developer</role>
+        </roles>
+    </developer>
+
+    <developer>
         <name>Brian Remedios</name>
         <id>hooperbloob</id>
         <email>hooperbloob@users.sourceforge.net</email>
