@@ -290,12 +290,14 @@ public class DAAPathFinder {
     private int countLoops() {
         DefaultMutableTreeNode treeNode = stack.getLastLeaf();
         int counter = 0;
-        int childCount = treeNode.getParent().getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            DefaultMutableTreeNode tNode = (DefaultMutableTreeNode) treeNode.getParent().getChildAt(i);
-            PathElement e = (PathElement) tNode.getUserObject();
-            if (e != null && !e.isPseudoPathElement()) {
-                counter++;
+        if (treeNode.getParent() != null) {
+            int childCount = treeNode.getParent().getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                DefaultMutableTreeNode tNode = (DefaultMutableTreeNode) treeNode.getParent().getChildAt(i);
+                PathElement e = (PathElement) tNode.getUserObject();
+                if (e != null && !e.isPseudoPathElement()) {
+                    counter++;
+                }
             }
         }
         return counter;
