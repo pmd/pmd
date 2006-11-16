@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+short
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+	  bar();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+long
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+    } // 11 lines - violation
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+not quite long
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+    } // 9 lines - Not a violation
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+long
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+	  bar();
+    } // > 10 lines - Not a violation
+}
+     ]]></code>
+    </test-code>
+</test-data>

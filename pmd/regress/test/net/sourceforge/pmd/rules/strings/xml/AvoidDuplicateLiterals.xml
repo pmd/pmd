@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+duplicate literals in argument list
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+literal int argument, ok for now
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz(2);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+duplicate literals in field decl
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String[] FOO = {"foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo"};
+}
+     ]]></code>
+    </test-code>
+</test-data>

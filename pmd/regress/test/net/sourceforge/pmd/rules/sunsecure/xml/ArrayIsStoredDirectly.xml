@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Clear violation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void foo (String[] x) {arr = x;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Clear violation with this.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void foo (String[] arr) {this.arr = arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment to an internal array
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void foo (String[] x) {this.arr = x;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment of param to local
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void getArr(String[] arr) {String[] foo; foo = arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip interfaces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ void getArr(String[] arr);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip abstract, native
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ abstract void getArr(String[] arr);
+ native void getArr2(String[] arr);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+equality expression, not assignment
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar(String[] buf) {
+   x = (buf[0] == 1);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment of array element
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar(String[] buf) {
+   x = buf[0];
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Constructor clear violation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ Foo (String[] x) {arr = x;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Constructor no violation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ Foo (String[] x) {arr = x.clone();}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+No reassignment
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ void foo() {String[] bar = {""};arr = bar;}
+}
+     ]]></code>
+    </test-code>
+</test-data>

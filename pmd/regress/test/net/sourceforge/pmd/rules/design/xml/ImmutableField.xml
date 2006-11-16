@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+could be immutable, only assigned in constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ public Foo() {
+  x = 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+could be immutable, only assigned in decl
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x = 42;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, assigned twice
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ public Foo() {
+  x = 41;
+ }
+ public void bar() {
+  x = 42;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, static field 
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static int x = 0;
+ private final int y;
+ public Foo() {
+  y = x;
+  x++;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, one constructor assigns, one doesn't
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ public Foo(int y) {
+  x = y;
+ }
+ public Foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, assignment via postfix expression
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ public Foo() {}
+ private void bar() {x++;}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+postfix expressions imply mutability
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x = 0;
+ private void bar() {
+  x++;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+compound assignment
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int w;
+ private int z;
+ private void bar() {
+  w = 2;
+  z = 4;
+ }
+ private void gaz() {
+  w += z++;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+preincrement
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x = 0;
+ public void bar() {
+  ++x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+predecrement
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x = 0;
+ public void bar() {
+  --x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+compound assignment 2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x = 0;
+ public void bar() {
+  x += 1;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+rhs 2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x = 0;
+ public void bar() {
+  Object y = new Bar(x++);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment in constructor is in try block
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ public Foo() {
+  try {
+   x = 2;
+  } catch (Exception e) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment in method is in try block
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ public void bar() {
+  try {
+   x = 2;
+  } catch (Exception e) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment in constructor in loop is ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ public Foo() {
+  for (int i=0; i<10; i++) { x += 5; }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment in anonymous inner class method is OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x = 2 ;
+ public Foo() {
+   mouseListener = new MouseAdapter() {
+      public void mouseClicked(MouseEvent e) {
+        x = e.getSource();
+        super.mouseClicked(e);
+      }
+    };
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

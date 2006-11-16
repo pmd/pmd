@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+simple unused single type import
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+public class Foo {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+one used single type import
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+public class Foo {
+ private File file;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+2 unused single-type imports
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+import java.util.List;
+public class Foo {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1 used single type import
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.security.AccessController;
+public class Foo {
+ public void foo() {
+  AccessController.doPrivileged(null);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1 import stmt, used only in throws clause
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.rmi.RemoteException;
+public class Foo {
+ public void foo() throws RemoteException {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+for loop
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+public class Foo {
+ public void foo(ArrayList list) {
+  for (String s : list) {}
+ }
+}
+     ]]></code>
+     <source-type>java 1.5</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Generics
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.TestInterfaceTwo;
+public class Foo {
+ private List<TestInterfaceTwo> x = new ArrayList<TestInterfaceTwo>();
+}
+     ]]></code>
+     <source-type>java 1.5</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Annotations
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.annotation.Retention;
+import foo.annotation.RetentionPolicy;
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Foo {
+}
+     ]]></code>
+     <source-type>java 1.5</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Annotations 2
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.FooAnnotation1;
+import foo.FooAnnotation2;
+@FooAnnotation1
+@FooAnnotation2
+public class Foo {}
+     ]]></code>
+     <source-type>java 1.5</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+import from default package
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import Bar;
+public class Foo {
+ public Bar foo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+import from default package
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import Bar;
+public class Foo {
+ public void foo() {}
+}
+     ]]></code>
+    </test-code>
+</test-data>

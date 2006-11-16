@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+new 'new String's
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String bar = new String("bar");
+ private String baz = new String();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+new String array
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String[] bar = new String[5];
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using multiple parameter constructor
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  byte[] bytes = new byte[50];
+  String bar = new String(bytes, 0, bytes.length);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using 4 parameter constructor
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  byte[] bytes = new byte[50];
+  String bar = new String(bytes, 0, bytes.length, "some-encoding");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+byte array constructor is ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void foo() {
+  byte[] bytes = new byte[50];
+  String bar = new String(bytes);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Method returning new String
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String foo() {
+  return new String("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Not a new String
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ STRING foo() {
+  return new STRING("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Returns new String(str)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String foo(String str) {
+  return new String(str);
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

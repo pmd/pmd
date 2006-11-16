@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static void bar() {
+  if (true) {List buz = new ArrayList();}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static int bar() {
+  try{
+  if (true) {List buz = new ArrayList();}
+  for(int i = 0; i < 19; i++) {List buz = new ArrayList();}
+  int j = 0;
+  if (true) {j = 10;}
+  while (j++ < 20) {List buz = new ArrayList();}
+  if (true) {j = 21;}
+  if(false) {j = 0;}
+  do {List buz = new ArrayList();} while (j++ < 30); 
+  } catch(Exception e){
+  if (true) {e.printStackTrace();}
+ }
+  if (true) {return 1;}
+  else {return 2;}
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello";
+  if (x.indexOf("o") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using single quotes, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello";
+  if (x.indexOf('o') == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+indexOf multi-character literal, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello";
+  if (x.indexOf("ello") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using indexOf(singleCharString, int)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello world";
+  if (x.indexOf("e", 5) == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+using lastIndexOf(singleCharString)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello world";
+  if (x.lastIndexOf("e", 5) == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+complicated expressions are ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  String x = "hello world";
+  if (x.indexOf("e" + "o") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

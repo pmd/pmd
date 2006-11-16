@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Using length properly
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+void bar() {
+    StringBuffer sb = new StringBuffer();
+     if ( sb.length() == 0 ){
+           sb.append(",");
+     }
+    sb.append( "whatever" );
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+StringBuffer.toString.equals(""), bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+void bar() {
+    StringBuffer sb = new StringBuffer();
+     if ( sb.toString().equals("") ){
+           sb.append(",");
+     }
+    sb.append( "whatever" );
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+StringBuffer.toString.equals("foo"), ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+void bar() {
+    StringBuffer sb = new StringBuffer();
+     if ( sb.toString().equals("foo") ){
+           sb.append(",");
+     }
+    sb.append( "whatever" );
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+StringBuffer.toString.length(), bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+void bar() {
+    StringBuffer sb = new StringBuffer();
+     if ( sb.toString().length() == 0 ){
+           sb.append(",");
+     }
+    sb.append( "whatever" );
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+no literals
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ boolean bar(Object foo) {
+  StringBuffer sb = new StringBuffer();
+  return sb.toString().equals(foo);
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

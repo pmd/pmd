@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+1, Exception thrown without preserving stack
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+2, Exception thrown, stack preserved
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw new Exception(e);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3, Exception thrown, stack preserved
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw new Exception(e, e.getMessage());
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+4, No exception thrown, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw e.fillInStackTrace();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+5, No exception thrown, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+6, No exception thrown, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+7, No exception thrown, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw new Exception(Bar.foo(e),e);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+8, No exception thrown, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw (Error)e;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+9, Excetion is cast, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            throw (Error)e.fillInStackTrace();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+10, Throwing new Exception, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            Exception e1 = new Exception(e);
+            throw e1;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+11, Throwing new Exception, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String a) {
+        try {
+            int i = Integer.parseInt(a);
+        } catch(Exception e){
+            Exception e1 = (Exception)e.fillInStackTrace();
+            throw e1;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+12, Catch and throw RuntimeException
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class B {
+public void bla(){
+try {
+;
+} catch (IllegalStateException e) {
+throw new RuntimeException(e);
+}
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+13, Catch and throw RuntimeException, fail
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class B {
+public void bla(){
+try {
+;
+} catch (IllegalStateException e) {
+throw new RuntimeException();
+}
+}
+}
+     ]]></code>
+    </test-code>
+</test-data>

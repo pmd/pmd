@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+fail, == 0
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static boolean bar(List lst) {
+        if(lst.size() == 0){
+            return true;
+        }
+        return false;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, isEmpty
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static boolean bar(List lst) {
+        if(lst.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+fail, != 0
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static boolean bar(List lst) {
+        if(lst.size() != 0){
+            return true;
+        }
+        return false;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, !isEmpty
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static boolean bar(List lst) {
+        if(!lst.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+fail, != 0
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static boolean bar(List lst, boolean b) {
+        if(lst.size() == 0 && b){
+            return true;
+        }
+        return false;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, !isEmpty
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static boolean bar(List lst, boolean b) {
+        if(lst.isEmpty() && b){
+            return true;
+        }
+        return false;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+fail, 0 ==
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static boolean bar(List lst) {
+        if(0 == lst.size()){
+            return true;
+        }
+        return false;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+fail, > 0
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static boolean bar(List lst) {
+        if(lst.size() > 0){
+            return true;
+        }
+        return false;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, in expression
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static int modulo = 2;
+    public static boolean bar(List lst) {
+        if(lst.size() % modulo == 0){
+            return true;
+        }
+        return false;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, in expression
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    final Map map;
+    public boolean bar(Foo other) {
+        if (this.map.size() != other.map.size()){
+            return true;
+        }
+        return false;
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

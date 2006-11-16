@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+2 calls to next() inside the loop == bad!
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class PositionalIterator1 {
+ public void foo(Iterator i) {
+  while(i.hasNext()) {
+   Object one = i.next();
+   
+   // 2 calls to next() inside the loop == bad!
+   Object two = i.next(); 
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+one call to next() inside the loop == ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PositionalIterator2 {
+ public void foo(Iterator i) {
+  while(i.hasNext()) {
+   Object one = i.next();
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PositionalIterator3 {
+ public void foo() {
+  Iterator i = (new List()).iterator();
+  while(i.hasNext()) {
+   Object one = i.next();
+   Iterator j = (new List()).iterator();
+   while (j.hasNext()) {
+    j.next();
+   }
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

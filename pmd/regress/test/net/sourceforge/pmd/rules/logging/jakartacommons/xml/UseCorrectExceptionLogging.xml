@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static final Log _LOG = LogFactory.getLog( Main.class );
+ void foo() {
+  try {} catch (OtherException oe) {
+   _LOG.error(oe.getMessage(), oe);
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case - two calls
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static final Log _LOG = LogFactory.getLog( Main.class );
+ void foo() {
+  try {} catch (Exception e) {
+   _LOG.error(e);
+   _LOG.info(e);
+  } 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+must be in a catch block
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static final Log _LOG = LogFactory.getLog( Main.class );
+ void foo(int e) {
+  _LOG.error(e);
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+short
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void main(String args[]) {
+	  int x;
+    }
+}
+     ]]></code>
+    </test-code>
+    <code-fragment id="long"><![CDATA[
+public class Foo {
+    public void bar() {
+      bar();
+      bar();
+      bar();
+      bar();
+      bar();
+      bar();
+      bar();
+      bar();
+      bar();
+      bar();
+    }
+}
+ ]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+long
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code-ref id="long"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+long class - changed minimum
+     ]]></description>
+        <rule-property name="minimum">2000</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="long"/>
+    </test-code>
+</test-data>

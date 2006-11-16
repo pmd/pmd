@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+A violation.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+<html> <body> <ul> <c:forEach items='${books}' var='b'>
+<li> <h:outputText value='#{b}' /> </li>
+</c:forEach> </ul> </body> </html>
+     ]]></code>
+        <source-type>jsp</source-type>
+    </test-code>
+</test-data>

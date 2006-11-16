@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+throwing various types
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  throw new NullPointerException();
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

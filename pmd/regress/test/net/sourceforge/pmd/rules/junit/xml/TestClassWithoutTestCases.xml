@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class FooTest {}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+success case
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooTest {
+   void testX(){}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+inner class should get checked
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class FooTest {
+   class Bar { void testX(){} } 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+inner class that's ok 
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   class BarTest { void testX(){} } 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+abstract classes are ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class FooTest {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ditto interfaces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface FooTest {
+}
+     ]]></code>
+    </test-code>
+</test-data>

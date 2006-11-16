@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+        Ok
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final Log LOG = LogFactory.getLog(Foo.class);
+}
+ ]]>    </code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+        wrong class name
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final Log LOG = LogFactory.getLog(Bar.class);
+}
+ ]]>    </code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+        Ok, special case
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final Log log;
+    Foo(Log log) {
+        this.log = log;
+    }
+}
+ ]]>    </code>
+    </test-code>
+</test-data>

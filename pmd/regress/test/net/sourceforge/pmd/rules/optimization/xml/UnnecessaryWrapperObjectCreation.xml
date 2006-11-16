@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo(float value) {
+  float border = Float.valueOf(value).floatValue();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+calling valueOf is OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo(float value) {
+  Float f = Float.valueOf(value);
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Format called from non-synchronized block
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    void bar() {
+        sdf.format();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+2, No call to format
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final SimpleDateFormat sdf = new SimpleDateFormat();
+    void bar() {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+3, Inside synchronized, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    synchronized void bar() {
+        sdf.format();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+4, Inside synchronized, OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final SimpleDateFormat sdf = new SimpleDateFormat();
+    public void bar() {
+        synchronized (sdf) {
+            sdf.format();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+5, Use DateFormat, ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final DateFormat sdf = new DateFormat();
+    synchronized void bar() {
+        sdf.format();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+6, Use DateFormat, fail
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final DateFormat sdf = new DateFormat();
+    void bar() {
+        sdf.format();
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

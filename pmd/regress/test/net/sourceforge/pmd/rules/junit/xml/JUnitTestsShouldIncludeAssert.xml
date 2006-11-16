@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Contains assert
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+  assertEquals("1 == 1", 1, 1);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Missing assert
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+All ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void setUp() {
+ }
+ public void test1() {
+  assertTrue("foo", "foo".equals("foo"));
+ }
+ public void test2() {
+  assertEquals("foo", "foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Two wrong
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void setUp() {
+ }
+ public void test1() {
+ 	int a;
+ 	callMethod(a);
+ }
+ public void test2() {
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Contains fail
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+  fail("1 == 1");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+One wrong
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void setUp() {
+ }
+ public void test1() {
+ 	int a;
+ 	callMethod(a);
+ }
+ public void test2() {
+ 	fail();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Skip interfaces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public void setUp() throws Exception;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Skip abstract methods
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public abstract void setUp() throws Exception;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Another fail() case
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class AbstractAggregateCreator {
+    public abstract int getType();
+    public abstract ProfileAggregate create(DatabaseTransaction db,
+        DailyProfileList profiles, ProfileType type, ProfileStatus status)
+        throws VixenException;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+BUG 1105633 - False +: JUnit testcases could have fail() instead of assert
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooTest {
+ public void testNPEThrown() {
+  try {
+   methodCall(null);
+   fail("Expected NullPointerException to be thrown.");
+  } catch (NullPointerException npe) {
+   // Caught expected exception
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+BUG 1146116 PMDException with inner interfaces
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package at.herold.anthilltest;
+public class TestJunitRuleException {
+   interface I1 { 
+      public void meth(); // this is ok
+   }
+   interface I2 {
+      public void meth() throws Exception; // this causes PMDException
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip static test methods
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static void testfoo() {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+exceptions shouldn't block it
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void testfoo() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+</test-data>

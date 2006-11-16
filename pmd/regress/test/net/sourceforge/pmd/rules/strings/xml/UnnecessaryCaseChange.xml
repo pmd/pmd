@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+failure case with toUpperCase().equals()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private boolean baz(String buz) {
+  return foo.toUpperCase().equals("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case with toLowerCase().equals()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private boolean baz(String buz) {
+  return foo.toLowerCase().equals("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case with toUpperCase().equalsIgnoreCase()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private boolean baz(String buz) {
+  return foo.toUpperCase().equalsIgnoreCase("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+don't flag toUpperCase() invocations with Locale args
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private boolean baz(String buz) {
+  return foo.toUpperCase(locale).equals("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>
