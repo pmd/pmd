@@ -15,17 +15,25 @@ import javax.swing.tree.DefaultMutableTreeNode;
  *         2 paths. This is special to the data flow anomaly analysis.
  */
 public class DAAPathFinder {
-
     private static final int MAX_PATHS = 5000;
+    private static final int MAX_PATH_LENGTH = 5000;
 
     private IDataFlowNode rootNode;
     private Executable shim;
     private CurrentPath currentPath = new CurrentPath();
     private DefaultMutableTreeNode stack = new DefaultMutableTreeNode();
+    private int maxPaths;
 
     public DAAPathFinder(IDataFlowNode rootNode, Executable shim) {
         this.rootNode = rootNode;
         this.shim = shim;
+        this.maxPaths = MAX_PATHS;
+    }
+    
+    public DAAPathFinder(IDataFlowNode rootNode, Executable shim, int maxPaths) {
+        this.rootNode = rootNode;
+        this.shim = shim;
+        this.maxPaths = maxPaths;
     }
 
     public void run() {
@@ -44,7 +52,7 @@ public class DAAPathFinder {
             phase2(flag);
             shim.execute(currentPath);
             flag = false;
-        } while (i < MAX_PATHS && phase3());
+        } while (i < maxPaths && phase3());
         //System.out.println("found: " + i + " path(s)");
     }
 
@@ -52,7 +60,7 @@ public class DAAPathFinder {
      * Builds up the path.
      * */
     private void phase2(boolean flag) {
-        while (!currentPath.isEndNode()) {
+        while (!currentPath.isEndNode() && currentPath.getLength() < MAX_PATH_LENGTH) {
             if (currentPath.isBranch() || currentPath.isFirstDoStatement()) {
                 if (flag) {
                     addNodeToTree();

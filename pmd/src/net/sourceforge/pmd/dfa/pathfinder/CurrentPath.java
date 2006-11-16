@@ -14,6 +14,10 @@ public class CurrentPath {
         list = new LinkedList();
     }
 
+    public int getLength() {
+        return list.size();
+    }
+    
     public Iterator iterator() {
         return list.iterator();
     }

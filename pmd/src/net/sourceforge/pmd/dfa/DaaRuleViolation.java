@@ -16,12 +16,14 @@ public class DaaRuleViolation extends RuleViolation {
     private String variableName;
     private int beginLine;
     private int endLine;
+    private String type;
     
-    public DaaRuleViolation(Rule rule, RuleContext ctx, SimpleNode node, String specificMsg, String variableName, int beginLine, int endLine) {
-        super(rule, ctx, node, specificMsg);
-        this.variableName = variableName;
+    public DaaRuleViolation(Rule rule, RuleContext ctx, SimpleNode node, String type, String msg, String var, int beginLine, int endLine) {
+        super(rule, ctx, node, msg);
+        this.variableName = var;
         this.beginLine = beginLine;
         this.endLine = endLine;
+        this.type = type;
     }
 	
     public String getVariableName() {
@@ -34,5 +36,9 @@ public class DaaRuleViolation extends RuleViolation {
 	
     public int getEndLine() {
         return endLine;
+    }
+    
+    public String getType() {
+        return type;
     }
 }

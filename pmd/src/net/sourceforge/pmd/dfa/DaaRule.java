@@ -5,6 +5,7 @@ package net.sourceforge.pmd.dfa;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
@@ -12,6 +13,7 @@ import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -23,19 +25,38 @@ import java.util.List;
  *         Starts path search for each method and runs code if found.
  */
 public class DaaRule extends AbstractRule implements Executable {
-
     private RuleContext rc;
-    private int counter;
-    private static final int MAX_PATHS = 5000;
-
+    private List daaRuleViolations;
+    private final static String PROPERTY_MAX_PATH = "maxpaths";
+    private final static String PROPERTY_MAX_VIOLATIONS = "maxviolations";
+    private final static int DEFAULT_MAX_VIOLATIONS = 1000;
+    private int maxRuleViolations;
+    private int currentRuleViolationCount;
+    
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+        if (this.hasProperty(PROPERTY_MAX_VIOLATIONS)) {
+            this.maxRuleViolations = this.getIntProperty(PROPERTY_MAX_VIOLATIONS);
+        } else {
+            this.maxRuleViolations = DEFAULT_MAX_VIOLATIONS;
+        }     
+        
+        this.currentRuleViolationCount = 0;
+        return super.visit(node, data);
+    }
+    
     public Object visit(ASTMethodDeclaration node, Object data) {
         this.rc = (RuleContext) data;
-        counter = 0;
-
+        this.daaRuleViolations = new ArrayList();
+        
         IDataFlowNode n = (IDataFlowNode) node.getDataFlowNode().getFlow().get(0);
-        System.out.println("In DaaRule, IDataFlowNode n = " + n);
-
-        DAAPathFinder a = new DAAPathFinder(n, this);
+        
+        DAAPathFinder a;
+        if (this.hasProperty(PROPERTY_MAX_PATH)) {
+            a = new DAAPathFinder(n, this, this.getIntProperty(PROPERTY_MAX_PATH));
+        } else {
+            a = new DAAPathFinder(n, this);
+        }
+        
         a.run();
 
         super.visit(node, data);
@@ -43,12 +64,13 @@ public class DaaRule extends AbstractRule implements Executable {
     }
 
     public void execute(CurrentPath path) {
-        Hashtable hash = new Hashtable();
-        counter++;
-        if (counter == 5000) {
-            System.out.print("|");
-            counter = 0;
+        if (maxNumberOfViolationsReached()) {
+            // dont execute this path if the limit is already reached
+            return;
         }
+        
+        Hashtable hash = new Hashtable();
+        
         for (Iterator d = path.iterator(); d.hasNext();) {
             IDataFlowNode inode = (IDataFlowNode) d.next();
             if (inode.getVariableAccess() != null) {
@@ -81,7 +103,7 @@ public class DaaRule extends AbstractRule implements Executable {
                         	// undefinition outside, get the node of the definition
                                 SimpleNode lastSimpleNode = (SimpleNode)array.get(1);
                                 if (lastSimpleNode != null) {
-                                    addDaaViolation(rc, lastSimpleNode, "DU", va.getVariableName(), startLine, endLine);                           		
+                                    addDaaViolation(rc, lastSimpleNode, "DU", va.getVariableName(), startLine, endLine);
                                 }
                             }
                         }
@@ -103,8 +125,50 @@ public class DaaRule extends AbstractRule implements Executable {
      * @param node the node that produces the violation
      * @param msg  specific message to put in the report
      */
-    private final void addDaaViolation(Object data, SimpleNode node, String msg, String var, int startLine, int endLine) {
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new DaaRuleViolation(this, ctx, node, msg, var, startLine, endLine));
+    private final void addDaaViolation(Object data, SimpleNode node, String type, String var, int startLine, int endLine) {
+        if (!maxNumberOfViolationsReached() 
+                && !violationAlreadyExists(type, var, startLine, endLine)) {
+            RuleContext ctx = (RuleContext) data;
+            Object[] params = new Object[] { type, var, new Integer(startLine), new Integer(endLine) };
+            String msg = type;
+            if (getMessage() != null) {
+                msg = MessageFormat.format(getMessage(), params);
+            }
+            DaaRuleViolation violation = new DaaRuleViolation(this, ctx, node, type, msg, var, startLine, endLine);
+            ctx.getReport().addRuleViolation(violation);
+            this.daaRuleViolations.add(violation);
+            this.currentRuleViolationCount++;
+      }
+    }
+
+    /**
+     * Maximum number of violations was already reached?
+     * @return
+     */
+    private boolean maxNumberOfViolationsReached() {
+        return this.currentRuleViolationCount >= this.maxRuleViolations;
+    }
+    
+    /**
+     * Checks if a violation already exists.
+     * This is needed because on the different paths same anomalies can occur.
+     * @param type
+     * @param var
+     * @param startLine
+     * @param endLine
+     * @return true if the violation already was added to the report
+     */
+    private boolean violationAlreadyExists(String type, String var, int startLine, int endLine) {
+        Iterator violationIterator = this.daaRuleViolations.iterator();
+        while (violationIterator.hasNext()) {
+            DaaRuleViolation violation = (DaaRuleViolation)violationIterator.next();
+            if ((violation.getBeginLine() == startLine)
+                    && (violation.getEndLine() == endLine)
+                    && violation.getType().equals(type)
+                    && violation.getVariableName().equals(var)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
