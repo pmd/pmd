@@ -16,7 +16,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class DAAPathFinder {
     private static final int MAX_PATHS = 5000;
-    private static final int MAX_PATH_LENGTH = 5000;
+    private static final int MAX_PATH_LENGTH = 2000;
 
     private IDataFlowNode rootNode;
     private Executable shim;
@@ -198,7 +198,9 @@ public class DAAPathFinder {
             return;
         }
         DefaultMutableTreeNode parent = (DefaultMutableTreeNode) last.getParent();
-        parent.remove(last);
+        if (parent != null) {
+            parent.remove(last);
+        }
         last = stack.getLastLeaf();
         if (last == null || last.getUserObject() == null) return;
 
