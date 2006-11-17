@@ -1087,26 +1087,12 @@ public class Test {
 
     <rule   name="AvoidUsingOctalValues"
             message="Do not start a literal by 0 unless it's an octal value"
-            class="net.sourceforge.pmd.rules.XPathRule"
+            class="net.sourceforge.pmd.rules.basic.AvoidUsingOctalValues"
             externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingOctalValues">
     <description>
     Integer literals should not start with zero.
     Zero means that the rest of literal will be interpreted as an octal value.
     </description>
-    <properties>
-        <property name="xpath">
-            <value>
-<![CDATA[
-//Literal
- [(starts-with(@Image, 0))]
- [string-length(@Image)>1]
- [not(contains(@Image, '.'))]
- [not(substring(@Image, 2, 1) = 'x')]
- [not(substring(@Image, 2, 1) = 'L')]
-]]>
-            </value>
-        </property>
-    </properties>
     <priority>3</priority>
     <example>
     <![CDATA[
