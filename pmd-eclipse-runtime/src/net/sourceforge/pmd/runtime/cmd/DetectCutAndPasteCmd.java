@@ -69,6 +69,9 @@ import org.eclipse.ui.IPropertyListener;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2006/11/18 14:45:11  holobender
+ * some more info output
+ *
  * Revision 1.2  2006/11/16 16:54:40  holobender
  * - changed command for the new cpd view
  * - possibility to set the number of maxviolations per file over the rule-properties
@@ -110,30 +113,35 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
         try {
             // find the files
             final List files = findFiles();
-            setStepsCount(files.size());
-            
-            beginTask("Finding suspect Cut And Paste", getStepsCount()*2);
 
-            // detect cut and paste
-            final CPD cpd = detectCutAndPaste(files);
+            if (files.size() == 0) {
+                PMDRuntimePlugin.getDefault().logInformation("No files found to specified language.");
+            } else {
+                PMDRuntimePlugin.getDefault().logInformation("Found " + files.size() + " files to the specified language. Performing CPD.");
+                setStepsCount(files.size());               
+                beginTask("Finding suspect Cut And Paste", getStepsCount()*2);
+                               
+                if (!isCanceled()) {                    
+                    // detect cut and paste
+                    final CPD cpd = detectCutAndPaste(files);           
 
-            if (!isCanceled()) {
-                // if the command was not canceled
-                if (this.createReport) {
-                    // create the report optionally
-                    this.renderReport(cpd.getMatches());
-                }
-                
-                // trigger event propertyChanged for all listeners
-                Display.getDefault().asyncExec(new Runnable() {
-                    public void run() {
-                        final Iterator listenerIterator = listenerList.iterator();
-                        while (listenerIterator.hasNext()) {
-                            final IPropertyListener listener = (IPropertyListener) listenerIterator.next();
-                            listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
-                        }
+                    // if the command was not canceled
+                    if (this.createReport) {
+                        // create the report optionally
+                        this.renderReport(cpd.getMatches());
                     }
-                });
+                    
+                    // trigger event propertyChanged for all listeners
+                    Display.getDefault().asyncExec(new Runnable() {
+                        public void run() {
+                            final Iterator listenerIterator = listenerList.iterator();
+                            while (listenerIterator.hasNext()) {
+                                final IPropertyListener listener = (IPropertyListener) listenerIterator.next();
+                                listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
+                            }
+                        }
+                    });
+                }
             }
         } catch (CoreException e) {
             log.debug("Core Exception: " + e.getMessage(), e);
@@ -261,7 +269,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
                 log.warn("IOException when adding file " + file.getName() + " to CPD. Continuing.", e);
             }
         }
-        
+               
         if (!isCanceled()) {
             subTask("Performing CPD");
             log.debug("Performing CPD");
