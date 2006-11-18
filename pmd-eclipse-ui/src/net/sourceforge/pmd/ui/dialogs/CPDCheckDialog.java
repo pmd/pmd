@@ -41,6 +41,8 @@ import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -64,6 +66,9 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/11/18 14:47:35  holobender
+ * some little improvements for cpd view
+ *
  * Revision 1.1  2006/11/16 17:10:08  holobender
  * Some major changes:
  * - new CPD View
@@ -131,8 +136,12 @@ public class CPDCheckDialog extends Dialog {
         int tilesize = 0;
         try {
             tilesize = Integer.parseInt(tileSize);
+            if (tilesize <=0) {
+                throw new NumberFormatException();
+            }
         } catch (NumberFormatException e) {
             tilesize = PMDRuntimePlugin.getDefault().loadPreferences().getMinTileSize();
+            PMDRuntimePlugin.getDefault().logInformation("Invalid minimum tile-size: Setting to default value of " + tilesize);            
         }
         return tilesize;
     }
@@ -167,12 +176,20 @@ public class CPDCheckDialog extends Dialog {
         gridData5.horizontalIndent = 10;
         gridData5.heightHint = -1;
         gridData5.verticalAlignment = GridData.CENTER;
+        final GridData gridData4 = new GridData();
+        gridData4.verticalIndent = 5;
+        gridData4.horizontalIndent = 5;
+        gridData4.horizontalSpan = 2;
         
         final GridLayout gridLayout1 = new GridLayout();
         gridLayout1.numColumns = 2;
         gridLayout1.makeColumnsEqualWidth = false;
         container.setLayout(gridLayout1);
    
+        final Label helpLabel = new Label(container,SWT.NONE);
+        helpLabel.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_HELP_LABEL));
+        helpLabel.setLayoutData(gridData4);
+        
         final Label languageLabel = new Label(container, SWT.NONE);
         languageLabel.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_LANGUAGE_LABEL));
         languageLabel.setLayoutData(gridData6);
@@ -186,8 +203,12 @@ public class CPDCheckDialog extends Dialog {
         minimumTileSizeText.setLayoutData(gridData5);
         minimumTileSizeText.setToolTipText(getString(StringKeys.MSGKEY_DIALOG_TOOLTIP_CPD_MIN_TILESIZE));
         final int minTileSize = PMDRuntimePlugin.getDefault().loadPreferences().getMinTileSize();
-        minimumTileSizeText.setText(Integer.toString(minTileSize));
+        final String minTileSizeString = Integer.toString(minTileSize);
+        this.tileSize = minTileSizeString;
+        minimumTileSizeText.setText(minTileSizeString);
         minimumTileSizeText.setTextLimit(3);
+        
+
         minimumTileSizeText.addModifyListener(new ModifyListener() {
             public void modifyText(ModifyEvent e) {
                 tileSize = minimumTileSizeText.getText();

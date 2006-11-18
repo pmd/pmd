@@ -40,6 +40,9 @@ import org.eclipse.ui.PartInitException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/11/18 14:47:13  holobender
+ * some little improvements for cpd view
+ *
  * Revision 1.4  2006/11/16 17:09:40  holobender
  * Some major changes:
  * - new CPD View
@@ -74,7 +77,7 @@ public class CPDCheckProjectAction implements IObjectActionDelegate {
     private IWorkbenchPart targetPart;
 
     private static final String XML_KEY = "XML";
-    private static final String SIMPLE_KEY = "Simple";
+    private static final String SIMPLE_KEY = "Simple Text";
     private static final String CSV_KEY = "CSV";
     
     /*

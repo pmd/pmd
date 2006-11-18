@@ -42,6 +42,9 @@ package net.sourceforge.pmd.ui.nls;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/11/18 14:47:51  holobender
+ * some little improvements for cpd view
+ *
  * Revision 1.3  2006/11/16 17:11:09  holobender
  * Some major changes:
  * - new CPD View
@@ -195,7 +198,8 @@ public class StringKeys {
     public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_LINE = "view.dataflow.table.column_line";
     public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_VARIABLE = "view.dataflow.table.column_variable";
     public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_METHOD = "view.dataflow.table.column_method";
-
+    public static final String MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_TYPE_TOOLTIP = "view.dataflow.table.column_type.tooltip";
+    
     public static final String MSGKEY_VIEW_FILTER_PRIORITY_1 = "view.filter.priority.1";
     public static final String MSGKEY_VIEW_FILTER_PRIORITY_2 = "view.filter.priority.2";
     public static final String MSGKEY_VIEW_FILTER_PRIORITY_3 = "view.filter.priority.3";
@@ -260,6 +264,8 @@ public class StringKeys {
     public static final String MSGKEY_DIALOG_TOOLTIP_CPD_FORMAT = "dialog.tooltip.cpd.format";
     public static final String MSGKEY_DIALOG_TOOLTIP_CPD_MIN_TILESIZE = "dialog.tooltip.cpd.tilesize";
     public static final String MSGKEY_DIALOG_TOOLTIP_CPD_LANGUAGE = "dialog.tooltip.cpd.language";
+    public static final String MSGKEY_DIALOG_CPD_HELP_LABEL = "dialog.cpd.help.label";
+    
     public static final String MSGKEY_ERROR_TITLE = "message.error.title";
     public static final String MSGKEY_ERROR_CORE_EXCEPTION = "message.error.core_exception";
     public static final String MSGKEY_ERROR_PMD_EXCEPTION = "message.error.pmd_exception";
