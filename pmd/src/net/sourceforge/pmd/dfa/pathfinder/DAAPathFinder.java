@@ -16,7 +16,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class DAAPathFinder {
     private static final int MAX_PATHS = 5000;
-    private static final int MAX_PATH_LENGTH = 2000;
+    private static final int MAX_PATH_LENGTH = 1000;
 
     private IDataFlowNode rootNode;
     private Executable shim;
@@ -60,7 +60,8 @@ public class DAAPathFinder {
      * Builds up the path.
      * */
     private void phase2(boolean flag) {
-        while (!currentPath.isEndNode() && currentPath.getLength() < MAX_PATH_LENGTH) {
+        while (!currentPath.isEndNode() 
+                && currentPath.getLength() < MAX_PATH_LENGTH) { // lockup in special cases, see bug 1461873 
             if (currentPath.isBranch() || currentPath.isFirstDoStatement()) {
                 if (flag) {
                     addNodeToTree();
@@ -119,8 +120,11 @@ public class DAAPathFinder {
         if (currentPath.isBranch()) { // TODO WHY????
             PathElement last = (PathElement) stack.getLastLeaf().getUserObject();
             IDataFlowNode inode = currentPath.getLast();
-            IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(last.currentChild);
-            this.currentPath.addLast(child);
+            if (inode.getChildren().size() > last.currentChild) { 
+                // for some unknown reasons last.currentChild might not be a children of inode, see bug 1597987 
+                IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(last.currentChild);
+                this.currentPath.addLast(child);
+            }
         } else {
             IDataFlowNode inode = currentPath.getLast();
             IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(0); //TODO ???? IMPORTANT - ERROR?
@@ -199,6 +203,7 @@ public class DAAPathFinder {
         }
         DefaultMutableTreeNode parent = (DefaultMutableTreeNode) last.getParent();
         if (parent != null) {
+        	// for some unknown reasons parent might be null, see bug 1597987
             parent.remove(last);
         }
         last = stack.getLastLeaf();
@@ -293,6 +298,7 @@ public class DAAPathFinder {
         DefaultMutableTreeNode treeNode = stack.getLastLeaf();
         int counter = 0;
         if (treeNode.getParent() != null) {
+            // for some unknown reasons the parent of treeNode might be null, see bug 1597987
             int childCount = treeNode.getParent().getChildCount();
             for (int i = 0; i < childCount; i++) {
                 DefaultMutableTreeNode tNode = (DefaultMutableTreeNode) treeNode.getParent().getChildAt(i);
