@@ -53,7 +53,8 @@ public class DataflowAnomalyTableViewer extends TableViewer {
         final TableColumn typeColumn = new TableColumn(table, SWT.LEFT);
         typeColumn.setWidth(80);
         typeColumn.setText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_TYPE));
-
+        typeColumn.setToolTipText(getString(StringKeys.MSGKEY_VIEW_DATAFLOW_TABLE_COLUMN_TYPE_TOOLTIP));
+        
         // Line(s) where the Anomaly occures
         final TableColumn lineColumn = new TableColumn(table, SWT.RIGHT);
         lineColumn.setWidth(100);
