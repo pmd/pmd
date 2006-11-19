@@ -127,8 +127,8 @@ public class Formatter {
     }
 
     private void outputReportTo(Writer writer, Report report, boolean consoleRenderer) throws IOException {
-        String renderedReport = getRenderer(consoleRenderer).render(report) + PMD.EOL;
-        writer.write(renderedReport, 0, renderedReport.length());
+        getRenderer(consoleRenderer).render(writer, report);
+        writer.write(PMD.EOL);
         writer.close();
     }
 

@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ import java.util.Map;
  * colorization is atm only supported under *nix terminals accepting ansi escape
  * sequences, such as xterm, rxvt et cetera.</p>
  */
-public class PapariTextRenderer extends AbstractRenderer implements Renderer {
+public class PapariTextRenderer extends AbstractRenderer {
     /**
      * Directory from where java was invoked.
      */
@@ -78,7 +79,7 @@ public class PapariTextRenderer extends AbstractRenderer implements Renderer {
         }
     }
 
-    public String render(Report report) {
+    public void render(Writer writer, Report report) throws IOException {
         StringBuffer buf = new StringBuffer(PMD.EOL);
         initializeColorsIfSupported();
         String lastFile = null;
@@ -86,6 +87,7 @@ public class PapariTextRenderer extends AbstractRenderer implements Renderer {
         int numberOfWarnings = 0;
 
         for (Iterator i = report.iterator(); i.hasNext();) {
+            buf.setLength(0);
             numberOfWarnings++;
             IRuleViolation rv = (IRuleViolation) i.next();
             if (!rv.getFilename().equals(lastFile)) {
@@ -96,17 +98,21 @@ public class PapariTextRenderer extends AbstractRenderer implements Renderer {
             buf.append(this.green + "    rule: " + this.colorReset + rv.getRule().getName() + PMD.EOL);
             buf.append(this.green + "    msg:  " + this.colorReset + rv.getDescription() + PMD.EOL);
             buf.append(this.green + "    code: " + this.colorReset + this.getLine(lastFile, rv.getBeginLine()) + PMD.EOL + PMD.EOL);
+            writer.write(buf.toString());
         }
-        buf.append(PMD.EOL + PMD.EOL);
-        buf.append("Summary:" + PMD.EOL + PMD.EOL);
+        writer.write(PMD.EOL + PMD.EOL);
+        writer.write("Summary:" + PMD.EOL + PMD.EOL);
         Map summary = report.getCountSummary();
         for (Iterator i = summary.entrySet().iterator(); i.hasNext();) {
+            buf.setLength(0);
             Map.Entry entry = (Map.Entry) i.next();
             String key = (String) entry.getKey();
             buf.append(key + " : " + ((Integer) entry.getValue()).intValue() + PMD.EOL);
+            writer.write(buf.toString());
         }
 
         for (Iterator i = report.errors(); i.hasNext();) {
+            buf.setLength(0);
             numberOfErrors++;
             Report.ProcessingError error = (Report.ProcessingError) i.next();
             if (error.getFile().equals(lastFile)) {
@@ -114,15 +120,14 @@ public class PapariTextRenderer extends AbstractRenderer implements Renderer {
                 buf.append(this.redBold + "*" + this.colorReset + " file: " + this.whiteBold + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
             }
             buf.append(this.green + "    err:  " + this.cyan + error.getMsg() + this.colorReset + PMD.EOL + PMD.EOL);
+            writer.write(buf.toString());
         }
 
         // adding error message count, if any
         if (numberOfErrors > 0) {
-            buf.append(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + numberOfWarnings + this.colorReset + PMD.EOL);
+            writer.write(this.redBold + "*" + this.colorReset + " errors:   " + this.whiteBold + numberOfWarnings + this.colorReset + PMD.EOL);
         }
-        buf.append(this.yellowBold + "*" + this.colorReset + " warnings: " + this.whiteBold + numberOfWarnings + this.colorReset + PMD.EOL);
-
-        return buf.toString();
+        writer.write(this.yellowBold + "*" + this.colorReset + " warnings: " + this.whiteBold + numberOfWarnings + this.colorReset + PMD.EOL);
     }
 
     /**

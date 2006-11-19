@@ -7,6 +7,8 @@ import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Iterator;
 
 /**
@@ -24,8 +26,8 @@ import java.util.Iterator;
  *
  * @author Jeff Epstein, based upon <a href="EmacsRenderer.html">EmacsRenderer</a>, Tuesday, September 23, 2003
  */
-public class TextPadRenderer extends AbstractRenderer implements Renderer {
-    public String render(Report report) {
+public class TextPadRenderer extends AbstractRenderer {
+    public void render(Writer writer, Report report) throws IOException {
         StringBuffer buf = new StringBuffer();
         Iterator i;
         try {
@@ -35,6 +37,7 @@ public class TextPadRenderer extends AbstractRenderer implements Renderer {
         }
         while (i.hasNext()) {
             IRuleViolation rv = (IRuleViolation) i.next();
+            buf.setLength(0);
             //Filename
             buf.append(PMD.EOL).append(rv.getFilename() + "(");
             //Line number
@@ -43,7 +46,7 @@ public class TextPadRenderer extends AbstractRenderer implements Renderer {
             buf.append(rv.getRule().getName()).append("):  ");
             //Specific violation message
             buf.append(rv.getDescription());
+            writer.write(buf.toString());
         }
-        return buf.toString();
     }
 }

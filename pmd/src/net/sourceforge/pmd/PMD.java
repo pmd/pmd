@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -274,7 +275,10 @@ public class PMD {
 
         try {
             Renderer r = opts.createRenderer();
-            System.out.println(r.render(ctx.getReport()));
+            OutputStreamWriter w = new OutputStreamWriter(System.out);
+            r.render(w, ctx.getReport());
+            w.flush();
+            System.out.println();
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println(opts.usage());

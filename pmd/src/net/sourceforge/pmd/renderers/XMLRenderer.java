@@ -8,19 +8,23 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.util.StringUtil;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
-public class XMLRenderer extends AbstractRenderer implements Renderer {
+public class XMLRenderer extends AbstractRenderer {
 
-    public String render(Report report) {
+    public void render(Writer writer, Report report) throws IOException {
 
-        StringBuffer buf = new StringBuffer("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + createVersionAttr() + createTimestampAttr() + createTimeElapsedAttr(report) + '>' + PMD.EOL);
+        StringBuffer buf = new StringBuffer();
+        writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + createVersionAttr() + createTimestampAttr() + createTimeElapsedAttr(report) + '>' + PMD.EOL);
         String filename = null;
 
         // rule violations
         for (Iterator i = report.iterator(); i.hasNext();) {
+            buf.setLength(0);
             IRuleViolation rv = (IRuleViolation) i.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {// Not first file ?
@@ -50,24 +54,29 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
             buf.append(PMD.EOL);
             buf.append("</violation>");
             buf.append(PMD.EOL);
+            writer.write(buf.toString());
         }
         if (filename != null) { // Not first file ?
-            buf.append("</file>").append(PMD.EOL);
+            writer.write("</file>");
+            writer.write(PMD.EOL);
         }
 
         // errors
         for (Iterator i = report.errors(); i.hasNext();) {
+            buf.setLength(0);
             Report.ProcessingError pe = (Report.ProcessingError) i.next();
             buf.append("<error ").append("filename=\"");
             StringUtil.appendXmlEscaped(buf, pe.getFile());
             buf.append("\" msg=\"");
             StringUtil.appendXmlEscaped(buf, pe.getMsg());
             buf.append("\"/>").append(PMD.EOL);
+            writer.write(buf.toString());
         }
 
         // suppressed violations
         if (showSuppressedViolations) {
             for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
+                buf.setLength(0);
                 Report.SuppressedViolation suppressed = (Report.SuppressedViolation) i.next();
                 buf.append("<suppressedviolation ").append("filename=\"");
                 StringUtil.appendXmlEscaped(buf, suppressed.getRuleViolation().getFilename());
@@ -78,11 +87,11 @@ public class XMLRenderer extends AbstractRenderer implements Renderer {
                 buf.append("\" usermsg=\"");
                 StringUtil.appendXmlEscaped(buf, suppressed.getUserMessage());
                 buf.append("\"/>").append(PMD.EOL);
+                writer.write(buf.toString());
             }
         }
 
-        buf.append("</pmd>");
-        return buf.toString();
+        writer.write("</pmd>");
     }
 
     private void maybeAdd(String attr, String value, StringBuffer buf) {

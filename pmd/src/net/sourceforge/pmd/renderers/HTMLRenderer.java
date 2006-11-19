@@ -8,9 +8,11 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.util.StringUtil;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Iterator;
 
-public class HTMLRenderer extends AbstractRenderer implements Renderer {
+public class HTMLRenderer extends AbstractRenderer {
 
     private String linkPrefix;
     private String linePrefix;
@@ -25,31 +27,30 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
         this(null, null);
     }
 
-    public String render(Report report) {
-        StringBuffer buf = new StringBuffer("<html><head><title>PMD</title></head><body>" + PMD.EOL);
-        buf.append(renderBody(report));
-        buf.append("</body></html>");
-        return buf.toString();
+    public void render(Writer writer, Report report) throws IOException {
+        writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
+        renderBody(writer, report);
+        writer.write("</body></html>");
     }
 
-    public String renderBody(Report report) {
-        StringBuffer buf = glomIRuleViolations(report);
-        glomProcessingErrors(report, buf);
+    public void renderBody(Writer writer, Report report) throws IOException {
+        glomIRuleViolations(writer, report);
+        glomProcessingErrors(writer, report);
         if (showSuppressedViolations) {
-            glomSuppressions(report, buf);
+            glomSuppressions(writer, report);
         }
-        return buf.toString();
     }
     
-    private StringBuffer glomIRuleViolations(Report report) {
+    private void glomIRuleViolations(Writer writer, Report report) throws IOException {
         boolean colorize = true;
         int violationCount = 1;
         StringBuffer buf = new StringBuffer(500);
-        buf.append("<center><h3>PMD report</h3></center>");
-        buf.append("<center><h3>Problems found</h3></center>");
-        buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
+        writer.write("<center><h3>PMD report</h3></center>");
+        writer.write("<center><h3>Problems found</h3></center>");
+        writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
         for (Iterator i = report.iterator(); i.hasNext();) {
             IRuleViolation rv = (IRuleViolation) i.next();
+            buf.setLength(0);
             buf.append("<tr");
             if (colorize) {
                 buf.append(" bgcolor=\"lightgrey\"");
@@ -67,26 +68,28 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
             }
             buf.append("<td width=\"*\">" + d + "</td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
+            writer.write(buf.toString());
             violationCount++;
         }
         if (violationCount > 0) {
-            buf.append("</table>");
+            writer.write("</table>");
         }
-        return buf;
     }
 
-    private void glomProcessingErrors(Report report, StringBuffer buf) {
+    private void glomProcessingErrors(Writer writer, Report report) throws IOException {
         boolean colorize = true;
         int violationCount;
         // errors
         if (report.errors().hasNext()) {
-            buf.append("<hr/>");
-            buf.append("<center><h3>Processing errors</h3></center>");
-            buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>File</th><th>Problem</th></tr>" + PMD.EOL);
+            writer.write("<hr/>");
+            writer.write("<center><h3>Processing errors</h3></center>");
+            writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>File</th><th>Problem</th></tr>" + PMD.EOL);
         }
         violationCount = 0;
+        StringBuffer buf = new StringBuffer(500);
         for (Iterator i = report.errors(); i.hasNext();) {
             Report.ProcessingError pe = (Report.ProcessingError) i.next();
+            buf.setLength(0);
             buf.append("<tr");
             if (colorize) {
                 buf.append(" bgcolor=\"lightgrey\"");
@@ -96,24 +99,27 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
             buf.append("<td>" + pe.getFile() + "</td>" + PMD.EOL);
             buf.append("<td>" + pe.getMsg() + "</td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
+            writer.write(buf.toString());
             violationCount++;
         }
         if (violationCount > 0) {
-            buf.append("</table>");
+            writer.write("</table>");
         }
     }
 
-    private void glomSuppressions(Report report, StringBuffer buf) {
+    private void glomSuppressions(Writer writer, Report report) throws IOException {
         boolean colorize = true;
         boolean hasSuppressedViolations = !report.getSuppressedRuleViolations().isEmpty();
         if (hasSuppressedViolations) {
-            buf.append("<hr/>");
-            buf.append("<center><h3>Suppressed warnings</h3></center>");
-            buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>" + PMD.EOL);
+            writer.write("<hr/>");
+            writer.write("<center><h3>Suppressed warnings</h3></center>");
+            writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>" + PMD.EOL);
         }
         Report.SuppressedViolation sv;
+        StringBuffer buf = new StringBuffer(500);
         for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
             sv = (Report.SuppressedViolation) i.next();
+            buf.setLength(0);
             buf.append("<tr");
             if (colorize) {
                 buf.append(" bgcolor=\"lightgrey\"");
@@ -126,9 +132,10 @@ public class HTMLRenderer extends AbstractRenderer implements Renderer {
             buf.append("<td align=\"center\">" + (sv.suppressedByNOPMD() ? "NOPMD" : "Annotation") + "</td>" + PMD.EOL);
             buf.append("<td align=\"center\">" + (sv.getUserMessage() == null ? "" : sv.getUserMessage()) + "</td>" + PMD.EOL);
             buf.append("</tr>" + PMD.EOL);
+            writer.write(buf.toString());
         }
         if (hasSuppressedViolations) {
-            buf.append("</table>");
+            writer.write("</table>");
         }
     }
 

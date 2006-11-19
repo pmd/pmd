@@ -7,17 +7,19 @@ import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.Iterator;
 
 /**
  * @author Vladimir
  * @version $Revision$ $Date$
  */
-public class VBHTMLRenderer extends AbstractRenderer implements Renderer {
+public class VBHTMLRenderer extends AbstractRenderer {
 
-    public String render(Report report) {
+    public void render(Writer writer, Report report) throws IOException {
         if (report.isEmpty()) {
-            return "";
+            return;
         }
 
         StringBuffer sb = new StringBuffer(header());
@@ -27,6 +29,7 @@ public class VBHTMLRenderer extends AbstractRenderer implements Renderer {
         boolean colorize = false;
 
         for (Iterator iter = report.iterator(); iter.hasNext();) {
+            sb.setLength(0);
             IRuleViolation rv = (IRuleViolation) iter.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {
@@ -50,15 +53,17 @@ public class VBHTMLRenderer extends AbstractRenderer implements Renderer {
             sb.append("<td><font class=body>" + rv.getDescription() + "</font></td>");
             sb.append("</tr>");
             sb.append(lineSep);
+            writer.write(sb.toString());
         }
         if (filename != null) {
-            sb.append("</table>");
+            writer.write("</table>");
         }
-        sb.append("<br>");
+        writer.write("<br>");
 
         // output the problems
         Iterator iter = report.errors();
         if (iter.hasNext()) {
+            sb.setLength(0);
             sb.append("<table border=\"0\" width=\"80%\">");
             sb.append("<tr id=TableHeader><td><font class=title>&nbsp;Problems found</font></td></tr>");
             colorize = false;
@@ -72,11 +77,10 @@ public class VBHTMLRenderer extends AbstractRenderer implements Renderer {
                 sb.append("<td><font class=body>").append(iter.next()).append("\"</font></td></tr>");
             }
             sb.append("</table>");
+            writer.write(sb.toString());
         }
 
-        sb.append(footer());
-
-        return sb.toString();
+        writer.write(footer());
     }
 
     private String header() {
