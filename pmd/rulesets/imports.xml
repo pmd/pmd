@@ -29,27 +29,11 @@ public class Foo {}
 
   <rule name="DontImportJavaLang"
         message="Avoid importing anything from the package 'java.lang'"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.rules.imports.DontImportJavaLang"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#DontImportJavaLang">
     <description>
 Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
     </description>
-      <properties>
-          <property name="xpath">
-              <value>
-                  <![CDATA[
-//ImportDeclaration
- [@Static = 'false']
- [starts-with(Name/@Image, 'java.lang')]
- [not(starts-with(Name/@Image, 'java.lang.ref'))]
- [not(starts-with(Name/@Image, 'java.lang.reflect'))]
- [not(starts-with(Name/@Image, 'java.lang.annotation'))]
- [not(starts-with(Name/@Image, 'java.lang.instrument'))]
- [not(starts-with(Name/@Image, 'java.lang.management'))]
-                ]]>
-              </value>
-          </property>
-       </properties>
       <priority>4</priority>
     <example>
 <![CDATA[

@@ -182,23 +182,11 @@ public class Foo {
 
     <rule name="DontImportSun"
        message="Avoid importing anything from the 'sun.*' packages"
-       class="net.sourceforge.pmd.rules.XPathRule"
+       class="net.sourceforge.pmd.rules.imports.DontImportSun"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DontImportSun">
        <description>
 Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
        </description>
-       <properties>
-          <property name="xpath">
-               <value>
-<![CDATA[
-//ImportDeclaration
-[starts-with(Name/@Image, 'sun.')]
-[not(starts-with(Name/@Image, 'sun.misc.Signal'))]
-]]>
-
-               </value>
-          </property>
-       </properties>
        <priority>4</priority>
        <example>
 <![CDATA[
@@ -381,6 +369,7 @@ public class Foo {
       </example>
     </rule>
 
+    <!--
     <rule name="DataflowAnomalyAnalysis"
               message="Found ''{0}''-anomaly for variable ''{1}'' (lines ''{2}''-''{3}'')."
               class="net.sourceforge.pmd.dfa.DaaRule"
@@ -412,6 +401,7 @@ public class Foo {
         </rule>
 
 
+	-->
 </ruleset>
 
 

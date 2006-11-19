@@ -46,6 +46,8 @@ Renderers use less memory when generating reports.
 Performance Refactoring, XPath rules re-written as Java:
     AssignmentInOperand
     AvoidDollarSigns
+    DontImportJavaLang
+    DontImportSun
     MoreThanOneLogger
     SuspiciousHashcodeMethodName
     UselessStringValueOf
