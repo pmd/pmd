@@ -369,7 +369,6 @@ public class Foo {
       </example>
     </rule>
 
-    <!--
     <rule name="DataflowAnomalyAnalysis"
               message="Found ''{0}''-anomaly for variable ''{1}'' (lines ''{2}''-''{3}'')."
               class="net.sourceforge.pmd.dfa.DaaRule"
@@ -401,7 +400,6 @@ public class Foo {
         </rule>
 
 
-	-->
 </ruleset>
 
 
