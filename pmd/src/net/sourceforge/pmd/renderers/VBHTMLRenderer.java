@@ -22,12 +22,13 @@ public class VBHTMLRenderer extends AbstractRenderer {
             return;
         }
 
-        StringBuffer sb = new StringBuffer(header());
+        StringBuffer sb = new StringBuffer();
         String filename = null;
         String lineSep = PMD.EOL;
 
         boolean colorize = false;
 
+        writer.write(header());
         for (Iterator iter = report.iterator(); iter.hasNext();) {
             sb.setLength(0);
             IRuleViolation rv = (IRuleViolation) iter.next();
