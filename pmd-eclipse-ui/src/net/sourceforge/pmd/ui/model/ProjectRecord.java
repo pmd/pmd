@@ -46,6 +46,7 @@ import net.sourceforge.pmd.ui.nls.StringKeys;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IPackageFragment;
@@ -60,6 +61,9 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.9  2006/11/20 14:53:27  holobender
+ * Fix: When Packages are in a src folder and not in the root of the project, they are not shown in the violation overview.
+ *
  * Revision 1.8  2006/11/16 17:11:08  holobender
  * Some major changes:
  * - new CPD View
@@ -140,29 +144,42 @@ public class ProjectRecord extends AbstractPMDRecord {
     protected final AbstractPMDRecord[] createChildren() {
         final Set packages = new HashSet();
         try {
-            // search for Project members
-            final IResource[] members = this.project.members();
-            for (int i = 0; i < members.length; i++) {
+            // search for Packages            
+            this.project.accept(new IResourceVisitor() {
 
-                // create JavaElements for each member
-                final IJavaElement javaMember = JavaCore.create(members[i]);
+                public boolean visit(IResource resource) throws CoreException {
+                    boolean visitChildren = false;
+                    switch(resource.getType()) {
+                    case IResource.FOLDER:
+                        final IJavaElement javaMember = JavaCore.create(resource);
 
-                // if the Element is the Root of all Packages
-                // get all packages from it and add them to the list
-                // (e.g. for "org.eclipse.core.resources" and
-                // "org.eclipse.core" the root is "org.eclipse.core")
-                if (javaMember instanceof IPackageFragmentRoot) {
-                    packages.addAll(createPackagesFromFragmentRoot((IPackageFragmentRoot) javaMember));
-                }
-                
-                // if the Element is a Package
-                else if ((javaMember instanceof IPackageFragment) 
-                        && (javaMember.getParent() instanceof IPackageFragmentRoot)) {
-                    final IPackageFragment fragment = (IPackageFragment) javaMember;
-                    // ... get its Root and do the same as above
-                    packages.addAll(createPackagesFromFragmentRoot((IPackageFragmentRoot) fragment.getParent()));
-                }
-            }
+                        if (javaMember == null) {
+                            visitChildren = true;
+                        } else {
+                            if (javaMember instanceof IPackageFragmentRoot) {
+                                // if the Element is the Root of all Packages
+                                // get all packages from it and add them to the list
+                                // (e.g. for "org.eclipse.core.resources" and
+                                // "org.eclipse.core" the root is "org.eclipse.core")                                
+                                packages.addAll(createPackagesFromFragmentRoot((IPackageFragmentRoot) javaMember));
+                            } else if ((javaMember instanceof IPackageFragment) 
+                                    && (javaMember.getParent() instanceof IPackageFragmentRoot)) {
+                                // if the Element is a Package get its Root and do the same as above
+                                final IPackageFragment fragment = (IPackageFragment) javaMember;
+                                packages.addAll(createPackagesFromFragmentRoot((IPackageFragmentRoot) fragment.getParent()));
+                            }
+                            visitChildren = false;
+                        }
+                        break;
+                    case IResource.PROJECT:
+                         visitChildren = true;
+                         break;
+                    default:
+                        visitChildren = false;
+                    }
+                    return visitChildren;
+                }  
+            });
         } catch (CoreException ce) {
             PMDUiPlugin.getDefault().logError(StringKeys.MSGKEY_ERROR_CORE_EXCEPTION + this.toString(), ce);
         }
