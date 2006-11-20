@@ -16,7 +16,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
  */
 public class DAAPathFinder {
     private static final int MAX_PATHS = 5000;
-    private static final int MAX_PATH_LENGTH = 1000;
 
     private IDataFlowNode rootNode;
     private Executable shim;
@@ -49,19 +48,18 @@ public class DAAPathFinder {
         boolean flag = true;
         do {
             i++;
+//            System.out.println("Building path from " + currentPath.getLast());
             phase2(flag);
             shim.execute(currentPath);
             flag = false;
         } while (i < maxPaths && phase3());
-        //System.out.println("found: " + i + " path(s)");
     }
 
     /*
      * Builds up the path.
      * */
     private void phase2(boolean flag) {
-        while (!currentPath.isEndNode() 
-                && currentPath.getLength() < MAX_PATH_LENGTH) { // lockup in special cases, see bug 1461873 
+        while (!currentPath.isEndNode()) { 
             if (currentPath.isBranch() || currentPath.isFirstDoStatement()) {
                 if (flag) {
                     addNodeToTree();
@@ -71,7 +69,8 @@ public class DAAPathFinder {
                     addCurrentChild();
                     continue;
                 } else {
-                    addSecondChild();
+                    // jump out of that loop
+                    addLastChild();
                     continue;
                 }
             } else {
@@ -111,10 +110,16 @@ public class DAAPathFinder {
         return e.currentChild + 1 < e.node.getChildren().size();
     }
 
-    private void addSecondChild() {
+    private void addLastChild() {
         PathElement e = (PathElement) stack.getLastLeaf().getUserObject();
-        currentPath.addLast((IDataFlowNode) e.node.getChildren().get(e.currentChild == 1 ? 0 : 1));
+        for (int i=e.node.getChildren().size()-1; i >= 0; i--) {
+            if (i != e.currentChild) {
+                currentPath.addLast((IDataFlowNode) e.node.getChildren().get(i));
+                break;
+            }
+        }
     }
+
 
     private void addCurrentChild() {
         if (currentPath.isBranch()) { // TODO WHY????
@@ -146,8 +151,8 @@ public class DAAPathFinder {
 
             while (true) {
                 if (level.getChildCount() != 0) {
-                    PathElement ref;
-                    if ((ref = this.isNodeInLevel(level)) != null) {
+                    PathElement ref = this.isNodeInLevel(level);
+                    if (ref != null) {
                         this.addRefPseudoPathElement(level, ref);
                         break;
                     } else {
@@ -167,9 +172,12 @@ public class DAAPathFinder {
             if (currentPath.isDoBranchNode()) {
                 while (!this.equalsPseudoPathElementWithDoBranchNodeInLevel(level)) {
                     level = this.getLastChildNode(level);
+                    if (level.getChildCount() == 0) {
+                        break;
+                    }
                 }
-                PathElement ref;
-                if ((ref = this.getDoBranchNodeInLevel(level)) != null) {
+                PathElement ref = this.getDoBranchNodeInLevel(level);
+                if (ref != null) {
                     addNode(level, ref);
                 } else {
                     this.addNewPathElement(level);

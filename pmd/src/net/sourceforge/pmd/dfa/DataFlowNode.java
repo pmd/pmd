@@ -162,6 +162,8 @@ public class DataFlowNode implements IDataFlowNode {
             typeMap.put(new Integer(NodeType.RETURN_STATEMENT), "RETURN_STATEMENT");
             typeMap.put(new Integer(NodeType.BREAK_STATEMENT), "BREAK_STATEMENT");
             typeMap.put(new Integer(NodeType.CONTINUE_STATEMENT), "CONTINUE_STATEMENT");
+            typeMap.put(new Integer(NodeType.LABEL_STATEMENT), "LABEL_STATEMENT");
+            typeMap.put(new Integer(NodeType.LABEL_LAST_STATEMENT), "LABEL_END");
         }
         if (!typeMap.containsKey(new Integer(intype))) {
             throw new RuntimeException("Couldn't find type id " + intype);

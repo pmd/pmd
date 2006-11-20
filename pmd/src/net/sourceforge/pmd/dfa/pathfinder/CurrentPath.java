@@ -36,6 +36,7 @@ public class CurrentPath {
 
     public void addLast(IDataFlowNode n) {
         list.addLast(n);
+        //System.out.println("adding: " + n);
     }
 
     public boolean isDoBranchNode() {

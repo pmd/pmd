@@ -5,6 +5,9 @@ package net.sourceforge.pmd.dfa;
 
 import java.util.List;
 
+import net.sourceforge.pmd.ast.ASTLabeledStatement;
+import net.sourceforge.pmd.ast.SimpleNode;
+
 /**
  * @author raik
  *         Links data flow nodes to each other.
@@ -63,7 +66,7 @@ public class Linker {
                 case NodeType.DO_BEFORE_FIRST_STATEMENT:
                     this.computeDo(sc.getFirstIndex(), sc.getLastIndex());
                     break;
-
+                                      
                 default:
             }
 
@@ -85,22 +88,10 @@ public class Linker {
                     continueBreakReturnStack.remove(0);
                     break;
                 case NodeType.BREAK_STATEMENT:
-                    // What about breaks to labels above if statements?
-                    List bList = node.getFlow();
-                    for (int i = bList.indexOf(node); i < bList.size(); i++) {
-                        IDataFlowNode n = (IDataFlowNode) bList.get(i);
-                        if (n.isType(NodeType.WHILE_LAST_STATEMENT) ||
-                                n.isType(NodeType.SWITCH_END) ||
-                                n.isType(NodeType.FOR_END) ||
-                                n.isType(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE) ||
-                                n.isType(NodeType.DO_EXPR)) {
-                            node.removePathToChild((IDataFlowNode) node.getChildren().get(0));
-                            IDataFlowNode last = (IDataFlowNode) bList.get(i + 1);
-                            node.addPathToChild(last);
-                            continueBreakReturnStack.remove(0);
-                            break;
-                        }
-                    }
+                    IDataFlowNode last = getNodeToBreakStatement(node);
+                    node.removePathToChild((IDataFlowNode) node.getChildren().get(0));
+                    node.addPathToChild(last);                    
+                    continueBreakReturnStack.remove(0);
                     break;
 
                 case NodeType.CONTINUE_STATEMENT:
@@ -170,10 +161,55 @@ public class Linker {
         }
     }
 
+    private IDataFlowNode getNodeToBreakStatement(IDataFlowNode node) {
+        // What about breaks to labels above if statements?
+        List bList = node.getFlow();
+        int findEnds = 1; // ignore ends of other for's while's etc.
+       
+        
+        // find out index of the node where the path goes to after the break
+        int index = bList.indexOf(node); 
+        for (; index < bList.size()-2; index++) {
+            IDataFlowNode n = (IDataFlowNode) bList.get(index);
+            if (n.isType(NodeType.DO_EXPR) || 
+                    n.isType(NodeType.FOR_INIT) ||
+                    n.isType(NodeType.WHILE_EXPR) ||
+                    n.isType(NodeType.SWITCH_START)) {
+                findEnds++;
+            }
+            if (n.isType(NodeType.WHILE_LAST_STATEMENT) ||
+                    n.isType(NodeType.SWITCH_END) ||
+                    n.isType(NodeType.FOR_END) ||
+                    n.isType(NodeType.DO_EXPR)) {                            
+                if (findEnds > 1) {
+                    // thats not the right node
+                    findEnds--;
+                } else {
+                    break;
+                }
+            }
+            
+            if (n.isType(NodeType.LABEL_LAST_STATEMENT)) {
+                SimpleNode parentNode = (SimpleNode) n.getSimpleNode().getFirstParentOfType(ASTLabeledStatement.class);
+                if (parentNode == null) {
+                    break;                                
+                } else {
+                    String label = node.getSimpleNode().getImage();
+                    if (label == null || label.equals(parentNode.getImage())) {
+                        node.removePathToChild((IDataFlowNode) node.getChildren().get(0));
+                        IDataFlowNode last = (IDataFlowNode) bList.get(index + 1);
+                        node.addPathToChild(last);
+                        break;
+                    }
+                }
+            }
+        }
+        return (IDataFlowNode)node.getFlow().get(index+1);
+    }
+
     private void computeDo(int first, int last) {
         IDataFlowNode doSt = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
         IDataFlowNode doExpr = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
-        //IDataFlowNode doFirst = (IDataFlowNode)doSt.getChildren().get(0);
         IDataFlowNode doFirst = (IDataFlowNode) doSt.getFlow().get(doSt.getIndex() + 1);
         if (doFirst.getIndex() != doExpr.getIndex()) {
             doExpr.addPathToChild(doFirst);

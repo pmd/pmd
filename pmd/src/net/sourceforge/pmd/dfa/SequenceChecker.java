@@ -88,6 +88,9 @@ public class SequenceChecker {
         Status doSt = new Status(NodeType.DO_BEFORE_FIRST_STATEMENT);
         Status doExpr = new Status(NodeType.DO_EXPR, true);
 
+        Status labelNode = new Status(NodeType.LABEL_STATEMENT);
+        Status labelEnd = new Status(NodeType.LABEL_LAST_STATEMENT, true);
+        
         root.addStep(ifNode);
         root.addStep(whileNode);
         root.addStep(switchNode);
@@ -96,6 +99,7 @@ public class SequenceChecker {
         root.addStep(forUpdate);
         root.addStep(forSt);
         root.addStep(doSt);
+        root.addStep(labelNode);
 
         ifNode.addStep(ifSt);
         ifNode.addStep(ifStWithoutElse);
@@ -103,6 +107,9 @@ public class SequenceChecker {
         ifStWithoutElse.addStep(root);
         elseSt.addStep(root);
 
+        labelNode.addStep(labelEnd);
+        labelEnd.addStep(root);
+        
         whileNode.addStep(whileSt);
         whileSt.addStep(root);
 
