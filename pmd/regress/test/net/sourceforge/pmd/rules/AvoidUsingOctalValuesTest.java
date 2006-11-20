@@ -21,6 +21,7 @@ public class AvoidUsingOctalValuesTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST3, "OK, long value", 0, rule),
             new TestDescriptor(TEST4, "OK, double value", 0, rule),
             new TestDescriptor(TEST5, "OK, double value", 0, rule),
+            new TestDescriptor(TEST6, "bad, 012L", 1, rule),
         });
     }
 
@@ -47,6 +48,11 @@ public class AvoidUsingOctalValuesTest extends SimpleAggregatorTst {
     private static final String TEST5 =
     "public class Foo {" + PMD.EOL +
     "  float f = 0f;" + PMD.EOL +
+    "}";
+
+    private static final String TEST6 =
+    "public class Foo {" + PMD.EOL +
+    "  long x = 012L;" + PMD.EOL +
     "}";
 
 }

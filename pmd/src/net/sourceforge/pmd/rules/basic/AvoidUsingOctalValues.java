@@ -7,7 +7,7 @@ import net.sourceforge.pmd.ast.ASTLiteral;
 
 public class AvoidUsingOctalValues extends AbstractRule {
 
-    public static final Pattern OCTAL_PATTERN = Pattern.compile("0[0-7]+");
+    public static final Pattern OCTAL_PATTERN = Pattern.compile("0[0-7]+[lL]?");
 
     public Object visit(ASTLiteral node, Object data) {
         String img = node.getImage();
