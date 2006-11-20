@@ -72,6 +72,9 @@ import org.eclipse.jface.viewers.Viewer;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2006/11/20 14:55:31  holobender
+ * fix to minor refresh problems
+ *
  * Revision 1.5  2006/11/16 17:11:08  holobender
  * Some major changes:
  * - new CPD View
@@ -558,5 +561,6 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
             final AbstractPMDRecord record = (AbstractPMDRecord)elementIterator.next();
             this.treeViewer.refresh(record.getParent());
         }
+        this.violationView.refreshMenu();
     }
 }

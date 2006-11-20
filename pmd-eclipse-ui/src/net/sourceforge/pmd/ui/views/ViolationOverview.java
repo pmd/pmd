@@ -86,6 +86,9 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/11/20 14:55:31  holobender
+ * fix to minor refresh problems
+ *
  * Revision 1.4  2006/11/16 17:11:08  holobender
  * Some major changes:
  * - new CPD View
@@ -457,13 +460,18 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     public void refresh() {
         if (!this.treeViewer.getControl().isDisposed()) {
-            this.treeViewer.getControl().setRedraw(false);
+            //this.treeViewer.getControl().setRedraw(false);
             this.treeViewer.refresh();
-            this.menuManager.createDropDownMenu(getViewSite().getActionBars().getMenuManager());
-            this.treeViewer.getControl().setRedraw(true);
+            refreshMenu();
+            //this.treeViewer.getControl().setRedraw(true);
         }
     }
 
+    public void refreshMenu() {
+        this.menuManager.createDropDownMenu(getViewSite().getActionBars().getMenuManager());
+        this.menuManager.createContextMenu();
+    }
+    
     /**
      * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
      */
