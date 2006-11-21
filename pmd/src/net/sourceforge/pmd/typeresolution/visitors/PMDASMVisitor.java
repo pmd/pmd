@@ -70,7 +70,7 @@ public class PMDASMVisitor implements ClassVisitor {
 
 	private void extractSignature(String sig) {
 		if (sig != null) {
-			new SignatureReader(sig).acceptType(sigVisitor);
+			new SignatureReader(sig).accept(sigVisitor);
 		}
 	}
 
@@ -159,7 +159,7 @@ public class PMDASMVisitor implements ClassVisitor {
 	 * Start visitors
 	 */
 
-	private class PMDFieldVisitor implements FieldVisitor {
+	private static class PMDFieldVisitor implements FieldVisitor {
 
 		private PMDASMVisitor parent;
 
@@ -179,7 +179,7 @@ public class PMDASMVisitor implements ClassVisitor {
 		}
 	}
 
-	private class PMDAnnotationVisitor implements AnnotationVisitor {
+	private static class PMDAnnotationVisitor implements AnnotationVisitor {
 		private PMDASMVisitor parent;
 
 		public PMDAnnotationVisitor(PMDASMVisitor visitor) {
@@ -209,7 +209,7 @@ public class PMDASMVisitor implements ClassVisitor {
 		}
 	}
 
-	private class PMDSignatureVisitor implements SignatureVisitor {
+	private static class PMDSignatureVisitor implements SignatureVisitor {
 		private PMDASMVisitor parent;
 
 		public PMDSignatureVisitor(PMDASMVisitor visitor) {
@@ -276,7 +276,7 @@ public class PMDASMVisitor implements ClassVisitor {
 		}
 	}
 
-	private class PMDMethodVisitor implements MethodVisitor {
+	private static class PMDMethodVisitor implements MethodVisitor {
 		private PMDASMVisitor parent;
 
 		public PMDMethodVisitor(PMDASMVisitor visitor) {
@@ -379,7 +379,7 @@ public class PMDASMVisitor implements ClassVisitor {
 
 		public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
 			parent.addType(Type.getType(desc));
-			return annotationVisitor;
+			return parent.annotationVisitor;
 		}
 
 		public void visitEnd() {
