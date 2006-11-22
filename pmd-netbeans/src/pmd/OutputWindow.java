@@ -30,6 +30,7 @@ package pmd;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.ActionMap;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -78,8 +79,17 @@ public class OutputWindow extends TopComponent {
                 }
             }
         });
+        initActions();
     }
     
+    /** Map F12/S-F12 to next/prev error */ 
+	private void initActions() { 
+	    ActionMap map = getActionMap(); 
+	     
+	    map.put("jumpNext", new GotoProblemAction (true)); // NOI18N 
+	    map.put("jumpPrev", new GotoProblemAction (false)); // NOI18N 
+	}
+        
     public boolean selectNextResult(){
         int selectedRow = tblResults.getSelectedRow();
         
