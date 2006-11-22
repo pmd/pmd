@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.dfa;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
@@ -12,34 +13,58 @@ import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.properties.IntegerProperty;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
+ * Starts path search for each method and runs code if found.
+ * 
  * @author raik
- *         <p/>
- *         Starts path search for each method and runs code if found.
+ * @author Sven Jacob
  */
 public class DaaRule extends AbstractRule implements Executable {
     private RuleContext rc;
     private List daaRuleViolations;
-    private final static String PROPERTY_MAX_PATH = "maxpaths";
-    private final static String PROPERTY_MAX_VIOLATIONS = "maxviolations";
-    private final static int DEFAULT_MAX_VIOLATIONS = 1000;
     private int maxRuleViolations;
     private int currentRuleViolationCount;
+   
+    private static final PropertyDescriptor maxPathDescriptor = new IntegerProperty(
+            "maxpaths", "Maximum number of paths per method", 5000, 1.0f
+            );
+
+    private static final PropertyDescriptor maxViolationsDescriptor = new IntegerProperty(
+            "maxviolations", "Maximum number of anomalys per class", 1000, 2.0f
+            );
+        
+    private static final Map propertyDescriptorsByName = asFixedMap(
+            new PropertyDescriptor[] { maxPathDescriptor, maxViolationsDescriptor});
+            
+    protected Map propertiesByName() {
+        return propertyDescriptorsByName;
+    }
+    
+    private static class Usage {
+        public int accessType;
+        public IDataFlowNode node;
+
+        public Usage(int accessType, IDataFlowNode node) {
+            this.accessType = accessType;
+            this.node = node;
+        }
+
+        public String toString() {
+            return "accessType = " + accessType + ", line = " + node.getLine();
+        }
+    }
     
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (this.hasProperty(PROPERTY_MAX_VIOLATIONS)) {
-            this.maxRuleViolations = this.getIntProperty(PROPERTY_MAX_VIOLATIONS);
-        } else {
-            this.maxRuleViolations = DEFAULT_MAX_VIOLATIONS;
-        }     
-        
+        this.maxRuleViolations = getIntProperty(maxViolationsDescriptor);
         this.currentRuleViolationCount = 0;
         return super.visit(node, data);
     }
@@ -50,13 +75,7 @@ public class DaaRule extends AbstractRule implements Executable {
         
         IDataFlowNode n = (IDataFlowNode) node.getDataFlowNode().getFlow().get(0);
         
-        DAAPathFinder a;
-        if (this.hasProperty(PROPERTY_MAX_PATH)) {
-            a = new DAAPathFinder(n, this, this.getIntProperty(PROPERTY_MAX_PATH));
-        } else {
-            a = new DAAPathFinder(n, this);
-        }
-        
+        DAAPathFinder a = new DAAPathFinder(n, this, getIntProperty(maxPathDescriptor));       
         a.run();
 
         super.visit(node, data);
@@ -79,40 +98,35 @@ public class DaaRule extends AbstractRule implements Executable {
 
                     Object o = hash.get(va.getVariableName());
                     if (o != null) {
-                        List array = (List) o;
-                        // get the last access type
-                        int lastAccessType = ((Integer) array.get(0)).intValue();
+                        Usage u = (Usage) o;
                         // get the start and end line
-                        int startLine = ((Integer) array.get(2)).intValue();
+                        int startLine = u.node.getLine();
                         int endLine = inode.getLine();
                         
-                        if (va.accessTypeMatches(lastAccessType) && va.isDefinition()) { // DD
+                        if (va.accessTypeMatches(u.accessType) && va.isDefinition()) { // DD
                             if (inode.getSimpleNode() != null) {
                                 // preventing NullpointerException
                                 addDaaViolation(rc, inode.getSimpleNode(), "DD", va.getVariableName(), startLine, endLine);
                             }
-                        } else if (lastAccessType == VariableAccess.UNDEFINITION && va.isReference()) { // UR
+                        } else if (u.accessType == VariableAccess.UNDEFINITION && va.isReference()) { // UR
                             if (inode.getSimpleNode() != null) {
                                 // preventing NullpointerException                        		
                                 addDaaViolation(rc, inode.getSimpleNode(), "UR", va.getVariableName(), startLine, endLine);
                             }
-                        } else if (lastAccessType == VariableAccess.DEFINITION && va.isUndefinition()) { // DU
+                        } else if (u.accessType == VariableAccess.DEFINITION && va.isUndefinition()) { // DU
                             if (inode.getSimpleNode() != null) {
                                 addDaaViolation(rc, inode.getSimpleNode(), "DU", va.getVariableName(), startLine, endLine);
                             } else {
-                        	// undefinition outside, get the node of the definition
-                                SimpleNode lastSimpleNode = (SimpleNode)array.get(1);
+                                // undefinition outside, get the node of the definition
+                                SimpleNode lastSimpleNode = u.node.getSimpleNode();
                                 if (lastSimpleNode != null) {
                                     addDaaViolation(rc, lastSimpleNode, "DU", va.getVariableName(), startLine, endLine);
                                 }
                             }
                         }
                     }
-                    List array = new ArrayList();
-                    array.add(new Integer(va.getAccessType()));
-                    array.add(inode.getSimpleNode());
-                    array.add(new Integer(inode.getLine()));
-                    hash.put(va.getVariableName(), array);
+                    Usage u = new Usage(va.getAccessType(), inode);
+                    hash.put(va.getVariableName(), u);
                 }
             }
         }
