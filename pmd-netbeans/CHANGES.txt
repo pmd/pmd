@@ -1,7 +1,9 @@
 Version 1.8.1
 - Now it is only tested with NB5.5 and development builds
-- Reflecting chenges in NB trunk (http://www.netbeans.org/issues/show_bug.cgi?id=87929)
+- Reflecting changes in NB trunk (http://www.netbeans.org/issues/show_bug.cgi?id=87929)
 - JDK1.5 or newer is required now
+- Window state is persisted now
+- F12/S-F12 works again
 
 Version 1.8
 - Updated pmd to version 3.8
