@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2006, the pmd-netbeans team
+ *  Copyright (c) 2002-2006, the pmd-netbeans team
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without modification,
@@ -26,37 +26,34 @@
  */
 package pmd;
 
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
-import org.openide.awt.StatusDisplayer;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
+import org.openide.util.actions.CallableSystemAction;
 
 /**
- *
- * @author Tomasz Slota <tomslot@gmail.com>
- * @author Radim Kubacki <radim.kubacki@gmail.com>
+ * @author Andrei Badea <andrei.badea@movzx.net>
  */
-class GotoProblemAction extends AbstractAction {
-
-    boolean next;
+public final class ShowOutputWindowAction extends CallableSystemAction {
     
-    /** Creates an instance of Go to next or Go to previous action
-     */
-    public GotoProblemAction(boolean next) {
-        this.next = next;
+    public void performAction() {
+        OutputWindow.findInstance().promote();
     }
     
-    protected boolean action(){
-        return next?
-            !OutputWindow.findInstance().selectNextResult():
-            !OutputWindow.findInstance().selectPreviousResult();
+    public String getName() {
+        return NbBundle.getMessage(ShowOutputWindowAction.class, "CTL_ShowOutputWindowAction");
     }
     
-    public void actionPerformed(ActionEvent e) {
-        if (action()){
-            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(GotoProblemAction.class, "MSG_NoResults"));
-        }
+    protected void initialize() {
+        super.initialize();
+        // see org.openide.util.actions.SystemAction.iconResource() javadoc for more details
+        putValue("noIconInMenu", Boolean.TRUE);
     }
     
+    public HelpCtx getHelpCtx() {
+        return HelpCtx.DEFAULT_HELP;
+    }
+    
+    protected boolean asynchronous() {
+        return false;
+    }
 }

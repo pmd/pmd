@@ -263,7 +263,6 @@ public class RunPMDAction extends CookieAction {
      */
     protected void performAction( Node[] node ) {
         FaultRegistry.getInstance().clearRegistry();
-        OutputWriter out = null;
         try {
             StatusDisplayer.getDefault().setStatusText("PMD checking for rule violations");
             List<DataObject> list = getDataObjects(node);
@@ -275,23 +274,19 @@ public class RunPMDAction extends CookieAction {
             else {
                 StatusDisplayer.getDefault().setStatusText("PMD found rule violations");
             }
-            
-            final OutputWindow wnd = OutputWindow.getInstance();
-            wnd.setViolations(violations.toArray(new Fault[violations.size()]));
-            
+
             SwingUtilities.invokeLater(new Runnable(){
                 public void run(){
+                    OutputWindow wnd = OutputWindow.findInstance();
+                    wnd.setViolations(violations.toArray(new Fault[violations.size()]));
                     wnd.setDisplayName("PMD Output: found " + violations.size() + " violations");
-                    wnd.open();
-                    wnd.requestActive();
+                    if (violations.size() > 0 ) {
+                        wnd.promote();
+                    }
                 }
             });
         } catch(IOException e) {
             ErrorManager.getDefault().notify(e);
-        } finally {
-            if (out != null) {
-                out.close();
-            }
         }
     }
 

@@ -28,28 +28,37 @@
 package pmd;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.Serializable;
+import javax.swing.AbstractAction;
 import javax.swing.ActionMap;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
+import org.openide.ErrorManager;
 import org.openide.awt.StatusDisplayer;
 import org.openide.cookies.LineCookie;
 import org.openide.loaders.DataObject;
 import org.openide.text.Line;
 import org.openide.text.Line.Set;
-import org.openide.windows.Mode;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
  *
  * @author Tomasz Slota <tomslot@gmail.com>
+ * @author Andrei Badea <andrei.badea@movzx.net>
  */
 public class OutputWindow extends TopComponent {
+
+    private static final String PREFERRED_ID = "PMDOutputWindow";
+
     private JTable tblResults = new JTable();
     private ViolationsTableModel tblMdlResults = new ViolationsTableModel();
     private TableSorter tblSorter = null;
@@ -57,6 +66,8 @@ public class OutputWindow extends TopComponent {
     
     /** Creates a new instance of OutputWindow */
     private OutputWindow() {
+        setDisplayName("PMD Output");
+        
         setLayout(new BorderLayout());
         
         tblSorter = new TableSorter(tblMdlResults);
@@ -80,6 +91,25 @@ public class OutputWindow extends TopComponent {
             }
         });
         initActions();
+
+        tblResults.getActionMap().put("selectViolation", new AbstractAction() {
+            public void actionPerformed(ActionEvent e) {
+                int row = tblResults.getSelectedRow();
+                if (row != -1) {
+                    selectResultRow(row);
+                }
+            }
+        });
+        tblResults.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),
+                "selectViolation");
+    }
+
+    public void requestActive() {
+        super.requestActive();
+        if (tblResults != null) {
+            tblResults.requestFocusInWindow();
+        }
     }
     
     /** Map F12/S-F12 to next/prev error */ 
@@ -126,7 +156,12 @@ public class OutputWindow extends TopComponent {
         return true;
     }
     
-    public static OutputWindow getInstance(){
+    /**
+     * Gets default instance. Do not use directly: reserved for *.settings files only,
+     * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
+     * To obtain the singleton instance, use {@link findInstance}.
+     */
+    public static synchronized OutputWindow getDefault(){
         if (instance == null){
             instance = new OutputWindow();
         }
@@ -134,32 +169,55 @@ public class OutputWindow extends TopComponent {
         return instance;
     }
     
-    public void open() {
-        Mode m = WindowManager.getDefault().findMode("output");
-        if (m != null) {
-            m.dockInto(this);
+    /**
+     * Obtain the OutputWindow_Generated instance. Never call {@link #getDefault} directly!
+     */
+    public static synchronized OutputWindow findInstance() {
+        TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
+        if (win == null) {
+            ErrorManager.getDefault().log(ErrorManager.WARNING,
+                    "Cannot find PMDOutputWindow component. It will not be located properly in the window system.");
+            return getDefault();
         }
-        super.open();
+        if (win instanceof OutputWindow) {
+            return (OutputWindow)win;
+        }
+        ErrorManager.getDefault().log(ErrorManager.WARNING,
+                "There seem to be multiple components with the '" + PREFERRED_ID +
+                "' ID. That is a potential source of errors and unexpected behavior.");
+        return getDefault();
+    }
+    
+    public void promote() {
+        open();
+        requestActive();
     }
     
     protected String preferredID(){
-        return "PMDOutput";
+        return PREFERRED_ID;
     }
     
     public int getPersistenceType(){
-        return PERSISTENCE_NEVER;
+        return PERSISTENCE_ALWAYS;
+    }
+
+    /**
+     * Avoids serializing the properties of this top component,
+     * which is not really necessary. Instead, getDefault() will get called
+     * when the component (or actually the replacer returned by this method)
+     * is deserialized.
+     */
+    public Object writeReplace() {
+        return new ResolvableHelper();
     }
     
     public void setViolations(Fault violations[]){
         tblMdlResults.setViolations(violations);
         
         if (violations.length > 0){
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    selectResultRow(0);
-                    tblResults.getSelectionModel().setSelectionInterval(0, 0);
-                }
-            });
+            selectResultRow(0);
+            tblResults.getSelectionModel().setSelectionInterval(0, 0);
+            tblResults.getColumnModel().getSelectionModel().setSelectionInterval(0, 0);
         }
     }
     
@@ -241,5 +299,14 @@ public class OutputWindow extends TopComponent {
     private static String getRecommendation(Fault fault){
         String msg = fault.getMessage();
         return msg.substring(msg.indexOf(",") + 1);
+    }
+    
+    final static class ResolvableHelper implements Serializable {
+        
+        private static final long serialVersionUID = 1L;
+        
+        public Object readResolve() {
+            return OutputWindow.getDefault();
+        }
     }
 }
