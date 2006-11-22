@@ -107,6 +107,8 @@ public class ForeignBundleCodeRule extends AbstractRule {
     }
     
     /** checks if symbol in name matches to class definition encapsulating node
+     * 
+     *  TODO also check is getClass() is used in non-private method.
      */
     private boolean isCorrectClass (ASTPrimaryExpression node, ASTClassOrInterfaceType name) {
         if (name == null || name.getImage() == null)
