@@ -60,7 +60,6 @@ public interface JavaParserVisitor
   public Object visit(ASTPreIncrementExpression node, Object data);
   public Object visit(ASTPreDecrementExpression node, Object data);
   public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data);
-  public Object visit(ASTCastLookahead node, Object data);
   public Object visit(ASTPostfixExpression node, Object data);
   public Object visit(ASTCastExpression node, Object data);
   public Object visit(ASTPrimaryExpression node, Object data);

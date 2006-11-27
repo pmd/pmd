@@ -1605,7 +1605,7 @@ void UnaryExpressionNotPlusMinus() #UnaryExpressionNotPlusMinus((jjtn000.getImag
 // This production is to determine lookahead only.  The LOOKAHEAD specifications
 // below are not used, but they are there just to indicate that we know about
 // this.
-void CastLookahead() :
+void CastLookahead() #void :
 {}
 { LOOKAHEAD(2) "(" PrimitiveType()
 | LOOKAHEAD("(" Type() "[")  "(" Type() "[" "]"

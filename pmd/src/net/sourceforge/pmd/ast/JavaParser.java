@@ -3220,87 +3220,63 @@ Token t;
 // below are not used, but they are there just to indicate that we know about
 // this.
   final public void CastLookahead() throws ParseException {
- /*@bgen(jjtree) CastLookahead */
-  ASTCastLookahead jjtn000 = new ASTCastLookahead(this, JJTCASTLOOKAHEAD);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      if (jj_2_25(2)) {
-        jj_consume_token(LPAREN);
-        PrimitiveType();
-      } else if (jj_2_26(2147483647)) {
+    if (jj_2_25(2)) {
+      jj_consume_token(LPAREN);
+      PrimitiveType();
+    } else if (jj_2_26(2147483647)) {
+      jj_consume_token(LPAREN);
+      Type();
+      jj_consume_token(LBRACKET);
+      jj_consume_token(RBRACKET);
+    } else {
+      switch (jj_nt.kind) {
+      case LPAREN:
         jj_consume_token(LPAREN);
         Type();
-        jj_consume_token(LBRACKET);
-        jj_consume_token(RBRACKET);
-      } else {
+        jj_consume_token(RPAREN);
         switch (jj_nt.kind) {
+        case TILDE:
+          jj_consume_token(TILDE);
+          break;
+        case BANG:
+          jj_consume_token(BANG);
+          break;
         case LPAREN:
           jj_consume_token(LPAREN);
-          Type();
-          jj_consume_token(RPAREN);
-          switch (jj_nt.kind) {
-          case TILDE:
-            jj_consume_token(TILDE);
-            break;
-          case BANG:
-            jj_consume_token(BANG);
-            break;
-          case LPAREN:
-            jj_consume_token(LPAREN);
-            break;
-          case IDENTIFIER:
-            jj_consume_token(IDENTIFIER);
-            break;
-          case THIS:
-            jj_consume_token(THIS);
-            break;
-          case SUPER:
-            jj_consume_token(SUPER);
-            break;
-          case NEW:
-            jj_consume_token(NEW);
-            break;
-          case FALSE:
-          case NULL:
-          case TRUE:
-          case INTEGER_LITERAL:
-          case FLOATING_POINT_LITERAL:
-          case HEX_FLOATING_POINT_LITERAL:
-          case CHARACTER_LITERAL:
-          case STRING_LITERAL:
-            Literal();
-            break;
-          default:
-            jj_la1[85] = jj_gen;
-            jj_consume_token(-1);
-            throw new ParseException();
-          }
+          break;
+        case IDENTIFIER:
+          jj_consume_token(IDENTIFIER);
+          break;
+        case THIS:
+          jj_consume_token(THIS);
+          break;
+        case SUPER:
+          jj_consume_token(SUPER);
+          break;
+        case NEW:
+          jj_consume_token(NEW);
+          break;
+        case FALSE:
+        case NULL:
+        case TRUE:
+        case INTEGER_LITERAL:
+        case FLOATING_POINT_LITERAL:
+        case HEX_FLOATING_POINT_LITERAL:
+        case CHARACTER_LITERAL:
+        case STRING_LITERAL:
+          Literal();
           break;
         default:
-          jj_la1[86] = jj_gen;
+          jj_la1[85] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
+        break;
+      default:
+        jj_la1[86] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
       }
-    } catch (Throwable jjte000) {
-    if (jjtc000) {
-      jjtree.clearNodeScope(jjtn000);
-      jjtc000 = false;
-    } else {
-      jjtree.popNode();
-    }
-    if (jjte000 instanceof RuntimeException) {
-      {if (true) throw (RuntimeException)jjte000;}
-    }
-    if (jjte000 instanceof ParseException) {
-      {if (true) throw (ParseException)jjte000;}
-    }
-    {if (true) throw (Error)jjte000;}
-    } finally {
-    if (jjtc000) {
-      jjtree.closeNodeScope(jjtn000, true);
-    }
     }
   }
 
