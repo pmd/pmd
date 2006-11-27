@@ -54,7 +54,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Harald Rohan - Reported bug in CPD GUIr</li>
+            <li>Harald Rohan - Reported bug in CPD GUI</li>
             <li>classens - Noted missing varargs setting in ASTFormalParameter</li>
             <li>piair - Implemented StringBufferInstantiationWithChar, AvoidUsingOctalValues</li>
             <li>Christopher Eagan - Reported bug in VariableNamingConventions</li>
