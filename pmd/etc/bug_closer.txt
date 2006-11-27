@@ -1,10 +1,10 @@
-Fixed in CVS, and you can download a new pmd-3.8.jar file here:
+Fixed in CVS, and if you hit this page again:
 
-http://infoether.com/~tom/pmd-3.8.jar
+http://pmd.sf.net/cpd.html
 
-that contains that fix.
+you'll get an updated version that includes this fix.
 
 Thanks,
 
-Tom                  
+Tom
 The PMD book for $20: http://pmdapplied.com/

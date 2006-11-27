@@ -456,7 +456,7 @@ public class GUI implements CPDListener {
     private boolean isLegalPath(String path, LanguageConfig config) {
     	String[] extensions = config.extensions();
     	for (int i=0; i<extensions.length; i++) {
-    		if (path.endsWith(extensions[i])) return true;
+    		if (path.endsWith(extensions[i]) && extensions[i].length() > 0) return true;
     	}
     	return false;
     }

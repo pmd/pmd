@@ -11,7 +11,6 @@ public class ASTEnumElement extends SimpleJavaNode {
         super(p, id);
     }
 
-
     /**
      * Accept the visitor. *
      */
