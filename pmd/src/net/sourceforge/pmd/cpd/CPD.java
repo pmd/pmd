@@ -87,6 +87,11 @@ public class CPD {
             current.add(signature);
         }
 
+        if (!file.getCanonicalPath().equals(file.getAbsolutePath())) {
+            System.out.println("Skipping " + file + " since it appears to be a symlink");
+            return;
+        }
+
         listener.addedFile(fileCount, file);
         SourceCode sourceCode = new SourceCode(new SourceCode.FileCodeLoader(file));
         language.getTokenizer().tokenize(sourceCode, tokens);

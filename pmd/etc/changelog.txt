@@ -17,6 +17,7 @@ Fixed bug 1580859 - AvoidDecimalLiteralsInBigDecimalConstructor now catches more
 Fixed bug 1581123 - False +: UnnecessaryWrapperObjectCreation.
 Fixed bug 1592710 - VariableNamingConventions no longer reports false positives on certain enum declarations.
 Fixed bug 1593292 - The CPD GUI now works with the 'by extension' option selected.
+Fixed bug 1560944 - CPD now skips symlinks.
 Applied patch 1551189 - SingularField false + for initialization blocks
 Applied patch 1573981 - false + in CloneMethodMustImplementCloneable
 Applied patch 1574988 - false + in OverrideBothEqualsAndHashcode
