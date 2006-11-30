@@ -26,4 +26,18 @@ public class Bar {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case for 1.5+
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo(boolean value) {
+  boolean b = Boolean.valueOf(value).booleanValue();
+ }
+}
+     ]]></code>
+    <source-type>java 1.5</source-type>
+    </test-code>
 </test-data>
