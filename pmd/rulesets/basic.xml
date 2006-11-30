@@ -1002,77 +1002,21 @@ class Foo {
         </example>
     </rule>
 
-<rule name="BigIntegerInstantiation_1.5"
+<rule name="BigIntegerInstantiation"
   message="Don't create instances of already existing
 BigInteger and BigDecimal (ZERO, ONE, TEN)"
-  class="net.sourceforge.pmd.rules.XPathRule">
+  class="net.sourceforge.pmd.rules.basic.BigIntegerInstantiation">
   <description>
 Don't create instances of already existing BigInteger
-(BigInteger.ZERO, BigInteger.ONE, BigInteger.TEN)  
-and BigDecimal (BigDecimal.ZERO, BigDecimal.ONE,
-BigDecimal.TEN)  
+(BigInteger.ZERO, BigInteger.ONE) and for 1.5 on,
+BigInteger.TEN and BigDecimal (BigDecimal.ZERO,
+BigDecimal.ONE, BigDecimal.TEN) 
   </description>
-  <properties>
-    <property name="xpath">
-    <value>
-<![CDATA[
-//Expression[./PrimaryExpression/PrimaryPrefix/AllocationExpression[./ClassOrInterfaceType[@Image="BigInteger"
-or 
-@Image="BigDecimal"]]/Arguments/ArgumentList[count(./Expression)=1]/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image=1
-or @Image='"1"' or @Image=0 or
-@Image='"0"'  or @Image=10 or
-@Image='"10"']]
-]]>
-    </value>
-    </property>
-  </properties>
   <priority>3</priority>
   <example>
 <![CDATA[
 public class Test {
 
- public static void main(String[] args) {
-   BigInteger bi=new BigInteger(1);
-
-   BigInteger bi2=new BigInteger(0);
-
-   BigInteger bi3=new BigInteger(10);
-
-   BigDecimal bd=new BigDecimal(1);
-
-   BigDecimal bd2=new BigDecimal(0);
-
-   BigDecimal bd3=new BigDecimal(10);
-
- }
-}
-]]>
-  </example>
-</rule>
-
-<rule name="BigIntegerInstantiation_1.4"
-  message="Don't create instances of already existing
-BigInteger (BigInteger.ZERO, BigInteger.ONE)"
-  class="net.sourceforge.pmd.rules.XPathRule">
-  <description>
-Don't create instances of already existing BigInteger
-(BigInteger.ZERO, BigInteger.ONE)  
-  </description>
-  <properties>
-    <property name="xpath">
-    <value>
-<![CDATA[
-//Expression[./PrimaryExpression/PrimaryPrefix/AllocationExpression[./ClassOrInterfaceType[@Image="BigInteger"]]/Arguments/ArgumentList[count(./Expression)=1]/Expression/PrimaryExpression/PrimaryPrefix/Literal[@Image=1
-or @Image='"1"' or @Image=0 or
-@Image='"0"']]
-]]>
-    </value>
-    </property>
-  </properties>
-  <priority>3</priority>
-  <example>
-<![CDATA[
-public class Test {
  public static void main(String[] args) {
    BigInteger bi=new BigInteger(1);
    BigInteger bi2=new BigInteger("0");

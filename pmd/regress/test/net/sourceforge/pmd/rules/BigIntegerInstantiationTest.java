@@ -7,16 +7,13 @@ import net.sourceforge.pmd.Rule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class BigIntegerInstantiationTest extends SimpleAggregatorTst {
-    private Rule rule14;
-    private Rule rule15;
+    private Rule rule;
 
     public void setUp() {
-        rule14 = findRule("basic", "BigIntegerInstantiation_1.4");
-        rule15 = findRule("basic", "BigIntegerInstantiation_1.5");
+        rule = findRule("basic", "BigIntegerInstantiation");
     }
 
     public void testAll() {
-        runTests(rule14);
-        runTests(rule15);
+        runTests(rule);
     }        
 }
