@@ -26,6 +26,9 @@
                 </xs:choice>
                 <xs:element ref="source-type" minOccurs="0"/>
             </xs:sequence>
+            <!-- Reinitialize the rule for this test. For rules with caching (ie. XPath 
+            rules with properties), only works if the rule was created with findRule -->
+            <xs:attribute name="reinitializeRule" type="xs:boolean" use="optional"/>
         </xs:complexType>
     </xs:element>
     

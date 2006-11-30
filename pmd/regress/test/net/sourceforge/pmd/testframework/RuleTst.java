@@ -45,6 +45,7 @@ public class RuleTst extends TestCase {
     public Rule findRule(String ruleSet, String ruleName) {
         try {
             Rule rule = new RuleSetFactory().createRuleSets(new SimpleRuleSetNameMapper(ruleSet).getRuleSets()).getRuleByName(ruleName);
+            rule.setRuleSetName(ruleSet);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             }
@@ -61,7 +62,13 @@ public class RuleTst extends TestCase {
      * Run the rule on the given code, and check the expected number of violations.
      */
     public void runTest(TestDescriptor test) {
-        Properties ruleProperties = test.getRule().getProperties();
+        Rule rule = test.getRule();
+        
+        if (test.getReinitializeRule()) {
+            rule = findRule(rule.getRuleSetName(), rule.getName());
+        }
+        
+        Properties ruleProperties = rule.getProperties();
         Properties oldProperties = (Properties)ruleProperties.clone();
         try {
             if (test.getProperties() != null) {
@@ -69,7 +76,7 @@ public class RuleTst extends TestCase {
                 ruleProperties.putAll(test.getProperties());
             }
             
-            int res = processUsingStringReader(test.getCode(), test.getRule(), test.getSourceType()).size();
+            int res = processUsingStringReader(test.getCode(), rule, test.getSourceType()).size();
             assertEquals("\"" + test.getDescription() + "\" test resulted in wrong number of failures,",
                 test.getNumberOfProblemsExpected(), res);
         } catch (Throwable t) {
@@ -166,9 +173,21 @@ public class RuleTst extends TestCase {
     private TestDescriptor[] parseTests(Rule rule, Document doc) {
         Element root = doc.getDocumentElement();
         NodeList testCodes = root.getElementsByTagName("test-code");
+
         TestDescriptor[] tests = new TestDescriptor[testCodes.getLength()];
         for (int i = 0; i < testCodes.getLength(); i++) {
             Element testCode = (Element)testCodes.item(i);
+
+            boolean reinitializeRule = false;
+            Node reinitializeRuleAttribute = testCode.getAttributes().getNamedItem("reinitializeRule");
+            if (reinitializeRuleAttribute != null) {
+                String reinitializeRuleValue = reinitializeRuleAttribute.getNodeValue();
+                if ("true".equalsIgnoreCase(reinitializeRuleValue) || 
+                        "1".equalsIgnoreCase(reinitializeRuleValue)) {
+                    reinitializeRule = true;
+                }
+            }
+            
             NodeList ruleProperties = testCode.getElementsByTagName("rule-property");
             Properties properties = new Properties();
             for (int j = 0; j < ruleProperties.getLength(); j++) {
@@ -211,6 +230,7 @@ public class RuleTst extends TestCase {
                     throw new RuntimeException("Unknown sourceType for test: " + sourceTypeString);
                 }
             }
+            tests[i].setReinitializeRule(reinitializeRule);
             tests[i].setProperties(properties);
         }
         return tests;

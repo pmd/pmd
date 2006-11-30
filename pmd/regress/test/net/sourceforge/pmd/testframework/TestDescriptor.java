@@ -18,6 +18,7 @@ public class TestDescriptor {
     private int numberOfProblemsExpected;
     private String code;
     private SourceType sourceType;
+    private boolean reinitializeRule = false;   //default
 
     public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule) {
         this(code, description, numberOfProblemsExpected, rule, RuleTst.DEFAULT_SOURCE_TYPE);
@@ -57,5 +58,13 @@ public class TestDescriptor {
 
     public Rule getRule() {
         return rule;
+    }
+
+    public boolean getReinitializeRule() {
+        return reinitializeRule;
+    }
+
+    public void setReinitializeRule(boolean reinitializeRule) {
+        this.reinitializeRule = reinitializeRule;
     }
 }
