@@ -3,25 +3,17 @@
  */
 package net.sourceforge.pmd.rules.optimization;
 
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTFormalParameter;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.Scope;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
+import net.sourceforge.pmd.ast.ASTFormalParameter;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.AccessNode;
+import net.sourceforge.pmd.symboltable.Scope;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        if (node.isInterface()) {
-            return data;
-        }
-        return super.visit(node, data);
-    }
+public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
 
     public Object visit(ASTMethodDeclaration meth, Object data) {
         if (meth.isNative() || meth.isAbstract()) {
@@ -32,21 +24,12 @@ public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
         for (Iterator i = decls.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
             VariableNameDeclaration var = (VariableNameDeclaration) entry.getKey();
-            if (!var.getAccessNodeParent().isFinal() && (var.getAccessNodeParent() instanceof ASTFormalParameter) && !assigned((List) entry.getValue())) {
-                addViolation(data, var.getAccessNodeParent(), var.getImage());
+            AccessNode node = var.getAccessNodeParent();
+            if (!node.isFinal() && (node instanceof ASTFormalParameter) && !assigned((List) entry.getValue())) {
+                addViolation(data, node, var.getImage());
             }
         }
         return data;
     }
 
-    private boolean assigned(List usages) {
-        for (Iterator j = usages.iterator(); j.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) j.next();
-            if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
-                return true;
-            }
-            continue;
-        }
-        return false;
-    }
 }

@@ -10,7 +10,7 @@ These rules deal with different optimizations that generally apply to performanc
   </description>
 
     <rule name="LocalVariableCouldBeFinal"
-          message="Local variable could be declared final"
+	    message="Local variable ''{0}'' could be declared final"
           class="net.sourceforge.pmd.rules.optimization.LocalVariableCouldBeFinal"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#LocalVariableCouldBeFinal">
       <description>
