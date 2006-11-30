@@ -21,20 +21,14 @@
          rule.addProperty("minimum", "10");
          runTests(tests);
      }
- 
-     public void testReallyLongMethodWithLongerRange() throws Throwable {
-         rule.addProperty("minimum", "20");
-         runTest(new TestDescriptor(tests[1].getCode(), 
-             "minimum with longer range", 0, rule));
-     }
- 
+
  /*
      public void testOverrideMinimumWithTopScore() throws Throwable {
          Rule r = findRule("codesize", "ExcessiveMethodLength");
          r.addProperty("minimum", "1");
          r.addProperty("topscore", "2");
          Report rpt = new Report();
-         runTestFromString(tests[4].getCode(), r, rpt);
+         runTestFromString(tests[5].getCode(), r, rpt);
          for (Iterator i = rpt.iterator(); i.hasNext();) {
              RuleViolation rv = (RuleViolation)i.next();
              assertTrue(rv.getLine() == 2 || rv.getLine() == 6);
