@@ -65,7 +65,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code>
+    <test-code reinitializeRule="true">
         <description><![CDATA[
 threshold test
      ]]></description>
