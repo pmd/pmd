@@ -88,7 +88,7 @@ Bad, no closeTargets properties for statements
         <expected-problems>2</expected-problems>
         <code-ref id="executeQuery"/>
     </test-code>
-    <test-code>
+    <test-code reinitializeRule="true">
         <description><![CDATA[
 Ok, closeTargets properties for statements
      ]]></description>
@@ -96,7 +96,7 @@ Ok, closeTargets properties for statements
         <expected-problems>0</expected-problems>
         <code-ref id="executeQuery"/>
     </test-code>
-    <test-code>
+    <test-code reinitializeRule="true">
         <description><![CDATA[
 Add type param
      ]]></description>
@@ -115,7 +115,7 @@ readExternal(aStream);
 }
      ]]></code>
     </test-code>
-    <test-code>
+    <test-code reinitializeRule="true">
         <description><![CDATA[
 OK
      ]]></description>
