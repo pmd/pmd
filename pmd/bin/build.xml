@@ -9,6 +9,9 @@
 	<property name="dir.regress" value="regress\" />
 	<property name="version" value="3.8" />
 	<property name="keystore" value="${keystore.path}" />
+    
+    <!--Settings-->
+    <property name="outputTestResultsToFile" value="false" />
 
 	<path id="dependencies.path">
 		<pathelement location="${dir.build}" />
@@ -91,7 +94,11 @@
 	</target>
 
 	<target name="test" depends="requires-junit,compile,copy" description="Runs the unit tests">
-		<junit printsummary="yes" haltonfailure="no" forkmode="perBatch">
+		<condition property="testResultsToFile">
+            <istrue value="${outputTestResultsToFile}"/>
+        </condition>
+
+        <junit printsummary="yes" haltonfailure="no" forkmode="perBatch">
 			<classpath>
 				<path refid="dependencies.path" />
 			</classpath>
@@ -100,6 +107,8 @@
 					<include name="test/**/*Test.java" />
 				</fileset>
 			</batchtest>
+      
+            <formatter type="xml" if="testResultsToFile"/>
 		</junit>
 		<junitreport todir="${dir.build}">
 			<fileset dir="${dir.build}">
