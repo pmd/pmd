@@ -124,20 +124,35 @@ public class NameOccurrence {
     }
 
     public boolean isSelfAssignment() {
-        if (location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreDecrementExpression || location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPreIncrementExpression || location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTPostfixExpression) {
-            return true;
-        }
-
-        if (location.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTStatementExpression) {
-            ASTStatementExpression exp = (ASTStatementExpression) location.jjtGetParent().jjtGetParent().jjtGetParent();
-            if (exp.jjtGetNumChildren() >= 2 && exp.jjtGetChild(1) instanceof ASTAssignmentOperator) {
-                ASTAssignmentOperator op = (ASTAssignmentOperator) exp.jjtGetChild(1);
-                if (op.isCompound()) {
-                    return true;
+        Node l = location;
+        while (true) {
+            Node p = l.jjtGetParent();
+            Node gp = p.jjtGetParent();
+            Node node = gp.jjtGetParent();
+            if (node instanceof ASTPreDecrementExpression || node instanceof ASTPreIncrementExpression || node instanceof ASTPostfixExpression) {
+                return true;
+            }
+    
+            if (node instanceof ASTStatementExpression) {
+                ASTStatementExpression exp = (ASTStatementExpression) node;
+                if (exp.jjtGetNumChildren() >= 2 && exp.jjtGetChild(1) instanceof ASTAssignmentOperator) {
+                    ASTAssignmentOperator op = (ASTAssignmentOperator) exp.jjtGetChild(1);
+                    if (op.isCompound()) {
+                        return true;
+                    }
                 }
             }
+    
+            // deal with extra parenthesis: "(i)++"
+            if (p instanceof ASTPrimaryPrefix && p.jjtGetNumChildren() == 1 &&
+                    gp instanceof ASTPrimaryExpression && gp.jjtGetNumChildren() == 1&&
+                    node instanceof ASTExpression && node.jjtGetNumChildren() == 1) {
+                l = node;
+                continue;
+            }
+    
+            return false;
         }
-        return false;
     }
 
     public boolean isThisOrSuper() {
