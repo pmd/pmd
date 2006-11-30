@@ -32,6 +32,9 @@ public class BigIntegerInstantiation extends AbstractRule {
             ASTArguments args = (ASTArguments) node.getFirstChildOfType(ASTArguments.class);
             if (args.getArgumentCount() == 1) {
                 ASTLiteral literal = (ASTLiteral) node.getFirstChildOfType(ASTLiteral.class);
+                if (literal == null || literal.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent() != args) {
+                    return super.visit(node, data);
+                }
 
                 img = literal.getImage();
                 if ((img.length() > 2 && img.charAt(0) == '"')) {
