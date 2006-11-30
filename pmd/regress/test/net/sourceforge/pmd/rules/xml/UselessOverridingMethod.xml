@@ -205,4 +205,17 @@ public synchronized String foo() {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Constructors are OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo extends Bar {
+public Foo(String bar) {
+    super(bar);
+}
+}
+     ]]></code>
+    </test-code>
 </test-data>
