@@ -147,7 +147,7 @@ public class RuleSetFactory {
      * @return the new ruleset
      * @throws RuleSetNotFoundException
      */
-    public RuleSet createSingleRuleSet(String ruleSetFileName, ClassLoader classLoader)
+    private RuleSet createSingleRuleSet(String ruleSetFileName, ClassLoader classLoader)
             throws RuleSetNotFoundException {
         return createRuleSet(tryToGetStreamTo(ruleSetFileName, classLoader), classLoader);
     }
@@ -183,7 +183,7 @@ public class RuleSetFactory {
      * @param classLoader a class loader used to load rule classes
      * @return a new ruleset
      */
-    public RuleSet createRuleSet(InputStream inputStream, ClassLoader classLoader) {
+    private RuleSet createRuleSet(InputStream inputStream, ClassLoader classLoader) {
         try {
             this.classLoader = classLoader;
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
