@@ -155,6 +155,7 @@ public class GUI implements CPDListener {
     	}
     	
         public void actionPerformed(ActionEvent evt) {
+            JFileChooser fcSave	= new JFileChooser();
             int ret = fcSave.showSaveDialog(GUI.this.frame);
             File f = fcSave.getSelectedFile();
             if (f == null || ret != JFileChooser.APPROVE_OPTION) return;
@@ -224,7 +225,6 @@ public class GUI implements CPDListener {
     private JComboBox languageBox			= new JComboBox();
     private JTextField extensionField		= new JTextField();
     private JLabel extensionLabel			= new JLabel("Extension:", SwingConstants.RIGHT);
-    private JFileChooser fcSave				= new JFileChooser();
     private JTable resultsTable				= new JTable();    
     private JButton goButton;
     private JButton cancelButton;
