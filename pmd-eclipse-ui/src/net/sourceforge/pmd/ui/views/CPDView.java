@@ -51,6 +51,7 @@ import org.eclipse.jface.viewers.TreeNodeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IPropertyListener;
@@ -65,6 +66,9 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2006/12/01 11:11:44  holobender
+ * show dialog box after cpd finished without results
+ *
  * Revision 1.1  2006/11/16 17:11:08  holobender
  * Some major changes:
  * - new CPD View
@@ -200,7 +204,17 @@ public class CPDView extends ViewPart implements IPropertyListener {
     public void propertyChanged(Object source, int propId) {
         if (propId == PMDRuntimeConstants.PROPERTY_CPD
                 && source instanceof Iterator) {
-            setData((Iterator)source);
+            final Iterator iter = (Iterator) source;
+            // after setdata(iter) iter.hasNext will always return false
+            final boolean hasResults = iter.hasNext();  
+            setData(iter);
+            if (!hasResults) {
+                // no entries
+                final MessageBox box = new MessageBox(this.treeViewer.getControl().getShell());
+                box.setText(getString(StringKeys.MSGKEY_DIALOG_CPD_NORESULTS_HEADER));
+                box.setMessage(getString(StringKeys.MSGKEY_DIALOG_CPD_NORESULTS_BODY));
+                box.open();
+            }
         }
     }
 }

@@ -42,6 +42,9 @@ package net.sourceforge.pmd.ui.nls;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/12/01 11:12:06  holobender
+ * show dialog box after cpd finished without results
+ *
  * Revision 1.4  2006/11/18 14:47:51  holobender
  * some little improvements for cpd view
  *
@@ -265,6 +268,9 @@ public class StringKeys {
     public static final String MSGKEY_DIALOG_TOOLTIP_CPD_MIN_TILESIZE = "dialog.tooltip.cpd.tilesize";
     public static final String MSGKEY_DIALOG_TOOLTIP_CPD_LANGUAGE = "dialog.tooltip.cpd.language";
     public static final String MSGKEY_DIALOG_CPD_HELP_LABEL = "dialog.cpd.help.label";
+    
+    public static final String MSGKEY_DIALOG_CPD_NORESULTS_HEADER = "dialog.cpd.no_results.header";
+    public static final String MSGKEY_DIALOG_CPD_NORESULTS_BODY = "dialog.cpd.no_results.body";
     
     public static final String MSGKEY_ERROR_TITLE = "message.error.title";
     public static final String MSGKEY_ERROR_CORE_EXCEPTION = "message.error.core_exception";

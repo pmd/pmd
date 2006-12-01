@@ -69,6 +69,9 @@ import org.eclipse.ui.IPropertyListener;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/12/01 11:13:48  holobender
+ * show dialog box after cpd finished without results
+ *
  * Revision 1.3  2006/11/18 14:45:11  holobender
  * some more info output
  *
@@ -118,30 +121,30 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
                 PMDRuntimePlugin.getDefault().logInformation("No files found to specified language.");
             } else {
                 PMDRuntimePlugin.getDefault().logInformation("Found " + files.size() + " files to the specified language. Performing CPD.");
-                setStepsCount(files.size());               
-                beginTask("Finding suspect Cut And Paste", getStepsCount()*2);
-                               
-                if (!isCanceled()) {                    
-                    // detect cut and paste
-                    final CPD cpd = detectCutAndPaste(files);           
+            }
+            setStepsCount(files.size());               
+            beginTask("Finding suspect Cut And Paste", getStepsCount()*2);
+                           
+            if (!isCanceled()) {                    
+                // detect cut and paste
+                final CPD cpd = detectCutAndPaste(files);           
 
-                    // if the command was not canceled
-                    if (this.createReport) {
-                        // create the report optionally
-                        this.renderReport(cpd.getMatches());
-                    }
-                    
-                    // trigger event propertyChanged for all listeners
-                    Display.getDefault().asyncExec(new Runnable() {
-                        public void run() {
-                            final Iterator listenerIterator = listenerList.iterator();
-                            while (listenerIterator.hasNext()) {
-                                final IPropertyListener listener = (IPropertyListener) listenerIterator.next();
-                                listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
-                            }
-                        }
-                    });
+                // if the command was not canceled
+                if (this.createReport) {
+                    // create the report optionally
+                    this.renderReport(cpd.getMatches());
                 }
+                
+                // trigger event propertyChanged for all listeners
+                Display.getDefault().asyncExec(new Runnable() {
+                    public void run() {
+                        final Iterator listenerIterator = listenerList.iterator();
+                        while (listenerIterator.hasNext()) {
+                            final IPropertyListener listener = (IPropertyListener) listenerIterator.next();
+                            listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
+                        }
+                    }
+                });
             }
         } catch (CoreException e) {
             log.debug("Core Exception: " + e.getMessage(), e);
