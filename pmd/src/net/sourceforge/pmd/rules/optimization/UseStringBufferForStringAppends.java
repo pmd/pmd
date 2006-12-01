@@ -31,6 +31,7 @@ public class UseStringBufferForStringAppends extends AbstractRule {
                 continue;
             }
             if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0).getClass().equals(ASTPrimaryExpression.class)) {
+                // FIXME - hm, is there a bug in those methods?
                 // check that we're looking at the "left hand" node. NB:
                 // no.isRightHand / no.isLeftHand doesn't look like it works
                 ASTName astName = (ASTName) ((SimpleNode) statement.jjtGetChild(0)).getFirstChildOfType(ASTName.class);
