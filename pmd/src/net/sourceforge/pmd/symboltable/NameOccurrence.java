@@ -146,7 +146,8 @@ public class NameOccurrence {
             // deal with extra parenthesis: "(i)++"
             if (p instanceof ASTPrimaryPrefix && p.jjtGetNumChildren() == 1 &&
                     gp instanceof ASTPrimaryExpression && gp.jjtGetNumChildren() == 1&&
-                    node instanceof ASTExpression && node.jjtGetNumChildren() == 1) {
+                    node instanceof ASTExpression && node.jjtGetNumChildren() == 1 &&
+                    node.jjtGetParent() instanceof ASTPrimaryPrefix && node.jjtGetParent().jjtGetNumChildren() == 1) {
                 l = node;
                 continue;
             }
