@@ -41,4 +41,30 @@ void bar(int i) {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+valueOf as first/last expression in concatenation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+public static String bar25(int n) {
+    return String.valueOf(n) + n + String.valueOf(n); // no - yes
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+valueOf as first/last expression in concatenation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+public static String bar17(int n) {
+    return n + String.valueOf(n) + "n"; // no
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>

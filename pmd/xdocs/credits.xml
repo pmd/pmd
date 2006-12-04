@@ -54,6 +54,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Thomas Leplus - Rewrote UselessStringValueOf</li>
             <li>Larry Brigman - Reported symlink bug in CPD</li>
             <li>Harald Rohan - Reported bug in CPD GUI</li>
             <li>classens - Noted missing varargs setting in ASTFormalParameter</li>

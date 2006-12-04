@@ -273,7 +273,7 @@ public class Foo {
           class="net.sourceforge.pmd.rules.strings.UselessStringValueOf"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UselessStringValueOf">
       <description>
-Use valueOf() argument directly.
+No need to call String.valueOf to append to a string; just use the valueOf() argument directly.
       </description>
         <priority>3</priority>
       <example>

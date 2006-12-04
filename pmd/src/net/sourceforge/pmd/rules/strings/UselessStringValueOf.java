@@ -7,11 +7,13 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleJavaNode;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 public class UselessStringValueOf extends AbstractRule {
 
     public Object visit(ASTPrimaryPrefix node, Object data) {
-        if (node.jjtGetNumChildren() == 0 || !node.jjtGetChild(0).getClass().equals(ASTName.class)) {
+        if (node.jjtGetNumChildren() == 0 ||
+            !(node.jjtGetChild(0) instanceof ASTName)) {
             return super.visit(node, data);
         }
 
@@ -19,16 +21,46 @@ public class UselessStringValueOf extends AbstractRule {
 
         if ("String.valueOf".equals(image)) {
             Node parent = node.jjtGetParent();
+            if (parent.jjtGetNumChildren() != 2) {
+                return super.visit(node, data);
+            }
             SimpleJavaNode gp = (SimpleJavaNode) parent.jjtGetParent();
             if (parent instanceof ASTPrimaryExpression &&
                     gp instanceof ASTAdditiveExpression &&
-                    gp.jjtGetChild(0) != parent &&
                     "+".equals(gp.getImage())) {
-                super.addViolation(data, node);
-                return data;
+                boolean ok = false;
+                if (gp.jjtGetChild(0) == parent) {
+                    ok = !isPrimitive(gp.jjtGetChild(1));
+                } else  {
+                    for (int i = 0; !ok && gp.jjtGetChild(i) != parent; i++) {
+                        ok = !isPrimitive(gp.jjtGetChild(i));
+                    }
+                }
+                if (ok) {
+                    super.addViolation(data, node);
+                    return data;
+                }
             }
         }
         return super.visit(node, data);
     }
 
+    private static boolean isPrimitive(Node parent) {
+        boolean result = false;
+        if (parent instanceof ASTPrimaryExpression &&
+            parent.jjtGetNumChildren() == 1 &&
+            parent.jjtGetChild(0) instanceof ASTPrimaryPrefix &&
+            parent.jjtGetChild(0).jjtGetNumChildren() == 1 &&
+            parent.jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
+            ASTName name = (ASTName) parent.jjtGetChild(0).jjtGetChild(0);
+            if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
+                VariableNameDeclaration nd = (VariableNameDeclaration) name.getNameDeclaration();
+                if (nd.isPrimitiveType()) {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+    
 }
