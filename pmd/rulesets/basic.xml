@@ -570,23 +570,6 @@ public class MyClass {
    <description>
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
    </description>
-      <properties>
-          <property name="xpath">
-              <value>
-<![CDATA[
-//PrimaryExpression[
-PrimaryPrefix/AllocationExpression[not (ArrayDimsAndInits) and (ClassOrInterfaceType/@Image='Boolean' or ClassOrInterfaceType/@Image='java.lang.Boolean')]
-or
-(
-PrimaryPrefix/Name[@Image='Boolean.valueOf']
-and
-PrimarySuffix/Arguments//BooleanLiteral
-)
-]
-]]>
-              </value>
-          </property>
-      </properties>
       <priority>2</priority>
    <example>
    <![CDATA[

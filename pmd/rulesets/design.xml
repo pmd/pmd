@@ -434,7 +434,7 @@ public class Foo {
 
     <rule name="OptimizableToArrayCall"
           message="This call to Collection.toArray() may be optimizable"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.xpath.PrimaryExpressionXPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#OptimizableToArrayCall">
       <description>
 A call to Collection.toArray can use the Collection's size vs an empty Array of the desired type.
@@ -443,7 +443,7 @@ A call to Collection.toArray can use the Collection's size vs an empty Array of 
           <property name="xpath">
               <value>
                   <![CDATA[
-//PrimaryExpression
+.
 [PrimaryPrefix/Name[ends-with(@Image, 'toArray')]]
 [
 PrimarySuffix/Arguments/ArgumentList/Expression
@@ -502,7 +502,7 @@ public class Bar {
 
     <rule   name="EqualsNull"
             message="Avoid using equals() to compare against null"
-            class="net.sourceforge.pmd.rules.XPathRule"
+            class="net.sourceforge.pmd.rules.xpath.PrimaryExpressionXPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#EqualsNull">
         <description>
 Inexperienced programmers sometimes confuse comparison concepts
@@ -512,7 +512,7 @@ and use equals() to compare to null.
             <property name="xpath">
                 <value>
     <![CDATA[
-//PrimaryExpression
+.
  [
 PrimaryPrefix/Name[ends-with(@Image, 'equals')]
 or
@@ -679,7 +679,7 @@ public class Foo {
 
     <rule name="UseLocaleWithCaseConversions"
           message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.xpath.PrimaryExpressionXPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseLocaleWithCaseConversions">
       <description>
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids
@@ -707,7 +707,7 @@ class Foo {
           <property name="xpath">
             <value>
                 <![CDATA[
-//PrimaryExpression
+.
 [PrimaryPrefix/Name
  [ends-with(@Image, 'toLowerCase') or ends-with(@Image,
 'toUpperCase')]
@@ -1068,7 +1068,7 @@ class Foo {
 
 <rule  name="PositionLiteralsFirstInComparisons"
   message="Position literals first in String comparisons"
-  class="net.sourceforge.pmd.rules.XPathRule"
+  class="net.sourceforge.pmd.rules.xpath.PrimaryExpressionXPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PositionLiteralsFirstInComparisons">
   <description>
  Position literals first in String comparisons - that way if the String is null you won't get a NullPointerException, it'll just return false.
@@ -1076,7 +1076,7 @@ class Foo {
       <properties>
         <property name="xpath">
           <value><![CDATA[
-    //PrimaryExpression[PrimaryPrefix[Name[ends-with(@Image, '.equals')]][..//Literal]]
+    .[PrimaryPrefix[Name[ends-with(@Image, '.equals')]][..//Literal]]
     [not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
     [not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
           ]]></value>
