@@ -143,7 +143,7 @@ public class HTMLRenderer extends AbstractRenderer {
         if (linkPrefix == null) {
             return filename;
         }
-        String newFileName = filename.substring(0, filename.lastIndexOf('.'));
+        String newFileName = filename.substring(0, filename.lastIndexOf('.')).replace('\\', '/');
         return "<a href=\"" + linkPrefix + newFileName + ".html#" + line + "\">" + newFileName + "</a>";
     }
 }

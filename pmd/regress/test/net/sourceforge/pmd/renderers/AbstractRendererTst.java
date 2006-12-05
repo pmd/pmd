@@ -20,22 +20,10 @@ public abstract class AbstractRendererTst extends RuleTst {
                 addViolation(ctx, c);
             return ctx;
         }
-
-        public String getMessage() {
-            return "msg";
-        }
-
-        public String getName() {
-            return "Foo";
-        }
-
-        public String getRuleSetName() {
-            return "RuleSet";
-        }
-
-        public String getDescription() {
-            return "desc";
-        }
+        public String getMessage() { return "msg";  }
+        public String getName() { return "Foo"; }
+        public String getRuleSetName() { return "RuleSet"; }
+        public String getDescription() { return "desc"; }
     }
 
     private static class FooRule2 extends FooRule {
