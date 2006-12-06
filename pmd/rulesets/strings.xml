@@ -291,7 +291,8 @@ public String convert(int i) {
 
 <rule   name="StringBufferInstantiationWithChar"
         message="Do not instantiate a StringBuffer with a char"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.rules.DynamicXPathRule"
+        type="AllocationExpression"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringBufferInstantiationWithChar">
     <description>
 StringBuffer sb = new StringBuffer('c'); The
@@ -302,7 +303,7 @@ StringBuffer size.
         <property name="xpath">
             <value>
 <![CDATA[
-//AllocationExpression/ClassOrInterfaceType
+./ClassOrInterfaceType
 [@Image='StringBuffer']
 /../Arguments/ArgumentList/Expression/PrimaryExpression
 /PrimaryPrefix/

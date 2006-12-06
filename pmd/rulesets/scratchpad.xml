@@ -12,7 +12,8 @@ These are new rules that are still in progress.
 
 <rule   name="AvoidUsingOctalValues"
         message="Do not start a literal by 0 unless it's an octal value"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.rules.DynamicXPathRule"
+        type="Literal"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingOctalValues">
 <description>
 Integers literals should not start with zero.
@@ -24,7 +25,7 @@ interprated as an octal.
 <value>
 <![CDATA[
 
-//Literal
+.
  [(starts-with(@Image, 0))]
  [not(substring(@Image, 2, 1) = 'x')]
  [not(substring(@Image, 2, 1) = 'L')]

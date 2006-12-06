@@ -11,7 +11,8 @@ The Braces Ruleset contains a collection of braces rules.
 
    <rule name="IfStmtsMustUseBraces"
          message="Avoid using if statements without curly braces"
-         class="net.sourceforge.pmd.rules.XPathRule"
+         class="net.sourceforge.pmd.rules.DynamicXPathRule"
+         type="IfStatement"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#IfStmtsMustUseBraces">
      <description>
 Avoid using if statements without using curly braces.
@@ -20,7 +21,7 @@ Avoid using if statements without using curly braces.
            <property name="xpath">
                <value>
                    <![CDATA[
-//IfStatement[count(*) < 3][not(Statement/Block)]
+.[count(*) < 3][not(Statement/Block)]
                    ]]>
                </value>
            </property>
@@ -41,7 +42,8 @@ Avoid using if statements without using curly braces.
 
     <rule name="WhileLoopsMustUseBraces"
           message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="WhileStatement"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#WhileLoopsMustUseBraces">
       <description>
 Avoid using 'while' statements without using curly braces.
@@ -50,7 +52,7 @@ Avoid using 'while' statements without using curly braces.
             <property name="xpath">
                 <value>
 <![CDATA[
-//WhileStatement[not(Statement/Block)]
+.[not(Statement/Block)]
 ]]>
                 </value>
             </property>
@@ -69,7 +71,8 @@ public void doSomething() {
 
       <rule name="IfElseStmtsMustUseBraces"
            message="Avoid using 'if...else' statements without curly braces"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.rules.DynamicXPathRule"
+           type="Statement"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#IfElseStmtsMustUseBraces">
        <description>
 Avoid using if..else statements without using curly braces.
@@ -78,7 +81,7 @@ Avoid using if..else statements without using curly braces.
              <property name="xpath">
                  <value>
 <![CDATA[
-//Statement
+.
  [parent::IfStatement[@Else='true']]
  [not(child::Block)]
  [not(child::IfStatement)]
@@ -105,7 +108,8 @@ Avoid using if..else statements without using curly braces.
 
      <rule name="ForLoopsMustUseBraces"
            message="Avoid using 'for' statements without curly braces"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.rules.DynamicXPathRule"
+           type="ForStatement"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#ForLoopsMustUseBraces">
        <description>
 Avoid using 'for' statements without using curly braces.
@@ -114,7 +118,7 @@ Avoid using 'for' statements without using curly braces.
              <property name="xpath">
                  <value>
  <![CDATA[
-//ForStatement[not(Statement/Block)]
+.[not(Statement/Block)]
  ]]>
                  </value>
              </property>

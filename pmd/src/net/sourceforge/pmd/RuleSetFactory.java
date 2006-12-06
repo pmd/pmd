@@ -21,6 +21,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.rules.DynamicXPathRule;
+
 // Note that ruleset parsing may fail on JDK 1.6 beta
 // due to this bug - http://www.netbeans.org/issues/show_bug.cgi?id=63257
 
@@ -280,7 +282,14 @@ public class RuleSetFactory {
         Element ruleElement = (Element) ruleNode;
 
         String attribute = ruleElement.getAttribute("class");
-        Rule rule = (Rule) classLoader.loadClass(attribute).newInstance();
+        Class c;
+        if (attribute.equals("net.sourceforge.pmd.rules.DynamicXPathRule")) {
+            String type = ruleElement.getAttribute("type");
+            c = DynamicXPathRule.loadClass(classLoader, type);
+        } else {
+            c = classLoader.loadClass(attribute);
+        }
+        Rule rule = (Rule) c.newInstance();
 
         rule.setName(ruleElement.getAttribute("name"));
         rule.setMessage(ruleElement.getAttribute("message"));

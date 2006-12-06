@@ -15,7 +15,8 @@ most people really dislike :-)
 
     <rule name="UnnecessaryConstructor"
           message="Avoid unnecessary constructors - the compiler will generate these for you"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="ClassOrInterfaceBody"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UnnecessaryConstructor">
       <description>
 This rule detects when a constructor is not necessary; i.e., when there's only one constructor,
@@ -25,8 +26,7 @@ it's public, has an empty body, and takes no arguments.
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ClassOrInterfaceDeclaration
-/ClassOrInterfaceBody[count(ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)=1]
+.[count(ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)=1]
 /ClassOrInterfaceBodyDeclaration/ConstructorDeclaration
 [@Public='true']
 [not(FormalParameters/*)]
@@ -154,7 +154,8 @@ public class Foo {
 
     <rule name="AtLeastOneConstructor"
       message="Each class should declare at least one constructor"
-      class="net.sourceforge.pmd.rules.XPathRule"
+      class="net.sourceforge.pmd.rules.DynamicXPathRule"
+      type="ClassOrInterfaceDeclaration"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AtLeastOneConstructor">
   <description>
 Each class should declare at least one constructor.
@@ -163,7 +164,7 @@ Each class should declare at least one constructor.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration
+.
  [not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)]
  [@Interface='false']
 ]]>
@@ -227,7 +228,8 @@ public class Foo {
 
     <rule name="CallSuperInConstructor"
           message="It is a good practice to call super() in a constructor"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="ClassOrInterfaceDeclaration"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#CallSuperInConstructor">
       <description>
 It is a good practice to call super() in a constructor. If super() is not called but
@@ -237,7 +239,7 @@ It is a good practice to call super() in a constructor. If super() is not called
           <property name="xpath">
               <value>
     <![CDATA[
-//ClassOrInterfaceDeclaration[ count (ExtendsList/*) > 0 ]
+.[ count (ExtendsList/*) > 0 ]
 /ClassOrInterfaceBody
  /ClassOrInterfaceBodyDeclaration
  /ConstructorDeclaration[ count (.//ExplicitConstructorInvocation)=0 ]
@@ -265,7 +267,8 @@ public class Foo extends Bar{
 
     <rule name="UnnecessaryParentheses"
           message="This statement may have some unnecessary parentheses"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="ReturnStatement"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UnnecessaryParentheses">
       <description>
 Sometimes expressions are wrapped in unnecessary parentheses,
@@ -275,7 +278,7 @@ making them look like a function call.
         <property name="xpath">
             <value>
                 <![CDATA[
-//ReturnStatement
+.
           /Expression
            /PrimaryExpression
             /PrimaryPrefix
@@ -319,7 +322,8 @@ public class Foo {
 
     <rule name="DefaultPackage"
         message="Use explicit scoping instead of the default package private level"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.rules.DynamicXPathRule"
+        type="ClassOrInterfaceDeclaration"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DefaultPackage">
         <description>
 Use explicit scoping instead of the default package private level.
@@ -327,7 +331,7 @@ Use explicit scoping instead of the default package private level.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-//ClassOrInterfaceDeclaration[@Interface='false']
+.[@Interface='false']
 /ClassOrInterfaceBody
 /ClassOrInterfaceBodyDeclaration
 /FieldDeclaration[@PackagePrivate='true']
@@ -340,7 +344,8 @@ Use explicit scoping instead of the default package private level.
 
     <rule name="BooleanInversion"
           message="Use bitwise inversion to invert boolean values"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="AssignmentOperator"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#BooleanInversion">
       <description>
 Use bitwise inversion to invert boolean values - it's the fastest way to do this.
@@ -350,7 +355,7 @@ See http://www.javaspecialists.co.za/archive/newsletter.do?issue=042&amp;locale=
           <property name="xpath">
               <value>
     <![CDATA[
-//AssignmentOperator[@Image="="]/../Expression/UnaryExpressionNotPlusMinus[@Image="!"]
+.[@Image="="]/../Expression/UnaryExpressionNotPlusMinus[@Image="!"]
 ]]>
              </value>
           </property>

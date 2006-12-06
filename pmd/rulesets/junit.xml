@@ -11,7 +11,8 @@ These rules deal with different problems that can occur with JUnit tests.
 
     <rule name="JUnitStaticSuite"
           message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="MethodDeclaration"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#JUnitStaticSuite">
       <description>
 The suite() method in a JUnit test needs to be both public and static.
@@ -20,7 +21,7 @@ The suite() method in a JUnit test needs to be both public and static.
         <property name="xpath">
             <value>
                 <![CDATA[
-//MethodDeclaration[not(@Static='true') or not(@Public='true')]
+.[not(@Static='true') or not(@Public='true')]
 [MethodDeclarator/@Image='suite']
 [MethodDeclarator/FormalParameters/@ParameterCount=0]
                 ]]>
@@ -42,7 +43,8 @@ public class Foo extends TestCase {
 
   <rule name="JUnitSpelling"
         message="You may have misspelled a JUnit framework method (setUp or tearDown)"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.rules.DynamicXPathRule"
+        type="MethodDeclarator"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#JUnitSpelling">
     <description>
 Some JUnit framework methods are easy to misspell.
@@ -51,7 +53,7 @@ Some JUnit framework methods are easy to misspell.
       <property name="xpath">
           <value>
               <![CDATA[
-//MethodDeclarator[(not(@Image = 'setUp')
+.[(not(@Image = 'setUp')
  and translate(@Image, 'SETuP', 'setUp') = 'setUp')
  or (not(@Image = 'tearDown')
  and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')]
@@ -144,7 +146,8 @@ public class CarTest {
 
     <rule name="UnnecessaryBooleanAssertion"
           message="assertTrue(true) or similar statements are unnecessary"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="StatementExpression"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UnnecessaryBooleanAssertion">
       <description>
 A JUnit test assertion with a boolean literal is unnecessary since it always will eval to the same thing.
@@ -155,7 +158,7 @@ statements like assertTrue(true) and assertFalse(false).  If you just want a tes
           <property name="xpath">
               <value>
     <![CDATA[
-//StatementExpression
+.
 [
 .//Name[@Image='assertTrue' or  @Image='assertFalse']
 and
@@ -190,7 +193,8 @@ public class SimpleTest extends TestCase {
 
     <rule name="UseAssertEqualsInsteadOfAssertTrue"
           message="Use assertEquals(x, y) instead of assertTrue(x.equals(y))"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="PrimaryExpression"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UseAssertEqualsInsteadOfAssertTrue">
       <description>
 This rule detects JUnit assertions in object equality. These assertions
@@ -200,7 +204,7 @@ should be made by more specific methods, like assertEquals.
         <property name="xpath">
             <value>
                 <![CDATA[
-//PrimaryExpression[
+.[
     PrimaryPrefix/Name[@Image = 'assertTrue']
 ][
     PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
@@ -226,7 +230,8 @@ public class FooTest extends TestCase {
 
    <rule name="UseAssertSameInsteadOfAssertTrue"
           message="Use assertSame(x, y) instead of assertTrue(x==y), or assertNotSame(x,y) vs assertFalse(x==y)"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="PrimaryExpression"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UseAssertSameInsteadOfAssertTrue">
       <description>
 This rule detects JUnit assertions in object references equality. These assertions
@@ -236,7 +241,7 @@ should be made by more specific methods, like assertSame, assertNotSame.
         <property name="xpath">
             <value>
                 <![CDATA[
-//PrimaryExpression [
+.[
     PrimaryPrefix/Name
      [@Image = 'assertTrue' or @Image = 'assertFalse']
 ]
@@ -263,7 +268,8 @@ public class FooTest extends TestCase {
 
     <rule name="UseAssertNullInsteadOfAssertTrue"
            message="Use assertNull(x) instead of assertTrue(x==null), or assertNotNull(x) vs assertFalse(x==null)"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.rules.DynamicXPathRule"
+           type="PrimaryExpression"
            externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UseAssertNullInsteadOfAssertTrue">
        <description>
  This rule detects JUnit assertions in object references equality. These assertions
@@ -273,7 +279,7 @@ public class FooTest extends TestCase {
          <property name="xpath">
              <value>
                  <![CDATA[
-//PrimaryExpression[
+.[
  PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
 ][
  PrimarySuffix/Arguments/ArgumentList[
@@ -302,7 +308,8 @@ public class FooTest extends TestCase {
 
     <rule name="SimplifyBooleanAssertion"
 	    message="assertTrue(!expr) can be replaced by assertFalse(expr)"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.rules.DynamicXPathRule"
+        type="StatementExpression"
        externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#SimplifyBooleanAssertion">
       <description>
 Avoid negation in an assertTrue or assertFalse test.
@@ -315,7 +322,7 @@ assertFalse(expr);
           <property name="xpath">
               <value>
     <![CDATA[
-//StatementExpression
+.
 [
 .//Name[@Image='assertTrue' or  @Image='assertFalse']
 and

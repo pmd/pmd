@@ -12,7 +12,8 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
 
   <rule name="ShortVariable"
         message="Avoid variables with short names like {0}"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.rules.DynamicXPathRule"
+        type="VariableDeclaratorId"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ShortVariable">
     <description>
 Detects when a field, local, or parameter has a very short name.
@@ -21,7 +22,7 @@ Detects when a field, local, or parameter has a very short name.
           <property name="xpath" pluginname="true">
               <value>
                   <![CDATA[
-//VariableDeclaratorId[string-length(@Image) < 3]
+.[string-length(@Image) < 3]
  [not(ancestor::ForInit)]
  [not((ancestor::FormalParameter) and (ancestor::TryStatement))]
                   ]]>
@@ -46,7 +47,8 @@ public class Something {
 
   <rule name="LongVariable"
         message="Avoid excessively long variable names like {0}"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.rules.DynamicXPathRule"
+        type="VariableDeclaratorId"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#LongVariable">
     <description>
 Detects when a field, formal or local variable is declared with a long name.
@@ -57,7 +59,7 @@ Detects when a field, formal or local variable is declared with a long name.
           <property name="xpath" pluginname="true">
               <value>
                   <![CDATA[
-//VariableDeclaratorId[string-length(@Image) > $minimum]
+.[string-length(@Image) > $minimum]
                   ]]>
               </value>
           </property>
@@ -79,7 +81,8 @@ public class Something {
 
   <rule name="ShortMethodName"
         message="Avoid using short method names"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.rules.DynamicXPathRule"
+        type="MethodDeclarator"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ShortMethodName">
      <description>
 Detects when very short method names are used.
@@ -89,7 +92,7 @@ Detects when very short method names are used.
           <property name="xpath">
               <value>
                   <![CDATA[
-//MethodDeclarator[string-length(@Image) < 3]
+.[string-length(@Image) < 3]
                   ]]>
               </value>
           </property>
@@ -167,7 +170,8 @@ public class Foo {}
 
     <rule name="AbstractNaming"
           message="Abstract classes should be named 'AbstractXXX'"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="ClassOrInterfaceDeclaration"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AbstractNaming">
        <description>
 Abstract classes should be named 'AbstractXXX'.
@@ -177,7 +181,7 @@ Abstract classes should be named 'AbstractXXX'.
             <property name="xpath">
                 <value>
                     <![CDATA[
-//ClassOrInterfaceDeclaration
+.
  [@Abstract='true' and @Interface='false']
  [not (starts-with(@Image,'Abstract'))]
                     ]]>
@@ -250,7 +254,8 @@ public class Foo {
 
     <rule name="SuspiciousConstantFieldName"
           message="The field name indicates a constant but its modifiers do not"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="ClassOrInterfaceDeclaration"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#SuspiciousConstantFieldName">
        <description>
 A field name is all in uppercase characters, which in Sun's Java naming
@@ -260,7 +265,7 @@ conventions indicate a constant. However, the field is not final.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassOrInterfaceDeclaration[@Interface='false']
+.[@Interface='false']
  /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
   [@Final='false']
   [VariableDeclarator/VariableDeclaratorId[upper-case(@Image)=@Image]]
@@ -284,7 +289,8 @@ public class Foo {
     <rule
         name="SuspiciousEqualsMethodName"
         message="The method name and parameter number are suspiciously close to equals(Object)"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.rules.DynamicXPathRule"
+        type="MethodDeclarator"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#SuspiciousEqualsMethodName">
         <description>
 The method name and parameter number are suspiciously close to
@@ -295,7 +301,7 @@ method.
             <property name="xpath">
                 <value>
         <![CDATA[
-//MethodDeclarator [
+.[
 (
 @Image = 'equals'
   and count(FormalParameters/*) = 1
@@ -391,7 +397,8 @@ public class Foo {
 
     <rule name="NoPackage"
         message="All classes and interfaces must belong to a named package"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.rules.DynamicXPathRule"
+        type="ClassOrInterfaceDeclaration"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#NoPackage">
     <description>
 Detects when a class or interface does not have a package definition.
@@ -400,7 +407,7 @@ Detects when a class or interface does not have a package definition.
           <property name="xpath" pluginname="true">
               <value>
                   <![CDATA[
-//ClassOrInterfaceDeclaration[count(preceding::PackageDeclaration) = 0]
+.[count(preceding::PackageDeclaration) = 0]
                   ]]>
               </value>
           </property>
@@ -417,7 +424,8 @@ public class ClassInDefaultPackage {
 
     <rule name="PackageCase"
             message="Package name contains upper case characters"
-            class="net.sourceforge.pmd.rules.XPathRule"
+            class="net.sourceforge.pmd.rules.DynamicXPathRule"
+            type="PackageDeclaration"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#PackageCase">
         <description>
     Detects when a package definition contains upper case characters.
@@ -426,7 +434,7 @@ public class ClassInDefaultPackage {
               <property name="xpath" pluginname="true">
                   <value>
                       <![CDATA[
-//PackageDeclaration/Name[lower-case(@Image)!=@Image]
+./Name[lower-case(@Image)!=@Image]
                       ]]>
                   </value>
               </property>
@@ -443,7 +451,8 @@ public class SomeClass {
 
     <rule name="MisleadingVariableName"
           message="Avoid naming non-fields with the prefix 'm_'"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.DynamicXPathRule"
+          type="VariableDeclaratorId"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#MisleadingVariableName">
       <description>
 Detects when a non-field has a name starting with 'm_'.  This usually
@@ -453,7 +462,7 @@ indicates a field and thus is confusing.
             <property name="xpath" pluginname="true">
                 <value>
                     <![CDATA[
-//VariableDeclaratorId
+.
 [starts-with(@Image, 'm_')]
 [not (../../../FieldDeclaration)]
                     ]]>
