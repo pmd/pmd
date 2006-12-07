@@ -21,6 +21,10 @@
              if (c.getImage().equalsIgnoreCase("Foo")) addViolation(ctx, c);
              return super.visit(c, ctx);
          }
+
+         public String getName() {
+             return "NoFoo";
+         }
      }
  
      public void testClassLevelSuppression() throws Throwable {
@@ -67,12 +71,18 @@
          assertEquals(1, rpt.size());
      }
  
+     public void testSpecificSuppression() throws Throwable {
+         Report rpt = new Report();
+         runTestFromString(TEST9, new FooRule(), rpt, SourceType.JAVA_15);
+         assertEquals(1, rpt.size());
+     }
+
      private static final String TEST1 =
-             "@SuppressWarnings(\"\")" + PMD.EOL +
+             "@SuppressWarnings(\"PMD\")" + PMD.EOL +
              "public class Foo {}";
  
      private static final String TEST2 =
-             "@SuppressWarnings(\"\")" + PMD.EOL +
+             "@SuppressWarnings(\"PMD\")" + PMD.EOL +
              "public class Foo {" + PMD.EOL +
              " void bar() {" + PMD.EOL +
              "  int foo;" + PMD.EOL +
@@ -81,7 +91,7 @@
  
      private static final String TEST3 =
              "public class Baz {" + PMD.EOL +
-             " @SuppressWarnings(\"\")" + PMD.EOL +
+             " @SuppressWarnings(\"PMD\")" + PMD.EOL +
              " public class Bar {" + PMD.EOL +
              "  void bar() {" + PMD.EOL +
              "   int foo;" + PMD.EOL +
@@ -91,7 +101,7 @@
  
      private static final String TEST4 =
              "public class Foo {" + PMD.EOL +
-             " @SuppressWarnings(\"\")" + PMD.EOL +
+             " @SuppressWarnings(\"PMD\")" + PMD.EOL +
              " void bar() {" + PMD.EOL +
              "  int foo;" + PMD.EOL +
              " }" + PMD.EOL +
@@ -99,7 +109,7 @@
  
      private static final String TEST5 =
              "public class Bar {" + PMD.EOL +
-             " @SuppressWarnings(\"\")" + PMD.EOL +
+             " @SuppressWarnings(\"PMD\")" + PMD.EOL +
              " public Bar() {" + PMD.EOL +
              "  int foo;" + PMD.EOL +
              " }" + PMD.EOL +
@@ -107,7 +117,7 @@
  
      private static final String TEST6 =
              "public class Bar {" + PMD.EOL +
-             " @SuppressWarnings(\"\")" + PMD.EOL +
+             " @SuppressWarnings(\"PMD\")" + PMD.EOL +
              " int foo;" + PMD.EOL +
              " void bar() {" + PMD.EOL +
              "  int foo;" + PMD.EOL +
@@ -117,15 +127,23 @@
      private static final String TEST7 =
              "public class Bar {" + PMD.EOL +
              " int foo;" + PMD.EOL +
-             " void bar(@SuppressWarnings(\"\") int foo) {}" + PMD.EOL +
+             " void bar(@SuppressWarnings(\"PMD\") int foo) {}" + PMD.EOL +
              "}";
  
      private static final String TEST8 =
              "public class Bar {" + PMD.EOL +
              " int foo;" + PMD.EOL +
              " void bar() {" + PMD.EOL +
-             "  @SuppressWarnings(\"\") int foo;" + PMD.EOL +
+             "  @SuppressWarnings(\"PMD\") int foo;" + PMD.EOL +
              " }" + PMD.EOL +
              "}";
  
+     private static final String TEST9 =
+             "public class Bar {" + PMD.EOL +
+             " int foo;" + PMD.EOL +
+             " void bar() {" + PMD.EOL +
+             "  @SuppressWarnings(\"PMD.NoFoo\") int foo;" + PMD.EOL +
+             " }" + PMD.EOL +
+             "}";
+
  }

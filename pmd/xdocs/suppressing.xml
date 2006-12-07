@@ -12,7 +12,17 @@
        <p>You can use a JDK 1.5 annotation to suppress PMD warnings, like this:</p>
 <source>
 // This will suppress all the PMD warnings in this class
-@SuppressWarnings("")
+@SuppressWarnings("PMD")
+public class Bar {
+ void bar() {
+  int foo;
+ }
+}
+</source>
+       <p>Or you can suppress one rule with an annotation like this:</p>
+<source>
+// This will suppress UnusedLocalVariable warnings in this class
+@SuppressWarnings("PMD.UnusedLocalVariable")
 public class Bar {
  void bar() {
   int foo;

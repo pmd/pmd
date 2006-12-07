@@ -10,44 +10,35 @@ These are new rules that are still in progress.
   </description>
 
 
-<rule   name="AvoidUsingOctalValues"
-        message="Do not start a literal by 0 unless it's an octal value"
-        class="net.sourceforge.pmd.rules.DynamicXPathRule"
-        type="Literal"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingOctalValues">
-<description>
-Integers literals should not start with zero.
-Zero means that the rest of literal have to be
-interprated as an octal.
-</description>
-<properties>
-<property name="xpath">
-<value>
-<![CDATA[
+    <rule name="DataflowAnomalyAnalysis"
+              message="Found ''{0}''-anomaly for variable ''{1}'' (lines ''{2}''-''{3}'')."
+              class="net.sourceforge.pmd.dfa.DaaRule"
+              dfa="true">
+          <description>The dataflow analysis tracks local definitions, undefinitions and references to variables on different paths on the data flow.
+From those informations there can be found various problems.
 
-.
- [(starts-with(@Image, 0))]
- [not(substring(@Image, 2, 1) = 'x')]
- [not(substring(@Image, 2, 1) = 'L')]
- [string-length(@Image)>1]
-
-]]>
-</value>
-</property>
-</properties>
-<priority>3</priority>
-<example>
+1. UR - Anomaly: There is a reference to a variable that was not defined before. This is a bug and leads to an error.
+2. DU - Anomaly: A recently defined variable is undefined. These anomalies may appear in normal source text.
+3. DD - Anomaly: A recently defined variable is redefined. This is ominous but don't have to be a bug.
+          </description>
+          <priority>5</priority>
+          <properties>
+            <property name="maxviolations" value="100"/>
+            <property name="maxpaths" value="1000"/>
+          </properties>
+          <example>
 <![CDATA[
-...
-int i = 012; // set i with 10 not 12
-int j = 010; // set j with 8 not 10
-...
-k = i * j; // set k with 80 not 120
-..
+public class Foo {
+    public void foo() {
+	 int buz = 5;
+	 buz = 6; // redefinition of buz -> dd-anomaly
+	 foo(buz);
+	 buz = 2;
+    } // buz is undefined when leaving scope -> du-anomaly
 }
 ]]>
-</example>
-</rule>
+          </example>
+        </rule>
 
     <!--
     <rule name="UselessAssignment"

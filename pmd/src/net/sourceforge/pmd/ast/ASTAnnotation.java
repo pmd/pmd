@@ -4,6 +4,9 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.Rule;
 
+import java.util.Iterator;
+import java.util.List;
+
 public class ASTAnnotation extends SimpleJavaNode {
     public ASTAnnotation(int id) {
         super(id);
@@ -13,58 +16,32 @@ public class ASTAnnotation extends SimpleJavaNode {
         super(p, id);
     }
 
-
     public boolean suppresses(Rule rule) {
-        /*  Check for "suppress all warnings" case
-          @SuppressWarnings("")
-          TypeDeclaration
-          Annotation
-           NormalAnnotation
-            Name:SuppressWarnings
-        */
+        final String ruleAnno = "\"PMD." + rule.getName() + "\"";
+
         if (jjtGetChild(0) instanceof ASTSingleMemberAnnotation) {
             ASTSingleMemberAnnotation n = (ASTSingleMemberAnnotation) jjtGetChild(0);
-            if (n.jjtGetChild(0) instanceof ASTName && ((ASTName) n.jjtGetChild(0)).hasImageEqualTo("SuppressWarnings")) {
-                return true;
+
+            if (n.jjtGetChild(0) instanceof ASTName) {
+                ASTName annName = ((ASTName) n.jjtGetChild(0));
+
+                if (annName.getImage().equals("SuppressWarnings")) {
+                    List nodes = n.findChildrenOfType(ASTLiteral.class);
+                    for (Iterator iter = nodes.iterator(); iter.hasNext();) {
+                        ASTLiteral element = (ASTLiteral) iter.next();
+                        if (element.hasImageEqualTo("\"PMD\"")
+                                || element.hasImageEqualTo(ruleAnno)) {
+                            return true;
+                        }
+                    }
+                }
             }
-            return false;
         }
-
-        /* Check for "suppress some warnings" case
-         @SuppressWarnings({"hi","hey"})
-         TypeDeclaration
-          Annotation
-           SingleMemberAnnotation
-            Name:SuppressWarnings
-            MemberValue
-             MemberValueArrayInitializer
-              MemberValue
-               PrimaryExpression
-                PrimaryPrefix
-                 Literal:"hi"
-              MemberValue
-               PrimaryExpression
-                PrimaryPrefix
-                 Literal:"hey"
-        */
-/*
-
-        if (!(jjtGetChild(0) instanceof ASTName)) {
-            return false;
-        }
-        ASTName n = (ASTName)jjtGetChild(0);
-        if (n.getImage() == null || n.hasImageEqualTo("SuppressWarnings")) {
-            return false;
-        }
-
-        //List values = findChildrenOfType()
-*/
         return false;
     }
 
-
     /**
-     * Accept the visitor. *
+     * Accept the visitor.
      */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
