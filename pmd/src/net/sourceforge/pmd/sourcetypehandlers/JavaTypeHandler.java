@@ -12,14 +12,11 @@ import net.sourceforge.pmd.typeresolution.TypeResolutionFacade;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public abstract class JavaTypeHandler implements SourceTypeHandler {
-    private DataFlowFacade dataFlowFacade = new DataFlowFacade();
-    private SymbolFacade stb = new SymbolFacade();
-    private TypeResolutionFacade tr = new TypeResolutionFacade();
 
     public VisitorStarter getDataFlowFacade() {
         return new VisitorStarter() {
             public void start(Object rootNode) {
-                dataFlowFacade.initializeWith((ASTCompilationUnit) rootNode);
+                new DataFlowFacade().initializeWith((ASTCompilationUnit) rootNode);
             }
         };
     }
@@ -27,7 +24,7 @@ public abstract class JavaTypeHandler implements SourceTypeHandler {
     public VisitorStarter getSymbolFacade() {
         return new VisitorStarter() {
             public void start(Object rootNode) {
-                stb.initializeWith((ASTCompilationUnit) rootNode);
+                new SymbolFacade().initializeWith((ASTCompilationUnit) rootNode);
             }
         };
     }
@@ -35,7 +32,7 @@ public abstract class JavaTypeHandler implements SourceTypeHandler {
     public VisitorStarter getTypeResolutionFacade() {
         return new VisitorStarter() {
             public void start(Object rootNode) {
-                tr.initializeWith((ASTCompilationUnit) rootNode);
+                new TypeResolutionFacade().initializeWith((ASTCompilationUnit) rootNode);
             }
         };
     }
