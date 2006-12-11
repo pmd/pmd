@@ -148,7 +148,7 @@ public class DaaRule extends AbstractRule implements Executable {
                 && !violationAlreadyExists(type, var, startLine, endLine)
                 && node != null) {
             final RuleContext ctx = (RuleContext) data;
-            final Object[] params = new Object[] { type, var, Integer.valueOf(startLine), Integer.valueOf(endLine) };
+            final Object[] params = new Object[] { type, var, new Integer(startLine), new Integer(endLine) };
             String msg = type;
             if (getMessage() != null) {
                 msg = MessageFormat.format(getMessage(), params);
