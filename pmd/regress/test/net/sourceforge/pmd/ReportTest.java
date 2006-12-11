@@ -131,7 +131,7 @@ public class ReportTest extends RuleTst implements ReportListener {
             "public class Foo {}" + PMD.EOL;
 
     private static final String TEST2 =
-            "@SuppressWarnings(\"\")" + PMD.EOL +
+            "@SuppressWarnings(\"PMD\")" + PMD.EOL +
             "public class Foo {}";
 
     private static final String TEST3 =
