@@ -69,16 +69,16 @@ public class DaaRule extends AbstractRule implements Executable {
         return super.visit(node, data);
     }
     
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    public Object visit(ASTMethodDeclaration methodDeclaration, Object data) {
         this.rc = (RuleContext) data;
         this.daaRuleViolations = new ArrayList();
         
-        IDataFlowNode n = (IDataFlowNode) node.getDataFlowNode().getFlow().get(0);
+        final IDataFlowNode node = (IDataFlowNode) methodDeclaration.getDataFlowNode().getFlow().get(0);
         
-        DAAPathFinder a = new DAAPathFinder(n, this, getIntProperty(maxPathDescriptor));       
-        a.run();
+        final DAAPathFinder pathFinder = new DAAPathFinder(node, this, getIntProperty(maxPathDescriptor));       
+        pathFinder.run();
 
-        super.visit(node, data);
+        super.visit(methodDeclaration, data);
         return data;
     }
 
@@ -88,47 +88,51 @@ public class DaaRule extends AbstractRule implements Executable {
             return;
         }
         
-        Hashtable hash = new Hashtable();
+        final Hashtable hash = new Hashtable();
         
-        for (Iterator d = path.iterator(); d.hasNext();) {
-            IDataFlowNode inode = (IDataFlowNode) d.next();
+        final Iterator pathIterator = path.iterator();
+        while (pathIterator.hasNext()) {
+            // iterate all nodes in this path
+            IDataFlowNode inode = (IDataFlowNode) pathIterator.next();
             if (inode.getVariableAccess() != null) {
+                // iterate all variables of this node
                 for (int g = 0; g < inode.getVariableAccess().size(); g++) {
-                    VariableAccess va = (VariableAccess) inode.getVariableAccess().get(g);
-
-                    Object o = hash.get(va.getVariableName());
-                    if (o != null) {
-                        Usage u = (Usage) o;
-                        // get the start and end line
-                        int startLine = u.node.getLine();
-                        int endLine = inode.getLine();
-                        
-                        if (va.accessTypeMatches(u.accessType) && va.isDefinition()) { // DD
-                            if (inode.getSimpleNode() != null) {
-                                // preventing NullpointerException
-                                addDaaViolation(rc, inode.getSimpleNode(), "DD", va.getVariableName(), startLine, endLine);
-                            }
-                        } else if (u.accessType == VariableAccess.UNDEFINITION && va.isReference()) { // UR
-                            if (inode.getSimpleNode() != null) {
-                                // preventing NullpointerException                        		
-                                addDaaViolation(rc, inode.getSimpleNode(), "UR", va.getVariableName(), startLine, endLine);
-                            }
-                        } else if (u.accessType == VariableAccess.DEFINITION && va.isUndefinition()) { // DU
-                            if (inode.getSimpleNode() != null) {
-                                addDaaViolation(rc, inode.getSimpleNode(), "DU", va.getVariableName(), startLine, endLine);
-                            } else {
-                                // undefinition outside, get the node of the definition
-                                SimpleNode lastSimpleNode = u.node.getSimpleNode();
-                                if (lastSimpleNode != null) {
-                                    addDaaViolation(rc, lastSimpleNode, "DU", va.getVariableName(), startLine, endLine);
-                                }
-                            }
-                        }
+                    final VariableAccess va = (VariableAccess) inode.getVariableAccess().get(g);
+                    
+                    // get the last usage of the current variable
+                    final Usage lastUsage = (Usage) hash.get(va.getVariableName());
+                    if (lastUsage != null) {
+                        // there was a usage to this variable before
+                        checkVariableAccess(inode, va, lastUsage);
                     }
-                    Usage u = new Usage(va.getAccessType(), inode);
-                    hash.put(va.getVariableName(), u);
+                    
+                    final Usage newUsage = new Usage(va.getAccessType(), inode);
+                    // put the new usage for the variable
+                    hash.put(va.getVariableName(), newUsage);
                 }
             }
+        }
+    }
+
+    /**
+     * @param inode
+     * @param va
+     * @param o
+     */
+    private void checkVariableAccess(IDataFlowNode inode, VariableAccess va, final Usage u) {
+        // get the start and end line
+        final int startLine = u.node.getLine();
+        final int endLine = inode.getLine();
+        
+        final SimpleNode lastNode = inode.getSimpleNode();
+        final SimpleNode firstNode = u.node.getSimpleNode();
+        
+        if (va.accessTypeMatches(u.accessType) && va.isDefinition() ) { // DD
+            addDaaViolation(rc, lastNode, "DD", va.getVariableName(), startLine, endLine);
+        } else if (u.accessType == VariableAccess.UNDEFINITION && va.isReference()) { // UR
+            addDaaViolation(rc, lastNode, "UR", va.getVariableName(), startLine, endLine);
+        } else if (u.accessType == VariableAccess.DEFINITION && va.isUndefinition()) { // DU
+            addDaaViolation(rc, firstNode, "DU", va.getVariableName(), startLine, endLine);
         }
     }
     
@@ -141,14 +145,15 @@ public class DaaRule extends AbstractRule implements Executable {
      */
     private final void addDaaViolation(Object data, SimpleNode node, String type, String var, int startLine, int endLine) {
         if (!maxNumberOfViolationsReached() 
-                && !violationAlreadyExists(type, var, startLine, endLine)) {
-            RuleContext ctx = (RuleContext) data;
-            Object[] params = new Object[] { type, var, new Integer(startLine), new Integer(endLine) };
+                && !violationAlreadyExists(type, var, startLine, endLine)
+                && node != null) {
+            final RuleContext ctx = (RuleContext) data;
+            final Object[] params = new Object[] { type, var, Integer.valueOf(startLine), Integer.valueOf(endLine) };
             String msg = type;
             if (getMessage() != null) {
                 msg = MessageFormat.format(getMessage(), params);
             }
-            DaaRuleViolation violation = new DaaRuleViolation(this, ctx, node, type, msg, var, startLine, endLine);
+            final DaaRuleViolation violation = new DaaRuleViolation(this, ctx, node, type, msg, var, startLine, endLine);
             ctx.getReport().addRuleViolation(violation);
             this.daaRuleViolations.add(violation);
             this.currentRuleViolationCount++;
@@ -173,9 +178,9 @@ public class DaaRule extends AbstractRule implements Executable {
      * @return true if the violation already was added to the report
      */
     private boolean violationAlreadyExists(String type, String var, int startLine, int endLine) {
-        Iterator violationIterator = this.daaRuleViolations.iterator();
+        final Iterator violationIterator = this.daaRuleViolations.iterator();
         while (violationIterator.hasNext()) {
-            DaaRuleViolation violation = (DaaRuleViolation)violationIterator.next();
+            final DaaRuleViolation violation = (DaaRuleViolation)violationIterator.next();
             if ((violation.getBeginLine() == startLine)
                     && (violation.getEndLine() == endLine)
                     && violation.getType().equals(type)
