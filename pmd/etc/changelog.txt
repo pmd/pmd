@@ -5,6 +5,7 @@ New rules:
     Design ruleset: UseCollectionIsEmpty
     Strings ruleset: StringBufferInstantiationWithChar
     Typeresolution ruleset: Loose Coupling - This is a re-implementation using the new Type Resolution facility
+Fixed bug 1610730 - MisplacedNullCheck now catches more cases
 Fixed bug 1570915 - AvoidRethrowingException no longer reports a false positive for certain nested exceptions.
 Fixed bug 1571324 - UselessStringValueOf no longer reports a false positive for additive expressions.
 Fixed bug 1573795 - PreserveStackTrace doesn't throw CastClassException on exception with 0 args

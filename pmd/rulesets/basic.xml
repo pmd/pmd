@@ -664,7 +664,7 @@ public class Foo {
       </example>
     </rule>
 
-	<rule name="UselessOverridingMethod"
+    <rule name="UselessOverridingMethod"
     message="Overriding method merely calls super"
     class="net.sourceforge.pmd.rules.UselessOverridingMethod"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOverridingMethod">
@@ -674,7 +674,7 @@ The overriding method merely calls the same method defined in a superclass
         <priority>3</priority>
         <example><![CDATA[
 public void foo(String bar) {
-    super.foo(bar);		 //Why bother overriding?
+    super.foo(bar);      //Why bother overriding?
 }
         ]]></example>
         <example><![CDATA[
@@ -820,21 +820,22 @@ class Test {
     <rule  name="MisplacedNullCheck"
            message="The null check here is misplaced; if the variable is null there'll be a NullPointerException"
            class="net.sourceforge.pmd.rules.DynamicXPathRule"
-           type="ConditionalAndExpression"
+           type="Expression"
            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#MisplacedNullCheck">
       <description>
     The null check here is misplaced. if the variable is null you'll get a NullPointerException.
-    Either the check is useless (the variable will never  be "null") or it's incorrect.
+    Either the check is useless (the variable will never be "null") or it's incorrect.
       </description>
       <properties>
         <property name="xpath">
         <value>
     <![CDATA[
     .
+    /*[self::ConditionalOrExpression or self::ConditionalAndExpression]
      /descendant::PrimaryExpression/PrimaryPrefix
       /Name[starts-with(@Image,
       concat(ancestor::PrimaryExpression/following-sibling::EqualityExpression
-       [@Image="!=" and ./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
+       [./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]
      /PrimaryExpression/PrimaryPrefix
       /Name[count(../../PrimarySuffix)=0]/@Image,"."))
     ]
@@ -846,14 +847,19 @@ class Test {
       <example>
     <![CDATA[
 public class Foo {
- public void bar() {
-  if (a.equals("hi") && a != null) {
-   // do something
-  }
+ void bar() {
+  if (a.equals(baz) && a != null) {}
  }
 }
     ]]>
       </example>
+      <example><![CDATA[
+public class Foo {
+ void bar() {
+  if (a.equals(baz) || a == null) {}
+ }
+}
+   ]]></example>
     </rule>
 
     <rule name="UnusedNullCheckInEquals"
@@ -965,7 +971,7 @@ Avoid using ThreadGroup; although it is intended to be used in a threaded enviro
           message="Method call on object which may be null"
           class="net.sourceforge.pmd.rules.DynamicXPathRule"
           type="IfStatement"
-      externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BrokenNullCheck">
+          externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BrokenNullCheck">
         <description>
 The null check is broken since it will throw a Nullpointer itself. 
 The reason is that a method is called on the object when it is null. 
