@@ -50,6 +50,7 @@ use of entrySet to iterate over Maps.
 PMD now allows rules to use Type Resolution. This was referenced in patch 1257259.
 Renderers use less memory when generating reports.
 New DynamicXPathRule class to speed up XPath based rules by providing a base type for the XPath expression.
+Multithreaded processing on multi core or multi cpu systems.
 Performance Refactoring, XPath rules re-written as Java:
     AssignmentInOperand
     AvoidDollarSigns

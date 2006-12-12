@@ -13,7 +13,6 @@ import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,6 +24,11 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
+import edu.emory.mathcs.backport.java.util.concurrent.Executors;
+import edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory;
+import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
+import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -228,25 +232,24 @@ public class PMD {
             files = collectFilesFromOneName(opts.getInputPath(), fileSelector);
         }
 
-        PMD pmd = new PMD();
+        SourceType sourceType;
         if (opts.getTargetJDK().equals("1.3")) {
             if (opts.debugEnabled())
                 System.out.println("In JDK 1.3 mode");
-            pmd.setJavaVersion(SourceType.JAVA_13);
+            sourceType = SourceType.JAVA_13;
         } else if (opts.getTargetJDK().equals("1.5")) {
             if (opts.debugEnabled())
                 System.out.println("In JDK 1.5 mode");
-            pmd.setJavaVersion(SourceType.JAVA_15);
+            sourceType = SourceType.JAVA_15;
         } else if (opts.getTargetJDK().equals("1.6")) {
             if (opts.debugEnabled())
                 System.out.println("In JDK 1.6 mode");
-            pmd.setJavaVersion(SourceType.JAVA_16);
+            sourceType = SourceType.JAVA_16;
         } else {
             if (opts.debugEnabled())
                 System.out.println("In JDK 1.4 mode");
-            pmd.setJavaVersion(SourceType.JAVA_14);
+            sourceType = SourceType.JAVA_14;
         }
-        pmd.setExcludeMarker(opts.getExcludeMarker());
 
         RuleContext ctx = new RuleContext();
         Report report = new Report();
@@ -256,14 +259,14 @@ public class PMD {
         try {
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             ruleSetFactory.setMinimumPriority(opts.getMinPriority());
+
             RuleSets rulesets = ruleSetFactory.createRuleSets(opts.getRulesets());
             printRuleNamesInDebug(opts.debugEnabled(), rulesets);
 
-            pmd.processFiles(files, ctx, rulesets, opts.debugEnabled(), opts
-                    .shortNamesEnabled(), opts.getInputPath(), opts.getEncoding());
-        } catch (FileNotFoundException fnfe) {
-            System.out.println(opts.usage());
-            fnfe.printStackTrace();
+            int threadCount = Runtime.getRuntime().availableProcessors();
+            processFiles(threadCount, ruleSetFactory, sourceType, files, ctx,
+                    opts.getRulesets(), opts.debugEnabled(), opts.shortNamesEnabled(),
+                    opts.getInputPath(), opts.getEncoding(), opts.getExcludeMarker());
         } catch (RuleSetNotFoundException rsnfe) {
             System.out.println(opts.usage());
             rsnfe.printStackTrace();
@@ -285,6 +288,135 @@ public class PMD {
             if (opts.debugEnabled()) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private static class PmdRunnable extends PMD implements Runnable {
+        private final InputStream inputStream;
+        private final String fileName;
+        private final boolean debugEnabled;
+        private final String encoding;
+        private final String rulesets;
+
+        public PmdRunnable(InputStream inputStream, String fileName, SourceType sourceType,
+                boolean debugEnabled, String encoding, String rulesets, String excludeMarker) {
+            this.inputStream = inputStream;
+            this.fileName = fileName;
+            this.debugEnabled = debugEnabled;
+            this.encoding = encoding;
+            this.rulesets = rulesets;
+            
+            setJavaVersion(sourceType);
+            setExcludeMarker(excludeMarker);
+        }
+
+        public void run() {
+            PmdThread thread = (PmdThread) Thread.currentThread();
+
+            RuleContext ctx = thread.getRuleContext();
+            RuleSets rs = thread.getRuleSets(rulesets);
+
+            ctx.setSourceCodeFilename(fileName);
+            if (debugEnabled) {
+                System.out.println("Processing " + ctx.getSourceCodeFilename());
+            }
+
+            try {
+                InputStream stream = new BufferedInputStream(inputStream);
+                processFile(stream, encoding, rs, ctx);
+            } catch (PMDException pmde) {
+                if (debugEnabled) {
+                    pmde.getReason().printStackTrace();
+                }
+                ctx.getReport().addError(
+                        new Report.ProcessingError(pmde.getMessage(),
+                        fileName));
+            }
+        }
+
+    }
+
+    private static class PmdThreadFactory implements ThreadFactory {
+
+        public PmdThreadFactory(Report report, RuleSetFactory ruleSetFactory) {
+            this.report = report;
+            this.ruleSetFactory = ruleSetFactory;
+        }
+        
+        private final Report report;
+        private final RuleSetFactory ruleSetFactory;
+        private final AtomicInteger counter = new AtomicInteger();
+
+        public Thread newThread(Runnable r) {
+            return new PmdThread(counter.incrementAndGet(), r, report, ruleSetFactory);
+        }
+
+    }
+
+    private static class PmdThread extends Thread {
+
+        public PmdThread(int id, Runnable r, Report report, RuleSetFactory ruleSetFactory) {
+            super(r, "PmdThread " + id);
+            this.id = id;
+            context = new RuleContext();
+            context.setReport(report);
+            this.ruleSetFactory = ruleSetFactory;
+        }
+        
+        private int id;
+        private RuleContext context;
+        private RuleSets rulesets;
+        private RuleSetFactory ruleSetFactory;
+        
+        public RuleContext getRuleContext() {
+            return context;
+        }
+
+        public RuleSets getRuleSets(String rsList) {
+            if (rulesets == null) {
+                try {
+                    rulesets = ruleSetFactory.createRuleSets(rsList);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return rulesets;
+        }
+
+        public String toString() {
+            return "PmdThread " + id;
+        }
+
+    }
+
+    /**
+     * Run PMD on a list of files using multiple threads.
+     *
+     * @throws IOException If one of the files could not be read
+     */
+    public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List files, RuleContext ctx, String rulesets,
+            boolean debugEnabled, boolean shortNamesEnabled, String inputPath,
+            String encoding, String excludeMarker) throws IOException {
+
+        PmdThreadFactory factory = new PmdThreadFactory(ctx.getReport(), ruleSetFactory);
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount, factory);
+
+        for (Iterator i = files.iterator(); i.hasNext();) {
+            DataSource dataSource = (DataSource) i.next();
+            String niceFileName = dataSource.getNiceFileName(shortNamesEnabled,
+                    inputPath);
+            InputStream is = dataSource.getInputStream();
+ 
+            Runnable r = new PmdRunnable(is, niceFileName, sourceType, debugEnabled,
+                                            encoding, rulesets, excludeMarker);
+
+            executor.execute(r);
+        }
+        executor.shutdown();
+
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
         }
     }
 

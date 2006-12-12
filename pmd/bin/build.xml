@@ -18,6 +18,7 @@
 		<fileset dir="${dir.lib}">
 			<include name="jaxen-1.1-beta-10.jar" />
 			<include name="asm-3.0.jar" />     
+			<include name="backport-util-concurrent.jar" />     
 		</fileset>
 	</path>
 
@@ -66,7 +67,7 @@
 		<jar jarfile="${dir.lib}\pmd-${version}.jar" includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**" basedir="${dir.build}">
 			<manifest>
 				<attribute name="Main-Class" value="net.sourceforge.pmd.PMD" />
-				<attribute name="Class-Path" value="jaxen-1.1-beta-10.jar asm-3.0.jar" />
+				<attribute name="Class-Path" value="jaxen-1.1-beta-10.jar asm-3.0.jar backport-util-concurrent.jar" />
 			</manifest>
 		</jar>
 	</target>
