@@ -46,7 +46,7 @@ public class DataflowAnomalyTableContentProvider implements IStructuredContentPr
     }
     
     private boolean violationIsInList(DaaRuleViolation newViolation, List list) {
-        boolean isInList = false;
+        
         final Iterator violationIterator = list.iterator();
         while (violationIterator.hasNext()) {
             
@@ -55,11 +55,10 @@ public class DataflowAnomalyTableContentProvider implements IStructuredContentPr
                     && violation.getType().equals(newViolation.getType())
                     && violation.getBeginLine() == newViolation.getBeginLine()
                     && violation.getEndLine() == newViolation.getEndLine()) {
-                isInList = true;
-                break;                
+                return true;              
             }
         }
-        return isInList;
+        return false;
     }
 
 }
