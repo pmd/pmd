@@ -23,6 +23,7 @@ public class CommandLineOptions {
     private boolean debugEnabled;
     private String targetJDK = "1.4";
     private boolean shortNamesEnabled;
+    private int cpus = Runtime.getRuntime().availableProcessors();
 
     private String excludeMarker = PMD.EXCLUDE_MARKER;
     private String inputPath;
@@ -57,26 +58,34 @@ public class CommandLineOptions {
             } else if (args[i].equals("-shortnames")) {
                 shortNamesEnabled = true;
             } else if (args[i].equals("-encoding")) {
-                encoding = args[i + 1];
+                encoding = args[++i];
+            } else if (args[i].equals("-cpus")) {
+                try {
+                    cpus = Integer.parseInt(args[++i]);
+                } catch (NumberFormatException e) {
+                    throw new RuntimeException(MessageFormat.format(
+                            "cpus parameter must be a whole number, {0} received",
+                            new String[] { args[i] }));
+                }
             } else if (args[i].equals("-targetjdk")) {
-                targetJDK = args[i + 1];
+                targetJDK = args[++i];
             } else if (args[i].equals("-excludemarker")) {
-                excludeMarker = args[i + 1];
+                excludeMarker = args[++i];
             } else if (args[i].equals("-jsp")) {
                 checkJspFiles = true;
             } else if (args[i].equals("-nojava")) {
                 checkJavaFiles = false;
             } else if (args[i].equals("-lineprefix")) {
-                linePrefix = args[i + 1];
+                linePrefix = args[++i];
             } else if (args[i].equals("-linkprefix")) {
-                linkPrefix = args[i + 1];
+                linkPrefix = args[++i];
             } else if (args[i].equals("-minimumpriority")) {
                 try {
-                    minPriority = Integer.parseInt(args[i + 1]);
+                    minPriority = Integer.parseInt(args[++i]);
                 } catch (NumberFormatException e) {
                     throw new RuntimeException(MessageFormat.format(
                             "minimumpriority parameter must be a whole number, {0} received",
-                            new String[] { args[i + 1] }));
+                            new String[] { args[i] }));
                 }
             }
         }
@@ -144,6 +153,10 @@ public class CommandLineOptions {
         return debugEnabled;
     }
 
+    public int getCpus() {
+        return cpus;
+    }
+
     public String getTargetJDK() {
         return targetJDK;
     }
@@ -169,6 +182,7 @@ public class CommandLineOptions {
                 "Optional arguments that may be put after the mandatory arguments are: " + PMD.EOL +
                 "-debug: prints debugging information " + PMD.EOL +
                 "-targetjdk: specifies a language version to target - 1.3, 1.4, 1.5 or 1.6" + PMD.EOL +
+                "-cpus: specifies the number of threads to create" + PMD.EOL +
                 "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
                 "-excludemarker: specifies the String that marks the a line which PMD should ignore; default is NOPMD" + PMD.EOL +
                 "-shortnames: prints shortened filenames in the report" + PMD.EOL +

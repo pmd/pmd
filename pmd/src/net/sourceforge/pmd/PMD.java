@@ -263,8 +263,7 @@ public class PMD {
             RuleSets rulesets = ruleSetFactory.createRuleSets(opts.getRulesets());
             printRuleNamesInDebug(opts.debugEnabled(), rulesets);
 
-            int threadCount = Runtime.getRuntime().availableProcessors();
-            processFiles(threadCount, ruleSetFactory, sourceType, files, ctx,
+            processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx,
                     opts.getRulesets(), opts.debugEnabled(), opts.shortNamesEnabled(),
                     opts.getInputPath(), opts.getEncoding(), opts.getExcludeMarker());
         } catch (RuleSetNotFoundException rsnfe) {
