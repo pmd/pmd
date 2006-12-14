@@ -47,23 +47,23 @@ public class MatchesFunctionTest extends TestCase implements Node {
         return className;
     }
 
-    public void testMatch() throws FunctionCallException {
+    public void testMatch() throws FunctionCallException, NoSuchMethodException {
         className = "Foo";
         assertTrue(tryRegexp("Foo") instanceof List);
     }
 
-    public void testNoMatch() throws FunctionCallException {
+    public void testNoMatch() throws FunctionCallException, NoSuchMethodException {
         className = "bar";
         assertTrue(tryRegexp("Foo") instanceof Boolean);
         className = "FobboBar";
         assertTrue(tryRegexp("Foo") instanceof Boolean);
     }
 
-    private Object tryRegexp(String exp) throws FunctionCallException {
+    private Object tryRegexp(String exp) throws FunctionCallException, NoSuchMethodException {
         MatchesFunction function = new MatchesFunction();
         List list = new ArrayList();
         List attrs = new ArrayList();
-        attrs.add(new Attribute(this, "matches", getClass().getMethods()[0]));
+        attrs.add(new Attribute(this, "matches", getClass().getMethod("getValue", new Class[0])));
         list.add(attrs);
         list.add(exp);
         Context c = new Context(null);
@@ -71,3 +71,5 @@ public class MatchesFunctionTest extends TestCase implements Node {
         return function.call(c, list);
     }
 }
+
+ 	  	 
