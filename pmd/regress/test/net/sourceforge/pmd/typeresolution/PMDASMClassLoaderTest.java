@@ -32,7 +32,6 @@ public class PMDASMClassLoaderTest extends TestCase {
         Class clazz = cl.loadClass(className);
         assertNotNull(clazz);
         Map imports = cl.getImportedClasses(className);
-        System.err.println(imports);
         assertNotNull(imports);
         assertEquals(7, imports.size());
         assertEquals("java.util.Iterator", imports.get("Iterator"));
