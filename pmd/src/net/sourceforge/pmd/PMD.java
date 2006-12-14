@@ -291,15 +291,17 @@ public class PMD {
     }
 
     private static class PmdRunnable extends PMD implements Runnable {
-        private final InputStream inputStream;
+        private final ExecutorService executor;
+        private final DataSource dataSource;
         private final String fileName;
         private final boolean debugEnabled;
         private final String encoding;
         private final String rulesets;
 
-        public PmdRunnable(InputStream inputStream, String fileName, SourceType sourceType,
+        public PmdRunnable(ExecutorService executor, DataSource dataSource, String fileName, SourceType sourceType,
                 boolean debugEnabled, String encoding, String rulesets, String excludeMarker) {
-            this.inputStream = inputStream;
+            this.executor = executor;
+            this.dataSource = dataSource;
             this.fileName = fileName;
             this.debugEnabled = debugEnabled;
             this.encoding = encoding;
@@ -321,7 +323,7 @@ public class PMD {
             }
 
             try {
-                InputStream stream = new BufferedInputStream(inputStream);
+                InputStream stream = new BufferedInputStream(dataSource.getInputStream());
                 processFile(stream, encoding, rs, ctx);
             } catch (PMDException pmde) {
                 if (debugEnabled) {
@@ -330,6 +332,16 @@ public class PMD {
                 ctx.getReport().addError(
                         new Report.ProcessingError(pmde.getMessage(),
                         fileName));
+            } catch (Throwable t) {
+                // unexepected exception: log and stop executor service
+                if (debugEnabled) {
+                    t.printStackTrace();
+                }
+                ctx.getReport().addError(
+                        new Report.ProcessingError(t.getMessage(),
+                        fileName));
+
+                executor.shutdownNow();
             }
         }
 
@@ -404,9 +416,8 @@ public class PMD {
             DataSource dataSource = (DataSource) i.next();
             String niceFileName = dataSource.getNiceFileName(shortNamesEnabled,
                     inputPath);
-            InputStream is = dataSource.getInputStream();
- 
-            Runnable r = new PmdRunnable(is, niceFileName, sourceType, debugEnabled,
+
+            Runnable r = new PmdRunnable(executor, dataSource, niceFileName, sourceType, debugEnabled,
                                             encoding, rulesets, excludeMarker);
 
             executor.execute(r);
