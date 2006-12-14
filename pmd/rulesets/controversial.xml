@@ -334,8 +334,10 @@ Use explicit scoping instead of the default package private level.
 .[@Interface='false']
 /ClassOrInterfaceBody
 /ClassOrInterfaceBodyDeclaration
-/FieldDeclaration[@PackagePrivate='true']
-| /MethodDeclaration[@PackagePrivate='true']
+[
+FieldDeclaration[@PackagePrivate='true']
+or MethodDeclaration[@PackagePrivate='true']
+]
                 ]]></value>
             </property>
         </properties>
