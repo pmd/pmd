@@ -4,7 +4,7 @@
  import net.sourceforge.pmd.Rule;
  import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
  
- public class AvoidSynchronizedAtMethodLevel extends SimpleAggregatorTst {
+ public class AvoidSynchronizedAtMethodLevelTest extends SimpleAggregatorTst {
  
      private Rule rule;
  
