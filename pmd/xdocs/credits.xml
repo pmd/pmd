@@ -63,7 +63,7 @@
             <li>piair - Implemented StringBufferInstantiationWithChar, AvoidUsingOctalValues</li>
             <li>Christopher Eagan - Reported bug in VariableNamingConventions</li>
             <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - Improvement for UseArraysAsList, UnusedNullCheckInEquals, MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray, BigIntegerInstantiation</li>
-            <li>Ryan Gustafson - Patch to fix bug in AvoidDecimalLiteralsInBigDecimalConstructor, patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0</li>
+            <li>Ryan Gustafson - Patch to fix bug in AvoidDecimalLiteralsInBigDecimalConstructor, patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0, patch to support classpaths with spaces in pmd.bat</li>
             <li>Stefan Seidel - Reported JDK 1.5 parsing bug</li>
             <li>Aaron Optimizer Digulla - Tweaks to pmd.bat</li>
             <li>Peter Van de Voorde - Rewrote the 'create rule XML' functionality in the designer utility</li>
