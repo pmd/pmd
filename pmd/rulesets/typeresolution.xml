@@ -36,5 +36,30 @@ public class Bar {
       </example>
     </rule>
 
+    <rule name="CloneMethodMustImplementCloneable"
+        message="clone() method should be implemented only if implementing Cloneable interface"
+        class="net.sourceforge.pmd.typeresolution.rules.CloneMethodMustImplementCloneable"
+        typeResolution="true"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/typeresolution.html#CloneMethodMustImplementCloneable">
+        <description>
+The method clone() should only be implemented if the class implements the 
+Cloneable interface with the exception of a final method that only throws 
+CloneNotSupportedException. This version uses PMD's type resolution facilities, 
+and can detect if the class implements or extends a Cloneable class
+        </description>
+        <properties>
+        </properties>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class MyClass {
+ public Object clone() throws CloneNotSupportedException {
+  return foo;
+ }
+}
+   ]]>
+        </example>
+    </rule>
+
  </ruleset>
 
