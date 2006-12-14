@@ -33,11 +33,13 @@ public class PMDASMClassLoaderTest extends TestCase {
         assertNotNull(clazz);
         Map imports = cl.getImportedClasses(className);
         assertNotNull(imports);
-        assertEquals(7, imports.size());
+        System.err.println(imports);
+        assertEquals(8, imports.size());
         assertEquals("java.util.Iterator", imports.get("Iterator"));
         assertEquals("java.util.Map", imports.get("Map"));
         assertEquals("java.util.Set", imports.get("Set"));
         assertEquals("java.util.Map$Entry", imports.get("Entry"));
+        assertEquals("java.util.Map$Entry", imports.get("Map$Entry"));
         assertEquals("java.util.Map$Entry", imports.get("Map$Entry"));
         assertEquals("java.lang.Object", imports.get("Object"));
         assertEquals("test.net.sourceforge.pmd.typeresolution.ClassWithImportInnerOnDemand", imports.get("ClassWithImportInnerOnDemand"));
