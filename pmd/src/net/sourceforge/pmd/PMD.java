@@ -12,13 +12,16 @@ import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -275,17 +278,33 @@ public class PMD {
         }
         report.end();
 
+        Writer w = null;
         try {
             Renderer r = opts.createRenderer();
-            OutputStreamWriter w = new OutputStreamWriter(System.out);
+            if (opts.getReportFile() != null) {
+                w = new BufferedWriter(new FileWriter(opts.getReportFile()));
+            } else {
+                w = new OutputStreamWriter(System.out);
+            }
             r.render(w, ctx.getReport());
+            w.write(EOL);
             w.flush();
-            System.out.println();
+            if (opts.getReportFile() != null) {
+                w.close();
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println(opts.usage());
             if (opts.debugEnabled()) {
                 e.printStackTrace();
+            }
+        } finally {
+            if (opts.getReportFile() != null && w != null) {
+                try {
+                    w.close();
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
             }
         }
     }
@@ -560,3 +579,5 @@ public class PMD {
     }
 
 }
+
+         

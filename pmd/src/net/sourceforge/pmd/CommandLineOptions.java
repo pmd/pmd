@@ -28,6 +28,7 @@ public class CommandLineOptions {
     private String excludeMarker = PMD.EXCLUDE_MARKER;
     private String inputPath;
     private String reportFormat;
+    private String reportFile;
     private String ruleSets;
     private String encoding = new InputStreamReader(System.in).getEncoding();
     private String linePrefix;
@@ -87,6 +88,8 @@ public class CommandLineOptions {
                             "minimumpriority parameter must be a whole number, {0} received",
                             new String[] { args[i] }));
                 }
+            } else if (args[i].equals("-reportfile")) {
+                reportFile = args[++i];
             }
         }
         
@@ -141,6 +144,10 @@ public class CommandLineOptions {
         return this.reportFormat;
     }
 
+    public String getReportFile() {
+        return this.reportFile;
+    }
+
     public String getRulesets() {
         return this.ruleSets;
     }
@@ -180,15 +187,16 @@ public class CommandLineOptions {
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html unusedcode" + PMD.EOL +
                 PMD.EOL +
                 "Optional arguments that may be put after the mandatory arguments are: " + PMD.EOL +
-                "-debug: prints debugging information " + PMD.EOL +
+                "-debug: prints debugging information" + PMD.EOL +
                 "-targetjdk: specifies a language version to target - 1.3, 1.4, 1.5 or 1.6" + PMD.EOL +
                 "-cpus: specifies the number of threads to create" + PMD.EOL +
                 "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
                 "-excludemarker: specifies the String that marks the a line which PMD should ignore; default is NOPMD" + PMD.EOL +
                 "-shortnames: prints shortened filenames in the report" + PMD.EOL +
-                "-linkprefix: path to HTML source, for summary html renderer only." + PMD.EOL +
-                "-lineprefix: custom anchor to affected line in the source file, for summary html renderer only." + PMD.EOL +
-                "-minimumpriority: The rule priority threshold; rules with lower priority than they will not be used." + PMD.EOL +
+                "-linkprefix: path to HTML source, for summary html renderer only" + PMD.EOL +
+                "-lineprefix: custom anchor to affected line in the source file, for summary html renderer only" + PMD.EOL +
+                "-minimumpriority: rule priority threshold; rules with lower priority than they will not be used" + PMD.EOL +
+                "-reportfile: send report output to a file; default to System.out" + PMD.EOL +
                 PMD.EOL +
                 "For example: " + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code text unusedcode,imports -targetjdk 1.5 -debug" + PMD.EOL +
@@ -212,3 +220,5 @@ public class CommandLineOptions {
 }
 
 
+
+         
