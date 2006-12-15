@@ -32,8 +32,7 @@ class Foo{
 
      <rule name="LoggerIsNotStaticFinal"
          message="The Logger variable declaration does not contain the static and final modifiers"
-         class="net.sourceforge.pmd.rules.DynamicXPathRule"
-         type="VariableDeclarator"
+         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#LoggerIsNotStaticFinal">
      <description>
 In most cases, the Logger can be declared static and final.
@@ -42,7 +41,7 @@ In most cases, the Logger can be declared static and final.
          <property name="xpath">
              <value>
                  <![CDATA[
-.
+//VariableDeclarator
  [parent::FieldDeclaration]
  [../Type/ReferenceType
   /ClassOrInterfaceType[@Image='Logger']
@@ -102,8 +101,7 @@ first -->
 
     <rule name="SystemPrintln"
          message="System.out.print is used"
-         class="net.sourceforge.pmd.rules.DynamicXPathRule"
-         type="Name"
+         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln">
      <description>
 System.(out|err).print is used, consider using a logger.
@@ -112,7 +110,7 @@ System.(out|err).print is used, consider using a logger.
          <property name="xpath">
              <value>
                  <![CDATA[
-.[
+//Name[
     starts-with(@Image, 'System.out.print')
     or
     starts-with(@Image, 'System.err.print')
@@ -138,8 +136,7 @@ class Foo{
 
     <rule  name="AvoidPrintStackTrace"
            message="Avoid printStackTrace(); use a logger call instead."
-           class="net.sourceforge.pmd.rules.DynamicXPathRule"
-           type="PrimaryExpression"
+           class="net.sourceforge.pmd.rules.XPathRule"
 		   externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace">
            <description>
 Avoid printStackTrace(); use a logger call instead.
@@ -148,7 +145,7 @@ Avoid printStackTrace(); use a logger call instead.
              <property name="xpath">
              <value>
 <![CDATA[
-.
+//PrimaryExpression
  [PrimaryPrefix/Name[contains(@Image,'printStackTrace')]]
  [PrimarySuffix[not(boolean(Arguments/ArgumentList/Expression))]]
 ]]>

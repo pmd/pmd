@@ -13,8 +13,7 @@ Contains rules about migrating from one JDK version to another.  Don't use these
 
 <rule name="ReplaceVectorWithList"
   message="Consider replacing this Vector with the newer java.util.List"
-  class="net.sourceforge.pmd.rules.DynamicXPathRule"
-  type="Type"
+  class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ReplaceVectorWithList">
   <description>
   Consider replacing Vector usages with the newer java.util.ArrayList if expensive threadsafe operation is not required.
@@ -23,7 +22,7 @@ Contains rules about migrating from one JDK version to another.  Don't use these
     <property name="xpath">
     <value>
 <![CDATA[
-./ReferenceType/ClassOrInterfaceType[@Image='Vector']
+//Type/ReferenceType/ClassOrInterfaceType[@Image='Vector']
  ]]>
     </value>
     </property>
@@ -42,8 +41,7 @@ public class Foo {
 
     <rule name="ReplaceHashtableWithMap"
       message="Consider replacing this Hashtable with the newer java.util.Map"
-      class="net.sourceforge.pmd.rules.DynamicXPathRule"
-      type="Type"
+      class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ReplaceHashtableWithMap">
       <description>
       Consider replacing this Hashtable with the newer java.util.Map
@@ -52,7 +50,7 @@ public class Foo {
         <property name="xpath">
         <value>
     <![CDATA[
-    ./ReferenceType/ClassOrInterfaceType[@Image='Hashtable']
+//Type/ReferenceType/ClassOrInterfaceType[@Image='Hashtable']
      ]]>
         </value>
         </property>
@@ -71,8 +69,7 @@ public class Foo {
 
     <rule name="ReplaceEnumerationWithIterator"
       message="Consider replacing this Enumeration with the newer java.util.Iterator"
-      class="net.sourceforge.pmd.rules.DynamicXPathRule"
-      type="ImplementsList"
+      class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ReplaceEnumerationWithIterator">
       <description>
       Consider replacing this Enumeration with the newer java.util.Iterator
@@ -81,7 +78,7 @@ public class Foo {
         <property name="xpath">
         <value>
     <![CDATA[
-    ./ClassOrInterfaceType[@Image='Enumeration']
+//ImplementsList/ClassOrInterfaceType[@Image='Enumeration']
      ]]>
         </value>
         </property>
@@ -104,15 +101,14 @@ public class Foo implements Enumeration {
 
     <rule name="AvoidEnumAsIdentifier"
           message="Avoid using enum as an identifier; it's a reserved word in JDK 1.5"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="VariableDeclaratorId"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#AvoidEnumAsIdentifier">
       <description>Finds all places 'enum' is used as an identifier is used.</description>
       <properties>
           <property name="xpath">
               <value>
                   <![CDATA[
-                    .[@Image='enum']
+//VariableDeclaratorId[@Image='enum']
                   ]]>
               </value>
           </property>
@@ -131,15 +127,14 @@ public class Foo implements Enumeration {
 
     <rule name="AvoidAssertAsIdentifier"
           message="Avoid using assert as an identifier; it's a reserved word in JDK 1.4"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="VariableDeclaratorId"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#AvoidAssertAsIdentifier">
       <description>Finds all places 'assert' is used as an identifier is used.</description>
       <properties>
           <property name="xpath">
               <value>
                   <![CDATA[
-                    .[@Image='assert']
+//VariableDeclaratorId[@Image='assert']
                   ]]>
               </value>
           </property>
@@ -158,14 +153,13 @@ public class Foo implements Enumeration {
 
     <rule name="IntegerInstantiation"
           message="Avoid instantiating Integer objects. Call Integer.valueOf() instead."
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="PrimaryPrefix">
+	  class="net.sourceforge.pmd.rules.XPathRule">
       <description>In JDK 1.5, calling new Integer() causes memory allocation.  Integer.valueOf() is more memory friendly.</description>
       <properties>
           <property name="xpath">
               <value>
                   <![CDATA[
-.
+//PrimaryPrefix
  /AllocationExpression
   [not (ArrayDimsAndInits)
    and (ClassOrInterfaceType/@Image='Integer'

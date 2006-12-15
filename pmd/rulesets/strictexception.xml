@@ -79,8 +79,7 @@ public class Foo {
 
 <rule name="AvoidCatchingNPE"
     message="Avoid catching NullPointerException; consider removing the cause of the NPE."
-    class="net.sourceforge.pmd.rules.DynamicXPathRule"
-    type="CatchStatement"
+    class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidCatchingNPE">
     <description>
       Code should never throw NPE under normal circumstances.  A catch block may hide the original error, causing other more subtle errors in its wake.
@@ -101,7 +100,7 @@ public class Foo {
       <property name="xpath">
         <value>
             <![CDATA[
-./FormalParameter/Type
+//CatchStatement/FormalParameter/Type
  /ReferenceType/ClassOrInterfaceType[@Image='NullPointerException']
  ]]>
         </value>
@@ -111,8 +110,7 @@ public class Foo {
 
   <rule name="AvoidThrowingRawExceptionTypes"
       message="Avoid throwing raw exception types."
-      class="net.sourceforge.pmd.rules.DynamicXPathRule"
-      type="AllocationExpression"
+      class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidThrowingRawExceptionTypes">
     <description>
 Avoid throwing certain exception types.  Rather than throw a raw RuntimeException, Throwable,
@@ -132,7 +130,7 @@ public void bar() throws Exception {
       <property name="xpath">
         <value>
             <![CDATA[
-.
+//AllocationExpression
  /ClassOrInterfaceType[
  @Image='Throwable' or
  @Image='Exception' or
@@ -146,8 +144,7 @@ public void bar() throws Exception {
 
     <rule name="AvoidThrowingNullPointerException"
         message="Avoid throwing null pointer exceptions."
-        class="net.sourceforge.pmd.rules.DynamicXPathRule"
-        type="AllocationExpression"
+        class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidThrowingNullPointerException">
       <description>
 Avoid throwing a NullPointerException - it's confusing because most people will assume that the
@@ -168,7 +165,7 @@ public class Foo {
         <property name="xpath">
           <value>
               <![CDATA[
-./ClassOrInterfaceType[@Image='NullPointerException']
+//AllocationExpression/ClassOrInterfaceType[@Image='NullPointerException']
    ]]>
           </value>
         </property>
@@ -177,8 +174,7 @@ public class Foo {
 
   <rule name="AvoidRethrowingException"
     message="A catch statement that catches an exception only to rethrow it should be avoided."
-     class="net.sourceforge.pmd.rules.DynamicXPathRule"
-     type="CatchStatement">
+    class="net.sourceforge.pmd.rules.XPathRule">
     <description>
      Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
     </description>
@@ -199,7 +195,7 @@ public class Foo {
     <property name="xpath">
       <value>
         <![CDATA[
-.[FormalParameter
+//CatchStatement[FormalParameter
  /VariableDeclaratorId/@Image = Block/BlockStatement/Statement
  /ThrowStatement/Expression/PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix/Name/@Image
  and count(Block/BlockStatement/Statement) =1]

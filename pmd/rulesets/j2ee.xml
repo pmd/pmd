@@ -8,8 +8,7 @@
 
   <rule name="UseProperClassLoader"
    message="In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead."
-   class="net.sourceforge.pmd.rules.DynamicXPathRule"
-   type="PrimarySuffix">
+   class="net.sourceforge.pmd.rules.XPathRule">
    <description>
     In J2EE getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
    </description>
@@ -17,7 +16,7 @@
           <property name="xpath">
               <value>
 <![CDATA[
-.[@Image='getClassLoader']
+//PrimarySuffix[@Image='getClassLoader']
  ]]>
               </value>
           </property>

@@ -11,8 +11,7 @@ The Jakarta Commons Logging ruleset contains a collection of rules that find que
 
 	<rule name="UseCorrectExceptionLogging"
         message="Use the correct logging statement for logging exceptions"
-        class="net.sourceforge.pmd.rules.DynamicXPathRule"
-        type="CatchStatement"
+        class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-jakarta-commons.html#UseCorrectExceptionLogging">
 		<description>
 To make sure the full stacktrace is printed out, use the logging statement with 2 arguments: a String and a Throwable.
@@ -20,7 +19,7 @@ To make sure the full stacktrace is printed out, use the logging statement with 
 		<properties>
 			<property name="xpath">
 				<value><![CDATA[
-./Block/BlockStatement/Statement/StatementExpression
+//CatchStatement/Block/BlockStatement/Statement/StatementExpression
 /PrimaryExpression[PrimaryPrefix/Name[starts-with(@Image,
 concat(//ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [Type//ClassOrInterfaceType[@Image='Log']]
@@ -47,8 +46,7 @@ public class Main {
 
     <rule name="ProperLogger"
          message="Logger should be defined private static final and have the correct class"
-         class="net.sourceforge.pmd.rules.DynamicXPathRule"
-         type="ClassOrInterfaceBodyDeclaration"
+         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-jakarta-commons.html#ProperLogger">
              <description>
  Logger should normally be defined private static final and have the correct class.
@@ -59,7 +57,7 @@ public class Main {
              <property name="xpath">
                      <value>
      <![CDATA[
- .[FieldDeclaration//ClassOrInterfaceType[@Image='Log']
+//ClassOrInterfaceBodyDeclaration[FieldDeclaration//ClassOrInterfaceType[@Image='Log']
  and
  not(FieldDeclaration[@Final='true'][@Static='true'][@Private='true'][//VariableDeclaratorId[@Image=$staticLoggerName]]
  //ArgumentList//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration/@Image)

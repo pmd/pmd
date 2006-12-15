@@ -61,8 +61,7 @@ public class Foo {
 
     <rule name="SimplifyBooleanExpressions"
           message="Avoid unnecessary comparisons in boolean expressions"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="EqualityExpression"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyBooleanExpressions">
       <description>
 Avoid unnecessary comparisons in boolean expressions - this complicates simple code.
@@ -71,7 +70,7 @@ Avoid unnecessary comparisons in boolean expressions - this complicates simple c
           <property name="xpath">
               <value>
 <![CDATA[
-./PrimaryExpression
+//EqualityExpression/PrimaryExpression
  /PrimaryPrefix/Literal/BooleanLiteral
 ]]>
               </value>
@@ -93,8 +92,7 @@ public class Bar {
 
   <rule name="SwitchStmtsShouldHaveDefault"
         message="Switch statements should have a default label"
-        class="net.sourceforge.pmd.rules.DynamicXPathRule"
-        type="SwitchStatement"
+        class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SwitchStmtsShouldHaveDefault">
     <description>
 Switch statements should have a default label.
@@ -103,7 +101,7 @@ Switch statements should have a default label.
           <property name="xpath">
               <value>
                   <![CDATA[
-.[not(SwitchLabel[@Default='true'])]
+//SwitchStatement[not(SwitchLabel[@Default='true'])]
                   ]]>
               </value>
           </property>
@@ -270,8 +268,7 @@ public class Outer {
 
     <rule name="FinalFieldCouldBeStatic"
           message="This final field could be made static"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="FieldDeclaration"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#FinalFieldCouldBeStatic">
       <description>
 If a final field is assigned to a compile-time constant, it could be
@@ -281,7 +278,7 @@ made static, thus saving overhead in each object at runtime.
             <property name="xpath">
                 <value>
                     <![CDATA[
-.
+//FieldDeclaration
  [@Final='true' and @Static='false']
  [not (../../../../ClassOrInterfaceDeclaration[@Interface='true'])]
    /VariableDeclarator/VariableInitializer/Expression
@@ -333,8 +330,7 @@ public class Bar {
 
     <rule name="NonStaticInitializer"
            message="Non-static initializers are confusing"
-           class="net.sourceforge.pmd.rules.DynamicXPathRule"
-           type="Initializer"
+           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#NonStaticInitializer">
        <description>
 A nonstatic initializer block will be called any time a constructor
@@ -345,7 +341,7 @@ is a valid language construct, it is rarely used and is confusing.
              <property name="xpath">
                  <value>
 <![CDATA[
-.[@Static='false']
+//Initializer[@Static='false']
 ]]>
                  </value>
              </property>
@@ -365,8 +361,7 @@ public class MyClass {
 
     <rule name="DefaultLabelNotLastInSwitchStmt"
            message="The default label should be the last label in a switch statement"
-           class="net.sourceforge.pmd.rules.DynamicXPathRule"
-           type="SwitchStatement"
+           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#DefaultLabelNotLastInSwitchStmt">
        <description>
 By convention, the default label should be the last label in a switch statement.
@@ -375,7 +370,7 @@ By convention, the default label should be the last label in a switch statement.
              <property name="xpath">
                  <value>
 <![CDATA[
-.
+//SwitchStatement
  [not(SwitchLabel[position() = last()][@Default='true'])]
  [SwitchLabel[@Default='true']]
 ]]>
@@ -402,8 +397,7 @@ public class Foo {
 
     <rule name="NonCaseLabelInSwitchStatement"
            message="A non-case label was present in a switch statement"
-           class="net.sourceforge.pmd.rules.DynamicXPathRule"
-           type="SwitchStatement"
+           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#NonCaseLabelInSwitchStatement">
        <description>
 A non-case label (e.g. a named break/continue label) was present in a switch statement.
@@ -413,7 +407,7 @@ This legal, but confusing. It is easy to mix up the case labels and the non-case
              <property name="xpath">
                  <value>
  <![CDATA[
-.//BlockStatement/Statement/LabeledStatement
+//SwitchStatement//BlockStatement/Statement/LabeledStatement
  ]]>
                  </value>
              </property>
@@ -440,8 +434,7 @@ public class Foo {
 
     <rule name="OptimizableToArrayCall"
           message="This call to Collection.toArray() may be optimizable"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="PrimaryExpression"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#OptimizableToArrayCall">
       <description>
 A call to Collection.toArray can use the Collection's size vs an empty Array of the desired type.
@@ -450,7 +443,7 @@ A call to Collection.toArray can use the Collection's size vs an empty Array of 
           <property name="xpath">
               <value>
                   <![CDATA[
-.
+//PrimaryExpression
 [PrimaryPrefix/Name[ends-with(@Image, 'toArray')]]
 [
 PrimarySuffix/Arguments/ArgumentList/Expression
@@ -481,8 +474,7 @@ class Foo {
 
     <rule name="BadComparison"
           message="Avoid equality comparisons with Double.NaN"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="EqualityExpression"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#BadComparison">
       <description>
 Avoid equality comparisons with Double.NaN - these are likely to be logic errors.
@@ -491,7 +483,7 @@ Avoid equality comparisons with Double.NaN - these are likely to be logic errors
           <property name="xpath">
               <value>
                   <![CDATA[
-.[@Image='==']
+//EqualityExpression[@Image='==']
  /PrimaryExpression/PrimaryPrefix
  /Name[@Image='Double.NaN' or @Image='Float.NaN']
                   ]]>
@@ -510,8 +502,7 @@ public class Bar {
 
     <rule   name="EqualsNull"
             message="Avoid using equals() to compare against null"
-            class="net.sourceforge.pmd.rules.DynamicXPathRule"
-            type="PrimaryExpression"
+            class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#EqualsNull">
         <description>
 Inexperienced programmers sometimes confuse comparison concepts
@@ -521,7 +512,7 @@ and use equals() to compare to null.
             <property name="xpath">
                 <value>
     <![CDATA[
-.
+//PrimaryExpression
  [
 PrimaryPrefix/Name[ends-with(@Image, 'equals')]
 or
@@ -578,8 +569,7 @@ public class Foo {
 
     <rule name="InstantiationToGetClass"
           message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="PrimarySuffix"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#InstantiationToGetClass">
       <description>
 Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
@@ -599,7 +589,7 @@ public class Foo {
           <property name="xpath">
             <value>
                 <![CDATA[
-.
+//PrimarySuffix
  [@Image='getClass']
  [parent::PrimaryExpression
   [PrimaryPrefix/AllocationExpression]
@@ -635,8 +625,7 @@ public class Foo {
     <rule
         name="SimpleDateFormatNeedsLocale"
         message="When instantiating a SimpleDateFormat object, specify a Locale"
-        class="net.sourceforge.pmd.rules.DynamicXPathRule"
-        type="AllocationExpression"
+        class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimpleDateFormatNeedsLocale">
         <description>
 Be sure to specify a Locale when creating a new instance of SimpleDateFormat.
@@ -645,7 +634,7 @@ Be sure to specify a Locale when creating a new instance of SimpleDateFormat.
             <property name="xpath">
                 <value>
 <![CDATA[
-.
+//AllocationExpression
  [ClassOrInterfaceType[@Image='SimpleDateFormat']]
  [Arguments[@ArgumentCount=1]]
 ]]>
@@ -690,8 +679,7 @@ public class Foo {
 
     <rule name="UseLocaleWithCaseConversions"
           message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="PrimaryExpression"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseLocaleWithCaseConversions">
       <description>
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids
@@ -719,7 +707,7 @@ class Foo {
           <property name="xpath">
             <value>
                 <![CDATA[
-.
+//PrimaryExpression
 [PrimaryPrefix/Name
  [ends-with(@Image, 'toLowerCase') or ends-with(@Image,
 'toUpperCase')]
@@ -733,8 +721,7 @@ class Foo {
 
     <rule name="AvoidProtectedFieldInFinalClass"
              message="Avoid protected fields in a final class.  Change to private or package access."
-             class="net.sourceforge.pmd.rules.DynamicXPathRule"
-             type="ClassOrInterfaceDeclaration"
+             class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidProtectedFieldInFinalClass">
          <description>
 Do not use protected fields in final classes since they cannot be subclassed.
@@ -744,7 +731,7 @@ Clarify your intent by using private or package access modifiers instead.
              <property name="xpath">
                  <value>
 <![CDATA[
-.[@Final='true']
+//ClassOrInterfaceDeclaration[@Final='true']
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration
 /FieldDeclaration[@Protected='true']
  ]]>
@@ -785,8 +772,7 @@ public class StaticField {
 
     <rule name="MissingStaticMethodInNonInstantiatableClass"
           message="Class cannot be instantiated and does not provide any static methods or fields"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="ClassOrInterfaceDeclaration"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#MissingStaticMethodInNonInstantiatableClass">
       <description>
 A class that has private constructors and does not have any static methods or fields cannot be used.
@@ -795,7 +781,7 @@ A class that has private constructors and does not have any static methods or fi
           <property name="xpath">
               <value>
     <![CDATA[
-.[@Nested='false'][
+//ClassOrInterfaceDeclaration[@Nested='false'][
 ( count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)>0
   and count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration) = count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private='true']) )
 and
@@ -826,8 +812,7 @@ public class Foo {
 
     <rule name="AvoidSynchronizedAtMethodLevel"
           message="Use block level rather than method level synchronization"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="MethodDeclaration"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidSynchronizedAtMethodLevel">
       <description>
   Method level synchronization can backfire when new code is added to the method.  Block-level
@@ -837,7 +822,7 @@ public class Foo {
           <property name="xpath">
               <value>
     <![CDATA[
-.[@Synchronized='true']
+//MethodDeclaration[@Synchronized='true']
     ]]>
               </value>
           </property>
@@ -861,8 +846,7 @@ public class Foo {
 
     <rule name="MissingBreakInSwitch"
           message="A switch statement does not contain a break"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="SwitchStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#MissingBreakInSwitch">
       <description>
 A switch statement without an enclosed break statement may be a bug.
@@ -871,7 +855,7 @@ A switch statement without an enclosed break statement may be a bug.
           <property name="xpath">
               <value>
     <![CDATA[
-.
+//SwitchStatement
 [count(.//BreakStatement)=0]
 [count(SwitchLabel) > 0]
 [count(BlockStatement/Statement/ReturnStatement)
@@ -904,8 +888,7 @@ public class Foo {
 
     <rule name="UseNotifyAllInsteadOfNotify"
           message="Call Thread.notifyAll() rather than Thread.notify()"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="StatementExpression"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseNotifyAllInsteadOfNotify">
       <description>
 Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
@@ -915,7 +898,7 @@ one is chosen.  The thread chosen is arbitrary; thus it's usually safer to call 
           <property name="xpath">
               <value>
     <![CDATA[
-./PrimaryExpression
+//StatementExpression/PrimaryExpression
 [count(PrimarySuffix/Arguments/ArgumentList) = 0]
 [
 PrimaryPrefix[./Name[@Image='notify' or ends-with(@Image,'.notify')]
@@ -945,8 +928,7 @@ public class Foo {
 
     <rule name="AvoidInstanceofChecksInCatchClause"
           message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="CatchStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidInstanceofChecksInCatchClause">
     <description>
 Each caught exception type should be handled in its own catch clause.
@@ -955,7 +937,7 @@ Each caught exception type should be handled in its own catch clause.
           <property name="xpath">
               <value>
     <![CDATA[
-./FormalParameter
+//CatchStatement/FormalParameter
  /following-sibling::Block//InstanceOfExpression/PrimaryExpression/PrimaryPrefix
   /Name[
    @Image = ./ancestor::Block/preceding-sibling::FormalParameter
@@ -986,8 +968,7 @@ try {  // Prefer this:
 
     <rule name="AbstractClassWithoutAbstractMethod"
           message="This abstract class does not have any abstract methods"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="ClassOrInterfaceDeclaration"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AbstractClassWithoutAbstractMethod">
       <description>
 The abstract class does not contain any abstract methods. An abstract class suggests
@@ -998,7 +979,7 @@ direcly) a protected constructor can be provided prevent direct instantiation.
       <properties>
           <property name="xpath">
               <value><![CDATA[
-.
+//ClassOrInterfaceDeclaration
  [@Abstract='true'
   and count( .//MethodDeclaration[@Abstract='true'] )=0 ]
   [count(ImplementsList)=0]
@@ -1021,8 +1002,7 @@ public abstract class Foo {
 
     <rule name="SimplifyConditional"
               message="No need to check for null before an instanceof"
-              class="net.sourceforge.pmd.rules.DynamicXPathRule"
-              type="Expression"
+              class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyConditional">
            <description>
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
@@ -1031,7 +1011,7 @@ No need to check for null before an instanceof; the instanceof keyword returns f
               <property name="xpath">
                   <value>
                       <![CDATA[
-.
+//Expression
  [ConditionalOrExpression
  [EqualityExpression[@Image='==']
   //NullLiteral
@@ -1088,8 +1068,7 @@ class Foo {
 
 <rule  name="PositionLiteralsFirstInComparisons"
   message="Position literals first in String comparisons"
-  class="net.sourceforge.pmd.rules.DynamicXPathRule"
-  type="PrimaryExpression"
+  class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PositionLiteralsFirstInComparisons">
   <description>
  Position literals first in String comparisons - that way if the String is null you won't get a NullPointerException, it'll just return false.
@@ -1097,7 +1076,7 @@ class Foo {
       <properties>
         <property name="xpath">
           <value><![CDATA[
-    .[PrimaryPrefix[Name[ends-with(@Image, '.equals')]][..//Literal]]
+//PrimaryExpression[PrimaryPrefix[Name[ends-with(@Image, '.equals')]][..//Literal]]
     [not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
     [not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
           ]]></value>
@@ -1175,8 +1154,7 @@ public static Foo getFoo() {
 
     <rule name="UncommentedEmptyMethod"
           message="Document empty method"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="MethodDeclaration"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UncommentedEmptyMethod">
       <description>
 Uncommented Empty Method finds instances where a method does not contain
@@ -1188,7 +1166,7 @@ empty methods.
           <property name="xpath">
               <value>
     <![CDATA[
-./Block[count(BlockStatement) = 0 and @containsComment = 'false']
+//MethodDeclaration/Block[count(BlockStatement) = 0 and @containsComment = 'false']
  ]]>
              </value>
           </property>
@@ -1204,8 +1182,7 @@ public void doSomething() {
 
     <rule name="UncommentedEmptyConstructor"
           message="Document empty constructor"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="ConstructorDeclaration"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UncommentedEmptyConstructor">
       <description>
 Uncommented Empty Constructor finds instances where a constructor does not
@@ -1217,7 +1194,7 @@ and unintentional empty constructors.
           <property name="xpath">
               <value>
     <![CDATA[
-.[@Private='false'][count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
+//ConstructorDeclaration[@Private='false'][count(BlockStatement) = 0 and ($ignoreExplicitConstructorInvocation = 'true' or not(ExplicitConstructorInvocation)) and @containsComment = 'false']
  ]]>
              </value>
           </property>
@@ -1237,8 +1214,7 @@ public Foo() {
 
 <rule name="AvoidConstantsInterface"
       message="An Interface should be used only to model a behaviour; consider converting this to a class."
-      class="net.sourceforge.pmd.rules.DynamicXPathRule"
-      type="ClassOrInterfaceDeclaration">
+      class="net.sourceforge.pmd.rules.XPathRule">
       <description>
      An interface should be used only to model a behaviour of a
     class: using an interface as a container of constants is a poor usage pattern.
@@ -1247,7 +1223,7 @@ public Foo() {
         <property name="xpath">
         <value>
     <![CDATA[
-    .[@Interface="true"]
+//ClassOrInterfaceDeclaration[@Interface="true"]
     [
      count(//MethodDeclaration)=0
      and

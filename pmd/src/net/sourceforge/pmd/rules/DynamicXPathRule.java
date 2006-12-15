@@ -125,7 +125,12 @@ public class DynamicXPathRule extends AbstractRule implements Opcodes {
             regexpFunctionRegistered = true;
         }
 
-        xpath = new BaseXPath(getStringProperty("xpath"), new DocumentNavigator());
+        String prop = getStringProperty("xpath");
+
+        String tail = prop.trim().replaceFirst("^//\\w+", "");
+        String subquery = '.' + tail.trim();
+        
+        xpath = new BaseXPath(subquery, new DocumentNavigator());
         if (properties.size() > 1) {
             SimpleVariableContext vc = new SimpleVariableContext();
             for (Iterator i = properties.entrySet().iterator(); i.hasNext();) {

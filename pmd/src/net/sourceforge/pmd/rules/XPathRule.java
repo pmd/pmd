@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
+
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.SimpleVariableContext;
@@ -28,6 +29,25 @@ import java.util.Map.Entry;
  * This rule needs a property "xpath".
  */
 public class XPathRule extends CommonAbstractRule {
+
+    public static Class loadClass(ClassLoader classloader, String xpath, String name) {
+        if (xpath.indexOf('|') != -1) {
+            //System.err.println(name + " not a dynamic rule: " + xpath.trim().replaceAll("\n", ""));
+            return XPathRule.class;
+        }
+        String part = xpath.trim();
+        
+        // Need to use DOTALL mode because of potential line terminators
+        if (!part.matches("(?s)//\\w+\\W.*")) {
+            //System.err.println(name + " not a dynamic rule: " + xpath.trim().replaceAll("\n", ""));
+            return XPathRule.class;           
+        }
+        
+        String tail = part.replaceFirst("^//\\w+", "");
+        String nodeName = part.substring(2, part.indexOf(tail));
+
+        return DynamicXPathRule.loadClass(classloader, nodeName);
+    }
 
     private XPath xpath;
     private boolean regexpFunctionRegistered;

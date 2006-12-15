@@ -12,8 +12,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
 
     <rule name="EmptyCatchBlock"
           message="Avoid empty catch blocks"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="CatchStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
       <description>
 Empty Catch Block finds instances where an exception is caught,
@@ -24,7 +23,7 @@ which should either be acted on or reported.
           <property name="xpath">
               <value>
     <![CDATA[
-.
+//CatchStatement
  [count(Block/BlockStatement) = 0 and ($allowCommentedBlocks != 'true' or Block/@containsComment = 'false')]
  [FormalParameter/Type/ReferenceType
    /ClassOrInterfaceType[@Image != 'InterruptedException' and @Image != 'CloneNotSupportedException']
@@ -52,8 +51,7 @@ public void doSomething() {
 
     <rule name="EmptyIfStmt"
           message="Avoid empty 'if' statements"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="IfStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt">
       <description>
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
@@ -63,7 +61,7 @@ Empty If Statement finds instances where a condition is checked but nothing is d
           <property name="xpath">
               <value>
 <![CDATA[
-./Statement
+//IfStatement/Statement
  [EmptyStatement or Block[count(*) = 0]]
  ]]>
               </value>
@@ -85,8 +83,7 @@ public class Foo {
 
     <rule name="EmptyWhileStmt"
           message="Avoid empty 'while' statements"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="WhileStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
        <description>
 Empty While Statement finds all instances where a while statement
@@ -97,7 +94,7 @@ it's a while loop that does a lot in the exit expression, rewrite it to make it 
           <property name="xpath">
               <value>
 <![CDATA[
-./Statement[./Block[count(*) = 0]  or ./EmptyStatement]
+//WhileStatement/Statement[./Block[count(*) = 0]  or ./EmptyStatement]
 ]]>
               </value>
           </property>
@@ -120,8 +117,7 @@ public class Foo {
 
     <rule name="EmptyTryBlock"
           message="Avoid empty try blocks"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="TryStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyTryBlock">
       <description>
 Avoid empty try blocks - what's the point?
@@ -130,7 +126,7 @@ Avoid empty try blocks - what's the point?
           <property name="xpath">
               <value>
 <![CDATA[
-./Block[1][count(*) = 0]
+//TryStatement/Block[1][count(*) = 0]
 ]]>
               </value>
           </property>
@@ -153,8 +149,7 @@ public class Foo {
 
     <rule name="EmptyFinallyBlock"
           message="Avoid empty finally blocks"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="FinallyStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyFinallyBlock">
       <description>
 Avoid empty finally blocks - these can be deleted.
@@ -163,7 +158,7 @@ Avoid empty finally blocks - these can be deleted.
           <property name="xpath">
               <value>
 <![CDATA[
-.[count(Block/BlockStatement) = 0]
+//FinallyStatement[count(Block/BlockStatement) = 0]
  ]]>
               </value>
           </property>
@@ -188,8 +183,7 @@ public class Foo {
 
     <rule name="EmptySwitchStatements"
           message="Avoid empty switch statements"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="SwitchStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptySwitchStatements">
       <description>
 Avoid empty switch statements.
@@ -198,7 +192,7 @@ Avoid empty switch statements.
           <property name="xpath">
               <value>
 <![CDATA[
-.[count(*) = 1]
+//SwitchStatement[count(*) = 1]
  ]]>
               </value>
           </property>
@@ -222,8 +216,7 @@ public class Foo {
 
     <rule name="JumbledIncrementer"
          message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
-         class="net.sourceforge.pmd.rules.DynamicXPathRule"
-         type="ForStatement"
+         class="net.sourceforge.pmd.rules.XPathRule"
          externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#JumbledIncrementer">
      <description>
 Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.
@@ -232,7 +225,7 @@ Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing eve
          <property name="xpath">
              <value>
  <![CDATA[
-.
+//ForStatement
  [
   ForUpdate/StatementExpressionList/StatementExpression/PostfixExpression/PrimaryExpression/PrimaryPrefix/Name/@Image
   =
@@ -260,8 +253,7 @@ public class JumbledIncrementerRule1 {
 
     <rule name="ForLoopShouldBeWhileLoop"
           message="This for loop could be simplified to a while loop"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="ForStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ForLoopShouldBeWhileLoop">
       <description>
 Some for loops can be simplified to while loops - this makes them more concise.
@@ -270,7 +262,7 @@ Some for loops can be simplified to while loops - this makes them more concise.
         <property name="xpath">
             <value>
                 <![CDATA[
-.
+//ForStatement
  [count(*) > 1]
  [not(ForInit)]
  [not(ForUpdate)]
@@ -382,8 +374,7 @@ public class Foo {
 
     <rule name="ReturnFromFinallyBlock"
           message="Avoid returning from a finally block"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="FinallyStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ReturnFromFinallyBlock">
       <description>
 Avoid returning from a finally block - this can discard exceptions.
@@ -392,7 +383,7 @@ Avoid returning from a finally block - this can discard exceptions.
           <property name="xpath">
               <value>
 <![CDATA[
-.//ReturnStatement
+//FinallyStatement//ReturnStatement
 ]]>
               </value>
           </property>
@@ -418,8 +409,7 @@ public class Bar {
 
     <rule name="EmptySynchronizedBlock"
           message="Avoid empty synchronized blocks"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="SynchronizedStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptySynchronizedBlock">
       <description>
   Avoid empty synchronized blocks - they're useless.
@@ -428,7 +418,7 @@ public class Bar {
           <property name="xpath">
               <value>
 <![CDATA[
-./Block[1][count(*) = 0]
+//SynchronizedStatement/Block[1][count(*) = 0]
 ]]>
               </value>
           </property>
@@ -472,8 +462,7 @@ public class Foo {
 
     <rule name="EmptyStaticInitializer"
            message="Empty static initializer was found"
-           class="net.sourceforge.pmd.rules.DynamicXPathRule"
-           type="Initializer"
+           class="net.sourceforge.pmd.rules.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStaticInitializer">
        <description>
 An empty static initializer was found.
@@ -482,7 +471,7 @@ An empty static initializer was found.
              <property name="xpath">
                  <value>
 <![CDATA[
-.[@Static='true']/Block[count(*)=0]
+//Initializer[@Static='true']/Block[count(*)=0]
 ]]>
                  </value>
              </property>
@@ -501,8 +490,7 @@ public class Foo {
 
     <rule name="UnconditionalIfStatement"
        message="Do not use 'if' statements that are always true or always false"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="IfStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnconditionalIfStatement">
       <description>
 Do not use "if" statements that are always true or always false.
@@ -511,7 +499,7 @@ Do not use "if" statements that are always true or always false.
             <property name="xpath">
                 <value>
  <![CDATA[
-./Expression
+//IfStatement/Expression
  [count(PrimaryExpression)=1]
  /PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
 ]]>
@@ -534,8 +522,7 @@ public class Foo {
 
     <rule name="EmptyStatementNotInLoop"
           message="An empty statement (semicolon) not part of a loop"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="EmptyStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop">
        <description>
 An empty statement (aka a semicolon by itself) that is not used
@@ -547,7 +534,7 @@ removed.
             <property name="xpath">
                 <value>
 <![CDATA[
-.
+//EmptyStatement
  [not(
        ../../../ForStatement
        or ../../../WhileStatement
@@ -596,8 +583,7 @@ public class Foo {
 
     <rule name="UnnecessaryFinalModifier"
           message="Unnecessary final modifier in final class"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="ClassOrInterfaceDeclaration"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier">
       <description>
 When a class has the final modifier, all the methods are automatically final.
@@ -606,7 +592,7 @@ When a class has the final modifier, all the methods are automatically final.
           <property name="xpath">
               <value>
     <![CDATA[
-.[@Final='true' and @Interface='false']
+//ClassOrInterfaceDeclaration[@Final='true' and @Interface='false']
 /ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/MethodDeclaration[@Final='true']
     ]]>
               </value>
@@ -629,8 +615,7 @@ public final class Foo {
 
     <rule name="CollapsibleIfStatements"
           message="These nested if statements could be combined"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="IfStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
       <description>
 Sometimes two 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
@@ -639,10 +624,10 @@ Sometimes two 'if' statements can be consolidated by separating their conditions
         <property name="xpath">
             <value>
                 <![CDATA[
-.[@Else='false']/Statement
+//IfStatement[@Else='false']/Statement
  /IfStatement[@Else='false']
  |
-.[@Else='false']/Statement
+//IfStatement[@Else='false']/Statement
  /Block[count(BlockStatement)=1]/BlockStatement
   /Statement/IfStatement[@Else='false']]]>
             </value>
@@ -686,8 +671,7 @@ public String foo() {
 
  <rule name="ClassCastExceptionWithToArray"
        message="This usage of the Collection.toArray() method will throw a ClassCastException."
-       class="net.sourceforge.pmd.rules.DynamicXPathRule"
-       type="CastExpression"
+       class="net.sourceforge.pmd.rules.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ClassCastExceptionWithToArray">
   <description>
 if you need to get an array of a class from your Collection,
@@ -699,7 +683,7 @@ ClassCastException.
     <property name="xpath">
     <value>
 <![CDATA[
-.[Type/ReferenceType/ClassOrInterfaceType[@Image !=
+//CastExpression[Type/ReferenceType/ClassOrInterfaceType[@Image !=
 "Object"]]//PrimaryExpression
 [
  PrimaryPrefix/Name[ends-with(@Image, '.toArray')]
@@ -738,8 +722,7 @@ if executed)
 
 <rule  name="AvoidDecimalLiteralsInBigDecimalConstructor"
        message="Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal"
-       class="net.sourceforge.pmd.rules.DynamicXPathRule"
-       type="AllocationExpression"
+       class="net.sourceforge.pmd.rules.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor">
   <description>
      One might assume that "new BigDecimal(.1)" is exactly equal
@@ -759,7 +742,7 @@ if executed)
     <property name="xpath">
     <value>
 <![CDATA[
-.[ClassOrInterfaceType[@Image="BigDecimal"]
+//AllocationExpression[ClassOrInterfaceType[@Image="BigDecimal"]
 and
 ./Arguments/ArgumentList
 /Expression/PrimaryExpression/PrimaryPrefix/Literal[(not
@@ -819,8 +802,7 @@ class Test {
 
     <rule  name="MisplacedNullCheck"
            message="The null check here is misplaced; if the variable is null there'll be a NullPointerException"
-           class="net.sourceforge.pmd.rules.DynamicXPathRule"
-           type="Expression"
+           class="net.sourceforge.pmd.rules.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#MisplacedNullCheck">
       <description>
     The null check here is misplaced. if the variable is null you'll get a NullPointerException.
@@ -830,7 +812,7 @@ class Test {
         <property name="xpath">
         <value>
     <![CDATA[
-    .
+//Expression
     /*[self::ConditionalOrExpression or self::ConditionalAndExpression]
      /descendant::PrimaryExpression/PrimaryPrefix
       /Name[starts-with(@Image,
@@ -864,8 +846,7 @@ public class Foo {
 
     <rule name="UnusedNullCheckInEquals"
         message="Invoke equals() on the object you''ve already ensured is not null"
-        class="net.sourceforge.pmd.rules.DynamicXPathRule"
-        type="PrimarySuffix"
+        class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnusedNullCheckInEquals">
     <description>
     After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
@@ -874,7 +855,7 @@ public class Foo {
         <property name="xpath">
         <value>
         <![CDATA[
-.[@Image='equals' and not(../PrimaryPrefix/Literal)]
+//PrimarySuffix[@Image='equals' and not(../PrimaryPrefix/Literal)]
  /../PrimarySuffix/Arguments/ArgumentList/Expression
  /PrimaryExpression/PrimaryPrefix
  /Name[@Image = ./../../../../../../../../../../Expression/ConditionalAndExpression
@@ -969,8 +950,7 @@ Avoid using ThreadGroup; although it is intended to be used in a threaded enviro
 
     <rule name="BrokenNullCheck"
           message="Method call on object which may be null"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="IfStatement"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BrokenNullCheck">
         <description>
 The null check is broken since it will throw a Nullpointer itself. 
@@ -980,7 +960,7 @@ It is likely that you used || instead of &amp;&amp; or vice versa.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-./Expression[.//NullLiteral]
+//IfStatement/Expression[.//NullLiteral]
 [
 .//ConditionalOrExpression/EqualityExpression[@Image='!=']
 [starts-with(../*[position()>1]//PrimaryPrefix/Name/@Image,

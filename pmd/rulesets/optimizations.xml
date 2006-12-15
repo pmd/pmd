@@ -70,8 +70,7 @@ public class Something {
   
     <rule name="UseArrayListInsteadOfVector"
           message="Use ArrayList instead of Vector"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="AllocationExpression"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseArrayListInsteadOfVector">
       <description>
 ArrayList is a much better Collection implementation than Vector.
@@ -80,7 +79,7 @@ ArrayList is a much better Collection implementation than Vector.
           <property name="xpath">
               <value>
 <![CDATA[
-.
+//AllocationExpression
  /ClassOrInterfaceType[@Image='Vector' or @Image='java.util.Vector']
 ]]>
               </value>
@@ -102,8 +101,7 @@ public class SimpleTest extends TestCase {
 
     <rule name="SimplifyStartsWith"
           message="This call to String.startsWith can be rewritten using String.charAt(0)"
-          class="net.sourceforge.pmd.rules.DynamicXPathRule"
-          type="PrimaryExpression"
+          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#SimplifyStartsWith">
       <description>
 Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
@@ -112,7 +110,7 @@ Since it passes in a literal of length 1, this call to String.startsWith can be 
         <property name="xpath">
             <value>
 <![CDATA[
-.
+//PrimaryExpression
  [PrimaryPrefix/Name
   [ends-with(@Image, '.startsWith')]]
  [PrimarySuffix/Arguments/ArgumentList
@@ -166,8 +164,7 @@ public class Foo {
 
   <rule name="UseArraysAsList"
      message="Use asList instead of tight loops"
-      class="net.sourceforge.pmd.rules.DynamicXPathRule"
-      type="Statement"
+      class="net.sourceforge.pmd.rules.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseArraysAsList">
      <description>
    The class java.util.Arrays has a "asList" method that
@@ -179,7 +176,7 @@ public class Foo {
        <property name="xpath">
        <value>
    <![CDATA[
-   .[
+//Statement[
     (ForStatement) and (count(.//IfStatement)=0)
    ]
    //StatementExpression[
@@ -231,8 +228,7 @@ public class Foo {
 
     <rule name="AvoidArrayLoops"
       message="System.arrayCopy is more efficient"
-      class="net.sourceforge.pmd.rules.DynamicXPathRule"
-      type="Statement"
+      class="net.sourceforge.pmd.rules.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#AvoidArrayLoops">
       <description>
     Instead of copying data between two arrays, use
@@ -242,7 +238,7 @@ public class Foo {
         <property name="xpath">
         <value>
     <![CDATA[
-.[(ForStatement or WhileStatement) and
+//Statement[(ForStatement or WhileStatement) and
 count(*//AssignmentOperator[@Image = '='])=1
 and
 */Statement
