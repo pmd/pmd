@@ -106,6 +106,12 @@ public class CommandLineOptionsTest extends TestCase {
             // cool
         }
     }
+    
+    public void testReportFile(){
+    	
+        CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic", "-reportfile", "foo.txt"});
+        assertSame("foo.txt", opt.getReportFile());
+    }
 
     public void testRenderer() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "xml", "basic"});
