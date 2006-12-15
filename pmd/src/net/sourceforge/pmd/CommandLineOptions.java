@@ -46,10 +46,14 @@ public class CommandLineOptions {
         if (args == null || args.length < 3) {
             throw new RuntimeException(usage());
         }
+        int optIndex = 0;
+		if (args[0].charAt(0) == '-') {
+			optIndex = args.length - 3;
+		}
 
-        inputPath = args[0];
-        reportFormat = args[1];
-        ruleSets = new SimpleRuleSetNameMapper(args[2]).getRuleSets();
+        inputPath = args[optIndex];
+        reportFormat = args[optIndex+1];
+        ruleSets = new SimpleRuleSetNameMapper(args[optIndex+2]).getRuleSets();
 
         this.args = args;
 
@@ -92,7 +96,6 @@ public class CommandLineOptions {
                 reportFile = args[++i];
             }
         }
-        
     }
 
     public Renderer createRenderer() {
@@ -186,7 +189,7 @@ public class CommandLineOptions {
                 "For example: " + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html unusedcode" + PMD.EOL +
                 PMD.EOL +
-                "Optional arguments that may be put after the mandatory arguments are: " + PMD.EOL +
+                "Optional arguments that may be put before or after the mandatory arguments: " + PMD.EOL +
                 "-debug: prints debugging information" + PMD.EOL +
                 "-targetjdk: specifies a language version to target - 1.3, 1.4, 1.5 or 1.6" + PMD.EOL +
                 "-cpus: specifies the number of threads to create" + PMD.EOL +

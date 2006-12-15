@@ -45,20 +45,28 @@ public class CommandLineOptionsTest extends TestCase {
         assertEquals("1.5", opt.getTargetJDK());
         opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-targetjdk", "1.6"});
         assertEquals("1.6", opt.getTargetJDK());
+        opt = new CommandLineOptions(new String[]{"-targetjdk", "1.6", "file", "format", "ruleset"});
+        assertEquals("1.6", opt.getTargetJDK());
     }
 
     public void testDebug() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic", "-debug"});
+        assertTrue(opt.debugEnabled());
+        opt = new CommandLineOptions(new String[]{"-debug", "file", "format", "basic"});
         assertTrue(opt.debugEnabled());
     }
 
     public void testExcludeMarker() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic", "-excludemarker", "FOOBAR"});
         assertEquals("FOOBAR", opt.getExcludeMarker());
+        opt = new CommandLineOptions(new String[]{"-excludemarker", "FOOBAR", "file", "format", "basic"});
+        assertEquals("FOOBAR", opt.getExcludeMarker());
     }
 
     public void testShortNames() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic", "-shortnames"});
+        assertTrue(opt.shortNamesEnabled());
+        opt = new CommandLineOptions(new String[]{"-shortnames", "file", "format", "basic"});
         assertTrue(opt.shortNamesEnabled());
     }
 
@@ -66,6 +74,8 @@ public class CommandLineOptionsTest extends TestCase {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
         assertTrue(opt.getEncoding().equals((new InputStreamReader(System.in)).getEncoding()));
         opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-encoding", "UTF-8"});
+        assertTrue(opt.getEncoding().equals("UTF-8"));
+        opt = new CommandLineOptions(new String[]{"-encoding", "UTF-8", "file", "format", "ruleset"});
         assertTrue(opt.getEncoding().equals("UTF-8"));
     }
 
@@ -111,7 +121,17 @@ public class CommandLineOptionsTest extends TestCase {
     	
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic", "-reportfile", "foo.txt"});
         assertSame("foo.txt", opt.getReportFile());
+        opt = new CommandLineOptions(new String[]{"-reportfile", "foo.txt", "file", "format", "basic"});
+        assertSame("foo.txt", opt.getReportFile());
     }
+
+    public void testCpus() {
+
+		CommandLineOptions opt = new CommandLineOptions(new String[] { "file", "format", "basic", "-cpus", "2" });
+		assertEquals(2, opt.getCpus());
+		opt = new CommandLineOptions(new String[] { "-cpus", "2", "file", "format", "basic" });
+		assertEquals(2, opt.getCpus());
+	}
 
     public void testRenderer() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "xml", "basic"});
@@ -142,5 +162,14 @@ public class CommandLineOptionsTest extends TestCase {
         } catch (IllegalArgumentException iae) {
             // cool
         }
+    }
+    
+    public void testOptionsFirst(){
+		CommandLineOptions opt = new CommandLineOptions(new String[] { "-cpus", "2", "-debug", "file", "format", "basic" });
+		assertEquals(2, opt.getCpus());
+        assertEquals("file", opt.getInputPath());
+        assertEquals("format", opt.getReportFormat());
+        assertEquals("rulesets/basic.xml", opt.getRulesets());
+        assertTrue(opt.debugEnabled());
     }
 }
