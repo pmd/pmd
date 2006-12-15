@@ -54,7 +54,9 @@ public class PMDASMVisitor implements ClassVisitor {
 		packages.put(className, name);
 		n = className.indexOf('$');
 		if (n > -1) {
+			//TODO I don't think the first one, with Class$Inner is needed - come back and check
 			packages.put(className.substring(n + 1), name);
+			packages.put(className.replace('$', '.'), name);
 		}
 
 		return name;
