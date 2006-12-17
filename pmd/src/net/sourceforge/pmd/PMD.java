@@ -380,7 +380,7 @@ public class PMD {
             return t;
         }
 
-        public List<PmdThread> threadList = Collections.synchronizedList(new LinkedList<PmdThread>());
+        public List threadList = Collections.synchronizedList(new LinkedList());
 
     }
 
@@ -450,7 +450,9 @@ public class PMD {
         }
 
         Report mainReport = ctx.getReport();
-        for(PmdThread thread: factory.threadList) {
+        Iterator i = factory.threadList.iterator();
+        while (i.hasNext()) {
+            PmdThread thread = (PmdThread) i.next();
             Report r = thread.context.getReport();
             mainReport.merge(r);
         }
