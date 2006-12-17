@@ -175,7 +175,7 @@ public class Report {
         return suppressedRuleViolations;
     }
 
-    public synchronized void addRuleViolation(IRuleViolation violation) {
+    public void addRuleViolation(IRuleViolation violation) {
 
         // NOPMD excluder
         Integer line = new Integer(violation.getBeginLine());
@@ -198,7 +198,7 @@ public class Report {
         }
     }
 
-    public synchronized void addMetric(Metric metric) {
+    public void addMetric(Metric metric) {
         metrics.add(metric);
         for (Iterator i = listeners.iterator(); i.hasNext();) {
             ReportListener listener = (ReportListener) i.next();
@@ -206,8 +206,23 @@ public class Report {
         }
     }
 
-    public synchronized void addError(ProcessingError error) {
+    public void addError(ProcessingError error) {
         errors.add(error);
+    }
+
+    public void merge(Report r) {
+        Iterator i = r.errors();
+        while (i.hasNext()) {
+            addError((ProcessingError)i.next());
+        }
+        i = r.metrics();
+        while (i.hasNext()) {
+            addMetric((Metric)i.next());
+        }
+        i = r.iterator();
+        while (i.hasNext()) {
+            addRuleViolation((IRuleViolation)i.next());
+        }
     }
 
     public boolean hasMetrics() {

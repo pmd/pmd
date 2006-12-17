@@ -25,6 +25,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
@@ -32,6 +33,7 @@ import edu.emory.mathcs.backport.java.util.concurrent.Executors;
 import edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory;
 import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
+import edu.emory.mathcs.backport.java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -272,9 +274,6 @@ public class PMD {
         } catch (RuleSetNotFoundException rsnfe) {
             System.out.println(opts.usage());
             rsnfe.printStackTrace();
-        } catch (IOException ioe) {
-            System.out.println(opts.usage());
-            ioe.printStackTrace();
         }
         report.end();
 
@@ -368,28 +367,30 @@ public class PMD {
 
     private static class PmdThreadFactory implements ThreadFactory {
 
-        public PmdThreadFactory(Report report, RuleSetFactory ruleSetFactory) {
-            this.report = report;
+        public PmdThreadFactory(RuleSetFactory ruleSetFactory) {
             this.ruleSetFactory = ruleSetFactory;
         }
-        
-        private final Report report;
+
         private final RuleSetFactory ruleSetFactory;
         private final AtomicInteger counter = new AtomicInteger();
 
         public Thread newThread(Runnable r) {
-            return new PmdThread(counter.incrementAndGet(), r, report, ruleSetFactory);
+            PmdThread t = new PmdThread(counter.incrementAndGet(), r, ruleSetFactory);
+            threadList.add(t);
+            return t;
         }
+
+        public List<PmdThread> threadList = Collections.synchronizedList(new LinkedList<PmdThread>());
 
     }
 
     private static class PmdThread extends Thread {
 
-        public PmdThread(int id, Runnable r, Report report, RuleSetFactory ruleSetFactory) {
+        public PmdThread(int id, Runnable r, RuleSetFactory ruleSetFactory) {
             super(r, "PmdThread " + id);
             this.id = id;
             context = new RuleContext();
-            context.setReport(report);
+            context.setReport(new Report());
             this.ruleSetFactory = ruleSetFactory;
         }
         
@@ -426,9 +427,9 @@ public class PMD {
      */
     public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List files, RuleContext ctx, String rulesets,
             boolean debugEnabled, boolean shortNamesEnabled, String inputPath,
-            String encoding, String excludeMarker) throws IOException {
+            String encoding, String excludeMarker) {
 
-        PmdThreadFactory factory = new PmdThreadFactory(ctx.getReport(), ruleSetFactory);
+        PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory);
         ExecutorService executor = Executors.newFixedThreadPool(threadCount, factory);
 
         for (Iterator i = files.iterator(); i.hasNext();) {
@@ -446,6 +447,12 @@ public class PMD {
         try {
             executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         } catch (InterruptedException e) {
+        }
+
+        Report mainReport = ctx.getReport();
+        for(PmdThread thread: factory.threadList) {
+            Report r = thread.context.getReport();
+            mainReport.merge(r);
         }
     }
 

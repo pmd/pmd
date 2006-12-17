@@ -64,7 +64,6 @@ public class RuleSetFactory {
         }
     }
 
-    private ClassLoader classLoader;
     private int minPriority = Rule.LOWEST_PRIORITY;
 
     public void setMinimumPriority(int minPriority) {
@@ -187,7 +186,6 @@ public class RuleSetFactory {
      */
     private RuleSet createRuleSet(InputStream inputStream, ClassLoader classLoader) {
         try {
-            this.classLoader = classLoader;
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(inputStream);
             Element root = doc.getDocumentElement();
@@ -203,7 +201,7 @@ public class RuleSetFactory {
                     if (node.getNodeName().equals("description")) {
                         ruleSet.setDescription(parseTextNode(node));
                     } else if (node.getNodeName().equals("rule")) {
-                        parseRuleNode(ruleSet, node);
+                        parseRuleNode(ruleSet, node, classLoader);
                     }
                 }
             }
@@ -259,13 +257,13 @@ public class RuleSetFactory {
      * @param ruleSet  the ruleset being constructed
      * @param ruleNode must be a rule element node
      */
-    private void parseRuleNode(RuleSet ruleSet, Node ruleNode)
+    private void parseRuleNode(RuleSet ruleSet, Node ruleNode, ClassLoader classLoader)
             throws ClassNotFoundException, InstantiationException,
             IllegalAccessException, RuleSetNotFoundException {
         Element ruleElement = (Element) ruleNode;
         String ref = ruleElement.getAttribute("ref");
         if (ref.trim().length() == 0) {
-            parseInternallyDefinedRuleNode(ruleSet, ruleNode);
+            parseInternallyDefinedRuleNode(ruleSet, ruleNode, classLoader);
         } else {
             parseExternallyDefinedRuleNode(ruleSet, ruleNode);
         }
@@ -277,7 +275,7 @@ public class RuleSetFactory {
      * @param ruleSet  the ruleset being constructed
      * @param ruleNode must be a rule element node
      */
-    private void parseInternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode)
+    private void parseInternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode, ClassLoader classLoader)
             throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         Element ruleElement = (Element) ruleNode;
 
