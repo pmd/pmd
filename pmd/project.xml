@@ -159,61 +159,61 @@
 				<role>Developer</role>
 			</roles>
 		</developer>
+
+        <developer>
+            <name>Allan Caplan</name>
+            <id>allancaplan</id>
+            <email>allancaplan@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Sven Jacob</name>
+            <id>holobender</id>
+            <email>holobender@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Wouter Zelle</name>
+            <id>wfzelle</id>
+            <email>wfzelle@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Brian Remedios</name>
+            <id>hooperbloob</id>
+            <email>hooperbloob@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Xavier Le Vourch</name>
+            <id>xlv</id>
+            <email>xlv@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Johan Nagels</name>
+            <id>bluejohn</id>
+            <email>bluejohn@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
 	</developers>
-
-    <developer>
-        <name>Allan Caplan</name>
-        <id>allancaplan</id>
-        <email>allancaplan@users.sourceforge.net</email>
-        <roles>
-            <role>Developer</role>
-        </roles>
-    </developer>
-
-    <developer>
-        <name>Sven Jacob</name>
-        <id>holobender</id>
-        <email>holobender@users.sourceforge.net</email>
-        <roles>
-            <role>Developer</role>
-        </roles>
-    </developer>
-
-    <developer>
-        <name>Wouter Zelle</name>
-        <id>wfzelle</id>
-        <email>wfzelle@users.sourceforge.net</email>
-        <roles>
-            <role>Developer</role>
-        </roles>
-    </developer>
-
-    <developer>
-        <name>Brian Remedios</name>
-        <id>hooperbloob</id>
-        <email>hooperbloob@users.sourceforge.net</email>
-        <roles>
-            <role>Developer</role>
-        </roles>
-    </developer>
-
-    <developer>
-        <name>Xavier Le Vourch</name>
-        <id>xlv</id>
-        <email>xlv@users.sourceforge.net</email>
-        <roles>
-            <role>Developer</role>
-        </roles>
-    </developer>
-
-    <developer>
-        <name>Johan Nagels</name>
-        <id>bluejohn</id>
-        <email>bluejohn@users.sourceforge.net</email>
-        <roles>
-            <role>Developer</role>
-        </roles>
-    </developer>
 
 
 	<contributors></contributors>
@@ -249,6 +249,14 @@
 			<includes>
 				<include>**/*Test.java</include>
 			</includes>
+			<resources>
+				<resource>
+					<directory>${basedir}/regress/</directory>
+					<includes>
+						<include>**/*.xml</include>
+					</includes>
+				</resource>
+			</resources>
 		</unitTest>
 
 		<resources>
