@@ -1,4 +1,4 @@
-?????, 2006 - 3.9:
+December 19, 2006 - 3.9:
 New rules:
     Basic ruleset: BigIntegerInstantiation, AvoidUsingOctalValues
     Codesize ruleset: NPathComplexity, NcssTypeCount, NcssMethodCount, NcssConstructorCount

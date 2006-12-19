@@ -13,7 +13,7 @@
     <offline-allowed/>
     <resources>
         <j2se version="1.4+" max-heap-size="384M"/>
-        <jar href="pmd-3.8.jar"/>
+        <jar href="pmd-3.9.jar"/>
     </resources>
     <application-desc main-class="net.sourceforge.pmd.cpd.GUI"/>
 </jnlp>
