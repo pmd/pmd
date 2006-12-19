@@ -44,7 +44,7 @@ public class XPathRule extends CommonAbstractRule {
         }
         
         String tail = part.replaceFirst("^//\\w+", "");
-        String nodeName = part.substring(2, part.indexOf(tail));
+        String nodeName = part.substring(2, part.indexOf(tail, 2));
 
         return DynamicXPathRule.loadClass(classloader, nodeName);
     }
