@@ -166,6 +166,8 @@ Help->Help Contents and browse the "How to..." section in the "PMD Plugin Docume
 After installing an update, if you get an Exception such as "java.lang.RuntimeException: Couldn't find that class xxxxx",
 try deleting the ruleset.xml file in the .metadata/plugins/net.sourceforge.pmd.eclipse directory in your workspace.
 </p>
+<p>To get Eclipse to not flag the @SuppressWarnings("PMD") annotation, look
+ under the menu headings Java -> Compiler -> Errors/Warnings -> Annotations -> Unhandled Warning Token.</p>
       </subsection>
 
 
