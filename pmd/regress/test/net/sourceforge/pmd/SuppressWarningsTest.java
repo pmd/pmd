@@ -76,6 +76,18 @@
          runTestFromString(TEST9, new FooRule(), rpt, SourceType.JAVA_15);
          assertEquals(1, rpt.size());
      }
+     
+     public void testNoSuppressionBlank() throws Throwable {
+         Report rpt = new Report();
+         runTestFromString(TEST10, new FooRule(), rpt, SourceType.JAVA_15);
+         assertEquals(2, rpt.size());
+     }
+     
+     public void testNoSuppressionSomethingElseS() throws Throwable {
+         Report rpt = new Report();
+         runTestFromString(TEST11, new FooRule(), rpt, SourceType.JAVA_15);
+         assertEquals(2, rpt.size());
+     }
 
      private static final String TEST1 =
              "@SuppressWarnings(\"PMD\")" + PMD.EOL +
@@ -146,4 +158,21 @@
              " }" + PMD.EOL +
              "}";
 
+     private static final String TEST10 =
+             "public class Bar {" + PMD.EOL +
+             " int foo;" + PMD.EOL +
+             " void bar() {" + PMD.EOL +
+             "  @SuppressWarnings(\"\") int foo;" + PMD.EOL +
+             " }" + PMD.EOL +
+             "}";
+
+     private static final String TEST11 =
+             "public class Bar {" + PMD.EOL +
+             " int foo;" + PMD.EOL +
+             " void bar() {" + PMD.EOL +
+             "  @SuppressWarnings(\"SomethingElse\") int foo;" + PMD.EOL +
+             " }" + PMD.EOL +
+             "}";
  }
+
+ 	  	 
