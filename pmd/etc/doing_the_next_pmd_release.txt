@@ -79,10 +79,11 @@ Add the pmd-src-3.9.zip file
 Classify the file
 Click File Releases, Edit Release, set previous version to 'hidden'.
 
-Redo the web site
+./docs all
 cd ~/pmd/pmd
-update the "what's new" link in navigation.xml
+update the "download" and "what's new" link in navigation.xml
 ./docs.sh upload
+scp target/pmd-*-bundle.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/
 
 Submit news to SF
 Go to http://freshmeat.net/

@@ -17,6 +17,7 @@ elif [ $option = "all" ]; then
   maven -qb site
   rm -f rulesets/*.xml
   cvs -q up rulesets
+  maven artifact:create-upload-bundle
 elif [ $option = "uploadcurrent" ]; then
   echo "Generating xdocs and uploading"
   `./munge_rulesets.rb`
