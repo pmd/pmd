@@ -177,6 +177,17 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
     }
     
     /**
+     * Confort method to show a method.
+     * @param index index position of the combobox
+     */
+    private void showMethod(final int index) {
+        if (index >= 0 && index < pmdMethodList.size() ) {
+            final ASTMethodDeclaration method = (ASTMethodDeclaration) pmdMethodList.get(index);
+            showMethod(method);
+        }
+    }
+    
+    /**
      * Shows the DataflowGraph (and Dataflow-Anomalies) for a Method.
      * 
      * @param pmdMethod Method to show in the graph 
@@ -346,11 +357,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
     /* @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent) */
     public void widgetDefaultSelected(SelectionEvent e) {
         if (methodSelection.equals(e.widget)) {
-            final int index = methodSelection.getSelectionIndex();
-            if (index != -1) {
-                final ASTMethodDeclaration method = (ASTMethodDeclaration) pmdMethodList.get(index);
-                showMethod(method);
-            }
+            showMethod(methodSelection.getSelectionIndex());
         }
     }
 
@@ -375,10 +382,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
             // ... or from the combobox
             final int index = methodSelection.getSelectionIndex();
             methodSelection.setSelection(new Point(0,0));
-            if (index != -1) {
-                final ASTMethodDeclaration method = (ASTMethodDeclaration) pmdMethodList.get(index);
-                showMethod(method);
-            }
+            showMethod(index);
         }
     }
 
@@ -401,10 +405,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
         // refresh the methods and select the old selected method
         final int index = methodSelection.getSelectionIndex();
         refreshPMDMethods();
-        if (index != -1) {
-            final ASTMethodDeclaration method = (ASTMethodDeclaration) pmdMethodList.get(index);
-            showMethod(method);
-        }
+        showMethod(index);
         methodSelection.select(index);
     }
 
