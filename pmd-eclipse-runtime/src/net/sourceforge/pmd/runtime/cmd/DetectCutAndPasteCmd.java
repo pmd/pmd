@@ -69,6 +69,9 @@ import org.eclipse.ui.IPropertyListener;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2006/12/22 14:20:32  holobender
+ * fixed bug when pressing cancel
+ *
  * Revision 1.4  2006/12/01 11:13:48  holobender
  * show dialog box after cpd finished without results
  *
@@ -128,23 +131,25 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
             if (!isCanceled()) {                    
                 // detect cut and paste
                 final CPD cpd = detectCutAndPaste(files);           
-
-                // if the command was not canceled
-                if (this.createReport) {
-                    // create the report optionally
-                    this.renderReport(cpd.getMatches());
-                }
-                
-                // trigger event propertyChanged for all listeners
-                Display.getDefault().asyncExec(new Runnable() {
-                    public void run() {
-                        final Iterator listenerIterator = listenerList.iterator();
-                        while (listenerIterator.hasNext()) {
-                            final IPropertyListener listener = (IPropertyListener) listenerIterator.next();
-                            listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
-                        }
+                        
+                if (!isCanceled()) {
+                    // if the command was not canceled
+                    if (this.createReport) {
+                        // create the report optionally
+                        this.renderReport(cpd.getMatches());
                     }
-                });
+                    
+                    // trigger event propertyChanged for all listeners
+                    Display.getDefault().asyncExec(new Runnable() {
+                        public void run() {
+                            final Iterator listenerIterator = listenerList.iterator();
+                            while (listenerIterator.hasNext()) {
+                                final IPropertyListener listener = (IPropertyListener) listenerIterator.next();
+                                listener.propertyChanged(cpd.getMatches(), PMDRuntimeConstants.PROPERTY_CPD);
+                            }
+                        }
+                    });
+                }
             }
         } catch (CoreException e) {
             log.debug("Core Exception: " + e.getMessage(), e);
