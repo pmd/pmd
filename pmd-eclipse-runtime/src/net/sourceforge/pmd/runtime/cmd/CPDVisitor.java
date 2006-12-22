@@ -22,6 +22,9 @@ import org.eclipse.ui.ResourceWorkingSetFilter;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2006/12/22 14:19:39  holobender
+ * removed unused variable
+ *
  * Revision 1.3  2006/11/16 16:54:40  holobender
  * - changed command for the new cpd view
  * - possibility to set the number of maxviolations per file over the rule-properties
@@ -42,7 +45,6 @@ public class CPDVisitor implements IResourceVisitor {
     private boolean includeDerivedFiles;
     private ResourceWorkingSetFilter workingSetFilter;
     private Language language;
-    private int filesCount;
     private List files;
 
     /**
@@ -65,13 +67,6 @@ public class CPDVisitor implements IResourceVisitor {
      */
     public void setLanguage(Language language) {
         this.language = language;   
-    }
-
-    /**
-     * @return the number of files that has been processed
-     */
-    public int getAddedFilesCount() {
-        return this.filesCount;
     }
     
     /**
@@ -106,7 +101,6 @@ public class CPDVisitor implements IResourceVisitor {
                                         || (!this.includeDerivedFiles && !file.isDerived())))) {
                     log.debug("Add file " + resource.getName());
                     this.files.add(ioFile);
-                    this.filesCount++;
                     result = false;
                 }
             } catch (PropertiesException e) {
