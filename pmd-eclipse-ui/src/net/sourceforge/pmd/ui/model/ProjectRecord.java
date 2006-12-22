@@ -61,6 +61,9 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.10  2006/12/22 14:15:09  holobender
+ * fixed bug
+ *
  * Revision 1.9  2006/11/20 14:53:27  holobender
  * Fix: When Packages are in a src folder and not in the root of the project, they are not shown in the violation overview.
  *
@@ -244,30 +247,33 @@ public class ProjectRecord extends AbstractPMDRecord {
         AbstractPMDRecord addedResource = null;
         // we only care about Files
         if (resource instanceof IFile) {
-            final IPackageFragment fragment = (IPackageFragment) JavaCore.create(resource.getParent());
-            PackageRecord packageRec;
+            final IJavaElement javaMember = JavaCore.create(resource.getParent());
+            // TODO: javaMember can also be instance of IPackageFragmentRoot
+            if (javaMember instanceof IPackageFragment) {                
+                final IPackageFragment fragment = (IPackageFragment) JavaCore.create(resource.getParent());
+    
+                // we search int the children Packages for the File's Package
+                // by comparing their Fragments
+                for (int k = 0; (k < this.children.length) && (addedResource == null); k++) {
+                    final PackageRecord packageRec = (PackageRecord) children[k];
+                    if (packageRec.getFragment().equals(fragment)) {
+                        // if the Package exists
+                        // we delegate to its addResource-function
+                        addedResource = packageRec.addResource(resource);
+                    }
+                }
 
-            // we search int the children Packages for the File's Package
-            // by comparing their Fragments
-            for (int k = 0; (k < this.children.length) && (addedResource == null); k++) {
-                packageRec = (PackageRecord) children[k];
-                if (packageRec.getFragment().equals(fragment)) {
-                    // if the Package exists
-                    // we delegate to its addResource-function
+                // ... else we create a new Record for the new Package
+                if (addedResource == null) {
+                    final PackageRecord packageRec = new PackageRecord(fragment, this);
+                    final List packages = getChildrenAsList();
+                    packages.add(packageRec);
+    
+                    // ... and we add a new FileRecord to it
+                    this.children = new AbstractPMDRecord[packages.size()];
+                    packages.toArray(children);
                     addedResource = packageRec.addResource(resource);
                 }
-            }
-
-            // ... else we create a new Record for the new Package
-            if (addedResource == null) {
-                packageRec = new PackageRecord(fragment, this);
-                final List packages = getChildrenAsList();
-                packages.add(packageRec);
-
-                // ... and we add a new FileRecord to it
-                this.children = new AbstractPMDRecord[packages.size()];
-                packages.toArray(children);
-                addedResource = packageRec.addResource(resource);
             }
         }
 
