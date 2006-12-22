@@ -85,6 +85,7 @@ update the "download" and "what's new" link in navigation.xml
 ./docs.sh upload
 scp target/pmd-*-bundle.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/
 
+Open a JIRA Maven upload issue: http://maven.apache.org/maven-1.x/reference/repository-upload.html
 Submit news to SF
 Go to http://freshmeat.net/
 Submit news to java.net
