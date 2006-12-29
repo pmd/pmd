@@ -22,6 +22,7 @@ public class CPD {
     private MatchAlgorithm matchAlgorithm;
     private Language language;
     private boolean skipDuplicates;
+    private String encoding;
 
     public CPD(int minimumTileSize, Language language) {
         this.minimumTileSize = minimumTileSize;
@@ -34,6 +35,10 @@ public class CPD {
 
     public void setCpdListener(CPDListener cpdListener) {
         this.listener = cpdListener;
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     public void go() {
@@ -93,7 +98,7 @@ public class CPD {
         }
 
         listener.addedFile(fileCount, file);
-        SourceCode sourceCode = new SourceCode(new SourceCode.FileCodeLoader(file));
+        SourceCode sourceCode = new SourceCode(new SourceCode.FileCodeLoader(file, encoding));
         language.getTokenizer().tokenize(sourceCode, tokens);
         source.put(sourceCode.getFileName(), sourceCode);
     }
@@ -149,11 +154,13 @@ public class CPD {
             String pathToFiles = findRequiredStringValue(args, "--files");
             String languageString = findOptionalStringValue(args, "--language", "java");
             String formatString = findOptionalStringValue(args, "--format", "text");
+            String encodingString = findOptionalStringValue(args, "--encoding", System.getProperty("file.encoding"));
             int minimumTokens = Integer.parseInt(findRequiredStringValue(args, "--minimum-tokens"));
             LanguageFactory f = new LanguageFactory();
             Language language = f.createLanguage(languageString);
             Renderer renderer = CPD.getRendererFromString(formatString);
             CPD cpd = new CPD(minimumTokens, language);
+            cpd.setEncoding(encodingString);
             if (skipDuplicateFiles) {
                 cpd.skipDuplicates();
             }
@@ -167,13 +174,13 @@ public class CPD {
 
     private static void usage() {
         System.out.println("Usage:");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--format (xml|text|csv)] [--skip-duplicate-files] ");
+        System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--encoding xxx] [--format (xml|text|csv)] [--skip-duplicate-files] ");
         System.out.println("i.e: ");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files c:\\jdk14\\src\\java ");
         System.out.println("or: ");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/code --language c ");
         System.out.println("or: ");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/java/code --format xml");
+        System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --encoding UTF-16LE --files /path/to/java/code --format xml");
     }
 
 }

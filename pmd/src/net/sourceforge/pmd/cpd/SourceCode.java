@@ -10,6 +10,8 @@ import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,13 +62,15 @@ public class SourceCode {
 
     public static class FileCodeLoader extends CodeLoader {
         private File file;
+        private String encoding;
 
-        public FileCodeLoader(File file) {
+        public FileCodeLoader(File file, String encoding) {
             this.file = file;
+            this.encoding = encoding;
         }
 
         public Reader getReader() throws Exception {
-            return new FileReader(file);
+            return new InputStreamReader(new FileInputStream(file), encoding);
         }
 
         public String getFileName() {
