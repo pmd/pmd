@@ -106,6 +106,10 @@ public class CPD {
     public static Renderer getRendererFromString(String name) {
         if (name.equalsIgnoreCase("text") || name.equals("")) {
             return new SimpleRenderer();
+        } else if ("xml".equals(name)) {
+            return new XMLRenderer();
+        }  else if ("csv".equals(name)) {
+            return new CSVRenderer();
         }
         try {
             return (Renderer) Class.forName(name).newInstance();
