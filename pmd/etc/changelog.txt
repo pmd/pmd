@@ -1,3 +1,6 @@
+???, 2007 - 4.0:
+Fixed bug 1618858 - PMD no longer raises an exception on XPath like '//ConditionalExpression//ConditionalExpression'
+
 December 19, 2006 - 3.9:
 New rules:
     Basic ruleset: BigIntegerInstantiation, AvoidUsingOctalValues
