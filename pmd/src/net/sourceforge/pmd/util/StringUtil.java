@@ -104,6 +104,8 @@ public class StringUtil {
 	 * Parses the input source using the delimiter specified. This method is much
 	 * faster than using the StringTokenizer or String.split(char) approach and
 	 * serves as a replacement for String.split() for JDK1.3 that doesn't have it.
+     *
+     * FIXME - we're on JDK 1.4 now, can we replace this with String.split?
 	 *
 	 * @param source String
 	 * @param delimiter char
