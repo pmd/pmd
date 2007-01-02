@@ -1,5 +1,7 @@
 ???, 2007 - 4.0:
 Fixed bug 1618858 - PMD no longer raises an exception on XPath like '//ConditionalExpression//ConditionalExpression'
+Fixed bug 1626232 - Commons logging rules (ProperLogger and UseCorrectExceptionLogging) now catch more cases
+Fixed bug 1626201 - BrokenNullCheck now catches more cases
 
 December 19, 2006 - 3.9:
 New rules:
