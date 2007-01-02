@@ -21,11 +21,12 @@ To make sure the full stacktrace is printed out, use the logging statement with 
 				<value><![CDATA[
 //CatchStatement/Block/BlockStatement/Statement/StatementExpression
 /PrimaryExpression[PrimaryPrefix/Name[starts-with(@Image,
-concat(//ClassOrInterfaceBodyDeclaration/FieldDeclaration
+concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/FieldDeclaration
 [Type//ClassOrInterfaceType[@Image='Log']]
 /VariableDeclarator/VariableDeclaratorId/@Image, '.'))]]
 [PrimarySuffix/Arguments[@ArgumentCount='1']]
-[PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]         ]]></value>
+[PrimarySuffix/Arguments//Name/@Image = ancestor::CatchStatement/FormalParameter/VariableDeclaratorId/@Image]
+         ]]></value>
 			</property>
 		</properties>
         <priority>3</priority>
@@ -59,12 +60,12 @@ public class Main {
      <![CDATA[
 //ClassOrInterfaceBodyDeclaration[FieldDeclaration//ClassOrInterfaceType[@Image='Log']
  and
- not(FieldDeclaration[@Final='true'][@Static='true'][@Private='true'][//VariableDeclaratorId[@Image=$staticLoggerName]]
+ not(FieldDeclaration[@Final='true'][@Static='true'][@Private='true'][.//VariableDeclaratorId[@Image=$staticLoggerName]]
  //ArgumentList//ClassOrInterfaceType/@Image = ancestor::ClassOrInterfaceDeclaration/@Image)
  and
- not(FieldDeclaration[@Final='true'][@Private='true'][//VariableDeclaratorId[@Image='log']]
- [count(//VariableInitializer)=0]
- [/descendant::StatementExpression[//PrimaryExpression/descendant::*[@Image='log']][count(//AllocationExpression)=0]]
+ not(FieldDeclaration[@Final='true'][@Private='true'][.//VariableDeclaratorId[@Image='log']]
+ [count(.//VariableInitializer)=0]
+ [/descendant::StatementExpression[.//PrimaryExpression/descendant::*[@Image='log']][count(.//AllocationExpression)=0]]
  )]
      ]]>
                      </value>

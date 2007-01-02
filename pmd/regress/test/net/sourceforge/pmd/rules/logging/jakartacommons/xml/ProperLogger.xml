@@ -2,7 +2,7 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-        Ok
+Ok
         ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -13,7 +13,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-        wrong class name
+Wrong class name
         ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -24,7 +24,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-        Ok, special case
+Ok, special case
         ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -33,6 +33,33 @@ public class Foo {
     Foo(Log log) {
         this.log = log;
     }
+}
+ ]]>    </code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bug 1626232, a seperate variable initialization should not confuse the rule
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private String bar = "";
+    private final Log log;
+    Foo(Log log) {
+        this.log = log;
+    }
+}
+ ]]>    </code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bug 1626232, extra loggers with different names are not allowed by default (use NOPMD if you want them)
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private static final Log LOG = LogFactory.getLog(Foo.class);
+    private static final Log LOG2 = LogFactory.getLog(Foo.class + ".foo");
 }
  ]]>    </code>
     </test-code>
