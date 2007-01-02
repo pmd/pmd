@@ -950,35 +950,18 @@ Avoid using ThreadGroup; although it is intended to be used in a threaded enviro
 
     <rule name="BrokenNullCheck"
           message="Method call on object which may be null"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.rules.basic.BrokenNullCheck"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BrokenNullCheck">
         <description>
 The null check is broken since it will throw a Nullpointer itself. 
 The reason is that a method is called on the object when it is null. 
 It is likely that you used || instead of &amp;&amp; or vice versa.
      </description>
-        <properties>
-            <property name="xpath">
-                <value><![CDATA[
-//IfStatement/Expression[.//NullLiteral]
-[
-.//ConditionalOrExpression/EqualityExpression[@Image='!=']
-[starts-with(../*[position()>1]//PrimaryPrefix/Name/@Image,
-concat(PrimaryExpression//PrimaryPrefix/Name/@Image, '.'))]
-or
-.//ConditionalAndExpression/EqualityExpression[@Image='==']
-[starts-with(../*[position()>1]//PrimaryPrefix/Name/@Image,
-concat(PrimaryExpression//PrimaryPrefix/Name/@Image, '.'))]
-]
-                ]]>
-                </value>
-            </property>
-        </properties>
         <priority>2</priority>
         <example>
 <![CDATA[
 class Foo {
- String munge(String string) {
+ String bar(String string) {
   // should be &&
   if (string!=null || !string.equals(""))
     return string;

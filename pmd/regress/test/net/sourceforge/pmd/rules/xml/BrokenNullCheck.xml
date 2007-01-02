@@ -2,7 +2,7 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-should be ||
+should be &&
         ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -14,10 +14,38 @@ public class Foo {
  }
 }
      ]]></code>
+     </test-code>
+     <test-code>
+        <description><![CDATA[
+Ok, is &&
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ List bar(List list) {
+  if (list != null && !list.equals(buz)) {
+   return list;
+  }
+ }
+}
+     ]]></code>
+     </test-code>
+    <test-code>
+        <description><![CDATA[
+should be &&, but now with a longer expression
+        ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+ void bar() {
+  if (books.getJane()!= null || !books.getJane().equals("")) { }
+ }
+}
+     ]]></code>
     </test-code>
     <test-code>
         <description><![CDATA[
-should be &&
+should be ||
         ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -26,6 +54,62 @@ public class Foo {
   if (list == null && list.equals(buz)) {
    return list;
   }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, is ||
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ List bar(List list) {
+  if (list == null || list.equals(buz)) {
+   return list;
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Arrays are Ok
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (index >= 0 && books[index] == null) { }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Different method is Ok
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (books[i].getJane() == null &&
+        books[i].getEyre() == null) { }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Using a shorter expression with the same variable in the second check should not crash the test
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (books.getJane() == null &&
+        books == eyre) { }
  }
 }
      ]]></code>
