@@ -65,7 +65,7 @@ public class Main {
  and
  not(FieldDeclaration[@Final='true'][@Private='true'][.//VariableDeclaratorId[@Image='log']]
  [count(.//VariableInitializer)=0]
- [/descendant::StatementExpression[.//PrimaryExpression/descendant::*[@Image='log']][count(.//AllocationExpression)=0]]
+ [ancestor::ClassOrInterfaceBody//StatementExpression[.//PrimaryExpression/descendant::*[@Image='log']][count(.//AllocationExpression)=0]]
  )]
      ]]>
                      </value>
