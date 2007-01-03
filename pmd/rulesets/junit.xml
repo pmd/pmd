@@ -242,7 +242,7 @@ should be made by more specific methods, like assertSame, assertNotSame.
 ]
 [PrimarySuffix/Arguments
  /ArgumentList/Expression
- /EqualityExpression[count(//NullLiteral) = 0]]
+ /EqualityExpression[count(.//NullLiteral) = 0]]
  ]]>
             </value>
         </property>

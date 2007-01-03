@@ -65,4 +65,18 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+bug 1626715, the null check in the rule shouldn't match the null outside the assert method 
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+  assertFalse(a==b);
+  null;
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

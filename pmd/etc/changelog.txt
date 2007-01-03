@@ -2,6 +2,7 @@
 Fixed bug 1618858 - PMD no longer raises an exception on XPath like '//ConditionalExpression//ConditionalExpression'
 Fixed bug 1626232 - Commons logging rules (ProperLogger and UseCorrectExceptionLogging) now catch more cases
 Fixed bug 1626201 - BrokenNullCheck now catches more cases
+Fixed bug 1626715 - UseAssertSameInsteadOfAssertTrue now correctly checks classes which contain the null constant
 Applied patch 1612455 - RFE 1411022 CompareObjectsWithEquals now catches the case where comparison is against new Object
 
 December 19, 2006 - 3.9:
