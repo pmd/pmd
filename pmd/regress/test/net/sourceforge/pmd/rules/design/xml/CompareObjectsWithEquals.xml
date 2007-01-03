@@ -113,7 +113,7 @@ public class Foo {
         <description><![CDATA[
 Comparing against new object should always return false
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
  void bar(Date aDate) {
