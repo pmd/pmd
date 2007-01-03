@@ -26,7 +26,7 @@
             <li>Brian Remedios - PMD core, lots of CPD UI improvements, Eclipse plugin improvements</li>
             <li>Xavier Le Vourch - PMD core, numerous bug fixes, UselessStringValueOf, UnnecessaryWrapperObjectCreation, SimplifyBooleanAssertion</li>
             <li>Sven Jacob - DFA subsystem, Eclipse plugin</li>
-            <li>Wouter Zelle - Lots of bugfixes and cleanups, JUnit test XML design, BrokenNullCheck, NonThreadSafeSingleton, DefaultPackage rule, UselessOverridingMethod, ProperLogger, AvoidPrintStackTrace, SimplifyConditionalk</li>
+            <li>Wouter Zelle - Lots of bugfixes and cleanups, JUnit test XML design, BrokenNullCheck, NonThreadSafeSingleton, DefaultPackage rule, UselessOverridingMethod, ProperLogger, AvoidPrintStackTrace, SimplifyConditional</li>
         </ul>
         </subsection>
         <subsection name="Committers emeritus">
