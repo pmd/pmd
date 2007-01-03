@@ -1225,9 +1225,9 @@ public Foo() {
     <![CDATA[
 //ClassOrInterfaceDeclaration[@Interface="true"]
     [
-     count(//MethodDeclaration)=0
+     count(.//MethodDeclaration)=0
      and
-     count(//FieldDeclaration)>0
+     count(.//FieldDeclaration)>0
     ]
     ]]>
         </value>
