@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.rules.design;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.ASTName;
@@ -14,7 +15,25 @@ public class CompareObjectsWithEquals extends AbstractRule {
         return n.jjtGetNumChildren() > 0 && n.jjtGetChild(0) instanceof ASTName;
     }
     
+    /**
+	 * Indicate whether this node is allocating a new object.
+	 * 
+	 * @param n
+	 *            node that might be allocating a new object
+	 * @return true if child 0 is an AllocationExpression
+	 */
+	private boolean isAllocation(Node n) {
+		return n.jjtGetNumChildren() > 0 && n.jjtGetChild(0) instanceof ASTAllocationExpression;
+	}
+        
     public Object visit(ASTEqualityExpression node, Object data) {
+        // If either side is allocating a new object, there's no way an
+		// equals expression is correct
+		if (isAllocation(node.jjtGetChild(0).jjtGetChild(0)) || isAllocation(node.jjtGetChild(1).jjtGetChild(0))) {
+			addViolation(data, node);
+			return data;
+		}
+    	      
         // skip if either child is not a simple name
         if (!hasName(((SimpleNode) node.jjtGetChild(0)).jjtGetChild(0)) || !hasName(((SimpleNode) node.jjtGetChild(1)).jjtGetChild(0))) {
             return data;

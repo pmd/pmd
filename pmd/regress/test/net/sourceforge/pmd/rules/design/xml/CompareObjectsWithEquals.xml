@@ -109,4 +109,19 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Comparing against new object should always return false
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar(Date aDate) {
+    if ( aDate == new Date( 0 ) ) {
+    }
+ }
+}
+     ]]></code>
+    </test-code>
+}
 </test-data>
