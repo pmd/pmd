@@ -184,7 +184,7 @@ public class RuleSetFactory {
      * @param classLoader a class loader used to load rule classes
      * @return a new ruleset
      */
-    private RuleSet createRuleSet(InputStream inputStream, ClassLoader classLoader) {
+    public RuleSet createRuleSet(InputStream inputStream, ClassLoader classLoader) {
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = builder.parse(inputStream);
