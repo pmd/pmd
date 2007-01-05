@@ -34,7 +34,7 @@
             <include name="asm-3.0.jar"/>
             <include name="backport-util-concurrent.jar"/>
             <include name="jaxen-1.1-beta-10.jar"/>
-            <include name="lib/jakarta-oro-2.0.8.jar"/>
+            <include name="jakarta-oro-2.0.8.jar"/>
           </fileset>
         </copy>
     </target>
