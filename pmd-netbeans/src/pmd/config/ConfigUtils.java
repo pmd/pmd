@@ -28,6 +28,9 @@ package pmd.config;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -176,20 +179,31 @@ public abstract class ConfigUtils {
 					ErrorManager.getDefault().notify(e);
 				}
 			}
-			Iterator<String> rulesets = settings.getRuleSets().iterator();
-			while( rulesets.hasNext() ) {
-				String ruleSetXml = rulesets.next();
-				try {
-					RuleSet ruleset = ruleSetFactory.createRuleSet(
-					new FileInputStream( ruleSetXml ),
-                                                // PENDING: perhaps can get ClassLoader from Lookup 
-					new RuleClassLoader( ConfigUtils.class.getClassLoader() ) ); 
-					list.addAll( ruleset.getRules() );
-				}
-				catch( RuntimeException e ) {
-					ErrorManager.getDefault().notify(e);
-				}
-			}
+                        Iterator<String> rulesets = settings.getRuleSets().iterator();
+                        while( rulesets.hasNext() ) {
+                            String ruleSetXml = rulesets.next();
+                            try {
+                                Method m = RuleSetFactory.class.getDeclaredMethod("createRuleSet", InputStream.class, ClassLoader.class);
+                                m.setAccessible(true);
+                                Object o = m.invoke(ruleSetFactory, new FileInputStream( ruleSetXml ),
+                                        new RuleClassLoader(ConfigUtils.class.getClassLoader()));
+                                RuleSet ruleset = (RuleSet)o;
+                                    /*
+                                        RuleSet ruleset = ruleSetFactory.createRuleSet(
+                                        new FileInputStream( ruleSetXml ),
+                                        new RuleClassLoader( ConfigUtils.class.getClassLoader() ) );
+                                     */
+                                list.addAll( ruleset.getRules() );
+                            } catch( RuntimeException e ) {
+                                ErrorManager.getDefault().notify(e);
+                            } catch (NoSuchMethodException e) {
+                                ErrorManager.getDefault().notify(e);
+                            } catch (IllegalAccessException e) {
+                                ErrorManager.getDefault().notify(e);
+                            } catch (InvocationTargetException e) {
+                                ErrorManager.getDefault().notify(e);
+                            }
+                        }
 		}
 		catch( FileNotFoundException e ) {
 			throw new RuntimeException( e.getMessage() );

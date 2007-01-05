@@ -1,3 +1,5 @@
+- Updated pmd to version 3.9
+
 Version 1.8.1
 - Now it is only tested with NB5.5 and development builds
 - Reflecting changes in NB trunk (http://www.netbeans.org/issues/show_bug.cgi?id=87929)
