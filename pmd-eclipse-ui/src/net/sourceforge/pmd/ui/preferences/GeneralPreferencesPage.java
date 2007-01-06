@@ -39,6 +39,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2007/01/06 11:58:08  holobender
+ * disabled the experimental option since it can now be enabled over the DataflowAnomalyAnalysis rule
+ *
  * Revision 1.1  2006/05/22 21:23:40  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -139,7 +142,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         this.useDFABox.setLayoutData(data);
-
+        
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
@@ -332,8 +335,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Button buildUseDfaBoxButton(final Composite viewGroup) {
         Button button = new Button(viewGroup, SWT.CHECK);
         button.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_USE_DFA));
-        button.setSelection(this.preferences.isDfaEnabled());
-        
+        // this check box has no function since dfa can now be enabled over the DataflowAnomalyAnalysis - Rule.
+        //button.setSelection(this.preferences.isDfaEnabled());
+        button.setSelection(true);
+        button.setEnabled(false);
         return button;
     }
 
