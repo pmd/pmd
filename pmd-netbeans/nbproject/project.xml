@@ -21,10 +21,6 @@
                 <binary-origin>lib/jaxen-1.1-beta-10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jakarta-oro-2.0.8.jar</runtime-relative-path>
-                <binary-origin>lib/jakarta-oro-2.0.8.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/pmd-3.9.jar</runtime-relative-path>
                 <binary-origin>lib/pmd-3.9.jar</binary-origin>
             </class-path-extension>

@@ -38,7 +38,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 
 import net.sourceforge.pmd.Rule;
-import org.apache.oro.text.perl.Perl5Util;
 import pmd.config.ConfigUtils;
 
 /**
@@ -46,10 +45,6 @@ import pmd.config.ConfigUtils;
  */
 public class RuleEnabler extends JPanel implements TableModelListener {
 
-	private static final String REGEX_EXAMPLE = "s/^\\s+\\n|\\s+$//g";
-	private static final String REGEX_INFORMATION = "s/\\s+/ /g";
-	private static final Perl5Util REGEX = new Perl5Util();
-        
 	private final PropertyEditorSupport editor;
 	private String currentRuleName = null;
         
@@ -438,15 +433,26 @@ public class RuleEnabler extends JPanel implements TableModelListener {
         private void updateTexts(Rule rule) {
             if( rule != null ) {
                 String exampleText = rule.getExample() != null?
-                        REGEX.substitute( REGEX_EXAMPLE, rule.getExample() ):
+                        rule.getExample().trim():
                         "";
-                if (exampleText.startsWith( "\n" )) {
-                    // Probably REGEX_EXAMPLE should have taken care of this, but it did not?!
-                    exampleText = exampleText.substring( 1 );
-                }
                 example.setText( exampleText );
                 example.setCaretPosition( 0 );
-                information.setText( REGEX.substitute( REGEX_INFORMATION, rule.getDescription().trim() ) );
+                // squeeze spaces in description
+                String from = rule.getDescription();
+                from = (from == null)? "": from;
+                StringBuilder sb = new StringBuilder(from.length());
+                boolean wasWS = false;
+                for (int i = 0; i < from.length(); i++) {
+                    char c = from.charAt(i);
+                    if (!wasWS) {
+                        sb.append(Character.isWhitespace(c)? ' ': c);
+                    }
+                    else {
+                        if (!Character.isWhitespace(c)) sb.append(c);
+                    }
+                    wasWS = Character.isWhitespace(c);
+                }
+                information.setText( sb.toString() );
                 information.setCaretPosition( 0 );
                 updatePropertiesModel( rule );
             }

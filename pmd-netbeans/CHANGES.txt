@@ -1,3 +1,5 @@
+- Removed dependency on Jakarta-ORO
+
 Version 1.9
 - Updated pmd to version 3.9
 
