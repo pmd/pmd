@@ -10,6 +10,7 @@ import net.sourceforge.pmd.parsers.Parser;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
+import net.sourceforge.pmd.util.Benchmark;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
@@ -81,19 +82,31 @@ public class PMD {
             ctx.setSourceType(sourceType);
             Parser parser = sourceTypeHandler.getParser();
             parser.setExcludeMarker(excludeMarker);
+            long start = Benchmark.nanoTime();
             Object rootNode = parser.parse(reader);
             ctx.excludeLines(parser.getExcludeMap());
+            long end = Benchmark.nanoTime();
+            Benchmark.mark(Benchmark.TYPE_PARSER, "Parser", end - start, 0);
             Thread.yield();
+            start = Benchmark.nanoTime();
             sourceTypeHandler.getSymbolFacade().start(rootNode);
+            end = Benchmark.nanoTime();
+            Benchmark.mark(Benchmark.TYPE_SYMBOL_TABLE, "Symbol Table", end - start, 0);
 
             Language language = SourceTypeToRuleLanguageMapper.getMappedLanguage(sourceType);
 
             if (ruleSets.usesDFA(language)) {
+                start = Benchmark.nanoTime();
                 sourceTypeHandler.getDataFlowFacade().start(rootNode);
+                end = Benchmark.nanoTime();
+                Benchmark.mark(Benchmark.TYPE_DFA, "Data Flow Analysis", end - start, 0);
             }
 
             if (ruleSets.usesTypeResolution(language)) {
+                start = Benchmark.nanoTime();
                 sourceTypeHandler.getTypeResolutionFacade().start(rootNode);
+                end = Benchmark.nanoTime();
+                Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, "Type Resolution", end - start, 0);
             }
 
             List acus = new ArrayList();
@@ -222,8 +235,10 @@ public class PMD {
     }
 
     public static void main(String[] args) {
+        long start = Benchmark.nanoTime();
         CommandLineOptions opts = new CommandLineOptions(args);
 
+        long startFiles = Benchmark.nanoTime();
         SourceFileSelector fileSelector = new SourceFileSelector();
 
         fileSelector.setSelectJavaFiles(opts.isCheckJavaFiles());
@@ -236,6 +251,8 @@ public class PMD {
         } else {
             files = collectFilesFromOneName(opts.getInputPath(), fileSelector);
         }
+        long endFiles = Benchmark.nanoTime();
+        Benchmark.mark(Benchmark.TYPE_COLLECT_FILES, "Collect Files", endFiles - startFiles, 0);
 
         SourceType sourceType;
         if (opts.getTargetJDK().equals("1.3")) {
@@ -262,11 +279,14 @@ public class PMD {
         report.start();
 
         try {
+        	   long startLoadRules = Benchmark.nanoTime();
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             ruleSetFactory.setMinimumPriority(opts.getMinPriority());
 
             RuleSets rulesets = ruleSetFactory.createRuleSets(opts.getRulesets());
             printRuleNamesInDebug(opts.debugEnabled(), rulesets);
+        	   long endLoadRules = Benchmark.nanoTime();
+        	   Benchmark.mark(Benchmark.TYPE_LOAD_RULES, "Load Rules", endLoadRules - startLoadRules, 0);
 
             processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx,
                     opts.getRulesets(), opts.debugEnabled(), opts.shortNamesEnabled(),
@@ -278,6 +298,7 @@ public class PMD {
         report.end();
 
         Writer w = null;
+        long reportStart = Benchmark.nanoTime();
         try {
             Renderer r = opts.createRenderer();
             if (opts.getReportFile() != null) {
@@ -290,6 +311,7 @@ public class PMD {
             w.flush();
             if (opts.getReportFile() != null) {
                 w.close();
+                w = null;
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -305,6 +327,14 @@ public class PMD {
                     System.out.println(e.getMessage());
                 }
             }
+            long reportEnd = Benchmark.nanoTime();
+            Benchmark.mark(Benchmark.TYPE_REPORTING, "Reporting", reportEnd - reportStart, 0);
+        }
+        
+        if (opts.benchmark()) {
+            long end = Benchmark.nanoTime();
+            Benchmark.mark(Benchmark.TYPE_TOTAL, "Total PMD", end - start, 0);
+            System.err.println(Benchmark.report());
         }
     }
 

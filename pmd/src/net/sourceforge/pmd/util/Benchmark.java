@@ -23,9 +23,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -168,5 +174,155 @@ public class Benchmark {
             results.add(new Result(elapsed, rule));
             if (debug) System.out.println("Done timing " + rule.getName() + "; elapsed time was " + elapsed);
         }
+    }
+
+    private static final Map nameToBenchmarkResult = new HashMap();
+
+    public static final int TYPE_RULE = 0;
+    public static final int TYPE_RULE_CHAIN_RULE = 1;
+    public static final int TYPE_COLLECT_FILES = 2;
+    public static final int TYPE_LOAD_RULES = 3;
+    public static final int TYPE_PARSER = 4;
+    public static final int TYPE_SYMBOL_TABLE = 5;
+    public static final int TYPE_DFA = 6;
+    public static final int TYPE_TYPE_RESOLUTION = 7;
+    public static final int TYPE_RULE_CHAIN = 8;
+    public static final int TYPE_REPORTING = 9;
+    private static final int TYPE_RULE_TOTAL = 10;
+    private static final int TYPE_RULE_CHAIN_RULE_TOTAL = 11;
+    private static final int TYPE_MEASURED_TOTAL = 12;
+    private static final int TYPE_UNMEASURED_TOTAL = 13;
+    public static final int TYPE_TOTAL = 14;
+
+	 private static final class BenchmarkResult implements Comparable {
+        private final int type;
+        private final String name;
+        private long time;
+        private long count;
+        public BenchmarkResult(int type, String name) {
+            this.type = type;
+            this.name = name;
+        }
+        public BenchmarkResult(int type, String name, long time, long count) {
+            this.type = type;
+            this.name = name;
+            this.time = time;
+            this.count = count;
+        }
+        public int getType() {
+            return type;
+        }
+        public String getName() {
+            return name;
+        }
+        public long getTime() {
+            return time;
+        }
+        public long getCount() {
+            return count;
+        }
+        public void update(long time, long count) {
+            this.time += time;
+            this.count += count;
+        }
+        public int compareTo(Object o) {
+            BenchmarkResult benchmarkResult = (BenchmarkResult)o;
+            int cmp = this.type - benchmarkResult.type;
+            if (cmp == 0) {
+                long delta = this.time - benchmarkResult.time;
+                cmp = delta > 0 ? 1 : (delta < 0 ? -1 : 0);
+            }
+            return cmp;
+        }
+    }
+
+    public static long nanoTime() {
+        return System.currentTimeMillis() * 1000000;
+        //return System.nanoTime();
+    }
+
+    public synchronized static void mark(int type, String name, long time, long count) {
+    	BenchmarkResult benchmarkResult = (BenchmarkResult)nameToBenchmarkResult.get(name);
+        if (benchmarkResult == null) {
+            benchmarkResult = new BenchmarkResult(type, name);
+            nameToBenchmarkResult.put(name, benchmarkResult);
+        }
+        benchmarkResult.update(time, count);
+    }
+
+    public static void reset() {
+        nameToBenchmarkResult.clear();
+    }
+
+    public static String report() {
+        List results = new ArrayList(nameToBenchmarkResult.values());
+
+        long totalTime[] = new long[TYPE_TOTAL + 1];
+        long totalCount[] = new long[TYPE_TOTAL + 1];
+        for (Iterator i = results.iterator(); i.hasNext();) {
+            BenchmarkResult benchmarkResult = (BenchmarkResult)i.next();
+            totalTime[benchmarkResult.getType()] += benchmarkResult.getTime();
+            totalCount[benchmarkResult.getType()] += benchmarkResult.getCount();
+            if (benchmarkResult.getType() < TYPE_MEASURED_TOTAL) {
+                totalTime[TYPE_MEASURED_TOTAL] += benchmarkResult.getTime();
+            }
+        }
+        results.add(new BenchmarkResult(TYPE_RULE_TOTAL, "Rule Total", totalTime[TYPE_RULE], 0));
+        results.add(new BenchmarkResult(TYPE_RULE_CHAIN_RULE_TOTAL, "RuleChain Rule Total", totalTime[TYPE_RULE_CHAIN_RULE], 0));
+        results.add(new BenchmarkResult(TYPE_MEASURED_TOTAL, "Measured", totalTime[TYPE_MEASURED_TOTAL], 0));
+        results.add(new BenchmarkResult(TYPE_UNMEASURED_TOTAL, "Non-measured", totalTime[TYPE_TOTAL] - totalTime[TYPE_MEASURED_TOTAL], 0));
+        Collections.sort(results);
+
+        StringBuffer buf = new StringBuffer();
+        boolean writeRuleHeader = true;
+        boolean writeRuleChainRuleHeader = true;
+        for (Iterator i = results.iterator(); i.hasNext();) {
+            BenchmarkResult benchmarkResult = (BenchmarkResult)i.next();
+            StringBuffer buf2 = new StringBuffer();
+            buf2.append(benchmarkResult.getName());
+            buf2.append(":");
+            while (buf2.length() <= 50) {
+                buf2.append(" ");
+            }
+            buf2.append(StringUtil.lpad(MessageFormat.format("{0,number,0.00000}", new Object[]{new Double(benchmarkResult.getTime()/1000000000.0)}), 8, " "));
+            if (benchmarkResult.getType() <= TYPE_RULE_CHAIN_RULE) {
+                buf2.append(StringUtil.lpad(MessageFormat.format("{0,number,###,###,###,###,###}", new Object[]{new Long(benchmarkResult.getCount())}), 20, " "));
+            }
+            switch (benchmarkResult.getType()) {
+                case TYPE_RULE:
+                    if (writeRuleHeader) {
+                        writeRuleHeader = false;
+                        buf.append(PMD.EOL);
+                        buf.append("---------------------------------<<< Rules >>>---------------------------------" + PMD.EOL);
+                        buf.append("Rule name                                       Time (secs)    # of Evaluations" + PMD.EOL);
+                        buf.append(PMD.EOL);
+                    }
+                    break;
+                case TYPE_RULE_CHAIN_RULE:
+                    if (writeRuleChainRuleHeader) {
+                        writeRuleChainRuleHeader = false;
+                        buf.append(PMD.EOL);
+                        buf.append("----------------------------<<< RuleChain Rules >>>----------------------------" + PMD.EOL);
+                        buf.append("Rule name                                       Time (secs)         # of Visits" + PMD.EOL);
+                        buf.append(PMD.EOL);
+                    }
+                    break;
+                case TYPE_COLLECT_FILES:
+                    buf.append(PMD.EOL);
+                    buf.append("--------------------------------<<< Summary >>>--------------------------------" + PMD.EOL);
+                    buf.append("Segment                                         Time (secs)" + PMD.EOL);
+                    buf.append(PMD.EOL);
+                    break;
+                case TYPE_MEASURED_TOTAL:
+                    buf.append(PMD.EOL);
+                    buf.append("-----------------------------<<< Final Summary >>>-----------------------------" + PMD.EOL);
+                    buf.append("Total                                           Time (secs)" + PMD.EOL);
+                    buf.append(PMD.EOL);
+                    break;
+            }
+            buf.append(buf2.toString());
+            buf.append(PMD.EOL);
+        }
+        return buf.toString();
     }
 }

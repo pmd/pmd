@@ -8,6 +8,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sourceforge.pmd.util.Benchmark;
+
 
 /**
  * This class represents a collection of rules.
@@ -92,9 +94,13 @@ public class RuleSet {
 
     public void apply(List acuList, RuleContext ctx) {
         Iterator rs = rules.iterator();
+        long start = Benchmark.nanoTime();
         while (rs.hasNext()) {
             Rule rule = (Rule) rs.next();
             rule.apply(acuList, ctx);
+            long end = Benchmark.nanoTime();
+            Benchmark.mark(Benchmark.TYPE_RULE, rule.getName(), end - start, 1);
+            start = end;
         }
     }
 

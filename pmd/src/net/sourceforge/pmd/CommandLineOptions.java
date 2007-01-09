@@ -34,10 +34,11 @@ public class CommandLineOptions {
     private String linePrefix;
     private String linkPrefix;
     private int minPriority = Rule.LOWEST_PRIORITY;
+    private boolean benchmark;
 
 
     private boolean checkJavaFiles = true;
-    private boolean checkJspFiles = false;
+    private boolean checkJspFiles;
 
     private String[] args;
 
@@ -94,6 +95,8 @@ public class CommandLineOptions {
                 }
             } else if (args[i].equals("-reportfile")) {
                 reportFile = args[++i];
+            } else if (args[i].equals("-benchmark")) {
+                benchmark = true;
             }
         }
     }
@@ -178,6 +181,10 @@ public class CommandLineOptions {
     public int getMinPriority() {
         return minPriority;
     }
+    
+    public boolean benchmark() {
+        return benchmark;
+    }
 
     public String usage() {
         return PMD.EOL + PMD.EOL +
@@ -199,7 +206,10 @@ public class CommandLineOptions {
                 "-linkprefix: path to HTML source, for summary html renderer only" + PMD.EOL +
                 "-lineprefix: custom anchor to affected line in the source file, for summary html renderer only" + PMD.EOL +
                 "-minimumpriority: rule priority threshold; rules with lower priority than they will not be used" + PMD.EOL +
+                "-nojava: do not check Java files; default to check Java files" + PMD.EOL +
+                "-jsp: check JSP/JSF files; default to do not check JSP/JSF files" + PMD.EOL +
                 "-reportfile: send report output to a file; default to System.out" + PMD.EOL +
+                "-benchmark: output a benchmark report upon completion; default to System.err" + PMD.EOL +
                 PMD.EOL +
                 "For example: " + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code text unusedcode,imports -targetjdk 1.5 -debug" + PMD.EOL +
