@@ -263,19 +263,15 @@ public class StringUtil {
      * Left pads a string.
      * @param s The String to pad
      * @param length The desired minimum length of the resulting padded String
-     * @param pad The String to pad with
      * @return The resulting left padded String
      */
-    public static String lpad(String s, int length, String pad) {
-        if (pad == null || pad.length() == 0) {
-            pad = " ";
-        }
-        StringBuffer buf = new StringBuffer(length);
-        for (int i = 0; i < length - s.length();) {
-            buf.append(pad);
-            i+= pad.length();
-        }
-        buf.append(s);
-        return buf.toString();
+    public static String lpad(String s, int length) {
+         String res = s;
+         if (length - s.length() > 0) {
+             char [] arr = new char[length - s.length()];
+             java.util.Arrays.fill(arr, ' ');
+             res = new StringBuffer(length).append(arr).append(s).toString();
+         }
+         return res;
     }
 }
