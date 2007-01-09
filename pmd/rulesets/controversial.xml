@@ -373,7 +373,8 @@ public class Foo {
     <rule name="DataflowAnomalyAnalysis"
               message="Found ''{0}''-anomaly for variable ''{1}'' (lines ''{2}''-''{3}'')."
               class="net.sourceforge.pmd.dfa.DaaRule"
-              dfa="true">
+              dfa="true"
+              externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DataflowAnomalyAnalysis">
           <description>The dataflow analysis tracks local definitions, undefinitions and references to variables on different paths on the data flow.
 From those informations there can be found various problems.
 
