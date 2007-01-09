@@ -384,8 +384,8 @@ From those informations there can be found various problems.
           </description>
           <priority>5</priority>
           <properties>
-            <property name="maxviolations" value="100"/>
-            <property name="maxpaths" value="1000"/>
+            <property name="maxviolations" value="100" description="The maximum number of violations per class."/>
+            <property name="maxpaths" value="1000" description="The maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease the number of found anomalies."/>
           </properties>
           <example>
 <![CDATA[
