@@ -27,7 +27,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -280,9 +279,9 @@ public class Benchmark {
             BenchmarkResult benchmarkResult = (BenchmarkResult)i.next();
             StringBuffer buf2 = new StringBuffer();
             buf2.append(benchmarkResult.getName());
-            buf2.append(":");
+            buf2.append(':');
             while (buf2.length() <= 50) {
-                buf2.append(" ");
+                buf2.append(' ');
             }
             buf2.append(StringUtil.lpad(MessageFormat.format("{0,number,0.00000}", new Object[]{new Double(benchmarkResult.getTime()/1000000000.0)}), 8));
             if (benchmarkResult.getType() <= TYPE_RULE_CHAIN_RULE) {
