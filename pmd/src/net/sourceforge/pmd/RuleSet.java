@@ -94,13 +94,14 @@ public class RuleSet {
 
     public void apply(List acuList, RuleContext ctx) {
         Iterator rs = rules.iterator();
-        long start = Benchmark.nanoTime();
         while (rs.hasNext()) {
             Rule rule = (Rule) rs.next();
-            rule.apply(acuList, ctx);
-            long end = Benchmark.nanoTime();
-            Benchmark.mark(Benchmark.TYPE_RULE, rule.getName(), end - start, 1);
-            start = end;
+            if (!rule.usesRuleChain()) {
+                long start = Benchmark.nanoTime();
+                rule.apply(acuList, ctx);
+                long end = Benchmark.nanoTime();
+                Benchmark.mark(Benchmark.TYPE_RULE, rule.getName(), end - start, 1);
+            }
         }
     }
 

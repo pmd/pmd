@@ -4,6 +4,7 @@ Fixed bug 1626232 - Commons logging rules (ProperLogger and UseCorrectExceptionL
 Fixed bug 1626201 - BrokenNullCheck now catches more cases
 Fixed bug 1626715 - UseAssertSameInsteadOfAssertTrue now correctly checks classes which contain the null constant
 Applied patch 1612455 - RFE 1411022 CompareObjectsWithEquals now catches the case where comparison is against new Object
+XPath rules are now chained together for an extra speedup in processing
 
 December 19, 2006 - 3.9:
 New rules:

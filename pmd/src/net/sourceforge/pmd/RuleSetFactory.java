@@ -21,8 +21,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.rules.XPathRule;
-
 // Note that ruleset parsing may fail on JDK 1.6 beta
 // due to this bug - http://www.netbeans.org/issues/show_bug.cgi?id=63257
 
@@ -280,24 +278,7 @@ public class RuleSetFactory {
         Element ruleElement = (Element) ruleNode;
 
         String attribute = ruleElement.getAttribute("class");
-        Class c;
-        if ((Language.JAVA.equals(ruleSet.getLanguage()) || ruleSet.getLanguage() == null) &&
-                attribute.equals("net.sourceforge.pmd.rules.XPathRule")) {
-            String xpath = null;
-            for (int i = 0; i < ruleElement.getChildNodes().getLength(); i++) {
-                Node node = ruleElement.getChildNodes().item(i);
-                if (node.getNodeType() == Node.ELEMENT_NODE) {
-                    if (node.getNodeName().equals("properties")) {
-                        Properties p = new Properties();
-                        parsePropertiesNode(p, node);
-                        xpath = p.getProperty("xpath");
-                    }
-                }
-            }
-            c = XPathRule.loadClass(classLoader, xpath, ruleElement.getAttribute("name"));
-        } else {
-            c = classLoader.loadClass(attribute);
-        }
+        Class c = classLoader.loadClass(attribute);
         Rule rule = (Rule) c.newInstance();
 
         rule.setName(ruleElement.getAttribute("name"));

@@ -4,6 +4,7 @@
 package net.sourceforge.pmd;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,6 +32,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     protected boolean usesTypeResolution;
     protected int priority = LOWEST_PRIORITY;
     protected String externalInfoUrl;
+    protected List ruleChainVisits = new ArrayList();
 
     private static final boolean inOldPropertyMode = true;	// temporary flag during conversion
     
@@ -463,5 +465,19 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     	PropertyDescriptor desc = (PropertyDescriptor)propertiesByName().get(propertyName);
     	if (desc == null) throw new IllegalArgumentException("unknown property: " + propertyName);
     	return desc;
+    }
+
+    public boolean usesRuleChain() {
+        return !getRuleChainVisits().isEmpty();
+    }
+
+    public List getRuleChainVisits() {
+        return ruleChainVisits;
+    }
+
+    public void addRuleChainVisit(String astNodeName) {
+        if (!ruleChainVisits.contains(astNodeName)) {
+            ruleChainVisits.add(astNodeName);
+        }
     }
 }

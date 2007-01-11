@@ -19,6 +19,11 @@ public class RuleSets {
     private Collection ruleSets = new ArrayList();
 
     /**
+     * RuleChain for effecient AST visitation.
+     */
+    private RuleChain ruleChain = new RuleChain();
+
+    /**
      * Public constructor.
      */
     public RuleSets() {
@@ -43,6 +48,7 @@ public class RuleSets {
      */
     public void addRuleSet(RuleSet ruleSet) {
         ruleSets.add(ruleSet);
+        ruleChain.add(ruleSet);
     }
 
     /**
@@ -97,6 +103,7 @@ public class RuleSets {
      * @param language the Language of the source
      */
     public void apply(List acuList, RuleContext ctx, Language language) {
+        ruleChain.apply(acuList, ctx, language);
         for (Iterator i = ruleSets.iterator(); i.hasNext();) {
             RuleSet ruleSet = (RuleSet) i.next();
             if (applies(language, ruleSet.getLanguage())) {

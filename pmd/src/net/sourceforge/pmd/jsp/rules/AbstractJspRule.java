@@ -3,6 +3,12 @@
  */
 package net.sourceforge.pmd.jsp.rules;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -10,11 +16,6 @@ import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.jsp.ast.JspParserVisitorAdapter;
 import net.sourceforge.pmd.jsp.ast.SimpleNode;
-
-import java.text.MessageFormat;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
 
 public abstract class AbstractJspRule extends JspParserVisitorAdapter implements Rule {
 
@@ -29,6 +30,7 @@ public abstract class AbstractJspRule extends JspParserVisitorAdapter implements
     protected boolean usesTypeResolution;
     protected int priority = LOWEST_PRIORITY;
     protected String externalInfoUrl;
+    protected List ruleChainVisits = new ArrayList();
 
     public String getRuleSetName() {
         return ruleSetName;
@@ -243,5 +245,19 @@ public abstract class AbstractJspRule extends JspParserVisitorAdapter implements
     
     public PropertyDescriptor propertyDescriptorFor(String name) {
     	return null;	// TODO not implemented yet
+    }
+
+    public boolean usesRuleChain() {
+        return !getRuleChainVisits().isEmpty();
+    }
+
+    public List getRuleChainVisits() {
+        return ruleChainVisits;
+    }
+
+    public void addRuleChainVisit(String astNodeName) {
+        if (!ruleChainVisits.contains(astNodeName)) {
+            ruleChainVisits.add(astNodeName);
+        }
     }
 }

@@ -54,7 +54,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Ryan Gustafson - Better benchmarking code, patch to add more annotation suppression tests, patch to fix bug in AvoidDecimalLiteralsInBigDecimalConstructor, patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0, patch to support classpaths with spaces in pmd.bat, patch to fix controversial/DefaultPackage XPath rule</li>
+            <li>Ryan Gustafson - patch to chain XPath rules together, Better benchmarking code, patch to add more annotation suppression tests, patch to fix bug in AvoidDecimalLiteralsInBigDecimalConstructor, patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0, patch to support classpaths with spaces in pmd.bat, patch to fix controversial/DefaultPackage XPath rule</li>
             <li>Lukas Theussl - Patch to bring Maven configuration files up to date</li>
             <li>Jason Bennett - Rewrite of annotation-based warning suppression to allow for rule-specific suppression, noticed useless line in XSLT scripts, fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule, patches to improve CyclomaticComplexity rule, Implemented: UseCollectionIsEmpty, NcssTypeCount, NcssMethodCount, NcssConstructor, Patch to detect comparison with new Object</li>
             <li>Brent Fisher - Fixed report backslash bug, SummaryHTML report improvements</li>

@@ -1,6 +1,8 @@
 package net.sourceforge.pmd;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import net.sourceforge.pmd.ast.Node;
@@ -25,6 +27,7 @@ public abstract class CommonAbstractRule implements Rule {
     protected boolean usesTypeResolution;
     protected int priority = LOWEST_PRIORITY;
     protected String externalInfoUrl;
+    protected List ruleChainVisits = new ArrayList();
 
     public String getRuleSetName() {
         return ruleSetName;
@@ -230,5 +233,19 @@ public abstract class CommonAbstractRule implements Rule {
 
     public PropertyDescriptor propertyDescriptorFor(String name) {
     	return null;	// TODO not implemented yet
+    }
+
+    public boolean usesRuleChain() {
+        return !getRuleChainVisits().isEmpty();
+    }
+
+    public List getRuleChainVisits() {
+        return ruleChainVisits;
+    }
+
+    public void addRuleChainVisit(String astNodeName) {
+        if (!ruleChainVisits.contains(astNodeName)) {
+            ruleChainVisits.add(astNodeName);
+        }
     }
 }

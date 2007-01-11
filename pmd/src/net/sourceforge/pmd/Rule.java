@@ -69,7 +69,13 @@ public interface Rule {
     
     PropertyDescriptor propertyDescriptorFor(String name);
 
-	void setUsesTypeResolution();
+    void setUsesTypeResolution();
 
-	boolean usesTypeResolution();
+    boolean usesTypeResolution();
+
+    boolean usesRuleChain();
+
+    List getRuleChainVisits();
+
+    void addRuleChainVisit(String astNodeName);
 }
