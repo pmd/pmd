@@ -44,7 +44,11 @@ public class FileDataSource implements DataSource {
             }
         } 
 
-        return file.getAbsolutePath();
+        try {
+            return file.getCanonicalFile().getAbsolutePath();
+        } catch (Exception e) {
+            return file.getAbsolutePath();
+        }
     }
 
     private String trimAnyPathSep(String name) {
