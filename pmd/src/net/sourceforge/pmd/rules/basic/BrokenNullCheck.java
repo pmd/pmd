@@ -5,11 +5,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
@@ -54,6 +56,10 @@ public class BrokenNullCheck extends AbstractRule {
         if (nullLiteral == null) {
             return;     //No null check
         }
+        //If there is an assignment in the equalityExpression we give up, because things get too complex
+        if (conditionalExpression.getFirstChildOfType(ASTAssignmentOperator.class) != null) {
+            return;
+        }
 
         //Find the expression used in the null compare
         ASTPrimaryExpression nullCompareExpression = findNullCompareExpression(equalityExpression);
@@ -64,32 +70,39 @@ public class BrokenNullCheck extends AbstractRule {
         //Now we find the expression to compare to and do the comparison
         for (int i = 0; i < conditionalExpression.jjtGetNumChildren(); i++) {
             SimpleJavaNode conditionalSubnode = (SimpleJavaNode)conditionalExpression.jjtGetChild(i);
-            //We skip the ASTEqualityExpression, which is the null compare branch
-            if (!(conditionalSubnode instanceof ASTEqualityExpression)) {
-                if (!(conditionalSubnode instanceof ASTPrimaryExpression)) {
-                    //The ASTPrimaryExpression is hidden (probably in a negation)
-                    conditionalSubnode = (SimpleJavaNode)conditionalSubnode.getFirstChildOfType(ASTPrimaryExpression.class);
-                }
-            }
-            if (conditionalSubnode instanceof ASTPrimaryExpression) {
-                if (primaryExpressionsAreEqual(nullCompareExpression, (ASTPrimaryExpression)conditionalSubnode)) {
-                    addViolation(data, node);   //We have a match
-                }
-            }
             
+            //We skip the null compare branch
+            ASTEqualityExpression nullEqualityExpression = (ASTEqualityExpression) nullLiteral
+                .getFirstParentOfType(ASTEqualityExpression.class);
+            if (conditionalSubnode.equals(nullEqualityExpression)) {
+                continue;
+            }
+            ASTPrimaryExpression conditionalPrimaryExpression;
+            if (conditionalSubnode instanceof ASTPrimaryExpression) {
+                conditionalPrimaryExpression = (ASTPrimaryExpression)conditionalSubnode;
+            } else {
+                //The ASTPrimaryExpression is hidden (in a negation, braces or EqualityExpression)
+                conditionalPrimaryExpression = (ASTPrimaryExpression) conditionalSubnode
+                    .getFirstChildOfType(ASTPrimaryExpression.class);
+            }
+
+            if (primaryExpressionsAreEqual(nullCompareExpression, conditionalPrimaryExpression)) {
+                addViolation(data, node);   //We have a match
+            }
+
         }
     }
 
     private boolean primaryExpressionsAreEqual(ASTPrimaryExpression nullCompareVariable, ASTPrimaryExpression expressionUsage) {
         List nullCompareNames = new ArrayList();
-        findVariableNames(nullCompareVariable, nullCompareNames);
+        findExpressionNames(nullCompareVariable, nullCompareNames);
         
         List expressionUsageNames = new ArrayList();
-        findVariableNames(expressionUsage, expressionUsageNames);
+        findExpressionNames(expressionUsage, expressionUsageNames);
         
         for (int i = 0; i < nullCompareNames.size(); i++) {
             if (expressionUsageNames.size() == i) {
-                return false;   //The used expression is shorter than the null compare expression
+                return false;   //The used expression is shorter than the null compare expression (and we don't want to crash below)
             }
             
             String nullCompareExpressionName = (String)nullCompareNames.get(i);
@@ -107,15 +120,21 @@ public class BrokenNullCheck extends AbstractRule {
 
 
     /**
-     * Find the variable names in a PrimaryExpression (thus in the Name and PrimarySuffix children).
+     * Find the names of variables, methods and array arguments in a PrimaryExpression.
      */
-    private void findVariableNames(Node nullCompareVariable, List results) {
+    private void findExpressionNames(Node nullCompareVariable, List results) {
         for (int i = 0; i < nullCompareVariable.jjtGetNumChildren(); i++) {
             Node child = nullCompareVariable.jjtGetChild(i);
             
-            if (child.getClass().equals(ASTName.class)) {
+            if (child.getClass().equals(ASTName.class)) {                   //Variable names and some method calls
                 results.add( ((ASTName)child).getImage() );
-            } else if (child.getClass().equals(ASTPrimarySuffix.class)) {
+            } else if (child.getClass().equals(ASTLiteral.class)) {         //Array arguments
+                String literalImage = ((ASTLiteral)child).getImage();
+                //Skip other null checks
+                if (literalImage != null) {
+                    results.add( literalImage );
+                }
+            } else if (child.getClass().equals(ASTPrimarySuffix.class)) {   //More method calls
                 String name = ((ASTPrimarySuffix)child).getImage();
                 if (name != null && !name.equals("")) {
                     results.add(name);
@@ -123,7 +142,7 @@ public class BrokenNullCheck extends AbstractRule {
             }
             
             if (child.jjtGetNumChildren() > 0) {
-                findVariableNames(child, results);
+                findExpressionNames(child, results);
             }
         }
     }
