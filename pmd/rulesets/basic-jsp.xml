@@ -62,8 +62,10 @@ onload=calcDays;
 		<properties>
 			<property name="xpath">
 				<value>
-					<![CDATA[ //descendant::*[ 
-self::JspScriptlet  or (self::Element and string:upper-case(@Name)="JSP:SCRIPTLET") ]
+					<![CDATA[
+					//JspScriptlet
+					|
+					//Element[ string:upper-case(@Name)="JSP:SCRIPTLET" ]
 					]]>
 				</value>
 			</property>
