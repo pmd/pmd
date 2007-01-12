@@ -60,7 +60,6 @@ public class XPathRule extends CommonAbstractRule {
     public void evaluate(Node compilationUnit, RuleContext data) {
         try {
             initializeXPathExpression();
-            //String nodeName = compilationUnit.getClass().getName().replaceAll(".*\\.AST", "");
             List xpaths = (List)nodeNameToXPaths.get(compilationUnit.toString());
             if (xpaths == null) {
                 xpaths = (List)nodeNameToXPaths.get(AST_ROOT);
@@ -69,9 +68,7 @@ public class XPathRule extends CommonAbstractRule {
                 XPath xpath = (XPath)xpaths.get(i);
                 List results = xpath.selectNodes(compilationUnit);
                 for (Iterator j = results.iterator(); j.hasNext();) {
-                //for (int j = 0; j < results.size(); j++) {
                     SimpleNode n = (SimpleNode) j.next();
-                    //SimpleNode n = (SimpleNode)results.get(j);
                     if (n instanceof ASTVariableDeclaratorId && getBooleanProperty("pluginname")) {
                         addViolation(data, n, n.getImage());
                     } else {
@@ -197,14 +194,13 @@ public class XPathRule extends CommonAbstractRule {
     }
 
     private BaseXPath createXPath(String xpathQueryString) throws JaxenException {
-        // TODO Need to fix Jaxen!  It is not properly escaping the " character in String literals.
+        // TODO As of Jaxen 1.1, LiteralExpr which contain " or ' characters
+        // are not escaped properly.  The following is fix for the known
+        // XPath queries built into PMD.  It will not necessarily work for
+        // arbitrary XPath queries users of PMD will create.  JAXEN-177 is
+        // about this problem: http://jira.codehaus.org/browse/JAXEN-177
+        // PMD should upgrade to the next Jaxen release containing this fix.
         xpathQueryString = xpathQueryString.replaceAll("\"\"\"", "'\"'");
-        // TODO Need to fix Jaxen!  It is not properly formatting context variable references.
-        xpathQueryString = xpathQueryString.replaceAll("\\$:", "\\$");
-        //System.out.println("xpathQueryString: " + xpathQueryString);
-
-        // The following will make the queries look a bit more like one is used to seeing.
-        // System.out.println(xpathQueryString.replaceAll("child::node\\(\\)", ".").replaceAll("child::", "").replaceAll("attribute::", "@"));
 
         BaseXPath xpath = new BaseXPath(xpathQueryString, new DocumentNavigator());
         if (properties.size() > 1) {

@@ -9,11 +9,12 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.util.Benchmark;
 
 /**
- * This is a base class for RuleChainVisitor implementations which performs
- * extracts interesting nodes from an AST, and lets each Rule visit the nodes it
- * has expressed interest in.
+ * This is a base class for RuleChainVisitor implementations which
+ * extracts interesting nodes from an AST, and lets each Rule visit
+ * the nodes it has expressed interest in.
  */
 public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
@@ -42,19 +43,27 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
 
         // Perform a visitation of the AST to index nodes which need visiting by
         // type
+        long start = Benchmark.nanoTime();
         indexNodes(astCompilationUnits, ctx);
+        long end = Benchmark.nanoTime();
+        Benchmark.mark(Benchmark.TYPE_RULE_CHAIN, "RuleChain Visit", end - start, 1);
 
         // For each rule, allow it to visit the nodes it desires
+        int visits = 0;
+        start = Benchmark.nanoTime();
         for (int i = 0; i < rules.size(); i++) {
             final Rule rule = (Rule) rules.get(i);
             final List nodeNames = rule.getRuleChainVisits();
             for (int j = 0; j < nodeNames.size(); j++) {
-                List nodes = (List) nodeNameToNodes.get((String) nodeNames
-                        .get(j));
+                List nodes = (List) nodeNameToNodes.get((String) nodeNames.get(j));
                 for (int k = 0; k < nodes.size(); k++) {
                     visit(rule, (SimpleNode) nodes.get(k), ctx);
                 }
+                visits += nodes.size();
             }
+            end = Benchmark.nanoTime();
+            Benchmark.mark(Benchmark.TYPE_RULE_CHAIN_RULE, rule.getName(), end - start, visits);
+            start = end;
         }
     }
 
@@ -81,7 +90,10 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * Initialize the RuleChainVisitor to be ready to perform visitations. This
      * method should not be called until it is know that all Rules participating
-     * in the RuleChain are ready to be initialized themselves.
+     * in the RuleChain are ready to be initialized themselves.  Some rules
+     * may require full initialization to determine if they will participate in
+     * the RuleChain, so this has been delayed as long as possible to ensure
+     * that manipulation of the Rules is no longer occuring.
      */
     protected void initialize() {
         if (nodeNameToNodes != null) {
@@ -95,16 +107,15 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
             if (rule.usesRuleChain()) {
                 visitedNodes.addAll(rule.getRuleChainVisits());
             }
-            // Drop rules which do not participate in the rule chain.
             else {
-                // i.remove();
+                // Drop rules which do not participate in the rule chain.
+                i.remove();
             }
         }
 
         // Setup the data structure to manage mapping node names to node
-        // instances.
-        // We intend to reuse this data structure between visits to different
-        // ASTs.
+        // instances.  We intend to reuse this data structure between
+        // visits to different ASTs.
         nodeNameToNodes = new HashMap();
         for (Iterator i = visitedNodes.iterator(); i.hasNext();) {
             List nodes = new ArrayList(100);
