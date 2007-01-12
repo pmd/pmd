@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.ast.JavaRuleChainVisitorByRule;
-import net.sourceforge.pmd.jsp.ast.JspRuleChainVisitorByRule;
+import net.sourceforge.pmd.ast.JavaRuleChainVisitor;
+import net.sourceforge.pmd.jsp.ast.JspRuleChainVisitor;
 
 /**
  * The RuleChain is a means by which Rules can participate in a uniform
@@ -76,9 +76,9 @@ public class RuleChain {
                 .get(language);
         if (visitor == null) {
             if (Language.JAVA.equals(language)) {
-                visitor = new JavaRuleChainVisitorByRule();
+                visitor = new JavaRuleChainVisitor();
             } else if (Language.JSP.equals(language)) {
-                visitor = new JspRuleChainVisitorByRule();
+                visitor = new JspRuleChainVisitor();
             } else {
                 throw new IllegalArgumentException("Unknown language: "
                         + language);

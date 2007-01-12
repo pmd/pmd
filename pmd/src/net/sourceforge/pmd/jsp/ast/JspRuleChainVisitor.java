@@ -7,7 +7,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class JspRuleChainVisitorByRule extends AbstractRuleChainVisitor {
+public class JspRuleChainVisitor extends AbstractRuleChainVisitor {
 
     protected void indexNodes(List astCompilationUnits, RuleContext ctx) {
         JspParserVisitor jspParserVisitor = new JspParserVisitorAdapter() {
