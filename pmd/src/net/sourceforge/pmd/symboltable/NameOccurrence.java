@@ -151,6 +151,11 @@ public class NameOccurrence {
                 l = node;
                 continue;
             }
+            
+            // catch this.i++ or ++this.i
+            if (gp instanceof ASTPreDecrementExpression || gp instanceof ASTPreIncrementExpression || gp instanceof ASTPostfixExpression) {
+                return true;
+            }
     
             return false;
         }

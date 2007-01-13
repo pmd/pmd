@@ -52,6 +52,18 @@ public class NameOccurrencesTest extends STBBaseTst {
         assertEquals("b", ((NameOccurrence) occs.getNames().get(0)).getImage());
         assertEquals("x", ((NameOccurrence) occs.getNames().get(1)).getImage());
     }
+    
+    public void testIsSelfAssignment(){
+        parseCode(TEST5);
+        List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
+        NameFinder occs = new NameFinder((ASTPrimaryExpression) nodes.get(2));
+        assertTrue(((NameOccurrence) occs.getNames().get(0)).isSelfAssignment());
+
+        parseCode(TEST6);
+        nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
+        occs = new NameFinder((ASTPrimaryExpression) nodes.get(2));
+        assertTrue(((NameOccurrence) occs.getNames().get(0)).isSelfAssignment());
+    }
 
     public static final String TEST1 =
             "public class Foo {" + PMD.EOL +
@@ -80,4 +92,32 @@ public class NameOccurrencesTest extends STBBaseTst {
             "  b.x = 2;" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
+
+    public static final String TEST5 =
+        "public class Foo{" + PMD.EOL +
+        "    private int counter;" + PMD.EOL +
+        "    private Foo(){" + PMD.EOL +
+        "        counter = 0;" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "    private int foo(){" + PMD.EOL +
+        "        if (++counter < 3) {" + PMD.EOL +
+        "            return 0;" + PMD.EOL +
+        "        }" + PMD.EOL +
+        "        return 1;" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "}";
+    
+    public static final String TEST6 =
+        "public class Foo{" + PMD.EOL +
+        "    private int counter;" + PMD.EOL +
+        "    private Foo(){" + PMD.EOL +
+        "        counter = 0;" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "    private int foo(){" + PMD.EOL +
+        "        if (++this.counter < 3) {" + PMD.EOL +
+        "            return 0;" + PMD.EOL +
+        "        }" + PMD.EOL +
+        "        return 1;" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "}";
 }
