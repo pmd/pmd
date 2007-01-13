@@ -86,12 +86,12 @@ public class PMD {
             Object rootNode = parser.parse(reader);
             ctx.excludeLines(parser.getExcludeMap());
             long end = Benchmark.nanoTime();
-            Benchmark.mark(Benchmark.TYPE_PARSER, "Parser", end - start, 0);
+            Benchmark.mark(Benchmark.TYPE_PARSER, end - start, 0);
             Thread.yield();
             start = Benchmark.nanoTime();
             sourceTypeHandler.getSymbolFacade().start(rootNode);
             end = Benchmark.nanoTime();
-            Benchmark.mark(Benchmark.TYPE_SYMBOL_TABLE, "Symbol Table", end - start, 0);
+            Benchmark.mark(Benchmark.TYPE_SYMBOL_TABLE, end - start, 0);
 
             Language language = SourceTypeToRuleLanguageMapper.getMappedLanguage(sourceType);
 
@@ -99,14 +99,14 @@ public class PMD {
                 start = Benchmark.nanoTime();
                 sourceTypeHandler.getDataFlowFacade().start(rootNode);
                 end = Benchmark.nanoTime();
-                Benchmark.mark(Benchmark.TYPE_DFA, "Data Flow Analysis", end - start, 0);
+                Benchmark.mark(Benchmark.TYPE_DFA, end - start, 0);
             }
 
             if (ruleSets.usesTypeResolution(language)) {
                 start = Benchmark.nanoTime();
                 sourceTypeHandler.getTypeResolutionFacade().start(rootNode);
                 end = Benchmark.nanoTime();
-                Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, "Type Resolution", end - start, 0);
+                Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, end - start, 0);
             }
 
             List acus = new ArrayList();
@@ -252,7 +252,7 @@ public class PMD {
             files = collectFilesFromOneName(opts.getInputPath(), fileSelector);
         }
         long endFiles = Benchmark.nanoTime();
-        Benchmark.mark(Benchmark.TYPE_COLLECT_FILES, "Collect Files", endFiles - startFiles, 0);
+        Benchmark.mark(Benchmark.TYPE_COLLECT_FILES, endFiles - startFiles, 0);
 
         SourceType sourceType;
         if (opts.getTargetJDK().equals("1.3")) {
@@ -279,14 +279,14 @@ public class PMD {
         report.start();
 
         try {
-        	   long startLoadRules = Benchmark.nanoTime();
+            long startLoadRules = Benchmark.nanoTime();
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             ruleSetFactory.setMinimumPriority(opts.getMinPriority());
 
             RuleSets rulesets = ruleSetFactory.createRuleSets(opts.getRulesets());
             printRuleNamesInDebug(opts.debugEnabled(), rulesets);
-        	   long endLoadRules = Benchmark.nanoTime();
-        	   Benchmark.mark(Benchmark.TYPE_LOAD_RULES, "Load Rules", endLoadRules - startLoadRules, 0);
+            long endLoadRules = Benchmark.nanoTime();
+            Benchmark.mark(Benchmark.TYPE_LOAD_RULES, endLoadRules - startLoadRules, 0);
 
             processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx,
                     opts.getRulesets(), opts.debugEnabled(), opts.shortNamesEnabled(),
@@ -328,12 +328,12 @@ public class PMD {
                 }
             }
             long reportEnd = Benchmark.nanoTime();
-            Benchmark.mark(Benchmark.TYPE_REPORTING, "Reporting", reportEnd - reportStart, 0);
+            Benchmark.mark(Benchmark.TYPE_REPORTING, reportEnd - reportStart, 0);
         }
         
         if (opts.benchmark()) {
             long end = Benchmark.nanoTime();
-            Benchmark.mark(Benchmark.TYPE_TOTAL, "Total PMD", end - start, 0);
+            Benchmark.mark(Benchmark.TYPE_TOTAL_PMD, end - start, 0);
             System.err.println(Benchmark.report());
         }
     }
@@ -479,6 +479,7 @@ public class PMD {
         } catch (InterruptedException e) {
         }
 
+        long start = Benchmark.nanoTime();
         Report mainReport = ctx.getReport();
         Iterator i = factory.threadList.iterator();
         while (i.hasNext()) {
@@ -486,6 +487,8 @@ public class PMD {
             Report r = thread.context.getReport();
             mainReport.merge(r);
         }
+        long end = Benchmark.nanoTime();
+        Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
     }
 
     /**

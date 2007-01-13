@@ -46,7 +46,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
         long start = Benchmark.nanoTime();
         indexNodes(astCompilationUnits, ctx);
         long end = Benchmark.nanoTime();
-        Benchmark.mark(Benchmark.TYPE_RULE_CHAIN, "RuleChain Visit", end - start, 1);
+        Benchmark.mark(Benchmark.TYPE_RULE_CHAIN_VISIT, end - start, 1);
 
         // For each rule, allow it to visit the nodes it desires
         int visits = 0;

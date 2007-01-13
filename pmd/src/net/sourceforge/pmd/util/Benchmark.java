@@ -185,15 +185,33 @@ public class Benchmark {
     public static final int TYPE_SYMBOL_TABLE = 5;
     public static final int TYPE_DFA = 6;
     public static final int TYPE_TYPE_RESOLUTION = 7;
-    public static final int TYPE_RULE_CHAIN = 8;
+    public static final int TYPE_RULE_CHAIN_VISIT = 8;
     public static final int TYPE_REPORTING = 9;
     private static final int TYPE_RULE_TOTAL = 10;
     private static final int TYPE_RULE_CHAIN_RULE_TOTAL = 11;
     private static final int TYPE_MEASURED_TOTAL = 12;
-    private static final int TYPE_UNMEASURED_TOTAL = 13;
-    public static final int TYPE_TOTAL = 14;
+    private static final int TYPE_NON_MEASURED_TOTAL = 13;
+    public static final int TYPE_TOTAL_PMD = 14;
+    
+    private static final String[] TYPE_NAMES = {
+        null,
+        null,
+        "Collect Files",
+        "Load Rules",
+        "Parser",
+        "Symbol Table",
+        "Data Flow Analysis",
+        "Type Resolution",
+        "RuleChain Visit",
+        "Reporting",
+        "Rule Total",
+        "RuleChain Rule Total",
+        "Measured",
+        "Non-measured",
+        "Total PMD",
+    };
 
-	 private static final class BenchmarkResult implements Comparable {
+    private static final class BenchmarkResult implements Comparable {
         private final int type;
         private final String name;
         private long time;
@@ -240,11 +258,23 @@ public class Benchmark {
         //return System.nanoTime();
     }
 
+    public static void mark(int type, long time, long count) {
+        mark(type, null, time, count);
+    }
+
     public synchronized static void mark(int type, String name, long time, long count) {
-    	BenchmarkResult benchmarkResult = (BenchmarkResult)nameToBenchmarkResult.get(name);
+        String typeName = TYPE_NAMES[type];
+        if (typeName != null && name != null) {
+            throw new IllegalArgumentException("Name cannot be given for type: " + type);
+        } else if (typeName == null && name == null) {
+            throw new IllegalArgumentException("Name is required for type: " + type);
+        } else if (typeName == null) {
+            typeName = name;
+        }
+        BenchmarkResult benchmarkResult = (BenchmarkResult)nameToBenchmarkResult.get(typeName);
         if (benchmarkResult == null) {
-            benchmarkResult = new BenchmarkResult(type, name);
-            nameToBenchmarkResult.put(name, benchmarkResult);
+            benchmarkResult = new BenchmarkResult(type, typeName);
+            nameToBenchmarkResult.put(typeName, benchmarkResult);
         }
         benchmarkResult.update(time, count);
     }
@@ -256,8 +286,8 @@ public class Benchmark {
     public static String report() {
         List results = new ArrayList(nameToBenchmarkResult.values());
 
-        long totalTime[] = new long[TYPE_TOTAL + 1];
-        long totalCount[] = new long[TYPE_TOTAL + 1];
+        long totalTime[] = new long[TYPE_TOTAL_PMD + 1];
+        long totalCount[] = new long[TYPE_TOTAL_PMD + 1];
         for (Iterator i = results.iterator(); i.hasNext();) {
             BenchmarkResult benchmarkResult = (BenchmarkResult)i.next();
             totalTime[benchmarkResult.getType()] += benchmarkResult.getTime();
@@ -266,10 +296,10 @@ public class Benchmark {
                 totalTime[TYPE_MEASURED_TOTAL] += benchmarkResult.getTime();
             }
         }
-        results.add(new BenchmarkResult(TYPE_RULE_TOTAL, "Rule Total", totalTime[TYPE_RULE], 0));
-        results.add(new BenchmarkResult(TYPE_RULE_CHAIN_RULE_TOTAL, "RuleChain Rule Total", totalTime[TYPE_RULE_CHAIN_RULE], 0));
-        results.add(new BenchmarkResult(TYPE_MEASURED_TOTAL, "Measured", totalTime[TYPE_MEASURED_TOTAL], 0));
-        results.add(new BenchmarkResult(TYPE_UNMEASURED_TOTAL, "Non-measured", totalTime[TYPE_TOTAL] - totalTime[TYPE_MEASURED_TOTAL], 0));
+        results.add(new BenchmarkResult(TYPE_RULE_TOTAL, TYPE_NAMES[TYPE_RULE_TOTAL], totalTime[TYPE_RULE], 0));
+        results.add(new BenchmarkResult(TYPE_RULE_CHAIN_RULE_TOTAL, TYPE_NAMES[TYPE_RULE_CHAIN_RULE_TOTAL], totalTime[TYPE_RULE_CHAIN_RULE], 0));
+        results.add(new BenchmarkResult(TYPE_MEASURED_TOTAL, TYPE_NAMES[TYPE_MEASURED_TOTAL], totalTime[TYPE_MEASURED_TOTAL], 0));
+        results.add(new BenchmarkResult(TYPE_NON_MEASURED_TOTAL, TYPE_NAMES[TYPE_NON_MEASURED_TOTAL], totalTime[TYPE_TOTAL_PMD] - totalTime[TYPE_MEASURED_TOTAL], 0));
         Collections.sort(results);
 
         StringBuffer buf = new StringBuffer();
@@ -283,7 +313,7 @@ public class Benchmark {
             while (buf2.length() <= 50) {
                 buf2.append(' ');
             }
-            buf2.append(StringUtil.lpad(MessageFormat.format("{0,number,0.00000}", new Object[]{new Double(benchmarkResult.getTime()/1000000000.0)}), 8));
+            buf2.append(StringUtil.lpad(MessageFormat.format("{0,number,0.000}", new Object[]{new Double(benchmarkResult.getTime()/1000000000.0)}), 8));
             if (benchmarkResult.getType() <= TYPE_RULE_CHAIN_RULE) {
                 buf2.append(StringUtil.lpad(MessageFormat.format("{0,number,###,###,###,###,###}", new Object[]{new Long(benchmarkResult.getCount())}), 20));
             }
