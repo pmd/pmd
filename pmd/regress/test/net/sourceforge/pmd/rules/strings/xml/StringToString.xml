@@ -82,4 +82,18 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+ToString on String Array Object
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public String getFoo() {
+        String foo[] = new String[0];
+        foo.toString();
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
