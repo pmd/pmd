@@ -72,6 +72,9 @@ import org.eclipse.jface.viewers.Viewer;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2007/01/14 21:03:49  holobender
+ * violation overview was not updated in some cases... fixed
+ *
  * Revision 1.6  2006/11/20 14:55:31  holobender
  * fix to minor refresh problems
  *
@@ -515,12 +518,11 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
      * @param changes
      */
     protected void updateViewer(List additions, List removals, List changes) {
-        final List refreshList = new ArrayList();
-        
+
         // perform removals
         if (removals.size() > 0) {
-            this.treeViewer.remove(removals.toArray(new AbstractPMDRecord[removals.size()]));
-            refreshList.addAll(removals);
+            this.treeViewer.cancelEditing();
+            this.treeViewer.remove(removals.toArray());
         }
 
         // perform additions
@@ -533,34 +535,13 @@ public class ViolationOverviewContentProvider implements ITreeContentProvider, I
                     this.treeViewer.add(this.root, addedRec);
                 }
             }
-            refreshList.addAll(additions);
         }
 
         // perform changes
         if (changes.size() > 0) {
-            for (int i = 0; i < changes.size(); i++) {
-                final AbstractPMDRecord changedRec = (AbstractPMDRecord) changes.get(i);
-                if (changedRec instanceof FileRecord) {
-                    this.treeViewer.update(changedRec, null);
-                    this.treeViewer.update(changedRec.getChildren(), null);
-                }
-            }
-            refreshList.addAll(changes);
+            this.treeViewer.update(changes.toArray(), null);
         }
-        
-        refreshViewer(refreshList);
-    }
-    
-    /**
-     * Refresh the viewer with the parent elements of each element in the list.
-     * @param elements list of changes, removals or additions (AbstractPMDRecord)
-     */
-    protected void refreshViewer(List elements) {
-        final Iterator elementIterator = elements.iterator();
-        while (elementIterator.hasNext()) {
-            final AbstractPMDRecord record = (AbstractPMDRecord)elementIterator.next();
-            this.treeViewer.refresh(record.getParent());
-        }
-        this.violationView.refreshMenu();
+
+        this.violationView.refresh();
     }
 }
