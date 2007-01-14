@@ -206,6 +206,15 @@
         </developer>
 
         <developer>
+            <name>Ryan Gustafson</name>
+            <id>rgustav</id>
+            <email>rgustav@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
             <name>Johan Nagels</name>
             <id>bluejohn</id>
             <email>bluejohn@users.sourceforge.net</email>
