@@ -5,6 +5,7 @@ Fixed bugs 1626201 & 1633683 - BrokenNullCheck now catches more cases
 Fixed bug 1626715 - UseAssertSameInsteadOfAssertTrue now correctly checks classes which contain the null constant
 Fixed bug 1531216 - ImmutableField. NameOccurrence.isSelfAssignment now recognizes this.x++ as a self assignment
 Fixed bug 1634078 - StringToString now recognizes toString on a String Array, rather than an element.
+Fixed bug 1631646 - UselessOperationOnImmutable doesn't throw on variable.method().variable. 
 Applied patch 1612455 - RFE 1411022 CompareObjectsWithEquals now catches the case where comparison is against new Object
 XPath rules are now chained together for an extra speedup in processing
 

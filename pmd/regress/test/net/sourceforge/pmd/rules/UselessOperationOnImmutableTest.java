@@ -20,6 +20,7 @@ public class UselessOperationOnImmutableTest extends SimpleAggregatorTst {
             new TestDescriptor(TEST2, "useless operation on BigInteger", 1, rule),
             new TestDescriptor(TEST3, "using the result, so OK", 0, rule),
             new TestDescriptor(TEST4, "using the result in a method call, so OK", 0, rule),
+            new TestDescriptor(TEST6, "BigInteger obtained from compound method call", 0, rule),
         });
 
         runTests(new TestDescriptor[]{
@@ -67,6 +68,15 @@ public class UselessOperationOnImmutableTest extends SimpleAggregatorTst {
         "           result.add(entry(size(),i).negate());" + PMD.EOL +
         "           result.add(this.equations[i].check(solution));" + PMD.EOL +
         "        }" + PMD.EOL +
+        "    }" + PMD.EOL +
+        "}";
+
+    private static final String TEST6 =
+        "public class Foo {" + PMD.EOL +
+        "    public String toString() {" + PMD.EOL +
+        "    Bar _b;" + PMD.EOL +
+        "        java.math.BigInteger n = _b.getBigIntContainer().n;" + PMD.EOL +
+        "        return n.toString();" + PMD.EOL +
         "    }" + PMD.EOL +
         "}";
 }

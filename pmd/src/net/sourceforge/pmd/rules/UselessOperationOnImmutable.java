@@ -6,9 +6,9 @@ import java.util.Set;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -38,7 +38,9 @@ public class UselessOperationOnImmutable extends AbstractRule {
         String variableName = var.getImage();
         for (Iterator it = var.getUsages().iterator(); it.hasNext();) {
             NameOccurrence no = (NameOccurrence) it.next();
-            ASTName sn = (ASTName) no.getLocation();
+            // FIXME - getUsages will return everything with the same name as the variable, 
+            // see JUnit test, case 6. Changing to SimpleNode below, revisit when getUsages is fixed
+            SimpleNode sn = (SimpleNode) no.getLocation();
             if (!sn.jjtGetParent().jjtGetParent().jjtGetParent().getClass().equals(ASTExpression.class)) {
                 String methodCall = sn.getImage().substring(variableName.length());
                 if (targetMethods.contains(methodCall)) {
