@@ -712,7 +712,7 @@ class Foo {
  [ends-with(@Image, 'toLowerCase') or ends-with(@Image,
 'toUpperCase')]
  ]
-[PrimarySuffix/Arguments[@ArgumentCount=0]]
+[PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
      ]]>
             </value>
           </property>
