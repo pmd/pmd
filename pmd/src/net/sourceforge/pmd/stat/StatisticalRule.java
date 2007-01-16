@@ -22,7 +22,7 @@ import net.sourceforge.pmd.properties.IntegerProperty;
  */
 public abstract class StatisticalRule extends AbstractRule {
 
-    public static double DELTA = 0.000005; // Within this range. . .
+    public static final double DELTA = 0.000005; // Within this range. . .
 
     private SortedSet dataPoints = new TreeSet();
 

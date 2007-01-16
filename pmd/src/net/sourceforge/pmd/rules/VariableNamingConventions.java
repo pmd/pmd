@@ -15,7 +15,6 @@ import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.properties.StringProperty;
 
 public class VariableNamingConventions extends AbstractRule {

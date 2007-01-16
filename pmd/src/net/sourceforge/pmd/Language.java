@@ -17,8 +17,8 @@ public final class Language {
     private static final String JSP_RULE_LANGUAGE_NAME = "jsp";
     private static final String JAVA_RULE_LANGUAGE_NAME = "java";
 
-    public static Language JAVA = new Language(JAVA_RULE_LANGUAGE_NAME);
-    public static Language JSP = new Language(JSP_RULE_LANGUAGE_NAME);
+    public static final Language JAVA = new Language(JAVA_RULE_LANGUAGE_NAME);
+    public static final Language JSP = new Language(JSP_RULE_LANGUAGE_NAME);
 
 
     /**

@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CPPTokenizer implements Tokenizer {
-    protected String EOL = System.getProperty("line.separator", "\n");
-
     private static SimpleCharStream charStream;
 
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {

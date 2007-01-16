@@ -6,7 +6,6 @@ package net.sourceforge.pmd.cpd;
 import net.sourceforge.pmd.PMD;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
 import java.io.StringReader;

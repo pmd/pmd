@@ -171,7 +171,7 @@ public class CPDTask extends Task {
     }
 
     public static class LanguageAttribute extends EnumeratedAttribute {
-        private String[] LANGUAGES = new String[]{LanguageFactory.JAVA_KEY, LanguageFactory.JSP_KEY, LanguageFactory.CPP_KEY, LanguageFactory.C_KEY, LanguageFactory.PHP_KEY, LanguageFactory.RUBY_KEY };
+        private static final String[] LANGUAGES = new String[]{LanguageFactory.JAVA_KEY, LanguageFactory.JSP_KEY, LanguageFactory.CPP_KEY, LanguageFactory.C_KEY, LanguageFactory.PHP_KEY, LanguageFactory.RUBY_KEY };
         public String[] getValues() {
             return LANGUAGES;
         }
