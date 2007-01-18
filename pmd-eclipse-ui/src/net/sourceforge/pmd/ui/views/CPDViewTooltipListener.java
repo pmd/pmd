@@ -61,6 +61,9 @@ import org.eclipse.swt.widgets.TreeItem;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2007/01/18 21:03:56  phherlin
+ * Fix several problems on memento usage
+ *
  * Revision 1.1  2006/11/16 17:11:08  holobender
  * Some major changes:
  * - new CPD View
@@ -148,7 +151,7 @@ public class CPDViewTooltipListener implements Listener {
     }
 
     private String createText(Match match) {
-        final String text = match.getSourceCodeSlice().replace("\t", "    ");
+        final String text = match.getSourceCodeSlice().replaceAll("\t", "    ");
         final StringBuffer outputString = new StringBuffer();
         final StringTokenizer lines = new StringTokenizer(text, "\n");
         for (int i=0; lines.hasMoreTokens(); i++) {

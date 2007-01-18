@@ -63,6 +63,9 @@ import org.eclipse.ui.XMLMemento;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2007/01/18 21:03:56  phherlin
+ * Fix several problems on memento usage
+ *
  * Revision 1.6  2006/11/16 17:11:08  holobender
  * Some major changes:
  * - new CPD View
@@ -285,7 +288,7 @@ public class ViewMemento {
             if (k > 0) {
                 valueString.append(LIST_SEPARATOR);
             }
-            valueString.append(valueList.get(k).toString());
+            valueString.append(valueList.get(k));
         }
 
         putString(key, valueString.toString());
@@ -336,7 +339,7 @@ public class ViewMemento {
         if (valueString != null) {
             final String[] objects = valueString.split(LIST_SEPARATOR);
             for (int k = 0; k < objects.length; k++) {
-                if (objects[k].trim().length() == 0) {
+                if ((objects[k].trim().length() == 0) || ("null".equals(objects[k]))) {
                     valuelist.add(new Integer(0)); // NOPMD by Herlin on 11/10/06 00:13
                 } else {
                     valuelist.add(new Integer(objects[k])); // NOPMD by Herlin on 11/10/06 00:14

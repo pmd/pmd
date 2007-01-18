@@ -47,8 +47,8 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
     private ViewerFilter viewerFilter;
     private FileRecord resource;
 
-    protected Integer[] columnWidths;
-    protected int[] columnSortOrder = { 1, 1, 1 };
+    protected final Integer[] columnWidths = {new Integer(20), new Integer(170), new Integer(40)};
+    protected final int[] columnSortOrder = { 1, 1, 1 };
     protected int currentSortedColumn;
 
     /**
@@ -123,7 +123,6 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
      */
     private void createColumnAdapters(Table table) {
         TableColumn[] columns = table.getColumns();
-        columnWidths = new Integer[columns.length];
 
         for (int k = 0; k < columns.length; k++) {
             columnWidths[k] = new Integer(columns[k].getWidth());
@@ -264,9 +263,13 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
 
         TableColumn[] columns = tableViewer.getTable().getColumns();
         for (int k = 0; k < widths.length; k++) {
+            if (widths[k] == null) {
+                widths[k] = k == 0 ? new Integer(20) : k == 1 ? new Integer(170) : new Integer(40);
+            }
             columns[k].setWidth(widths[k].intValue());
         }
-        columnWidths = widths;
+        
+        System.arraycopy(widths, 0, this.columnWidths, 0, Math.min(this.columnWidths.length, widths.length));
     }
 
     /**
@@ -282,10 +285,11 @@ public class ViolationOutlinePage extends Page implements IPage, ISelectionChang
      * @param properties, an Integer-Array with the Number of Column to sort by [0] and the Direction to sort by (-1 or 1) [1]
      */
     public void setSorterProperties(Integer[] properties) {
-        currentSortedColumn = properties[0].intValue();
-        columnSortOrder[currentSortedColumn] = properties[1].intValue();
-
-        tableViewer.setSorter(getViewerSorter(currentSortedColumn));
+        if (properties.length > 0) {
+            this.currentSortedColumn = properties[0].intValue();
+            this.columnSortOrder[currentSortedColumn] = properties[1].intValue();
+            this.tableViewer.setSorter(getViewerSorter(this.currentSortedColumn));
+        }
     }
 
     /**

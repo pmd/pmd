@@ -63,6 +63,9 @@ import org.eclipse.ui.ide.IDE;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2007/01/18 21:03:56  phherlin
+ * Fix several problems on memento usage
+ *
  * Revision 1.1  2006/11/16 17:11:08  holobender
  * Some major changes:
  * - new CPD View
@@ -195,15 +198,18 @@ public class ViolationOverviewDoubleClickListener implements IDoubleClickListene
             if (view == null) {
                 view = (ViolationOutline) workbenchPage.showView(PMDUiConstants.ID_OUTLINE);
             }
-            final ViolationOutlinePage vioPage = (ViolationOutlinePage)view.getCurrentPage();
             
-            final TableItem[] items = vioPage.getTableViewer().getTable().getItems();
-            vioPage.getTableViewer().getTable().deselectAll();
-            for (int j=0; j< markers.length; j++) {                               
-                for (int i=0; i< items.length; i++) {
-                    if (items[i].getData() instanceof IMarker 
-                            && markers[j].equals(items[i].getData())) {
-                        vioPage.getTableViewer().getTable().select(i);
+            if (view.getCurrentPage() instanceof ViolationOutlinePage) {
+                final ViolationOutlinePage vioPage = (ViolationOutlinePage)view.getCurrentPage();
+                
+                final TableItem[] items = vioPage.getTableViewer().getTable().getItems();
+                vioPage.getTableViewer().getTable().deselectAll();
+                for (int j=0; j< markers.length; j++) {                               
+                    for (int i=0; i< items.length; i++) {
+                        if (items[i].getData() instanceof IMarker 
+                                && markers[j].equals(items[i].getData())) {
+                            vioPage.getTableViewer().getTable().select(i);
+                        }
                     }
                 }
             }

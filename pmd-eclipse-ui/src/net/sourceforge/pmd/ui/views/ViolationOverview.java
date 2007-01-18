@@ -53,6 +53,7 @@ import net.sourceforge.pmd.ui.model.PackageRecord;
 import net.sourceforge.pmd.ui.model.RootRecord;
 import net.sourceforge.pmd.ui.nls.StringKeys;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -86,6 +87,9 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.6  2007/01/18 21:03:56  phherlin
+ * Fix several problems on memento usage
+ *
  * Revision 1.5  2006/11/20 14:55:31  holobender
  * fix to minor refresh problems
  *
@@ -100,6 +104,8 @@ import org.eclipse.ui.part.ViewPart;
  *
  */
 public class ViolationOverview extends ViewPart implements ISelectionProvider, ITreeViewerListener { // NOPMD by Sven on 13.11.06 11:45
+    private static final Logger LOG = Logger.getLogger(ViolationOverview.class);
+    
     private TreeViewer treeViewer;
     private ViolationOverviewContentProvider contentProvider;
     private ViolationOverviewLabelProvider labelProvider;
@@ -111,8 +117,8 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     private RootRecord root;
     private ViewMemento memento;
 
-    protected Integer[] columnWidths;
-    protected int[] columnSortOrder = { 1, -1, -1, -1, 1 };
+    protected final Integer[] columnWidths = new Integer[5];
+    protected final int[] columnSortOrder = { 1, -1, -1, -1, 1 };
     protected int currentSortedColumn;
     private int showType;
 
@@ -284,29 +290,17 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      */
     private void createColumnAdapters(Tree tree) {
         final TreeColumn[] columns = tree.getColumns();
-        this.columnWidths = new Integer[columns.length];
 
         for (int k = 0; k < columns.length; k++) {
             this.columnWidths[k] = new Integer(columns[k].getWidth()); // NOPMD by Herlin on 09/10/06 15:02
-            final int i = k;
 
             // each Column gets a SelectionAdapter
             // on Selection the Column is sorted
-            columns[k].addSelectionListener(new SelectionAdapter() { // NOPMD by Herlin on 09/10/06 15:02
-                public void widgetSelected(SelectionEvent e) {
-                    currentSortedColumn = i;
-                    columnSortOrder[currentSortedColumn] *= -1;
-                    treeViewer.setSorter(getViewerSorter(currentSortedColumn));
-                }
-            });
+            columns[k].addSelectionListener(new ColumnSelectionAdapter(k));
 
             // the ResizeListener saves the current Width
             // for storing it easily into a Memento later
-            columns[k].addControlListener(new ControlAdapter() { // NOPMD by Herlin on 09/10/06 15:02
-                public void controlResized(ControlEvent e) {
-                    columnWidths[i] = new Integer(treeViewer.getTree().getColumn(i).getWidth());
-                }
-            });
+            columns[k].addControlListener(new ColumnControlAdapter(k));
         }
     }
 
@@ -414,6 +408,9 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         if (!this.treeViewer.getTree().isDisposed()) {
             final TreeColumn[] columns = this.treeViewer.getTree().getColumns();
             for (int k = 0; k < this.columnWidths.length; k++) {
+                if (this.columnWidths[k] == null) {
+                    this.columnWidths[k] = new Integer(75);
+                }
                 columns[k].setWidth(this.columnWidths[k].intValue());
             }
         }
@@ -427,10 +424,11 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
      *            (-1 or 1)
      */
     public void setSorterProperties(Integer[] properties) { // NOPMD by Herlin on 09/10/06 15:03
-        this.currentSortedColumn = properties[0].intValue();
-        this.columnSortOrder[this.currentSortedColumn] = properties[1].intValue();
-
-        this.treeViewer.setSorter(getViewerSorter(this.currentSortedColumn));
+        if (properties.length > 0) {
+            this.currentSortedColumn = properties[0].intValue();
+            this.columnSortOrder[this.currentSortedColumn] = properties[1].intValue();
+            this.treeViewer.setSorter(getViewerSorter(this.currentSortedColumn));
+        }
     }
 
     /**
@@ -550,7 +548,6 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         // the Memento sets the Widths of Columns
         final List widthList = this.memento.getIntegerList(COLUMN_WIDTHS);
         if (!widthList.isEmpty()) {
-            this.columnWidths = new Integer[widthList.size()];
             widthList.toArray(this.columnWidths);
             setColumnWidths();
         }
@@ -820,4 +817,40 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
         }
         return numberOfMethods;
     }
+    
+    
+    /**
+     * Private Selection Adapter to handle column resizing.
+     */
+    private class ColumnSelectionAdapter extends SelectionAdapter {
+        private final int column;
+        
+        public ColumnSelectionAdapter(int column) {
+            super();
+            this.column = column;
+        }
+        
+        public void widgetSelected(SelectionEvent e) {
+            columnSortOrder[this.column] *= -1;
+            treeViewer.setSorter(getViewerSorter(this.column));
+        }
+    }
+    
+    /**
+     * Private Control Adpater to handle column width change.
+     */
+    private class ColumnControlAdapter extends ControlAdapter {
+        private final int column;
+        
+        public ColumnControlAdapter(int column) {
+            super();
+            this.column = column;
+        }
+        
+        public void controlResized(ControlEvent e) {
+            columnWidths[this.column] = new Integer(treeViewer.getTree().getColumn(this.column).getWidth());
+        }
+    }
+
+
 }
