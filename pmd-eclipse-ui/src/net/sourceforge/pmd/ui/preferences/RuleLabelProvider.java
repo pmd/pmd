@@ -15,6 +15,9 @@ import org.eclipse.swt.graphics.Image;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2007/01/18 21:03:17  phherlin
+ * Improve rule dialog
+ *
  * Revision 1.1  2006/05/22 21:23:38  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -50,7 +53,10 @@ public class RuleLabelProvider implements ITableLabelProvider {
                     result = PRIORITY_ILLEGAL;
                 }
             } else if (columnIndex == 2) {
-                result = rule.getDescription().trim();
+                result = rule.getDescription();
+                if (result != null) {
+                    result.trim();
+                }
             }
         }
 

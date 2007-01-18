@@ -21,30 +21,30 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * Implements a dialog for adding or editing a rule.
- * When editing, the rule is automatically updated. The caller has no need to
- * test if the dialog was OK or not.
+ * Implements a dialog for adding or editing a rule. When editing, the rule is
+ * automatically updated. The caller has no need to test if the dialog was OK or
+ * not.
  * 
  * @author Philippe Herlin
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.2  2006/10/06 19:39:21  phherlin
- * Fix 1470054 Violation Details dlg has OK button which does nothing
- *
- * Revision 1.1  2006/05/22 21:23:40  phherlin
- * Refactor the plug-in architecture to better support future evolutions
- *
- * Revision 1.3  2003/08/13 20:09:06  phherlin
- * Refactoring private->protected to remove warning about non accessible member access in enclosing types
- *
- * Revision 1.2  2003/07/07 19:25:36  phherlin
- * Adding PMD violations view
- *
- * Revision 1.1  2003/06/30 20:16:06  phherlin
- * Redesigning plugin configuration
- *
- *
+ * Revision 1.3  2007/01/18 21:03:17  phherlin
+ * Improve rule dialog
+ * Revision 1.2 2006/10/06 19:39:21 phherlin Fix 1470054 Violation Details
+ * dlg has OK button which does nothing
+ * 
+ * Revision 1.1 2006/05/22 21:23:40 phherlin Refactor the plug-in architecture
+ * to better support future evolutions
+ * 
+ * Revision 1.3 2003/08/13 20:09:06 phherlin Refactoring private->protected to
+ * remove warning about non accessible member access in enclosing types
+ * 
+ * Revision 1.2 2003/07/07 19:25:36 phherlin Adding PMD violations view
+ * 
+ * Revision 1.1 2003/06/30 20:16:06 phherlin Redesigning plugin configuration
+ * 
+ * 
  */
 public class RuleDialog extends Dialog {
     private static final int MODE_ADD = 1;
@@ -64,6 +64,7 @@ public class RuleDialog extends Dialog {
 
     /**
      * Constructor for RuleDialog.
+     * 
      * @param parentdlgArea
      */
     public RuleDialog(Shell parent) {
@@ -73,6 +74,7 @@ public class RuleDialog extends Dialog {
 
     /**
      * Constructor for RuleDialog.
+     * 
      * @param parentdlgArea
      */
     public RuleDialog(Shell parent, Rule editedRule) {
@@ -83,6 +85,7 @@ public class RuleDialog extends Dialog {
 
     /**
      * Constructor for RuleDialog.
+     * 
      * @param parentdlgArea
      */
     public RuleDialog(Shell parent, Rule editedRule, boolean flEdit) {
@@ -284,13 +287,15 @@ public class RuleDialog extends Dialog {
      */
     private Text buildDescriptionText(Composite parent) {
         Text text = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP);
-        if (mode == MODE_EDIT) {
-            text.setText(editedRule.getDescription().trim());
+
+        String description = this.editedRule.getDescription();
+        if (description == null) {
+            description = "";
         }
+        text.setText(description.trim());
 
         if (mode == MODE_VIEW) {
             text.setEditable(false);
-            text.setText(editedRule.getDescription().trim());
         }
 
         return text;
@@ -316,6 +321,7 @@ public class RuleDialog extends Dialog {
 
     /**
      * Helper method to shorten message access
+     * 
      * @param key a message key
      * @return requested message
      */
@@ -349,10 +355,8 @@ public class RuleDialog extends Dialog {
 
         String name = nameText.getText();
         if (name.trim().length() == 0) {
-            MessageDialog.openWarning(
-                getShell(),
-                getMessage(StringKeys.MSGKEY_WARNING_TITLE),
-                getMessage(StringKeys.MSGKEY_WARNING_NAME_MANDATORY));
+            MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
+                    getMessage(StringKeys.MSGKEY_WARNING_NAME_MANDATORY));
             nameText.setFocus();
             flValid = false;
         }
@@ -368,10 +372,8 @@ public class RuleDialog extends Dialog {
 
         String message = messageText.getText();
         if (message.trim().length() == 0) {
-            MessageDialog.openWarning(
-                getShell(),
-                getMessage(StringKeys.MSGKEY_WARNING_TITLE),
-                getMessage(StringKeys.MSGKEY_WARNING_MESSAGE_MANDATORY));
+            MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
+                    getMessage(StringKeys.MSGKEY_WARNING_MESSAGE_MANDATORY));
             messageText.setFocus();
             flValid = false;
         }
@@ -423,10 +425,8 @@ public class RuleDialog extends Dialog {
 
         // Display class error if needed
         if (flClassError) {
-            MessageDialog.openWarning(
-                getShell(),
-                getMessage(StringKeys.MSGKEY_WARNING_TITLE),
-                getMessage(StringKeys.MSGKEY_WARNING_CLASS_INVALID));
+            MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
+                    getMessage(StringKeys.MSGKEY_WARNING_CLASS_INVALID));
             implementationClassText.setFocus();
             flValid = false;
         }
@@ -436,6 +436,7 @@ public class RuleDialog extends Dialog {
 
     /**
      * Returns the rule.
+     * 
      * @return Rule
      */
     public Rule getRule() {
