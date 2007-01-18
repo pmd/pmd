@@ -29,6 +29,9 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2007/01/18 22:37:05  phherlin
+ * Fix 1583788 StackOverflowError in rule edit window
+ *
  * Revision 1.3  2007/01/18 21:03:17  phherlin
  * Improve rule dialog
  * Revision 1.2 2006/10/06 19:39:21 phherlin Fix 1470054 Violation Details
@@ -334,7 +337,7 @@ public class RuleDialog extends Dialog {
      */
     protected void okPressed() {
         if (validateForm() && (this.mode != MODE_VIEW)) {
-            okPressed();
+            super.okPressed();
         } else if (this.mode == MODE_VIEW) {
             cancelPressed();
         }

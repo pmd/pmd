@@ -1,7 +1,14 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
+v3.2.1 - tbp
 
+Runtime
+-------
+. Fix 1583788 StackOverflowError in rule edit window
+
+
+----------------------------------------------------------------------------------------
 v3.2.0 - 15/01/2007
 
 Runtime
