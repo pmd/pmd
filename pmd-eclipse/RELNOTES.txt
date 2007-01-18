@@ -1,6 +1,32 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
 
+v3.2.0 15/01/2006
+-----------------
+
+UPDATED : PMD v3.9
+------------------
+** JSP FILES ARE NOT SUPPORTED IN THIS VERSION YET **
+
+UPDATED : imporve overview and outline views
+--------------------------------------------
+These views include filters and the overview now propose 3 different layout of
+violations. Statistics are computed when a package is collapsed.
+A button is added to force statistics computations.
+
+NEW : Support for JDK 6.0
+-------------------------
+Projects targeted for JDK 6.0 are now supported.
+
+NEW : CPD support has been refactored
+-------------------------------------
+Dialogs and views has been developped to improve CPD integration.
+
+FIXED : various bugs...
+-----------------------
+
+
+----------------------------------------------------------------------------------------
 v3.1.7 05/10/2006
 -----------------
 

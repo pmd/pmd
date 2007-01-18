@@ -2,6 +2,18 @@ Change log for the PMD Eclipse plugin
 -------------------------------------
 
 
+v3.2.0 - 15/01/2007
+
+Runtime
+-------
+. Upgrade to PMD v3.9
+. Update and improve overview and outline views
+. Refactor CPD views
+. Fix major NullPointer and ClassCastException bugs
+. Add support for JDK 6.0
+
+
+----------------------------------------------------------------------------------------
 v3.1.7 - 05/10/2006
 
 Runtime
