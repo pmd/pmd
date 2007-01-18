@@ -46,6 +46,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 			populateClassName(node);
 		} catch (ClassNotFoundException e) {
 			populateImports(node);
+		} catch (NoClassDefFoundError e) {
+			populateImports(node);
 		}
 		return super.visit(node, data);
 	}
