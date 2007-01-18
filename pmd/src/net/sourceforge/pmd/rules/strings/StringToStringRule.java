@@ -19,10 +19,11 @@ public class StringToStringRule extends AbstractRule {
         boolean isArray = node.isArray();
         for (Iterator i = node.getUsages().iterator(); i.hasNext();) {
             NameOccurrence occ = (NameOccurrence) i.next();
-            if (occ.getNameForWhichThisIsAQualifier() != null) {
-                if (!isArray && occ.getNameForWhichThisIsAQualifier().getImage().indexOf("toString") != -1) {
+            NameOccurrence qualifier = occ.getNameForWhichThisIsAQualifier();
+            if (qualifier != null) {
+                if (!isArray && qualifier.getImage().indexOf("toString") != -1) {
                     addViolation(data, occ.getLocation());
-                } else if (isArray && occ.getNameForWhichThisIsAQualifier().getLocation() != null && !ASTName.class.equals(occ.getNameForWhichThisIsAQualifier().getLocation().getClass())) {
+                } else if (isArray && qualifier.getLocation() != null && !ASTName.class.equals(qualifier.getLocation().getClass()) && qualifier.getImage().equals("toString")) {
                     addViolation(data, occ.getLocation());
                 }
             }
