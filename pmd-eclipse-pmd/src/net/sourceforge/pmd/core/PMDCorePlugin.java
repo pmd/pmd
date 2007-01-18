@@ -45,6 +45,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.osgi.framework.Bundle;
 
 /**
  * The plugin class for the Core PMD Plugin.
@@ -53,19 +54,20 @@ import org.eclipse.core.runtime.Status;
  * @version $Revision$
  * 
  * $Log$
- * Revision 1.4  2006/06/20 21:04:49  phherlin
- * Enable PMD and fix error level violations
- *
- * Revision 1.3  2006/04/10 20:58:18  phherlin
- * Update to PMD 3.6
- *
- * Revision 1.2  2005/07/02 14:33:05  phherlin
- * Implement the RuleSets extension point
- *
- * Revision 1.1  2005/06/07 22:39:57  phherlin
- * Implementing extra ruleset declaration
- *
- *
+ * Revision 1.5  2007/01/18 20:58:27  phherlin
+ * Integrate PMD v3.9
+ * Revision 1.4 2006/06/20 21:04:49 phherlin Enable
+ * PMD and fix error level violations
+ * 
+ * Revision 1.3 2006/04/10 20:58:18 phherlin Update to PMD 3.6
+ * 
+ * Revision 1.2 2005/07/02 14:33:05 phherlin Implement the RuleSets extension
+ * point
+ * 
+ * Revision 1.1 2005/06/07 22:39:57 phherlin Implementing extra ruleset
+ * declaration
+ * 
+ * 
  */
 public class PMDCorePlugin extends Plugin {
     private static PMDCorePlugin pluginInstance; // NOPMD:AssignmentToNonFinalStatic
@@ -80,35 +82,42 @@ public class PMDCorePlugin extends Plugin {
         this.registerStandardRuleSets();
         this.registerAdditionalRuleSets();
     }
-    
+
     /**
      * Get the plugin instance
+     * 
      * @return the plugin instance
      */
     public static PMDCorePlugin getDefault() {
         return pluginInstance;
     }
-    
+
     /**
      * @return the ruleset manager instance
      */
     public final IRuleSetManager getRuleSetManager() {
         return this.ruleSetManager;
     }
-    
+
     /**
      * Logs inside the Eclipse environment
+     * 
      * @param severity the severity of the log (IStatus code)
      * @param message the message to log
      * @param t a possible throwable, may be null
      */
     public final void log(final int severity, final String message, final Throwable t) {
-        this.getLog().log(new Status(severity, getBundle().getSymbolicName(), 0, message, t));
+        Bundle bundle = getBundle();
+        if (bundle != null) {
+            getLog().log(new Status(severity, bundle.getSymbolicName(), 0, message, t));
+        }
+        
+        // TODO : when bundle is not created yet (ie at startup), we cannot log ; find a way to log.
     }
-    
+
     /**
      * Registering the standard rulesets
-     *
+     * 
      */
     private void registerStandardRuleSets() {
         final RuleSetFactory factory = new RuleSetFactory();
@@ -124,9 +133,9 @@ public class PMDCorePlugin extends Plugin {
     }
 
     /**
-     * Register additional rulesets that may be provided by a fragment.
-     * Find extension points implementation and call them
-     *
+     * Register additional rulesets that may be provided by a fragment. Find
+     * extension points implementation and call them
+     * 
      */
     private void registerAdditionalRuleSets() {
         try {

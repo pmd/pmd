@@ -42,6 +42,9 @@ package net.sourceforge.pmd.core;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2007/01/18 20:58:27  phherlin
+ * Integrate PMD v3.9
+ *
  * Revision 1.6  2006/10/06 17:07:39  phherlin
  * Upgrade to PMD v3.8
  *
@@ -85,6 +88,7 @@ public class PluginConstants {
             "rulesets/strictexception.xml",
             "rulesets/strings.xml",
             "rulesets/sunsecure.xml",
+            "rulesets/typeresolution.xml",
             "rulesets/unusedcode.xml"};
     
     /**
