@@ -167,4 +167,34 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <!-- A rare edge case that is technically a false positive, 
+    although the code is senseless. Will not fix. -->
+<!--<test-code>
+        <description><![CDATA[
+Useless code, but it will not throw a NullPointerException
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  if (family.plain == null && family.bold == null &&
+	    family.plain == null && family.bold == null) {
+ }
+}
+     ]]></code>
+    </test-code> -->
+        <test-code>
+        <description><![CDATA[
+Similar method calls with different arguments are OK
+        ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+   if (library.getBooks(Jane.class) != null ||
+      library.getBooks(Eyre.class) != null) { }
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

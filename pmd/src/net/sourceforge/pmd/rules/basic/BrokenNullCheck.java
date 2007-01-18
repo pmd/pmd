@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
@@ -139,14 +140,16 @@ public class BrokenNullCheck extends AbstractRule {
                 if (name != null && !name.equals("")) {
                     results.add(name);
                 }
+            } else if (child.getClass().equals(ASTClassOrInterfaceType.class)) {    //A class can be an argument too
+                String name = ((ASTClassOrInterfaceType)child).getImage();
+                results.add(name);
             }
-            
+
             if (child.jjtGetNumChildren() > 0) {
                 findExpressionNames(child, results);
             }
         }
     }
-
 
     private ASTPrimaryExpression findNullCompareExpression(ASTEqualityExpression equalityExpression) {
         List primaryExpressions = equalityExpression.findChildrenOfType(ASTPrimaryExpression.class);
