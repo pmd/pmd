@@ -85,6 +85,9 @@ import org.eclipse.ui.PlatformUI;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2007/01/18 21:00:23  phherlin
+ * Add support for Java 6.0
+ *
  * Revision 1.7  2006/11/16 16:47:42  holobender
  * division by zero fix
  *
@@ -323,6 +326,8 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 pmdEngine.setJavaVersion(SourceType.JAVA_14);
             } else if (JavaCore.VERSION_1_5.equals(compilerCompliance)) {
                 pmdEngine.setJavaVersion(SourceType.JAVA_15);
+            } else if (JavaCore.VERSION_1_6.equals(compilerCompliance)) {
+                pmdEngine.setJavaVersion(SourceType.JAVA_16);
             } else {
                 throw new CommandException("The target JDK, " + compilerCompliance + " is not yet supported"); // TODO:
                 // NLS
