@@ -1,3 +1,4 @@
+- [ 1634131 ] Netbeans Plug-in and source level 1.6
 - Removed dependency on Jakarta-ORO
 
 Version 1.9

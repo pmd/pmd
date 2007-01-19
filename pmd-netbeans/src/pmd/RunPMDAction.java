@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2002-2006, the pmd-netbeans team
+ *  Copyright (c) 2002-2007, the pmd-netbeans team
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without modification,
@@ -36,10 +36,10 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
-
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
@@ -48,7 +48,6 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.SourceType;
-
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.queries.SourceLevelQuery;
 import org.netbeans.api.progress.ProgressHandle;
@@ -66,8 +65,6 @@ import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.CookieAction;
-import org.openide.windows.OutputWriter;
-
 import pmd.config.ConfigUtils;
 import pmd.scan.EditorChangeListener;
 
@@ -83,6 +80,8 @@ import pmd.scan.EditorChangeListener;
  * enable real-time scanning.
  */
 public class RunPMDAction extends CookieAction {
+    
+    private static final Logger LOG = Logger.getLogger(RunPMDAction.class.getName());
 
     /**
      * Overridden to log that the action is being initialized, and to register an editor change listener for
@@ -173,13 +172,14 @@ public class RunPMDAction extends CookieAction {
                 FileObject fobj = dataobject.getPrimaryFile();
                 ClassPath cp = ClassPath.getClassPath( fobj, ClassPath.SOURCE );
                 if (cp == null) {
-                    // not on any classpath, ignore
+                    LOG.finer("File "+fobj+" is not on any source classpath. Ignoring.");
                     continue;
                 }
                 String name = cp.getResourceName( fobj, '.', false );
 
                 //The file is not a java file
                 if (!shouldCheck(dataobject)) {
+                    LOG.finer("File "+fobj+" should not be checked. Ignoring.");
                     continue;
                 }
 
@@ -189,6 +189,8 @@ public class RunPMDAction extends CookieAction {
                 PMD pmd = new PMD();
                 if ("1.5".equals(sourceLevel)) {
                     pmd.setJavaVersion(SourceType.JAVA_15);
+                } else if ("1.6".equals(sourceLevel)) {
+                    pmd.setJavaVersion(SourceType.JAVA_16);
                 } else if ("1.3".equals(sourceLevel)) {
                     pmd.setJavaVersion(SourceType.JAVA_13);
                 } else {
@@ -213,9 +215,11 @@ public class RunPMDAction extends CookieAction {
                 ctx.setSourceCodeFilename( name );
                 try {
                     pmd.processFile( reader, set, ctx );
+                    Logger.getLogger(RunPMDAction.class.getName()).finer("File "+fobj+" processed");
                 } catch( PMDException e ) {
                     // want to log only short info about failure and stack only when -J-Dpmd=-1 or similar flag is on
-                    ErrorManager.getDefault().log(ErrorManager.INFORMATIONAL+1, "PMD threw exception " + e.toString());
+                    Logger.getLogger("pmd").fine("PMD threw exception " + e.toString());
+                    // XXX use Exceptions
                     ErrorManager err = ErrorManager.getDefault().getInstance("pmd");
                     if (err.isLoggable(err.INFORMATIONAL)) {
                         err.notify(ErrorManager.INFORMATIONAL, e); // NOI18N
