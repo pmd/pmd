@@ -79,7 +79,7 @@ public class RunPMDActionTest extends NbTestCase {
         
         // try on empty list
         
-        result = pmd.RunPMDAction.performScan(Collections.EMPTY_LIST);
+        result = pmd.RunPMDAction.performScan(Collections.<DataObject>emptyList());
 //        assertEquals(expResult, result);
         
         FileObject dir = FileUtil.toFileObject(getWorkDir());
