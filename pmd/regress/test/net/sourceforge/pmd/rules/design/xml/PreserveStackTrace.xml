@@ -195,13 +195,13 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class B {
-public void bla(){
-try {
-;
-} catch (IllegalStateException e) {
-throw new RuntimeException(e);
-}
-}
+    public void bla() {
+        try {
+            ;
+        } catch (IllegalStateException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
      ]]></code>
     </test-code>
@@ -212,13 +212,34 @@ throw new RuntimeException(e);
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class B {
-public void bla(){
-try {
-;
-} catch (IllegalStateException e) {
-throw new RuntimeException();
+    public void bla() {
+        try {
+            ;
+        } catch (IllegalStateException e) {
+            throw new RuntimeException();
+        }
+    }
 }
-}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+14, Nested with same name catch and throw, fail on inner
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class B {
+    public void bla() {
+        try {
+            try {
+                ;
+            } catch (IllegalStateException ex) {
+                throw new RuntimeException("Oh no!");
+            }
+        } catch (IllegalStateException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
 }
      ]]></code>
     </test-code>
