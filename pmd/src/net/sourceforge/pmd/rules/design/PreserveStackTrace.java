@@ -14,13 +14,16 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import org.jaxen.JaxenException;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class PreserveStackTrace extends AbstractRule {
 
-	public Object visit(ASTCatchStatement node, Object data) {
+    private List nameNodes = new ArrayList();
+
+    public Object visit(ASTCatchStatement node, Object data) {
         String target = (((SimpleNode) node.jjtGetChild(0).jjtGetChild(1)).getImage());
         List lstThrowStatements = node.findChildrenOfType(ASTThrowStatement.class);
         for (Iterator iter = lstThrowStatements.iterator(); iter.hasNext();) {
@@ -56,7 +59,7 @@ public class PreserveStackTrace extends AbstractRule {
 	                        }
 	                    }
                     } else if(child.getClass().equals(ASTClassOrInterfaceType.class)){
-        				addViolation((RuleContext) data, throwStatement);
+                       addViolation((RuleContext) data, throwStatement);
                     }
                 }
             }
@@ -64,17 +67,21 @@ public class PreserveStackTrace extends AbstractRule {
         return super.visit(node, data);
     }
 
-	private void ck(Object data, String target,
-			ASTThrowStatement throwStatement, ASTArgumentList args) {
-		try {
-			List lst = args.findChildNodesWithXPath("//Name[@Image='" + target
-					+ "']");
-			if (lst.isEmpty()) {
-				RuleContext ctx = (RuleContext) data;
-				addViolation(ctx, throwStatement);
-			}
-		} catch (JaxenException e) {
-			e.printStackTrace();
-		}
-	}
+    private void ck(Object data, String target, ASTThrowStatement throwStatement,
+                    ASTArgumentList args) {
+        boolean match = false;
+        nameNodes.clear();
+        args.findChildrenOfType(ASTName.class, nameNodes);
+        for (int i = 0; i < nameNodes.size(); i++) {
+            ASTName nameNode = (ASTName)nameNodes.get(i);
+            if (target.equals(nameNode.getImage())) {
+                match = true;
+                break;
+            }
+        }
+        if (!match) {
+            RuleContext ctx = (RuleContext) data;
+            addViolation(ctx, throwStatement);
+        }
+    }
 }
