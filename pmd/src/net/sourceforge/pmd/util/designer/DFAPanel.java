@@ -182,7 +182,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
             int y1 = this.computeDrawPos(index1);
             int y2 = this.computeDrawPos(index2);
 
-            int arrow = 6;
+            //int arrow = 6;
 
             if (index1 < index2) {
                 if (index2 - index1 == 1) {
