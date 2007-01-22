@@ -552,17 +552,15 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
             putEvalPackage(nullEvalPackage);
         }
         //store any errors caught from other passes.
-        super.visit((ASTClassOrInterfaceDeclaration) node, data);
+        super.visit(node, data);
 
         //skip this class if it has no evaluation package
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {
-            //evaluate danger of all methods in class
-            while (evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass)) {
-            }
+            //evaluate danger of all methods in class, this method will return false when all methods have been evaluated
+            while (evaluateDangerOfMethods(getCurrentEvalPackage().allMethodsOfClass)) { } //NOPMD
             //evaluate danger of constructors
             evaluateDangerOfConstructors1(getCurrentEvalPackage().allPrivateConstructorsOfClass, getCurrentEvalPackage().allMethodsOfClass.keySet());
-            while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass)) {
-            }
+            while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass)) { } //NOPMD
 
             //get each method called on this object from a non-private constructor, if its dangerous flag it
             for (Iterator it = getCurrentEvalPackage().calledMethods.iterator(); it.hasNext();) {
