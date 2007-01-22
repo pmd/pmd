@@ -559,7 +559,10 @@ public class GUI implements CPDListener {
                 setListDataFrom(cpd.getMatches());
                 
             }
-        } catch (Throwable t) {
+        } catch (IOException t) {
+            t.printStackTrace();
+            JOptionPane.showMessageDialog(frame, "Halted due to " + t.getClass().getName() + "; " + t.getMessage());
+        } catch (RuntimeException t) {
             t.printStackTrace();
             JOptionPane.showMessageDialog(frame, "Halted due to " + t.getClass().getName() + "; " + t.getMessage());
         }

@@ -380,13 +380,23 @@ public class PMD {
                 ctx.getReport().addError(
                         new Report.ProcessingError(pmde.getMessage(),
                         fileName));
-            } catch (Throwable t) {
-                // unexepected exception: log and stop executor service
+            } catch (IOException ioe) {
+                // unexpected exception: log and stop executor service
                 if (debugEnabled) {
-                    t.printStackTrace();
+                    ioe.printStackTrace();
                 }
                 ctx.getReport().addError(
-                        new Report.ProcessingError(t.getMessage(),
+                        new Report.ProcessingError(ioe.getMessage(),
+                        fileName));
+
+                executor.shutdownNow();
+            } catch (RuntimeException re) {
+                // unexpected exception: log and stop executor service
+                if (debugEnabled) {
+                    re.printStackTrace();
+                }
+                ctx.getReport().addError(
+                        new Report.ProcessingError(re.getMessage(),
                         fileName));
 
                 executor.shutdownNow();
