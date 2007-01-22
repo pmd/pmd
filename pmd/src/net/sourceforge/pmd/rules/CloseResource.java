@@ -54,7 +54,7 @@ public class CloseResource extends AbstractRule {
 
     protected Map propertiesByName() {
         return propertyDescriptorsByName;
-    };
+    }
 
     public Object visit(ASTCompilationUnit node, Object data) {
         if (closeTargets.isEmpty() && getStringProperty(closeTargetsDescriptor) != null) {
@@ -106,7 +106,9 @@ public class CloseResource extends AbstractRule {
         String target = id.getImage() + ".close";
         Node n = var;
 
-        while (!((n = n.jjtGetParent()) instanceof ASTBlock)) ;
+        while (!(n instanceof ASTBlock)) {
+            n = n.jjtGetParent();
+        }
 
         ASTBlock top = (ASTBlock) n;
 
