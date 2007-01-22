@@ -46,21 +46,15 @@
 		<mkdir dir="${dir.lib}" />
 		<copy todir="${dir.build}rulesets">
 			<fileset dir="${dir.rulesets}">
-				<include name="*.xml" />
-				<include name="*.properties" />
+				<include name="**/*.xml" />
+				<include name="**/*.properties" />
 			</fileset>
 		</copy>
-   <copy todir="${dir.build}/test/net/sourceforge/pmd">
-     <fileset dir="${dir.regress}/test/net/sourceforge/pmd">
-       <include name="**/xml/*.xml" />
-     </fileset>
-		</copy>
-        <mkdir dir="${dir.build}/rulesets/releases" />
-        <copy todir="${dir.build}rulesets/releases">
-            <fileset dir="${dir.rulesets}/releases">
-                <include name="*.xml" />
+        <copy todir="${dir.build}/test/net/sourceforge/pmd">
+            <fileset dir="${dir.regress}/test/net/sourceforge/pmd">
+                <include name="**/xml/*.xml" />
             </fileset>
-        </copy>
+		</copy>
 	</target>
 
 	<target name="jar" depends="copy,compile" description="Jars up the classes and rulesets">
@@ -76,7 +70,7 @@
 		<jar jarfile="${dir.lib}\pmd-src-${version}.jar" basedir="${dir.src}" />
 	</target>
 
-	<target name="pmd" description="Runs PMD">
+	<target name="pmd" description="Runs PMD" depends="copy, compile">
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
 		<pmd rulesetfiles="unusedcode" shortFilenames="true">
 			<classpath>
@@ -88,6 +82,21 @@
 			</fileset>
 		</pmd>
 	</target>
+    
+    <target name="pmdOnPmd" description="Runs PMD on PMD" depends="copy, compile">
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
+        <pmd rulesetfiles="${dir.rulesets}internal\dogfood.xml" shortFilenames="true">
+            <classpath>
+                <path refid="dependencies.path" />
+            </classpath>
+            <formatter type="text" toConsole="true"/>
+            <fileset dir="${dir.src}">
+                <include name="**/*.java" />
+                <exclude name="**/ast/*.java" />
+                <exclude name="**/cppast/*.java" />
+            </fileset>
+        </pmd>
+    </target>
 
 	<target name="requires-junit" description="Ensures JUnit is available">
 		<available classname="junit.framework.Test" property="junit.available" classpathref="dependencies.path" />
