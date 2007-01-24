@@ -15,6 +15,9 @@ import org.eclipse.swt.graphics.Image;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2007/01/24 22:46:17  hooperbloob
+ * Cleanup rule description formatting & sorting bug crasher
+ *
  * Revision 1.2  2007/01/18 21:03:17  phherlin
  * Improve rule dialog
  *
@@ -54,9 +57,7 @@ public class RuleLabelProvider implements ITableLabelProvider {
                 }
             } else if (columnIndex == 2) {
                 result = rule.getDescription();
-                if (result != null) {
-                    result.trim();
-                }
+                result = (result == null) ? "" : result.trim();
             }
         }
 

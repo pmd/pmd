@@ -59,6 +59,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2007/01/24 22:46:17  hooperbloob
+ * Cleanup rule description formatting & sorting bug crasher
+ *
  * Revision 1.1  2006/05/22 21:23:39  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -123,23 +126,34 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
     
     private static final Comparator RULE_NAME_COMPARATOR = new Comparator() {
         public int compare(Object e1, Object e2) {
-               return ((Rule) e1).getName().compareTo(((Rule) e2).getName());
+        	return compareStrings(((Rule)e1).getName(), ((Rule)e2).getName());
         }
     };
     
     private static final Comparator RULE_PRIORITY_COMPARATOR = new Comparator() {
         public int compare(Object e1, Object e2) {
-           return ((Rule) e1).getPriority() - (((Rule) e2).getPriority());
+            return ((Rule) e1).getPriority() - (((Rule) e2).getPriority());
         }
     };
    
     private static final Comparator RULE_DESCRIPTION_COMPARATOR = new Comparator() {
         public int compare(Object e1, Object e2) {
-        	String desc1 = ((Rule) e1).getDescription().trim();
-        	String desc2 = ((Rule) e2).getDescription().trim();
-         	return desc1.toUpperCase().compareTo(desc2.toUpperCase());
+        	return compareStrings(((Rule)e1).getDescription(), ((Rule)e2).getDescription());
             }
     };
+   
+    /**
+     * Compare string pairs while handling nulls and trimming whitespace.
+     * 
+     * @param s1
+     * @param s2
+     * @return int
+     */
+    private static int compareStrings(String s1, String s2) {
+    	String str1 = s1 == null ? "" : s1.trim().toUpperCase();
+    	String str2 = s2 == null ? "" : s2.trim().toUpperCase();
+     	return str1.compareTo(str2);
+    }
     
     /**
      * @see IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
@@ -605,6 +619,10 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         return button;
     }
 
+    private static String asCleanString(String original) {
+    	return original == null ? "" : original.trim();
+    }
+    
     /**
      * Populate the rule table
      */
@@ -613,7 +631,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         ruleSet = new RuleSet();
         ruleSet.addRuleSet(defaultRuleSet);
         ruleSet.setName(defaultRuleSet.getName());
-        ruleSet.setDescription(defaultRuleSet.getDescription());
+        ruleSet.setDescription(asCleanString(defaultRuleSet.getDescription()));
         ruleTableViewer.setInput(ruleSet);
     }
 
