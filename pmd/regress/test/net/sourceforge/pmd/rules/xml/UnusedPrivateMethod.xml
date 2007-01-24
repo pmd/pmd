@@ -267,4 +267,16 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+SuppressWarnings("unused") - simple unused private method
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ @SuppressWarnings("unused")
+ private void foo() {}
+}
+     ]]></code>
+    </test-code>
 </test-data>

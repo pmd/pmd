@@ -8,6 +8,7 @@ Fixed bug 1634078 - StringToString now recognizes toString on a String Array, ra
 Fixed bug 1631646 - UselessOperationOnImmutable doesn't throw on variable.method().variable. 
 Fixed bug 1627830 - UseLocaleWithCaseConversions now works with compound string operations
 Applied patch 1612455 - RFE 1411022 CompareObjectsWithEquals now catches the case where comparison is against new Object
+Implemented RFE 1627581 - SuppressWarnings("unused") now suppresses all warnings in unusedcode.xml
 XPath rules are now chained together for an extra speedup in processing
 
 December 19, 2006 - 3.9:

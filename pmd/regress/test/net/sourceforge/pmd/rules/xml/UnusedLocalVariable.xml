@@ -292,4 +292,18 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+unused local with assignment - Suppressed
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings("unused")
+public class Foo {
+ void foo() {
+   String fr = new String();
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

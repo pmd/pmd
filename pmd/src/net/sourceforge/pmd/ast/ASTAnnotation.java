@@ -4,10 +4,14 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.Rule;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
 public class ASTAnnotation extends SimpleJavaNode {
+
+    private static List unusedRules = Arrays.asList(new String[]{"UnusedPrivateField","UnusedLocalVariable","UnusedPrivateMethod","UnusedFormalParameter"});
+
     public ASTAnnotation(int id) {
         super(id);
     }
@@ -30,7 +34,10 @@ public class ASTAnnotation extends SimpleJavaNode {
                     for (Iterator iter = nodes.iterator(); iter.hasNext();) {
                         ASTLiteral element = (ASTLiteral) iter.next();
                         if (element.hasImageEqualTo("\"PMD\"")
-                                || element.hasImageEqualTo(ruleAnno)) {
+                                || element.hasImageEqualTo(ruleAnno)
+                                // the SuppressWarnings("unused") annotation allows unused code 
+                                // to be igored and is a Java standard annotation
+                                || (element.hasImageEqualTo("\"unused\"") && unusedRules.contains(rule.getName()))) {
                             return true;
                         }
                     }
