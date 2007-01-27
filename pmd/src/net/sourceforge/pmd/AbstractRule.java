@@ -40,9 +40,9 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 		
 		Map<String, PropertyDescriptor> descsById = new HashMap<String, PropertyDescriptor>(descriptors.length);
 		
-		for (int i=0; i<descriptors.length; i++) {
-			descsById.put(descriptors[i].name(), descriptors[i]);
-		}
+		for (PropertyDescriptor descriptor : descriptors) {
+            descsById.put(descriptor.name(), descriptor);
+        }
 		return Collections.unmodifiableMap(descsById);
 	}	
 	
