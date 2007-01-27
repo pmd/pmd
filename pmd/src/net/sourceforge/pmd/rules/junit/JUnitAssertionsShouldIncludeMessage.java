@@ -10,7 +10,6 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class JUnitAssertionsShouldIncludeMessage extends AbstractRule {
@@ -25,7 +24,7 @@ public class JUnitAssertionsShouldIncludeMessage extends AbstractRule {
         }
     }
 
-    private List checks = new ArrayList();
+    private List<AssertionCall> checks = new ArrayList<AssertionCall>();
 
     public JUnitAssertionsShouldIncludeMessage() {
         checks.add(new AssertionCall(2, "assertEquals"));
@@ -37,8 +36,7 @@ public class JUnitAssertionsShouldIncludeMessage extends AbstractRule {
     }
 
     public Object visit(ASTArguments node, Object data) {
-        for (Iterator i = checks.iterator(); i.hasNext();) {
-            AssertionCall call = (AssertionCall) i.next();
+        for (AssertionCall call : checks) {
             check(data, node, call.args, call.name);
         }
         return super.visit(node, data);
