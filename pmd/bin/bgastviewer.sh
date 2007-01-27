@@ -1,1 +1,9 @@
-java -cp ../build:../lib/asm-3.0.jar:../lib/pmd-3.9.jar:../lib/jaxen-1.1.jar net.sourceforge.pmd.util.viewer.Viewer
+TOPDIR=..
+VERSION=3.9
+PMDJAR=$TOPDIR/lib/pmd-$VERSION.jar
+JARPATH=$TOPDIR/lib/asm-3.0.jar:$TOPDIR/lib/jaxen-1.1.jar
+OPTS=
+MAIN_CLASS=net.sourceforge.pmd.util.viewer.Viewer
+
+java $OPTS -cp $PMDJAR:$JARPATH:$TOPDIR/build $MAIN_CLASS $*
+
