@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class Formatter {
@@ -40,7 +39,7 @@ public class Formatter {
     private boolean toConsole;
     private boolean showSuppressed;
 
-    private static final Map renderersByCode = new HashMap(8);
+    private static final Map<String, RendererBuilder> renderersByCode = new HashMap<String, RendererBuilder>(8);
 
     static {
         renderersByCode.put("xml", new RendererBuilder() {
@@ -119,11 +118,7 @@ public class Formatter {
     }
 
     private static String[] validRendererCodes() {
-        Iterator iter = renderersByCode.keySet().iterator();
-        String[] validTypes = new String[renderersByCode.size()];
-        int i = 0;
-        while (iter.hasNext()) validTypes[i++] = (String) iter.next();
-        return validTypes;
+        return renderersByCode.keySet().toArray(new String[renderersByCode.size()]);
     }
 
     private void outputReportTo(Writer writer, Report report, boolean consoleRenderer) throws IOException {
@@ -159,7 +154,7 @@ public class Formatter {
         if ("".equals(type)) {
             throw new BuildException(unknownRendererMessage("<unspecified>"));
         }
-        RendererBuilder builder = (RendererBuilder) renderersByCode.get(type);
+        RendererBuilder builder = renderersByCode.get(type);
         Renderer renderer = builder == null ? fromClassname(type) : builder.build(new String[]{linkPrefix, linePrefix});
         renderer.showSuppressedViolations(showSuppressed);
         return renderer;

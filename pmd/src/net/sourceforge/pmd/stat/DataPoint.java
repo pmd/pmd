@@ -11,7 +11,7 @@ import java.util.Random;
  * @author David Dixon-Peugh
  *         Aug 8, 2002 DataPoint.java
  */
-public class DataPoint implements java.lang.Comparable {
+public class DataPoint implements Comparable<DataPoint> {
 
     private SimpleNode node;
     private int random;
@@ -29,20 +29,14 @@ public class DataPoint implements java.lang.Comparable {
         random = rand.nextInt(11061973);
     }
 
-    public int compareTo(Object object) {
-
-        DataPoint rhs = (DataPoint) object;
-
+    public int compareTo(DataPoint rhs) {
         Double lhsScore = new Double(score);
         Double rhsScore = new Double(rhs.getScore());
-
         if (lhsScore.doubleValue() != rhsScore.doubleValue()) {
             return lhsScore.compareTo(rhsScore);
         }
-
         Integer lhsRand = new Integer(random);
         Integer rhsRand = new Integer(rhs.random);
-
         return lhsRand.compareTo(rhsRand);
     }
 

@@ -8,7 +8,7 @@ package net.sourceforge.pmd;
  * @author Brian Remedios
  * @version $Revision$
  */
-public interface PropertyDescriptor extends Comparable {
+public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
 
 	PropertyDescriptor[] emptyPropertySet = new PropertyDescriptor[0];
 	

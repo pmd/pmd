@@ -6,7 +6,7 @@ package net.sourceforge.pmd.cpd;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TokenEntry implements Comparable {
+public class TokenEntry implements Comparable<TokenEntry> {
 
     public static final TokenEntry EOF = new TokenEntry();
 
@@ -16,7 +16,7 @@ public class TokenEntry implements Comparable {
     private int identifier;
     private int hashCode;
 
-    private final static Map Tokens = new HashMap();
+    private final static Map<String, Integer> Tokens = new HashMap<String, Integer>();
     private static int TokenCount = 0;
 
     private TokenEntry() {
@@ -25,7 +25,7 @@ public class TokenEntry implements Comparable {
     }
 
     public TokenEntry(String image, String tokenSrcID, int beginLine) {
-        Integer i = (Integer) Tokens.get(image);
+        Integer i = Tokens.get(image);
         if (i == null) {
             i = new Integer(Tokens.size() + 1);
             Tokens.put(image, i);
@@ -78,8 +78,7 @@ public class TokenEntry implements Comparable {
         return other.hashCode == hashCode;
     }
 
-    public int compareTo(Object o) {
-        TokenEntry other = (TokenEntry) o;
+    public int compareTo(TokenEntry other) {
         return getIndex() - other.getIndex();
     }
 }

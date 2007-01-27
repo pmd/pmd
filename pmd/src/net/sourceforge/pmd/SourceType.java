@@ -5,7 +5,7 @@ package net.sourceforge.pmd;
   *
   * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
   */
- public final class SourceType implements Comparable {
+ public final class SourceType implements Comparable<SourceType> {
      public static final SourceType JAVA_13 = new SourceType("java 1.3");
      public static final SourceType JAVA_14 = new SourceType("java 1.4");
      public static final SourceType JAVA_15 = new SourceType("java 1.5");
@@ -53,8 +53,8 @@ package net.sourceforge.pmd;
          return getId().hashCode();
      }
  
-     public int compareTo(Object other) {
-         return getId().compareTo(((SourceType) other).getId());
+     public int compareTo(SourceType other) {
+         return getId().compareTo(other.getId());
      }
  
      public String toString() {

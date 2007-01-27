@@ -159,8 +159,8 @@ public abstract class AbstractPMDProperty implements PropertyDescriptor {
 	 * @return int
 	 * @see java.lang.Comparable#compareTo(Object)
 	 */
-	public int compareTo(Object otherProperty) {
-		float otherOrder = ((PropertyDescriptor)otherProperty).uiOrder();
+	public int compareTo(PropertyDescriptor otherProperty) {
+		float otherOrder = otherProperty.uiOrder();
 		return (int) (otherOrder - uiOrder);
 	}
 	
