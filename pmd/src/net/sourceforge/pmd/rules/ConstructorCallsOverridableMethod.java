@@ -155,12 +155,12 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
     private static class MethodInvocation {
         private String m_Name;
         private ASTPrimaryExpression m_Ape;
-        private List m_ReferenceNames;
-        private List m_QualifierNames;
+        private List<String> m_ReferenceNames;
+        private List<String> m_QualifierNames;
         private int m_ArgumentSize;
         private boolean m_Super;
 
-        private MethodInvocation(ASTPrimaryExpression ape, List qualifierNames, List referenceNames, String name, int argumentSize, boolean superCall) {
+        private MethodInvocation(ASTPrimaryExpression ape, List<String> qualifierNames, List<String> referenceNames, String name, int argumentSize, boolean superCall) {
             m_Ape = ape;
             m_QualifierNames = qualifierNames;
             m_ReferenceNames = referenceNames;
@@ -181,11 +181,11 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
             return m_ArgumentSize;
         }
 
-        public List getReferenceNames() {
+        public List<String> getReferenceNames() {
             return m_ReferenceNames;//new ArrayList(variableNames);
         }
 
-        public List getQualifierNames() {
+        public List<String> getQualifierNames() {
             return m_QualifierNames;
         }
 
@@ -202,8 +202,8 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                 if ((lastNode.jjtGetNumChildren() == 1) && (lastNode.jjtGetChild(0) instanceof ASTArguments)) { //could be ASTExpression for instance 'a[4] = 5';
                     //start putting method together
                     //					System.out.println("Putting method together now");
-                    List varNames = new ArrayList();
-                    List packagesAndClasses = new ArrayList(); //look in JLS for better name here;
+                    List<String> varNames = new ArrayList<String>();
+                    List<String> packagesAndClasses = new ArrayList<String>(); //look in JLS for better name here;
                     String methodName = null;
                     ASTArguments args = (ASTArguments) lastNode.jjtGetChild(0);
                     int numOfArguments = args.getArgumentCount();
@@ -349,18 +349,14 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
 
         public void show() {
             System.out.println("<MethodInvocation>");
-            List pkg = getQualifierNames();
             System.out.println("  <Qualifiers>");
-            for (Iterator it = pkg.iterator(); it.hasNext();) {
-                String name = (String) it.next();
+            for (String name: getQualifierNames()) {
                 System.out.println("    " + name);
             }
             System.out.println("  </Qualifiers>");
             System.out.println("  <Super>" + isSuper() + "</Super>");
-            List vars = getReferenceNames();
             System.out.println("  <References>");
-            for (Iterator it = vars.iterator(); it.hasNext();) {
-                String name = (String) it.next();
+            for (String name: getReferenceNames()) {
                 System.out.println("    " + name);
             }
             System.out.println("  </References>");
@@ -376,10 +372,10 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
 
         public ConstructorInvocation(ASTExplicitConstructorInvocation eci) {
             m_Eci = eci;
-            List l = new ArrayList();
+            List<ASTArguments> l = new ArrayList<ASTArguments>();
             eci.findChildrenOfType(ASTArguments.class, l);
             if (!l.isEmpty()) {
-                ASTArguments aa = (ASTArguments) l.get(0);
+                ASTArguments aa = l.get(0);
                 count = aa.getArgumentCount();
             }
             name = eci.getImage();
@@ -489,27 +485,27 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
 
         public EvalPackage(String className) {
             m_ClassName = className;
-            calledMethods = new ArrayList();//meths called from constructor
-            allMethodsOfClass = new HashMap();
-            calledConstructors = new ArrayList();//all constructors called from constructor
-            allPrivateConstructorsOfClass = new HashMap();
+            calledMethods = new ArrayList<MethodInvocation>();//meths called from constructor
+            allMethodsOfClass = new HashMap<MethodHolder, List<MethodInvocation>>();
+            calledConstructors = new ArrayList<ConstructorInvocation>();//all constructors called from constructor
+            allPrivateConstructorsOfClass = new HashMap<ConstructorHolder, List<MethodInvocation>>();
         }
 
         public String m_ClassName;
-        public List calledMethods;
-        public Map allMethodsOfClass;
+        public List<MethodInvocation> calledMethods;
+        public Map<MethodHolder, List<MethodInvocation>> allMethodsOfClass;
 
-        public List calledConstructors;
-        public Map allPrivateConstructorsOfClass;
+        public List<ConstructorInvocation> calledConstructors;
+        public Map<ConstructorHolder, List<MethodInvocation>> allPrivateConstructorsOfClass;
     }
 
     private static final class NullEvalPackage extends EvalPackage {
         public NullEvalPackage() {
             m_ClassName = "";
-            calledMethods = Collections.EMPTY_LIST;
-            allMethodsOfClass = Collections.EMPTY_MAP;
-            calledConstructors = Collections.EMPTY_LIST;
-            allPrivateConstructorsOfClass = Collections.EMPTY_MAP;
+            calledMethods = Collections.emptyList();
+            allMethodsOfClass = Collections.emptyMap();
+            calledConstructors = Collections.emptyList();
+            allPrivateConstructorsOfClass = Collections.emptyMap();
         }
     }
 
@@ -519,10 +515,10 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
     /**
      * 1 package per class.
      */
-    private final List evalPackages = new ArrayList();//could use java.util.Stack
+    private final List<EvalPackage> evalPackages = new ArrayList<EvalPackage>();//could use java.util.Stack
 
     private EvalPackage getCurrentEvalPackage() {
-        return (EvalPackage) evalPackages.get(evalPackages.size() - 1);
+        return evalPackages.get(evalPackages.size() - 1);
     }
 
     /**
@@ -563,11 +559,9 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
             while (evaluateDangerOfConstructors2(getCurrentEvalPackage().allPrivateConstructorsOfClass)) { } //NOPMD
 
             //get each method called on this object from a non-private constructor, if its dangerous flag it
-            for (Iterator it = getCurrentEvalPackage().calledMethods.iterator(); it.hasNext();) {
-                MethodInvocation meth = (MethodInvocation) it.next();
+            for (MethodInvocation meth: getCurrentEvalPackage().calledMethods) {
                 //check against each dangerous method in class
-                for (Iterator it2 = getCurrentEvalPackage().allMethodsOfClass.keySet().iterator(); it2.hasNext();) {
-                    MethodHolder h = (MethodHolder) it2.next();
+                for (MethodHolder h: getCurrentEvalPackage().allMethodsOfClass.keySet()) {
                     if (h.isDangerous()) {
                         String methName = h.getASTMethodDeclarator().getImage();
                         int count = h.getASTMethodDeclarator().getParameterCount();
@@ -578,13 +572,11 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                 }
             }
             //get each unsafe private constructor, and check if its called from any non private constructors
-            for (Iterator privConstIter = getCurrentEvalPackage().allPrivateConstructorsOfClass.keySet().iterator(); privConstIter.hasNext();) {
-                ConstructorHolder ch = (ConstructorHolder) privConstIter.next();
+            for (ConstructorHolder ch: getCurrentEvalPackage().allPrivateConstructorsOfClass.keySet()) {
                 if (ch.isDangerous()) { //if its dangerous check if its called from any non-private constructors
                     //System.out.println("visitClassDec Evaluating dangerous constructor with " + ch.getASTConstructorDeclaration().getParameterCount() + " params");
                     int paramCount = ch.getASTConstructorDeclaration().getParameterCount();
-                    for (Iterator calledConstIter = getCurrentEvalPackage().calledConstructors.iterator(); calledConstIter.hasNext();) {
-                        ConstructorInvocation ci = (ConstructorInvocation) calledConstIter.next();
+                    for (ConstructorInvocation ci: getCurrentEvalPackage().calledConstructors) {
                         if (ci.getArgumentCount() == paramCount) {
                             //match name  super / this !?
                             addViolation(data, ci.getASTExplicitConstructorInvocation(), "constructor");
@@ -612,20 +604,17 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
      *
      * @todo investigate limiting the number of passes through config.
      */
-    private boolean evaluateDangerOfMethods(Map classMethodMap) {
+    private boolean evaluateDangerOfMethods(Map<MethodHolder, List<MethodInvocation>> classMethodMap) {
         //check each method if it calls overridable method
         boolean found = false;
-        for (Iterator methodsIter = classMethodMap.entrySet().iterator(); methodsIter.hasNext();) {
-            Map.Entry entry = (Map.Entry) methodsIter.next();
- 
-            MethodHolder h = (MethodHolder) entry.getKey();
-            List calledMeths = (List) entry.getValue();
-            for (Iterator calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && !h.isDangerous();) {
+        for (Map.Entry<MethodHolder, List<MethodInvocation>> entry: classMethodMap.entrySet()) {
+            MethodHolder h = entry.getKey();
+            List<MethodInvocation> calledMeths = entry.getValue();
+            for (Iterator<MethodInvocation> calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && !h.isDangerous();) {
                 //if this method matches one of our dangerous methods, mark it dangerous
-                MethodInvocation meth = (MethodInvocation) calledMethsIter.next();
+                MethodInvocation meth = calledMethsIter.next();
                 //System.out.println("Called meth is " + meth);
-                for (Iterator innerMethsIter = classMethodMap.keySet().iterator(); innerMethsIter.hasNext();) { //need to skip self here h == h3
-                    MethodHolder h3 = (MethodHolder) innerMethsIter.next();
+                for (MethodHolder h3: classMethodMap.keySet()) { //need to skip self here h == h3
                     if (h3.isDangerous()) {
                         String matchMethodName = h3.getASTMethodDeclarator().getImage();
                         int matchMethodParamCount = h3.getASTMethodDeclarator().getParameterCount();
@@ -649,22 +638,20 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
      *
      * @todo optimize by having methods already evaluated somehow!?
      */
-    private void evaluateDangerOfConstructors1(Map classConstructorMap, Set evaluatedMethods) {
+    private void evaluateDangerOfConstructors1(Map<ConstructorHolder, List<MethodInvocation>> classConstructorMap, Set<MethodHolder> evaluatedMethods) {
         //check each constructor in the class
-        for (Iterator constIter = classConstructorMap.entrySet().iterator(); constIter.hasNext();) {
-            Map.Entry entry = (Map.Entry) constIter.next();
-            ConstructorHolder ch = (ConstructorHolder) entry.getKey();
+        for (Map.Entry<ConstructorHolder, List<MethodInvocation>> entry: classConstructorMap.entrySet()) {
+            ConstructorHolder ch = entry.getKey();
             if (!ch.isDangerous()) {//if its not dangerous then evaluate if it should be
                 //if it calls dangerous method mark it as dangerous
-                List calledMeths = (List) entry.getValue();
+                List<MethodInvocation> calledMeths = entry.getValue();
                 //check each method it calls
-                for (Iterator calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && !ch.isDangerous();) {//but thee are diff objects which represent same thing but were never evaluated, they need reevaluation
-                    MethodInvocation meth = (MethodInvocation) calledMethsIter.next();//CCE
+                for (Iterator<MethodInvocation> calledMethsIter = calledMeths.iterator(); calledMethsIter.hasNext() && !ch.isDangerous();) {//but thee are diff objects which represent same thing but were never evaluated, they need reevaluation
+                    MethodInvocation meth = calledMethsIter.next();//CCE
                     String methName = meth.getName();
                     int methArgCount = meth.getArgumentCount();
                     //check each of the already evaluated methods: need to optimize this out
-                    for (Iterator evaldMethsIter = evaluatedMethods.iterator(); evaldMethsIter.hasNext();) {
-                        MethodHolder h = (MethodHolder) evaldMethsIter.next();
+                    for (MethodHolder h: evaluatedMethods) {
                         if (h.isDangerous()) {
                             String matchName = h.getASTMethodDeclarator().getImage();
                             int matchParamCount = h.getASTMethodDeclarator().getParameterCount();
@@ -690,11 +677,10 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
      * we return boolean in order to limit the number of passes through this method
      * but it seems as if we can forgo that and just process it till its done.
      */
-    private boolean evaluateDangerOfConstructors2(Map classConstructorMap) {
+    private boolean evaluateDangerOfConstructors2(Map<ConstructorHolder, List<MethodInvocation>> classConstructorMap) {
         boolean found = false;//triggers on danger state change
         //check each constructor in the class
-        for (Iterator constIter = classConstructorMap.keySet().iterator(); constIter.hasNext();) {
-            ConstructorHolder ch = (ConstructorHolder) constIter.next();
+        for (ConstructorHolder ch: classConstructorMap.keySet()) {
             ConstructorInvocation calledC = ch.getCalledConstructor();
             if (calledC == null || ch.isDangerous()) {
                 continue;
@@ -702,8 +688,8 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
             //if its not dangerous then evaluate if it should be
             //if it calls dangerous constructor mark it as dangerous
             int cCount = calledC.getArgumentCount();
-            for (Iterator innerConstIter = classConstructorMap.keySet().iterator(); innerConstIter.hasNext() && !ch.isDangerous();) { //forget skipping self because that introduces another check for each, but only 1 hit
-                ConstructorHolder h2 = (ConstructorHolder) innerConstIter.next();
+            for (Iterator<ConstructorHolder> innerConstIter = classConstructorMap.keySet().iterator(); innerConstIter.hasNext() && !ch.isDangerous();) { //forget skipping self because that introduces another check for each, but only 1 hit
+                ConstructorHolder h2 = innerConstIter.next();
                 if (h2.isDangerous()) {
                     int matchConstArgCount = h2.getASTConstructorDeclaration().getParameterCount();
                     if (matchConstArgCount == cCount) {
@@ -759,7 +745,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
      */
     public Object visit(ASTConstructorDeclaration node, Object data) {
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {//only evaluate if we have an eval package for this class
-            List calledMethodsOfConstructor = new ArrayList();
+            List<MethodInvocation> calledMethodsOfConstructor = new ArrayList<MethodInvocation>();
             ConstructorHolder ch = new ConstructorHolder(node);
             addCalledMethodsOfNode(node, calledMethodsOfConstructor, getCurrentEvalPackage().m_ClassName);
             if (!node.isPrivate()) {
@@ -795,7 +781,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                 ASTMethodDeclaration decl = (ASTMethodDeclaration) node.getFirstParentOfType(ASTMethodDeclaration.class);
                 h.setCalledMethod(decl.getMethodName());
             }
-            List l = new ArrayList();
+            List<MethodInvocation> l = new ArrayList<MethodInvocation>();
             addCalledMethodsOfNode((SimpleNode) parent, l, getCurrentEvalPackage().m_ClassName);
             getCurrentEvalPackage().allMethodsOfClass.put(h, l);
         }
@@ -803,8 +789,8 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
     }
 
 
-    private static void addCalledMethodsOfNode(AccessNode node, List calledMethods, String className) {
-        List expressions = new ArrayList();
+    private static void addCalledMethodsOfNode(AccessNode node, List<MethodInvocation> calledMethods, String className) {
+        List<ASTPrimaryExpression> expressions = new ArrayList<ASTPrimaryExpression>();
         node.findChildrenOfType(ASTPrimaryExpression.class, expressions, false);
         addCalledMethodsOfNodeImpl(expressions, calledMethods, className);
     }
@@ -812,15 +798,14 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
     /**
      * Adds all methods called on this instance from within this Node.
      */
-    private static void addCalledMethodsOfNode(SimpleNode node, List calledMethods, String className) {
-        List expressions = new ArrayList();
+    private static void addCalledMethodsOfNode(SimpleNode node, List<MethodInvocation> calledMethods, String className) {
+        List<ASTPrimaryExpression> expressions = new ArrayList<ASTPrimaryExpression>();
         node.findChildrenOfType(ASTPrimaryExpression.class, expressions);
         addCalledMethodsOfNodeImpl(expressions, calledMethods, className);
     }
 
-    private static void addCalledMethodsOfNodeImpl(List expressions, List calledMethods, String className) {
-        for (Iterator it = expressions.iterator(); it.hasNext();) {
-            ASTPrimaryExpression ape = (ASTPrimaryExpression) it.next();
+    private static void addCalledMethodsOfNodeImpl(List<ASTPrimaryExpression> expressions, List<MethodInvocation> calledMethods, String className) {
+        for (ASTPrimaryExpression ape: expressions) {
             MethodInvocation meth = findMethod(ape, className);
             if (meth != null) {
                 //System.out.println("Adding call " + methName);
@@ -851,10 +836,9 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
             if ((meth.getReferenceNames().size() == 0) && !meth.isSuper()) {
                 //if this list does not contain our class name, then its not referencing our class
                 //this is a cheezy test... but it errs on the side of less false hits.
-                List packClass = meth.getQualifierNames();
+                List<String> packClass = meth.getQualifierNames();
                 if (!packClass.isEmpty()) {
-                    for (Iterator it = packClass.iterator(); it.hasNext();) {
-                        String name = (String) it.next();
+                    for (String name: packClass) {
                         if (name.equals(className)) {
                             found = true;
                             break;
