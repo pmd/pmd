@@ -44,7 +44,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     private void computeNow(SimpleNode node) {
         IDataFlowNode inode = node.getDataFlowNode();
 
-        List undefinitions = markUsages(inode);
+        List<VariableAccess> undefinitions = markUsages(inode);
 
         // all variables are first in state undefinition 
         IDataFlowNode firstINode = inode.getFlow().get(0);
@@ -55,9 +55,9 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
         lastINode.setVariableAccess(undefinitions);
     }
 
-    private List markUsages(IDataFlowNode inode) {
+    private List<VariableAccess> markUsages(IDataFlowNode inode) {
         // undefinitions was once a field... seems like it works fine as a local
-        List undefinitions = new ArrayList();
+        List<VariableAccess> undefinitions = new ArrayList<VariableAccess>();
         Set variableDeclarations = collectDeclarations(inode);
         for (Iterator i = variableDeclarations.iterator(); i.hasNext();) {
             Map declarations = (Map) i.next();

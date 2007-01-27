@@ -11,7 +11,6 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.symboltable.MethodScope;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -88,7 +87,7 @@ public class RuleViolation implements IRuleViolation {
 
         // TODO combine this duplicated code
         // TODO same for duplicated code in ASTTypeDeclaration && ASTClassOrInterfaceBodyDeclaration
-        List parentTypes = node.getParentsOfType(ASTTypeDeclaration.class);
+        List<SimpleNode> parentTypes = node.getParentsOfType(ASTTypeDeclaration.class);
         if (node instanceof ASTTypeDeclaration) {
             parentTypes.add(node);
         }

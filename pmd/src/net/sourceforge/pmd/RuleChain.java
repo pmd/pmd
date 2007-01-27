@@ -58,7 +58,7 @@ public class RuleChain {
      * @param language
      *            The Language.
      */
-    public void apply(List astCompilationUnits, RuleContext ctx,
+    public void apply(List<? extends CompilationUnit> astCompilationUnits, RuleContext ctx,
             Language language) {
         RuleChainVisitor<? extends CompilationUnit> visitor = getRuleChainVisitor(language);
         if (visitor != null) {

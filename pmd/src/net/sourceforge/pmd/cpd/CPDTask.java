@@ -13,7 +13,6 @@ import org.apache.tools.ant.types.FileSet;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -47,7 +46,7 @@ public class CPDTask extends Task {
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
     private File outputFile;
-    private List filesets = new ArrayList();
+    private List<FileSet> filesets = new ArrayList<FileSet>();
 
     public void execute() throws BuildException {
         try {
@@ -97,8 +96,7 @@ public class CPDTask extends Task {
     }
 
     private void tokenizeFiles(CPD cpd) throws IOException {
-        for (Iterator iterator = filesets.iterator(); iterator.hasNext();) {
-            FileSet fileSet = (FileSet) iterator.next();
+        for (FileSet fileSet: filesets) {
             DirectoryScanner directoryScanner = fileSet.getDirectoryScanner(getProject());
             String[] includedFiles = directoryScanner.getIncludedFiles();
             for (int i = 0; i < includedFiles.length; i++) {

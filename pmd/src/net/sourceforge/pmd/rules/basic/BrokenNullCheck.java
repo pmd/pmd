@@ -95,10 +95,10 @@ public class BrokenNullCheck extends AbstractRule {
     }
 
     private boolean primaryExpressionsAreEqual(ASTPrimaryExpression nullCompareVariable, ASTPrimaryExpression expressionUsage) {
-        List nullCompareNames = new ArrayList();
+        List<String> nullCompareNames = new ArrayList<String>();
         findExpressionNames(nullCompareVariable, nullCompareNames);
         
-        List expressionUsageNames = new ArrayList();
+        List<String> expressionUsageNames = new ArrayList<String>();
         findExpressionNames(expressionUsage, expressionUsageNames);
         
         for (int i = 0; i < nullCompareNames.size(); i++) {
@@ -106,8 +106,8 @@ public class BrokenNullCheck extends AbstractRule {
                 return false;   //The used expression is shorter than the null compare expression (and we don't want to crash below)
             }
             
-            String nullCompareExpressionName = (String)nullCompareNames.get(i);
-            String expressionUsageName       = (String)expressionUsageNames.get(i);
+            String nullCompareExpressionName = nullCompareNames.get(i);
+            String expressionUsageName       = expressionUsageNames.get(i);
             
             //Variablenames should match or the expressionUsage should have the variable with a method call (ie. var.equals())
             if (!nullCompareExpressionName.equals(expressionUsageName) &&
@@ -123,7 +123,7 @@ public class BrokenNullCheck extends AbstractRule {
     /**
      * Find the names of variables, methods and array arguments in a PrimaryExpression.
      */
-    private void findExpressionNames(Node nullCompareVariable, List results) {
+    private void findExpressionNames(Node nullCompareVariable, List<String> results) {
         for (int i = 0; i < nullCompareVariable.jjtGetNumChildren(); i++) {
             Node child = nullCompareVariable.jjtGetChild(i);
             
