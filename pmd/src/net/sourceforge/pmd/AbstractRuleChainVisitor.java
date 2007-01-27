@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.ast.CompilationUnit;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.util.Benchmark;
 
@@ -16,7 +17,7 @@ import net.sourceforge.pmd.util.Benchmark;
  * extracts interesting nodes from an AST, and lets each Rule visit
  * the nodes it has expressed interest in.
  */
-public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
+public abstract class AbstractRuleChainVisitor<E extends CompilationUnit> implements RuleChainVisitor<E> {
     /**
      * These are all the rules participating in the RuleChain.
      */
@@ -37,7 +38,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * @see RuleChainVisitor#visitAll(List, RuleContext)
      */
-    public void visitAll(List astCompilationUnits, RuleContext ctx) {
+    public void visitAll(List<E> astCompilationUnits, RuleContext ctx) {
         initialize();
         clear();
 
@@ -74,7 +75,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * Index all nodes for visitation by rules.
      */
-    protected abstract void indexNodes(List astCompilationUnits, RuleContext ctx);
+    protected abstract void indexNodes(List<E> astCompilationUnits, RuleContext ctx);
 
     /**
      * Index a single node for visitation by rules.

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.ast.CompilationUnit;
 import net.sourceforge.pmd.ast.JavaRuleChainVisitor;
 import net.sourceforge.pmd.jsp.ast.JspRuleChainVisitor;
 
@@ -15,7 +16,7 @@ import net.sourceforge.pmd.jsp.ast.JspRuleChainVisitor;
  */
 public class RuleChain {
     // Mapping from Language to RuleChainVisitor
-    private final Map<Language, RuleChainVisitor> languageToRuleChainVisitor = new HashMap<Language, RuleChainVisitor>();
+    private final Map<Language, RuleChainVisitor<? extends CompilationUnit>> languageToRuleChainVisitor = new HashMap<Language, RuleChainVisitor<? extends CompilationUnit>>();
 
     /**
      * Add all Rules from the given RuleSet which want to participate in the
@@ -59,18 +60,18 @@ public class RuleChain {
      */
     public void apply(List astCompilationUnits, RuleContext ctx,
             Language language) {
-        RuleChainVisitor visitor = getRuleChainVisitor(language);
+        RuleChainVisitor<? extends CompilationUnit> visitor = getRuleChainVisitor(language);
         if (visitor != null) {
             visitor.visitAll(astCompilationUnits, ctx);
         }
     }
 
     // Get the RuleChainVisitor for the appropriate Language.
-    private RuleChainVisitor getRuleChainVisitor(Language language) {
+    private RuleChainVisitor<? extends CompilationUnit> getRuleChainVisitor(Language language) {
         if (language == null) {
             language = Language.JAVA;
         }
-        RuleChainVisitor visitor = languageToRuleChainVisitor.get(language);
+        RuleChainVisitor<? extends CompilationUnit> visitor = languageToRuleChainVisitor.get(language);
         if (visitor == null) {
             if (Language.JAVA.equals(language)) {
                 visitor = new JavaRuleChainVisitor();

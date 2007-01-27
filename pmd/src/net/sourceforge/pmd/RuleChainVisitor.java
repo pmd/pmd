@@ -2,11 +2,13 @@ package net.sourceforge.pmd;
 
 import java.util.List;
 
+import net.sourceforge.pmd.ast.CompilationUnit;
+
 /**
  * The RuleChainVisitor understands how to visit an AST for a particular
  * Language.
  */
-public interface RuleChainVisitor {
+public interface RuleChainVisitor<E extends CompilationUnit> {
     /**
      * Add the given rule to the visitor.
      * 
@@ -24,5 +26,5 @@ public interface RuleChainVisitor {
      * @param ctx
      *            The RuleContext.
      */
-    void visitAll(List astCompilationUnits, RuleContext ctx);
+    void visitAll(List<E> astCompilationUnits, RuleContext ctx);
 }
