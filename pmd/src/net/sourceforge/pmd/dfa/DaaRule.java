@@ -42,7 +42,7 @@ public class DaaRule extends AbstractRule implements Executable {
             "maxviolations", "Maximum number of anomalys per class", 1000, 2.0f
             );
         
-    private static final Map propertyDescriptorsByName = asFixedMap(
+    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(
             new PropertyDescriptor[] { maxPathDescriptor, maxViolationsDescriptor});
             
     protected Map propertiesByName() {

@@ -27,7 +27,7 @@ public abstract class CommonAbstractRule implements Rule {
     protected boolean usesTypeResolution;
     protected int priority = LOWEST_PRIORITY;
     protected String externalInfoUrl;
-    protected List ruleChainVisits = new ArrayList();
+    protected List<String> ruleChainVisits = new ArrayList<String>();
 
     public String getRuleSetName() {
         return ruleSetName;
@@ -74,7 +74,7 @@ public abstract class CommonAbstractRule implements Rule {
     }
 
     public boolean getBooleanProperty(String name) {
-        return Boolean.valueOf(properties.getProperty(name)).booleanValue();
+        return Boolean.parseBoolean(properties.getProperty(name));
     }
 
     public String getStringProperty(String name) {
@@ -239,7 +239,7 @@ public abstract class CommonAbstractRule implements Rule {
         return !getRuleChainVisits().isEmpty();
     }
 
-    public List getRuleChainVisits() {
+    public List<String> getRuleChainVisits() {
         return ruleChainVisits;
     }
 

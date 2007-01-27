@@ -37,8 +37,8 @@ import java.util.List;
 public class PMDTask extends Task {
 
     private Path classpath;
-    private List formatters = new ArrayList();
-    private List filesets = new ArrayList();
+    private List<Formatter> formatters = new ArrayList<Formatter>();
+    private List<FileSet> filesets = new ArrayList<FileSet>();
     private int minPriority = Rule.LOWEST_PRIORITY;
     private boolean shortFilenames;
     private String ruleSetFiles;
@@ -48,7 +48,7 @@ public class PMDTask extends Task {
     private String targetJDK = "1.4";
     private String failuresPropertyName;
     private String excludeMarker;
-    private final Collection nestedRules = new ArrayList();
+    private final Collection<RuleSetWrapper> nestedRules = new ArrayList<RuleSetWrapper>();
 
     public void setShortFilenames(boolean value) {
         this.shortFilenames = value;
@@ -164,8 +164,7 @@ public class PMDTask extends Task {
         Report report = new Report();
         ctx.setReport(report);
         report.start();
-        for (Iterator i = filesets.iterator(); i.hasNext();) {
-            FileSet fs = (FileSet) i.next();
+        for (FileSet fs: filesets) {
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());
             String[] srcFiles = ds.getIncludedFiles();
             for (int j = 0; j < srcFiles.length; j++) {
@@ -200,8 +199,7 @@ public class PMDTask extends Task {
 
         log(ctx.getReport().size() + " problems found", Project.MSG_VERBOSE);
 
-        for (Iterator i = formatters.iterator(); i.hasNext();) {
-            Formatter formatter = (Formatter) i.next();
+        for (Formatter formatter: formatters) {
             log("Sending a report to " + formatter, Project.MSG_VERBOSE);
             formatter.outputReport(ctx.getReport(), getProject().getBaseDir().toString());
         }
@@ -216,15 +214,14 @@ public class PMDTask extends Task {
         }
     }
 
-    private void logRulesUsed(net.sourceforge.pmd.RuleSets rules) {
+    private void logRulesUsed(RuleSets rules) {
         log("Using these rulesets: " + ruleSetFiles, Project.MSG_VERBOSE);
 
         RuleSet[] ruleSets = rules.getAllRuleSets();
         for (int j = 0; j < ruleSets.length; j++) {
             RuleSet ruleSet = ruleSets[j];
 
-            for (Iterator i = ruleSet.getRules().iterator(); i.hasNext();) {
-                Rule rule = (Rule) i.next();
+            for (Rule rule: ruleSet.getRules()) {
                 log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
             }
         }
@@ -232,8 +229,7 @@ public class PMDTask extends Task {
 
     private void validate() throws BuildException {
         // TODO - check for empty Formatters List here?
-        for (Iterator i = formatters.iterator(); i.hasNext();) {
-            Formatter f = (Formatter) i.next();
+        for (Formatter f: formatters) {
             if (f.isNoOutputSupplied()) {
                 throw new BuildException("toFile or toConsole needs to be specified in Formatter");
             }
@@ -253,8 +249,8 @@ public class PMDTask extends Task {
 
     private String getNestedRuleSetFiles() {
         final StringBuffer sb = new StringBuffer();
-        for (Iterator it = nestedRules.iterator(); it.hasNext();) {
-            RuleSetWrapper rs = (RuleSetWrapper) it.next();
+        for (Iterator<RuleSetWrapper> it = nestedRules.iterator(); it.hasNext();) {
+            RuleSetWrapper rs = it.next();
             sb.append(rs.getFile());
             if (it.hasNext()) {
                 sb.append(',');

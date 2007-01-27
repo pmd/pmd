@@ -39,13 +39,13 @@ public class AttributeAxisIterator implements Iterator {
     private int position;
     private Node node;
 
-    private static Map methodCache = new HashMap();
+    private static Map<Class, MethodWrapper[]> methodCache = new HashMap<Class, MethodWrapper[]>();
 
     public AttributeAxisIterator(Node contextNode) {
         this.node = contextNode;
         if (!methodCache.containsKey(contextNode.getClass())) {
             Method[] preFilter = contextNode.getClass().getMethods();
-            List postFilter = new ArrayList();
+            List<MethodWrapper> postFilter = new ArrayList<MethodWrapper>();
             for (int i = 0; i < preFilter.length; i++) {
                 if (isAttributeAccessor(preFilter[i])) {
                     postFilter.add(new MethodWrapper(preFilter[i]));
@@ -53,7 +53,7 @@ public class AttributeAxisIterator implements Iterator {
             }
             methodCache.put(contextNode.getClass(), postFilter.toArray(new MethodWrapper[postFilter.size()]));
         }
-        this.methodWrappers = (MethodWrapper[]) methodCache.get(contextNode.getClass());
+        this.methodWrappers = methodCache.get(contextNode.getClass());
 
         this.position = 0;
         this.currObj = getNextAttribute();

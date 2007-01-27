@@ -36,19 +36,18 @@ import java.util.TreeSet;
 
 public class Benchmark {
 
-    private static class Result implements Comparable {
+    private static class Result implements Comparable<Result> {
         public Rule rule;
         public long time;
 
-        public int compareTo(Object o) {
-            Result other = (Result) o;
+        public int compareTo(Result other) {
             if (other.time < time) {
                 return -1;
             } else if (other.time > time) {
                 return 1;
             }
 
-            return rule.getName().compareTo(((Result) o).rule.getName());
+            return rule.getName().compareTo(other.rule.getName());
         }
 
         public Result(long elapsed, Rule rule) {
@@ -98,7 +97,7 @@ public class Benchmark {
         } else {
             String ruleset = findOptionalStringValue(args, "--ruleset", "");
             if (debug) System.out.println("Checking directory " + srcDir);
-            Set results = new TreeSet();
+            Set<Result> results = new TreeSet<Result>();
             RuleSetFactory factory = new RuleSetFactory();
             if (ruleset.length() > 0) {
                 SimpleRuleSetNameMapper mapper = new SimpleRuleSetNameMapper(ruleset);
@@ -112,8 +111,7 @@ public class Benchmark {
             System.out.println("=========================================================");
             System.out.println("Rule\t\t\t\t\t\tTime in ms");
             System.out.println("=========================================================");
-            for (Iterator j = results.iterator(); j.hasNext();) {
-                Result result = (Result) j.next();
+            for (Result result: results) {
                 StringBuffer out = new StringBuffer(result.rule.getName());
                 while (out.length() < 48) {
                     out.append(' ');
@@ -148,10 +146,9 @@ public class Benchmark {
         System.out.println("That took " + elapsed + " ms");
     }
 
-    private static void stress(SourceType t, RuleSet ruleSet, List files, Set results, boolean debug) throws PMDException, IOException {
-        Collection rules = ruleSet.getRules();
-        for (Iterator j = rules.iterator(); j.hasNext();) {
-            Rule rule = (Rule) j.next();
+    private static void stress(SourceType t, RuleSet ruleSet, List files, Set<Result> results, boolean debug) throws PMDException, IOException {
+        Collection<Rule> rules = ruleSet.getRules();
+        for (Rule rule: rules) {
             if (debug) System.out.println("Starting " + rule.getName());
 
             RuleSet working = new RuleSet();
@@ -175,7 +172,7 @@ public class Benchmark {
         }
     }
 
-    private static final Map nameToBenchmarkResult = new HashMap();
+    private static final Map<String, BenchmarkResult> nameToBenchmarkResult = new HashMap<String, BenchmarkResult>();
 
     public static final int TYPE_RULE = 0;
     public static final int TYPE_RULE_CHAIN_RULE = 1;
@@ -211,7 +208,7 @@ public class Benchmark {
         "Total PMD",
     };
 
-    private static final class BenchmarkResult implements Comparable {
+    private static final class BenchmarkResult implements Comparable<BenchmarkResult> {
         private final int type;
         private final String name;
         private long time;
@@ -242,8 +239,7 @@ public class Benchmark {
             this.time += time;
             this.count += count;
         }
-        public int compareTo(Object o) {
-            BenchmarkResult benchmarkResult = (BenchmarkResult)o;
+        public int compareTo(BenchmarkResult benchmarkResult) {
             int cmp = this.type - benchmarkResult.type;
             if (cmp == 0) {
                 long delta = this.time - benchmarkResult.time;
@@ -251,11 +247,6 @@ public class Benchmark {
             }
             return cmp;
         }
-    }
-
-    public static long nanoTime() {
-        return System.currentTimeMillis() * 1000000;
-        //return System.nanoTime();
     }
 
     public static void mark(int type, long time, long count) {
@@ -271,7 +262,7 @@ public class Benchmark {
         } else if (typeName == null) {
             typeName = name;
         }
-        BenchmarkResult benchmarkResult = (BenchmarkResult)nameToBenchmarkResult.get(typeName);
+        BenchmarkResult benchmarkResult = nameToBenchmarkResult.get(typeName);
         if (benchmarkResult == null) {
             benchmarkResult = new BenchmarkResult(type, typeName);
             nameToBenchmarkResult.put(typeName, benchmarkResult);
@@ -284,12 +275,11 @@ public class Benchmark {
     }
 
     public static String report() {
-        List results = new ArrayList(nameToBenchmarkResult.values());
+        List<BenchmarkResult> results = new ArrayList<BenchmarkResult>(nameToBenchmarkResult.values());
 
         long totalTime[] = new long[TYPE_TOTAL_PMD + 1];
         long totalCount[] = new long[TYPE_TOTAL_PMD + 1];
-        for (Iterator i = results.iterator(); i.hasNext();) {
-            BenchmarkResult benchmarkResult = (BenchmarkResult)i.next();
+        for (BenchmarkResult benchmarkResult: results) {
             totalTime[benchmarkResult.getType()] += benchmarkResult.getTime();
             totalCount[benchmarkResult.getType()] += benchmarkResult.getCount();
             if (benchmarkResult.getType() < TYPE_MEASURED_TOTAL) {
@@ -305,8 +295,7 @@ public class Benchmark {
         StringBuffer buf = new StringBuffer();
         boolean writeRuleHeader = true;
         boolean writeRuleChainRuleHeader = true;
-        for (Iterator i = results.iterator(); i.hasNext();) {
-            BenchmarkResult benchmarkResult = (BenchmarkResult)i.next();
+        for (BenchmarkResult benchmarkResult: results) {
             StringBuffer buf2 = new StringBuffer();
             buf2.append(benchmarkResult.getName());
             buf2.append(':');

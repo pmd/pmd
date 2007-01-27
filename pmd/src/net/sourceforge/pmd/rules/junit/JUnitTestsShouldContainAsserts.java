@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
@@ -15,7 +14,7 @@ import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTTypeParameters;
 import net.sourceforge.pmd.ast.Node;
 
-public class JUnitTestsShouldContainAsserts extends AbstractRule implements Rule {
+public class JUnitTestsShouldContainAsserts extends AbstractRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {

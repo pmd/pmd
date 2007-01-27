@@ -242,10 +242,6 @@
             <id>asm</id>
             <version>3.0</version>
         </dependency>
-        <dependency>
-            <id>backport-util-concurrent</id>
-            <version>3.0</version>
-        </dependency>
 	</dependencies>
 
 	<build>

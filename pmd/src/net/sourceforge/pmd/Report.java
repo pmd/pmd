@@ -112,22 +112,22 @@ public class Report {
     private ReportTree violationTree = new ReportTree();
 
     // Note that this and the above data structure are both being maintained for a bit
-    private Set violations = new TreeSet(COMPARATOR);
-    private Set metrics = new HashSet();
-    private List listeners = new ArrayList();
-    private List errors = new ArrayList();
+    private Set<IRuleViolation> violations = new TreeSet<IRuleViolation>(COMPARATOR);
+    private Set<Metric> metrics = new HashSet<Metric>();
+    private List<ReportListener> listeners = new ArrayList<ReportListener>();
+    private List<ProcessingError> errors = new ArrayList<ProcessingError>();
     private Map linesToExclude = new HashMap();
     private long start;
     private long end;
 
-    private List suppressedRuleViolations = new ArrayList();
+    private List<SuppressedViolation> suppressedRuleViolations = new ArrayList<SuppressedViolation>();
 
     public void exclude(Map lines) {
         linesToExclude = lines;
     }
 
-    public Map getCountSummary() {
-        Map summary = new HashMap();
+    public Map<String, Integer> getCountSummary() {
+        Map<String, Integer> summary = new HashMap<String, Integer>();
         for (Iterator iter = violationTree.iterator(); iter.hasNext();) {
             IRuleViolation rv = (IRuleViolation) iter.next();
             String key = "";
@@ -153,10 +153,9 @@ public class Report {
     /**
      * @return a Map summarizing the Report: String (rule name) ->Integer (count of violations)
      */
-    public Map getSummary() {
-        Map summary = new HashMap();
-        for (Iterator i = violations.iterator(); i.hasNext();) {
-            IRuleViolation rv = (IRuleViolation) i.next();
+    public Map<String, Integer> getSummary() {
+        Map<String, Integer> summary = new HashMap<String, Integer>();
+        for (IRuleViolation rv: violations) {
             String name = rv.getRule().getName();
             if (!summary.containsKey(name)) {
                 summary.put(name, NumericConstants.ZERO);
@@ -171,7 +170,7 @@ public class Report {
         listeners.add(listener);
     }
 
-    public List getSuppressedRuleViolations() {
+    public List<SuppressedViolation> getSuppressedRuleViolations() {
         return suppressedRuleViolations;
     }
 
@@ -200,8 +199,7 @@ public class Report {
 
     public void addMetric(Metric metric) {
         metrics.add(metric);
-        for (Iterator i = listeners.iterator(); i.hasNext();) {
-            ReportListener listener = (ReportListener) i.next();
+        for (ReportListener listener: listeners) {
             listener.metricAdded(metric);
         }
     }
@@ -229,7 +227,7 @@ public class Report {
         return !metrics.isEmpty();
     }
 
-    public Iterator metrics() {
+    public Iterator<Metric> metrics() {
         return metrics.iterator();
     }
 
@@ -245,11 +243,11 @@ public class Report {
         return violationTree.iterator();
     }
 
-    public Iterator iterator() {
+    public Iterator<IRuleViolation> iterator() {
         return violations.iterator();
     }
 
-    public Iterator errors() {
+    public Iterator<ProcessingError> errors() {
         return errors.iterator();
     }
 

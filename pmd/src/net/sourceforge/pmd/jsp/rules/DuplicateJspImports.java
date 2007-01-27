@@ -11,7 +11,7 @@ import java.util.StringTokenizer;
 
 public class DuplicateJspImports extends AbstractJspRule {
 
-    private Set imports = new HashSet();
+    private Set<ImportWrapper> imports = new HashSet<ImportWrapper>();
 
     public void apply(List acus, RuleContext ctx) {
         /*

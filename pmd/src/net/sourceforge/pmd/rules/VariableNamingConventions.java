@@ -40,7 +40,7 @@ public class VariableNamingConventions extends AbstractRule {
        	"memberSuffix", "Member suffixes", new String[] {""},	4.0f , ','
        	);
     
-    private static final Map propertyDescriptorsByName = asFixedMap( new PropertyDescriptor[] {
+    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap( new PropertyDescriptor[] {
     	staticPrefixesDescriptor, staticSuffixesDescriptor, 
     	memberPrefixesDescriptor, memberSuffixesDescriptor
 		});

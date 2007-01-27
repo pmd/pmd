@@ -71,7 +71,7 @@ public class CommandLineOptions {
                 } catch (NumberFormatException e) {
                     throw new RuntimeException(MessageFormat.format(
                             "cpus parameter must be a whole number, {0} received",
-                            new String[] { args[i] }));
+                            (Object[]) new String[] { args[i] }));
                 }
             } else if (args[i].equals("-targetjdk")) {
                 targetJDK = args[++i];
@@ -91,7 +91,7 @@ public class CommandLineOptions {
                 } catch (NumberFormatException e) {
                     throw new RuntimeException(MessageFormat.format(
                             "minimumpriority parameter must be a whole number, {0} received",
-                            new String[] { args[i] }));
+                            (Object[]) new String[] { args[i] }));
                 }
             } else if (args[i].equals("-reportfile")) {
                 reportFile = args[++i];

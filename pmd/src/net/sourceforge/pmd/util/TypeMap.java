@@ -10,14 +10,14 @@ import java.util.Map;
  */
 public class TypeMap {
 
-	private Map typesByName;
+	private Map<String, Class> typesByName;
 	
 	/**
 	 * Constructor for TypeMap.
 	 * @param initialSize int
 	 */
 	public TypeMap(int initialSize) {
-		typesByName = new HashMap(initialSize);
+		typesByName = new HashMap<String, Class>(initialSize);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class TypeMap {
 	 * @return Class
 	 */
 	public Class typeFor(String typeName) {
-		return (Class)typesByName.get(typeName);
+		return typesByName.get(typeName);
 	}
 	
 	/**

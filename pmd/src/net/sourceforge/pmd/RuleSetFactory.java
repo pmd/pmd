@@ -74,7 +74,7 @@ public class RuleSetFactory {
      *
      * @return an iterator of RuleSet objects
      */
-    public Iterator getRegisteredRuleSets() throws RuleSetNotFoundException {
+    public Iterator<RuleSet> getRegisteredRuleSets() throws RuleSetNotFoundException {
         try {
             Properties props = new Properties();
             props.load(ResourceLoader.loadResourceAsStream("rulesets/rulesets.properties"));
@@ -132,8 +132,8 @@ public class RuleSetFactory {
         RuleSets ruleSets = createRuleSets(name, classLoader);
         RuleSet result = new RuleSet();
         RuleSet[] allRuleSets = ruleSets.getAllRuleSets();
-        for (int i = 0; i < allRuleSets.length; i++) {
-            result.addRuleSet(allRuleSets[i]);
+        for (RuleSet ruleSet: allRuleSets) {
+            result.addRuleSet(ruleSet);
         }
         return result;
     }
@@ -375,7 +375,7 @@ public class RuleSetFactory {
     private void parseRuleNodeWithExclude(RuleSet ruleSet, Element ruleElement, String ref)
             throws RuleSetNotFoundException {
         NodeList excludeNodes = ruleElement.getChildNodes();
-        Set excludes = new HashSet();
+        Set<String> excludes = new HashSet<String>();
         for (int i = 0; i < excludeNodes.getLength(); i++) {
             if ((excludeNodes.item(i).getNodeType() == Node.ELEMENT_NODE)
                     && (excludeNodes.item(i).getNodeName().equals("exclude"))) {
@@ -387,8 +387,7 @@ public class RuleSetFactory {
         RuleSetFactory rsf = new RuleSetFactory();
         RuleSet externalRuleSet = rsf.createRuleSet(ResourceLoader
                 .loadResourceAsStream(ref));
-        for (Iterator i = externalRuleSet.getRules().iterator(); i.hasNext();) {
-            Rule rule = (Rule) i.next();
+        for (Rule rule: externalRuleSet.getRules()) {
             if (!excludes.contains(rule.getName()) && rule.getPriority() <= minPriority) {
                 ruleSet.addRule(rule);
             }

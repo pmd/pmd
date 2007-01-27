@@ -139,7 +139,7 @@ public class ReportTree {
             } catch (NoSuchMethodException nsme) {
                 // Compatible with < JDK 1.4
                 StringTokenizer toker = new StringTokenizer(pack, ".");
-                List parts = new ArrayList();
+                List<String> parts = new ArrayList<String>();
                 while (toker.hasMoreTokens()) {
                     parts.add(toker.nextToken());
                 }

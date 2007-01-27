@@ -19,12 +19,12 @@ import java.util.Map;
 
 public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
-	private static Map myPrimitiveTypes;
+	private static Map<String, Class> myPrimitiveTypes;
 
 	private static PMDASMClassLoader pmdClassLoader = new PMDASMClassLoader();
 
 	static {
-		Map thePrimitiveTypes = new HashMap();
+		Map<String, Class> thePrimitiveTypes = new HashMap<String, Class>();
 		thePrimitiveTypes.put("short", Short.TYPE);
 		thePrimitiveTypes.put("byte", Byte.TYPE);
 		thePrimitiveTypes.put("char", Character.TYPE);
@@ -37,7 +37,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		myPrimitiveTypes = Collections.unmodifiableMap(thePrimitiveTypes);
 	}
 
-	private Map importedClasses;
+	private Map<String, String> importedClasses;
 
 	private String className;
 
@@ -59,7 +59,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	 */
 	private void populateImports(ASTCompilationUnit node) {
 		List theImportDeclarations = node.findChildrenOfType(ASTImportDeclaration.class);
-		importedClasses = new HashMap();
+		importedClasses = new HashMap<String, String>();
 
 		// go through the imports
 		for (Iterator anIterator = theImportDeclarations.iterator(); anIterator.hasNext();) {
@@ -93,10 +93,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 		String className = node.getImage();
 		String qualifiedName = className;
-		Class myType = (Class) myPrimitiveTypes.get(className);
+		Class myType = myPrimitiveTypes.get(className);
 		if (myType == null && importedClasses != null) {
 			if (importedClasses.containsKey(className)) {
-				qualifiedName = (String) importedClasses.get(className);
+				qualifiedName = importedClasses.get(className);
 			} else if (importedClasses.containsValue(className)) {
 				qualifiedName = className;
 			}

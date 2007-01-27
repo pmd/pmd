@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractReportNode {
-    private List childNodes = new ArrayList();
+    private List<AbstractReportNode> childNodes = new ArrayList<AbstractReportNode>();
     private AbstractReportNode parentNode = null;
 
     /*
@@ -25,7 +25,7 @@ public abstract class AbstractReportNode {
         if (this.isLeaf()) {
             return null;
         }
-        return (AbstractReportNode) this.childNodes.get(0);
+        return this.childNodes.get(0);
     }
 
     /**
@@ -42,7 +42,7 @@ public abstract class AbstractReportNode {
         if (index >= this.parentNode.childNodes.size() - 1) {
             return null;
         }
-        return (AbstractReportNode) this.parentNode.childNodes.get(index + 1);
+        return this.parentNode.childNodes.get(index + 1);
     }
 
     /**
@@ -88,7 +88,7 @@ public abstract class AbstractReportNode {
     // visitor methods
     public void childrenAccept(ReportVisitor visitor) {
         for (int i = 0; i < childNodes.size(); i++) {
-            AbstractReportNode node = (AbstractReportNode) childNodes.get(i);
+            AbstractReportNode node = childNodes.get(i);
             node.accept(visitor);
         }
     }
@@ -99,7 +99,7 @@ public abstract class AbstractReportNode {
 
     public AbstractReportNode getChildAt(int arg0) {
         if (arg0 >= 0 && arg0 <= this.childNodes.size() - 1) {
-            return (AbstractReportNode) this.childNodes.get(arg0);
+            return this.childNodes.get(arg0);
         }
         return null;
     }

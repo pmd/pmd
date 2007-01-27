@@ -32,13 +32,13 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     protected boolean usesTypeResolution;
     protected int priority = LOWEST_PRIORITY;
     protected String externalInfoUrl;
-    protected List ruleChainVisits = new ArrayList();
+    protected List<String> ruleChainVisits = new ArrayList<String>();
 
     private static final boolean inOldPropertyMode = true;	// temporary flag during conversion
     
-	protected static Map asFixedMap(PropertyDescriptor[] descriptors) {
+	protected static Map<String, PropertyDescriptor> asFixedMap(PropertyDescriptor[] descriptors) {
 		
-		Map descsById = new HashMap(descriptors.length);
+		Map<String, PropertyDescriptor> descsById = new HashMap<String, PropertyDescriptor>(descriptors.length);
 		
 		for (int i=0; i<descriptors.length; i++) {
 			descsById.put(descriptors[i].name(), descriptors[i]);
@@ -46,7 +46,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
 		return Collections.unmodifiableMap(descsById);
 	}	
 	
-	protected static Map asFixedMap(PropertyDescriptor descriptor) {
+	protected static Map<String, PropertyDescriptor> asFixedMap(PropertyDescriptor descriptor) {
 		return asFixedMap(new PropertyDescriptor[] {descriptor});
 	}
     
@@ -171,7 +171,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      */
     public boolean getBooleanProperty(String name) {
     	
-    	return Boolean.valueOf(properties.getProperty(name)).booleanValue();        
+    	return Boolean.parseBoolean(properties.getProperty(name));        
     }
     
     /**
@@ -471,7 +471,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
         return !getRuleChainVisits().isEmpty();
     }
 
-    public List getRuleChainVisits() {
+    public List<String> getRuleChainVisits() {
         return ruleChainVisits;
     }
 

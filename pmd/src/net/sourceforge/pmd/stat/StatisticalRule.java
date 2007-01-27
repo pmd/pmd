@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.stat;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,7 +23,7 @@ public abstract class StatisticalRule extends AbstractRule {
 
     public static final double DELTA = 0.000005; // Within this range. . .
 
-    private SortedSet dataPoints = new TreeSet();
+    private SortedSet<DataPoint> dataPoints = new TreeSet<DataPoint>();
 
     private int count = 0;
     private double total = 0.0;
@@ -41,7 +40,7 @@ public abstract class StatisticalRule extends AbstractRule {
         "topscore", "Top score value",	0,	1.0f
         );    
     
-    private static final Map propertyDescriptorsByName = asFixedMap( new PropertyDescriptor[] {
+    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap( new PropertyDescriptor[] {
     	sigmaDescriptor, minimumDescriptor, topScoreDescriptor
     	});
   
@@ -71,7 +70,7 @@ public abstract class StatisticalRule extends AbstractRule {
             }
         }
 
-        SortedSet newPoints = applyMinimumValue(dataPoints, minimum);
+        SortedSet<DataPoint> newPoints = applyMinimumValue(dataPoints, minimum);
 
         if (hasProperty("topscore")) { // TODO - need to come up with a good default value
             int topScore = getIntProperty(topScoreDescriptor);
@@ -85,8 +84,8 @@ public abstract class StatisticalRule extends AbstractRule {
         double low = 0.0d;
         double high = 0.0d;
         if (!dataPoints.isEmpty()) {
-            low = ((DataPoint) dataPoints.first()).getScore();
-            high = ((DataPoint) dataPoints.last()).getScore();
+            low = dataPoints.first().getScore();
+            high = dataPoints.last().getScore();
         }
 
         ctx.getReport().addMetric(new Metric(this.getName(), count, total, low, high, getMean(), getStdDev()));
@@ -103,27 +102,23 @@ public abstract class StatisticalRule extends AbstractRule {
             return Double.NaN;
         }
 
-        Iterator points = dataPoints.iterator();
         double mean = getMean();
         double deltaSq = 0.0;
         double scoreMinusMean;
 
-        while (points.hasNext()) {
-            scoreMinusMean = ((DataPoint) points.next()).getScore() - mean;
+        for (DataPoint point: dataPoints) {
+            scoreMinusMean = point.getScore() - mean;
             deltaSq += (scoreMinusMean * scoreMinusMean);
         }
 
         return Math.sqrt(deltaSq / (dataPoints.size() - 1));
     }
 
-    protected SortedSet applyMinimumValue(SortedSet pointSet, double minValue) {
-        Iterator points = pointSet.iterator();
-        SortedSet RC = new TreeSet();
+    protected SortedSet<DataPoint> applyMinimumValue(SortedSet<DataPoint> pointSet, double minValue) {
+        SortedSet<DataPoint> RC = new TreeSet<DataPoint>();
         double threshold = minValue - DELTA;
 
-        while (points.hasNext()) {
-            DataPoint point = (DataPoint) points.next();
-
+        for (DataPoint point: pointSet) {
             if (point.getScore() > threshold) {
                 RC.add(point);
             }
@@ -131,19 +126,17 @@ public abstract class StatisticalRule extends AbstractRule {
         return RC;
     }
 
-    protected SortedSet applyTopScore(SortedSet points, int topScore) {
-        SortedSet s = new TreeSet();
-        Object[] arr = points.toArray();
+    protected SortedSet<DataPoint> applyTopScore(SortedSet<DataPoint> points, int topScore) {
+        SortedSet<DataPoint> s = new TreeSet<DataPoint>();
+        DataPoint[] arr = points.toArray(new DataPoint[]{});
         for (int i = arr.length - 1; i >= (arr.length - topScore); i--) {
             s.add(arr[i]);
         }
         return s;
     }
 
-    protected void makeViolations(RuleContext ctx, Set p) {
-        Iterator points = p.iterator();
-        while (points.hasNext()) {
-            DataPoint point = (DataPoint) points.next();
+    protected void makeViolations(RuleContext ctx, Set<DataPoint> p) {
+        for (DataPoint point: p) {
             addViolationWithMessage(ctx, point.getNode(), point.getMessage());
         }
     }

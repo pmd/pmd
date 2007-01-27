@@ -19,15 +19,13 @@ import java.util.List;
 
 public class RuleViolation implements IRuleViolation {
 
-    public static class RuleViolationComparator implements Comparator {
+    public static class RuleViolationComparator implements Comparator<IRuleViolation> {
         //
         // Changed logic of Comparator so that rules in the same file
         // get grouped together in the output report.
         // DDP 7/11/2002
         //
-        public int compare(Object o1, Object o2) {
-            IRuleViolation r1 = (IRuleViolation) o1;
-            IRuleViolation r2 = (IRuleViolation) o2;
+        public int compare(IRuleViolation r1, IRuleViolation r2) {
             if (!r1.getFilename().equals(r2.getFilename())) {
                 return r1.getFilename().compareTo(r2.getFilename());
             }

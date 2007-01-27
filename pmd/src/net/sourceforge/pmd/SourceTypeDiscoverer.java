@@ -15,7 +15,7 @@ public class SourceTypeDiscoverer {
      * Map of (upper-case) file name extensions on the appropriate SourceType
      * object.
      */
-    private Map mapExtensionOnSourceType = new HashMap();
+    private Map<String, SourceType> mapExtensionOnSourceType = new HashMap<String, SourceType>();
 
     /**
      * Public constructor.
@@ -59,8 +59,7 @@ public class SourceTypeDiscoverer {
         if (extensionIndex > 0) {
             String extensionUppercase = fileName.substring(extensionIndex).toUpperCase();
 
-            sourceType = (SourceType) mapExtensionOnSourceType
-                    .get(extensionUppercase);
+            sourceType = mapExtensionOnSourceType.get(extensionUppercase);
         }
 
         return sourceType;
@@ -77,6 +76,6 @@ public class SourceTypeDiscoverer {
     }
 
     public SourceType getSourceTypeOfJavaFiles() {
-        return (SourceType) mapExtensionOnSourceType.get(SourceFileConstants.JAVA_EXTENSION_UPPERCASE);
+        return mapExtensionOnSourceType.get(SourceFileConstants.JAVA_EXTENSION_UPPERCASE);
     }
 }

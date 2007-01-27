@@ -27,6 +27,7 @@ import org.jaxen.SimpleVariableContext;
 import org.jaxen.XPath;
 import org.jaxen.expr.AllNodeStep;
 import org.jaxen.expr.DefaultXPathFactory;
+import org.jaxen.expr.Expr;
 import org.jaxen.expr.LocationPath;
 import org.jaxen.expr.NameStep;
 import org.jaxen.expr.Predicate;
@@ -44,7 +45,7 @@ import org.jaxen.saxpath.Axis;
 public class XPathRule extends CommonAbstractRule {
 
     // Mapping from Node name to applicable XPath queries
-    private Map nodeNameToXPaths;
+    private Map<String, List<XPath>> nodeNameToXPaths;
     private boolean regexpFunctionRegistered;
 
     private static final String AST_ROOT = "_AST_ROOT_";
@@ -60,12 +61,11 @@ public class XPathRule extends CommonAbstractRule {
     public void evaluate(Node compilationUnit, RuleContext data) {
         try {
             initializeXPathExpression();
-            List xpaths = (List)nodeNameToXPaths.get(compilationUnit.toString());
+            List<XPath> xpaths = nodeNameToXPaths.get(compilationUnit.toString());
             if (xpaths == null) {
-                xpaths = (List)nodeNameToXPaths.get(AST_ROOT);
+                xpaths = nodeNameToXPaths.get(AST_ROOT);
             }
-            for (int i = 0; i < xpaths.size(); i++) {
-                XPath xpath = (XPath)xpaths.get(i);
+            for (XPath xpath: xpaths) {
                 List results = xpath.selectNodes(compilationUnit);
                 for (Iterator j = results.iterator(); j.hasNext();) {
                     SimpleNode n = (SimpleNode) j.next();
@@ -77,18 +77,16 @@ public class XPathRule extends CommonAbstractRule {
                 }
             }
         } catch (JaxenException ex) {
-            throwJaxenAsRuntime(ex);
+            throw new RuntimeException(ex);
         }
     }
 
-    public List getRuleChainVisits() {
+    public List<String> getRuleChainVisits() {
         try {
             initializeXPathExpression();
             return super.getRuleChainVisits();
         } catch (JaxenException ex) {
-            throwJaxenAsRuntime(ex);
-            // Note: This return should never happen because the above method throws an exception
-            return null;
+            throw new RuntimeException(ex);
         }
     }
 
@@ -108,16 +106,16 @@ public class XPathRule extends CommonAbstractRule {
         // parsed XPath AST using the Jaxen APIs to make this determination.
         // If the query is not exactly what we are looking for, do not use the RuleChain.
         //
-        nodeNameToXPaths = new HashMap();
+        nodeNameToXPaths = new HashMap<String, List<XPath>>();
 
         BaseXPath originalXPath = (BaseXPath)createXPath(getStringProperty("xpath"));
         indexXPath(originalXPath, AST_ROOT);
 
         boolean useRuleChain = true;
-        Stack pending = new Stack();
+        Stack<Expr> pending = new Stack<Expr>();
         pending.push(originalXPath.getRootExpr());
         while (!pending.isEmpty()) {
-            Object node = pending.pop();
+            Expr node = pending.pop();
 
             // Need to prove we can handle this part of the query
             boolean valid = false;
@@ -174,8 +172,8 @@ public class XPathRule extends CommonAbstractRule {
 
         if (useRuleChain) {
             // Use the RuleChain for all the nodes extracted from the xpath queries
-            for (Iterator i = nodeNameToXPaths.keySet().iterator(); i.hasNext();) {
-                addRuleChainVisit((String)i.next());
+            for (String s: nodeNameToXPaths.keySet()) {
+                addRuleChainVisit(s);
             }
         } else { // Use original XPath if we cannot use the rulechain
             nodeNameToXPaths.clear();
@@ -185,9 +183,9 @@ public class XPathRule extends CommonAbstractRule {
     }
 
     private void indexXPath(XPath xpath, String nodeName) {
-        List xpaths = (List)nodeNameToXPaths.get(nodeName);
+        List<XPath> xpaths = nodeNameToXPaths.get(nodeName);
         if (xpaths == null) {
-            xpaths = new ArrayList();
+            xpaths = new ArrayList<XPath>();
             nodeNameToXPaths.put(nodeName, xpaths);
         }
         xpaths.add(xpath);
@@ -214,29 +212,6 @@ public class XPathRule extends CommonAbstractRule {
             xpath.setVariableContext(vc);
         }
         return xpath;
-    }
-
-    private static void throwJaxenAsRuntime(final JaxenException ex) {
-        throw new RuntimeException() {
-            public void printStackTrace() {
-                super.printStackTrace();
-                ex.printStackTrace();
-            }
-
-            public void printStackTrace(PrintWriter writer) {
-                super.printStackTrace(writer);
-                ex.printStackTrace(writer);
-            }
-
-            public void printStackTrace(PrintStream stream) {
-                super.printStackTrace(stream);
-                ex.printStackTrace(stream);
-            }
-
-            public String getMessage() {
-                return super.getMessage() + ex.getMessage();
-            }
-        };
     }
 
     /**

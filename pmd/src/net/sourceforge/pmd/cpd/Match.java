@@ -10,48 +10,39 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Match implements Comparable {
+public class Match implements Comparable<Match> {
 
     private int tokenCount;
     private int lineCount;
-    private Set markSet = new TreeSet();
+    private Set<TokenEntry> markSet = new TreeSet<TokenEntry>();
     private TokenEntry[] marks = new TokenEntry[2];
     private String code;
     private MatchCode mc;
     private String label;
     
-    public static final Comparator MatchesComparator = new Comparator() {
-    	public int compare(Object a, Object b) {
-    		Match ma = (Match)a;
-    		Match mb = (Match)b;
+    public static final Comparator<Match> MatchesComparator = new Comparator<Match>() {
+    	public int compare(Match ma, Match mb) {
     		return mb.getMarkCount() - ma.getMarkCount();
     	}
     };
     
-    public static final Comparator LinesComparator = new Comparator() {
-    	public int compare(Object a, Object b) {
-    		Match ma = (Match)a;
-    		Match mb = (Match)b;
-    		
+    public static final Comparator<Match> LinesComparator = new Comparator<Match>() {
+    	public int compare(Match ma, Match mb) {
     		return mb.getLineCount() - ma.getLineCount();
     	}
     };
     
-    public static final Comparator LabelComparator = new Comparator() {
-    	public int compare(Object a, Object b) {
-    		Match ma = (Match)a;
-    		Match mb = (Match)b;
+    public static final Comparator<Match> LabelComparator = new Comparator<Match>() {
+    	public int compare(Match ma, Match mb) {
     		if (ma.getLabel() == null) return 1;
     		if (mb.getLabel() == null) return -1;
     		return mb.getLabel().compareTo(ma.getLabel());
     	}
     };
     
-    public static final Comparator LengthComparator = new Comparator() {
-        public int compare(Object o1, Object o2) {
-            Match m1 = (Match) o1;
-            Match m2 = (Match) o2;
-            return m2.getLineCount() - m1.getLineCount();
+    public static final Comparator<Match> LengthComparator = new Comparator<Match>() {
+        public int compare(Match ma, Match mb) {
+            return mb.getLineCount() - ma.getLineCount();
         }
     };
     
@@ -119,12 +110,11 @@ public class Match implements Comparable {
         this.code = code;
     }
 
-    public Iterator iterator() {
+    public Iterator<TokenEntry> iterator() {
         return markSet.iterator();
     }
 
-    public int compareTo(Object o) {
-        Match other = (Match) o;
+    public int compareTo(Match other) {
         int diff = other.getTokenCount() - getTokenCount();
         if (diff != 0) {
             return diff;
@@ -144,7 +134,7 @@ public class Match implements Comparable {
         return "Match: " + PMD.EOL + "tokenCount = " + tokenCount + PMD.EOL + "marks = " + markSet.size();
     }
 
-    public Set getMarkSet() {
+    public Set<TokenEntry> getMarkSet() {
         return markSet;
     }
 
@@ -159,7 +149,7 @@ public class Match implements Comparable {
         return marks[1].getIndex() + getTokenCount() - 1;
     }
 
-    public void setMarkSet(Set markSet) {
+    public void setMarkSet(Set<TokenEntry> markSet) {
         this.markSet = markSet;
     }
 

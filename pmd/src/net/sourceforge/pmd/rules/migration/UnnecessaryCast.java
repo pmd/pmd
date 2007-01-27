@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class UnnecessaryCast extends AbstractRule {
 
-    private static Set implClassNames = new HashSet();
+    private static Set<String> implClassNames = new HashSet<String>();
 
     static {
         implClassNames.add("List");

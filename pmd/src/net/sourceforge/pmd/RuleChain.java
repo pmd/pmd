@@ -1,7 +1,6 @@
 package net.sourceforge.pmd;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +15,7 @@ import net.sourceforge.pmd.jsp.ast.JspRuleChainVisitor;
  */
 public class RuleChain {
     // Mapping from Language to RuleChainVisitor
-    private final Map languageToRuleChainVisitor = new HashMap();
+    private final Map<Language, RuleChainVisitor> languageToRuleChainVisitor = new HashMap<Language, RuleChainVisitor>();
 
     /**
      * Add all Rules from the given RuleSet which want to participate in the
@@ -27,9 +26,8 @@ public class RuleChain {
      */
     public void add(RuleSet ruleSet) {
         Language language = ruleSet.getLanguage();
-        Iterator iter = ruleSet.getRules().iterator();
-        while (iter.hasNext()) {
-            add(language, (Rule) iter.next());
+        for (Rule r: ruleSet.getRules()) {
+            add(language, r);
         }
     }
 
@@ -72,8 +70,7 @@ public class RuleChain {
         if (language == null) {
             language = Language.JAVA;
         }
-        RuleChainVisitor visitor = (RuleChainVisitor) languageToRuleChainVisitor
-                .get(language);
+        RuleChainVisitor visitor = languageToRuleChainVisitor.get(language);
         if (visitor == null) {
             if (Language.JAVA.equals(language)) {
                 visitor = new JavaRuleChainVisitor();

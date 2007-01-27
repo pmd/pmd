@@ -20,12 +20,12 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * These are all the rules participating in the RuleChain.
      */
-    protected List rules = new ArrayList();
+    protected List<Rule> rules = new ArrayList<Rule>();
 
     /**
      * This is a mapping from node names to nodes instances for the current AST.
      */
-    protected Map nodeNameToNodes;
+    protected Map<String, List<SimpleNode>> nodeNameToNodes;
 
     /**
      * @see RuleChainVisitor#add(Rule)
@@ -43,25 +43,24 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
 
         // Perform a visitation of the AST to index nodes which need visiting by
         // type
-        long start = Benchmark.nanoTime();
+        long start = System.nanoTime();
         indexNodes(astCompilationUnits, ctx);
-        long end = Benchmark.nanoTime();
+        long end = System.nanoTime();
         Benchmark.mark(Benchmark.TYPE_RULE_CHAIN_VISIT, end - start, 1);
 
         // For each rule, allow it to visit the nodes it desires
         int visits = 0;
-        start = Benchmark.nanoTime();
-        for (int i = 0; i < rules.size(); i++) {
-            final Rule rule = (Rule) rules.get(i);
-            final List nodeNames = rule.getRuleChainVisits();
+        start = System.nanoTime();
+        for (Rule rule: rules) {
+            final List<String> nodeNames = rule.getRuleChainVisits();
             for (int j = 0; j < nodeNames.size(); j++) {
-                List nodes = (List) nodeNameToNodes.get((String) nodeNames.get(j));
+                List nodes = (List) nodeNameToNodes.get(nodeNames.get(j));
                 for (int k = 0; k < nodes.size(); k++) {
                     visit(rule, (SimpleNode) nodes.get(k), ctx);
                 }
                 visits += nodes.size();
             }
-            end = Benchmark.nanoTime();
+            end = System.nanoTime();
             Benchmark.mark(Benchmark.TYPE_RULE_CHAIN_RULE, rule.getName(), end - start, visits);
             start = end;
         }
@@ -81,7 +80,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
      * Index a single node for visitation by rules.
      */
     protected void indexNode(SimpleNode node) {
-        List nodes = (List) nodeNameToNodes.get(node.toString());
+        List<SimpleNode> nodes = nodeNameToNodes.get(node.toString());
         if (nodes != null) {
             nodes.add(node);
         }
@@ -101,7 +100,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
         }
 
         // Determine all node types that need visiting
-        Set visitedNodes = new HashSet();
+        Set<String> visitedNodes = new HashSet<String>();
         for (Iterator i = rules.iterator(); i.hasNext();) {
             Rule rule = (Rule) i.next();
             if (rule.usesRuleChain()) {
@@ -116,10 +115,10 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
         // Setup the data structure to manage mapping node names to node
         // instances.  We intend to reuse this data structure between
         // visits to different ASTs.
-        nodeNameToNodes = new HashMap();
-        for (Iterator i = visitedNodes.iterator(); i.hasNext();) {
-            List nodes = new ArrayList(100);
-            nodeNameToNodes.put((String) i.next(), nodes);
+        nodeNameToNodes = new HashMap<String, List<SimpleNode>>();
+        for (String s: visitedNodes) {
+            List<SimpleNode> nodes = new ArrayList<SimpleNode>(100);
+            nodeNameToNodes.put(s, nodes);
         }
     }
 
@@ -128,8 +127,8 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
      * between visiting different ASTs.
      */
     protected void clear() {
-        for (Iterator i = nodeNameToNodes.values().iterator(); i.hasNext();) {
-            ((List) i.next()).clear();
+        for (List<SimpleNode> l: nodeNameToNodes.values()) {
+            l.clear();
         }
     }
 }

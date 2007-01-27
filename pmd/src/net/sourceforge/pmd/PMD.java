@@ -29,12 +29,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
-import edu.emory.mathcs.backport.java.util.concurrent.ExecutorService;
-import edu.emory.mathcs.backport.java.util.concurrent.Executors;
-import edu.emory.mathcs.backport.java.util.concurrent.ThreadFactory;
-import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
-import edu.emory.mathcs.backport.java.util.concurrent.atomic.AtomicInteger;
-import edu.emory.mathcs.backport.java.util.Collections;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -82,30 +82,30 @@ public class PMD {
             ctx.setSourceType(sourceType);
             Parser parser = sourceTypeHandler.getParser();
             parser.setExcludeMarker(excludeMarker);
-            long start = Benchmark.nanoTime();
+            long start = System.nanoTime();
             Object rootNode = parser.parse(reader);
             ctx.excludeLines(parser.getExcludeMap());
-            long end = Benchmark.nanoTime();
+            long end = System.nanoTime();
             Benchmark.mark(Benchmark.TYPE_PARSER, end - start, 0);
             Thread.yield();
-            start = Benchmark.nanoTime();
+            start = System.nanoTime();
             sourceTypeHandler.getSymbolFacade().start(rootNode);
-            end = Benchmark.nanoTime();
+            end = System.nanoTime();
             Benchmark.mark(Benchmark.TYPE_SYMBOL_TABLE, end - start, 0);
 
             Language language = SourceTypeToRuleLanguageMapper.getMappedLanguage(sourceType);
 
             if (ruleSets.usesDFA(language)) {
-                start = Benchmark.nanoTime();
+                start = System.nanoTime();
                 sourceTypeHandler.getDataFlowFacade().start(rootNode);
-                end = Benchmark.nanoTime();
+                end = System.nanoTime();
                 Benchmark.mark(Benchmark.TYPE_DFA, end - start, 0);
             }
 
             if (ruleSets.usesTypeResolution(language)) {
-                start = Benchmark.nanoTime();
+                start = System.nanoTime();
                 sourceTypeHandler.getTypeResolutionFacade().start(rootNode);
-                end = Benchmark.nanoTime();
+                end = System.nanoTime();
                 Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, end - start, 0);
             }
 
@@ -235,10 +235,10 @@ public class PMD {
     }
 
     public static void main(String[] args) {
-        long start = Benchmark.nanoTime();
+        long start = System.nanoTime();
         CommandLineOptions opts = new CommandLineOptions(args);
 
-        long startFiles = Benchmark.nanoTime();
+        long startFiles = System.nanoTime();
         SourceFileSelector fileSelector = new SourceFileSelector();
 
         fileSelector.setSelectJavaFiles(opts.isCheckJavaFiles());
@@ -251,7 +251,7 @@ public class PMD {
         } else {
             files = collectFilesFromOneName(opts.getInputPath(), fileSelector);
         }
-        long endFiles = Benchmark.nanoTime();
+        long endFiles = System.nanoTime();
         Benchmark.mark(Benchmark.TYPE_COLLECT_FILES, endFiles - startFiles, 0);
 
         SourceType sourceType;
@@ -279,13 +279,13 @@ public class PMD {
         report.start();
 
         try {
-            long startLoadRules = Benchmark.nanoTime();
+            long startLoadRules = System.nanoTime();
             RuleSetFactory ruleSetFactory = new RuleSetFactory();
             ruleSetFactory.setMinimumPriority(opts.getMinPriority());
 
             RuleSets rulesets = ruleSetFactory.createRuleSets(opts.getRulesets());
             printRuleNamesInDebug(opts.debugEnabled(), rulesets);
-            long endLoadRules = Benchmark.nanoTime();
+            long endLoadRules = System.nanoTime();
             Benchmark.mark(Benchmark.TYPE_LOAD_RULES, endLoadRules - startLoadRules, 0);
 
             processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx,
@@ -298,7 +298,7 @@ public class PMD {
         report.end();
 
         Writer w = null;
-        long reportStart = Benchmark.nanoTime();
+        long reportStart = System.nanoTime();
         try {
             Renderer r = opts.createRenderer();
             if (opts.getReportFile() != null) {
@@ -327,12 +327,12 @@ public class PMD {
                     System.out.println(e.getMessage());
                 }
             }
-            long reportEnd = Benchmark.nanoTime();
+            long reportEnd = System.nanoTime();
             Benchmark.mark(Benchmark.TYPE_REPORTING, reportEnd - reportStart, 0);
         }
         
         if (opts.benchmark()) {
-            long end = Benchmark.nanoTime();
+            long end = System.nanoTime();
             Benchmark.mark(Benchmark.TYPE_TOTAL_PMD, end - start, 0);
             System.err.println(Benchmark.report());
         }
@@ -420,7 +420,7 @@ public class PMD {
             return t;
         }
 
-        public List threadList = Collections.synchronizedList(new LinkedList());
+        public List<PmdThread> threadList = Collections.synchronizedList(new LinkedList<PmdThread>());
 
     }
 
@@ -489,7 +489,7 @@ public class PMD {
         } catch (InterruptedException e) {
         }
 
-        long start = Benchmark.nanoTime();
+        long start = System.nanoTime();
         Report mainReport = ctx.getReport();
         Iterator i = factory.threadList.iterator();
         while (i.hasNext()) {
@@ -497,7 +497,7 @@ public class PMD {
             Report r = thread.context.getReport();
             mainReport.merge(r);
         }
-        long end = Benchmark.nanoTime();
+        long end = System.nanoTime();
         Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
     }
 
@@ -563,7 +563,7 @@ public class PMD {
      * @return the list of files collected from the <code>inputFileName</code>
      * @see #collect(String, SourceFileSelector)
      */
-    private static List collectFilesFromOneName(String inputFileName,
+    private static List<DataSource> collectFilesFromOneName(String inputFileName,
                                                 SourceFileSelector fileSelector) {
         return collect(inputFileName, fileSelector);
     }
@@ -575,9 +575,9 @@ public class PMD {
      * @param fileSelector Filtering of wanted source files
      * @return list of files collected from the <code>fileList</code>
      */
-    private static List collectFromCommaDelimitedString(String fileList,
+    private static List<DataSource> collectFromCommaDelimitedString(String fileList,
                                                         SourceFileSelector fileSelector) {
-        List files = new ArrayList();
+        List<DataSource> files = new ArrayList<DataSource>();
         for (StringTokenizer st = new StringTokenizer(fileList, ","); st
                 .hasMoreTokens();) {
             files.addAll(collect(st.nextToken(), fileSelector));
@@ -593,13 +593,13 @@ public class PMD {
      * @return a list of files found at the given <code>filename</code>
      * @throws RuntimeException if <code>filename</code> is not found
      */
-    private static List collect(String filename, SourceFileSelector fileSelector) {
+    private static List<DataSource> collect(String filename, SourceFileSelector fileSelector) {
         File inputFile = new File(filename);
         if (!inputFile.exists()) {
             throw new RuntimeException("File " + inputFile.getName()
                     + " doesn't exist");
         }
-        List dataSources = new ArrayList();
+        List<DataSource> dataSources = new ArrayList<DataSource>();
         if (!inputFile.isDirectory()) {
             if (filename.endsWith(".zip") || filename.endsWith(".jar")) {
                 ZipFile zipFile;

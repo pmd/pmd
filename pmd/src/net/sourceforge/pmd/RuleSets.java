@@ -16,7 +16,7 @@ public class RuleSets {
     /**
      * Map of RuleLanguage on RuleSet.
      */
-    private Collection ruleSets = new ArrayList();
+    private Collection<RuleSet> ruleSets = new ArrayList<RuleSet>();
 
     /**
      * RuleChain for effecient AST visitation.
@@ -57,10 +57,10 @@ public class RuleSets {
      * @return RuleSet[]
      */
     public RuleSet[] getAllRuleSets() {
-        return (RuleSet[]) ruleSets.toArray(new RuleSet[ruleSets.size()]);
+        return ruleSets.toArray(new RuleSet[ruleSets.size()]);
     }
 
-    public Iterator getRuleSetsIterator() {
+    public Iterator<RuleSet> getRuleSetsIterator() {
         return ruleSets.iterator();
     }
 
@@ -69,10 +69,10 @@ public class RuleSets {
      *
      * @return Set
      */
-    public Set getAllRules() {
-        HashSet result = new HashSet();
-        for (Iterator i = ruleSets.iterator(); i.hasNext();) {
-            result.addAll(((RuleSet) i.next()).getRules());
+    public Set<Rule> getAllRules() {
+        HashSet<Rule> result = new HashSet<Rule>();
+        for (RuleSet r: ruleSets) {
+            result.addAll(r.getRules());
         }
         return result;
     }
@@ -104,8 +104,7 @@ public class RuleSets {
      */
     public void apply(List acuList, RuleContext ctx, Language language) {
         ruleChain.apply(acuList, ctx, language);
-        for (Iterator i = ruleSets.iterator(); i.hasNext();) {
-            RuleSet ruleSet = (RuleSet) i.next();
+        for (RuleSet ruleSet: ruleSets) {
             if (applies(language, ruleSet.getLanguage())) {
                 ruleSet.apply(acuList, ctx);
             }
@@ -120,8 +119,7 @@ public class RuleSets {
      * @return true if any rule in the RuleSet needs the DFA layer
      */
     public boolean usesDFA(Language language) {
-        for (Iterator i = ruleSets.iterator(); i.hasNext();) {
-            RuleSet ruleSet = (RuleSet) i.next();
+        for (RuleSet ruleSet: ruleSets) {
             if (applies(language, ruleSet.getLanguage()) && ruleSet.usesDFA()) {
                 return true;
             }
@@ -137,16 +135,15 @@ public class RuleSets {
      */
     public Rule getRuleByName(String ruleName) {
         Rule rule = null;
-        for (Iterator i = ruleSets.iterator(); i.hasNext() && (rule == null);) {
-            RuleSet ruleSet = (RuleSet) i.next();
+        for (Iterator<RuleSet> i = ruleSets.iterator(); i.hasNext() && (rule == null);) {
+            RuleSet ruleSet = i.next();
             rule = ruleSet.getRuleByName(ruleName);
         }
         return rule;
     }
 
 	public boolean usesTypeResolution(Language language) {
-		for (Iterator i = ruleSets.iterator(); i.hasNext();) {
-			RuleSet ruleSet = (RuleSet) i.next();
+		for (RuleSet ruleSet: ruleSets) {
 			if (applies(language, ruleSet.getLanguage()) && ruleSet.usesTypeResolution()) {
 				return true;
 			}

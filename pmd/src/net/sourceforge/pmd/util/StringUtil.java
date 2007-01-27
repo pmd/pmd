@@ -160,7 +160,7 @@ public class StringUtil {
 	            return new String[]{str};
 	        }
 
-	        List list = new ArrayList();
+	        List<String> list = new ArrayList<String>();
 	        int currPos = 0;
 	        int len = separator.length();
 	        while (index != -1) {
@@ -169,7 +169,7 @@ public class StringUtil {
 	            index = str.indexOf(separator, currPos);
 	        }
 	        list.add(str.substring(currPos));
-	        return (String[]) list.toArray(new String[list.size()]);
+	        return list.toArray(new String[list.size()]);
 	    }
 	
 	

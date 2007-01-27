@@ -38,7 +38,7 @@ public class NonThreadSafeSingleton extends AbstractRule {
     	"checkNonStaticFields", "Check for non-static fields.",	true, 2.0f
     	);
     
-    private static final Map propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] {
+    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] {
     	checkNonStaticMethodsDescriptor, checkNonStaticFieldsDescriptor
     	});
     

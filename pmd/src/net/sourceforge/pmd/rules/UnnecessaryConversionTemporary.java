@@ -14,7 +14,7 @@ import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-public class UnnecessaryConversionTemporary extends AbstractRule implements Rule {
+public class UnnecessaryConversionTemporary extends AbstractRule {
 
     private boolean inPrimaryExpressionContext;
     private ASTPrimaryExpression primary;

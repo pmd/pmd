@@ -12,7 +12,7 @@ import java.util.Map;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public final class Language {
-    private static Map mapNameOnRuleLanguage = new HashMap();
+    private static Map<String, Language> mapNameOnRuleLanguage = new HashMap<String, Language>();
 
     private static final String JSP_RULE_LANGUAGE_NAME = "jsp";
     private static final String JAVA_RULE_LANGUAGE_NAME = "java";
@@ -29,7 +29,7 @@ public final class Language {
      * @return the corresponding RuleLanuage; or null if the name is not recognized
      */
     public static Language getByName(String name) {
-        return (Language) mapNameOnRuleLanguage.get(name);
+        return mapNameOnRuleLanguage.get(name);
     }
 
     private String name;

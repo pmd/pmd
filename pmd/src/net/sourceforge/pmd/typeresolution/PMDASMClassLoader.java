@@ -25,9 +25,9 @@ public class PMDASMClassLoader extends ClassLoader {
     public PMDASMClassLoader() {
     }
 
-    private Set dontBother = new HashSet();
+    private Set<String> dontBother = new HashSet<String>();
 
-    public Map getImportedClasses(String name) throws ClassNotFoundException {
+    public Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
 
         if (dontBother.contains(name)) {
             throw new ClassNotFoundException(name);
@@ -37,10 +37,9 @@ public class PMDASMClassLoader extends ClassLoader {
             PMDASMVisitor asmVisitor = new PMDASMVisitor();
             reader.accept(asmVisitor, 0);
 
-            List inner = asmVisitor.getInnerClasses();
+            List<String> inner = asmVisitor.getInnerClasses();
             if (inner != null && !inner.isEmpty()) {
-                for (int ix = 0; ix < inner.size(); ix++) {
-                    String str = (String) inner.get(ix);
+                for (String str: inner) {
                     reader = new ClassReader(getResourceAsStream(str.replace('.', '/') + ".class"));
                     reader.accept(asmVisitor, 0);
                 }

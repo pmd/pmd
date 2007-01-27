@@ -12,7 +12,7 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.Iterator;
 
-public class SymbolTableTestRule extends AbstractRule implements Rule {
+public class SymbolTableTestRule extends AbstractRule {
 
     public Object visit(ASTFieldDeclaration node,Object data) {
         ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId)node.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);

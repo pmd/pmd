@@ -36,7 +36,7 @@ class NonRuleWithAllPropertyTypes extends AbstractRule {
 	public static final PropertyDescriptor enumType	= new EnumeratedProperty("enumType", "Property with a enumerated choices", new Object[][] {{"String", String.class},{"Object", Object.class}}, 5.0f);
 	
 	
-	private static final Map propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] {
+	private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] {
 		singleStr, multiStr, singleInt, multiInt, singleBool, multiBool,
 		singleChar, multiChar, singleFloat, multiFloat, singleType, multiType,
 		enumType

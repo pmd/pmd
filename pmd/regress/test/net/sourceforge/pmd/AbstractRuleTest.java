@@ -43,7 +43,7 @@ public class AbstractRuleTest extends TestCase {
 
     	private static final PropertyDescriptor xpath = new StringProperty("xpath", "xpath property", "", 2.0f);
 
-        private static final Map propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { pd, xpath });
+        private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { pd, xpath });
 
         protected Map propertiesByName() {
         	return propertyDescriptorsByName;
@@ -60,7 +60,7 @@ public class AbstractRuleTest extends TestCase {
     private static class MyOtherRule extends AbstractRule {
     	private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
 
-		private static final Map propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { pd });
+		private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { pd });
 
         protected Map propertiesByName() {
         	return propertyDescriptorsByName;

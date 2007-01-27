@@ -10,14 +10,13 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 public class NameFinder {
 
-    private LinkedList names = new LinkedList();
+    private LinkedList<NameOccurrence> names = new LinkedList<NameOccurrence>();
 
     public NameFinder(ASTPrimaryExpression node) {
         ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);
@@ -46,7 +45,7 @@ public class NameFinder {
             }
         }
         if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) node).isArguments()) {
-            NameOccurrence occurrence = (NameOccurrence) names.getLast();
+            NameOccurrence occurrence = names.getLast();
             occurrence.setIsMethodOrConstructorInvocation();
             ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).jjtGetChild(0);
             occurrence.setArgumentCount(args.getArgumentCount());
@@ -57,7 +56,7 @@ public class NameFinder {
     private void add(NameOccurrence name) {
         names.add(name);
         if (names.size() > 1) {
-            NameOccurrence qualifiedName = (NameOccurrence) names.get(names.size() - 2);
+            NameOccurrence qualifiedName = names.get(names.size() - 2);
             qualifiedName.setNameWhichThisQualifies(name);
         }
     }
@@ -65,8 +64,7 @@ public class NameFinder {
 
     public String toString() {
         StringBuffer result = new StringBuffer();
-        for (Iterator i = names.iterator(); i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) i.next();
+        for (NameOccurrence occ: names) {
             result.append(occ.getImage());
         }
         return result.toString();

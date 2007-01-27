@@ -10,6 +10,9 @@ Fixed bug 1627830 - UseLocaleWithCaseConversions now works with compound string 
 Applied patch 1612455 - RFE 1411022 CompareObjectsWithEquals now catches the case where comparison is against new Object
 Implemented RFE 1627581 - SuppressWarnings("unused") now suppresses all warnings in unusedcode.xml
 XPath rules are now chained together for an extra speedup in processing
+PMD now requires JDK 1.5 to be compiled. Java 1.4 support is provided using Retroweaver
+- PMD will still analyze code from earlier JDKs
+- to run pmd with 1.4, use the files from the java14 directory (weaved pmd jar and support files)
 
 December 19, 2006 - 3.9:
 New rules:

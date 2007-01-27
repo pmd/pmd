@@ -30,7 +30,7 @@ public abstract class AbstractJspRule extends JspParserVisitorAdapter implements
     protected boolean usesTypeResolution;
     protected int priority = LOWEST_PRIORITY;
     protected String externalInfoUrl;
-    protected List ruleChainVisits = new ArrayList();
+    protected List<String> ruleChainVisits = new ArrayList<String>();
 
     public String getRuleSetName() {
         return ruleSetName;
@@ -251,7 +251,7 @@ public abstract class AbstractJspRule extends JspParserVisitorAdapter implements
         return !getRuleChainVisits().isEmpty();
     }
 
-    public List getRuleChainVisits() {
+    public List<String> getRuleChainVisits() {
         return ruleChainVisits;
     }
 

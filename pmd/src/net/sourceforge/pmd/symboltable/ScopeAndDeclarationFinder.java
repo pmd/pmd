@@ -26,7 +26,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * A stack of scopes reflecting the scope hierarchy when a node is visited.
      * This is used to set the parents of the created scopes correctly.
      */
-    private Stack scopes = new Stack();
+    private Stack<Scope> scopes = new Stack<Scope>();
 
     /**
      * Sets the scope of a node and adjustes the scope stack accordingly.
@@ -38,7 +38,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void addScope(Scope newScope, SimpleNode node) {
-        newScope.setParent((Scope) scopes.peek());
+        newScope.setParent(scopes.peek());
         scopes.push(newScope);
         node.setScope(newScope);
     }

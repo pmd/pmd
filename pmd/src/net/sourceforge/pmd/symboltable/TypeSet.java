@@ -6,7 +6,6 @@ package net.sourceforge.pmd.symboltable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,15 +26,14 @@ public class TypeSet {
     }
 
     public static class ExplicitImportResolver implements Resolver {
-        private Set importStmts;
+        private Set<String> importStmts;
 
-        public ExplicitImportResolver(Set importStmts) {
+        public ExplicitImportResolver(Set<String> importStmts) {
             this.importStmts = importStmts;
         }
 
         public Class resolve(String name) throws ClassNotFoundException {
-            for (Iterator i = importStmts.iterator(); i.hasNext();) {
-                String importStmt = (String) i.next();
+            for (String importStmt: importStmts) {
                 if (importStmt.endsWith(name)) {
                     return Class.forName(importStmt);
                 }
@@ -64,15 +62,14 @@ public class TypeSet {
     }
 
     public static class ImportOnDemandResolver implements Resolver {
-        private Set importStmts;
+        private Set<String> importStmts;
 
-        public ImportOnDemandResolver(Set importStmts) {
+        public ImportOnDemandResolver(Set<String> importStmts) {
             this.importStmts = importStmts;
         }
 
         public Class resolve(String name) throws ClassNotFoundException {
-            for (Iterator i = importStmts.iterator(); i.hasNext();) {
-                String importStmt = (String) i.next();
+            for (String importStmt: importStmts) {
                 if (importStmt.endsWith("*")) {
                     try {
                         String importPkg = importStmt.substring(0, importStmt.indexOf('*') - 1);
@@ -86,7 +83,7 @@ public class TypeSet {
     }
 
     public static class PrimitiveTypeResolver implements Resolver {
-        private Map primitiveTypes = new HashMap();
+        private Map<String, Class> primitiveTypes = new HashMap<String, Class>();
 
         public PrimitiveTypeResolver() {
             primitiveTypes.put("int", int.class);
@@ -103,7 +100,7 @@ public class TypeSet {
             if (!primitiveTypes.containsKey(name)) {
                 throw new ClassNotFoundException();
             }
-            return (Class) primitiveTypes.get(name);
+            return primitiveTypes.get(name);
         }
     }
 
@@ -123,8 +120,8 @@ public class TypeSet {
     }
 
     private String pkg;
-    private Set imports = new HashSet();
-    private List resolvers = new ArrayList();
+    private Set<String> imports = new HashSet<String>();
+    private List<Resolver> resolvers = new ArrayList<Resolver>();
 
     public void setASTCompilationUnitPackage(String pkg) {
         this.pkg = pkg;
@@ -148,8 +145,7 @@ public class TypeSet {
             buildResolvers();
         }
 
-        for (Iterator i = resolvers.iterator(); i.hasNext();) {
-            Resolver resolver = (Resolver) i.next();
+        for (Resolver resolver: resolvers) {
             try {
                 return resolver.resolve(name);
             } catch (ClassNotFoundException cnfe) {

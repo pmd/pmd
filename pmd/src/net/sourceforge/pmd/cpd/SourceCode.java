@@ -18,29 +18,29 @@ import java.util.List;
 public class SourceCode {
 
     public static abstract class CodeLoader {
-        private SoftReference code;
+        private SoftReference<List<String>> code;
 
-        public List getCode() {
-            List c = null;
+        public List<String> getCode() {
+            List<String> c = null;
             if (code != null) {
-                c = (List) code.get();
+                c = code.get();
             }
             if (c != null) {
                 return c;
             }
-            this.code = new SoftReference(load());
-            return (List) code.get();
+            this.code = new SoftReference<List<String>>(load());
+            return code.get();
         }
 
         public abstract String getFileName();
 
         protected abstract Reader getReader() throws Exception;
 
-        protected List load() {
+        protected List<String> load() {
             LineNumberReader lnr = null;
             try {
                 lnr = new LineNumberReader(getReader());
-                List lines = new ArrayList();
+                List<String> lines = new ArrayList<String>();
                 String currentLine;
                 while ((currentLine = lnr.readLine()) != null) {
                     lines.add(currentLine);

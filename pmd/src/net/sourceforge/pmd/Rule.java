@@ -75,7 +75,7 @@ public interface Rule {
 
     boolean usesRuleChain();
 
-    List getRuleChainVisits();
+    List<String> getRuleChainVisits();
 
     void addRuleChainVisit(String astNodeName);
 }

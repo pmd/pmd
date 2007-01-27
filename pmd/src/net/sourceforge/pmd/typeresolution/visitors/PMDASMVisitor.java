@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class PMDASMVisitor implements ClassVisitor {
 
-	private Map packages = new HashMap();
+	private Map<String, String> packages = new HashMap<String, String>();
 
 	private AnnotationVisitor annotationVisitor = new PMDAnnotationVisitor(this);
 
@@ -30,13 +30,13 @@ public class PMDASMVisitor implements ClassVisitor {
 
 	private MethodVisitor methodVisitor = new PMDMethodVisitor(this);
 
-	public List innerClasses;
+	public List<String> innerClasses;
 
-	public Map getPackages() {
+	public Map<String, String> getPackages() {
 		return packages;
 	}
 
-	public List getInnerClasses() {
+	public List<String> getInnerClasses() {
 		return innerClasses;
 	}
 
@@ -117,7 +117,7 @@ public class PMDASMVisitor implements ClassVisitor {
 
 	public void visitInnerClass(String name, String outerName, String innerName, int access) {
 		if (innerClasses == null) {
-			innerClasses = new ArrayList();
+			innerClasses = new ArrayList<String>();
 		}
 		if (!innerClasses.contains(name.replace('/', '.'))) {
 			innerClasses.add(name.replace('/', '.'));

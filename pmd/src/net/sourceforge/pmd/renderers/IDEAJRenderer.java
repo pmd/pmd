@@ -21,7 +21,7 @@ public class IDEAJRenderer extends AbstractRenderer {
 	
     private static class SourcePath {
 
-        private Set paths = new HashSet();
+        private Set<String> paths = new HashSet<String>();
 
         public SourcePath(String sourcePathString) {
             for (StringTokenizer st = new StringTokenizer(sourcePathString, PATH_SEPARATOR); st.hasMoreTokens();) {
@@ -30,8 +30,7 @@ public class IDEAJRenderer extends AbstractRenderer {
         }
 
         public String clipPath(String fullFilename) {
-            for (Iterator i = paths.iterator(); i.hasNext();) {
-                String path = (String) i.next();
+            for (String path: paths) {
                 if (fullFilename.startsWith(path)) {
                     return fullFilename.substring(path.length() + 1);
                 }

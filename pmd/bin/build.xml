@@ -3,13 +3,15 @@
 	<property file="bin/local.properties" />
 
 	<property name="dir.lib" value="lib\" />
+	<property name="dir.lib14" value="java14\lib\" />
 	<property name="dir.src" value="src\" />
 	<property name="dir.build" value="build\" />
 	<property name="dir.rulesets" value="rulesets\" />
 	<property name="dir.regress" value="regress\" />
 	<property name="version" value="3.9" />
 	<property name="keystore" value="${keystore.path}" />
-    
+	<property name="jvm14.exe" value="c:/Program Files/Java/j2re1.4.2_13/bin/java.exe" />
+
     <!--Settings-->
     <property name="outputTestResultsToFile" value="false" />
 
@@ -17,8 +19,7 @@
 		<pathelement location="${dir.build}" />
 		<fileset dir="${dir.lib}">
 			<include name="jaxen-1.1.jar" />
-			<include name="asm-3.0.jar" />     
-			<include name="backport-util-concurrent.jar" />     
+			<include name="asm-3.0.jar" />
 		</fileset>
 	</path>
 
@@ -30,7 +31,7 @@
 
 	<target name="compile" description="Compiles the code">
 		<mkdir dir="${dir.build}" />
-		<javac source="1.4" target="1.4" encoding="latin1" deprecation="false" debug="true" optimize="false" srcdir="${dir.src}:${dir.regress}" destdir="${dir.build}">
+		<javac source="1.5" target="1.5" encoding="latin1" deprecation="false" debug="true" optimize="false" srcdir="${dir.src}:${dir.regress}" destdir="${dir.build}">
 			<classpath>
 				<path refid="dependencies.path" />
 			</classpath>
@@ -61,9 +62,30 @@
 		<jar jarfile="${dir.lib}\pmd-${version}.jar" includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**" basedir="${dir.build}">
 			<manifest>
 				<attribute name="Main-Class" value="net.sourceforge.pmd.PMD" />
-				<attribute name="Class-Path" value="jaxen-1.1.jar asm-3.0.jar backport-util-concurrent.jar" />
+				<attribute name="Class-Path" value="jaxen-1.1.jar asm-3.0.jar" />
 			</manifest>
 		</jar>
+	</target>
+
+	<target name="weave" depends="jar">
+		<taskdef name="retroweaver" classname="net.sourceforge.retroweaver.ant.RetroWeaverTask">
+			<classpath>
+				<pathelement location="${dir.lib14}/retroweaver-2.0Beta3.jar"/>
+				<pathelement location="${dir.lib14}/retroweaver-rt-2.0Beta3.jar"/>
+				<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
+				<pathelement location="${dir.lib14}/asm-commons-3.0.jar"/>
+				<pathelement location="${dir.lib14}/asm-util-3.0.jar"/>
+				<pathelement location="${dir.lib}/asm-3.0.jar"/>
+			</classpath>
+		</taskdef>
+
+		<retroweaver inputjar="../${dir.lib}\pmd-${version}.jar" outputjar="../${dir.lib14}\pmd14-${version}.jar" target="1.4" failonerror="true" />
+
+		<jar jarfile="${dir.lib}\pmd-test-${version}.jar"
+		      includes="test/net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
+		      excludes="test/net/sourceforge/pmd/testframework/**/**" basedir="${dir.build}" />
+
+		<retroweaver inputjar="../${dir.lib}\pmd-test-${version}.jar" outputjar="../${dir.lib14}\pmd14-test-${version}.jar" target="1.4" failonerror="true" />
 	</target>
 
 	<target name="jarsrc" depends="copy,compile" description="Jars up the source directory">
@@ -82,7 +104,7 @@
 			</fileset>
 		</pmd>
 	</target>
-    
+
     <target name="pmdOnPmd" description="Runs PMD on PMD" depends="copy, compile">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
         <pmd rulesetfiles="${dir.rulesets}internal\dogfood.xml" shortFilenames="true">
@@ -117,8 +139,46 @@
 					<include name="test/**/*Test.java" />
 				</fileset>
 			</batchtest>
-      
+
             <formatter type="xml" if="testResultsToFile"/>
+		</junit>
+		<junitreport todir="${dir.build}">
+			<fileset dir="${dir.build}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${dir.build}/html" />
+		</junitreport>
+	</target>
+
+	<target name="test14" depends="requires-junit,compile,copy,weave" description="Runs the unit tests with 1.4 jvm">
+		<condition property="testResultsToFile">
+			<istrue value="${outputTestResultsToFile}"/>
+		</condition>
+
+		<path id="dependencies14.path">
+			<fileset dir="${dir.lib14}">
+				<include name="backport-util-concurrent.jar" />
+				<include name="pmd14-3.9.jar" />
+				<include name="pmd14-test-3.9.jar" />
+				<include name="retroweaver-rt-2.0Beta3.jar" />
+			</fileset>
+			<fileset dir="${dir.lib}">
+				<include name="jaxen-1.1.jar" />
+				<include name="asm-3.0.jar" />
+			</fileset>
+		</path>
+
+		<junit printsummary="yes" haltonfailure="no" jvm="${jvm14.exe}" forkmode="perBatch">
+			<classpath>
+				<path refid="dependencies14.path" />
+			</classpath>
+			<batchtest fork="yes" todir="${dir.build}">
+				<fileset dir="${dir.regress}">
+					<include name="test/**/*Test.java" />
+				</fileset>
+			</batchtest>
+
+			<formatter type="xml" if="testResultsToFile"/>
 		</junit>
 		<junitreport todir="${dir.build}">
 			<fileset dir="${dir.build}">
@@ -184,7 +244,7 @@
 		<replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException" />
         <replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="extends Exception" value="extends RuntimeException" />
         <replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
-        <replace file="src/net/sourceforge/pmd/ast/JavaParserVisitor.java" token="SimpleNode" value="SimpleJavaNode" />	
+        <replace file="src/net/sourceforge/pmd/ast/JavaParserVisitor.java" token="SimpleNode" value="SimpleJavaNode" />
     </target>
 
     <target name="jspjjtree" description="Generates the JSP parser and AST source filesr">

@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
@@ -18,7 +17,7 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
  *
  * @author mgriffa
  */
-public class AbstractOptimizationRule extends AbstractRule implements Rule {
+public class AbstractOptimizationRule extends AbstractRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {

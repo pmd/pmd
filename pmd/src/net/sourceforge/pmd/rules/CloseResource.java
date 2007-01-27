@@ -50,7 +50,7 @@ public class CloseResource extends AbstractRule {
     private static final PropertyDescriptor typesDescriptor = new StringProperty("types",
             "Types that are affected by this rule", "", 2.0f);
 
-    private static final Map propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { typesDescriptor, closeTargetsDescriptor });
+    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { typesDescriptor, closeTargetsDescriptor });
 
     protected Map propertiesByName() {
         return propertyDescriptorsByName;

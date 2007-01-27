@@ -18,7 +18,7 @@ import net.sourceforge.pmd.util.Benchmark;
  */
 public class RuleSet {
 
-    private List rules = new ArrayList();
+    private List<Rule> rules = new ArrayList<Rule>();
     private String name = "";
     private String description = "";
     private Language language;
@@ -49,7 +49,7 @@ public class RuleSet {
      *
      * @return a Collection with the rules. All objects are of type {@link Rule}
      */
-    public Collection getRules() {
+    public Collection<Rule> getRules() {
         return rules;
     }
 
@@ -57,8 +57,7 @@ public class RuleSet {
      * @return true if any rule in the RuleSet needs the DFA layer
      */
     public boolean usesDFA() {
-        for (Iterator i = rules.iterator(); i.hasNext();) {
-            Rule r = (Rule) i.next();
+        for (Rule r: rules) {
             if (r.usesDFA()) {
                 return true;
             }
@@ -94,12 +93,12 @@ public class RuleSet {
 
     public void apply(List acuList, RuleContext ctx) {
         Iterator rs = rules.iterator();
-        long start = Benchmark.nanoTime();
+        long start = System.nanoTime();
         while (rs.hasNext()) {
             Rule rule = (Rule) rs.next();
             if (!rule.usesRuleChain()) {
                 rule.apply(acuList, ctx);
-                long end = Benchmark.nanoTime();
+                long end = System.nanoTime();
                 Benchmark.mark(Benchmark.TYPE_RULE, rule.getName(), end - start, 1);
                 start = end;
             }
