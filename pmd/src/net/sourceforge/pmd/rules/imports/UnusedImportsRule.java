@@ -13,18 +13,16 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.rules.ImportWrapper;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class UnusedImportsRule extends AbstractRule {
 
-    private Set imports = new HashSet();
+    private Set<ImportWrapper> imports = new HashSet<ImportWrapper>();
 
     public Object visit(ASTCompilationUnit node, Object data) {
         imports.clear();
         super.visit(node, data);
-        for (Iterator i = imports.iterator(); i.hasNext();) {
-            ImportWrapper wrapper = (ImportWrapper) i.next();
+        for (ImportWrapper wrapper : imports) {
             addViolation(data, wrapper.getNode(), wrapper.getFullName());
         }
         return data;
