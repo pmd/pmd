@@ -1,5 +1,4 @@
-
- package net.sourceforge.pmd;
+package net.sourceforge.pmd;
  
  /**
   * Enumeration of the types of source code.
@@ -34,9 +33,9 @@
       * @return null if not found
       */
      public static SourceType getSourceTypeForId(String id) {
-         for (int i = 0; i < sourceTypes.length; i++) {
-             if (sourceTypes[i].getId().equalsIgnoreCase(id)) {
-                 return sourceTypes[i];
+         for (SourceType sourceType : sourceTypes) {
+             if (sourceType.getId().equalsIgnoreCase(id)) {
+                 return sourceType;
              }
          }
          return null;
