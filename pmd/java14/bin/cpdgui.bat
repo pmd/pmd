@@ -1,1 +1,12 @@
-java -Xmx512m  -cp ../lib/pmd14-3.9.jar net.sourceforge.pmd.cpd.GUI
+@echo off
+set TOPDIR=%~dp0/../..
+set VERSION=3.9
+set PMDJAR=%TOPDIR%/java14/lib/pmd14-%VERSION%.jar
+set JARPATH=%TOPDIR%/lib/asm-3.0.jar;%TOPDIR%/lib/jaxen-1.1.jar
+set RWPATH=%TOPDIR%/java14/lib/retroweaver-rt-2.0Beta3.jar;%TOPDIR%/java14/lib/backport-util-concurrent.jar
+set JARPATH=%JARPATH%;%RWPATH%
+set OPTS=-Xmx512m
+set MAIN_CLASS=net.sourceforge.pmd.cpd.GUI
+
+java %OPTS% -cp %PMDJAR%;%JARPATH% %MAIN_CLASS% %*
+

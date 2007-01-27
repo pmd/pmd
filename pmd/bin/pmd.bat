@@ -1,4 +1,10 @@
 @echo off
-java -cp "%~dp0\..\lib\pmd-3.9.jar;%~dp0\..\lib\jaxen-1.1.jar;%~dp0\..\lib\asm-3.0.jar;%CLASSPATH%" net.sourceforge.pmd.PMD %*
+set TOPDIR=%~dp0/..
+set VERSION=3.9
+set PMDJAR=%TOPDIR%/lib/pmd-%VERSION%.jar
+set JARPATH=%TOPDIR%/lib/asm-3.0.jar;%TOPDIR%/lib/jaxen-1.1.jar
+set OPTS=
+set MAIN_CLASS=net.sourceforge.pmd.PMD
 
- 	  	 
+java %OPTS% -cp %PMDJAR%;%JARPATH%;%CLASSPATH% %MAIN_CLASS% %*
+
