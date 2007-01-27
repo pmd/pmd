@@ -56,7 +56,7 @@ public class TooManyFields extends AbstractRule {
         }
         for (String k : stats.keySet()) {
             int val = stats.get(k);
-            SimpleNode n = (SimpleNode) nodes.get(k);
+            SimpleNode n = nodes.get(k);
             if (val > maxFields) {
                 addViolation(data, n);
             }

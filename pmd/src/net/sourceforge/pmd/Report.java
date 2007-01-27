@@ -160,7 +160,7 @@ public class Report {
             if (!summary.containsKey(name)) {
                 summary.put(name, NumericConstants.ZERO);
             }
-            Integer count = (Integer) summary.get(name);
+            Integer count = summary.get(name);
             summary.put(name, new Integer(count.intValue() + 1));
         }
         return summary;

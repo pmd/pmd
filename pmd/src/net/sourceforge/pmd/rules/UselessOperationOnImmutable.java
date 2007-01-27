@@ -40,7 +40,7 @@ public class UselessOperationOnImmutable extends AbstractRule {
             NameOccurrence no = (NameOccurrence) it.next();
             // FIXME - getUsages will return everything with the same name as the variable, 
             // see JUnit test, case 6. Changing to SimpleNode below, revisit when getUsages is fixed
-            SimpleNode sn = (SimpleNode) no.getLocation();
+            SimpleNode sn = no.getLocation();
             if (!sn.jjtGetParent().jjtGetParent().jjtGetParent().getClass().equals(ASTExpression.class)) {
                 String methodCall = sn.getImage().substring(variableName.length());
                 if (targetMethods.contains(methodCall)) {

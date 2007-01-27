@@ -67,7 +67,7 @@ public class RuleSetFactoryTest extends TestCase {
     public void testSingleRule() {
         RuleSet rs = loadRuleSet(SINGLE_RULE);
         assertEquals(1, rs.size());
-        Rule r = (Rule) rs.getRules().iterator().next();
+        Rule r = rs.getRules().iterator().next();
         assertEquals("MockRuleName", r.getName());
         assertEquals("avoid the mock rule", r.getMessage());
     }
@@ -315,7 +315,7 @@ public class RuleSetFactoryTest extends TestCase {
 
     private Rule loadFirstRule(String ruleSetName) {
         RuleSet rs = loadRuleSet(ruleSetName);
-        return ((Rule) (rs.getRules().iterator().next()));
+        return rs.getRules().iterator().next();
     }
 
     private RuleSet loadRuleSet(String ruleSetName) {

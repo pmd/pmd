@@ -72,7 +72,7 @@ public class XPathRule extends CommonAbstractRule {
                     if (n instanceof ASTVariableDeclaratorId && getBooleanProperty("pluginname")) {
                         addViolation(data, n, n.getImage());
                     } else {
-                        addViolation(data, (SimpleNode) n, getMessage());
+                        addViolation(data, n, getMessage());
                     }
                 }
             }
@@ -108,7 +108,7 @@ public class XPathRule extends CommonAbstractRule {
         //
         nodeNameToXPaths = new HashMap<String, List<XPath>>();
 
-        BaseXPath originalXPath = (BaseXPath)createXPath(getStringProperty("xpath"));
+        BaseXPath originalXPath = createXPath(getStringProperty("xpath"));
         indexXPath(originalXPath, AST_ROOT);
 
         boolean useRuleChain = true;

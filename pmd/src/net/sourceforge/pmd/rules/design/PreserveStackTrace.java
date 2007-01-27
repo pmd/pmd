@@ -57,7 +57,7 @@ public class PreserveStackTrace extends AbstractRule {
 	                        }
 	                    }
                     } else if(child.getClass().equals(ASTClassOrInterfaceType.class)){
-                       addViolation((RuleContext) data, throwStatement);
+                       addViolation(data, throwStatement);
                     }
                 }
             }

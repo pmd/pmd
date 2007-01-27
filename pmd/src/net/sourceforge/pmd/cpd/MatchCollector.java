@@ -15,8 +15,8 @@ import java.util.Set;
 public class MatchCollector {
 
     private MatchAlgorithm ma;
-    private Map startMap = new HashMap();
-    private Map fileMap = new HashMap();
+    private Map<Match.MatchCode, Match> startMap = new HashMap<Match.MatchCode, Match>();
+    private Map<String, List<Match>> fileMap = new HashMap<String, List<Match>>();
 
     public MatchCollector(MatchAlgorithm ma) {
         this.ma = ma;
@@ -51,17 +51,17 @@ public class MatchCollector {
     }
 
     public List getMatches() {
-        List matchList = new ArrayList(startMap.values());
+        List<Match> matchList = new ArrayList<Match>(startMap.values());
         Collections.sort(matchList);
-        Set matchSet = new HashSet();
+        Set<Match.MatchCode> matchSet = new HashSet<Match.MatchCode>();
         Match.MatchCode matchCode = new Match.MatchCode();
         for (int i = matchList.size(); i > 1; i--) {
-            Match match1 = (Match) matchList.get(i - 1);
-            TokenEntry mark1 = (TokenEntry) match1.getMarkSet().iterator().next();
+            Match match1 = matchList.get(i - 1);
+            TokenEntry mark1 = match1.getMarkSet().iterator().next();
             matchSet.clear();
             matchSet.add(match1.getMatchCode());
             for (int j = i - 1; j > 0; j--) {
-                Match match2 = (Match) matchList.get(j - 1);
+                Match match2 = matchList.get(j - 1);
                 if (match1.getTokenCount() != match2.getTokenCount()) {
                     break;
                 }
@@ -87,12 +87,12 @@ public class MatchCollector {
             //prune the mark set
             Set pruned = match1.getMarkSet();
             boolean done = false;
-            ArrayList a1 = new ArrayList(match1.getMarkSet());
+            ArrayList<TokenEntry> a1 = new ArrayList<TokenEntry>(match1.getMarkSet());
             Collections.sort(a1);
             for (int outer = 0; outer < a1.size() - 1 && !done; outer++) {
-                TokenEntry cmark1 = (TokenEntry) a1.get(outer);
+                TokenEntry cmark1 = a1.get(outer);
                 for (int inner = outer + 1; inner < a1.size() && !done; inner++) {
-                    TokenEntry cmark2 = (TokenEntry) a1.get(inner);
+                    TokenEntry cmark2 = a1.get(inner);
                     matchCode.setFirst(cmark1.getIndex());
                     matchCode.setSecond(cmark2.getIndex());
                     if (!matchSet.contains(matchCode)) {
@@ -115,14 +115,14 @@ public class MatchCollector {
     private void determineMatch(TokenEntry mark1, TokenEntry mark2, int dupes) {
         Match match = new Match(dupes, mark1, mark2);
         String fileKey = mark1.getTokenSrcID() + mark2.getTokenSrcID();
-        List pairMatches = (ArrayList) fileMap.get(fileKey);
+        List<Match> pairMatches = fileMap.get(fileKey);
         if (pairMatches == null) {
-            pairMatches = new ArrayList();
+            pairMatches = new ArrayList<Match>();
             fileMap.put(fileKey, pairMatches);
         }
         boolean add = true;
         for (int i = 0; i < pairMatches.size(); i++) {
-            Match other = (Match) pairMatches.get(i);
+            Match other = pairMatches.get(i);
             if (other.getFirstMark().getIndex() + other.getTokenCount() - mark1.getIndex()
                     > 0) {
                 boolean ordered = other.getSecondMark().getIndex() - mark2.getIndex() < 0;

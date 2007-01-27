@@ -55,9 +55,9 @@ public abstract class AbstractRuleChainVisitor<E extends CompilationUnit> implem
         for (Rule rule: rules) {
             final List<String> nodeNames = rule.getRuleChainVisits();
             for (int j = 0; j < nodeNames.size(); j++) {
-                List nodes = (List) nodeNameToNodes.get(nodeNames.get(j));
-                for (int k = 0; k < nodes.size(); k++) {
-                    visit(rule, (SimpleNode) nodes.get(k), ctx);
+                List<SimpleNode> nodes = nodeNameToNodes.get(nodeNames.get(j));
+                for (SimpleNode node: nodes) {
+                    visit(rule, node, ctx);
                 }
                 visits += nodes.size();
             }

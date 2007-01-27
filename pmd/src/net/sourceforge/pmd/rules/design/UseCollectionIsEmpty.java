@@ -29,7 +29,7 @@ public class UseCollectionIsEmpty extends AbstractInefficientZeroCheck {
      */
     public boolean isTargetMethod(NameOccurrence occ) {
         if (occ.getNameForWhichThisIsAQualifier() != null) {
-            if (((SimpleNode) occ.getLocation()).getImage().endsWith(".size")) {
+            if (occ.getLocation().getImage().endsWith(".size")) {
                 return true;
             }
         }
