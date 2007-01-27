@@ -3,6 +3,7 @@ package net.sourceforge.pmd.dfa;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -22,17 +23,17 @@ public class DataFlowNode implements IDataFlowNode {
     private SimpleNode node;
     private Map<Integer, String> typeMap = new HashMap<Integer, String>();
 
-    protected List parents = new ArrayList();
-    protected List children = new ArrayList();
+    protected List<DataFlowNode> parents = new ArrayList<DataFlowNode>();
+    protected List<DataFlowNode> children = new ArrayList<DataFlowNode>();
     protected BitSet type = new BitSet();
-    protected List variableAccess = new ArrayList();
-    protected LinkedList dataFlow;
+    protected List<VariableAccess> variableAccess = new ArrayList<VariableAccess>();
+    protected LinkedList<DataFlowNode> dataFlow;
     protected int line;
 
     protected DataFlowNode() {
     }
 
-    public DataFlowNode(SimpleNode node, LinkedList dataFlow) {
+    public DataFlowNode(SimpleNode node, LinkedList<DataFlowNode> dataFlow) {
         this.dataFlow = dataFlow;
         this.node = node;
 
@@ -40,7 +41,7 @@ public class DataFlowNode implements IDataFlowNode {
         this.line = node.getBeginLine();
 
         if (!this.dataFlow.isEmpty()) {
-            DataFlowNode parent = (DataFlowNode) this.dataFlow.getLast();
+            DataFlowNode parent = this.dataFlow.getLast();
             parent.addPathToChild(this);
         }
         this.dataFlow.addLast(this);
@@ -63,7 +64,7 @@ public class DataFlowNode implements IDataFlowNode {
 
     public void reverseParentPathsTo(IDataFlowNode destination) {
         while (!parents.isEmpty()) {
-            DataFlowNode parent = (DataFlowNode) parents.get(0);
+            DataFlowNode parent = parents.get(0);
             parent.removePathToChild(this);
             parent.addPathToChild(destination);
         }
@@ -90,15 +91,15 @@ public class DataFlowNode implements IDataFlowNode {
         return this.node;
     }
 
-    public List getChildren() {
+    public List<DataFlowNode> getChildren() {
         return this.children;
     }
 
-    public List getParents() {
+    public List<DataFlowNode> getParents() {
         return this.parents;
     }
 
-    public List getFlow() {
+    public List<DataFlowNode> getFlow() {
         return this.dataFlow;
     }
 
@@ -106,7 +107,7 @@ public class DataFlowNode implements IDataFlowNode {
         return this.dataFlow.indexOf(this);
     }
 
-    public void setVariableAccess(List variableAccess) {
+    public void setVariableAccess(List<VariableAccess> variableAccess) {
         if (this.variableAccess.isEmpty()) {
             this.variableAccess = variableAccess;
         } else {
@@ -114,7 +115,7 @@ public class DataFlowNode implements IDataFlowNode {
         }
     }
 
-    public List getVariableAccess() {
+    public List<VariableAccess> getVariableAccess() {
         return this.variableAccess;
     }
 
@@ -168,7 +169,7 @@ public class DataFlowNode implements IDataFlowNode {
         if (!typeMap.containsKey(intype)) {
             throw new RuntimeException("Couldn't find type id " + intype);
         }
-        return (String) typeMap.get(intype);
+        return typeMap.get(intype);
     }
 
 }

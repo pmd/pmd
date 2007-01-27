@@ -34,7 +34,7 @@ public class UselessAssignment extends AbstractRule implements Executable {
         }
 */
 
-        DAAPathFinder a = new DAAPathFinder((IDataFlowNode) node.getDataFlowNode().getFlow().get(0), this);
+        DAAPathFinder a = new DAAPathFinder(node.getDataFlowNode().getFlow().get(0), this);
         a.run();
 
         return data;
@@ -64,7 +64,7 @@ public class UselessAssignment extends AbstractRule implements Executable {
                 continue;
             }
             for (int j = 0; j < inode.getVariableAccess().size(); j++) {
-                VariableAccess va = (VariableAccess) inode.getVariableAccess().get(j);
+                VariableAccess va = inode.getVariableAccess().get(j);
                 //System.out.println("inode = " + inode + ", va = " + va);
                 Object o = hash.get(va.getVariableName());
                 if (o != null) {

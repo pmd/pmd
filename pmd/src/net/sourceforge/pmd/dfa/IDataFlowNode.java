@@ -1,11 +1,13 @@
 package net.sourceforge.pmd.dfa;
 
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+
 
 import java.util.List;
 
 public interface IDataFlowNode {
-    List getVariableAccess();
+    List<VariableAccess> getVariableAccess();
 
     int getLine();
 
@@ -13,15 +15,15 @@ public interface IDataFlowNode {
 
     boolean isType(int type);
 
-    List getChildren();
+    List<? extends IDataFlowNode> getChildren();
 
-    List getParents();
+    List<? extends IDataFlowNode> getParents();
 
-    List getFlow();
+    List<? extends IDataFlowNode> getFlow();
 
     SimpleNode getSimpleNode();
 
-    void setVariableAccess(List variableAccess);
+    void setVariableAccess(List<VariableAccess> variableAccess);
 
     void addPathToChild(IDataFlowNode child);
 

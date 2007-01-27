@@ -30,7 +30,7 @@ import java.util.Map;
  */
 public class DaaRule extends AbstractRule implements Executable {
     private RuleContext rc;
-    private List daaRuleViolations;
+    private List<DaaRuleViolation> daaRuleViolations;
     private int maxRuleViolations;
     private int currentRuleViolationCount;
    
@@ -71,9 +71,9 @@ public class DaaRule extends AbstractRule implements Executable {
     
     public Object visit(ASTMethodDeclaration methodDeclaration, Object data) {
         this.rc = (RuleContext) data;
-        this.daaRuleViolations = new ArrayList();
+        this.daaRuleViolations = new ArrayList<DaaRuleViolation>();
         
-        final IDataFlowNode node = (IDataFlowNode) methodDeclaration.getDataFlowNode().getFlow().get(0);
+        final IDataFlowNode node = methodDeclaration.getDataFlowNode().getFlow().get(0);
         
         final DAAPathFinder pathFinder = new DAAPathFinder(node, this, getIntProperty(maxPathDescriptor));       
         pathFinder.run();
@@ -88,7 +88,7 @@ public class DaaRule extends AbstractRule implements Executable {
             return;
         }
         
-        final Hashtable hash = new Hashtable();
+        final Hashtable<String, Usage> hash = new Hashtable<String, Usage>();
         
         final Iterator pathIterator = path.iterator();
         while (pathIterator.hasNext()) {
@@ -97,10 +97,10 @@ public class DaaRule extends AbstractRule implements Executable {
             if (inode.getVariableAccess() != null) {
                 // iterate all variables of this node
                 for (int g = 0; g < inode.getVariableAccess().size(); g++) {
-                    final VariableAccess va = (VariableAccess) inode.getVariableAccess().get(g);
+                    final VariableAccess va = inode.getVariableAccess().get(g);
                     
                     // get the last usage of the current variable
-                    final Usage lastUsage = (Usage) hash.get(va.getVariableName());
+                    final Usage lastUsage = hash.get(va.getVariableName());
                     if (lastUsage != null) {
                         // there was a usage to this variable before
                         checkVariableAccess(inode, va, lastUsage);
@@ -178,9 +178,7 @@ public class DaaRule extends AbstractRule implements Executable {
      * @return true if the violation already was added to the report
      */
     private boolean violationAlreadyExists(String type, String var, int startLine, int endLine) {
-        final Iterator violationIterator = this.daaRuleViolations.iterator();
-        while (violationIterator.hasNext()) {
-            final DaaRuleViolation violation = (DaaRuleViolation)violationIterator.next();
+        for(DaaRuleViolation violation: this.daaRuleViolations) {
             if ((violation.getBeginLine() == startLine)
                     && (violation.getEndLine() == endLine)
                     && violation.getType().equals(type)

@@ -41,7 +41,7 @@ public class AcceptanceTest extends ParserTst {
             ASTMethodDeclarator decl = (ASTMethodDeclarator) methodNodes.get(i);
             IDataFlowNode inode = decl.getDataFlowNode();
             for (int j = 0; j < inode.getChildren().size(); j++) {
-                IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(j);
+                IDataFlowNode child = inode.getChildren().get(j);
                 if (array[i][j] != child.getIndex() - 1) {
                     return false;
                 }

@@ -82,14 +82,14 @@ public class Linker {
             switch (stackObject.getType()) {
                 case NodeType.RETURN_STATEMENT:
                     // remove all children (should contain only one child)
-                    node.removePathToChild((IDataFlowNode) node.getChildren().get(0));
-                    IDataFlowNode lastNode = (IDataFlowNode) node.getFlow().get(node.getFlow().size() - 1);
+                    node.removePathToChild(node.getChildren().get(0));
+                    IDataFlowNode lastNode = node.getFlow().get(node.getFlow().size() - 1);
                     node.addPathToChild(lastNode);
                     continueBreakReturnStack.remove(0);
                     break;
                 case NodeType.BREAK_STATEMENT:
                     IDataFlowNode last = getNodeToBreakStatement(node);
-                    node.removePathToChild((IDataFlowNode) node.getChildren().get(0));
+                    node.removePathToChild(node.getChildren().get(0));
                     node.addPathToChild(last);                    
                     continueBreakReturnStack.remove(0);
                     break;
@@ -196,7 +196,7 @@ public class Linker {
                 } else {
                     String label = node.getSimpleNode().getImage();
                     if (label == null || label.equals(parentNode.getImage())) {
-                        node.removePathToChild((IDataFlowNode) node.getChildren().get(0));
+                        node.removePathToChild(node.getChildren().get(0));
                         IDataFlowNode last = (IDataFlowNode) bList.get(index + 1);
                         node.addPathToChild(last);
                         break;
@@ -204,13 +204,13 @@ public class Linker {
                 }
             }
         }
-        return (IDataFlowNode)node.getFlow().get(index+1);
+        return node.getFlow().get(index+1);
     }
 
     private void computeDo(int first, int last) {
         IDataFlowNode doSt = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
         IDataFlowNode doExpr = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
-        IDataFlowNode doFirst = (IDataFlowNode) doSt.getFlow().get(doSt.getIndex() + 1);
+        IDataFlowNode doFirst = doSt.getFlow().get(doSt.getIndex() + 1);
         if (doFirst.getIndex() != doExpr.getIndex()) {
             doExpr.addPathToChild(doFirst);
         }
@@ -238,9 +238,9 @@ public class Linker {
                 fEnd = node;
             }
         }
-        IDataFlowNode end = (IDataFlowNode) fEnd.getFlow().get(fEnd.getIndex() + 1);
+        IDataFlowNode end = fEnd.getFlow().get(fEnd.getIndex() + 1);
 
-        IDataFlowNode firstSt = (IDataFlowNode) fSt.getChildren().get(0);
+        IDataFlowNode firstSt = fSt.getChildren().get(0);
 
         if (isUpdate) {
             if (fSt.getIndex() != fEnd.getIndex()) {
@@ -272,13 +272,13 @@ public class Linker {
 
         IDataFlowNode sStart = ((StackObject) this.braceStack.get(firstIndex)).getDataFlowNode();
         IDataFlowNode sEnd = ((StackObject) this.braceStack.get(lastIndex)).getDataFlowNode();
-        IDataFlowNode end = (IDataFlowNode) sEnd.getChildren().get(0);
+        IDataFlowNode end = sEnd.getChildren().get(0);
 
         for (int i = 0; i < diff - 2; i++) {
             StackObject so = (StackObject) this.braceStack.get(firstIndex + 2 + i);
             IDataFlowNode node = so.getDataFlowNode();
 
-            sStart.addPathToChild((IDataFlowNode) node.getChildren().get(0));
+            sStart.addPathToChild(node.getChildren().get(0));
 
             if (so.getType() == NodeType.SWITCH_LAST_DEFAULT_STATEMENT)
                 defaultStatement = true;
@@ -292,7 +292,7 @@ public class Linker {
         IDataFlowNode wStart = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
         IDataFlowNode wEnd = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
 
-        IDataFlowNode end = (IDataFlowNode) wEnd.getFlow().get(wEnd.getIndex() + 1);
+        IDataFlowNode end = wEnd.getFlow().get(wEnd.getIndex() + 1);
 
         if (wStart.getIndex() != wEnd.getIndex()) {
             end.reverseParentPathsTo(wStart);
@@ -305,8 +305,8 @@ public class Linker {
         IDataFlowNode ifEnd = ((StackObject) this.braceStack.get(second)).getDataFlowNode();
         IDataFlowNode elseEnd = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
 
-        IDataFlowNode elseStart = (IDataFlowNode) ifEnd.getFlow().get(ifEnd.getIndex() + 1);
-        IDataFlowNode end = (IDataFlowNode) elseEnd.getFlow().get(elseEnd.getIndex() + 1);
+        IDataFlowNode elseStart = ifEnd.getFlow().get(ifEnd.getIndex() + 1);
+        IDataFlowNode end = elseEnd.getFlow().get(elseEnd.getIndex() + 1);
 
         // if if-statement and else-statement contains statements or expressions
         if (ifStart.getIndex() != ifEnd.getIndex() &&
@@ -332,7 +332,7 @@ public class Linker {
 
         // only if the if-statement contains another Statement or Expression
         if (ifStart.getIndex() != ifEnd.getIndex()) {
-            IDataFlowNode end = (IDataFlowNode) ifEnd.getFlow().get(ifEnd.getIndex() + 1);
+            IDataFlowNode end = ifEnd.getFlow().get(ifEnd.getIndex() + 1);
             ifStart.addPathToChild(end);
         }
     }

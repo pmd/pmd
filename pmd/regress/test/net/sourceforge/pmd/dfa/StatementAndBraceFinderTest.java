@@ -31,25 +31,25 @@ public class StatementAndBraceFinderTest extends ParserTst {
 
     public void testIfStmtHasCorrectTypes() throws Throwable {
         ASTExpression exp = (ASTExpression) getOrderedNodes(ASTExpression.class, TEST3).get(0);
-        IDataFlowNode dfn = (IDataFlowNode) exp.getDataFlowNode().getFlow().get(2);
+        IDataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.IF_EXPR));
         assertTrue(dfn.isType(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE));
     }
 
     public void testWhileStmtHasCorrectTypes() throws Throwable {
         ASTExpression exp = (ASTExpression) getOrderedNodes(ASTExpression.class, TEST4).get(0);
-        IDataFlowNode dfn = (IDataFlowNode) exp.getDataFlowNode().getFlow().get(2);
+        IDataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.WHILE_EXPR));
         assertTrue(dfn.isType(NodeType.WHILE_LAST_STATEMENT));
     }
 
     public void testForStmtHasCorrectTypes() throws Throwable {
         ASTExpression exp = (ASTExpression) getOrderedNodes(ASTExpression.class, TEST5).get(0);
-        IDataFlowNode dfn = (IDataFlowNode) exp.getDataFlowNode().getFlow().get(2);
+        IDataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.FOR_INIT));
-        dfn = (IDataFlowNode) exp.getDataFlowNode().getFlow().get(3);
+        dfn = exp.getDataFlowNode().getFlow().get(3);
         assertTrue(dfn.isType(NodeType.FOR_EXPR));
-        dfn = (IDataFlowNode) exp.getDataFlowNode().getFlow().get(4);
+        dfn = exp.getDataFlowNode().getFlow().get(4);
         assertTrue(dfn.isType(NodeType.FOR_UPDATE));
         assertTrue(dfn.isType(NodeType.FOR_BEFORE_FIRST_STATEMENT));
         assertTrue(dfn.isType(NodeType.FOR_END));

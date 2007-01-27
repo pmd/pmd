@@ -133,7 +133,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
                 }
 
                 for (int j = 0; j < inode.getChildren().size(); j++) {
-                    IDataFlowNode n = (IDataFlowNode) inode.getChildren().get(j);
+                    IDataFlowNode n = inode.getChildren().get(j);
                     drawMyLine(inode.getIndex(), n.getIndex(), g);
                 }
                 String childIndices = childIndicesOf(inode, ", ");

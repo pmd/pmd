@@ -77,7 +77,7 @@ public class RuleViolation implements IRuleViolation {
             className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : node.getScope().getEnclosingClassScope().getClassName();
         }
 
-        methodName = node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : ((MethodScope) node.getScope().getEnclosingMethodScope()).getName();
+        methodName = node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : node.getScope().getEnclosingMethodScope().getName();
 
         packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
 

@@ -143,7 +143,7 @@ public class ReportTree {
                 while (toker.hasMoreTokens()) {
                     parts.add(toker.nextToken());
                 }
-                a = (String[]) parts.toArray(new String[parts.size()]);
+                a = parts.toArray(new String[parts.size()]);
             }
         } else {
             a = new String[]{pack};

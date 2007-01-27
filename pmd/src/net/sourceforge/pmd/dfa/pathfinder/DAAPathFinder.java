@@ -114,7 +114,7 @@ public class DAAPathFinder {
         PathElement e = (PathElement) stack.getLastLeaf().getUserObject();
         for (int i=e.node.getChildren().size()-1; i >= 0; i--) {
             if (i != e.currentChild) {
-                currentPath.addLast((IDataFlowNode) e.node.getChildren().get(i));
+                currentPath.addLast(e.node.getChildren().get(i));
                 break;
             }
         }
@@ -127,12 +127,12 @@ public class DAAPathFinder {
             IDataFlowNode inode = currentPath.getLast();
             if (inode.getChildren().size() > last.currentChild) { 
                 // for some unknown reasons last.currentChild might not be a children of inode, see bug 1597987 
-                IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(last.currentChild);
+                IDataFlowNode child = inode.getChildren().get(last.currentChild);
                 this.currentPath.addLast(child);
             }
         } else {
             IDataFlowNode inode = currentPath.getLast();
-            IDataFlowNode child = (IDataFlowNode) inode.getChildren().get(0); //TODO ???? IMPORTANT - ERROR?
+            IDataFlowNode child = inode.getChildren().get(0); //TODO ???? IMPORTANT - ERROR?
             this.currentPath.addLast(child);
         }
     }

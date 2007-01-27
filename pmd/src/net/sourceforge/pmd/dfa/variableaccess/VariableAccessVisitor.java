@@ -47,11 +47,11 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
         List undefinitions = markUsages(inode);
 
         // all variables are first in state undefinition 
-        IDataFlowNode firstINode = (IDataFlowNode) inode.getFlow().get(0);
+        IDataFlowNode firstINode = inode.getFlow().get(0);
         firstINode.setVariableAccess(undefinitions);
 
         // all variables are getting undefined when leaving scope
-        IDataFlowNode lastINode = (IDataFlowNode) inode.getFlow().get(inode.getFlow().size() - 1);
+        IDataFlowNode lastINode = inode.getFlow().get(inode.getFlow().size() - 1);
         lastINode.setVariableAccess(undefinitions);
     }
 
@@ -92,7 +92,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
         Set decls = new HashSet();
         Map varDecls;
         for (int i = 0; i < inode.getFlow().size(); i++) {
-            IDataFlowNode n = (IDataFlowNode) inode.getFlow().get(i);
+            IDataFlowNode n = inode.getFlow().get(i);
             if (n instanceof StartOrEndDataFlowNode) {
                 continue;
             }
