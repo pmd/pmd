@@ -40,10 +40,9 @@ import java.util.StringTokenizer;
  */
 public class CloseResource extends AbstractRule {
 
-    private Set types = new HashSet();
-    
+    private Set<String> types = new HashSet<String>();
 
-    private Set closeTargets = new HashSet();
+    private Set<String> closeTargets = new HashSet<String>();
     private static final PropertyDescriptor closeTargetsDescriptor = new StringProperty("closeTargets",
             "Methods which may close this resource", "", 1.0f);
 
@@ -72,7 +71,7 @@ public class CloseResource extends AbstractRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         List vars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
-        List ids = new ArrayList();
+        List<ASTVariableDeclaratorId> ids = new ArrayList<ASTVariableDeclaratorId>();
 
         // find all variable references to Connection objects
         for (Iterator it = vars.iterator(); it.hasNext();) {
@@ -92,8 +91,7 @@ public class CloseResource extends AbstractRule {
         }
 
         // if there are connections, ensure each is closed.
-        for (int i = 0; i < ids.size(); i++) {
-            ASTVariableDeclaratorId x = (ASTVariableDeclaratorId) ids.get(i);
+        for (ASTVariableDeclaratorId x : ids) {
             ensureClosed((ASTLocalVariableDeclaration) x.jjtGetParent().jjtGetParent(), x, data);
         }
         return data;
@@ -112,7 +110,7 @@ public class CloseResource extends AbstractRule {
 
         ASTBlock top = (ASTBlock) n;
 
-        List tryblocks = new ArrayList();
+        List<ASTTryStatement> tryblocks = new ArrayList<ASTTryStatement>();
         top.findChildrenOfType(ASTTryStatement.class, tryblocks, true);
 
         boolean closed = false;
@@ -120,15 +118,13 @@ public class CloseResource extends AbstractRule {
         // look for try blocks below the line the variable was
         // introduced and make sure there is a .close call in a finally
         // block.
-        for (Iterator it = tryblocks.iterator(); it.hasNext();) {
-            ASTTryStatement t = (ASTTryStatement) it.next();
-
+        for (ASTTryStatement t : tryblocks) {
             if ((t.getBeginLine() > id.getBeginLine()) && (t.hasFinally())) {
                 ASTBlock f = (ASTBlock) t.getFinally().jjtGetChild(0);
-                List names = new ArrayList();
+                List<ASTName> names = new ArrayList<ASTName>();
                 f.findChildrenOfType(ASTName.class, names, true);
-                for (Iterator it2 = names.iterator(); it2.hasNext();) {
-                    String name = ((ASTName) it2.next()).getImage();
+                for (ASTName oName : names) {
+                    String name = oName.getImage();
                     if (name.equals(target) || closeTargets.contains(name)) {
                         closed = true;
                     }

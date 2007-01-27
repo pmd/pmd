@@ -32,8 +32,8 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
             this.delimiter = delimiter;
         }
 
-        public Set parse(String in) {
-            Set result = new HashSet();
+        public Set<String> parse(String in) {
+            Set<String> result = new HashSet<String>();
             StringBuffer currentToken = new StringBuffer();
             boolean inEscapeMode = false;
             for (int i = 0; i < in.length(); i++) {
@@ -65,8 +65,8 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
     private static final String SEPARATOR_PROPERTY = "separator";
     private static final String EXCEPTION_FILE_NAME_PROPERTY = "exceptionfile";
 
-    private Map literals = new HashMap();
-    private Set exceptions = new HashSet();
+    private Map<String, List> literals = new HashMap<String, List>();
+    private Set<String> exceptions = new HashSet<String>();
 
     public Object visit(ASTCompilationUnit node, Object data) {
         literals.clear();
@@ -80,7 +80,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
             }
             exceptions = p.parse(getStringProperty(EXCEPTION_LIST_PROPERTY));
         } else if (hasProperty(EXCEPTION_FILE_NAME_PROPERTY)) {
-            exceptions = new HashSet();
+            exceptions = new HashSet<String>();
             LineNumberReader reader = null;
             try {
                 reader = new LineNumberReader(new BufferedReader(new FileReader(new File(getStringProperty(EXCEPTION_FILE_NAME_PROPERTY)))));
@@ -103,11 +103,10 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
         super.visit(node, data);
 
         int threshold = getIntProperty("threshold");
-        for (Iterator i = literals.keySet().iterator(); i.hasNext();) {
-            String key = (String) i.next();
+        for (String key: literals.keySet()) {
             List occurrences = (List) literals.get(key);
             if (occurrences.size() >= threshold) {
-                Object[] args = new Object[]{key, new Integer(occurrences.size()), new Integer(((SimpleNode) occurrences.get(0)).getBeginLine())};
+                Object[] args = new Object[]{key, Integer.valueOf(occurrences.size()), Integer.valueOf(((SimpleNode) occurrences.get(0)).getBeginLine())};
                 addViolation(data, (SimpleNode) occurrences.get(0), args);
             }
         }

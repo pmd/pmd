@@ -41,7 +41,7 @@ public class UseStringBufferLength extends AbstractRule {
     - check each usage
     - flag those that involve variable.toString()
     */
-    private Set alreadySeen = new HashSet();
+    private Set<VariableNameDeclaration> alreadySeen = new HashSet<VariableNameDeclaration>();
 
     public Object visit(ASTCompilationUnit acu, Object data) {
         alreadySeen.clear();

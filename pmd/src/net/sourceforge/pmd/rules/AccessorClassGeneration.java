@@ -34,7 +34,7 @@ import java.util.ListIterator;
  */
 public class AccessorClassGeneration extends AbstractRule {
 
-    private List classDataList = new ArrayList();
+    private List<ClassData> classDataList = new ArrayList<ClassData>();
     private int classID = -1;
     private String packageName;
 
@@ -50,18 +50,18 @@ public class AccessorClassGeneration extends AbstractRule {
 
     private static class ClassData {
         private String m_ClassName;
-        private List m_PrivateConstructors;
-        private List m_Instantiations;
+        private List<ASTConstructorDeclaration> m_PrivateConstructors;
+        private List<AllocData> m_Instantiations;
         /**
          * List of outer class names that exist above this class
          */
-        private List m_ClassQualifyingNames;
+        private List<String> m_ClassQualifyingNames;
 
         public ClassData(String className) {
             m_ClassName = className;
-            m_PrivateConstructors = new ArrayList();
-            m_Instantiations = new ArrayList();
-            m_ClassQualifyingNames = new ArrayList();
+            m_PrivateConstructors = new ArrayList<ASTConstructorDeclaration>();
+            m_Instantiations = new ArrayList<AllocData>();
+            m_ClassQualifyingNames = new ArrayList<String>();
         }
 
         public void addInstantiation(AllocData ad) {
@@ -160,7 +160,7 @@ public class AccessorClassGeneration extends AbstractRule {
                 setClassID(classDataList.size());
                 ClassData newClassData = new ClassData(interfaceName);
                 //store the names of any outer classes of this class in the classQualifyingName List
-                ClassData formerClassData = (ClassData) classDataList.get(formerID);
+                ClassData formerClassData = classDataList.get(formerID);
                 newClassData.addClassQualifyingName(formerClassData.getClassName());
                 classDataList.add(getClassID(), newClassData);
                 Object o = super.visit(node, data);
@@ -194,7 +194,7 @@ public class AccessorClassGeneration extends AbstractRule {
                 return null;
             }
             //store the names of any outer classes of this class in the classQualifyingName List
-            ClassData formerClassData = (ClassData) classDataList.get(formerID);
+            ClassData formerClassData = classDataList.get(formerID);
             newClassData.addClassQualifyingName(formerClassData.getClassName());
             classDataList.add(getClassID(), newClassData);
             Object o = super.visit(node, data);
@@ -243,13 +243,11 @@ public class AccessorClassGeneration extends AbstractRule {
 
     private void processRule(Object ctx) {
         //check constructors of outerIterator against allocations of innerIterator
-        for (Iterator outerIterator = classDataList.iterator(); outerIterator.hasNext();) {
-            ClassData outerDataSet = (ClassData) outerIterator.next();
+        for (ClassData outerDataSet : classDataList) {
             for (Iterator constructors = outerDataSet.getPrivateConstructorIterator(); constructors.hasNext();) {
                 ASTConstructorDeclaration cd = (ASTConstructorDeclaration) constructors.next();
 
-                for (Iterator innerIterator = classDataList.iterator(); innerIterator.hasNext();) {
-                    ClassData innerDataSet = (ClassData) innerIterator.next();
+                for (ClassData innerDataSet : classDataList) {
                     if (outerDataSet == innerDataSet) {
                         continue;
                     }
@@ -274,7 +272,7 @@ public class AccessorClassGeneration extends AbstractRule {
         if (classID >= classDataList.size()) {
             return null;
         }
-        return (ClassData) classDataList.get(classID);
+        return classDataList.get(classID);
     }
 
     private void setClassID(int ID) {

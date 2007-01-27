@@ -304,7 +304,7 @@ public class RuleSetFactory {
                 } else if (node.getNodeName().equals("example")) {
                     rule.setExample(parseTextNode(node));
                 } else if (node.getNodeName().equals("priority")) {
-                    rule.setPriority(new Integer(parseTextNode(node).trim()).intValue());
+                    rule.setPriority(Integer.parseInt(parseTextNode(node).trim()));
                 } else if (node.getNodeName().equals("properties")) {
                     Properties p = new Properties();
                     parsePropertiesNode(p, node);

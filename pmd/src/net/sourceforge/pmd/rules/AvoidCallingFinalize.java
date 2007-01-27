@@ -11,7 +11,7 @@ import java.util.Set;
 
 public class AvoidCallingFinalize extends AbstractRule {
 
-    private Set checked = new HashSet();
+    private Set<MethodScope> checked = new HashSet<MethodScope>();
 
     public Object visit(ASTCompilationUnit acu, Object ctx) {
         checked.clear();

@@ -75,7 +75,7 @@ public class RuleSetFactoryTest extends TestCase {
     public void testMultipleRules() {
         RuleSet rs = loadRuleSet(MULTIPLE_RULES);
         assertEquals(2, rs.size());
-        Set expected = new HashSet();
+        Set<String> expected = new HashSet<String>();
         expected.add("MockRuleName1");
         expected.add("MockRuleName2");
         for (Iterator i = rs.getRules().iterator(); i.hasNext();) {

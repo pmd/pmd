@@ -44,7 +44,7 @@ public class NpathComplexity extends StatisticalRule {
 	        npath *= ((Integer) simpleNode.jjtAccept( this, data )).intValue();
 	      }
 	    
-	    return npath;
+	    return new Integer( npath );
 	}
 	
 	private int complexitySumOf(SimpleJavaNode node, int npathStart, Object data) {
@@ -57,7 +57,7 @@ public class NpathComplexity extends StatisticalRule {
 	        npath += ((Integer) simpleNode.jjtAccept( this, data )).intValue();
 	      }
 	    
-	    return npath;
+	    return new Integer( npath );
 	}
 	
   public Object visit(ASTMethodDeclaration node, Object data) {
@@ -223,7 +223,7 @@ public class NpathComplexity extends StatisticalRule {
 
 	  int npath = complexitySumOf(node, 0, data);
 	  
-    return new Integer( npath );
+    return Integer.valueOf( npath );
 
   }
 
@@ -239,7 +239,7 @@ public class NpathComplexity extends StatisticalRule {
     	int npath = complexitySumOf(node, 0, data);
     	
       npath += 2;
-      return new Integer( npath );
+      return Integer.valueOf( npath );
     }
     return NumericConstants.ONE;
   }

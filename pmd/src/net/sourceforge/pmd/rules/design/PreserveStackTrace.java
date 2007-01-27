@@ -12,7 +12,6 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import org.jaxen.JaxenException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,13 +20,12 @@ import java.util.Map;
 
 public class PreserveStackTrace extends AbstractRule {
 
-    private List nameNodes = new ArrayList();
+    private List<ASTName> nameNodes = new ArrayList<ASTName>();
 
     public Object visit(ASTCatchStatement node, Object data) {
         String target = (((SimpleNode) node.jjtGetChild(0).jjtGetChild(1)).getImage());
-        List lstThrowStatements = node.findChildrenOfType(ASTThrowStatement.class);
-        for (Iterator iter = lstThrowStatements.iterator(); iter.hasNext();) {
-            ASTThrowStatement throwStatement = (ASTThrowStatement) iter.next();
+        List<ASTThrowStatement> lstThrowStatements = node.findChildrenOfType(ASTThrowStatement.class);
+        for (ASTThrowStatement throwStatement : lstThrowStatements) {
             SimpleNode sn = (SimpleNode) throwStatement.jjtGetChild(0).jjtGetChild(0);
             if (sn.getClass().equals(ASTCastExpression.class)) {
                 ASTPrimaryExpression expr = (ASTPrimaryExpression) sn.jjtGetChild(1);
@@ -72,8 +70,7 @@ public class PreserveStackTrace extends AbstractRule {
         boolean match = false;
         nameNodes.clear();
         args.findChildrenOfType(ASTName.class, nameNodes);
-        for (int i = 0; i < nameNodes.size(); i++) {
-            ASTName nameNode = (ASTName)nameNodes.get(i);
+        for (ASTName nameNode : nameNodes) {
             if (target.equals(nameNode.getImage())) {
                 match = true;
                 break;

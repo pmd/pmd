@@ -22,7 +22,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 public class ASTModel implements TreeModel {
 	
     private SimpleNode root;
-    private List listeners = new ArrayList(1);
+    private List<TreeModelListener> listeners = new ArrayList<TreeModelListener>(1);
 
     /**
      * creates the tree model
@@ -97,8 +97,8 @@ public class ASTModel implements TreeModel {
 
 
     protected void fireTreeModelEvent(TreeModelEvent e) {
-        for (int i = 0; i < listeners.size(); i++) {
-            ((TreeModelListener) listeners.get(i)).treeNodesChanged(e);
+        for (TreeModelListener listener : listeners) {
+            listener.treeNodesChanged(e);
         }
     }
 

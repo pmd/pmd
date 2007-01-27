@@ -22,8 +22,8 @@ public class TooManyFields extends AbstractRule {
 
     private static final int DEFAULT_MAXFIELDS = 15;
 
-    private Map stats;
-    private Map nodes;
+    private Map<String, Integer> stats;
+    private Map<String, ASTClassOrInterfaceDeclaration> nodes;
     private int maxFields;
 
     private static final PropertyDescriptor maxFieldsDescriptor = new IntegerProperty(
@@ -39,8 +39,8 @@ public class TooManyFields extends AbstractRule {
     	
         maxFields = getIntProperty(maxFieldsDescriptor);
 
-        stats = new HashMap(5);
-        nodes = new HashMap(5);
+        stats = new HashMap<String, Integer>(5);
+        nodes = new HashMap<String, ASTClassOrInterfaceDeclaration>(5);
 
         List l = node.findChildrenOfType(ASTFieldDeclaration.class);
 
@@ -54,9 +54,8 @@ public class TooManyFields extends AbstractRule {
                 bumpCounterFor(clazz);
             }
         }
-        for (Iterator it = stats.keySet().iterator(); it.hasNext();) {
-            String k = (String) it.next();
-            int val = ((Integer) stats.get(k)).intValue();
+        for (String k : stats.keySet()) {
+            int val = stats.get(k);
             SimpleNode n = (SimpleNode) nodes.get(k);
             if (val > maxFields) {
                 addViolation(data, n);
@@ -71,7 +70,7 @@ public class TooManyFields extends AbstractRule {
             stats.put(key, NumericConstants.ZERO);
             nodes.put(key, clazz);
         }
-        Integer i = new Integer(((Integer) stats.get(key)).intValue() + 1);
+        Integer i = Integer.valueOf(stats.get(key) + 1);
         stats.put(key, i);
     }
 

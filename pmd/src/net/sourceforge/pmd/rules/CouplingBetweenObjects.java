@@ -35,7 +35,7 @@ import java.util.Set;
 public class CouplingBetweenObjects extends AbstractRule {
 
     private int couplingCount;
-    private Set typesFoundSoFar;
+    private Set<String> typesFoundSoFar;
 
     private static final PropertyDescriptor thresholdDescriptor = new IntegerProperty(
     	"threshold", "Coupling threshold value", 2, 1.0f
@@ -45,7 +45,7 @@ public class CouplingBetweenObjects extends AbstractRule {
         
     
     public Object visit(ASTCompilationUnit cu, Object data) {
-        typesFoundSoFar = new HashSet();
+        typesFoundSoFar = new HashSet<String>();
         couplingCount = 0;
 
         Object returnObj = cu.childrenAccept(this, data);

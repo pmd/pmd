@@ -20,7 +20,7 @@ import java.util.StringTokenizer;
 public class DataFlowNode implements IDataFlowNode {
 
     private SimpleNode node;
-    private Map typeMap = new HashMap();
+    private Map<Integer, String> typeMap = new HashMap<Integer, String>();
 
     protected List parents = new ArrayList();
     protected List children = new ArrayList();
@@ -125,9 +125,9 @@ public class DataFlowNode implements IDataFlowNode {
         } else {
             String tmp = type.toString();
             String newTmp = "";
-            for (int i = 0; i < tmp.length(); i++) {
-                if (tmp.charAt(i) != '{' && tmp.charAt(i) != '}' && tmp.charAt(i) != ' ') {
-                    newTmp += tmp.charAt(i);
+            for (char c : tmp.toCharArray()) {
+                if (c != '{' && c != '}' && c != ' ') {
+                    newTmp += c;
                 }
             }
             for (StringTokenizer st = new StringTokenizer(newTmp, ","); st.hasMoreTokens();) {
@@ -142,33 +142,33 @@ public class DataFlowNode implements IDataFlowNode {
 
     private String stringFromType(int intype) {
         if (typeMap.isEmpty()) {
-            typeMap.put(new Integer(NodeType.IF_EXPR), "IF_EXPR");
-            typeMap.put(new Integer(NodeType.IF_LAST_STATEMENT), "IF_LAST_STATEMENT");
-            typeMap.put(new Integer(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE), "IF_LAST_STATEMENT_WITHOUT_ELSE");
-            typeMap.put(new Integer(NodeType.ELSE_LAST_STATEMENT), "ELSE_LAST_STATEMENT");
-            typeMap.put(new Integer(NodeType.WHILE_LAST_STATEMENT), "WHILE_LAST_STATEMENT");
-            typeMap.put(new Integer(NodeType.WHILE_EXPR), "WHILE_EXPR");
-            typeMap.put(new Integer(NodeType.SWITCH_START), "SWITCH_START");
-            typeMap.put(new Integer(NodeType.CASE_LAST_STATEMENT), "CASE_LAST_STATEMENT");
-            typeMap.put(new Integer(NodeType.SWITCH_LAST_DEFAULT_STATEMENT), "SWITCH_LAST_DEFAULT_STATEMENT");
-            typeMap.put(new Integer(NodeType.SWITCH_END), "SWITCH_END");
-            typeMap.put(new Integer(NodeType.FOR_INIT), "FOR_INIT");
-            typeMap.put(new Integer(NodeType.FOR_EXPR), "FOR_EXPR");
-            typeMap.put(new Integer(NodeType.FOR_UPDATE), "FOR_UPDATE");
-            typeMap.put(new Integer(NodeType.FOR_BEFORE_FIRST_STATEMENT), "FOR_BEFORE_FIRST_STATEMENT");
-            typeMap.put(new Integer(NodeType.FOR_END), "FOR_END");
-            typeMap.put(new Integer(NodeType.DO_BEFORE_FIRST_STATEMENT), "DO_BEFORE_FIRST_STATEMENT");
-            typeMap.put(new Integer(NodeType.DO_EXPR), "DO_EXPR");
-            typeMap.put(new Integer(NodeType.RETURN_STATEMENT), "RETURN_STATEMENT");
-            typeMap.put(new Integer(NodeType.BREAK_STATEMENT), "BREAK_STATEMENT");
-            typeMap.put(new Integer(NodeType.CONTINUE_STATEMENT), "CONTINUE_STATEMENT");
-            typeMap.put(new Integer(NodeType.LABEL_STATEMENT), "LABEL_STATEMENT");
-            typeMap.put(new Integer(NodeType.LABEL_LAST_STATEMENT), "LABEL_END");
+            typeMap.put(NodeType.IF_EXPR, "IF_EXPR");
+            typeMap.put(NodeType.IF_LAST_STATEMENT, "IF_LAST_STATEMENT");
+            typeMap.put(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE, "IF_LAST_STATEMENT_WITHOUT_ELSE");
+            typeMap.put(NodeType.ELSE_LAST_STATEMENT, "ELSE_LAST_STATEMENT");
+            typeMap.put(NodeType.WHILE_LAST_STATEMENT, "WHILE_LAST_STATEMENT");
+            typeMap.put(NodeType.WHILE_EXPR, "WHILE_EXPR");
+            typeMap.put(NodeType.SWITCH_START, "SWITCH_START");
+            typeMap.put(NodeType.CASE_LAST_STATEMENT, "CASE_LAST_STATEMENT");
+            typeMap.put(NodeType.SWITCH_LAST_DEFAULT_STATEMENT, "SWITCH_LAST_DEFAULT_STATEMENT");
+            typeMap.put(NodeType.SWITCH_END, "SWITCH_END");
+            typeMap.put(NodeType.FOR_INIT, "FOR_INIT");
+            typeMap.put(NodeType.FOR_EXPR, "FOR_EXPR");
+            typeMap.put(NodeType.FOR_UPDATE, "FOR_UPDATE");
+            typeMap.put(NodeType.FOR_BEFORE_FIRST_STATEMENT, "FOR_BEFORE_FIRST_STATEMENT");
+            typeMap.put(NodeType.FOR_END, "FOR_END");
+            typeMap.put(NodeType.DO_BEFORE_FIRST_STATEMENT, "DO_BEFORE_FIRST_STATEMENT");
+            typeMap.put(NodeType.DO_EXPR, "DO_EXPR");
+            typeMap.put(NodeType.RETURN_STATEMENT, "RETURN_STATEMENT");
+            typeMap.put(NodeType.BREAK_STATEMENT, "BREAK_STATEMENT");
+            typeMap.put(NodeType.CONTINUE_STATEMENT, "CONTINUE_STATEMENT");
+            typeMap.put(NodeType.LABEL_STATEMENT, "LABEL_STATEMENT");
+            typeMap.put(NodeType.LABEL_LAST_STATEMENT, "LABEL_END");
         }
-        if (!typeMap.containsKey(new Integer(intype))) {
+        if (!typeMap.containsKey(intype)) {
             throw new RuntimeException("Couldn't find type id " + intype);
         }
-        return (String) typeMap.get(new Integer(intype));
+        return (String) typeMap.get(intype);
     }
 
 }
