@@ -72,9 +72,10 @@ public class ViolationOutline extends PageBookView implements ISelectionProvider
         priorityFilter = new PriorityFilter();
         if (memento != null) {
             List priorityList = memento.getIntegerList(PRIORITY_LIST);
-            if (priorityList != null)
+            if (!priorityList.isEmpty()) {
                 // set the loaded List for the Priority Filter
                 priorityFilter.setPriorityFilterList(priorityList);
+            }
         }
     }
 

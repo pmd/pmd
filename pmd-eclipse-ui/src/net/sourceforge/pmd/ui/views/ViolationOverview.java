@@ -87,6 +87,9 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.7  2007/01/28 18:19:19  holobender
+ * Fixed default values for priorities
+ *
  * Revision 1.6  2007/01/18 21:03:56  phherlin
  * Fix several problems on memento usage
  *
@@ -514,12 +517,12 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
 
         // Provide the Filters with their last State
         final List priorityList = this.memento.getIntegerList(PRIORITY_LIST);
-        if (priorityList != null) {
+        if (!priorityList.isEmpty()) {
             this.priorityFilter.setPriorityFilterList(priorityList);
         }
 
         final List projectNames = this.memento.getStringList(PROJECT_LIST);
-        if (projectNames != null) {
+        if (!projectNames.isEmpty()) {
             final List projectList = new ArrayList();
             for (int k = 0; k < projectNames.size(); k++) {
                 final AbstractPMDRecord project = this.root.findResourceByName(projectNames.get(k).toString(),
