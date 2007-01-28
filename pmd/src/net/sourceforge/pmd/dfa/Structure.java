@@ -18,9 +18,9 @@ import java.util.Stack;
  */
 public class Structure {
 
-    private LinkedList dataFlow = new LinkedList();
-    private Stack braceStack = new Stack();
-    private Stack continueBreakReturnStack = new Stack();
+    private LinkedList<DataFlowNode> dataFlow = new LinkedList<DataFlowNode>();
+    private Stack<StackObject> braceStack = new Stack<StackObject>();
+    private Stack<StackObject> continueBreakReturnStack = new Stack<StackObject>();
 
     /**
      * This class encapsulates the access to the DataFlowNode class. Is this worthwhile?
@@ -41,11 +41,11 @@ public class Structure {
     }
 
     public IDataFlowNode getLast() {
-        return (IDataFlowNode) this.dataFlow.getLast();
+        return this.dataFlow.getLast();
     }
 
     public IDataFlowNode getFirst() {
-        return (IDataFlowNode) this.dataFlow.getFirst();
+        return this.dataFlow.getFirst();
     }
 
 //  ----------------------------------------------------------------------------

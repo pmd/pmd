@@ -7,13 +7,12 @@ import net.sourceforge.pmd.jsp.ast.JspParser;
 
 import java.io.StringReader;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class AbstractJspNodesTst extends TestCase {
 
-    public void assertNumberOfNodes(Class clazz, String source, int number) {
-        Set nodes = getNodes(clazz, source);
+    public <T> void assertNumberOfNodes(Class<T> clazz, String source, int number) {
+        Set<T> nodes = getNodes(clazz, source);
         assertEquals("Exactly " + number + " element(s) expected", number, nodes.size());
     }
 
@@ -24,10 +23,10 @@ public class AbstractJspNodesTst extends TestCase {
      * @param source
      * @return Set 
      */
-    public Set getNodes(Class clazz, String source) {
+    public <T> Set<T> getNodes(Class<T> clazz, String source) {
         JspParser parser = new JspParser(new JspCharStream(new StringReader(source)));
         Node rootNode = parser.CompilationUnit();
-        Set nodes = new HashSet();
+        Set<T> nodes = new HashSet<T>();
         addNodeAndSubnodes(rootNode, nodes, clazz);
         return nodes;
     }
@@ -40,12 +39,11 @@ public class AbstractJspNodesTst extends TestCase {
      * @param allNodes
      * @return Set 
      */
-    public Set getNodesOfType(Class clazz, Set allNodes) {
-        Set result = new HashSet();
-        for (Iterator i = allNodes.iterator(); i.hasNext();) {
-            Object node = i.next();
+    public <T> Set<T> getNodesOfType(Class<T> clazz, Set allNodes) {
+        Set<T> result = new HashSet<T>();
+        for (Object node: allNodes) {
             if (clazz.equals(node.getClass())) {
-                result.add(node);
+                result.add((T)node);
             }
         }
         return result;
@@ -59,10 +57,10 @@ public class AbstractJspNodesTst extends TestCase {
      * @param nodex
      * @param clazz
      */
-    private void addNodeAndSubnodes(Node node, Set nodes, Class clazz) {
+    private <T> void addNodeAndSubnodes(Node node, Set<T> nodes, Class<T> clazz) {
         if (null != node) {
             if ((null == clazz) || (clazz.equals(node.getClass()))) {
-                nodes.add(node);
+                nodes.add((T)node);
             }
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {

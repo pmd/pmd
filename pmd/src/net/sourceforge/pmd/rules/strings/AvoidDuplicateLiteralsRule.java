@@ -65,7 +65,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
     private static final String SEPARATOR_PROPERTY = "separator";
     private static final String EXCEPTION_FILE_NAME_PROPERTY = "exceptionfile";
 
-    private Map<String, List> literals = new HashMap<String, List>();
+    private Map<String, List<ASTLiteral>> literals = new HashMap<String, List<ASTLiteral>>();
     private Set<String> exceptions = new HashSet<String>();
 
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -104,10 +104,10 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
 
         int threshold = getIntProperty("threshold");
         for (String key: literals.keySet()) {
-            List occurrences = (List) literals.get(key);
+            List<ASTLiteral> occurrences = literals.get(key);
             if (occurrences.size() >= threshold) {
-                Object[] args = new Object[]{key, Integer.valueOf(occurrences.size()), Integer.valueOf(((SimpleNode) occurrences.get(0)).getBeginLine())};
-                addViolation(data, (SimpleNode) occurrences.get(0), args);
+                Object[] args = new Object[]{key, Integer.valueOf(occurrences.size()), Integer.valueOf(occurrences.get(0).getBeginLine())};
+                addViolation(data, occurrences.get(0), args);
             }
         }
         return data;
@@ -125,10 +125,10 @@ public class AvoidDuplicateLiteralsRule extends AbstractRule {
         }
 
         if (literals.containsKey(node.getImage())) {
-            List occurrences = (List) literals.get(node.getImage());
+            List<ASTLiteral> occurrences = literals.get(node.getImage());
             occurrences.add(node);
         } else {
-            List occurrences = new ArrayList();
+            List<ASTLiteral> occurrences = new ArrayList<ASTLiteral>();
             occurrences.add(node);
             literals.put(node.getImage(), occurrences);
         }

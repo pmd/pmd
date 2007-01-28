@@ -20,7 +20,7 @@ import java.util.List;
 public class SimpleNodeTreeNodeAdapter implements TreeNode {
 	
     private SimpleNode node;
-    private List children;
+    private List<TreeNode> children;
     private SimpleNodeTreeNodeAdapter parent;
 
     /**
@@ -48,7 +48,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
      */
     public TreeNode getChildAt(int childIndex) {
         checkChildren();
-        return (TreeNode) children.get(childIndex);
+        return children.get(childIndex);
     }
 
 
@@ -99,7 +99,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
      * @see javax.swing.tree.TreeNode#children()
      */
 
-    public Enumeration children() {
+    public Enumeration<TreeNode> children() {
         return Collections.enumeration(children);
     }
 
@@ -109,7 +109,7 @@ public class SimpleNodeTreeNodeAdapter implements TreeNode {
      */
     private void checkChildren() {
         if (children == null) {
-            children = new ArrayList(node.jjtGetNumChildren());
+            children = new ArrayList<TreeNode>(node.jjtGetNumChildren());
             for (int i = 0; i < node.jjtGetNumChildren(); i++) {
                 children.add(new SimpleNodeTreeNodeAdapter(this, (SimpleNode) node.jjtGetChild(i)));
             }

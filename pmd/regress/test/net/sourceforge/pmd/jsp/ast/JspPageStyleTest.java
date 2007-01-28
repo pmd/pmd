@@ -34,29 +34,29 @@ public class JspPageStyleTest extends AbstractJspNodesTst {
     public void testDirective() {
         Set nodes = getNodes(null, JSP_DIRECTIVE);
 
-        Set directives = getNodesOfType(ASTJspDirective.class, nodes);
+        Set<ASTJspDirective> directives = getNodesOfType(ASTJspDirective.class, nodes);
         assertEquals("One directive expected!", 1, directives.size());
-        ASTJspDirective directive = (ASTJspDirective) directives.iterator().next();
+        ASTJspDirective directive = directives.iterator().next();
         assertEquals("Correct directive name expected!",
                 "page", directive.getName());
 
-        Set directiveAttrs = getNodesOfType(ASTJspDirectiveAttribute.class, nodes);
+        Set<ASTJspDirectiveAttribute> directiveAttrs = getNodesOfType(ASTJspDirectiveAttribute.class, nodes);
         assertEquals("Two directive attributes expected!", 2, directiveAttrs.size());
 
-        List attrsList = new ArrayList(directiveAttrs);
-        Collections.sort(attrsList, new Comparator() {
-            public int compare(Object arg0, Object arg1) {
-                return ((ASTJspDirectiveAttribute) arg0).getName().compareTo(((ASTJspDirectiveAttribute) arg1).getName());
+        List<ASTJspDirectiveAttribute> attrsList = new ArrayList<ASTJspDirectiveAttribute>(directiveAttrs);
+        Collections.sort(attrsList, new Comparator<ASTJspDirectiveAttribute>() {
+            public int compare(ASTJspDirectiveAttribute arg0, ASTJspDirectiveAttribute arg1) {
+                return arg0.getName().compareTo(arg1.getName());
             }
         });
 
-        ASTJspDirectiveAttribute attr = (ASTJspDirectiveAttribute) attrsList.get(0);
+        ASTJspDirectiveAttribute attr = attrsList.get(0);
         assertEquals("Correct directive attribute name expected!",
                 "language", attr.getName());
         assertEquals("Correct directive attribute value expected!",
                 "java", attr.getValue());
 
-        attr = (ASTJspDirectiveAttribute) attrsList.get(1);
+        attr = attrsList.get(1);
         assertEquals("Correct directive attribute name expected!",
                 "session", attr.getName());
         assertEquals("Correct directive attribute value expected!",

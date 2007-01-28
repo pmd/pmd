@@ -30,7 +30,7 @@ import java.util.Set;
  */
 public class UnsynchronizedStaticDateFormatter extends AbstractRule {
 
-    private static Set targets = new HashSet();
+    private static Set<String> targets = new HashSet<String>();
     static {
         targets.add("DateFormat");
         targets.add("SimpleDateFormat");

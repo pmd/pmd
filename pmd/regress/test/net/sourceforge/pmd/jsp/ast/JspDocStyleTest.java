@@ -39,9 +39,9 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	public void testElementAttributeAndNamespace() throws Throwable {
 		Set nodes = getNodes(null, TEST_ELEMENT_AND_NAMESPACE);
 
-		Set elementNodes = getNodesOfType(ASTElement.class, nodes);
+		Set<ASTElement> elementNodes = getNodesOfType(ASTElement.class, nodes);
 		assertEquals("One element node expected!", 1, elementNodes.size());
-		ASTElement element = (ASTElement) elementNodes.iterator().next();
+		ASTElement element = elementNodes.iterator().next();
 		assertEquals("Correct name expected!", "h:html", element.getName());
 		assertEquals("Has namespace prefix!", true, element.isHasNamespacePrefix());
 		assertEquals("Element is empty!", true, element.isEmpty());
@@ -72,30 +72,29 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	{
 		Set nodes = getNodes(null, TEST_ATTRIBUTE_VALUE_CONTAINING_HASH);
 		
-		Set attributes = getNodesOfType(ASTAttribute.class, nodes);
+		Set<ASTAttribute> attributes = getNodesOfType(ASTAttribute.class, nodes);
 		assertEquals("Three attributes expected!", 3, attributes.size());
 		
-		List attrsList = new ArrayList(attributes);
-		Collections.sort(attrsList, new Comparator() {
-			public int compare(Object arg0, Object arg1) {
-				return ((ASTAttribute)arg0).getName().compareTo(
-						((ASTAttribute)arg1).getName() );
+		List<ASTAttribute> attrsList = new ArrayList<ASTAttribute>(attributes);
+		Collections.sort(attrsList, new Comparator<ASTAttribute>() {
+			public int compare(ASTAttribute arg0, ASTAttribute arg1) {
+				return arg0.getName().compareTo(arg1.getName());
 			}
 		});
 		
-		ASTAttribute attr = (ASTAttribute) attrsList.get(0);
+		ASTAttribute attr = attrsList.get(0);
 		assertEquals("Correct attribute name expected!", 
 				"foo", attr.getName());
 		assertEquals("Correct attribute value expected!", 
 				"CREATE", ((ASTAttributeValue) attr.getFirstChildOfType(ASTAttributeValue.class)).getImage());
 		
-		attr = (ASTAttribute) attrsList.get(1);
+		attr = attrsList.get(1);
 		assertEquals("Correct attribute name expected!", 
 				"href", attr.getName());
 		assertEquals("Correct attribute value expected!", 
 				"#", ((ASTAttributeValue) attr.getFirstChildOfType(ASTAttributeValue.class)).getImage());
 		
-		attr = (ASTAttribute) attrsList.get(2);
+		attr = attrsList.get(2);
 		assertEquals("Correct attribute name expected!", 
 				"something", attr.getName());
 		assertEquals("Correct attribute value expected!", 
@@ -120,10 +119,10 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	public void testDoctype() {
 		Set nodes = getNodes(null, TEST_DOCTYPE);
 
-		Set docTypeDeclarations = getNodesOfType(ASTDoctypeDeclaration.class, nodes);
+		Set<ASTDoctypeDeclaration> docTypeDeclarations = getNodesOfType(ASTDoctypeDeclaration.class, nodes);
 		assertEquals("One doctype declaration expected!", 1, docTypeDeclarations
 				.size());
-		ASTDoctypeDeclaration docTypeDecl = (ASTDoctypeDeclaration) docTypeDeclarations
+		ASTDoctypeDeclaration docTypeDecl = docTypeDeclarations
 				.iterator().next();
 		assertEquals("Correct doctype-name expected!", "html", docTypeDecl.getName());
 		
