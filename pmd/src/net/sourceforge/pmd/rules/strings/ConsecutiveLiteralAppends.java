@@ -55,10 +55,10 @@ import java.util.Set;
  */
 public class ConsecutiveLiteralAppends extends AbstractRule {
 
-    private final static Set blockParents;
+    private final static Set<Class> blockParents;
 
     static {
-        blockParents = new HashSet();
+        blockParents = new HashSet<Class>();
         blockParents.add(ASTForStatement.class);
         blockParents.add(ASTWhileStatement.class);
         blockParents.add(ASTDoStatement.class);

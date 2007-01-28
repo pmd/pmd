@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ApplierTest extends TestCase {
 
-    private static class MyFunction implements UnaryFunction {
+    private static class MyFunction implements UnaryFunction<Object> {
         private boolean gotCallback;
 
         public void applyTo(Object o) {
@@ -26,7 +26,7 @@ public class ApplierTest extends TestCase {
 
     public void testSimple() {
         MyFunction f = new MyFunction();
-        List l = new ArrayList();
+        List<Object> l = new ArrayList<Object>();
         l.add(new Object());
         Applier.apply(f, l.iterator());
         assertTrue(f.gotCallback());

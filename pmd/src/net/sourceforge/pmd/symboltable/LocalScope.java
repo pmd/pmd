@@ -14,12 +14,12 @@ import java.util.Map;
 
 public class LocalScope extends AbstractScope {
 
-    protected Map variableNames = new HashMap();
+    protected Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
 
     public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
         NameDeclaration decl = findVariableHere(occurrence);
         if (decl != null && !occurrence.isThisOrSuper()) {
-            List nameOccurrences = (List) variableNames.get(decl);
+            List<NameOccurrence> nameOccurrences = variableNames.get(decl);
             nameOccurrences.add(occurrence);
             SimpleNode n = occurrence.getLocation();
             if (n instanceof ASTName) {
@@ -29,7 +29,7 @@ public class LocalScope extends AbstractScope {
         return decl;
     }
 
-    public Map getVariableDeclarations() {
+    public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
         VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
         Applier.apply(f, variableNames.keySet().iterator());
         return f.getUsed();
@@ -39,7 +39,7 @@ public class LocalScope extends AbstractScope {
         if (variableNames.containsKey(nameDecl)) {
             throw new RuntimeException("Variable " + nameDecl + " is already in the symbol table");
         }
-        variableNames.put(nameDecl, new ArrayList());
+        variableNames.put(nameDecl, new ArrayList<NameOccurrence>());
     }
 
     public NameDeclaration findVariableHere(NameOccurrence occurrence) {

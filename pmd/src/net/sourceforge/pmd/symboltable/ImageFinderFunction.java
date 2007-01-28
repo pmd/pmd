@@ -9,21 +9,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ImageFinderFunction implements UnaryFunction {
+public class ImageFinderFunction implements UnaryFunction<NameDeclaration> {
 
-    private Set images = new HashSet();
+    private Set<String> images = new HashSet<String>();
     private NameDeclaration decl;
 
     public ImageFinderFunction(String img) {
         images.add(img);
     }
 
-    public ImageFinderFunction(List imageList) {
+    public ImageFinderFunction(List<String> imageList) {
         images.addAll(imageList);
     }
 
-    public void applyTo(Object o) {
-        NameDeclaration nameDeclaration = (NameDeclaration) o;
+    public void applyTo(NameDeclaration nameDeclaration) {
         if (images.contains(nameDeclaration.getImage())) {
             decl = nameDeclaration;
         }

@@ -9,15 +9,14 @@ import net.sourceforge.pmd.util.Applier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class ClassScope extends AbstractScope {
 
-    protected Map classNames = new HashMap();
-    protected Map methodNames = new HashMap();
-    protected Map variableNames = new HashMap();
+    protected Map<ClassNameDeclaration, List<NameOccurrence>> classNames = new HashMap<ClassNameDeclaration, List<NameOccurrence>>();
+    protected Map<MethodNameDeclaration, List<NameOccurrence>> methodNames = new HashMap<MethodNameDeclaration, List<NameOccurrence>>();
+    protected Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
 
     // FIXME - this breaks given sufficiently nested code
     private static int anonymousInnerClassCounter = 1;
@@ -45,13 +44,13 @@ public class ClassScope extends AbstractScope {
         if (variableNames.containsKey(variableDecl)) {
             throw new RuntimeException(variableDecl + " is already in the symbol table");
         }
-        variableNames.put(variableDecl, new ArrayList());
+        variableNames.put(variableDecl, new ArrayList<NameOccurrence>());
     }
 
     public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
         NameDeclaration decl = findVariableHere(occurrence);
         if (decl != null && occurrence.isMethodOrConstructorInvocation()) {
-            List nameOccurrences = (List) methodNames.get(decl);
+            List<NameOccurrence> nameOccurrences = methodNames.get(decl);
             if (nameOccurrences == null) {
                 // TODO may be a class name: Foo.this.super();
             } else {
@@ -63,7 +62,7 @@ public class ClassScope extends AbstractScope {
             }
 
         } else if (decl != null && !occurrence.isThisOrSuper()) {
-            List nameOccurrences = (List) variableNames.get(decl);
+            List<NameOccurrence> nameOccurrences = variableNames.get(decl);
             if (nameOccurrences == null) {
                 // TODO may be a class name
             } else {
@@ -77,17 +76,17 @@ public class ClassScope extends AbstractScope {
         return decl;
     }
 
-    public Map getVariableDeclarations() {
+    public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
         VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
         Applier.apply(f, variableNames.keySet().iterator());
         return f.getUsed();
     }
 
-    public Map getMethodDeclarations() {
+    public Map<MethodNameDeclaration, List<NameOccurrence>> getMethodDeclarations() {
         return methodNames;
     }
 
-    public Map getClassDeclarations() {
+    public Map<ClassNameDeclaration, List<NameOccurrence>> getClassDeclarations() {
         return classNames;
     }
 
@@ -100,11 +99,11 @@ public class ClassScope extends AbstractScope {
     }
 
     public void addDeclaration(MethodNameDeclaration decl) {
-        methodNames.put(decl, new ArrayList());
+        methodNames.put(decl, new ArrayList<NameOccurrence>());
     }
 
     public void addDeclaration(ClassNameDeclaration decl) {
-        classNames.put(decl, new ArrayList());
+        classNames.put(decl, new ArrayList<NameOccurrence>());
     }
 
     protected NameDeclaration findVariableHere(NameOccurrence occurrence) {
@@ -125,14 +124,13 @@ public class ClassScope extends AbstractScope {
             // we'll look up Foo just to get a handle to the class scope
             // and then we'll look up X.
             if (!variableNames.isEmpty()) {
-                return (NameDeclaration) variableNames.keySet().iterator().next();
+                return variableNames.keySet().iterator().next();
             }
-            return (NameDeclaration) methodNames.keySet().iterator().next();
+            return methodNames.keySet().iterator().next();
         }
 
         if (occurrence.isMethodOrConstructorInvocation()) {
-            for (Iterator i = methodNames.keySet().iterator(); i.hasNext();) {
-                MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
+            for (MethodNameDeclaration mnd: methodNames.keySet()) {
                 if (mnd.getImage().equals(occurrence.getImage())) {
                     int args = occurrence.getArgumentCount();
                     if (args == mnd.getParameterCount()) {
@@ -147,7 +145,7 @@ public class ClassScope extends AbstractScope {
             return null;
         }
 
-        List images = new ArrayList();
+        List<String> images = new ArrayList<String>();
         images.add(occurrence.getImage());
         if (occurrence.getImage().startsWith(className)) {
             images.add(clipClassName(occurrence.getImage()));
@@ -161,9 +159,7 @@ public class ClassScope extends AbstractScope {
         String res = "ClassScope (" + className + "): ";
         if (!classNames.isEmpty()) res += "(" + glomNames(classNames.keySet().iterator()) + ")";
         if (!methodNames.isEmpty()) {
-            Iterator i = methodNames.keySet().iterator();
-            while (i.hasNext()) {
-                MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
+            for (MethodNameDeclaration mnd: methodNames.keySet()) {
                 res += mnd.toString();
                 int usages = ((List) methodNames.get(mnd)).size();
                 res += "(begins at line " + mnd.getNode().getBeginLine() + ", " + usages + " usages)";

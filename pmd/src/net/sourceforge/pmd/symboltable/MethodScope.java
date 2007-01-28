@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class MethodScope extends AbstractScope {
 
-    protected Map variableNames = new HashMap();
+    protected Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
     private SimpleNode node;
 
     public MethodScope(SimpleNode node) {
@@ -26,7 +26,7 @@ public class MethodScope extends AbstractScope {
         return this;
     }
 
-    public Map getVariableDeclarations() {
+    public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
         VariableUsageFinderFunction f = new VariableUsageFinderFunction(variableNames);
         Applier.apply(f, variableNames.keySet().iterator());
         return f.getUsed();
@@ -35,7 +35,7 @@ public class MethodScope extends AbstractScope {
     public NameDeclaration addVariableNameOccurrence(NameOccurrence occurrence) {
         NameDeclaration decl = findVariableHere(occurrence);
         if (decl != null && !occurrence.isThisOrSuper()) {
-            ((List) variableNames.get(decl)).add(occurrence);
+            variableNames.get(decl).add(occurrence);
             SimpleNode n = occurrence.getLocation();
             if (n instanceof ASTName) {
                 ((ASTName) n).setNameDeclaration(decl);
@@ -48,7 +48,7 @@ public class MethodScope extends AbstractScope {
         if (variableNames.containsKey(variableDecl)) {
             throw new RuntimeException("Variable " + variableDecl + " is already in the symbol table");
         }
-        variableNames.put(variableDecl, new ArrayList());
+        variableNames.put(variableDecl, new ArrayList<NameOccurrence>());
     }
 
     public NameDeclaration findVariableHere(NameOccurrence occurrence) {
