@@ -134,12 +134,12 @@ public abstract class SimpleNode implements Node {
      * @param parentType class which you want to find.
      * @return Node of type parentType.  Returns null if none found.
      */
-    public <T> Node getFirstParentOfType(Class<T> parentType) {
+    public <T> T getFirstParentOfType(Class<T> parentType) {
         Node parentNode = jjtGetParent();
         while (parentNode != null && parentNode.getClass() != parentType) {
             parentNode = parentNode.jjtGetParent();
         }
-        return parentNode;
+        return (T) parentNode;
     }
 
     /**

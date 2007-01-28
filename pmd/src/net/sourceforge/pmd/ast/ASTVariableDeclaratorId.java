@@ -2,6 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.List;
@@ -34,8 +35,8 @@ public class ASTVariableDeclaratorId extends SimpleJavaNode {
         nameDeclaration = decl;
     }
 
-    public List getUsages() {
-        return (List) getScope().getVariableDeclarations().get(nameDeclaration);
+    public List<NameOccurrence> getUsages() {
+        return getScope().getVariableDeclarations().get(nameDeclaration);
     }
 
     public void bumpArrayDepth() {

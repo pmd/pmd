@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.symboltable;
 
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,16 +12,15 @@ import java.util.Map;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public class DummyScope implements Scope {
-    private Map emptyMap = new HashMap();
 
     private Scope parent;
 
-    public Map getVariableDeclarations() {
-        return emptyMap;
+    public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
+        return Collections.emptyMap();
     }
 
-    public Map getClassDeclarations() {
-        return emptyMap;
+    public Map<ClassNameDeclaration, List<NameOccurrence>> getClassDeclarations() {
+        return Collections.emptyMap();
     }
 
     public void addDeclaration(ClassNameDeclaration decl) {

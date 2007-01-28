@@ -13,9 +13,9 @@ public class FileFinder {
     private FilenameFilter filter;
     private static final String FILE_SEP = System.getProperty("file.separator");
 
-    public List findFilesFrom(String dir, FilenameFilter filter, boolean recurse) {
+    public List<File> findFilesFrom(String dir, FilenameFilter filter, boolean recurse) {
         this.filter = filter;
-        List files = new ArrayList();
+        List<File> files = new ArrayList<File>();
         scanDirectory(new File(dir), files, recurse);
         return files;
     }
@@ -23,7 +23,7 @@ public class FileFinder {
     /**
      * Implements a tail recursive file scanner
      */
-    private void scanDirectory(File dir, List list, boolean recurse) {
+    private void scanDirectory(File dir, List<File> list, boolean recurse) {
         String[] candidates = dir.list(filter);
         if (candidates == null) {
             return;

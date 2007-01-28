@@ -30,7 +30,7 @@ public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
 	 * Denotes the value datatype.
 	 * @return Class
 	 */
-	Class type();
+	Class<?> type();
 	/**
 	 * If the property is multi-valued, i.e. an array of strings, then this
 	 * returns the maximum number permitted. Unary property rule properties

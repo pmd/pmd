@@ -113,7 +113,7 @@ public class AbstractRuleTest extends TestCase {
     public void testRuleExclusion() {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
-        Map m = new HashMap();
+        Map<Integer, String> m = new HashMap<Integer, String>();
         m.put(new Integer(5), "");
         ctx.setReport(new Report());
         ctx.excludeLines(m);

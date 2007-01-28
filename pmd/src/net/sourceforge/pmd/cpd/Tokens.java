@@ -9,18 +9,18 @@ import java.util.List;
 
 public class Tokens {
 
-    private List tokens = new ArrayList();
+    private List<TokenEntry> tokens = new ArrayList<TokenEntry>();
 
     public void add(TokenEntry tokenEntry) {
         this.tokens.add(tokenEntry);
     }
 
-    public Iterator iterator() {
+    public Iterator<TokenEntry> iterator() {
         return tokens.iterator();
     }
 
     private TokenEntry get(int index) {
-        return (TokenEntry) tokens.get(index);
+        return tokens.get(index);
     }
 
     public int size() {
@@ -35,7 +35,7 @@ public class Tokens {
         return endTok.getBeginLine() - mark.getBeginLine() + 1;
     }
 
-    public List getTokens() {
+    public List<TokenEntry> getTokens() {
         return tokens;
     }
 

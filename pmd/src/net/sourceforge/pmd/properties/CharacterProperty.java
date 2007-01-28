@@ -76,7 +76,7 @@ public class CharacterProperty extends AbstractPMDProperty {
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
-	public Class type() {
+	public Class<Character> type() {
 		return Character.class;
 	}
 	

@@ -44,7 +44,7 @@ public class TypeProperty extends StringProperty {
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
-	public Class type() {
+	public Class<Class> type() {
 		return Class.class;
 	}
 

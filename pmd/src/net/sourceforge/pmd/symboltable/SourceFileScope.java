@@ -3,12 +3,13 @@ package net.sourceforge.pmd.symboltable;
 import net.sourceforge.pmd.util.Applier;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SourceFileScope extends AbstractScope implements Scope {
+public class SourceFileScope extends AbstractScope {
 
-    protected Map classNames = new HashMap();
+    protected Map<ClassNameDeclaration, List<NameOccurrence>> classNames = new HashMap<ClassNameDeclaration, List<NameOccurrence>>();
     private String packageImage;
 
     public SourceFileScope() {
@@ -36,7 +37,7 @@ public class SourceFileScope extends AbstractScope implements Scope {
     }
 
     public void addDeclaration(ClassNameDeclaration classDecl) {
-        classNames.put(classDecl, new ArrayList());
+        classNames.put(classDecl, new ArrayList<NameOccurrence>());
     }
 
     public void addDeclaration(MethodNameDeclaration decl) {
@@ -47,11 +48,11 @@ public class SourceFileScope extends AbstractScope implements Scope {
         throw new RuntimeException("SourceFileScope.addDeclaration(VariableNameDeclaration decl) called");
     }
 
-    public Map getClassDeclarations() {
+    public Map<ClassNameDeclaration, List<NameOccurrence>> getClassDeclarations() {
         return classNames;
     }
 
-    public Map getVariableDeclarations() {
+    public Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations() {
         throw new RuntimeException("PackageScope.getVariableDeclarations() called");
     }
 

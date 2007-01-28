@@ -190,7 +190,7 @@ public class Linker {
             }
             
             if (n.isType(NodeType.LABEL_LAST_STATEMENT)) {
-                SimpleNode parentNode = (SimpleNode) n.getSimpleNode().getFirstParentOfType(ASTLabeledStatement.class);
+                SimpleNode parentNode = n.getSimpleNode().getFirstParentOfType(ASTLabeledStatement.class);
                 if (parentNode == null) {
                     break;                                
                 } else {

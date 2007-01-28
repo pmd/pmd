@@ -50,7 +50,7 @@ public class DoubleProperty extends AbstractScalarProperty {
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
-	public Class type() {
+	public Class<Double> type() {
 		return Double.class;
 	}
 

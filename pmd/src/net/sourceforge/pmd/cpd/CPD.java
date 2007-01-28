@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class CPD {
 
-    private Map source = new HashMap();
+    private Map<String, SourceCode> source = new HashMap<String, SourceCode>();
     private CPDListener listener = new CPDNullListener();
     private Tokens tokens = new Tokens();
     private int minimumTileSize;
@@ -47,7 +47,7 @@ public class CPD {
         matchAlgorithm.findMatches();
     }
 
-    public Iterator getMatches() {
+    public Iterator<Match> getMatches() {
         return matchAlgorithm.matches();
     }
 
@@ -63,9 +63,9 @@ public class CPD {
         addDirectory(dir, true);
     }
 
-    public void add(List files) throws IOException {
-        for (Iterator i = files.iterator(); i.hasNext();) {
-            add(files.size(), (File) i.next());
+    public void add(List<File> files) throws IOException {
+        for (File f: files) {
+            add(files.size(), f);
         }
     }
 
@@ -78,7 +78,7 @@ public class CPD {
         add(finder.findFilesFrom(dir, language.getFileFilter(), recurse));
     }
 
-    private Set current = new HashSet();
+    private Set<String> current = new HashSet<String>();
 
     private void add(int fileCount, File file) throws IOException {
 

@@ -26,8 +26,7 @@ public class AppendCharacterWithChar extends AbstractRule {
     private static final Pattern REGEX = Pattern.compile("\"[\\\\]?[\\s\\S]\"");
 
     public Object visit(ASTLiteral node, Object data) {
-        ASTBlockStatement bs = (ASTBlockStatement) node
-                .getFirstParentOfType(ASTBlockStatement.class);
+        ASTBlockStatement bs = node.getFirstParentOfType(ASTBlockStatement.class);
         if (bs == null) {
             return data;
         }

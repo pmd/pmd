@@ -73,8 +73,7 @@ public class BrokenNullCheck extends AbstractRule {
             SimpleJavaNode conditionalSubnode = (SimpleJavaNode)conditionalExpression.jjtGetChild(i);
             
             //We skip the null compare branch
-            ASTEqualityExpression nullEqualityExpression = (ASTEqualityExpression) nullLiteral
-                .getFirstParentOfType(ASTEqualityExpression.class);
+            ASTEqualityExpression nullEqualityExpression = nullLiteral.getFirstParentOfType(ASTEqualityExpression.class);
             if (conditionalSubnode.equals(nullEqualityExpression)) {
                 continue;
             }

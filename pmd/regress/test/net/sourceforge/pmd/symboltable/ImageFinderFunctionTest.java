@@ -24,7 +24,7 @@ public class ImageFinderFunctionTest extends TestCase {
     }
 
     public void testSeveralImages() {
-        List imgs = new ArrayList();
+        List<String> imgs = new ArrayList<String>();
         imgs.add("Foo.foo");
         imgs.add("foo");
         ImageFinderFunction f = new ImageFinderFunction(imgs);

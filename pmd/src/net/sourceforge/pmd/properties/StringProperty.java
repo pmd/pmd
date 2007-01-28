@@ -63,7 +63,7 @@ public class StringProperty extends AbstractPMDProperty {
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
-	public Class type() {
+	public Class<?> type() {
 		return String.class;
 	}
 	

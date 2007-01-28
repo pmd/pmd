@@ -31,7 +31,7 @@ import java.util.List;
 public class InefficientStringBuffering extends AbstractRule {
 
     public Object visit(ASTAdditiveExpression node, Object data) {
-        ASTBlockStatement bs = (ASTBlockStatement) node.getFirstParentOfType(ASTBlockStatement.class);
+        ASTBlockStatement bs = node.getFirstParentOfType(ASTBlockStatement.class);
         if (bs == null) {
             return data;
         }
@@ -82,7 +82,7 @@ public class InefficientStringBuffering extends AbstractRule {
         if (!xParentIsStatementExpression(node, length)) {
             return false;
         }
-        ASTStatementExpression s = (ASTStatementExpression) node.getFirstParentOfType(ASTStatementExpression.class);
+        ASTStatementExpression s = node.getFirstParentOfType(ASTStatementExpression.class);
         if (s == null) {
             return false;
         }
@@ -116,7 +116,7 @@ public class InefficientStringBuffering extends AbstractRule {
     }
 
     private boolean isAllocatedStringBuffer(ASTAdditiveExpression node) {
-        ASTAllocationExpression ao = (ASTAllocationExpression) node.getFirstParentOfType(ASTAllocationExpression.class);
+        ASTAllocationExpression ao = node.getFirstParentOfType(ASTAllocationExpression.class);
         if (ao == null) {
             return false;
         }

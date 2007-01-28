@@ -29,10 +29,9 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             return data;
         }
 
-        Map methods = ((ClassScope) node.getScope()).getMethodDeclarations();
-        for (Iterator i = findUnique(methods).iterator(); i.hasNext();) {
-            MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
-            List occs = (List) methods.get(mnd);
+        Map<MethodNameDeclaration, List<NameOccurrence>> methods = ((ClassScope) node.getScope()).getMethodDeclarations();
+        for (MethodNameDeclaration mnd: findUnique(methods)) {
+            List<NameOccurrence> occs = methods.get(mnd);
             if (!privateAndNotExcluded(mnd)) {
                 continue;
             }
@@ -48,14 +47,13 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         return data;
     }
 
-    private Set findUnique(Map methods) {
+    private Set<MethodNameDeclaration> findUnique(Map<MethodNameDeclaration, List<NameOccurrence>> methods) {
         // some rather hideous hackery here
         // to work around the fact that PMD does not yet do full type analysis
         // when it does, delete this
-        Set unique = new HashSet();
-        Set sigs = new HashSet();
-        for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
-            MethodNameDeclaration mnd = (MethodNameDeclaration) i.next();
+        Set<MethodNameDeclaration> unique = new HashSet<MethodNameDeclaration>();
+        Set<String> sigs = new HashSet<String>();
+        for (MethodNameDeclaration mnd: methods.keySet()) {
             String sig = mnd.getImage() + mnd.getParameterCount();
             if (!sigs.contains(sig)) {
                 unique.add(mnd);
@@ -65,23 +63,22 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         return unique;
     }
 
-    private boolean calledFromOutsideItself(List occs, MethodNameDeclaration mnd) {
+    private boolean calledFromOutsideItself(List<NameOccurrence> occs, MethodNameDeclaration mnd) {
         int callsFromOutsideMethod = 0;
-        for (Iterator i = occs.iterator(); i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) i.next();
+        for (NameOccurrence occ: occs) {
             SimpleNode occNode = occ.getLocation();
-            ASTConstructorDeclaration enclosingConstructor = (ASTConstructorDeclaration) occNode.getFirstParentOfType(ASTConstructorDeclaration.class);
+            ASTConstructorDeclaration enclosingConstructor = occNode.getFirstParentOfType(ASTConstructorDeclaration.class);
             if (enclosingConstructor != null) {
                 callsFromOutsideMethod++;
                 break; // Do we miss unused private constructors here?
             }
-            ASTInitializer enclosingInitializer = (ASTInitializer) occNode.getFirstParentOfType(ASTInitializer.class);
+            ASTInitializer enclosingInitializer = occNode.getFirstParentOfType(ASTInitializer.class);
             if (enclosingInitializer != null) {
                 callsFromOutsideMethod++;
                 break;
             }
 
-            ASTMethodDeclaration enclosingMethod = (ASTMethodDeclaration) occNode.getFirstParentOfType(ASTMethodDeclaration.class);
+            ASTMethodDeclaration enclosingMethod = occNode.getFirstParentOfType(ASTMethodDeclaration.class);
             if ((enclosingMethod == null) || (enclosingMethod != null && !mnd.getNode().jjtGetParent().equals(enclosingMethod))) {
                 callsFromOutsideMethod++;
             }

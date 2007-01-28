@@ -36,7 +36,7 @@ public class MethodReturnsInternalArray extends AbstractSunSecureRule {
             return data;
         }
         List returns = method.findChildrenOfType(ASTReturnStatement.class);
-        ASTTypeDeclaration td = (ASTTypeDeclaration) method.getFirstParentOfType(ASTTypeDeclaration.class);
+        ASTTypeDeclaration td = method.getFirstParentOfType(ASTTypeDeclaration.class);
         for (Iterator it = returns.iterator(); it.hasNext();) {
             final ASTReturnStatement ret = (ASTReturnStatement) it.next();
             final String vn = getReturnedVariableName(ret);

@@ -25,7 +25,7 @@ public class AvoidFieldNameMatchingMethodName extends AbstractRule {
         String fieldDeclaringType = getDeclaringType(node);
         if (varName != null) {
             varName = varName.toLowerCase();
-            ASTClassOrInterfaceDeclaration cl = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+            ASTClassOrInterfaceDeclaration cl = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
             if (cl != null) {
                 List methods = cl.findChildrenOfType(ASTMethodDeclaration.class);
                 for (Iterator it = methods.iterator(); it.hasNext();) {

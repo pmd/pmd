@@ -4,13 +4,14 @@
 package net.sourceforge.pmd.symboltable;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractScope implements Scope {
 
     private Scope parent;
 
-    public Map getClassDeclarations() {
+    public Map<ClassNameDeclaration, List<NameOccurrence>> getClassDeclarations() {
         throw new RuntimeException("AbstractScope.getClassDeclarations() was invoked.  That shouldn't happen... bug.");
     }
 

@@ -19,6 +19,7 @@ import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 public class BeanMembersShouldSerializeRule extends AbstractRule {
@@ -38,12 +39,12 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
 		return data;
 	}
 	
-	private static String[] imagesOf(List simpleNodes) {
+	private static String[] imagesOf(List<? extends SimpleNode> simpleNodes) {
 		
         String[] imageArray = new String[simpleNodes.size()];
         
         for (int i = 0; i < simpleNodes.size(); i++) {
-        	imageArray[i] = ((SimpleNode) simpleNodes.get(i)).getImage();
+        	imageArray[i] = simpleNodes.get(i).getImage();
         }
         return imageArray;
 	}
@@ -53,10 +54,10 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             return data;
         }
 
-        Map methods = node.getScope().getEnclosingClassScope().getMethodDeclarations();
-        List getSetMethList = new ArrayList(methods.size());
-        for (Iterator i = methods.keySet().iterator(); i.hasNext();) {
-            ASTMethodDeclarator mnd = ((MethodNameDeclaration) i.next()).getMethodNameDeclaratorNode();
+        Map<MethodNameDeclaration, List<NameOccurrence>> methods = node.getScope().getEnclosingClassScope().getMethodDeclarations();
+        List<ASTMethodDeclarator> getSetMethList = new ArrayList<ASTMethodDeclarator>(methods.size());
+        for (MethodNameDeclaration d: methods.keySet()) {
+            ASTMethodDeclarator mnd = d.getMethodNameDeclaratorNode();
             if (isBeanAccessor(mnd)) {
                 getSetMethList.add(mnd);
             }

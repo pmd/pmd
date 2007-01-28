@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,13 +17,13 @@ public interface Scope {
      * Returns a Map (VariableNameDeclaration->List(NameOccurrence,NameOccurrence)) of declarations that
      * exist at this scope
      */
-    Map getVariableDeclarations();
+    Map<VariableNameDeclaration, List<NameOccurrence>> getVariableDeclarations();
 
     /**
      * Returns a Map (VariableNameDeclaration->List(NameOccurrence,NameOccurrence)) of declarations that
      * exist at this scope
      */
-    Map getClassDeclarations();
+    Map<ClassNameDeclaration, List<NameOccurrence>> getClassDeclarations();
 
     /**
      * Add a class declaration to this scope

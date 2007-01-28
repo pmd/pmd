@@ -103,10 +103,10 @@ public class NpathComplexity extends StatisticalRule {
 
     int complexity = 0;
 
-    List statementChildren = new ArrayList();
+    List<SimpleJavaNode> statementChildren = new ArrayList<SimpleJavaNode>();
     for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
       if ( node.jjtGetChild( i ).getClass() == ASTStatement.class ) {
-        statementChildren.add( node.jjtGetChild( i ) );
+        statementChildren.add((SimpleJavaNode) node.jjtGetChild( i ) );
       }
     }
 
@@ -121,8 +121,7 @@ public class NpathComplexity extends StatisticalRule {
       complexity++;
     }
 
-    for ( Iterator iter = statementChildren.iterator(); iter.hasNext(); ) {
-      SimpleJavaNode element = (SimpleJavaNode) iter.next();
+    for (SimpleJavaNode element: statementChildren) {
       complexity += ( (Integer) element.jjtAccept( this, data ) ).intValue();
     }
 

@@ -50,10 +50,10 @@ public class UnsynchronizedStaticDateFormatter extends AbstractRule {
         for (Iterator i = var.getUsages().iterator(); i.hasNext();) {
             NameOccurrence occ = (NameOccurrence) i.next();
             SimpleNode n = occ.getLocation();
-            if ((ASTSynchronizedStatement) n.getFirstParentOfType(ASTSynchronizedStatement.class) != null) {
+            if (n.getFirstParentOfType(ASTSynchronizedStatement.class) != null) {
                 continue;
             }
-            ASTMethodDeclaration method = (ASTMethodDeclaration) n.getFirstParentOfType(ASTMethodDeclaration.class);
+            ASTMethodDeclaration method = n.getFirstParentOfType(ASTMethodDeclaration.class);
             if (method != null && !method.isSynchronized()) {
                 addViolation(data, n);
             }

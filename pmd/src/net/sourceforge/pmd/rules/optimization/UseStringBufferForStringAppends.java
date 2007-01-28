@@ -26,7 +26,7 @@ public class UseStringBufferForStringAppends extends AbstractRule {
         for (Iterator iter = node.getUsages().iterator(); iter.hasNext();) {
             NameOccurrence no = (NameOccurrence) iter.next();
             SimpleNode name = no.getLocation();
-            ASTStatementExpression statement = (ASTStatementExpression) name.getFirstParentOfType(ASTStatementExpression.class);
+            ASTStatementExpression statement = name.getFirstParentOfType(ASTStatementExpression.class);
             if (statement == null) {
                 continue;
             }

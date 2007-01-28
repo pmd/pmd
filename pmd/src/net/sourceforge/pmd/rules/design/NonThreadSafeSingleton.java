@@ -26,7 +26,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
 
 public class NonThreadSafeSingleton extends AbstractRule {
 
-    private Map fieldDecls = new HashMap();
+    private Map<String, ASTFieldDeclaration> fieldDecls = new HashMap<String, ASTFieldDeclaration>();
 
     private boolean checkNonStaticMethods = true;
     private boolean checkNonStaticFields = true;

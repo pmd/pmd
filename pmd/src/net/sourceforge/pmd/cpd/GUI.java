@@ -232,7 +232,7 @@ public class GUI implements CPDListener {
     private JFrame frame;
     private boolean trimLeadingWhitespace;
 
-    private List matches = new ArrayList();
+    private List<Match> matches = new ArrayList<Match>();
 
     private void addSaveOptionsTo(JMenu menu) {
     	
@@ -382,7 +382,7 @@ public class GUI implements CPDListener {
     private void populateResultArea() {
     	int[] selectionIndices = resultsTable.getSelectedRows();
     	TableModel model = resultsTable.getModel();
-    	List selections = new ArrayList(selectionIndices.length);
+    	List<Object> selections = new ArrayList<Object>(selectionIndices.length);
     	for (int i=0; i<selectionIndices.length; i++) {
     		selections.add(model.getValueAt(selectionIndices[i], 99));
     	}
@@ -463,14 +463,14 @@ public class GUI implements CPDListener {
     
     private String setLabelFor(Match match) {
     	
-    	Set sourceIDs = new HashSet(match.getMarkCount());
-    	for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
-             sourceIDs.add( ((TokenEntry) occurrences.next()).getTokenSrcID());
+    	Set<String> sourceIDs = new HashSet<String>(match.getMarkCount());
+    	for (Iterator<TokenEntry> occurrences = match.iterator(); occurrences.hasNext();) {
+             sourceIDs.add(occurrences.next().getTokenSrcID());
           }
     	String label;
     	
     	if (sourceIDs.size() == 1) {
-    		String sourceId = (String)sourceIDs.iterator().next();
+    		String sourceId = sourceIDs.iterator().next();
     		int separatorPos = sourceId.lastIndexOf(File.separatorChar);
     		label = "..." + sourceId.substring(separatorPos);
     		} else {
@@ -542,10 +542,10 @@ public class GUI implements CPDListener {
             cpd.go();
             t.stop();
             
-        	matches = new ArrayList();
+        	matches = new ArrayList<Match>();
         	Match match;
-        	for (Iterator i = cpd.getMatches(); i.hasNext();) {
-        		match = (Match)i.next();
+        	for (Iterator<Match> i = cpd.getMatches(); i.hasNext();) {
+        		match = i.next();
         		setLabelFor(match);
         		matches.add(match);
         	}

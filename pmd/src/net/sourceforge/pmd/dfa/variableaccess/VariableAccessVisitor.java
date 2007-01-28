@@ -58,17 +58,15 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     private List<VariableAccess> markUsages(IDataFlowNode inode) {
         // undefinitions was once a field... seems like it works fine as a local
         List<VariableAccess> undefinitions = new ArrayList<VariableAccess>();
-        Set variableDeclarations = collectDeclarations(inode);
-        for (Iterator i = variableDeclarations.iterator(); i.hasNext();) {
-            Map declarations = (Map) i.next();
-            for (Iterator j = declarations.entrySet().iterator(); j.hasNext();) {
-				Map.Entry entry = (Map.Entry) j.next();
-                VariableNameDeclaration vnd = (VariableNameDeclaration) entry.getKey();
+        Set<Map<VariableNameDeclaration, List<NameOccurrence>>> variableDeclarations = collectDeclarations(inode);
+        for (Map<VariableNameDeclaration, List<NameOccurrence>> declarations: variableDeclarations) {
+            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: declarations.entrySet()) {
+                VariableNameDeclaration vnd = entry.getKey();
 
                 if (vnd.getAccessNodeParent() instanceof ASTFormalParameter) {
                     // add definition for parameters
                     addVariableAccess(
-                            (SimpleNode)vnd.getNode().getFirstParentOfType(ASTFormalParameters.class), 
+                            vnd.getNode().getFirstParentOfType(ASTFormalParameters.class), 
                             new VariableAccess(VariableAccess.DEFINITION, vnd.getImage()), 
                             inode.getFlow());
                 } else if (vnd.getAccessNodeParent().getFirstChildOfType(ASTVariableInitializer.class) != null) {
@@ -80,17 +78,17 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                 }
                 undefinitions.add(new VariableAccess(VariableAccess.UNDEFINITION, vnd.getImage()));
 
-                for (Iterator k = ((List) entry.getValue()).iterator(); k.hasNext();) {
-                    addAccess(k, inode);
+                for (NameOccurrence occurrence: entry.getValue()) {
+                    addAccess(occurrence, inode);
                 }
             }
         }
         return undefinitions;
     }
 
-    private Set collectDeclarations(IDataFlowNode inode) {
-        Set decls = new HashSet();
-        Map varDecls;
+    private Set<Map<VariableNameDeclaration, List<NameOccurrence>>> collectDeclarations(IDataFlowNode inode) {
+        Set<Map<VariableNameDeclaration, List<NameOccurrence>>> decls = new HashSet<Map<VariableNameDeclaration, List<NameOccurrence>>>();
+        Map<VariableNameDeclaration, List<NameOccurrence>> varDecls;
         for (int i = 0; i < inode.getFlow().size(); i++) {
             IDataFlowNode n = inode.getFlow().get(i);
             if (n instanceof StartOrEndDataFlowNode) {
@@ -104,8 +102,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
         return decls;
     }
 
-    private void addAccess(Iterator k, IDataFlowNode inode) {
-        NameOccurrence occurrence = (NameOccurrence) k.next();
+    private void addAccess(NameOccurrence occurrence, IDataFlowNode inode) {
         if (occurrence.isOnLeftHandSide()) {
             this.addVariableAccess(occurrence.getLocation(), new VariableAccess(VariableAccess.DEFINITION, occurrence.getImage()), inode.getFlow());
         } else if (occurrence.isOnRightHandSide() || (!occurrence.isOnLeftHandSide() && !occurrence.isOnRightHandSide())) {
@@ -131,7 +128,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
             Iterator childrenIterator = children.iterator();
             while (childrenIterator.hasNext()) {
                 if (node.equals(childrenIterator.next())) { 
-                    List v = new ArrayList();
+                    List<VariableAccess> v = new ArrayList<VariableAccess>();
                     v.add(va);
                     inode.setVariableAccess(v);     
                     return;

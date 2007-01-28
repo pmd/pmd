@@ -9,7 +9,6 @@ import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class PositionalIteratorRule extends AbstractRule {
@@ -20,11 +19,10 @@ public class PositionalIteratorRule extends AbstractRule {
             if (exprName.indexOf(".hasNext") != -1 && node.jjtGetNumChildren() > 1) {
 
                 SimpleNode loopBody = (SimpleNode) node.jjtGetChild(1);
-                List names = new ArrayList();
+                List<String> names = new ArrayList<String>();
                 collectNames(getVariableName(exprName), names, loopBody);
                 int nextCount = 0;
-                for (Iterator i = names.iterator(); i.hasNext();) {
-                    String name = (String) i.next();
+                for (String name: names) {
                     if (name.indexOf(".next") != -1) {
                         nextCount++;
                     }
@@ -43,7 +41,7 @@ public class PositionalIteratorRule extends AbstractRule {
         return exprName.substring(0, exprName.indexOf('.'));
     }
 
-    private void collectNames(String target, List names, SimpleNode node) {
+    private void collectNames(String target, List<String> names, SimpleNode node) {
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             SimpleNode child = (SimpleNode) node.jjtGetChild(i);
             if (child.jjtGetNumChildren() > 0) {

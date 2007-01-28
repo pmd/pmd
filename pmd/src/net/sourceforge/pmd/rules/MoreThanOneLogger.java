@@ -14,7 +14,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 
 public class MoreThanOneLogger extends AbstractRule {
 
-	private Stack stack = new Stack();
+	private Stack<Integer> stack = new Stack<Integer>();
 
 	private Integer count;
 
@@ -35,7 +35,7 @@ public class MoreThanOneLogger extends AbstractRule {
 		if (count.intValue() > 1) {
 			addViolation(data, node);
 		}
-		count = (Integer) stack.pop();
+		count = stack.pop();
 
 		return data;
 	}

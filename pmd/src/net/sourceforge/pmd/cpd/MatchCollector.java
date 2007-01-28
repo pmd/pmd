@@ -22,12 +22,12 @@ public class MatchCollector {
         this.ma = ma;
     }
 
-    public void collect(List marks) {
+    public void collect(List<TokenEntry> marks) {
         //first get a pairwise collection of all maximal matches
         for (int i = 0; i < marks.size() - 1; i++) {
-            TokenEntry mark1 = (TokenEntry) marks.get(i);
+            TokenEntry mark1 = marks.get(i);
             for (int j = i + 1; j < marks.size(); j++) {
-                TokenEntry mark2 = (TokenEntry) marks.get(j);
+                TokenEntry mark2 = marks.get(j);
                 int diff = mark1.getIndex() - mark2.getIndex();
                 if (-diff < ma.getMinimumTileSize()) {
                     continue;
@@ -50,7 +50,7 @@ public class MatchCollector {
         }
     }
 
-    public List getMatches() {
+    public List<Match> getMatches() {
         List<Match> matchList = new ArrayList<Match>(startMap.values());
         Collections.sort(matchList);
         Set<Match.MatchCode> matchSet = new HashSet<Match.MatchCode>();
@@ -66,8 +66,8 @@ public class MatchCollector {
                     break;
                 }
                 TokenEntry mark2 = null;
-                for (Iterator iter = match2.getMarkSet().iterator(); iter.hasNext();) {
-                    mark2 = (TokenEntry) iter.next();
+                for (Iterator<TokenEntry> iter = match2.getMarkSet().iterator(); iter.hasNext();) {
+                    mark2 = iter.next();
                     if (mark2 != mark1) {
                         break;
                     }

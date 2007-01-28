@@ -82,7 +82,7 @@ public class TypeSetTest extends TestCase {
     }
 
     public void testExplicitImportResolver() throws Throwable {
-        Set imports = new HashSet();
+        Set<String> imports = new HashSet<String>();
         imports.add("java.io.File");
         TypeSet.Resolver r = new TypeSet.ExplicitImportResolver(imports);
         assertEquals(File.class, r.resolve("File"));
@@ -108,7 +108,7 @@ public class TypeSetTest extends TestCase {
     }
 
     public void testImportOnDemandResolverPass() throws Throwable {
-        Set imports = new HashSet();
+        Set<String> imports = new HashSet<String>();
         imports.add("java.io.*");
         imports.add("java.util.*");
         TypeSet.Resolver r = new TypeSet.ImportOnDemandResolver(imports);
@@ -117,7 +117,7 @@ public class TypeSetTest extends TestCase {
     }
 
     public void testImportOnDemandResolverFail() throws Throwable {
-        Set imports = new HashSet();
+        Set<String> imports = new HashSet<String>();
         imports.add("java.io.*");
         imports.add("java.util.*");
         TypeSet.Resolver r = new TypeSet.ImportOnDemandResolver(imports);

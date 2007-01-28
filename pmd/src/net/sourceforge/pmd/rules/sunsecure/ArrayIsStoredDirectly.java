@@ -84,9 +84,9 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                     assignedVar = suffix.getImage();
                 }
 
-                SimpleNode n = (ASTMethodDeclaration) pe.getFirstParentOfType(ASTMethodDeclaration.class);
+                SimpleNode n = pe.getFirstParentOfType(ASTMethodDeclaration.class);
                 if (n == null) {
-					n = (ASTConstructorDeclaration) pe.getFirstParentOfType(ASTConstructorDeclaration.class);
+					n = pe.getFirstParentOfType(ASTConstructorDeclaration.class);
 					if (n == null) {
 						continue;
 					}
@@ -119,9 +119,9 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                     }
 
                     if (val.equals(varName)) {
-                        SimpleNode md = (ASTMethodDeclaration) parameter.getFirstParentOfType(ASTMethodDeclaration.class);
+                        SimpleNode md = parameter.getFirstParentOfType(ASTMethodDeclaration.class);
                         if (md == null) {
-                        	md = (ASTConstructorDeclaration) pe.getFirstParentOfType(ASTConstructorDeclaration.class);
+                        	md = pe.getFirstParentOfType(ASTConstructorDeclaration.class);
         				}
                         if (!isLocalVariable(varName, md)) {
                             addViolation(ctx, parameter, varName);
@@ -136,13 +136,13 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
     private final ASTFormalParameter[] getArrays(ASTFormalParameters params) {
         final List l = params.findChildrenOfType(ASTFormalParameter.class);
         if (l != null && !l.isEmpty()) {
-            Vector v = new Vector();
+            Vector<ASTFormalParameter> v = new Vector<ASTFormalParameter>();
             for (Iterator it = l.iterator(); it.hasNext();) {
                 ASTFormalParameter fp = (ASTFormalParameter) it.next();
                 if (fp.isArray())
                     v.add(fp);
             }
-            return (ASTFormalParameter[]) v.toArray(new ASTFormalParameter[v.size()]);
+            return v.toArray(new ASTFormalParameter[v.size()]);
         }
         return null;
     }

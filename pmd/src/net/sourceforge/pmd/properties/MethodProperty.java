@@ -23,7 +23,7 @@ public class MethodProperty extends AbstractPMDProperty {
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
-	public Class type() {
+	public Class<Method> type() {
 		return Method.class;
 	}
 
@@ -36,7 +36,7 @@ public class MethodProperty extends AbstractPMDProperty {
 	 */
 	public Object valueFrom(String propertyString) throws IllegalArgumentException {
 		
-		Class cls = classIn(propertyString);
+		Class<?> cls = classIn(propertyString);
 		String methodName = methodNameIn(propertyString);
 		Class[] parameterTypes = parameterTypesIn(propertyString);
 		
@@ -47,7 +47,7 @@ public class MethodProperty extends AbstractPMDProperty {
 		}
 	}
 
-	private Class classIn(String propertyString) throws IllegalArgumentException {
+	private Class<?> classIn(String propertyString) throws IllegalArgumentException {
 		
 		int dotPos = propertyString.lastIndexOf('.');
 		String className = propertyString.substring(0, dotPos);

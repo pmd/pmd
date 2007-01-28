@@ -16,12 +16,12 @@ import org.jaxen.XPath;
 
 public class ViewerModel {
 	
-    private List		listeners;
+    private List<ViewerModelListener> listeners;
     private SimpleNode	rootNode;
     private List		evaluationResults;
 
     public ViewerModel() {
-        listeners = new ArrayList(5);
+        listeners = new ArrayList<ViewerModelListener>(5);
     }
 
     public SimpleNode getRootNode() {
@@ -101,7 +101,7 @@ public class ViewerModel {
 
     protected void fireViewerModelEvent(ViewerModelEvent e) {
         for (int i = 0; i < listeners.size(); i++) {
-            ((ViewerModelListener) listeners.get(i)).viewerModelChanged(e);
+            listeners.get(i).viewerModelChanged(e);
         }
     }
 }

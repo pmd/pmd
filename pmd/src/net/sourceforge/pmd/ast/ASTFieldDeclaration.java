@@ -77,8 +77,8 @@ public class ASTFieldDeclaration extends AccessNode implements Dimensionable {
         if (jjtGetParent().jjtGetParent() instanceof ASTEnumBody) {
             return false;
         }
-        ASTClassOrInterfaceDeclaration n = (ASTClassOrInterfaceDeclaration)getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-        return n instanceof ASTClassOrInterfaceDeclaration && n.isInterface();
+        ASTClassOrInterfaceDeclaration n = getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        return n != null && n.isInterface();
     }
 
     public boolean isArray() {

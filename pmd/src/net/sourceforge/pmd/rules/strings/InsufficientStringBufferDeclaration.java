@@ -36,10 +36,10 @@ import java.util.Set;
  */
 public class InsufficientStringBufferDeclaration extends AbstractRule {
 
-    private final static Set blockParents;
+    private final static Set<Class> blockParents;
 
     static {
-        blockParents = new HashSet();
+        blockParents = new HashSet<Class>();
         blockParents.add(ASTIfStatement.class);
         blockParents.add(ASTSwitchStatement.class);
     }
@@ -55,10 +55,10 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
 
         constructorLength = getConstructorLength(node, constructorLength);
         anticipatedLength = getInitialLength(node);
-        List usage = node.getUsages();
+        List<NameOccurrence> usage = node.getUsages();
         Map blocks = new HashMap();
         for (int ix = 0; ix < usage.size(); ix++) {
-            NameOccurrence no = (NameOccurrence) usage.get(ix);
+            NameOccurrence no = usage.get(ix);
             SimpleNode n = no.getLocation();
             if (!InefficientStringBuffering.isInStringBufferOperation(n, 3, "append")) {
 
@@ -74,7 +74,7 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
                 rootNode = n;
                 anticipatedLength = getInitialLength(node);
             }
-            ASTPrimaryExpression s = (ASTPrimaryExpression) n.getFirstParentOfType(ASTPrimaryExpression.class);
+            ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
             int numChildren = s.jjtGetNumChildren();
             for (int jx = 0; jx < numChildren; jx++) {
                 SimpleNode sn = (SimpleNode) s.jjtGetChild(jx);
@@ -197,14 +197,14 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
 
     private int getConstructorLength(SimpleNode node, int constructorLength) {
         int iConstructorLength = constructorLength;
-        SimpleNode block = (SimpleNode) node.getFirstParentOfType(ASTBlockStatement.class);
+        SimpleNode block = node.getFirstParentOfType(ASTBlockStatement.class);
         List literal;
 
         if (block == null) {
-            block = (ASTFieldDeclaration) node.getFirstParentOfType(ASTFieldDeclaration.class);
+            block = node.getFirstParentOfType(ASTFieldDeclaration.class);
         }
         if (block == null) {
-            block = (ASTFormalParameter) node.getFirstParentOfType(ASTFormalParameter.class);
+            block = node.getFirstParentOfType(ASTFormalParameter.class);
             if (block != null) {
                 iConstructorLength = -1;
             }
@@ -240,13 +240,13 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
 
 
     private int getInitialLength(SimpleNode node) {
-        SimpleNode block = (SimpleNode) node.getFirstParentOfType(ASTBlockStatement.class);
+        SimpleNode block = node.getFirstParentOfType(ASTBlockStatement.class);
         List literal;
 
         if (block == null) {
-            block = (ASTFieldDeclaration) node.getFirstParentOfType(ASTFieldDeclaration.class);
+            block = node.getFirstParentOfType(ASTFieldDeclaration.class);
             if (block == null) {
-                block = (ASTFormalParameter) node.getFirstParentOfType(ASTFormalParameter.class);
+                block = node.getFirstParentOfType(ASTFormalParameter.class);
             }
         }
         literal = (block.findChildrenOfType(ASTLiteral.class));

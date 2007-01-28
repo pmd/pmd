@@ -46,7 +46,7 @@ public class MatchAlgorithmTest extends TestCase {
         TokenEntry.clearImages();
         tokenizer.tokenize(sourceCode, tokens);
         assertEquals(41, tokens.size());
-        Map codeMap = new HashMap();
+        Map<String, SourceCode> codeMap = new HashMap<String, SourceCode>();
         codeMap.put("Foo.java", sourceCode);
 
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);
@@ -74,7 +74,7 @@ public class MatchAlgorithmTest extends TestCase {
         Tokens tokens = new Tokens();
         TokenEntry.clearImages();
         tokenizer.tokenize(sourceCode, tokens);
-        Map codeMap = new HashMap();
+        Map<String, SourceCode> codeMap = new HashMap<String, SourceCode>();
         codeMap.put("Foo.java", sourceCode);
 
         MatchAlgorithm matchAlgorithm = new MatchAlgorithm(codeMap, tokens, 5);

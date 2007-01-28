@@ -63,7 +63,7 @@ public class BooleanProperty extends AbstractScalarProperty {
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
-	public Class type() {
+	public Class<Boolean> type() {
 		return Boolean.class;
 	}
 

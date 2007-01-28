@@ -39,7 +39,7 @@ public class XMLRendererTest extends TestCase {
 
     public void test_one_dupe() {
         Renderer renderer = new XMLRenderer();
-        List list = new ArrayList();
+        List<Match> list = new ArrayList<Match>();
         Match match = new Match(75, new TokenEntry("public", "/var/Foo.java", 48), new TokenEntry("stuff", "/var/Foo.java", 73));
         match.setLineCount(6);
         match.setSourceCodeSlice("code fragment");
@@ -73,7 +73,7 @@ public class XMLRendererTest extends TestCase {
 
     public void testRender_MultipleMatch() {
         Renderer renderer = new XMLRenderer();
-        List list = new ArrayList();
+        List<Match> list = new ArrayList<Match>();
         Match match1 = new Match(75, new TokenEntry("public", "/var/Foo.java", 48), new TokenEntry("void", "/var/Foo.java", 73));
         match1.setLineCount(6);
         match1.setSourceCodeSlice("code fragment");

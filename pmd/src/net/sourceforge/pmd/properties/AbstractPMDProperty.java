@@ -210,7 +210,7 @@ public abstract class AbstractPMDProperty implements PropertyDescriptor {
 				return "Value is not an array of type: " + type();
 			}
 			
-			Class arrayType = value.getClass().getComponentType();
+			Class<?> arrayType = value.getClass().getComponentType();
 			if (arrayType == null || !arrayType.isAssignableFrom(type())) {
 				return "Value is not an array of type: " + type();
 			}

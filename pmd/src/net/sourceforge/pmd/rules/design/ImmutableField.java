@@ -19,7 +19,6 @@ import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,16 +33,15 @@ public class ImmutableField extends AbstractRule {
     private static final int CHECKDECL = 2;
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        Map vars = node.getScope().getVariableDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getVariableDeclarations();
         List<ASTConstructorDeclaration> constructors = findAllConstructors(node);
-        for (Iterator i = vars.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            VariableNameDeclaration field = (VariableNameDeclaration) entry.getKey();
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
+            VariableNameDeclaration field = entry.getKey();
             if (field.getAccessNodeParent().isStatic() || !field.getAccessNodeParent().isPrivate() || field.getAccessNodeParent().isFinal()) {
                 continue;
             }
 
-            int result = initializedInConstructor((List) entry.getValue(), new HashSet<ASTConstructorDeclaration>(constructors));
+            int result = initializedInConstructor(entry.getValue(), new HashSet<ASTConstructorDeclaration>(constructors));
             if (result == MUTABLE) {
                 continue;
             }
@@ -58,14 +56,13 @@ public class ImmutableField extends AbstractRule {
         return !field.getAccessNodeParent().findChildrenOfType(ASTVariableInitializer.class).isEmpty();
     }
 
-    private int initializedInConstructor(List usages, Set<ASTConstructorDeclaration> allConstructors) {
+    private int initializedInConstructor(List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
         int result = MUTABLE, methodInitCount = 0;
-        Set consSet = new HashSet();
-        for (Iterator j = usages.iterator(); j.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) j.next();
+        Set<SimpleNode> consSet = new HashSet<SimpleNode>();
+        for (NameOccurrence occ: usages) {
             if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
                 SimpleNode node = occ.getLocation();
-                SimpleNode constructor = (SimpleNode) node.getFirstParentOfType(ASTConstructorDeclaration.class);
+                ASTConstructorDeclaration constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
                     if (inLoopOrTry(node)) {
                         continue;
@@ -94,14 +91,14 @@ public class ImmutableField extends AbstractRule {
     }
 
     private boolean inLoopOrTry(SimpleNode node) {
-        return (SimpleNode) node.getFirstParentOfType(ASTTryStatement.class) != null ||
-                (SimpleNode) node.getFirstParentOfType(ASTForStatement.class) != null ||
-                (SimpleNode) node.getFirstParentOfType(ASTWhileStatement.class) != null ||
-                (SimpleNode) node.getFirstParentOfType(ASTDoStatement.class) != null;
+        return node.getFirstParentOfType(ASTTryStatement.class) != null ||
+                node.getFirstParentOfType(ASTForStatement.class) != null ||
+                node.getFirstParentOfType(ASTWhileStatement.class) != null ||
+                node.getFirstParentOfType(ASTDoStatement.class) != null;
     }
 
     private boolean inAnonymousInnerClass(SimpleNode node) {
-        ASTClassOrInterfaceBodyDeclaration parent = (ASTClassOrInterfaceBodyDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
+        ASTClassOrInterfaceBodyDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
         return parent != null && parent.isAnonymousInnerClass();
     }
 

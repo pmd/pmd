@@ -60,22 +60,22 @@ public class UselessOverridingMethod extends AbstractRule {
         if (statementGrandChild instanceof ASTPrimaryExpression)
             primaryExpression = (ASTPrimaryExpression) statementGrandChild;
         else {
-            List primaryExpressions = findFirstDegreeChildrenOfType(statementGrandChild, ASTPrimaryExpression.class);
+            List<ASTPrimaryExpression> primaryExpressions = findFirstDegreeChildrenOfType(statementGrandChild, ASTPrimaryExpression.class);
             if (primaryExpressions.size() != 1)
                 return super.visit(node, data);
-            primaryExpression = (ASTPrimaryExpression) primaryExpressions.get(0);
+            primaryExpression = primaryExpressions.get(0);
         }
 
-        ASTPrimaryPrefix primaryPrefix = (ASTPrimaryPrefix) findFirstDegreeChildrenOfType(primaryExpression, ASTPrimaryPrefix.class).get(0);
+        ASTPrimaryPrefix primaryPrefix = findFirstDegreeChildrenOfType(primaryExpression, ASTPrimaryPrefix.class).get(0);
         if (!primaryPrefix.usesSuperModifier())
             return super.visit(node, data);
 
-        ASTMethodDeclarator methodDeclarator = (ASTMethodDeclarator) findFirstDegreeChildrenOfType(node, ASTMethodDeclarator.class).get(0);
+        ASTMethodDeclarator methodDeclarator = findFirstDegreeChildrenOfType(node, ASTMethodDeclarator.class).get(0);
         if (!primaryPrefix.hasImageEqualTo(methodDeclarator.getImage()))
             return super.visit(node, data);
 
         //Process arguments
-        ASTPrimarySuffix primarySuffix = (ASTPrimarySuffix) findFirstDegreeChildrenOfType(primaryExpression, ASTPrimarySuffix.class).get(0);
+        ASTPrimarySuffix primarySuffix = findFirstDegreeChildrenOfType(primaryExpression, ASTPrimarySuffix.class).get(0);
         ASTArguments arguments = (ASTArguments) primarySuffix.jjtGetChild(0);
         ASTFormalParameters formalParameters = (ASTFormalParameters) methodDeclarator.jjtGetChild(0);
         if (formalParameters.jjtGetNumChildren() != arguments.jjtGetNumChildren())
@@ -105,7 +105,7 @@ public class UselessOverridingMethod extends AbstractRule {
 
                 ASTName argumentName = (ASTName) argumentPrimaryPrefixChild;
                 ASTFormalParameter formalParameter = (ASTFormalParameter) formalParameters.jjtGetChild(i);
-                ASTVariableDeclaratorId variableId = (ASTVariableDeclaratorId) findFirstDegreeChildrenOfType(formalParameter, ASTVariableDeclaratorId.class).get(0);
+                ASTVariableDeclaratorId variableId = findFirstDegreeChildrenOfType(formalParameter, ASTVariableDeclaratorId.class).get(0);
                 if (!argumentName.hasImageEqualTo(variableId.getImage())) {
                     return super.visit(node, data); //The arguments are not simply passed through
                 }
@@ -116,15 +116,15 @@ public class UselessOverridingMethod extends AbstractRule {
         return super.visit(node, data);
     }
 
-    public List findFirstDegreeChildrenOfType(SimpleNode n, Class targetType) {
-        List l = new ArrayList();
+    public <T> List<T> findFirstDegreeChildrenOfType(SimpleNode n, Class<T> targetType) {
+        List<T> l = new ArrayList<T>();
         lclFindChildrenOfType(n, targetType, l);
         return l;
     }
 
-    private void lclFindChildrenOfType(Node node, Class targetType, List results) {
+    private <T> void lclFindChildrenOfType(Node node, Class<T> targetType, List<T> results) {
         if (node.getClass().equals(targetType)) {
-            results.add(node);
+            results.add((T) node);
         }
 
         if (node instanceof ASTClassOrInterfaceDeclaration && ((ASTClassOrInterfaceDeclaration) node).isNested()) {
@@ -138,7 +138,7 @@ public class UselessOverridingMethod extends AbstractRule {
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
             if (child.getClass().equals(targetType)) {
-                results.add(child);
+                results.add((T) child);
             }
         }
     }

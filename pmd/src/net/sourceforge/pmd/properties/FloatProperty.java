@@ -50,7 +50,7 @@ public class FloatProperty extends AbstractScalarProperty {
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
-	public Class type() {
+	public Class<Float> type() {
 		return Float.class;
 	}
 

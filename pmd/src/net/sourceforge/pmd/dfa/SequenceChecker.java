@@ -28,7 +28,7 @@ public class SequenceChecker {
     private static class Status {
         public static final int ROOT = -1;
 
-        private List nextSteps = new ArrayList();
+        private List<Status> nextSteps = new ArrayList<Status>();
         private int type;
         private boolean lastStep;
 
@@ -48,8 +48,8 @@ public class SequenceChecker {
 
         public Status step(int type) {
             for (int i = 0; i < this.nextSteps.size(); i++) {
-                if (type == ((Status) nextSteps.get(i)).type) {
-                    return (Status) nextSteps.get(i);
+                if (type == nextSteps.get(i).type) {
+                    return nextSteps.get(i);
                 }
             }
             return null;

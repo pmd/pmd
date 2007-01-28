@@ -29,6 +29,8 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+
 import test.net.sourceforge.pmd.testframework.MockRule;
 
 import java.io.StringReader;
@@ -170,7 +172,7 @@ public class RuleSetTest extends TestCase {
     protected void verifyRuleSet(RuleSet IUT, int size, Set values) throws Throwable {
 
         RuleContext context = new RuleContext();
-        Set reportedValues = new HashSet();
+        Set<RuleViolation> reportedValues = new HashSet<RuleViolation>();
         context.setReport(new Report());
         IUT.apply(makeCompilationUnits(), context);
 
@@ -193,7 +195,7 @@ public class RuleSetTest extends TestCase {
 
 
     protected List makeCompilationUnits() throws Throwable {
-        List RC = new ArrayList();
+        List<ASTCompilationUnit> RC = new ArrayList<ASTCompilationUnit>();
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(javaCode));
         RC.add(parser.CompilationUnit());
         return RC;

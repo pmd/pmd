@@ -46,7 +46,7 @@ public class AssignmentToNonFinalStatic extends AbstractRule {
             NameOccurrence occ = (NameOccurrence) j.next();
             if (occ.isOnLeftHandSide()) { // specifically omitting prefix and postfix operators as there are legitimate usages of these with static fields, e.g. typesafe enum pattern.
                 SimpleNode node = occ.getLocation();
-                SimpleNode constructor = (SimpleNode) node.getFirstParentOfType(ASTConstructorDeclaration.class);
+                SimpleNode constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
                     initInConstructor = true;
                 }

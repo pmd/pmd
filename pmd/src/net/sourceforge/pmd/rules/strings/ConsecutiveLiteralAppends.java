@@ -111,8 +111,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
                     }
                     continue;
                 }
-                ASTPrimaryExpression s = (ASTPrimaryExpression) n
-                        .getFirstParentOfType(ASTPrimaryExpression.class);
+                ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
                 int numChildren = s.jjtGetNumChildren();
                 for (int jx = 0; jx < numChildren; jx++) {
                     SimpleNode sn = (SimpleNode) s.jjtGetChild(jx);

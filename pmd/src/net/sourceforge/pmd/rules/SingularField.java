@@ -32,11 +32,11 @@ public class SingularField extends AbstractRule {
                 NameOccurrence no = (NameOccurrence) usages.get(ix);
                 SimpleNode location = no.getLocation();
 
-                SimpleNode method = (SimpleNode) location.getFirstParentOfType(ASTMethodDeclaration.class);
+                SimpleNode method = location.getFirstParentOfType(ASTMethodDeclaration.class);
                 if (method == null) {
-                    method = (SimpleNode) location.getFirstParentOfType(ASTConstructorDeclaration.class);
+                    method = location.getFirstParentOfType(ASTConstructorDeclaration.class);
                     if (method == null) {
-                    	method = (SimpleNode) location.getFirstParentOfType(ASTInitializer.class);
+                    	method = location.getFirstParentOfType(ASTInitializer.class);
                     	if (method == null) {
                     		continue;
                     	}

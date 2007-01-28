@@ -53,7 +53,7 @@ public class EnumeratedProperty extends AbstractPMDProperty {
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
-	public Class type() {
+	public Class<Object> type() {
 		return Object.class;
 	}
 

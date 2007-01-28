@@ -19,13 +19,13 @@ import java.util.List;
 public class ExceptionAsFlowControl extends AbstractRule {
 
     public Object visit(ASTThrowStatement node, Object data) {
-        ASTTryStatement parent = (ASTTryStatement) node.getFirstParentOfType(ASTTryStatement.class);
+        ASTTryStatement parent = node.getFirstParentOfType(ASTTryStatement.class);
         if (parent == null) {
             return data;
         }
-        for (parent = (ASTTryStatement) parent.getFirstParentOfType(ASTTryStatement.class)
+        for (parent = parent.getFirstParentOfType(ASTTryStatement.class)
                 ; parent != null
-                ; parent = (ASTTryStatement) parent.getFirstParentOfType(ASTTryStatement.class)) {
+                ; parent = parent.getFirstParentOfType(ASTTryStatement.class)) {
 
             List list = parent.findChildrenOfType(ASTCatchStatement.class);
             for (Iterator iter = list.iterator(); iter.hasNext();) {

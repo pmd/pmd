@@ -130,7 +130,7 @@ public class StatisticalRuleTest extends TestCase {
                 IUT.addDataPoint(points[i]);
             }
         } else {
-            List lPoints = new ArrayList();
+            List<DataPoint> lPoints = new ArrayList<DataPoint>();
             for (int i = 0; i < POINTS; i++) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
@@ -147,7 +147,7 @@ public class StatisticalRuleTest extends TestCase {
 
             Collections.shuffle(lPoints);
             for (int i = 0; i < POINTS; i++) {
-                IUT.addDataPoint((DataPoint) lPoints.get(i));
+                IUT.addDataPoint(lPoints.get(i));
             }
         }
 

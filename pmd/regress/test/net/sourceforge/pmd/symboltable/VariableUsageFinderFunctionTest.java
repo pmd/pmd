@@ -3,7 +3,6 @@ package test.net.sourceforge.pmd.symboltable;
 import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleJavaNode;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableUsageFinderFunction;
@@ -19,14 +18,14 @@ public class VariableUsageFinderFunctionTest extends TestCase {
     public void testLookingForUsed() {
         ASTVariableDeclaratorId variableDeclarationIdNode = new ASTVariableDeclaratorId(1);
         variableDeclarationIdNode.setImage("x");
-        NameDeclaration nameDeclaration = new VariableNameDeclaration(variableDeclarationIdNode);
-        List nameOccurrences = new ArrayList();
+        VariableNameDeclaration nameDeclaration = new VariableNameDeclaration(variableDeclarationIdNode);
+        List<NameOccurrence> nameOccurrences = new ArrayList<NameOccurrence>();
         nameOccurrences.add(new NameOccurrence(new SimpleJavaNode(2), "x"));
 
-        Map declarations = new HashMap();
+        Map<VariableNameDeclaration, List<NameOccurrence>> declarations = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
         declarations.put(nameDeclaration, nameOccurrences);
 
-        List vars = new ArrayList();
+        List<VariableNameDeclaration> vars = new ArrayList<VariableNameDeclaration>();
         vars.add(nameDeclaration);
 
         VariableUsageFinderFunction f = new VariableUsageFinderFunction(declarations);

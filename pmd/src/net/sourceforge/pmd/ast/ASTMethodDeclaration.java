@@ -58,7 +58,7 @@ public class ASTMethodDeclaration extends AccessNode {
     }
 
     public boolean isInterfaceMember() {
-        ASTClassOrInterfaceDeclaration clz = (ASTClassOrInterfaceDeclaration) getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        ASTClassOrInterfaceDeclaration clz = getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         return clz != null && clz.isInterface();
     }
 

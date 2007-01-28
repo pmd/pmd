@@ -55,7 +55,7 @@ public class UselessAssignment extends AbstractRule implements Executable {
     }
 
     public void execute(CurrentPath path) {
-        Map hash = new HashMap();
+        Map<String, Usage> hash = new HashMap<String, Usage>();
         //System.out.println("path size is " + path.size());
         for (Iterator i = path.iterator(); i.hasNext();) {
             //System.out.println("i = " + i);
@@ -66,9 +66,8 @@ public class UselessAssignment extends AbstractRule implements Executable {
             for (int j = 0; j < inode.getVariableAccess().size(); j++) {
                 VariableAccess va = inode.getVariableAccess().get(j);
                 //System.out.println("inode = " + inode + ", va = " + va);
-                Object o = hash.get(va.getVariableName());
-                if (o != null) {
-                    Usage u = (Usage) o;
+                Usage u = hash.get(va.getVariableName());
+                if (u != null) {
                     // At some point investigate and possibly reintroduce this line2 thing
                     //int line2 = ((Integer) array.get(1)).intValue();
 
@@ -91,7 +90,7 @@ public class UselessAssignment extends AbstractRule implements Executable {
                     }
 */
                 }
-                Usage u = new Usage(va.getAccessType(), inode);
+                u = new Usage(va.getAccessType(), inode);
                 hash.put(va.getVariableName(), u);
             }
         }

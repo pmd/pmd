@@ -423,7 +423,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      * @param node the node which will be searched
      */
     protected final String getDeclaringType(SimpleNode node) {
-        ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration) node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        ASTClassOrInterfaceDeclaration c = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         if (c != null)
             return c.getImage();
         return null;

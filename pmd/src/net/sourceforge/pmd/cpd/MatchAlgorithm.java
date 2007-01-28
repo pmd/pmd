@@ -16,18 +16,18 @@ public class MatchAlgorithm {
     private int lastHash;
     private int lastMod = 1;
 
-    private List matches;
-    private Map source;
+    private List<Match> matches;
+    private Map<String, SourceCode> source;
     private Tokens tokens;
-    private List code;
+    private List<TokenEntry> code;
     private CPDListener cpdListener;
     private int min;
 
-    public MatchAlgorithm(Map sourceCode, Tokens tokens, int min) {
+    public MatchAlgorithm(Map<String, SourceCode> sourceCode, Tokens tokens, int min) {
         this(sourceCode, tokens, min, new CPDNullListener());
     }
 
-    public MatchAlgorithm(Map sourceCode, Tokens tokens, int min, CPDListener listener) {
+    public MatchAlgorithm(Map<String, SourceCode> sourceCode, Tokens tokens, int min, CPDListener listener) {
         this.source = sourceCode;
         this.tokens = tokens;
         this.code = tokens.getTokens();
@@ -42,12 +42,12 @@ public class MatchAlgorithm {
         this.cpdListener = listener;
     }
 
-    public Iterator matches() {
+    public Iterator<Match> matches() {
         return matches.iterator();
     }
 
     public TokenEntry tokenAt(int offset, TokenEntry m) {
-        return (TokenEntry) code.get(offset + m.getIndex());
+        return code.get(offset + m.getIndex());
     }
 
     public int getMinimumTileSize() {
@@ -56,30 +56,31 @@ public class MatchAlgorithm {
 
     public void findMatches() {
         cpdListener.phaseUpdate(CPDListener.HASH);
-        Map markGroups = hash();
+        Map<TokenEntry, Object> markGroups = hash();
 
         cpdListener.phaseUpdate(CPDListener.MATCH);
         MatchCollector matchCollector = new MatchCollector(this);
-        for (Iterator i = markGroups.values().iterator(); i.hasNext();) {
+        for (Iterator<Object> i = markGroups.values().iterator(); i.hasNext();) {
             Object o = i.next();
             if (o instanceof List) {
-                Collections.reverse((List) o);
-                matchCollector.collect((List) o);
+                List<TokenEntry> l = (List<TokenEntry>) o;
+
+                Collections.reverse(l);
+                matchCollector.collect(l);
             }
             i.remove();
         }
         cpdListener.phaseUpdate(CPDListener.GROUPING);
         matches = matchCollector.getMatches();
         matchCollector = null;
-        for (Iterator i = matches.iterator(); i.hasNext();) {
-            Match match = (Match) i.next();
-            for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
-                TokenEntry mark = (TokenEntry) occurrences.next();
+        for (Match match: matches) {
+            for (Iterator<TokenEntry> occurrences = match.iterator(); occurrences.hasNext();) {
+                TokenEntry mark = occurrences.next();
                 match.setLineCount(tokens.getLineCount(mark, match));
                 if (!occurrences.hasNext()) {
                     int start = mark.getBeginLine();
                     int end = start + match.getLineCount() - 1;
-                    SourceCode sourceCode = (SourceCode) source.get(mark.getTokenSrcID());
+                    SourceCode sourceCode = source.get(mark.getTokenSrcID());
                     match.setSourceCodeSlice(sourceCode.getSlice(start, end));
                 }
             }
@@ -87,10 +88,10 @@ public class MatchAlgorithm {
         cpdListener.phaseUpdate(CPDListener.DONE);
     }
 
-    private Map hash() {
-        Map markGroups = new HashMap(tokens.size());
+    private Map<TokenEntry, Object> hash() {
+        Map<TokenEntry, Object> markGroups = new HashMap<TokenEntry, Object>(tokens.size());
         for (int i = code.size() - 1; i >= 0; i--) {
-            TokenEntry token = (TokenEntry) code.get(i);
+            TokenEntry token = code.get(i);
             if (token != TokenEntry.EOF) {
                 int last = tokenAt(min, token).getIdentifier();
                 lastHash = MOD * lastHash + token.getIdentifier() - lastMod * last;
@@ -102,18 +103,18 @@ public class MatchAlgorithm {
                 if (o == null) {
                     markGroups.put(token, token);
                 } else if (o instanceof TokenEntry) {
-                    List l = new ArrayList();
-                    l.add(o);
+                    List<TokenEntry> l = new ArrayList<TokenEntry>();
+                    l.add((TokenEntry) o);
                     l.add(token);
                     markGroups.put(token, l);
                 } else {
-                    List l = (List) o;
+                    List<TokenEntry> l = (List<TokenEntry>) o;
                     l.add(token);
                 }
             } else {
                 lastHash = 0;
                 for (int end = Math.max(0, i - min + 1); i > end; i--) {
-                    token = (TokenEntry) code.get(i - 1);
+                    token = code.get(i - 1);
                     lastHash = MOD * lastHash + token.getIdentifier();
                     if (token == TokenEntry.EOF) {
                         break;

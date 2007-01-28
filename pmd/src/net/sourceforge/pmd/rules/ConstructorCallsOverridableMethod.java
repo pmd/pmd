@@ -778,7 +778,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
             MethodHolder h = new MethodHolder(node);
             if (!parent.isAbstract() && !parent.isPrivate() && !parent.isStatic() && !parent.isFinal()) { //Skip abstract methods, have a separate rule for that
                 h.setDangerous();//this method is overridable
-                ASTMethodDeclaration decl = (ASTMethodDeclaration) node.getFirstParentOfType(ASTMethodDeclaration.class);
+                ASTMethodDeclaration decl = node.getFirstParentOfType(ASTMethodDeclaration.class);
                 h.setCalledMethod(decl.getMethodName());
             }
             List<MethodInvocation> l = new ArrayList<MethodInvocation>();
