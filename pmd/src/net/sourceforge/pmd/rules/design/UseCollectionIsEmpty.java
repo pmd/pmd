@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.rules.AbstractInefficientZeroCheck;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.CollectionUtil;

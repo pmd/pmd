@@ -2,7 +2,6 @@ package test.net.sourceforge.pmd.dfa;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
