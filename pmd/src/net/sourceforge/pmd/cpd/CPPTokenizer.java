@@ -9,8 +9,6 @@ import net.sourceforge.pmd.cpd.cppast.Token;
 import net.sourceforge.pmd.cpd.cppast.TokenMgrError;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CPPTokenizer implements Tokenizer {
     private static SimpleCharStream charStream;
@@ -35,8 +33,6 @@ public class CPPTokenizer implements Tokenizer {
         } catch (TokenMgrError err) {
             err.printStackTrace();
             System.out.println("Skipping " + sourceCode.getFileName() + " due to parse error");
-            List emptyCode = new ArrayList();
-            emptyCode.add("");
             tokenEntries.add(TokenEntry.getEOF());
         }
     }
