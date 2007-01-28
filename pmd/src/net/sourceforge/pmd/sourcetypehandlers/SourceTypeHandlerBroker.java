@@ -12,13 +12,13 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class SourceTypeHandlerBroker {
 
-    private static final Map mapSourceTypeOnSourceTypeHandler = CollectionUtil.mapFrom( new Object[][] {
-    	{ SourceType.JAVA_13, new Java13Handler()},
-    	{ SourceType.JAVA_14, new Java14Handler()},
-    	{ SourceType.JAVA_15, new Java15Handler()},
-    	{ SourceType.JAVA_16, new Java16Handler()},
-    	{ SourceType.JSP, new JspTypeHandler()},
-    	});
+    private static final Map<SourceType, SourceTypeHandler> mapSourceTypeOnSourceTypeHandler = CollectionUtil
+            .mapFrom(new SourceType[] { SourceType.JAVA_13, SourceType.JAVA_14,
+                    SourceType.JAVA_15, SourceType.JAVA_16, SourceType.JSP, },
+
+            new SourceTypeHandler[] { new Java13Handler(), new Java14Handler(),
+                    new Java15Handler(), new Java16Handler(),
+                    new JspTypeHandler(), });
 
     /**
      * Never create one
@@ -26,7 +26,7 @@ public class SourceTypeHandlerBroker {
     private SourceTypeHandlerBroker() {  }
 
     public static SourceTypeHandler getVisitorsFactoryForSourceType(SourceType sourceType) {
-        SourceTypeHandler handler = (SourceTypeHandler) mapSourceTypeOnSourceTypeHandler.get(sourceType);
+        SourceTypeHandler handler = mapSourceTypeOnSourceTypeHandler.get(sourceType);
 
         if (handler == null) {
             throw new IllegalArgumentException("No VisitorsFactory is registered for SourceType [" + sourceType + "].");

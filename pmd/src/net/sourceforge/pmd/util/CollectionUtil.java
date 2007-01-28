@@ -87,9 +87,9 @@ public class CollectionUtil {
      * @param items Object[]
      * @return Set
      */
-    public static Set asSet(Object[] items) {
+    public static <T> Set<T> asSet(T[] items) {
     	
-    	Set set = new HashSet(items.length);
+    	Set<T> set = new HashSet<T>(items.length);
     	for (int i=0; i<items.length; i++) {
     		set.add(items[i]);
     	}
@@ -103,10 +103,13 @@ public class CollectionUtil {
 	 * @param keyValueSets Object[][]
 	 * @return Map
 	 */
-	public static Map mapFrom(Object[][] keyValueSets) {
-		Map map = new HashMap(keyValueSets.length);
-		for (int i=0; i<keyValueSets.length; i++) {
-			map.put(keyValueSets[i][0], keyValueSets[i][1]);
+	public static <K, V> Map<K, V> mapFrom(K[] keys, V[] values) {
+        if (keys.length != values.length) {
+            throw new RuntimeException("mapFrom keys and values arrays have different sizes");
+        }
+		Map<K, V> map = new HashMap<K, V>(keys.length);
+		for (int i=0; i<keys.length; i++) {
+			map.put(keys[i], values[i]);
 		}
 		return map;
 	}
@@ -117,14 +120,11 @@ public class CollectionUtil {
 	 * @param source Map
 	 * @return Map
 	 */
-	public static Map invertedMapFrom(Map source) {
-		Map map = new HashMap(source.size());
-		Iterator iter = source.entrySet().iterator();
-		Entry entry;
-		while (iter.hasNext()) {
-			entry = (Entry)iter.next();
-			map.put(entry.getValue(), entry.getKey());
-		}
+	public static <K, V> Map<V, K> invertedMapFrom(Map<K, V> source) {
+		Map<V, K> map = new HashMap<V, K>(source.size());
+        for (Map.Entry<K, V> entry: source.entrySet()) {
+            map.put(entry.getValue(), entry.getKey());
+        }
 		return map;
 	}
 	

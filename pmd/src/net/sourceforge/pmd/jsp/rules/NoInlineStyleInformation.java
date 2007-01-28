@@ -19,14 +19,14 @@ public class NoInlineStyleInformation extends AbstractJspRule {
     /**
      * List of HTML element-names that define style.
      */
-    private static final Set STYLE_ELEMENT_NAMES = CollectionUtil.asSet(
+    private static final Set<String> STYLE_ELEMENT_NAMES = CollectionUtil.asSet(
     		new String[]{"B", "I", "FONT", "BASEFONT", "U", "CENTER"}
     		);
 
     /**
      * List of HTML element-names that can have attributes defining style.
      */
-    private static final Set ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES = CollectionUtil.asSet(
+    private static final Set<String> ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES = CollectionUtil.asSet(
     		new String[]{"P", "TABLE", "THEAD", "TBODY", "TFOOT", "TR", "TD", "COL", "COLGROUP"}
     		);
 
@@ -34,7 +34,7 @@ public class NoInlineStyleInformation extends AbstractJspRule {
      * List of attributes that define style when they are attributes of HTML elements with
      * names in ELEMENT_NAMES_THAT_CAN_HAVE_STYLE_ATTRIBUTES.
      */
-    private static final Set STYLE_ATTRIBUTES = CollectionUtil.asSet(
+    private static final Set<String> STYLE_ATTRIBUTES = CollectionUtil.asSet(
     		new String[]{"STYLE", "FONT", "SIZE", "COLOR", "FACE", "ALIGN", "VALIGN", "BGCOLOR"}
     		);
     

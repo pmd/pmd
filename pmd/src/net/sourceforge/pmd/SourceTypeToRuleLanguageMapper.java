@@ -13,22 +13,21 @@ public class SourceTypeToRuleLanguageMapper {
     /**
      * Map of SourceType on RuleLanguage.
      */
-    private static Map mapSourceTypeOnRuleLanguage = CollectionUtil.mapFrom( new Object[][] {
-    	{ SourceType.JAVA_13, Language.JAVA },
-		{ SourceType.JAVA_14, Language.JAVA },
-		{ SourceType.JAVA_15, Language.JAVA },
-		{ SourceType.JAVA_16, Language.JAVA },
-		{ SourceType.JSP, Language.JSP },
-    	});
+    private static Map<SourceType, Language> mapSourceTypeOnRuleLanguage = CollectionUtil.mapFrom(
+            new SourceType[] { SourceType.JAVA_13, SourceType.JAVA_14,
+                    SourceType.JAVA_15, SourceType.JAVA_16, SourceType.JSP, },
+            new Language[] { Language.JAVA, Language.JAVA, Language.JAVA,
+                    Language.JAVA, Language.JSP, });
 
     private SourceTypeToRuleLanguageMapper() {};
     /**
      * Get the RuleLanguage that corresponds to the given SourceType.
-     *
-     * @param sourceType the SourceType
+     * 
+     * @param sourceType
+     *            the SourceType
      * @return a RuleLanguage
      */
     public static Language getMappedLanguage(SourceType sourceType) {
-        return (Language) mapSourceTypeOnRuleLanguage.get(sourceType);
+        return mapSourceTypeOnRuleLanguage.get(sourceType);
     }
 }

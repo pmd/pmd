@@ -33,7 +33,7 @@ class NonRuleWithAllPropertyTypes extends AbstractRule {
 	public static final PropertyDescriptor singleType	= new TypeProperty("singleType", "Property with a single type value", String.class, 5.0f);
 	public static final PropertyDescriptor multiType	= new TypeProperty("multiType", "Property with multiple type values", new Class[] {Integer.class, Object.class}, 6.0f);
 
-	public static final PropertyDescriptor enumType	= new EnumeratedProperty("enumType", "Property with a enumerated choices", new Object[][] {{"String", String.class},{"Object", Object.class}}, 5.0f);
+	public static final PropertyDescriptor enumType	= new EnumeratedProperty<Class>("enumType", "Property with a enumerated choices", new String[] {"String", "Object"}, new Class[] {String.class, Object.class}, 5.0f);
 	
 	
 	private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] {

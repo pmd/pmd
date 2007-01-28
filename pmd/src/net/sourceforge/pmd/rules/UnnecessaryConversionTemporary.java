@@ -6,7 +6,6 @@ package net.sourceforge.pmd.rules;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
@@ -20,7 +19,7 @@ public class UnnecessaryConversionTemporary extends AbstractRule {
     private ASTPrimaryExpression primary;
     private boolean usingPrimitiveWrapperAllocation;
     
-    private static final Set primitiveWrappers = CollectionUtil.asSet(
+    private static final Set<String> primitiveWrappers = CollectionUtil.asSet(
     	new String[] {"Integer", "Boolean", "Double", "Long", "Short", "Byte", "Float"}
     	);
  

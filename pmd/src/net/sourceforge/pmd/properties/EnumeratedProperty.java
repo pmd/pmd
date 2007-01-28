@@ -13,36 +13,36 @@ import net.sourceforge.pmd.util.StringUtil;
  * @author Brian Remedios
  * @version $Revision$
  */
-public class EnumeratedProperty extends AbstractPMDProperty {
+public class EnumeratedProperty<E> extends AbstractPMDProperty {
 
-	private Object[][]	choiceTuples;
-	private Map			choicesByLabel;
-	private Map			labelsByChoice;
+	private Map<String, E>	choicesByLabel;
+	private Map<E, String>	labelsByChoice;
 	
 	/**
 	 * Constructor for EnumeratedProperty.
 	 * @param theName String
 	 * @param theDescription String
-	 * @param theChoices Object[][]
+     * @param theLabels String[]
+   	 * @param theChoices E[]
 	 * @param theUIOrder float
 	 */
-	public EnumeratedProperty(String theName, String theDescription, Object[][] theChoices, float theUIOrder) {
-		this(theName, theDescription, theChoices, theUIOrder, 1);
+	public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices, float theUIOrder) {
+		this(theName, theDescription, theLabels, theChoices, theUIOrder, 1);
 	}
 	
 	/**
 	 * Constructor for EnumeratedProperty.
 	 * @param theName String
 	 * @param theDescription String
-	 * @param theChoices Object[][]
+     * @param theLabels String[]
+     * @param theChoices E[]
 	 * @param theUIOrder float
 	 * @param maxValues int
 	 */
-	public EnumeratedProperty(String theName, String theDescription, Object[][] theChoices, float theUIOrder, int maxValues) {
-		super(theName, theDescription, theChoices[0][1], theUIOrder);
-		
-		choiceTuples = theChoices;
-		choicesByLabel = CollectionUtil.mapFrom(theChoices);
+	public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices, float theUIOrder, int maxValues) {
+		super(theName, theDescription, theChoices[0], theUIOrder);
+
+		choicesByLabel = CollectionUtil.mapFrom(theLabels, theChoices);
 		labelsByChoice = CollectionUtil.invertedMapFrom(choicesByLabel);
 		
 		maxValueCount(maxValues);
@@ -57,15 +57,6 @@ public class EnumeratedProperty extends AbstractPMDProperty {
 		return Object.class;
 	}
 
-	/**
-	 * Method choices.
-	 * @return Object[][]
-	 * @see net.sourceforge.pmd.PropertyDescriptor#choices()
-	 */
-	public Object[][] choices() {
-		return choiceTuples;
-	}
-	
 	private String nonLegalValueMsgFor(Object value) {
 		return "" + value + " is not a legal value";
 	}
@@ -94,10 +85,10 @@ public class EnumeratedProperty extends AbstractPMDProperty {
 	/**
 	 * Method choiceFrom.
 	 * @param label String
-	 * @return Object
+	 * @return E
 	 */
-	private Object choiceFrom(String label) {
-		Object result = choicesByLabel.get(label);
+	private E choiceFrom(String label) {
+		E result = choicesByLabel.get(label);
 		if (result != null) return result;
 		throw new IllegalArgumentException(label);
 	}
@@ -128,7 +119,7 @@ public class EnumeratedProperty extends AbstractPMDProperty {
 	 */
 	public String asDelimitedString(Object value) {
 		
-		if (maxValueCount() == 1) return (String)labelsByChoice.get(value);
+		if (maxValueCount() == 1) return labelsByChoice.get(value);
 		
 		Object[] choices = (Object[])value;
 		

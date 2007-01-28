@@ -10,13 +10,20 @@ import net.sourceforge.pmd.properties.EnumeratedProperty;
  */
 public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 
-	private static final Object[][] mixedItems = new Object[][] {
-		{"map",			new HashMap()},
-		{"emptyArray",	new Object[0]},
-		{"list",		new ArrayList()},
-		{"string",		"Hello World!"},
+	private static final String[] keys = new String[] {
+		"map",
+		"emptyArray",
+		"list",
+		"string",
 		};
-	
+
+    private static final Object[] values = new Object[] {
+        new HashMap(),
+        new Object[0],
+        new ArrayList(),
+        "Hello World!",
+        };
+    
 	public EnumeratedPropertyTest() {
 		super();
 	}
@@ -28,7 +35,7 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	protected Object createValue(int count) {
 		
-		if (count == 1) return ((Object[])randomChoice(mixedItems))[1];
+		if (count == 1) return randomChoice(values);
 		
 		Object[] values = new Object[count];
 		for (int i=0; i<values.length; i++) values[i] = createValue(1);
@@ -43,8 +50,8 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createProperty(int maxCount) {
 		
 		return maxCount == 1 ?
-			new EnumeratedProperty("testEnumerations", "Test enumerations with complex types", mixedItems, 1.0f) :
-			new EnumeratedProperty("testEnumerations", "Test enumerations with complex types", mixedItems, 1.0f, 3);	
+			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, values, 1.0f) :
+			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, values, 1.0f, 3);	
 	}
 
 }

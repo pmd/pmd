@@ -14,7 +14,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 public class UnnecessaryWrapperObjectCreation extends AbstractRule {
 
-    private static final Set prefixSet = CollectionUtil.asSet(new String[] {
+    private static final Set<String> prefixSet = CollectionUtil.asSet(new String[] {
         "Byte.valueOf",
         "Short.valueOf",
         "Integer.valueOf",
@@ -24,7 +24,7 @@ public class UnnecessaryWrapperObjectCreation extends AbstractRule {
         "Character.valueOf"
     });
 
-    private static final Set suffixSet = CollectionUtil.asSet(new String[] {
+    private static final Set<String> suffixSet = CollectionUtil.asSet(new String[] {
         "byteValue",
         "shortValue",
         "intValue",
