@@ -18,13 +18,13 @@ public class SourceFileScopeTest extends STBBaseTst {
 
     public void testPackageIsEmptyString() {
         parseCode(TEST1);
-        ASTCompilationUnit decl = (ASTCompilationUnit) (acu.findChildrenOfType(ASTCompilationUnit.class)).get(0);
+        ASTCompilationUnit decl = acu.findChildrenOfType(ASTCompilationUnit.class).get(0);
         assertEquals(decl.getScope().getEnclosingSourceFileScope().getPackageName(), "");
     }
 
     public void testPackageNameFound() {
         parseCode(TEST2);
-        ASTCompilationUnit decl = (ASTCompilationUnit) (acu.findChildrenOfType(ASTCompilationUnit.class)).get(0);
+        ASTCompilationUnit decl = acu.findChildrenOfType(ASTCompilationUnit.class).get(0);
         assertEquals(decl.getScope().getEnclosingSourceFileScope().getPackageName(), "foo.bar");
     }
 

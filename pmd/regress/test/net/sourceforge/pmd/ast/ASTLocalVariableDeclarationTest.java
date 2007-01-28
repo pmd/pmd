@@ -14,21 +14,21 @@ public class ASTLocalVariableDeclarationTest extends ParserTst {
     public void testSingleDimArray() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST1));
         ASTCompilationUnit cu = parser.CompilationUnit();
-        ASTLocalVariableDeclaration node = (ASTLocalVariableDeclaration) cu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
+        ASTLocalVariableDeclaration node = cu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
         assertEquals(1, node.getArrayDepth());
     }
 
     public void testMultDimArray() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST2));
         ASTCompilationUnit cu = parser.CompilationUnit();
-        ASTLocalVariableDeclaration node = (ASTLocalVariableDeclaration) cu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
+        ASTLocalVariableDeclaration node = cu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
         assertEquals(2, node.getArrayDepth());
     }
 
     public void testMultDimArraySplitBraces() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST3));
         ASTCompilationUnit cu = parser.CompilationUnit();
-        ASTLocalVariableDeclaration node = (ASTLocalVariableDeclaration) cu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
+        ASTLocalVariableDeclaration node = cu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
         assertEquals(3, node.getArrayDepth());
     }
 

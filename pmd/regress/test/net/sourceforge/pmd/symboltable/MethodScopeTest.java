@@ -13,7 +13,7 @@ public class MethodScopeTest extends STBBaseTst {
 
     public void testMethodParameterOccurrenceRecorded() {
         parseCode(TEST1);
-        Map m = ((ASTMethodDeclaration) (acu.findChildrenOfType(ASTMethodDeclaration.class)).get(0)).getScope().getVariableDeclarations();
+        Map m = acu.findChildrenOfType(ASTMethodDeclaration.class).get(0).getScope().getVariableDeclarations();
         VariableNameDeclaration vnd = (VariableNameDeclaration) m.keySet().iterator().next();
         assertEquals("bar", vnd.getImage());
         List occs = (List) m.get(vnd);
@@ -23,7 +23,7 @@ public class MethodScopeTest extends STBBaseTst {
 
     public void testMethodName() {
         parseCode(TEST1);
-        ASTMethodDeclaration meth = (ASTMethodDeclaration) (acu.findChildrenOfType(ASTMethodDeclaration.class)).get(0);
+        ASTMethodDeclaration meth = acu.findChildrenOfType(ASTMethodDeclaration.class).get(0);
         MethodScope ms = (MethodScope) meth.getScope();
         assertEquals(ms.getName(), "foo");
     }

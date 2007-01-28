@@ -126,7 +126,7 @@ public class SimpleNodeTest extends ParserTst {
         ASTBlock block = new ASTBlock(1);
         block.jjtAddChild(new ASTBlockStatement(2), 0);
         block.jjtAddChild(new ASTBlockStatement(3), 1);
-        List nodes = new ArrayList();
+        List<ASTBlockStatement> nodes = new ArrayList<ASTBlockStatement>();
         block.findChildrenOfType(ASTBlockStatement.class, nodes);
         assertEquals(2, nodes.size());
     }
@@ -136,7 +136,7 @@ public class SimpleNodeTest extends ParserTst {
         ASTBlock childBlock = new ASTBlock(2);
         block.jjtAddChild(childBlock, 0);
         childBlock.jjtAddChild(new ASTMethodDeclaration(3), 0);
-        List nodes = new ArrayList();
+        List<ASTMethodDeclaration> nodes = new ArrayList<ASTMethodDeclaration>();
         block.findChildrenOfType(ASTMethodDeclaration.class, nodes);
         assertEquals(1, nodes.size());
     }
@@ -215,7 +215,7 @@ public class SimpleNodeTest extends ParserTst {
 
     public void testContainsNoInnerWithAnonInner() throws Throwable {
         ASTCompilationUnit c = (ASTCompilationUnit) getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
-        List res = new ArrayList();
+        List<ASTFieldDeclaration> res = new ArrayList<ASTFieldDeclaration>();
         c.findChildrenOfType(ASTFieldDeclaration.class, res, false);
         assertTrue(res.isEmpty());
     }

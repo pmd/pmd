@@ -24,7 +24,7 @@ public class ASTVariableDeclaratorIdTest extends ParserTst {
 
     public void testTypeNameNode() throws Throwable {
         ASTCompilationUnit acu = (ASTCompilationUnit) (super.getNodes(ASTCompilationUnit.class, TYPE_NAME_NODE).iterator().next());
-        ASTVariableDeclaratorId id = (ASTVariableDeclaratorId) acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
+        ASTVariableDeclaratorId id = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
 
         ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().jjtGetChild(0);
         assertEquals("String", name.getImage());

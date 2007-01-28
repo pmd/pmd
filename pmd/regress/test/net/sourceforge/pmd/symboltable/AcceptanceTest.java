@@ -53,7 +53,7 @@ public class AcceptanceTest extends STBBaseTst {
     public void testFieldFinder() {
         System.out.println(TEST_FIELD);
         parseCode(TEST_FIELD);
-        ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId)acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
+        ASTVariableDeclaratorId declaration = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
         NameOccurrence no = (NameOccurrence)declaration.getUsages().iterator().next();
         SimpleNode location = no.getLocation();
         System.out.println("variable " + declaration.getImage() + " is used here: " + location.getImage());

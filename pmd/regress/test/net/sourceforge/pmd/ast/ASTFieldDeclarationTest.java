@@ -19,7 +19,7 @@ public class ASTFieldDeclarationTest extends ParserTst {
     public void testIsArray() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST1));
         ASTCompilationUnit cu = parser.CompilationUnit();
-        Dimensionable node = (Dimensionable) cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        Dimensionable node = cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
         assertTrue(node.isArray());
         assertEquals(1, node.getArrayDepth());
     }
@@ -27,14 +27,14 @@ public class ASTFieldDeclarationTest extends ParserTst {
     public void testMultiDimensionalArray() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST2));
         ASTCompilationUnit cu = parser.CompilationUnit();
-        Dimensionable node = (Dimensionable) cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        Dimensionable node = cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
         assertEquals(3, node.getArrayDepth());
     }
 
     public void testIsSyntacticallyPublic() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST3));
         ASTCompilationUnit cu = parser.CompilationUnit();
-        ASTFieldDeclaration node = (ASTFieldDeclaration) cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        ASTFieldDeclaration node = cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
         assertFalse(node.isSyntacticallyPublic());
         assertFalse(node.isPackagePrivate());
         assertFalse(node.isPrivate());
@@ -47,7 +47,7 @@ public class ASTFieldDeclarationTest extends ParserTst {
     public void testWithEnum() {
         JavaParser parser = (new TargetJDK1_5()).createParser(new StringReader(TEST4));
         ASTCompilationUnit cu = parser.CompilationUnit();
-        ASTFieldDeclaration node = (ASTFieldDeclaration) cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        ASTFieldDeclaration node = cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
         assertFalse(node.isInterfaceMember());
     }
 

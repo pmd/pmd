@@ -11,7 +11,7 @@ public class ScopeCreationVisitorTest extends STBBaseTst {
 
     public void testScopesAreCreated() {
         parseCode(TEST1);
-        ASTIfStatement n = (ASTIfStatement) acu.findChildrenOfType(ASTIfStatement.class).get(0);
+        ASTIfStatement n = acu.findChildrenOfType(ASTIfStatement.class).get(0);
         assertTrue(n.getScope() instanceof LocalScope);
     }
 

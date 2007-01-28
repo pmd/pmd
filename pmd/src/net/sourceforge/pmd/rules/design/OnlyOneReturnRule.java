@@ -27,11 +27,11 @@ public class OnlyOneReturnRule extends AbstractRule {
             return data;
         }
 
-        List returnNodes = new ArrayList();
+        List<ASTReturnStatement> returnNodes = new ArrayList<ASTReturnStatement>();
         node.findChildrenOfType(ASTReturnStatement.class, returnNodes, false);
         if (returnNodes.size() > 1) {
-            for (Iterator i = returnNodes.iterator(); i.hasNext();) {
-                SimpleNode problem = (SimpleNode) i.next();
+            for (Iterator<ASTReturnStatement> i = returnNodes.iterator(); i.hasNext();) {
+                SimpleNode problem = i.next();
                 // skip the last one, it's OK
                 if (!i.hasNext()) {
                     continue;

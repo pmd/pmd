@@ -31,8 +31,8 @@ public class ExceptionAsFlowControl extends AbstractRule {
             for (Iterator iter = list.iterator(); iter.hasNext();) {
                 ASTCatchStatement catchStmt = (ASTCatchStatement) iter.next();
                 ASTFormalParameter fp = (ASTFormalParameter) catchStmt.jjtGetChild(0);
-                ASTType type = (ASTType) fp.findChildrenOfType(ASTType.class).get(0);
-                ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) type.findChildrenOfType(ASTClassOrInterfaceType.class).get(0);
+                ASTType type = fp.findChildrenOfType(ASTType.class).get(0);
+                ASTClassOrInterfaceType name = type.findChildrenOfType(ASTClassOrInterfaceType.class).get(0);
                 if (node.getFirstClassOrInterfaceTypeImage() != null && node.getFirstClassOrInterfaceTypeImage().equals(name.getImage())) {
                     addViolation(data, name);
                 }

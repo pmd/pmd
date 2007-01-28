@@ -11,7 +11,7 @@ public class GlobalScopeTest extends STBBaseTst {
 
     public void testClassDeclAppears() {
         parseCode(TEST1);
-        ASTCompilationUnit decl = (ASTCompilationUnit) (acu.findChildrenOfType(ASTCompilationUnit.class)).get(0);
+        ASTCompilationUnit decl = acu.findChildrenOfType(ASTCompilationUnit.class).get(0);
         Scope scope = decl.getScope();
         Map m = scope.getClassDeclarations();
         ClassNameDeclaration classNameDeclaration = (ClassNameDeclaration) m.keySet().iterator().next();

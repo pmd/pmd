@@ -36,37 +36,37 @@ public class VariableNameDeclarationTest extends STBBaseTst {
 
     public void testIsArray() {
         parseCode(TEST3);
-        VariableNameDeclaration decl = (VariableNameDeclaration) ((ASTVariableDeclaratorId) acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        VariableNameDeclaration decl = (VariableNameDeclaration) (acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
         assertTrue(decl.isArray());
     }
 
     public void testPrimitiveType() {
         parseCode(TEST1);
-        VariableNameDeclaration decl = (VariableNameDeclaration) ((ASTVariableDeclaratorId) acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        VariableNameDeclaration decl = (VariableNameDeclaration) (acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
         assertTrue(decl.isPrimitiveType());
     }
 
     public void testArrayIsReferenceType() {
         parseCode(TEST3);
-        VariableNameDeclaration decl = (VariableNameDeclaration) ((ASTVariableDeclaratorId) acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        VariableNameDeclaration decl = (VariableNameDeclaration) (acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
         assertTrue(decl.isReferenceType());
     }
 
     public void testPrimitiveTypeImage() {
         parseCode(TEST3);
-        VariableNameDeclaration decl = (VariableNameDeclaration) ((ASTVariableDeclaratorId) acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        VariableNameDeclaration decl = (VariableNameDeclaration) (acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
         assertEquals("int", decl.getTypeImage());
     }
 
     public void testRefTypeImage() {
         parseCode(TEST4);
-        VariableNameDeclaration decl = (VariableNameDeclaration) ((ASTVariableDeclaratorId) acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        VariableNameDeclaration decl = (VariableNameDeclaration) (acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
         assertEquals("String", decl.getTypeImage());
     }
 
     public void testParamTypeImage() {
         parseCode(TEST5);
-        VariableNameDeclaration decl = (VariableNameDeclaration) ((ASTVariableDeclaratorId) acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
+        VariableNameDeclaration decl = (VariableNameDeclaration) (acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0)).getScope().getVariableDeclarations().keySet().iterator().next();
         assertEquals("String", decl.getTypeImage());
     }
 

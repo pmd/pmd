@@ -134,7 +134,7 @@ public abstract class SimpleNode implements Node {
      * @param parentType class which you want to find.
      * @return Node of type parentType.  Returns null if none found.
      */
-    public Node getFirstParentOfType(Class parentType) {
+    public <T> Node getFirstParentOfType(Class<T> parentType) {
         Node parentNode = jjtGetParent();
         while (parentNode != null && parentNode.getClass() != parentType) {
             parentNode = parentNode.jjtGetParent();
@@ -148,35 +148,35 @@ public abstract class SimpleNode implements Node {
      * @param parentType classes which you want to find.
      * @return List of parentType instances found.
      */
-    public List getParentsOfType(Class parentType) {
-        List parents = new ArrayList();
+    public <T> List<T> getParentsOfType(Class<T> parentType) {
+        List<T> parents = new ArrayList<T>();
         Node parentNode = jjtGetParent();
         while (parentNode != null) {
             if (parentNode.getClass() == parentType) {
-                parents.add(parentNode);
+                parents.add((T) parentNode);
             }
             parentNode = parentNode.jjtGetParent();
         }
         return parents;
     }
 
-    public List findChildrenOfType(Class targetType) {
-        List list = new ArrayList();
+    public <T> List<T> findChildrenOfType(Class<T> targetType) {
+        List<T> list = new ArrayList<T>();
         findChildrenOfType(targetType, list);
         return list;
     }
 
-    public void findChildrenOfType(Class targetType, List results) {
+    public <T> void findChildrenOfType(Class<T> targetType, List<T> results) {
         findChildrenOfType(this, targetType, results, true);
     }
 
-    public void findChildrenOfType(Class targetType, List results, boolean descendIntoNestedClasses) {
+    public <T> void findChildrenOfType(Class<T> targetType, List<T> results, boolean descendIntoNestedClasses) {
         this.findChildrenOfType(this, targetType, results, descendIntoNestedClasses);
     }
 
-    private void findChildrenOfType(Node node, Class targetType, List results, boolean descendIntoNestedClasses) {
+    private <T> void findChildrenOfType(Node node, Class<T> targetType, List<T> results, boolean descendIntoNestedClasses) {
         if (node.getClass().equals(targetType)) {
-            results.add(node);
+            results.add((T) node);
         }
 
         if (!descendIntoNestedClasses) {
@@ -195,7 +195,7 @@ public abstract class SimpleNode implements Node {
                 findChildrenOfType(child, targetType, results, descendIntoNestedClasses);
             } else {
                 if (child.getClass().equals(targetType)) {
-                    results.add(child);
+                    results.add((T) child);
                 }
             }
         }
@@ -289,11 +289,11 @@ public abstract class SimpleNode implements Node {
      * @param childType class which you want to find.
      * @return Node of type childType.  Returns <code>null</code> if none found.
      */
-    public Node getFirstChildOfType(Class childType) {
+    public <T> Node getFirstChildOfType(Class<T> childType) {
         return getFirstChildOfType(childType, this);
     }
 
-    private Node getFirstChildOfType(Class childType, Node node) {
+    private <T> Node getFirstChildOfType(Class<T> childType, Node node) {
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node n = node.jjtGetChild(i);
             if (n != null) {
@@ -314,7 +314,7 @@ public abstract class SimpleNode implements Node {
      * @param type the node type to search
      * @return <code>true</code> if there is at lease on child of the given type and <code>false</code> in any other case
      */
-    public final boolean containsChildOfType(Class type) {
+    public final <T> boolean containsChildOfType(Class<T> type) {
         return !findChildrenOfType(type).isEmpty();
     }
 

@@ -60,16 +60,16 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
             return super.visit(node, data);
         }
 
-        List finder = new ArrayList();
-        node.findChildrenOfType(ASTReturnStatement.class, finder, true);
-        if (finder.size() != 1) {
+        List<ASTReturnStatement> rsl = new ArrayList<ASTReturnStatement>();
+        node.findChildrenOfType(ASTReturnStatement.class, rsl, true);
+        if (rsl.size() != 1) {
             return super.visit(node, data);
         }
-        ASTReturnStatement rs = (ASTReturnStatement) finder.get(0);
+        ASTReturnStatement rs = rsl.get(0);
 
-        finder.clear();
-        rs.findChildrenOfType(ASTPrimaryExpression.class, finder, true);
-        ASTPrimaryExpression ape = (ASTPrimaryExpression) finder.get(0);
+        List<ASTPrimaryExpression> pel = new ArrayList<ASTPrimaryExpression>();
+        rs.findChildrenOfType(ASTPrimaryExpression.class, pel, true);
+        ASTPrimaryExpression ape = pel.get(0);
         Node lastChild = ape.jjtGetChild(ape.jjtGetNumChildren() - 1);
         String returnVariableName = null;
         if (lastChild instanceof ASTPrimaryPrefix) {
@@ -78,25 +78,25 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
         if (returnVariableName == null) {
             return super.visit(node, data);
         }
-        finder.clear();
-        node.findChildrenOfType(ASTIfStatement.class, finder, true);
-        if (finder.size() == 2) {
-            ASTIfStatement is = (ASTIfStatement) finder.get(0);
+        List<ASTIfStatement> isl = new ArrayList<ASTIfStatement>();
+        node.findChildrenOfType(ASTIfStatement.class, isl, true);
+        if (isl.size() == 2) {
+            ASTIfStatement is = isl.get(0);
             if (ifVerify(is, returnVariableName)) {
                 //find synchronized
-                finder.clear();
-                is.findChildrenOfType(ASTSynchronizedStatement.class, finder, true);
-                if (finder.size() == 1) {
-                    ASTSynchronizedStatement ss = (ASTSynchronizedStatement) finder.get(0);
-                    finder.clear();
-                    ss.findChildrenOfType(ASTIfStatement.class, finder, true);
-                    if (finder.size() == 1) {
-                        ASTIfStatement is2 = (ASTIfStatement) finder.get(0);
+                List<ASTSynchronizedStatement> ssl = new ArrayList<ASTSynchronizedStatement>();
+                is.findChildrenOfType(ASTSynchronizedStatement.class, ssl, true);
+                if (ssl.size() == 1) {
+                    ASTSynchronizedStatement ss = ssl.get(0);
+                    isl.clear();
+                    ss.findChildrenOfType(ASTIfStatement.class, isl, true);
+                    if (isl.size() == 1) {
+                        ASTIfStatement is2 = isl.get(0);
                         if (ifVerify(is2, returnVariableName)) {
-                            finder.clear();
-                            is2.findChildrenOfType(ASTStatementExpression.class, finder, true);
-                            if (finder.size() == 1) {
-                                ASTStatementExpression se = (ASTStatementExpression) finder.get(0);
+                            List<ASTStatementExpression> sel = new ArrayList<ASTStatementExpression>();
+                            is2.findChildrenOfType(ASTStatementExpression.class, sel, true);
+                            if (sel.size() == 1) {
+                                ASTStatementExpression se = sel.get(0);
                                 if (se.jjtGetNumChildren() == 3) { //primaryExpression, AssignmentOperator, Expression
                                     if (se.jjtGetChild(0) instanceof ASTPrimaryExpression) {
                                         ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
@@ -117,12 +117,12 @@ public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
     }
 
     private boolean ifVerify(ASTIfStatement is, String varname) {
-        List finder = new ArrayList();
+        List<ASTPrimaryExpression> finder = new ArrayList<ASTPrimaryExpression>();
         is.findChildrenOfType(ASTPrimaryExpression.class, finder, true);
         if (finder.size() > 1) {
-            ASTPrimaryExpression apeLeft = (ASTPrimaryExpression) finder.get(0);
+            ASTPrimaryExpression apeLeft = finder.get(0);
             if (matchName(apeLeft, varname)) {
-                ASTPrimaryExpression apeRight = (ASTPrimaryExpression) finder.get(1);
+                ASTPrimaryExpression apeRight = finder.get(1);
                 if ((apeRight.jjtGetNumChildren() == 1) && (apeRight.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
                     ASTPrimaryPrefix pp2 = (ASTPrimaryPrefix) apeRight.jjtGetChild(0);
                     if ((pp2.jjtGetNumChildren() == 1) && (pp2.jjtGetChild(0) instanceof ASTLiteral)) {

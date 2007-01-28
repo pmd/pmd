@@ -35,7 +35,7 @@ public class ImmutableField extends AbstractRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Map vars = node.getScope().getVariableDeclarations();
-        List constructors = findAllConstructors(node);
+        List<ASTConstructorDeclaration> constructors = findAllConstructors(node);
         for (Iterator i = vars.entrySet().iterator(); i.hasNext();) {
             Map.Entry entry = (Map.Entry) i.next();
             VariableNameDeclaration field = (VariableNameDeclaration) entry.getKey();
@@ -43,7 +43,7 @@ public class ImmutableField extends AbstractRule {
                 continue;
             }
 
-            int result = initializedInConstructor((List) entry.getValue(), new HashSet(constructors));
+            int result = initializedInConstructor((List) entry.getValue(), new HashSet<ASTConstructorDeclaration>(constructors));
             if (result == MUTABLE) {
                 continue;
             }
@@ -58,7 +58,7 @@ public class ImmutableField extends AbstractRule {
         return !field.getAccessNodeParent().findChildrenOfType(ASTVariableInitializer.class).isEmpty();
     }
 
-    private int initializedInConstructor(List usages, Set allConstructors) {
+    private int initializedInConstructor(List usages, Set<ASTConstructorDeclaration> allConstructors) {
         int result = MUTABLE, methodInitCount = 0;
         Set consSet = new HashSet();
         for (Iterator j = usages.iterator(); j.hasNext();) {
@@ -105,8 +105,8 @@ public class ImmutableField extends AbstractRule {
         return parent != null && parent.isAnonymousInnerClass();
     }
 
-    private List findAllConstructors(ASTClassOrInterfaceDeclaration node) {
-        List cons = new ArrayList();
+    private List<ASTConstructorDeclaration> findAllConstructors(ASTClassOrInterfaceDeclaration node) {
+        List<ASTConstructorDeclaration> cons = new ArrayList<ASTConstructorDeclaration>();
         node.findChildrenOfType(ASTConstructorDeclaration.class, cons, false);
         return cons;
     }

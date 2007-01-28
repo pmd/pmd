@@ -93,7 +93,7 @@ public class LocalScopeTest extends STBBaseTst {
 
     public void testgetEnclosingMethodScope() {
         parseCode(TEST4);
-        ASTLocalVariableDeclaration node = (ASTLocalVariableDeclaration) acu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
+        ASTLocalVariableDeclaration node = acu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
         LocalScope scope = (LocalScope) node.getScope();
         MethodScope ms = scope.getEnclosingMethodScope();
         assertEquals(2, ms.getVariableDeclarations().size());

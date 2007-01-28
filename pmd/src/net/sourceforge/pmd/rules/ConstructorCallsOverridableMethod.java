@@ -457,10 +457,10 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         }
 
         private void initCI() {
-            List expressions = new ArrayList();
+            List<ASTExplicitConstructorInvocation> expressions = new ArrayList<ASTExplicitConstructorInvocation>();
             m_Cd.findChildrenOfType(ASTExplicitConstructorInvocation.class, expressions); //only 1...
             if (!expressions.isEmpty()) {
-                ASTExplicitConstructorInvocation eci = (ASTExplicitConstructorInvocation) expressions.get(0);
+                ASTExplicitConstructorInvocation eci = expressions.get(0);
                 m_Ci = new ConstructorInvocation(eci);
                 //System.out.println("Const call " + eci.getImage()); //super or this???
             }

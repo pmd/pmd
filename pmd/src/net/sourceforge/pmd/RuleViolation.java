@@ -15,7 +15,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
+import java.util.ArrayList;
 public class RuleViolation implements IRuleViolation {
 
     public static class RuleViolationComparator implements Comparator<IRuleViolation> {
@@ -87,7 +87,7 @@ public class RuleViolation implements IRuleViolation {
 
         // TODO combine this duplicated code
         // TODO same for duplicated code in ASTTypeDeclaration && ASTClassOrInterfaceBodyDeclaration
-        List<SimpleNode> parentTypes = node.getParentsOfType(ASTTypeDeclaration.class);
+        List<SimpleNode> parentTypes = new ArrayList<SimpleNode>(node.getParentsOfType(ASTTypeDeclaration.class));
         if (node instanceof ASTTypeDeclaration) {
             parentTypes.add(node);
         }
