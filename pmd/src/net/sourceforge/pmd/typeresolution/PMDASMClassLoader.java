@@ -8,6 +8,7 @@ import net.sourceforge.pmd.typeresolution.visitors.PMDASMVisitor;
 import org.objectweb.asm.ClassReader;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class PMDASMClassLoader extends ClassLoader {
 
     private Set<String> dontBother = new HashSet<String>();
 
-    public Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
+    public synchronized Map<String, String> getImportedClasses(String name) throws ClassNotFoundException {
 
         if (dontBother.contains(name)) {
             throw new ClassNotFoundException(name);
@@ -39,6 +40,7 @@ public class PMDASMClassLoader extends ClassLoader {
 
             List<String> inner = asmVisitor.getInnerClasses();
             if (inner != null && !inner.isEmpty()) {
+                inner = new LinkedList<String>(inner); // to avoid ConcurrentModificationException
                 for (String str: inner) {
                     reader = new ClassReader(getResourceAsStream(str.replace('.', '/') + ".class"));
                     reader.accept(asmVisitor, 0);
