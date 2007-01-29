@@ -22,8 +22,8 @@ public class JspTypeHandler implements SourceTypeHandler {
                 return new net.sourceforge.pmd.jsp.ast.JspParser(new JspCharStream(source))
                         .CompilationUnit();
             }
-            public Map getExcludeMap() {
-                return new HashMap();
+            public Map<Integer, String> getExcludeMap() {
+                return new HashMap<Integer, String>();
             }
             public void setExcludeMarker(String marker) {}
         };

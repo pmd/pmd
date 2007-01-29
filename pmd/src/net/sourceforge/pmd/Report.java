@@ -116,13 +116,13 @@ public class Report {
     private Set<Metric> metrics = new HashSet<Metric>();
     private List<ReportListener> listeners = new ArrayList<ReportListener>();
     private List<ProcessingError> errors = new ArrayList<ProcessingError>();
-    private Map linesToExclude = new HashMap();
+    private Map<Integer, String> linesToExclude = new HashMap<Integer, String>();
     private long start;
     private long end;
 
     private List<SuppressedViolation> suppressedRuleViolations = new ArrayList<SuppressedViolation>();
 
-    public void exclude(Map lines) {
+    public void exclude(Map<Integer, String> lines) {
         linesToExclude = lines;
     }
 
@@ -179,7 +179,7 @@ public class Report {
         // NOPMD excluder
         Integer line = new Integer(violation.getBeginLine());
         if (linesToExclude.keySet().contains(line)) {
-            suppressedRuleViolations.add(new SuppressedViolation(violation, true, (String)linesToExclude.get(line)));
+            suppressedRuleViolations.add(new SuppressedViolation(violation, true, linesToExclude.get(line)));
             return;
         }
 

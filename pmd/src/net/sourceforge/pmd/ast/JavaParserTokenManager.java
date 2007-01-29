@@ -5,13 +5,13 @@ import net.sourceforge.pmd.PMD;
 
 public class JavaParserTokenManager implements JavaParserConstants
 {
-    private Map excludeMap = new HashMap();
+    private Map<Integer, String> excludeMap = new HashMap<Integer, String>();
     private String excludeMarker = PMD.EXCLUDE_MARKER;
 
     public void setExcludeMarker(String marker) {
         this.excludeMarker = marker;
     }
-    public Map getExcludeMap() {
+    public Map<Integer, String> getExcludeMap() {
         return excludeMap;
     }
   public  java.io.PrintStream debugStream = System.out;

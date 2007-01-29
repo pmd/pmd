@@ -27,7 +27,7 @@ public class RuleContext {
         this.sourceCodeFilename = filename;
     }
 
-    public void excludeLines(Map lines) {
+    public void excludeLines(Map<Integer, String> lines) {
         report.exclude(lines);
     }
 

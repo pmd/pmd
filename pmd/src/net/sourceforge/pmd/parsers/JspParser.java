@@ -13,8 +13,8 @@ public class JspParser implements Parser {
         return new net.sourceforge.pmd.jsp.ast.JspParser(new JspCharStream(source)).CompilationUnit();
     }
 
-    public Map getExcludeMap() {
-        return new HashMap(); // FIXME
+    public Map<Integer, String> getExcludeMap() {
+        return new HashMap<Integer, String>(); // FIXME
     }
 
     public void setExcludeMarker(String marker) {

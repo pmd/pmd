@@ -79,7 +79,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       return res;
   }
 
-  public Map getExcludeMap() {
+  public Map<Integer, String> getExcludeMap() {
     return token_source.getExcludeMap();
   }
 

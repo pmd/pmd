@@ -22,7 +22,7 @@ public interface Parser {
      */
     Object parse(Reader source) throws ParseException;
 
-    Map getExcludeMap();
+    Map<Integer, String> getExcludeMap();
 
     void setExcludeMarker(String marker);
 

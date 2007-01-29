@@ -23,7 +23,7 @@ public class Java14Parser implements Parser {
         return parser.CompilationUnit();
     }
 
-    public Map getExcludeMap() {
+    public Map<Integer, String> getExcludeMap() {
         return parser.getExcludeMap();
     }
 

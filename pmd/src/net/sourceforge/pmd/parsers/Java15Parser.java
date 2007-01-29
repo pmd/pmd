@@ -24,7 +24,7 @@ public class Java15Parser implements Parser {
         return parser.CompilationUnit();
     }
 
-    public Map getExcludeMap() {
+    public Map<Integer, String> getExcludeMap() {
         return parser.getExcludeMap();
     }
 
