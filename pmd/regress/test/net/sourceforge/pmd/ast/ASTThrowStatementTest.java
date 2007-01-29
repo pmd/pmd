@@ -15,12 +15,12 @@ import test.net.sourceforge.pmd.testframework.ParserTst;
 public class ASTThrowStatementTest extends ParserTst {
 
     public final void testGetFirstASTNameImageNull() throws Throwable {
-        ASTThrowStatement t = (ASTThrowStatement) getNodes(ASTThrowStatement.class, NULL_NAME).iterator().next();
+        ASTThrowStatement t = getNodes(ASTThrowStatement.class, NULL_NAME).iterator().next();
         assertNull(t.getFirstClassOrInterfaceTypeImage());
     }
 
     public final void testGetFirstASTNameImageNew() throws Throwable {
-        ASTThrowStatement t = (ASTThrowStatement) getNodes(ASTThrowStatement.class, OK_NAME).iterator().next();
+        ASTThrowStatement t = getNodes(ASTThrowStatement.class, OK_NAME).iterator().next();
         assertEquals("FooException", t.getFirstClassOrInterfaceTypeImage());
     }
 

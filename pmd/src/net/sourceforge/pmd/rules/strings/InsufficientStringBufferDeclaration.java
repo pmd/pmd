@@ -23,7 +23,6 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,7 +55,7 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
         constructorLength = getConstructorLength(node, constructorLength);
         anticipatedLength = getInitialLength(node);
         List<NameOccurrence> usage = node.getUsages();
-        Map blocks = new HashMap();
+        Map<Node, Map<Node, Integer>> blocks = new HashMap<Node, Map<Node, Integer>>();
         for (int ix = 0; ix < usage.size(); ix++) {
             NameOccurrence no = usage.get(ix);
             SimpleNode n = no.getLocation();
@@ -115,7 +114,7 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
      * @param block
      *            The block in question
      */
-    private void storeBlockStatistics(Map blocks, int thisSize, Node block) {
+    private void storeBlockStatistics(Map<Node, Map<Node, Integer>> blocks, int thisSize, Node block) {
         Node statement = block.jjtGetParent();
         if (ASTIfStatement.class.equals(block.jjtGetParent().getClass())) {
             // Else Ifs are their own subnode in AST. So we have to
@@ -126,27 +125,25 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
                 possibleStatement = ((SimpleNode) possibleStatement).getFirstParentOfType(ASTIfStatement.class);
             }
         }
-        Map thisBranch = (Map) blocks.get(statement);
+        Map<Node, Integer> thisBranch = blocks.get(statement);
         if (thisBranch == null) {
-            thisBranch = new HashMap();
+            thisBranch = new HashMap<Node, Integer>();
             blocks.put(statement, thisBranch);
         }
-        Integer x = (Integer) thisBranch.get(block);
+        Integer x = thisBranch.get(block);
         if (x != null) {
             thisSize += x.intValue();
         }
         thisBranch.put(statement, new Integer(thisSize));
     }
 
-    private int processBlocks(Map blocks) {
+    private int processBlocks(Map<Node, Map<Node, Integer>> blocks) {
         int anticipatedLength = 0;
         int ifLength = 0;
-        for (Iterator iter = blocks.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry entry = (Map.Entry) iter.next();
+        for (Map.Entry<Node, Map<Node, Integer>> entry: blocks.entrySet()) {
             ifLength = 0;
-            for (Iterator iter2 = ((Map) entry.getValue()).entrySet().iterator(); iter2.hasNext();) {
-                Map.Entry entry2 = (Map.Entry) iter2.next();
-                Integer value = (Integer) entry2.getValue();
+            for (Map.Entry<Node, Integer> entry2: entry.getValue().entrySet()) {
+                Integer value = entry2.getValue();
                 ifLength = Math.max(ifLength, value.intValue());
             }
             anticipatedLength += ifLength;

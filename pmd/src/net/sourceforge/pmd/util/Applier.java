@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 public class Applier {
 
-    public static void apply(UnaryFunction f, Iterator i) {
+    public static <E> void apply(UnaryFunction<E> f, Iterator<? extends E> i) {
         while (i.hasNext()) {
             f.applyTo(i.next());
         }

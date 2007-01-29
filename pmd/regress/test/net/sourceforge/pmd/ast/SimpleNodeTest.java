@@ -48,25 +48,25 @@ public class SimpleNodeTest extends ParserTst {
 
     public void testHasExplicitExtends() throws Throwable {
         String code = HAS_EXPLICIT_EXTENDS;
-        ASTClassOrInterfaceDeclaration ucd = (ASTClassOrInterfaceDeclaration) (getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next());
+        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertTrue(ucd.jjtGetChild(0) instanceof ASTExtendsList);
     }
 
     public void testNoExplicitExtends() throws Throwable {
         String code = NO_EXPLICIT_EXTENDS;
-        ASTClassOrInterfaceDeclaration ucd = (ASTClassOrInterfaceDeclaration) (getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next());
+        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertFalse(ucd.jjtGetChild(0) instanceof ASTExtendsList);
     }
 
     public void testHasExplicitImplements() throws Throwable {
         String code = HAS_EXPLICIT_IMPLEMENTS;
-        ASTClassOrInterfaceDeclaration ucd = (ASTClassOrInterfaceDeclaration) (getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next());
+        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertTrue(ucd.jjtGetChild(0) instanceof ASTImplementsList);
     }
 
     public void testNoExplicitImplements() throws Throwable {
         String code = NO_EXPLICIT_IMPLEMENTS;
-        ASTClassOrInterfaceDeclaration ucd = (ASTClassOrInterfaceDeclaration) (getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next());
+        ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertFalse(ucd.jjtGetChild(0) instanceof ASTImplementsList);
     }
 
@@ -214,19 +214,19 @@ public class SimpleNodeTest extends ParserTst {
 */
 
     public void testContainsNoInnerWithAnonInner() throws Throwable {
-        ASTCompilationUnit c = (ASTCompilationUnit) getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
+        ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
         List<ASTFieldDeclaration> res = new ArrayList<ASTFieldDeclaration>();
         c.findChildrenOfType(ASTFieldDeclaration.class, res, false);
         assertTrue(res.isEmpty());
     }
 
     public void testContainsChildOfType() throws Throwable {
-        ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration) getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE).iterator().next();
+        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE).iterator().next();
         assertTrue(c.containsChildOfType(ASTFieldDeclaration.class));
     }
 
     public void testXPathNodeSelect() throws Throwable {
-        ASTClassOrInterfaceDeclaration c = (ASTClassOrInterfaceDeclaration) getNodes(ASTClassOrInterfaceDeclaration.class, TEST_XPATH).iterator().next();
+        ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, TEST_XPATH).iterator().next();
         List nodes = c.findChildNodesWithXPath("//FieldDeclaration");
         assertEquals(2, nodes.size());
         assertTrue(nodes.get(0) instanceof ASTFieldDeclaration);

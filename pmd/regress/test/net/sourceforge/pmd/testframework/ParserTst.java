@@ -24,27 +24,27 @@ import java.util.Set;
 
 public class ParserTst extends TestCase {
 
-    private class Collector implements InvocationHandler {
-        private Class clazz = null;
-        private Collection collection;
+    private class Collector<E> implements InvocationHandler {
+        private Class<E> clazz = null;
+        private Collection<E> collection;
 
-        public Collector(Class clazz) {
-            this(clazz, new HashSet());
+        public Collector(Class<E> clazz) {
+            this(clazz, new HashSet<E>());
         }
 
-        public Collector(Class clazz, Collection coll) {
+        public Collector(Class<E> clazz, Collection<E> coll) {
             this.clazz = clazz;
             this.collection = coll;
         }
 
-        public Collection getCollection() {
+        public Collection<E> getCollection() {
             return collection;
         }
 
         public Object invoke(Object proxy, Method method, Object params[]) throws Throwable {
             if (method.getName().equals("visit")) {
                 if (clazz.isInstance(params[0])) {
-                    collection.add(params[0]);
+                    collection.add((E) params[0]);
                 }
             }
 
@@ -54,21 +54,21 @@ public class ParserTst extends TestCase {
         }
     }
 
-    public Set getNodes(Class clazz, String javaCode) throws Throwable {
+    public <E> Set<E> getNodes(Class<E> clazz, String javaCode) throws Throwable {
         return getNodes(new TargetJDK1_4(), clazz, javaCode);
     }
 
-    public Set getNodes(TargetJDKVersion jdk, Class clazz, String javaCode) throws Throwable {
-        Collector coll = new Collector(clazz);
+    public <E> Set<E> getNodes(TargetJDKVersion jdk, Class<E> clazz, String javaCode) throws Throwable {
+        Collector<E> coll = new Collector<E>(clazz);
         JavaParser parser = jdk.createParser(new StringReader(javaCode));
         ASTCompilationUnit cu = parser.CompilationUnit();
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);
-        return (Set) coll.getCollection();
+        return (Set<E>) coll.getCollection();
     }
 
-    public List getOrderedNodes(Class clazz, String javaCode) throws Throwable {
-        Collector coll = new Collector(clazz, new ArrayList());
+    public <E> List<E> getOrderedNodes(Class<E> clazz, String javaCode) throws Throwable {
+        Collector<E> coll = new Collector<E>(clazz, new ArrayList<E>());
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(javaCode));
         ASTCompilationUnit cu = parser.CompilationUnit();
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
@@ -77,13 +77,13 @@ public class ParserTst extends TestCase {
         sf.initializeWith(cu);
         DataFlowFacade dff = new DataFlowFacade();
         dff.initializeWith(cu);
-        return (List) coll.getCollection();
+        return (List<E>) coll.getCollection();
     }
 
     public ASTCompilationUnit buildDFA(String javaCode) throws Throwable {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(javaCode));
         ASTCompilationUnit cu = parser.CompilationUnit();
-        JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, new Collector(ASTCompilationUnit.class));
+        JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, new Collector<ASTCompilationUnit>(ASTCompilationUnit.class));
         jpv.visit(cu, null);
         new SymbolFacade().initializeWith(cu);
         new DataFlowFacade().initializeWith(cu);

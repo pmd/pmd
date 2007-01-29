@@ -16,35 +16,35 @@ import test.net.sourceforge.pmd.testframework.ParserTst;
 public class StatementAndBraceFinderTest extends ParserTst {
 
     public void testStatementExpressionParentChildLinks() throws Throwable {
-        ASTStatementExpression se = (ASTStatementExpression) getOrderedNodes(ASTStatementExpression.class, TEST1).get(0);
+        ASTStatementExpression se = getOrderedNodes(ASTStatementExpression.class, TEST1).get(0);
         ASTMethodDeclaration seParent = (ASTMethodDeclaration) ((DataFlowNode) se.getDataFlowNode().getParents().get(0)).getSimpleNode();
         assertEquals(se, ((IDataFlowNode) seParent.getDataFlowNode().getChildren().get(0)).getSimpleNode());
         assertEquals(seParent, ((IDataFlowNode) se.getDataFlowNode().getParents().get(0)).getSimpleNode());
     }
 
     public void testVariableDeclaratorParentChildLinks() throws Throwable {
-        ASTVariableDeclarator vd = (ASTVariableDeclarator) getOrderedNodes(ASTVariableDeclarator.class, TEST2).get(0);
+        ASTVariableDeclarator vd = getOrderedNodes(ASTVariableDeclarator.class, TEST2).get(0);
         ASTMethodDeclaration vdParent = (ASTMethodDeclaration) ((DataFlowNode) vd.getDataFlowNode().getParents().get(0)).getSimpleNode();
         assertEquals(vd, ((IDataFlowNode) vdParent.getDataFlowNode().getChildren().get(0)).getSimpleNode());
         assertEquals(vdParent, ((IDataFlowNode) vd.getDataFlowNode().getParents().get(0)).getSimpleNode());
     }
 
     public void testIfStmtHasCorrectTypes() throws Throwable {
-        ASTExpression exp = (ASTExpression) getOrderedNodes(ASTExpression.class, TEST3).get(0);
+        ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST3).get(0);
         IDataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.IF_EXPR));
         assertTrue(dfn.isType(NodeType.IF_LAST_STATEMENT_WITHOUT_ELSE));
     }
 
     public void testWhileStmtHasCorrectTypes() throws Throwable {
-        ASTExpression exp = (ASTExpression) getOrderedNodes(ASTExpression.class, TEST4).get(0);
+        ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST4).get(0);
         IDataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.WHILE_EXPR));
         assertTrue(dfn.isType(NodeType.WHILE_LAST_STATEMENT));
     }
 
     public void testForStmtHasCorrectTypes() throws Throwable {
-        ASTExpression exp = (ASTExpression) getOrderedNodes(ASTExpression.class, TEST5).get(0);
+        ASTExpression exp = getOrderedNodes(ASTExpression.class, TEST5).get(0);
         IDataFlowNode dfn = exp.getDataFlowNode().getFlow().get(2);
         assertTrue(dfn.isType(NodeType.FOR_INIT));
         dfn = exp.getDataFlowNode().getFlow().get(3);

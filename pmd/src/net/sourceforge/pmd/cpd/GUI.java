@@ -95,9 +95,9 @@ public class GUI implements CPDListener {
 		private String label;
 		private int alignment;
 		private int width;
-		private Comparator sorter;
+		private Comparator<Match> sorter;
 		
-		public ColumnSpec(String aLabel, int anAlignment, int aWidth, Comparator aSorter) {
+		public ColumnSpec(String aLabel, int anAlignment, int aWidth, Comparator<Match> aSorter) {
 			label = aLabel;
 			alignment = anAlignment;
 			width = aWidth;
@@ -106,7 +106,7 @@ public class GUI implements CPDListener {
 		public String label() { return label; };
 		public int alignment() { return alignment; };
 		public int width() { return width; };
-		public Comparator sorter() { return sorter; };
+		public Comparator<Match> sorter() { return sorter; };
 	}
 
 	private final ColumnSpec[] matchColumns = new ColumnSpec[] {
@@ -569,23 +569,23 @@ public class GUI implements CPDListener {
         setProgressControls(false);
     }
 	
-    private interface SortingTableModel extends TableModel {
+    private interface SortingTableModel<E> extends TableModel {
     	public int sortColumn();
     	public void sortColumn(int column);
     	public boolean sortDescending();
     	public void sortDescending(boolean flag);
-    	public void sort(Comparator comparator);
+    	public void sort(Comparator<E> comparator);
     }
     
-    private TableModel tableModelFrom(final List items) {
+    private TableModel tableModelFrom(final List<Match> items) {
     	
-    	TableModel model = new SortingTableModel() {
+    	TableModel model = new SortingTableModel<Match>() {
     		
     		private int sortColumn;
     		private boolean sortDescending;
     		
     		 public Object getValueAt(int rowIndex, int columnIndex) {
-    			Match match = (Match) items.get(rowIndex);
+    			Match match = items.get(rowIndex);
     			switch (columnIndex) {
     				case 0: return match.getLabel();
     				case 2: return Integer.toString(match.getLineCount());
@@ -597,7 +597,7 @@ public class GUI implements CPDListener {
 			public int getColumnCount() { return matchColumns.length;	}
 			public int getRowCount() {	return items.size(); }
 			public boolean isCellEditable(int rowIndex, int columnIndex) {	return false;	}
-			public Class getColumnClass(int columnIndex) { return Object.class;	}
+			public Class<?> getColumnClass(int columnIndex) { return Object.class;	}
 			public void setValueAt(Object aValue, int rowIndex, int columnIndex) {	}
 			public String getColumnName(int i) {	return matchColumns[i].label();	}
 			public void addTableModelListener(TableModelListener l) { }
@@ -606,7 +606,7 @@ public class GUI implements CPDListener {
 			public void sortColumn(int column) { sortColumn = column; };
 			public boolean sortDescending() { return sortDescending; };
 			public void sortDescending(boolean flag) { sortDescending = flag; };
-			public void sort(Comparator comparator) { 
+			public void sort(Comparator<Match> comparator) { 
 				Collections.sort(items, comparator);
 				if (sortDescending) Collections.reverse(items);
 				}
@@ -616,8 +616,8 @@ public class GUI implements CPDListener {
     }    
         
     private void sortOnColumn(int columnIndex) {
-    	Comparator comparator = matchColumns[columnIndex].sorter();
-    	SortingTableModel model = (SortingTableModel)resultsTable.getModel();
+    	Comparator<Match> comparator = matchColumns[columnIndex].sorter();
+    	SortingTableModel<Match> model = (SortingTableModel<Match>)resultsTable.getModel();
     	if (model.sortColumn() == columnIndex) {
     		model.sortDescending(!model.sortDescending());
     	}

@@ -19,7 +19,7 @@ public class ASTImportDeclarationTest extends ParserTst {
     }
 
     public void testGetImportedNameNode() throws Throwable {
-        ASTImportDeclaration i = (ASTImportDeclaration) (getNodes(ASTImportDeclaration.class, TEST2).iterator().next());
+        ASTImportDeclaration i = getNodes(ASTImportDeclaration.class, TEST2).iterator().next();
         assertEquals("foo.bar.Baz", i.getImportedName());
     }
 
