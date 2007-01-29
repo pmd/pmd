@@ -21,7 +21,7 @@ public class LooseCoupling extends AbstractRule {
 	}
 
 	public Object visit(ASTClassOrInterfaceType node, Object data) {
-		Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
+		Node parent = node.getNthParent(3);
 		Class clazzType = node.getType();
 		boolean isType = CollectionUtil.isCollectionType(clazzType, false);
 		if (isType

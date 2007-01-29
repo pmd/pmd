@@ -58,12 +58,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	 * @param node
 	 */
 	private void populateImports(ASTCompilationUnit node) {
-		List theImportDeclarations = node.findChildrenOfType(ASTImportDeclaration.class);
+		List<ASTImportDeclaration> theImportDeclarations = node.findChildrenOfType(ASTImportDeclaration.class);
 		importedClasses = new HashMap<String, String>();
 
 		// go through the imports
-		for (Iterator anIterator = theImportDeclarations.iterator(); anIterator.hasNext();) {
-			ASTImportDeclaration anImportDeclaration = (ASTImportDeclaration) anIterator.next();
+		for (ASTImportDeclaration anImportDeclaration : theImportDeclarations) {
 			if (!anImportDeclaration.isImportOnDemand()) {
 				String strPackage = anImportDeclaration.getPackageName();
 				String strName = anImportDeclaration.getImportedName();

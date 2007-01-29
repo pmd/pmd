@@ -138,8 +138,8 @@ public class PMDASMVisitor implements ClassVisitor {
 
 	private void addTypes(String desc) {
 		Type[] types = Type.getArgumentTypes(desc);
-		for (int i = 0; i < types.length; i++) {
-			addType(types[i]);
+		for (Type type : types) {
+			addType(type);
 		}
 	}
 
