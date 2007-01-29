@@ -45,7 +45,7 @@ public class AbstractRuleTest extends TestCase {
 
         private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { pd, xpath });
 
-        protected Map propertiesByName() {
+        protected Map<String, PropertyDescriptor> propertiesByName() {
         	return propertyDescriptorsByName;
         }
 
@@ -62,7 +62,7 @@ public class AbstractRuleTest extends TestCase {
 
 		private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { pd });
 
-        protected Map propertiesByName() {
+        protected Map<String, PropertyDescriptor> propertiesByName() {
         	return propertyDescriptorsByName;
         }
 

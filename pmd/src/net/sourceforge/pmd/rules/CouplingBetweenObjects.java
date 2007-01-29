@@ -41,7 +41,7 @@ public class CouplingBetweenObjects extends AbstractRule {
     	"threshold", "Coupling threshold value", 2, 1.0f
     	);
     
-    private static final Map propertyDescriptorsByName = asFixedMap(thresholdDescriptor);
+    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(thresholdDescriptor);
         
     
     public Object visit(ASTCompilationUnit cu, Object data) {
@@ -160,7 +160,7 @@ public class CouplingBetweenObjects extends AbstractRule {
     /**
      * @return Map
      */
-    protected Map propertiesByName() {
+    protected Map<String, PropertyDescriptor> propertiesByName() {
     	return propertyDescriptorsByName;
     }
 }

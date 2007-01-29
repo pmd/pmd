@@ -30,7 +30,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
     	"prefix", "Prefix somethingorother?", "", 1.0f
     	);
     
-    private static final Map propertyDescriptorsByName = asFixedMap(prefixDescriptor);
+    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(prefixDescriptor);
     	
 	
 	public Object visit(ASTCompilationUnit node, Object data) {
@@ -111,7 +111,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
     /**
      * @return Map
      */
-    protected Map propertiesByName() {
+    protected Map<String, PropertyDescriptor> propertiesByName() {
     	return propertyDescriptorsByName;
     }
 }

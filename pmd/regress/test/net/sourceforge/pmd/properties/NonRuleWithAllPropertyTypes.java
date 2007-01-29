@@ -47,7 +47,7 @@ class NonRuleWithAllPropertyTypes extends AbstractRule {
 		super();
 	}
 
-    protected Map propertiesByName() {
+    protected Map<String, PropertyDescriptor> propertiesByName() {
     	return propertyDescriptorsByName;
     }
 }

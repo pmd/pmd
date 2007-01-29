@@ -114,7 +114,7 @@ public class NonThreadSafeSingleton extends AbstractRule {
     /**
      * @return Map
      */
-    protected Map propertiesByName() {
+    protected Map<String, PropertyDescriptor> propertiesByName() {
     	return propertyDescriptorsByName;
     }
 }

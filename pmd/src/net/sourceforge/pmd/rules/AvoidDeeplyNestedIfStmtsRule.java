@@ -23,7 +23,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractRule {
     		1.0f
     		);
     
-    private static final Map propertyDescriptorsByName = asFixedMap(problemDepthDescriptor);
+    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(problemDepthDescriptor);
         
     public Object visit(ASTCompilationUnit node, Object data) {
         depth = 0;
@@ -46,7 +46,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractRule {
     /**
      * @return Map
      */
-    protected Map propertiesByName() {
+    protected Map<String, PropertyDescriptor> propertiesByName() {
     	return propertyDescriptorsByName;
     }
 }

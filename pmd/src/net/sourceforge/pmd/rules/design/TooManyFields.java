@@ -33,7 +33,7 @@ public class TooManyFields extends AbstractRule {
     		1.0f
     		);
     
-    private static final Map propertyDescriptorsByName = asFixedMap(maxFieldsDescriptor);
+    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(maxFieldsDescriptor);
     
     public Object visit(ASTCompilationUnit node, Object data) {
     	
@@ -77,7 +77,7 @@ public class TooManyFields extends AbstractRule {
     /**
      * @return Map
      */
-    protected Map propertiesByName() {
+    protected Map<String, PropertyDescriptor> propertiesByName() {
     	return propertyDescriptorsByName;
     }
 }

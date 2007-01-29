@@ -45,7 +45,7 @@ public class DaaRule extends AbstractRule implements Executable {
     private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(
             new PropertyDescriptor[] { maxPathDescriptor, maxViolationsDescriptor});
             
-    protected Map propertiesByName() {
+    protected Map<String, PropertyDescriptor> propertiesByName() {
         return propertyDescriptorsByName;
     }
     

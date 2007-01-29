@@ -141,7 +141,7 @@ public abstract class StatisticalRule extends AbstractRule {
         }
     }
     
-    protected Map propertiesByName() {
+    protected Map<String, PropertyDescriptor> propertiesByName() {
     	return propertyDescriptorsByName;
     }
 }

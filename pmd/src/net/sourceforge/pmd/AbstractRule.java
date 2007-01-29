@@ -451,8 +451,8 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      * 
      * @return Map
      */
-    protected Map propertiesByName() {
-    	return Collections.EMPTY_MAP;
+    protected Map<String, PropertyDescriptor> propertiesByName() {
+    	return Collections.emptyMap();
     }
     
     /**
@@ -462,7 +462,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      * @return PropertyDescriptor
      */
     public PropertyDescriptor propertyDescriptorFor(String propertyName) {
-    	PropertyDescriptor desc = (PropertyDescriptor)propertiesByName().get(propertyName);
+    	PropertyDescriptor desc = propertiesByName().get(propertyName);
     	if (desc == null) throw new IllegalArgumentException("unknown property: " + propertyName);
     	return desc;
     }

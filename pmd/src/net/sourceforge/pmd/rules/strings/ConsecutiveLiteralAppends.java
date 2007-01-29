@@ -74,7 +74,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
     		1.0f
     		);
     
-    private static final Map propertyDescriptorsByName = asFixedMap(thresholdDescriptor);
+    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(thresholdDescriptor);
  
 
     private int threshold = 1;
@@ -315,7 +315,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
         return "StringBuffer".equals(((SimpleNode) nn.jjtGetChild(0)).getImage());
     }
 
-    protected Map propertiesByName() {
+    protected Map<String, PropertyDescriptor> propertiesByName() {
     	return propertyDescriptorsByName;
     }
 }
