@@ -77,7 +77,7 @@ public abstract class AbstractJspRule extends JspParserVisitorAdapter implements
     }
 
     public boolean getBooleanProperty(String name) {
-        return Boolean.valueOf(properties.getProperty(name)).booleanValue();
+        return Boolean.parseBoolean(properties.getProperty(name));
     }
 
     public String getStringProperty(String name) {

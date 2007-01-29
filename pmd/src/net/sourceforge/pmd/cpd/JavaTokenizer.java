@@ -20,8 +20,8 @@ public class JavaTokenizer implements Tokenizer {
     private boolean ignoreIdentifiers;
 
     public void setProperties(Properties properties) {
-        ignoreLiterals = Boolean.valueOf(properties.getProperty(IGNORE_LITERALS, "false")).booleanValue();
-        ignoreIdentifiers = Boolean.valueOf(properties.getProperty(IGNORE_IDENTIFIERS, "false")).booleanValue();
+        ignoreLiterals = Boolean.parseBoolean(properties.getProperty(IGNORE_LITERALS, "false"));
+        ignoreIdentifiers = Boolean.parseBoolean(properties.getProperty(IGNORE_IDENTIFIERS, "false"));
     }
 
     public void tokenize(SourceCode tokens, Tokens tokenEntries) {
