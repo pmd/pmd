@@ -58,4 +58,6 @@ Rules to check PMD itself
     <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable"/>
     <!-- Unused code End-->
 
+    <rule ref="rulesets/migrating.xml"/>
+
 </ruleset>
