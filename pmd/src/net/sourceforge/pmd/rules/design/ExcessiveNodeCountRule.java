@@ -34,7 +34,7 @@ public class ExcessiveNodeCountRule extends StatisticalRule {
 
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Integer treeSize = (Integer) ((SimpleJavaNode) node.jjtGetChild(i)).jjtAccept(this, data);
-            numNodes += treeSize.intValue();
+            numNodes += treeSize;
         }
 
         if (nodeClass.isInstance(node)) {
@@ -45,6 +45,6 @@ public class ExcessiveNodeCountRule extends StatisticalRule {
             addDataPoint(point);
         }
 
-        return new Integer(numNodes);
+        return Integer.valueOf(numNodes);
     }
 }

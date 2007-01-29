@@ -134,12 +134,11 @@ public class Report {
             if (rv.getPackageName() != null && rv.getPackageName().length() != 0) {
                 key = rv.getPackageName() + '.' + rv.getClassName();
             }
-            Object o = summary.get(key);
+            Integer o = summary.get(key);
             if (o == null) {
                 summary.put(key, NumericConstants.ONE);
             } else {
-                Integer value = (Integer) o;
-                summary.put(key, new Integer(value.intValue() + 1));
+                summary.put(key, o+1);
             }
         }
         return summary;
@@ -161,7 +160,7 @@ public class Report {
                 summary.put(name, NumericConstants.ZERO);
             }
             Integer count = summary.get(name);
-            summary.put(name, new Integer(count.intValue() + 1));
+            summary.put(name, count + 1);
         }
         return summary;
     }
@@ -177,8 +176,8 @@ public class Report {
     public void addRuleViolation(IRuleViolation violation) {
 
         // NOPMD excluder
-        Integer line = new Integer(violation.getBeginLine());
-        if (linesToExclude.keySet().contains(line)) {
+        int line = violation.getBeginLine();
+        if (linesToExclude.containsKey(line)) {
             suppressedRuleViolations.add(new SuppressedViolation(violation, true, linesToExclude.get(line)));
             return;
         }

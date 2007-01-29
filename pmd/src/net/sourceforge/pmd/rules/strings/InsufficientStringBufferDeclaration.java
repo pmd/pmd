@@ -132,9 +132,9 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
         }
         Integer x = thisBranch.get(block);
         if (x != null) {
-            thisSize += x.intValue();
+            thisSize += x;
         }
-        thisBranch.put(statement, new Integer(thisSize));
+        thisBranch.put(statement, thisSize);
     }
 
     private int processBlocks(Map<Node, Map<Node, Integer>> blocks) {

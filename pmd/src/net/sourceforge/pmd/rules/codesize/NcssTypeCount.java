@@ -55,7 +55,7 @@ public class NcssTypeCount extends AbstractNcssCount {
     if ( node.jjtGetParent() instanceof ASTTypeDeclaration ) {
       Integer nodeCount = countNodeChildren( node, data );
       int count = nodeCount.intValue() - 1;
-      return new Integer( count );
+      return Integer.valueOf( count );
     }
     return countNodeChildren( node, data );
   }

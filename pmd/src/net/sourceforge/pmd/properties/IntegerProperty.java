@@ -17,7 +17,7 @@ public class IntegerProperty extends AbstractScalarProperty {
 	 * @param theUIOrder float
 	 */
 	public IntegerProperty(String theName, String theDescription, int theDefault, float theUIOrder) {
-		super(theName, theDescription, new Integer(theDefault), theUIOrder);
+		super(theName, theDescription, theDefault, theUIOrder);
 	}
 
 	/**
@@ -53,7 +53,7 @@ public class IntegerProperty extends AbstractScalarProperty {
 	 */
 	private static final Integer[] asIntegers(int[] ints) {
 		Integer[] integers = new Integer[ints.length];
-		for (int i=0; i<ints.length; i++) integers[i] = new Integer(ints[i]);
+		for (int i=0; i<ints.length; i++) integers[i] = Integer.valueOf(ints[i]);
 		return integers;
 	}
 	
@@ -72,7 +72,7 @@ public class IntegerProperty extends AbstractScalarProperty {
 	 * @return Object
 	 */
 	protected Object createFrom(String value) {
-		return new Integer(value);
+		return Integer.valueOf(value);
 	}
 
 	/**

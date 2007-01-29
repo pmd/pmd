@@ -62,7 +62,7 @@ public abstract class AbstractNcssCount extends StatisticalRule {
       addDataPoint( point );
     }
 
-    return new Integer( numNodes );
+    return Integer.valueOf( numNodes );
   }
 
   /**
@@ -83,7 +83,7 @@ public abstract class AbstractNcssCount extends StatisticalRule {
           this, data );
       lineCount += nodeCount.intValue();
     }
-    return new Integer( ++lineCount );
+    return ++lineCount;
   }
 
   public Object visit(ASTForStatement node, Object data) {
@@ -99,9 +99,7 @@ public abstract class AbstractNcssCount extends StatisticalRule {
     Integer lineCount = countNodeChildren( node, data );
 
     if ( node.hasElse() ) {
-      int lines = lineCount.intValue();
-      lines++;
-      lineCount = new Integer( lines );
+      lineCount++;
     }
 
     return lineCount;
