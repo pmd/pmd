@@ -433,8 +433,8 @@ public class Designer implements ClipboardOwner {
                 //        // Compatible with >= JDK 1.4
                 //        tabbed.setMnemonicAt(0, KeyEvent.VK_A);
                 //        tabbed.setMnemonicAt(1, KeyEvent.VK_D);
-                setMnemonicAt.invoke(tabbed, new Object[]{NumericConstants.ZERO, new Integer(KeyEvent.VK_A)});
-                setMnemonicAt.invoke(tabbed, new Object[]{NumericConstants.ONE, new Integer(KeyEvent.VK_D)});
+                setMnemonicAt.invoke(tabbed, new Object[]{NumericConstants.ZERO, KeyEvent.VK_A});
+                setMnemonicAt.invoke(tabbed, new Object[]{NumericConstants.ONE, KeyEvent.VK_D});
             }
         } catch (NoSuchMethodException nsme) { // Runtime is < JDK 1.4
         } catch (IllegalAccessException e) { // Runtime is >= JDK 1.4 but there was an error accessing the function
