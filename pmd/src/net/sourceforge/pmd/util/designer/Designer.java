@@ -55,7 +55,6 @@ import java.lang.reflect.Method;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 public class Designer implements ClipboardOwner {
 
@@ -276,7 +275,7 @@ public class Designer implements ClipboardOwner {
     
     private class ASTTreeWidget extends JTree {
     	
-    	public ASTTreeWidget(Vector items) {
+    	public ASTTreeWidget(Object[] items) {
     		super(items);
     	}
     	
@@ -407,7 +406,7 @@ public class Designer implements ClipboardOwner {
     }
 
     private final CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
-    private final ASTTreeWidget astWidget			= new ASTTreeWidget(new Vector());
+    private final ASTTreeWidget astWidget			= new ASTTreeWidget(new Object[0]);
     private DefaultListModel xpathResults			= new DefaultListModel();
     private final JList xpathResultList				= new JList(xpathResults);
     private final JTextArea xpathQueryArea			= new JTextArea(15, 30);

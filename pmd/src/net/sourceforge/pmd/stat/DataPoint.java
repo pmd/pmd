@@ -35,9 +35,7 @@ public class DataPoint implements Comparable<DataPoint> {
         if (lhsScore.doubleValue() != rhsScore.doubleValue()) {
             return lhsScore.compareTo(rhsScore);
         }
-        Integer lhsRand = new Integer(random);
-        Integer rhsRand = new Integer(rhs.random);
-        return lhsRand.compareTo(rhsRand);
+        return random - rhs.random;
     }
 
     public SimpleNode getNode() {

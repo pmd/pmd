@@ -27,7 +27,7 @@ public class TokenEntry implements Comparable<TokenEntry> {
     public TokenEntry(String image, String tokenSrcID, int beginLine) {
         Integer i = Tokens.get(image);
         if (i == null) {
-            i = new Integer(Tokens.size() + 1);
+            i = Tokens.size() + 1;
             Tokens.put(image, i);
         }
         this.identifier = i.intValue();

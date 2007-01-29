@@ -22,7 +22,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * @author mgriffa
@@ -134,15 +134,14 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
     }
 
     private final ASTFormalParameter[] getArrays(ASTFormalParameters params) {
-        final List l = params.findChildrenOfType(ASTFormalParameter.class);
+        final List<ASTFormalParameter> l = params.findChildrenOfType(ASTFormalParameter.class);
         if (l != null && !l.isEmpty()) {
-            Vector<ASTFormalParameter> v = new Vector<ASTFormalParameter>();
-            for (Iterator it = l.iterator(); it.hasNext();) {
-                ASTFormalParameter fp = (ASTFormalParameter) it.next();
+            List<ASTFormalParameter> l2 = new ArrayList<ASTFormalParameter>();
+            for (ASTFormalParameter fp: l) {
                 if (fp.isArray())
-                    v.add(fp);
+                    l2.add(fp);
             }
-            return v.toArray(new ASTFormalParameter[v.size()]);
+            return l2.toArray(new ASTFormalParameter[l2.size()]);
         }
         return null;
     }

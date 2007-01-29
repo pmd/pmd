@@ -17,7 +17,7 @@ import net.sourceforge.pmd.properties.IntegerProperty;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +88,7 @@ public class DaaRule extends AbstractRule implements Executable {
             return;
         }
         
-        final Hashtable<String, Usage> hash = new Hashtable<String, Usage>();
+        final Map<String, Usage> hash = new HashMap<String, Usage>();
         
         final Iterator pathIterator = path.iterator();
         while (pathIterator.hasNext()) {
@@ -148,7 +148,7 @@ public class DaaRule extends AbstractRule implements Executable {
                 && !violationAlreadyExists(type, var, startLine, endLine)
                 && node != null) {
             final RuleContext ctx = (RuleContext) data;
-            final Object[] params = new Object[] { type, var, new Integer(startLine), new Integer(endLine) };
+            final Object[] params = new Object[] { type, var, startLine, endLine };
             String msg = type;
             if (getMessage() != null) {
                 msg = MessageFormat.format(getMessage(), params);
