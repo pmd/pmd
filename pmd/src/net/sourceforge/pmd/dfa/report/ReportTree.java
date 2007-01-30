@@ -2,19 +2,14 @@ package net.sourceforge.pmd.dfa.report;
 
 import net.sourceforge.pmd.IRuleViolation;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
 
 public class ReportTree {
 
     private PackageNode rootNode = new PackageNode("");
     private AbstractReportNode level;
 
-    private class TreeIterator implements Iterator {
+    private class TreeIterator implements Iterator<IRuleViolation> {
 
         private AbstractReportNode iterNode = rootNode;
         private boolean hasNextFlag;
@@ -28,7 +23,7 @@ public class ReportTree {
             return this.getNext() != null;
         }
 
-        public Object next() {
+        public IRuleViolation next() {
 
             if (!this.hasNextFlag) {
                 this.getNext();
@@ -54,7 +49,7 @@ public class ReportTree {
          * root node. Because there is no one, the search stops.
          */
 
-        private Object getNext() {
+        private AbstractReportNode getNext() {
             AbstractReportNode node;
 
             while (true) {
@@ -89,7 +84,7 @@ public class ReportTree {
     }
 
 
-    public Iterator iterator() {
+    public Iterator<IRuleViolation> iterator() {
         return new TreeIterator();
     }
 
@@ -118,9 +113,7 @@ public class ReportTree {
         } else if (pack.indexOf('.') != -1) {
             String[] tmp = pack.split("\\.");
             a = new String[tmp.length];
-            for (int i = 0; i < tmp.length; i++) {
-              a[i] = (String) tmp[i];
-            }
+            System.arraycopy(tmp, 0, a, 0, tmp.length);
         } else {
             a = new String[]{pack};
         }
