@@ -9,8 +9,10 @@ import net.sourceforge.pmd.Report;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.Map;
@@ -102,19 +104,18 @@ public class PapariTextRenderer extends AbstractRenderer {
         }
         writer.write(PMD.EOL + PMD.EOL);
         writer.write("Summary:" + PMD.EOL + PMD.EOL);
-        Map summary = report.getCountSummary();
-        for (Iterator i = summary.entrySet().iterator(); i.hasNext();) {
+        Map<String, Integer> summary = report.getCountSummary();
+        for (Map.Entry<String, Integer> entry : summary.entrySet()) {
             buf.setLength(0);
-            Map.Entry entry = (Map.Entry) i.next();
-            String key = (String) entry.getKey();
-            buf.append(key + " : " + ((Integer) entry.getValue()).intValue() + PMD.EOL);
+            String key = entry.getKey();
+            buf.append(key).append(" : ").append(entry.getValue()).append(PMD.EOL);
             writer.write(buf.toString());
         }
 
-        for (Iterator i = report.errors(); i.hasNext();) {
+        for (Iterator<Report.ProcessingError> i = report.errors(); i.hasNext();) {
             buf.setLength(0);
             numberOfErrors++;
-            Report.ProcessingError error = (Report.ProcessingError) i.next();
+            Report.ProcessingError error = i.next();
             if (error.getFile().equals(lastFile)) {
                 lastFile = error.getFile();
                 buf.append(this.redBold + "*" + this.colorReset + " file: " + this.whiteBold + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);
@@ -141,7 +142,7 @@ public class PapariTextRenderer extends AbstractRenderer {
         String code = null;
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new FileReader(new File(sourceFile)));
+            br = new BufferedReader(getReader(sourceFile));
             for (int i = 0; line > i; i++) {
                 code = br.readLine().trim();
             }
@@ -157,6 +158,10 @@ public class PapariTextRenderer extends AbstractRenderer {
             }
         }
         return code;
+    }
+
+    protected Reader getReader(String sourceFile) throws FileNotFoundException {
+        return new FileReader(new File(sourceFile));
     }
 
     /**

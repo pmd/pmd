@@ -61,20 +61,20 @@ public abstract class AbstractRendererTst extends RuleTst {
         Report rep = new Report();
         runTestFromString(TEST1, new FooRule(), rep);
         String actual = getRenderer().render(rep);
-        assertEquals(actual, getExpected());
+        assertEquals(getExpected(), actual);
     }
 
     public void testRendererEmpty() throws Throwable {
         Report rep = new Report();
         String actual = getRenderer().render(rep);
-        assertEquals(actual, getExpectedEmpty());
+        assertEquals(getExpectedEmpty(), actual);
     }
 
     public void testRendererMultiple() throws Throwable {
         Report rep = new Report();
         runTestFromString(TEST1, new FooRule2(), rep);
         String actual = getRenderer().render(rep);
-        assertEquals(actual, getExpectedMultiple());
+        assertEquals(getExpectedMultiple(), actual);
     }
 
     public void testError() throws Throwable {
@@ -82,7 +82,7 @@ public abstract class AbstractRendererTst extends RuleTst {
         Report.ProcessingError err = new Report.ProcessingError("Error", "file");
         rep.addError(err);
         String actual = getRenderer().render(rep);
-        assertEquals(actual, getExpectedError(err));
+        assertEquals(getExpectedError(err), actual);
     }
 
     private static final String TEST1 = "public class Foo {}" + PMD.EOL;
