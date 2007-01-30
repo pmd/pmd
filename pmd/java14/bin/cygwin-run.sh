@@ -6,7 +6,12 @@ esac
 FILE=$1
 FORMAT=$2
 RULESETFILES=$3
-PMD_CLASSPATH=../lib/pmd-3.9.jar:../lib/jaxen-1.1.jar:../lib/backport-util-concurrent.jar:../lib/asm-3.0.jar
+TOPDIR=../..
+VERSION=3.9
+PMDJAR=$TOPDIR/java14/lib/pmd14-$VERSION.jar
+JARPATH=$TOPDIR/lib/asm-3.0.jar:$TOPDIR/lib/jaxen-1.1.jar
+RWPATH=$TOPDIR/java14/lib/retroweaver-rt-2.0Beta3.jar:$TOPDIR/java14/lib/backport-util-concurrent.jar
+PMD_CLASSPATH=$JARPATH:$RWPATH
 if $cygwin; then
   FILE=`cygpath --windows "$FILE"`
   PMD_CLASSPATH=`cygpath --path --windows "$PMD_CLASSPATH"`
