@@ -10,12 +10,20 @@ fi
 SCRIPT_DIR=`dirname $0`
 CWD="$PWD"
 
-cd "$SCRIPT_DIR/../lib"
+cd "$SCRIPT_DIR/../../lib"
 LIB_DIR=`pwd -P`
+
+cd "$CWD"
+cd "$SCRIPT_DIR/../lib"
+RW_LIB_DIR=`pwd -P`
 
 classpath=$CLASSPATH
 
-build_dir="$SCRIPT_DIR/../build"
+for jarfile in `ls $RW_LIB_DIR/*.jar`; do
+    classpath=$classpath:$jarfile
+done
+
+build_dir="$SCRIPT_DIR/../../build"
 
 if [ -d "$build_dir" ]; then
     cd "$build_dir"
