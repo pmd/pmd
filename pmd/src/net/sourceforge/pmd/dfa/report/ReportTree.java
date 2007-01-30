@@ -116,34 +116,10 @@ public class ReportTree {
         if (pack == null) {
             a = new String[]{""};
         } else if (pack.indexOf('.') != -1) {
-            // TODO Remove when minimal runtime support is >= JDK 1.4
-            try {
-                Method split = String.class.getMethod("split", new Class[]{String.class});
-                if (split != null) {
-                    //        // Compatible with >= JDK 1.4
-                    Object[] tmp = (Object[]) split.invoke(pack, new Object[]{"\\."});
-                    a = new String[tmp.length];
-                    for (int i = 0; i < tmp.length; i++) {
-                        a[i] = (String) tmp[i];
-                    }
-                }
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-                throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace();
-                throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-                throw new InternalError("Runtime reports to be >= JDK 1.4 yet String.split(java.lang.String) is broken.");
-            } catch (NoSuchMethodException nsme) {
-                // Compatible with < JDK 1.4
-                StringTokenizer toker = new StringTokenizer(pack, ".");
-                List<String> parts = new ArrayList<String>();
-                while (toker.hasMoreTokens()) {
-                    parts.add(toker.nextToken());
-                }
-                a = parts.toArray(new String[parts.size()]);
+            String[] tmp = pack.split("\\.");
+            a = new String[tmp.length];
+            for (int i = 0; i < tmp.length; i++) {
+              a[i] = (String) tmp[i];
             }
         } else {
             a = new String[]{pack};
