@@ -5,7 +5,6 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.PapariTextRenderer;
 
-import java.io.FileNotFoundException;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -13,7 +12,7 @@ public class PapariTextRendererTest extends AbstractRendererTst {
 
     public AbstractRenderer getRenderer() {
         return new PapariTextRenderer(){
-            protected Reader getReader(String sourceFile) throws FileNotFoundException {
+            protected Reader getReader(String sourceFile) {
                 return new StringReader("public class Foo {}");
             }
         };
