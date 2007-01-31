@@ -25,7 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -244,7 +243,7 @@ public class PMD {
         fileSelector.setSelectJavaFiles(opts.isCheckJavaFiles());
         fileSelector.setSelectJspFiles(opts.isCheckJspFiles());
 
-        List files;
+        List<DataSource> files;
         if (opts.containsCommaSeparatedFileList()) {
             files = collectFromCommaDelimitedString(opts.getInputPath(),
                     fileSelector);
@@ -465,15 +464,14 @@ public class PMD {
      *
      * @throws IOException If one of the files could not be read
      */
-    public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List files, RuleContext ctx, String rulesets,
+    public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List<DataSource> files, RuleContext ctx, String rulesets,
             boolean debugEnabled, boolean shortNamesEnabled, String inputPath,
             String encoding, String excludeMarker) {
 
         PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory);
         ExecutorService executor = Executors.newFixedThreadPool(threadCount, factory);
 
-        for (Iterator i = files.iterator(); i.hasNext();) {
-            DataSource dataSource = (DataSource) i.next();
+        for (DataSource dataSource:files) {
             String niceFileName = dataSource.getNiceFileName(shortNamesEnabled,
                     inputPath);
 
@@ -491,9 +489,7 @@ public class PMD {
 
         long start = System.nanoTime();
         Report mainReport = ctx.getReport();
-        Iterator i = factory.threadList.iterator();
-        while (i.hasNext()) {
-            PmdThread thread = (PmdThread) i.next();
+        for (PmdThread thread: factory.threadList) {
             Report r = thread.context.getReport();
             mainReport.merge(r);
         }
@@ -514,12 +510,10 @@ public class PMD {
      * @param encoding
      * @throws IOException If one of the files could not be read
      */
-    public void processFiles(List files, RuleContext ctx, RuleSets rulesets,
+    public void processFiles(List<DataSource> files, RuleContext ctx, RuleSets rulesets,
                              boolean debugEnabled, boolean shortNamesEnabled, String inputPath,
                              String encoding) throws IOException {
-        for (Iterator i = files.iterator(); i.hasNext();) {
-            DataSource dataSource = (DataSource) i.next();
-
+        for (DataSource dataSource: files) {
             String niceFileName = dataSource.getNiceFileName(shortNamesEnabled,
                     inputPath);
             ctx.setSourceCodeFilename(niceFileName);
@@ -548,8 +542,7 @@ public class PMD {
      */
     private static void printRuleNamesInDebug(boolean debugEnabled, RuleSets rulesets) {
         if (debugEnabled) {
-            for (Iterator i = rulesets.getAllRules().iterator(); i.hasNext();) {
-                Rule r = (Rule) i.next();
+            for (Rule r: rulesets.getAllRules()) {
                 System.out.println("Loaded rule " + r.getName());
             }
         }
@@ -621,10 +614,10 @@ public class PMD {
             }
         } else {
             FileFinder finder = new FileFinder();
-            List files = finder.findFilesFrom(inputFile.getAbsolutePath(),
+            List<File> files = finder.findFilesFrom(inputFile.getAbsolutePath(),
                     new SourceFileOrDirectoryFilter(fileSelector), true);
-            for (Iterator i = files.iterator(); i.hasNext();) {
-                dataSources.add(new FileDataSource((File) i.next()));
+            for (File f: files) {
+                dataSources.add(new FileDataSource(f));
             }
         }
         return dataSources;

@@ -73,8 +73,8 @@ public class RuleSet {
      */
     public Rule getRuleByName(String ruleName) {
         Rule rule = null;
-        for (Iterator i = rules.iterator(); i.hasNext() && (rule == null);) {
-            Rule r = (Rule) i.next();
+        for (Iterator<Rule> i = rules.iterator(); i.hasNext() && (rule == null);) {
+            Rule r = i.next();
             if (r.getName().equals(ruleName)) {
                 rule = r;
             }
@@ -92,10 +92,8 @@ public class RuleSet {
     }
 
     public void apply(List acuList, RuleContext ctx) {
-        Iterator rs = rules.iterator();
         long start = System.nanoTime();
-        while (rs.hasNext()) {
-            Rule rule = (Rule) rs.next();
+        for (Rule rule: rules) {
             if (!rule.usesRuleChain()) {
                 rule.apply(acuList, ctx);
                 long end = System.nanoTime();
@@ -153,8 +151,7 @@ public class RuleSet {
     }
 
 	public boolean usesTypeResolution() {
-        for (Iterator i = rules.iterator(); i.hasNext();) {
-            Rule r = (Rule) i.next();
+        for (Rule r: rules) {
             if (r.usesTypeResolution()) {
                 return true;
             }

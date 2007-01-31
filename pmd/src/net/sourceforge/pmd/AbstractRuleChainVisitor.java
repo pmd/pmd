@@ -102,8 +102,8 @@ public abstract class AbstractRuleChainVisitor<E extends CompilationUnit> implem
 
         // Determine all node types that need visiting
         Set<String> visitedNodes = new HashSet<String>();
-        for (Iterator i = rules.iterator(); i.hasNext();) {
-            Rule rule = (Rule) i.next();
+        for (Iterator<Rule> i = rules.iterator(); i.hasNext();) {
+            Rule rule = i.next();
             if (rule.usesRuleChain()) {
                 visitedNodes.addAll(rule.getRuleChainVisits());
             }

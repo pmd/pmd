@@ -13,13 +13,13 @@ import java.util.Iterator;
  */
 public class XMLRenderer implements Renderer {
 	
-    public String render(Iterator matches) {
+    public String render(Iterator<Match> matches) {
         StringBuffer buffer = new StringBuffer(300);
         buffer.append("<?xml version=\"1.0\"  encoding=\"UTF-8\"?>");
         buffer.append("<pmd-cpd>").append(PMD.EOL);
         Match match;
         while (matches.hasNext()) {
-            match = (Match) matches.next();
+            match = matches.next();
             buffer.append("<duplication lines=\"");
             buffer.append(match.getLineCount());
             buffer.append("\" tokens=\"");
@@ -27,8 +27,8 @@ public class XMLRenderer implements Renderer {
             buffer.append("\">").append(PMD.EOL);
 
             TokenEntry mark;
-            for (Iterator iterator = match.iterator(); iterator.hasNext();) {
-                mark = (TokenEntry) iterator.next();
+            for (Iterator<TokenEntry> iterator = match.iterator(); iterator.hasNext();) {
+                mark = iterator.next();
                 buffer.append("<file line=\"");
                 buffer.append(mark.getBeginLine());
                 buffer.append("\" path=\"");

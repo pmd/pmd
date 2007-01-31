@@ -116,7 +116,7 @@ public class DocumentNavigator extends DefaultNavigator {
      * @param contextNode The context node for the child axis.
      * @return A possibly-empty iterator (not null).
      */
-    public Iterator getChildAxisIterator(Object contextNode) {
+    public Iterator<Node> getChildAxisIterator(Object contextNode) {
         return new NodeIterator((Node) contextNode) {
             protected Node getFirstNode(Node node) {
                 return getFirstChild(node);
@@ -152,7 +152,7 @@ public class DocumentNavigator extends DefaultNavigator {
      * @param contextNode the context node for the sibling iterator.
      * @return A possibly-empty iterator (not null).
      */
-    public Iterator getFollowingSiblingAxisIterator(Object contextNode) {
+    public Iterator<Node> getFollowingSiblingAxisIterator(Object contextNode) {
         return new NodeIterator((Node) contextNode) {
             protected Node getFirstNode(Node node) {
                 return getNextNode(node);
@@ -170,7 +170,7 @@ public class DocumentNavigator extends DefaultNavigator {
      * @param contextNode The context node for the preceding sibling axis.
      * @return A possibly-empty iterator (not null).
      */
-    public Iterator getPrecedingSiblingAxisIterator(Object contextNode) {
+    public Iterator<Node> getPrecedingSiblingAxisIterator(Object contextNode) {
         return new NodeIterator((Node) contextNode) {
             protected Node getFirstNode(Node node) {
                 return getNextNode(node);
@@ -188,7 +188,7 @@ public class DocumentNavigator extends DefaultNavigator {
      * @param contextNode The context node for the following axis.
      * @return A possibly-empty iterator (not null).
      */
-    public Iterator getFollowingAxisIterator(Object contextNode) {
+    public Iterator<Node> getFollowingAxisIterator(Object contextNode) {
         return new NodeIterator((Node) contextNode) {
             protected Node getFirstNode(Node node) {
                 if (node == null)
@@ -224,7 +224,7 @@ public class DocumentNavigator extends DefaultNavigator {
      * @param contextNode The context node for the preceding axis.
      * @return A possibly-empty iterator (not null).
      */
-    public Iterator getPrecedingAxisIterator(Object contextNode) {
+    public Iterator<Node> getPrecedingAxisIterator(Object contextNode) {
         return new NodeIterator((Node) contextNode) {
             protected Node getFirstNode(Node node) {
                 if (node == null)

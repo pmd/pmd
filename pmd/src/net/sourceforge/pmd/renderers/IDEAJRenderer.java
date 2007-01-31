@@ -61,9 +61,9 @@ public class IDEAJRenderer extends AbstractRenderer {
     private void render(Writer writer, Report report, String sourcePathString) throws IOException {
         SourcePath sourcePath = new SourcePath(sourcePathString);
         StringBuffer buf = new StringBuffer();
-        for (Iterator i = report.iterator(); i.hasNext();) {
+        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
             buf.setLength(0);
-            IRuleViolation rv = (IRuleViolation) i.next();
+            IRuleViolation rv = i.next();
             buf.append(rv.getDescription() + PMD.EOL);
             buf.append(" at ").append(getFullyQualifiedClassName(rv.getFilename(), sourcePath)).append(".method(");
             buf.append(getSimpleFileName(rv.getFilename())).append(':').append(rv.getBeginLine()).append(')').append(PMD.EOL);
@@ -73,9 +73,9 @@ public class IDEAJRenderer extends AbstractRenderer {
 
     private void render(Writer writer, Report report, String classAndMethod, String file) throws IOException {
         StringBuffer buf = new StringBuffer();
-        for (Iterator i = report.iterator(); i.hasNext();) {
+        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
             buf.setLength(0);
-            IRuleViolation rv = (IRuleViolation) i.next();
+            IRuleViolation rv = i.next();
             buf.append(rv.getDescription()).append(PMD.EOL);
             buf.append(" at ").append(classAndMethod).append('(').append(file).append(':').append(rv.getBeginLine()).append(')').append(PMD.EOL);
             writer.write(buf.toString());

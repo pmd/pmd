@@ -128,8 +128,8 @@ public class Report {
 
     public Map<String, Integer> getCountSummary() {
         Map<String, Integer> summary = new HashMap<String, Integer>();
-        for (Iterator iter = violationTree.iterator(); iter.hasNext();) {
-            IRuleViolation rv = (IRuleViolation) iter.next();
+        for (Iterator<IRuleViolation> iter = violationTree.iterator(); iter.hasNext();) {
+            IRuleViolation rv = iter.next();
             String key = "";
             if (rv.getPackageName() != null && rv.getPackageName().length() != 0) {
                 key = rv.getPackageName() + '.' + rv.getClassName();
@@ -190,8 +190,7 @@ public class Report {
 
         violations.add(violation);
         violationTree.addRuleViolation(violation);
-        for (Iterator i = listeners.iterator(); i.hasNext();) {
-            ReportListener listener = (ReportListener) i.next();
+        for (ReportListener listener: listeners) {
             listener.ruleViolationAdded(violation);
         }
     }
@@ -208,17 +207,17 @@ public class Report {
     }
 
     public void merge(Report r) {
-        Iterator i = r.errors();
+        Iterator<ProcessingError> i = r.errors();
         while (i.hasNext()) {
-            addError((ProcessingError)i.next());
+            addError(i.next());
         }
-        i = r.metrics();
-        while (i.hasNext()) {
-            addMetric((Metric)i.next());
+        Iterator<Metric> m = r.metrics();
+        while (m.hasNext()) {
+            addMetric(m.next());
         }
-        i = r.iterator();
-        while (i.hasNext()) {
-            addRuleViolation((IRuleViolation)i.next());
+        Iterator<IRuleViolation> v = r.iterator();
+        while (v.hasNext()) {
+            addRuleViolation(v.next());
         }
     }
 
@@ -238,7 +237,7 @@ public class Report {
         return !violationTree.iterator().hasNext();
     }
 
-    public Iterator treeIterator() {
+    public Iterator<IRuleViolation> treeIterator() {
         return violationTree.iterator();
     }
 

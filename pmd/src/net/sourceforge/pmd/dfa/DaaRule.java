@@ -90,10 +90,10 @@ public class DaaRule extends AbstractRule implements Executable {
         
         final Map<String, Usage> hash = new HashMap<String, Usage>();
         
-        final Iterator pathIterator = path.iterator();
+        final Iterator<IDataFlowNode> pathIterator = path.iterator();
         while (pathIterator.hasNext()) {
             // iterate all nodes in this path
-            IDataFlowNode inode = (IDataFlowNode) pathIterator.next();
+            IDataFlowNode inode = pathIterator.next();
             if (inode.getVariableAccess() != null) {
                 // iterate all variables of this node
                 for (int g = 0; g < inode.getVariableAccess().size(); g++) {

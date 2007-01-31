@@ -5,7 +5,6 @@ import net.sourceforge.pmd.Report;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Iterator;
 import java.util.Map;
 
 public class SummaryHTMLRenderer extends AbstractRenderer {
@@ -35,14 +34,13 @@ public class SummaryHTMLRenderer extends AbstractRenderer {
         buf.append("<th>Rule name</th>");
         buf.append("<th>Number of violations</th>");
         writer.write(buf.toString());
-        Map summary = report.getSummary();
-        for (Iterator i = summary.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            String ruleName = (String) entry.getKey();
+        Map<String, Integer> summary = report.getSummary();
+        for (Map.Entry<String, Integer> entry: summary.entrySet()) {
+            String ruleName = entry.getKey();
             buf.setLength(0);
             buf.append("<tr>");
             buf.append("<td>" + ruleName + "</td>");
-            buf.append("<td align=center>" + ((Integer) entry.getValue()).intValue() + "</td>");
+            buf.append("<td align=center>" + entry.getValue().intValue() + "</td>");
             buf.append("</tr>");
             writer.write(buf.toString());
         }

@@ -435,9 +435,8 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     
     public static boolean importsPackage(ASTCompilationUnit node, String packageName) {
     	
-        List nodes = node.findChildrenOfType(ASTImportDeclaration.class);
-        for (Iterator i = nodes.iterator(); i.hasNext();) {
-            ASTImportDeclaration n = (ASTImportDeclaration) i.next();
+        List<ASTImportDeclaration> nodes = node.findChildrenOfType(ASTImportDeclaration.class);
+        for (ASTImportDeclaration n: nodes) {
             if (n.getPackageName().startsWith(packageName)) {
                 return true;
             }

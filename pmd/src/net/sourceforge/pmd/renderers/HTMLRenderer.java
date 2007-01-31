@@ -48,8 +48,8 @@ public class HTMLRenderer extends AbstractRenderer {
         writer.write("<center><h3>PMD report</h3></center>");
         writer.write("<center><h3>Problems found</h3></center>");
         writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
-        for (Iterator i = report.iterator(); i.hasNext();) {
-            IRuleViolation rv = (IRuleViolation) i.next();
+        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
+            IRuleViolation rv = i.next();
             buf.setLength(0);
             buf.append("<tr");
             if (colorize) {
@@ -87,8 +87,8 @@ public class HTMLRenderer extends AbstractRenderer {
         }
         violationCount = 0;
         StringBuffer buf = new StringBuffer(500);
-        for (Iterator i = report.errors(); i.hasNext();) {
-            Report.ProcessingError pe = (Report.ProcessingError) i.next();
+        for (Iterator<Report.ProcessingError> i = report.errors(); i.hasNext();) {
+            Report.ProcessingError pe = i.next();
             buf.setLength(0);
             buf.append("<tr");
             if (colorize) {
@@ -115,10 +115,8 @@ public class HTMLRenderer extends AbstractRenderer {
             writer.write("<center><h3>Suppressed warnings</h3></center>");
             writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>" + PMD.EOL);
         }
-        Report.SuppressedViolation sv;
         StringBuffer buf = new StringBuffer(500);
-        for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
-            sv = (Report.SuppressedViolation) i.next();
+        for (Report.SuppressedViolation sv: report.getSuppressedRuleViolations()) {
             buf.setLength(0);
             buf.append("<tr");
             if (colorize) {

@@ -33,9 +33,9 @@ public class CSVRenderer extends AbstractRenderer {
 	private void addViolations(Writer writer, Report report, StringBuffer buf) throws IOException {
 		int violationCount = 1;
 		IRuleViolation rv;
-        for (Iterator i = report.iterator(); i.hasNext();) {
+        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
             buf.setLength(0);
-            rv = (IRuleViolation) i.next();
+            rv = i.next();
             quoteAndCommify(buf, Integer.toString(violationCount));
             quoteAndCommify(buf, rv.getPackageName());
             quoteAndCommify(buf, rv.getFilename());

@@ -29,14 +29,14 @@ import java.util.Iterator;
 public class TextPadRenderer extends AbstractRenderer {
     public void render(Writer writer, Report report) throws IOException {
         StringBuffer buf = new StringBuffer();
-        Iterator i;
+        Iterator<IRuleViolation> i;
         try {
             i = report.iterator();
         } catch (NullPointerException npx) {
             throw new NullPointerException("ERROR in " + this.getClass().getName() + ".render:  Parameter report is null.");
         }
         while (i.hasNext()) {
-            IRuleViolation rv = (IRuleViolation) i.next();
+            IRuleViolation rv = i.next();
             buf.setLength(0);
             //Filename
             buf.append(PMD.EOL).append(rv.getFilename() + "(");

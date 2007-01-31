@@ -90,7 +90,7 @@ public class ReportTree {
 
     public int size() {
         int count = 0;
-        for (Iterator i = iterator(); i.hasNext();) {
+        for (Iterator<IRuleViolation> i = iterator(); i.hasNext();) {
             i.next();
             count++;
         }

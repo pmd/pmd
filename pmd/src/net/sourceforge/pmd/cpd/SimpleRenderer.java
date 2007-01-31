@@ -32,9 +32,8 @@ public class SimpleRenderer implements Renderer {
 		
           rpt.append("Found a ").append(match.getLineCount()).append(" line (").append(match.getTokenCount()).append(" tokens) duplication in the following files: ").append(PMD.EOL);
           
-          TokenEntry mark;
-          for (Iterator occurrences = match.iterator(); occurrences.hasNext();) {
-              mark = (TokenEntry) occurrences.next();
+          for (Iterator<TokenEntry> occurrences = match.iterator(); occurrences.hasNext();) {
+              TokenEntry mark = occurrences.next();
               rpt.append("Starting at line ").append(mark.getBeginLine()).append(" of ").append(mark.getTokenSrcID()).append(PMD.EOL);
           }
           
@@ -58,17 +57,17 @@ public class SimpleRenderer implements Renderer {
 	}
 	
 	
-    public String render(Iterator matches) {
+    public String render(Iterator<Match> matches) {
     	
         StringBuffer rpt = new StringBuffer(300);
         
         if (matches.hasNext()) {
-        	renderOn(rpt, (Match)matches.next());
+        	renderOn(rpt, matches.next());
         }
         
         Match match;
         while (matches.hasNext()) {
-            match = (Match) matches.next();
+            match = matches.next();
             rpt.append(separator).append(PMD.EOL);
             renderOn(rpt, match);
           

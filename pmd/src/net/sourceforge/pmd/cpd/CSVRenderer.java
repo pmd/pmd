@@ -22,23 +22,20 @@ public class CSVRenderer implements Renderer {
 		separator = separatorChar;
 	}
 	
-    public String render(Iterator matches) {
+    public String render(Iterator<Match> matches) {
         StringBuffer rpt = new StringBuffer(1000);
         rpt.append("lines").append(separator);
         rpt.append("tokens").append(separator);
         rpt.append("occurrences");
         rpt.append(PMD.EOL);
         
-        Match match;
-        TokenEntry mark;
-        
         while (matches.hasNext()) {
-            match = (Match) matches.next();
+            Match match = matches.next();
             rpt.append(match.getLineCount()).append(separator);
             rpt.append(match.getTokenCount()).append(separator);
             rpt.append(match.getMarkCount()).append(separator);
-            for (Iterator marks = match.iterator(); marks.hasNext();) {
-                mark = (TokenEntry) marks.next();
+            for (Iterator<TokenEntry> marks = match.iterator(); marks.hasNext();) {
+                TokenEntry mark = marks.next();
                 rpt.append(mark.getBeginLine()).append(separator);
                 rpt.append(mark.getTokenSrcID());
                 if (marks.hasNext()) {

@@ -23,9 +23,9 @@ public class XMLRenderer extends AbstractRenderer {
         String filename = null;
 
         // rule violations
-        for (Iterator i = report.iterator(); i.hasNext();) {
+        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
             buf.setLength(0);
-            IRuleViolation rv = (IRuleViolation) i.next();
+            IRuleViolation rv = i.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {// Not first file ?
                     buf.append("</file>").append(PMD.EOL);

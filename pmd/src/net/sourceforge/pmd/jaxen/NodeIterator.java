@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 /**
  * @author daniels
  */
-public abstract class NodeIterator implements Iterator {
+public abstract class NodeIterator implements Iterator<Node> {
 
     private Node node;
 
@@ -23,7 +23,7 @@ public abstract class NodeIterator implements Iterator {
         return node != null;
     }
 
-    public Object next() {
+    public Node next() {
         if (node == null)
             throw new NoSuchElementException();
         Node ret = node;

@@ -18,7 +18,6 @@ import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -124,10 +123,9 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                 continue;
             }
 
-            List children = inode.getSimpleNode().findChildrenOfType(node.getClass());
-            Iterator childrenIterator = children.iterator();
-            while (childrenIterator.hasNext()) {
-                if (node.equals(childrenIterator.next())) { 
+            List<? extends SimpleNode> children = inode.getSimpleNode().findChildrenOfType(node.getClass());
+            for (SimpleNode n: children) {
+                if (node.equals(n)) { 
                     List<VariableAccess> v = new ArrayList<VariableAccess>();
                     v.add(va);
                     inode.setVariableAccess(v);     

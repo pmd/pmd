@@ -43,14 +43,14 @@ import java.util.Set;
 public class GUI implements CPDListener {
 
 	private interface Renderer {
-		String render(Iterator items);
+		String render(Iterator<Match> items);
 	}
 	
 	private static final Object[][] rendererSets = new Object[][] {
-		{ "Text", 		new Renderer() { public String render(Iterator items) { return new SimpleRenderer().render(items); } } },
-		{ "XML", 		new Renderer() { public String render(Iterator items) { return new XMLRenderer().render(items); } } },
-		{ "CSV (comma)",new Renderer() { public String render(Iterator items) { return new CSVRenderer(',').render(items); } } },
-		{ "CSV (tab)",	new Renderer() { public String render(Iterator items) { return new CSVRenderer('\t').render(items); } } }
+		{ "Text", 		new Renderer() { public String render(Iterator<Match> items) { return new SimpleRenderer().render(items); } } },
+		{ "XML", 		new Renderer() { public String render(Iterator<Match> items) { return new XMLRenderer().render(items); } } },
+		{ "CSV (comma)",new Renderer() { public String render(Iterator<Match> items) { return new CSVRenderer(',').render(items); } } },
+		{ "CSV (tab)",	new Renderer() { public String render(Iterator<Match> items) { return new CSVRenderer('\t').render(items); } } }
 		};
 	
 	private interface LanguageConfig {
@@ -382,9 +382,9 @@ public class GUI implements CPDListener {
     private void populateResultArea() {
     	int[] selectionIndices = resultsTable.getSelectedRows();
     	TableModel model = resultsTable.getModel();
-    	List<Object> selections = new ArrayList<Object>(selectionIndices.length);
+    	List<Match> selections = new ArrayList<Match>(selectionIndices.length);
     	for (int i=0; i<selectionIndices.length; i++) {
-    		selections.add(model.getValueAt(selectionIndices[i], 99));
+    		selections.add((Match)model.getValueAt(selectionIndices[i], 99));
     	}
     	String report = new SimpleRenderer(trimLeadingWhitespace).render(selections.iterator());
     	resultsTextArea.setText(report);

@@ -16,8 +16,8 @@ public class EmacsRenderer extends AbstractRenderer {
 
     public void render(Writer writer, Report report) throws IOException {
         StringBuffer buf = new StringBuffer();
-        for (Iterator i = report.iterator(); i.hasNext();) {
-            IRuleViolation rv = (IRuleViolation) i.next();
+        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
+            IRuleViolation rv = i.next();
             buf.setLength(0);
             buf.append(EOL).append(rv.getFilename());
             buf.append(':').append(Integer.toString(rv.getBeginLine()));

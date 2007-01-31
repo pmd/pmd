@@ -24,20 +24,19 @@ public class TextRenderer extends AbstractRenderer {
             writer.write(buf.toString());
             return;
         }
-        Iterator i;
         
-        for (i = report.iterator(); i.hasNext();) {
+        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
             buf.setLength(0);
-            IRuleViolation rv = (IRuleViolation) i.next();
+            IRuleViolation rv = i.next();
             buf.append(PMD.EOL).append(rv.getFilename());
             buf.append(':').append(Integer.toString(rv.getBeginLine()));
             buf.append('\t').append(rv.getDescription());
             writer.write(buf.toString());
         }
 
-        for (i = report.errors(); i.hasNext();) {
+        for (Iterator<Report.ProcessingError> i = report.errors(); i.hasNext();) {
             buf.setLength(0);
-            Report.ProcessingError error = (Report.ProcessingError) i.next();
+            Report.ProcessingError error = i.next();
             buf.append(PMD.EOL).append(error.getFile());
             buf.append("\t-\t").append(error.getMsg());
             writer.write(buf.toString());
@@ -51,11 +50,7 @@ public class TextRenderer extends AbstractRenderer {
     }
 
     private void addSuppressed(Report report, StringBuffer buf) {
-    	
-    	Report.SuppressedViolation excluded;
-    	
-        for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
-            excluded = (Report.SuppressedViolation) i.next();
+        for (Report.SuppressedViolation excluded: report.getSuppressedRuleViolations()) {
             buf.append(PMD.EOL);
             buf.append(excluded.getRuleViolation().getRule().getName());
             buf.append(" rule violation suppressed by ");

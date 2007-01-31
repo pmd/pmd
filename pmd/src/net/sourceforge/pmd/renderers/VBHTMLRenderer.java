@@ -29,9 +29,9 @@ public class VBHTMLRenderer extends AbstractRenderer {
         boolean colorize = false;
 
         writer.write(header());
-        for (Iterator iter = report.iterator(); iter.hasNext();) {
+        for (Iterator<IRuleViolation> iter = report.iterator(); iter.hasNext();) {
             sb.setLength(0);
-            IRuleViolation rv = (IRuleViolation) iter.next();
+            IRuleViolation rv = iter.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {
                     sb.append("</table></br>");
