@@ -15,7 +15,6 @@ import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -33,10 +32,9 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
      * @return <code>true</code> if there is a field in the type declaration named varName, <code>false</code> in other case
      */
     protected final boolean isField(String varName, ASTTypeDeclaration typeDeclaration) {
-        final List fds = typeDeclaration.findChildrenOfType(ASTFieldDeclaration.class);
+        final List<ASTFieldDeclaration> fds = typeDeclaration.findChildrenOfType(ASTFieldDeclaration.class);
         if (fds != null) {
-            for (Iterator it = fds.iterator(); it.hasNext();) {
-                final ASTFieldDeclaration fd = (ASTFieldDeclaration) it.next();
+            for (ASTFieldDeclaration fd: fds) {
                 final ASTVariableDeclaratorId vid = fd.getFirstChildOfType(ASTVariableDeclaratorId.class);
                 if (vid != null && vid.hasImageEqualTo(varName)) {
                     return true;
@@ -76,10 +74,9 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
      * @return <code>true</code> if the method declaration contains any local variable named vn and <code>false</code> in other case
      */
     protected boolean isLocalVariable(String vn, SimpleNode node) {
-        final List lvars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
+        final List<ASTLocalVariableDeclaration> lvars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
         if (lvars != null) {
-            for (Iterator it = lvars.iterator(); it.hasNext();) {
-                final ASTLocalVariableDeclaration lvd = (ASTLocalVariableDeclaration) it.next();
+            for (ASTLocalVariableDeclaration lvd: lvars) {
                 final ASTVariableDeclaratorId vid = lvd.getFirstChildOfType(ASTVariableDeclaratorId.class);
                 if (vid != null && vid.hasImageEqualTo(vn)) {
                     return true;

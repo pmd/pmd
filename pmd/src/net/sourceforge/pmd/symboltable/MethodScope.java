@@ -68,6 +68,6 @@ public class MethodScope extends AbstractScope {
     }
 
     public String toString() {
-        return "MethodScope:" + glomNames(variableNames.keySet().iterator());
+        return "MethodScope:" + glomNames(variableNames.keySet());
     }
 }

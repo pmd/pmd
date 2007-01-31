@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.rules.design;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,13 +35,11 @@ public class UnnecessaryLocalBeforeReturn extends AbstractRule {
             return data;
         }
 
-        Map vars = name.getScope().getVariableDeclarations();
-        for (Iterator i = vars.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
-            VariableNameDeclaration key = (VariableNameDeclaration) entry.getKey();
-            List usages = (List) entry.getValue();
-            for (Iterator j = usages.iterator(); j.hasNext();) {
-                NameOccurrence occ = (NameOccurrence) j.next();
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = name.getScope().getVariableDeclarations();
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
+            VariableNameDeclaration key = entry.getKey();
+            List<NameOccurrence> usages = entry.getValue();
+            for (NameOccurrence occ: usages) {
                 if (occ.getLocation().equals(name)) {
                     // only check declarations that occur one line earlier
                     if (key.getNode().getBeginLine() == name.getBeginLine() - 1) {
@@ -66,9 +63,8 @@ public class UnnecessaryLocalBeforeReturn extends AbstractRule {
      * @return true if any method calls are made within the given return
      */
     private boolean isMethodCall(ASTReturnStatement rtn) {
-     List suffix = rtn.findChildrenOfType( ASTPrimarySuffix.class );
-     for ( Iterator iter = suffix.iterator(); iter.hasNext(); ) {
-        ASTPrimarySuffix element = (ASTPrimarySuffix) iter.next();
+     List<ASTPrimarySuffix> suffix = rtn.findChildrenOfType( ASTPrimarySuffix.class );
+     for ( ASTPrimarySuffix element: suffix ) {
         if ( element.isArguments() ) {
           return true;
         }

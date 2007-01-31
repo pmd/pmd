@@ -3,7 +3,6 @@ package net.sourceforge.pmd.symboltable;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class OccurrenceFinder extends JavaParserVisitorAdapter {
@@ -15,9 +14,8 @@ public class OccurrenceFinder extends JavaParserVisitorAdapter {
         // is null/not null?
         NameDeclaration decl = null;
 
-        List names = nameFinder.getNames();
-        for (Iterator i = names.iterator(); i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) i.next();
+        List<NameOccurrence> names = nameFinder.getNames();
+        for (NameOccurrence occ: names) {
             Search search = new Search(occ);
             if (decl == null) {
                 // doing the first name lookup

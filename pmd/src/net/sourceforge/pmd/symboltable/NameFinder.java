@@ -30,7 +30,7 @@ public class NameFinder {
         }
     }
 
-    public List getNames() {
+    public List<NameOccurrence> getNames() {
         return names;
     }
 

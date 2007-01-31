@@ -23,9 +23,9 @@ import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.properties.IntegerProperty;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,17 +89,15 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
         int concurrentCount = checkConstructor(node, data);
         Node lastBlock = getFirstParentBlock(node);
         Node currentBlock = lastBlock;
-        Map decls = node.getScope().getVariableDeclarations();
+        Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope().getVariableDeclarations();
         SimpleNode rootNode = null;
         // only want the constructor flagged if it's really containing strings
         if (concurrentCount == 1) {
             rootNode = node;
         }
-        for (Iterator iter = decls.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry entry = (Map.Entry) iter.next();
-            List decl = (List) entry.getValue();
-            for (int ix = 0; ix < decl.size(); ix++) {
-                NameOccurrence no = (NameOccurrence) decl.get(ix);
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: decls.entrySet()) {
+            List<NameOccurrence> decl = entry.getValue();
+            for (NameOccurrence no: decl) {
                 SimpleNode n = no.getLocation();
 
                 currentBlock = getFirstParentBlock(n);

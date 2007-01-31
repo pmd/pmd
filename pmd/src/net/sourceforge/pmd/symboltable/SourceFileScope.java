@@ -61,7 +61,7 @@ public class SourceFileScope extends AbstractScope {
     }
 
     public String toString() {
-        return "SourceFileScope: " + glomNames(classNames.keySet().iterator());
+        return "SourceFileScope: " + glomNames(classNames.keySet());
     }
 
     protected NameDeclaration findVariableHere(NameOccurrence occ) {

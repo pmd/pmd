@@ -11,10 +11,10 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -47,9 +47,8 @@ public class PreserveStackTrace extends AbstractRule {
                 }
                 if (child != null){
                     if( child.getClass().equals(ASTName.class) && (!target.equals(child.getImage()) && !child.hasImageEqualTo(target + ".fillInStackTrace"))) {
-	                    Map vars = ((ASTName) child).getScope().getVariableDeclarations();
-	                    for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-	                        VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
+                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((ASTName) child).getScope().getVariableDeclarations();
+	                    for (VariableNameDeclaration decl: vars.keySet()) {
 	                        args = ((SimpleNode) decl.getNode().jjtGetParent())
 	                                .getFirstChildOfType(ASTArgumentList.class);
 	                        if (args != null) {

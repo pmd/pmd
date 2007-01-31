@@ -3,9 +3,9 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class AbstractScope implements Scope {
 
@@ -49,10 +49,10 @@ public abstract class AbstractScope implements Scope {
 
     protected abstract NameDeclaration findVariableHere(NameOccurrence occurrence);
 
-    protected String glomNames(Iterator i) {
+    protected <T> String glomNames(Set<T> s) {
         StringBuffer result = new StringBuffer();
-        while (i.hasNext()) {
-            result.append(i.next().toString());
+        for (T t: s) {
+            result.append(t.toString());
             result.append(',');
         }
         return result.length() == 0 ? "" : result.toString().substring(0, result.length() - 1);

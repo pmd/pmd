@@ -20,7 +20,6 @@ import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -40,7 +39,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
         ASTFormalParameter[] arrs = getArrays(node.getParameters());
         if (arrs != null) {
             //TODO check if one of these arrays is stored in a non local variable
-            List bs = node.findChildrenOfType(ASTBlockStatement.class);
+            List<ASTBlockStatement> bs = node.findChildrenOfType(ASTBlockStatement.class);
             checkAll(data, arrs, bs);
         }
         return data;
@@ -55,7 +54,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
         return data;
     }
 
-    private void checkAll(Object context, ASTFormalParameter[] arrs, List bs) {
+    private void checkAll(Object context, ASTFormalParameter[] arrs, List<ASTBlockStatement> bs) {
         for (int i = 0; i < arrs.length; i++) {
             checkForDirectAssignment(context, arrs[i], bs);
         }
@@ -64,11 +63,10 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
     /**
      * Checks if the variable designed in parameter is written to a field (not local variable) in the statements.
      */
-    private boolean checkForDirectAssignment(Object ctx, final ASTFormalParameter parameter, final List bs) {
+    private boolean checkForDirectAssignment(Object ctx, final ASTFormalParameter parameter, final List<ASTBlockStatement> bs) {
         final ASTVariableDeclaratorId vid = parameter.getFirstChildOfType(ASTVariableDeclaratorId.class);
         final String varName = vid.getImage();
-        for (Iterator it = bs.iterator(); it.hasNext();) {
-            final ASTBlockStatement b = (ASTBlockStatement) it.next();
+        for (ASTBlockStatement b: bs) {
             if (b.containsChildOfType(ASTAssignmentOperator.class)) {
                 final ASTStatementExpression se = b.getFirstChildOfType(ASTStatementExpression.class);
                 if (se == null || !(se.jjtGetChild(0) instanceof ASTPrimaryExpression)) {
