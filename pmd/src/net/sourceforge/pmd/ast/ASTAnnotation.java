@@ -5,7 +5,6 @@ package net.sourceforge.pmd.ast;
 import net.sourceforge.pmd.Rule;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 public class ASTAnnotation extends SimpleJavaNode {
@@ -30,9 +29,8 @@ public class ASTAnnotation extends SimpleJavaNode {
                 ASTName annName = ((ASTName) n.jjtGetChild(0));
 
                 if (annName.getImage().equals("SuppressWarnings")) {
-                    List nodes = n.findChildrenOfType(ASTLiteral.class);
-                    for (Iterator iter = nodes.iterator(); iter.hasNext();) {
-                        ASTLiteral element = (ASTLiteral) iter.next();
+                    List<ASTLiteral> nodes = n.findChildrenOfType(ASTLiteral.class);
+                    for (ASTLiteral element: nodes) {
                         if (element.hasImageEqualTo("\"PMD\"")
                                 || element.hasImageEqualTo(ruleAnno)
                                 // the SuppressWarnings("unused") annotation allows unused code 

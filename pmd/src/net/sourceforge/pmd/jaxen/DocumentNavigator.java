@@ -106,7 +106,7 @@ public class DocumentNavigator extends DefaultNavigator {
         return ((Attribute) arg0).getParent();
     }
 
-    public Iterator getAttributeAxisIterator(Object arg0) {
+    public Iterator<Attribute> getAttributeAxisIterator(Object arg0) {
         return new AttributeAxisIterator((Node) arg0);
     }
 

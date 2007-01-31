@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class AttributeAxisIterator implements Iterator {
+public class AttributeAxisIterator implements Iterator<Attribute> {
 
     private static class MethodWrapper {
         public Method method;
@@ -34,7 +34,7 @@ public class AttributeAxisIterator implements Iterator {
         }
     }
 
-    private Object currObj;
+    private Attribute currObj;
     private MethodWrapper[] methodWrappers;
     private int position;
     private Node node;
@@ -59,11 +59,11 @@ public class AttributeAxisIterator implements Iterator {
         this.currObj = getNextAttribute();
     }
 
-    public Object next() {
+    public Attribute next() {
         if (currObj == null) {
             throw new IndexOutOfBoundsException();
         }
-        Object ret = currObj;
+        Attribute ret = currObj;
         currObj = getNextAttribute();
         return ret;
     }

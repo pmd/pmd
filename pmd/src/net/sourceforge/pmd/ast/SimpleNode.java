@@ -254,8 +254,8 @@ public abstract class SimpleNode implements Node {
         String elementName = docNav.getElementName(this);
         Element element = ownerDocument.createElement(elementName);
         parentNode.appendChild(element);
-        for (Iterator iter = docNav.getAttributeAxisIterator(this); iter.hasNext();) {
-            Attribute attr = (Attribute) iter.next();
+        for (Iterator<Attribute> iter = docNav.getAttributeAxisIterator(this); iter.hasNext();) {
+            Attribute attr = iter.next();
             element.setAttribute(attr.getName(), attr.getValue());
         }
         for (Iterator iter = docNav.getChildAxisIterator(this); iter.hasNext();) {
