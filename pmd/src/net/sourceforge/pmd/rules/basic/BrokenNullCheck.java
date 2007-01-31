@@ -40,7 +40,7 @@ public class BrokenNullCheck extends AbstractRule {
 
 
     private void checkForViolations(ASTIfStatement node, Object data, SimpleJavaNode conditionalExpression) {
-        ASTEqualityExpression equalityExpression = (ASTEqualityExpression)getFirstDirectChildOfType(ASTEqualityExpression.class, conditionalExpression);
+        ASTEqualityExpression equalityExpression = getFirstDirectChildOfType(ASTEqualityExpression.class, conditionalExpression);
         if (equalityExpression == null) {
             return;
         }
@@ -164,11 +164,11 @@ public class BrokenNullCheck extends AbstractRule {
         return null;  //Nothing found
     }
 
-    private Node getFirstDirectChildOfType(Class childType, Node node) {
+    private <T> T getFirstDirectChildOfType(Class<T> childType, Node node) {
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild(i);
             if (simpleNode.getClass().equals(childType))
-                return simpleNode;
+                return (T)simpleNode;
         }
         return null;
     }
