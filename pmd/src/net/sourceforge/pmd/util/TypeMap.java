@@ -25,7 +25,7 @@ public class TypeMap {
 	 * 
 	 * @param types Class[]
 	 */
-	public TypeMap(Class[] types) {
+	public TypeMap(Class... types) {
 		this(types.length);
 		add(types);
 	}
@@ -76,7 +76,7 @@ public class TypeMap {
 	 * 
 	 * @param types Class[]
 	 */
-	public void add(Class[] types) {
+	public void add(Class... types) {
 		for (int i=0; i<types.length; i++) {
 			add(types[i]);
 		}

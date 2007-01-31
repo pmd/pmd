@@ -23,7 +23,7 @@ public class AttributesSubMenu
     private SimpleNode node;
 
     public AttributesSubMenu(ViewerModel model, SimpleNode node) {
-        super(MessageFormat.format(NLS.nls("AST.MENU.ATTRIBUTES"), new Object[]{node.toString()}));
+        super(MessageFormat.format(NLS.nls("AST.MENU.ATTRIBUTES"), node.toString()));
         this.model = model;
         this.node = node;
         init();

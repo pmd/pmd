@@ -402,7 +402,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
      */
     protected final void addViolation(Object data, SimpleNode node, String embed) {
         RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, MessageFormat.format(getMessage(), new Object[]{embed})));
+        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, MessageFormat.format(getMessage(), embed)));
     }
 
     /**

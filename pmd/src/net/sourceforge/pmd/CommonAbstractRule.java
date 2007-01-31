@@ -216,7 +216,7 @@ public abstract class CommonAbstractRule implements Rule {
      */
     protected final void addViolation(Object data, SimpleNode node, String embed) {
         RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, MessageFormat.format(getMessage(), new Object[]{embed})));
+        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, MessageFormat.format(getMessage(), embed)));
     }
 
     /**
