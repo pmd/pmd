@@ -37,7 +37,7 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
         if (fds != null) {
             for (Iterator it = fds.iterator(); it.hasNext();) {
                 final ASTFieldDeclaration fd = (ASTFieldDeclaration) it.next();
-                final ASTVariableDeclaratorId vid = (ASTVariableDeclaratorId) fd.getFirstChildOfType(ASTVariableDeclaratorId.class);
+                final ASTVariableDeclaratorId vid = fd.getFirstChildOfType(ASTVariableDeclaratorId.class);
                 if (vid != null && vid.hasImageEqualTo(varName)) {
                     return true;
                 }
@@ -58,10 +58,10 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
      * @return the name of the variable associated or <code>null</code> if it cannot be detected
      */
     protected final String getReturnedVariableName(ASTReturnStatement ret) {
-        final ASTName n = (ASTName) ret.getFirstChildOfType(ASTName.class);
+        final ASTName n = ret.getFirstChildOfType(ASTName.class);
         if (n != null)
             return n.getImage();
-        final ASTPrimarySuffix ps = (ASTPrimarySuffix) ret.getFirstChildOfType(ASTPrimarySuffix.class);
+        final ASTPrimarySuffix ps = ret.getFirstChildOfType(ASTPrimarySuffix.class);
         if (ps != null)
             return ps.getImage();
         return null;
@@ -80,7 +80,7 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
         if (lvars != null) {
             for (Iterator it = lvars.iterator(); it.hasNext();) {
                 final ASTLocalVariableDeclaration lvd = (ASTLocalVariableDeclaration) it.next();
-                final ASTVariableDeclaratorId vid = (ASTVariableDeclaratorId) lvd.getFirstChildOfType(ASTVariableDeclaratorId.class);
+                final ASTVariableDeclaratorId vid = lvd.getFirstChildOfType(ASTVariableDeclaratorId.class);
                 if (vid != null && vid.hasImageEqualTo(vn)) {
                     return true;
                 }
@@ -96,7 +96,7 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
      * @return the image of the first ASTName or <code>null</code>
      */
     protected String getFirstNameImage(SimpleNode n) {
-        ASTName name = (ASTName) n.getFirstChildOfType(ASTName.class);
+        ASTName name = n.getFirstChildOfType(ASTName.class);
         if (name != null)
             return name.getImage();
         return null;

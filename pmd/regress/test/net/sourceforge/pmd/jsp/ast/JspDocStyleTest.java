@@ -86,19 +86,19 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 		assertEquals("Correct attribute name expected!", 
 				"foo", attr.getName());
 		assertEquals("Correct attribute value expected!", 
-				"CREATE", ((ASTAttributeValue) attr.getFirstChildOfType(ASTAttributeValue.class)).getImage());
+				"CREATE", attr.getFirstChildOfType(ASTAttributeValue.class).getImage());
 		
 		attr = attrsList.get(1);
 		assertEquals("Correct attribute name expected!", 
 				"href", attr.getName());
 		assertEquals("Correct attribute value expected!", 
-				"#", ((ASTAttributeValue) attr.getFirstChildOfType(ASTAttributeValue.class)).getImage());
+				"#", attr.getFirstChildOfType(ASTAttributeValue.class).getImage());
 		
 		attr = attrsList.get(2);
 		assertEquals("Correct attribute name expected!", 
 				"something", attr.getName());
 		assertEquals("Correct attribute value expected!", 
-				"#yes#", ((ASTAttributeValue) attr.getFirstChildOfType(ASTAttributeValue.class)).getImage());
+				"#yes#", attr.getFirstChildOfType(ASTAttributeValue.class).getImage());
 	}
 
 	/**

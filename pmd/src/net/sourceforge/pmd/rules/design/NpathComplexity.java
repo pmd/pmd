@@ -99,7 +99,7 @@ public class NpathComplexity extends StatisticalRule {
   public Object visit(ASTIfStatement node, Object data) {
     // (npath of if + npath of else (or 1) + bool_comp of if) * npath of next
 
-    int boolCompIf = sumExpressionComplexity( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompIf = sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
 
     int complexity = 0;
 
@@ -131,7 +131,7 @@ public class NpathComplexity extends StatisticalRule {
   public Object visit(ASTWhileStatement node, Object data) {
     // (npath of while + bool_comp of while + 1) * npath of next
 
-    int boolCompWhile = sumExpressionComplexity( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompWhile = sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
 
     Integer nPathWhile = (Integer) ( (SimpleJavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
         this, data );
@@ -142,7 +142,7 @@ public class NpathComplexity extends StatisticalRule {
   public Object visit(ASTDoStatement node, Object data) {
     // (npath of do + bool_comp of do + 1) * npath of next
 
-    int boolCompDo = sumExpressionComplexity( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompDo = sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
 
     Integer nPathDo = (Integer) ( (SimpleJavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
         this, data );
@@ -153,7 +153,7 @@ public class NpathComplexity extends StatisticalRule {
   public Object visit(ASTForStatement node, Object data) {
     // (npath of for + bool_comp of for + 1) * npath of next
 
-    int boolCompFor = sumExpressionComplexity( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompFor = sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
 
     Integer nPathFor = (Integer) ( (SimpleJavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
         this, data );
@@ -164,7 +164,7 @@ public class NpathComplexity extends StatisticalRule {
   public Object visit(ASTReturnStatement node, Object data) {
     // return statements are valued at 1, or the value of the boolean expression
 
-    ASTExpression expr = (ASTExpression) node.getFirstChildOfType( ASTExpression.class );
+    ASTExpression expr = node.getFirstChildOfType( ASTExpression.class );
 
     if ( expr == null ) {
       return NumericConstants.ONE;
@@ -183,7 +183,7 @@ public class NpathComplexity extends StatisticalRule {
   public Object visit(ASTSwitchStatement node, Object data) {
     // bool_comp of switch + sum(npath(case_range))
 
-    int boolCompSwitch = sumExpressionComplexity( (ASTExpression) node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompSwitch = sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
 
     int npath = 0;
     int caseRange = 0;

@@ -289,17 +289,17 @@ public abstract class SimpleNode implements Node {
      * @param childType class which you want to find.
      * @return Node of type childType.  Returns <code>null</code> if none found.
      */
-    public <T> Node getFirstChildOfType(Class<T> childType) {
+    public <T> T getFirstChildOfType(Class<T> childType) {
         return getFirstChildOfType(childType, this);
     }
 
-    private <T> Node getFirstChildOfType(Class<T> childType, Node node) {
+    private <T> T getFirstChildOfType(Class<T> childType, Node node) {
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node n = node.jjtGetChild(i);
             if (n != null) {
                 if (n.getClass().equals(childType))
-                    return n;
-                Node n2 = getFirstChildOfType(childType, n);
+                    return (T) n;
+                T n2 = getFirstChildOfType(childType, n);
                 if (n2 != null)
                     return n2;
             }

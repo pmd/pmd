@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.rules;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,14 +14,11 @@ import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 public class AvoidReassigningParameters extends AbstractRule {
 
     public Object visit(ASTMethodDeclarator node, Object data) {
-        Map params = node.getScope().getVariableDeclarations();
-        for (Iterator i = params.entrySet().iterator(); i.hasNext();) {
-            Map.Entry entry = (Map.Entry) i.next();
- 
-            VariableNameDeclaration decl = (VariableNameDeclaration) entry.getKey();
-            List usages = (List) entry.getValue();
-            for (Iterator j = usages.iterator(); j.hasNext();) {
-                NameOccurrence occ = (NameOccurrence) j.next();
+        Map<VariableNameDeclaration, List<NameOccurrence>> params = node.getScope().getVariableDeclarations();
+        for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: params.entrySet()) {
+            VariableNameDeclaration decl = entry.getKey();
+            List<NameOccurrence> usages = entry.getValue();
+            for (NameOccurrence occ: usages) {
                 if ((occ.isOnLeftHandSide() || occ.isSelfAssignment()) && 
                     occ.getNameForWhichThisIsAQualifier() == null &&
                     (!decl.isArray() || occ.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() == 1))

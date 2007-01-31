@@ -13,7 +13,6 @@ import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -76,11 +75,9 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	}
 
 	private void populateClassName(ASTCompilationUnit node) throws ClassNotFoundException {
-		ASTClassOrInterfaceDeclaration decl = (ASTClassOrInterfaceDeclaration) node
-				.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
+		ASTClassOrInterfaceDeclaration decl = node.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
 		if (decl != null) {
-			ASTPackageDeclaration pkgDecl = (ASTPackageDeclaration) node
-					.getFirstChildOfType(ASTPackageDeclaration.class);
+			ASTPackageDeclaration pkgDecl = node.getFirstChildOfType(ASTPackageDeclaration.class);
 			className = pkgDecl == null ? decl.getImage() : ((ASTName) pkgDecl.jjtGetChild(0)).getImage() + "."
 					+ decl.getImage();
 			pmdClassLoader.loadClass(className);

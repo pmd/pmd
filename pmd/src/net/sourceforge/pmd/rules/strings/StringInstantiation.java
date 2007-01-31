@@ -33,7 +33,7 @@ public class StringInstantiation extends AbstractRule {
             return data;
         }
 
-        ASTName name = (ASTName) node.getFirstChildOfType(ASTName.class);
+        ASTName name =node.getFirstChildOfType(ASTName.class);
         // Literal, i.e., new String("foo")
         if (name == null) {
             addViolation(data, node);

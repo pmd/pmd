@@ -53,16 +53,15 @@ public class UnnecessaryCast extends AbstractRule {
     }
 
     private Object process(SimpleNode node, Object data) {
-        ASTClassOrInterfaceType cit = (ASTClassOrInterfaceType) node.getFirstChildOfType(ASTClassOrInterfaceType.class);
+        ASTClassOrInterfaceType cit = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
         if (cit == null || !implClassNames.contains(cit.getImage())) {
             return data;
         }
-        cit = (ASTClassOrInterfaceType) cit.getFirstChildOfType(ASTClassOrInterfaceType.class);
+        cit = cit.getFirstChildOfType(ASTClassOrInterfaceType.class);
         if (cit == null) {
             return data;
         }
-        ASTVariableDeclaratorId decl = (ASTVariableDeclaratorId) node
-                .getFirstChildOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId decl = node.getFirstChildOfType(ASTVariableDeclaratorId.class);
         List usages = decl.getUsages();
         for (Iterator iter = usages.iterator(); iter.hasNext();) {
             NameOccurrence no = (NameOccurrence) iter.next();

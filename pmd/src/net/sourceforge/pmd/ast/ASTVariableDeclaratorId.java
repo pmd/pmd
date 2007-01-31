@@ -69,7 +69,7 @@ public class ASTVariableDeclaratorId extends SimpleJavaNode {
             return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
         } else if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
             SimpleNode n = (SimpleNode) jjtGetParent().jjtGetParent();
-            return (ASTType) n.getFirstChildOfType(ASTType.class);
+            return n.getFirstChildOfType(ASTType.class);
         }
         throw new RuntimeException("Don't know how to get the type for anything other than ASTLocalVariableDeclaration/ASTFormalParameter/ASTFieldDeclaration");
     }

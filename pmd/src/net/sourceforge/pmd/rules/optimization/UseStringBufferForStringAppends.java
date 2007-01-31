@@ -34,9 +34,9 @@ public class UseStringBufferForStringAppends extends AbstractRule {
                 // FIXME - hm, is there a bug in those methods?
                 // check that we're looking at the "left hand" node. NB:
                 // no.isRightHand / no.isLeftHand doesn't look like it works
-                ASTName astName = (ASTName) ((SimpleNode) statement.jjtGetChild(0)).getFirstChildOfType(ASTName.class);
+                ASTName astName = ((SimpleNode) statement.jjtGetChild(0)).getFirstChildOfType(ASTName.class);
                 if (astName != null && astName.equals(name)) {
-                    ASTAssignmentOperator assignmentOperator = (ASTAssignmentOperator) statement.getFirstChildOfType(ASTAssignmentOperator.class);
+                    ASTAssignmentOperator assignmentOperator = statement.getFirstChildOfType(ASTAssignmentOperator.class);
                     if (assignmentOperator != null && assignmentOperator.isCompound()) {
                         addViolation(data, assignmentOperator);
                     }

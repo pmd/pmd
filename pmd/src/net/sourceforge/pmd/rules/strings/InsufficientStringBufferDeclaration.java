@@ -152,14 +152,14 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
     }
 
     private int processAdditive(SimpleNode sn) {
-        ASTAdditiveExpression additive = (ASTAdditiveExpression) sn.getFirstChildOfType(ASTAdditiveExpression.class);
+        ASTAdditiveExpression additive = sn.getFirstChildOfType(ASTAdditiveExpression.class);
         if (additive == null) {
             return 0;
         }
         int anticipatedLength = 0;
         for (int ix = 0; ix < additive.jjtGetNumChildren(); ix++) {
             SimpleNode childNode = (SimpleNode) additive.jjtGetChild(ix);
-            ASTLiteral literal = (ASTLiteral) childNode.getFirstChildOfType(ASTLiteral.class);
+            ASTLiteral literal = childNode.getFirstChildOfType(ASTLiteral.class);
             if (literal != null && literal.getImage() != null) {
                 anticipatedLength += literal.getImage().length() - 2;
             }
@@ -178,7 +178,7 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
 
     private int processNode(SimpleNode sn) {
         int anticipatedLength = 0;
-        ASTPrimaryPrefix xn = (ASTPrimaryPrefix) sn.getFirstChildOfType(ASTPrimaryPrefix.class);
+        ASTPrimaryPrefix xn = sn.getFirstChildOfType(ASTPrimaryPrefix.class);
         if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0).getClass().equals(ASTLiteral.class)) {
             String str = ((SimpleNode) xn.jjtGetChild(0)).getImage();
             if(isLiteral(str)){

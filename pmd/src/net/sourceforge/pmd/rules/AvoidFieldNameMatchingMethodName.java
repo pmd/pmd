@@ -8,7 +8,6 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class AvoidFieldNameMatchingMethodName extends AbstractRule {
@@ -27,9 +26,8 @@ public class AvoidFieldNameMatchingMethodName extends AbstractRule {
             varName = varName.toLowerCase();
             ASTClassOrInterfaceDeclaration cl = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
             if (cl != null) {
-                List methods = cl.findChildrenOfType(ASTMethodDeclaration.class);
-                for (Iterator it = methods.iterator(); it.hasNext();) {
-                    ASTMethodDeclaration m = (ASTMethodDeclaration) it.next();
+                List<ASTMethodDeclaration> methods = cl.findChildrenOfType(ASTMethodDeclaration.class);
+                for (ASTMethodDeclaration m: methods) {
                     //Make sure we are comparing fields and methods inside same type
                     if (fieldDeclaringType.equals(getDeclaringType(m))) {
                         String n = m.getMethodName();

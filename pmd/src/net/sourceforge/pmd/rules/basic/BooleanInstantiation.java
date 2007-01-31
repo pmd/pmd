@@ -47,11 +47,11 @@ public class BooleanInstantiation extends AbstractRule {
         if ("Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())
                 || "java.lang.Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())) {
             ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();
-            ASTPrimarySuffix suffix = (ASTPrimarySuffix) parent.getFirstChildOfType(ASTPrimarySuffix.class);
+            ASTPrimarySuffix suffix = parent.getFirstChildOfType(ASTPrimarySuffix.class);
             if (suffix == null) {
                 return super.visit(node, data);
             }
-            ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) suffix.getFirstChildOfType(ASTPrimaryPrefix.class);
+            ASTPrimaryPrefix prefix = suffix.getFirstChildOfType(ASTPrimaryPrefix.class);
             if (prefix == null) {
                 return super.visit(node, data);
             }
@@ -60,7 +60,7 @@ public class BooleanInstantiation extends AbstractRule {
                 super.addViolation(data, node);
                 return data;
             }
-            ASTLiteral literal = (ASTLiteral) prefix.getFirstChildOfType(ASTLiteral.class);
+            ASTLiteral literal = prefix.getFirstChildOfType(ASTLiteral.class);
             if (literal != null && ("\"true\"".equals(literal.getImage()) || "\"false\"".equals(literal.getImage()))) {
                 super.addViolation(data, node);
                 return data;

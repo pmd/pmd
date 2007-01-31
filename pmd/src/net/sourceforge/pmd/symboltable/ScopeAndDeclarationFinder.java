@@ -159,7 +159,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         createMethodScope(node);
-        ASTMethodDeclarator md = (ASTMethodDeclarator) node.getFirstChildOfType(ASTMethodDeclarator.class);
+        ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
         node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
         cont(node);
         return data;

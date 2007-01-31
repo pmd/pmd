@@ -13,7 +13,6 @@ import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -35,10 +34,9 @@ public class MethodReturnsInternalArray extends AbstractSunSecureRule {
         if (!method.getResultType().returnsArray()) {
             return data;
         }
-        List returns = method.findChildrenOfType(ASTReturnStatement.class);
+        List<ASTReturnStatement> returns = method.findChildrenOfType(ASTReturnStatement.class);
         ASTTypeDeclaration td = method.getFirstParentOfType(ASTTypeDeclaration.class);
-        for (Iterator it = returns.iterator(); it.hasNext();) {
-            final ASTReturnStatement ret = (ASTReturnStatement) it.next();
+        for (ASTReturnStatement ret: returns) {
             final String vn = getReturnedVariableName(ret);
             if (!isField(vn, td)) {
                 continue;
@@ -53,9 +51,9 @@ public class MethodReturnsInternalArray extends AbstractSunSecureRule {
                 addViolation(data, ret, vn);
             } else {
                 // This is to handle field hiding
-                final ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ret.getFirstChildOfType(ASTPrimaryPrefix.class);
+                final ASTPrimaryPrefix pp = ret.getFirstChildOfType(ASTPrimaryPrefix.class);
                 if (pp != null && pp.usesThisModifier()) {
-                    final ASTPrimarySuffix ps = (ASTPrimarySuffix) ret.getFirstChildOfType(ASTPrimarySuffix.class);
+                    final ASTPrimarySuffix ps = ret.getFirstChildOfType(ASTPrimarySuffix.class);
                     if (ps.hasImageEqualTo(vn)) {
                         addViolation(data, ret, vn);
                     }

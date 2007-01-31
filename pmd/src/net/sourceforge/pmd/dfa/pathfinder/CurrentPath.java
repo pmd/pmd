@@ -18,7 +18,7 @@ public class CurrentPath {
         return list.size();
     }
     
-    public Iterator iterator() {
+    public Iterator<IDataFlowNode> iterator() {
         return list.iterator();
     }
 

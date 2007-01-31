@@ -35,7 +35,7 @@ public class PreserveStackTrace extends AbstractRule {
                 }
                 continue;
             }
-            ASTArgumentList args = (ASTArgumentList) throwStatement.getFirstChildOfType(ASTArgumentList.class);
+            ASTArgumentList args = throwStatement.getFirstChildOfType(ASTArgumentList.class);
 
             if (args != null) {
                 ck(data, target, throwStatement, args);
@@ -50,7 +50,7 @@ public class PreserveStackTrace extends AbstractRule {
 	                    Map vars = ((ASTName) child).getScope().getVariableDeclarations();
 	                    for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
 	                        VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
-	                        args = (ASTArgumentList) ((SimpleNode) decl.getNode().jjtGetParent())
+	                        args = ((SimpleNode) decl.getNode().jjtGetParent())
 	                                .getFirstChildOfType(ASTArgumentList.class);
 	                        if (args != null) {
 	                            ck(data, target, throwStatement, args);

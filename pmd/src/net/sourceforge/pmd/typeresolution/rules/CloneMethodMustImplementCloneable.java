@@ -31,7 +31,7 @@ import java.util.List;
 public class CloneMethodMustImplementCloneable extends AbstractRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        ASTImplementsList impl = (ASTImplementsList) node.getFirstChildOfType(ASTImplementsList.class);
+        ASTImplementsList impl = node.getFirstChildOfType(ASTImplementsList.class);
         if (impl != null && impl.jjtGetParent().equals(node)) {
             for (int ix = 0; ix < impl.jjtGetNumChildren(); ix++) {
                 ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) impl.jjtGetChild(ix);
@@ -69,12 +69,11 @@ public class CloneMethodMustImplementCloneable extends AbstractRule {
     public Object visit(ASTMethodDeclaration node, Object data) {
 
         if (node.isFinal()) {
-            List blocks = node.findChildrenOfType(ASTBlock.class);
-            if (blocks.size() == 1) {
-                blocks = node.findChildrenOfType(ASTBlockStatement.class);
+            if (node.findChildrenOfType(ASTBlock.class).size() == 1) {
+                List<ASTBlockStatement> blocks = node.findChildrenOfType(ASTBlockStatement.class);
                 if (blocks.size() == 1) {
-                    ASTBlockStatement block = (ASTBlockStatement) blocks.get(0);
-                    ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) block.getFirstChildOfType(ASTClassOrInterfaceType.class);
+                    ASTBlockStatement block = blocks.get(0);
+                    ASTClassOrInterfaceType type = block.getFirstChildOfType(ASTClassOrInterfaceType.class);
                     if (type != null && type.getType() != null && type.getNthParent(9).equals(node) && type.getType().equals(CloneNotSupportedException.class)) {
                         return data;
                     } else if (type != null && type.getType() == null && "CloneNotSupportedException".equals(type.getImage())) {

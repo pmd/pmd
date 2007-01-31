@@ -26,7 +26,7 @@ public class UnnecessaryLocalBeforeReturn extends AbstractRule {
 
     public Object visit(ASTReturnStatement rtn, Object data) {
         // skip returns of literals
-        ASTName name = (ASTName) rtn.getFirstChildOfType(ASTName.class);
+        ASTName name = rtn.getFirstChildOfType(ASTName.class);
         if (name == null) {
             return data;
         }

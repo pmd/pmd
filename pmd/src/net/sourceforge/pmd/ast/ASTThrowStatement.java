@@ -31,7 +31,7 @@ public class ASTThrowStatement extends SimpleJavaNode {
      * @return the image of the first ASTClassOrInterfaceType node found or <code>null</code>
      */
     public final String getFirstClassOrInterfaceTypeImage() {
-        final ASTClassOrInterfaceType t = (ASTClassOrInterfaceType) getFirstChildOfType(ASTClassOrInterfaceType.class);
+        final ASTClassOrInterfaceType t = getFirstChildOfType(ASTClassOrInterfaceType.class);
         return t == null ? null : t.getImage();
     }
 }

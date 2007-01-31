@@ -8,7 +8,6 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -94,8 +93,7 @@ public abstract class AbstractPoorMethodCall extends AbstractRule {
             return data;
         }
         
-        for (Iterator i = node.getUsages().iterator(); i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) i.next();
+        for (NameOccurrence occ: node.getUsages()) {
             if (isNotedMethod(occ.getNameForWhichThisIsAQualifier())) {
                 SimpleNode parent = (SimpleNode)occ.getLocation().jjtGetParent().jjtGetParent();
                 if (parent instanceof ASTPrimaryExpression) {

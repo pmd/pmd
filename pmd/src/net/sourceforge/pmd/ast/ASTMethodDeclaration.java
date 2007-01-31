@@ -29,7 +29,7 @@ public class ASTMethodDeclaration extends AccessNode {
      * @return a String representing the name of the method
      */
     public String getMethodName() {
-        ASTMethodDeclarator md = (ASTMethodDeclarator) getFirstChildOfType(ASTMethodDeclarator.class);
+        ASTMethodDeclarator md = getFirstChildOfType(ASTMethodDeclarator.class);
         if (md != null)
             return md.getImage();
         return null;
@@ -63,11 +63,11 @@ public class ASTMethodDeclaration extends AccessNode {
     }
 
     public boolean isVoid() {
-        return ((ASTResultType) getFirstChildOfType(ASTResultType.class)).isVoid();
+        return getFirstChildOfType(ASTResultType.class).isVoid();
     }
 
     public ASTResultType getResultType() {
-        return (ASTResultType) getFirstChildOfType(ASTResultType.class);
+        return getFirstChildOfType(ASTResultType.class);
     }
 
     public ASTBlock getBlock() {

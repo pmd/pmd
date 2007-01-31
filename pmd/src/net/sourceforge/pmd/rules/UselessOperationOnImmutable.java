@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.rules;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -36,8 +35,7 @@ public class UselessOperationOnImmutable extends AbstractRule {
             return super.visit(node, data);
         }
         String variableName = var.getImage();
-        for (Iterator it = var.getUsages().iterator(); it.hasNext();) {
-            NameOccurrence no = (NameOccurrence) it.next();
+        for (NameOccurrence no: var.getUsages()) {
             // FIXME - getUsages will return everything with the same name as the variable, 
             // see JUnit test, case 6. Changing to SimpleNode below, revisit when getUsages is fixed
             SimpleNode sn = no.getLocation();

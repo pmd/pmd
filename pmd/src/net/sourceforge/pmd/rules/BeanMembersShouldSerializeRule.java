@@ -5,7 +5,6 @@ package net.sourceforge.pmd.rules;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -67,10 +66,9 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
         
         Arrays.sort(methNameArray);
 
-        Map vars = node.getScope().getVariableDeclarations();
-        for (Iterator i = vars.keySet().iterator(); i.hasNext();) {
-            VariableNameDeclaration decl = (VariableNameDeclaration) i.next();
-            if (((List) vars.get(decl)).isEmpty() || decl.getAccessNodeParent().isTransient() || decl.getAccessNodeParent().isStatic()) {
+        Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getVariableDeclarations();
+        for (VariableNameDeclaration decl: vars.keySet()) {
+            if (vars.get(decl).isEmpty() || decl.getAccessNodeParent().isTransient() || decl.getAccessNodeParent().isStatic()) {
                 continue;
             }
             String varName = trimIfPrefix(decl.getImage());

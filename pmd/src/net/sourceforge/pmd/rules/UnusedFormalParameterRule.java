@@ -12,7 +12,6 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,11 +35,10 @@ public class UnusedFormalParameterRule extends AbstractRule {
     private void check(SimpleNode node, Object data) {
         Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
         if (parent instanceof ASTClassOrInterfaceDeclaration && !((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
-            Map vars = node.getScope().getVariableDeclarations();
-            for (Iterator i = vars.entrySet().iterator(); i.hasNext();) {
-                Map.Entry entry = (Map.Entry) i.next();
-                VariableNameDeclaration nameDecl = (VariableNameDeclaration) entry.getKey();
-                if (actuallyUsed(nameDecl, (List) entry.getValue())) {
+            Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getVariableDeclarations();
+            for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
+                VariableNameDeclaration nameDecl = entry.getKey();
+                if (actuallyUsed(nameDecl, entry.getValue())) {
                     continue;
                 }
                 addViolation(data, node, new Object[]{node instanceof ASTMethodDeclaration ? "method" : "constructor", nameDecl.getImage()});
@@ -48,9 +46,8 @@ public class UnusedFormalParameterRule extends AbstractRule {
         }
     }
 
-    private boolean actuallyUsed(VariableNameDeclaration nameDecl, List usages) {
-        for (Iterator j = usages.iterator(); j.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) j.next();
+    private boolean actuallyUsed(VariableNameDeclaration nameDecl, List<NameOccurrence> usages) {
+        for (NameOccurrence occ: usages) {
             if (occ.isOnLeftHandSide()) {
                 if (nameDecl.isArray() && occ.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() > 1) {
                     // array element access

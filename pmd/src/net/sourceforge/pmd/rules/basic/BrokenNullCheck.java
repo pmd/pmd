@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.rules.basic;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -26,12 +25,12 @@ public class BrokenNullCheck extends AbstractRule {
     public Object visit(ASTIfStatement node, Object data) {
         ASTExpression expression = (ASTExpression)node.jjtGetChild(0);
         
-        ASTConditionalAndExpression conditionalAndExpression = (ASTConditionalAndExpression)expression.getFirstChildOfType(ASTConditionalAndExpression.class);
+        ASTConditionalAndExpression conditionalAndExpression = expression.getFirstChildOfType(ASTConditionalAndExpression.class);
         if (conditionalAndExpression != null) {
             checkForViolations(node, data, conditionalAndExpression);
         }
         
-        ASTConditionalOrExpression conditionalOrExpression = (ASTConditionalOrExpression)expression.getFirstChildOfType(ASTConditionalOrExpression.class);
+        ASTConditionalOrExpression conditionalOrExpression = expression.getFirstChildOfType(ASTConditionalOrExpression.class);
         if (conditionalOrExpression != null) {
             checkForViolations(node, data, conditionalOrExpression);
         }
@@ -53,7 +52,7 @@ public class BrokenNullCheck extends AbstractRule {
                 !"!=".equals(equalityExpression.getImage())) {
             return;
         }
-        ASTNullLiteral nullLiteral = (ASTNullLiteral)equalityExpression.getFirstChildOfType(ASTNullLiteral.class);
+        ASTNullLiteral nullLiteral = equalityExpression.getFirstChildOfType(ASTNullLiteral.class);
         if (nullLiteral == null) {
             return;     //No null check
         }
@@ -82,7 +81,7 @@ public class BrokenNullCheck extends AbstractRule {
                 conditionalPrimaryExpression = (ASTPrimaryExpression)conditionalSubnode;
             } else {
                 //The ASTPrimaryExpression is hidden (in a negation, braces or EqualityExpression)
-                conditionalPrimaryExpression = (ASTPrimaryExpression) conditionalSubnode
+                conditionalPrimaryExpression = conditionalSubnode
                     .getFirstChildOfType(ASTPrimaryExpression.class);
             }
 
@@ -151,13 +150,11 @@ public class BrokenNullCheck extends AbstractRule {
     }
 
     private ASTPrimaryExpression findNullCompareExpression(ASTEqualityExpression equalityExpression) {
-        List primaryExpressions = equalityExpression.findChildrenOfType(ASTPrimaryExpression.class);
-        for (Iterator iter = primaryExpressions.iterator(); iter.hasNext();) {
-            ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression) iter.next();
-            List primaryPrefixes = primaryExpression.findChildrenOfType(ASTPrimaryPrefix.class);
-            for (Iterator iterator = primaryPrefixes.iterator(); iterator.hasNext();) {
-                ASTPrimaryPrefix primaryPrefix = (ASTPrimaryPrefix) iterator.next();
-                ASTName name = (ASTName)primaryPrefix.getFirstChildOfType(ASTName.class);
+        List<ASTPrimaryExpression> primaryExpressions = equalityExpression.findChildrenOfType(ASTPrimaryExpression.class);
+        for (ASTPrimaryExpression primaryExpression: primaryExpressions) {
+            List<ASTPrimaryPrefix> primaryPrefixes = primaryExpression.findChildrenOfType(ASTPrimaryPrefix.class);
+            for (ASTPrimaryPrefix primaryPrefix: primaryPrefixes) {
+                ASTName name = primaryPrefix.getFirstChildOfType(ASTName.class);
                 if (name != null) {
                     //We found the variable that is compared to null
                     return primaryExpression;

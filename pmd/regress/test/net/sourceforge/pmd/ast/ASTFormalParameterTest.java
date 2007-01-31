@@ -18,7 +18,7 @@ public class ASTFormalParameterTest extends ParserTst {
         Set ops = getNodes(new TargetJDK1_5(), ASTFormalParameter.class, TEST1);
         for (Iterator iter = ops.iterator(); iter.hasNext();) {
             ASTFormalParameter b = (ASTFormalParameter) iter.next();
-            ASTVariableDeclaratorId variableDeclId = (ASTVariableDeclaratorId)b.getFirstChildOfType(ASTVariableDeclaratorId.class);
+            ASTVariableDeclaratorId variableDeclId = b.getFirstChildOfType(ASTVariableDeclaratorId.class);
             if (!"x".equals(variableDeclId.getImage())) {
                 assertTrue(b.isVarargs());
                 nrOfVarArgs++;

@@ -71,12 +71,12 @@ public class NonThreadSafeSingleton extends AbstractRule {
         for (Iterator iter = ifStatements.iterator(); iter.hasNext();) {
             ASTIfStatement ifStatement = (ASTIfStatement) iter.next();
             if (ifStatement.getFirstParentOfType(ASTSynchronizedStatement.class) == null) {
-                ASTNullLiteral NullLiteral = (ASTNullLiteral) ifStatement.getFirstChildOfType(ASTNullLiteral.class);
+                ASTNullLiteral NullLiteral = ifStatement.getFirstChildOfType(ASTNullLiteral.class);
 
                 if (NullLiteral == null) {
                     continue;
                 }
-                ASTName Name = (ASTName) ifStatement.getFirstChildOfType(ASTName.class);
+                ASTName Name = ifStatement.getFirstChildOfType(ASTName.class);
                 if (Name == null || !fieldDecls.containsKey(Name.getImage())) {
                     continue;
                 }
@@ -92,7 +92,7 @@ public class NonThreadSafeSingleton extends AbstractRule {
                         ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetChild(0);
                         String name = null;
                         if (pp.usesThisModifier()) {
-                        	ASTPrimarySuffix priSuf = (ASTPrimarySuffix)expr.getFirstChildOfType(ASTPrimarySuffix.class); 
+                        	ASTPrimarySuffix priSuf = expr.getFirstChildOfType(ASTPrimarySuffix.class); 
                         	name = priSuf.getImage();
 						} else {
 							ASTName astName = (ASTName) pp.jjtGetChild(0);

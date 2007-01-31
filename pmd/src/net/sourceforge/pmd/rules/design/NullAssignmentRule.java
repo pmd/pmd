@@ -37,7 +37,7 @@ public class NullAssignmentRule extends AbstractRule {
     }
 
     private boolean isAssignmentToFinalField(ASTStatementExpression n) {
-        ASTName name = (ASTName) n.getFirstChildOfType(ASTName.class);
+        ASTName name = n.getFirstChildOfType(ASTName.class);
         return name != null
                 && name.getNameDeclaration() instanceof VariableNameDeclaration
                 && ((VariableNameDeclaration) name.getNameDeclaration()).getAccessNodeParent().isFinal();

@@ -20,7 +20,6 @@ import net.sourceforge.pmd.properties.StringProperty;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,12 +69,11 @@ public class CloseResource extends AbstractRule {
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        List vars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
+        List<ASTLocalVariableDeclaration> vars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
         List<ASTVariableDeclaratorId> ids = new ArrayList<ASTVariableDeclaratorId>();
 
         // find all variable references to Connection objects
-        for (Iterator it = vars.iterator(); it.hasNext();) {
-            ASTLocalVariableDeclaration var = (ASTLocalVariableDeclaration) it.next();
+        for (ASTLocalVariableDeclaration var: vars) {
             ASTType type = var.getTypeNode();
 
             if (type.jjtGetChild(0) instanceof ASTReferenceType) {

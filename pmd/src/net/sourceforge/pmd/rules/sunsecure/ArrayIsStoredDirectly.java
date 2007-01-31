@@ -47,7 +47,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        final ASTFormalParameters params = (ASTFormalParameters) node.getFirstChildOfType(ASTFormalParameters.class);
+        final ASTFormalParameters params = node.getFirstChildOfType(ASTFormalParameters.class);
         ASTFormalParameter[] arrs = getArrays(params);
         if (arrs != null) {
             checkAll(data, arrs, node.findChildrenOfType(ASTBlockStatement.class));
@@ -65,19 +65,19 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
      * Checks if the variable designed in parameter is written to a field (not local variable) in the statements.
      */
     private boolean checkForDirectAssignment(Object ctx, final ASTFormalParameter parameter, final List bs) {
-        final ASTVariableDeclaratorId vid = (ASTVariableDeclaratorId) parameter.getFirstChildOfType(ASTVariableDeclaratorId.class);
+        final ASTVariableDeclaratorId vid = parameter.getFirstChildOfType(ASTVariableDeclaratorId.class);
         final String varName = vid.getImage();
         for (Iterator it = bs.iterator(); it.hasNext();) {
             final ASTBlockStatement b = (ASTBlockStatement) it.next();
             if (b.containsChildOfType(ASTAssignmentOperator.class)) {
-                final ASTStatementExpression se = (ASTStatementExpression) b.getFirstChildOfType(ASTStatementExpression.class);
+                final ASTStatementExpression se = b.getFirstChildOfType(ASTStatementExpression.class);
                 if (se == null || !(se.jjtGetChild(0) instanceof ASTPrimaryExpression)) {
                     continue;
                 }
                 ASTPrimaryExpression pe = (ASTPrimaryExpression) se.jjtGetChild(0);
                 String assignedVar = getFirstNameImage(pe);
                 if (assignedVar == null) {
-                    ASTPrimarySuffix suffix = (ASTPrimarySuffix) se.getFirstChildOfType(ASTPrimarySuffix.class);
+                    ASTPrimarySuffix suffix = se.getFirstChildOfType(ASTPrimarySuffix.class);
                     if (suffix == null) {
                         continue;
                     }
@@ -104,7 +104,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                     }
                     String val = getFirstNameImage(e);
                     if (val == null) {
-                        ASTPrimarySuffix foo = (ASTPrimarySuffix) se.getFirstChildOfType(ASTPrimarySuffix.class);
+                        ASTPrimarySuffix foo = se.getFirstChildOfType(ASTPrimarySuffix.class);
                         if (foo == null) {
                             continue;
                         }
@@ -113,7 +113,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                     if (val == null) {
                         continue;
                     }
-                    ASTPrimarySuffix foo = (ASTPrimarySuffix) se.getFirstChildOfType(ASTPrimarySuffix.class);
+                    ASTPrimarySuffix foo = se.getFirstChildOfType(ASTPrimarySuffix.class);
                     if (foo != null && foo.isArrayDereference()) {
                         continue;
                     }

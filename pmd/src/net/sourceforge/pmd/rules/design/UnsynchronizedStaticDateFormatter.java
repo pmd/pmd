@@ -42,11 +42,11 @@ public class UnsynchronizedStaticDateFormatter extends AbstractRule {
         if (!node.isStatic()) {
             return data;
         }
-        ASTClassOrInterfaceType cit = (ASTClassOrInterfaceType) node.getFirstChildOfType(ASTClassOrInterfaceType.class);
+        ASTClassOrInterfaceType cit = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
         if (cit == null || !targets.contains(cit.getImage())) {
             return data;
         }
-        ASTVariableDeclaratorId var = (ASTVariableDeclaratorId) node.getFirstChildOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId var = node.getFirstChildOfType(ASTVariableDeclaratorId.class);
         for (Iterator i = var.getUsages().iterator(); i.hasNext();) {
             NameOccurrence occ = (NameOccurrence) i.next();
             SimpleNode n = occ.getLocation();

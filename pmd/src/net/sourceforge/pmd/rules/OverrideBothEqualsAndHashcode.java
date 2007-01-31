@@ -58,11 +58,10 @@ public class OverrideBothEqualsAndHashcode extends AbstractRule {
         for (int ix = 0; ix < node.jjtGetNumChildren(); ix++) {
             SimpleNode sn = (SimpleNode) node.jjtGetChild(ix);
             if (sn.getClass().equals(ASTFormalParameters.class)) {
-                List allParams = ((ASTFormalParameters) sn).findChildrenOfType(ASTFormalParameter.class);
-                for (int i = 0; i < allParams.size(); i++) {
+                List<ASTFormalParameter> allParams = ((ASTFormalParameters) sn).findChildrenOfType(ASTFormalParameter.class);
+                for (ASTFormalParameter formalParam: allParams) {
                     iFormalParams++;
-                    ASTFormalParameter formalParam = (ASTFormalParameter) allParams.get(i);
-                    ASTClassOrInterfaceType param = (ASTClassOrInterfaceType) formalParam.getFirstChildOfType(ASTClassOrInterfaceType.class);
+                    ASTClassOrInterfaceType param = formalParam.getFirstChildOfType(ASTClassOrInterfaceType.class);
                     if (param != null) {
                         paramName = param.getImage();
                     }

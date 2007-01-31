@@ -9,7 +9,6 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -34,9 +33,8 @@ public abstract class AbstractInefficientZeroCheck extends AbstractRule {
             return data;
         }
 
-        List declars = node.getUsages();
-        for (Iterator i = declars.iterator(); i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) i.next();
+        List<NameOccurrence> declars = node.getUsages();
+        for (NameOccurrence occ: declars) {
             if (!isTargetMethod(occ)) {
                 continue;
             }

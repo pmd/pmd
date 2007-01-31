@@ -162,11 +162,10 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
     private int checkConstructor(ASTVariableDeclaratorId node, Object data) {
         Node parent = node.jjtGetParent();
         if (parent.jjtGetNumChildren() >= 2) {
-            ASTArgumentList list = (ASTArgumentList) ((SimpleNode) parent
+            ASTArgumentList list = ((SimpleNode) parent
                     .jjtGetChild(1)).getFirstChildOfType(ASTArgumentList.class);
             if (list != null) {
-                ASTLiteral literal = (ASTLiteral) list
-                        .getFirstChildOfType(ASTLiteral.class);
+                ASTLiteral literal = list.getFirstChildOfType(ASTLiteral.class);
                 if (!isAdditive(list) && literal != null
                         && literal.isStringLiteral()) {
                     return 1;
@@ -179,8 +178,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
 
     private int processAdditive(Object data, int concurrentCount,
                                 SimpleNode sn, SimpleNode rootNode) {
-        ASTAdditiveExpression additive = (ASTAdditiveExpression) sn
-                .getFirstChildOfType(ASTAdditiveExpression.class);
+        ASTAdditiveExpression additive = sn.getFirstChildOfType(ASTAdditiveExpression.class);
         if (additive == null) {
             return 0;
         }

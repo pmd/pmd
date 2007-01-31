@@ -45,7 +45,7 @@ public class MoreThanOneLogger extends AbstractRule {
 		if (count > 1) {
 			return super.visit(node, data);
 		}
-		SimpleNode type = (SimpleNode) ((SimpleNode) node.jjtGetParent()).getFirstChildOfType(ASTType.class);
+		SimpleNode type = ((SimpleNode) node.jjtGetParent()).getFirstChildOfType(ASTType.class);
 		if (type != null) {
 			SimpleNode reftypeNode = (SimpleNode) type.jjtGetChild(0);
 			if (reftypeNode instanceof ASTReferenceType) {

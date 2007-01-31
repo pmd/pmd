@@ -19,11 +19,11 @@ public class ASTType extends SimpleJavaNode {
     }
 
     public String getTypeImage() {
-        ASTPrimitiveType prim = (ASTPrimitiveType) getFirstChildOfType(ASTPrimitiveType.class);
+        ASTPrimitiveType prim = getFirstChildOfType(ASTPrimitiveType.class);
         if (prim != null) {
             return prim.getImage();
         }
-        return ((ASTClassOrInterfaceType) getFirstChildOfType(ASTClassOrInterfaceType.class)).getImage();
+        return getFirstChildOfType(ASTClassOrInterfaceType.class).getImage();
     }
 
     public int getArrayDepth() {

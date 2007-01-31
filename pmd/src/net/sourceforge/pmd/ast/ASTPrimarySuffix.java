@@ -34,7 +34,7 @@ public class ASTPrimarySuffix extends SimpleJavaNode {
         if (!this.isArguments()) {
             throw new RuntimeException("ASTPrimarySuffix.getArgumentCount called, but this is not a method call");
         }
-        return ((ASTArguments)this.getFirstChildOfType(ASTArguments.class)).getArgumentCount();
+        return this.getFirstChildOfType(ASTArguments.class).getArgumentCount();
     }
 
     public void dump(String prefix) {

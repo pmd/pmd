@@ -68,7 +68,7 @@ public class AccessorClassGeneration extends AbstractRule {
             m_Instantiations.add(ad);
         }
 
-        public Iterator getInstantiationIterator() {
+        public Iterator<AllocData> getInstantiationIterator() {
             return m_Instantiations.iterator();
         }
 
@@ -76,7 +76,7 @@ public class AccessorClassGeneration extends AbstractRule {
             m_PrivateConstructors.add(cd);
         }
 
-        public Iterator getPrivateConstructorIterator() {
+        public Iterator<ASTConstructorDeclaration> getPrivateConstructorIterator() {
             return m_PrivateConstructors.iterator();
         }
 
@@ -88,7 +88,7 @@ public class AccessorClassGeneration extends AbstractRule {
             m_ClassQualifyingNames.add(name);
         }
 
-        public List getClassQualifyingNamesList() {
+        public List<String> getClassQualifyingNamesList() {
             return m_ClassQualifyingNames;
         }
     }
@@ -99,7 +99,7 @@ public class AccessorClassGeneration extends AbstractRule {
         private ASTAllocationExpression m_ASTAllocationExpression;
         private boolean isArray;
 
-        public AllocData(ASTAllocationExpression node, String aPackageName, List classQualifyingNames) {
+        public AllocData(ASTAllocationExpression node, String aPackageName, List<String> classQualifyingNames) {
             if (node.jjtGetChild(1) instanceof ASTArguments) {
                 ASTArguments aa = (ASTArguments) node.jjtGetChild(1);
                 m_ArgumentCount = aa.getArgumentCount();
@@ -114,8 +114,8 @@ public class AccessorClassGeneration extends AbstractRule {
                 //strip off outer class names
                 //try OuterClass, then try OuterClass.InnerClass, then try OuterClass.InnerClass.InnerClass2, etc...
                 String findName = "";
-                for (ListIterator li = classQualifyingNames.listIterator(classQualifyingNames.size()); li.hasPrevious();) {
-                    String aName = (String) li.previous();
+                for (ListIterator<String> li = classQualifyingNames.listIterator(classQualifyingNames.size()); li.hasPrevious();) {
+                    String aName = li.previous();
                     findName = aName + "." + findName;
                     if (m_Name.startsWith(findName)) {
                         //strip off name and exit
@@ -244,15 +244,15 @@ public class AccessorClassGeneration extends AbstractRule {
     private void processRule(Object ctx) {
         //check constructors of outerIterator against allocations of innerIterator
         for (ClassData outerDataSet : classDataList) {
-            for (Iterator constructors = outerDataSet.getPrivateConstructorIterator(); constructors.hasNext();) {
-                ASTConstructorDeclaration cd = (ASTConstructorDeclaration) constructors.next();
+            for (Iterator<ASTConstructorDeclaration> constructors = outerDataSet.getPrivateConstructorIterator(); constructors.hasNext();) {
+                ASTConstructorDeclaration cd = constructors.next();
 
                 for (ClassData innerDataSet : classDataList) {
                     if (outerDataSet == innerDataSet) {
                         continue;
                     }
-                    for (Iterator allocations = innerDataSet.getInstantiationIterator(); allocations.hasNext();) {
-                        AllocData ad = (AllocData) allocations.next();
+                    for (Iterator<AllocData> allocations = innerDataSet.getInstantiationIterator(); allocations.hasNext();) {
+                        AllocData ad = allocations.next();
                         //if the constructor matches the instantiation
                         //flag the instantiation as a generator of an extra class
                         if (outerDataSet.getClassName().equals(ad.getName()) && (cd.getParameterCount() == ad.getArgumentCount())) {

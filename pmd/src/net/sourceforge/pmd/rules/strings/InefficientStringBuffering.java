@@ -86,7 +86,7 @@ public class InefficientStringBuffering extends AbstractRule {
         if (s == null) {
             return false;
         }
-        ASTName n = (ASTName)s.getFirstChildOfType(ASTName.class);
+        ASTName n = s.getFirstChildOfType(ASTName.class);
         if (n == null || n.getImage().indexOf(methodName) == -1 || !(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
             return false;
         }
@@ -95,7 +95,7 @@ public class InefficientStringBuffering extends AbstractRule {
         // we need something to support this in the framework
         // but, "for now" (tm):
         // if more than one arg to append(), skip it
-        ASTArgumentList argList = (ASTArgumentList)s.getFirstChildOfType(ASTArgumentList.class);
+        ASTArgumentList argList = s.getFirstChildOfType(ASTArgumentList.class);
         if (argList == null || argList.jjtGetNumChildren() > 1) {
             return false;
         }
@@ -121,7 +121,7 @@ public class InefficientStringBuffering extends AbstractRule {
             return false;
         }
         // note that the child can be an ArrayDimsAndInits, for example, from java.lang.FloatingDecimal:  t = new int[ nWords+wordcount+1 ];
-        ASTClassOrInterfaceType an = (ASTClassOrInterfaceType) ao.getFirstChildOfType(ASTClassOrInterfaceType.class);
+        ASTClassOrInterfaceType an = ao.getFirstChildOfType(ASTClassOrInterfaceType.class);
         return an != null && (an.getImage().endsWith("StringBuffer") || an.getImage().endsWith("StringBuilder"));
     }
 }

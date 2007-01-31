@@ -9,7 +9,6 @@ import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class UnusedLocalVariableRule extends AbstractRule {
@@ -30,9 +29,8 @@ public class UnusedLocalVariableRule extends AbstractRule {
         return data;
     }
 
-    private boolean actuallyUsed(List usages) {
-        for (Iterator j = usages.iterator(); j.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) j.next();
+    private boolean actuallyUsed(List<NameOccurrence> usages) {
+        for (NameOccurrence occ: usages) {
             if (occ.isOnLeftHandSide()) {
                 continue;
             } else {
