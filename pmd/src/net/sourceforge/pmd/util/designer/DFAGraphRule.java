@@ -8,18 +8,18 @@ import java.util.List;
 
 public class DFAGraphRule extends AbstractRule {
 
-    private List methods;
-    private List constructors;
+    private List<ASTMethodDeclaration> methods;
+    private List<ASTMethodDeclaration> constructors;
 
     public DFAGraphRule() {
         super.setUsesDFA();
     }
 
-    public List getMethods() {
+    public List<ASTMethodDeclaration> getMethods() {
         return this.methods;
     }
 
-    public List getConstructors() {
+    public List<ASTMethodDeclaration> getConstructors() {
         return this.constructors;
     }
 

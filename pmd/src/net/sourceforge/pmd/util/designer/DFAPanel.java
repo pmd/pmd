@@ -15,7 +15,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.util.Iterator;
 import java.util.List;
 
 public class DFAPanel extends JComponent implements ListSelectionListener {

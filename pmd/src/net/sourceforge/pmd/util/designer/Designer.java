@@ -11,6 +11,7 @@ import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDK1_6;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -358,7 +359,7 @@ public class Designer implements ClipboardOwner {
                e.printStackTrace();
            		}
            
-           List methods = dfaGraphRule.getMethods();
+           List<ASTMethodDeclaration> methods = dfaGraphRule.getMethods();
            if (methods != null && !methods.isEmpty()) {
                dfaPanel.resetTo(methods, codeEditorPane);
                dfaPanel.repaint();

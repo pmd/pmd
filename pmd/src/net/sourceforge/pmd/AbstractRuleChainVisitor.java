@@ -17,7 +17,7 @@ import net.sourceforge.pmd.util.Benchmark;
  * extracts interesting nodes from an AST, and lets each Rule visit
  * the nodes it has expressed interest in.
  */
-public abstract class AbstractRuleChainVisitor<E extends CompilationUnit> implements RuleChainVisitor<E> {
+public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * These are all the rules participating in the RuleChain.
      */
@@ -38,7 +38,7 @@ public abstract class AbstractRuleChainVisitor<E extends CompilationUnit> implem
     /**
      * @see RuleChainVisitor#visitAll(List, RuleContext)
      */
-    public void visitAll(List<E> astCompilationUnits, RuleContext ctx) {
+    public void visitAll(List<CompilationUnit> astCompilationUnits, RuleContext ctx) {
         initialize();
         clear();
 
@@ -75,7 +75,7 @@ public abstract class AbstractRuleChainVisitor<E extends CompilationUnit> implem
     /**
      * Index all nodes for visitation by rules.
      */
-    protected abstract void indexNodes(List<E> astCompilationUnits, RuleContext ctx);
+    protected abstract void indexNodes(List<CompilationUnit> astCompilationUnits, RuleContext ctx);
 
     /**
      * Index a single node for visitation by rules.

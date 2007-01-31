@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.ast.CompilationUnit;
+
 /**
  * Grouping of Rules per Language in a RuleSet.
  *
@@ -102,7 +104,7 @@ public class RuleSets {
      * @param ctx      the RuleContext
      * @param language the Language of the source
      */
-    public void apply(List acuList, RuleContext ctx, Language language) {
+    public void apply(List<CompilationUnit> acuList, RuleContext ctx, Language language) {
         ruleChain.apply(acuList, ctx, language);
         for (RuleSet ruleSet: ruleSets) {
             if (applies(language, ruleSet.getLanguage())) {

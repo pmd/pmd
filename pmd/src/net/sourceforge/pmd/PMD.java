@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd;
 
+import net.sourceforge.pmd.ast.CompilationUnit;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
@@ -82,7 +83,7 @@ public class PMD {
             Parser parser = sourceTypeHandler.getParser();
             parser.setExcludeMarker(excludeMarker);
             long start = System.nanoTime();
-            Object rootNode = parser.parse(reader);
+            CompilationUnit rootNode = (CompilationUnit) parser.parse(reader);
             ctx.excludeLines(parser.getExcludeMap());
             long end = System.nanoTime();
             Benchmark.mark(Benchmark.TYPE_PARSER, end - start, 0);
@@ -108,7 +109,7 @@ public class PMD {
                 Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, end - start, 0);
             }
 
-            List acus = new ArrayList();
+            List<CompilationUnit> acus = new ArrayList<CompilationUnit>();
             acus.add(rootNode);
 
             ruleSets.apply(acus, ctx, language);

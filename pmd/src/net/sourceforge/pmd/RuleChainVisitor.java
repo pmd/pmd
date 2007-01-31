@@ -8,7 +8,7 @@ import net.sourceforge.pmd.ast.CompilationUnit;
  * The RuleChainVisitor understands how to visit an AST for a particular
  * Language.
  */
-public interface RuleChainVisitor<E extends CompilationUnit> {
+public interface RuleChainVisitor {
     /**
      * Add the given rule to the visitor.
      * 
@@ -26,5 +26,5 @@ public interface RuleChainVisitor<E extends CompilationUnit> {
      * @param ctx
      *            The RuleContext.
      */
-    void visitAll(List<E> astCompilationUnits, RuleContext ctx);
+    void visitAll(List<CompilationUnit> astCompilationUnits, RuleContext ctx);
 }

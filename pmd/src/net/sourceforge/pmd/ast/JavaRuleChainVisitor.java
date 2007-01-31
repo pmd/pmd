@@ -7,9 +7,9 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.rules.XPathRule;
 
-public class JavaRuleChainVisitor extends AbstractRuleChainVisitor<ASTCompilationUnit> {
+public class JavaRuleChainVisitor extends AbstractRuleChainVisitor {
     
-    protected void indexNodes(List<ASTCompilationUnit> astCompilationUnits, RuleContext ctx) {
+    protected void indexNodes(List<CompilationUnit> astCompilationUnits, RuleContext ctx) {
         JavaParserVisitor javaParserVistor = new JavaParserVisitorAdapter() {
             // Perform a visitation of the AST to index nodes which need
             // visiting by type
@@ -20,7 +20,7 @@ public class JavaRuleChainVisitor extends AbstractRuleChainVisitor<ASTCompilatio
         };
 
         for (int i = 0; i < astCompilationUnits.size(); i++) {
-            javaParserVistor.visit(astCompilationUnits.get(i), ctx);
+            javaParserVistor.visit((ASTCompilationUnit)astCompilationUnits.get(i), ctx);
         }
     }
 

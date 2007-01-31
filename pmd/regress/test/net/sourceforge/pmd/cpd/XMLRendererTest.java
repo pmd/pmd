@@ -23,7 +23,7 @@ import java.util.List;
 public class XMLRendererTest extends TestCase {
     public void test_no_dupes() {
         Renderer renderer = new XMLRenderer();
-        List list = new ArrayList();
+        List<Match> list = new ArrayList<Match>();
         String report = renderer.render(list.iterator());
         try {
             Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new ByteArrayInputStream(report.getBytes()));
