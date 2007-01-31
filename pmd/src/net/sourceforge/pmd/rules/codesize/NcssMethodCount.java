@@ -1,6 +1,5 @@
 package net.sourceforge.pmd.rules.codesize;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
@@ -25,10 +24,8 @@ public class NcssMethodCount extends AbstractNcssCount {
     return super.visit( node, data );
   }
 
-  protected void makeViolations(RuleContext ctx, Set p) {
-    Iterator points = p.iterator();
-    while ( points.hasNext() ) {
-      DataPoint point = (DataPoint) points.next();
+  protected void makeViolations(RuleContext ctx, Set<DataPoint> p) {
+    for ( DataPoint point: p ) {
       addViolation( ctx, point.getNode(), new String[] {
           ( (ASTMethodDeclaration) point.getNode() ).getMethodName(),
           String.valueOf( (int) point.getScore() ) } );

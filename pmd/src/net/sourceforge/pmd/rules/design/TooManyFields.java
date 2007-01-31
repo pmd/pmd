@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.rules.design;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -42,10 +41,9 @@ public class TooManyFields extends AbstractRule {
         stats = new HashMap<String, Integer>(5);
         nodes = new HashMap<String, ASTClassOrInterfaceDeclaration>(5);
 
-        List l = node.findChildrenOfType(ASTFieldDeclaration.class);
+        List<ASTFieldDeclaration> l = node.findChildrenOfType(ASTFieldDeclaration.class);
 
-        for (Iterator it = l.iterator(); it.hasNext();) {
-            ASTFieldDeclaration fd = (ASTFieldDeclaration) it.next();
+        for (ASTFieldDeclaration fd: l) {
             if (fd.isFinal() && fd.isStatic()) {
                 continue;
             }

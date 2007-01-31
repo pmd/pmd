@@ -8,7 +8,6 @@ import net.sourceforge.pmd.ast.ASTThrowStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTType;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -27,9 +26,8 @@ public class ExceptionAsFlowControl extends AbstractRule {
                 ; parent != null
                 ; parent = parent.getFirstParentOfType(ASTTryStatement.class)) {
 
-            List list = parent.findChildrenOfType(ASTCatchStatement.class);
-            for (Iterator iter = list.iterator(); iter.hasNext();) {
-                ASTCatchStatement catchStmt = (ASTCatchStatement) iter.next();
+            List<ASTCatchStatement> list = parent.findChildrenOfType(ASTCatchStatement.class);
+            for (ASTCatchStatement catchStmt: list) {
                 ASTFormalParameter fp = (ASTFormalParameter) catchStmt.jjtGetChild(0);
                 ASTType type = fp.findChildrenOfType(ASTType.class).get(0);
                 ASTClassOrInterfaceType name = type.findChildrenOfType(ASTClassOrInterfaceType.class).get(0);

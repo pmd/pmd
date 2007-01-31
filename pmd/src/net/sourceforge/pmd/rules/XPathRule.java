@@ -201,8 +201,7 @@ public class XPathRule extends CommonAbstractRule {
         BaseXPath xpath = new BaseXPath(xpathQueryString, new DocumentNavigator());
         if (properties.size() > 1) {
             SimpleVariableContext vc = new SimpleVariableContext();
-            for (Iterator j = properties.entrySet().iterator(); j.hasNext();) {
-                Entry e = (Entry) j.next();
+            for (Entry e: properties.entrySet()) {
                 if (!"xpath".equals(e.getKey())) {
                     vc.setVariableValue((String) e.getKey(), e.getValue());
                 }

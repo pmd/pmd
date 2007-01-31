@@ -19,11 +19,11 @@ public class TestClassWithoutTestCases extends AbstractRule {
 
         String className = node.getImage();
         if (className.endsWith("Test")) {
-            List m = node.findChildrenOfType(ASTMethodDeclarator.class);
+            List<ASTMethodDeclarator> m = node.findChildrenOfType(ASTMethodDeclarator.class);
             boolean testsFound = false;
             if (m != null) {
-                for (Iterator it = m.iterator(); it.hasNext() && !testsFound;) {
-                    ASTMethodDeclarator md = (ASTMethodDeclarator) it.next();
+                for (Iterator<ASTMethodDeclarator> it = m.iterator(); it.hasNext() && !testsFound;) {
+                    ASTMethodDeclarator md = it.next();
                     if (!isInInnerClassOrInterface(md)
                             && md.getImage().startsWith("test")) {
                         testsFound = true;

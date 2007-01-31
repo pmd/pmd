@@ -8,8 +8,6 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
-import java.util.Iterator;
-
 public class StringToStringRule extends AbstractRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
@@ -17,8 +15,7 @@ public class StringToStringRule extends AbstractRule {
             return data;
         }
         boolean isArray = node.isArray();
-        for (Iterator i = node.getUsages().iterator(); i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) i.next();
+        for (NameOccurrence occ: node.getUsages()) {
             NameOccurrence qualifier = occ.getNameForWhichThisIsAQualifier();
             if (qualifier != null) {
                 if (!isArray && qualifier.getImage().indexOf("toString") != -1) {

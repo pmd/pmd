@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.rules.design;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -260,19 +259,17 @@ public class NpathComplexity extends StatisticalRule {
       return 0;
     }
 
-    List andNodes = expr.findChildrenOfType( ASTConditionalAndExpression.class );
-    List orNodes = expr.findChildrenOfType( ASTConditionalOrExpression.class );
+    List<ASTConditionalAndExpression> andNodes = expr.findChildrenOfType( ASTConditionalAndExpression.class );
+    List<ASTConditionalOrExpression> orNodes = expr.findChildrenOfType( ASTConditionalOrExpression.class );
 
     int children = 0;
 
-    for ( Iterator iter = orNodes.iterator(); iter.hasNext(); ) {
-      ASTConditionalOrExpression element = (ASTConditionalOrExpression) iter.next();
+    for ( ASTConditionalOrExpression element: orNodes ) {
       children += element.jjtGetNumChildren();
       children--;
     }
 
-    for ( Iterator iter = andNodes.iterator(); iter.hasNext(); ) {
-      ASTConditionalAndExpression element = (ASTConditionalAndExpression) iter.next();
+    for ( ASTConditionalAndExpression element: andNodes ) {
       children += element.jjtGetNumChildren();
       children--;
     }
@@ -280,10 +277,8 @@ public class NpathComplexity extends StatisticalRule {
     return children;
   }
 
-  protected void makeViolations(RuleContext ctx, Set p) {
-    Iterator points = p.iterator();
-    while ( points.hasNext() ) {
-      DataPoint point = (DataPoint) points.next();
+  protected void makeViolations(RuleContext ctx, Set<DataPoint> p) {
+    for ( DataPoint point: p ) {
       addViolation( ctx, point.getNode(), new String[] {
           ( (ASTMethodDeclaration) point.getNode() ).getMethodName(),
           String.valueOf( (int) point.getScore() ) } );

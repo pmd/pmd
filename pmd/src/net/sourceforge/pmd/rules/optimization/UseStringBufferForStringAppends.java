@@ -11,8 +11,6 @@ import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
-import java.util.Iterator;
-
 public class UseStringBufferForStringAppends extends AbstractRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
@@ -23,8 +21,7 @@ public class UseStringBufferForStringAppends extends AbstractRule {
         if (!parent.getClass().equals(ASTLocalVariableDeclaration.class)) {
             return data;
         }
-        for (Iterator iter = node.getUsages().iterator(); iter.hasNext();) {
-            NameOccurrence no = (NameOccurrence) iter.next();
+        for (NameOccurrence no: node.getUsages()) {
             SimpleNode name = no.getLocation();
             ASTStatementExpression statement = name.getFirstParentOfType(ASTStatementExpression.class);
             if (statement == null) {

@@ -5,7 +5,6 @@
  */
 package net.sourceforge.pmd.rules.optimization;
 
-import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.AbstractRule;
@@ -26,9 +25,8 @@ public class AbstractOptimizationRule extends AbstractRule {
         return super.visit(node, data);
     }
 
-    protected boolean assigned(List usages) {
-        for (Iterator j = usages.iterator(); j.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) j.next();
+    protected boolean assigned(List<NameOccurrence> usages) {
+        for (NameOccurrence occ: usages) {
             if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
                 return true;
             }

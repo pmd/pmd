@@ -11,7 +11,6 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -62,9 +61,8 @@ public class UnnecessaryCast extends AbstractRule {
             return data;
         }
         ASTVariableDeclaratorId decl = node.getFirstChildOfType(ASTVariableDeclaratorId.class);
-        List usages = decl.getUsages();
-        for (Iterator iter = usages.iterator(); iter.hasNext();) {
-            NameOccurrence no = (NameOccurrence) iter.next();
+        List<NameOccurrence> usages = decl.getUsages();
+        for (NameOccurrence no: usages) {
             ASTName name = (ASTName) no.getLocation();
             SimpleNode n = (SimpleNode) name.jjtGetParent().jjtGetParent().jjtGetParent();
             if (ASTCastExpression.class.equals(n.getClass())) {

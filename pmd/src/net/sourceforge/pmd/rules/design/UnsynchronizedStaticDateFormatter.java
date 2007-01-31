@@ -13,7 +13,6 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -47,8 +46,7 @@ public class UnsynchronizedStaticDateFormatter extends AbstractRule {
             return data;
         }
         ASTVariableDeclaratorId var = node.getFirstChildOfType(ASTVariableDeclaratorId.class);
-        for (Iterator i = var.getUsages().iterator(); i.hasNext();) {
-            NameOccurrence occ = (NameOccurrence) i.next();
+        for (NameOccurrence occ: var.getUsages()) {
             SimpleNode n = occ.getLocation();
             if (n.getFirstParentOfType(ASTSynchronizedStatement.class) != null) {
                 continue;

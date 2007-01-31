@@ -283,14 +283,14 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
         dfaCanvas.repaint();
     }
 
-    public void resetTo(List newNodes, LineGetter lines) {
+    public void resetTo(List<ASTMethodDeclaration> newNodes, LineGetter lines) {
         dfaCanvas.setCode(lines);
         nodes.clear();
-        for (Iterator i = newNodes.iterator(); i.hasNext();) {
-            nodes.addElement(new ElementWrapper((ASTMethodDeclaration) i.next()));
+        for (ASTMethodDeclaration md: newNodes) {
+            nodes.addElement(new ElementWrapper(md));
         }
         nodeList.setSelectedIndex(0);
-        dfaCanvas.setMethod((SimpleNode) newNodes.get(0));
+        dfaCanvas.setMethod(newNodes.get(0));
         repaint();
     }
 }

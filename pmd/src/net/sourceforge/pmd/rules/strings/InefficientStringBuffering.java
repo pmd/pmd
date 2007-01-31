@@ -16,7 +16,6 @@ import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import java.util.Iterator;
 import java.util.List;
 
 /*
@@ -37,9 +36,8 @@ public class InefficientStringBuffering extends AbstractRule {
         }
 
         int immediateLiterals = 0;
-        List nodes = node.findChildrenOfType(ASTLiteral.class);
-        for (Iterator i = nodes.iterator();i.hasNext();) {
-            ASTLiteral literal = (ASTLiteral)i.next();
+        List<ASTLiteral> nodes = node.findChildrenOfType(ASTLiteral.class);
+        for (ASTLiteral literal: nodes) {
             if (literal.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTAdditiveExpression) {
                 immediateLiterals++;
             }
@@ -56,9 +54,8 @@ public class InefficientStringBuffering extends AbstractRule {
         }
 
         // if literal + public static final, return
-        List nameNodes = node.findChildrenOfType(ASTName.class);
-        for (Iterator i = nameNodes.iterator(); i.hasNext();) {
-            ASTName name = (ASTName)i.next();
+        List<ASTName> nameNodes = node.findChildrenOfType(ASTName.class);
+        for (ASTName name: nameNodes) {
             if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
                 VariableNameDeclaration vnd = (VariableNameDeclaration)name.getNameDeclaration();
                 if (vnd.getAccessNodeParent().isFinal() && vnd.getAccessNodeParent().isStatic()) {

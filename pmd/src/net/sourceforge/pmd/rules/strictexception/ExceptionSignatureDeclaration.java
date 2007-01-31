@@ -8,7 +8,6 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.Node;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -43,7 +42,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
             return super.visit(methodDeclaration, o);
         }
 
-        List exceptionList = methodDeclaration.findChildrenOfType(ASTName.class);
+        List<ASTName> exceptionList = methodDeclaration.findChildrenOfType(ASTName.class);
         if (!exceptionList.isEmpty()) {
             evaluateExceptions(exceptionList, o);
         }
@@ -52,7 +51,7 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
 
 
     public Object visit(ASTConstructorDeclaration constructorDeclaration, Object o) {
-        List exceptionList = constructorDeclaration.findChildrenOfType(ASTName.class);
+        List<ASTName> exceptionList = constructorDeclaration.findChildrenOfType(ASTName.class);
         if (!exceptionList.isEmpty()) {
             evaluateExceptions(exceptionList, o);
         }
@@ -65,10 +64,8 @@ public class ExceptionSignatureDeclaration extends AbstractRule {
      * @param exceptionList containing all exception for declaration
      * @param context
      */
-    private void evaluateExceptions(List exceptionList, Object context) {
-        ASTName exception;
-        for (Iterator iter = exceptionList.iterator(); iter.hasNext();) {
-            exception = (ASTName) iter.next();
+    private void evaluateExceptions(List<ASTName> exceptionList, Object context) {
+        for (ASTName exception: exceptionList) {
             if (hasDeclaredExceptionInSignature(exception)) {
                 addViolation(context, exception);
             }

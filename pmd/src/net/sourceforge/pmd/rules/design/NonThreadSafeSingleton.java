@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.rules.design;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -67,9 +66,8 @@ public class NonThreadSafeSingleton extends AbstractRule {
             return super.visit(node, data);
         }
 
-        List ifStatements = node.findChildrenOfType(ASTIfStatement.class);
-        for (Iterator iter = ifStatements.iterator(); iter.hasNext();) {
-            ASTIfStatement ifStatement = (ASTIfStatement) iter.next();
+        List<ASTIfStatement> ifStatements = node.findChildrenOfType(ASTIfStatement.class);
+        for (ASTIfStatement ifStatement: ifStatements) {
             if (ifStatement.getFirstParentOfType(ASTSynchronizedStatement.class) == null) {
                 ASTNullLiteral NullLiteral = ifStatement.getFirstChildOfType(ASTNullLiteral.class);
 

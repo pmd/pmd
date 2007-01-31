@@ -77,7 +77,7 @@ public class Benchmark {
     public static void main(String[] args) throws RuleSetNotFoundException, IOException, PMDException {
 
         String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
-        List files = new FileFinder().findFilesFrom(srcDir, new SourceFileOrDirectoryFilter(new SourceFileSelector()), true);
+        List<File> files = new FileFinder().findFilesFrom(srcDir, new SourceFileOrDirectoryFilter(new SourceFileSelector()), true);
 
         SourceType jdk = SourceType.JAVA_14;
         String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
@@ -103,9 +103,9 @@ public class Benchmark {
                 SimpleRuleSetNameMapper mapper = new SimpleRuleSetNameMapper(ruleset);
                 stress(jdk, factory.createSingleRuleSet(mapper.getRuleSets()), files, results, debug);
             } else {
-                Iterator i = factory.getRegisteredRuleSets();
+                Iterator<RuleSet> i = factory.getRegisteredRuleSets();
                 while (i.hasNext()) {
-                    stress(jdk, (RuleSet) i.next(), files, results, debug);
+                    stress(jdk, i.next(), files, results, debug);
                 }
             }
             System.out.println("=========================================================");
@@ -124,10 +124,9 @@ public class Benchmark {
         System.out.println("=========================================================");
     }
 
-    private static void parseStress(SourceType t, List files) throws FileNotFoundException {
+    private static void parseStress(SourceType t, List<File> files) throws FileNotFoundException {
         long start = System.currentTimeMillis();
-        for (Iterator k = files.iterator(); k.hasNext();) {
-            File file = (File) k.next();
+        for (File file: files) {
             TargetJDKVersion jdk;
             if (t.equals(SourceType.JAVA_13)) {
                 jdk = new TargetJDK1_3();
@@ -146,7 +145,7 @@ public class Benchmark {
         System.out.println("That took " + elapsed + " ms");
     }
 
-    private static void stress(SourceType t, RuleSet ruleSet, List files, Set<Result> results, boolean debug) throws PMDException, IOException {
+    private static void stress(SourceType t, RuleSet ruleSet, List<File> files, Set<Result> results, boolean debug) throws PMDException, IOException {
         Collection<Rule> rules = ruleSet.getRules();
         for (Rule rule: rules) {
             if (debug) System.out.println("Starting " + rule.getName());
@@ -158,8 +157,7 @@ public class Benchmark {
             p.setJavaVersion(t);
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
-            for (Iterator k = files.iterator(); k.hasNext();) {
-                File file = (File) k.next();
+            for (File file: files) {
                 FileReader reader = new FileReader(file);
                 ctx.setSourceCodeFilename(file.getName());
                 p.processFile(reader, working, ctx);
