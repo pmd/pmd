@@ -9,6 +9,7 @@ Fixed bug 1631646 - UselessOperationOnImmutable doesn't throw on variable.method
 Fixed bug 1627830 - UseLocaleWithCaseConversions now works with compound string operations
 Fixed bug 1613807 - DontImportJavaLang rule allows import to Thread inner classes
 Applied patch 1612455 - RFE 1411022 CompareObjectsWithEquals now catches the case where comparison is against new Object
+Implemented RFE 1562230 - Added migration rule to check for instantiation of Short/Byte/Long 
 Implemented RFE 1627581 - SuppressWarnings("unused") now suppresses all warnings in unusedcode.xml
 XPath rules are now chained together for an extra speedup in processing
 PMD now requires JDK 1.5 to be compiled. Java 1.4 support is provided using Retroweaver

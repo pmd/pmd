@@ -177,6 +177,91 @@ public class Foo {
    ]]>
       </example>
     </rule>
+	<rule name="ByteInstantiation"
+          message="Avoid instantiating Byte objects. Call Byte.valueOf() instead"
+          class="net.sourceforge.pmd.rules.XPathRule">
+          <description>
+              In JDK 1.5, calling new Byte() causes memory allocation. Byte.valueOf() is more memory friendly.
+          </description>
+      <properties>
+          <property name="xpath">
+          <value>
+          <![CDATA[
+//PrimaryPrefix/AllocationExpression
+[not (ArrayDimsAndInits)
+and (ClassOrInterfaceType/@Image='Byte'
+or ClassOrInterfaceType/@Image='java.lang.Byte')]
+          ]]>
+          </value>
+        </property>
+     </properties>
+     <priority>2</priority>
+     <example>
+<![CDATA[
+public class Foo {
+private Byte i = new Byte(0); // change to Byte i =
+Byte.valueOf(0);
+}
+]]>
+     </example>
+</rule>
+
+    <rule name="ShortInstantiation"
+          message="Avoid instantiating Short objects. Call Short.valueOf() instead"
+          class="net.sourceforge.pmd.rules.XPathRule">
+          <description>In JDK 1.5, calling new Short() causes memory allocation. Short.valueOf() is more memory friendly.
+          </description>
+          <properties>
+              <property name="xpath">
+          <value>
+<![CDATA[
+//PrimaryPrefix
+/AllocationExpression
+[not (ArrayDimsAndInits)
+and (ClassOrInterfaceType/@Image='Short'
+or ClassOrInterfaceType/@Image='java.lang.Short')]
+]]>
+          </value>
+              </property>
+          </properties>
+          <priority>2</priority>
+          <example>
+<![CDATA[
+public class Foo {
+private Short i = new Short(0); // change to Short i =
+Short.valueOf(0);
+}
+]]>
+          </example>
+</rule>
+
+<rule name="LongInstantiation"
+	message="Avoid instantiating Long objects.Call Long.valueOf() instead"
+    class="net.sourceforge.pmd.rules.XPathRule">
+    <description>In JDK 1.5, calling new Long() causes memory allocation. Long.valueOf() is more memory friendly.</description>
+    <properties>
+    <property name="xpath">
+    <value>
+<![CDATA[
+//PrimaryPrefix
+/AllocationExpression
+[not (ArrayDimsAndInits)
+and (ClassOrInterfaceType/@Image='Long'
+or ClassOrInterfaceType/@Image='java.lang.Long')]
+]]>
+    </value>
+    </property>
+    </properties>
+    <priority>2</priority>
+    <example>
+<![CDATA[
+public class Foo {
+private Long i = new Long(0); // change to Long i =
+Long.valueOf(0);
+}
+]]>
+    </example>
+  </rule>
 
 </ruleset>
 
