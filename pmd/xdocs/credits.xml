@@ -61,7 +61,7 @@
             <li>Thomas Leplus - Rewrote UselessStringValueOf</li>
             <li>Larry Brigman - Reported symlink bug in CPD</li>
             <li>Harald Rohan - Reported bug in CPD GUI</li>
-            <li>classens - Noted missing varargs setting in ASTFormalParameter</li>
+            <li>Stephan Classens - Patch for file closing bug, noted missing varargs setting in ASTFormalParameter</li>
             <li>piair - Implemented StringBufferInstantiationWithChar, AvoidUsingOctalValues</li>
             <li>Christopher Eagan - Reported bug in VariableNamingConventions</li>
             <li><a href="http://www.livejournal.com/users/insac/">Fabio Insaccanebbia</a> - Improvement for UseArraysAsList, UnusedNullCheckInEquals, MisplacedNullCheck, UselessOperationOnImmutable, AvoidArrayLoops, UseArraysAsList, AvoidConstantsInterface, AvoidDecimalLiteralsInBigDecimalConstructor, ClassCastExceptionWithToArray, BigIntegerInstantiation</li>

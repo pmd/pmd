@@ -124,7 +124,11 @@ public class Formatter {
     private void outputReportTo(Writer writer, Report report, boolean consoleRenderer) throws IOException {
         getRenderer(consoleRenderer).render(writer, report);
         writer.write(PMD.EOL);
-        writer.close();
+        if (consoleRenderer) {
+            writer.flush();
+        } else {
+            writer.close();
+        }
     }
 
 
