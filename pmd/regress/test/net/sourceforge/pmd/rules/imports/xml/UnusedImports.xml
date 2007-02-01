@@ -140,4 +140,33 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Used static import
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static com.foo.MyClass.staticMethod;
+public class Foo {
+	public Foo(){
+	    staticMethod("This is OK");
+	}
+}
+     ]]></code>
+     <source-type>java 1.5</source-type>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unused static import
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import static com.foo.MyClass.staticMethod;
+public class Foo {
+	public Foo(){
+	}
+}
+     ]]></code>
+     <source-type>java 1.5</source-type>
+    </test-code>
 </test-data>
