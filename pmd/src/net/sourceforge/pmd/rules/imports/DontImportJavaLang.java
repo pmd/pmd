@@ -16,7 +16,8 @@ public class DontImportJavaLang extends AbstractRule {
                     || img.startsWith("java.lang.reflect")
                     || img.startsWith("java.lang.annotation")
                     || img.startsWith("java.lang.instrument")
-                    || img.startsWith("java.lang.management")) {
+                    || img.startsWith("java.lang.management")
+                    || img.startsWith("java.lang.Thread.")) {
                 return data;
             }
 

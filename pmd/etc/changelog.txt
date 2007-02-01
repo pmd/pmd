@@ -7,6 +7,7 @@ Fixed bug 1531216 - ImmutableField. NameOccurrence.isSelfAssignment now recogniz
 Fixed bug 1634078 - StringToString now recognizes toString on a String Array, rather than an element.
 Fixed bug 1631646 - UselessOperationOnImmutable doesn't throw on variable.method().variable. 
 Fixed bug 1627830 - UseLocaleWithCaseConversions now works with compound string operations
+Fixed bug 1613807 - DontImportJavaLang rule allows import to Thread inner classes
 Applied patch 1612455 - RFE 1411022 CompareObjectsWithEquals now catches the case where comparison is against new Object
 Implemented RFE 1627581 - SuppressWarnings("unused") now suppresses all warnings in unusedcode.xml
 XPath rules are now chained together for an extra speedup in processing
