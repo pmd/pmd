@@ -41,6 +41,7 @@
       <xs:attribute name="message" type="xs:string" use="optional" />
       <xs:attribute name="externalInfoUrl" type="xs:string" use="optional" />
       <xs:attribute name="class" type="xs:NMTOKEN" use="optional" />
+      <xs:attribute name="typeResolution" type="xs:boolean" default="false" use="optional" />
     </xs:complexType>
   </xs:element>
 
