@@ -19,11 +19,17 @@ public class ImportWrapper {
 
     public boolean equals(Object other) {
         ImportWrapper i = (ImportWrapper) other;
+        if(name == null && i.getName() == null){
+            return i.getFullName().equals(fullname);
+        }
         return i.getName().equals(name);
     }
 
     public int hashCode() {
-        return getName().hashCode();
+        if(name == null){
+            return fullname.hashCode();
+        }
+        return name.hashCode();
     }
 
     public String getName() {

@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class UnusedImportsRule extends AbstractRule {
 
-    private Set<ImportWrapper> imports = new HashSet<ImportWrapper>();
+    protected Set<ImportWrapper> imports = new HashSet<ImportWrapper>();
 
     public Object visit(ASTCompilationUnit node, Object data) {
         imports.clear();
@@ -54,7 +54,17 @@ public class UnusedImportsRule extends AbstractRule {
         return data;
     }
 
-    private void check(SimpleNode node) {
+    protected void check(SimpleNode node) {
+        if (imports.isEmpty()) {
+            return;
+        }
+        ImportWrapper candidate = getImportWrapper(node);
+        if (imports.contains(candidate)) {
+            imports.remove(candidate);
+        }
+    }
+
+    protected ImportWrapper getImportWrapper(SimpleNode node) {
         String name;
         if (!isQualifiedName(node)) {
             name = node.getImage();
@@ -62,8 +72,6 @@ public class UnusedImportsRule extends AbstractRule {
             name = node.getImage().substring(0, node.getImage().indexOf('.'));
         }
         ImportWrapper candidate = new ImportWrapper(node.getImage(), name, new SimpleJavaNode(-1));
-        if (imports.contains(candidate)) {
-            imports.remove(candidate);
-        }
+        return candidate;
     }
 }

@@ -61,5 +61,22 @@ public class MyClass {
         </example>
     </rule>
 
+  <rule name="UnusedImports"
+        message="Avoid unused imports such as ''{0}''"
+        class="net.sourceforge.pmd.typeresolution.rules.imports.UnusedImports"
+        typeResolution="true"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/typeresolution.html#UnusedImports">
+    <description>
+    Avoid unused import statements.
+    </description>
+      <priority>4</priority>
+    <example>
+<![CDATA[
+// this is bad
+import java.io.*;
+public class Foo {}
+]]>
+    </example>
+    </rule>
  </ruleset>
 
