@@ -10,7 +10,6 @@
 	<property name="dir.regress" value="regress\" />
 	<property name="version" value="3.9" />
 	<property name="keystore" value="${keystore.path}" />
-	<property name="jvm14.exe" value="c:/Program Files/Java/j2re1.4.2_13/bin/java.exe" />
 
     <!--Settings-->
     <property name="outputTestResultsToFile" value="false" />
@@ -68,10 +67,14 @@
 	</target>
 
 	<target name="weave" depends="jar">
+		<fail unless="ant.jar" message="ant.jar location is not defined properly" />
+		<fail unless="junit.jar" message="junit.jar location is not defined properly" />
+		<fail unless="jvm14.runtime" message="jvm14.runtime (i.e. rt.jar) location is not defined properly" />
+
 		<taskdef name="retroweaver" classname="net.sourceforge.retroweaver.ant.RetroWeaverTask">
 			<classpath>
-				<pathelement location="${dir.lib14}/retroweaver-2.0Beta3.jar"/>
-				<pathelement location="${dir.lib14}/retroweaver-rt-2.0Beta3.jar"/>
+				<pathelement location="${dir.lib14}/retroweaver-2.0Beta4.jar"/>
+				<pathelement location="${dir.lib14}/retroweaver-rt-2.0Beta4.jar"/>
 				<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
 				<pathelement location="${dir.lib14}/asm-commons-3.0.jar"/>
 				<pathelement location="${dir.lib14}/asm-util-3.0.jar"/>
@@ -79,12 +82,25 @@
 			</classpath>
 		</taskdef>
 
-		<retroweaver inputjar="../${dir.lib}/pmd-${version}.jar" outputjar="../${dir.lib14}/pmd14-${version}.jar" target="1.4" failonerror="true" />
+		<path id="retroweaverclasspath">
+			<pathelement location="${dir.lib14}/pmd14-${version}.jar" />
+			<pathelement location="${dir.lib14}/retroweaver-rt-2.0Beta4.jar"/>
+			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
+			<pathelement location="${dir.lib}/asm-3.0.jar"/>
+			<pathelement location="${jvm14.runtime}" />
+			<pathelement location="${dir.lib}/jaxen-1.1.jar" />
+			<pathelement location="${dir.lib}/asm-3.0.jar" />
+			<pathelement location="${junit.jar}" />
+			<pathelement location="${ant.jar}" />
+		</path>
+
+		<retroweaver inputjar="../${dir.lib}/pmd-${version}.jar" outputjar="../${dir.lib14}/pmd14-${version}.jar" target="1.4" failonerror="true" verify="true">
+			<classpath refid="retroweaverclasspath" />
+		</retroweaver>
 
 		<jar jarfile="${dir.lib}\pmd-test-${version}.jar"
 		      includes="test/net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
 		      excludes="test/net/sourceforge/pmd/testframework/**/**" basedir="${dir.build}" />
-
 		<retroweaver inputjar="../${dir.lib}/pmd-test-${version}.jar" outputjar="../${dir.lib14}/pmd14-test-${version}.jar" target="1.4" failonerror="true" />
 	</target>
 
@@ -151,6 +167,8 @@
 	</target>
 
 	<target name="test14" depends="requires-junit,compile,copy,weave" description="Runs the unit tests with 1.4 jvm">
+		<fail unless="jvm14.exe" message="jvm14.exe location is not defined properly" />
+
 		<condition property="testResultsToFile">
 			<istrue value="${outputTestResultsToFile}"/>
 		</condition>
@@ -160,7 +178,7 @@
 				<include name="backport-util-concurrent.jar" />
 				<include name="pmd14-3.9.jar" />
 				<include name="pmd14-test-3.9.jar" />
-				<include name="retroweaver-rt-2.0Beta3.jar" />
+				<include name="retroweaver-rt-2.0Beta4.jar" />
 			</fileset>
 			<fileset dir="${dir.lib}">
 				<include name="jaxen-1.1.jar" />
