@@ -4,10 +4,10 @@
 
 	<property name="dir.lib" value="lib/" />
 	<property name="dir.lib14" value="java14/lib/" />
-	<property name="dir.src" value="src\" />
-	<property name="dir.build" value="build\" />
-	<property name="dir.rulesets" value="rulesets\" />
-	<property name="dir.regress" value="regress\" />
+	<property name="dir.src" value="src/" />
+	<property name="dir.build" value="build/" />
+	<property name="dir.rulesets" value="rulesets/" />
+	<property name="dir.regress" value="regress/" />
 	<property name="version" value="3.9" />
 	<property name="keystore" value="${keystore.path}" />
 
@@ -24,7 +24,7 @@
 
 	<target name="delete" description="Deletes the build directory and the pmd-x.x jar file.">
 		<delete dir="${dir.build}" />
-		<delete file="${dir.lib}\pmd-${version}.jar" />
+		<delete file="${dir.lib}/pmd-${version}.jar" />
 		<mkdir dir="${dir.build}" />
 	</target>
 
@@ -58,7 +58,7 @@
 	</target>
 
 	<target name="jar" depends="copy,compile" description="Jars up the classes and rulesets">
-		<jar jarfile="${dir.lib}\pmd-${version}.jar" includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**" basedir="${dir.build}">
+		<jar jarfile="${dir.lib}/pmd-${version}.jar" includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**" basedir="${dir.build}">
 			<manifest>
 				<attribute name="Main-Class" value="net.sourceforge.pmd.PMD" />
 				<attribute name="Class-Path" value="jaxen-1.1.jar asm-3.0.jar" />
@@ -98,14 +98,14 @@
 			<classpath refid="retroweaverclasspath" />
 		</retroweaver>
 
-		<jar jarfile="${dir.lib}\pmd-test-${version}.jar"
+		<jar jarfile="${dir.lib}/pmd-test-${version}.jar"
 		      includes="test/net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
 		      excludes="test/net/sourceforge/pmd/testframework/**/**" basedir="${dir.build}" />
 		<retroweaver inputjar="../${dir.lib}/pmd-test-${version}.jar" outputjar="../${dir.lib14}/pmd14-test-${version}.jar" target="1.4" failonerror="true" />
 	</target>
 
 	<target name="jarsrc" depends="copy,compile" description="Jars up the source directory">
-		<jar jarfile="${dir.lib}\pmd-src-${version}.jar" basedir="${dir.src}" />
+		<jar jarfile="${dir.lib}/pmd-src-${version}.jar" basedir="${dir.src}" />
 	</target>
 
 	<target name="pmd" description="Runs PMD" depends="copy, compile">
@@ -123,7 +123,7 @@
 
     <target name="pmdOnPmd" description="Runs PMD on PMD" depends="copy, compile">
         <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
-        <pmd rulesetfiles="${dir.rulesets}internal\dogfood.xml" shortFilenames="true" targetjdk="1.5">
+        <pmd rulesetfiles="${dir.rulesets}internal/dogfood.xml" shortFilenames="true" targetjdk="1.5">
             <classpath>
                 <path refid="dependencies.path" />
             </classpath>
