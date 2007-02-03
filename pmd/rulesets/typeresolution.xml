@@ -67,7 +67,7 @@ public class MyClass {
         typeResolution="true"
           externalInfoUrl="http://pmd.sourceforge.net/rules/typeresolution.html#UnusedImports">
     <description>
-    Avoid unused import statements.
+    Avoid unused import statements. This rule will find unused on demand imports, i.e. import com.foo.*.
     </description>
       <priority>4</priority>
     <example>
