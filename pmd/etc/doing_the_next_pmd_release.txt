@@ -63,6 +63,7 @@ cp pmd/lib/pmd-src-3.9.jar tmp/pmd-3.9/lib/
 mv tmp/pmd-3.9/ ~/tmp/
 cp pmd/lib/pmd-3.9.jar ~/tmp/pmd-3.9/lib
 cp -R pmd/target/docs ~/tmp/pmd-3.9/
+rm -f ~/tmp/pmd-3.9/etc/clover.license
 cd ~/tmp/
 zip -q -r pmd-src-3.9.zip pmd-3.9/
 
