@@ -6,12 +6,16 @@
 <!ATTLIST property name NMTOKEN #REQUIRED >
 <!ATTLIST property value NMTOKEN #IMPLIED >
 <!ATTLIST property pluginname NMTOKEN #IMPLIED >
+<!ELEMENT exclude EMPTY >
+<!ATTLIST exclude name NMTOKEN #REQUIRED >
 <!ELEMENT rule ( description | example | priority | properties )* >
 <!ATTLIST rule class NMTOKEN #IMPLIED >
 <!ATTLIST rule message CDATA #IMPLIED >
 <!ATTLIST rule externalInfoUrl CDATA #IMPLIED >
 <!ATTLIST rule name ID #IMPLIED >
 <!ATTLIST rule ref CDATA #IMPLIED >
+<!ATTLIST rule typeResolution CDATA #IMPLIED >
 <!ELEMENT ruleset ( description, rule+ ) >
 <!ATTLIST ruleset name CDATA #REQUIRED >
+<!ATTLIST ruleset language CDATA #IMPLIED >
 <!ELEMENT value ( #PCDATA ) >
