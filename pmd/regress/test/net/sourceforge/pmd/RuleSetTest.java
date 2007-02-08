@@ -153,7 +153,6 @@ public class RuleSetTest extends TestCase {
         s2.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
 
         assertFalse("2 rulesets with different name but same rules must not be equals", s1.equals(s2));
-        assertFalse("Rulesets that are not equals should not have the same hashcode", s1.hashCode() == s2.hashCode());
     }
 
     public void testEquals6() {
@@ -166,7 +165,6 @@ public class RuleSetTest extends TestCase {
         s2.addRule(new MockRule("other rule", "desc", "msg", "rulesetname"));
 
         assertFalse("2 rulesets with same name but different rules must not be equals", s1.equals(s2));
-        assertFalse("Rulesets that are not equals should not have the same hashcode", s1.hashCode() == s2.hashCode());
     }
 
     protected void verifyRuleSet(RuleSet IUT, int size, Set values) throws Throwable {

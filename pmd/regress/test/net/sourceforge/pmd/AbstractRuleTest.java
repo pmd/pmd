@@ -141,7 +141,7 @@ public class AbstractRuleTest extends TestCase {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
         assertEquals("2 instances of the same rule are equals", r1, r2);
-        assertEquals("hasCode for 2 instances of the same rule must be equals", r1.hashCode(), r2.hashCode());
+        assertEquals("Hashcode for 2 instances of the same rule must be equals", r1.hashCode(), r2.hashCode());
     }
 
     public void testEquals4() {
@@ -153,7 +153,6 @@ public class AbstractRuleTest extends TestCase {
         MyRule myRule = new MyRule();
         MyOtherRule myOtherRule = new MyOtherRule();
         assertFalse("2 rules of different classes cannot be equals", myRule.equals(myOtherRule));
-        assertFalse("Rules that are not equals should not have the same hashcode", myRule.hashCode() == myOtherRule.hashCode());
     }
 
     public void testEquals6() {
@@ -161,7 +160,6 @@ public class AbstractRuleTest extends TestCase {
         MyRule r2 = new MyRule();
         r2.setName("MyRule2");
         assertFalse("Rules with different names cannot be equals", r1.equals(r2));
-        assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
     }
 
     public void testEquals7() {
@@ -169,7 +167,6 @@ public class AbstractRuleTest extends TestCase {
         MyRule r2 = new MyRule();
         r2.setPriority(1);
         assertFalse("Rules with different priority cannot be equals", r1.equals(r2));
-        assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
     }
 
     public void testEquals8() {
@@ -178,7 +175,6 @@ public class AbstractRuleTest extends TestCase {
         MyRule r2 = new MyRule();
         r2.setProperty(MyRule.xpath, "something else");
         assertFalse("Rules with different properties values cannot be equals", r1.equals(r2));
-        assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
     }
 
     public void testEquals9() {
@@ -186,7 +182,6 @@ public class AbstractRuleTest extends TestCase {
         MyRule r2 = new MyRule();
         r2.setProperty(MyRule.xpath, "something else");
         assertFalse("Rules with different properties cannot be equals", r1.equals(r2));
-        assertFalse("Rules that are not equals should not have the same hashcode", r1.hashCode() == r2.hashCode());
     }
 
     public void testEquals10() {
