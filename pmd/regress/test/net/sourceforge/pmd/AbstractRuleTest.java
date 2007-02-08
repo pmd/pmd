@@ -140,33 +140,33 @@ public class AbstractRuleTest extends TestCase {
     public void testEquals3() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
-        assertEquals("2 instances of the same rule are equals", r1, r2);
-        assertEquals("Hashcode for 2 instances of the same rule must be equals", r1.hashCode(), r2.hashCode());
+        assertEquals("Two instances of the same rule are equal", r1, r2);
+        assertEquals("Hashcode for two instances of the same rule must be equal", r1.hashCode(), r2.hashCode());
     }
 
     public void testEquals4() {
         MyRule myRule = new MyRule();
-        assertFalse("A rule cannot be equals to an object of another class", myRule.equals("MyRule"));
+        assertFalse("A rule cannot be equal to an object of another class", myRule.equals("MyRule"));
     }
 
     public void testEquals5() {
         MyRule myRule = new MyRule();
         MyOtherRule myOtherRule = new MyOtherRule();
-        assertFalse("2 rules of different classes cannot be equals", myRule.equals(myOtherRule));
+        assertFalse("Two rules from different classes cannot be equal", myRule.equals(myOtherRule));
     }
 
     public void testEquals6() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
         r2.setName("MyRule2");
-        assertFalse("Rules with different names cannot be equals", r1.equals(r2));
+        assertFalse("Rules with different names cannot be equal", r1.equals(r2));
     }
 
     public void testEquals7() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
         r2.setPriority(1);
-        assertFalse("Rules with different priority cannot be equals", r1.equals(r2));
+        assertFalse("Rules with different priority levels cannot be equal", r1.equals(r2));
     }
 
     public void testEquals8() {
@@ -174,22 +174,22 @@ public class AbstractRuleTest extends TestCase {
         r1.setProperty(MyRule.xpath, "something");
         MyRule r2 = new MyRule();
         r2.setProperty(MyRule.xpath, "something else");
-        assertFalse("Rules with different properties values cannot be equals", r1.equals(r2));
+        assertFalse("Rules with different properties values cannot be equal", r1.equals(r2));
     }
 
     public void testEquals9() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
         r2.setProperty(MyRule.xpath, "something else");
-        assertFalse("Rules with different properties cannot be equals", r1.equals(r2));
+        assertFalse("Rules with different properties cannot be equal", r1.equals(r2));
     }
 
     public void testEquals10() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
         r2.setMessage("another message");
-        assertTrue("Rules with different message are still equals", r1.equals(r2));
-        assertTrue("Rules that are equals must have the same hashcode", r1.hashCode() == r2.hashCode());
+        assertTrue("Rules with different messages are still equal", r1.equals(r2));
+        assertTrue("Rules that are equal must have the same hashcode", r1.hashCode() == r2.hashCode());
     }
 
 }
