@@ -3,6 +3,8 @@
  */
 package test.net.sourceforge.pmd.symboltable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTTryStatement;
@@ -10,10 +12,12 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import java.util.List;
+import org.junit.Test;
 
+import java.util.List;
 public class VariableNameDeclarationTest extends STBBaseTst {
 
+    @Test
     public void testConstructor() {
         parseCode(TEST1);
         List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
@@ -23,6 +27,7 @@ public class VariableNameDeclarationTest extends STBBaseTst {
         assertEquals(3, decl.getNode().getBeginLine());
     }
 
+    @Test
     public void testExceptionBlkParam() {
         ASTVariableDeclaratorId id = new ASTVariableDeclaratorId(3);
         id.testingOnly__setBeginLine(10);
@@ -34,36 +39,42 @@ public class VariableNameDeclarationTest extends STBBaseTst {
         assertTrue(decl.isExceptionBlockParameter());
     }
 
+    @Test
     public void testIsArray() {
         parseCode(TEST3);
         VariableNameDeclaration decl = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
         assertTrue(decl.isArray());
     }
 
+    @Test
     public void testPrimitiveType() {
         parseCode(TEST1);
         VariableNameDeclaration decl = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
         assertTrue(decl.isPrimitiveType());
     }
 
+    @Test
     public void testArrayIsReferenceType() {
         parseCode(TEST3);
         VariableNameDeclaration decl = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
         assertTrue(decl.isReferenceType());
     }
 
+    @Test
     public void testPrimitiveTypeImage() {
         parseCode(TEST3);
         VariableNameDeclaration decl = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
         assertEquals("int", decl.getTypeImage());
     }
 
+    @Test
     public void testRefTypeImage() {
         parseCode(TEST4);
         VariableNameDeclaration decl = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
         assertEquals("String", decl.getTypeImage());
     }
 
+    @Test
     public void testParamTypeImage() {
         parseCode(TEST5);
         VariableNameDeclaration decl = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0).getScope().getVariableDeclarations().keySet().iterator().next();
@@ -101,4 +112,8 @@ public class VariableNameDeclarationTest extends STBBaseTst {
             "public class Foo {" + PMD.EOL +
             " void foo(String x) {}" + PMD.EOL +
             "}";
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(VariableNameDeclarationTest.class);
+    }
 }

@@ -3,8 +3,9 @@
  */
 package test.net.sourceforge.pmd.ant;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 
 /**
@@ -13,27 +14,17 @@ import junit.framework.TestSuite;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
+@RunWith(Suite.class)
+@SuiteClasses({FormatterTest.class, PMDTaskTest.class})
 public class AntTests {
-    /**
-     * test suite
-     *
-     * @return test suite
-     */
-    public static Test suite() {
-        TestSuite suite = new TestSuite("Test for test.net.sourceforge.pmd.ant");
-
-        //$JUnit-BEGIN$
-        suite.addTestSuite(FormatterTest.class);
-        suite.addTestSuite(PMDTaskTest.class);
-
-        //$JUnit-END$
-        return suite;
-    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.6  2007/02/09 01:37:59  allancaplan
+ * Moving to JUnit 4
+ *
  * Revision 1.5  2006/02/10 14:26:25  tomcopeland
  * Huge reformatting checkin
  *

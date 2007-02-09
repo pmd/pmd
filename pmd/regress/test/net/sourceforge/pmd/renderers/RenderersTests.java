@@ -3,8 +3,9 @@
  */
 package test.net.sourceforge.pmd.renderers;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 
 /**
@@ -13,30 +14,17 @@ import junit.framework.TestSuite;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
+@RunWith(Suite.class)
+@SuiteClasses({CSVRendererTest.class, EmacsRendererTest.class, XMLRendererTest.class, TextPadRendererTest.class})
 public class RenderersTests {
-    /**
-     * test suite
-     *
-     * @return test suite
-     */
-    public static Test suite() {
-        TestSuite suite =
-                new TestSuite("Test for test.net.sourceforge.pmd.renderers");
-
-        //$JUnit-BEGIN$
-        suite.addTestSuite(CSVRendererTest.class);
-        suite.addTestSuite(EmacsRendererTest.class);
-        suite.addTestSuite(XMLRendererTest.class);
-        suite.addTestSuite(TextPadRendererTest.class);
-
-        //$JUnit-END$
-        return suite;
-    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.7  2007/02/09 01:38:02  allancaplan
+ * Moving to JUnit 4
+ *
  * Revision 1.6  2006/10/13 23:49:38  allancaplan
  * Improving JUnit tests
  *

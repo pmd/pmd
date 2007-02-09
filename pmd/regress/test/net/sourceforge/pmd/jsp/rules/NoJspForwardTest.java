@@ -2,7 +2,11 @@
  package test.net.sourceforge.pmd.jsp.rules;
  
  import net.sourceforge.pmd.Rule;
- import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
  
  /**
   * Test the "NoJspForward" rule.
@@ -12,11 +16,17 @@
  public class NoJspForwardTest extends SimpleAggregatorTst {
      private Rule rule;
  
+     @Before
      public void setUp() {
          rule = findRule("jsp", "NoJspForward");
      }
  
+     @Test
      public void testViolation() {
          runTests(rule);
      }
- }
+
+     public static junit.framework.Test suite() {
+         return new junit.framework.JUnit4TestAdapter(NoJspForwardTest.class);
+     }
+}

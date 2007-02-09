@@ -3,6 +3,10 @@
  */
 package test.net.sourceforge.pmd.ast;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTBlock;
@@ -20,6 +24,10 @@ import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.util.ArrayList;
@@ -29,47 +37,55 @@ import java.util.Set;
 
 public class SimpleNodeTest extends ParserTst {
 
+    @Test
     public void testMethodDiffLines() throws Throwable {
         Set methods = getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
         Iterator iter = methods.iterator();
         verifyNode((SimpleNode) iter.next(), 2, 9, 4, 2);
     }
 
+    @Test
     public void testMethodSameLine() throws Throwable {
         Set methods = getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
         verifyNode((SimpleNode) methods.iterator().next(), 2, 9, 2, 21);
     }
 
+    @Test
     public void testNoLookahead() throws Throwable {
         String code = NO_LOOKAHEAD; // 1, 8 -> 1, 20
         Set uCD = getNodes(ASTClassOrInterfaceDeclaration.class, code);
         verifyNode((SimpleNode) uCD.iterator().next(), 1, 8, 1, 20);
     }
 
+    @Test
     public void testHasExplicitExtends() throws Throwable {
         String code = HAS_EXPLICIT_EXTENDS;
         ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertTrue(ucd.jjtGetChild(0) instanceof ASTExtendsList);
     }
 
+    @Test
     public void testNoExplicitExtends() throws Throwable {
         String code = NO_EXPLICIT_EXTENDS;
         ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertFalse(ucd.jjtGetChild(0) instanceof ASTExtendsList);
     }
 
+    @Test
     public void testHasExplicitImplements() throws Throwable {
         String code = HAS_EXPLICIT_IMPLEMENTS;
         ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertTrue(ucd.jjtGetChild(0) instanceof ASTImplementsList);
     }
 
+    @Test
     public void testNoExplicitImplements() throws Throwable {
         String code = NO_EXPLICIT_IMPLEMENTS;
         ASTClassOrInterfaceDeclaration ucd = getNodes(ASTClassOrInterfaceDeclaration.class, code).iterator().next();
         assertFalse(ucd.jjtGetChild(0) instanceof ASTImplementsList);
     }
 
+    @Test
     public void testColumnsOnQualifiedName() throws Throwable {
         Set name = getNodes(ASTName.class, QUALIFIED_NAME);
         Iterator i = name.iterator();
@@ -81,6 +97,7 @@ public class SimpleNodeTest extends ParserTst {
         }
     }
 
+    @Test
     public void testLineNumbersForNameSplitOverTwoLines() throws Throwable {
         Set name = getNodes(ASTName.class, BROKEN_LINE_IN_NAME);
         Iterator i = name.iterator();
@@ -95,6 +112,7 @@ public class SimpleNodeTest extends ParserTst {
         }
     }
 
+    @Test
     public void testLineNumbersAreSetOnAllSiblings() throws Throwable {
         Set blocks = getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS);
         Iterator i = blocks.iterator();
@@ -116,12 +134,14 @@ public class SimpleNodeTest extends ParserTst {
         }
     }
 
+    @Test
     public void testFindChildrenOfType() {
         ASTBlock block = new ASTBlock(2);
         block.jjtAddChild(new ASTReturnStatement(1), 0);
         assertEquals(1, block.findChildrenOfType(ASTReturnStatement.class).size());
     }
 
+    @Test
     public void testFindChildrenOfTypeMultiple() {
         ASTBlock block = new ASTBlock(1);
         block.jjtAddChild(new ASTBlockStatement(2), 0);
@@ -131,6 +151,7 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals(2, nodes.size());
     }
 
+    @Test
     public void testFindChildrenOfTypeRecurse() {
         ASTBlock block = new ASTBlock(1);
         ASTBlock childBlock = new ASTBlock(2);
@@ -141,6 +162,7 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals(1, nodes.size());
     }
 
+    @Test
     public void testGetFirstChild() {
         ASTBlock block = new ASTBlock(1);
         ASTStatement x = new ASTStatement(2);
@@ -153,6 +175,7 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals(x, n);
     }
 
+    @Test
     public void testGetFirstChildNested() {
         ASTBlock block = new ASTBlock(1);
         ASTStatement x = new ASTStatement(2);
@@ -167,6 +190,7 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals(x1, n);
     }
 
+    @Test
     public void testGetFirstChildNestedDeeper() {
         ASTBlock block = new ASTBlock(1);
         ASTStatement x = new ASTStatement(2);
@@ -184,13 +208,14 @@ public class SimpleNodeTest extends ParserTst {
         assertEquals(x2, n);
     }
 
-/*
+    @Ignore
+    @Test
     public void testContainsNoInner() throws Throwable {
         ASTCompilationUnit c = (ASTCompilationUnit) getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
-        List res = new ArrayList();
+        List<ASTFieldDeclaration> res = new ArrayList<ASTFieldDeclaration>();
         c.findChildrenOfType(ASTFieldDeclaration.class, res, false);
         assertTrue(res.isEmpty());
-        String expectedXml = "<CompilationUnit BeginColumn=\"1\" BeginLine=\"5\" EndColumn=\"1\" EndLine=\"5\">" +
+/*        String expectedXml = "<CompilationUnit BeginColumn=\"1\" BeginLine=\"5\" EndColumn=\"1\" EndLine=\"5\">" +
                 "<TypeDeclaration BeginColumn=\"1\" BeginLine=\"1\" EndColumn=\"1\" EndLine=\"5\">" +
                 "<ClassOrInterfaceDeclaration Abstract=\"false\" BeginColumn=\"8\" BeginLine=\"1\" EndColumn=\"1\" " +
                 "EndLine=\"5\" Final=\"false\" Image=\"Test\" Interface=\"false\" Native=\"false\" Nested=\"false\" PackagePrivate=\"false\" Private=\"false\" Protected=\"false\" Public=\"true\" Static=\"false\" Strictfp=\"false\" Synchronized=\"false\" Transient=\"false\" Volatile=\"false\">" +
@@ -210,9 +235,9 @@ public class SimpleNodeTest extends ParserTst {
                 "</ClassOrInterfaceDeclaration></ClassOrInterfaceBodyDeclaration></ClassOrInterfaceBody></ClassOrInterfaceDeclaration>" +
                 "</TypeDeclaration></CompilationUnit>";
         assertEquals( expectedXml, getXmlString( c ) );
-    }
-*/
+*/    }
 
+    @Test
     public void testContainsNoInnerWithAnonInner() throws Throwable {
         ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
         List<ASTFieldDeclaration> res = new ArrayList<ASTFieldDeclaration>();
@@ -220,11 +245,13 @@ public class SimpleNodeTest extends ParserTst {
         assertTrue(res.isEmpty());
     }
 
+    @Test
     public void testContainsChildOfType() throws Throwable {
         ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE).iterator().next();
         assertTrue(c.containsChildOfType(ASTFieldDeclaration.class));
     }
 
+    @Test
     public void testXPathNodeSelect() throws Throwable {
         ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, TEST_XPATH).iterator().next();
         List nodes = c.findChildNodesWithXPath("//FieldDeclaration");
@@ -310,4 +337,7 @@ public class SimpleNodeTest extends ParserTst {
             "  int y = 42;" + PMD.EOL +
             "}";
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(SimpleNodeTest.class);
+    }
 }

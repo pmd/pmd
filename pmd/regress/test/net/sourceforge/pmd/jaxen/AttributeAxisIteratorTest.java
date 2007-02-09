@@ -3,24 +3,24 @@
  */
 package test.net.sourceforge.pmd.jaxen;
 
-import junit.framework.TestCase;
 import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.AttributeAxisIterator;
 
-public class AttributeAxisIteratorTest extends TestCase {
+import org.junit.Test;
 
+public class AttributeAxisIteratorTest {
+
+    @Test(expected = UnsupportedOperationException.class)
     public void testRemove() {
         SimpleNode n = new SimpleJavaNode(0);
         n.testingOnly__setBeginColumn(1);
         n.testingOnly__setBeginLine(1);
         AttributeAxisIterator iter = new AttributeAxisIterator(n);
-        try {
-            iter.remove();
-            fail("Should have thrown an exception!");
-        } catch (UnsupportedOperationException e) {
-            // cool
-        }
+        iter.remove();
     }
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(AttributeAxisIteratorTest.class);
+    }
 }

@@ -1,13 +1,16 @@
 package test.net.sourceforge.pmd.cpd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.CPPTokenizer;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.Tokens;
 
-public class CPPTokenizerTest extends TestCase {
+import org.junit.Test;
 
+public class CPPTokenizerTest {
+
+    @Test
     public void testMultiLineMacros() throws Throwable {
         CPPTokenizer tokenizer = new CPPTokenizer();
         SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(TEST1));
@@ -16,14 +19,17 @@ public class CPPTokenizerTest extends TestCase {
         assertEquals(7, tokens.size());
     }
 
+    @Test
     public void testDollarSignInIdentifier() {
         parse(TEST2);
     }
 
+    @Test
     public void testDollarSignStartingIdentifier() {
         parse(TEST3);
     }
 
+    @Test
     public void testWideCharacters() {
         parse(TEST4);
     }
@@ -54,5 +60,7 @@ public class CPPTokenizerTest extends TestCase {
     private static final String TEST4 =
             " void main() { char x = L'a'; }";
 
-
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(CPPTokenizerTest.class);
+    }
 }

@@ -3,6 +3,8 @@
  */
 package test.net.sourceforge.pmd.symboltable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
@@ -15,11 +17,13 @@ import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
+import org.junit.Test;
+
 import java.util.List;
 import java.util.Map;
-
 public class LocalScopeTest extends STBBaseTst {
 
+    @Test
     public void testNameWithThisOrSuperIsNotFlaggedAsUnused() {
         LocalScope scope = new LocalScope();
         ASTName name = new ASTName(1);
@@ -32,6 +36,7 @@ public class LocalScopeTest extends STBBaseTst {
         assertFalse(scope.getVariableDeclarations().keySet().iterator().hasNext());
     }
 
+    @Test
     public void testNameWithSuperIsNotFlaggedAsUnused() {
         LocalScope scope = new LocalScope();
         ASTName name = new ASTName(1);
@@ -44,6 +49,7 @@ public class LocalScopeTest extends STBBaseTst {
         assertFalse(scope.getVariableDeclarations().keySet().iterator().hasNext());
     }
 
+    @Test
     public void testLocalVariableDeclarationFound() {
         parseCode(TEST1);
         List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
@@ -54,6 +60,7 @@ public class LocalScopeTest extends STBBaseTst {
         assertEquals("b", decl.getImage());
     }
 
+    @Test
     public void testQualifiedNameOccurrence() {
         parseCode(TEST2);
         List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
@@ -64,6 +71,7 @@ public class LocalScopeTest extends STBBaseTst {
         assertEquals("b", occ.getImage());
     }
 
+    @Test
     public void testPostfixUsageIsRecorded() {
         parseCode(TEST3);
         List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
@@ -75,6 +83,7 @@ public class LocalScopeTest extends STBBaseTst {
         assertEquals(4, occ.getLocation().getBeginLine());
     }
 
+    @Test
     public void testLocalVariableTypesAreRecorded() {
         parseCode(TEST1);
         List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
@@ -83,6 +92,7 @@ public class LocalScopeTest extends STBBaseTst {
         assertEquals("Bar", decl.getTypeImage());
     }
 
+    @Test
     public void testMethodArgumentTypesAreRecorded() {
         parseCode(TEST5);
         List nodes = acu.findChildrenOfType(ASTFormalParameter.class);
@@ -91,6 +101,7 @@ public class LocalScopeTest extends STBBaseTst {
         assertEquals("String", decl.getTypeImage());
     }
 
+    @Test
     public void testgetEnclosingMethodScope() {
         parseCode(TEST4);
         ASTLocalVariableDeclaration node = acu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
@@ -133,4 +144,7 @@ public class LocalScopeTest extends STBBaseTst {
             " void foo(String x);" + PMD.EOL +
             "}";
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(LocalScopeTest.class);
+    }
 }

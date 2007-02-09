@@ -1,5 +1,6 @@
 package test.net.sourceforge.pmd.jsp.ast;
 
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.jsp.ast.ASTAttributeValue;
 import net.sourceforge.pmd.jsp.ast.ASTCData;
@@ -8,12 +9,13 @@ import net.sourceforge.pmd.jsp.ast.ASTDoctypeDeclaration;
 import net.sourceforge.pmd.jsp.ast.ASTDoctypeExternalId;
 import net.sourceforge.pmd.jsp.ast.ASTElement;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-
 /**
  * Test parsing of a JSP in document style, by checking the generated AST.
  * 
@@ -27,7 +29,8 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	 * 
 	 * @throws Throwable
 	 */
-	public void testSimplestJsp() throws Throwable {
+    @Test
+    public void testSimplestJsp() throws Throwable {
 		assertNumberOfNodes(ASTElement.class, TEST_SIMPLEST_HTML, 1);
 	}
 
@@ -36,6 +39,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	 * 
 	 * @throws Throwable
 	 */
+    @Test
 	public void testElementAttributeAndNamespace() throws Throwable {
 		Set nodes = getNodes(null, TEST_ELEMENT_AND_NAMESPACE);
 
@@ -68,7 +72,8 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	 * in an attribute value.
 	 *
 	 */
-	public void testAttributeValueContainingHash() 
+    @Test
+    public void testAttributeValueContainingHash() 
 	{
 		Set nodes = getNodes(null, TEST_ATTRIBUTE_VALUE_CONTAINING_HASH);
 		
@@ -104,7 +109,8 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	/**
 	 * Test correct parsing of CDATA.
 	 */
-	public void testCData() {
+    @Test
+    public void testCData() {
 		Set cdataNodes = getNodes(ASTCData.class, TEST_CDATA);
 
 		assertEquals("One CDATA node expected!", 1, cdataNodes.size());
@@ -116,7 +122,8 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	/**
 	 * Test parsing of Doctype declaration.
 	 */
-	public void testDoctype() {
+    @Test
+    public void testDoctype() {
 		Set nodes = getNodes(null, TEST_DOCTYPE);
 
 		Set<ASTDoctypeDeclaration> docTypeDeclarations = getNodesOfType(ASTDoctypeDeclaration.class, nodes);
@@ -142,7 +149,8 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	 * Test parsing of a XML comment.
 	 *
 	 */
-	public void testComment() {
+    @Test
+    public void testComment() {
 		Set comments = getNodes(ASTCommentTag.class, TEST_COMMENT);
 		assertEquals("One comment expected!", 1, comments.size());
 		ASTCommentTag comment = (ASTCommentTag) comments.iterator().next();
@@ -164,4 +172,8 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 	
 	private static final String TEST_ATTRIBUTE_VALUE_CONTAINING_HASH = 
 		"<tag:if something=\"#yes#\" foo=\"CREATE\">  <a href=\"#\">foo</a> </tag:if>";
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(JspDocStyleTest.class);
+    }
 }

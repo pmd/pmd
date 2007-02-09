@@ -3,15 +3,19 @@
  */
 package test.net.sourceforge.pmd.dfa;
 
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
+
+import org.junit.Test;
+
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.util.List;
-
 public class AcceptanceTest extends ParserTst {
 
+    @Test
     public void testbook() throws Throwable {
         getOrderedNodes(ASTMethodDeclarator.class, FOO);
     }
@@ -23,6 +27,7 @@ public class AcceptanceTest extends ParserTst {
             " }" + PMD.EOL +
             "}";
 
+    @Test
     public void testLabelledBreakLockup() throws Throwable {
         getOrderedNodes(ASTMethodDeclarator.class, LABELLED_BREAK_LOCKUP);
     }
@@ -50,118 +55,147 @@ public class AcceptanceTest extends ParserTst {
         return true;
     }
 
+    @Test
     public void test_1() throws Throwable {
         assertTrue(check(TEST1_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST1)));
     }
 
+    @Test
     public void test_2() throws Throwable {
         assertTrue(check(TEST2_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST2)));
     }
 
+    @Test
     public void test_3() throws Throwable {
         assertTrue(check(TEST3_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST3)));
     }
 
+    @Test
     public void test_4() throws Throwable {
         assertTrue(check(TEST4_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST4)));
     }
 
+    @Test
     public void test_6() throws Throwable {
         assertTrue(check(TEST5_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST6)));
     }
 
+    @Test
     public void test_7() throws Throwable {
         assertTrue(check(TEST5_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST7)));
     }
 
+    @Test
     public void test_8() throws Throwable {
         assertTrue(check(TEST8_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST8)));
     }
 
+    @Test
     public void test_9() throws Throwable {
         assertTrue(check(TEST5_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST9)));
     }
 
+    @Test
     public void test_10() throws Throwable {
         assertTrue(check(TEST8_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST10)));
     }
 
+    @Test
     public void test_11() throws Throwable {
         assertTrue(check(TEST8_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST11)));
     }
 
+    @Test
     public void test_12() throws Throwable {
         assertTrue(check(TEST12_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST12)));
     }
 
+    @Test
     public void test_13() throws Throwable {
         assertTrue(check(TEST13_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST13)));
     }
 
+    @Test
     public void test_14() throws Throwable {
         assertTrue(check(TEST14_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST14)));
     }
 
+    @Test
     public void test_15() throws Throwable {
         assertTrue(check(TEST15_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST15)));
     }
 
+    @Test
     public void test_16() throws Throwable {
         assertTrue(check(TEST16_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST16)));
     }
 
+    @Test
     public void test_17() throws Throwable {
         assertTrue(check(TEST17_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST17)));
     }
 
+    @Test
     public void test_18() throws Throwable {
         assertTrue(check(TEST18_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST18)));
     }
 
+    @Test
     public void test_19() throws Throwable {
         assertTrue(check(TEST19_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST19)));
     }
 
+    @Test
     public void test_20() throws Throwable {
         assertTrue(check(TEST20_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST20)));
     }
 
+    @Test
     public void test_21() throws Throwable {
         assertTrue(check(TEST21_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST21)));
     }
 
+    @Test
     public void test_22() throws Throwable {
         assertTrue(check(TEST22_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST22)));
     }
 
+    @Test
     public void test_23() throws Throwable {
         assertTrue(check(TEST23_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST23)));
     }
 
+    @Test
     public void test_24() throws Throwable {
         assertTrue(check(TEST24_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST24)));
     }
 
+    @Test
     public void test_25() throws Throwable {
         assertTrue(check(TEST25_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST25)));
     }
 
+    @Test
     public void test_26() throws Throwable {
         assertTrue(check(TEST26_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST26)));
     }
 
+    @Test
     public void test_27() throws Throwable {
         assertTrue(check(TEST27_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST27)));
     }
 
+    @Test
     public void test_28() throws Throwable {
         assertTrue(check(TEST28_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST28)));
     }
 
+    @Test
     public void test_29() throws Throwable {
         assertTrue(check(TEST29_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST29)));
     }
 
+    @Test
     public void test_30() throws Throwable {
         assertTrue(check(TEST30_NODES, getOrderedNodes(ASTMethodDeclarator.class, TEST30)));
     }
@@ -789,4 +823,8 @@ public class AcceptanceTest extends ParserTst {
             "  }" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(AcceptanceTest.class);
+    }
 }

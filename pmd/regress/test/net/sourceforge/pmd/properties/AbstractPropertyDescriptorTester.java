@@ -1,14 +1,15 @@
 package test.net.sourceforge.pmd.properties;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.util.CollectionUtil;
 
+import org.junit.Test;
 /**
  * 
  * @author Brian Remedios
  */
-public abstract class AbstractPropertyDescriptorTester extends TestCase {
+public abstract class AbstractPropertyDescriptorTester {
 
 	private static final int maxCardinality = 10;
 	
@@ -19,8 +20,6 @@ public abstract class AbstractPropertyDescriptorTester extends TestCase {
 	public static final String alphaNumericChars = digitChars + alphaChars;
 	public static final String allChars			 = punctuationChars + whitespaceChars + alphaNumericChars;
 
-	
-	protected AbstractPropertyDescriptorTester() { }
 	
 	/**
 	 * Method createValue.
@@ -35,7 +34,8 @@ public abstract class AbstractPropertyDescriptorTester extends TestCase {
 	 */
 	protected abstract PropertyDescriptor createProperty(int maxCount);
 	
-	public void testAsDelimitedString() {
+    @Test
+    public void testAsDelimitedString() {
 		
 		Object testValue = createValue(maxCardinality);
 		PropertyDescriptor pmdProp = createProperty(maxCardinality);
@@ -47,7 +47,8 @@ public abstract class AbstractPropertyDescriptorTester extends TestCase {
 		assertTrue(CollectionUtil.areEqual(returnedValue, testValue));
 	}
 	
-	public void testValueFrom() {
+    @Test
+    public void testValueFrom() {
 		
 		Object testValue = createValue(1);
 		PropertyDescriptor pmdProp = createProperty(1);
@@ -60,7 +61,8 @@ public abstract class AbstractPropertyDescriptorTester extends TestCase {
 	}
 	
 	
-	public void testErrorFor() {
+    @Test
+    public void testErrorFor() {
 		
 		Object testValue = createValue(1);
 		PropertyDescriptor pmdProp = createProperty(1);
@@ -73,7 +75,8 @@ public abstract class AbstractPropertyDescriptorTester extends TestCase {
 		assertTrue(errorMsg == null);
 	}
 	
-	public void testType() {
+    @Test
+    public void testType() {
 		
 		PropertyDescriptor pmdProp = createProperty(1);
 
@@ -138,4 +141,8 @@ public abstract class AbstractPropertyDescriptorTester extends TestCase {
 		}
 		return results;
 	}
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(AbstractPropertyDescriptorTester.class);
+    }
 }

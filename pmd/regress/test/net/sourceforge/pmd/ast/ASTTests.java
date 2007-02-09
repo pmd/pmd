@@ -3,35 +3,22 @@
  */
 package test.net.sourceforge.pmd.ast;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
+@RunWith(Suite.class)
+@SuiteClasses( { ASTImportDeclarationTest.class, ASTVariableDeclaratorIdTest.class, AccessNodeTest.class, ClassDeclTest.class, FieldDeclTest.class, MethodDeclTest.class, SimpleNodeTest.class })
 public class ASTTests {
-    /**
-     * test suite
-     *
-     * @return test suite
-     */
-    public static Test suite() {
-        TestSuite suite = new TestSuite("Test for test.net.sourceforge.pmd.ast");
 
-        //$JUnit-BEGIN$
-        suite.addTestSuite(ASTImportDeclarationTest.class);
-        suite.addTestSuite(ASTVariableDeclaratorIdTest.class);
-        suite.addTestSuite(AccessNodeTest.class);
-        suite.addTestSuite(ClassDeclTest.class);
-        suite.addTestSuite(FieldDeclTest.class);
-        suite.addTestSuite(MethodDeclTest.class);
-        suite.addTestSuite(SimpleNodeTest.class);
-
-        //$JUnit-END$
-        return suite;
-    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.6  2007/02/09 01:38:05  allancaplan
+ * Moving to JUnit 4
+ *
  * Revision 1.5  2006/02/10 14:26:25  tomcopeland
  * Huge reformatting checkin
  *

@@ -21,5 +21,9 @@ public class IDEAJRendererTest extends AbstractRendererTst {
     public String getExpectedMultiple() {
         return "msg" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL + "msg" + PMD.EOL + " at Foo <init>(Foo.java:1)" + PMD.EOL;
     }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(IDEAJRendererTest.class);
+    }
 }
 

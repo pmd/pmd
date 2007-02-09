@@ -26,6 +26,9 @@ public class TextPadRendererTest extends AbstractRendererTst{
         return PMD.EOL + "n/a(1,  Foo):  msg" + PMD.EOL + "n/a(1,  Foo):  msg";
     }
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(TextPadRendererTest.class);
+    }
 }
 
 

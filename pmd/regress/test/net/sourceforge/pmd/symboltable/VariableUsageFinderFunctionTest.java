@@ -1,6 +1,6 @@
 package test.net.sourceforge.pmd.symboltable;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
@@ -8,13 +8,15 @@ import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableUsageFinderFunction;
 import net.sourceforge.pmd.util.Applier;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+public class VariableUsageFinderFunctionTest {
 
-public class VariableUsageFinderFunctionTest extends TestCase {
-
+    @Test
     public void testLookingForUsed() {
         ASTVariableDeclaratorId variableDeclarationIdNode = new ASTVariableDeclaratorId(1);
         variableDeclarationIdNode.setImage("x");
@@ -32,5 +34,9 @@ public class VariableUsageFinderFunctionTest extends TestCase {
         Applier.apply(f, vars.iterator());
         Map p = f.getUsed();
         assertEquals(1, p.size());
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(VariableUsageFinderFunctionTest.class);
     }
 }

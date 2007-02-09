@@ -50,4 +50,8 @@ class NonRuleWithAllPropertyTypes extends AbstractRule {
     protected Map<String, PropertyDescriptor> propertiesByName() {
     	return propertyDescriptorsByName;
     }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(NonRuleWithAllPropertyTypes.class);
+    }
 }

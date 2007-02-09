@@ -37,4 +37,7 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 				new FloatProperty("testFloat", "Test float property", new float[] {-1,0,1,2}, 1.0f, maxCount);
 		}
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(FloatPropertyTest.class);
+    }
 }

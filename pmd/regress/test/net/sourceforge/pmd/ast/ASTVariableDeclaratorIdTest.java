@@ -3,16 +3,22 @@
  */
 package test.net.sourceforge.pmd.ast;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+
+import org.junit.Test;
+
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 public class ASTVariableDeclaratorIdTest extends ParserTst {
 
+    @Test
     public void testIsExceptionBlockParameter() {
         ASTTryStatement tryNode = new ASTTryStatement(1);
         ASTBlock block = new ASTBlock(2);
@@ -22,6 +28,7 @@ public class ASTVariableDeclaratorIdTest extends ParserTst {
         assertTrue(v.isExceptionBlockParameter());
     }
 
+    @Test
     public void testTypeNameNode() throws Throwable {
         ASTCompilationUnit acu = super.getNodes(ASTCompilationUnit.class, TYPE_NAME_NODE).iterator().next();
         ASTVariableDeclaratorId id = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
@@ -35,4 +42,7 @@ public class ASTVariableDeclaratorIdTest extends ParserTst {
             "  private String bar;" + PMD.EOL +
             "}";
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(ASTVariableDeclaratorIdTest.class);
+    }
 }

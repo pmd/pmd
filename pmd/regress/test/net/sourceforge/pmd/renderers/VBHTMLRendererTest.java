@@ -25,7 +25,6 @@ public class VBHTMLRendererTest extends AbstractRendererTst {
     }
 
     public String getExpectedEmpty() {
-        // TODO Auto-generated method stub
         return "";
     }
 
@@ -54,4 +53,7 @@ public class VBHTMLRendererTest extends AbstractRendererTst {
                 "--></style><body><center><br><table border=\"0\" width=\"80%\"><tr id=TableHeader><td><font class=title>&nbsp;Problems found</font></td></tr><tr id=RowColor2><td><font class=body>" + error +"\"</font></td></tr></table></center></body></html>";
     }
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(VBHTMLRendererTest.class);
+    }
 }

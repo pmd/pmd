@@ -5,8 +5,13 @@
  */
 package test.net.sourceforge.pmd.ast;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
+
+import org.junit.Test;
+
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 /**
@@ -14,11 +19,13 @@ import test.net.sourceforge.pmd.testframework.ParserTst;
  */
 public class ASTThrowStatementTest extends ParserTst {
 
+    @Test
     public final void testGetFirstASTNameImageNull() throws Throwable {
         ASTThrowStatement t = getNodes(ASTThrowStatement.class, NULL_NAME).iterator().next();
         assertNull(t.getFirstClassOrInterfaceTypeImage());
     }
 
+    @Test
     public final void testGetFirstASTNameImageNew() throws Throwable {
         ASTThrowStatement t = getNodes(ASTThrowStatement.class, OK_NAME).iterator().next();
         assertEquals("FooException", t.getFirstClassOrInterfaceTypeImage());
@@ -37,4 +44,8 @@ public class ASTThrowStatementTest extends ParserTst {
             "   throw new FooException();" + PMD.EOL +
             "  }" + PMD.EOL +
             "}";
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(ASTThrowStatementTest.class);
+    }
 }

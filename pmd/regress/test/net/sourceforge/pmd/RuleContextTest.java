@@ -22,12 +22,18 @@
  */
 package test.net.sourceforge.pmd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 
-public class RuleContextTest extends TestCase {
+import org.junit.Test;
 
+import junit.framework.JUnit4TestAdapter;
+
+public class RuleContextTest {
+
+    @Test
     public void testReport() {
         RuleContext ctx = new RuleContext();
         assertEquals(0, ctx.getReport().size());
@@ -37,10 +43,15 @@ public class RuleContextTest extends TestCase {
         assertEquals("report object mismatch", r, r2);
     }
 
+    @Test
     public void testFilename() {
         RuleContext ctx = new RuleContext();
         assertNull("filename should be null", ctx.getSourceCodeFilename());
         ctx.setSourceCodeFilename("foo");
         assertEquals("filename mismatch", "foo", ctx.getSourceCodeFilename());
+    }
+
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(RuleContextTest.class);
     }
 }

@@ -3,9 +3,12 @@
  */
 package test.net.sourceforge.pmd.cpd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.cpd.FileReporter;
 import net.sourceforge.pmd.cpd.ReportException;
+
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,24 +18,24 @@ import java.io.IOException;
 /**
  * @author Philippe T'Seyen
  */
-public class FileReporterTest extends TestCase {
+public class FileReporterTest {
+
+    @Test(expected = NullPointerException.class)
     public void testCreation() {
-        try {
-            new FileReporter(null);
-            fail("expected NullPointerException");
-        } catch (NullPointerException npe) {
-        }
+        new FileReporter(null);
     }
 
+    @Test
     public void testEmptyReport() throws ReportException {
         File reportFile = new File("report.tmp");
         FileReporter fileReporter = new FileReporter(reportFile);
         fileReporter.report("");
         assertTrue(reportFile.exists());
-        assertEquals(0, reportFile.length());
+        assertEquals(0L, reportFile.length());
         assertTrue(reportFile.delete());
     }
 
+    @Test
     public void testReport() throws ReportException, IOException {
         String testString = "first line\nsecond line";
         File reportFile = new File("report.tmp");
@@ -43,14 +46,11 @@ public class FileReporterTest extends TestCase {
         assertTrue(reportFile.delete());
     }
 
-    public void testInvalidFile() {
+    @Test(expected = ReportException.class)
+    public void testInvalidFile() throws ReportException {
         File reportFile = new File("/invalid_folder/report.tmp");
         FileReporter fileReporter = new FileReporter(reportFile);
-        try {
-            fileReporter.report("");
-            fail("expected ReportException");
-        } catch (ReportException re) {
-        }
+        fileReporter.report("");
     }
 
     private String readFile(File file) throws IOException {
@@ -68,7 +68,12 @@ public class FileReporterTest extends TestCase {
             }
             return buffer.toString();
         } finally {
-            if (reader != null) reader.close();
+            if (reader != null)
+                reader.close();
         }
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(FileReporterTest.class);
     }
 }

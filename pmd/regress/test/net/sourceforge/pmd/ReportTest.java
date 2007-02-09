@@ -22,9 +22,8 @@
  */
 package test.net.sourceforge.pmd;
 
-import java.util.Iterator;
-import java.util.Map;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.PMD;
@@ -41,8 +40,16 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
+
+import org.junit.Test;
+
 import test.net.sourceforge.pmd.testframework.MockRule;
 import test.net.sourceforge.pmd.testframework.RuleTst;
+
+import java.util.Iterator;
+import java.util.Map;
+
+import junit.framework.JUnit4TestAdapter;
 
 public class ReportTest extends RuleTst implements ReportListener {
 
@@ -80,18 +87,20 @@ public class ReportTest extends RuleTst implements ReportListener {
         metricSemaphore = true;
     }
 
+    @Test
     public void testBasic() throws Throwable {
         Report r = new Report();
         runTestFromString(TEST1, new FooRule(), r);
         assertTrue(!r.isEmpty());
     }
 
-
+    @Test
     public void testMetric0() {
         Report r = new Report();
         assertTrue("Default report shouldn't contain metrics", !r.hasMetrics());
     }
 
+    @Test
     public void testMetric1() {
         Report r = new Report();
         assertTrue("Default report shouldn't contain metrics", !r.hasMetrics());
@@ -113,6 +122,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         assertEquals("wrong std dev value", 4.0, m.getStandardDeviation(), 0.05);
     }
 
+    @Test
     public void testExclusionsInReportWithAnnotations() throws Throwable {
         Report rpt = new Report();
         runTestFromString(TEST2, new FooRule(), rpt, SourceType.JAVA_15);
@@ -120,6 +130,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }
 
+    @Test
     public void testExclusionsInReportWithNOPMD() throws Throwable {
         Report rpt = new Report();
         runTestFromString(TEST3, new FooRule(), rpt);
@@ -138,6 +149,7 @@ public class ReportTest extends RuleTst implements ReportListener {
             "public class Foo {} // NOPMD";
 
     // Files are grouped together now.
+    @Test
     public void testSortedReport_File() {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
@@ -152,6 +164,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
     }
 
+    @Test
     public void testSortedReport_Line() {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
@@ -166,6 +179,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
     }
 
+    @Test
     public void testListener() {
         Report rpt = new Report();
         rpt.addListener(this);
@@ -182,6 +196,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         assertTrue("no metric", metricSemaphore);
     }
 
+    @Test
     public void testSummary() {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
@@ -212,4 +227,9 @@ public class ReportTest extends RuleTst implements ReportListener {
         s.testingOnly__setBeginColumn(5);
         return s;
     }
+    
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(ReportTest.class);
+    }
+
 }

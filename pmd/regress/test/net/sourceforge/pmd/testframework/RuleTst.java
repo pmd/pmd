@@ -3,17 +3,8 @@
  */
 package test.net.sourceforge.pmd.testframework;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.Properties;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
@@ -33,10 +24,19 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.Properties;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 /**
  * Advanced methods for test cases
  */
-public class RuleTst extends TestCase {
+public abstract class RuleTst {
     public static final SourceType DEFAULT_SOURCE_TYPE = SourceType.JAVA_14;
 
     /**
@@ -44,7 +44,8 @@ public class RuleTst extends TestCase {
      */
     public Rule findRule(String ruleSet, String ruleName) {
         try {
-            Rule rule = new RuleSetFactory().createRuleSets(new SimpleRuleSetNameMapper(ruleSet).getRuleSets()).getRuleByName(ruleName);
+            String rules = new SimpleRuleSetNameMapper(ruleSet).getRuleSets();
+            Rule rule = new RuleSetFactory().createRuleSets(rules).getRuleByName(ruleName);
             rule.setRuleSetName(ruleSet);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
@@ -65,6 +66,7 @@ public class RuleTst extends TestCase {
         Rule rule = test.getRule();
         
         if (test.getReinitializeRule()) {
+            System.err.println(rule.getRuleSetName());
             rule = findRule(rule.getRuleSetName(), rule.getName());
         }
         
@@ -81,7 +83,7 @@ public class RuleTst extends TestCase {
                 test.getNumberOfProblemsExpected(), res);
         } catch (Throwable t) {
             t.printStackTrace();
-            throw new RuntimeException("Test \"" + test.getDescription()  + "\" failed");
+            throw new RuntimeException("Test \"" + test.getDescription() + "\" on Rule \"" + test.getRule().getName() + "\"failed");
         } finally {
             //Restore old properties
             ruleProperties.clear();
@@ -115,7 +117,7 @@ public class RuleTst extends TestCase {
      * getResourceAsStream tries to find the XML file in weird locations if the
      * ruleName includes the package, so we strip it here.
      */
-    private String getCleanRuleName(Rule rule) {
+    protected String getCleanRuleName(Rule rule) {
         String fullClassName = rule.getClass().getName();
         if (fullClassName.equals(rule.getName())) {
             //We got the full class name, so we'll use the stripped name instead
@@ -137,13 +139,16 @@ public class RuleTst extends TestCase {
         return extractTestsFromXml(rule, testsFileName);
     }
 
+    public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName) {
+        return extractTestsFromXml(rule, testsFileName, "xml/");
+    }
     /**
      * Extract a set of tests from an XML file with the given name. The file should be
      * ./xml/[testsFileName].xml relative to the test class. The format is defined in
      * test-data.xsd.
      */
-    public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName) {
-        String testXmlFileName = "xml/" + testsFileName + ".xml";
+    public TestDescriptor[] extractTestsFromXml(Rule rule, String testsFileName, String baseDirectory) {
+        String testXmlFileName = baseDirectory + testsFileName + ".xml";
         InputStream inputStream = getClass().getResourceAsStream(testXmlFileName);
         if (inputStream == null) {
             throw new RuntimeException("Couldn't find " + testXmlFileName);

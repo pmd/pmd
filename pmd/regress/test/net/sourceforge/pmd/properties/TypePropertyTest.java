@@ -42,4 +42,8 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
 			new TypeProperty("testType", "Test type property", classes, 1.0f);
 			}
 
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(TypePropertyTest.class);
+    }
 }

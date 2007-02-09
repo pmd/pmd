@@ -3,6 +3,10 @@
  */
 package test.net.sourceforge.pmd.jaxen;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.fail;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -13,9 +17,13 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
+
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.UnsupportedAxisException;
+import org.junit.Before;
+import org.junit.Test;
+
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
 import java.util.Iterator;
@@ -63,6 +71,7 @@ public class DocumentNavigatorTest extends RuleTst {
         }
     }
 
+    @Before 
     public void setUp() throws Exception {
         try {
             rule = new TestRule();
@@ -73,6 +82,7 @@ public class DocumentNavigatorTest extends RuleTst {
         }
     }
 
+    @Test
     public void testChildAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
         Iterator iter = nav.getChildAxisIterator(rule.compilationUnit);
@@ -81,6 +91,7 @@ public class DocumentNavigatorTest extends RuleTst {
         assertFalse(iter.hasNext());
     }
 
+    @Test
     public void testParentAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
         Iterator iter = nav.getParentAxisIterator(rule.importDeclaration);
@@ -88,12 +99,14 @@ public class DocumentNavigatorTest extends RuleTst {
         assertFalse(iter.hasNext());
     }
 
+    @Test
     public void testParentAxisIterator2() {
         DocumentNavigator nav = new DocumentNavigator();
         Iterator iter = nav.getParentAxisIterator(rule.compilationUnit);
         assertFalse(iter.hasNext());
     }
 
+    @Test
     public void testDescendantAxisIterator() throws UnsupportedAxisException {
         DocumentNavigator nav = new DocumentNavigator();
         Iterator iter = nav.getDescendantAxisIterator(rule.statement);
@@ -112,6 +125,7 @@ public class DocumentNavigatorTest extends RuleTst {
 //        assertFalse(iter.hasNext());
     }
 
+    @Test
     public void testDescendantAxisIterator2() throws UnsupportedAxisException {
         DocumentNavigator nav = new DocumentNavigator();
         Iterator iter = nav.getDescendantAxisIterator(rule.primaryPrefix);
@@ -120,6 +134,7 @@ public class DocumentNavigatorTest extends RuleTst {
         assertFalse(iter.hasNext());
     }
 
+    @Test
     public void testFollowingSiblingAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
         Iterator iter = nav.getFollowingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(0));
@@ -127,12 +142,14 @@ public class DocumentNavigatorTest extends RuleTst {
         assertFalse(iter.hasNext());
     }
 
+    @Test
     public void testFollowingSiblingAxisIterator2() {
         DocumentNavigator nav = new DocumentNavigator();
         Iterator iter = nav.getFollowingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(1));
         assertFalse(iter.hasNext());
     }
 
+    @Test
     public void testPrecedingSiblingAxisIterator() {
         DocumentNavigator nav = new DocumentNavigator();
         Iterator iter = nav.getPrecedingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(1));
@@ -140,18 +157,21 @@ public class DocumentNavigatorTest extends RuleTst {
         assertFalse(iter.hasNext());
     }
 
+    @Test
     public void testPrecedingSiblingAxisIterator2() {
         DocumentNavigator nav = new DocumentNavigator();
         Iterator iter = nav.getPrecedingSiblingAxisIterator(rule.primaryExpression.jjtGetChild(0));
         assertFalse(iter.hasNext());
     }
 
+    @Test
     public void testXPath() throws JaxenException {
         BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
         List matches = xPath.selectNodes(rule.statement);
         assertEquals(6, matches.size());
     }
 
+    @Test
     public void testXPath2() throws JaxenException {
         BaseXPath xPath = new BaseXPath(".//*", new DocumentNavigator());
         List matches = xPath.selectNodes(rule.importDeclaration);
@@ -174,4 +194,8 @@ public class DocumentNavigatorTest extends RuleTst {
             "  }" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(DocumentNavigatorTest.class);
+    }
 }

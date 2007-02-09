@@ -56,5 +56,9 @@ public class HTMLRendererTest extends AbstractRendererTst {
             "</tr>" + PMD.EOL +
             "</table></body></html>";        
     }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(HTMLRendererTest.class);
+    }
 }
 

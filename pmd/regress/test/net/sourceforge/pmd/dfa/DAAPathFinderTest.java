@@ -1,5 +1,7 @@
 package test.net.sourceforge.pmd.dfa;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
@@ -9,6 +11,7 @@ import test.net.sourceforge.pmd.testframework.ParserTst;
 
 public class DAAPathFinderTest extends ParserTst implements Executable {
 
+    @Test
     public void testTwoUpdateDefs() throws Throwable {
         ASTMethodDeclarator meth = getOrderedNodes(ASTMethodDeclarator.class, TWO_UPDATE_DEFS).get(0);
         DAAPathFinder a = new DAAPathFinder(meth.getDataFlowNode().getFlow().get(0), this);
@@ -26,5 +29,7 @@ public class DAAPathFinderTest extends ParserTst implements Executable {
             " }" + PMD.EOL +
             "}";
 
-
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(DAAPathFinderTest.class);
+    }
 }

@@ -1,30 +1,41 @@
 
  package test.net.sourceforge.pmd;
  
- import java.io.StringReader;
- 
- import net.sourceforge.pmd.PMD;
- import net.sourceforge.pmd.Report;
- import net.sourceforge.pmd.Rule;
- import net.sourceforge.pmd.RuleContext;
- import net.sourceforge.pmd.RuleSet;
- import net.sourceforge.pmd.RuleSets;
- import net.sourceforge.pmd.SourceTypeToRuleLanguageMapper;
- import test.net.sourceforge.pmd.testframework.RuleTst;
- import test.net.sourceforge.pmd.testframework.TestDescriptor;
- 
+ import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.SourceTypeToRuleLanguageMapper;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import test.net.sourceforge.pmd.testframework.RuleTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
+
+import java.io.StringReader;
+
+import junit.framework.JUnit4TestAdapter;
+
  public class ExcludeLinesTest extends RuleTst {
      private Rule rule;
  
+     @Before 
      public void setUp() {
          rule = findRule("unusedcode", "UnusedLocalVariable");
      }
  
+     @Test
      public void testAcceptance() {
          runTest(new TestDescriptor(TEST1, "NOPMD should work", 0, rule));
          runTest(new TestDescriptor(TEST2, "Should fail without exclude marker", 1, rule));
      }
  
+     @Test
      public void testAlternateMarker() throws Throwable {
          PMD p = new PMD();
          p.setExcludeMarker("FOOBAR");
@@ -60,5 +71,8 @@
              "  int x; // FOOBAR" + PMD.EOL +
              " } " + PMD.EOL +
              "}";
- 
- }
+
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(ExcludeLinesTest.class);
+    }
+}

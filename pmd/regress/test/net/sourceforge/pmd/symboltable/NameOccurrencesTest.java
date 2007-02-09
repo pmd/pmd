@@ -3,15 +3,20 @@
  */
 package test.net.sourceforge.pmd.symboltable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.symboltable.NameFinder;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
-import java.util.List;
+import org.junit.Test;
 
+import java.util.List;
 public class NameOccurrencesTest extends STBBaseTst {
 
+    @Test
     public void testSuper() {
         parseCode(TEST1);
         List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
@@ -19,6 +24,7 @@ public class NameOccurrencesTest extends STBBaseTst {
         assertEquals("super", occs.getNames().get(0).getImage());
     }
 
+    @Test
     public void testThis() {
         parseCode(TEST2);
         List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
@@ -27,6 +33,7 @@ public class NameOccurrencesTest extends STBBaseTst {
         assertEquals("x", occs.getNames().get(1).getImage());
     }
 
+    @Test
     public void testNameLinkage() {
         parseCode(TEST2);
         List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
@@ -35,6 +42,7 @@ public class NameOccurrencesTest extends STBBaseTst {
         assertEquals(thisNameOccurrence.getNameForWhichThisIsAQualifier(), occs.getNames().get(1));
     }
 
+    @Test
     public void testSimpleVariableOccurrence() {
         parseCode(TEST3);
         List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
@@ -45,6 +53,7 @@ public class NameOccurrencesTest extends STBBaseTst {
         assertTrue(occs.getNames().get(0).isOnLeftHandSide());
     }
 
+    @Test
     public void testQualifiedOccurrence() {
         parseCode(TEST4);
         List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
@@ -53,6 +62,7 @@ public class NameOccurrencesTest extends STBBaseTst {
         assertEquals("x", occs.getNames().get(1).getImage());
     }
     
+    @Test
     public void testIsSelfAssignment(){
         parseCode(TEST5);
         List nodes = acu.findChildrenOfType(ASTPrimaryExpression.class);
@@ -120,4 +130,8 @@ public class NameOccurrencesTest extends STBBaseTst {
         "        return 1;" + PMD.EOL +
         "    }" + PMD.EOL +
         "}";
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(NameOccurrencesTest.class);
+    }
 }

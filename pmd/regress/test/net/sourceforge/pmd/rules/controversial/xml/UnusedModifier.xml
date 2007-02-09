@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'public' in interface method
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public void bar();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+class, no problem
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo {
+ public abstract void bar();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'abstract' in interface method
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ abstract void bar();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+all is well in interface method
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ void bar();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'public' in interface field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public int X = 0;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'static' in interface field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ static int X = 0;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'final' in interface field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ final int X = 0;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'public static final' in interface field
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public static final int X = 0;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK in interface field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ int X = 0;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'public' in class nested in interface
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public class Bar {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'static' in class nested in interface
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ static class Bar {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK in class nested in interface
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ class Bar {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'public' in interface nested in interface
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public interface Baz {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'static' in interface nested in interface
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ static interface Baz {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK in interface nested in interface
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ interface Baz {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'static' in interface nested in class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public static interface Bar {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK in interface nested in class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public interface Bar {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Unneeded 'public static final' in interface field inside another interface
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public interface Bar {
+  public static final int X = 0;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK in interface field inside another interface
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+interface Foo {
+ interface Bar {
+  int X = 0;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Don't check methods in nested classes
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+interface Foo {
+ class Bar {
+  public void foo() {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Don't check fields in nested classes
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+interface Foo {
+ class Bar {
+  public int buz;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Don't check fields that are anonymous inner classes
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+interface Foo {
+   Test DFLT_IMPL = new Test() {
+   public int size() { return 0;}
+ };
+}
+     ]]></code>
+    </test-code>
+</test-data>

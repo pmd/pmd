@@ -37,4 +37,8 @@ public class BooleanPropertyTest extends AbstractPropertyDescriptorTester {
 			new BooleanProperty("testBoolean", "Test boolean property", false, 1.0f) :
 			new BooleanProperty("testBoolean", "Test boolean property", new boolean[] {false}, 1.0f, maxValues);
 	}
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(BooleanPropertyTest.class);
+    }
 }

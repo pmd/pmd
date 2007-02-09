@@ -1,6 +1,5 @@
 package test.net.sourceforge.pmd.ast;
 
-import junit.framework.TestCase;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
@@ -9,42 +8,41 @@ import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 
+import org.junit.Test;
+
 import java.io.StringReader;
 
-public class JDKVersionTest extends TestCase {
+public class JDKVersionTest {
 
     // enum keyword/identifier
+    @Test(expected = ParseException.class)
     public void testEnumAsKeywordShouldFailWith14() throws Throwable {
-        try {
-            JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_ENUM));
-            p.CompilationUnit();
-            throw new Error("JDK 1.4 parser should have failed to parse enum used as keyword");
-        } catch (ParseException e) {
-        }    // cool
+        JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_ENUM));
+        p.CompilationUnit();
     }
 
+    @Test
     public void testEnumAsIdentifierShouldPassWith14() throws Throwable {
         JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK14_ENUM));
         p.CompilationUnit();
     }
 
+    @Test
     public void testEnumAsKeywordShouldPassWith15() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_ENUM));
         p.CompilationUnit();
     }
 
+    @Test(expected = ParseException.class)
     public void testEnumAsIdentifierShouldFailWith15() throws Throwable {
-        try {
-            TargetJDKVersion jdk = new TargetJDK1_5();
-            JavaParser p = jdk.createParser(new StringReader(JDK14_ENUM));
-            p.CompilationUnit();
-            throw new Error("JDK 1.5 parser should have failed to parse enum used as identifier");
-        } catch (ParseException e) {
-        }    // cool
+        TargetJDKVersion jdk = new TargetJDK1_5();
+        JavaParser p = jdk.createParser(new StringReader(JDK14_ENUM));
+        p.CompilationUnit();
     }
     // enum keyword/identifier
 
     // assert keyword/identifier
+    @Test
     public void testAssertAsKeywordVariantsSucceedWith1_4() {
         (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST1)).CompilationUnit();
         (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST2)).CompilationUnit();
@@ -52,80 +50,66 @@ public class JDKVersionTest extends TestCase {
         (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST4)).CompilationUnit();
     }
 
+    @Test(expected = ParseException.class)
     public void testAssertAsVariableDeclIdentifierFailsWith1_4() {
-        try {
-            (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST5)).CompilationUnit();
-            throw new RuntimeException("Usage of assert as identifier should have failed with 1.4");
-        } catch (ParseException pe) {
-            // cool
-        }
+        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST5)).CompilationUnit();
     }
 
+    @Test(expected = ParseException.class)
     public void testAssertAsMethodNameIdentifierFailsWith1_4() {
-        try {
-            (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST7)).CompilationUnit();
-            throw new RuntimeException("Usage of assert as identifier should have failed with 1.4");
-        } catch (ParseException pe) {
-            // cool
-        }
+        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST7)).CompilationUnit();
     }
 
+    @Test
     public void testAssertAsIdentifierSucceedsWith1_3() {
         JavaParser jp = (new TargetJDK1_3()).createParser(new StringReader(ASSERT_TEST5));
         jp.CompilationUnit();
     }
 
+    @Test(expected = ParseException.class)
     public void testAssertAsKeywordFailsWith1_3() {
-        try {
-            JavaParser jp = (new TargetJDK1_3()).createParser(new StringReader(ASSERT_TEST6));
-            jp.CompilationUnit();
-            throw new RuntimeException("Usage of assert as keyword should have failed with 1.3");
-        } catch (ParseException pe) {
-            // cool
-        }
+        JavaParser jp = (new TargetJDK1_3()).createParser(new StringReader(ASSERT_TEST6));
+        jp.CompilationUnit();
     }
     // assert keyword/identifier
 
+    @Test
     public void testVarargsShouldPassWith15() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_VARARGS));
         p.CompilationUnit();
     }
 
+    @Test(expected = ParseException.class)
     public void testVarargsShouldFailWith14() throws Throwable {
-        try {
-            JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_VARARGS));
-            p.CompilationUnit();
-            fail("Should have throw ParseException!");
-        } catch (ParseException pe) {
-            // cool
-        }
+        JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_VARARGS));
+        p.CompilationUnit();
     }
 
+    @Test
     public void testJDK15ForLoopSyntaxShouldPassWith15() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_FORLOOP));
         p.CompilationUnit();
     }
 
+    @Test
     public void testJDK15ForLoopSyntaxWithModifiers() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_FORLOOP_WITH_MODIFIER));
         p.CompilationUnit();
     }
 
+    @Test(expected = ParseException.class)
     public void testJDK15ForLoopShouldFailWith14() throws Throwable {
-        try {
-            JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_FORLOOP));
-            p.CompilationUnit();
-            fail("Should have throw ParseException!");
-        } catch (ParseException pe) {
-            // cool
-        }
+        JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_FORLOOP));
+        p.CompilationUnit();
     }
 
+    @Test
     public void testJDK15GenericsSyntaxShouldPassWith15() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_GENERICS));
         p.CompilationUnit();
     }
 
+    @Test
     public void testVariousParserBugs() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(FIELDS_BUG));
         p.CompilationUnit();
@@ -137,6 +121,7 @@ public class JDKVersionTest extends TestCase {
         p.CompilationUnit();
     }
 
+    @Test
     public void testNestedClassInMethodBug() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(INNER_BUG));
         p.CompilationUnit();
@@ -144,21 +129,25 @@ public class JDKVersionTest extends TestCase {
         p.CompilationUnit();
     }
 
+    @Test
     public void testGenericsInMethodCall() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERIC_IN_METHOD_CALL));
         p.CompilationUnit();
     }
 
+    @Test
     public void testGenericINAnnotation() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERIC_IN_ANNOTATION));
         p.CompilationUnit();
     }
 
+    @Test
     public void testGenericReturnType() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERIC_RETURN_TYPE));
         p.CompilationUnit();
     }
 
+    @Test
     public void testMultipleGenerics() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(FUNKY_GENERICS));
         p.CompilationUnit();
@@ -166,16 +155,19 @@ public class JDKVersionTest extends TestCase {
         p.CompilationUnit();
     }
 
+    @Test
     public void testAnnotatedParams() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(ANNOTATED_PARAMS));
         p.CompilationUnit();
     }
 
+    @Test
     public void testAnnotatedLocals() throws Throwable {
         JavaParser p = new TargetJDK1_5().createParser(new StringReader(ANNOTATED_LOCALS));
         p.CompilationUnit();
     }
 
+    @Test
     public void testAssertAsIdentifierSucceedsWith1_3_test2() {
         JavaParser jp = (new TargetJDK1_3()).createParser(new StringReader(ASSERT_TEST5_a));
         jp.CompilationUnit();
@@ -347,4 +339,8 @@ public class JDKVersionTest extends TestCase {
             "public class Foo {" + PMD.EOL +
             "  public <T extends E> Foo() {}" + PMD.EOL +
             "}";
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(JDKVersionTest.class);
+    }
 }

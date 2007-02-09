@@ -1,20 +1,22 @@
 package test.net.sourceforge.pmd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.SourceFileSelector;
 
-import java.io.File;
+import org.junit.Test;
 
+import java.io.File;
 /**
  * Tests on FileSelector.
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
-public class FileSelectorTest extends TestCase {
+public class FileSelectorTest {
 
     /**
      * Test default selection of .java files.
      */
+    @Test
     public void testSelectJavaFile() {
         SourceFileSelector fileSelector = new SourceFileSelector();
 
@@ -27,6 +29,7 @@ public class FileSelectorTest extends TestCase {
     /**
      * Test wanted selection of .jsp files.
      */
+    @Test
     public void testSelectJspFile() {
         SourceFileSelector fileSelector = new SourceFileSelector();
         fileSelector.setSelectJspFiles(true);
@@ -40,6 +43,7 @@ public class FileSelectorTest extends TestCase {
     /**
      * Test unwanted selection of a non source file.
      */
+    @Test
     public void testUnwantedFile() {
         SourceFileSelector fileSelector = new SourceFileSelector();
 
@@ -52,6 +56,7 @@ public class FileSelectorTest extends TestCase {
     /**
      * Test unwanted selection of a java file.
      */
+    @Test
     public void testUnwantedJavaFile() {
         SourceFileSelector fileSelector = new SourceFileSelector();
         fileSelector.setSelectJavaFiles(false);
@@ -60,5 +65,9 @@ public class FileSelectorTest extends TestCase {
 
         boolean selected = fileSelector.isWantedFile(javaFile);
         assertEquals("Unwanted java file must not be selected!", false, selected);
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(FileSelectorTest.class);
     }
 }

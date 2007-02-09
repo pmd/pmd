@@ -1,5 +1,5 @@
 package test.net.sourceforge.pmd.jsp.ast;
-
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.jsp.ast.ASTElExpression;
 import net.sourceforge.pmd.jsp.ast.ASTJspComment;
 import net.sourceforge.pmd.jsp.ast.ASTJspDeclaration;
@@ -10,17 +10,19 @@ import net.sourceforge.pmd.jsp.ast.ASTJspExpressionInAttribute;
 import net.sourceforge.pmd.jsp.ast.ASTJspScriptlet;
 import net.sourceforge.pmd.jsp.ast.ASTValueBinding;
 
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-
 public class JspPageStyleTest extends AbstractJspNodesTst {
 
     /**
      * Test parsing of a JSP comment.
      */
+    @Test
     public void testComment() {
         Set comments = getNodes(ASTJspComment.class, JSP_COMMENT);
         assertEquals("One comment expected!", 1, comments.size());
@@ -31,6 +33,7 @@ public class JspPageStyleTest extends AbstractJspNodesTst {
     /**
      * Test parsing a JSP directive.
      */
+    @Test
     public void testDirective() {
         Set nodes = getNodes(null, JSP_DIRECTIVE);
 
@@ -68,6 +71,7 @@ public class JspPageStyleTest extends AbstractJspNodesTst {
     /**
      * Test parsing of a JSP declaration.
      */
+    @Test
     public void testDeclaration() {
         Set declarations = getNodes(ASTJspDeclaration.class, JSP_DECLARATION);
         assertEquals("One declaration expected!", 1, declarations.size());
@@ -79,6 +83,7 @@ public class JspPageStyleTest extends AbstractJspNodesTst {
     /**
      * Test parsing of a JSP scriptlet.
      */
+    @Test
     public void testScriptlet() {
         Set scriptlets = getNodes(ASTJspScriptlet.class, JSP_SCRIPTLET);
         assertEquals("One scriptlet expected!", 1, scriptlets.size());
@@ -90,6 +95,7 @@ public class JspPageStyleTest extends AbstractJspNodesTst {
     /**
      * Test parsing of a JSP expression.
      */
+    @Test
     public void testExpression() {
         Set expressions = getNodes(ASTJspExpression.class, JSP_EXPRESSION);
         assertEquals("One expression expected!", 1, expressions.size());
@@ -101,6 +107,7 @@ public class JspPageStyleTest extends AbstractJspNodesTst {
     /**
      * Test parsing of a JSP expression in an attribute.
      */
+    @Test
     public void testExpressionInAttribute() {
         Set expressions = getNodes(ASTJspExpressionInAttribute.class,
                 JSP_EXPRESSION_IN_ATTRIBUTE);
@@ -113,6 +120,7 @@ public class JspPageStyleTest extends AbstractJspNodesTst {
     /**
      * Test parsing of a EL expression.
      */
+    @Test
     public void testElExpression() {
         Set expressions = getNodes(ASTElExpression.class, JSP_EL_EXPRESSION);
         assertEquals("One expression expected!", 1, expressions.size());
@@ -124,6 +132,7 @@ public class JspPageStyleTest extends AbstractJspNodesTst {
     /**
      * Test parsing of a EL expression in an attribute.
      */
+    @Test
     public void testElExpressionInAttribute() {
         Set expressions = getNodes(ASTElExpression.class, JSP_EL_EXPRESSION_IN_ATTRIBUTE);
         assertEquals("One expression expected!", 1, expressions.size());
@@ -135,6 +144,7 @@ public class JspPageStyleTest extends AbstractJspNodesTst {
     /**
      * Test parsing of a EL expression in an attribute.
      */
+    @Test
     public void testJsfValueBinding() {
         Set valueBindings = getNodes(ASTValueBinding.class, JSF_VALUE_BINDING);
         assertEquals("One value binding expected!", 1, valueBindings.size());
@@ -169,4 +179,8 @@ public class JspPageStyleTest extends AbstractJspNodesTst {
 
     private static final String JSF_VALUE_BINDING
             = "<html> <body> <p class='#{myValidator.find(\"'jsf'\")}'> Hello </p> </body> </html>";
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(JspPageStyleTest.class);
+    }
 }

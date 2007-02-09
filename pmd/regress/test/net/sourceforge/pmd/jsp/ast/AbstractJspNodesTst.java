@@ -1,6 +1,6 @@
 package test.net.sourceforge.pmd.jsp.ast;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.jsp.ast.JspCharStream;
 import net.sourceforge.pmd.jsp.ast.JspParser;
@@ -8,8 +8,7 @@ import net.sourceforge.pmd.jsp.ast.JspParser;
 import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
-
-public class AbstractJspNodesTst extends TestCase {
+public abstract class AbstractJspNodesTst {
 
     public <T> void assertNumberOfNodes(Class<T> clazz, String source, int number) {
         Set<T> nodes = getNodes(clazz, source);

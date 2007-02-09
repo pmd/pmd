@@ -3,7 +3,9 @@
  */
 package test.net.sourceforge.pmd.cpd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.JavaTokenizer;
 import net.sourceforge.pmd.cpd.Match;
@@ -12,11 +14,13 @@ import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.Tokens;
 
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class MatchAlgorithmTest extends TestCase {
+public class MatchAlgorithmTest {
 
     public static final String LINE_1 = "public class Foo { ";
     public static final String LINE_2 = " public void bar() {";
@@ -39,6 +43,7 @@ public class MatchAlgorithmTest extends TestCase {
                 LINE_8;
     }
 
+    @Test
     public void testSimple() throws Throwable {
         JavaTokenizer tokenizer = new JavaTokenizer();
         SourceCode sourceCode = new SourceCode(new SourceCode.StringCodeLoader(getSampleCode(), "Foo.java"));
@@ -66,6 +71,7 @@ public class MatchAlgorithmTest extends TestCase {
         assertEquals(LINE_3, match.getSourceCodeSlice());
     }
 
+    @Test
     public void testIgnore() throws Throwable {
         JavaTokenizer tokenizer = new JavaTokenizer();
         tokenizer.setIgnoreLiterals(true);
@@ -88,5 +94,9 @@ public class MatchAlgorithmTest extends TestCase {
         marks.next();
         marks.next();
         assertFalse(marks.hasNext());
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(MatchAlgorithmTest.class);
     }
 }

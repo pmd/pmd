@@ -1,13 +1,16 @@
 package test.net.sourceforge.pmd.cpd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.cpd.AnyTokenizer;
 import net.sourceforge.pmd.cpd.SourceCode;
 import net.sourceforge.pmd.cpd.Tokens;
 
-public class AnyTokenizerTest extends TestCase {
+import org.junit.Test;
 
+public class AnyTokenizerTest {
+
+    @Test
     public void testMultiLineMacros() throws Throwable {
         AnyTokenizer tokenizer = new AnyTokenizer();
         SourceCode code = new SourceCode(new SourceCode.StringCodeLoader(TEST1));
@@ -27,4 +30,7 @@ public class AnyTokenizerTest extends TestCase {
             "    }" + PMD.EOL +
             "}" + PMD.EOL;
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(AnyTokenizerTest.class);
+    }
 }

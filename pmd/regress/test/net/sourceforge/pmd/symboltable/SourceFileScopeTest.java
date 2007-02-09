@@ -1,14 +1,18 @@
 package test.net.sourceforge.pmd.symboltable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
 
+import org.junit.Test;
+
 import java.util.Iterator;
 import java.util.Map;
-
 public class SourceFileScopeTest extends STBBaseTst {
 
+    @Test
     public void testClassDeclAppears() {
         parseCode(TEST1);
         Map m = acu.getScope().getClassDeclarations();
@@ -16,18 +20,21 @@ public class SourceFileScopeTest extends STBBaseTst {
         assertEquals(classNameDeclaration.getImage(), "Foo");
     }
 
+    @Test
     public void testPackageIsEmptyString() {
         parseCode(TEST1);
         ASTCompilationUnit decl = acu.findChildrenOfType(ASTCompilationUnit.class).get(0);
         assertEquals(decl.getScope().getEnclosingSourceFileScope().getPackageName(), "");
     }
 
+    @Test
     public void testPackageNameFound() {
         parseCode(TEST2);
         ASTCompilationUnit decl = acu.findChildrenOfType(ASTCompilationUnit.class).get(0);
         assertEquals(decl.getScope().getEnclosingSourceFileScope().getPackageName(), "foo.bar");
     }
 
+    @Test
     public void testNestedClasses() {
         parseCode(TEST3);
         Map m = acu.getScope().getClassDeclarations();
@@ -51,4 +58,7 @@ public class SourceFileScopeTest extends STBBaseTst {
             " }" + PMD.EOL +
             "}" + PMD.EOL;
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(SourceFileScopeTest.class);
+    }
 }

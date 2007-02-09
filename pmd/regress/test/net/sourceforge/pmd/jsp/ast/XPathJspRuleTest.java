@@ -1,5 +1,6 @@
 package test.net.sourceforge.pmd.jsp.ast;
 
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.Language;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -10,6 +11,9 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.rules.XPathRule;
+
+import org.junit.Test;
+
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
 import java.io.StringReader;
@@ -21,6 +25,7 @@ public class XPathJspRuleTest extends RuleTst {
      *
      * @throws Throwable
      */
+    @Test
     public void testExpressionMatching() throws Throwable {
         Rule rule = new XPathRule();
         rule.addProperty("xpath", XPATH_EXPRESSION);
@@ -50,4 +55,7 @@ public class XPathJspRuleTest extends RuleTst {
     private static final String XPATH_EXPRESSION
             = "//Element [@Name='hr']";
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(XPathJspRuleTest.class);
+    }
 }

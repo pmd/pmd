@@ -8,7 +8,7 @@ import net.sourceforge.pmd.Rule;
 /**
  * Standard methods for (simple) testcases.
  */
-public class SimpleAggregatorTst extends RuleTst {
+public abstract class SimpleAggregatorTst extends RuleTst {
     /**
      * Run a set of tests defined in an XML test-data file for a rule. The file
      * should be ./xml/RuleName.xml relative to the test-class. The format is

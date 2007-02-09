@@ -3,14 +3,16 @@
  */
 package test.net.sourceforge.pmd.jaxen;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.jaxen.Attribute;
 
+import org.junit.Test;
+
 import java.lang.reflect.Method;
+public class AttributeTest{
 
-public class AttributeTest extends TestCase {
-
+    @Test
     public void testConstructor() {
         ASTPrimaryPrefix p = new ASTPrimaryPrefix(1);
         p.testingOnly__setBeginLine(5);
@@ -26,5 +28,9 @@ public class AttributeTest extends TestCase {
         assertEquals("BeginLine", a.getName());
         assertEquals("5", a.getValue());
         assertEquals(p, a.getParent());
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(AttributeTest.class);
     }
 }

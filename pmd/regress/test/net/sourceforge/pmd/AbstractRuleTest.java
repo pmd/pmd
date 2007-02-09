@@ -22,7 +22,9 @@
  */
 package test.net.sourceforge.pmd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Report;
@@ -33,10 +35,11 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 
+import org.junit.Test;
+
 import java.util.HashMap;
 import java.util.Map;
-
-public class AbstractRuleTest extends TestCase {
+public class AbstractRuleTest {
 	
     private static class MyRule extends AbstractRule {
     	private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
@@ -74,10 +77,7 @@ public class AbstractRuleTest extends TestCase {
         }
     }
 
-    public AbstractRuleTest(String name) {
-        super(name);
-    }
-
+    @Test
     public void testCreateRV() {
         MyRule r = new MyRule();
         r.setRuleSetName("foo");
@@ -95,6 +95,7 @@ public class AbstractRuleTest extends TestCase {
         assertEquals("RuleSet name mismatch!", "foo", rv.getRule().getRuleSetName());
     }
 
+    @Test
     public void testCreateRV2() {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
@@ -110,6 +111,7 @@ public class AbstractRuleTest extends TestCase {
         assertEquals("Rule description mismatch!", "specificdescription", rv.getDescription());
     }
 
+    @Test
     public void testRuleExclusion() {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
@@ -127,16 +129,19 @@ public class AbstractRuleTest extends TestCase {
         assertTrue(ctx.getReport().isEmpty());
     }
 
+    @Test
     public void testEquals1() {
         MyRule r = new MyRule();
         assertFalse("A rule is never equals to null!", r.equals(null));
     }
 
+    @Test
     public void testEquals2() {
         MyRule r = new MyRule();
         assertEquals("A rule must be equals to itself", r, r);
     }
 
+    @Test
     public void testEquals3() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
@@ -144,17 +149,20 @@ public class AbstractRuleTest extends TestCase {
         assertEquals("Hashcode for two instances of the same rule must be equal", r1.hashCode(), r2.hashCode());
     }
 
+    @Test
     public void testEquals4() {
         MyRule myRule = new MyRule();
         assertFalse("A rule cannot be equal to an object of another class", myRule.equals("MyRule"));
     }
 
+    @Test
     public void testEquals5() {
         MyRule myRule = new MyRule();
         MyOtherRule myOtherRule = new MyOtherRule();
         assertFalse("Two rules from different classes cannot be equal", myRule.equals(myOtherRule));
     }
 
+    @Test
     public void testEquals6() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
@@ -162,6 +170,7 @@ public class AbstractRuleTest extends TestCase {
         assertFalse("Rules with different names cannot be equal", r1.equals(r2));
     }
 
+    @Test
     public void testEquals7() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
@@ -169,6 +178,7 @@ public class AbstractRuleTest extends TestCase {
         assertFalse("Rules with different priority levels cannot be equal", r1.equals(r2));
     }
 
+    @Test
     public void testEquals8() {
         MyRule r1 = new MyRule();
         r1.setProperty(MyRule.xpath, "something");
@@ -177,6 +187,7 @@ public class AbstractRuleTest extends TestCase {
         assertFalse("Rules with different properties values cannot be equal", r1.equals(r2));
     }
 
+    @Test
     public void testEquals9() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
@@ -184,6 +195,7 @@ public class AbstractRuleTest extends TestCase {
         assertFalse("Rules with different properties cannot be equal", r1.equals(r2));
     }
 
+    @Test
     public void testEquals10() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
@@ -192,4 +204,8 @@ public class AbstractRuleTest extends TestCase {
         assertTrue("Rules that are equal must have the same hashcode", r1.hashCode() == r2.hashCode());
     }
 
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(AbstractRuleTest.class);
+    }
 }

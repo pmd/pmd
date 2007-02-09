@@ -3,14 +3,19 @@
  */
 package test.net.sourceforge.pmd.cpd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.TokenEntry;
 
+import org.junit.Test;
+
 import java.util.Iterator;
 
-public class MatchTest extends TestCase {
+public class MatchTest {
 
+    @Test
     public void testSimple() {
         TokenEntry mark1 = new TokenEntry("public", "/var/Foo.java", 1);
         TokenEntry mark2 = new TokenEntry("class", "/var/Foo.java", 1);
@@ -26,9 +31,14 @@ public class MatchTest extends TestCase {
         assertFalse(i.hasNext());
     }
 
+    @Test
     public void testCompareTo() {
         Match m1 = new Match(1, new TokenEntry("public", "/var/Foo.java", 1), new TokenEntry("class", "/var/Foo.java", 1));
         Match m2 = new Match(2, new TokenEntry("Foo", "/var/Foo.java", 1), new TokenEntry("{", "/var/Foo.java", 1));
         assertTrue(m2.compareTo(m1) < 0);
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(MatchTest.class);
     }
 }

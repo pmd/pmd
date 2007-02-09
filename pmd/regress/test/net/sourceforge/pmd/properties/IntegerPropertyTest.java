@@ -7,11 +7,6 @@ import net.sourceforge.pmd.properties.IntegerProperty;
  */
 public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 
-	public IntegerPropertyTest() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
 	/**
 	 * Method createValue.
 	 * @param count int
@@ -38,4 +33,7 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 				new IntegerProperty("testInteger", "Test integer property", new int[] {-1,0,1,2}, 1.0f, maxCount);
 		}
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(IntegerPropertyTest.class);
+    }
 }

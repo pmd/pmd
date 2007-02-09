@@ -22,13 +22,19 @@
  */
 package test.net.sourceforge.pmd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import net.sourceforge.pmd.util.ResourceLoader;
+
+import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -36,8 +42,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-public class RuleSetFactoryTest extends TestCase {
+import junit.framework.JUnit4TestAdapter;
+public class RuleSetFactoryTest {
 
+    @Test
     public void testRefs() throws Throwable {
         InputStream in = ResourceLoader.loadResourceAsStream("rulesets/favorites.xml", this.getClass().getClassLoader());
         if (in == null) {
@@ -48,22 +56,20 @@ public class RuleSetFactoryTest extends TestCase {
         assertNotNull(rs.getRuleByName("WhileLoopsMustUseBraces"));
     }
 
-    public void testRuleSetNotFound() {
+    @Test(expected = RuleSetNotFoundException.class)
+    public void testRuleSetNotFound() throws RuleSetNotFoundException {
         RuleSetFactory rsf = new RuleSetFactory();
-        try {
-            rsf.createSingleRuleSet("fooooo");
-            fail("Should have thrown a RuleSetNotFoundException");
-        } catch (RuleSetNotFoundException rsnfe) {
-            // cool
-        }
+        rsf.createSingleRuleSet("fooooo");
     }
 
+    @Test
     public void testCreateEmptyRuleSet() {
         RuleSet rs = loadRuleSet(EMPTY_RULESET);
         assertEquals("test", rs.getName());
         assertEquals(0, rs.size());
     }
 
+    @Test
     public void testSingleRule() {
         RuleSet rs = loadRuleSet(SINGLE_RULE);
         assertEquals(1, rs.size());
@@ -72,6 +78,7 @@ public class RuleSetFactoryTest extends TestCase {
         assertEquals("avoid the mock rule", r.getMessage());
     }
 
+    @Test
     public void testMultipleRules() {
         RuleSet rs = loadRuleSet(MULTIPLE_RULES);
         assertEquals(2, rs.size());
@@ -83,10 +90,12 @@ public class RuleSetFactoryTest extends TestCase {
         }
     }
 
+    @Test
     public void testSingleRuleWithPriority() {
         assertEquals(3, loadFirstRule(PRIORITY).getPriority());
     }
 
+    @Test
     public void testProps() {
         Rule r = loadFirstRule(PROPERTIES);
         assertTrue(r.hasProperty("foo"));
@@ -100,26 +109,31 @@ public class RuleSetFactoryTest extends TestCase {
         assertTrue(r.getDescription().indexOf("testdesc2") != -1);
     }
 
+    @Test
     public void testXPathPluginnameProperty() {
         Rule r = loadFirstRule(XPATH_PLUGINNAME);
         assertTrue(r.hasProperty("pluginname"));
     }
 
+    @Test
     public void testXPath() {
         Rule r = loadFirstRule(XPATH);
         assertTrue(r.hasProperty("xpath"));
         assertTrue(r.getStringProperty("xpath").indexOf(" //Block ") != -1);
     }
 
+    @Test
     public void testFacadesOffByDefault() {
         Rule r = loadFirstRule(XPATH);
         assertFalse(r.usesDFA());
     }
 
+    @Test
     public void testDFAFlag() {
         assertTrue(loadFirstRule(DFA).usesDFA());
     }
 
+    @Test
     public void testExternalReferenceOverride() {
         Rule r = loadFirstRule(REF_OVERRIDE);
         assertEquals("TestNameOverride", r.getName());
@@ -135,25 +149,24 @@ public class RuleSetFactoryTest extends TestCase {
         assertEquals("new property", r.getStringProperty("test4"));
     }
 
+    @Test
     public void testOverrideMessage() {
         Rule r = loadFirstRule(REF_OVERRIDE_ORIGINAL_NAME);
         assertEquals("TestMessageOverride", r.getMessage());
     }
 
+    @Test
     public void testOverrideMessageOneElem() {
         Rule r = loadFirstRule(REF_OVERRIDE_ORIGINAL_NAME_ONE_ELEM);
         assertEquals("TestMessageOverride", r.getMessage());
     }
 
-    public void testExternalRef() {
-        try {
-            loadFirstRule(REF_MISPELLED_XREF);
-            fail("Whoa, should have gotten an IllegalArgumentException");
-        } catch (IllegalArgumentException iae) {
-            // cool
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void testExternalRef() throws IllegalArgumentException {
+        loadFirstRule(REF_MISPELLED_XREF);
     }
 
+    @Test
     public void testSetPriority() {
         RuleSetFactory rsf = new RuleSetFactory();
         rsf.setMinimumPriority(2);
@@ -322,17 +335,22 @@ public class RuleSetFactoryTest extends TestCase {
         RuleSetFactory rsf = new RuleSetFactory();
         return rsf.createRuleSet(new ByteArrayInputStream(ruleSetName.getBytes()));
     }
-/*
+    
+    @Test
     public void testExternalReferences() {
         RuleSet rs = loadRuleSet(EXTERNAL_REFERENCE_RULE_SET);
         assertEquals(1, rs.size());
         assertEquals(UnusedLocalVariableRule.class, rs.getRuleByName("UnusedLocalVariable").getClass());
     }
-        private static final String EXTERNAL_REFERENCE_RULE_SET =
-                "<?xml version=\"1.0\"?>" + PMD.EOL +
-                "<ruleset name=\"test\">" + PMD.EOL +
-                "<description>testdesc</description>" + PMD.EOL +
-                "<rule ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\"/>" + PMD.EOL +
-                "</ruleset>";
-*/
+
+    private static final String EXTERNAL_REFERENCE_RULE_SET =
+            "<?xml version=\"1.0\"?>" + PMD.EOL +
+            "<ruleset name=\"test\">" + PMD.EOL +
+            "<description>testdesc</description>" + PMD.EOL +
+            "<rule ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\"/>" + PMD.EOL +
+            "</ruleset>";
+
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(RuleSetFactoryTest.class);
+    }
 }

@@ -2,12 +2,16 @@ package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_4;
+
+import org.junit.Test;
+
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.io.StringReader;
 
 public class ParserCornersTest extends ParserTst {
 
+    @Test
     public final void testGetFirstASTNameImageNull() throws Throwable {
         new TargetJDK1_4().createParser(new StringReader(ABSTRACT_METHOD_LEVEL_CLASS_DECL)).CompilationUnit();
     }
@@ -22,4 +26,7 @@ public class ParserCornersTest extends ParserTst {
             "  }" + PMD.EOL +
             "}";
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(ParserCornersTest.class);
+    }
 }

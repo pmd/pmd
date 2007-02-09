@@ -1,11 +1,14 @@
 package test.net.sourceforge.pmd.ast;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
-public class ASTMethodDeclarationTest extends TestCase {
+import org.junit.Test;
 
+public class ASTMethodDeclarationTest {
+
+    @Test
     public void testGetVariableName() {
         int id = 0;
 
@@ -15,5 +18,9 @@ public class ASTMethodDeclarationTest extends TestCase {
         md.jjtAddChild(de, 0);
 
         assertEquals("foo", md.getMethodName());
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(ASTMethodDeclarationTest.class);
     }
 }

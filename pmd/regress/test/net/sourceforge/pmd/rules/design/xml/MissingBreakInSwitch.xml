@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+one case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	void main() {
+		switch(i) {
+		case 1:
+		default:
+		}
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+just skip empty switch
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	void main() {
+		switch(i) {
+		}
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+one break
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	void main() {
+		switch(i) {
+		case 1:
+		case 2:
+			break;
+		default:
+		}
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+each case stmt has a return
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	int main() {
+		switch(i) {
+		case '1':
+		 return 1;
+		case '2':
+		 return 2;
+		default:
+		 return 3;
+		}
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+all cases have return or throw
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	int main() {
+		switch(i) {
+		case '1':
+		 return 1;
+		case '2':
+		 return 2;
+		default:
+		 throw new Exception("bad number");
+		}
+	}
+}
+     ]]></code>
+    </test-code>
+</test-data>

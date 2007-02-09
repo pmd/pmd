@@ -1,16 +1,23 @@
 package test.net.sourceforge.pmd.ast;
 
-import java.util.Iterator;
-import java.util.Set;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+
+import org.junit.Test;
+
 import test.net.sourceforge.pmd.testframework.ParserTst;
+
+import java.util.Iterator;
+import java.util.Set;
 
 public class ASTFormalParameterTest extends ParserTst {
 
+    @Test
     public void testVarargs() throws Throwable {
         int nrOfVarArgs   = 0;
         int nrOfNoVarArgs = 0;
@@ -38,4 +45,7 @@ public class ASTFormalParameterTest extends ParserTst {
             " void bar(int x, int... others) {}" + PMD.EOL +
             "}";
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(ASTFormalParameterTest.class);
+    }
 }

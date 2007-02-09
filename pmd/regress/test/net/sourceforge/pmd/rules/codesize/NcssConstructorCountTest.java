@@ -3,19 +3,27 @@
  */
 package test.net.sourceforge.pmd.rules.codesize;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import net.sourceforge.pmd.Rule;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class NcssConstructorCountTest extends SimpleAggregatorTst {
     private Rule rule;
 
+    @Before
     public void setUp() {
         rule = findRule("codesize", "NcssConstructorCount");
     }
 
+    @Test
     public void testAll() {
-        rule.addProperty("minimum", "13");
         runTests(rule);
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(NcssConstructorCountTest.class);
     }
 }
 

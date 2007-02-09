@@ -22,7 +22,9 @@
  */
 package test.net.sourceforge.pmd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.CommandLineOptions;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.EmacsRenderer;
@@ -32,10 +34,15 @@ import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 
+import org.junit.Test;
+
 import java.io.InputStreamReader;
 
-public class CommandLineOptionsTest extends TestCase {
+import junit.framework.JUnit4TestAdapter;
 
+public class CommandLineOptionsTest {
+
+    @Test
     public void testTargetJDKVersion() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
         assertEquals("1.4", opt.getTargetJDK());
@@ -49,6 +56,7 @@ public class CommandLineOptionsTest extends TestCase {
         assertEquals("1.6", opt.getTargetJDK());
     }
 
+    @Test
     public void testDebug() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic", "-debug"});
         assertTrue(opt.debugEnabled());
@@ -56,6 +64,7 @@ public class CommandLineOptionsTest extends TestCase {
         assertTrue(opt.debugEnabled());
     }
 
+    @Test
     public void testExcludeMarker() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic", "-excludemarker", "FOOBAR"});
         assertEquals("FOOBAR", opt.getExcludeMarker());
@@ -63,6 +72,7 @@ public class CommandLineOptionsTest extends TestCase {
         assertEquals("FOOBAR", opt.getExcludeMarker());
     }
 
+    @Test
     public void testShortNames() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic", "-shortnames"});
         assertTrue(opt.shortNamesEnabled());
@@ -70,6 +80,7 @@ public class CommandLineOptionsTest extends TestCase {
         assertTrue(opt.shortNamesEnabled());
     }
 
+    @Test
     public void testEncoding() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
         assertTrue(opt.getEncoding().equals((new InputStreamReader(System.in)).getEncoding()));
@@ -79,44 +90,41 @@ public class CommandLineOptionsTest extends TestCase {
         assertTrue(opt.getEncoding().equals("UTF-8"));
     }
 
+    @Test
     public void testInputFileName() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
         assertEquals("file", opt.getInputPath());
     }
 
+    @Test
     public void testReportFormat() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
         assertEquals("format", opt.getReportFormat());
     }
 
+    @Test
     public void testRulesets() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
         assertEquals("rulesets/basic.xml", opt.getRulesets());
     }
 
+    @Test
     public void testCommaSeparatedFiles() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file1,file2,file3", "format", "basic"});
         assertTrue(opt.containsCommaSeparatedFileList());
     }
 
+    @Test(expected = RuntimeException.class)
     public void testNotEnoughArgs() {
-        try {
-            new CommandLineOptions(new String[]{"file1", "format"});
-            fail("Should have thrown an exception when only array contained < 3 args");
-        } catch (RuntimeException re) {
-            // cool
-        }
+        new CommandLineOptions(new String[] { "file1", "format" });
     }
 
+    @Test(expected = RuntimeException.class)
     public void testNullArgs() {
-        try {
-            new CommandLineOptions(null);
-            fail("Should have thrown an exception when null passed to constructor");
-        } catch (RuntimeException re) {
-            // cool
-        }
+        new CommandLineOptions(null);
     }
     
+    @Test
     public void testReportFile(){
     	
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic", "-reportfile", "foo.txt"});
@@ -125,6 +133,7 @@ public class CommandLineOptionsTest extends TestCase {
         assertSame("foo.txt", opt.getReportFile());
     }
 
+    @Test
     public void testCpus() {
 
 		CommandLineOptions opt = new CommandLineOptions(new String[] { "file", "format", "basic", "-cpus", "2" });
@@ -133,6 +142,7 @@ public class CommandLineOptionsTest extends TestCase {
 		assertEquals(2, opt.getCpus());
 	}
 
+    @Test
     public void testRenderer() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "xml", "basic"});
         assertTrue(opt.createRenderer() instanceof XMLRenderer);
@@ -148,22 +158,21 @@ public class CommandLineOptionsTest extends TestCase {
         assertTrue(opt.createRenderer() instanceof VBHTMLRenderer);
         opt = new CommandLineOptions(new String[]{"file", "ideaj", "basic"});
         assertTrue(opt.createRenderer() instanceof IDEAJRenderer);
+    }
 
-        try {
-            opt = new CommandLineOptions(new String[]{"file", "fiddlefaddle", "basic"});
-            opt.createRenderer();
-        } catch (IllegalArgumentException iae) {
-            // cool
-        }
-
-        try {
-            opt = new CommandLineOptions(new String[]{"file", "", "basic"});
-            opt.createRenderer();
-        } catch (IllegalArgumentException iae) {
-            // cool
-        }
+    @Test(expected = IllegalArgumentException.class)
+    public void illegalArgument1() {
+        CommandLineOptions opt = new CommandLineOptions(new String[] { "file", "", "basic" });
+        opt.createRenderer();
     }
     
+    @Test(expected = IllegalArgumentException.class)
+    public void illegalArgument2() {
+        CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "fiddlefaddle", "basic"});
+        opt.createRenderer();
+    }
+    
+    @Test
     public void testOptionsFirst(){
 		CommandLineOptions opt = new CommandLineOptions(new String[] { "-cpus", "2", "-debug", "file", "format", "basic" });
 		assertEquals(2, opt.getCpus());
@@ -171,5 +180,9 @@ public class CommandLineOptionsTest extends TestCase {
         assertEquals("format", opt.getReportFormat());
         assertEquals("rulesets/basic.xml", opt.getRulesets());
         assertTrue(opt.debugEnabled());
+    }
+
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(CommandLineOptionsTest.class);
     }
 }

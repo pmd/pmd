@@ -40,4 +40,8 @@ public class PapariTextRendererTest extends AbstractRendererTst {
     public String getExpectedError(ProcessingError error) {
         return PMD.EOL + PMD.EOL + "Summary:" + PMD.EOL + PMD.EOL + "    err:  Error" + PMD.EOL + PMD.EOL + "* errors:   0" + PMD.EOL + "* warnings: 0" + PMD.EOL;
     }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(PapariTextRendererTest.class);
+    }
 }

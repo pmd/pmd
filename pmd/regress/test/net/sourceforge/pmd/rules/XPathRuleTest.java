@@ -1,17 +1,20 @@
+package test.net.sourceforge.pmd.rules;
+ 
+import static org.junit.Assert.assertEquals;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.rules.XPathRule;
 
- package test.net.sourceforge.pmd.rules;
- 
- import java.io.StringReader;
- 
- import net.sourceforge.pmd.PMD;
- import net.sourceforge.pmd.Report;
- import net.sourceforge.pmd.Rule;
- import net.sourceforge.pmd.RuleContext;
- import net.sourceforge.pmd.RuleSet;
- import net.sourceforge.pmd.RuleViolation;
- import net.sourceforge.pmd.rules.XPathRule;
- import test.net.sourceforge.pmd.testframework.RuleTst;
- 
+import org.junit.Before;
+import org.junit.Test;
+
+import test.net.sourceforge.pmd.testframework.RuleTst;
+
+import java.io.StringReader;
  /**
   * @author daniels
   */
@@ -19,11 +22,13 @@
  
      XPathRule rule;
  
+     @Before
      public void setUp() {
          rule = new XPathRule();
          rule.setMessage("XPath Rule Failed");
      }
  
+     @Test
      public void testPluginname() throws Throwable {
          Rule rule = new XPathRule();
          rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) < 3]");
@@ -41,6 +46,7 @@
          assertEquals("a", rv.getDescription());
      }
  
+     @Test
      public void testVariables() throws Throwable {
          Rule rule = new XPathRule();
          rule.addProperty("xpath", "//VariableDeclaratorId[@Image=$var]");
@@ -68,4 +74,8 @@
              " int faddle;" + PMD.EOL +
              " int fiddle;" + PMD.EOL +
              "}";
+
+     public static junit.framework.Test suite() {
+         return new junit.framework.JUnit4TestAdapter(XPathRuleTest.class);
+     }
  }

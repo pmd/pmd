@@ -1,19 +1,23 @@
 package test.net.sourceforge.pmd.typeresolution;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import net.sourceforge.pmd.typeresolution.PMDASMClassLoader;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.Map;
-
-import junit.framework.TestCase;
-
-public class PMDASMClassLoaderTest extends TestCase {
+public class PMDASMClassLoaderTest {
 
     private PMDASMClassLoader cl;
-    protected void setUp() throws Exception {
+    
+    @Before
+    public void setUp() throws Exception {
         cl = new PMDASMClassLoader();
-        super.setUp();
     }
 
+    @Test
     public void testLoadClassWithImportOnDemand() throws Exception {
         String className = "test.net.sourceforge.pmd.typeresolution.ClassWithImportOnDemand";
         Class clazz = cl.loadClass(className);
@@ -27,6 +31,7 @@ public class PMDASMClassLoaderTest extends TestCase {
         assertEquals("test.net.sourceforge.pmd.typeresolution.ClassWithImportOnDemand", imports.get("ClassWithImportOnDemand"));
     }
     
+    @Test
     public void testClassWithImportInnerOnDemand() throws Exception {
         String className = "test.net.sourceforge.pmd.typeresolution.ClassWithImportInnerOnDemand";
         Class clazz = cl.loadClass(className);
@@ -43,5 +48,9 @@ public class PMDASMClassLoaderTest extends TestCase {
         assertEquals("java.util.Map$Entry", imports.get("Map$Entry"));
         assertEquals("java.lang.Object", imports.get("Object"));
         assertEquals("test.net.sourceforge.pmd.typeresolution.ClassWithImportInnerOnDemand", imports.get("ClassWithImportInnerOnDemand"));
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(PMDASMClassLoaderTest.class);
     }
 }

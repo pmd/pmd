@@ -40,4 +40,7 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
 			new CharacterProperty("testCharacter", "Test character property", new char[] {'a', 'b', 'c'}, 1.0f, delimiter);
 	}
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(CharacterPropertyTest.class);
+    }
 }

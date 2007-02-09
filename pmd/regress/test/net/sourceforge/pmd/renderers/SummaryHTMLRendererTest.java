@@ -71,6 +71,10 @@ public class SummaryHTMLRendererTest extends AbstractRendererTst {
         "</tr>" + PMD.EOL + 
         "</table></table></body></html>";
     }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(SummaryHTMLRendererTest.class);
+    }
 }
 
 

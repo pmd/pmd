@@ -3,6 +3,8 @@
  */
 package test.net.sourceforge.pmd.renderers;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -11,15 +13,19 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+
+import org.junit.Test;
 import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
 import test.net.sourceforge.pmd.testframework.RuleTst;
+
+import java.io.IOException;
+import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.StringReader;
 
 public class XMLRendererTest extends RuleTst {
 
@@ -46,12 +52,14 @@ public class XMLRendererTest extends RuleTst {
         }
     }
 
+    @Test
     public void testEmptyReport() throws Throwable {
         Element root = parseRootElement(new Report());
         assertEquals("pmd", root.getNodeName());
         assertNull(root.getFirstChild().getNextSibling()); // only one child, it's whitespace
     }
 
+    @Test
     public void testErrorReport() throws Throwable {
         Report report = new Report();
         report.addError(new Report.ProcessingError("test_msg", "test_filename"));
@@ -59,6 +67,7 @@ public class XMLRendererTest extends RuleTst {
         assertEquals("test_msg", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("msg").getNodeValue());
     }
 
+    @Test
     public void testSingleReport() throws Throwable {
         Report report = new Report();
         runTestFromString(TEST1, new FooRule(), report);
@@ -78,6 +87,7 @@ public class XMLRendererTest extends RuleTst {
             "}" + PMD.EOL;
 
 
+    @Test
     public void testDoubleReport() throws Throwable {
         Report report = new Report();
         runTestFromString(TEST2, new FooRule(), report);
@@ -87,6 +97,7 @@ public class XMLRendererTest extends RuleTst {
         assertEquals("Foo", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getNextSibling().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
     }
 
+    @Test
     public void testTwoFiles() throws Throwable {
         Report report = new Report();
         FooRule rule = new FooRule();
@@ -108,4 +119,7 @@ public class XMLRendererTest extends RuleTst {
         return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(new XMLRenderer().render(rpt)))).getDocumentElement();
     }
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(XMLRendererTest.class);
+    }
 }

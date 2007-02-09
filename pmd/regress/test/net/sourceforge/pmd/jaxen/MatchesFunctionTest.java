@@ -1,17 +1,19 @@
 package test.net.sourceforge.pmd.jaxen;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.ast.JavaParserVisitor;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.jaxen.Attribute;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
+
 import org.jaxen.Context;
 import org.jaxen.FunctionCallException;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MatchesFunctionTest extends TestCase implements Node {
+public class MatchesFunctionTest implements Node {
 
     public void jjtOpen() {
     }
@@ -47,11 +49,13 @@ public class MatchesFunctionTest extends TestCase implements Node {
         return className;
     }
 
+    @Test
     public void testMatch() throws FunctionCallException, NoSuchMethodException {
         className = "Foo";
         assertTrue(tryRegexp("Foo") instanceof List);
     }
 
+    @Test
     public void testNoMatch() throws FunctionCallException, NoSuchMethodException {
         className = "bar";
         assertTrue(tryRegexp("Foo") instanceof Boolean);
@@ -69,6 +73,10 @@ public class MatchesFunctionTest extends TestCase implements Node {
         Context c = new Context(null);
         c.setNodeSet(new ArrayList());
         return function.call(c, list);
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(MatchesFunctionTest.class);
     }
 }
 

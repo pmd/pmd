@@ -22,14 +22,19 @@
  */
 package test.net.sourceforge.pmd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.JavaParser;
+
+import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.MockRule;
 
@@ -41,10 +46,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class RuleSetTest extends TestCase {
+public class RuleSetTest {
 
     private String javaCode = "public class Test { }";
 
+    @Test
     public void testNoDFA() {
         RuleSet rs = new RuleSet();
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
@@ -52,6 +58,7 @@ public class RuleSetTest extends TestCase {
         assertFalse(rs.usesDFA());
     }
 
+    @Test
     public void testIncludesRuleWithDFA() {
         RuleSet rs = new RuleSet();
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
@@ -60,6 +67,7 @@ public class RuleSetTest extends TestCase {
         assertTrue(rs.usesDFA());
     }
 
+    @Test
     public void testAccessors() {
         RuleSet rs = new RuleSet();
         rs.setName("foo");
@@ -68,6 +76,7 @@ public class RuleSetTest extends TestCase {
         assertEquals("description mismatch", "bar", rs.getDescription());
     }
 
+    @Test
     public void testGetRuleByName() {
         RuleSet rs = new RuleSet();
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
@@ -75,6 +84,7 @@ public class RuleSetTest extends TestCase {
         assertEquals("unable to fetch rule by name", mock, rs.getRuleByName("name"));
     }
 
+    @Test
     public void testGetRuleByName2() {
         RuleSet rs = new RuleSet();
         MockRule mock = new MockRule("name", "desc", "msg", "rulesetname");
@@ -82,6 +92,7 @@ public class RuleSetTest extends TestCase {
         assertNull("the rule FooRule must not be found!", rs.getRuleByName("FooRule"));
     }
 
+    @Test
     public void testRuleList() {
         RuleSet IUT = new RuleSet();
 
@@ -100,6 +111,7 @@ public class RuleSetTest extends TestCase {
         assertEquals("Rule isn't in ruleset.", rule, i.next());
     }
 
+    @Test
     public void testAddRuleSet() {
         RuleSet set1 = new RuleSet();
         set1.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
@@ -109,27 +121,32 @@ public class RuleSetTest extends TestCase {
         assertEquals("ruleset size wrong", 2, set1.size());
     }
 
+    @Test
     public void testApply0Rules() throws Throwable {
         RuleSet IUT = new RuleSet();
         verifyRuleSet(IUT, 0, new HashSet());
     }
 
+    @Test
     public void testEquals1() {
         RuleSet s = new RuleSet();
         assertFalse("A ruleset cannot be equals to null", s.equals(null));
     }
 
+    @Test
     public void testEquals2() {
         RuleSet s = new RuleSet();
         assertTrue("A rulset must be equals to itself", s.equals(s));
     }
 
+    @Test
     public void testEquals3() {
         RuleSet s = new RuleSet();
         s.setName("basic rules");
         assertFalse("A ruleset cannot be equals to another kind of object", s.equals("basic rules"));
     }
 
+    @Test
     public void testEquals4() {
         RuleSet s1 = new RuleSet();
         s1.setName("my ruleset");
@@ -143,6 +160,7 @@ public class RuleSetTest extends TestCase {
         assertEquals("Equals rulesets must have the same hashcode", s1.hashCode(), s2.hashCode());
     }
 
+    @Test
     public void testEquals5() {
         RuleSet s1 = new RuleSet();
         s1.setName("my ruleset");
@@ -155,6 +173,7 @@ public class RuleSetTest extends TestCase {
         assertFalse("2 rulesets with different name but same rules must not be equals", s1.equals(s2));
     }
 
+    @Test
     public void testEquals6() {
         RuleSet s1 = new RuleSet();
         s1.setName("my ruleset");
@@ -197,5 +216,9 @@ public class RuleSetTest extends TestCase {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(javaCode));
         RC.add(parser.CompilationUnit());
         return RC;
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(RuleSetTest.class);
     }
 }

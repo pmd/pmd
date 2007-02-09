@@ -25,4 +25,8 @@ public class YAHTMLRendererTest extends AbstractRendererTst {
     public String getExpectedError(ProcessingError error) {
         return "<h3 align=\"center\">The HTML files are created above the project directory.</h3>";
     }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(YAHTMLRendererTest.class);
+    }
 }

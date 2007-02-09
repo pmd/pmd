@@ -1,14 +1,18 @@
 package test.net.sourceforge.pmd.symboltable;
 
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.symboltable.Scope;
 
+import org.junit.Test;
+
 import java.util.Map;
 
 public class GlobalScopeTest extends STBBaseTst {
 
+    @Test
     public void testClassDeclAppears() {
         parseCode(TEST1);
         ASTCompilationUnit decl = acu.findChildrenOfType(ASTCompilationUnit.class).get(0);
@@ -18,11 +22,10 @@ public class GlobalScopeTest extends STBBaseTst {
         assertEquals(classNameDeclaration.getImage(), "Foo");
     }
 
+    @Test
     public void testEnums() {
         parseCode15(TEST2);
     }
-
-
 
     private static final String TEST1 =
             "public class Foo {}" + PMD.EOL;
@@ -37,5 +40,7 @@ public class GlobalScopeTest extends STBBaseTst {
             "  }" + PMD.EOL +
             "}" + PMD.EOL;
 
-
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(GlobalScopeTest.class);
+    }
 }

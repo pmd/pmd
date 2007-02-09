@@ -54,4 +54,7 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, values, 1.0f, 3);	
 	}
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(EnumeratedPropertyTest.class);
+    }
 }

@@ -1,5 +1,8 @@
 package test.net.sourceforge.pmd.ast;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
@@ -10,12 +13,16 @@ import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Dimensionable;
 import net.sourceforge.pmd.ast.JavaParser;
+
+import org.junit.Test;
+
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 import java.io.StringReader;
 
 public class ASTFieldDeclarationTest extends ParserTst {
 
+    @Test
     public void testIsArray() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST1));
         ASTCompilationUnit cu = parser.CompilationUnit();
@@ -24,6 +31,7 @@ public class ASTFieldDeclarationTest extends ParserTst {
         assertEquals(1, node.getArrayDepth());
     }
 
+    @Test
     public void testMultiDimensionalArray() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST2));
         ASTCompilationUnit cu = parser.CompilationUnit();
@@ -31,6 +39,7 @@ public class ASTFieldDeclarationTest extends ParserTst {
         assertEquals(3, node.getArrayDepth());
     }
 
+    @Test
     public void testIsSyntacticallyPublic() {
         JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(TEST3));
         ASTCompilationUnit cu = parser.CompilationUnit();
@@ -44,6 +53,7 @@ public class ASTFieldDeclarationTest extends ParserTst {
         assertTrue(node.isPublic());
     }
 
+    @Test
     public void testWithEnum() {
         JavaParser parser = (new TargetJDK1_5()).createParser(new StringReader(TEST4));
         ASTCompilationUnit cu = parser.CompilationUnit();
@@ -72,6 +82,7 @@ public class ASTFieldDeclarationTest extends ParserTst {
             " private int x;" + PMD.EOL +
             "}";
 
+    @Test
     public void testGetVariableName() {
         int id = 0;
         ASTFieldDeclaration n = new ASTFieldDeclaration(id++);
@@ -85,5 +96,9 @@ public class ASTFieldDeclarationTest extends ParserTst {
 
         assertEquals("foo", n.getVariableName());
 
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(ASTFieldDeclarationTest.class);
     }
 }

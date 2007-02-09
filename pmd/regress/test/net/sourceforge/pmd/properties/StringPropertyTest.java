@@ -62,4 +62,8 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
 			new StringProperty("testString", "Test string property", new String[] {"hello", "world"}, 1.0f, delimiter);
 		}
 
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(StringPropertyTest.class);
+    }
 }

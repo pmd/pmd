@@ -3,24 +3,30 @@
  */
 package test.net.sourceforge.pmd.cpd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.Renderer;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.XMLRenderer;
+
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 /**
  * @author Philippe T'Seyen
  */
-public class XMLRendererTest extends TestCase {
+public class XMLRendererTest {
+
+    @Test
     public void test_no_dupes() {
         Renderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<Match>();
@@ -37,6 +43,7 @@ public class XMLRendererTest extends TestCase {
         }
     }
 
+    @Test
     public void test_one_dupe() {
         Renderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<Match>();
@@ -71,6 +78,7 @@ public class XMLRendererTest extends TestCase {
         }
     }
 
+    @Test
     public void testRender_MultipleMatch() {
         Renderer renderer = new XMLRenderer();
         List<Match> list = new ArrayList<Match>();
@@ -91,6 +99,10 @@ public class XMLRendererTest extends TestCase {
             e.printStackTrace();
             fail(e.getMessage());
         }
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(XMLRendererTest.class);
     }
 }
 

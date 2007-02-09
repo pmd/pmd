@@ -3,7 +3,6 @@
  */
 package test.net.sourceforge.pmd.testframework;
 
-import junit.framework.TestCase;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -22,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class ParserTst extends TestCase {
+public abstract class ParserTst {
 
     private class Collector<E> implements InvocationHandler {
         private Class<E> clazz = null;

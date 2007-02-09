@@ -3,45 +3,37 @@
  */
 package test.net.sourceforge.pmd.ant;
 
-import junit.framework.TestCase;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.RuleSetWrapper;
+
 import org.apache.tools.ant.BuildException;
+import org.junit.Ignore;
+import org.junit.Test;
 
-public class PMDTaskTest extends TestCase {
+public class PMDTaskTest {
 
+    @Test(expected = BuildException.class)
     public void testNoFormattersValidation() {
         PMDTask task = new PMDTask();
-        try {
-            task.execute();
-            throw new RuntimeException("Should have thrown a BuildException - no Formatters");
-        } catch (BuildException be) {
-            // cool
-        }
+        task.execute();
     }
 
+    @Test(expected = BuildException.class)
     public void testFormatterWithNoToFileAttribute() {
         PMDTask task = new PMDTask();
         task.addFormatter(new Formatter());
-        try {
-            task.execute();
-            throw new RuntimeException("Should have thrown a BuildException - a Formatter was missing a toFile attribute");
-        } catch (BuildException be) {
-            // cool
-        }
+        task.execute();
     }
 
+    @Test(expected = BuildException.class)
     public void testNoRuleSets() {
         PMDTask task = new PMDTask();
-        try {
-            task.execute();
-            throw new RuntimeException("Should have thrown a BuildException - no rulesets");
-        } catch (BuildException be) {
-            // cool
-        }
+        task.execute();
     }
 
+    @Ignore("This test has a TODO in it")
+    @Test
     public void testNestedRuleset() {
         PMDTask task = new PMDTask();
         RuleSetWrapper r = new RuleSetWrapper();
@@ -60,15 +52,14 @@ public class PMDTaskTest extends TestCase {
         }
     }
 
+    @Test(expected = BuildException.class)
     public void testInvalidJDK() {
         PMDTask task = new PMDTask();
         task.setTargetJDK("1.7");
-        try {
-            task.execute();
-            throw new RuntimeException("Should have thrown a BuildException - JDK 1.7 targeted");
-        } catch (BuildException be) {
-            // cool
-        }
+        task.execute();
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(PMDTaskTest.class);
     }
 }
-

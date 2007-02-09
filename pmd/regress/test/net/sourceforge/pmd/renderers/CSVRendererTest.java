@@ -33,4 +33,7 @@ public class CSVRendererTest extends AbstractRendererTst {
         return "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"Description\",\"Rule set\",\"Rule\"" + PMD.EOL;
     }
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(CSVRendererTest.class);
+    }
 }

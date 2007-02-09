@@ -3,6 +3,9 @@
  */
 package test.net.sourceforge.pmd.symboltable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
@@ -15,17 +18,20 @@ import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
+import org.junit.Test;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 public class ClassScopeTest extends STBBaseTst {
 
+    @Test
     public void testEnumsClassScope() {
         parseCode15(ENUM_SCOPE);
     }
 
     // FIXME - these will break when this goes from Anonymous$1 to Foo$1
+    @Test
     public void testAnonymousInnerClassName() {
         ClassScope s = new ClassScope();
         assertEquals("Anonymous$1", s.getClassName());
@@ -33,6 +39,7 @@ public class ClassScopeTest extends STBBaseTst {
         assertEquals("Anonymous$2", s.getClassName());
     }
 
+    @Test
     public void testContains() {
         ClassScope s = new ClassScope("Foo");
         ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
@@ -41,6 +48,7 @@ public class ClassScopeTest extends STBBaseTst {
         assertTrue(s.getVariableDeclarations().keySet().iterator().hasNext());
     }
 
+    @Test
     public void testCantContainsSuperToString() {
         ClassScope s = new ClassScope("Foo");
         SimpleNode node = new SimpleJavaNode(1);
@@ -48,6 +56,7 @@ public class ClassScopeTest extends STBBaseTst {
         assertFalse(s.contains(new NameOccurrence(node, node.getImage())));
     }
 
+    @Test
     public void testContainsStaticVariablePrefixedWithClassName() {
         ClassScope s = new ClassScope("Foo");
         ASTVariableDeclaratorId node = new ASTVariableDeclaratorId(1);
@@ -59,12 +68,14 @@ public class ClassScopeTest extends STBBaseTst {
         assertTrue(s.contains(new NameOccurrence(node2, node2.getImage())));
     }
 
+    @Test
     public void testClassName() {
         parseCode(CLASS_NAME);
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         assertEquals("Foo", n.getScope().getEnclosingClassScope().getClassName());
     }
 
+    @Test
     public void testMethodDeclarationRecorded() {
         parseCode(METHOD_DECLARATIONS_RECORDED);
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
@@ -77,6 +88,7 @@ public class ClassScopeTest extends STBBaseTst {
         assertTrue(node.isPrivate());
     }
 
+    @Test
     public void testTwoMethodsSameNameDiffArgs() {
         // TODO this won't work with String and java.lang.String
         parseCode(METHODS_WITH_DIFF_ARG);
@@ -90,6 +102,7 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
 
+    @Test
     public final void testOneParams() throws Throwable {
         parseCode(ONE_PARAM);
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
@@ -98,6 +111,7 @@ public class ClassScopeTest extends STBBaseTst {
         assertEquals("(String)", mnd.getParameterDisplaySignature());
     }
 
+    @Test
     public final void testTwoParams() throws Throwable {
         parseCode(TWO_PARAMS);
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
@@ -106,6 +120,7 @@ public class ClassScopeTest extends STBBaseTst {
         assertEquals("(String,int)", mnd.getParameterDisplaySignature());
     }
 
+    @Test
     public final void testNoParams() throws Throwable {
         parseCode(NO_PARAMS);
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
@@ -115,6 +130,7 @@ public class ClassScopeTest extends STBBaseTst {
     }
 
 
+    @Test
     public final void testNestedClassDeclFound() throws Throwable {
         parseCode(NESTED_CLASS_FOUND);
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
@@ -124,12 +140,14 @@ public class ClassScopeTest extends STBBaseTst {
         assertEquals("Buz", cnd.getImage());
     }
 
+    @Test
     public final void testbuz() throws Throwable {
         parseCode(METH);
         //SymbolTableViewer st = new SymbolTableViewer();
         //acu.jjtAccept(st, null);
     }
 
+    @Test
     public void testMethodUsageSeen() {
         parseCode(METHOD_USAGE_SEEN);
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
@@ -146,6 +164,7 @@ public class ClassScopeTest extends STBBaseTst {
         assertEquals("bar", ((NameOccurrence) usages.get(0)).getImage());
     }
 
+    @Test
     public void testMethodUsageSeenWithThis() {
         parseCode(METHOD_USAGE_SEEN_WITH_THIS);
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
@@ -161,6 +180,7 @@ public class ClassScopeTest extends STBBaseTst {
         assertEquals("bar", ((NameOccurrence) usages.get(0)).getImage());
     }
 
+    @Test
     public void testMethodUsageSeen2() {
         parseCode(METHOD_USAGE_SEEN2);
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
@@ -258,5 +278,7 @@ public class ClassScopeTest extends STBBaseTst {
             " }" + PMD.EOL +
             "}";
 
-
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(ClassScopeTest.class);
+    }
 }

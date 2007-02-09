@@ -1,7 +1,8 @@
 package test.net.sourceforge.pmd.stat;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 
 /**
@@ -10,27 +11,17 @@ import junit.framework.TestSuite;
  * @author Boris Gruschko ( boris at gruschko.org )
  * @version $Id$
  */
+@RunWith(Suite.class)
+@SuiteClasses({MetricTest.class, StatisticalRuleTest.class})
 public class StatTests {
-    /**
-     * test suite
-     *
-     * @return test suite
-     */
-    public static Test suite() {
-        TestSuite suite = new TestSuite("Test for test.net.sourceforge.pmd.stat");
-
-        //$JUnit-BEGIN$
-        suite.addTestSuite(MetricTest.class);
-        suite.addTestSuite(StatisticalRuleTest.class);
-
-        //$JUnit-END$
-        return suite;
-    }
 }
 
 
 /*
  * $Log$
+ * Revision 1.4  2007/02/09 01:38:09  allancaplan
+ * Moving to JUnit 4
+ *
  * Revision 1.3  2006/02/10 14:26:27  tomcopeland
  * Huge reformatting checkin
  *

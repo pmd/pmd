@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+ private void bar(String x) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method called on param
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+ private void foo (String s) {
+  String str = s.toString();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assignment to param
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+ private void bar(int s) {
+  s = 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+interface
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ void foo(int x);
+}
+     ]]></code>
+    </test-code>
+    <code-fragment id="public methods"><![CDATA[
+class Foo {
+ public void bar(int s) {}
+}
+     ]]></code-fragment>
+    <test-code>
+        <description><![CDATA[
+don't flag public methods by default
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="public methods"/>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+flag public methods if checkall property is set
+     ]]></description>
+        <rule-property name="checkall">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="public methods"/>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip native/abstract methods
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+ public native void bar(int s);
+ protected abstract void foo(Long s);
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+anonymous inner class npe
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+ void bar() {
+  ActionListener a  = new ActionListener() {
+   public void event(Event e) {}
+  };
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unused constructor param
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+ public Foo(int s) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+assigned but not used
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+ private void foo (String s) {
+  s = "hello";
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+array element is set
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+ private void foo (String[] s) {
+  s[2] = "hello";
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unused array in constructor
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+ int type;
+ public Foo (int type, String[] s) {
+  this.type = type;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unused array in method
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+ private final void setLang(final String lang[]){
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

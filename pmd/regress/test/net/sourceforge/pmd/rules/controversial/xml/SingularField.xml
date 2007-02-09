@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ int bar(int y) {
+  x = y + 5; 
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ void setX(int x) {
+  this.x = x;
+ }
+ int getX() {
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+second method uses 'this'
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ void setX(int x) {
+  this.x = x;
+ }
+ int getX() {
+  return this.x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip publics
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int x;
+ int bar(int y) {
+  x = y + 5; 
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip statics
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static int x;
+ int bar(int y) {
+  x = y + 5; 
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+unused fields shouldn't show up
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ int a = 3;
+ int b = 3;
+ void bar() {
+  foo(b); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+inner class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int a;
+ void bar() {
+  Object o = new FooAdapter() {
+   public void bar(Event e) {
+    a = e.GetInt();
+   }
+  }; 
+ }
+ int baz() {
+  return a; 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+initialized in constructor
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ public Foo(int y) {
+  x = y; 
+ }
+ int bar(int y) {
+  x = y + 5; 
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case in inner class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ class Bar {
+ private int x;
+ int bar(int y) {
+  x = y + 5; 
+  return x;
+ }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case with Object
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Integer x = null;
+ private Integer getFoo() {
+  if(x == null){; 
+      x = new Integer(1);; 
+  }; 
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case in static inner class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static class Bar {
+ private int x;
+ int bar(int y) {
+   this.x = y + 5; 
+ }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, shouldn't catch unused variable
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ void bar(int y) {
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case with self-instantiation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Integer x = new Integer(1);
+ private Integer getFoo() {
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Reuse variable name as params in method calls
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Integer x = new Integer(1);
+ public Foo(Integer x) {
+ }
+ private void getFoo(Integer x) {
+  this.x = x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case in two static inner classes
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static class Bar1 {
+ private int x;
+ int bar(int y) {
+   this.x = y + 5; 
+ }
+ }
+ static class Bar2 {
+ private int x;
+ int getX() {
+   return x; 
+ }
+ int setX(int y) {
+   this.x = y + 5; 
+ }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK, instantiates own self internally
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ int bar(int y) {
+  x = y + 5; 
+  return x;
+ }
+ private void bar() {
+  Foo foo = new Foo();
+  foo.x = new Integer(5);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure, variable accessed twice in same method
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Map map = new SomeMap();
+ private boolean bar(Object o) {
+     boolean ret = true;
+     if(super.isTrue) {
+     if(map.get(o) != null) {
+         ret = false; 
+     } else {
+         map.put(o,o); 
+     } 
+     } 
+     return ret; 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure, static
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ static {
+  x = 5; 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure, second method re-uses class level name
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ void setX(int x) {
+  this.x = x;
+ }
+ int doX() {
+  int x = 5;
+  return x*3;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+initialized in static initialization block
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static Foo FOO = new Foo();
+ private int x;
+ static {
+  FOO.x = 5; 
+ }
+ int bar(int y) {
+  x = y + 5; 
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

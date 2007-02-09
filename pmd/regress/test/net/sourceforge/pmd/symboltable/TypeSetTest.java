@@ -3,34 +3,40 @@
  */
 package test.net.sourceforge.pmd.symboltable;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.symboltable.TypeSet;
+
+import org.junit.Test;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TypeSetTest extends TestCase {
+public class TypeSetTest {
 
+    @Test
     public void testASTCompilationUnitPackage() {
         TypeSet t = new TypeSet();
         t.setASTCompilationUnitPackage("java.lang.");
         assertEquals("java.lang.", t.getASTCompilationUnitPackage());
     }
 
+    @Test
     public void testAddImport() {
         TypeSet t = new TypeSet();
         t.addImport("java.io.File");
         assertEquals(1, t.getImportsCount());
     }
 
+    @Test
     public void testFindClassImplicitImport() throws Throwable {
         TypeSet t = new TypeSet();
         Class clazz = t.findClass("String");
         assertEquals(String.class, clazz);
     }
 
+    @Test
     public void testFindClassSamePackage() throws Throwable {
         TypeSet t = new TypeSet();
         t.setASTCompilationUnitPackage("net.sourceforge.pmd.");
@@ -38,6 +44,7 @@ public class TypeSetTest extends TestCase {
         assertEquals(PMD.class, clazz);
     }
 
+    @Test
     public void testFindClassExplicitImport() throws Throwable {
         TypeSet t = new TypeSet();
         t.addImport("java.io.File");
@@ -45,6 +52,7 @@ public class TypeSetTest extends TestCase {
         assertEquals(File.class, clazz);
     }
 
+    @Test
     public void testFindClassImportOnDemand() throws Throwable {
         TypeSet t = new TypeSet();
         t.addImport("java.io.*");
@@ -52,16 +60,19 @@ public class TypeSetTest extends TestCase {
         assertEquals(File.class, clazz);
     }
 
+    @Test
     public void testFindClassPrimitive() throws Throwable {
         TypeSet t = new TypeSet();
         assertEquals(int.class, t.findClass("int"));
     }
 
+    @Test
     public void testFindClassVoid() throws Throwable {
         TypeSet t = new TypeSet();
         assertEquals(void.class, t.findClass("void"));
     }
 
+    @Test
     public void testFindFullyQualified() throws Throwable {
         TypeSet t = new TypeSet();
         assertEquals(String.class, t.findClass("java.lang.String"));
@@ -69,6 +80,7 @@ public class TypeSetTest extends TestCase {
     }
 
     // inner class tests
+    @Test
     public void testPrimitiveTypeResolver() throws Throwable {
         TypeSet.Resolver r = new TypeSet.PrimitiveTypeResolver();
         assertEquals(int.class, r.resolve("int"));
@@ -76,11 +88,13 @@ public class TypeSetTest extends TestCase {
         assertEquals(long.class, r.resolve("long"));
     }
 
+    @Test
     public void testVoidTypeResolver() throws Throwable {
         TypeSet.Resolver r = new TypeSet.VoidResolver();
         assertEquals(void.class, r.resolve("void"));
     }
 
+    @Test
     public void testExplicitImportResolver() throws Throwable {
         Set<String> imports = new HashSet<String>();
         imports.add("java.io.File");
@@ -88,52 +102,52 @@ public class TypeSetTest extends TestCase {
         assertEquals(File.class, r.resolve("File"));
     }
 
+    @Test
     public void testImplicitImportResolverPass() throws Throwable {
         TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
         assertEquals(String.class, r.resolve("String"));
     }
 
+    @Test(expected=ClassNotFoundException.class)
     public void testImplicitImportResolverPassFail() throws Throwable {
         TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
-        try {
-            r.resolve("PMD");
-            fail("Should have thrown an exception");
-        } catch (ClassNotFoundException cnfe) {
-        }
+        r.resolve("PMD");
     }
 
+    @Test
     public void testCurrentPackageResolverPass() throws Throwable {
         TypeSet.Resolver r = new TypeSet.CurrentPackageResolver("net.sourceforge.pmd.");
         assertEquals(PMD.class, r.resolve("PMD"));
     }
 
+    @Test
     public void testImportOnDemandResolverPass() throws Throwable {
-        Set<String> imports = new HashSet<String>();
-        imports.add("java.io.*");
-        imports.add("java.util.*");
-        TypeSet.Resolver r = new TypeSet.ImportOnDemandResolver(imports);
+        TypeSet.Resolver r = getResolver();
         assertEquals(Set.class, r.resolve("Set"));
         assertEquals(File.class, r.resolve("File"));
     }
 
-    public void testImportOnDemandResolverFail() throws Throwable {
+    @Test(expected = ClassNotFoundException.class)
+    public void importOnDemandResolverFail1() throws Throwable {
+        TypeSet.Resolver r = getResolver();
+        r.resolve("foo");
+    }
+
+    @Test(expected = ClassNotFoundException.class)
+    public void importOnDemandResolverFail2() throws Throwable {
+        TypeSet.Resolver r = getResolver();
+        r.resolve("String");
+    }
+
+    private TypeSet.Resolver getResolver() {
         Set<String> imports = new HashSet<String>();
         imports.add("java.io.*");
         imports.add("java.util.*");
         TypeSet.Resolver r = new TypeSet.ImportOnDemandResolver(imports);
-        try {
-            r.resolve("foo");
-            fail("Should have thrown a ClassNotFoundException");
-        } catch (ClassNotFoundException cnfe) {
-        }
-        try {
-            r.resolve("String");
-            fail("Should have thrown a ClassNotFoundException");
-        } catch (ClassNotFoundException cnfe) {
-        }
+        return r;
     }
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(TypeSetTest.class);
+    }
 }
-
-
-

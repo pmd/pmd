@@ -3,18 +3,37 @@
  */
 package test.net.sourceforge.pmd.symboltable;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTCatchStatement;
+import net.sourceforge.pmd.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.ast.ASTInitializer;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.Scope;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 public class AcceptanceTest extends STBBaseTst {
 
-/*
+    @Ignore
+    @Test
     public void testClashingSymbols() {
         parseCode(TEST1);
     }
 
+    @Ignore
+    @Test
     public void testInitializer() {
         parseCode(TEST_INITIALIZERS);
         ASTInitializer a = (ASTInitializer)(acu.findChildrenOfType(ASTInitializer.class)).get(0);
@@ -23,6 +42,8 @@ public class AcceptanceTest extends STBBaseTst {
         assertTrue(a.isStatic());
     }
 
+    @Ignore
+    @Test
     public void testCatchBlocks() {
         parseCode(TEST_CATCH_BLOCKS);
         ASTCatchStatement c = (ASTCatchStatement)(acu.findChildrenOfType(ASTCatchStatement.class)).get(0);
@@ -35,6 +56,8 @@ public class AcceptanceTest extends STBBaseTst {
         assertEquals(1, ((List)vars.get(v)).size());
     }
 
+    @Ignore
+    @Test
     public void testEq() {
         parseCode(TEST_EQ);
         ASTEqualityExpression e = (ASTEqualityExpression)(acu.findChildrenOfType(ASTEqualityExpression.class)).get(0);
@@ -48,9 +71,10 @@ public class AcceptanceTest extends STBBaseTst {
         }
         //System.out.println(m.size());
     }
-*/
 
+    @Test
     public void testFieldFinder() {
+        //FIXME - Does this test do anything?
         System.out.println(TEST_FIELD);
         parseCode(TEST_FIELD);
         ASTVariableDeclaratorId declaration = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
@@ -59,7 +83,8 @@ public class AcceptanceTest extends STBBaseTst {
         System.out.println("variable " + declaration.getImage() + " is used here: " + location.getImage());
     }
 
-/*
+    @Ignore
+    @Test
     public void testDemo() {
         parseCode(TEST_DEMO);
         System.out.println(TEST_DEMO);
@@ -72,7 +97,6 @@ public class AcceptanceTest extends STBBaseTst {
             System.out.println("Type: " + d.getTypeImage());
         }
     }
-*/
 /*
             List u = (List)m.get(d);
             System.out.println("Usages: " + u.size());
@@ -125,5 +149,7 @@ public class AcceptanceTest extends STBBaseTst {
     " boolean b = MyClass.ASCENDING; " + PMD.EOL +
     "}" + PMD.EOL;
 
-
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(AcceptanceTest.class);
+    }
 }

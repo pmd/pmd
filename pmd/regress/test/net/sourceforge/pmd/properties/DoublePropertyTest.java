@@ -37,4 +37,7 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
 			new DoubleProperty("testDouble", "Test double property", new double[] {-1,0,1,2}, 1.0f, maxCount);
 		}
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(DoublePropertyTest.class);
+    }
 }

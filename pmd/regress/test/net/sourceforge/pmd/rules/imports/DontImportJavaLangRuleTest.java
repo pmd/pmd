@@ -4,18 +4,27 @@
   */
  package test.net.sourceforge.pmd.rules.imports;
  
- import net.sourceforge.pmd.Rule;
- import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+ import org.junit.Before;
+import org.junit.Test;
+
+import net.sourceforge.pmd.Rule;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
  
  public class DontImportJavaLangRuleTest extends SimpleAggregatorTst {
  
      private Rule rule;
  
+     @Before
      public void setUp() {
          rule = findRule("imports", "DontImportJavaLang");
      }
  
+     @Test
      public void testAll() {
          runTests(rule);
+     }
+
+     public static junit.framework.Test suite() {
+         return new junit.framework.JUnit4TestAdapter(DontImportJavaLangRuleTest.class);
      }
  }

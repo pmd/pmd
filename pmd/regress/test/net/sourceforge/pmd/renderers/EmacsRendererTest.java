@@ -21,4 +21,8 @@ public class EmacsRendererTest extends AbstractRendererTst {
     public String getExpectedMultiple() {
         return PMD.EOL + "n/a:1: msg" + PMD.EOL + "n/a:1: msg";
     }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(EmacsRendererTest.class);
+    }
 }

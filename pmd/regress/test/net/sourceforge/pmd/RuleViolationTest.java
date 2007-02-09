@@ -22,12 +22,25 @@
  */
 package test.net.sourceforge.pmd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.ast.SimpleJavaNode;
+import net.sourceforge.pmd.ast.SimpleNode;
 
-public class RuleViolationTest extends TestCase {
+import org.junit.Ignore;
+import org.junit.Test;
 
+import test.net.sourceforge.pmd.testframework.MockRule;
+import junit.framework.JUnit4TestAdapter;
+
+public class RuleViolationTest {
+
+    @Ignore
+    @Test
     public void testConstructor1() {
-/*
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("filename");
@@ -37,10 +50,10 @@ public class RuleViolationTest extends TestCase {
         assertEquals("object mismatch", rule, r.getRule());
         assertEquals("line number is wrong", 2, r.getBeginLine());
         assertEquals("filename is wrong", "filename", r.getFilename());
-*/
     }
 
-/*
+    @Ignore
+    @Test
     public void testConstructor2() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleContext ctx = new RuleContext();
@@ -54,6 +67,8 @@ public class RuleViolationTest extends TestCase {
         assertEquals("description is wrong", "description", r.getDescription());
     }
 
+    @Ignore
+    @Test
     public void testComparatorWithDifferentFilenames() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
@@ -70,6 +85,8 @@ public class RuleViolationTest extends TestCase {
         assertEquals(1, comp.compare(r2, r1));
     }
 
+    @Ignore
+    @Test
     public void testComparatorWithSameFileDifferentLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
@@ -85,6 +102,8 @@ public class RuleViolationTest extends TestCase {
         assertTrue(comp.compare(r2, r1) > 0);
     }
 
+    @Ignore
+    @Test
     public void testComparatorWithSameFileSameLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         RuleViolation.RuleViolationComparator comp = new RuleViolation.RuleViolationComparator();
@@ -99,5 +118,8 @@ public class RuleViolationTest extends TestCase {
         assertEquals(1, comp.compare(r1, r2));
         assertEquals(1, comp.compare(r2, r1));
     }
-*/
+
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(RuleViolationTest.class);
+    }
 }

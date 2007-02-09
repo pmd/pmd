@@ -1,5 +1,7 @@
 package test.net.sourceforge.pmd.dfa;
 
+import org.junit.Test;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class GeneralFiddlingTest extends ParserTst {
 
+    @Test
     public void test1() throws Throwable {
         ASTCompilationUnit acu = buildDFA(TEST1);
         ASTMethodDeclarator meth = acu.findChildrenOfType(ASTMethodDeclarator.class).get(0);
@@ -37,4 +40,8 @@ public class GeneralFiddlingTest extends ParserTst {
             "  x = 3;" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(GeneralFiddlingTest.class);
+    }
 }

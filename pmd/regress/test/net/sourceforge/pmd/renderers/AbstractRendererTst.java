@@ -3,6 +3,7 @@
  */
 package test.net.sourceforge.pmd.renderers;
 
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -10,6 +11,9 @@ import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
+
+import org.junit.Test;
+
 import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public abstract class AbstractRendererTst extends RuleTst {
@@ -48,15 +52,12 @@ public abstract class AbstractRendererTst extends RuleTst {
         return "";
     }
 
+    @Test(expected = NullPointerException.class)
     public void testNullPassedIn() {
-        try {
-            getRenderer().render(null);
-            fail("Providing a render(null) should throw an npx");
-        } catch (NullPointerException npx) {
-            // cool
-        }
+        getRenderer().render(null);
     }
 
+    @Test
     public void testRenderer() throws Throwable {
         Report rep = new Report();
         runTestFromString(TEST1, new FooRule(), rep);
@@ -64,12 +65,14 @@ public abstract class AbstractRendererTst extends RuleTst {
         assertEquals(getExpected(), actual);
     }
 
+    @Test
     public void testRendererEmpty() throws Throwable {
         Report rep = new Report();
         String actual = getRenderer().render(rep);
         assertEquals(getExpectedEmpty(), actual);
     }
 
+    @Test
     public void testRendererMultiple() throws Throwable {
         Report rep = new Report();
         runTestFromString(TEST1, new FooRule2(), rep);
@@ -77,6 +80,7 @@ public abstract class AbstractRendererTst extends RuleTst {
         assertEquals(getExpectedMultiple(), actual);
     }
 
+    @Test
     public void testError() throws Throwable {
         Report rep = new Report();
         Report.ProcessingError err = new Report.ProcessingError("Error", "file");

@@ -1,6 +1,5 @@
 package test.net.sourceforge.pmd.symboltable;
 
-import junit.framework.TestCase;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDKVersion;
@@ -10,7 +9,7 @@ import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 import java.io.StringReader;
 
-public abstract class STBBaseTst extends TestCase {
+public abstract class STBBaseTst {
 
     protected ASTCompilationUnit acu;
     protected SymbolFacade stb;

@@ -26,5 +26,8 @@ public class TextRendererTest extends AbstractRendererTst {
     public String getExpectedError(ProcessingError error) {
         return PMD.EOL + "file\t-\tError";
     }
-    
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(TextRendererTest.class);
+    }
 }

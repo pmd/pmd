@@ -1,16 +1,21 @@
 package test.net.sourceforge.pmd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.SourceTypeDiscoverer;
 
+import org.junit.Test;
+
 import java.io.File;
 
-public class SourceTypeDiscovererTest extends TestCase {
+import junit.framework.JUnit4TestAdapter;
+
+public class SourceTypeDiscovererTest {
 
     /**
      * Test on JSP file.
      */
+    @Test
     public void testJspFile() {
         SourceTypeDiscoverer discoverer = new SourceTypeDiscoverer();
         File jspFile = new File("/path/to/MyPage.jsp");
@@ -23,6 +28,7 @@ public class SourceTypeDiscovererTest extends TestCase {
     /**
      * Test on Java file with default options.
      */
+    @Test
     public void testJavaFileUsingDefaults() {
         SourceTypeDiscoverer discoverer = new SourceTypeDiscoverer();
         File javaFile = new File("/path/to/MyClass.java");
@@ -35,6 +41,7 @@ public class SourceTypeDiscovererTest extends TestCase {
     /**
      * Test on Java file with Java version set to 1.5.
      */
+    @Test
     public void testJavaFileUsing15() {
         SourceTypeDiscoverer discoverer = new SourceTypeDiscoverer();
         discoverer.setSourceTypeOfJavaFiles(SourceType.JAVA_15);
@@ -43,5 +50,9 @@ public class SourceTypeDiscovererTest extends TestCase {
         SourceType type = discoverer.getSourceTypeOfFile(javaFile);
 
         assertEquals("SourceType must be Java 1.5!", SourceType.JAVA_15, type);
+    }
+
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(SourceTypeDiscovererTest.class);
     }
 }

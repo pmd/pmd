@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Bad, very deep
+     ]]></description>
+        <rule-property name="problemDepth">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() { 
+  int x=2; 
+  int y=3; 
+  int z=4; 
+  if (x>y) { 
+   if (y>z) { 
+    if (z==x) { 
+     // this is officially out of control now 
+    } 
+   } 
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+OK, not so deep
+     ]]></description>
+        <rule-property name="problemDepth">3</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() { 
+  if (true) {
+  } else if (true) {
+  } else if (true) {
+  } else {
+    // this ain't good code, but it shouldn't trigger this rule
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

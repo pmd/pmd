@@ -1,27 +1,44 @@
 package test.net.sourceforge.pmd;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.Report;
 
-public class ReadableDurationTest extends TestCase {
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
-    public void testMillisSeconds() {
-        assertEquals("0s", new Report.ReadableDuration(35).getTime());
+import java.util.Arrays;
+import java.util.Collection;
+
+import junit.framework.JUnit4TestAdapter;
+
+@RunWith(Parameterized.class)
+public class ReadableDurationTest {
+
+    private Integer value;
+    private String expected;
+    public ReadableDurationTest(String expected, Integer value) {
+        this.value = value;
+        this.expected = expected;
     }
 
-    public void testSeconds() {
-        assertEquals("25s", new Report.ReadableDuration(25 * 1000).getTime());
+    @Parameters
+    public static Collection data() {
+        return Arrays.asList(new Object[][]{
+                {"0s", 35},
+                {"25s", (25 * 1000)},
+                {"5m 0s", (60 * 1000 * 5)},
+                {"2h 0m 0s", (60 * 1000 * 120)}
+        });
     }
 
-    public void testWholeMinutes() {
-        assertEquals("5m 0s", new Report.ReadableDuration(60 * 1000 * 5).getTime());
+    @Test
+    public void test() {
+        assertEquals(expected, new Report.ReadableDuration(value).getTime());
     }
 
-    public void testMinutesAndSeconds() {
-        assertEquals("5m 10s", new Report.ReadableDuration((60 * 1000 * 5) + (1000 * 10)).getTime());
-    }
-
-    public void testHours() {
-        assertEquals("2h 0m 0s", new Report.ReadableDuration(60 * 1000 * 120).getTime());
+    public static junit.framework.Test suite() {
+        return new JUnit4TestAdapter(ReadableDurationTest.class);
     }
 }

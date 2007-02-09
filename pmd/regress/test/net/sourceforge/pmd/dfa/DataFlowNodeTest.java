@@ -1,15 +1,20 @@
 package test.net.sourceforge.pmd.dfa;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.dfa.DataFlowNode;
 import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.NodeType;
 import net.sourceforge.pmd.dfa.StartOrEndDataFlowNode;
 
+import org.junit.Test;
+
 import java.util.LinkedList;
 
-public class DataFlowNodeTest extends TestCase {
+public class DataFlowNodeTest {
 
+    @Test
     public void testAddPathToChild() {
         DataFlowNode parent = new StartOrEndDataFlowNode(new LinkedList<DataFlowNode>(), 10, false);
         IDataFlowNode child = new StartOrEndDataFlowNode(new LinkedList<DataFlowNode>(), 12, false);
@@ -19,6 +24,7 @@ public class DataFlowNodeTest extends TestCase {
         assertTrue(parent.getChildren().contains(child));
     }
 
+    @Test
     public void testRemovePathToChild() {
         DataFlowNode parent = new StartOrEndDataFlowNode(new LinkedList<DataFlowNode>(), 10, false);
         IDataFlowNode child = new StartOrEndDataFlowNode(new LinkedList<DataFlowNode>(), 12, false);
@@ -29,12 +35,14 @@ public class DataFlowNodeTest extends TestCase {
         assertFalse(parent.getChildren().contains(child));
     }
 
+    @Test
     public void testRemovePathWithNonChild() {
         DataFlowNode parent = new StartOrEndDataFlowNode(new LinkedList<DataFlowNode>(), 10, false);
         IDataFlowNode child = new StartOrEndDataFlowNode(new LinkedList<DataFlowNode>(), 12, false);
         assertFalse(parent.removePathToChild(child));
     }
 
+    @Test
     public void testReverseParentPathsTo() {
         DataFlowNode parent1 = new StartOrEndDataFlowNode(new LinkedList<DataFlowNode>(), 10, false);
         DataFlowNode parent2 = new StartOrEndDataFlowNode(new LinkedList<DataFlowNode>(), 12, false);
@@ -54,10 +62,15 @@ public class DataFlowNodeTest extends TestCase {
         assertEquals(2, child2.getParents().size());
     }
 
+    @Test
     public void testSetType() {
         DataFlowNode node = new StartOrEndDataFlowNode(new LinkedList<DataFlowNode>(), 10, false);
         node.setType(NodeType.BREAK_STATEMENT);
         assertTrue(node.isType(NodeType.BREAK_STATEMENT));
         assertFalse(node.isType(NodeType.CASE_LAST_STATEMENT));
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(DataFlowNodeTest.class);
     }
 }

@@ -4,6 +4,7 @@
         <description><![CDATA[
 short
      ]]></description>
+        <rule-property name="minimum">13</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -17,6 +18,7 @@ public class Foo {
         <description><![CDATA[
 lots of comments
      ]]></description>
+        <rule-property name="minimum">13</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -65,6 +67,7 @@ public class Foo {
         <description><![CDATA[
 long method
      ]]></description>
+        <rule-property name="minimum">13</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="long method"/>
     </test-code>

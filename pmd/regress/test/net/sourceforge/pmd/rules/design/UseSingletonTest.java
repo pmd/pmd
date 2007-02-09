@@ -2,31 +2,39 @@
  /**
   * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
   */
- package test.net.sourceforge.pmd.rules.design;
+package test.net.sourceforge.pmd.rules.design;
  
- import net.sourceforge.pmd.IRuleViolation;
- import net.sourceforge.pmd.Report;
- import net.sourceforge.pmd.ReportListener;
- import net.sourceforge.pmd.Rule;
- import net.sourceforge.pmd.stat.Metric;
- import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
- import test.net.sourceforge.pmd.testframework.TestDescriptor;
- 
- public class UseSingletonTest extends SimpleAggregatorTst implements ReportListener {
+import static org.junit.Assert.assertEquals;
+import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.ReportListener;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.stat.Metric;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
+
+public class UseSingletonTest extends SimpleAggregatorTst implements ReportListener {
  
      private int callbacks;
      private Rule rule;
      private TestDescriptor[] tests;
- 
+
+     @Before
      public void setUp() {
          rule = findRule("design", "UseSingleton");
          tests = extractTestsFromXml(rule);
-     }
+    }
  
+     @Test
      public void testAll() {
          runTests(tests);
      }
  
+     @Test
      public void testResetState() throws Throwable {
          callbacks = 0;
          Report report = new Report();
@@ -41,5 +49,9 @@
      }
  
      public void metricAdded(Metric metric) {
+     }
+
+     public static junit.framework.Test suite() {
+         return new junit.framework.JUnit4TestAdapter(UseSingletonTest.class);
      }
  }
