@@ -3,18 +3,15 @@
  */
 package net.sourceforge.pmd.rules.junit;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
-import net.sourceforge.pmd.ast.ASTTypeParameters;
 import net.sourceforge.pmd.ast.Node;
 
-public class JUnitTestsShouldContainAsserts extends AbstractRule {
+public class JUnitTestsShouldContainAsserts extends AbstractJUnitRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
@@ -24,15 +21,7 @@ public class JUnitTestsShouldContainAsserts extends AbstractRule {
     }
 
     public Object visit(ASTMethodDeclaration method, Object data) {
-        if (!method.isPublic() || method.isAbstract() || method.isNative() || method.isStatic()) {
-            return data; // skip various inapplicable method variations
-        }
-
-        Node node = method.jjtGetChild(0);
-        if (node instanceof ASTTypeParameters) {
-            node = method.jjtGetChild(1);
-        }
-        if (((ASTResultType)node).isVoid() && method.getMethodName().startsWith("test"))  {
+        if (isJUnitMethod(method, data))  {
             if (!containsAssert(method.getBlock(), false)) {
                 addViolation(data, method);
             }

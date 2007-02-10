@@ -1,4 +1,6 @@
 ???, 2007 - 4.0:
+New rulesets:
+    Migrating To JUnit4: Rules that help move from JUnit 3 to JUnit 4
 Fixed bug 1618858 - PMD no longer raises an exception on XPath like '//ConditionalExpression//ConditionalExpression'
 Fixed bug 1626232 - Commons logging rules (ProperLogger and UseCorrectExceptionLogging) now catch more cases
 Fixed bugs 1626201 & 1633683 - BrokenNullCheck now catches more cases

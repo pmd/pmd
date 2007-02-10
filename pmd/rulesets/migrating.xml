@@ -263,5 +263,172 @@ Long.valueOf(0);
     </example>
   </rule>
 
+
+    <rule name="JUnit4TestShouldUseBeforeAnnotation"
+          message="JUnit 4 tests that set up tests should use the @Before annotation"
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#JUnit4TestShouldUseBeforeAnnotation">
+      <description>
+In JUnit 3, the setUp method was used to set up all data entities required in running tests. JUnit 4 skips the setUp method 
+and executes all methods annotated with @Before before all tests
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='setUp']]
+[count(Annotation/MarkerAnnotation/Name[@Image='Before'])=0]
+]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public class MyTest {
+    public void setUp() {
+        bad();
+    }
+}
+public class MyTest2 {
+    @Before public void setUp() {
+        good();
+    }
+}
+]]>
+      </example>
+    </rule>
+    <rule name="JUnit4TestShouldUseAfterAnnotation"
+          message="JUnit 4 tests that clean up tests should use the @After annotation"
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#JUnit4TestShouldUseAfterAnnotation">
+      <description>
+In JUnit 3, the tearDown method was used to clean up all data entities required in running tests. JUnit 4 skips the tearDown method 
+and executes all methods annotated with @After after running each test
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='tearDown']]
+[count(Annotation/MarkerAnnotation/Name[@Image='After'])=0]
+]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public class MyTest {
+    public void tearDown() {
+        bad();
+    }
+}
+public class MyTest2 {
+    @After public void tearDown() {
+        good();
+    }
+}
+]]>
+      </example>
+    </rule>
+    <rule name="JUnit4TestShouldUseTestAnnotation"
+          message="JUnit 4 tests that execute tests should use the @Test annotation"
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#JUnit4TestShouldUseTestAnnotation">
+      <description>
+In JUnit 3, the framework executed all methods which started with the word test as a unit test. In JUnit 4, only methods annotated
+with the @Test annotation are executed.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[starts-with(@Image,'test')]]
+[count(Annotation//Name[@Image='Test'])=0]
+]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public class MyTest {
+    public void testBad() {
+        doSomething();
+    }
+
+	@Test
+    public void testGood() {
+        doSomething();
+    }
+}
+]]>
+      </example>
+    </rule>
+    <rule name="JUnit4SuitesShouldUseSuiteAnnotation"
+          message="JUnit 4 indicates test suites via annotations, not the suite method."
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#JUnit4SuitesShouldUseSuiteAnnotation">
+      <description>
+In JUnit 3, test suites are indicated by the suite() method. In JUnit 4, suites are indicated
+through the @RunWith(Suite.class) annotation.
+      </description>
+      <properties>
+          <property name="xpath">
+              <value>
+<![CDATA[
+//ClassOrInterfaceBodyDeclaration[MethodDeclaration/MethodDeclarator[@Image='suite']]
+[MethodDeclaration/ResultType/Type/ReferenceType/ClassOrInterfaceType[@Image='Test' or @Image = 'junit.framework.Test']]
+[not(MethodDeclaration/Block//ClassOrInterfaceType[@Image='JUnit4TestAdapter'])]
+]]>
+              </value>
+          </property>
+      </properties>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public class BadExample extends TestCase{
+
+    public static Test suite(){
+    	return new Suite();
+    }
+}
+
+@RunWith(Suite.class)
+@SuiteClasses( { TestOne.class, TestTwo.class })
+public class GoodTest {
+}]]>
+      </example>
+    </rule>
+    
+    <rule name="JUnitUseExpected"
+          message="In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions"
+          class="net.sourceforge.pmd.rules.migration.JUnitUseExpected"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#JUnitUseExpected">
+      <description>
+      </description>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+public class MyTest {
+	@Test
+    public void testBad() {
+        try {
+            doSomething();
+            fail("should have thrown an exception");
+        } catch (Exception e) {
+        }
+    }
+
+	@Test(expected=Exception.class)
+    public void testGood() {
+        doSomething();
+    }
+}
+]]>
+      </example>
+    </rule>
+
 </ruleset>
 
