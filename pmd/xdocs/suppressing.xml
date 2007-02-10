@@ -29,6 +29,17 @@ public class Bar {
  }
 }
 </source>
+       <p>PMD also obeys the JDK annotation @SuppressWarnings("unused"), which will apply to all rules in the unused ruleset</p>
+<source>
+// This will suppress UnusedLocalVariable and UnusedPrivateMethod warnings in this class
+@SuppressWarnings("unused")
+public class Bar {
+ void bar() {
+  int foo;
+ }
+ private void foobar(){}
+}
+</source>
    </subsection>
 
        <subsection name="NOPMD">
