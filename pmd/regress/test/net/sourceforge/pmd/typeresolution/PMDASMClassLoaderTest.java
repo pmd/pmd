@@ -38,7 +38,6 @@ public class PMDASMClassLoaderTest {
         assertNotNull(clazz);
         Map imports = cl.getImportedClasses(className);
         assertNotNull(imports);
-        System.err.println(imports);
         assertEquals(8, imports.size());
         assertEquals("java.util.Iterator", imports.get("Iterator"));
         assertEquals("java.util.Map", imports.get("Map"));

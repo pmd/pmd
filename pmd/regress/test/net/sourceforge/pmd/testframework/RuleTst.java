@@ -66,7 +66,6 @@ public abstract class RuleTst {
         Rule rule = test.getRule();
         
         if (test.getReinitializeRule()) {
-            System.err.println(rule.getRuleSetName());
             rule = findRule(rule.getRuleSetName(), rule.getName());
         }
         
