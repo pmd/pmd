@@ -13,10 +13,11 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.rules.DynamicXPathRule;
+import net.sourceforge.pmd.rules.XPathRule;
 import net.sourceforge.pmd.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.runtime.writer.WriterException;
 
-import org.apache.log4j.Logger;
 import org.apache.xml.serialize.DOMSerializer;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
@@ -35,6 +36,9 @@ import org.w3c.dom.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2007/02/15 22:27:15  phherlin
+ * Fix 1641930 Creation of ruleset.xml file causes error in Eclipse
+ *
  * Revision 1.2  2006/06/20 21:01:49  phherlin
  * Enable PMD and fix error level violations
  *
@@ -81,7 +85,6 @@ import org.w3c.dom.Text;
  *
  */
 class RuleSetWriterImpl implements IRuleSetWriter {
-    private static final Logger log = Logger.getLogger(RuleSetWriterImpl.class);
 
     /**
      * Write a ruleset as an XML stream
@@ -90,16 +93,17 @@ class RuleSetWriterImpl implements IRuleSetWriter {
      */
     public void write(OutputStream outputStream, RuleSet ruleSet) throws WriterException {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-            Document doc = documentBuilder.newDocument();
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+            final Document doc = documentBuilder.newDocument();
 
-            Element ruleSetElement = getRuleSetElement(doc, ruleSet);
+            final Element ruleSetElement = getRuleSetElement(doc, ruleSet);
             doc.appendChild(ruleSetElement);
 
-            OutputFormat outputFormat = new OutputFormat(doc, "UTF-8", true);
+            final OutputFormat outputFormat = new OutputFormat(doc, "UTF-8", true);
             outputFormat.setLineWidth(0);
-            DOMSerializer serializer = new XMLSerializer(outputStream, outputFormat);
+
+            final DOMSerializer serializer = new XMLSerializer(outputStream, outputFormat);
             serializer.serialize(doc);
 
         } catch (DOMException e) {
@@ -120,18 +124,16 @@ class RuleSetWriterImpl implements IRuleSetWriter {
      * @return a ruleset element
      */
     private Element getRuleSetElement(Document doc, RuleSet ruleSet) {
-        Element ruleSetElement = doc.createElement("ruleset");
+        final Element ruleSetElement = doc.createElement("ruleset");
         ruleSetElement.setAttribute("name", ruleSet.getName());
-        // ruleSetElement.setAttribute("include", ruleSet.include() ? "true" : "false");
 
-        Element descriptionElement = getDescriptionElement(doc, ruleSet.getDescription());
+        final Element descriptionElement = getDescriptionElement(doc, ruleSet.getDescription());
         ruleSetElement.appendChild(descriptionElement);
 
-        Iterator rules = ruleSet.getRules().iterator();
+        final Iterator rules = ruleSet.getRules().iterator();
         while (rules.hasNext()) {
-            Rule rule = (Rule) rules.next();
-//            log.debug("Serializing rule " + rule.getName());
-            Element ruleElement = getRuleElement(doc, rule);
+            final Rule rule = (Rule) rules.next();
+            final Element ruleElement = getRuleElement(doc, rule);
             ruleSetElement.appendChild(ruleElement);
         }
 
@@ -145,8 +147,8 @@ class RuleSetWriterImpl implements IRuleSetWriter {
      * @return a description element
      */
     private Element getDescriptionElement(Document doc, String description) {
-        Element descriptionElement = doc.createElement("description");
-        Text text = doc.createTextNode(description);
+        final Element descriptionElement = doc.createElement("description");
+        final Text text = doc.createTextNode(description);
         descriptionElement.appendChild(text);
         return descriptionElement;
     }
@@ -158,16 +160,16 @@ class RuleSetWriterImpl implements IRuleSetWriter {
      * @return a rule element
      */
     private Element getRuleElement(Document doc, Rule rule) {
-        Element ruleElement = doc.createElement("rule");
+        final Element ruleElement = doc.createElement("rule");
         ruleElement.setAttribute("name", rule.getName());
         ruleElement.setAttribute("message", rule.getMessage());
-        ruleElement.setAttribute("class", rule.getClass().getName());
-/*
- * symbol table is always used since PMD v3.2
-        if (rule.usesSymbolTable()) {
-            ruleElement.setAttribute("symboltable", "true");
+        
+        String className = rule.getClass().getName();
+        if (rule instanceof DynamicXPathRule) {
+            className = XPathRule.class.getName();
         }
-*/
+        ruleElement.setAttribute("class", className);
+
         if (rule.usesDFA()) {
             ruleElement.setAttribute("dfa", "true");
         }
@@ -175,16 +177,16 @@ class RuleSetWriterImpl implements IRuleSetWriter {
             ruleElement.setAttribute("include", "true");
         }
 
-        Element descriptionElement = getDescriptionElement(doc, rule.getDescription());
+        final Element descriptionElement = getDescriptionElement(doc, rule.getDescription());
         ruleElement.appendChild(descriptionElement);
 
-        Element exampleElement = getExampleElement(doc, rule.getExample());
+        final Element exampleElement = getExampleElement(doc, rule.getExample());
         ruleElement.appendChild(exampleElement);
 
-        Element priorityElement = getPriorityElement(doc, rule.getPriority());
+        final Element priorityElement = getPriorityElement(doc, rule.getPriority());
         ruleElement.appendChild(priorityElement);
 
-        Element propertiesElement = getPropertiesElement(doc, rule.getProperties());
+        final Element propertiesElement = getPropertiesElement(doc, rule.getProperties());
         ruleElement.appendChild(propertiesElement);
 
         return ruleElement;
@@ -197,8 +199,8 @@ class RuleSetWriterImpl implements IRuleSetWriter {
      * @return an example element
      */
     private Element getExampleElement(Document doc, String example) {
-        Element exampleElement = doc.createElement("example");
-        CDATASection cdataSection = doc.createCDATASection(example);
+        final Element exampleElement = doc.createElement("example");
+        final CDATASection cdataSection = doc.createCDATASection(example);
         exampleElement.appendChild(cdataSection);
         return exampleElement;
     }
@@ -210,8 +212,8 @@ class RuleSetWriterImpl implements IRuleSetWriter {
      * @return a priority element
      */
     private Element getPriorityElement(Document doc, int priority) {
-        Element priorityElement = doc.createElement("priority");
-        Text text = doc.createTextNode(String.valueOf(priority));
+        final Element priorityElement = doc.createElement("priority");
+        final Text text = doc.createTextNode(String.valueOf(priority));
         priorityElement.appendChild(text);
         return priorityElement;
     }
@@ -223,11 +225,11 @@ class RuleSetWriterImpl implements IRuleSetWriter {
      * @return a properties element
      */
     private Element getPropertiesElement(Document doc, Properties properties) {
-        Element propertiesElement = doc.createElement("properties");
-        Enumeration keys = properties.keys();
+        final Element propertiesElement = doc.createElement("properties");
+        final Enumeration keys = properties.keys();
         while (keys.hasMoreElements()) {
-            Object key = keys.nextElement();
-            Element propertyElement = getPropertyElement(doc, (String) key, (String) properties.get(key));
+            final Object key = keys.nextElement();
+            final Element propertyElement = getPropertyElement(doc, (String) key, (String) properties.get(key));
             propertiesElement.appendChild(propertyElement);
         }
         return propertiesElement;
@@ -241,11 +243,11 @@ class RuleSetWriterImpl implements IRuleSetWriter {
      * @return a property element
      */
     private Element getPropertyElement(Document doc, String key, String value) {
-        Element propertyElement = doc.createElement("property");
+        final Element propertyElement = doc.createElement("property");
         propertyElement.setAttribute("name", key);
-        if (key.equals("xpath")) {
-            Element valueElement = doc.createElement("value");
-            CDATASection cdataSection = doc.createCDATASection(value);
+        if ("xpath".equals(key)) {
+            final Element valueElement = doc.createElement("value");
+            final CDATASection cdataSection = doc.createCDATASection(value);
             valueElement.appendChild(cdataSection);
             propertyElement.appendChild(valueElement);
         } else {
