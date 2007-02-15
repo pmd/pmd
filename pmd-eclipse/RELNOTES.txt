@@ -1,6 +1,18 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
 
+v3.2.1 15/02/2006
+-----------------
+
+
+FIXED
+-----
+Bug #1583788 StackOverflowError in rule edit window
+Bug #1641930 Creation of ruleset.xml file causes error in Eclipse
+Bug #1645449 Views broken in 3.2.0 with Eclipse 3.2.1 on Solaris
+
+
+----------------------------------------------------------------------------------------
 v3.2.0 15/01/2006
 -----------------
 

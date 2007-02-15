@@ -1,11 +1,13 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
-v3.2.1 - tbp
+v3.2.1 - 15/02/2007
 
 Runtime
 -------
 . Fix 1583788 StackOverflowError in rule edit window
+. Fix 1641930 Creation of ruleset.xml file causes error in Eclipse
+. Fix 1645449 Views broken in 3.2.0 with Eclipse 3.2.1 on Solaris
 
 
 ----------------------------------------------------------------------------------------
