@@ -211,7 +211,7 @@ public class SimpleNodeTest extends ParserTst {
     @Ignore
     @Test
     public void testContainsNoInner() throws Throwable {
-        ASTCompilationUnit c = (ASTCompilationUnit) getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
+        ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
         List<ASTFieldDeclaration> res = new ArrayList<ASTFieldDeclaration>();
         c.findChildrenOfType(ASTFieldDeclaration.class, res, false);
         assertTrue(res.isEmpty());

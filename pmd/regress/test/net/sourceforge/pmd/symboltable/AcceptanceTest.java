@@ -36,9 +36,9 @@ public class AcceptanceTest extends STBBaseTst {
     @Test
     public void testInitializer() {
         parseCode(TEST_INITIALIZERS);
-        ASTInitializer a = (ASTInitializer)(acu.findChildrenOfType(ASTInitializer.class)).get(0);
+        ASTInitializer a = acu.findChildrenOfType(ASTInitializer.class).get(0);
         assertFalse(a.isStatic());
-        a = (ASTInitializer)(acu.findChildrenOfType(ASTInitializer.class)).get(1);
+        a = acu.findChildrenOfType(ASTInitializer.class).get(1);
         assertTrue(a.isStatic());
     }
 
@@ -46,8 +46,8 @@ public class AcceptanceTest extends STBBaseTst {
     @Test
     public void testCatchBlocks() {
         parseCode(TEST_CATCH_BLOCKS);
-        ASTCatchStatement c = (ASTCatchStatement)(acu.findChildrenOfType(ASTCatchStatement.class)).get(0);
-        ASTBlock a = (ASTBlock)(c.findChildrenOfType(ASTBlock.class)).get(0);
+        ASTCatchStatement c = acu.findChildrenOfType(ASTCatchStatement.class).get(0);
+        ASTBlock a = c.findChildrenOfType(ASTBlock.class).get(0);
         Scope s = a.getScope();
         Map vars = s.getParent().getVariableDeclarations();
         assertEquals(1, vars.size());
@@ -60,8 +60,8 @@ public class AcceptanceTest extends STBBaseTst {
     @Test
     public void testEq() {
         parseCode(TEST_EQ);
-        ASTEqualityExpression e = (ASTEqualityExpression)(acu.findChildrenOfType(ASTEqualityExpression.class)).get(0);
-        ASTMethodDeclaration method = (ASTMethodDeclaration)e.getFirstParentOfType(ASTMethodDeclaration.class);
+        ASTEqualityExpression e = acu.findChildrenOfType(ASTEqualityExpression.class).get(0);
+        ASTMethodDeclaration method = e.getFirstParentOfType(ASTMethodDeclaration.class);
         Scope s = method.getScope();
         Map m = s.getVariableDeclarations();
         for (Iterator i = m.keySet().iterator(); i.hasNext();) {
@@ -88,7 +88,7 @@ public class AcceptanceTest extends STBBaseTst {
     public void testDemo() {
         parseCode(TEST_DEMO);
         System.out.println(TEST_DEMO);
-        ASTMethodDeclaration node = (ASTMethodDeclaration) acu.findChildrenOfType(ASTMethodDeclaration.class).get(0);
+        ASTMethodDeclaration node = acu.findChildrenOfType(ASTMethodDeclaration.class).get(0);
         Scope s = node.getScope();
         Map m = s.getVariableDeclarations();
         for (Iterator i = m.keySet().iterator(); i.hasNext();) {
