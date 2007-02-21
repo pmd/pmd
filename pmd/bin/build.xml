@@ -100,9 +100,8 @@
 		</retroweaver>
 	</target>
 
-	<target name="weave" depends="jar">
+	<target name="weave" depends="jar, weavejunit">
 		<fail unless="ant.jar" message="ant.jar location is not defined properly" />
-		<fail unless="junit.jar" message="junit.jar location is not defined properly" />
 		<fail unless="jvm14.runtime" message="jvm14.runtime (i.e. rt.jar) location is not defined properly" />
 
 		<taskdef name="retroweaver" classname="net.sourceforge.retroweaver.ant.RetroWeaverTask">
@@ -210,8 +209,8 @@
 		<path id="dependencies14.path">
 			<fileset dir="${dir.lib14}">
 				<include name="backport-util-concurrent.jar" />
-				<include name="pmd14-3.9.jar" />
-				<include name="pmd14-test-3.9.jar" />
+				<include name="pmd14-${version}.jar" />
+				<include name="pmd14-test-${version}.jar" />
 				<include name="retroweaver-rt-2.0Beta4.jar" />
 				<include name="junit.jar" />
 			</fileset>
