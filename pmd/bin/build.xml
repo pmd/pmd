@@ -170,7 +170,7 @@
     </target>
 
 	<target name="requires-junit" description="Ensures JUnit is available">
-		<available classname="junit.framework.Test" property="junit.available" classpathref="dependencies.path" />
+		<available classname="org.junit.Assert" property="junit.available" classpathref="dependencies.path" />
 		<fail unless="junit.available" message="Could find JUnit... please place a junit.jar file in the CLASSPATH." />
 	</target>
 
