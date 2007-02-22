@@ -66,6 +66,8 @@ and
   count(ImplementsList
    [ClassOrInterfaceType/@Image='Serializable'
    or ClassOrInterfaceType/@Image='java.io.Serializable']) =1
+and
+   @Abstract = 'false'
 ]
 ]]>
               </value>

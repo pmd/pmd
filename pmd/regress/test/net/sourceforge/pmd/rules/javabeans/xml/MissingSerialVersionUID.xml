@@ -63,4 +63,15 @@ public interface Foo implements Bar{
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+abstract case
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.Serializable;
+public abstract class Foo implements Serializable {
+}
+     ]]></code>
+    </test-code>
 </test-data>
