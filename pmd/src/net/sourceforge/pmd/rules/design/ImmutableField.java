@@ -37,7 +37,7 @@ public class ImmutableField extends AbstractRule {
         List<ASTConstructorDeclaration> constructors = findAllConstructors(node);
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
             VariableNameDeclaration field = entry.getKey();
-            if (field.getAccessNodeParent().isStatic() || !field.getAccessNodeParent().isPrivate() || field.getAccessNodeParent().isFinal()) {
+            if (field.getAccessNodeParent().isStatic() || !field.getAccessNodeParent().isPrivate() || field.getAccessNodeParent().isFinal() || field.getAccessNodeParent().isVolatile()) {
                 continue;
             }
 
