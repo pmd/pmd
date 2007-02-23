@@ -171,7 +171,7 @@
 
 	<target name="requires-junit" description="Ensures JUnit is available">
 		<available classname="org.junit.Assert" property="junit.available" classpathref="dependencies.path" />
-		<fail unless="junit.available" message="Could find JUnit... please place a junit.jar file in the CLASSPATH." />
+		<fail unless="junit.available" message="Could find JUnit 4... please place a junit.jar file in the CLASSPATH." />
 	</target>
 
 	<target name="test" depends="requires-junit,compile,copy" description="Runs the unit tests">
