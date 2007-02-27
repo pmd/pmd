@@ -5,6 +5,7 @@
 <!ELEMENT property ( value? ) >
 <!ATTLIST property name NMTOKEN #REQUIRED >
 <!ATTLIST property value NMTOKEN #IMPLIED >
+<!ATTLIST property description NMTOKEN #IMPLIED >
 <!ATTLIST property pluginname NMTOKEN #IMPLIED >
 <!ELEMENT exclude EMPTY >
 <!ATTLIST exclude name NMTOKEN #REQUIRED >
