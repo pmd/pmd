@@ -31,10 +31,10 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="description" minOccurs="0" maxOccurs="1" />
-        <xs:element ref="example" minOccurs="0" maxOccurs="1" />
-        <xs:element ref="priority" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="priority" minOccurs="0" maxOccurs="1"/>
         <xs:element ref="properties" minOccurs="0" maxOccurs="1" />
         <xs:element ref="exclude" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element ref="example" minOccurs="0" maxOccurs="1" />
       </xs:sequence>
       <xs:attribute name="name" type="xs:ID" use="optional" />
       <xs:attribute name="ref" type="xs:string" use="optional" />
@@ -45,11 +45,10 @@
     </xs:complexType>
   </xs:element>
 
-  <xs:element name="example" type="xs:string">
-  </xs:element>
+  <xs:element name="example" type="xs:string"/>
 
-  <xs:element name="priority" type="xs:int">
-  </xs:element>
+  <!-- Default priority is the lowest -->
+  <xs:element name="priority" type="xs:int" default="5"/>
 
   <xs:element name="properties">
     <xs:complexType>
@@ -66,6 +65,7 @@
       </xs:sequence>
       <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
       <xs:attribute name="value" type="xs:string" use="optional" />
+      <xs:attribute name="description" type="xs:string" use="optional" />
       <xs:attribute name="pluginname" type="xs:NMTOKEN" use="optional" />
     </xs:complexType>
   </xs:element>
