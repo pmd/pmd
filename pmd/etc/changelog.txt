@@ -1,4 +1,6 @@
 ???, 2007 - 4.0:
+New rules:
+	Strict exception ruleset: DoNotExtendJavaLangError
 New rulesets:
     Migrating To JUnit4: Rules that help move from JUnit 3 to JUnit 4
 Fixed bug 1618858 - PMD no longer raises an exception on XPath like '//ConditionalExpression//ConditionalExpression'
