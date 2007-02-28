@@ -46,6 +46,9 @@ import org.eclipse.core.resources.IResource;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2007/02/28 20:56:04  hooperbloob
+ * Optimization: new AbstractPMDRecord[0] -> AbstractPMDRecord.EMPTY_RECORDS (static final constant)
+ *
  * Revision 1.1  2006/11/16 17:11:08  holobender
  * Some major changes:
  * - new CPD View
@@ -74,14 +77,14 @@ public class FileToMarkerRecord extends AbstractPMDRecord {
      * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#createChildren()
      */
     protected AbstractPMDRecord[] createChildren() {
-        return new AbstractPMDRecord[0];
+        return AbstractPMDRecord.EMPTY_RECORDS;
     }
 
     /* (non-Javadoc)
      * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#getChildren()
      */
     public AbstractPMDRecord[] getChildren() {
-        return new AbstractPMDRecord[0];
+        return AbstractPMDRecord.EMPTY_RECORDS;
     }
 
     /* (non-Javadoc)

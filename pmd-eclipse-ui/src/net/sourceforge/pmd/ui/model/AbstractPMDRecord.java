@@ -53,6 +53,9 @@ import org.eclipse.core.resources.IResource;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.4  2007/02/28 20:56:04  hooperbloob
+ * Optimization: new AbstractPMDRecord[0] -> AbstractPMDRecord.EMPTY_RECORDS (static final constant)
+ *
  * Revision 1.3  2006/11/16 17:11:08  holobender
  * Some major changes:
  * - new CPD View
@@ -74,6 +77,7 @@ public abstract class AbstractPMDRecord {
     public final static int TYPE_FILE = IResource.FILE;
     public final static int TYPE_MARKER = 16;
     
+    public static final AbstractPMDRecord[] EMPTY_RECORDS = new AbstractPMDRecord[0];
     /**
      * @return the Name of the Element
      */

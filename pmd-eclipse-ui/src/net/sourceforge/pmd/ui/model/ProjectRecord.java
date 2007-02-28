@@ -61,6 +61,9 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.12  2007/02/28 20:56:04  hooperbloob
+ * Optimization: new AbstractPMDRecord[0] -> AbstractPMDRecord.EMPTY_RECORDS (static final constant)
+ *
  * Revision 1.11  2007/01/18 21:01:20  phherlin
  * Fix several cast and NPE exceptions
  * Revision 1.10 2006/12/22 14:15:09 holobender fixed bug
@@ -113,7 +116,7 @@ public class ProjectRecord extends AbstractPMDRecord {
         if (project.isAccessible()) {
             this.children = createChildren();
         } else {
-            this.children = new AbstractPMDRecord[0];
+            this.children = AbstractPMDRecord.EMPTY_RECORDS;
         }
 
     }

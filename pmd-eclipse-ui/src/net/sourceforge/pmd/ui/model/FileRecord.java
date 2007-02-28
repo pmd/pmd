@@ -69,6 +69,9 @@ import org.eclipse.jdt.core.JavaModelException;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2007/02/28 20:56:04  hooperbloob
+ * Optimization: new AbstractPMDRecord[0] -> AbstractPMDRecord.EMPTY_RECORDS (static final constant)
+ *
  * Revision 1.7  2006/11/16 17:11:08  holobender
  * Some major changes:
  * - new CPD View
@@ -155,7 +158,7 @@ public class FileRecord extends AbstractPMDRecord {
      * @see net.sourceforge.pmd.ui.model.AbstractPMDRecord#createChildren()
      */
     protected final AbstractPMDRecord[] createChildren() {
-        AbstractPMDRecord[] children = new AbstractPMDRecord[0];
+        AbstractPMDRecord[] children = AbstractPMDRecord.EMPTY_RECORDS;
 
         try {           
             // get all markers

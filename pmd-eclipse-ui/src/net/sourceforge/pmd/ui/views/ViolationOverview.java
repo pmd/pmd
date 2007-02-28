@@ -87,6 +87,9 @@ import org.eclipse.ui.part.ViewPart;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2007/02/28 20:56:04  hooperbloob
+ * Optimization: new AbstractPMDRecord[0] -> AbstractPMDRecord.EMPTY_RECORDS (static final constant)
+ *
  * Revision 1.7  2007/01/28 18:19:19  holobender
  * Fixed default values for priorities
  *
@@ -449,7 +452,7 @@ public class ViolationOverview extends ViewPart implements ISelectionProvider, I
     }
 
     public AbstractPMDRecord[] getAllProjects() {
-        AbstractPMDRecord[] projects = new AbstractPMDRecord[0];
+        AbstractPMDRecord[] projects = AbstractPMDRecord.EMPTY_RECORDS;
         if (this.root != null) {
             projects = this.root.getChildren();
         }
