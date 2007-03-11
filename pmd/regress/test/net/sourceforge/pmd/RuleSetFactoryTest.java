@@ -140,6 +140,7 @@ public class RuleSetFactoryTest {
         assertEquals("Test message override", r.getMessage());
         assertEquals("Test description override", r.getDescription());
         assertEquals("Test example override", r.getExample());
+        assertEquals("Test that both example are stored", 2, r.getExamples().size());
         assertEquals(3, r.getPriority());
         assertTrue(r.hasProperty("test2"));
         assertEquals("override2", r.getStringProperty("test2"));

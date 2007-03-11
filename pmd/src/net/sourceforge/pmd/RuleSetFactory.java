@@ -46,7 +46,7 @@ public class RuleSetFactory {
                     if (node.getNodeName().equals("description")) {
                         rule.setDescription(parseTextNode(node));
                     } else if (node.getNodeName().equals("example")) {
-                        rule.setExample(parseTextNode(node));
+                        rule.addExample(parseTextNode(node));
                     } else if (node.getNodeName().equals("priority")) {
                         rule.setPriority(Integer.parseInt(parseTextNode(node)));
                     } else if (node.getNodeName().equals("properties")) {
@@ -299,7 +299,7 @@ public class RuleSetFactory {
                 if (node.getNodeName().equals("description")) {
                     rule.setDescription(parseTextNode(node));
                 } else if (node.getNodeName().equals("example")) {
-                    rule.setExample(parseTextNode(node));
+                    rule.addExample(parseTextNode(node));
                 } else if (node.getNodeName().equals("priority")) {
                     rule.setPriority(Integer.parseInt(parseTextNode(node).trim()));
                 } else if (node.getNodeName().equals("properties")) {

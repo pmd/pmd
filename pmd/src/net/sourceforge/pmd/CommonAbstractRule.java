@@ -15,12 +15,11 @@ import net.sourceforge.pmd.ast.SimpleNode;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public abstract class CommonAbstractRule implements Rule {
-
     protected String name = getClass().getName();
     protected Properties properties = new Properties();
     protected String message;
     protected String description;
-    protected String example;
+    protected List<String> examples = new ArrayList<String>();
     protected String ruleSetName;
     protected boolean include;
     protected boolean usesDFA;
@@ -45,12 +44,26 @@ public abstract class CommonAbstractRule implements Rule {
         this.description = description;
     }
 
+    public List<String> getExamples() {
+        return examples;
+    }
+    
+    /**
+     * Still used by the JDeveloper plugin
+     * 
+     * @deprecated use getExamples(), since we now support multiple examples
+     */
     public String getExample() {
-        return example;
+        if (examples.isEmpty()) {
+            return null;
+        } else {
+            //We return the last example, so the override still works
+            return examples.get(examples.size()-1);
+        }
     }
 
-    public void setExample(String example) {
-        this.example = example;
+    public void addExample(String example) {
+        examples.add(example);
     }
 
     public boolean hasProperty(String name) {

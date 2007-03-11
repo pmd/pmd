@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Properties;
 
 public interface Rule {
-
     public static final int LOWEST_PRIORITY = 5;
     public static final String[] PRIORITIES = {"High", "Medium High", "Medium", "Medium Low", "Low"};
 
@@ -17,6 +16,13 @@ public interface Rule {
 
     String getDescription();
 
+    List<String> getExamples();
+
+    /**
+     * Still used by the JDeveloper plugin
+     * 
+     * @deprecated use getExamples(), since we now support multiple examples
+     */
     String getExample();
 
     String getExternalInfoUrl();
@@ -31,7 +37,7 @@ public interface Rule {
 
     void setDescription(String description);
 
-    void setExample(String example);
+    void addExample(String example);
 
     void setExternalInfoUrl(String url);
 
