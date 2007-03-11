@@ -391,13 +391,13 @@ public class RuleSetFactory {
         }
     }
 
-    private static String parseTextNode(Node exampleNode) {
+    private static String parseTextNode(Node node) {
         StringBuffer buffer = new StringBuffer();
-        for (int i = 0; i < exampleNode.getChildNodes().getLength(); i++) {
-            Node node = exampleNode.getChildNodes().item(i);
-            if (node.getNodeType() == Node.CDATA_SECTION_NODE
-                    || node.getNodeType() == Node.TEXT_NODE) {
-                buffer.append(node.getNodeValue());
+        for (int i = 0; i < node.getChildNodes().getLength(); i++) {
+            Node childNode = node.getChildNodes().item(i);
+            if (childNode.getNodeType() == Node.CDATA_SECTION_NODE
+                    || childNode.getNodeType() == Node.TEXT_NODE) {
+                buffer.append(childNode.getNodeValue());
             }
         }
         return buffer.toString();
