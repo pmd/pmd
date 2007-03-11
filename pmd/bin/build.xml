@@ -121,7 +121,6 @@
 			<pathelement location="${dir.lib}/asm-3.0.jar"/>
 			<pathelement location="${jvm14.runtime}" />
 			<pathelement location="${dir.lib}/jaxen-1.1.jar" />
-			<pathelement location="${dir.lib}/asm-3.0.jar" />
 			<pathelement location="${dir.lib14}/junit.jar" />
 			<pathelement location="${ant.jar}" />
 		</path>
