@@ -21,9 +21,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-// Note that ruleset parsing may fail on JDK 1.6 beta
-// due to this bug - http://www.netbeans.org/issues/show_bug.cgi?id=63257
-
 public class RuleSetFactory {
 
     private static class OverrideParser {
