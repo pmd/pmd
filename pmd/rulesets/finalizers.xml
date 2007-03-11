@@ -17,6 +17,7 @@ These rules deal with different problems that can occur with finalizers.
        <description>
 If the finalize() method is empty, then it does not need to exist.
        </description>
+       <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -27,7 +28,6 @@ If the finalize() method is empty, then it does not need to exist.
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
        <example>
 <![CDATA[
 public class Foo {
@@ -45,6 +45,7 @@ public class Foo {
 If the finalize() is implemented, it should do something besides just calling
 super.finalize().
        </description>
+       <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -59,7 +60,6 @@ super.finalize().
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
        <example>
            <![CDATA[
 public class Foo {
@@ -80,6 +80,7 @@ Methods named finalize() should not have parameters.  It is
 confusing and probably a bug to overload finalize().  It will
 not be called by the VM.
    </description>
+   <priority>3</priority>
     <properties>
         <property name="xpath">
             <value>
@@ -90,7 +91,6 @@ not be called by the VM.
             </value>
         </property>
     </properties>
-    <priority>3</priority>
    <example>
 <![CDATA[
 public class Foo {
@@ -109,6 +109,7 @@ public class Foo {
        <description>
 If the finalize() is implemented, its last action should be to call super.finalize.
        </description>
+       <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -126,7 +127,6 @@ a block whose last statement is NOT a call to super.finalize -->
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
        <example>
 <![CDATA[
 public class Foo {
@@ -147,6 +147,7 @@ public class Foo {
 If you override finalize(), make it protected.  If you make
  it public, other classes may call it.
       </description>
+      <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -158,7 +159,6 @@ If you override finalize(), make it protected.  If you make
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
 public class Foo {

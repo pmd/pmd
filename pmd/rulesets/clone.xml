@@ -16,6 +16,7 @@ The Clone Implementation ruleset contains a collection of rules that find questi
      <description>
 Object clone() should be implemented with super.clone().
      </description>
+     <priority>2</priority>
      <properties>
          <property name="xpath">
              <value>
@@ -33,8 +34,6 @@ ClassOrInterfaceDeclaration[1]/@Image)
              </value>
          </property>
      </properties>
-        <priority>2</priority>
-
      <example>
  <![CDATA[
 class Foo{
@@ -53,6 +52,7 @@ class Foo{
          <description>
 The method clone() should throw a CloneNotSupportedException.
          </description>
+         <priority>3</priority>
          <properties>
              <property name="xpath">
                  <value>
@@ -71,7 +71,6 @@ and count(NameList/Name[contains
                  </value>
              </property>
          </properties>
-         <priority>3</priority>
          <example>
              <![CDATA[
  public class MyClass implements Cloneable{
@@ -91,6 +90,7 @@ and count(NameList/Name[contains
         <description>
 The method clone() should only be implemented if the class implements the Cloneable interface with the exception of a final method that only throws CloneNotSupportedException.
         </description>
+        <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -112,7 +112,6 @@ and Block[count(BlockStatement)=1]
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
         <example>
             <![CDATA[
 public class MyClass {

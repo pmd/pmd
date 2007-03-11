@@ -19,6 +19,7 @@ Empty Catch Block finds instances where an exception is caught,
 but nothing is done.  In most circumstances, this swallows an exception
 which should either be acted on or reported.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -35,7 +36,6 @@ which should either be acted on or reported.
               <value>false</value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
 public void doSomething() {
@@ -90,6 +90,7 @@ Empty While Statement finds all instances where a while statement
 does nothing.  If it is a timing loop, then you should use Thread.sleep() for it; if
 it's a while loop that does a lot in the exit expression, rewrite it to make it clearer.
        </description>
+       <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -99,8 +100,6 @@ it's a while loop that does a lot in the exit expression, rewrite it to make it 
               </value>
           </property>
       </properties>
-        <priority>3</priority>
-
        <example>
   <![CDATA[
 public class Foo {
@@ -122,6 +121,7 @@ public class Foo {
       <description>
 Avoid empty try blocks - what's the point?
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -131,8 +131,6 @@ Avoid empty try blocks - what's the point?
               </value>
           </property>
       </properties>
-        <priority>3</priority>
-
       <example>
   <![CDATA[
 public class Foo {
@@ -154,6 +152,7 @@ public class Foo {
       <description>
 Avoid empty finally blocks - these can be deleted.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -163,8 +162,6 @@ Avoid empty finally blocks - these can be deleted.
               </value>
           </property>
       </properties>
-        <priority>3</priority>
-
       <example>
   <![CDATA[
 public class Foo {
@@ -188,6 +185,7 @@ public class Foo {
       <description>
 Avoid empty switch statements.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -197,8 +195,6 @@ Avoid empty switch statements.
               </value>
           </property>
       </properties>
-        <priority>3</priority>
-
       <example>
   <![CDATA[
 public class Foo {
@@ -221,6 +217,7 @@ public class Foo {
      <description>
 Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.
      </description>
+     <priority>3</priority>
      <properties>
          <property name="xpath">
              <value>
@@ -235,7 +232,6 @@ Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing eve
              </value>
          </property>
      </properties>
-        <priority>3</priority>
      <example>
  <![CDATA[
 public class JumbledIncrementerRule1 {
@@ -258,6 +254,7 @@ public class JumbledIncrementerRule1 {
       <description>
 Some for loops can be simplified to while loops - this makes them more concise.
       </description>
+      <priority>3</priority>
     <properties>
         <property name="xpath">
             <value>
@@ -271,7 +268,6 @@ Some for loops can be simplified to while loops - this makes them more concise.
             </value>
         </property>
     </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
 public class Foo {
@@ -311,9 +307,7 @@ public String convert(int x) {
       <description>
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
       </description>
-      <properties>
-      </properties>
-        <priority>3</priority>
+      <priority>3</priority>
       <example>
   <![CDATA[
 // this is bad
@@ -379,6 +373,7 @@ public class Foo {
       <description>
 Avoid returning from a finally block - this can discard exceptions.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -388,8 +383,6 @@ Avoid returning from a finally block - this can discard exceptions.
               </value>
           </property>
       </properties>
-        <priority>3</priority>
-
       <example>
   <![CDATA[
 public class Bar {
@@ -414,6 +407,7 @@ public class Bar {
       <description>
   Avoid empty synchronized blocks - they're useless.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -423,8 +417,6 @@ public class Bar {
               </value>
           </property>
       </properties>
-        <priority>3</priority>
-
       <example>
 <![CDATA[
 public class Foo {
@@ -445,8 +437,7 @@ public class Foo {
       <description>
 Avoid unnecessary return statements
       </description>
-      <properties></properties>
-        <priority>3</priority>
+      <priority>3</priority>
       <example>
   <![CDATA[
 public class Foo {
@@ -467,6 +458,7 @@ public class Foo {
        <description>
 An empty static initializer was found.
        </description>
+       <priority>3</priority>
          <properties>
              <property name="xpath">
                  <value>
@@ -476,7 +468,6 @@ An empty static initializer was found.
                  </value>
              </property>
          </properties>
-         <priority>3</priority>
        <example>
    <![CDATA[
 public class Foo {
@@ -495,6 +486,7 @@ public class Foo {
       <description>
 Do not use "if" statements that are always true or always false.
       </description>
+      <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -506,7 +498,6 @@ Do not use "if" statements that are always true or always false.
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
 public class Foo {
@@ -530,6 +521,7 @@ as the sole body of a for loop or while loop is probably a bug.  It
 could also be a double semicolon, which is useless and should be
 removed.
        </description>
+       <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -548,7 +540,6 @@ removed.
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
        <example>
 <![CDATA[
 public class MyClass {
@@ -588,6 +579,7 @@ public class Foo {
       <description>
 When a class has the final modifier, all the methods are automatically final.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -598,8 +590,6 @@ When a class has the final modifier, all the methods are automatically final.
               </value>
           </property>
       </properties>
-        <priority>3</priority>
-
       <example>
 <![CDATA[
 public final class Foo {
@@ -620,7 +610,8 @@ public final class Foo {
       <description>
 Sometimes two 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
       </description>
-    <properties>
+      <priority>3</priority>
+      <properties>
         <property name="xpath">
             <value>
                 <![CDATA[
@@ -632,8 +623,7 @@ Sometimes two 'if' statements can be consolidated by separating their conditions
   /Statement/IfStatement[@Else='false']]]>
             </value>
         </property>
-    </properties>
-        <priority>3</priority>
+      </properties>
       <example>
   <![CDATA[
 public class Foo {
@@ -679,6 +669,7 @@ you should pass an array of the desidered class
 as the parameter of the toArray method. Otherwise you will get a
 ClassCastException.
   </description>
+  <priority>3</priority>
   <properties>
     <property name="xpath">
     <value>
@@ -694,7 +685,6 @@ ClassCastException.
     </value>
     </property>
   </properties>
-  <priority>3</priority>
   <example>
 <![CDATA[
 import java.util.ArrayList;
@@ -738,6 +728,7 @@ if executed)
      would expect.  Therefore, it is generally recommended that the (String)
      constructor be used in preference to this one.
   </description>
+  <priority>3</priority>
   <properties>
     <property name="xpath">
     <value>
@@ -752,7 +743,6 @@ and
     </value>
     </property>
   </properties>
-  <priority>3</priority>
   <example>
 <![CDATA[
 import java.math.BigDecimal;
@@ -780,8 +770,6 @@ public class Test {
     An operation on an Immutable object (BigDecimal or BigInteger) won't change the object itself. The
     result of the operation is a new object. Therefore, ignoring the operation result is an error.
       </description>
-      <properties>
-      </properties>
       <priority>3</priority>
       <example>
     <![CDATA[
@@ -808,6 +796,7 @@ class Test {
     The null check here is misplaced. if the variable is null you'll get a NullPointerException.
     Either the check is useless (the variable will never be "null") or it's incorrect.
       </description>
+      <priority>3</priority>
       <properties>
         <property name="xpath">
         <value>
@@ -825,7 +814,6 @@ class Test {
         </value>
         </property>
       </properties>
-      <priority>3</priority>
       <example>
     <![CDATA[
 public class Foo {

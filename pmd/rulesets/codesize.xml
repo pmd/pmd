@@ -225,15 +225,15 @@ public class Person {
 <rule name="NcssMethodCount" message="The method {0}() has an NCSS line count of {1}"
    class="net.sourceforge.pmd.rules.codesize.NcssMethodCount"
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssMethodCount">
-   <properties>
-    <property name="minimum" description="The method NCSS count reporting threshold" value="100"/>
-   </properties>
-      <description>
+    <description>
 This rule uses the NCSS (Non Commenting Source Statements) algorithm to determine the number of lines
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm, 
 lines of code that are split are counted as one.
-      </description>
-     <priority>3</priority>
+    </description>
+    <priority>3</priority>
+    <properties>
+    	<property name="minimum" description="The method NCSS count reporting threshold" value="100"/>
+    </properties>
    <example>
 <![CDATA[
 public class Foo extends Bar {
@@ -255,15 +255,15 @@ public class Foo extends Bar {
 <rule name="NcssTypeCount" message="The type has an NCSS line count of {0}"
    class="net.sourceforge.pmd.rules.codesize.NcssTypeCount" 
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssTypeCount">
-    <properties>
-    <property name="minimum" description="The type NCSS count reporting threshold" value="1500"/>
-   </properties>
-      <description>
+    <description>
 This rule uses the NCSS (Non Commenting Source Statements) algorithm to determine the number of lines
 of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm, 
 lines of code that are split are counted as one.
-      </description>
-     <priority>3</priority>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="minimum" description="The type NCSS count reporting threshold" value="1500"/>
+    </properties>
    <example>
 <![CDATA[
 public class Foo extends Bar {
@@ -284,15 +284,15 @@ public class Foo extends Bar {
 <rule name="NcssConstructorCount" message="The constructor with {0} parameters has an NCSS line count of {1}"
    class="net.sourceforge.pmd.rules.codesize.NcssConstructorCount" 
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssConstructorCount">
-    <properties>
-    <property name="minimum" description="The constructor NCSS count reporting threshold" value="100"/>
-   </properties>
-      <description>
+    <description>
 This rule uses the NCSS (Non Commenting Source Statements) algorithm to determine the number of lines
 of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm, 
 lines of code that are split are counted as one.
-      </description>
-     <priority>3</priority>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="minimum" description="The constructor NCSS count reporting threshold" value="100"/>
+    </properties>
    <example>
 <![CDATA[
 public class Foo extends Bar {

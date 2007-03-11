@@ -16,6 +16,7 @@ The Braces Ruleset contains a collection of braces rules.
      <description>
 Avoid using if statements without using curly braces.
      </description>
+     <priority>3</priority>
        <properties>
            <property name="xpath">
                <value>
@@ -25,8 +26,6 @@ Avoid using if statements without using curly braces.
                </value>
            </property>
        </properties>
-       <priority>3</priority>
-
      <example>
  <![CDATA[
  public class Foo {
@@ -46,6 +45,7 @@ Avoid using if statements without using curly braces.
       <description>
 Avoid using 'while' statements without using curly braces.
       </description>
+      <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -55,8 +55,6 @@ Avoid using 'while' statements without using curly braces.
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
-
       <example>
 <![CDATA[
 public void doSomething() {
@@ -74,6 +72,7 @@ public void doSomething() {
        <description>
 Avoid using if..else statements without using curly braces.
        </description>
+       <priority>3</priority>
          <properties>
              <property name="xpath">
                  <value>
@@ -86,8 +85,6 @@ Avoid using if..else statements without using curly braces.
                  </value>
              </property>
          </properties>
-         <priority>3</priority>
-
        <example>
 <![CDATA[
  public void doSomething() {
@@ -110,6 +107,7 @@ Avoid using if..else statements without using curly braces.
        <description>
 Avoid using 'for' statements without using curly braces.
        </description>
+       <priority>3</priority>
          <properties>
              <property name="xpath">
                  <value>
@@ -119,8 +117,6 @@ Avoid using 'for' statements without using curly braces.
                  </value>
              </property>
          </properties>
-         <priority>3</priority>
-
        <example>
 <![CDATA[
 public void foo() {

@@ -66,6 +66,7 @@ public class Foo {
       <description>
 Avoid unnecessary comparisons in boolean expressions - this complicates simple code.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -76,7 +77,6 @@ Avoid unnecessary comparisons in boolean expressions - this complicates simple c
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
 public class Bar {
@@ -97,6 +97,7 @@ public class Bar {
     <description>
 Switch statements should have a default label.
     </description>
+    <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -106,7 +107,6 @@ Switch statements should have a default label.
               </value>
           </property>
       </properties>
-      <priority>3</priority>
     <example>
 <![CDATA[
 public class Foo {
@@ -274,6 +274,7 @@ public class Outer {
 If a final field is assigned to a compile-time constant, it could be
 made static, thus saving overhead in each object at runtime.
       </description>
+      <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -287,7 +288,6 @@ made static, thus saving overhead in each object at runtime.
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
 public class Foo {
@@ -305,10 +305,10 @@ public class Foo {
     <description>
 Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
     </description>
+    <priority>3</priority>
       <properties>
           <property name="types" value="Connection,Statement,ResultSet"/>
       </properties>
-    <priority>3</priority>
     <example>
 <![CDATA[
 public class Bar {
@@ -337,6 +337,7 @@ A nonstatic initializer block will be called any time a constructor
 is invoked (just prior to invoking the constructor).  While this
 is a valid language construct, it is rarely used and is confusing.
        </description>
+       <priority>3</priority>
          <properties>
              <property name="xpath">
                  <value>
@@ -346,7 +347,6 @@ is a valid language construct, it is rarely used and is confusing.
                  </value>
              </property>
          </properties>
-         <priority>3</priority>
        <example>
    <![CDATA[
 public class MyClass {
@@ -366,6 +366,7 @@ public class MyClass {
        <description>
 By convention, the default label should be the last label in a switch statement.
        </description>
+       <priority>3</priority>
          <properties>
              <property name="xpath">
                  <value>
@@ -377,7 +378,6 @@ By convention, the default label should be the last label in a switch statement.
                  </value>
              </property>
          </properties>
-         <priority>3</priority>
        <example>
    <![CDATA[
 public class Foo {
@@ -403,6 +403,7 @@ public class Foo {
 A non-case label (e.g. a named break/continue label) was present in a switch statement.
 This legal, but confusing. It is easy to mix up the case labels and the non-case labels.
        </description>
+       <priority>3</priority>
          <properties>
              <property name="xpath">
                  <value>
@@ -412,7 +413,6 @@ This legal, but confusing. It is easy to mix up the case labels and the non-case
                  </value>
              </property>
          </properties>
-         <priority>3</priority>
        <example>
    <![CDATA[
 public class Foo {
@@ -439,6 +439,7 @@ public class Foo {
       <description>
 A call to Collection.toArray can use the Collection's size vs an empty Array of the desired type.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -455,7 +456,6 @@ PrimarySuffix/Arguments/ArgumentList/Expression
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
 class Foo {
@@ -479,6 +479,7 @@ class Foo {
       <description>
 Avoid equality comparisons with Double.NaN - these are likely to be logic errors.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -490,7 +491,6 @@ Avoid equality comparisons with Double.NaN - these are likely to be logic errors
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
 public class Bar {
@@ -500,7 +500,7 @@ public class Bar {
       </example>
     </rule>
 
-    <rule   name="EqualsNull"
+    <rule name="EqualsNull"
             message="Avoid using equals() to compare against null"
             class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#EqualsNull">
@@ -508,6 +508,7 @@ public class Bar {
 Inexperienced programmers sometimes confuse comparison concepts
 and use equals() to compare to null.
         </description>
+        <priority>1</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -525,7 +526,6 @@ PrimarySuffix[ends-with(@Image, 'equals')]
                 </value>
             </property>
          </properties>
-        <priority>1</priority>
     <example>
        <![CDATA[
 class Bar {
@@ -574,17 +574,7 @@ public class Foo {
       <description>
 Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
       </description>
-        <example>
-    <![CDATA[
-public class Foo {
- // Replace this
- Class c = new String().getClass();
- // with this:
- Class c = String.class;
-}
-    ]]>
-        </example>
-        <priority>4</priority>
+      <priority>4</priority>
         <properties>
           <property name="xpath">
             <value>
@@ -599,6 +589,16 @@ public class Foo {
             </value>
           </property>
         </properties>
+        <example>
+    <![CDATA[
+public class Foo {
+ // Replace this
+ Class c = new String().getClass();
+ // with this:
+ Class c = String.class;
+}
+    ]]>
+        </example>
       </rule>
 
     <rule name="IdempotentOperations"
@@ -630,6 +630,7 @@ public class Foo {
         <description>
 Be sure to specify a Locale when creating a new instance of SimpleDateFormat.
         </description>
+        <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -641,7 +642,6 @@ Be sure to specify a Locale when creating a new instance of SimpleDateFormat.
                     </value>
                  </property>
               </properties>
-        <priority>3</priority>
         <example>
         <![CDATA[
 public class Foo {
@@ -685,6 +685,21 @@ public class Foo {
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids
 problems with certain locales, i.e. Turkish.
       </description>
+      <priority>3</priority>
+        <properties>
+          <property name="xpath">
+            <value>
+                <![CDATA[
+//PrimaryExpression
+[PrimaryPrefix/Name
+ [ends-with(@Image, 'toLowerCase') or ends-with(@Image,
+'toUpperCase')]
+ ]
+[PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
+     ]]>
+            </value>
+          </property>
+        </properties>
         <example>
     <![CDATA[
 class Foo {
@@ -702,22 +717,7 @@ class Foo {
 }
     ]]>
         </example>
-        <priority>3</priority>
-        <properties>
-          <property name="xpath">
-            <value>
-                <![CDATA[
-//PrimaryExpression
-[PrimaryPrefix/Name
- [ends-with(@Image, 'toLowerCase') or ends-with(@Image,
-'toUpperCase')]
- ]
-[PrimarySuffix[position() = 1]/Arguments[@ArgumentCount=0]]
-     ]]>
-            </value>
-          </property>
-        </properties>
-      </rule>
+    </rule>
 
     <rule name="AvoidProtectedFieldInFinalClass"
              message="Avoid protected fields in a final class.  Change to private or package access."
@@ -727,6 +727,7 @@ class Foo {
 Do not use protected fields in final classes since they cannot be subclassed.
 Clarify your intent by using private or package access modifiers instead.
          </description>
+         <priority>3</priority>
          <properties>
              <property name="xpath">
                  <value>
@@ -738,7 +739,6 @@ Clarify your intent by using private or package access modifiers instead.
                  </value>
              </property>
          </properties>
-           <priority>3</priority>
         <example>
 <![CDATA[
 public final class Bar {
@@ -777,6 +777,7 @@ public class StaticField {
       <description>
 A class that has private constructors and does not have any static methods or fields cannot be used.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -793,7 +794,6 @@ count(.//FieldDeclaration[@Private='false'][@Static='true'])=0
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
 <![CDATA[
 /* This class is unusable, since it cannot be
@@ -818,6 +818,7 @@ public class Foo {
   Method level synchronization can backfire when new code is added to the method.  Block-level
   synchronization helps to ensure that only the code that needs synchronization gets it.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -827,7 +828,6 @@ public class Foo {
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
 <![CDATA[
 public class Foo {
@@ -851,6 +851,7 @@ public class Foo {
       <description>
 A switch statement without an enclosed break statement may be a bug.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -865,7 +866,6 @@ A switch statement without an enclosed break statement may be a bug.
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
 <![CDATA[
 public class Foo {
@@ -894,6 +894,7 @@ public class Foo {
 Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
 one is chosen.  The thread chosen is arbitrary; thus it's usually safer to call notifyAll() instead.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -910,8 +911,6 @@ or (./AllocationExpression and ../PrimarySuffix[@Image='notify'])
               </value>
           </property>
       </properties>
-        <priority>3</priority>
-
       <example>
 <![CDATA[
 public class Foo {
@@ -930,9 +929,10 @@ public class Foo {
           message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidInstanceofChecksInCatchClause">
-    <description>
+      <description>
 Each caught exception type should be handled in its own catch clause.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -947,7 +947,6 @@ Each caught exception type should be handled in its own catch clause.
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
 <![CDATA[
 try { // Avoid this
@@ -976,6 +975,7 @@ an incomplete implementation, which is to be completed by subclasses implementin
 abstract methods. If the class is intended to be used as a base class only (not to be instantiated
 direcly) a protected constructor can be provided prevent direct instantiation.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value><![CDATA[
@@ -987,7 +987,6 @@ direcly) a protected constructor can be provided prevent direct instantiation.
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
 <![CDATA[
 public abstract class Foo {
@@ -1004,9 +1003,10 @@ public abstract class Foo {
               message="No need to check for null before an instanceof"
               class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyConditional">
-           <description>
+          <description>
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
-           </description>
+          </description>
+          <priority>3</priority>
           <properties>
               <property name="xpath">
                   <value>
@@ -1032,7 +1032,6 @@ InstanceOfExpression
                   </value>
               </property>
           </properties>
-            <priority>3</priority>
            <example>
       <![CDATA[
 class Foo {
@@ -1066,22 +1065,25 @@ class Foo {
 </rule>
 
 
-<rule  name="PositionLiteralsFirstInComparisons"
+<rule name="PositionLiteralsFirstInComparisons"
   message="Position literals first in String comparisons"
   class="net.sourceforge.pmd.rules.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PositionLiteralsFirstInComparisons">
+  externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PositionLiteralsFirstInComparisons">
   <description>
  Position literals first in String comparisons - that way if the String is null you won't get a NullPointerException, it'll just return false.
   </description>
-      <properties>
-        <property name="xpath">
-          <value><![CDATA[
+  <priority>3</priority>
+  <properties>
+      <property name="xpath">
+          <value>
+              <![CDATA[
 //PrimaryExpression[PrimaryPrefix[Name[ends-with(@Image, '.equals')]][..//Literal]]
     [not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
     [not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
-          ]]></value>
-        </property>
-      </properties>  <priority>3</priority>
+          ]]>
+          </value>
+      </property>
+  </properties>
   <example>
 <![CDATA[
 class Foo {
@@ -1127,17 +1129,17 @@ initialize-on-demand holder class (do not use the double-check idiom).
 
 See Effective Java, item 48.
         </description>
+        <priority>3</priority>
         <properties>
-            <property name="checkNonStaticMethods">
-                <description>Do not set this to false and checkNonStaticFields to true</description>
+            <property name="checkNonStaticMethods" 
+                description="Do not set this to false and checkNonStaticFields to true">
                 <value>true</value>
             </property>
-            <property name="checkNonStaticFields">
-                <description>Do not set this to true and checkNonStaticMethods to false</description>
+            <property name="checkNonStaticFields"
+                description="Do not set this to true and checkNonStaticMethods to false">
                 <value>false</value>
             </property>
         </properties>
-        <priority>3</priority>
         <example><![CDATA[
 private static Foo foo = null;
 
@@ -1162,6 +1164,7 @@ statements, but there is no comment. By explicitly commenting empty methods
 it is easier to distinguish between intentional (commented) and unintentional
 empty methods.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -1171,7 +1174,6 @@ empty methods.
              </value>
           </property>
       </properties>
-      <priority>3</priority>
       <example>
   <![CDATA[
 public void doSomething() {
@@ -1190,6 +1192,7 @@ contain statements, but there is no comment. By explicitly commenting empty
 constructors it is easier to distinguish between intentional (commented)
 and unintentional empty constructors.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -1202,7 +1205,6 @@ and unintentional empty constructors.
               <value>false</value>
           </property>
       </properties>
-      <priority>3</priority>
       <example>
   <![CDATA[
 public Foo() {
@@ -1219,6 +1221,7 @@ public Foo() {
      An interface should be used only to model a behaviour of a
     class: using an interface as a container of constants is a poor usage pattern.
       </description>
+      <priority>3</priority>
       <properties>
         <property name="xpath">
         <value>
@@ -1233,7 +1236,6 @@ public Foo() {
         </value>
         </property>
       </properties>
-      <priority>3</priority>
       <example>
     <![CDATA[
     public interface ConstantsInterface {
@@ -1252,7 +1254,6 @@ SimpleDateFormat is not synchronized. Sun recomends separate format instances
 for each thread. If multiple threads must access a static formatter, the 
 formatter must be synchronized either on method or block level.
       </description>
-      <properties></properties>
       <priority>3</priority>
       <example>
     <![CDATA[
@@ -1278,7 +1279,6 @@ Throwing a new exception from a catch block without passing the original excepti
 new Exception will cause the true stack trace to be lost, and can make it difficult to
 debug effectively.
       </description>
-      <properties></properties>
       <priority>3</priority>
       <example>
     <![CDATA[
@@ -1310,7 +1310,6 @@ public class Foo {
 The isEmpty() method on java.util.Collection is provided to see if a collection has any elements.
 Comparing the value of size() to 0 merely duplicates existing behavior.
       </description>
-      <properties></properties>
       <priority>3</priority>
       <example>
     <![CDATA[

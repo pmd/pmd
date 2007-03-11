@@ -54,6 +54,7 @@ provide getFoo and setFoo methods.
       <description>
 Classes that are serializable should provide a serialVersionUID field.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -73,7 +74,6 @@ and
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
 <![CDATA[
 public class Foo implements java.io.Serializable {

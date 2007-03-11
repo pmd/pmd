@@ -21,6 +21,7 @@ most people really dislike :-)
 This rule detects when a constructor is not necessary; i.e., when there's only one constructor,
 it's public, has an empty body, and takes no arguments.
       </description>
+      <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -36,7 +37,6 @@ it's public, has an empty body, and takes no arguments.
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
 public class Foo {
@@ -158,18 +158,18 @@ public class Foo {
   <description>
 Each class should declare at least one constructor.
   </description>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
+  <priority>3</priority>
+  <properties>
+      <property name="xpath">
+          <value>
+              <![CDATA[
 //ClassOrInterfaceDeclaration
  [not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)]
  [@Interface='false']
 ]]>
-                </value>
-            </property>
-         </properties>
-    <priority>3</priority>
+          </value>
+      </property>
+  </properties>
   <example>
   <![CDATA[
 public class Foo {
@@ -232,6 +232,7 @@ public class Foo {
 It is a good practice to call super() in a constructor. If super() is not called but
  another constructor (such as an overloaded constructor) is called, this rule will not report it.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -244,7 +245,6 @@ It is a good practice to call super() in a constructor. If super() is not called
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
 <![CDATA[
 public class Foo extends Bar{
@@ -270,10 +270,11 @@ public class Foo extends Bar{
 Sometimes expressions are wrapped in unnecessary parentheses,
 making them look like a function call.
       </description>
-    <properties>
-        <property name="xpath">
-            <value>
-                <![CDATA[
+      <priority>3</priority>
+      <properties>
+          <property name="xpath">
+              <value>
+                  <![CDATA[
 //ReturnStatement
           /Expression
            /PrimaryExpression
@@ -281,10 +282,9 @@ making them look like a function call.
              /Expression[count(*)=1]
               /PrimaryExpression
               /PrimaryPrefix]]>
-            </value>
-        </property>
-    </properties>
-        <priority>3</priority>
+              </value>
+          </property>
+      </properties>
       <example>
   <![CDATA[public class Foo {
       boolean bar() {
@@ -323,6 +323,7 @@ public class Foo {
         <description>
 Use explicit scoping instead of the default package private level.
         </description>
+        <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -336,7 +337,6 @@ or MethodDeclaration[@PackagePrivate='true']
                 ]]></value>
             </property>
         </properties>
-        <priority>3</priority>
     </rule>
 
     <rule name="BooleanInversion"
@@ -347,6 +347,7 @@ or MethodDeclaration[@PackagePrivate='true']
 Use bitwise inversion to invert boolean values - it's the fastest way to do this.
 See http://www.javaspecialists.co.za/archive/newsletter.do?issue=042&amp;locale=en_US for specific details
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -356,7 +357,6 @@ See http://www.javaspecialists.co.za/archive/newsletter.do?issue=042&amp;locale=
              </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
 public class Foo {

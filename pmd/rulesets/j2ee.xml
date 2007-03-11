@@ -6,12 +6,17 @@
     xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
     xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
 
+  <description>
+    These are rules for J2EE
+  </description>
+
   <rule name="UseProperClassLoader"
    message="In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead."
    class="net.sourceforge.pmd.rules.XPathRule">
    <description>
     In J2EE getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
    </description>
+   <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -21,7 +26,6 @@
               </value>
           </property>
       </properties>
-      <priority>3</priority>
    <example>
 <![CDATA[
 public class Foo {
