@@ -1,11 +1,11 @@
 <!ELEMENT description ( #PCDATA ) >
 <!ELEMENT example ( #PCDATA ) >
 <!ELEMENT priority ( #PCDATA ) >
-<!ELEMENT properties ( property ) >
+<!ELEMENT properties ( property+ ) >
 <!ELEMENT property ( value? ) >
 <!ATTLIST property name NMTOKEN #REQUIRED >
-<!ATTLIST property value NMTOKEN #IMPLIED >
-<!ATTLIST property description NMTOKEN #IMPLIED >
+<!ATTLIST property value CDATA #IMPLIED >
+<!ATTLIST property description CDATA #IMPLIED >
 <!ATTLIST property pluginname NMTOKEN #IMPLIED >
 <!ELEMENT exclude EMPTY >
 <!ATTLIST exclude name NMTOKEN #REQUIRED >
@@ -16,6 +16,7 @@
 <!ATTLIST rule name ID #IMPLIED >
 <!ATTLIST rule ref CDATA #IMPLIED >
 <!ATTLIST rule typeResolution CDATA #IMPLIED >
+<!ATTLIST rule dfa CDATA #IMPLIED >
 <!ELEMENT ruleset ( description, rule+ ) >
 <!ATTLIST ruleset name CDATA #REQUIRED >
 <!ATTLIST ruleset language CDATA #IMPLIED >
