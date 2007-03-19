@@ -15,8 +15,9 @@ The Jakarta Commons Logging ruleset contains a collection of rules that find que
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-jakarta-commons.html#UseCorrectExceptionLogging">
 		<description>
 To make sure the full stacktrace is printed out, use the logging statement with 2 arguments: a String and a Throwable.
-    </description>
-		<properties>
+        </description>
+        <priority>3</priority>
+	   	<properties>
 			<property name="xpath">
 				<value><![CDATA[
 //CatchStatement/Block/BlockStatement/Statement/StatementExpression
@@ -29,7 +30,6 @@ concat(ancestor::ClassOrInterfaceDeclaration/ClassOrInterfaceBody/ClassOrInterfa
          ]]></value>
 			</property>
 		</properties>
-        <priority>3</priority>
 		<example><![CDATA[
 public class Main {
  private static final Log _LOG = LogFactory.getLog( Main.class );
@@ -50,10 +50,11 @@ public class Main {
          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-jakarta-commons.html#ProperLogger">
              <description>
- Logger should normally be defined private static final and have the correct class.
- Private final Log log; is also allowed for rare cases when loggers need to be passed
- around, but the logger needs to be passed into the constructor.
- </description>
+A logger should normally be defined private static final and have the correct class.
+Private final Log log; is also allowed for rare cases where loggers need to be passed
+around, with the restriction that the logger needs to be passed into the constructor.
+             </description>
+             <priority>3</priority>
              <properties>
              <property name="xpath">
                      <value>
@@ -74,7 +75,6 @@ public class Main {
                      <value>LOG</value>
              </property>
              </properties>
-             <priority>3</priority>
              <example>
  <![CDATA[
  public class Foo {
@@ -84,7 +84,7 @@ public class Main {
  protected Log LOG = LogFactory.getLog(Testclass.class);
 }
  ]]>
- </example>
+            </example>
      </rule>
 
 </ruleset>

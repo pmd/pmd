@@ -37,6 +37,7 @@ class Foo{
      <description>
 In most cases, the Logger can be declared static and final.
      </description>
+     <priority>2</priority>
      <properties>
          <property name="xpath">
              <value>
@@ -51,7 +52,6 @@ In most cases, the Logger can be declared static and final.
              </value>
          </property>
      </properties>
-        <priority>2</priority>
      <example>
  <![CDATA[
 class Foo{
@@ -106,6 +106,7 @@ first -->
      <description>
 System.(out|err).print is used, consider using a logger.
      </description>
+     <priority>2</priority>
      <properties>
          <property name="xpath">
              <value>
@@ -119,7 +120,6 @@ System.(out|err).print is used, consider using a logger.
              </value>
          </property>
      </properties>
-        <priority>2</priority>
      <example>
  <![CDATA[
 class Foo{
@@ -141,6 +141,7 @@ class Foo{
            <description>
 Avoid printStackTrace(); use a logger call instead.
            </description>
+           <priority>3</priority>
            <properties>
              <property name="xpath">
              <value>
@@ -152,7 +153,6 @@ Avoid printStackTrace(); use a logger call instead.
              </value>
              </property>
            </properties>
-           <priority>3</priority>
            <example>
 <![CDATA[
 class Foo {

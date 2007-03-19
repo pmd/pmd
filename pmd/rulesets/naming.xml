@@ -17,6 +17,7 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
     <description>
 Detects when a field, local, or parameter has a very short name.
     </description>
+    <priority>3</priority>
       <properties>
           <property name="xpath" pluginname="true">
               <value>
@@ -28,7 +29,6 @@ Detects when a field, local, or parameter has a very short name.
               </value>
           </property>
       </properties>
-      <priority>3</priority>
     <example>
 <![CDATA[
 public class Something {
@@ -256,6 +256,7 @@ public class Foo {
 A field name is all in uppercase characters, which in Sun's Java naming
 conventions indicate a constant. However, the field is not final.
        </description>
+       <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -268,7 +269,6 @@ conventions indicate a constant. However, the field is not final.
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
        <example>
     <![CDATA[
 public class Foo {
@@ -291,6 +291,7 @@ The method name and parameter number are suspiciously close to
 equals(Object), which may mean you are intending to override the equals(Object)
 method.
         </description>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -313,7 +314,6 @@ or
                     </value>
                  </property>
               </properties>
-        <priority>2</priority>
         <example>
         <![CDATA[
 public class Foo {
@@ -396,6 +396,7 @@ public class Foo {
     <description>
 Detects when a class or interface does not have a package definition.
     </description>
+    <priority>3</priority>
       <properties>
           <property name="xpath" pluginname="true">
               <value>
@@ -405,7 +406,6 @@ Detects when a class or interface does not have a package definition.
               </value>
           </property>
       </properties>
-      <priority>3</priority>
     <example>
 <![CDATA[
 // no package declaration
@@ -422,6 +422,7 @@ public class ClassInDefaultPackage {
         <description>
     Detects when a package definition contains upper case characters.
         </description>
+        <priority>3</priority>
           <properties>
               <property name="xpath" pluginname="true">
                   <value>
@@ -431,7 +432,6 @@ public class ClassInDefaultPackage {
                   </value>
               </property>
           </properties>
-          <priority>3</priority>
         <example>
     <![CDATA[
 package com.MyCompany;  // <- should be lower case name
@@ -449,6 +449,7 @@ public class SomeClass {
 Detects when a non-field has a name starting with 'm_'.  This usually
 indicates a field and thus is confusing.
       </description>
+      <priority>3</priority>
         <properties>
             <property name="xpath" pluginname="true">
                 <value>
@@ -460,7 +461,6 @@ indicates a field and thus is confusing.
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
   public class Foo {

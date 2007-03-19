@@ -126,9 +126,7 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
  Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
           or StringBuffer.toString().length() ==.
       </description>
-      <properties>
-      </properties>
-        <priority>3</priority>
+      <priority>3</priority>
       <example>
   <![CDATA[
 public class Foo {
@@ -298,6 +296,7 @@ StringBuffer sb = new StringBuffer('c'); The
 char will be converted into int to intialize
 StringBuffer size.
     </description>
+    <priority>4</priority>
     <properties>
         <property name="xpath">
             <value>
@@ -313,7 +312,6 @@ Literal [(starts-with(@Image, "'"))][(ends-with
             </value>
         </property>
     </properties>
-    <priority>4</priority>
     <example>
 <![CDATA[
 class Foo {

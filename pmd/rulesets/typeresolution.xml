@@ -47,8 +47,6 @@ Cloneable interface with the exception of a final method that only throws
 CloneNotSupportedException. This version uses PMD's type resolution facilities, 
 and can detect if the class implements or extends a Cloneable class
         </description>
-        <properties>
-        </properties>
         <priority>3</priority>
         <example>
             <![CDATA[

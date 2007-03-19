@@ -75,6 +75,7 @@ public class Something {
       <description>
 ArrayList is a much better Collection implementation than Vector.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -85,7 +86,6 @@ ArrayList is a much better Collection implementation than Vector.
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
 <![CDATA[
 public class SimpleTest extends TestCase {
@@ -106,6 +106,7 @@ public class SimpleTest extends TestCase {
       <description>
 Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
       </description>
+      <priority>3</priority>
     <properties>
         <property name="xpath">
             <value>
@@ -124,7 +125,6 @@ Since it passes in a literal of length 1, this call to String.startsWith can be 
             </value>
         </property>
     </properties>
-        <priority>3</priority>
       <example>
   <![CDATA[
 public class Foo {
@@ -143,8 +143,6 @@ public class Foo {
            <description>
 Finds usages of += for appending strings.
            </description>
-          <properties>
-          </properties>
             <priority>3</priority>
            <example>
       <![CDATA[
@@ -172,6 +170,7 @@ public class Foo {
    an array of objects. It is faster than executing a loop to
    cpy all the elements of the array one by one
      </description>
+     <priority>3</priority>
      <properties>
        <property name="xpath">
        <value>
@@ -206,7 +205,6 @@ public class Foo {
        </value>
        </property>
      </properties>
-     <priority>3</priority>
      <example>
    <![CDATA[
    public class Test {
@@ -234,6 +232,7 @@ public class Foo {
     Instead of copying data between two arrays, use
     System.arrayCopy method
       </description>
+      <priority>3</priority>
       <properties>
         <property name="xpath">
         <value>
@@ -258,7 +257,6 @@ or AdditiveExpression) and count(.//PrimaryPrefix/Name)=1]
         </value>
         </property>
       </properties>
-      <priority>3</priority>
       <example>
     <![CDATA[
 public class Test {

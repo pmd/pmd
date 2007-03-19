@@ -16,6 +16,7 @@ These rules deal with different problems that can occur with JUnit tests.
       <description>
 The suite() method in a JUnit test needs to be both public and static.
       </description>
+      <priority>3</priority>
         <properties>
         <property name="xpath">
             <value>
@@ -27,8 +28,6 @@ The suite() method in a JUnit test needs to be both public and static.
             </value>
         </property>
         </properties>
-        <priority>3</priority>
-
       <example>
   <![CDATA[
 import junit.framework.*;
@@ -47,6 +46,7 @@ public class Foo extends TestCase {
     <description>
 Some JUnit framework methods are easy to misspell.
     </description>
+    <priority>3</priority>
       <properties>
       <property name="xpath">
           <value>
@@ -60,7 +60,6 @@ Some JUnit framework methods are easy to misspell.
           </value>
       </property>
       </properties>
-      <priority>3</priority>
     <example>
 <![CDATA[
 import junit.framework.*;
@@ -151,6 +150,7 @@ A JUnit test assertion with a boolean literal is unnecessary since it always wil
 Consider using flow control (in case of assertTrue(false) or similar) or simply removing
 statements like assertTrue(true) and assertFalse(false).  If you just want a test to halt, use the fail method.
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -174,8 +174,6 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
               </value>
           </property>
       </properties>
-        <priority>3</priority>
-
       <example>
 <![CDATA[
 public class SimpleTest extends TestCase {
@@ -196,6 +194,7 @@ public class SimpleTest extends TestCase {
 This rule detects JUnit assertions in object equality. These assertions
 should be made by more specific methods, like assertEquals.
       </description>
+      <priority>3</priority>
     <properties>
         <property name="xpath">
             <value>
@@ -210,7 +209,6 @@ should be made by more specific methods, like assertEquals.
             </value>
         </property>
     </properties>
-        <priority>3</priority>
       <example>
 <![CDATA[
 public class FooTest extends TestCase {
@@ -232,6 +230,7 @@ public class FooTest extends TestCase {
 This rule detects JUnit assertions in object references equality. These assertions
 should be made by more specific methods, like assertSame, assertNotSame.
       </description>
+      <priority>3</priority>
     <properties>
         <property name="xpath">
             <value>
@@ -247,7 +246,6 @@ should be made by more specific methods, like assertSame, assertNotSame.
             </value>
         </property>
     </properties>
-        <priority>3</priority>
       <example>
 <![CDATA[
 public class FooTest extends TestCase {
@@ -269,6 +267,7 @@ public class FooTest extends TestCase {
  This rule detects JUnit assertions in object references equality. These assertions
  should be made by more specific methods, like assertNull, assertNotNull.
        </description>
+       <priority>3</priority>
      <properties>
          <property name="xpath">
              <value>
@@ -284,7 +283,6 @@ public class FooTest extends TestCase {
              </value>
          </property>
      </properties>
-         <priority>3</priority>
        <example>
  <![CDATA[
  public class FooTest extends TestCase {
@@ -311,6 +309,7 @@ assertTrue(!expr);
 as:
 assertFalse(expr);
       </description>
+      <priority>3</priority>
       <properties>
           <property name="xpath">
               <value>
@@ -327,7 +326,6 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
               </value>
           </property>
       </properties>
-        <priority>3</priority>
       <example>
 <![CDATA[
 public class SimpleTest extends TestCase {
