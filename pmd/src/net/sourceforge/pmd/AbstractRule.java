@@ -21,18 +21,18 @@ import net.sourceforge.pmd.ast.SimpleNode;
 
 public abstract class AbstractRule extends JavaParserVisitorAdapter implements Rule {
 
-    protected String name = getClass().getName();
-    protected Properties properties = new Properties();		// TODO - remove when ready
-    protected String message;
-    protected String description;
-    protected List<String> examples = new ArrayList<String>();
-    protected String ruleSetName;
-    protected boolean include;
-    protected boolean usesDFA;
-    protected boolean usesTypeResolution;
-    protected int priority = LOWEST_PRIORITY;
-    protected String externalInfoUrl;
-    protected List<String> ruleChainVisits = new ArrayList<String>();
+    private String name = getClass().getName();
+    private Properties properties = new Properties();		// TODO - remove when ready
+    private String message;
+    private String description;
+    private List<String> examples = new ArrayList<String>();
+    private String ruleSetName;
+    private boolean include;
+    private boolean usesDFA;
+    private boolean usesTypeResolution;
+    private int priority = LOWEST_PRIORITY;
+    private String externalInfoUrl;
+    private List<String> ruleChainVisits = new ArrayList<String>();
 
     private static final boolean inOldPropertyMode = true;	// temporary flag during conversion
     

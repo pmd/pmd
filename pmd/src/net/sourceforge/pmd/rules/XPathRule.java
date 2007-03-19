@@ -199,9 +199,9 @@ public class XPathRule extends CommonAbstractRule {
         xpathQueryString = xpathQueryString.replaceAll("\"\"\"", "'\"'");
 
         BaseXPath xpath = new BaseXPath(xpathQueryString, new DocumentNavigator());
-        if (properties.size() > 1) {
+        if (getProperties().size() > 1) {
             SimpleVariableContext vc = new SimpleVariableContext();
-            for (Entry e: properties.entrySet()) {
+            for (Entry e: getProperties().entrySet()) {
                 if (!"xpath".equals(e.getKey())) {
                     vc.setVariableValue((String) e.getKey(), e.getValue());
                 }

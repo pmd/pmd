@@ -15,18 +15,18 @@ import net.sourceforge.pmd.ast.SimpleNode;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public abstract class CommonAbstractRule implements Rule {
-    protected String name = getClass().getName();
-    protected Properties properties = new Properties();
-    protected String message;
-    protected String description;
-    protected List<String> examples = new ArrayList<String>();
-    protected String ruleSetName;
-    protected boolean include;
-    protected boolean usesDFA;
-    protected boolean usesTypeResolution;
-    protected int priority = LOWEST_PRIORITY;
-    protected String externalInfoUrl;
-    protected List<String> ruleChainVisits = new ArrayList<String>();
+    private String name = getClass().getName();
+    private Properties properties = new Properties();
+    private String message;
+    private String description;
+    private List<String> examples = new ArrayList<String>();
+    private String ruleSetName;
+    private boolean include;
+    private boolean usesDFA;
+    private boolean usesTypeResolution;
+    private int priority = LOWEST_PRIORITY;
+    private String externalInfoUrl;
+    private List<String> ruleChainVisits = new ArrayList<String>();
 
     public String getRuleSetName() {
         return ruleSetName;
