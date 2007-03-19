@@ -52,6 +52,7 @@ import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.JTextComponent;
@@ -99,26 +100,26 @@ public class Designer implements ClipboardOwner {
 	private static final char LABEL_IMAGE_SEPARATOR = ':';
 	private static final Color IMAGE_TEXT_COLOR = Color.BLUE;
 
-	private interface Parser { public SimpleNode parse(StringReader sr); };
+	private interface Parser { public SimpleNode parse(StringReader sr); }
 
 	private static final Parser jdkParser1_3 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return new TargetJDK1_3().createParser(sr).CompilationUnit(); };
+		public SimpleNode parse(StringReader sr) { return new TargetJDK1_3().createParser(sr).CompilationUnit(); }
 	};
 	
 	private static final Parser jdkParser1_4 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return new TargetJDK1_4().createParser(sr).CompilationUnit(); };
+		public SimpleNode parse(StringReader sr) { return new TargetJDK1_4().createParser(sr).CompilationUnit(); }
 	};
 	
 	private static final Parser jdkParser1_5 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return new TargetJDK1_5().createParser(sr).CompilationUnit(); };
+		public SimpleNode parse(StringReader sr) { return new TargetJDK1_5().createParser(sr).CompilationUnit(); }
 	};
 	
 	private static final Parser jdkParser1_6 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return new TargetJDK1_6().createParser(sr).CompilationUnit(); };
+		public SimpleNode parse(StringReader sr) { return new TargetJDK1_6().createParser(sr).CompilationUnit(); }
 	};
 	
 	private static final Parser jspParser = new Parser() {
-		public SimpleNode parse(StringReader sr) { return new JspParser(new JspCharStream(sr)).CompilationUnit(); };
+		public SimpleNode parse(StringReader sr) { return new JspParser(new JspCharStream(sr)).CompilationUnit(); }
 	};
 	
 	private static final Object[][] sourceTypeSets = new Object[][] {
@@ -276,7 +277,7 @@ public class Designer implements ClipboardOwner {
     	
     	private ASTTreeNode node;
 
-    	public Icon getIcon() { return null; };
+    	public Icon getIcon() { return null; }
     	
     	public Component getTreeCellRendererComponent(JTree tree, Object value,	boolean sel,boolean expanded,boolean leaf, int row,  boolean hasFocus) {
 
@@ -543,7 +544,7 @@ public class Designer implements ClipboardOwner {
     	CreateXMLRulePanel rulePanel = new CreateXMLRulePanel(xpathQueryArea, codeEditorPane);
     	JFrame xmlframe = new JFrame("Create XML Rule");
     	xmlframe.setContentPane(rulePanel);
-    	xmlframe.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    	xmlframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         xmlframe.setSize(new Dimension(600, 700));
         xmlframe.addComponentListener(new java.awt.event.ComponentAdapter() {
         	  public void componentResized(ComponentEvent e) {
@@ -668,7 +669,7 @@ public class Designer implements ClipboardOwner {
         Result result = new StreamResult(writer);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         try {
-            transformerFactory.setAttribute("indent-number", new Integer(4));   //For java 5
+            transformerFactory.setAttribute("indent-number", 4);   //For java 5
         } catch (IllegalArgumentException e) {
             //Running on Java 1.4 which does not support this attribute
         }
@@ -676,7 +677,7 @@ public class Designer implements ClipboardOwner {
         xformer.setOutputProperty(OutputKeys.INDENT, "yes");
         xformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "4");   //For java 1.4
         xformer.transform(source, result);
-
+        
         return writer.toString();
     }
 
