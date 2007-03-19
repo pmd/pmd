@@ -220,5 +220,42 @@ response.setHeader("Pragma", "No-cache");
 			 ]]>
 		</example>
 	</rule>
+    
+    <rule
+        name="JspEncoding"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        message="JSP file should use UTF-8 encoding"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#JspEncoding">
+        <description>
+            <![CDATA[
+A missing 'meta' tag or page directive will trigger this rule, as well as a non-UTF-8 charset.
+            ]]>
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//Content[
+not(Element[@Name="meta"][
+   Attribute[@Name="content"]/AttributeValue[contains(string:lower-case(@Image),"charset=utf-8")]
+]) 
+and 
+    not(JspDirective[@Name='page']/JspDirectiveAttribute[@Name='contentType'][contains(string:lower-case(@Value),"charset=utf-8")])
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+                Most browsers should be able to interpret the following headers:
+                
+                <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+                    
+                <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
+            ]]>
+        </example>
+    </rule>
 
 </ruleset>

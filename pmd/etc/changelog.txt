@@ -1,6 +1,8 @@
 ???, 2007 - 4.0:
 New rules:
 	Strict exception ruleset: DoNotExtendJavaLangError
+	Basic JSP ruleset: JspEncoding
+	J2EE ruleset: MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention
 New rulesets:
     Migrating To JUnit4: Rules that help move from JUnit 3 to JUnit 4
 Fixed bug 1670717 - 'Copy xml to clipboard' menu command now works again in the Designer

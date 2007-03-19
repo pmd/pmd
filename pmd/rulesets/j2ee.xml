@@ -34,5 +34,224 @@ public class Foo {
 ]]>
   </example>
  </rule>
+ 
+    <rule
+        name="MDBAndSessionBeanNamingConvention"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        message="SessionBean or MessageBean should be suffixed by Bean"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#MDBAndSessionBeanNamingConvention">
+        <description>
+        The EJB Specification state that any MessageDrivenBean or SessionBean should be suffixed by Bean.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//TypeDeclaration/ClassOrInterfaceDeclaration
+[
+    (
+        (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'SessionBean')])
+        or
+        (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'MessageDrivenBean')])
+    )
+    and
+    not 
+    (
+        ends-with(@Image,'Bean')
+    )
+]
+             ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            /* Proper name */
+            public class SomeBean implements SessionBean{}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad name */
+            public class MissingTheProperSuffix implements SessionBean {}
+            ]]>
+        </example>
+    </rule>
+    
+    <rule
+        name="RemoteSessionInterfaceNamingConvention"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        message="Remote Home interface of a Session EJB should be suffixed by 'Home'"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#RemoteSessionInterfaceNamingConvention">
+        <description>
+        Remote Home interface of a Session EJB should be suffixed by 'Home'.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBHome')])
+    )
+    and
+    not 
+    (
+        ends-with(@Image,'Home')
+    )
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            /* Proper name */
+            public interface MyBeautifulHome extends javax.ejb.EJBHome {}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad name */
+            public interface MissingProperSuffix extends javax.ejb.EJBHome {}
+            ]]>
+        </example>
+    </rule>
+    
+    <rule
+        name="LocalInterfaceSessionNamingConvention"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        message="The Local Interface of a Session EJB should be suffixed by 'Local'"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#LocalInterfaceSessionNamingConvention">
+        <description>
+        The Local Interface of a Session EJB should be suffixed by 'Local'.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalObject')])                     
+    )
+    and
+    not 
+    (
+        ends-with(@Image,'Local')
+    )
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            /* Proper name */
+            public interface MyLocal extends javax.ejb.EJBLocalObject {}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad name */
+            public interface MissingProperSuffix extends javax.ejb.EJBLocalObject {}
+            ]]>
+        </example>
+    </rule>
+    
+    <rule
+        name="LocalHomeNamingConvention"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        message="The Local Home interface of a Session EJB should be suffixed by 'LocalHome'"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#LocalHomeNamingConvention">
+        <description>
+        The Local Home interface of a Session EJB should be suffixed by 'LocalHome'.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalHome')])   
+    )
+    and
+    not 
+    (
+        ends-with(@Image,'LocalHome')
+    )
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            /* Proper name */
+            public interface MyBeautifulLocalHome extends javax.ejb.EJBLocalHome {}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad name */
+            public interface MissingProperSuffix extends javax.ejb.EJBLocalHome {}
+            ]]>
+        </example>
+    </rule>
+    
+    <rule
+        name="RemoteInterfaceNamingConvention"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        message="Remote Interface of a Session EJB should NOT be suffixed"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#RemoteInterfaceNamingConvention">
+        <description>
+        Remote Interface of a Session EJB should NOT be suffixed.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassOrInterfaceDeclaration
+[
+    (
+        (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBObject')]) 
+    )
+    and
+    (
+        ends-with(@Image,'Session')
+        or 
+        ends-with(@Image,'EJB')
+        or 
+        ends-with(@Image,'Bean')
+    )
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+            /* Bad Session suffix */
+            public interface BadSuffixSession extends javax.ejb.EJBObject {}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad EJB suffix */
+            public interface BadSuffixEJB extends javax.ejb.EJBObject {}
+            ]]>
+        </example>
+        <example>
+            <![CDATA[
+            /* Bad Bean suffix */
+            public interface BadSuffixBean extends javax.ejb.EJBObject {}
+            ]]>
+        </example>
+    </rule>
 
 </ruleset>
