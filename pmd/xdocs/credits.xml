@@ -55,6 +55,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Maarten ter Huurne - Noticed mispeling in AvoidArrayLoops rule</li>
             <li>Romain Pelisse - DoNotExtendJavaLangError, JspEncoding, MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention</li>
             <li>Lukas Theussl - Patch to bring Maven configuration files up to date</li>
             <li>Jason Bennett - Rewrite of annotation-based warning suppression to allow for rule-specific suppression, noticed useless line in XSLT scripts, fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule, patches to improve CyclomaticComplexity rule, Implemented: UseCollectionIsEmpty, NcssTypeCount, NcssMethodCount, NcssConstructor, Patch to detect comparison with new Object</li>
