@@ -286,7 +286,7 @@ public class Test {
       <description>
 Parsing method should be called directy instead.
       </description>
-        <priority>3</priority>
+      <priority>3</priority>
       <example>
 <![CDATA[
 public int convert(String s) {
@@ -304,6 +304,38 @@ public int convert(String s) {
           </example>
     </rule>
 
+    <rule name="AddEmptyString"
+        message="Do not add empty strings"
+        class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+Finds empty string literals which are being added. This is an inefficient way 
+to convert any type to a String.
+        </description>
+        <priority>3</priority>
+<!--TODO XPath should be changed to: 
+//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""'] 
+when we use a version of Jaxen with a bugfix for JAXEN-177. This change 
+can always be tried, if the junit tests do not fail, the change is good. -->
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[ 
+//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal
+   [string-length(@Image)=2]
+   [starts-with(@Image, '"')]
+   [ends-with(@Image, '"')]
+                ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[ 
+        String s = "" + 123; // bad 
+        String t = Integer.toString(456); // ok 
+            ]]>
+        </example>
+    </rule>
+
 
     <!--
     other optimization should be like avoiding
@@ -319,7 +351,3 @@ public int convert(String s) {
     -->
 
 </ruleset>
-
-
-
-                                             
