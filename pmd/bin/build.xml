@@ -10,6 +10,7 @@
 	<property name="dir.regress" value="regress/" />
 	<property name="version" value="3.9" />
 	<property name="keystore" value="${keystore.path}" />
+	<property name="retroweaver.version" value="2.0" />
 
     <!--Settings-->
     <property name="outputTestResultsToFile" value="false" />
@@ -75,8 +76,8 @@
 
 		<taskdef name="retroweaver" classname="net.sourceforge.retroweaver.ant.RetroWeaverTask">
 			<classpath>
-				<pathelement location="${dir.lib14}/retroweaver-2.0Beta4.jar"/>
-				<pathelement location="${dir.lib14}/retroweaver-rt-2.0Beta4.jar"/>
+				<pathelement location="${dir.lib14}/retroweaver-${retroweaver.version}.jar"/>
+				<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
 				<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
 				<pathelement location="${dir.lib14}/asm-commons-3.0.jar"/>
 				<pathelement location="${dir.lib14}/asm-util-3.0.jar"/>
@@ -85,7 +86,7 @@
 		</taskdef>
 
 		<path id="retroweaverclasspath">
-			<pathelement location="${dir.lib14}/retroweaver-rt-2.0Beta4.jar"/>
+			<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
 			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
 			<pathelement location="${dir.lib}/asm-3.0.jar"/>
 			<pathelement location="${jvm14.runtime}" />
@@ -105,8 +106,8 @@
 
 		<taskdef name="retroweaver" classname="net.sourceforge.retroweaver.ant.RetroWeaverTask">
 			<classpath>
-				<pathelement location="${dir.lib14}/retroweaver-2.0Beta4.jar"/>
-				<pathelement location="${dir.lib14}/retroweaver-rt-2.0Beta4.jar"/>
+				<pathelement location="${dir.lib14}/retroweaver-${retroweaver.version}.jar"/>
+				<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
 				<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
 				<pathelement location="${dir.lib14}/asm-commons-3.0.jar"/>
 				<pathelement location="${dir.lib14}/asm-util-3.0.jar"/>
@@ -116,7 +117,7 @@
 
 		<path id="retroweaverclasspath">
 			<pathelement location="${dir.lib14}/pmd14-${version}.jar" />
-			<pathelement location="${dir.lib14}/retroweaver-rt-2.0Beta4.jar"/>
+			<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
 			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
 			<pathelement location="${dir.lib}/asm-3.0.jar"/>
 			<pathelement location="${jvm14.runtime}" />
@@ -209,7 +210,7 @@
 				<include name="backport-util-concurrent.jar" />
 				<include name="pmd14-${version}.jar" />
 				<include name="pmd14-test-${version}.jar" />
-				<include name="retroweaver-rt-2.0Beta4.jar" />
+				<include name="retroweaver-rt-${retroweaver.version}.jar" />
 				<include name="junit.jar" />
 			</fileset>
 			<fileset dir="${dir.lib}">
