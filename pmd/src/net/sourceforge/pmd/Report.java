@@ -217,7 +217,13 @@ public class Report {
         }
         Iterator<IRuleViolation> v = r.iterator();
         while (v.hasNext()) {
-            addRuleViolation(v.next());
+            IRuleViolation violation = v.next();
+            violations.add(violation);
+            violationTree.addRuleViolation(violation);
+        }
+        Iterator<SuppressedViolation> s = r.getSuppressedRuleViolations().iterator();
+        while (s.hasNext()) {
+            suppressedRuleViolations.add(s.next());
         }
     }
 
