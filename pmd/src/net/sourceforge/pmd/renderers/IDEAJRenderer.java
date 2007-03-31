@@ -5,7 +5,6 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -14,7 +13,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-public class IDEAJRenderer extends AbstractRenderer {
+public class IDEAJRenderer extends OnTheFlyRenderer {
 
 	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 	private static final String PATH_SEPARATOR = System.getProperty("path.separator");
@@ -45,25 +44,30 @@ public class IDEAJRenderer extends AbstractRenderer {
         this.args = args;
     }
 
-    public void render(Writer writer, Report report) throws IOException {
+    public void start() throws IOException {}
+
+    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+        Writer writer = getWriter();
         if (args[4].equals(".method")) {
             // working on a directory tree
             String sourcePath = args[3];
-            render(writer, report, sourcePath);
+            render(writer, violations, sourcePath);
             return;
         }
         // working on one file
         String classAndMethodName = args[4];
         String singleFileName = args[5];
-        render(writer, report, classAndMethodName, singleFileName);
+        render(writer, violations, classAndMethodName, singleFileName);
     }
 
-    private void render(Writer writer, Report report, String sourcePathString) throws IOException {
+    public void end() throws IOException {}
+
+    private void render(Writer writer, Iterator<IRuleViolation> violations, String sourcePathString) throws IOException {
         SourcePath sourcePath = new SourcePath(sourcePathString);
         StringBuffer buf = new StringBuffer();
-        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
+        while (violations.hasNext()) {
             buf.setLength(0);
-            IRuleViolation rv = i.next();
+            IRuleViolation rv = violations.next();
             buf.append(rv.getDescription() + PMD.EOL);
             buf.append(" at ").append(getFullyQualifiedClassName(rv.getFilename(), sourcePath)).append(".method(");
             buf.append(getSimpleFileName(rv.getFilename())).append(':').append(rv.getBeginLine()).append(')').append(PMD.EOL);
@@ -71,11 +75,11 @@ public class IDEAJRenderer extends AbstractRenderer {
         }
     }
 
-    private void render(Writer writer, Report report, String classAndMethod, String file) throws IOException {
+    private void render(Writer writer, Iterator<IRuleViolation> violations, String classAndMethod, String file) throws IOException {
         StringBuffer buf = new StringBuffer();
-        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
+        while (violations.hasNext()) {
             buf.setLength(0);
-            IRuleViolation rv = i.next();
+            IRuleViolation rv = violations.next();
             buf.append(rv.getDescription()).append(PMD.EOL);
             buf.append(" at ").append(classAndMethod).append('(').append(file).append(':').append(rv.getBeginLine()).append(')').append(PMD.EOL);
             writer.write(buf.toString());

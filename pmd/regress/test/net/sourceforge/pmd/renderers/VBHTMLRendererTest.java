@@ -25,7 +25,14 @@ public class VBHTMLRendererTest extends AbstractRendererTst {
     }
 
     public String getExpectedEmpty() {
-        return "";
+        return "<html><head><title>PMD</title></head><style type=\"text/css\"><!--" + PMD.EOL + 
+        "body { background-color: white; font-family:verdana, arial, helvetica, geneva; font-size: 16px; font-style: italic; color: black; }" + PMD.EOL + 
+        ".title { font-family: verdana, arial, helvetica,geneva; font-size: 12px; font-weight:bold; color: white; }" + PMD.EOL + 
+        ".body { font-family: verdana, arial, helvetica, geneva; font-size: 12px; font-weight:plain; color: black; }" + PMD.EOL + 
+        "#TableHeader { background-color: #003366; }" + PMD.EOL + 
+        "#RowColor1 { background-color: #eeeeee; }" + PMD.EOL + 
+        "#RowColor2 { background-color: white; }" + PMD.EOL + 
+        "--></style><body><center><br></center></body></html>";
     }
 
     public String getExpectedMultiple() {

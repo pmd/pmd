@@ -20,6 +20,22 @@ public interface Renderer {
      */
     String render(Report report);
 
+    /**
+     * 
+     * @deprecated This method consumes too much memory.
+     * Use the start, renderFileReport and end methods instead.
+     * 
+     */
     void render(Writer writer, Report report) throws IOException;
+
+    void setWriter(Writer writer);
+
+    Writer getWriter();
+
+    void start() throws IOException;
+
+    void renderFileReport(Report report) throws IOException;
+
+    void end() throws IOException;
 
 }

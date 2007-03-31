@@ -15,23 +15,26 @@ import java.util.Iterator;
  * @author Vladimir
  * @version $Revision$ $Date$
  */
-public class VBHTMLRenderer extends AbstractRenderer {
+public class VBHTMLRenderer extends OnTheFlyRenderer {
 
-    public void render(Writer writer, Report report) throws IOException {
-        if (report.isEmpty()) {
+    public void start() throws IOException {
+        getWriter().write(header());      
+    }
+
+    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+        if (!violations.hasNext()) {
             return;
         }
 
+        Writer writer = getWriter();
         StringBuffer sb = new StringBuffer();
         String filename = null;
         String lineSep = PMD.EOL;
 
         boolean colorize = false;
-
-        writer.write(header());
-        for (Iterator<IRuleViolation> iter = report.iterator(); iter.hasNext();) {
+        while (violations.hasNext()) {
             sb.setLength(0);
-            IRuleViolation rv = iter.next();
+            IRuleViolation rv = violations.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {
                     sb.append("</table></br>");
@@ -59,29 +62,34 @@ public class VBHTMLRenderer extends AbstractRenderer {
         if (filename != null) {
             writer.write("</table>");
         }
+    }
+
+    public void end() throws IOException {
+        Writer writer = getWriter();
+        StringBuffer sb = new StringBuffer();
+        
         writer.write("<br>");
 
         // output the problems
-        Iterator iter = report.errors();
-        if (iter.hasNext()) {
+        if (!errors.isEmpty()) {
             sb.setLength(0);
             sb.append("<table border=\"0\" width=\"80%\">");
             sb.append("<tr id=TableHeader><td><font class=title>&nbsp;Problems found</font></td></tr>");
-            colorize = false;
-            while (iter.hasNext()) {
+            boolean colorize = false;
+            for (Report.ProcessingError error: errors) {
                 if (colorize) {
                     sb.append("<tr id=RowColor1>");
                 } else {
                     sb.append("<tr id=RowColor2>");
                 }
                 colorize = !colorize;
-                sb.append("<td><font class=body>").append(iter.next()).append("\"</font></td></tr>");
+                sb.append("<td><font class=body>").append(error).append("\"</font></td></tr>");
             }
             sb.append("</table>");
             writer.write(sb.toString());
         }
 
-        writer.write(footer());
+        writer.write(footer());     
     }
 
     private String header() {

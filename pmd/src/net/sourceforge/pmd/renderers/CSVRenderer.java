@@ -5,16 +5,17 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.util.StringUtil;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
-public class CSVRenderer extends AbstractRenderer {
+public class CSVRenderer extends OnTheFlyRenderer {
 
-    public void render(Writer writer, Report report) throws IOException {
+    private int violationCount = 1;
+
+    public void start() throws IOException {
         StringBuffer buf = new StringBuffer(300);
         quoteAndCommify(buf, "Problem");
         quoteAndCommify(buf, "Package");
@@ -25,17 +26,17 @@ public class CSVRenderer extends AbstractRenderer {
         quoteAndCommify(buf, "Rule set");
         quote(buf, "Rule");
         buf.append(PMD.EOL);
-        writer.write(buf.toString());
-
-        addViolations(writer, report, buf);
+        getWriter().write(buf.toString());
     }
 
-	private void addViolations(Writer writer, Report report, StringBuffer buf) throws IOException {
-		int violationCount = 1;
+    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+        StringBuffer buf = new StringBuffer(300);
+        Writer writer = getWriter();
+
 		IRuleViolation rv;
-        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
+        while (violations.hasNext()) {
             buf.setLength(0);
-            rv = i.next();
+            rv = violations.next();
             quoteAndCommify(buf, Integer.toString(violationCount));
             quoteAndCommify(buf, rv.getPackageName());
             quoteAndCommify(buf, rv.getFilename());
@@ -49,6 +50,9 @@ public class CSVRenderer extends AbstractRenderer {
             violationCount++;
         }
 	}
+
+    public void end() throws IOException {
+    }
 
     private void quote(StringBuffer sb, String d) {
         sb.append('"').append(d).append('"');

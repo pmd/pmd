@@ -5,7 +5,6 @@ package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.Report;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -26,17 +25,15 @@ import java.util.Iterator;
  *
  * @author Jeff Epstein, based upon <a href="EmacsRenderer.html">EmacsRenderer</a>, Tuesday, September 23, 2003
  */
-public class TextPadRenderer extends AbstractRenderer {
-    public void render(Writer writer, Report report) throws IOException {
+public class TextPadRenderer extends OnTheFlyRenderer {
+
+    public void start() throws IOException {}
+
+    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+        Writer writer = getWriter();
         StringBuffer buf = new StringBuffer();
-        Iterator<IRuleViolation> i;
-        try {
-            i = report.iterator();
-        } catch (NullPointerException npx) {
-            throw new NullPointerException("ERROR in " + this.getClass().getName() + ".render:  Parameter report is null.");
-        }
-        while (i.hasNext()) {
-            IRuleViolation rv = i.next();
+        while (violations.hasNext()) {
+            IRuleViolation rv = violations.next();
             buf.setLength(0);
             //Filename
             buf.append(PMD.EOL).append(rv.getFilename() + "(");
@@ -49,4 +46,6 @@ public class TextPadRenderer extends AbstractRenderer {
             writer.write(buf.toString());
         }
     }
+
+    public void end() throws IOException {}
 }

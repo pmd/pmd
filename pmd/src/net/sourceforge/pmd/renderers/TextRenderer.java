@@ -11,51 +11,56 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
-public class TextRenderer extends AbstractRenderer {
+public class TextRenderer extends OnTheFlyRenderer {
 
-    public void render(Writer writer, Report report) throws IOException {
+    private boolean empty;
+
+    public void start() throws IOException {
+        empty = true;
+    }
+
+    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+        Writer writer = getWriter();
         StringBuffer buf = new StringBuffer();
 
-        if (report.isEmpty()) {
-            buf.append("No problems found!");
-            if (showSuppressedViolations) {
-                addSuppressed(report, buf);
-            }
-            writer.write(buf.toString());
-            return;
-        }
-        
-        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
+        empty = !violations.hasNext();
+        while (violations.hasNext()) {
             buf.setLength(0);
-            IRuleViolation rv = i.next();
+            IRuleViolation rv = violations.next();
             buf.append(PMD.EOL).append(rv.getFilename());
             buf.append(':').append(Integer.toString(rv.getBeginLine()));
             buf.append('\t').append(rv.getDescription());
             writer.write(buf.toString());
         }
-
-        for (Iterator<Report.ProcessingError> i = report.errors(); i.hasNext();) {
-            buf.setLength(0);
-            Report.ProcessingError error = i.next();
-            buf.append(PMD.EOL).append(error.getFile());
-            buf.append("\t-\t").append(error.getMsg());
-            writer.write(buf.toString());
-        }
-
-        if (showSuppressedViolations) {
-            buf.setLength(0);
-            addSuppressed(report, buf);
-            writer.write(buf.toString());
-        }
     }
 
-    private void addSuppressed(Report report, StringBuffer buf) {
-        for (Report.SuppressedViolation excluded: report.getSuppressedRuleViolations()) {
+    public void end() throws IOException {
+        Writer writer = getWriter();
+        StringBuffer buf = new StringBuffer();
+        if (!errors.isEmpty()) {
+            empty = false;
+
+            for(Report.ProcessingError error: errors) {
+                buf.setLength(0);
+                buf.append(PMD.EOL).append(error.getFile());
+                buf.append("\t-\t").append(error.getMsg());
+                writer.write(buf.toString());
+            }
+        }
+
+        for(Report.SuppressedViolation excluded: suppressed) {
+            buf.setLength(0);
             buf.append(PMD.EOL);
             buf.append(excluded.getRuleViolation().getRule().getName());
             buf.append(" rule violation suppressed by ");
             buf.append(excluded.suppressedByNOPMD() ? "//NOPMD" : "Annotation");
             buf.append(" in ").append(excluded.getRuleViolation().getFilename());
+            writer.write(buf.toString());
+        }
+
+        if (empty) {
+            getWriter().write("No problems found!");
         }
     }
+
 }

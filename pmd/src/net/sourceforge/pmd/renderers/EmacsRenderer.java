@@ -4,20 +4,22 @@
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.IRuleViolation;
-import net.sourceforge.pmd.Report;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
-public class EmacsRenderer extends AbstractRenderer {
+public class EmacsRenderer extends OnTheFlyRenderer {
 
     protected static final String EOL = System.getProperty("line.separator", "\n");
 
-    public void render(Writer writer, Report report) throws IOException {
+    public void start() throws IOException {}
+
+    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+        Writer writer = getWriter();
         StringBuffer buf = new StringBuffer();
-        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
-            IRuleViolation rv = i.next();
+        while (violations.hasNext()) {
+            IRuleViolation rv = violations.next();
             buf.setLength(0);
             buf.append(EOL).append(rv.getFilename());
             buf.append(':').append(Integer.toString(rv.getBeginLine()));
@@ -25,4 +27,6 @@ public class EmacsRenderer extends AbstractRenderer {
             writer.write(buf.toString());
         }
     }
+
+    public void end() throws IOException {}
 }

@@ -19,7 +19,7 @@ import java.util.TreeSet;
 public class Report {
 
     public static class ReadableDuration {
-        private long duration;
+        private final long duration;
 
         public ReadableDuration(long duration) {
             this.duration = duration;
@@ -57,8 +57,8 @@ public class Report {
     }
 
     public static class ProcessingError {
-        private String msg;
-        private String file;
+        private final String msg;
+        private final String file;
 
         public ProcessingError(String msg, String file) {
             this.msg = msg;
@@ -75,9 +75,9 @@ public class Report {
     }
 
     public static class SuppressedViolation {
-        private IRuleViolation rv;
-        private boolean isNOPMD;
-        private String userMessage;
+        private final IRuleViolation rv;
+        private final boolean isNOPMD;
+        private final String userMessage;
 
         public SuppressedViolation(IRuleViolation rv, boolean isNOPMD, String userMessage) {
             this.isNOPMD = isNOPMD;
@@ -109,13 +109,13 @@ public class Report {
      * better and faster sort and filter mechanism and to visualize the result
      * als tree. (ide plugins).
      * */
-    private ReportTree violationTree = new ReportTree();
+    private final ReportTree violationTree = new ReportTree();
 
     // Note that this and the above data structure are both being maintained for a bit
-    private Set<IRuleViolation> violations = new TreeSet<IRuleViolation>(COMPARATOR);
-    private Set<Metric> metrics = new HashSet<Metric>();
-    private List<ReportListener> listeners = new ArrayList<ReportListener>();
-    private List<ProcessingError> errors = new ArrayList<ProcessingError>();
+    private final Set<IRuleViolation> violations = new TreeSet<IRuleViolation>(COMPARATOR);
+    private final Set<Metric> metrics = new HashSet<Metric>();
+    private final List<ReportListener> listeners = new ArrayList<ReportListener>();
+    private final List<ProcessingError> errors = new ArrayList<ProcessingError>();
     private Map<Integer, String> linesToExclude = new HashMap<Integer, String>();
     private long start;
     private long end;

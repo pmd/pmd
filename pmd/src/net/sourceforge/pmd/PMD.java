@@ -25,12 +25,16 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -273,40 +277,46 @@ public class PMD {
             sourceType = SourceType.JAVA_14;
         }
 
-        RuleContext ctx = new RuleContext();
-        Report report = new Report();
-        ctx.setReport(report);
-        report.start();
-
-        try {
-            long startLoadRules = System.nanoTime();
-            RuleSetFactory ruleSetFactory = new RuleSetFactory();
-            ruleSetFactory.setMinimumPriority(opts.getMinPriority());
-
-            RuleSets rulesets = ruleSetFactory.createRuleSets(opts.getRulesets());
-            printRuleNamesInDebug(opts.debugEnabled(), rulesets);
-            long endLoadRules = System.nanoTime();
-            Benchmark.mark(Benchmark.TYPE_LOAD_RULES, endLoadRules - startLoadRules, 0);
-
-            processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx,
-                    opts.getRulesets(), opts.debugEnabled(), opts.shortNamesEnabled(),
-                    opts.getInputPath(), opts.getEncoding(), opts.getExcludeMarker());
-        } catch (RuleSetNotFoundException rsnfe) {
-            System.out.println(opts.usage());
-            rsnfe.printStackTrace();
-        }
-        report.end();
-
+        long reportStart, reportEnd;
+        Renderer renderer;
         Writer w = null;
-        long reportStart = System.nanoTime();
+
+        reportStart = System.nanoTime();
         try {
-            Renderer r = opts.createRenderer();
+            renderer = opts.createRenderer();
             if (opts.getReportFile() != null) {
                 w = new BufferedWriter(new FileWriter(opts.getReportFile()));
             } else {
                 w = new OutputStreamWriter(System.out);
             }
-            r.render(w, ctx.getReport());
+            renderer.setWriter(w);
+            renderer.start();
+
+            reportEnd = System.nanoTime();
+            Benchmark.mark(Benchmark.TYPE_REPORTING, reportEnd - reportStart, 0);
+    
+            RuleContext ctx = new RuleContext();
+
+            try {
+                long startLoadRules = System.nanoTime();
+                RuleSetFactory ruleSetFactory = new RuleSetFactory();
+                ruleSetFactory.setMinimumPriority(opts.getMinPriority());
+    
+                RuleSets rulesets = ruleSetFactory.createRuleSets(opts.getRulesets());
+                printRuleNamesInDebug(opts.debugEnabled(), rulesets);
+                long endLoadRules = System.nanoTime();
+                Benchmark.mark(Benchmark.TYPE_LOAD_RULES, endLoadRules - startLoadRules, 0);
+    
+                processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx, renderer,
+                        opts.getRulesets(), opts.debugEnabled(), opts.shortNamesEnabled(),
+                        opts.getInputPath(), opts.getEncoding(), opts.getExcludeMarker());
+            } catch (RuleSetNotFoundException rsnfe) {
+                System.out.println(opts.usage());
+                rsnfe.printStackTrace();
+            }
+
+            reportStart = System.nanoTime();
+            renderer.end();
             w.write(EOL);
             w.flush();
             if (opts.getReportFile() != null) {
@@ -327,7 +337,7 @@ public class PMD {
                     System.out.println(e.getMessage());
                 }
             }
-            long reportEnd = System.nanoTime();
+            reportEnd = System.nanoTime();
             Benchmark.mark(Benchmark.TYPE_REPORTING, reportEnd - reportStart, 0);
         }
         
@@ -338,7 +348,7 @@ public class PMD {
         }
     }
 
-    private static class PmdRunnable extends PMD implements Runnable {
+    private static class PmdRunnable extends PMD implements Callable<Report> {
         private final ExecutorService executor;
         private final DataSource dataSource;
         private final String fileName;
@@ -359,11 +369,14 @@ public class PMD {
             setExcludeMarker(excludeMarker);
         }
 
-        public void run() {
+        public Report call() {
             PmdThread thread = (PmdThread) Thread.currentThread();
 
             RuleContext ctx = thread.getRuleContext();
             RuleSets rs = thread.getRuleSets(rulesets);
+
+            Report report = new Report();
+            ctx.setReport(report);
 
             ctx.setSourceCodeFilename(fileName);
             if (debugEnabled) {
@@ -377,7 +390,7 @@ public class PMD {
                 if (debugEnabled) {
                     pmde.getReason().printStackTrace();
                 }
-                ctx.getReport().addError(
+                report.addError(
                         new Report.ProcessingError(pmde.getMessage(),
                         fileName));
             } catch (IOException ioe) {
@@ -385,7 +398,7 @@ public class PMD {
                 if (debugEnabled) {
                     ioe.printStackTrace();
                 }
-                ctx.getReport().addError(
+                report.addError(
                         new Report.ProcessingError(ioe.getMessage(),
                         fileName));
 
@@ -395,12 +408,13 @@ public class PMD {
                 if (debugEnabled) {
                     re.printStackTrace();
                 }
-                ctx.getReport().addError(
+                report.addError(
                         new Report.ProcessingError(re.getMessage(),
                         fileName));
 
                 executor.shutdownNow();
             }
+            return report;
         }
 
     }
@@ -430,7 +444,6 @@ public class PMD {
             super(r, "PmdThread " + id);
             this.id = id;
             context = new RuleContext();
-            context.setReport(new Report());
             this.ruleSetFactory = ruleSetFactory;
         }
         
@@ -465,37 +478,61 @@ public class PMD {
      *
      * @throws IOException If one of the files could not be read
      */
-    public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List<DataSource> files, RuleContext ctx, String rulesets,
-            boolean debugEnabled, boolean shortNamesEnabled, String inputPath,
+    public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List<DataSource> files, RuleContext ctx,
+            Renderer renderer, String rulesets, boolean debugEnabled, final boolean shortNamesEnabled, final String inputPath,
             String encoding, String excludeMarker) {
 
         PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory);
         ExecutorService executor = Executors.newFixedThreadPool(threadCount, factory);
+        List<Future<Report>> tasks = new LinkedList<Future<Report>>();
+        
+        Collections.sort(files, new Comparator<DataSource>() {
+            public int compare(DataSource d1,DataSource d2) {
+                String s1 = d1.getNiceFileName(shortNamesEnabled, inputPath);
+                String s2 = d2.getNiceFileName(shortNamesEnabled, inputPath);
+                return s1.compareTo(s2);
+            }
+        });
 
         for (DataSource dataSource:files) {
             String niceFileName = dataSource.getNiceFileName(shortNamesEnabled,
                     inputPath);
 
-            Runnable r = new PmdRunnable(executor, dataSource, niceFileName, sourceType, debugEnabled,
+            PmdRunnable r = new PmdRunnable(executor, dataSource, niceFileName, sourceType, debugEnabled,
                                             encoding, rulesets, excludeMarker);
 
-            executor.execute(r);
+            Future<Report> future = executor.submit(r);
+            tasks.add(future);
         }
         executor.shutdown();
 
-        try {
-            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
-        }
+        while (!tasks.isEmpty()) {
+            Future<Report> future = tasks.remove(0);
+            Report report = null;
+            try {
+                report = future.get();
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+                future.cancel(true);
+            } catch (ExecutionException ee) {
+                Throwable t = ee.getCause();
+                if (t instanceof RuntimeException) {
+                    throw (RuntimeException) t;
+                } else if (t instanceof Error) {
+                    throw (Error) t;
+                } else {
+                    throw new IllegalStateException("PmdRunnable exception", t);
+                }
+            }
 
-        long start = System.nanoTime();
-        Report mainReport = ctx.getReport();
-        for (PmdThread thread: factory.threadList) {
-            Report r = thread.context.getReport();
-            mainReport.merge(r);
+            try {
+                long start = System.nanoTime();
+                renderer.renderFileReport(report);
+                long end = System.nanoTime();
+                Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
+            } catch (IOException ioe) {
+            }
         }
-        long end = System.nanoTime();
-        Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
     }
 
     /**

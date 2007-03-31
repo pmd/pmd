@@ -22,7 +22,7 @@ public class SummaryHTMLRenderer extends AbstractRenderer {
         writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
         renderSummary(writer, report);
         writer.write("<h2><center>Detail</h2></center>");
-        writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
+        writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL);
         new HTMLRenderer(linkPrefix,linePrefix).renderBody(writer, report);
         writer.write("</table></body></html>");
     }
