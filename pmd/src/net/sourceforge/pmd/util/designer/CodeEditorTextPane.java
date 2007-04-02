@@ -1,9 +1,5 @@
 package net.sourceforge.pmd.util.designer;
 
-import net.sourceforge.pmd.util.LineGetter;
-
-import javax.swing.*;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -13,13 +9,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import javax.swing.JTextPane;
+
+import net.sourceforge.pmd.util.LineGetter;
+
 public class CodeEditorTextPane extends JTextPane implements LineGetter, ActionListener {
 
     private static final String SETTINGS_FILE_NAME = System.getProperty("user.home") + System.getProperty("file.separator") + ".pmd_designer";
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     public CodeEditorTextPane() {
-        setPreferredSize(new Dimension(400, 200));
         setText(loadCode());
     }
 
