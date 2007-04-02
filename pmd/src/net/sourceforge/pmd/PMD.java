@@ -284,6 +284,8 @@ public class PMD {
         reportStart = System.nanoTime();
         try {
             renderer = opts.createRenderer();
+            List<Renderer> renderers = new LinkedList<Renderer>();
+            renderers.add(renderer);
             if (opts.getReportFile() != null) {
                 w = new BufferedWriter(new FileWriter(opts.getReportFile()));
             } else {
@@ -307,7 +309,7 @@ public class PMD {
                 long endLoadRules = System.nanoTime();
                 Benchmark.mark(Benchmark.TYPE_LOAD_RULES, endLoadRules - startLoadRules, 0);
     
-                processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx, renderer,
+                processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx, renderers,
                         opts.getRulesets(), opts.debugEnabled(), opts.shortNamesEnabled(),
                         opts.getInputPath(), opts.getEncoding(), opts.getExcludeMarker());
             } catch (RuleSetNotFoundException rsnfe) {
@@ -355,16 +357,18 @@ public class PMD {
         private final boolean debugEnabled;
         private final String encoding;
         private final String rulesets;
+        private final List<Renderer> renderers;
 
         public PmdRunnable(ExecutorService executor, DataSource dataSource, String fileName, SourceType sourceType,
-                boolean debugEnabled, String encoding, String rulesets, String excludeMarker) {
+                List<Renderer> renderers, boolean debugEnabled, String encoding, String rulesets, String excludeMarker) {
             this.executor = executor;
             this.dataSource = dataSource;
             this.fileName = fileName;
             this.debugEnabled = debugEnabled;
             this.encoding = encoding;
             this.rulesets = rulesets;
-            
+            this.renderers = renderers;
+
             setJavaVersion(sourceType);
             setExcludeMarker(excludeMarker);
         }
@@ -381,6 +385,9 @@ public class PMD {
             ctx.setSourceCodeFilename(fileName);
             if (debugEnabled) {
                 System.out.println("Processing " + ctx.getSourceCodeFilename());
+            }
+            for(Renderer r: renderers) {
+                r.startFileAnalysis(dataSource);
             }
 
             try {
@@ -479,7 +486,7 @@ public class PMD {
      * @throws IOException If one of the files could not be read
      */
     public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List<DataSource> files, RuleContext ctx,
-            Renderer renderer, String rulesets, boolean debugEnabled, final boolean shortNamesEnabled, final String inputPath,
+            List<Renderer> renderers, String rulesets, boolean debugEnabled, final boolean shortNamesEnabled, final String inputPath,
             String encoding, String excludeMarker) {
 
         PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory);
@@ -498,7 +505,7 @@ public class PMD {
             String niceFileName = dataSource.getNiceFileName(shortNamesEnabled,
                     inputPath);
 
-            PmdRunnable r = new PmdRunnable(executor, dataSource, niceFileName, sourceType, debugEnabled,
+            PmdRunnable r = new PmdRunnable(executor, dataSource, niceFileName, sourceType, renderers, debugEnabled,
                                             encoding, rulesets, excludeMarker);
 
             Future<Report> future = executor.submit(r);
@@ -527,7 +534,9 @@ public class PMD {
 
             try {
                 long start = System.nanoTime();
-                renderer.renderFileReport(report);
+                for (Renderer r: renderers) {
+                    r.renderFileReport(report);
+                }
                 long end = System.nanoTime();
                 Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
             } catch (IOException ioe) {

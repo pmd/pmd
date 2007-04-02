@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 
+import net.sourceforge.pmd.DataSource;
 import net.sourceforge.pmd.Report;
 
 public abstract class AbstractRenderer implements Renderer {
@@ -42,6 +43,8 @@ public abstract class AbstractRenderer implements Renderer {
         mainReport = new Report();
     }
 
+    public void startFileAnalysis(DataSource dataSource) {}
+    
     public void renderFileReport(Report report) throws IOException {
         // default (and backward compatible) behavior is to build a full report.
         // Optimized rendering is done in OnTheFlyRenderer and descendants

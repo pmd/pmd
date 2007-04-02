@@ -6,6 +6,7 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.Writer;
 
+import net.sourceforge.pmd.DataSource;
 import net.sourceforge.pmd.Report;
 
 public interface Renderer {
@@ -33,6 +34,8 @@ public interface Renderer {
     Writer getWriter();
 
     void start() throws IOException;
+
+    void startFileAnalysis(DataSource dataSource);
 
     void renderFileReport(Report report) throws IOException;
 

@@ -30,6 +30,7 @@ PMD now requires JDK 1.5 to be compiled. Java 1.4 support is provided using Retr
 - to run pmd with 1.4, use the files from the java14 directory (weaved pmd jar and support files)
 TypeResolution now looks at some ASTName nodes.
 Memory footprint reduced: most renderers now use less memory by generating reports on the fly.
+Ant task now takes advantage of multithreading code and on the fly renderers
 
 December 19, 2006 - 3.9:
 New rules:

@@ -96,13 +96,39 @@ public class Formatter {
         this.linePrefix = linePrefix;
     }
 
-    public void outputReport(Report report, String baseDir) {
+    private Writer writer;
+
+    private Renderer renderer;
+
+    public Renderer getRenderer() {
+        return renderer;
+    }
+
+    public void start(String baseDir) {
         try {
             if (toConsole) {
-                outputReportTo(new BufferedWriter(new OutputStreamWriter(System.out)), report, true);
+                writer = new BufferedWriter(new OutputStreamWriter(System.out));
             }
             if (toFile != null) {
-                outputReportTo(getToFileWriter(baseDir), report, false);
+                writer = getToFileWriter(baseDir);
+            }
+            renderer = getRenderer(toConsole);
+            renderer.setWriter(writer);
+            renderer.start();
+        } catch (IOException ioe) {
+            throw new BuildException(ioe.getMessage());
+        }
+    }
+
+    public void end(Report errorReport) {
+        try {
+            renderer.renderFileReport(errorReport);
+            renderer.end();
+            writer.write(PMD.EOL);
+            if (toConsole) {
+                writer.flush();
+            } else {
+                writer.close();
             }
         } catch (IOException ioe) {
             throw new BuildException(ioe.getMessage());
@@ -120,17 +146,6 @@ public class Formatter {
     private static String[] validRendererCodes() {
         return renderersByCode.keySet().toArray(new String[renderersByCode.size()]);
     }
-
-    private void outputReportTo(Writer writer, Report report, boolean consoleRenderer) throws IOException {
-        getRenderer(consoleRenderer).render(writer, report);
-        writer.write(PMD.EOL);
-        if (consoleRenderer) {
-            writer.flush();
-        } else {
-            writer.close();
-        }
-    }
-
 
     private static String unknownRendererMessage(String userSpecifiedType) {
         StringBuffer sb = new StringBuffer(100);
