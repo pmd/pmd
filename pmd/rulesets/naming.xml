@@ -473,7 +473,37 @@ indicates a field and thus is confusing.
       </example>
     </rule>
 
+    <rule name="BooleanGetMethodName"
+        message="A 'getX()' method which returns a boolean should be named 'isX()'"
+        class="net.sourceforge.pmd.rules.XPathRule">
+        <description>
+Looks for methods named 'getX()' with 'boolean' as the return type. The convention 
+is to name these methods 'isX()'.
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//MethodDeclaration[
+MethodDeclarator[count(FormalParameters/FormalParameter) = 0 or $checkParameterizedMethods = 'true']
+                [starts-with(@Image, 'get')]
+and
+ResultType/Type/PrimitiveType[@Image = 'boolean']
+]
+]]>
+                </value>
+            </property>
+            <property name="checkParameterizedMethods">
+                <value>false</value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[ 
+public boolean getFoo(); // bad
+public boolean isFoo(); // ok
+public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
+     ]]></example>
+    </rule>
+
 </ruleset>
-
-
-

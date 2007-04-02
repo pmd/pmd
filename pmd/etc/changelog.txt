@@ -4,6 +4,7 @@ New rules:
 	Basic JSP ruleset: JspEncoding
 	J2EE ruleset: MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention
 	Optimizations ruleset: AddEmptyString
+	Naming: BooleanGetMethodName
 New rulesets:
     Migrating To JUnit4: Rules that help move from JUnit 3 to JUnit 4
 Fixed bug 1670717 - 'Copy xml to clipboard' menu command now works again in the Designer
