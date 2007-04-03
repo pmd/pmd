@@ -78,7 +78,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
             }
 
             ASTMethodDeclaration enclosingMethod = occNode.getFirstParentOfType(ASTMethodDeclaration.class);
-            if ((enclosingMethod == null) || (enclosingMethod != null && !mnd.getNode().jjtGetParent().equals(enclosingMethod))) {
+            if (enclosingMethod == null || !mnd.getNode().jjtGetParent().equals(enclosingMethod)) {
                 callsFromOutsideMethod++;
             }
         }

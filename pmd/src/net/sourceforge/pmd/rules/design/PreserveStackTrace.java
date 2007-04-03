@@ -39,7 +39,7 @@ public class PreserveStackTrace extends AbstractRule {
 
             if (args != null) {
                 ck(data, target, throwStatement, args);
-            } else if (args == null) {
+            } else {
                 SimpleNode child = (SimpleNode) throwStatement.jjtGetChild(0);
                 while (child != null && child.jjtGetNumChildren() > 0
                         && !child.getClass().equals(ASTName.class)) {
