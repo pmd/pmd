@@ -26,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.ExcessivePublicCount;
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class ExcessivePublicCountTest extends SimpleAggregatorTst {
