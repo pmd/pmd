@@ -160,6 +160,29 @@ public class Formatter {
         return sb.toString();
     }
 
+    public void outputReport(Report report, String baseDir) {
+        try {
+            if (toConsole) {
+                outputReportTo(new BufferedWriter(new OutputStreamWriter(System.out)), report, true);
+            }
+            if (toFile != null) {
+                outputReportTo(getToFileWriter(baseDir), report, false);
+            }
+        } catch (IOException ioe) {
+            throw new BuildException(ioe.getMessage());
+        }
+    }
+    
+    private void outputReportTo(Writer writer, Report report, boolean consoleRenderer) throws IOException {
+        getRenderer(consoleRenderer).render(writer, report);
+        writer.write(PMD.EOL);
+        if (consoleRenderer) {
+            writer.flush();
+        } else {
+            writer.close();
+        }
+    }
+    
     private Renderer fromClassname(String rendererClassname) {
         try {
             return (Renderer) Class.forName(rendererClassname).newInstance();

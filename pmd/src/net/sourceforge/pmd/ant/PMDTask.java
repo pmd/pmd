@@ -3,9 +3,8 @@
  */
 package net.sourceforge.pmd.ant;
 
-import net.sourceforge.pmd.DataSource;
-import net.sourceforge.pmd.FileDataSource;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -15,9 +14,6 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.SourceType;
-import net.sourceforge.pmd.renderers.AbstractRenderer;
-import net.sourceforge.pmd.renderers.Renderer;
-
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -27,16 +23,15 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.Writer;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 public class PMDTask extends Task {
@@ -52,8 +47,7 @@ public class PMDTask extends Task {
     private boolean failOnRuleViolation;
     private String targetJDK = "1.4";
     private String failuresPropertyName;
-    private String excludeMarker = PMD.EXCLUDE_MARKER;
-    private int cpus = Runtime.getRuntime().availableProcessors();
+    private String excludeMarker;
     private final Collection<RuleSetWrapper> nestedRules = new ArrayList<RuleSetWrapper>();
 
     public void setShortFilenames(boolean value) {
@@ -82,10 +76,6 @@ public class PMDTask extends Task {
 
     public void setEncoding(String encoding) {
         this.encoding = encoding;
-    }
-
-    public void setCpus(int cpus) {
-        this.cpus = cpus;
     }
 
     public void setFailuresPropertyName(String failuresPropertyName) {
@@ -127,25 +117,9 @@ public class PMDTask extends Task {
         validate();
 
         ruleSetFiles = new SimpleRuleSetNameMapper(ruleSetFiles).getRuleSets();
-
-        RuleSetFactory ruleSetFactory = new RuleSetFactory() {
-            public RuleSets createRuleSets(String ruleSetFileNames) throws RuleSetNotFoundException {
-                if (classpath == null) {
-                    return super.createRuleSets(ruleSetFiles);
-                } else {
-                    return createRuleSets(ruleSetFiles, new AntClassLoader(getProject(), classpath));
-
-                }
-            }
-        };
-        for (Formatter formatter: formatters) {
-            log("Sending a report to " + formatter, Project.MSG_VERBOSE);
-            formatter.start(getProject().getBaseDir().toString());
-        }
-
+        RuleSets rules;
         try {
-            // This is just used to validate and display rules. Each thread will create its own ruleset
-            RuleSets rules;
+            RuleSetFactory ruleSetFactory = new RuleSetFactory();
             ruleSetFactory.setMinimumPriority(minPriority);
             if (classpath == null) {
                 log("Using the normal ClassLoader", Project.MSG_VERBOSE);
@@ -154,109 +128,89 @@ public class PMDTask extends Task {
                 log("Using the AntClassLoader", Project.MSG_VERBOSE);
                 rules = ruleSetFactory.createRuleSets(ruleSetFiles, new AntClassLoader(getProject(), classpath));
             }
-            logRulesUsed(rules);
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage());
         }
+        logRulesUsed(rules);
 
-        SourceType sourceType;
+        PMD pmd;
         if (targetJDK.equals("1.3")) {
             log("Targeting Java language version 1.3", Project.MSG_VERBOSE);
-            sourceType = SourceType.JAVA_13;
+            pmd = new PMD();
+            pmd.setJavaVersion(SourceType.JAVA_13);
         } else if (targetJDK.equals("1.5")) {
             log("Targeting Java language version 1.5", Project.MSG_VERBOSE);
-            sourceType = SourceType.JAVA_15;
+            pmd = new PMD();
+            pmd.setJavaVersion(SourceType.JAVA_15);
         } else if (targetJDK.equals("1.6")) {
             log("Targeting Java language version 1.6", Project.MSG_VERBOSE);
-            sourceType = SourceType.JAVA_16;
+            pmd = new PMD();
+            pmd.setJavaVersion(SourceType.JAVA_16);
         } else if(targetJDK.equals("jsp")){
             log("Targeting JSP", Project.MSG_VERBOSE);
-            sourceType = SourceType.JSP;
+            pmd = new PMD();
+            pmd.setJavaVersion(SourceType.JSP);
         } else {
             log("Targeting Java language version 1.4", Project.MSG_VERBOSE);
-            sourceType = SourceType.JAVA_14;
+            pmd = new PMD();
         }
 
         if (excludeMarker != null) {
             log("Setting exclude marker to be " + excludeMarker, Project.MSG_VERBOSE);
+            pmd.setExcludeMarker(excludeMarker);
         }
 
         RuleContext ctx = new RuleContext();
-        Report errorReport = new Report();
-        final AtomicInteger reportSize = new AtomicInteger();
+        Report report = new Report();
+        ctx.setReport(report);
+        report.start();
         for (FileSet fs: filesets) {
-            List<DataSource> files = new LinkedList<DataSource>();
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());
             String[] srcFiles = ds.getIncludedFiles();
             for (int j = 0; j < srcFiles.length; j++) {
                 File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
-                files.add(new FileDataSource(file));
-            }
-
-            boolean debugEnabled = false;
-            final String inputPath = ds.getBasedir().getPath();
-
-            Renderer logRenderer = new AbstractRenderer() {
-                public void start() throws IOException {}
-
-                public void startFileAnalysis(DataSource dataSource) {
-                    log("Processing file " + dataSource.getNiceFileName(false, inputPath), Project.MSG_VERBOSE);
-                }
-                
-                public void renderFileReport(Report r) throws IOException {
-                    int size = r.size();
-                    if (size > 0) {
-                        reportSize.addAndGet(size);
+                log("Processing file " + file.getAbsoluteFile().toString(), Project.MSG_VERBOSE);
+                ctx.setSourceCodeFilename(shortFilenames ? srcFiles[j] : file.getAbsolutePath());
+                try {
+                    pmd.processFile(new BufferedInputStream(new FileInputStream(file)), encoding, rules, ctx);
+                } catch (FileNotFoundException fnfe) {
+                    if (failOnError) {
+                        throw new BuildException(fnfe);
                     }
+                } catch (PMDException pmde) {
+                    log(pmde.toString(), Project.MSG_VERBOSE);
+                    if (pmde.getReason() != null) {
+                        StringWriter strWriter = new StringWriter();
+                        PrintWriter printWriter = new PrintWriter(strWriter);
+                        pmde.getReason().printStackTrace(printWriter);
+                        log(strWriter.toString(), Project.MSG_VERBOSE);
+                    }
+                    if (pmde.getReason() != null && pmde.getReason().getMessage() != null) {
+                        log(pmde.getReason().getMessage(), Project.MSG_VERBOSE);
+                    }
+                    if (failOnError) {
+                        throw new BuildException(pmde);
+                    }
+                    ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), ctx.getSourceCodeFilename()));
                 }
-
-                public void end() throws IOException {}
-
-                public void render(Writer writer, Report r) throws IOException {}
-            };
-            List<Renderer> renderers = new LinkedList<Renderer>();
-            renderers.add(logRenderer);
-            for (Formatter formatter: formatters) {
-                renderers.add(formatter.getRenderer());
-            }
-            try {
-                PMD.processFiles(cpus, ruleSetFactory, sourceType, files, ctx,
-                    renderers, ruleSetFiles,
-                    debugEnabled, shortFilenames, inputPath,
-                    encoding, excludeMarker);
-            } catch (RuntimeException pmde) {
-                pmde.printStackTrace();
-                log(pmde.toString(), Project.MSG_VERBOSE);
-                if (pmde.getCause() != null) {
-                    StringWriter strWriter = new StringWriter();
-                    PrintWriter printWriter = new PrintWriter(strWriter);
-                    pmde.getCause().printStackTrace(printWriter);
-                    log(strWriter.toString(), Project.MSG_VERBOSE);
-                }
-                if (pmde.getCause() != null && pmde.getCause().getMessage() != null) {
-                    log(pmde.getCause().getMessage(), Project.MSG_VERBOSE);
-                }
-                if (failOnError) {
-                    throw new BuildException(pmde);
-                }
-                errorReport.addError(new Report.ProcessingError(pmde.getMessage(), ctx.getSourceCodeFilename()));
             }
         }
+        report.end();
 
-        int problemCount = reportSize.get();
-        log(problemCount + " problems found", Project.MSG_VERBOSE);
+        log(ctx.getReport().size() + " problems found", Project.MSG_VERBOSE);
 
         for (Formatter formatter: formatters) {
-            formatter.end(errorReport);
+            log("Sending a report to " + formatter, Project.MSG_VERBOSE);
+            formatter.outputReport(ctx.getReport(), getProject().getBaseDir().toString());
         }
 
-        if (failuresPropertyName != null && problemCount > 0) {
-            getProject().setProperty(failuresPropertyName, String.valueOf(problemCount));
-            log("Setting property " + failuresPropertyName + " to " + problemCount, Project.MSG_VERBOSE);
+        if (failuresPropertyName != null && ctx.getReport().size() > 0) {
+            getProject().setProperty(failuresPropertyName, String.valueOf(ctx.getReport().size()));
+            log("Setting property " + failuresPropertyName + " to " + ctx.getReport().size(), Project.MSG_VERBOSE);
         }
 
-        if (failOnRuleViolation && problemCount > 0) {
-            throw new BuildException("Stopping build since PMD found " + problemCount + " rule violations in the code");
+        if (failOnRuleViolation && ctx.getReport().size() > 0) {
+            throw new BuildException("Stopping build since PMD found " + ctx.getReport().size() + " rule violations in the code");
         }
     }
 
