@@ -3,6 +3,12 @@
  */
 package net.sourceforge.pmd.typeresolution;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -11,12 +17,6 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.TypeNode;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
@@ -87,12 +87,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		try {
             importedOnDemand = new ArrayList<String>();
 			populateClassName(node);
-            populateImports(node, true);
 		} catch (ClassNotFoundException e) {
-			populateImports(node, false);
+            //Implicit imports
 		} catch (NoClassDefFoundError e) {
-			populateImports(node, false);
-		}
+		} finally {
+            populateImports(node);
+        }
 		return super.visit(node, data);
 	}
 
@@ -101,14 +101,14 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	 * 
 	 * @param node
 	 */
-    private void populateImports(ASTCompilationUnit node, boolean processOnDemand){
+    private void populateImports(ASTCompilationUnit node){
 		List<ASTImportDeclaration> theImportDeclarations = node.findChildrenOfType(ASTImportDeclaration.class);
         importedClasses = new HashMap<String, String>();
 
 		// go through the imports
 		for (ASTImportDeclaration anImportDeclaration : theImportDeclarations) {
             String strPackage = anImportDeclaration.getPackageName();
-            if (processOnDemand && anImportDeclaration.isImportOnDemand()) {
+            if (anImportDeclaration.isImportOnDemand()) {
                 importedOnDemand.add(strPackage);
             } else if (!anImportDeclaration.isImportOnDemand()) {
                 String strName = anImportDeclaration.getImportedName();
