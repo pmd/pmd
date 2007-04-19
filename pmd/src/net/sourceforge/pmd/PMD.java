@@ -25,6 +25,7 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -37,7 +38,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.Collections;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -480,6 +480,28 @@ public class PMD {
     }
 
     /**
+     * Do we have proper permissions to use multithreading?
+     */
+    private static final boolean mtSupported;
+    
+    static {
+        boolean error = false;
+        try {
+            /*
+             * ant task ran from Eclipse with jdk 1.5.0 raises an AccessControlException
+             * when shutdown is called. Standalone pmd or ant from command line are fine.
+             * 
+             * With jdk 1.6.0, ant task from Eclipse also works.
+             */
+            ExecutorService executor = Executors.newFixedThreadPool(1);
+            executor.shutdown();
+        } catch (RuntimeException e) {
+            error = true;
+        }
+        mtSupported = !error;
+    }
+
+    /**
      * Run PMD on a list of files using multiple threads.
      *
      * @throws IOException If one of the files could not be read
@@ -488,10 +510,13 @@ public class PMD {
             List<Renderer> renderers, String rulesets, boolean debugEnabled, final boolean shortNamesEnabled, final String inputPath,
             String encoding, String excludeMarker) {
 
-        PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory);
-        ExecutorService executor = Executors.newFixedThreadPool(threadCount, factory);
-        List<Future<Report>> tasks = new LinkedList<Future<Report>>();
-        
+        /*
+         * Check if multithreaded is supported. 
+         * ExecutorService can also be disabled if threadCount is not positive, e.g. using the
+         * "-cpus 0" command line option.
+         */
+        boolean useMT = mtSupported && (threadCount > 0);
+
         Collections.sort(files, new Comparator<DataSource>() {
             public int compare(DataSource d1,DataSource d2) {
                 String s1 = d1.getNiceFileName(shortNamesEnabled, inputPath);
@@ -500,45 +525,117 @@ public class PMD {
             }
         });
 
-        for (DataSource dataSource:files) {
-            String niceFileName = dataSource.getNiceFileName(shortNamesEnabled,
-                    inputPath);
+        if (useMT) {
+            PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory);
+            ExecutorService executor = Executors.newFixedThreadPool(threadCount, factory);
+            List<Future<Report>> tasks = new LinkedList<Future<Report>>();
 
-            PmdRunnable r = new PmdRunnable(executor, dataSource, niceFileName, sourceType, renderers, debugEnabled,
-                                            encoding, rulesets, excludeMarker);
-
-            Future<Report> future = executor.submit(r);
-            tasks.add(future);
-        }
-        executor.shutdown();
-
-        while (!tasks.isEmpty()) {
-            Future<Report> future = tasks.remove(0);
-            Report report = null;
-            try {
-                report = future.get();
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-                future.cancel(true);
-            } catch (ExecutionException ee) {
-                Throwable t = ee.getCause();
-                if (t instanceof RuntimeException) {
-                    throw (RuntimeException) t;
-                } else if (t instanceof Error) {
-                    throw (Error) t;
-                } else {
-                    throw new IllegalStateException("PmdRunnable exception", t);
+            for (DataSource dataSource:files) {
+                String niceFileName = dataSource.getNiceFileName(shortNamesEnabled,
+                        inputPath);
+    
+                PmdRunnable r = new PmdRunnable(executor, dataSource, niceFileName, sourceType, renderers, debugEnabled,
+                                                encoding, rulesets, excludeMarker);
+    
+                Future<Report> future = executor.submit(r);
+                tasks.add(future);
+            }
+            executor.shutdown();
+    
+            while (!tasks.isEmpty()) {
+                Future<Report> future = tasks.remove(0);
+                Report report = null;
+                try {
+                    report = future.get();
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    future.cancel(true);
+                } catch (ExecutionException ee) {
+                    Throwable t = ee.getCause();
+                    if (t instanceof RuntimeException) {
+                        throw (RuntimeException) t;
+                    } else if (t instanceof Error) {
+                        throw (Error) t;
+                    } else {
+                        throw new IllegalStateException("PmdRunnable exception", t);
+                    }
+                }
+    
+                try {
+                    long start = System.nanoTime();
+                    for (Renderer r: renderers) {
+                        r.renderFileReport(report);
+                    }
+                    long end = System.nanoTime();
+                    Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
+                } catch (IOException ioe) {
                 }
             }
+        } else {
+            // single threaded execution
 
+            PMD pmd = new PMD();
+            pmd.setJavaVersion(sourceType);
+            pmd.setExcludeMarker(excludeMarker);
+
+            RuleSets rs = null;
             try {
-                long start = System.nanoTime();
-                for (Renderer r: renderers) {
-                    r.renderFileReport(report);
+                rs = ruleSetFactory.createRuleSets(rulesets);
+            } catch (RuleSetNotFoundException rsnfe) {
+                // should not happen: parent already created a ruleset
+            }
+            for (DataSource dataSource: files) {
+                String niceFileName = dataSource.getNiceFileName(shortNamesEnabled,
+                        inputPath);
+
+                Report report = new Report();
+                ctx.setReport(report);
+
+                ctx.setSourceCodeFilename(niceFileName);
+                if (debugEnabled) {
+                    System.out.println("Processing " + ctx.getSourceCodeFilename());
                 }
-                long end = System.nanoTime();
-                Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
-            } catch (IOException ioe) {
+                for(Renderer r: renderers) {
+                    r.startFileAnalysis(dataSource);
+                }
+
+                try {
+                    InputStream stream = new BufferedInputStream(dataSource.getInputStream());
+                    pmd.processFile(stream, encoding, rs, ctx);
+                } catch (PMDException pmde) {
+                    if (debugEnabled) {
+                        pmde.getReason().printStackTrace();
+                    }
+                    report.addError(
+                            new Report.ProcessingError(pmde.getMessage(),
+                                    niceFileName));
+                } catch (IOException ioe) {
+                    // unexpected exception: log and stop executor service
+                    if (debugEnabled) {
+                        ioe.printStackTrace();
+                    }
+                    report.addError(
+                            new Report.ProcessingError(ioe.getMessage(),
+                                    niceFileName));
+                } catch (RuntimeException re) {
+                    // unexpected exception: log and stop executor service
+                    if (debugEnabled) {
+                        re.printStackTrace();
+                    }
+                    report.addError(
+                            new Report.ProcessingError(re.getMessage(),
+                                    niceFileName));
+                }
+
+                try {
+                    long start = System.nanoTime();
+                    for (Renderer r: renderers) {
+                        r.renderFileReport(report);
+                    }
+                    long end = System.nanoTime();
+                    Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
+                } catch (IOException ioe) {
+                }
             }
         }
     }
@@ -670,5 +767,3 @@ public class PMD {
     }
 
 }
-
-         
