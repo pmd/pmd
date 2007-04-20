@@ -90,7 +90,6 @@ public class PMD {
             ctx.excludeLines(parser.getExcludeMap());
             long end = System.nanoTime();
             Benchmark.mark(Benchmark.TYPE_PARSER, end - start, 0);
-            Thread.yield();
             start = System.nanoTime();
             sourceTypeHandler.getSymbolFacade().start(rootNode);
             end = System.nanoTime();
