@@ -123,6 +123,12 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         return data;
     }
 
+    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
+        createClassScope(node);
+        cont(node);
+        return data;
+    }
+
     public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
         if (node.isAnonymousInnerClass() || node.isEnumChild()) {
             createClassScope(node);
