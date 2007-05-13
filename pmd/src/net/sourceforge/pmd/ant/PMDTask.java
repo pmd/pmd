@@ -3,6 +3,17 @@
  */
 package net.sourceforge.pmd.ant;
 
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import net.sourceforge.pmd.DataSource;
 import net.sourceforge.pmd.FileDataSource;
 import net.sourceforge.pmd.PMD;
@@ -27,18 +38,6 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 public class PMDTask extends Task {
 
     private Path classpath;
@@ -50,6 +49,7 @@ public class PMDTask extends Task {
     private String encoding = System.getProperty("file.encoding");
     private boolean failOnError;
     private boolean failOnRuleViolation;
+    private boolean debugEnabled = false;
     private String targetJDK = "1.4";
     private String failuresPropertyName;
     private String excludeMarker = PMD.EXCLUDE_MARKER;
@@ -74,6 +74,10 @@ public class PMDTask extends Task {
 
     public void setFailOnRuleViolation(boolean fail) {
         this.failOnRuleViolation = fail;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debugEnabled = debug;
     }
 
     public void setRuleSetFiles(String ruleSetFiles) {
@@ -193,26 +197,25 @@ public class PMDTask extends Task {
                 files.add(new FileDataSource(file));
             }
 
-            boolean debugEnabled = false;
             final String inputPath = ds.getBasedir().getPath();
 
             Renderer logRenderer = new AbstractRenderer() {
-                public void start() throws IOException {}
+                public void start() {}
 
                 public void startFileAnalysis(DataSource dataSource) {
                     log("Processing file " + dataSource.getNiceFileName(false, inputPath), Project.MSG_VERBOSE);
                 }
                 
-                public void renderFileReport(Report r) throws IOException {
+                public void renderFileReport(Report r) {
                     int size = r.size();
                     if (size > 0) {
                         reportSize.addAndGet(size);
                     }
                 }
 
-                public void end() throws IOException {}
+                public void end() {}
 
-                public void render(Writer writer, Report r) throws IOException {}
+                public void render(Writer writer, Report r) {}
             };
             List<Renderer> renderers = new LinkedList<Renderer>();
             renderers.add(logRenderer);
@@ -317,4 +320,3 @@ public class PMDTask extends Task {
     }
 
 }
-
