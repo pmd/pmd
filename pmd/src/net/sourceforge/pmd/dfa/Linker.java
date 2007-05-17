@@ -80,13 +80,15 @@ public class Linker {
             IDataFlowNode node = stackObject.getDataFlowNode();
 
             switch (stackObject.getType()) {
+            	case NodeType.THROW_STATEMENT:
+            		// do the same like a return
                 case NodeType.RETURN_STATEMENT:
                     // remove all children (should contain only one child)
                     node.removePathToChild(node.getChildren().get(0));
                     IDataFlowNode lastNode = node.getFlow().get(node.getFlow().size() - 1);
                     node.addPathToChild(lastNode);
                     continueBreakReturnStack.remove(0);
-                    break;
+                    break;                
                 case NodeType.BREAK_STATEMENT:
                     IDataFlowNode last = getNodeToBreakStatement(node);
                     node.removePathToChild(node.getChildren().get(0));

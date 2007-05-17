@@ -111,7 +111,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         dataFlow.pushOnStack(NodeType.FOR_UPDATE, dataFlow.getLast());
         return data;
     }
-
+    
 // 	----------------------------------------------------------------------------
 //  BRANCH OUT
 
@@ -205,6 +205,16 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
+    public Object visit(ASTThrowStatement node, Object data) {
+        if (!(data instanceof Structure)) {
+            return data;
+        }
+        Structure dataFlow = (Structure) data;
+        dataFlow.createNewNode(node);
+        dataFlow.pushOnStack(NodeType.THROW_STATEMENT, dataFlow.getLast());
+        return super.visit(node, data);    	
+    }
+    
     /*
      * The method handles the special "for" loop. It creates always an
      * expression node even if the loop looks like for(;;).

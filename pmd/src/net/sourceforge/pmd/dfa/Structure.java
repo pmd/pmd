@@ -58,7 +58,10 @@ public class Structure {
      */
     protected void pushOnStack(int type, IDataFlowNode node) {
         StackObject obj = new StackObject(type, node);
-        if (type == NodeType.RETURN_STATEMENT || type == NodeType.BREAK_STATEMENT || type == NodeType.CONTINUE_STATEMENT) {
+        if (type == NodeType.RETURN_STATEMENT 
+        		|| type == NodeType.BREAK_STATEMENT 
+        		|| type == NodeType.CONTINUE_STATEMENT
+        		|| type == NodeType.THROW_STATEMENT) {
             // ugly solution - stores the type information in two ways
             continueBreakReturnStack.push(obj);
         } else {

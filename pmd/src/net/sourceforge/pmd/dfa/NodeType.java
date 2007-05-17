@@ -35,5 +35,5 @@ public interface NodeType {
     int LABEL_LAST_STATEMENT = 61;
     
     // TODO - throw statements?
-
+    int THROW_STATEMENT = 70;
 }
