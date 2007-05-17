@@ -63,11 +63,8 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                 VariableNameDeclaration vnd = entry.getKey();
 
                 if (vnd.getAccessNodeParent() instanceof ASTFormalParameter) {
-                    // add definition for parameters
-                    addVariableAccess(
-                            vnd.getNode().getFirstParentOfType(ASTFormalParameters.class), 
-                            new VariableAccess(VariableAccess.DEFINITION, vnd.getImage()), 
-                            inode.getFlow());
+                    // no definition/undefinition/references for parameters
+                    continue;
                 } else if (vnd.getAccessNodeParent().getFirstChildOfType(ASTVariableInitializer.class) != null) {
                     // add definition for initialized variables
                     addVariableAccess(
