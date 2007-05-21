@@ -1,3 +1,5 @@
+- [1722116] pmd.scan.Scanner.run fails with Netbeans 6.0
+
 Version 1.9.1
 - [ 1634131 ] Netbeans Plug-in and source level 1.6
 - Removed dependency on Jakarta-ORO

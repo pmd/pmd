@@ -36,13 +36,11 @@ import org.netbeans.editor.BaseDocument;
 import org.netbeans.editor.Settings;
 import org.netbeans.editor.SettingsNames;
 import org.netbeans.modules.editor.NbEditorUtilities;
-import org.netbeans.modules.editor.java.JavaKit;
 import org.openide.ErrorManager;
 import org.openide.loaders.DataObject;
 import org.openide.cookies.LineCookie;
 import org.openide.text.Annotatable;
 import org.openide.text.Line;
-import org.openide.text.Line.Part;
 import org.openide.util.RequestProcessor;
 import pmd.Fault;
 import pmd.RunPMDAction;
@@ -100,7 +98,7 @@ public class Scanner implements Runnable, DocumentListener {
                 LOG.fine(toString() + "started");
                     
                 int tabSize = 8;
-                Integer foo = (Integer) Settings.getValue(JavaKit.class, SettingsNames.TAB_SIZE);
+                Integer foo = (Integer) Settings.getValue(doc.getKitClass(), SettingsNames.TAB_SIZE);
                 if (foo != null)
                     tabSize = foo.intValue();
 
