@@ -79,50 +79,34 @@ public abstract class ConfigUtils {
         extraFactories.remove(fact);
     }
 	
-	/**
-	 * Determines the list of rules to use. This is done by iterating over all
-	 * known rules and, for each one, checking whether its name appears in the
-	 * given string followed by a comma and a space. If it does appear, then it
-	 * is added to the list of rules to use, after setting any properties whose
-	 * defaults have been configured to be overridden, in
-	 * {@link PMDOptionsSettings}.{@link PMDOptionsSettings#getDefault getDefault()}.{@link PMDOptionsSettings#getRuleProperties getRuleProperties()}.
-	 *
-	 * @param rules a string containing the names of the rules to use, with a comma-and-space after each one (including the last).
-	 * @return a list containing the rules to use.
-	 */
-	public static List<Rule> createRuleList( String rules, Map<String, Map<String, String>> propOverrides ) {
-		Iterator<Rule> iterator = getAllAvailableRules().iterator();
-		List<Rule> list = new ArrayList<Rule>();
-		while( iterator.hasNext() ) {
-			Rule rule = iterator.next();
-			if( rules.indexOf( rule.getName() + ", " ) > -1 ) {
-				// add it, but first check for property overrides.
-				Map<String, String> rulePropOverrides = propOverrides.get( rule.getName() );
-				if(rulePropOverrides != null) {
+    /**
+     * Determines the list of rules to use. This is done by iterating over all
+     * known rules and, for each one, checking whether its name appears in the
+     * given string followed by a comma and a space. If it does appear, then it
+     * is added to the list of rules to use, after setting any properties whose
+     * defaults have been configured to be overridden, in
+     * {@link PMDOptionsSettings}.{@link PMDOptionsSettings#getDefault getDefault()}.{@link PMDOptionsSettings#getRuleProperties getRuleProperties()}.
+     *
+     * @param rules a string containing the names of the rules to use, with a comma-and-space after each one (including the last).
+     * @return a list containing the rules to use.
+     */
+    public static List<Rule> createRuleList( String rules, Map<String, Map<String, String>> propOverrides ) {
+        List<Rule> list = new ArrayList<Rule>();
+        for (Rule rule: getAllAvailableRules()) {
+            if( rules.contains( rule.getName() + ", " )) {
+                // add it, but first check for property overrides.
+                Map<String, String> rulePropOverrides = propOverrides.get( rule.getName() );
+                if(rulePropOverrides != null) {
                     for (Map.Entry<String, String> entry: rulePropOverrides.entrySet()) {
-						rule.addProperty( entry.getKey(), entry.getValue() );
-					}
-				}
-				list.add( rule );
-			}
-		}
-		Collections.sort( list, new RuleComparator() );
-		return list;
-	}
-	
-	
-	/**
-	 * Determines the list of rules to use.
-	 * This just delegates to {@link #createRuleList} with the argument
-	 * {@link PMDOptionsSettings}.{@link PMDOptionsSettings#getDefault getDefault()}.{@link PMDOptionsSettings#getRules getRules()}.
-	 *
-	 * @return a list containing the rules to use. Each element of the list is an instance of {@link Rule}.
-	 */
-	public static List getRuleList() {
-		return createRuleList( PMDOptionsSettings.getDefault().getRules(),
-                        PMDOptionsSettings.getDefault().getRuleProperties()
-                        );
-	}
+                        rule.addProperty( entry.getKey(), entry.getValue() );
+                    }
+                }
+                list.add( rule );
+            }
+        }
+        Collections.sort( list, new RuleComparator() );
+        return list;
+    }
 	
 	
 	/**

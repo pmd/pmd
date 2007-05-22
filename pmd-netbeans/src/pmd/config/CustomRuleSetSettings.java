@@ -34,7 +34,7 @@ import java.util.List;
  * Represents a custom-rulesets configuration.
  */
 public class CustomRuleSetSettings implements Serializable {
-	/** The serialVersionUID. Don't change! */
+	/** The serialVersionUID. */
 	private final static long serialVersionUID = 8418202279212345678L;
 	
 	/** Holds value of property ruleSets. */

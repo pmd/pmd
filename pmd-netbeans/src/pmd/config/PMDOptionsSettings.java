@@ -26,24 +26,25 @@
  */
 package pmd.config;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.openide.options.SystemOption;
-import org.openide.util.HelpCtx;
-import org.openide.util.NbBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+import org.openide.util.NbPreferences;
 
 /**
  * Settings for the PMD-NetBeans module.
  */
-public class PMDOptionsSettings extends SystemOption {
-
-	/** The serialVersionUID. Don't change! */
-	private final static long serialVersionUID = 8418202279282091070L;
+public class PMDOptionsSettings {
 
 	/** The constant for the rules property. The String value of this property is a comma-separated list of
 	 * names of currently enabled rules. The names refer to the rule definitions in all rulesets returned by
@@ -94,59 +95,60 @@ public class PMDOptionsSettings extends SystemOption {
 		"AvoidReassigningParametersRule, OnlyOneReturn, UseSingletonRule, " +
 		"DontImportJavaLang, UnusedImports, DuplicateImports, ";
 
-	// No constructor please!
+    /** Name of key for storing part of cumstom rulesets settings. */
+    private static String PROP_INCLUDE_STD_RULES = "includeStdRules";
+    
+    private static final String NODE_RULESETS = "rulesets";
+    private static final String NODE_CLASSPATH = "classpath";
+    
+    private static PMDOptionsSettings INSTANCE = new PMDOptionsSettings();
 
-	/** Sets the default rulesets and initializes the option */
-	protected void initialize() {
-		super.initialize();
-		setRules(DEFAULT_RULES);
-		// OK to initialize with an empty map, we'll never expose it (always return a HashMap copy)
-		setRuleProperties(Collections.<String, Map<String, String>>emptyMap());
-		setRulesets(new CustomRuleSetSettings());
-		setScanEnabled(Boolean.FALSE);
-		setScanInterval(new Integer(DEFAULT_SCAN_INTERVAL));
-	}
+    /**
+     * Default instance of this system option, for the convenience of associated
+     * classes.
+     *
+     * @return The default value
+     */
+    public static PMDOptionsSettings getDefault() {
+            return INSTANCE;
+    }
+
+    private transient PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+    
+    /* Sets the default rulesets and initializes the option */
+    private PMDOptionsSettings() {
+    }
+
+    private final String getProperty(String key) {
+        return NbPreferences.forModule(PMDOptionsSettings.class).get(key, null);
+    }
+    
+    private final void putProperty(String key, String value) {
+        Preferences pref = NbPreferences.forModule(PMDOptionsSettings.class);
+        if (value != null) {
+            pref.put(key, value);
+        } else {
+            NbPreferences.forModule(PMDOptionsSettings.class).remove(key);
+        }
+    }
+    
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        pcs.addPropertyChangeListener(l);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+        pcs.removePropertyChangeListener(l);
+    }
 
 
-	/**
-	 * Returns the displayName of these options
-	 *
-	 * @return the displayname
-	 */
-	public String displayName() {
-		return NbBundle.getMessage( PMDOptionsSettings.class, "LBL_settings" );
-	}
-
-
-	/**
-	 * Returns the default help
-	 *
-	 * @return The helpCtx value
-	 */
-	public HelpCtx getHelpCtx() {
-		return HelpCtx.DEFAULT_HELP;
-	}
-
-
-	/**
-	 * Default instance of this system option, for the convenience of associated
-	 * classes.
-	 *
-	 * @return The default value
-	 */
-	public static PMDOptionsSettings getDefault() {
-		return ( PMDOptionsSettings )findObject( PMDOptionsSettings.class, true );
-	}
-
-
-	/**
-	 * Returns the rulesets property
-	 *
-	 * @return the rulesets property
-	 */
-	public String getRules() {
-		return ( String )getProperty( PROP_RULES );
-	}
+    /**
+     * Returns the rulesets property
+     *
+     * @return the rulesets property
+     */
+    public String getRules() {
+        return NbPreferences.forModule(PMDOptionsSettings.class).get(PROP_RULES, DEFAULT_RULES);
+    }
 
 	/**
 	 * Sets the rulesets property
@@ -154,93 +156,211 @@ public class PMDOptionsSettings extends SystemOption {
 	 * @param rules The new rules value
 	 */
 	public void setRules( String rules ) {
-		putProperty( PROP_RULES, rules, true );
+            putProperty( PROP_RULES, rules );
+            pcs.firePropertyChange(PROP_RULES, null, null);
 	}
 
-	/**
-	 * Returns the rule properties property. See {@link #PROP_RULE_PROPERTIES}.
-	 * Note: this returns a non-live <em>deep copy</em> of the rule properties map;
-	 * changes to the map or its contents will not affect the PMD settings until you
-	 * call {@link #setRuleProperties} with the modified map.
-	 * <p>
-	 * This is my nice naive way to observe correct property change event handling. It
-	 * gets inefficient as the set of rule properties gets large ... but the set of
-	 * rule properties generally <em>doesn't</em> get large because it really only
-	 * contains <em>overrides</em> of the PMD default rule properties.
-	 * <p>
-	 * IMPLEMENTATION NOTE: the deep copy operation recurses into all Map and Collection
-	 * values, so circular references will kill it. Make sure you put only simple data
-	 * in the rule properties! Also, note that non-Map, non-Collection values are not
-	 * cloned; the assumption is that the leaves of this hierarchy (actual rule property
-	 * values) are always immutable objects, most likely just strings.
-	 *
-	 * @return the rule properties, not null.
-	 */
-	public Map<String, Map<String, String>> getRuleProperties() {
-		return deepMapCopy((Map<String, Map<String, String>>)getProperty(PROP_RULE_PROPERTIES));
-	}
+        /**
+         * Determines the list of rules to use.
+         * This just delegates to {@link #createRuleList} with the argument
+         * {@link PMDOptionsSettings}.{@link PMDOptionsSettings#getDefault getDefault()}.{@link PMDOptionsSettings#getRules getRules()}.
+         *
+         * @return a list containing the rules to use. Each element of the list is an instance of {@link Rule}.
+         */
+        public List getRuleList() {
+            return ConfigUtils.createRuleList( getRules(), getRuleProperties());
+        }
+        
+	
+    /**
+     * Returns the rule properties property. See {@link #PROP_RULE_PROPERTIES}.
+     * Note: this returns a non-live <em>deep copy</em> of the rule properties map;
+     * changes to the map or its contents will not affect the PMD settings until you
+     * call {@link #setRuleProperties} with the modified map.
+     * <p>
+     * IMPLEMENTATION NOTE: the deep copy operation recurses into all Map and Collection
+     * values, so circular references will kill it. Make sure you put only simple data
+     * in the rule properties! Also, note that non-Map, non-Collection values are not
+     * cloned; the assumption is that the leaves of this hierarchy (actual rule property
+     * values) are always immutable objects, most likely just strings.
+     *
+     * @return the rule properties, not null.
+     */
+    public Map<String, Map<String, String>> getRuleProperties() {
+        Map<String, Map<String, String>> ruleProps = new HashMap<String, Map<String, String>>();
+        try {
+            Preferences prefs = NbPreferences.forModule(PMDOptionsSettings.class);
+            // 1. delete all old properties that are no longer valid
+            for (String keyName: prefs.keys()) {
+                if (!keyName.startsWith(PROP_RULE_PROPERTIES+'.'))
+                    continue;
+                int idx = keyName.indexOf(".", PROP_RULE_PROPERTIES.length()+2);
+                if (idx == -1)
+                    continue;
+                String ruleName = keyName.substring(PROP_RULE_PROPERTIES.length()+1, idx - 1);
+                Map<String, String> props = ruleProps.get(ruleName);
+                if (props == null) { 
+                    props = new HashMap<String, String>();
+                    ruleProps.put(ruleName, props);
+                }
+                String propName = keyName.substring(idx+1);
+                props.put(propName, prefs.get(keyName, null));
+            }
+        } catch (BackingStoreException bse) {
+            Logger.getLogger(PMDOptionsSettings.class.getName()).log(Level.INFO, "Error when storing preferences", bse);
+        }
+        return ruleProps;
+    }
 
-	/**
-	 * Sets the rule properties property (sorry). See {@link #PROP_RULE_PROPERTIES}.
-	 * See also the constraints on rule property values and the ban on circular references,
-	 * in the documentation for {@link #getRuleProperties}.
-	 *
-	 * @param ruleProperties The new rule properties map, not null. In this Map, each key must be
-	 * a String, the name of a PMD rule, and each value must be a Map, specifying the properties
-	 * for that rule.
-	 */
-	public void setRuleProperties(Map<String, Map<String, String>> ruleProperties) {
-		putProperty( PROP_RULE_PROPERTIES, ruleProperties, true );
-	}
+    /**
+     * Sets the rule properties property (sorry). See {@link #PROP_RULE_PROPERTIES}.
+     * See also the constraints on rule property values and the ban on circular references,
+     * in the documentation for {@link #getRuleProperties}.
+     *
+     * @param ruleProperties The new rule properties map, not null. In this Map, each key must be
+     * a String, the name of a PMD rule, and each value must be a Map, specifying the properties
+     * for that rule.
+     */
+    public void setRuleProperties(Map<String, Map<String, String>> ruleProperties) {
+        try {
+            Preferences prefs = NbPreferences.forModule(PMDOptionsSettings.class);
+            // 1. delete all old properties that are no longer valid
+            for (String keyName: prefs.keys()) {
+                if (!keyName.startsWith(PROP_RULE_PROPERTIES+'.'))
+                    continue;
+                int idx = keyName.indexOf(".", PROP_RULE_PROPERTIES.length()+2);
+                if (idx == -1)
+                    continue;
+                String ruleName = keyName.substring(PROP_RULE_PROPERTIES.length()+1, idx - 1);
+                String propName = keyName.substring(idx+1);
+                if (ruleProperties.get(ruleName) != null && ruleProperties.get(ruleName).get(propName) == null) {
+                    prefs.remove(keyName);
+                }
+            }
 
-	/** Getter for property rulesets.
-	 * @return Value of property rulesets.
-	 *
-	 */
-	public CustomRuleSetSettings getRulesets() {
-		return (CustomRuleSetSettings)getProperty( PROP_RULESETS );
-	}
+            // 2. set current ones
+            for (Map.Entry<String, Map<String, String>> ruleProp: ruleProperties.entrySet()) {
+                String ruleName = ruleProp.getKey();
+                for (Map.Entry<String, String> prop: ruleProp.getValue().entrySet()) {
+                    prefs.put(PROP_RULE_PROPERTIES+'.'+ruleName+'.'+prop.getKey(), prop.getValue());
+                }
+            }
+            pcs.firePropertyChange(PROP_RULE_PROPERTIES, null, null);
+        } catch (BackingStoreException bse) {
+            Logger.getLogger(PMDOptionsSettings.class.getName()).log(Level.INFO, "Error when storing preferences", bse);
+        }
+    }
+
+    /** Getter for property rulesets.
+     * @return Value of property rulesets.
+     *
+     */
+    public CustomRuleSetSettings getRulesets() {
+        CustomRuleSetSettings crss = new CustomRuleSetSettings();
+        try {
+            crss.setIncludeStdRules(Boolean.valueOf(getProperty(PROP_INCLUDE_STD_RULES)));
+            
+            Preferences prefs = NbPreferences.forModule(PMDOptionsSettings.class);
+            if (prefs.nodeExists(NODE_RULESETS)) {
+                List<String> rulesets = new ArrayList<String>();
+                for (String s: prefs.node(NODE_RULESETS).keys()) {
+                    rulesets.add(s);
+                }
+                crss.setRuleSets(rulesets);
+            }
+            
+            if (prefs.nodeExists(NODE_CLASSPATH)) {
+                List<String> cp = new ArrayList<String>();
+                for (String s: prefs.node(NODE_CLASSPATH).keys()) {
+                    cp.add(s);
+                }
+                crss.setClassPath(cp);
+            }
+            
+        } catch (BackingStoreException bse) {
+            Logger.getLogger(PMDOptionsSettings.class.getName()).log(Level.INFO, "Error when reading preferences", bse);
+        }
+        return crss;
+    }
+
+    /** Setter for property rulesets.
+     * @param rulesets New value of property rulesets.
+     *
+     */
+    public void setRulesets(CustomRuleSetSettings rulesets) {
+        try {
+            putProperty( PROP_INCLUDE_STD_RULES, Boolean.toString(rulesets.isIncludeStdRules()) );
+
+            List<String> r = rulesets.getRuleSets();
+            Preferences prefs = NbPreferences.forModule(PMDOptionsSettings.class);
+            if (r.isEmpty() && prefs.nodeExists(NODE_RULESETS)) {
+                prefs.node(NODE_RULESETS).removeNode();
+            }
+            else {
+                Preferences rsPref = prefs.node(NODE_RULESETS);
+                for (String key: rsPref.keys()) {
+                    rsPref.remove(key);
+                }
+                for(String s: r) {
+                    rsPref.put(s, s);
+                }
+            }
+            
+            @SuppressWarnings("unchecked")
+            List<String> cp = rulesets.getClassPath();
+            if (r.isEmpty() && prefs.nodeExists(NODE_CLASSPATH)) {
+                prefs.node(NODE_CLASSPATH).removeNode();
+            }
+            else {
+                Preferences rsPref = prefs.node(NODE_CLASSPATH);
+                for (String key: rsPref.keys()) {
+                    rsPref.remove(key);
+                }
+                for(String s: r) {
+                    rsPref.put(s, s);
+                }
+            }
+            
+        } catch (BackingStoreException bse) {
+            Logger.getLogger(PMDOptionsSettings.class.getName()).log(Level.INFO, "Error when storing preferences", bse);
+        }
+        pcs.firePropertyChange(PROP_RULESETS, null, null);
+    }
 	
-	/** Setter for property rulesets.
-	 * @param rulesets New value of property rulesets.
-	 *
-	 */
-	public void setRulesets(CustomRuleSetSettings rulesets) {
-		putProperty( PROP_RULESETS, rulesets, true );
-	}
-	
-	/** Getter for property scanEnabled.
-	 * @return Value of property scanEnabled.
-	 *
-	 */
-	public Boolean isScanEnabled() {
-		return (Boolean)getProperty( PROP_ENABLE_SCAN );
-	}
-	
-	/** Setter for property scanEnabled.
-	 * @param scanEnabled New value of property scanEnabled.
-	 *
-	 */
-	public void setScanEnabled(Boolean scanEnabled) {
-		putProperty( PROP_ENABLE_SCAN, scanEnabled, true );
-	}
-	
-	/** Getter for property scanInterval.
-	 * @return Value of property scanInterval.
-	 *
-	 */
-	public Integer getScanInterval() {
-		return (Integer)getProperty( PROP_SCAN_INTERVAL);
-	}
-	
-	/** Setter for property scanInterval.
-	 * @param scanInterval New value of property scanInterval.
-	 *
-	 */
-	public void setScanInterval(Integer scanInterval) {
-		putProperty( PROP_SCAN_INTERVAL, scanInterval );
-	}
-	
+    /** Getter for property scanEnabled.
+     * @return Value of property scanEnabled.
+     *
+     */
+    public Boolean isScanEnabled() {
+        return NbPreferences.forModule(PMDOptionsSettings.class).getBoolean(PROP_ENABLE_SCAN, false);
+    }
+    
+    /** Setter for property scanEnabled.
+     * @param scanEnabled New value of property scanEnabled.
+     *
+     */
+    public void setScanEnabled(Boolean scanEnabled) {
+        NbPreferences.forModule(PMDOptionsSettings.class).putBoolean(PROP_ENABLE_SCAN, scanEnabled);
+        pcs.firePropertyChange(PROP_ENABLE_SCAN, null, null);
+    }
+    
+    /** Getter for property scanInterval.
+     * @return Value of property scanInterval.
+     *
+     */
+    public Integer getScanInterval() {
+        return NbPreferences.forModule(PMDOptionsSettings.class).getInt(PROP_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL);
+    }
+    
+    /** Setter for property scanInterval.
+     * @param scanInterval New value of property scanInterval.
+     *
+     */
+    public void setScanInterval(Integer scanInterval) {
+        NbPreferences.forModule(PMDOptionsSettings.class).putInt(PROP_SCAN_INTERVAL, scanInterval);
+        pcs.firePropertyChange(PROP_SCAN_INTERVAL, null, null);
+    }
+    
 	/**
 	 * Performs a deep-copy operation on the given map, recursing into all values that are Maps or
 	 * Collections. Note that this is risky; if the map/collection hierarchy contains circular references,

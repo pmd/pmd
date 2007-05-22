@@ -66,6 +66,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.CookieAction;
 import pmd.config.ConfigUtils;
+import pmd.config.PMDOptionsSettings;
 import pmd.scan.EditorChangeListener;
 
 /**
@@ -161,7 +162,7 @@ public class RunPMDAction extends CookieAction {
         List<Fault> list = new ArrayList<Fault>( 100 );
 
         CancelCallback cancel = new CancelCallback();
-        ProgressHandle prgHdl = ProgressHandleFactory.createHandle("PMD check", cancel); // PENDING action to show output
+        ProgressHandle prgHdl = ProgressHandleFactory.createHandle("PMD check", cancel);
         prgHdl.start(dataobjects.size());
         try {
             for( int i = 0; i < dataobjects.size(); i++ ) {
@@ -303,7 +304,7 @@ public class RunPMDAction extends CookieAction {
      */
     private static RuleSet constructRuleSets() {
         RuleSet rules = new RuleSet();
-        List list = ConfigUtils.getRuleList();
+        List list = PMDOptionsSettings.getDefault().getRuleList();
         Iterator iterator = list.iterator();
         while( iterator.hasNext() ) {
             rules.addRule( ( Rule )iterator.next() );

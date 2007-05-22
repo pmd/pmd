@@ -38,6 +38,8 @@ import pmd.config.PMDOptionsSettings;
 
 /**
  * Classloader implementation for PMD custom rulesets.
+ * 
+ * TODO: should be rewritten to have its resources rather than asks for all rulesets every time
  */
 public class RuleClassLoader extends ClassLoader {
 

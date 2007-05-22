@@ -9,12 +9,6 @@
          </file>
      </folder>
  </folder>
-    <folder name="Services">
-        <file name="pmd-config-option.settings" url="config/option.xml">
-            <attr name="SystemFileSystem.localizingBundle" stringvalue="pmd.config.Bundle"/>
-            <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/pmd/resources/PMDOptionsSettingsIcon.gif"/>
-        </file>
-    </folder>
     <folder name="Menu">
         <folder name="Window">
             <attr name="ResultWindowOpenAction.shadow/pmd-ShowOutputWindowAction.shadow" boolvalue="true"/>
