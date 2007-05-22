@@ -46,10 +46,10 @@ public abstract class RuleTst {
         try {
             String rules = new SimpleRuleSetNameMapper(ruleSet).getRuleSets();
             Rule rule = new RuleSetFactory().createRuleSets(rules).getRuleByName(ruleName);
-            rule.setRuleSetName(ruleSet);
             if (rule == null) {
                 fail("Rule " + ruleName + " not found in ruleset " + ruleSet);
             }
+            rule.setRuleSetName(ruleSet);
             return rule;
         } catch (RuleSetNotFoundException e) {
             e.printStackTrace();        
