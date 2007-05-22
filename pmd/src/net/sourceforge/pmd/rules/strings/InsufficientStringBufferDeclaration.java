@@ -195,7 +195,7 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
     private int getConstructorLength(SimpleNode node, int constructorLength) {
         int iConstructorLength = constructorLength;
         SimpleNode block = node.getFirstParentOfType(ASTBlockStatement.class);
-        List literal;
+        List<ASTLiteral> literal;
 
         if (block == null) {
             block = node.getFirstParentOfType(ASTFieldDeclaration.class);
@@ -206,14 +206,14 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
                 iConstructorLength = -1;
             }
         }
-        literal = (block.findChildrenOfType(ASTLiteral.class));
+        literal = block.findChildrenOfType(ASTLiteral.class);
         if (literal.isEmpty()) {
-            List name = (block.findChildrenOfType(ASTName.class));
+            List name = block.findChildrenOfType(ASTName.class);
             if (!name.isEmpty()) {
                 iConstructorLength = -1;
             }
         } else if (literal.size() == 1) {
-            String str = ((SimpleNode) literal.get(0)).getImage();
+            String str = literal.get(0).getImage();
             if (str == null) {
                 iConstructorLength = 0;
             } else if (isLiteral(str)) {
