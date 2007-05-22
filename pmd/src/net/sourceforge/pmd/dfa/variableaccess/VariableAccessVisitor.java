@@ -6,7 +6,6 @@ package net.sourceforge.pmd.dfa.variableaccess;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
-import net.sourceforge.pmd.ast.ASTFormalParameters;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
