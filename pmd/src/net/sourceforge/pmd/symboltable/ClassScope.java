@@ -19,12 +19,15 @@ public class ClassScope extends AbstractScope {
     protected Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
 
     // FIXME - this breaks given sufficiently nested code
-    private static int anonymousInnerClassCounter = 1;
+    private static ThreadLocal<Integer> anonymousInnerClassCounter = new ThreadLocal<Integer>() {
+        protected Integer initialValue() { return Integer.valueOf(1); }
+    };
+
     private String className;
 
     public ClassScope(String className) {
         this.className = className;
-        anonymousInnerClassCounter = 1;
+        anonymousInnerClassCounter.set(Integer.valueOf(1));
     }
 
     /**
@@ -36,8 +39,9 @@ public class ClassScope extends AbstractScope {
      */
     public ClassScope() {
         //this.className = getParent().getEnclosingClassScope().getClassName() + "$" + String.valueOf(anonymousInnerClassCounter);
-        this.className = "Anonymous$" + anonymousInnerClassCounter;
-        anonymousInnerClassCounter++;
+        int v = anonymousInnerClassCounter.get().intValue();
+        this.className = "Anonymous$" + v;
+        anonymousInnerClassCounter.set(v + 1);
     }
 
     public void addDeclaration(VariableNameDeclaration variableDecl) {
