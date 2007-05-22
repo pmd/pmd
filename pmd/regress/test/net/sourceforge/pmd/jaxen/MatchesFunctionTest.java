@@ -65,7 +65,7 @@ public class MatchesFunctionTest implements Node {
 
     private Object tryRegexp(String exp) throws FunctionCallException, NoSuchMethodException {
         MatchesFunction function = new MatchesFunction();
-        List list = new ArrayList();
+        List<Object> list = new ArrayList<Object>();
         List<Attribute> attrs = new ArrayList<Attribute>();
         attrs.add(new Attribute(this, "matches", getClass().getMethod("getValue", new Class[0])));
         list.add(attrs);
