@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -53,6 +54,7 @@ import org.netbeans.api.java.queries.SourceLevelQuery;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.ErrorManager;
+import org.netbeans.api.queries.FileEncodingQuery;
 import org.openide.awt.StatusDisplayer;
 import org.openide.cookies.EditorCookie;
 import org.openide.cookies.LineCookie;
@@ -65,7 +67,6 @@ import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.CookieAction;
-import pmd.config.ConfigUtils;
 import pmd.config.PMDOptionsSettings;
 import pmd.scan.EditorChangeListener;
 
@@ -334,9 +335,10 @@ public class RunPMDAction extends CookieAction {
             }
         }
         if (reader == null) {
+            Charset cs = FileEncodingQuery.getEncoding (dataobject.getPrimaryFile());
             Iterator iterator = dataobject.files().iterator();
             FileObject file = ( FileObject )iterator.next();
-            reader = new BufferedReader( new InputStreamReader( file.getInputStream() ) );
+            reader = new BufferedReader( new InputStreamReader( file.getInputStream(), cs ) );
         }
         return reader;
     }
