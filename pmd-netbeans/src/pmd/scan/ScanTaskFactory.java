@@ -26,16 +26,11 @@
  */
 package pmd.scan;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.logging.Logger;
 import org.netbeans.api.java.source.CancellableTask;
 import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.java.source.JavaSource;
 import org.netbeans.api.java.source.support.EditorAwareJavaSourceTaskFactory;
 import org.openide.filesystems.FileObject;
-import pmd.config.PMDOptionsSettings;
-
 
 /**
  * Listener for changes in active document or PMD settings.
@@ -43,15 +38,6 @@ import pmd.config.PMDOptionsSettings;
  */
 public class ScanTaskFactory extends EditorAwareJavaSourceTaskFactory {
 
-    private Scanner scanner;
-    
-    private static final CancellableTask<CompilationInfo> EMPTY_TASK = new CancellableTask<CompilationInfo>() {
-
-        public void cancel() {}
-
-        public void run(CompilationInfo parameter) throws Exception {}
-    };
-    
     public ScanTaskFactory() {
         super(JavaSource.Phase.PARSED, JavaSource.Priority.MIN);
     }
