@@ -72,7 +72,11 @@ public class Scanner implements CancellableTask<CompilationInfo> {
         this.fo = fo;
         optionLsnr = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
+                boolean current = scanEnabled;
                 scanEnabled = PMDOptionsSettings.getDefault().isScanEnabled();
+                if (current && !scanEnabled) {
+                    PMDScanAnnotation.clearAll();
+                }
             }
         };
         PMDOptionsSettings option = PMDOptionsSettings.getDefault();
@@ -118,7 +122,7 @@ public class Scanner implements CancellableTask<CompilationInfo> {
                 if(line == null) {
                     LOG.fine(toString() + "no original line found for line " + lineNum + " in lineset; probably document closed" );
                 } else {
-                    LOG.fine(toString() + "Line class : " + line.getClass().getName() + ", count: " + line.getAnnotationCount() );
+                    LOG.finest(toString() + "Line class : " + line.getClass().getName() + ", count: " + line.getAnnotationCount() );
                     
                     String text = line.getText();
                     if (text != null) {
@@ -195,6 +199,6 @@ public class Scanner implements CancellableTask<CompilationInfo> {
     }
 	
     @Override public String toString() {
-            return "PMDScanner[" + fo + "]";
+        return "PMDScanner[" + fo + "]";
     }
 }
