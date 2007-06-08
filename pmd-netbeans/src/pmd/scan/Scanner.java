@@ -26,22 +26,26 @@
  */
 package pmd.scan;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.text.Document;
+import org.netbeans.api.java.source.CancellableTask;
+import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.editor.BaseDocument;
 import org.netbeans.editor.Settings;
 import org.netbeans.editor.SettingsNames;
 import org.netbeans.modules.editor.NbEditorUtilities;
-import org.openide.ErrorManager;
 import org.openide.loaders.DataObject;
 import org.openide.cookies.LineCookie;
+import org.openide.filesystems.FileObject;
 import org.openide.text.Annotatable;
 import org.openide.text.Line;
-import org.openide.util.RequestProcessor;
+import org.openide.util.Exceptions;
+import org.openide.util.WeakListeners;
 import pmd.Fault;
 import pmd.RunPMDAction;
 import pmd.config.PMDOptionsSettings;
@@ -49,113 +53,105 @@ import pmd.config.PMDOptionsSettings;
 /**
  * PMD background scanner.
  */
-public class Scanner implements Runnable, DocumentListener {
+public class Scanner implements CancellableTask<CompilationInfo> {
     
     private static final Logger LOG = Logger.getLogger("pmd");
 
-    private static RequestProcessor PMD_RP = new RequestProcessor("PMD scanner", 1);
+    private boolean scanEnabled;
     
-    private RequestProcessor.Task task;
+    private PropertyChangeListener optionLsnr;
+    
+    private FileObject fo;
+    
+    private volatile boolean cancelled = false;
 
-    private BaseDocument doc;
-    
     /** Creates a new instance of Scanner.
      *  This is created from EditorChangeListener only.
      */
-    Scanner() {
+    Scanner(FileObject fo) {
+        this.fo = fo;
+        optionLsnr = new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent evt) {
+                scanEnabled = PMDOptionsSettings.getDefault().isScanEnabled();
+            }
+        };
+        PMDOptionsSettings option = PMDOptionsSettings.getDefault();
+        option.addPropertyChangeListener(WeakListeners.propertyChange(optionLsnr, option));
+        scanEnabled = option.isScanEnabled();
     }
 	
-    /** Attaches listeners to a node.
-     */
-    void attachToDoc (BaseDocument doc) {
-        if (doc == null) {
+    public void run(CompilationInfo info) throws Exception {
+        if (!scanEnabled) 
             return;
-        }
-        if (doc.equals (this.doc)) {
-            LOG.fine(toString() + "the same node detected");
-            return;
-        }
-        detachFromDoc();
-        
-        this.doc = doc;
-        doc.addDocumentListener(this);
-        
-        task = PMD_RP.post(this, PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000, Thread.MIN_PRIORITY);
-    }
-	
-    private void detachFromDoc() {
-        if (doc != null) {
-            doc.removeDocumentListener(this);
-	}
-    }
-    
-        public void run() {
-            if (doc == null) {
+        try {
+            LOG.fine(toString() + "started");
+            cancelled = false;
+            Document doc = info.getDocument();
+            
+            int tabSize = 8;
+            if (doc instanceof BaseDocument) {
+                Integer foo = (Integer) Settings.getValue(((BaseDocument)doc).getKitClass(), SettingsNames.TAB_SIZE);
+                if (foo != null)
+                    tabSize = foo.intValue();
+            }
+            
+            DataObject dobj = NbEditorUtilities.getDataObject(doc);
+            if (dobj == null) {
+                return;
+            }
+            if (!dobj.getPrimaryFile().canWrite()) {
                 return;
             }
             
-            try {
-                LOG.fine(toString() + "started");
+            LineCookie cookie = ( LineCookie )dobj.getCookie( LineCookie.class );
+            Line.Set lineset = cookie.getLineSet();
+            List<DataObject> list = Collections.singletonList(dobj);
+            // TODO try to avoid duplicate work in this method
+            // TODO want to make this cancellable too
+            List<Fault> faults = RunPMDAction.performScan(list ); 
+            PMDScanAnnotation.clearAll();
+            for(Fault fault: faults) {
+                if (cancelled) 
+                    break;
+                int lineNum = fault.getLine();
+                Line line = lineset.getCurrent( lineNum - 1 );
+                if(line == null) {
+                    LOG.fine(toString() + "no original line found for line " + lineNum + " in lineset; probably document closed" );
+                } else {
+                    LOG.fine(toString() + "Line class : " + line.getClass().getName() + ", count: " + line.getAnnotationCount() );
                     
-                int tabSize = 8;
-                Integer foo = (Integer) Settings.getValue(doc.getKitClass(), SettingsNames.TAB_SIZE);
-                if (foo != null)
-                    tabSize = foo.intValue();
-
-                DataObject dobj = NbEditorUtilities.getDataObject(doc);
-                if (dobj == null) {
-                    return;
-                }
-                if (!dobj.getPrimaryFile().canWrite()) {
-                    return;
-                }
-
-                LineCookie cookie = ( LineCookie )dobj.getCookie( LineCookie.class );
-                Line.Set lineset = cookie.getLineSet();
-                List<DataObject> list = Collections.singletonList(dobj);
-                List<Fault> faults = RunPMDAction.performScan(list );
-                PMDScanAnnotation.clearAll();
-                for( int i = 0; i < faults.size(); i++ ) {
-                    Fault fault = faults.get( i );
-                    int lineNum = fault.getLine();
-                    Line line = lineset.getCurrent( lineNum - 1 );
-                    if(line == null) {
-                        LOG.fine(toString() + "no original line found for line " + lineNum + " in lineset; probably document closed" );
-                    } else {
-                        LOG.fine(toString() + "Line class : " + line.getClass().getName() + ", count: " + line.getAnnotationCount() );
-
-                        String text = line.getText();
-                        if (text != null) {
-                            Annotatable anno = line;
-                            try {
-                                int firstNonWhiteSpaceCharIndex = findFirstNonWhiteSpaceCharIndex(text);
-                                if (firstNonWhiteSpaceCharIndex == -1)
-                                    continue;
-                                int lastNonWhiteSpaceCharIndex = findLastNonWhiteSpaceCharIndex(text);
-                                String initialWhiteSpace = text.substring(0, firstNonWhiteSpaceCharIndex);
-                                String content = text.substring(firstNonWhiteSpaceCharIndex, lastNonWhiteSpaceCharIndex + 1);
-                                int start = expandedLength(0, initialWhiteSpace, tabSize);
-                                int length = expandedLength(start, content, tabSize);
-
-                                anno = line.createPart(start, length);
-                            }
-                            catch (Exception ex) {
-                                // SIOOBE sometimes, wrong counting with tabs?, attach to whole line
-                            }
-
-                            PMDScanAnnotation annotation = PMDScanAnnotation.getNewInstance();
-                            String msg = fault.getMessage();
-                            annotation.setErrorMessage( msg );
-                            annotation.attach( anno );
-                            anno.addPropertyChangeListener( annotation );
+                    String text = line.getText();
+                    if (text != null) {
+                        Annotatable anno = line;
+                        try {
+                            int firstNonWhiteSpaceCharIndex = findFirstNonWhiteSpaceCharIndex(text);
+                            if (firstNonWhiteSpaceCharIndex == -1)
+                                continue;
+                            int lastNonWhiteSpaceCharIndex = findLastNonWhiteSpaceCharIndex(text);
+                            String initialWhiteSpace = text.substring(0, firstNonWhiteSpaceCharIndex);
+                            String content = text.substring(firstNonWhiteSpaceCharIndex, lastNonWhiteSpaceCharIndex + 1);
+                            int start = expandedLength(0, initialWhiteSpace, tabSize);
+                            int length = expandedLength(start, content, tabSize);
+                            
+                            anno = line.createPart(start, length);
                         }
+                        catch (Exception ex) {
+                            // SIOOBE sometimes, wrong counting with tabs?, attach to whole line
+                        }
+                        
+                        PMDScanAnnotation annotation = PMDScanAnnotation.getNewInstance();
+                        String msg = fault.getMessage();
+                        annotation.setErrorMessage( msg );
+                        annotation.attach( anno );
+                        anno.addPropertyChangeListener( annotation );
                     }
                 }
-            } catch( IOException e ) {
-                ErrorManager.getDefault().notify(e);
             }
+        } catch( IOException e ) {
+            Exceptions.printStackTrace(e);
         }
-
+    }
+    
         private int findFirstNonWhiteSpaceCharIndex(String text) {
             for (int i = 0; i < text.length(); i++) {
                 char c = text.charAt(i);
@@ -194,32 +190,11 @@ public class Scanner implements Runnable, DocumentListener {
             return length;
         }
         
-	public void cancel() {
-            if (task != null) {
-                task.cancel();
-                task = null;
-            }
-            detachFromDoc();
-	}
+    public void cancel() {
+        cancelled = true;
+    }
 	
-	public String toString() {
-		return "PMDScanner[" + doc + "]";
-	}
-	
-	public void changedUpdate(DocumentEvent evt) {
-		// Ignore these; they are just attribute changes. Actual typing appears as remove and insert updates.
-	}
-	
-	public void insertUpdate(DocumentEvent evt) {
-            if (task != null) {
-                task.schedule(PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000);
-            }
-	}
-	
-	public void removeUpdate(DocumentEvent evt) {
-            if (task != null) {
-                task.schedule(PMDOptionsSettings.getDefault().getScanInterval().intValue() * 1000);
-            }
-	}
-	
+    @Override public String toString() {
+            return "PMDScanner[" + fo + "]";
+    }
 }

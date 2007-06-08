@@ -68,7 +68,6 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.CookieAction;
 import pmd.config.PMDOptionsSettings;
-import pmd.scan.EditorChangeListener;
 
 /**
  * Action that runs PMD on the currently selected Java file or set of Java files.
@@ -76,10 +75,6 @@ import pmd.scan.EditorChangeListener;
  * ({@link #performAction}),
  * and by the real-time scanner when a Java file needs to be scanned
  * ({@link #checkCookies}).
- *
- * Important side effect of this class is that it initializes
- * EditorChangeListener so this has to be loaded during startup to
- * enable real-time scanning.
  */
 public class RunPMDAction extends CookieAction {
     
@@ -91,7 +86,6 @@ public class RunPMDAction extends CookieAction {
      */
     protected void initialize() {
         super.initialize();
-        EditorChangeListener.initialize();
         putValue("noIconInMenu", Boolean.TRUE);
     }
     /**
