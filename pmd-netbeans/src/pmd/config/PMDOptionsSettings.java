@@ -258,9 +258,11 @@ public class PMDOptionsSettings {
     public CustomRuleSetSettings getRulesets() {
         CustomRuleSetSettings crss = new CustomRuleSetSettings();
         try {
-            crss.setIncludeStdRules(Boolean.valueOf(getProperty(PROP_INCLUDE_STD_RULES)));
-            
             Preferences prefs = NbPreferences.forModule(PMDOptionsSettings.class);
+            boolean inclStdRueset = 
+                    prefs.getBoolean(PROP_INCLUDE_STD_RULES, true);
+            crss.setIncludeStdRules(inclStdRueset);
+            
             if (prefs.nodeExists(NODE_RULESETS)) {
                 List<String> rulesets = new ArrayList<String>();
                 for (String s: prefs.node(NODE_RULESETS).keys()) {
