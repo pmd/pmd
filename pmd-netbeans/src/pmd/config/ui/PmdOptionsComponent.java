@@ -29,7 +29,6 @@ package pmd.config.ui;
 
 import java.awt.Component;
 import java.awt.Dialog;
-import java.util.Properties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -56,19 +55,10 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
     
     void setEnableScan (boolean es) {
         jCheckBox1.setSelected(es);
-        jTextField1.setEnabled(es);
     }
     
     boolean isEnableScan () {
         return jCheckBox1.isSelected();
-    }
-    
-    void setScanInterval (int i) {
-        jTextField1.setText(Integer.toString(i));
-    }
-    
-    int getScanInterval () {
-        return Integer.parseInt(jTextField1.getText());
     }
     
     void setRules(RulesConfig rules) {
@@ -94,9 +84,8 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        jLabel1 = new javax.swing.JLabel();
+
         jCheckBox1 = new javax.swing.JCheckBox();
-        jTextField1 = new javax.swing.JTextField();
         jPanelRules = new javax.swing.JPanel();
         jLblRules = new javax.swing.JLabel();
         jBtnRules = new javax.swing.JButton();
@@ -104,25 +93,19 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
         jLblRulesets = new javax.swing.JLabel();
         jBtnRulesets = new javax.swing.JButton();
 
-        jLabel1.setLabelFor(jTextField1);
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_ScanInterval"));
-
-        org.openide.awt.Mnemonics.setLocalizedText(jCheckBox1, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_EnableScan"));
+        org.openide.awt.Mnemonics.setLocalizedText(jCheckBox1, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_EnableScan")); // NOI18N
         jCheckBox1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox1ActionPerformed(evt);
             }
         });
 
-        jTextField1.setColumns(3);
-        jTextField1.setText("0");
+        jPanelRules.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesPanel"))); // NOI18N
 
-        jPanelRules.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesPanel")));
-        org.openide.awt.Mnemonics.setLocalizedText(jLblRules, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesText"));
+        org.openide.awt.Mnemonics.setLocalizedText(jLblRules, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesText")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(jBtnRules, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesBtn"));
+        org.openide.awt.Mnemonics.setLocalizedText(jBtnRules, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesBtn")); // NOI18N
         jBtnRules.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtnRulesActionPerformed(evt);
@@ -136,7 +119,7 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanelRulesLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(jLblRules)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 59, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 77, Short.MAX_VALUE)
                 .add(jBtnRules)
                 .addContainerGap())
         );
@@ -149,10 +132,11 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanelRulesets.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesetsPanel")));
-        org.openide.awt.Mnemonics.setLocalizedText(jLblRulesets, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesetsText"));
+        jPanelRulesets.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesetsPanel"))); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(jBtnRulesets, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesetBtn"));
+        org.openide.awt.Mnemonics.setLocalizedText(jLblRulesets, "<html>Use this button to specify additional rulesets<br>and customize their properties.");
+
+        org.openide.awt.Mnemonics.setLocalizedText(jBtnRulesets, org.openide.util.NbBundle.getMessage(PmdOptionsComponent.class, "LBL_RulesetBtn")); // NOI18N
         jBtnRulesets.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBtnRulesetsActionPerformed(evt);
@@ -166,7 +150,7 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanelRulesetsLayout.createSequentialGroup()
                 .addContainerGap()
                 .add(jLblRulesets)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 14, Short.MAX_VALUE)
                 .add(jBtnRulesets, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 146, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -186,28 +170,19 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jCheckBox1)
-                    .add(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .add(jLabel1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(332, Short.MAX_VALUE))
-            .add(jPanelRules, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .add(jPanelRulesets, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jPanelRulesets, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanelRules, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(jCheckBox1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel1)
-                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanelRules, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(8, 8, 8)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanelRulesets, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -244,7 +219,6 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
     }//GEN-LAST:event_jBtnRulesetsActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
-        jTextField1.setEnabled(jCheckBox1.isSelected());
         controller.dataChanged();
     }//GEN-LAST:event_jCheckBox1ActionPerformed
 
@@ -253,12 +227,10 @@ public class PmdOptionsComponent extends javax.swing.JPanel {
     private javax.swing.JButton jBtnRules;
     private javax.swing.JButton jBtnRulesets;
     private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLblRules;
     private javax.swing.JLabel jLblRulesets;
     private javax.swing.JPanel jPanelRules;
     private javax.swing.JPanel jPanelRulesets;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
     
 }

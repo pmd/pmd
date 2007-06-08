@@ -69,18 +69,10 @@ public class PMDOptionsSettings {
 	 */
 	public final static String PROP_RULESETS = "rulesetz";
 	
-	/** The constant for the interval property. The value of this property is the interval at which
-	 * source code in the active editor document should be automatically PMD-scanned, in seconds.
-	 */
-	public final static String PROP_SCAN_INTERVAL = "interval";
-	
 	/** The constant for the EnableScan property. This property defines whether automatic PMD source code
 	 * scanning is enabled or not.
 	 */
 	public final static String PROP_ENABLE_SCAN = "EnableScan";
-	
-	/** Default interval for scanning, five seconds. **/
-	public static final int DEFAULT_SCAN_INTERVAL = 5;
 	
 	/** The default rules.*/
 	private static final String DEFAULT_RULES =
@@ -344,23 +336,6 @@ public class PMDOptionsSettings {
     public void setScanEnabled(Boolean scanEnabled) {
         NbPreferences.forModule(PMDOptionsSettings.class).putBoolean(PROP_ENABLE_SCAN, scanEnabled);
         pcs.firePropertyChange(PROP_ENABLE_SCAN, null, null);
-    }
-    
-    /** Getter for property scanInterval.
-     * @return Value of property scanInterval.
-     *
-     */
-    public Integer getScanInterval() {
-        return NbPreferences.forModule(PMDOptionsSettings.class).getInt(PROP_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL);
-    }
-    
-    /** Setter for property scanInterval.
-     * @param scanInterval New value of property scanInterval.
-     *
-     */
-    public void setScanInterval(Integer scanInterval) {
-        NbPreferences.forModule(PMDOptionsSettings.class).putInt(PROP_SCAN_INTERVAL, scanInterval);
-        pcs.firePropertyChange(PROP_SCAN_INTERVAL, null, null);
     }
     
 	/**
