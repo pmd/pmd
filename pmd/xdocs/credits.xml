@@ -55,6 +55,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Kris Jurka - CPD patch to accept ".C" as a filename extension for C/C++ files</li>
             <li>Florian Deissenboeck - reported several JDK 1.5 grammar bugs</li>
             <li>Maarten ter Huurne - BooleanGetMethodName, AddEmptyString, Noticed mispeling in AvoidArrayLoops rule</li>
             <li>Romain Pelisse - DoNotExtendJavaLangError, JspEncoding, MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention</li>

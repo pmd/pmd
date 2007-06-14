@@ -10,7 +10,7 @@ public class CPPLanguage implements Language {
 
     public static class CPPFileOrDirectoryFilter implements FilenameFilter {
         public boolean accept(File dir, String filename) {
-            return filename.endsWith(".h") || filename.endsWith(".c") || filename.endsWith(".cpp") || filename.endsWith(".cxx") || filename.endsWith(".cc") || (new File(dir.getAbsolutePath() + fileSeparator + filename).isDirectory());
+            return filename.endsWith(".h") || filename.endsWith(".c") || filename.endsWith(".cpp") || filename.endsWith(".cxx") || filename.endsWith(".cc") || filename.endsWith(".C") || (new File(dir.getAbsolutePath() + fileSeparator + filename).isDirectory());
         }
     }
 
