@@ -1773,18 +1773,13 @@ void BlockStatement():
 |
   Statement()
 |
-    /* TODO:  I think this is not strict enough, but it does fix
-    problems with parsing annotations before method-local classes.
-    */
-  Annotation()
-|
   /*
   TODO: Seems like we should be discarding the "final"
   after using it in the lookahead; I added a ["final|abstract"] inside
   ClassOrInterfaceDeclaration, but that seems like a hack that
   could break other things...
   */
-  LOOKAHEAD( ["final"|"abstract"] "class") ClassOrInterfaceDeclaration(0)
+  LOOKAHEAD( [Annotation()] ["final"|"abstract"] "class") [Annotation()] ClassOrInterfaceDeclaration(0)
 }
 
 void LocalVariableDeclaration() :
