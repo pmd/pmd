@@ -86,14 +86,14 @@ public class CPD {
             // TODO refactor this thing into a separate class
             String signature = file.getName() + '_' + file.length();
             if (current.contains(signature)) {
-                System.out.println("Skipping " + file.getAbsolutePath() + " since it appears to be a duplicate file and --skip-duplicate-files is set");
+                System.err.println("Skipping " + file.getAbsolutePath() + " since it appears to be a duplicate file and --skip-duplicate-files is set");
                 return;
             }
             current.add(signature);
         }
 
         if (!file.getCanonicalPath().equals(file.getAbsolutePath())) {
-            System.out.println("Skipping " + file + " since it appears to be a symlink");
+            System.err.println("Skipping " + file + " since it appears to be a symlink");
             return;
         }
 

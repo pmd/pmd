@@ -29,10 +29,10 @@ public class CPPTokenizer implements Tokenizer {
                 currToken = CPPParserTokenManager.getNextToken();
             }
             tokenEntries.add(TokenEntry.getEOF());
-            System.out.println("Added " + sourceCode.getFileName());
+            System.err.println("Added " + sourceCode.getFileName());
         } catch (TokenMgrError err) {
             err.printStackTrace();
-            System.out.println("Skipping " + sourceCode.getFileName() + " due to parse error");
+            System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
             tokenEntries.add(TokenEntry.getEOF());
         }
     }
