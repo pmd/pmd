@@ -24,7 +24,7 @@ import java.util.Properties;
  * <project name="CPDProj" default="main" basedir=".">
  * <taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
  * <target name="main">
- * <cpd language="java" ignoreIdentifiers="true" ignoreLiterals="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
+ * <cpd encoding="UTF-16LE" language="java" ignoreIdentifiers="true" ignoreLiterals="true" minimumTokenCount="100" outputFile="c:\cpdrun.txt">
  * <fileset dir="/path/to/my/src">
  * <include name="*.java"/>
  * </fileset>
@@ -46,6 +46,7 @@ public class CPDTask extends Task {
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
     private File outputFile;
+    private String encoding = System.getProperty("file.encoding");
     private List<FileSet> filesets = new ArrayList<FileSet>();
 
     public void execute() throws BuildException {
@@ -54,6 +55,7 @@ public class CPDTask extends Task {
 
             log("Tokenizing files", Project.MSG_INFO);
             CPD cpd = new CPD(minimumTokenCount, createLanguage());
+            cpd.setEncoding(encoding);
             tokenizeFiles(cpd);
 
             log("Starting to analyze code", Project.MSG_INFO);
@@ -88,11 +90,13 @@ public class CPDTask extends Task {
             log("No duplicates over " + minimumTokenCount + " tokens found", Project.MSG_INFO);
         }
         Renderer renderer = createRenderer();
+        FileReporter reporter;
         if (outputFile.isAbsolute()) {
-            new FileReporter(outputFile).report(renderer.render(cpd.getMatches()));
+            reporter = new FileReporter(outputFile, encoding);
         } else {
-            new FileReporter(new File(getProject().getBaseDir(), outputFile.toString()));
+            reporter = new FileReporter(new File(getProject().getBaseDir(), outputFile.toString()), encoding);
         }
+        reporter.report(renderer.render(cpd.getMatches()));
     }
 
     private void tokenizeFiles(CPD cpd) throws IOException {
@@ -120,7 +124,7 @@ public class CPDTask extends Task {
         } else if (format.equals(CSV_FORMAT)) {
             return new CSVRenderer();
         }
-        return new XMLRenderer();
+        return new XMLRenderer(encoding);
     }
 
     private void validateFields() throws BuildException {
@@ -161,6 +165,11 @@ public class CPDTask extends Task {
         language = languageAttribute.getValue();
     }
 
+    public void setEncoding(String encodingValue) {
+        encoding = encodingValue;
+    }
+
+    // TODO can this be an enum?
     public static class FormatAttribute extends EnumeratedAttribute {
         private static final String[] FORMATS = new String[]{XML_FORMAT, TEXT_FORMAT, CSV_FORMAT};
         public String[] getValues() {
@@ -168,6 +177,7 @@ public class CPDTask extends Task {
         }
     }
 
+    // TODO can this be an enum?
     public static class LanguageAttribute extends EnumeratedAttribute {
         private static final String[] LANGUAGES = new String[]{LanguageFactory.JAVA_KEY, LanguageFactory.JSP_KEY, LanguageFactory.CPP_KEY, LanguageFactory.C_KEY, LanguageFactory.PHP_KEY, LanguageFactory.RUBY_KEY };
         public String[] getValues() {

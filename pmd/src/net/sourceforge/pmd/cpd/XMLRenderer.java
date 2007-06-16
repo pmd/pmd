@@ -12,10 +12,22 @@ import java.util.Iterator;
  * @author Philippe T'Seyen
  */
 public class XMLRenderer implements Renderer {
+
+    private String encoding;
+
+    public XMLRenderer() {
+        this(System.getProperty("file.encoding"));
+    }
+    
+    public XMLRenderer(String e) {
+        this.encoding = e;
+    }
 	
     public String render(Iterator<Match> matches) {
         StringBuffer buffer = new StringBuffer(300);
-        buffer.append("<?xml version=\"1.0\"  encoding=\"UTF-8\"?>");
+        buffer.append("<?xml version=\"1.0\" encoding=\"");
+        buffer.append(encoding);
+        buffer.append("\"?>").append(PMD.EOL);
         buffer.append("<pmd-cpd>").append(PMD.EOL);
         Match match;
         while (matches.hasNext()) {

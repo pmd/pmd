@@ -103,11 +103,11 @@ public class CPD {
         source.put(sourceCode.getFileName(), sourceCode);
     }
 
-    public static Renderer getRendererFromString(String name) {
+    public static Renderer getRendererFromString(String name, String encoding) {
         if (name.equalsIgnoreCase("text") || name.equals("")) {
             return new SimpleRenderer();
         } else if ("xml".equals(name)) {
-            return new XMLRenderer();
+            return new XMLRenderer(encoding);
         }  else if ("csv".equals(name)) {
             return new CSVRenderer();
         }
@@ -162,7 +162,7 @@ public class CPD {
             int minimumTokens = Integer.parseInt(findRequiredStringValue(args, "--minimum-tokens"));
             LanguageFactory f = new LanguageFactory();
             Language language = f.createLanguage(languageString);
-            Renderer renderer = CPD.getRendererFromString(formatString);
+            Renderer renderer = CPD.getRendererFromString(formatString, encodingString);
             CPD cpd = new CPD(minimumTokens, language);
             cpd.setEncoding(encodingString);
             if (skipDuplicateFiles) {
