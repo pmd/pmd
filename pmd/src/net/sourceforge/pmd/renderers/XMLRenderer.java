@@ -19,6 +19,7 @@ public class XMLRenderer extends AbstractRenderer {
     public void render(Writer writer, Report report) throws IOException {
 
         StringBuffer buf = new StringBuffer();
+        // FIXME - hardcoded character encoding, booooooo
         writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + createVersionAttr() + createTimestampAttr() + createTimeElapsedAttr(report) + '>' + PMD.EOL);
         String filename = null;
 
