@@ -1773,6 +1773,9 @@ void BlockStatement():
 |
   Statement()
 |
+    /* TODO:  I think this is not strict enough, but it does fix
+    problems with parsing annotations before method-local classes.
+    */
   Annotation()
 |
   /*
