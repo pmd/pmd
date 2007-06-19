@@ -47,6 +47,7 @@ public class SourceCode {
                 }
                 return lines;
             } catch (Exception e) {
+                e.printStackTrace();
                 throw new RuntimeException("Problem while reading " + getFileName() + ":" + e.getMessage());
             } finally {
                 try {

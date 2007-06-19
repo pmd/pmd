@@ -4,6 +4,8 @@
 package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.JavaParserConstants;
 import net.sourceforge.pmd.ast.JavaParserTokenManager;
 import net.sourceforge.pmd.ast.Token;
@@ -33,8 +35,7 @@ public class JavaTokenizer implements Tokenizer {
         keyword and goes back into "accumulate mode" when it hits a semicolon.
         This could probably be turned into some objects.
         */
-
-        // TODO - allow for JDK 1.5 selection
+        // Note that Java version is irrelevant for tokenizing
         JavaParserTokenManager tokenMgr = new TargetJDK1_4().createJavaParserTokenManager(new StringReader(buffer.toString()));
         Token currentToken = tokenMgr.getNextToken();
         boolean inDiscardingState = false;
