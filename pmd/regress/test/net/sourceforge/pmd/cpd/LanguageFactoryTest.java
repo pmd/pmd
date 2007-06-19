@@ -4,11 +4,7 @@
 package test.net.sourceforge.pmd.cpd;
 
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.cpd.AnyLanguage;
-import net.sourceforge.pmd.cpd.CPPLanguage;
-import net.sourceforge.pmd.cpd.JavaLanguage;
-import net.sourceforge.pmd.cpd.LanguageFactory;
-import net.sourceforge.pmd.cpd.PHPLanguage;
+import net.sourceforge.pmd.cpd.*;
 
 import org.junit.Test;
 public class LanguageFactoryTest {
@@ -20,7 +16,7 @@ public class LanguageFactoryTest {
         assertTrue(f.createLanguage(LanguageFactory.CPP_KEY) instanceof CPPLanguage);
         assertTrue(f.createLanguage(LanguageFactory.C_KEY) instanceof CPPLanguage);
         assertTrue(f.createLanguage(LanguageFactory.PHP_KEY) instanceof PHPLanguage);
-        assertTrue(f.createLanguage("fiddlesticks") instanceof AnyLanguage);
+        assertTrue(f.createLanguage("ruby") instanceof RubyLanguage);
     }
 
     public static junit.framework.Test suite() {
