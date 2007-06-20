@@ -33,7 +33,7 @@ PMD now requires JDK 1.5 to be compiled. Java 1.4 support is provided using Retr
 TypeResolution now looks at some ASTName nodes.
 Memory footprint reduced: most renderers now use less memory by generating reports on the fly.
 Ant task now takes advantage of multithreading code and on the fly renderers
-Ant task now offers debug option
+Ant task now logs more debug info when using -verbose
 
 December 19, 2006 - 3.9:
 New rules:

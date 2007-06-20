@@ -13,6 +13,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.pmd.DataSource;
 import net.sourceforge.pmd.FileDataSource;
@@ -28,6 +30,7 @@ import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.AntLogHandler;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -49,7 +52,6 @@ public class PMDTask extends Task {
     private String encoding = System.getProperty("file.encoding");
     private boolean failOnError;
     private boolean failOnRuleViolation;
-    private boolean debugEnabled = false;
     private String targetJDK = "1.4";
     private String failuresPropertyName;
     private String excludeMarker = PMD.EXCLUDE_MARKER;
@@ -74,10 +76,6 @@ public class PMDTask extends Task {
 
     public void setFailOnRuleViolation(boolean fail) {
         this.failOnRuleViolation = fail;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debugEnabled = debug;
     }
 
     public void setRuleSetFiles(String ruleSetFiles) {
@@ -130,6 +128,12 @@ public class PMDTask extends Task {
     public void execute() throws BuildException {
         validate();
 
+        //Some magic to enable Ant logging for code that uses a Logger
+        Logger rootLogger = Logger.getLogger("");
+        rootLogger.setLevel(Level.FINEST);   //The Ant logger filters itself
+        rootLogger.removeHandler(rootLogger.getHandlers()[0]);
+        rootLogger.addHandler(new AntLogHandler(this));
+        
         ruleSetFiles = new SimpleRuleSetNameMapper(ruleSetFiles).getRuleSets();
 
         RuleSetFactory ruleSetFactory = new RuleSetFactory() {
@@ -225,7 +229,7 @@ public class PMDTask extends Task {
             try {
                 PMD.processFiles(cpus, ruleSetFactory, sourceType, files, ctx,
                     renderers, ruleSetFiles,
-                    debugEnabled, shortFilenames, inputPath,
+                    shortFilenames, inputPath,
                     encoding, excludeMarker);
             } catch (RuntimeException pmde) {
                 pmde.printStackTrace();

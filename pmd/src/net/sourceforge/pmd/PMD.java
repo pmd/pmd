@@ -3,16 +3,6 @@
  */
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.ast.CompilationUnit;
-import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.cpd.FileFinder;
-import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
-import net.sourceforge.pmd.parsers.Parser;
-import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
-import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
-import net.sourceforge.pmd.util.Benchmark;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,14 +28,28 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import net.sourceforge.pmd.ast.CompilationUnit;
+import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.cpd.FileFinder;
+import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
+import net.sourceforge.pmd.parsers.Parser;
+import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
+import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
+import net.sourceforge.pmd.util.Benchmark;
+import net.sourceforge.pmd.util.ConsoleLogHandler;
 
 public class PMD {
     public static final String EOL = System.getProperty("line.separator", "\n");
     public static final String VERSION = "3.9";
     public static final String EXCLUDE_MARKER = "NOPMD";
 
+    private static final Logger LOG = Logger.getLogger(PMD.class.getName());
 
     private String excludeMarker = EXCLUDE_MARKER;
     private SourceTypeDiscoverer sourceTypeDiscoverer = new SourceTypeDiscoverer();
@@ -240,6 +244,8 @@ public class PMD {
         long start = System.nanoTime();
         CommandLineOptions opts = new CommandLineOptions(args);
 
+        initializeLogger(opts.debugEnabled());
+        
         long startFiles = System.nanoTime();
         SourceFileSelector fileSelector = new SourceFileSelector();
 
@@ -258,20 +264,16 @@ public class PMD {
 
         SourceType sourceType;
         if (opts.getTargetJDK().equals("1.3")) {
-            if (opts.debugEnabled())
-                System.out.println("In JDK 1.3 mode");
+            LOG.fine("In JDK 1.3 mode");
             sourceType = SourceType.JAVA_13;
         } else if (opts.getTargetJDK().equals("1.5")) {
-            if (opts.debugEnabled())
-                System.out.println("In JDK 1.5 mode");
+            LOG.fine("In JDK 1.5 mode");
             sourceType = SourceType.JAVA_15;
         } else if (opts.getTargetJDK().equals("1.6")) {
-            if (opts.debugEnabled())
-                System.out.println("In JDK 1.6 mode");
+            LOG.fine("In JDK 1.6 mode");
             sourceType = SourceType.JAVA_16;
         } else {
-            if (opts.debugEnabled())
-                System.out.println("In JDK 1.4 mode");
+            LOG.fine("In JDK 1.4 mode");
             sourceType = SourceType.JAVA_14;
         }
 
@@ -303,16 +305,16 @@ public class PMD {
                 ruleSetFactory.setMinimumPriority(opts.getMinPriority());
     
                 RuleSets rulesets = ruleSetFactory.createRuleSets(opts.getRulesets());
-                printRuleNamesInDebug(opts.debugEnabled(), rulesets);
+                printRuleNamesInDebug(rulesets);
                 long endLoadRules = System.nanoTime();
                 Benchmark.mark(Benchmark.TYPE_LOAD_RULES, endLoadRules - startLoadRules, 0);
     
                 processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx, renderers,
-                        opts.getRulesets(), opts.debugEnabled(), opts.shortNamesEnabled(),
+                        opts.getRulesets(), opts.shortNamesEnabled(),
                         opts.getInputPath(), opts.getEncoding(), opts.getExcludeMarker());
             } catch (RuleSetNotFoundException rsnfe) {
+                LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
                 System.out.println(opts.usage());
-                rsnfe.printStackTrace();
             }
 
             reportStart = System.nanoTime();
@@ -324,11 +326,11 @@ public class PMD {
                 w = null;
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println(opts.usage());
-            if (opts.debugEnabled()) {
-                e.printStackTrace();
-            }
+            LOG.severe(e.getMessage());
+            
+            LOG.log(Level.FINE, "Exception during processing", e);	//Only displayed when debug logging is on
+ 
+            LOG.info(opts.usage());
         } finally {
             if (opts.getReportFile() != null && w != null) {
                 try {
@@ -348,21 +350,33 @@ public class PMD {
         }
     }
 
+    private static void initializeLogger(boolean debugEnabled) {
+        Logger rootLogger = Logger.getLogger("");
+        rootLogger.removeHandler(rootLogger.getHandlers()[0]);
+        rootLogger.addHandler(new ConsoleLogHandler());
+        if (debugEnabled) {
+            rootLogger.setLevel(Level.FINER);
+            LOG.setLevel(Level.FINER);              //Need to do this, since the static logger has already been initialized at this point
+        } else {
+            //Info-level and up is normally logged, which matches Ant logging
+            rootLogger.setLevel(Level.INFO);
+            LOG.setLevel(Level.INFO);
+        }
+    }
+
     private static class PmdRunnable extends PMD implements Callable<Report> {
         private final ExecutorService executor;
         private final DataSource dataSource;
         private final String fileName;
-        private final boolean debugEnabled;
         private final String encoding;
         private final String rulesets;
         private final List<Renderer> renderers;
 
         public PmdRunnable(ExecutorService executor, DataSource dataSource, String fileName, SourceType sourceType,
-                List<Renderer> renderers, boolean debugEnabled, String encoding, String rulesets, String excludeMarker) {
+                List<Renderer> renderers, String encoding, String rulesets, String excludeMarker) {
             this.executor = executor;
             this.dataSource = dataSource;
             this.fileName = fileName;
-            this.debugEnabled = debugEnabled;
             this.encoding = encoding;
             this.rulesets = rulesets;
             this.renderers = renderers;
@@ -381,8 +395,8 @@ public class PMD {
             ctx.setReport(report);
 
             ctx.setSourceCodeFilename(fileName);
-            if (debugEnabled) {
-                System.out.println("Processing " + ctx.getSourceCodeFilename());
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.fine("Processing " + ctx.getSourceCodeFilename());
             }
             for(Renderer r: renderers) {
                 r.startFileAnalysis(dataSource);
@@ -392,17 +406,15 @@ public class PMD {
                 InputStream stream = new BufferedInputStream(dataSource.getInputStream());
                 processFile(stream, encoding, rs, ctx);
             } catch (PMDException pmde) {
-                if (debugEnabled) {
-                    pmde.getReason().printStackTrace();
-                }
+                LOG.log(Level.FINE, "Error while processing file", pmde.getReason());
+
                 report.addError(
                         new Report.ProcessingError(pmde.getMessage(),
                         fileName));
             } catch (IOException ioe) {
                 // unexpected exception: log and stop executor service
-                if (debugEnabled) {
-                    ioe.printStackTrace();
-                }
+                LOG.log(Level.FINE, "IOException during processing", ioe);
+
                 report.addError(
                         new Report.ProcessingError(ioe.getMessage(),
                         fileName));
@@ -410,9 +422,8 @@ public class PMD {
                 executor.shutdownNow();
             } catch (RuntimeException re) {
                 // unexpected exception: log and stop executor service
-                if (debugEnabled) {
-                    re.printStackTrace();
-                }
+                LOG.log(Level.FINE, "RuntimeException during processing", re);
+
                 report.addError(
                         new Report.ProcessingError(re.getMessage(),
                         fileName));
@@ -506,7 +517,7 @@ public class PMD {
      * @throws IOException If one of the files could not be read
      */
     public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List<DataSource> files, RuleContext ctx,
-            List<Renderer> renderers, String rulesets, boolean debugEnabled, final boolean shortNamesEnabled, final String inputPath,
+            List<Renderer> renderers, String rulesets, final boolean shortNamesEnabled, final String inputPath,
             String encoding, String excludeMarker) {
 
         /*
@@ -533,7 +544,7 @@ public class PMD {
                 String niceFileName = dataSource.getNiceFileName(shortNamesEnabled,
                         inputPath);
     
-                PmdRunnable r = new PmdRunnable(executor, dataSource, niceFileName, sourceType, renderers, debugEnabled,
+                PmdRunnable r = new PmdRunnable(executor, dataSource, niceFileName, sourceType, renderers,
                                                 encoding, rulesets, excludeMarker);
     
                 Future<Report> future = executor.submit(r);
@@ -591,8 +602,8 @@ public class PMD {
                 ctx.setReport(report);
 
                 ctx.setSourceCodeFilename(niceFileName);
-                if (debugEnabled) {
-                    System.out.println("Processing " + ctx.getSourceCodeFilename());
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.fine("Processing " + ctx.getSourceCodeFilename());
                 }
                 for(Renderer r: renderers) {
                     r.startFileAnalysis(dataSource);
@@ -602,25 +613,22 @@ public class PMD {
                     InputStream stream = new BufferedInputStream(dataSource.getInputStream());
                     pmd.processFile(stream, encoding, rs, ctx);
                 } catch (PMDException pmde) {
-                    if (debugEnabled) {
-                        pmde.getReason().printStackTrace();
-                    }
+                    LOG.log(Level.FINE, "Error while processing file", pmde.getReason());
+
                     report.addError(
                             new Report.ProcessingError(pmde.getMessage(),
                                     niceFileName));
                 } catch (IOException ioe) {
                     // unexpected exception: log and stop executor service
-                    if (debugEnabled) {
-                        ioe.printStackTrace();
-                    }
+                    LOG.log(Level.FINE, "Unable to read source file", ioe);
+
                     report.addError(
                             new Report.ProcessingError(ioe.getMessage(),
                                     niceFileName));
                 } catch (RuntimeException re) {
                     // unexpected exception: log and stop executor service
-                    if (debugEnabled) {
-                        re.printStackTrace();
-                    }
+                    LOG.log(Level.FINE, "RuntimeException while processing file", re);
+                    
                     report.addError(
                             new Report.ProcessingError(re.getMessage(),
                                     niceFileName));
@@ -659,18 +667,15 @@ public class PMD {
             String niceFileName = dataSource.getNiceFileName(shortNamesEnabled,
                     inputPath);
             ctx.setSourceCodeFilename(niceFileName);
-            if (debugEnabled) {
-                System.out.println("Processing " + ctx.getSourceCodeFilename());
-            }
-
+            LOG.fine("Processing " + ctx.getSourceCodeFilename());
+            
             try {
                 InputStream stream = new BufferedInputStream(dataSource
                         .getInputStream());
                 processFile(stream, encoding, rulesets, ctx);
             } catch (PMDException pmde) {
-                if (debugEnabled) {
-                    pmde.getReason().printStackTrace();
-                }
+                LOG.log(Level.FINE, "Error while processing files", pmde.getReason());
+
                 ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), niceFileName));
             }
         }
@@ -682,10 +687,10 @@ public class PMD {
      * @param debugEnabled the boolean indicating if debug is enabled
      * @param rulesets     the RuleSets to print
      */
-    private static void printRuleNamesInDebug(boolean debugEnabled, RuleSets rulesets) {
-        if (debugEnabled) {
+    private static void printRuleNamesInDebug(RuleSets rulesets) {
+        if (LOG.isLoggable(Level.FINER)) {
             for (Rule r: rulesets.getAllRules()) {
-                System.out.println("Loaded rule " + r.getName());
+                LOG.finer("Loaded rule " + r.getName());
             }
         }
     }
