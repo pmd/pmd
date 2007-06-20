@@ -4,8 +4,6 @@
 package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.JavaParserTokenManager;
-import net.sourceforge.pmd.ast.JavaCharStream;
 
 import java.io.InputStream;
 import java.io.Reader;
