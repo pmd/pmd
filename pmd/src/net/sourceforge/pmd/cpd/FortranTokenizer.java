@@ -13,17 +13,17 @@ public class FortranTokenizer extends AbstractTokenizer implements Tokenizer
 {
 	public FortranTokenizer()
 	{
-//		 setting markers for "string" in ruby
-		this.stringToken = new ArrayList();
+//		 setting markers for "string" in Fortran
+		this.stringToken = new ArrayList<String>();
 		this.stringToken.add("\'");
-		// setting markers for 'ignorable character' in Ruby
-		this.ignorableCharacter = new ArrayList();
+		// setting markers for 'ignorable character' in Fortran
+		this.ignorableCharacter = new ArrayList<String>();
 		this.ignorableCharacter.add("(");
 		this.ignorableCharacter.add(")");
 		this.ignorableCharacter.add(",");
 
-		// setting markers for 'ignorable string' in Ruby
-		this.ignorableStmt = new ArrayList();
+		// setting markers for 'ignorable string' in Fortran
+		this.ignorableStmt = new ArrayList<String>();
 		this.ignorableStmt.add("do");
 		this.ignorableStmt.add("while");
 		this.ignorableStmt.add("end");
