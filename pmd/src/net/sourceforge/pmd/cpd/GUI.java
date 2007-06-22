@@ -525,10 +525,7 @@ public class GUI implements CPDListener {
                     long elapsedSeconds = elapsedMillis / 1000;
                     long minutes = (long) Math.floor(elapsedSeconds / 60);
                     long seconds = elapsedSeconds - (minutes * 60);
-                    timeField.setText(""
-                            + munge(String.valueOf(minutes))
-                            + ':'
-                            + munge(String.valueOf(seconds)));
+                    timeField.setText(munge(String.valueOf(minutes)) + ':' + munge(String.valueOf(seconds)));
                 }
 
                 private String munge(String in) {

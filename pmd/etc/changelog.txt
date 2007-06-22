@@ -1,4 +1,4 @@
-???, 2007 - 4.0:
+June 22, 2007 - 3.9.1:
 New rules:
 	Strict exception ruleset: DoNotExtendJavaLangError
 	Basic JSP ruleset: JspEncoding

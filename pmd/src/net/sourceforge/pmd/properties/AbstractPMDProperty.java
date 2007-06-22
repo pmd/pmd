@@ -218,7 +218,7 @@ public abstract class AbstractPMDProperty implements PropertyDescriptor {
 		}
 		
 		if (!type().isAssignableFrom(value.getClass())) {
-			return "" + value + " is not an instance of " + type();
+			return value + " is not an instance of " + type();
 		}
 
 		return null;

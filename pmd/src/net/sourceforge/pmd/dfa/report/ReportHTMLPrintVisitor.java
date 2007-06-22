@@ -78,10 +78,10 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
                     " <head>" +
                     "   <title>PMD</title>" +
                     " </head>" +
-                    " <body>" + PMD.EOL + "" +
+                    " <body>" + PMD.EOL + 
                     "<h2>Package View</h2>" +
                     "<table border=\"1\" align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" +
-                    " <tr>" + PMD.EOL + "" +
+                    " <tr>" + PMD.EOL + 
                     "<th>Package</th>" +
                     "<th>Class</th>" +
                     "<th>#</th>" +
@@ -108,11 +108,11 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
             String str = cnode.getClassName();
 
             classBuf.insert(0,
-                    "<html><head><title>PMD - " + str + "</title></head><body>" + PMD.EOL + "" +
+                    "<html><head><title>PMD - " + str + "</title></head><body>" + PMD.EOL + 
                     "<h2>Class View</h2>" +
                     "<h3 align=\"center\">Class: " + str + "</h3>" +
                     "<table border=\"\" align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" +
-                    " <tr>" + PMD.EOL + "" +
+                    " <tr>" + PMD.EOL + 
                     "<th>Method</th>" +
                     "<th>Violation</th>" +
                     " </tr>" + PMD.EOL);

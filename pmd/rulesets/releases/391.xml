@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 
-<ruleset name="40" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ruleset name="391" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
   <description>
-This ruleset contains links to rules that are new in PMD v4.0
+This ruleset contains links to rules that are new in PMD v3.9.1
   </description>
 
   <rule ref="rulesets/migrating.xml/LongInstantiation"/>
@@ -14,5 +14,14 @@ This ruleset contains links to rules that are new in PMD v4.0
   <rule ref="rulesets/migrating.xml/JUnit4TestShouldUseAfterAnnotation"/>
   <rule ref="rulesets/migrating.xml/JUnit4SuitesShouldUseSuiteAnnotation"/>
   <rule ref="rulesets/migrating.xml/JUnitUseExpected"/>
+  <rule ref="rulesets/strictexception.xml/DoNotExtendJavaLangError"/>
+  <rule ref="rulesets/j2ee.xml/MDBAndSessionBeanNamingConvention"/>
+  <rule ref="rulesets/j2ee.xml/RemoteSessionInterfaceNamingConvention"/>
+  <rule ref="rulesets/j2ee.xml/LocalInterfaceSessionNamingConvention"/>
+  <rule ref="rulesets/j2ee.xml/LocalHomeNamingConvention"/>
+  <rule ref="rulesets/j2ee.xml/RemoteInterfaceNamingConvention"/>
+  <rule ref="rulesets/optimizations.xml/AddEmptyString"/>
+  <rule ref="rulesets/naming.xml/BooleanGetMethodName"/>
+
 </ruleset>
   
