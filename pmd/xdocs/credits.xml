@@ -55,6 +55,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Richard Hands - Fixed CPD symlink confusion</li>
             <li>Romain Pelisse - Restructed CPD tokenizers, added Fortran tokenizer, DoNotExtendJavaLangError, JspEncoding, MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention</li>
             <li>Oleg Skrypnyuk - reported a Java 1.5 grammar bug</li>
             <li>Jeff Campbell - Found bug and suggested fix for problem with XMLRenderer and SuppressWarnings("PMD") annotations</li>

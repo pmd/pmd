@@ -92,11 +92,10 @@ public class CPD {
             current.add(signature);
         }
 
-// TODO - what's the fix for this?
-//        if (!file.getCanonicalPath().equals(file.getAbsolutePath())) {
-//            System.err.println("Skipping " + file + " since it appears to be a symlink");
-//            return;
-//        }
+        if (!file.getCanonicalPath().equals(new File(file.getAbsolutePath()).getCanonicalPath())) {
+            System.err.println("Skipping " + file + " since it appears to be a symlink");
+            return;
+        }
 
         listener.addedFile(fileCount, file);
         SourceCode sourceCode = new SourceCode(new SourceCode.FileCodeLoader(file, encoding));
