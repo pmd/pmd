@@ -53,6 +53,8 @@ public class CPDTask extends Task {
         try {
             validateFields();
 
+            log("Starting run, minimumTokenCount is " + minimumTokenCount, Project.MSG_INFO);
+
             log("Tokenizing files", Project.MSG_INFO);
             CPD cpd = new CPD(minimumTokenCount, createLanguage());
             cpd.setEncoding(encoding);
