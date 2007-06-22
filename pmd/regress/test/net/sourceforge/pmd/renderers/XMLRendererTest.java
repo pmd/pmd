@@ -75,7 +75,7 @@ public class XMLRendererTest extends RuleTst {
         assertEquals("n/a", root.getFirstChild().getNextSibling().getAttributes().getNamedItem("name").getNodeValue());
         assertEquals("Foo", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("rule").getNodeValue());
         assertEquals("RuleSet", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("ruleset").getNodeValue());
-        assertEquals("1", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("line").getNodeValue());
+        assertEquals("1", root.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes().getNamedItem("beginline").getNodeValue());
     }
 
     private static final String TEST1 =

@@ -37,7 +37,10 @@ public class XMLRenderer extends AbstractRenderer {
                 buf.append("\">").append(PMD.EOL);
             }
 
-            buf.append("<violation line=\"").append(rv.getBeginLine());
+            buf.append("<violation beginline=\"").append(rv.getBeginLine());
+            buf.append("\" endline=\"").append(rv.getEndLine());
+            buf.append("\" begincolumn=\"").append(rv.getBeginColumn());
+            buf.append("\" endcolumn=\"").append(rv.getEndColumn());
             buf.append("\" rule=\"");
             StringUtil.appendXmlEscaped(buf, rv.getRule().getName());
             buf.append("\" ruleset=\"");
