@@ -55,7 +55,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Matt Koch - Added more detail to </li>
+            <li>Matt Koch - Added more detail to PMD XML report</li>
             <li>Richard Hands - Fixed CPD symlink confusion</li>
             <li>Romain Pelisse - Restructed CPD tokenizers, added Fortran tokenizer, DoNotExtendJavaLangError, JspEncoding, MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention</li>
             <li>Oleg Skrypnyuk - reported a Java 1.5 grammar bug</li>
