@@ -4,7 +4,7 @@ update the release date in the changelog
 update rulesets/rulesets.properties - add any new ruleset file names
 update release number and tag name in project.xml
 
-ensure all the new rules are listed in a rulesets/releases/391.xml file
+ensure all the new rules are listed in a rulesets/releases/4.0rc1.xml file
 
 ant clean test
 Check in everything
