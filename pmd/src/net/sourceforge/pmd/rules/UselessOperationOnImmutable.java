@@ -3,6 +3,7 @@ package net.sourceforge.pmd.rules;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTType;
@@ -39,7 +40,9 @@ public class UselessOperationOnImmutable extends AbstractRule {
             // FIXME - getUsages will return everything with the same name as the variable, 
             // see JUnit test, case 6. Changing to SimpleNode below, revisit when getUsages is fixed
             SimpleNode sn = no.getLocation();
-            if (!sn.jjtGetParent().jjtGetParent().jjtGetParent().getClass().equals(ASTExpression.class)) {
+            Class parentClass = sn.jjtGetParent().jjtGetParent().jjtGetParent().getClass();
+            if (!(parentClass.equals(ASTExpression.class) || parentClass.equals(ASTConditionalExpression.class))) {
+                System.out.println("Parent: " + sn.jjtGetParent().jjtGetParent().jjtGetParent().getClass());
                 String methodCall = sn.getImage().substring(variableName.length());
                 if (targetMethods.contains(methodCall)) {
                     addViolation(data, sn);

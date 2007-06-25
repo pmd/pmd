@@ -1,3 +1,7 @@
+???, 2007 - 4.0:
+
+Fixed false positive in UselessOperationOnImmutable
+
 June 22, 2007 - 4.0rc1:
 New rules:
 	Strict exception ruleset: DoNotExtendJavaLangError
