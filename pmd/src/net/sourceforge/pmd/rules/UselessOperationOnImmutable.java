@@ -42,7 +42,6 @@ public class UselessOperationOnImmutable extends AbstractRule {
             SimpleNode sn = no.getLocation();
             Class parentClass = sn.jjtGetParent().jjtGetParent().jjtGetParent().getClass();
             if (!(parentClass.equals(ASTExpression.class) || parentClass.equals(ASTConditionalExpression.class))) {
-                System.out.println("Parent: " + sn.jjtGetParent().jjtGetParent().jjtGetParent().getClass());
                 String methodCall = sn.getImage().substring(variableName.length());
                 if (targetMethods.contains(methodCall)) {
                     addViolation(data, sn);
