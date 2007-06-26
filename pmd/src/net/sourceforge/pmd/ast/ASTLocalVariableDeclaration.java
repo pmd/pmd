@@ -77,4 +77,18 @@ public class ASTLocalVariableDeclaration extends AccessNode implements Dimension
         System.out.println(toString(prefix) + out);
         dumpChildren(prefix);
     }
+    
+    /**
+     * Gets the variable name of this field.
+     * This method searches the first VariableDeclartorId node and returns it's image or <code>null</code> if the child node is not found.
+     *
+     * @return a String representing the name of the variable
+     */
+    public String getVariableName() {
+        ASTVariableDeclaratorId decl = getFirstChildOfType(ASTVariableDeclaratorId.class);
+        if (decl != null) {
+            return decl.getImage();
+        }
+        return null;
+    }
 }

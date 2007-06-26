@@ -5,10 +5,12 @@ package net.sourceforge.pmd;
 
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.ast.SimpleNode;
 
@@ -16,6 +18,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
+
 public class RuleViolation implements IRuleViolation {
 
     public static class RuleViolationComparator implements Comparator<IRuleViolation> {
@@ -51,6 +54,7 @@ public class RuleViolation implements IRuleViolation {
 
     private String className;
     private String methodName;
+    private String variableName;
     private String packageName;
     private int beginLine;
     private int endLine;
@@ -76,6 +80,8 @@ public class RuleViolation implements IRuleViolation {
             className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : node.getScope().getEnclosingClassScope().getClassName();
         }
 
+        setVariableNameIfExists(node);
+        
         methodName = node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : node.getScope().getEnclosingMethodScope().getName();
 
         packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
@@ -110,6 +116,17 @@ public class RuleViolation implements IRuleViolation {
             }
         }
     }
+
+       private void setVariableNameIfExists(SimpleNode node) {
+               variableName = (node.getClass().equals(ASTFieldDeclaration.class))
+               ? ((ASTFieldDeclaration)node).getVariableName() : "";
+        
+        variableName = (node.getClass().equals(ASTLocalVariableDeclaration.class))
+               ? ((ASTLocalVariableDeclaration)node).getVariableName() : "";
+        
+        variableName = (node.getClass().equals(ASTVariableDeclaratorId.class))
+               ? ((ASTVariableDeclaratorId)node).getImage() : "";
+       }
 
     public Rule getRule() {
         return rule;
@@ -156,7 +173,7 @@ public class RuleViolation implements IRuleViolation {
     }
 
     public String getVariableName() {
-        return "";
+        return variableName;
     }
 
     public String toString() {
