@@ -12,10 +12,10 @@ public class LanguageFactoryTest {
     @Test
     public void testSimple() {
         LanguageFactory f = new LanguageFactory();
-        assertTrue(f.createLanguage(LanguageFactory.JAVA_KEY) instanceof JavaLanguage);
-        assertTrue(f.createLanguage(LanguageFactory.CPP_KEY) instanceof CPPLanguage);
-        assertTrue(f.createLanguage(LanguageFactory.C_KEY) instanceof CPPLanguage);
-        assertTrue(f.createLanguage(LanguageFactory.PHP_KEY) instanceof PHPLanguage);
+        assertTrue(f.createLanguage("java") instanceof JavaLanguage);
+        assertTrue(f.createLanguage("cpp") instanceof CPPLanguage);
+        assertTrue(f.createLanguage("c") instanceof CPPLanguage);
+        assertTrue(f.createLanguage("php") instanceof PHPLanguage);
         assertTrue(f.createLanguage("ruby") instanceof RubyLanguage);
     }
 

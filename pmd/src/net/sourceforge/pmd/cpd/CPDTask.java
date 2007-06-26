@@ -41,7 +41,7 @@ public class CPDTask extends Task {
     private static final String CSV_FORMAT = "csv";
 
     private String format = TEXT_FORMAT;
-    private String language = LanguageFactory.JAVA_KEY;
+    private String language = "java";
     private int minimumTokenCount;
     private boolean ignoreLiterals;
     private boolean ignoreIdentifiers;
@@ -171,7 +171,6 @@ public class CPDTask extends Task {
         encoding = encodingValue;
     }
 
-    // TODO can this be an enum?
     public static class FormatAttribute extends EnumeratedAttribute {
         private static final String[] FORMATS = new String[]{XML_FORMAT, TEXT_FORMAT, CSV_FORMAT};
         public String[] getValues() {
@@ -179,9 +178,14 @@ public class CPDTask extends Task {
         }
     }
 
-    // TODO can this be an enum?
+    /*
+     * FIXME Can't we do something cleaner and
+     * more dynamic ? Maybe externalise to a properties files that will
+     * be generated when building pmd ? This will not have to add manually
+     * new language here ?
+    */
     public static class LanguageAttribute extends EnumeratedAttribute {
-        private static final String[] LANGUAGES = new String[]{LanguageFactory.JAVA_KEY, LanguageFactory.JSP_KEY, LanguageFactory.CPP_KEY, LanguageFactory.C_KEY, LanguageFactory.PHP_KEY, LanguageFactory.RUBY_KEY };
+        private static final String[] LANGUAGES = new String[]{"java","jsp","cpp", "c","php", "ruby", "fortran"};
         public String[] getValues() {
             return LANGUAGES;
         }

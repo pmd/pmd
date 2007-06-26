@@ -61,27 +61,31 @@ public class GUI implements CPDListener {
 	
 	private static final Object[][] languageSets = new Object[][] {
 		{"Java", 			new LanguageConfig() { 
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage(LanguageFactory.JAVA_KEY); }
+									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("java"); }
 									public boolean ignoreLiteralsByDefault() { return true; }
 									public String[] extensions() { return new String[] {".java", ".class" }; }; } },
 		{"JSP", 			new LanguageConfig() { 
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage(LanguageFactory.JSP_KEY); }
+									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("jsp"); }
 									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {".jsp" }; }; } },
 		{"C++", 			new LanguageConfig() { 
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage(LanguageFactory.CPP_KEY); }
+									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("cpp"); }
 									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {".cpp", ".c" }; }; } },
 		{"Ruby",			new LanguageConfig() { 
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage(LanguageFactory.RUBY_KEY); }
+									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("ruby"); }
 									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {".rb" }; }; } },
-		{"by extension...", new LanguageConfig() { 
+		{"Fortran",			new LanguageConfig() {
+									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("fortran"); }
+									public boolean ignoreLiteralsByDefault() { return false; }
+									public String[] extensions() { return new String[] {".rb" }; }; } },
+		{"by extension...", new LanguageConfig() {
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage(LanguageFactory.BY_EXTENSION, p); }
 									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {"" }; }; } },
 		{"PHP", 			new LanguageConfig() { 
-									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage(LanguageFactory.PHP_KEY); }
+									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("php"); }
 									public boolean ignoreLiteralsByDefault() { return false; }
 									public String[] extensions() { return new String[] {".php" }; };	} },
 		};

@@ -8,45 +8,71 @@ import java.util.Properties;
 public class LanguageFactory {
 
    // FIXME: A refactoring should be done to remove those
-   public static final String JAVA_KEY = "java";
-    public static final String JSP_KEY = "jsp";
-    public static final String CPP_KEY = "cpp";
-    public static final String C_KEY = "c";
-    public static final String PHP_KEY = "php";
-    public static final String RUBY_KEY = "ruby";
-   public static final String FORTRAN_KEY = "fortran";
+//   public static final String JAVA_KEY = "java";
+//   public static final String JSP_KEY = "jsp";
+//   public static final String CPP_KEY = "cpp";
+//   public static final String C_KEY = "c";
+//   public static final String PHP_KEY = "php";
+//   public static final String RUBY_KEY = "ruby";
+//   public static final String FORTRAN_KEY = "fortran";
 
+   public static String[] supportedLanguages = new String[]{"java", "jsp", "cpp", "c", "php", "ruby","fortran" };
    private static final String SUFFIX = "Language";
-    public static final String EXTENSION = "extension";
-    public static final String BY_EXTENSION = "by_extension";
+   public static final String EXTENSION = "extension";
+   public static final String BY_EXTENSION = "by_extension";
    private static final String PACKAGE = "net.sourceforge.pmd.cpd.";
 
     public Language createLanguage(String language) {
         return createLanguage(language, new Properties());
     }
 
-    public Language createLanguage(String language, Properties properties) {
-
-       try {
-           return (Language) this.getClass().getClassLoader().loadClass(PACKAGE +this.languageConventionSyntax(language) + SUFFIX).newInstance();
-       } catch (ClassNotFoundException e) {
-           if (language.equals(CPP_KEY) || language.equals(C_KEY)) {
-               return new CPPLanguage();
-           } else if (language.equals(PHP_KEY)) {
-               return new PHPLanguage();
-           } else if (language.equals(JSP_KEY)) {
-               return new JSPLanguage();
-           }
-           // No class found, returning default implementation
-           // FIXME: There should be somekind of log of this
+   public Language createLanguage(String language, Properties properties)
+   {
+     language = this.languageAliases(language);
+     // First, we look for a parser following this syntax 'RubyLanguage'
+     Language implementation;
+     try {
+       implementation = this.dynamicLanguageImplementationLoad(this.languageConventionSyntax(language));
+       if ( implementation == null )
+       {
+         // if it failed, we look for a parser following this syntax 'CPPLanguage'
+         implementation = this.dynamicLanguageImplementationLoad(language.toUpperCase());
+         //TODO: Should we try to break the coupling with PACKAGE by try to load the class
+         // based on her sole name ?
+         if ( implementation == null )
+         {
+           // No proper implementation
+           // FIXME: We should log a warning, shouldn't we ?
            return new AnyLanguage(language);
-       } catch (InstantiationException e) {
-            e.printStackTrace();
-       } catch (IllegalAccessException e) {
-           e.printStackTrace();
+         }
        }
-       return null;
+       return implementation;
+     } catch (InstantiationException e) {
+       e.printStackTrace();
+     } catch (IllegalAccessException e) {
+       e.printStackTrace();
+     }
+     return null;
    }
+
+     private String languageAliases(String language)
+     {
+       // CPD and C language share the same parser
+       if ( language == "c" )
+         return "cpp";
+       return language;
+     }
+
+    private Language dynamicLanguageImplementationLoad(String language) throws InstantiationException, IllegalAccessException
+    {
+      try {
+        return (Language) this.getClass().getClassLoader().loadClass(PACKAGE + language + SUFFIX).newInstance();
+      } catch (ClassNotFoundException e) {
+        // No class found, returning default implementation
+        // FIXME: There should be somekind of log of this
+        return null;
+      }
+    }
 
    /*
     * This method does simply this:
