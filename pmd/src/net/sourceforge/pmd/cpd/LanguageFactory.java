@@ -7,15 +7,6 @@ import java.util.Properties;
 
 public class LanguageFactory {
 
-   // FIXME: A refactoring should be done to remove those
-//   public static final String JAVA_KEY = "java";
-//   public static final String JSP_KEY = "jsp";
-//   public static final String CPP_KEY = "cpp";
-//   public static final String C_KEY = "c";
-//   public static final String PHP_KEY = "php";
-//   public static final String RUBY_KEY = "ruby";
-//   public static final String FORTRAN_KEY = "fortran";
-
    public static String[] supportedLanguages = new String[]{"java", "jsp", "cpp", "c", "php", "ruby","fortran" };
    private static final String SUFFIX = "Language";
    public static final String EXTENSION = "extension";
