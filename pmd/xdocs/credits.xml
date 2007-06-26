@@ -55,6 +55,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Ralf Wagner - Reported and noted proper fix for broken XSLT</li>
             <li>Matt Koch - Added more detail to PMD XML report</li>
             <li>Richard Hands - Fixed CPD symlink confusion</li>
             <li>Romain Pelisse - Restructed CPD tokenizers, added Fortran tokenizer, DoNotExtendJavaLangError, JspEncoding, MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention</li>

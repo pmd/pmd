@@ -84,7 +84,7 @@
 		    <tr>
 			<td style="padding: 3px" align="right"><div><xsl:attribute name="class"><xsl:call-template name="priorityDiv"/></xsl:attribute><xsl:value-of disable-output-escaping="yes" select="@priority"/></div></td>
 			<td style="padding: 3px" align="left"><xsl:value-of disable-output-escaping="yes" select="substring-before(translate(../@name,'/','.'),'.java')"/></td>
-			<td style="padding: 3px" align="right"><xsl:value-of disable-output-escaping="yes" select="@line"/></td>
+			<td style="padding: 3px" align="right"><xsl:value-of disable-output-escaping="yes" select="@beginline"/></td>
 			<td style="padding: 3px" align="left" width="100%"><xsl:if test="@externalInfoUrl"><a><xsl:attribute name="href"><xsl:value-of select="@externalInfoUrl"/></xsl:attribute><xsl:call-template name="message"/></a></xsl:if><xsl:if test="not(@externalInfoUrl)"><xsl:call-template name="message"/></xsl:if></td>
 		    </tr>
 	    </xsl:for-each>

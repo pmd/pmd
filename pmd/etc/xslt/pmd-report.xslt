@@ -53,13 +53,13 @@
         <H3><xsl:value-of disable-output-escaping="yes" select="substring-before(translate(@name,'/','.'),'.java')"/></H3>
         <table border="0" width="100%" class="details">
             <tr>
-                <th>Line</th>
+                <th>Begin Line</th>
                 <th align="left">Description</th>
             </tr>
 	    
 	    <xsl:for-each select="violation">
 		    <tr>
-			<td style="padding: 3px" align="right"><a><xsl:attribute name="href"><xsl:value-of select="$cvsweb"/><xsl:value-of select="$filename"/>?annotate=HEAD#<xsl:value-of disable-output-escaping="yes" select="@line"/></xsl:attribute><xsl:value-of disable-output-escaping="yes" select="@line"/></a></td>
+			<td style="padding: 3px" align="right"><a><xsl:attribute name="href"><xsl:value-of select="$cvsweb"/><xsl:value-of select="$filename"/>?annotate=HEAD#<xsl:value-of disable-output-escaping="yes" select="@beginline"/></xsl:attribute><xsl:value-of disable-output-escaping="yes" select="@beginline"/></a></td>
 			<td style="padding: 3px" align="left" width="100%"><xsl:value-of disable-output-escaping="yes" select="."/></td>
 		    </tr>
 	    </xsl:for-each>
