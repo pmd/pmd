@@ -49,6 +49,7 @@ public class XMLRenderer extends AbstractRenderer {
             maybeAdd("package", rv.getPackageName(), buf);
             maybeAdd("class", rv.getClassName(), buf);
             maybeAdd("method", rv.getMethodName(), buf);
+            maybeAdd("variable", rv.getVariableName(), buf);
             maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl(), buf);
             buf.append(" priority=\"");
             buf.append(rv.getRule().getPriority());
