@@ -684,7 +684,6 @@ public class PMD {
     /**
      * If in debug modus, print the names of the rules.
      *
-     * @param debugEnabled the boolean indicating if debug is enabled
      * @param rulesets     the RuleSets to print
      */
     private static void printRuleNamesInDebug(RuleSets rulesets) {
