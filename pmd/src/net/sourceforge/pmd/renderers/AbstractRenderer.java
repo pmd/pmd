@@ -10,6 +10,8 @@ import net.sourceforge.pmd.Report;
 public abstract class AbstractRenderer implements Renderer {
 
     protected boolean showSuppressedViolations = true;
+    private Writer writer;
+    private Report mainReport;
 
     public void showSuppressedViolations(boolean show) {
         this.showSuppressedViolations = show;
@@ -25,9 +27,6 @@ public abstract class AbstractRenderer implements Renderer {
         return w.toString();
     }
 
-    private Writer writer;
-
-    private Report mainReport;
 
     public void setWriter(Writer writer) {
         this.writer = writer;
