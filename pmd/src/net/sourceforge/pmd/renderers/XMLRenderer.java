@@ -14,19 +14,30 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
-public class XMLRenderer extends AbstractRenderer {
+public class XMLRenderer extends OnTheFlyRenderer {
 
-    public void render(Writer writer, Report report) throws IOException {
-
+    public void start() throws IOException {
+        Writer writer = getWriter();
         StringBuffer buf = new StringBuffer();
         // FIXME - hardcoded character encoding, booooooo
-        writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + PMD.EOL + createVersionAttr() + createTimestampAttr() + createTimeElapsedAttr(report) + '>' + PMD.EOL);
+        buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(PMD.EOL);
+        createVersionAttr(buf);
+        createTimestampAttr(buf);
+        // FIXME: elapsed time not available until the end of the processing
+        //buf.append(createTimeElapsedAttr(report));
+        buf.append('>').append(PMD.EOL);
+        writer.write(buf.toString());        
+    }
+
+    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+        Writer writer = getWriter();
+        StringBuffer buf = new StringBuffer();
         String filename = null;
 
         // rule violations
-        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
+        while (violations.hasNext()) {
             buf.setLength(0);
-            IRuleViolation rv = i.next();
+            IRuleViolation rv = violations.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {// Not first file ?
                     buf.append("</file>").append(PMD.EOL);
@@ -65,11 +76,14 @@ public class XMLRenderer extends AbstractRenderer {
             writer.write("</file>");
             writer.write(PMD.EOL);
         }
+    }
 
+    public void end() throws IOException {
+        Writer writer = getWriter();
+        StringBuffer buf = new StringBuffer();
         // errors
-        for (Iterator i = report.errors(); i.hasNext();) {
+        for (Report.ProcessingError pe: errors) {
             buf.setLength(0);
-            Report.ProcessingError pe = (Report.ProcessingError) i.next();
             buf.append("<error ").append("filename=\"");
             StringUtil.appendXmlEscaped(buf, pe.getFile());
             buf.append("\" msg=\"");
@@ -80,17 +94,16 @@ public class XMLRenderer extends AbstractRenderer {
 
         // suppressed violations
         if (showSuppressedViolations) {
-            for (Iterator i = report.getSuppressedRuleViolations().iterator(); i.hasNext();) {
+            for (Report.SuppressedViolation s: suppressed) {
                 buf.setLength(0);
-                Report.SuppressedViolation suppressed = (Report.SuppressedViolation) i.next();
                 buf.append("<suppressedviolation ").append("filename=\"");
-                StringUtil.appendXmlEscaped(buf, suppressed.getRuleViolation().getFilename());
+                StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getFilename());
                 buf.append("\" suppressiontype=\"");
-                StringUtil.appendXmlEscaped(buf, suppressed.suppressedByNOPMD() ? "nopmd" : "annotation");
+                StringUtil.appendXmlEscaped(buf, s.suppressedByNOPMD() ? "nopmd" : "annotation");
                 buf.append("\" msg=\"");
-                StringUtil.appendXmlEscaped(buf, suppressed.getRuleViolation().getDescription());
+                StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getDescription());
                 buf.append("\" usermsg=\"");
-                StringUtil.appendXmlEscaped(buf, (suppressed.getUserMessage() == null ? "" : suppressed.getUserMessage()));
+                StringUtil.appendXmlEscaped(buf, (s.getUserMessage() == null ? "" : s.getUserMessage()));
                 buf.append("\"/>").append(PMD.EOL);
                 writer.write(buf.toString());
             }
@@ -107,12 +120,12 @@ public class XMLRenderer extends AbstractRenderer {
         }
     }
 
-    private String createVersionAttr() {
-        return "<pmd version=\"" + PMD.VERSION + "\"";
+    private void createVersionAttr(StringBuffer buffer) {
+        buffer.append("<pmd version=\"").append(PMD.VERSION).append('"');
     }
 
-    private String createTimestampAttr() {
-        return " timestamp=\"" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date()) + "\"";
+    private void createTimestampAttr(StringBuffer buffer) {
+        buffer.append(" timestamp=\"").append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date())).append('"');
     }
 
     private String createTimeElapsedAttr(Report rpt) {
