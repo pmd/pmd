@@ -48,15 +48,13 @@ public class CommandLineOptions {
             throw new RuntimeException(usage());
         }
         int optIndex = 0;
-		if (args[0].charAt(0) == '-') {
-			optIndex = args.length - 3;
-		}
+        if (args[0].charAt(0) == '-') {
+            optIndex = args.length - 3;
+        }
 
         inputPath = args[optIndex];
         reportFormat = args[optIndex+1];
         ruleSets = new SimpleRuleSetNameMapper(args[optIndex+2]).getRuleSets();
-
-        this.args = args;
 
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-debug")) {
@@ -215,16 +213,10 @@ public class CommandLineOptions {
                 PMD.EOL;
     }
 
-    /**
-     * @return Returns the checkJavaFiles.
-     */
     public boolean isCheckJavaFiles() {
         return checkJavaFiles;
     }
 
-    /**
-     * @return Returns the checkJspFiles.
-     */
     public boolean isCheckJspFiles() {
         return checkJspFiles;
     }
