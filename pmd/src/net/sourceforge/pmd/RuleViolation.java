@@ -117,16 +117,18 @@ public class RuleViolation implements IRuleViolation {
         }
     }
 
-       private void setVariableNameIfExists(SimpleNode node) {
-               variableName = (node.getClass().equals(ASTFieldDeclaration.class))
-               ? ((ASTFieldDeclaration)node).getVariableName() : "";
-        
-        variableName = (node.getClass().equals(ASTLocalVariableDeclaration.class))
-               ? ((ASTLocalVariableDeclaration)node).getVariableName() : "";
-        
-        variableName = (node.getClass().equals(ASTVariableDeclaratorId.class))
-               ? ((ASTVariableDeclaratorId)node).getImage() : "";
-       }
+    private void setVariableNameIfExists(SimpleNode node) {
+        variableName = (node.getClass().equals(ASTFieldDeclaration.class))
+                ? ((ASTFieldDeclaration) node).getVariableName() : "";
+        if (variableName == "") {
+            variableName = (node.getClass().equals(ASTLocalVariableDeclaration.class))
+                    ? ((ASTLocalVariableDeclaration) node).getVariableName() : "";
+        }
+        if (variableName == "") {
+            variableName = (node.getClass().equals(ASTVariableDeclaratorId.class))
+                    ? node.getImage() : "";
+        }
+    }
 
     public Rule getRule() {
         return rule;
