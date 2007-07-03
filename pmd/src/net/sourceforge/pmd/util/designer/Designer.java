@@ -130,7 +130,7 @@ public class Designer implements ClipboardOwner {
 		{ "JSP", 	 SourceType.JSP, 	 jspParser }
 		};
 	
-	private static final int defaultSourceTypeSelectionIndex = 2; // Java 1.4
+	private static final int defaultSourceTypeSelectionIndex = 2; // Java 1.5
 	
 
     private SimpleNode getCompilationUnit() {
