@@ -43,7 +43,7 @@ public class XPathTest {
         ctx.setReport(report);
         ctx.setSourceCodeFilename(filename);
 
-        pmd.processFile(new FileReader(filename), ruleSet, ctx);
+        pmd.processFile(new FileReader(filename), new RuleSets(ruleSet), ctx, SourceType.JAVA_15);
 
         for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
             IRuleViolation rv = i.next();
