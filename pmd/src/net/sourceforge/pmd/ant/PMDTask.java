@@ -52,7 +52,7 @@ public class PMDTask extends Task {
     private String encoding = System.getProperty("file.encoding");
     private boolean failOnError;
     private boolean failOnRuleViolation;
-    private String targetJDK = "1.4";
+    private String targetJDK = "1.5";
     private String failuresPropertyName;
     private String excludeMarker = PMD.EXCLUDE_MARKER;
     private int cpus = Runtime.getRuntime().availableProcessors();
