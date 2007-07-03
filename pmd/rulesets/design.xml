@@ -1216,7 +1216,8 @@ public Foo() {
 
 <rule name="AvoidConstantsInterface"
       message="An Interface should be used only to model a behaviour; consider converting this to a class."
-      class="net.sourceforge.pmd.rules.XPathRule">
+      class="net.sourceforge.pmd.rules.XPathRule"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidConstantsInterface">
       <description>
      An interface should be used only to model a behaviour of a
     class: using an interface as a container of constants is a poor usage pattern.
@@ -1248,7 +1249,8 @@ public Foo() {
 
   <rule name="UnsynchronizedStaticDateFormatter"
       message="Static DateFormatter objects should be accessed in a synchronized manner"
-      class="net.sourceforge.pmd.rules.design.UnsynchronizedStaticDateFormatter">
+      class="net.sourceforge.pmd.rules.design.UnsynchronizedStaticDateFormatter"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnsynchronizedStaticDateFormatter">
       <description>
 SimpleDateFormat is not synchronized. Sun recomends separate format instances 
 for each thread. If multiple threads must access a static formatter, the 

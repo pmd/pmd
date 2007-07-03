@@ -174,7 +174,8 @@ public class Foo {
 
   <rule name="AvoidRethrowingException"
     message="A catch statement that catches an exception only to rethrow it should be avoided."
-    class="net.sourceforge.pmd.rules.XPathRule">
+    class="net.sourceforge.pmd.rules.XPathRule"
+    externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidRethrowingException">
     <description>
      Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
     </description>
@@ -208,7 +209,8 @@ public class Foo {
   <rule
     name="DoNotExtendJavaLangError"
     message="Exceptions should not extend java.lang.Error"
-    class="net.sourceforge.pmd.rules.XPathRule">
+    class="net.sourceforge.pmd.rules.XPathRule"
+    externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#DoNotExtendJavaLangError">
     <description>
       <![CDATA[[
         Errors are system exceptions. Do not extend them.

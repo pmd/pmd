@@ -243,7 +243,8 @@ public class Foo {
 
     <rule name="InsufficientStringBufferDeclaration"
         message="StringBuffer constructor is initialized with size {0}, but has at least {1} characters appended."
-        class="net.sourceforge.pmd.rules.strings.InsufficientStringBufferDeclaration">
+        class="net.sourceforge.pmd.rules.strings.InsufficientStringBufferDeclaration"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InsufficientStringBufferDeclaration">
     <description>
 Failing to pre-size a StringBuffer properly could cause it to re-size many times 
 during runtime. This rule checks the characters that are actually passed into

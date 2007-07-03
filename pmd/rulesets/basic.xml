@@ -965,7 +965,8 @@ class Foo {
 <rule name="BigIntegerInstantiation"
   message="Don't create instances of already existing
 BigInteger and BigDecimal (ZERO, ONE, TEN)"
-  class="net.sourceforge.pmd.rules.basic.BigIntegerInstantiation">
+  class="net.sourceforge.pmd.rules.basic.BigIntegerInstantiation"
+  externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BigIntegerInstantiation">
   <description>
 Don't create instances of already existing BigInteger
 (BigInteger.ZERO, BigInteger.ONE) and for 1.5 on,

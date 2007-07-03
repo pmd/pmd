@@ -153,7 +153,8 @@ public class Foo implements Enumeration {
 
     <rule name="IntegerInstantiation"
           message="Avoid instantiating Integer objects. Call Integer.valueOf() instead."
-	  class="net.sourceforge.pmd.rules.XPathRule">
+	  class="net.sourceforge.pmd.rules.XPathRule"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#IntegerInstantiation">
       <description>In JDK 1.5, calling new Integer() causes memory allocation.  Integer.valueOf() is more memory friendly.</description>
       <priority>2</priority>
       <properties>
@@ -179,7 +180,8 @@ public class Foo {
     </rule>
 	<rule name="ByteInstantiation"
           message="Avoid instantiating Byte objects. Call Byte.valueOf() instead"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ByteInstantiation">
           <description>
               In JDK 1.5, calling new Byte() causes memory allocation. Byte.valueOf() is more memory friendly.
           </description>
@@ -208,7 +210,8 @@ Byte.valueOf(0);
 
     <rule name="ShortInstantiation"
           message="Avoid instantiating Short objects. Call Short.valueOf() instead"
-          class="net.sourceforge.pmd.rules.XPathRule">
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ShortInstantiation">
           <description>In JDK 1.5, calling new Short() causes memory allocation. Short.valueOf() is more memory friendly.
           </description>
           <priority>2</priority>
@@ -237,7 +240,8 @@ Short.valueOf(0);
 
 <rule name="LongInstantiation"
 	message="Avoid instantiating Long objects.Call Long.valueOf() instead"
-    class="net.sourceforge.pmd.rules.XPathRule">
+    class="net.sourceforge.pmd.rules.XPathRule"
+	externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#LongInstantiation">
     <description>In JDK 1.5, calling new Long() causes memory allocation. Long.valueOf() is more memory friendly.</description>
     <priority>2</priority>
     <properties>

@@ -306,7 +306,8 @@ public int convert(String s) {
 
     <rule name="AddEmptyString"
         message="Do not add empty strings"
-        class="net.sourceforge.pmd.rules.XPathRule">
+        class="net.sourceforge.pmd.rules.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#AddEmptyString">
         <description>
 Finds empty string literals which are being added. This is an inefficient way 
 to convert any type to a String.

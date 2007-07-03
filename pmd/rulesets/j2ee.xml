@@ -12,7 +12,8 @@
 
   <rule name="UseProperClassLoader"
    message="In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead."
-   class="net.sourceforge.pmd.rules.XPathRule">
+   class="net.sourceforge.pmd.rules.XPathRule"
+   externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#UseProperClassLoader">
    <description>
     In J2EE getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead.
    </description>
