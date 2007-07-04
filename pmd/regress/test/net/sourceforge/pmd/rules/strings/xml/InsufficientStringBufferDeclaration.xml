@@ -590,4 +590,20 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Initialization with multiply - bug 1743938 
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void testStringBufferSizeBug() {
+		final String temp = "Hello world!";
+		final StringBuffer sb = new StringBuffer(temp.length() * 2);
+		sb.append(temp);
+		sb.append("abc");
+	}
+}
+     ]]></code>
+    </test-code>
 </test-data>

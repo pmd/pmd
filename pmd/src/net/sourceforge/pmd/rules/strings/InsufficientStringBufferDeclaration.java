@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.ast.ASTMultiplicativeExpression;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
@@ -206,6 +207,17 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
                 iConstructorLength = -1;
             }
         }
+        
+        //if there is any addition/subtraction going on then just use the default.
+        ASTAdditiveExpression exp = block.getFirstChildOfType(ASTAdditiveExpression.class);
+        if(exp != null){
+            return 16;
+        }
+        ASTMultiplicativeExpression mult = block.getFirstChildOfType(ASTMultiplicativeExpression.class);
+        if(mult != null){
+            return 16;
+        }
+        
         literal = block.findChildrenOfType(ASTLiteral.class);
         if (literal.isEmpty()) {
             List name = block.findChildrenOfType(ASTName.class);

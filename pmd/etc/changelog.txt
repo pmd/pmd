@@ -27,6 +27,8 @@ Fixed bug 1613793 - MissingSerialVersionUID rule now doesn't fire on abstract cl
 Fixed bug 1666646 - ImmutableField rule doesn't report against volatile variables
 Fixed bug 1693924 - Type resolution now works for implicit imports
 Fixed bug 1705716 - Annotation declarations now trigger a new scope level in the symbol table.
+Fixed bug 1743938 - False +: InsufficientStringBufferDeclaration with multiply
+Fixed bug 1657957 - UseStringBufferForStringAppends now catches self-assignments
 Applied patch 1612455 - RFE 1411022 CompareObjectsWithEquals now catches the case where comparison is against new Object
 Implemented RFE 1562230 - Added migration rule to check for instantiation of Short/Byte/Long 
 Implemented RFE 1627581 - SuppressWarnings("unused") now suppresses all warnings in unusedcode.xml

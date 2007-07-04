@@ -86,4 +86,19 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+reference self
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo{
+    private void bar(){
+        String result = "";
+        for (int i = 0; i < 10; i++){
+        result = result + i;
+        } }
+}
+     ]]></code>
+    </test-code>
 </test-data>
