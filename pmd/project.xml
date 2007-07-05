@@ -222,6 +222,15 @@
                 <role>Developer</role>
             </roles>
         </developer>
+
+        <developer>
+          <name>Torsten Kleiber</name>
+            <id>tkleiber</id>
+            <email>tkleiber@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
 	</developers>
 
 
