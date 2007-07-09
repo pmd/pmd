@@ -94,9 +94,9 @@ response.setHeader("Pragma", "No-cache");
 			Therefore, don't use <B> or <FONT> tags, or attributes like "align='center'". ]]> </description>
 		<priority>3</priority>
 		<example>
-			<![CDATA[ 
+			<![CDATA[
 <html><body><p align='center'><b>text</b></p></body></html>
-					 ]]>
+			]]>
 		</example>
 	</rule>
 	
