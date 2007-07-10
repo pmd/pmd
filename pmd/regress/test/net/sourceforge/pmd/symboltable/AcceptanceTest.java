@@ -77,7 +77,14 @@ public class AcceptanceTest extends STBBaseTst {
         //FIXME - Does this test do anything?
         System.out.println(TEST_FIELD);
         parseCode(TEST_FIELD);
-        ASTVariableDeclaratorId declaration = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
+
+        List<ASTVariableDeclaratorId> variableDeclaratorIds = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId declaration = null;
+        for (Iterator iter = variableDeclaratorIds.iterator(); iter.hasNext();) {
+            declaration = (ASTVariableDeclaratorId) iter.next();
+            if ("b".equals(declaration.getImage()))
+                break;
+        }
         NameOccurrence no = declaration.getUsages().iterator().next();
         SimpleNode location = no.getLocation();
         System.out.println("variable " + declaration.getImage() + " is used here: " + location.getImage());
