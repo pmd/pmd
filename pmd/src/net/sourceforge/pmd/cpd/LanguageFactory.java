@@ -56,13 +56,20 @@ public class LanguageFactory {
 
     private Language dynamicLanguageImplementationLoad(String language) throws InstantiationException, IllegalAccessException
     {
-      try {
-        return (Language) this.getClass().getClassLoader().loadClass(PACKAGE + language + SUFFIX).newInstance();
-      } catch (ClassNotFoundException e) {
-        // No class found, returning default implementation
-        // FIXME: There should be somekind of log of this
-        return null;
-      }
+        try {
+            return (Language) this.getClass().getClassLoader().loadClass(
+                PACKAGE + language + SUFFIX).newInstance();
+        } catch (ClassNotFoundException e) {
+            // No class found, returning default implementation
+            // FIXME: There should be somekind of log of this
+            return null;
+        } catch (NoClassDefFoundError e) {
+            // Windows is case insensitive, so it may find the file, even though
+            // the name has a different case. Since Java is case sensitive, it
+            // will not accept the classname inside the file that was found and
+            // will throw a NoClassDefFoundError
+            return null;
+        }
     }
 
    /*
