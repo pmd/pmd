@@ -153,12 +153,14 @@ public class ClassScopeTest extends STBBaseTst {
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
         Iterator i = m.entrySet().iterator();
-        Map.Entry entry = (Map.Entry) i.next();
+        MethodNameDeclaration mnd;
+        Map.Entry entry;
         
-        MethodNameDeclaration mnd = (MethodNameDeclaration) entry.getKey();
-        if (!mnd.getImage().equals("bar")) {
-            mnd = (MethodNameDeclaration) i.next();
-        }
+        do {
+            entry = (Map.Entry) i.next();
+            mnd = (MethodNameDeclaration) entry.getKey();
+        } while (!mnd.getImage().equals("bar"));
+
         List usages = (List) entry.getValue();
         assertEquals(1, usages.size());
         assertEquals("bar", ((NameOccurrence) usages.get(0)).getImage());
@@ -170,11 +172,14 @@ public class ClassScopeTest extends STBBaseTst {
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
         Iterator i = m.entrySet().iterator();
-        Map.Entry entry = (Map.Entry) i.next();
-        MethodNameDeclaration mnd = (MethodNameDeclaration) entry.getKey();
-        if (!mnd.getImage().equals("bar")) {
-            mnd = (MethodNameDeclaration) i.next();
-        }
+        MethodNameDeclaration mnd;
+        Map.Entry entry;
+        
+        do {
+            entry = (Map.Entry) i.next();
+            mnd = (MethodNameDeclaration) entry.getKey();
+        } while (!mnd.getImage().equals("bar"));
+
         List usages = (List) entry.getValue();
         assertEquals(1, usages.size());
         assertEquals("bar", ((NameOccurrence) usages.get(0)).getImage());
