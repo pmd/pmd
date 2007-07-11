@@ -983,6 +983,7 @@ direcly) a protected constructor can be provided prevent direct instantiation.
  [@Abstract='true'
   and count( .//MethodDeclaration[@Abstract='true'] )=0 ]
   [count(ImplementsList)=0]
+  [count(.//ExtendsList)=0]
               ]]>
               </value>
           </property>
