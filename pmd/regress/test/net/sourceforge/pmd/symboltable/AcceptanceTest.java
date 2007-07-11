@@ -75,6 +75,9 @@ public class AcceptanceTest extends STBBaseTst {
     @Test
     public void testFieldFinder() {
         //FIXME - Does this test do anything?
+        //Not really, I think it's just a demo -- Tom
+
+/*
         System.out.println(TEST_FIELD);
         parseCode(TEST_FIELD);
 
@@ -88,6 +91,7 @@ public class AcceptanceTest extends STBBaseTst {
         NameOccurrence no = declaration.getUsages().iterator().next();
         SimpleNode location = no.getLocation();
         System.out.println("variable " + declaration.getImage() + " is used here: " + location.getImage());
+*/
     }
 
     @Ignore
