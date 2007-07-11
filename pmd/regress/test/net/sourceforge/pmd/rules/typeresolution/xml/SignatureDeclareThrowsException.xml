@@ -60,6 +60,31 @@ public class Foo extends TestCase {
     </test-code>
     <test-code reinitializeRule="true">
         <description><![CDATA[
+Don't skip other methods
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+public class Foo extends TestCase {
+ void bar() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+    <test-code reinitializeRule="true">
+        <description><![CDATA[
+Unless 
+     ]]></description>
+        <rule-property name="IgnoreJUnitCompletely">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.*;
+public class Foo extends TestCase {
+ void bar() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+    <test-code reinitializeRule="true">
+        <description><![CDATA[
 skip junit setUp method where the superclass is TestCase
      ]]></description>
         <expected-problems>0</expected-problems>

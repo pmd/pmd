@@ -90,6 +90,10 @@ Use either a class derived from RuntimeException or a checked exception.
 Junit classes are excluded.
       </description>
       <priority>3</priority>
+      <properties>
+          <property description="If true, all methods in a JUnit testcase may throw Exception" 
+            name="IgnoreJUnitCompletely" value="false"/>
+      </properties>
       <example>
       	<![CDATA[
 public void methodThrowingException() throws Exception {

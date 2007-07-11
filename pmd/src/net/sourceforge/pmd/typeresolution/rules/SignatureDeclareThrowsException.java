@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
@@ -17,6 +18,7 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.properties.BooleanProperty;
 
 /**
  * A method/constructor shouldn't explicitly throw java.lang.Exception, since it
@@ -31,6 +33,10 @@ import net.sourceforge.pmd.ast.SimpleNode;
  * @author Wouter Zelle
  */
 public class SignatureDeclareThrowsException extends AbstractRule {
+    private static final PropertyDescriptor ignoreJUnitCompletelyDescriptor = new BooleanProperty("IgnoreJUnitCompletely",
+        "If true, all methods in a JUnit testcase may throw Exception", false, 1.0f);
+    
+    //Set to true when the class is determined to be a JUnit testcase
     private boolean junitImported = false;
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
@@ -86,13 +92,21 @@ public class SignatureDeclareThrowsException extends AbstractRule {
     
 
     public Object visit(ASTMethodDeclaration methodDeclaration, Object o) {
-        if (junitImported && (methodDeclaration.getMethodName().equals("setUp") || methodDeclaration.getMethodName().equals("tearDown"))) {
+        if (junitImported && isAllowedMethod(methodDeclaration)) {
             return super.visit(methodDeclaration, o);
         }
 
         checkExceptions(methodDeclaration, o);
         
         return super.visit(methodDeclaration, o);
+    }
+
+    private boolean isAllowedMethod(ASTMethodDeclaration methodDeclaration) {
+        if (getBooleanProperty(ignoreJUnitCompletelyDescriptor))
+            return true;
+        else
+            return (methodDeclaration.getMethodName().equals("setUp") || methodDeclaration
+                .getMethodName().equals("tearDown"));
     }
     
     public Object visit(ASTConstructorDeclaration constructorDeclaration, Object o) {
