@@ -1,6 +1,7 @@
 ???, 2007 - 4.0:
 
 Fixed false positive in UselessOperationOnImmutable
+Fixed bug 1680568 - A new SignatureDeclareThrowsException rule, using typeresolution, now ignores setUp and tearDown in JUnit 4 tests and tests that do not directly extend TestCase
 
 June 22, 2007 - 4.0rc1:
 New rules:

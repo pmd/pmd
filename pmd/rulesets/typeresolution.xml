@@ -76,5 +76,27 @@ public class Foo {}
 ]]>
     </example>
     </rule>
+    
+    <rule name="SignatureDeclareThrowsException"
+         message="A method/constructor shouldn't explicitly throw java.lang.Exception"
+          class="net.sourceforge.pmd.typeresolution.rules.SignatureDeclareThrowsException"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/typeresolution.html#SignatureDeclareThrowsException"
+          typeResolution="true">
+      <description>
+It is unclear which exceptions that can be thrown from the methods.
+It might be difficult to document and understand the vague interfaces.
+Use either a class derived from RuntimeException or a checked exception.
+
+Junit classes are excluded.
+      </description>
+      <priority>3</priority>
+      <example>
+      	<![CDATA[
+public void methodThrowingException() throws Exception {
+}
+      	]]>
+      </example>
+    </rule> 
+    
  </ruleset>
 
