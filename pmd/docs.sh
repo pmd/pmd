@@ -8,7 +8,7 @@ if [ -z $option ]; then
   maven -qb pmd:rulesets-index xdoc:generate-from-pom 
   maven -qb pmd:ruleset-docs 
   rm -f rulesets/*.xml
-  cvs -q up rulesets
+  svn up rulesets
   maven -qb xdoc:transform 
 elif [ $option = "all" ]; then
   echo "Running maven site"
@@ -16,7 +16,7 @@ elif [ $option = "all" ]; then
   `./munge_rulesets.rb`
   maven -qb site
   rm -f rulesets/*.xml
-  cvs -q up rulesets
+  svn up rulesets
   maven artifact:create-upload-bundle
 elif [ $option = "uploadcurrent" ]; then
   echo "Generating xdocs and uploading"
@@ -24,7 +24,7 @@ elif [ $option = "uploadcurrent" ]; then
   maven -qb pmd:rulesets-index xdoc:generate-from-pom 
   maven -qb pmd:ruleset-docs 
   rm -f rulesets/*.xml
-  cvs -q up rulesets
+  svn up rulesets
   maven -qb xdoc:transform 
   DOCS_FILE=docs.tar.gz
   cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
