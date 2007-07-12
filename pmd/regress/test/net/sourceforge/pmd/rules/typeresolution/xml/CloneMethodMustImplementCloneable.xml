@@ -103,11 +103,11 @@ public class Foo extends Bar implements Cloneable{
 }
      ]]></code>
     </test-code>
-    <!--test-code>
+    <test-code>
         <description><![CDATA[
 Bug 1698550, nr 1
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
 public final Object clone() throws CloneNotSupportedException {
@@ -120,7 +120,7 @@ throw new CloneNotSupportedException();
         <description><![CDATA[
 Bug 1698550, nr 2
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public final class Foo {
 public Object clone() throws CloneNotSupportedException {
@@ -128,5 +128,5 @@ throw new CloneNotSupportedException();
 }
 }
      ]]></code>
-    </test-code-->
+    </test-code>
 </test-data>

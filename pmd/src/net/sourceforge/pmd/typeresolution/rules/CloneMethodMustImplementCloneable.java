@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.typeresolution.rules;
 
+import java.util.Arrays;
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
@@ -14,9 +17,6 @@ import net.sourceforge.pmd.ast.ASTImplementsList;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * The method clone() should only be implemented if the class implements the
@@ -67,8 +67,8 @@ public class CloneMethodMustImplementCloneable extends AbstractRule {
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-
-        if (node.isFinal()) {
+        
+        if (node.isFinal() || node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).isFinal()) {
             if (node.findChildrenOfType(ASTBlock.class).size() == 1) {
                 List<ASTBlockStatement> blocks = node.findChildrenOfType(ASTBlockStatement.class);
                 if (blocks.size() == 1) {
