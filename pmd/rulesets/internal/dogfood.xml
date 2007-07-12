@@ -32,6 +32,8 @@ Rules to check PMD itself
     
     <rule ref="rulesets/strings.xml/UselessStringValueOf"/>
 
+    <rule ref="rulesets/strings.xml/AppendCharacterWithChar"/>
+
     <!-- Null checks -->
     <rule ref="rulesets/basic.xml/BrokenNullCheck"/>
     
