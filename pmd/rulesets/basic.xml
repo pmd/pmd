@@ -839,6 +839,7 @@ public class Foo {
     <description>
     After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
     </description>
+	<priority>3</priority>
     <properties>
         <property name="xpath">
         <value>
@@ -854,7 +855,6 @@ public class Foo {
         </value>
         </property>
     </properties>
-<priority>3</priority>
 <example>
 <![CDATA[
 public class Test {
@@ -911,6 +911,7 @@ if (method1().equals(a)) {
 Avoid using ThreadGroup; although it is intended to be used in a threaded environment
  it contains methods that are not thread safe.
       </description>
+      <priority>3</priority>
       <properties>
         <property name="xpath">
         <value>
@@ -921,7 +922,6 @@ Avoid using ThreadGroup; although it is intended to be used in a threaded enviro
         </value>
         </property>
       </properties>
-      <priority>3</priority>
       <example>
     <![CDATA[
     public class Bar {
