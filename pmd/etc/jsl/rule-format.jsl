@@ -54,13 +54,14 @@
     		    </p>
 		    </j:otherwise>
 	    </j:choose>
-		<p>Here's an example of code that would trigger this rule:</p>
-		<j:set trim="true" var="examplecode">
-			<x:expr select="./example"/>
-		</j:set>
-		<source>
-			${examplecode}
-		</source>
+	    
+        <x:set var="examples" trim="true" select="./example"/>
+        <j:forEach var="e" items="${examples}">
+        <p>Example:</p>
+            <source>
+                ${e.text}
+            </source>
+        </j:forEach>
 
         <j:set trim="true" var="hasproperties"><x:expr select="count(properties/property[@name!='xpath'])"/></j:set>
         <j:choose>
