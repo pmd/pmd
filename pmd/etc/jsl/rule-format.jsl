@@ -20,7 +20,6 @@
 		</properties>
 		<body>
 			<section name="${rulesetname}">
-				<p><x:expr select="./description"/></p>
 				<jsl:applyTemplates/>
 			</section>
 		</body>
