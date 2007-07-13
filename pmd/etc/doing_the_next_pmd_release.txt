@@ -49,7 +49,7 @@ cd -
 Time to tag:
 
 cd ../../
-svn copy https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0rc2
+svn -m "4.0rc2 release tag" copy https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0rc2
 
 Prepare source release:
 rm -rf ~/tmp/pmd-4.0rc2
