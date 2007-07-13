@@ -247,10 +247,14 @@
 			<id>jaxen</id>
 			<version>1.1</version>
 		</dependency>
-        <dependency>
-            <id>asm</id>
-            <version>3.0</version>
-        </dependency>
+    <dependency>
+      <id>asm</id>
+      <version>3.0</version>
+    </dependency>
+    <dependency>
+      <id>junit</id>
+      <version>4.1</version>
+    </dependency>
 	</dependencies>
 
 	<build>
