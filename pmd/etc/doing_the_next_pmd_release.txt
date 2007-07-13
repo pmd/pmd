@@ -60,7 +60,7 @@ cd ../../
 rm -rf tmp/
 mkdir tmp
 cd tmp
-svn export https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0rc2 pmd
+svn -q export https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0rc2 pmd
 mv pmd/ pmd-4.0rc2
 cd ..
 cp pmd/lib/pmd-src-4.0rc2.jar tmp/pmd-4.0rc2/lib/
@@ -77,6 +77,7 @@ and then retag it
 
 ncftpput upload.sourceforge.net incoming/ pmd-src-4.0rc2.zip pmd-bin-4.0rc2.zip
 
+
 Go to Admin, File Releases, Add release
 Paste stuff into the changelog/readme boxes
 Add the pmd-bin-4.0rc2.zip file
@@ -84,9 +85,9 @@ Add the pmd-src-4.0rc2.zip file
 Classify the file
 Click File Releases, Edit Release, set previous version to 'hidden'.
 
-./docs all
-cd ~/pmd/pmd
+cd ~/pmd/pmd/
 update the "download" and "what's new" link in navigation.xml
+./docs all
 ./docs.sh upload
 scp target/pmd-*-bundle.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/
 
