@@ -1,11 +1,11 @@
-???, 2007 - 4.0:
-
+July 12, 2007 - 4.0rc2:
 New rules:
 	Typeresolution ruleset: SignatureDeclareThrowsException - re-implementation using the new Type Resolution facility (old rule is still available)
 Fixed bug 1698550 - CloneMethodMustImplementCloneable now accepts a clone method that throws CloneNotSupportedException in a final class
 Fixed bug 1680568 - The new typeresolution SignatureDeclareThrowsException rule now ignores setUp and tearDown in JUnit 4 tests and tests that do not directly extend TestCase
 The new typeresolution SignatureDeclareThrowsException rule can now ignore JUnit classes completely by setting the IgnoreJUnitCompletely property
 Fixed false positive in UselessOperationOnImmutable
+PMD now defaults to using a Java 1.5 source code parser.
 
 June 22, 2007 - 4.0rc1:
 New rules:
