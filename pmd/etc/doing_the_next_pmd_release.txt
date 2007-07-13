@@ -86,7 +86,6 @@ Classify the file
 Click File Releases, Edit Release, set previous version to 'hidden'.
 
 ./docs all
-Check target/docs/rules/controversial - is description duplicated?
 cd ~/pmd/pmd
 update the "download" and "what's new" link in navigation.xml
 ./docs.sh upload
