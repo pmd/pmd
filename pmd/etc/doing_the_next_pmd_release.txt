@@ -87,7 +87,7 @@ Click File Releases, Edit Release, set previous version to 'hidden'.
 
 cd ~/pmd/pmd/
 update the "download" and "what's new" link in navigation.xml
-./docs all
+./docs.sh all
 ./docs.sh upload
 scp target/pmd-*-bundle.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/
 
