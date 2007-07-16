@@ -56,6 +56,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Thomas Leplus - Rewrote UselessStringValueOf, nice patch for ClassCastExceptionWithToArray</li>
             <li>Paul Sundling - A nice documentation patch for ruleset links</li>
             <li>Ralf Wagner - Reported and noted proper fix for broken XSLT</li>
             <li>Matt Koch - Added more detail to PMD XML report</li>
@@ -69,7 +70,6 @@
             <li>Lukas Theussl - Patch to bring Maven configuration files up to date</li>
             <li>Jason Bennett - Rewrite of annotation-based warning suppression to allow for rule-specific suppression, noticed useless line in XSLT scripts, fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule, patches to improve CyclomaticComplexity rule, Implemented: UseCollectionIsEmpty, NcssTypeCount, NcssMethodCount, NcssConstructor, Patch to detect comparison with new Object</li>
             <li>Brent Fisher - Fixed report backslash bug, SummaryHTML report improvements</li>
-            <li>Thomas Leplus - Rewrote UselessStringValueOf</li>
             <li>Larry Brigman - Reported symlink bug in CPD</li>
             <li>Harald Rohan - Reported bug in CPD GUI</li>
             <li>Stephan Classens - Patch for file closing bug, noted missing varargs setting in ASTFormalParameter</li>

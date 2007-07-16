@@ -680,6 +680,8 @@ ClassCastException.
  PrimaryPrefix/Name[ends-with(@Image, '.toArray')]
  and
  PrimarySuffix/Arguments[count(*) = 0]
+and
+count(PrimarySuffix) = 1
 ]
 ]]>
     </value>
@@ -941,8 +943,7 @@ Avoid using ThreadGroup; although it is intended to be used in a threaded enviro
           class="net.sourceforge.pmd.rules.basic.BrokenNullCheck"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BrokenNullCheck">
         <description>
-The null check is broken since it will throw a Nullpointer itself. 
-The reason is that a method is called on the object when it is null. 
+The null check is broken since it will throw a NullPointerException itself.
 It is likely that you used || instead of &amp;&amp; or vice versa.
      </description>
         <priority>2</priority>
@@ -971,7 +972,7 @@ BigInteger and BigDecimal (ZERO, ONE, TEN)"
 Don't create instances of already existing BigInteger
 (BigInteger.ZERO, BigInteger.ONE) and for 1.5 on,
 BigInteger.TEN and BigDecimal (BigDecimal.ZERO,
-BigDecimal.ONE, BigDecimal.TEN) 
+BigDecimal.ONE, BigDecimal.TEN)
   </description>
   <priority>3</priority>
   <example>
