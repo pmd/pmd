@@ -1,3 +1,6 @@
+????, 2007 - 4.0
+Fixed bug 1697397 - fixed false positives in ClassCastExceptionWithToArray
+
 July 12, 2007 - 4.0rc2:
 New rules:
 	Typeresolution ruleset: SignatureDeclareThrowsException - re-implementation using the new Type Resolution facility (old rule is still available)
