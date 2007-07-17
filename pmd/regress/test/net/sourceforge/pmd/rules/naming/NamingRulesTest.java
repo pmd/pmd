@@ -19,7 +19,6 @@ public class NamingRulesTest extends SimpleAggregatorTst {
         rules.add(findRule("naming", "AvoidDollarSigns"));
         rules.add(findRule("naming", "AvoidFieldNameMatchingMethodName"));
         rules.add(findRule("naming", "AvoidFieldNameMatchingTypeName"));
-        rules.add(findRule("naming", "AvoidNonConstructorMethodsWithClassName"));
         rules.add(findRule("naming", "BooleanGetMethodName"));
         rules.add(findRule("naming", "ClassNamingConventions"));
         rules.add(findRule("naming", "LongVariable"));

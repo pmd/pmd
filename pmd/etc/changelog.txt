@@ -1,5 +1,6 @@
 ????, 2007 - 4.0
 Fixed bug 1697397 - fixed false positives in ClassCastExceptionWithToArray
+Fixed bug 1728789 - removed redundant rule
 
 July 12, 2007 - 4.0rc2:
 New rules:

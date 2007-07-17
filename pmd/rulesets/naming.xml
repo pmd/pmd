@@ -369,25 +369,7 @@ public class Foo {
       </example>
     </rule>
 
-    <rule name="AvoidNonConstructorMethodsWithClassName"
-          message="Method {0} is not a constructor but it can be confused with one"
-          class="net.sourceforge.pmd.rules.AvoidNonConstructorMethodsWithClassName"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidNonConstructorMethodsWithClassName">
-      <description>
-It is very easy to confuse methods with classname with constructors. It is preferrable
-to name these non-constructor methods in a different way.
-      </description>
-        <priority>3</priority>
-      <example>
-<![CDATA[
-public class Foo {
- public void Foo() {
-  // not a constructor, just a poorly named method
- }
-}
-]]>
-      </example>
-    </rule>
+
 
     <rule name="NoPackage"
         message="All classes and interfaces must belong to a named package"
@@ -478,7 +460,7 @@ indicates a field and thus is confusing.
         class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#BooleanGetMethodName">
         <description>
-Looks for methods named 'getX()' with 'boolean' as the return type. The convention 
+Looks for methods named 'getX()' with 'boolean' as the return type. The convention
 is to name these methods 'isX()'.
         </description>
         <priority>4</priority>
@@ -500,7 +482,7 @@ ResultType/Type/PrimitiveType[@Image = 'boolean']
             </property>
         </properties>
         <example>
-            <![CDATA[ 
+            <![CDATA[
 public boolean getFoo(); // bad
 public boolean isFoo(); // ok
 public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true

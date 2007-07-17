@@ -56,12 +56,13 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Romain Pelisse - Restructured CPD tokenizers, patch to remove redundant rule, added Fortran tokenizer, DoNotExtendJavaLangError, JspEncoding, MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention</li>
+            <li>Thomas Steininger - Noticed redundant rule</li>
             <li>Thomas Leplus - Rewrote UselessStringValueOf, nice patch for ClassCastExceptionWithToArray</li>
             <li>Paul Sundling - A nice documentation patch for ruleset links</li>
             <li>Ralf Wagner - Reported and noted proper fix for broken XSLT</li>
             <li>Matt Koch - Added more detail to PMD XML report</li>
             <li>Richard Hands - Fixed CPD symlink confusion</li>
-            <li>Romain Pelisse - Restructed CPD tokenizers, added Fortran tokenizer, DoNotExtendJavaLangError, JspEncoding, MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention</li>
             <li>Oleg Skrypnyuk - reported a Java 1.5 grammar bug</li>
             <li>Jeff Campbell - Found bug and suggested fix for problem with XMLRenderer and SuppressWarnings("PMD") annotations</li>
             <li>Kris Jurka - CPD patch to accept ".C" as a filename extension for C/C++ files</li>
