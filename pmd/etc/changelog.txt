@@ -49,6 +49,7 @@ TypeResolution now looks at some ASTName nodes.
 Memory footprint reduced: most renderers now use less memory by generating reports on the fly.
 Ant task now takes advantage of multithreading code and on the fly renderers
 Ant task now logs more debug info when using -verbose
+PMD command line now has -benchmark: output a benchmark report upon completion; default to System.err
 
 December 19, 2006 - 3.9:
 New rules:
