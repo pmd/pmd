@@ -2,7 +2,9 @@
 
 package net.sourceforge.pmd.jerry.ast.xpath;
 
-public class ASTPITest extends SimpleNode {
+import net.sourceforge.pmd.jerry.ast.xpath.custom.ImageNode;
+
+public class ASTPITest extends ImageNode {
   public ASTPITest(int id) {
     super(id);
   }

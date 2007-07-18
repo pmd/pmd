@@ -1611,22 +1611,22 @@ private final int jjMoveNfa_0(int startState, int curPos)
                   }
                   break;
                case 36:
-                  if ((0x7ff600000000000L & l) != 0L)
+                  if ((0x3ff600000000000L & l) != 0L)
                   {
                      if (kind > 94)
                         kind = 94;
                      jjCheckNAdd(35);
                   }
-                  if ((0x7ff600000000000L & l) != 0L)
+                  else if (curChar == 58)
+                     jjstateSet[jjnewStateCnt++] = 32;
+                  if ((0x3ff600000000000L & l) != 0L)
                   {
                      if (kind > 93)
                         kind = 93;
                      jjCheckNAdd(34);
                   }
-                  if ((0x7ff600000000000L & l) != 0L)
+                  if ((0x3ff600000000000L & l) != 0L)
                      jjCheckNAddTwoStates(30, 31);
-                  if (curChar == 58)
-                     jjstateSet[jjnewStateCnt++] = 32;
                   break;
                case 0:
                   if ((0x3ff000000000000L & l) != 0L)
@@ -1768,7 +1768,7 @@ private final int jjMoveNfa_0(int startState, int curPos)
                      jjCheckNAddTwoStates(28, 23);
                   break;
                case 30:
-                  if ((0x7ff600000000000L & l) != 0L)
+                  if ((0x3ff600000000000L & l) != 0L)
                      jjCheckNAddTwoStates(30, 31);
                   break;
                case 31:
@@ -1776,21 +1776,21 @@ private final int jjMoveNfa_0(int startState, int curPos)
                      jjstateSet[jjnewStateCnt++] = 32;
                   break;
                case 33:
-                  if ((0x7ff600000000000L & l) == 0L)
+                  if ((0x3ff600000000000L & l) == 0L)
                      break;
                   if (kind > 93)
                      kind = 93;
                   jjstateSet[jjnewStateCnt++] = 33;
                   break;
                case 34:
-                  if ((0x7ff600000000000L & l) == 0L)
+                  if ((0x3ff600000000000L & l) == 0L)
                      break;
                   if (kind > 93)
                      kind = 93;
                   jjCheckNAdd(34);
                   break;
                case 35:
-                  if ((0x7ff600000000000L & l) == 0L)
+                  if ((0x3ff600000000000L & l) == 0L)
                      break;
                   if (kind > 94)
                      kind = 94;

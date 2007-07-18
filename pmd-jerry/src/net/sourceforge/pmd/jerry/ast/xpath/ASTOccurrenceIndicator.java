@@ -2,7 +2,9 @@
 
 package net.sourceforge.pmd.jerry.ast.xpath;
 
-public class ASTOccurrenceIndicator extends SimpleNode {
+import net.sourceforge.pmd.jerry.ast.xpath.custom.ImageNode;
+
+public class ASTOccurrenceIndicator extends ImageNode {
   public ASTOccurrenceIndicator(int id) {
     super(id);
   }

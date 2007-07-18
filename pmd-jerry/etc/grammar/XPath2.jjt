@@ -13,6 +13,10 @@ options
 	VISITOR = true;
 	NODE_USES_PARSER = true;
 	NODE_PACKAGE="net.sourceforge.pmd.jerry.ast.xpath";
+	
+	DEBUG_PARSER = false;
+	DEBUG_LOOKAHEAD = false;
+	DEBUG_TOKEN_MANAGER = false;
 }
 
 PARSER_BEGIN(XPath2Parser)
@@ -298,7 +302,7 @@ TOKEN :
 	|
 		<#NCNAMECHAR :
 			// Note: JavaCC cannot do <NAMECHAR> - ":", duplicate <NAMECHAR> here with ":" removed
-			<LETTER> | <DIGIT> | "." | "-" | "_" | ":" | <COMBININGCHAR> | <EXTENDER>
+			<LETTER> | <DIGIT> | "." | "-" | "_" | <COMBININGCHAR> | <EXTENDER>
 		>
 	|
 		<#NCNAMESTARTCHAR :
@@ -1050,22 +1054,21 @@ void ForwardAxis() :
 {
 }
 {
-// TODO Why is this not matching?!?
-		("child" "::")
+		("child" { jjtThis.addAxis(AxisEnum.CHILD); } "::")
 	|
-		("descendant" "::")
+		("descendant" { jjtThis.addAxis(AxisEnum.DESCENDANT); } "::")
 	|
-		("attribute" "::")
+		("attribute" { jjtThis.addAxis(AxisEnum.ATTRIBUTE); } "::")
 	|
-		("self" "::")
+		("self" { jjtThis.addAxis(AxisEnum.SELF); } "::")
 	|
-		("descendant-or-self" "::")
+		("descendant-or-self" { jjtThis.addAxis(AxisEnum.DESCENDANT_OR_SELF); } "::")
 	|
-		("following-sibling" "::")
+		("following-sibling" { jjtThis.addAxis(AxisEnum.FOLLOWING_SIBLING); } "::")
 	|
-		("following" "::")
+		("following" { jjtThis.addAxis(AxisEnum.FOLLOWING); } "::")
 	|
-		("namespace" "::")
+		("namespace" { jjtThis.addAxis(AxisEnum.NAMESPACE); } "::")
 }
 
 // [31] http://www.w3.org/TR/xpath20/#doc-xpath-AbbrevForwardStep
@@ -1091,15 +1094,15 @@ void ReverseAxis() :
 {
 }
 {
-		("parent" "::")
+		("parent" { jjtThis.addAxis(AxisEnum.PARENT); } "::")
 	|
-		("ancestor" "::")
+		("ancestor" { jjtThis.addAxis(AxisEnum.ANCESTOR); } "::")
 	|
-		("preceding-sibling" "::")
+		("preceding-sibling" { jjtThis.addAxis(AxisEnum.PRECEDING_SIBLING); } "::")
 	|
-		("preceding" "::")
+		("preceding" { jjtThis.addAxis(AxisEnum.PRECEDING); } "::")
 	|
-		("ancestor-or-self" "::")
+		("ancestor-or-self" { jjtThis.addAxis(AxisEnum.ANCESTOR_OR_SELF); } "::")
 }
 
 // [34] http://www.w3.org/TR/xpath20/#doc-xpath-AbbrevReverseStep
@@ -1278,11 +1281,12 @@ void OccurrenceIndicator() :
 {
 }
 {
-		"?"
+	{ Token token; }
+		token = "?" { jjtThis.setImage(token.image); }
 	|
-		"*"
+		token = "*" { jjtThis.setImage(token.image); }
 	|
-		"+"
+		token = "+" { jjtThis.setImage(token.image); }
 	// TODO
 	/* xgs: occurrence-indicators */
 }
@@ -1369,7 +1373,8 @@ void PITest() :
 {
 }
 {
-	"processing-instruction" "(" (<NCNAME> | StringLiteral())? ")"
+	{ Token token; }
+	"processing-instruction" "(" (token = <NCNAME> { jjtThis.setImage(token.image); } | StringLiteral())? ")"
 }
 
 // [60] http://www.w3.org/TR/xpath20/#doc-xpath-AttributeTest
@@ -1411,7 +1416,8 @@ void ElementTest() :
 {
 }
 {
-	"element" "(" (ElementNameOrWildcard() ("," TypeName() ("?")?)?)? ")"
+	{ Token token; }
+	"element" "(" (ElementNameOrWildcard() ("," TypeName() (token = "?" { jjtThis.setImage(token.image); })?)?)? ")"
 }
 
 // [65] http://www.w3.org/TR/xpath20/#doc-xpath-ElementNameOrWildcard

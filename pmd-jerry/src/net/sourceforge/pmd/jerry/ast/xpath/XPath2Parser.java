@@ -1515,34 +1515,42 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       switch (jj_nt.kind) {
       case KEYWORD_CHILD:
         jj_consume_token(KEYWORD_CHILD);
+                           jjtn000.addAxis(AxisEnum.CHILD);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_DESCENDANT:
         jj_consume_token(KEYWORD_DESCENDANT);
+                                jjtn000.addAxis(AxisEnum.DESCENDANT);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_ATTRIBUTE:
         jj_consume_token(KEYWORD_ATTRIBUTE);
+                               jjtn000.addAxis(AxisEnum.ATTRIBUTE);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_SELF:
         jj_consume_token(KEYWORD_SELF);
+                          jjtn000.addAxis(AxisEnum.SELF);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_DESCENDANT_OR_SELF:
         jj_consume_token(KEYWORD_DESCENDANT_OR_SELF);
+                                        jjtn000.addAxis(AxisEnum.DESCENDANT_OR_SELF);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_FOLLOWING_SIBLING:
         jj_consume_token(KEYWORD_FOLLOWING_SIBLING);
+                                       jjtn000.addAxis(AxisEnum.FOLLOWING_SIBLING);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_FOLLOWING:
         jj_consume_token(KEYWORD_FOLLOWING);
+                               jjtn000.addAxis(AxisEnum.FOLLOWING);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_NAMESPACE:
         jj_consume_token(KEYWORD_NAMESPACE);
+                               jjtn000.addAxis(AxisEnum.NAMESPACE);
         jj_consume_token(COLON_COLON);
         break;
       default:
@@ -1650,22 +1658,27 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       switch (jj_nt.kind) {
       case KEYWORD_PARENT:
         jj_consume_token(KEYWORD_PARENT);
+                            jjtn000.addAxis(AxisEnum.PARENT);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_ANCESTOR:
         jj_consume_token(KEYWORD_ANCESTOR);
+                              jjtn000.addAxis(AxisEnum.ANCESTOR);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_PRECEDING_SIBLIING:
         jj_consume_token(KEYWORD_PRECEDING_SIBLIING);
+                                       jjtn000.addAxis(AxisEnum.PRECEDING_SIBLING);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_PRECEDING:
         jj_consume_token(KEYWORD_PRECEDING);
+                               jjtn000.addAxis(AxisEnum.PRECEDING);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_ANCESTOR_OR_SELF:
         jj_consume_token(KEYWORD_ANCESTOR_OR_SELF);
+                                      jjtn000.addAxis(AxisEnum.ANCESTOR_OR_SELF);
         jj_consume_token(COLON_COLON);
         break;
       default:
@@ -2408,13 +2421,23 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     try {
       switch (jj_nt.kind) {
       case QUESTION_MARK:
-        jj_consume_token(QUESTION_MARK);
+          Token token;
+        token = jj_consume_token(QUESTION_MARK);
+                              jjtree.closeNodeScope(jjtn000, true);
+                              jjtc000 = false;
+                              jjtn000.setImage(token.image);
         break;
       case STAR:
-        jj_consume_token(STAR);
+        token = jj_consume_token(STAR);
+                              jjtree.closeNodeScope(jjtn000, true);
+                              jjtc000 = false;
+                              jjtn000.setImage(token.image);
         break;
       case PLUS:
-        jj_consume_token(PLUS);
+        token = jj_consume_token(PLUS);
+                              jjtree.closeNodeScope(jjtn000, true);
+                              jjtc000 = false;
+                              jjtn000.setImage(token.image);
         break;
       default:
         jj_la1[49] = jj_gen;
@@ -2422,9 +2445,9 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         throw new ParseException();
       }
     } finally {
-                  if (jjtc000) {
-                    jjtree.closeNodeScope(jjtn000, true);
-                  }
+          if (jjtc000) {
+            jjtree.closeNodeScope(jjtn000, true);
+          }
     }
   }
 
@@ -2670,6 +2693,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
+          Token token;
       jj_consume_token(KEYWORD_PROCESSING_INSTRUCTION);
       jj_consume_token(OPEN_PAREN);
       switch (jj_nt.kind) {
@@ -2677,7 +2701,8 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       case NCNAME:
         switch (jj_nt.kind) {
         case NCNAME:
-          jj_consume_token(NCNAME);
+          token = jj_consume_token(NCNAME);
+                                                         jjtn000.setImage(token.image);
           break;
         case STRING_LITERAL:
           StringLiteral();
@@ -2871,6 +2896,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
+          Token token;
       jj_consume_token(KEYWORD_ELEMENT);
       jj_consume_token(OPEN_PAREN);
       switch (jj_nt.kind) {
@@ -2883,7 +2909,8 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           TypeName();
           switch (jj_nt.kind) {
           case QUESTION_MARK:
-            jj_consume_token(QUESTION_MARK);
+            token = jj_consume_token(QUESTION_MARK);
+                                                                              jjtn000.setImage(token.image);
             break;
           default:
             jj_la1[59] = jj_gen;
@@ -3190,18 +3217,18 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     finally { jj_save(4, xla); }
   }
 
+  final private boolean jj_3R_99() {
+    if (jj_3R_111()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_98() {
     if (jj_3R_110()) return true;
     return false;
   }
 
-  final private boolean jj_3R_130() {
-    if (jj_scan_token(PLUS)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_104() {
-    if (jj_3R_115()) return true;
+  final private boolean jj_3R_131() {
+    if (jj_3R_134()) return true;
     return false;
   }
 
@@ -3210,50 +3237,9 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_129() {
-    if (jj_scan_token(MINUS)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_127() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_129()) {
-    jj_scanpos = xsp;
-    if (jj_3R_130()) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_96() {
-    if (jj_3R_108()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_95() {
-    if (jj_3R_107()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_128() {
-    if (jj_3R_131()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_94() {
-    if (jj_3R_106()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_91() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_94()) {
-    jj_scanpos = xsp;
-    if (jj_3R_95()) {
-    jj_scanpos = xsp;
-    if (jj_3R_96()) {
-    jj_scanpos = xsp;
     if (jj_3R_97()) {
     jj_scanpos = xsp;
     if (jj_3R_98()) {
@@ -3264,7 +3250,13 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     jj_scanpos = xsp;
     if (jj_3R_101()) {
     jj_scanpos = xsp;
-    if (jj_3R_102()) return true;
+    if (jj_3R_102()) {
+    jj_scanpos = xsp;
+    if (jj_3R_103()) {
+    jj_scanpos = xsp;
+    if (jj_3R_104()) {
+    jj_scanpos = xsp;
+    if (jj_3R_105()) return true;
     }
     }
     }
@@ -3276,185 +3268,23 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_103() {
+  final private boolean jj_3R_106() {
     if (jj_scan_token(QNAME)) return true;
     return false;
   }
 
-  final private boolean jj_3R_92() {
+  final private boolean jj_3R_95() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_103()) {
+    if (jj_3R_106()) {
     jj_scanpos = xsp;
-    if (jj_3R_104()) return true;
+    if (jj_3R_107()) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_86() {
-    if (jj_3R_92()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_85() {
-    if (jj_3R_91()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_80() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_85()) {
-    jj_scanpos = xsp;
-    if (jj_3R_86()) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_56() {
-    if (jj_3R_63()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_126() {
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_127()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_3R_128()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_55() {
-    if (jj_scan_token(STRING_LITERAL)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_125() {
-    if (jj_3R_126()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_69() {
-    if (jj_scan_token(DOUBLE_LITERAL)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_65() {
-    if (jj_scan_token(DOT_DOT)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_78() {
-    if (jj_scan_token(KEYWORD_ANCESTOR_OR_SELF)) return true;
-    if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_77() {
-    if (jj_scan_token(KEYWORD_PRECEDING)) return true;
-    if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_76() {
-    if (jj_scan_token(KEYWORD_PRECEDING_SIBLIING)) return true;
-    if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_124() {
-    if (jj_3R_125()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_75() {
-    if (jj_scan_token(KEYWORD_ANCESTOR)) return true;
-    if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3_5() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_64() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_74()) {
-    jj_scanpos = xsp;
-    if (jj_3R_75()) {
-    jj_scanpos = xsp;
-    if (jj_3R_76()) {
-    jj_scanpos = xsp;
-    if (jj_3R_77()) {
-    jj_scanpos = xsp;
-    if (jj_3R_78()) return true;
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_74() {
-    if (jj_scan_token(KEYWORD_PARENT)) return true;
-    if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_68() {
-    if (jj_scan_token(DECIMAL_LITERAL)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_17() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(10)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(21)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(22)) return true;
-    }
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_123() {
-    if (jj_3R_124()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_58() {
-    if (jj_3R_65()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_67() {
-    if (jj_scan_token(INTEGER_LITERAL)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_52() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_57()) {
-    jj_scanpos = xsp;
-    if (jj_3R_58()) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_57() {
-    if (jj_3R_64()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_122() {
-    if (jj_3R_123()) return true;
+  final private boolean jj_3R_89() {
+    if (jj_3R_95()) return true;
     return false;
   }
 
@@ -3463,7 +3293,184 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
+  final private boolean jj_3R_88() {
+    if (jj_3R_94()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_83() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_88()) {
+    jj_scanpos = xsp;
+    if (jj_3R_89()) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_58() {
+    if (jj_scan_token(STRING_LITERAL)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_129() {
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_130()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_3R_131()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_128() {
+    if (jj_3R_129()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_72() {
+    if (jj_scan_token(DOUBLE_LITERAL)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_81() {
+    if (jj_scan_token(KEYWORD_ANCESTOR_OR_SELF)) return true;
+    if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_68() {
+    if (jj_scan_token(DOT_DOT)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_80() {
+    if (jj_scan_token(KEYWORD_PRECEDING)) return true;
+    if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_127() {
+    if (jj_3R_128()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_79() {
+    if (jj_scan_token(KEYWORD_PRECEDING_SIBLIING)) return true;
+    if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_71() {
+    if (jj_scan_token(DECIMAL_LITERAL)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_78() {
+    if (jj_scan_token(KEYWORD_ANCESTOR)) return true;
+    if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_32() {
+    if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  final private boolean jj_3_5() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_67() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_77()) {
+    jj_scanpos = xsp;
+    if (jj_3R_78()) {
+    jj_scanpos = xsp;
+    if (jj_3R_79()) {
+    jj_scanpos = xsp;
+    if (jj_3R_80()) {
+    jj_scanpos = xsp;
+    if (jj_3R_81()) return true;
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_77() {
+    if (jj_scan_token(KEYWORD_PARENT)) return true;
+    if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_31() {
+    if (jj_scan_token(STAR)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_126() {
+    if (jj_3R_127()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_70() {
+    if (jj_scan_token(INTEGER_LITERAL)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_61() {
+    if (jj_3R_68()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_55() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_60()) {
+    jj_scanpos = xsp;
+    if (jj_3R_61()) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_60() {
+    if (jj_3R_67()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_125() {
+    if (jj_3R_126()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_30() {
+    if (jj_scan_token(QUESTION_MARK)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_17() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_30()) {
+    jj_scanpos = xsp;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) return true;
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_62() {
+    if (jj_3R_69()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_82() {
     if (jj_scan_token(AT)) return true;
     return false;
   }
@@ -3474,22 +3481,22 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_66() {
+  final private boolean jj_3R_69() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_79()) jj_scanpos = xsp;
-    if (jj_3R_80()) return true;
+    if (jj_3R_82()) jj_scanpos = xsp;
+    if (jj_3R_83()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_124() {
+    if (jj_3R_125()) return true;
     return false;
   }
 
   final private boolean jj_3R_28() {
     if (jj_scan_token(KEYWORD_FOLLOWING)) return true;
     if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_121() {
-    if (jj_3R_122()) return true;
     return false;
   }
 
@@ -3523,12 +3530,6 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_22() {
-    if (jj_scan_token(KEYWORD_CHILD)) return true;
-    if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
   final private boolean jj_3R_16() {
     Token xsp;
     xsp = jj_scanpos;
@@ -3557,40 +3558,46 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_44() {
+  final private boolean jj_3R_22() {
+    if (jj_scan_token(KEYWORD_CHILD)) return true;
+    if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_123() {
+    if (jj_3R_124()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_33() {
+    if (jj_3R_42()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_47() {
     if (jj_scan_token(QNAME)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_120() {
-    if (jj_3R_121()) return true;
+  final private boolean jj_3R_50() {
+    if (jj_3R_56()) return true;
     return false;
   }
 
-  final private boolean jj_3R_30() {
-    if (jj_3R_39()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_47() {
-    if (jj_3R_53()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_109() {
+  final private boolean jj_3R_112() {
     if (jj_scan_token(KEYWORD_SCHEMA_ELEMENT)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_43() {
+  final private boolean jj_3R_46() {
     if (jj_scan_token(DOT)) return true;
     return false;
   }
 
-  final private boolean jj_3R_51() {
-    if (jj_3R_56()) return true;
+  final private boolean jj_3R_54() {
+    if (jj_3R_59()) return true;
     return false;
   }
 
@@ -3599,31 +3606,31 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_53() {
+  final private boolean jj_3R_56() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_3()) {
     jj_scanpos = xsp;
-    if (jj_3R_59()) return true;
+    if (jj_3R_62()) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_32() {
+  final private boolean jj_3R_35() {
     if (jj_scan_token(SLASH_SLASH)) return true;
     return false;
   }
 
-  final private boolean jj_3R_42() {
+  final private boolean jj_3R_45() {
     if (jj_scan_token(OPEN_PAREN)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_51()) jj_scanpos = xsp;
+    if (jj_3R_54()) jj_scanpos = xsp;
     if (jj_scan_token(CLOSE_PARAN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_31() {
+  final private boolean jj_3R_34() {
     if (jj_scan_token(SLASH)) return true;
     return false;
   }
@@ -3633,35 +3640,35 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_46() {
-    if (jj_3R_52()) return true;
+  final private boolean jj_3R_49() {
+    if (jj_3R_55()) return true;
     return false;
   }
 
-  final private boolean jj_3R_119() {
-    if (jj_3R_120()) return true;
+  final private boolean jj_3R_122() {
+    if (jj_3R_123()) return true;
     return false;
   }
 
-  final private boolean jj_3R_39() {
+  final private boolean jj_3R_42() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_46()) {
+    if (jj_3R_49()) {
     jj_scanpos = xsp;
-    if (jj_3R_47()) return true;
+    if (jj_3R_50()) return true;
     }
     if (jj_3R_21()) return true;
     return false;
   }
 
-  final private boolean jj_3R_50() {
-    if (jj_scan_token(QNAME)) return true;
+  final private boolean jj_3R_110() {
+    if (jj_scan_token(KEYWORD_ELEMENT)) return true;
+    if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_107() {
-    if (jj_scan_token(KEYWORD_ELEMENT)) return true;
-    if (jj_scan_token(OPEN_PAREN)) return true;
+  final private boolean jj_3R_53() {
+    if (jj_scan_token(QNAME)) return true;
     return false;
   }
 
@@ -3675,73 +3682,73 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     xsp = jj_scanpos;
     if (jj_3_2()) {
     jj_scanpos = xsp;
-    if (jj_3R_30()) return true;
+    if (jj_3R_33()) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_41() {
+  final private boolean jj_3R_44() {
     if (jj_scan_token(DOLLAR)) return true;
-    if (jj_3R_50()) return true;
+    if (jj_3R_53()) return true;
     return false;
   }
 
-  final private boolean jj_3R_62() {
-    if (jj_3R_69()) return true;
+  final private boolean jj_3R_65() {
+    if (jj_3R_72()) return true;
     return false;
   }
 
   final private boolean jj_3R_19() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_31()) {
+    if (jj_3R_34()) {
     jj_scanpos = xsp;
-    if (jj_3R_32()) return true;
+    if (jj_3R_35()) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_61() {
-    if (jj_3R_68()) return true;
+  final private boolean jj_3R_64() {
+    if (jj_3R_71()) return true;
     return false;
   }
 
-  final private boolean jj_3R_116() {
-    if (jj_3R_119()) return true;
+  final private boolean jj_3R_119() {
+    if (jj_3R_122()) return true;
     return false;
   }
 
-  final private boolean jj_3R_54() {
+  final private boolean jj_3R_57() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_60()) {
+    if (jj_3R_63()) {
     jj_scanpos = xsp;
-    if (jj_3R_61()) {
+    if (jj_3R_64()) {
     jj_scanpos = xsp;
-    if (jj_3R_62()) return true;
+    if (jj_3R_65()) return true;
     }
     }
     return false;
   }
 
-  final private boolean jj_3R_60() {
-    if (jj_3R_67()) return true;
+  final private boolean jj_3R_63() {
+    if (jj_3R_70()) return true;
     return false;
   }
 
-  final private boolean jj_3R_89() {
-    if (jj_scan_token(KEYWORD_EVERY)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_110() {
+  final private boolean jj_3R_113() {
     if (jj_scan_token(KEYWORD_SCHEMA_ATTRIBUTE)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_105() {
-    if (jj_3R_116()) return true;
+  final private boolean jj_3R_92() {
+    if (jj_scan_token(KEYWORD_EVERY)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_108() {
+    if (jj_3R_119()) return true;
     return false;
   }
 
@@ -3755,56 +3762,82 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_49() {
-    if (jj_3R_55()) return true;
+  final private boolean jj_3R_52() {
+    if (jj_3R_58()) return true;
     return false;
   }
 
-  final private boolean jj_3R_134() {
+  final private boolean jj_3R_137() {
     if (jj_3R_14()) return true;
     return false;
   }
 
-  final private boolean jj_3R_40() {
+  final private boolean jj_3R_43() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_48()) {
+    if (jj_3R_51()) {
     jj_scanpos = xsp;
-    if (jj_3R_49()) return true;
+    if (jj_3R_52()) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_48() {
-    if (jj_3R_54()) return true;
+  final private boolean jj_3R_51() {
+    if (jj_3R_57()) return true;
     return false;
   }
 
-  final private boolean jj_3R_133() {
+  final private boolean jj_3R_136() {
     if (jj_scan_token(SLASH_SLASH)) return true;
     return false;
   }
 
-  final private boolean jj_3R_132() {
+  final private boolean jj_3R_135() {
     if (jj_scan_token(SLASH)) return true;
     return false;
   }
 
-  final private boolean jj_3R_131() {
+  final private boolean jj_3R_134() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_132()) {
+    if (jj_3R_135()) {
     jj_scanpos = xsp;
-    if (jj_3R_133()) {
+    if (jj_3R_136()) {
     jj_scanpos = xsp;
-    if (jj_3R_134()) return true;
+    if (jj_3R_137()) return true;
     }
     }
     return false;
   }
 
+  final private boolean jj_3R_96() {
+    if (jj_3R_108()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_40() {
+    if (jj_3R_47()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_39() {
+    if (jj_3R_46()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_111() {
+    if (jj_scan_token(KEYWORD_ATTRIBUTE)) return true;
+    if (jj_scan_token(OPEN_PAREN)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_38() {
+    if (jj_3R_45()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_93() {
-    if (jj_3R_105()) return true;
+    if (jj_3R_96()) return true;
     return false;
   }
 
@@ -3818,44 +3851,18 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_35() {
-    if (jj_3R_42()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_108() {
-    if (jj_scan_token(KEYWORD_ATTRIBUTE)) return true;
-    if (jj_scan_token(OPEN_PAREN)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_90() {
-    if (jj_3R_93()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_34() {
-    if (jj_3R_41()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_33() {
-    if (jj_3R_40()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_20() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_33()) {
-    jj_scanpos = xsp;
-    if (jj_3R_34()) {
-    jj_scanpos = xsp;
-    if (jj_3R_35()) {
-    jj_scanpos = xsp;
     if (jj_3R_36()) {
     jj_scanpos = xsp;
-    if (jj_3R_37()) return true;
+    if (jj_3R_37()) {
+    jj_scanpos = xsp;
+    if (jj_3R_38()) {
+    jj_scanpos = xsp;
+    if (jj_3R_39()) {
+    jj_scanpos = xsp;
+    if (jj_3R_40()) return true;
     }
     }
     }
@@ -3863,56 +3870,56 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_111() {
+  final private boolean jj_3R_114() {
     if (jj_scan_token(KEYWORD_PROCESSING_INSTRUCTION)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_84() {
-    if (jj_3R_90()) return true;
+  final private boolean jj_3R_87() {
+    if (jj_3R_93()) return true;
     return false;
   }
 
-  final private boolean jj_3R_112() {
+  final private boolean jj_3R_115() {
     if (jj_scan_token(KEYWORD_COMMENT)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_83() {
+  final private boolean jj_3R_86() {
     if (jj_scan_token(KEYWORD_IF)) return true;
     return false;
   }
 
-  final private boolean jj_3R_45() {
+  final private boolean jj_3R_48() {
     if (jj_scan_token(OPEN_BRACKET)) return true;
     return false;
   }
 
-  final private boolean jj_3R_113() {
+  final private boolean jj_3R_116() {
     if (jj_scan_token(KEYWORD_TEXT)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_88() {
+  final private boolean jj_3R_91() {
     if (jj_scan_token(KEYWORD_SOME)) return true;
     return false;
   }
 
-  final private boolean jj_3R_82() {
+  final private boolean jj_3R_85() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_88()) {
+    if (jj_3R_91()) {
     jj_scanpos = xsp;
-    if (jj_3R_89()) return true;
+    if (jj_3R_92()) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_38() {
-    if (jj_3R_45()) return true;
+  final private boolean jj_3R_41() {
+    if (jj_3R_48()) return true;
     return false;
   }
 
@@ -3920,18 +3927,18 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_38()) { jj_scanpos = xsp; break; }
+      if (jj_3R_41()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
-  final private boolean jj_3R_106() {
+  final private boolean jj_3R_109() {
     if (jj_scan_token(KEYWORD_DOCUMENT_NODE)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_87() {
+  final private boolean jj_3R_90() {
     if (jj_scan_token(KEYWORD_FOR)) return true;
     return false;
   }
@@ -3942,54 +3949,59 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_118() {
+  final private boolean jj_3R_121() {
     if (jj_scan_token(STAR)) return true;
     if (jj_scan_token(COLON)) return true;
     return false;
   }
 
   final private boolean jj_3R_117() {
-    if (jj_scan_token(NCNAME)) return true;
-    if (jj_scan_token(COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_114() {
     if (jj_scan_token(KEYWORD_NODE)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_102() {
-    if (jj_3R_114()) return true;
+  final private boolean jj_3R_105() {
+    if (jj_3R_117()) return true;
     return false;
   }
 
-  final private boolean jj_3R_81() {
+  final private boolean jj_3R_120() {
+    if (jj_scan_token(NCNAME)) return true;
+    if (jj_scan_token(COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_84() {
+    if (jj_3R_90()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_76() {
     if (jj_3R_87()) return true;
     return false;
   }
 
-  final private boolean jj_3R_73() {
-    if (jj_3R_84()) return true;
+  final private boolean jj_3R_104() {
+    if (jj_3R_116()) return true;
     return false;
   }
 
-  final private boolean jj_3R_115() {
+  final private boolean jj_3R_118() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_4()) {
     jj_scanpos = xsp;
-    if (jj_3R_117()) {
+    if (jj_3R_120()) {
     jj_scanpos = xsp;
-    if (jj_3R_118()) return true;
+    if (jj_3R_121()) return true;
     }
     }
     return false;
   }
 
-  final private boolean jj_3R_101() {
-    if (jj_3R_113()) return true;
+  final private boolean jj_3R_75() {
+    if (jj_3R_86()) return true;
     return false;
   }
 
@@ -3998,8 +4010,49 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_72() {
-    if (jj_3R_83()) return true;
+  final private boolean jj_3R_103() {
+    if (jj_3R_115()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_74() {
+    if (jj_3R_85()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_102() {
+    if (jj_3R_114()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_66() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_73()) {
+    jj_scanpos = xsp;
+    if (jj_3R_74()) {
+    jj_scanpos = xsp;
+    if (jj_3R_75()) {
+    jj_scanpos = xsp;
+    if (jj_3R_76()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_73() {
+    if (jj_3R_84()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_101() {
+    if (jj_3R_113()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_133() {
+    if (jj_scan_token(PLUS)) return true;
     return false;
   }
 
@@ -4008,34 +4061,23 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_71() {
-    if (jj_3R_82()) return true;
+  final private boolean jj_3R_132() {
+    if (jj_scan_token(MINUS)) return true;
     return false;
   }
 
-  final private boolean jj_3R_99() {
-    if (jj_3R_111()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_63() {
+  final private boolean jj_3R_130() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_70()) {
+    if (jj_3R_132()) {
     jj_scanpos = xsp;
-    if (jj_3R_71()) {
-    jj_scanpos = xsp;
-    if (jj_3R_72()) {
-    jj_scanpos = xsp;
-    if (jj_3R_73()) return true;
-    }
-    }
+    if (jj_3R_133()) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_70() {
-    if (jj_3R_81()) return true;
+  final private boolean jj_3R_107() {
+    if (jj_3R_118()) return true;
     return false;
   }
 

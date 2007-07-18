@@ -66,7 +66,7 @@ public class NodeAccessorAxisNavigator implements AxisNavigator {
 		case ANCESTOR:
 			// TODO
 			break;
-		case PRECEDING_SIBLINGS:
+		case PRECEDING_SIBLING:
 			// TODO
 			break;
 		case PRECEDING:

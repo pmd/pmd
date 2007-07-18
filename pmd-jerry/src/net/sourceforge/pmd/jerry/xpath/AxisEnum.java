@@ -45,7 +45,7 @@ public enum AxisEnum {
 	/**
 	 * TODO Document
 	 */
-	PRECEDING_SIBLINGS("preceding-siblings", false),
+	PRECEDING_SIBLING("preceding-sibling", false),
 	/**
 	 * TODO Document
 	 */

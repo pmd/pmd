@@ -2,7 +2,9 @@
 
 package net.sourceforge.pmd.jerry.ast.xpath;
 
-public class ASTForwardAxis extends SimpleNode {
+import net.sourceforge.pmd.jerry.ast.xpath.custom.StepNode;
+
+public class ASTForwardAxis extends StepNode {
   public ASTForwardAxis(int id) {
     super(id);
   }

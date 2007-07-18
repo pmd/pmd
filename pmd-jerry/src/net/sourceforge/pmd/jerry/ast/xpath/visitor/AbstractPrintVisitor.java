@@ -17,8 +17,16 @@ public abstract class AbstractPrintVisitor {
 		return outputBuffer.toString();
 	}
 
+	protected void print(Object o) {
+		print(String.valueOf(o));
+	}
+
 	protected void print(String s) {
 		lineBuffer.append(s);
+	}
+
+	protected void println(Object o) {
+		println(String.valueOf(o));
 	}
 
 	protected void println(String s) {
@@ -64,7 +72,6 @@ public abstract class AbstractPrintVisitor {
 	}
 
 	protected void TODO(Node node) {
-		String nodeName = node.getClass().getName();
 		StringBuffer buf = new StringBuffer(100);
 		buf.append("Visit for ");
 		buf.append(node);

@@ -2,7 +2,9 @@
 
 package net.sourceforge.pmd.jerry.ast.xpath;
 
-public class ASTReverseAxis extends SimpleNode {
+import net.sourceforge.pmd.jerry.ast.xpath.custom.StepNode;
+
+public class ASTReverseAxis extends StepNode {
   public ASTReverseAxis(int id) {
     super(id);
   }
