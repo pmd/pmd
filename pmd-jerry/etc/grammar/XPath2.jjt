@@ -1,6 +1,12 @@
 /**
  * This is a JavaCC JJTree grammar file for XPath 2.0, the specification of which can be found at:
  *    http://www.w3.org/TR/xpath20
+ *
+ * While this grammar was independently written, it does borrow some of the concepts used with
+ * the test grammar available at:
+ *    http://www.w3.org/2006/11/applets/xpathApplet.html
+ * But where that grammar provides no explaination of what is going on, this grammar contains a
+ * fair bit of instruction.
  */
 
 // TODO Document reason for these choices
@@ -720,7 +726,59 @@ SPECIAL_TOKEN:
 
 
 /**
- * XPath 2.0 grammar follows
+ * XPath 2.0 grammar follows.
+ *
+ * Instead of constructing an AST which contains nodes for every matching
+ * grammar production, various optimizations are being performed.
+ *
+ * The first category of optimizations is to never produce an AST node
+ * for certain grammar productions by using #void suppression.  These are
+ * productions which can be omitted from the AST such that the AST can
+ * still be properly interpreted without undo burden.  The grammar
+ * productions where this is being done are:
+ *
+ *    ExprSingle
+ *    SimpleForClause
+ *    ValueExpr
+ *    GeneralComp
+ *    ValueComp
+ *    NodeComp
+ *    RelativePathExpr
+ *    FilterExpr
+ *    AxisStep
+ *    ForwardStep
+ *    ReverseStep
+ *    PrimaryExpr
+ *    Literal
+ *    NumericLiteral
+ *    KindTest
+ *
+ * The second category of optimizations is to omit unnecessary AST nodes
+ * for unary/binary grammar productions, unless there are at least one/two
+ * meaningful operands for the production.  The grammar productions where
+ * this is being done are:
+ *
+ *    OrExpr
+ *    AndExpr
+ *    ComparisonExpr
+ *    RangeExpr
+ *    AdditiveExpr
+ *    MultiplicativeExpr
+ *    UnionExpr
+ *    IntersectExceptExpr
+ *    InstanceofExpr
+ *    TreatExpr
+ *    CastableExpr
+ *    CastExpr
+ *    UnaryExpr
+ *    PathExpr
+ *    PredicateList
+ *    Predicate
+ *
+ * The third category of optimizations are Path related.  The / and //
+ * terminals are being produced as AST nodes in PathExpr and // alone
+ * in RelativePathExpr.  This makes life easier, and is consistent
+ * with having an AST node for independent meaningful grammar productions.
  */
 
 // [1] http://www.w3.org/TR/xpath20/#doc-xpath-XPath
@@ -749,7 +807,7 @@ void Expr() :
 }
 
 // [3] http://www.w3.org/TR/xpath20/#doc-xpath-ExprSingle
-void ExprSingle() :
+void ExprSingle() #void :
 {
 }
 {
@@ -771,7 +829,7 @@ void ForExpr() :
 }
 
 // [5] http://www.w3.org/TR/xpath20/#prod-xpath-SimpleForClause
-void SimpleForClause() :
+void SimpleForClause() #void :
 {
 }
 {
@@ -795,7 +853,7 @@ void IfExpr() :
 }
 
 // [8] http://www.w3.org/TR/xpath20/#doc-xpath-OrExpr
-void OrExpr() :
+void OrExpr() #OrExpr(>1) :
 {
 }
 {
@@ -803,7 +861,7 @@ void OrExpr() :
 }
 
 // [9] http://www.w3.org/TR/xpath20/#doc-xpath-AndExpr
-void AndExpr() :
+void AndExpr() #AndExpr(>1) :
 {
 }
 {
@@ -811,7 +869,7 @@ void AndExpr() :
 }
 
 // [10] http://www.w3.org/TR/xpath20/#doc-xpath-ComparisonExpr
-void ComparisonExpr() :
+void ComparisonExpr() #ComparisonExpr(>1) :
 {
 }
 {
@@ -819,7 +877,7 @@ void ComparisonExpr() :
 }
 
 // [11] http://www.w3.org/TR/xpath20/#doc-xpath-RangeExpr
-void RangeExpr() :
+void RangeExpr() #RangeExpr(>1):
 {
 }
 {
@@ -827,7 +885,7 @@ void RangeExpr() :
 }
 
 // [12] http://www.w3.org/TR/xpath20/#doc-xpath-AdditiveExpr
-void AdditiveExpr() :
+void AdditiveExpr() #AdditiveExpr(>1) :
 {
 }
 {
@@ -843,7 +901,7 @@ void AdditiveExpr() :
 }
 
 // [13] http://www.w3.org/TR/xpath20/#doc-xpath-MultiplicativeExpr
-void MultiplicativeExpr() :
+void MultiplicativeExpr() #MultiplicativeExpr(>1) :
 {
 }
 {
@@ -863,7 +921,7 @@ void MultiplicativeExpr() :
 }
 
 // [14] http://www.w3.org/TR/xpath20/#doc-xpath-UnionExpr
-void UnionExpr() :
+void UnionExpr() #UnionExpr(>1) :
 {
 }
 {
@@ -879,7 +937,7 @@ void UnionExpr() :
 }
 
 // [15] http://www.w3.org/TR/xpath20/#doc-xpath-IntersectExceptExpr
-void IntersectExceptExpr() :
+void IntersectExceptExpr() #IntersectExceptExpr(>1) :
 {
 }
 {
@@ -895,7 +953,7 @@ void IntersectExceptExpr() :
 }
 
 // [16] http://www.w3.org/TR/xpath20/#doc-xpath-InstanceofExpr
-void InstanceofExpr() :
+void InstanceofExpr() #InstanceofExpr(>1) :
 {
 }
 {
@@ -903,7 +961,7 @@ void InstanceofExpr() :
 }
 
 // [17] http://www.w3.org/TR/xpath20/#doc-xpath-TreatExpr
-void TreatExpr() :
+void TreatExpr() #TreatExpr(>1) :
 {
 }
 {
@@ -911,7 +969,7 @@ void TreatExpr() :
 }
 
 // [18] http://www.w3.org/TR/xpath20/#doc-xpath-CastableExpr
-void CastableExpr() :
+void CastableExpr() #CastableExpr(>1) :
 {
 }
 {
@@ -919,7 +977,7 @@ void CastableExpr() :
 }
 
 // [19] http://www.w3.org/TR/xpath20/#doc-xpath-CastExpr
-void CastExpr() :
+void CastExpr() #CastExpr(>1) :
 {
 }
 {
@@ -927,20 +985,21 @@ void CastExpr() :
 }
 
 // [20] http://www.w3.org/TR/xpath20/#doc-xpath-UnaryExpr
-void UnaryExpr() :
+void UnaryExpr() #UnaryExpr(keepUnaryExpr):
 {
+	boolean keepUnaryExpr = false;
 }
 {
 	(
-			"-" { jjtThis.addOperator(OperatorEnum.UNARY_MINUS); }
+			"-" { keepUnaryExpr = true; jjtThis.addOperator(OperatorEnum.UNARY_MINUS); }
 		|
-			"+" { jjtThis.addOperator(OperatorEnum.UNARY_PLUS); }
+			"+" { keepUnaryExpr = true; jjtThis.addOperator(OperatorEnum.UNARY_PLUS); }
 	)*
 	ValueExpr()
 }
 
 // [21] http://www.w3.org/TR/xpath20/#doc-xpath-ValueExpr
-void ValueExpr() :
+void ValueExpr() #void :
 {
 }
 {
@@ -948,7 +1007,7 @@ void ValueExpr() :
 }
 
 // [22] http://www.w3.org/TR/xpath20/#doc-xpath-GeneralComp
-void GeneralComp(ASTComparisonExpr parent) :
+void GeneralComp(ASTComparisonExpr parent) #void :
 {
 }
 {
@@ -966,7 +1025,7 @@ void GeneralComp(ASTComparisonExpr parent) :
 }
 
 // [23] http://www.w3.org/TR/xpath20/#doc-xpath-ValueComp
-void ValueComp(ASTComparisonExpr parent) :
+void ValueComp(ASTComparisonExpr parent) #void :
 {
 }
 {
@@ -984,7 +1043,7 @@ void ValueComp(ASTComparisonExpr parent) :
 }
 
 // [24] http://www.w3.org/TR/xpath20/#doc-xpath-NodeComp
-void NodeComp(ASTComparisonExpr parent) :
+void NodeComp(ASTComparisonExpr parent) #void :
 {
 }
 {
@@ -996,13 +1055,13 @@ void NodeComp(ASTComparisonExpr parent) :
 }
 
 // [25] http://www.w3.org/TR/xpath20/#doc-xpath-PathExpr
-void PathExpr() :
+void PathExpr() #PathExpr(>1) :
 {
 }
 {
-		("/" { jjtThis.setRoot(true); } (LOOKAHEAD(2) RelativePathExpr())?)
+		("/" #Slash(true) (LOOKAHEAD(2) RelativePathExpr())?)
 	|
-		("//" { jjtThis.setRoot(true); jjtThis.addAxis(AxisEnum.DESCENDANT_OR_SELF); } RelativePathExpr())
+		("//" #SlashSlash(true) RelativePathExpr())
 	|
 		RelativePathExpr()
 	// TODO
@@ -1010,16 +1069,16 @@ void PathExpr() :
 }
 
 // [26] http://www.w3.org/TR/xpath20/#doc-xpath-RelativePathExpr
-void RelativePathExpr() :
+void RelativePathExpr() #void :
 {
 }
 {
 	StepExpr()
 	(
 		(
-				"/" { jjtThis.addAxis(null); }
+				"/"
 			|
-				"//" { jjtThis.addAxis(AxisEnum.DESCENDANT_OR_SELF); }
+				"//" #SlashSlash(true)
 		)
 		StepExpr()
 	)*
@@ -1034,7 +1093,7 @@ void StepExpr() :
 }
 
 // [28] http://www.w3.org/TR/xpath20/#doc-xpath-AxisStep
-void AxisStep() :
+void AxisStep() #void :
 {
 }
 {
@@ -1042,7 +1101,7 @@ void AxisStep() :
 }
 
 // [29] http://www.w3.org/TR/xpath20/#doc-xpath-ForwardStep
-void ForwardStep() :
+void ForwardStep() #void :
 {
 }
 {
@@ -1080,7 +1139,7 @@ void AbbrevForwardStep() :
 }
 
 // [32] http://www.w3.org/TR/xpath20/#doc-xpath-ReverseStep
-void ReverseStep() :
+void ReverseStep() #void :
 {
 }
 {
@@ -1150,7 +1209,7 @@ void Wildcard() :
 }
 
 // [38] http://www.w3.org/TR/xpath20/#doc-xpath-FilterExpr
-void FilterExpr() :
+void FilterExpr() #void :
 {
 }
 {
@@ -1158,7 +1217,7 @@ void FilterExpr() :
 }
 
 // [39] http://www.w3.org/TR/xpath20/#doc-xpath-PredicateList
-void PredicateList() :
+void PredicateList() #PredicateList(>0) :
 {
 }
 {
@@ -1166,7 +1225,7 @@ void PredicateList() :
 }
 
 // [40] http://www.w3.org/TR/xpath20/#doc-xpath-Predicate
-void Predicate() :
+void Predicate() #Predicate(>0) :
 {
 }
 {
@@ -1174,7 +1233,7 @@ void Predicate() :
 }
 
 // [41] http://www.w3.org/TR/xpath20/#doc-xpath-PrimaryExpr
-void PrimaryExpr() :
+void PrimaryExpr() #void :
 {
 }
 {
@@ -1190,7 +1249,7 @@ void PrimaryExpr() :
 }
 
 // [42] http://www.w3.org/TR/xpath20/#doc-xpath-Literal
-void Literal() :
+void Literal() #void :
 {
 }
 {
@@ -1200,7 +1259,7 @@ void Literal() :
 }
 
 // [43] http://www.w3.org/TR/xpath20/#doc-xpath-NumericLiteral
-void NumericLiteral() :
+void NumericLiteral() #void :
 {
 }
 {
@@ -1313,7 +1372,7 @@ void AtomicType() :
 }
 
 // [54] http://www.w3.org/TR/xpath20/#doc-xpath-KindTest
-void KindTest() :
+void KindTest() #void :
 {
 }
 {

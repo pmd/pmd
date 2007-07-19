@@ -6,86 +6,73 @@ public interface XPath2ParserTreeConstants
 {
   public int JJTXPATH = 0;
   public int JJTEXPR = 1;
-  public int JJTEXPRSINGLE = 2;
+  public int JJTVOID = 2;
   public int JJTFOREXPR = 3;
-  public int JJTSIMPLEFORCLAUSE = 4;
-  public int JJTQUANTIFIEDEXPR = 5;
-  public int JJTIFEXPR = 6;
-  public int JJTOREXPR = 7;
-  public int JJTANDEXPR = 8;
-  public int JJTCOMPARISONEXPR = 9;
-  public int JJTRANGEEXPR = 10;
-  public int JJTADDITIVEEXPR = 11;
-  public int JJTMULTIPLICATIVEEXPR = 12;
-  public int JJTUNIONEXPR = 13;
-  public int JJTINTERSECTEXCEPTEXPR = 14;
-  public int JJTINSTANCEOFEXPR = 15;
-  public int JJTTREATEXPR = 16;
-  public int JJTCASTABLEEXPR = 17;
-  public int JJTCASTEXPR = 18;
-  public int JJTUNARYEXPR = 19;
-  public int JJTVALUEEXPR = 20;
-  public int JJTGENERALCOMP = 21;
-  public int JJTVALUECOMP = 22;
-  public int JJTNODECOMP = 23;
-  public int JJTPATHEXPR = 24;
-  public int JJTRELATIVEPATHEXPR = 25;
-  public int JJTSTEPEXPR = 26;
-  public int JJTAXISSTEP = 27;
-  public int JJTFORWARDSTEP = 28;
-  public int JJTFORWARDAXIS = 29;
-  public int JJTABBREVFORWARDSTEP = 30;
-  public int JJTREVERSESTEP = 31;
-  public int JJTREVERSEAXIS = 32;
-  public int JJTABBREVREVERSESTEP = 33;
-  public int JJTNODETEST = 34;
-  public int JJTNAMETEST = 35;
-  public int JJTWILDCARD = 36;
-  public int JJTFILTEREXPR = 37;
-  public int JJTPREDICATELIST = 38;
-  public int JJTPREDICATE = 39;
-  public int JJTPRIMARYEXPR = 40;
-  public int JJTLITERAL = 41;
-  public int JJTNUMERICLITERAL = 42;
-  public int JJTVARREF = 43;
-  public int JJTVARNAME = 44;
-  public int JJTPARENTHESIZEDEXPR = 45;
-  public int JJTCONTEXTITEMEXPR = 46;
-  public int JJTFUNCTIONCALL = 47;
-  public int JJTSINGLETYPE = 48;
-  public int JJTSEQUENCETYPE = 49;
-  public int JJTOCCURRENCEINDICATOR = 50;
-  public int JJTITEMTYPE = 51;
-  public int JJTATOMICTYPE = 52;
-  public int JJTKINDTEST = 53;
-  public int JJTANYKINDTEST = 54;
-  public int JJTDOCUMENTTEST = 55;
-  public int JJTTEXTTEST = 56;
-  public int JJTCOMMENTTEST = 57;
-  public int JJTPITEST = 58;
-  public int JJTATTRIBUTETEST = 59;
-  public int JJTATTRIBNAMEORWILDCARD = 60;
-  public int JJTSCHEMAATTRIBUTETEST = 61;
-  public int JJTATTRIBUTEDECLARATION = 62;
-  public int JJTELEMENTTEST = 63;
-  public int JJTELEMENTNAMEORWILDCARD = 64;
-  public int JJTSCHEMAELEMENTTEST = 65;
-  public int JJTELEMENTDECLARATION = 66;
-  public int JJTATTRIBUTENAME = 67;
-  public int JJTELEMENTNAME = 68;
-  public int JJTTYPENAME = 69;
-  public int JJTINTEGERLITERAL = 70;
-  public int JJTDECIMALLITERAL = 71;
-  public int JJTDOUBLELITERAL = 72;
-  public int JJTSTRINGLITERAL = 73;
+  public int JJTQUANTIFIEDEXPR = 4;
+  public int JJTIFEXPR = 5;
+  public int JJTOREXPR = 6;
+  public int JJTANDEXPR = 7;
+  public int JJTCOMPARISONEXPR = 8;
+  public int JJTRANGEEXPR = 9;
+  public int JJTADDITIVEEXPR = 10;
+  public int JJTMULTIPLICATIVEEXPR = 11;
+  public int JJTUNIONEXPR = 12;
+  public int JJTINTERSECTEXCEPTEXPR = 13;
+  public int JJTINSTANCEOFEXPR = 14;
+  public int JJTTREATEXPR = 15;
+  public int JJTCASTABLEEXPR = 16;
+  public int JJTCASTEXPR = 17;
+  public int JJTUNARYEXPR = 18;
+  public int JJTPATHEXPR = 19;
+  public int JJTSLASH = 20;
+  public int JJTSLASHSLASH = 21;
+  public int JJTSTEPEXPR = 22;
+  public int JJTFORWARDAXIS = 23;
+  public int JJTABBREVFORWARDSTEP = 24;
+  public int JJTREVERSEAXIS = 25;
+  public int JJTABBREVREVERSESTEP = 26;
+  public int JJTNODETEST = 27;
+  public int JJTNAMETEST = 28;
+  public int JJTWILDCARD = 29;
+  public int JJTPREDICATELIST = 30;
+  public int JJTPREDICATE = 31;
+  public int JJTVARREF = 32;
+  public int JJTVARNAME = 33;
+  public int JJTPARENTHESIZEDEXPR = 34;
+  public int JJTCONTEXTITEMEXPR = 35;
+  public int JJTFUNCTIONCALL = 36;
+  public int JJTSINGLETYPE = 37;
+  public int JJTSEQUENCETYPE = 38;
+  public int JJTOCCURRENCEINDICATOR = 39;
+  public int JJTITEMTYPE = 40;
+  public int JJTATOMICTYPE = 41;
+  public int JJTANYKINDTEST = 42;
+  public int JJTDOCUMENTTEST = 43;
+  public int JJTTEXTTEST = 44;
+  public int JJTCOMMENTTEST = 45;
+  public int JJTPITEST = 46;
+  public int JJTATTRIBUTETEST = 47;
+  public int JJTATTRIBNAMEORWILDCARD = 48;
+  public int JJTSCHEMAATTRIBUTETEST = 49;
+  public int JJTATTRIBUTEDECLARATION = 50;
+  public int JJTELEMENTTEST = 51;
+  public int JJTELEMENTNAMEORWILDCARD = 52;
+  public int JJTSCHEMAELEMENTTEST = 53;
+  public int JJTELEMENTDECLARATION = 54;
+  public int JJTATTRIBUTENAME = 55;
+  public int JJTELEMENTNAME = 56;
+  public int JJTTYPENAME = 57;
+  public int JJTINTEGERLITERAL = 58;
+  public int JJTDECIMALLITERAL = 59;
+  public int JJTDOUBLELITERAL = 60;
+  public int JJTSTRINGLITERAL = 61;
 
 
   public String[] jjtNodeName = {
     "XPath",
     "Expr",
-    "ExprSingle",
+    "void",
     "ForExpr",
-    "SimpleForClause",
     "QuantifiedExpr",
     "IfExpr",
     "OrExpr",
@@ -101,29 +88,19 @@ public interface XPath2ParserTreeConstants
     "CastableExpr",
     "CastExpr",
     "UnaryExpr",
-    "ValueExpr",
-    "GeneralComp",
-    "ValueComp",
-    "NodeComp",
     "PathExpr",
-    "RelativePathExpr",
+    "Slash",
+    "SlashSlash",
     "StepExpr",
-    "AxisStep",
-    "ForwardStep",
     "ForwardAxis",
     "AbbrevForwardStep",
-    "ReverseStep",
     "ReverseAxis",
     "AbbrevReverseStep",
     "NodeTest",
     "NameTest",
     "Wildcard",
-    "FilterExpr",
     "PredicateList",
     "Predicate",
-    "PrimaryExpr",
-    "Literal",
-    "NumericLiteral",
     "VarRef",
     "VarName",
     "ParenthesizedExpr",
@@ -134,7 +111,6 @@ public interface XPath2ParserTreeConstants
     "OccurrenceIndicator",
     "ItemType",
     "AtomicType",
-    "KindTest",
     "AnyKindTest",
     "DocumentTest",
     "TextTest",

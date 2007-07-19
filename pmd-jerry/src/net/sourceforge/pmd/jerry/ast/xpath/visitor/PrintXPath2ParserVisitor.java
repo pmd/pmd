@@ -13,7 +13,6 @@ import net.sourceforge.pmd.jerry.ast.xpath.ASTAttribNameOrWildcard;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeDeclaration;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeName;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTAxisStep;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTCastExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTCastableExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTCommentTest;
@@ -27,25 +26,17 @@ import net.sourceforge.pmd.jerry.ast.xpath.ASTElementName;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTElementNameOrWildcard;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTElementTest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTExprSingle;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTFilterExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTForExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTForwardAxis;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTForwardStep;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTFunctionCall;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTGeneralComp;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTIfExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTInstanceofExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTIntegerLiteral;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTIntersectExceptExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTItemType;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTKindTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTLiteral;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTMultiplicativeExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTNameTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTNodeComp;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTNodeTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTNumericLiteral;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTOccurrenceIndicator;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTOrExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTPITest;
@@ -53,17 +44,15 @@ import net.sourceforge.pmd.jerry.ast.xpath.ASTParenthesizedExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTPathExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTPredicate;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTPredicateList;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTPrimaryExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTQuantifiedExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTRangeExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTRelativePathExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTReverseAxis;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTReverseStep;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTSchemaAttributeTest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTSchemaElementTest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTSequenceType;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTSimpleForClause;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTSingleType;
+import net.sourceforge.pmd.jerry.ast.xpath.ASTSlash;
+import net.sourceforge.pmd.jerry.ast.xpath.ASTSlashSlash;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTStepExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTStringLiteral;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTTextTest;
@@ -71,12 +60,11 @@ import net.sourceforge.pmd.jerry.ast.xpath.ASTTreatExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTTypeName;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTUnaryExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTUnionExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTValueComp;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTValueExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTVarName;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTVarRef;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTWildcard;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTXPath;
+import net.sourceforge.pmd.jerry.ast.xpath.Node;
 import net.sourceforge.pmd.jerry.ast.xpath.SimpleNode;
 import net.sourceforge.pmd.jerry.ast.xpath.XPath2Parser;
 import net.sourceforge.pmd.jerry.ast.xpath.XPath2ParserVisitor;
@@ -91,18 +79,22 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 	public static enum PrintModeEnum {
 		ABBREVIATE(), UNABBREVIATE();
 	}
-	
+
 	public static String abbreviate(String query) {
 		return visit(query, PrintModeEnum.ABBREVIATE);
 	}
+
 	public static String unabbreviate(String query) {
 		return visit(query, PrintModeEnum.UNABBREVIATE);
 	}
+
 	private static String visit(String query, PrintModeEnum printMode) {
 		Reader reader = new StringReader(query);
 		XPath2Parser parser = new XPath2Parser(reader);
 		ASTXPath xpath = parser.XPath();
-		PrintXPath2ParserVisitor visitor = new PrintXPath2ParserVisitor(printMode);
+		PrintXPath2ParserVisitor visitor = new PrintXPath2ParserVisitor(
+				printMode);
+		//xpath.dump("");
 		xpath.jjtAccept(visitor, null);
 		return visitor.getOutput();
 	}
@@ -121,15 +113,9 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return data;
 	}
 
-	private Object visitOperator(OperatorNode node, Object data,
-			boolean skipOperator) {
+	private Object visitOperator(OperatorNode node, Object data) {
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			if (i > 0) {
-				// Skip the operator child nodes? Those are the even position
-				// nodes
-				if (skipOperator && i % 2 == 1) {
-					continue;
-				}
 				print(" ");
 				print(node.getOperator((i - 1) / 2));
 				print(" ");
@@ -137,6 +123,27 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 			node.jjtGetChild(i).jjtAccept(this, data);
 		}
 		return data;
+	}
+
+	private Node findOnlyOne(Node node, Class nodeType) {
+		return findOnly(node, nodeType, 1);
+	}
+
+	// Find the 1st child node of the given type, but only if the child count is
+	// exactly as expected.
+	private Node findOnly(Node node, Class nodeType, int childCount) {
+		Node found = null;
+		if (node != null) {
+			if (node.jjtGetNumChildren() == childCount) {
+				for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+					if (nodeType.isAssignableFrom(node.jjtGetChild(i)
+							.getClass())) {
+						found = node.jjtGetChild(i);
+					}
+				}
+			}
+		}
+		return found;
 	}
 
 	public Object visit(ASTAbbrevForwardStep node, Object data) {
@@ -159,13 +166,10 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 				break;
 			case UNABBREVIATE:
 				AxisEnum axis = AxisEnum.CHILD;
-				if (node.jjtGetChild(0).jjtGetChild(0) instanceof ASTKindTest) {
-					Object testNode = node.jjtGetChild(0).jjtGetChild(0)
-							.jjtGetChild(0);
-					if (testNode instanceof ASTAttributeTest
-							|| testNode instanceof ASTSchemaAttributeTest) {
-						axis = AxisEnum.ATTRIBUTE;
-					}
+				Object testNode = node.jjtGetChild(0).jjtGetChild(0);
+				if (testNode instanceof ASTAttributeTest
+						|| testNode instanceof ASTSchemaAttributeTest) {
+					axis = AxisEnum.ATTRIBUTE;
 				}
 				print(axis);
 				print("::");
@@ -196,7 +200,7 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 	}
 
 	public Object visit(ASTAdditiveExpr node, Object data) {
-		visitOperator(node, data, false);
+		visitOperator(node, data);
 		return data;
 	}
 
@@ -242,12 +246,6 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return data;
 	}
 
-	public Object visit(ASTAxisStep node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
-		return data;
-	}
-
 	public Object visit(ASTCastableExpr node, Object data) {
 		visitSeparator(node, data, " castable as ");
 		return data;
@@ -264,7 +262,7 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 	}
 
 	public Object visit(ASTComparisonExpr node, Object data) {
-		visitOperator(node, data, true);
+		visitOperator(node, data);
 		return data;
 	}
 
@@ -331,22 +329,19 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return data;
 	}
 
-	public Object visit(ASTExprSingle node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
-		return data;
-	}
-
-	public Object visit(ASTFilterExpr node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
-		return data;
-	}
-
 	public Object visit(ASTForExpr node, Object data) {
-		node.jjtGetChild(0).jjtAccept(this, data);
+		print("for");
+		for (int i = 0; i < (node.jjtGetNumChildren() - 1) / 2; i++) {
+			if (i > 0) {
+				print(",");
+			}
+			print(" $");
+			node.jjtGetChild(i * 2).jjtAccept(this, data);
+			print(" in ");
+			node.jjtGetChild(i * 2 + 1).jjtAccept(this, data);
+		}
 		print(" return ");
-		node.jjtGetChild(1).jjtAccept(this, data);
+		node.jjtGetChild(node.jjtGetNumChildren() - 1).jjtAccept(this, data);
 		return data;
 	}
 
@@ -358,7 +353,14 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 			case CHILD:
 				break;
 			case ATTRIBUTE:
-				print("@");
+				Node sibling = node.jjtGetParent().jjtGetChild(1);
+				if (sibling instanceof ASTNodeTest
+						&& (sibling.jjtGetChild(0) instanceof ASTAttributeTest || sibling
+								.jjtGetChild(0) instanceof ASTSchemaAttributeTest)) {
+					// No explicit attribute axis
+				} else {
+					print("@");
+				}
 				break;
 			default:
 				print(axis);
@@ -368,30 +370,6 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 		case UNABBREVIATE:
 			print(axis);
 			print("::");
-			break;
-		default:
-			throw new IllegalStateException("Unknown PrintModeEnum: "
-					+ printMode);
-		}
-		return data;
-	}
-
-	public Object visit(ASTForwardStep node, Object data) {
-		switch (printMode) {
-		case ABBREVIATE:
-			if (node.jjtGetNumChildren() == 2) {
-				if (((ASTForwardAxis) node.jjtGetChild(0)).getAxis(0) == AxisEnum.DESCENDANT_OR_SELF) {
-					if (node.jjtGetChild(1).jjtGetChild(0) instanceof ASTKindTest) {
-						if (node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0) instanceof ASTAnyKindTest) {
-							break;
-						}
-					}
-				}
-			}
-			node.childrenAccept(this, data);
-			break;
-		case UNABBREVIATE:
-			node.childrenAccept(this, data);
 			break;
 		default:
 			throw new IllegalStateException("Unknown PrintModeEnum: "
@@ -413,14 +391,7 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return data;
 	}
 
-	public Object visit(ASTGeneralComp node, Object data) {
-		// Nothing to do
-		throw new IllegalStateException("Should not be here!");
-	}
-
 	public Object visit(ASTIfExpr node, Object data) {
-		// "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
-
 		print("if ");
 		print("(");
 		node.jjtGetChild(0).jjtAccept(this, data);
@@ -444,7 +415,7 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 	}
 
 	public Object visit(ASTIntersectExceptExpr node, Object data) {
-		visitOperator(node, data, false);
+		visitOperator(node, data);
 		return data;
 	}
 
@@ -457,20 +428,8 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return data;
 	}
 
-	public Object visit(ASTKindTest node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
-		return data;
-	}
-
-	public Object visit(ASTLiteral node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
-		return data;
-	}
-
 	public Object visit(ASTMultiplicativeExpr node, Object data) {
-		visitOperator(node, data, false);
+		visitOperator(node, data);
 		return data;
 	}
 
@@ -483,18 +442,7 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return data;
 	}
 
-	public Object visit(ASTNodeComp node, Object data) {
-		// Nothing to do
-		throw new IllegalStateException("Should not be here!");
-	}
-
 	public Object visit(ASTNodeTest node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
-		return data;
-	}
-
-	public Object visit(ASTNumericLiteral node, Object data) {
 		// Nothing to do
 		node.childrenAccept(this, data);
 		return data;
@@ -510,47 +458,96 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return data;
 	}
 
+	private boolean isRoot(Node node) {
+		//
+		// Do we have the structure for an unabbreviated / ?
+		// Looking for: (fn:root(self::node()) treat as document-node())
+		//
+		boolean root = false;
+		if (node instanceof ASTStepExpr) {
+			node = node.jjtGetChild(0);
+		}
+		if (node instanceof ASTParenthesizedExpr) {
+			Node n = findOnlyOne(node, ASTExpr.class);
+			n = findOnlyOne(n, ASTTreatExpr.class);
+			ASTTreatExpr treatExpr = (ASTTreatExpr) n;
+			if (treatExpr != null) {
+
+				// Check the SequenceType branch first, it is shortest
+				n = findOnly(treatExpr, ASTSequenceType.class, 2);
+				n = findOnlyOne(n, ASTItemType.class);
+				n = findOnlyOne(n, ASTDocumentTest.class);
+				if (n != null) {
+
+					// Now check the CastableExpr branch
+					n = findOnly(treatExpr, ASTStepExpr.class, 2);
+					n = findOnlyOne(n, ASTFunctionCall.class);
+					ASTFunctionCall functionCall = (ASTFunctionCall) n;
+					// Call to fn:root() with one argument?
+					if (functionCall != null
+							&& "fn:root".equals(functionCall.getImage())
+							&& functionCall.jjtGetNumChildren() == 1) {
+						n = findOnlyOne(n, ASTStepExpr.class);
+						// Must be on 'self' axis
+						ASTForwardAxis forwardAxis = (ASTForwardAxis) findOnly(
+								n, ASTForwardAxis.class, 2);
+						if (forwardAxis != null
+								&& AxisEnum.SELF == forwardAxis.getAxis(0)) {
+							n = findOnly(n, ASTNodeTest.class, 2);
+							n = findOnlyOne(n, ASTAnyKindTest.class);
+							if (n != null) {
+								root = true;
+							}
+						}
+					}
+				}
+			}
+		}
+		return root;
+	}
+
 	public Object visit(ASTParenthesizedExpr node, Object data) {
-		print("(");
-		node.childrenAccept(this, data);
-		print(")");
+		switch (printMode) {
+		case ABBREVIATE:
+			boolean rootStructure = isRoot(node);
+			if (rootStructure) {
+				print("/");
+			} else {
+				print("(");
+				node.childrenAccept(this, data);
+				print(")");
+			}
+			break;
+		case UNABBREVIATE:
+			print("(");
+			node.childrenAccept(this, data);
+			print(")");
+			break;
+		default:
+			throw new IllegalStateException("Unknown PrintModeEnum: "
+					+ printMode);
+		}
 		return data;
 	}
 
 	public Object visit(ASTPathExpr node, Object data) {
-		if (node.isRoot()) {
-			switch (printMode) {
-			case ABBREVIATE:
-				print("/");
-				break;
-			case UNABBREVIATE:
-				print("fn:root(");
-				print(AxisEnum.SELF);
-				print("::node()) treat as document-node()");
-				if (node.jjtGetNumChildren() > 0) {
+		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+			Node child = node.jjtGetChild(i);
+			if (i > 0) {
+				Node priorChild = node.jjtGetChild(i - 1);
+				if (printMode == PrintModeEnum.UNABBREVIATE
+						|| (!(priorChild instanceof ASTSlash
+								|| priorChild instanceof ASTSlashSlash || isRoot(priorChild)) && !(child instanceof ASTSlash
+								|| child instanceof ASTSlashSlash || isRoot(child)))) {
 					print("/");
 				}
-				break;
-			default:
-				throw new IllegalStateException("Unknown PrintModeEnum: "
-						+ printMode);
 			}
-			if (node.getNumAxes() > 0) {
-				switch (printMode) {
-				case ABBREVIATE:
-					print("/");
-					break;
-				case UNABBREVIATE:
-					print(AxisEnum.DESCENDANT_OR_SELF);
-					print("::node()/");
-					break;
-				default:
-					throw new IllegalStateException("Unknown PrintModeEnum: "
-							+ printMode);
-				}
+			if (i == 0 && printMode == PrintModeEnum.UNABBREVIATE
+					&& child instanceof ASTSlashSlash) {
+				print("(fn:root(self::node()) treat as document-node())/");
 			}
+			child.jjtAccept(this, data);
 		}
-		node.childrenAccept(this, data);
 		return data;
 	}
 
@@ -573,12 +570,6 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 	}
 
 	public Object visit(ASTPredicateList node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
-		return data;
-	}
-
-	public Object visit(ASTPrimaryExpr node, Object data) {
 		// Nothing to do
 		node.childrenAccept(this, data);
 		return data;
@@ -609,63 +600,9 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return data;
 	}
 
-	public Object visit(ASTRelativePathExpr node, Object data) {
-		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-			if (i > 0) {
-				print("/");
-				AxisEnum axisEnum = node.getAxis(i - 1);
-				if (axisEnum != null && axisEnum != AxisEnum.DESCENDANT_OR_SELF) {
-					throw new IllegalStateException("Unexpected axis: "
-							+ axisEnum);
-				}
-				if (axisEnum != null) {
-					switch (printMode) {
-					case ABBREVIATE:
-						print("/");
-						break;
-					case UNABBREVIATE:
-						print(axisEnum);
-						print("::node()/");
-						break;
-					default:
-						throw new IllegalStateException(
-								"Unknown PrintModeEnum: " + printMode);
-					}
-				}
-			}
-			node.jjtGetChild(i).jjtAccept(this, data);
-		}
-		return data;
-	}
-
 	public Object visit(ASTReverseAxis node, Object data) {
 		print(node.getAxis(0));
 		print("::");
-		return data;
-	}
-
-	public Object visit(ASTReverseStep node, Object data) {
-		switch (printMode) {
-		case ABBREVIATE:
-			if (node.jjtGetNumChildren() == 2) {
-				if (((ASTReverseAxis) node.jjtGetChild(0)).getAxis(0) == AxisEnum.PARENT) {
-					if (node.jjtGetChild(1).jjtGetChild(0) instanceof ASTKindTest) {
-						if (node.jjtGetChild(1).jjtGetChild(0).jjtGetChild(0) instanceof ASTAnyKindTest) {
-							print("..");
-							break;
-						}
-					}
-				}
-			}
-			node.childrenAccept(this, data);
-			break;
-		case UNABBREVIATE:
-			node.childrenAccept(this, data);
-			break;
-		default:
-			throw new IllegalStateException("Unknown PrintModeEnum: "
-					+ printMode);
-		}
 		return data;
 	}
 
@@ -692,20 +629,6 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return data;
 	}
 
-	public Object visit(ASTSimpleForClause node, Object data) {
-		print("for");
-		for (int i = 0; i < node.jjtGetNumChildren() / 2; i++) {
-			if (i > 0) {
-				print(",");
-			}
-			print(" $");
-			node.jjtGetChild(i * 2).jjtAccept(this, data);
-			print(" in ");
-			node.jjtGetChild(i * 2 + 1).jjtAccept(this, data);
-		}
-		return data;
-	}
-
 	public Object visit(ASTSingleType node, Object data) {
 		node.childrenAccept(this, data);
 		if (node.getImage() != null) {
@@ -714,9 +637,71 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return data;
 	}
 
+	public Object visit(ASTSlash node, Object data) {
+		switch (printMode) {
+		case ABBREVIATE:
+			print("/");
+			break;
+		case UNABBREVIATE:
+			print("(fn:root(self::node()) treat as document-node())");
+			break;
+		default:
+			throw new IllegalStateException("Unknown PrintModeEnum: "
+					+ printMode);
+		}
+		return data;
+	}
+
+	public Object visit(ASTSlashSlash node, Object data) {
+		switch (printMode) {
+		case ABBREVIATE:
+			print("//");
+			break;
+		case UNABBREVIATE:
+			print("descendant-or-self::node()");
+			break;
+		default:
+			throw new IllegalStateException("Unknown PrintModeEnum: "
+					+ printMode);
+		}
+		return data;
+	}
+
 	public Object visit(ASTStepExpr node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
+		switch (printMode) {
+		case ABBREVIATE:
+			if (node.jjtGetNumChildren() == 2) {
+				// Abbreviate: descendent-self::node()
+				if (node.jjtGetChild(0) instanceof ASTForwardAxis) {
+					if (((ASTForwardAxis) node.jjtGetChild(0)).getAxis(0) == AxisEnum.DESCENDANT_OR_SELF) {
+						if (node.jjtGetChild(1) instanceof ASTNodeTest) {
+							if (node.jjtGetChild(1).jjtGetChild(0) instanceof ASTAnyKindTest) {
+								break;
+							}
+						}
+					}
+				}
+				// Abbreviate: parent::node()
+				if (node.jjtGetChild(0) instanceof ASTReverseAxis) {
+					if (((ASTReverseAxis) node.jjtGetChild(0)).getAxis(0) == AxisEnum.PARENT) {
+						if (node.jjtGetChild(1) instanceof ASTNodeTest) {
+							if (node.jjtGetChild(1).jjtGetChild(0) instanceof ASTAnyKindTest) {
+								print("..");
+								break;
+							}
+						}
+					}
+				}
+			}
+			node.childrenAccept(this, data);
+			break;
+		case UNABBREVIATE:
+			node.childrenAccept(this, data);
+			break;
+		default:
+			throw new IllegalStateException("Unknown PrintModeEnum: "
+					+ printMode);
+		}
 		return data;
 	}
 
@@ -762,17 +747,6 @@ public class PrintXPath2ParserVisitor extends AbstractPrintVisitor implements
 					+ printMode);
 		}
 		visitSeparator(node, data, separator);
-		return data;
-	}
-
-	public Object visit(ASTValueComp node, Object data) {
-		// Nothing to do
-		throw new IllegalStateException("Should not be here!");
-	}
-
-	public Object visit(ASTValueExpr node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
 		return data;
 	}
 

@@ -9,8 +9,6 @@ import net.sourceforge.pmd.jerry.xpath.AxisEnum;
 
 public class StepNode extends SimpleNode {
 
-	private boolean root;
-
 	private List<AxisEnum> axes;
 
 	public StepNode(int id) {
@@ -19,14 +17,6 @@ public class StepNode extends SimpleNode {
 
 	public StepNode(XPath2Parser p, int id) {
 		super(p, id);
-	}
-
-	public boolean isRoot() {
-		return root;
-	}
-
-	public void setRoot(boolean root) {
-		this.root = root;
 	}
 
 	public void addAxis(AxisEnum axis) {

@@ -40,6 +40,10 @@ public class XPath2ParserTest extends TestCase {
 		public String getUnabbreviated() {
 			return unabbreviated != null ? unabbreviated : xpath;
 		}
+
+		public String toString() {
+			return xpath;
+		}
 	}
 
 	public static void main(String[] args) {
@@ -50,10 +54,9 @@ public class XPath2ParserTest extends TestCase {
 	}
 
 	private static final Query[] VALID_QUERIES = {
-
 			new Query("1,1", "1, 1", "1, 1"),
-			new Query("(fn:root(self::node()) treat as document-node())", null,
-					null),
+			new Query("((fn:root(self::node()) treat as document-node()))",
+					"(/)", null),
 			new Query("foo -foo", "foo - foo", "child::foo - child::foo"),
 			new Query("foo(: This is a comment :)- foo", "foo - foo",
 					"child::foo - child::foo"),
@@ -70,14 +73,15 @@ public class XPath2ParserTest extends TestCase {
 			new Query(
 					"5 instance (: strange place for a comment :) of xs:integer",
 					"5 instance of xs:integer", "5 instance of xs:integer"),
+			new Query("fn:doc(\"zoo.xml\")/fn:id('tiger')", null, null),
 			new Query("/", null,
-					"fn:root(self::node()) treat as document-node()"),
+					"(fn:root(self::node()) treat as document-node())"),
 			new Query("/*", null,
-					"fn:root(self::node()) treat as document-node()/child::*"),
+					"(fn:root(self::node()) treat as document-node())/child::*"),
 			new Query("/ *", "/*",
-					"fn:root(self::node()) treat as document-node()/child::*"),
+					"(fn:root(self::node()) treat as document-node())/child::*"),
 			new Query("(/) * 5", null,
-					"(fn:root(self::node()) treat as document-node()) * 5"),
+					"((fn:root(self::node()) treat as document-node())) * 5"),
 			new Query("4", null, null),
 			new Query("-4", null, null),
 			new Query("+4", null, null),
@@ -85,9 +89,9 @@ public class XPath2ParserTest extends TestCase {
 			new Query("-++4", null, null),
 			new Query("-+-+--+4", null, null),
 			new Query("4 + (/) * 5", null,
-					"4 + (fn:root(self::node()) treat as document-node()) * 5"),
+					"4 + ((fn:root(self::node()) treat as document-node())) * 5"),
 			new Query("4 + /", null,
-					"4 + fn:root(self::node()) treat as document-node()"),
+					"4 + (fn:root(self::node()) treat as document-node())"),
 			new Query("4 | 5", null, "4 union 5"),
 			new Query("4 union 5", "4 | 5", null),
 			new Query("4 intersect 5", null, null),
@@ -118,7 +122,7 @@ public class XPath2ParserTest extends TestCase {
 			new Query(
 					"//book[author eq 'Berners-Lee']",
 					null,
-					"fn:root(self::node()) treat as document-node()/descendant-or-self::node()/child::book[child::author eq 'Berners-Lee']"),
+					"(fn:root(self::node()) treat as document-node())/descendant-or-self::node()/child::book[child::author eq 'Berners-Lee']"),
 			new Query("some $x in $expr1 satisfies $x = 47", null, null),
 			new Query("some $x in $expr1, $y in $expr2 satisfies $x = 47",
 					null, null),
@@ -128,19 +132,19 @@ public class XPath2ParserTest extends TestCase {
 			new Query(
 					"//product[id = 47]",
 					null,
-					"fn:root(self::node()) treat as document-node()/descendant-or-self::node()/child::product[child::id = 47]"),
+					"(fn:root(self::node()) treat as document-node())/descendant-or-self::node()/child::product[child::id = 47]"),
 			new Query(
 					"//product[id = 47]/following::node()/part[id = 48]",
 					null,
-					"fn:root(self::node()) treat as document-node()/descendant-or-self::node()/child::product[child::id = 47]/following::node()/child::part[child::id = 48]"),
+					"(fn:root(self::node()) treat as document-node())/descendant-or-self::node()/child::product[child::id = 47]/following::node()/child::part[child::id = 48]"),
 			new Query(
 					"//part[color eq \"Red\"]",
 					null,
-					"fn:root(self::node()) treat as document-node()/descendant-or-self::node()/child::part[child::color eq \"Red\"]"),
+					"(fn:root(self::node()) treat as document-node())/descendant-or-self::node()/child::part[child::color eq \"Red\"]"),
 			new Query(
 					"//part[color = \"Red\"][color eq \"Red\"]",
 					null,
-					"fn:root(self::node()) treat as document-node()/descendant-or-self::node()/child::part[child::color = \"Red\"][child::color eq \"Red\"]"),
+					"(fn:root(self::node()) treat as document-node())/descendant-or-self::node()/child::part[child::color = \"Red\"][child::color eq \"Red\"]"),
 			new Query(
 					"$N[@x castable as xs:date][xs:date(@x) gt xs:date(\"2000-01-01\")]",
 					null,
@@ -202,21 +206,21 @@ public class XPath2ParserTest extends TestCase {
 			new Query(
 					"/book/chapter[5]/section[2]",
 					null,
-					"fn:root(self::node()) treat as document-node()/child::book/child::chapter[5]/child::section[2]"),
+					"(fn:root(self::node()) treat as document-node())/child::book/child::chapter[5]/child::section[2]"),
 			new Query("chapter//para", null,
 					"child::chapter/descendant-or-self::node()/child::para"),
 			new Query(
 					"//para",
 					null,
-					"fn:root(self::node()) treat as document-node()/descendant-or-self::node()/child::para"),
+					"(fn:root(self::node()) treat as document-node())/descendant-or-self::node()/child::para"),
 			new Query(
 					"//@version",
 					null,
-					"fn:root(self::node()) treat as document-node()/descendant-or-self::node()/attribute::version"),
+					"(fn:root(self::node()) treat as document-node())/descendant-or-self::node()/attribute::version"),
 			new Query(
 					"//list/member",
 					null,
-					"fn:root(self::node()) treat as document-node()/descendant-or-self::node()/child::list/child::member"),
+					"(fn:root(self::node()) treat as document-node())/descendant-or-self::node()/child::list/child::member"),
 			new Query(".//para", null,
 					"./descendant-or-self::node()/child::para"),
 			new Query("..", null, "parent::node()"),
@@ -232,6 +236,8 @@ public class XPath2ParserTest extends TestCase {
 			new Query("chapter[title]", null, "child::chapter[child::title]"),
 			new Query("employee[@secretary and @assistant]", null,
 					"child::employee[attribute::secretary and attribute::assistant]"),
+			new Query("employee[@secretary or @assistant]", null,
+					"child::employee[attribute::secretary or attribute::assistant]"),
 			new Query("book/(chapter | appendix)/section", null,
 					"child::book/(child::chapter union child::appendix)/child::section"),
 			new Query("E/.", null, "child::E/."),
@@ -266,35 +272,38 @@ public class XPath2ParserTest extends TestCase {
 			Query query = VALID_QUERIES[i];
 			try {
 				ASTXPath xpath = parse(query.getXpath());
-				// TODO Test the following assertions are true:
-				// 1) Abbreviate(XPath) ==
-				// Abbreviate(Unabbreviate(Abbreviate(XPath)))
-				// 2) Unabbreviate(XPath) ==
-				// Unabbreviate(Abbreviate(Unabbreviate(XPath)))
+				// xpath.dump("");
 
 				// Check: Abbreviated(XPath)
 				String abbreviated = PrintXPath2ParserVisitor.abbreviate(query
 						.getXpath());
-				System.out.println("Abbreviated:   " + abbreviated);
+				System.out.println("Abbreviate:               " + abbreviated);
 				assertEquals("Abbreviate", query.getAbbreviated(), abbreviated);
 
 				// Check: Unabbreviated(XPath)
 				String unabbreviated = PrintXPath2ParserVisitor
 						.unabbreviate(query.getXpath());
-				System.out.println("Unabbreviated: " + unabbreviated);
+				System.out
+						.println("Unabbreviate:             " + unabbreviated);
 				assertEquals("Unabbreviate", query.getUnabbreviated(),
 						unabbreviated);
 
 				// Check: Unabbreviate(Abbreviate(XPath))
-				assertEquals("Abbreviate->Unabbreviate", unabbreviated,
-						PrintXPath2ParserVisitor.unabbreviate(abbreviated));
+				String unabbreviateAbbreviate = PrintXPath2ParserVisitor
+						.unabbreviate(abbreviated);
+				System.out.println("Unabbreviate(Abbreviate): "
+						+ unabbreviateAbbreviate);
+				assertEquals("Unabbreviate(Abbreviate)", unabbreviated,
+						unabbreviateAbbreviate);
 
 				// Check: Abbreviate(Unabbreviate(XPath))
-				assertEquals("Unabbreviate->Abbreviate", abbreviated,
-						PrintXPath2ParserVisitor.abbreviate(unabbreviated));
+				String abbreviateUnabbreviate = PrintXPath2ParserVisitor
+						.abbreviate(unabbreviated);
+				System.out.println("Abbreviate(Unabbreviate): "
+						+ abbreviateUnabbreviate);
+				assertEquals("Abbreviate(Unabbreviate)", abbreviated,
+						abbreviateUnabbreviate);
 
-				// CoreXPath2ParserVisitor visitor = new
-				// CoreXPath2ParserVisitor();
 			} catch (ParseException e) {
 				e.printStackTrace();
 				fail("Should have been able to parse query: " + query);
@@ -323,7 +332,7 @@ public class XPath2ParserTest extends TestCase {
 
 	private ASTXPath parse(String query) throws ParseException {
 		System.out.println();
-		System.out.println("Parsing:       " + query);
+		System.out.println("XPath:                    " + query);
 		Reader reader = new StringReader(query);
 		XPath2Parser parser = new XPath2Parser(reader);
 		return parser.XPath();

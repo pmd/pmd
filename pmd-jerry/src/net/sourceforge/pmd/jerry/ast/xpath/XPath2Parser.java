@@ -10,7 +10,59 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
   protected JJTXPath2ParserState jjtree = new JJTXPath2ParserState();
 
 /**
- * XPath 2.0 grammar follows
+ * XPath 2.0 grammar follows.
+ *
+ * Instead of constructing an AST which contains nodes for every matching
+ * grammar production, various optimizations are being performed.
+ *
+ * The first category of optimizations is to never produce an AST node
+ * for certain grammar productions by using #void suppression.  These are
+ * productions which can be omitted from the AST such that the AST can
+ * still be properly interpreted without undo burden.  The grammar
+ * productions where this is being done are:
+ *
+ *    ExprSingle
+ *    SimpleForClause
+ *    ValueExpr
+ *    GeneralComp
+ *    ValueComp
+ *    NodeComp
+ *    RelativePathExpr
+ *    FilterExpr
+ *    AxisStep
+ *    ForwardStep
+ *    ReverseStep
+ *    PrimaryExpr
+ *    Literal
+ *    NumericLiteral
+ *    KindTest
+ *
+ * The second category of optimizations is to omit unnecessary AST nodes
+ * for unary/binary grammar productions, unless there are at least one/two
+ * meaningful operands for the production.  The grammar productions where
+ * this is being done are:
+ *
+ *    OrExpr
+ *    AndExpr
+ *    ComparisonExpr
+ *    RangeExpr
+ *    AdditiveExpr
+ *    MultiplicativeExpr
+ *    UnionExpr
+ *    IntersectExceptExpr
+ *    InstanceofExpr
+ *    TreatExpr
+ *    CastableExpr
+ *    CastExpr
+ *    UnaryExpr
+ *    PathExpr
+ *    PredicateList
+ *    Predicate
+ *
+ * The third category of optimizations are Path related.  The / and //
+ * terminals are being produced as AST nodes in PathExpr and // alone
+ * in RelativePathExpr.  This makes life easier, and is consistent
+ * with having an AST node for independent meaningful grammar productions.
  */
 
 // [1] http://www.w3.org/TR/xpath20/#doc-xpath-XPath
@@ -96,84 +148,60 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
 
 // [3] http://www.w3.org/TR/xpath20/#doc-xpath-ExprSingle
   final public void ExprSingle() throws ParseException {
- /*@bgen(jjtree) ExprSingle */
-  ASTExprSingle jjtn000 = new ASTExprSingle(this, JJTEXPRSINGLE);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      switch (jj_nt.kind) {
-      case KEYWORD_FOR:
-        ForExpr();
-        break;
-      case KEYWORD_EVERY:
-      case KEYWORD_SOME:
-        QuantifiedExpr();
-        break;
-      case KEYWORD_IF:
-        IfExpr();
-        break;
-      case MINUS:
-      case SLASH:
-      case SLASH_SLASH:
-      case DOT:
-      case DOT_DOT:
-      case OPEN_PAREN:
-      case AT:
-      case DOLLAR:
-      case STAR:
-      case PLUS:
-      case STRING_LITERAL:
-      case KEYWORD_ANCESTOR:
-      case KEYWORD_ANCESTOR_OR_SELF:
-      case KEYWORD_ATTRIBUTE:
-      case KEYWORD_CHILD:
-      case KEYWORD_COMMENT:
-      case KEYWORD_DESCENDANT:
-      case KEYWORD_DESCENDANT_OR_SELF:
-      case KEYWORD_DOCUMENT_NODE:
-      case KEYWORD_ELEMENT:
-      case KEYWORD_FOLLOWING:
-      case KEYWORD_FOLLOWING_SIBLING:
-      case KEYWORD_NAMESPACE:
-      case KEYWORD_NODE:
-      case KEYWORD_PARENT:
-      case KEYWORD_PRECEDING:
-      case KEYWORD_PRECEDING_SIBLIING:
-      case KEYWORD_PROCESSING_INSTRUCTION:
-      case KEYWORD_SCHEMA_ATTRIBUTE:
-      case KEYWORD_SCHEMA_ELEMENT:
-      case KEYWORD_SELF:
-      case KEYWORD_TEXT:
-      case INTEGER_LITERAL:
-      case DECIMAL_LITERAL:
-      case DOUBLE_LITERAL:
-      case QNAME:
-      case NCNAME:
-        OrExpr();
-        break;
-      default:
-        jj_la1[1] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    } catch (Throwable jjte000) {
-                  if (jjtc000) {
-                    jjtree.clearNodeScope(jjtn000);
-                    jjtc000 = false;
-                  } else {
-                    jjtree.popNode();
-                  }
-                  if (jjte000 instanceof RuntimeException) {
-                    {if (true) throw (RuntimeException)jjte000;}
-                  }
-                  if (jjte000 instanceof ParseException) {
-                    {if (true) throw (ParseException)jjte000;}
-                  }
-                  {if (true) throw (Error)jjte000;}
-    } finally {
-                  if (jjtc000) {
-                    jjtree.closeNodeScope(jjtn000, true);
-                  }
+    switch (jj_nt.kind) {
+    case KEYWORD_FOR:
+      ForExpr();
+      break;
+    case KEYWORD_EVERY:
+    case KEYWORD_SOME:
+      QuantifiedExpr();
+      break;
+    case KEYWORD_IF:
+      IfExpr();
+      break;
+    case MINUS:
+    case SLASH:
+    case SLASH_SLASH:
+    case DOT:
+    case DOT_DOT:
+    case OPEN_PAREN:
+    case AT:
+    case DOLLAR:
+    case STAR:
+    case PLUS:
+    case STRING_LITERAL:
+    case KEYWORD_ANCESTOR:
+    case KEYWORD_ANCESTOR_OR_SELF:
+    case KEYWORD_ATTRIBUTE:
+    case KEYWORD_CHILD:
+    case KEYWORD_COMMENT:
+    case KEYWORD_DESCENDANT:
+    case KEYWORD_DESCENDANT_OR_SELF:
+    case KEYWORD_DOCUMENT_NODE:
+    case KEYWORD_ELEMENT:
+    case KEYWORD_FOLLOWING:
+    case KEYWORD_FOLLOWING_SIBLING:
+    case KEYWORD_NAMESPACE:
+    case KEYWORD_NODE:
+    case KEYWORD_PARENT:
+    case KEYWORD_PRECEDING:
+    case KEYWORD_PRECEDING_SIBLIING:
+    case KEYWORD_PROCESSING_INSTRUCTION:
+    case KEYWORD_SCHEMA_ATTRIBUTE:
+    case KEYWORD_SCHEMA_ELEMENT:
+    case KEYWORD_SELF:
+    case KEYWORD_TEXT:
+    case INTEGER_LITERAL:
+    case DECIMAL_LITERAL:
+    case DOUBLE_LITERAL:
+    case QNAME:
+    case NCNAME:
+      OrExpr();
+      break;
+    default:
+      jj_la1[1] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
@@ -210,50 +238,26 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
 
 // [5] http://www.w3.org/TR/xpath20/#prod-xpath-SimpleForClause
   final public void SimpleForClause() throws ParseException {
- /*@bgen(jjtree) SimpleForClause */
-  ASTSimpleForClause jjtn000 = new ASTSimpleForClause(this, JJTSIMPLEFORCLAUSE);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      jj_consume_token(KEYWORD_FOR);
+    jj_consume_token(KEYWORD_FOR);
+    jj_consume_token(DOLLAR);
+    VarName();
+    jj_consume_token(KEYWORD_IN);
+    ExprSingle();
+    label_2:
+    while (true) {
+      switch (jj_nt.kind) {
+      case COMMA:
+        ;
+        break;
+      default:
+        jj_la1[2] = jj_gen;
+        break label_2;
+      }
+      jj_consume_token(COMMA);
       jj_consume_token(DOLLAR);
       VarName();
       jj_consume_token(KEYWORD_IN);
       ExprSingle();
-      label_2:
-      while (true) {
-        switch (jj_nt.kind) {
-        case COMMA:
-          ;
-          break;
-        default:
-          jj_la1[2] = jj_gen;
-          break label_2;
-        }
-        jj_consume_token(COMMA);
-        jj_consume_token(DOLLAR);
-        VarName();
-        jj_consume_token(KEYWORD_IN);
-        ExprSingle();
-      }
-    } catch (Throwable jjte000) {
-          if (jjtc000) {
-            jjtree.clearNodeScope(jjtn000);
-            jjtc000 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte000 instanceof RuntimeException) {
-            {if (true) throw (RuntimeException)jjte000;}
-          }
-          if (jjte000 instanceof ParseException) {
-            {if (true) throw (ParseException)jjte000;}
-          }
-          {if (true) throw (Error)jjte000;}
-    } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
     }
   }
 
@@ -359,7 +363,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
 
 // [8] http://www.w3.org/TR/xpath20/#doc-xpath-OrExpr
   final public void OrExpr() throws ParseException {
- /*@bgen(jjtree) OrExpr */
+ /*@bgen(jjtree) #OrExpr(> 1) */
   ASTOrExpr jjtn000 = new ASTOrExpr(this, JJTOREXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -394,14 +398,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [9] http://www.w3.org/TR/xpath20/#doc-xpath-AndExpr
   final public void AndExpr() throws ParseException {
- /*@bgen(jjtree) AndExpr */
+ /*@bgen(jjtree) #AndExpr(> 1) */
   ASTAndExpr jjtn000 = new ASTAndExpr(this, JJTANDEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -436,14 +440,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [10] http://www.w3.org/TR/xpath20/#doc-xpath-ComparisonExpr
   final public void ComparisonExpr() throws ParseException {
- /*@bgen(jjtree) ComparisonExpr */
+ /*@bgen(jjtree) #ComparisonExpr(> 1) */
   ASTComparisonExpr jjtn000 = new ASTComparisonExpr(this, JJTCOMPARISONEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -514,14 +518,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [11] http://www.w3.org/TR/xpath20/#doc-xpath-RangeExpr
   final public void RangeExpr() throws ParseException {
- /*@bgen(jjtree) RangeExpr */
+ /*@bgen(jjtree) #RangeExpr(> 1) */
   ASTRangeExpr jjtn000 = new ASTRangeExpr(this, JJTRANGEEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -552,14 +556,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [12] http://www.w3.org/TR/xpath20/#doc-xpath-AdditiveExpr
   final public void AdditiveExpr() throws ParseException {
- /*@bgen(jjtree) AdditiveExpr */
+ /*@bgen(jjtree) #AdditiveExpr(> 1) */
   ASTAdditiveExpr jjtn000 = new ASTAdditiveExpr(this, JJTADDITIVEEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -608,14 +612,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [13] http://www.w3.org/TR/xpath20/#doc-xpath-MultiplicativeExpr
   final public void MultiplicativeExpr() throws ParseException {
- /*@bgen(jjtree) MultiplicativeExpr */
+ /*@bgen(jjtree) #MultiplicativeExpr(> 1) */
   ASTMultiplicativeExpr jjtn000 = new ASTMultiplicativeExpr(this, JJTMULTIPLICATIVEEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -674,14 +678,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [14] http://www.w3.org/TR/xpath20/#doc-xpath-UnionExpr
   final public void UnionExpr() throws ParseException {
- /*@bgen(jjtree) UnionExpr */
+ /*@bgen(jjtree) #UnionExpr(> 1) */
   ASTUnionExpr jjtn000 = new ASTUnionExpr(this, JJTUNIONEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -730,14 +734,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [15] http://www.w3.org/TR/xpath20/#doc-xpath-IntersectExceptExpr
   final public void IntersectExceptExpr() throws ParseException {
- /*@bgen(jjtree) IntersectExceptExpr */
+ /*@bgen(jjtree) #IntersectExceptExpr(> 1) */
   ASTIntersectExceptExpr jjtn000 = new ASTIntersectExceptExpr(this, JJTINTERSECTEXCEPTEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -786,14 +790,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [16] http://www.w3.org/TR/xpath20/#doc-xpath-InstanceofExpr
   final public void InstanceofExpr() throws ParseException {
- /*@bgen(jjtree) InstanceofExpr */
+ /*@bgen(jjtree) #InstanceofExpr(> 1) */
   ASTInstanceofExpr jjtn000 = new ASTInstanceofExpr(this, JJTINSTANCEOFEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -825,14 +829,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [17] http://www.w3.org/TR/xpath20/#doc-xpath-TreatExpr
   final public void TreatExpr() throws ParseException {
- /*@bgen(jjtree) TreatExpr */
+ /*@bgen(jjtree) #TreatExpr(> 1) */
   ASTTreatExpr jjtn000 = new ASTTreatExpr(this, JJTTREATEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -864,14 +868,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [18] http://www.w3.org/TR/xpath20/#doc-xpath-CastableExpr
   final public void CastableExpr() throws ParseException {
- /*@bgen(jjtree) CastableExpr */
+ /*@bgen(jjtree) #CastableExpr(> 1) */
   ASTCastableExpr jjtn000 = new ASTCastableExpr(this, JJTCASTABLEEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -903,14 +907,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [19] http://www.w3.org/TR/xpath20/#doc-xpath-CastExpr
   final public void CastExpr() throws ParseException {
- /*@bgen(jjtree) CastExpr */
+ /*@bgen(jjtree) #CastExpr(> 1) */
   ASTCastExpr jjtn000 = new ASTCastExpr(this, JJTCASTEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -942,17 +946,17 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
           }
     }
   }
 
 // [20] http://www.w3.org/TR/xpath20/#doc-xpath-UnaryExpr
   final public void UnaryExpr() throws ParseException {
- /*@bgen(jjtree) UnaryExpr */
-  ASTUnaryExpr jjtn000 = new ASTUnaryExpr(this, JJTUNARYEXPR);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
+ /*@bgen(jjtree) #UnaryExpr( keepUnaryExpr) */
+        ASTUnaryExpr jjtn000 = new ASTUnaryExpr(this, JJTUNARYEXPR);
+        boolean jjtc000 = true;
+        jjtree.openNodeScope(jjtn000);boolean keepUnaryExpr = false;
     try {
       label_10:
       while (true) {
@@ -968,11 +972,11 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         switch (jj_nt.kind) {
         case MINUS:
           jj_consume_token(MINUS);
-                              jjtn000.addOperator(OperatorEnum.UNARY_MINUS);
+                              keepUnaryExpr = true; jjtn000.addOperator(OperatorEnum.UNARY_MINUS);
           break;
         case PLUS:
           jj_consume_token(PLUS);
-                              jjtn000.addOperator(OperatorEnum.UNARY_PLUS);
+                              keepUnaryExpr = true; jjtn000.addOperator(OperatorEnum.UNARY_PLUS);
           break;
         default:
           jj_la1[23] = jj_gen;
@@ -997,201 +1001,125 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000,  keepUnaryExpr);
           }
     }
   }
 
 // [21] http://www.w3.org/TR/xpath20/#doc-xpath-ValueExpr
   final public void ValueExpr() throws ParseException {
- /*@bgen(jjtree) ValueExpr */
-  ASTValueExpr jjtn000 = new ASTValueExpr(this, JJTVALUEEXPR);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      PathExpr();
-    } catch (Throwable jjte000) {
-          if (jjtc000) {
-            jjtree.clearNodeScope(jjtn000);
-            jjtc000 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte000 instanceof RuntimeException) {
-            {if (true) throw (RuntimeException)jjte000;}
-          }
-          if (jjte000 instanceof ParseException) {
-            {if (true) throw (ParseException)jjte000;}
-          }
-          {if (true) throw (Error)jjte000;}
-    } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
-    }
+    PathExpr();
   }
 
 // [22] http://www.w3.org/TR/xpath20/#doc-xpath-GeneralComp
   final public void GeneralComp(ASTComparisonExpr parent) throws ParseException {
- /*@bgen(jjtree) GeneralComp */
-  ASTGeneralComp jjtn000 = new ASTGeneralComp(this, JJTGENERALCOMP);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      switch (jj_nt.kind) {
-      case EQUAL:
-        jj_consume_token(EQUAL);
-                      jjtree.closeNodeScope(jjtn000, true);
-                      jjtc000 = false;
+    switch (jj_nt.kind) {
+    case EQUAL:
+      jj_consume_token(EQUAL);
                       parent.addOperator(OperatorEnum.GENERAL_COMPARISION_EQUAL);
-        break;
-      case BANG_EQUAL:
-        jj_consume_token(BANG_EQUAL);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+      break;
+    case BANG_EQUAL:
+      jj_consume_token(BANG_EQUAL);
                        parent.addOperator(OperatorEnum.GENERAL_COMPARISION_NOT_EQUAL);
-        break;
-      case LESS_THAN:
-        jj_consume_token(LESS_THAN);
-                      jjtree.closeNodeScope(jjtn000, true);
-                      jjtc000 = false;
+      break;
+    case LESS_THAN:
+      jj_consume_token(LESS_THAN);
                       parent.addOperator(OperatorEnum.GENERAL_COMPARISION_LESSER_THAN);
-        break;
-      case LESS_THAN_EQUAL:
-        jj_consume_token(LESS_THAN_EQUAL);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+      break;
+    case LESS_THAN_EQUAL:
+      jj_consume_token(LESS_THAN_EQUAL);
                        parent.addOperator(OperatorEnum.GENERAL_COMPARISION_LESSER_THAN_OR_EQUAL);
-        break;
-      case GREATER_THAN:
-        jj_consume_token(GREATER_THAN);
-                      jjtree.closeNodeScope(jjtn000, true);
-                      jjtc000 = false;
+      break;
+    case GREATER_THAN:
+      jj_consume_token(GREATER_THAN);
                       parent.addOperator(OperatorEnum.GENERAL_COMPARISION_GREATER_THAN);
-        break;
-      case GREATER_THAN_EQUAL:
-        jj_consume_token(GREATER_THAN_EQUAL);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+      break;
+    case GREATER_THAN_EQUAL:
+      jj_consume_token(GREATER_THAN_EQUAL);
                        parent.addOperator(OperatorEnum.GENERAL_COMPARISION_GREATER_THAN_OR_EQUAL);
-        break;
-      default:
-        jj_la1[24] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    } finally {
-                  if (jjtc000) {
-                    jjtree.closeNodeScope(jjtn000, true);
-                  }
+      break;
+    default:
+      jj_la1[24] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
 // [23] http://www.w3.org/TR/xpath20/#doc-xpath-ValueComp
   final public void ValueComp(ASTComparisonExpr parent) throws ParseException {
- /*@bgen(jjtree) ValueComp */
-  ASTValueComp jjtn000 = new ASTValueComp(this, JJTVALUECOMP);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      switch (jj_nt.kind) {
-      case KEYWORD_EQ:
-        jj_consume_token(KEYWORD_EQ);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+    switch (jj_nt.kind) {
+    case KEYWORD_EQ:
+      jj_consume_token(KEYWORD_EQ);
                        parent.addOperator(OperatorEnum.VALUE_COMPARISION_EQUAL);
-        break;
-      case KEYWORD_NE:
-        jj_consume_token(KEYWORD_NE);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+      break;
+    case KEYWORD_NE:
+      jj_consume_token(KEYWORD_NE);
                        parent.addOperator(OperatorEnum.VALUE_COMPARISION_NOT_EQUAL);
-        break;
-      case KEYWORD_LT:
-        jj_consume_token(KEYWORD_LT);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+      break;
+    case KEYWORD_LT:
+      jj_consume_token(KEYWORD_LT);
                        parent.addOperator(OperatorEnum.VALUE_COMPARISION_LESSER_THAN);
-        break;
-      case KEYWORD_LE:
-        jj_consume_token(KEYWORD_LE);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+      break;
+    case KEYWORD_LE:
+      jj_consume_token(KEYWORD_LE);
                        parent.addOperator(OperatorEnum.VALUE_COMPARISION_LESSER_THAN_OR_EQUAL);
-        break;
-      case KEYWORD_GT:
-        jj_consume_token(KEYWORD_GT);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+      break;
+    case KEYWORD_GT:
+      jj_consume_token(KEYWORD_GT);
                        parent.addOperator(OperatorEnum.VALUE_COMPARISION_GREATER_THAN);
-        break;
-      case KEYWORD_GE:
-        jj_consume_token(KEYWORD_GE);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+      break;
+    case KEYWORD_GE:
+      jj_consume_token(KEYWORD_GE);
                        parent.addOperator(OperatorEnum.VALUE_COMPARISION_GREATER_THAN_OR_EQUAL);
-        break;
-      default:
-        jj_la1[25] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    } finally {
-                  if (jjtc000) {
-                    jjtree.closeNodeScope(jjtn000, true);
-                  }
+      break;
+    default:
+      jj_la1[25] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
 // [24] http://www.w3.org/TR/xpath20/#doc-xpath-NodeComp
   final public void NodeComp(ASTComparisonExpr parent) throws ParseException {
- /*@bgen(jjtree) NodeComp */
-  ASTNodeComp jjtn000 = new ASTNodeComp(this, JJTNODECOMP);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      switch (jj_nt.kind) {
-      case KEYWORD_IS:
-        jj_consume_token(KEYWORD_IS);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+    switch (jj_nt.kind) {
+    case KEYWORD_IS:
+      jj_consume_token(KEYWORD_IS);
                        parent.addOperator(OperatorEnum.NODE_COMPARISION_IS);
-        break;
-      case PRECEEDS_OPERATOR:
-        jj_consume_token(PRECEEDS_OPERATOR);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+      break;
+    case PRECEEDS_OPERATOR:
+      jj_consume_token(PRECEEDS_OPERATOR);
                        parent.addOperator(OperatorEnum.NODE_COMPARISION_PRECEEDS);
-        break;
-      case FOLLOWS_OPERATOR:
-        jj_consume_token(FOLLOWS_OPERATOR);
-                       jjtree.closeNodeScope(jjtn000, true);
-                       jjtc000 = false;
+      break;
+    case FOLLOWS_OPERATOR:
+      jj_consume_token(FOLLOWS_OPERATOR);
                        parent.addOperator(OperatorEnum.NODE_COMPARISION_FOLLOWS);
-        break;
-      default:
-        jj_la1[26] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    } finally {
-                  if (jjtc000) {
-                    jjtree.closeNodeScope(jjtn000, true);
-                  }
+      break;
+    default:
+      jj_la1[26] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
 // [25] http://www.w3.org/TR/xpath20/#doc-xpath-PathExpr
   final public void PathExpr() throws ParseException {
- /*@bgen(jjtree) PathExpr */
+ /*@bgen(jjtree) #PathExpr(> 1) */
   ASTPathExpr jjtn000 = new ASTPathExpr(this, JJTPATHEXPR);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
     try {
       switch (jj_nt.kind) {
       case SLASH:
-        jj_consume_token(SLASH);
-                       jjtn000.setRoot(true);
+                   ASTSlash jjtn001 = new ASTSlash(this, JJTSLASH);
+                   boolean jjtc001 = true;
+                   jjtree.openNodeScope(jjtn001);
+        try {
+          jj_consume_token(SLASH);
+        } finally {
+                   if (jjtc001) {
+                     jjtree.closeNodeScope(jjtn001,  true);
+                   }
+        }
         if (jj_2_1(2)) {
           RelativePathExpr();
         } else {
@@ -1199,8 +1127,16 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         }
         break;
       case SLASH_SLASH:
-        jj_consume_token(SLASH_SLASH);
-                        jjtn000.setRoot(true); jjtn000.addAxis(AxisEnum.DESCENDANT_OR_SELF);
+                   ASTSlashSlash jjtn002 = new ASTSlashSlash(this, JJTSLASHSLASH);
+                   boolean jjtc002 = true;
+                   jjtree.openNodeScope(jjtn002);
+        try {
+          jj_consume_token(SLASH_SLASH);
+        } finally {
+                   if (jjtc002) {
+                     jjtree.closeNodeScope(jjtn002,  true);
+                   }
+        }
         RelativePathExpr();
         break;
       case DOT:
@@ -1259,64 +1195,47 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
                   {if (true) throw (Error)jjte000;}
     } finally {
                   if (jjtc000) {
-                    jjtree.closeNodeScope(jjtn000, true);
+                    jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 1);
                   }
     }
   }
 
 // [26] http://www.w3.org/TR/xpath20/#doc-xpath-RelativePathExpr
   final public void RelativePathExpr() throws ParseException {
- /*@bgen(jjtree) RelativePathExpr */
-  ASTRelativePathExpr jjtn000 = new ASTRelativePathExpr(this, JJTRELATIVEPATHEXPR);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      StepExpr();
-      label_11:
-      while (true) {
-        switch (jj_nt.kind) {
-        case SLASH:
-        case SLASH_SLASH:
-          ;
-          break;
-        default:
-          jj_la1[28] = jj_gen;
-          break label_11;
-        }
-        switch (jj_nt.kind) {
-        case SLASH:
-          jj_consume_token(SLASH);
-                                      jjtn000.addAxis(null);
-          break;
-        case SLASH_SLASH:
-          jj_consume_token(SLASH_SLASH);
-                                       jjtn000.addAxis(AxisEnum.DESCENDANT_OR_SELF);
-          break;
-        default:
-          jj_la1[29] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        StepExpr();
+    StepExpr();
+    label_11:
+    while (true) {
+      switch (jj_nt.kind) {
+      case SLASH:
+      case SLASH_SLASH:
+        ;
+        break;
+      default:
+        jj_la1[28] = jj_gen;
+        break label_11;
       }
-    } catch (Throwable jjte000) {
-          if (jjtc000) {
-            jjtree.clearNodeScope(jjtn000);
-            jjtc000 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte000 instanceof RuntimeException) {
-            {if (true) throw (RuntimeException)jjte000;}
-          }
-          if (jjte000 instanceof ParseException) {
-            {if (true) throw (ParseException)jjte000;}
-          }
-          {if (true) throw (Error)jjte000;}
-    } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
+      switch (jj_nt.kind) {
+      case SLASH:
+        jj_consume_token(SLASH);
+        break;
+      case SLASH_SLASH:
+                                  ASTSlashSlash jjtn001 = new ASTSlashSlash(this, JJTSLASHSLASH);
+                                  boolean jjtc001 = true;
+                                  jjtree.openNodeScope(jjtn001);
+        try {
+          jj_consume_token(SLASH_SLASH);
+        } finally {
+                                  if (jjtc001) {
+                                    jjtree.closeNodeScope(jjtn001,  true);
+                                  }
+        }
+        break;
+      default:
+        jj_la1[29] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
+      StepExpr();
     }
   }
 
@@ -1388,120 +1307,72 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
 
 // [28] http://www.w3.org/TR/xpath20/#doc-xpath-AxisStep
   final public void AxisStep() throws ParseException {
- /*@bgen(jjtree) AxisStep */
-  ASTAxisStep jjtn000 = new ASTAxisStep(this, JJTAXISSTEP);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      switch (jj_nt.kind) {
-      case DOT_DOT:
-      case KEYWORD_ANCESTOR:
-      case KEYWORD_ANCESTOR_OR_SELF:
-      case KEYWORD_PARENT:
-      case KEYWORD_PRECEDING:
-      case KEYWORD_PRECEDING_SIBLIING:
-        ReverseStep();
-        break;
-      case AT:
-      case STAR:
-      case KEYWORD_ATTRIBUTE:
-      case KEYWORD_CHILD:
-      case KEYWORD_COMMENT:
-      case KEYWORD_DESCENDANT:
-      case KEYWORD_DESCENDANT_OR_SELF:
-      case KEYWORD_DOCUMENT_NODE:
-      case KEYWORD_ELEMENT:
-      case KEYWORD_FOLLOWING:
-      case KEYWORD_FOLLOWING_SIBLING:
-      case KEYWORD_NAMESPACE:
-      case KEYWORD_NODE:
-      case KEYWORD_PROCESSING_INSTRUCTION:
-      case KEYWORD_SCHEMA_ATTRIBUTE:
-      case KEYWORD_SCHEMA_ELEMENT:
-      case KEYWORD_SELF:
-      case KEYWORD_TEXT:
-      case QNAME:
-      case NCNAME:
-        ForwardStep();
-        break;
-      default:
-        jj_la1[31] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      PredicateList();
-    } catch (Throwable jjte000) {
-          if (jjtc000) {
-            jjtree.clearNodeScope(jjtn000);
-            jjtc000 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte000 instanceof RuntimeException) {
-            {if (true) throw (RuntimeException)jjte000;}
-          }
-          if (jjte000 instanceof ParseException) {
-            {if (true) throw (ParseException)jjte000;}
-          }
-          {if (true) throw (Error)jjte000;}
-    } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
+    switch (jj_nt.kind) {
+    case DOT_DOT:
+    case KEYWORD_ANCESTOR:
+    case KEYWORD_ANCESTOR_OR_SELF:
+    case KEYWORD_PARENT:
+    case KEYWORD_PRECEDING:
+    case KEYWORD_PRECEDING_SIBLIING:
+      ReverseStep();
+      break;
+    case AT:
+    case STAR:
+    case KEYWORD_ATTRIBUTE:
+    case KEYWORD_CHILD:
+    case KEYWORD_COMMENT:
+    case KEYWORD_DESCENDANT:
+    case KEYWORD_DESCENDANT_OR_SELF:
+    case KEYWORD_DOCUMENT_NODE:
+    case KEYWORD_ELEMENT:
+    case KEYWORD_FOLLOWING:
+    case KEYWORD_FOLLOWING_SIBLING:
+    case KEYWORD_NAMESPACE:
+    case KEYWORD_NODE:
+    case KEYWORD_PROCESSING_INSTRUCTION:
+    case KEYWORD_SCHEMA_ATTRIBUTE:
+    case KEYWORD_SCHEMA_ELEMENT:
+    case KEYWORD_SELF:
+    case KEYWORD_TEXT:
+    case QNAME:
+    case NCNAME:
+      ForwardStep();
+      break;
+    default:
+      jj_la1[31] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
+    PredicateList();
   }
 
 // [29] http://www.w3.org/TR/xpath20/#doc-xpath-ForwardStep
   final public void ForwardStep() throws ParseException {
- /*@bgen(jjtree) ForwardStep */
-  ASTForwardStep jjtn000 = new ASTForwardStep(this, JJTFORWARDSTEP);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      if (jj_2_3(2)) {
-        ForwardAxis();
-        NodeTest();
-      } else {
-        switch (jj_nt.kind) {
-        case AT:
-        case STAR:
-        case KEYWORD_ATTRIBUTE:
-        case KEYWORD_COMMENT:
-        case KEYWORD_DOCUMENT_NODE:
-        case KEYWORD_ELEMENT:
-        case KEYWORD_NODE:
-        case KEYWORD_PROCESSING_INSTRUCTION:
-        case KEYWORD_SCHEMA_ATTRIBUTE:
-        case KEYWORD_SCHEMA_ELEMENT:
-        case KEYWORD_TEXT:
-        case QNAME:
-        case NCNAME:
-          AbbrevForwardStep();
-          break;
-        default:
-          jj_la1[32] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
+    if (jj_2_3(2)) {
+      ForwardAxis();
+      NodeTest();
+    } else {
+      switch (jj_nt.kind) {
+      case AT:
+      case STAR:
+      case KEYWORD_ATTRIBUTE:
+      case KEYWORD_COMMENT:
+      case KEYWORD_DOCUMENT_NODE:
+      case KEYWORD_ELEMENT:
+      case KEYWORD_NODE:
+      case KEYWORD_PROCESSING_INSTRUCTION:
+      case KEYWORD_SCHEMA_ATTRIBUTE:
+      case KEYWORD_SCHEMA_ELEMENT:
+      case KEYWORD_TEXT:
+      case QNAME:
+      case NCNAME:
+        AbbrevForwardStep();
+        break;
+      default:
+        jj_la1[32] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
       }
-    } catch (Throwable jjte000) {
-          if (jjtc000) {
-            jjtree.clearNodeScope(jjtn000);
-            jjtc000 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte000 instanceof RuntimeException) {
-            {if (true) throw (RuntimeException)jjte000;}
-          }
-          if (jjte000 instanceof ParseException) {
-            {if (true) throw (ParseException)jjte000;}
-          }
-          {if (true) throw (Error)jjte000;}
-    } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
     }
   }
 
@@ -1605,46 +1476,22 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
 
 // [32] http://www.w3.org/TR/xpath20/#doc-xpath-ReverseStep
   final public void ReverseStep() throws ParseException {
- /*@bgen(jjtree) ReverseStep */
-  ASTReverseStep jjtn000 = new ASTReverseStep(this, JJTREVERSESTEP);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      switch (jj_nt.kind) {
-      case KEYWORD_ANCESTOR:
-      case KEYWORD_ANCESTOR_OR_SELF:
-      case KEYWORD_PARENT:
-      case KEYWORD_PRECEDING:
-      case KEYWORD_PRECEDING_SIBLIING:
-        ReverseAxis();
-        NodeTest();
-        break;
-      case DOT_DOT:
-        AbbrevReverseStep();
-        break;
-      default:
-        jj_la1[35] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    } catch (Throwable jjte000) {
-                  if (jjtc000) {
-                    jjtree.clearNodeScope(jjtn000);
-                    jjtc000 = false;
-                  } else {
-                    jjtree.popNode();
-                  }
-                  if (jjte000 instanceof RuntimeException) {
-                    {if (true) throw (RuntimeException)jjte000;}
-                  }
-                  if (jjte000 instanceof ParseException) {
-                    {if (true) throw (ParseException)jjte000;}
-                  }
-                  {if (true) throw (Error)jjte000;}
-    } finally {
-                  if (jjtc000) {
-                    jjtree.closeNodeScope(jjtn000, true);
-                  }
+    switch (jj_nt.kind) {
+    case KEYWORD_ANCESTOR:
+    case KEYWORD_ANCESTOR_OR_SELF:
+    case KEYWORD_PARENT:
+    case KEYWORD_PRECEDING:
+    case KEYWORD_PRECEDING_SIBLIING:
+      ReverseAxis();
+      NodeTest();
+      break;
+    case DOT_DOT:
+      AbbrevReverseStep();
+      break;
+    default:
+      jj_la1[35] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
@@ -1844,37 +1691,13 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
 
 // [38] http://www.w3.org/TR/xpath20/#doc-xpath-FilterExpr
   final public void FilterExpr() throws ParseException {
- /*@bgen(jjtree) FilterExpr */
-  ASTFilterExpr jjtn000 = new ASTFilterExpr(this, JJTFILTEREXPR);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      PrimaryExpr();
-      PredicateList();
-    } catch (Throwable jjte000) {
-          if (jjtc000) {
-            jjtree.clearNodeScope(jjtn000);
-            jjtc000 = false;
-          } else {
-            jjtree.popNode();
-          }
-          if (jjte000 instanceof RuntimeException) {
-            {if (true) throw (RuntimeException)jjte000;}
-          }
-          if (jjte000 instanceof ParseException) {
-            {if (true) throw (ParseException)jjte000;}
-          }
-          {if (true) throw (Error)jjte000;}
-    } finally {
-          if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
-          }
-    }
+    PrimaryExpr();
+    PredicateList();
   }
 
 // [39] http://www.w3.org/TR/xpath20/#doc-xpath-PredicateList
   final public void PredicateList() throws ParseException {
- /*@bgen(jjtree) PredicateList */
+ /*@bgen(jjtree) #PredicateList(> 0) */
   ASTPredicateList jjtn000 = new ASTPredicateList(this, JJTPREDICATELIST);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -1907,14 +1730,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 0);
           }
     }
   }
 
 // [40] http://www.w3.org/TR/xpath20/#doc-xpath-Predicate
   final public void Predicate() throws ParseException {
- /*@bgen(jjtree) Predicate */
+ /*@bgen(jjtree) #Predicate(> 0) */
   ASTPredicate jjtn000 = new ASTPredicate(this, JJTPREDICATE);
   boolean jjtc000 = true;
   jjtree.openNodeScope(jjtn000);
@@ -1938,145 +1761,73 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           {if (true) throw (Error)jjte000;}
     } finally {
           if (jjtc000) {
-            jjtree.closeNodeScope(jjtn000, true);
+            jjtree.closeNodeScope(jjtn000, jjtree.nodeArity() > 0);
           }
     }
   }
 
 // [41] http://www.w3.org/TR/xpath20/#doc-xpath-PrimaryExpr
   final public void PrimaryExpr() throws ParseException {
- /*@bgen(jjtree) PrimaryExpr */
-  ASTPrimaryExpr jjtn000 = new ASTPrimaryExpr(this, JJTPRIMARYEXPR);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      switch (jj_nt.kind) {
-      case STRING_LITERAL:
-      case INTEGER_LITERAL:
-      case DECIMAL_LITERAL:
-      case DOUBLE_LITERAL:
-        Literal();
-        break;
-      case DOLLAR:
-        VarRef();
-        break;
-      case OPEN_PAREN:
-        ParenthesizedExpr();
-        break;
-      case DOT:
-        ContextItemExpr();
-        break;
-      case QNAME:
-        FunctionCall();
-        break;
-      default:
-        jj_la1[41] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    } catch (Throwable jjte000) {
-                  if (jjtc000) {
-                    jjtree.clearNodeScope(jjtn000);
-                    jjtc000 = false;
-                  } else {
-                    jjtree.popNode();
-                  }
-                  if (jjte000 instanceof RuntimeException) {
-                    {if (true) throw (RuntimeException)jjte000;}
-                  }
-                  if (jjte000 instanceof ParseException) {
-                    {if (true) throw (ParseException)jjte000;}
-                  }
-                  {if (true) throw (Error)jjte000;}
-    } finally {
-                  if (jjtc000) {
-                    jjtree.closeNodeScope(jjtn000, true);
-                  }
+    switch (jj_nt.kind) {
+    case STRING_LITERAL:
+    case INTEGER_LITERAL:
+    case DECIMAL_LITERAL:
+    case DOUBLE_LITERAL:
+      Literal();
+      break;
+    case DOLLAR:
+      VarRef();
+      break;
+    case OPEN_PAREN:
+      ParenthesizedExpr();
+      break;
+    case DOT:
+      ContextItemExpr();
+      break;
+    case QNAME:
+      FunctionCall();
+      break;
+    default:
+      jj_la1[41] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
 // [42] http://www.w3.org/TR/xpath20/#doc-xpath-Literal
   final public void Literal() throws ParseException {
- /*@bgen(jjtree) Literal */
-  ASTLiteral jjtn000 = new ASTLiteral(this, JJTLITERAL);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      switch (jj_nt.kind) {
-      case INTEGER_LITERAL:
-      case DECIMAL_LITERAL:
-      case DOUBLE_LITERAL:
-        NumericLiteral();
-        break;
-      case STRING_LITERAL:
-        StringLiteral();
-        break;
-      default:
-        jj_la1[42] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    } catch (Throwable jjte000) {
-                  if (jjtc000) {
-                    jjtree.clearNodeScope(jjtn000);
-                    jjtc000 = false;
-                  } else {
-                    jjtree.popNode();
-                  }
-                  if (jjte000 instanceof RuntimeException) {
-                    {if (true) throw (RuntimeException)jjte000;}
-                  }
-                  if (jjte000 instanceof ParseException) {
-                    {if (true) throw (ParseException)jjte000;}
-                  }
-                  {if (true) throw (Error)jjte000;}
-    } finally {
-                  if (jjtc000) {
-                    jjtree.closeNodeScope(jjtn000, true);
-                  }
+    switch (jj_nt.kind) {
+    case INTEGER_LITERAL:
+    case DECIMAL_LITERAL:
+    case DOUBLE_LITERAL:
+      NumericLiteral();
+      break;
+    case STRING_LITERAL:
+      StringLiteral();
+      break;
+    default:
+      jj_la1[42] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
 // [43] http://www.w3.org/TR/xpath20/#doc-xpath-NumericLiteral
   final public void NumericLiteral() throws ParseException {
- /*@bgen(jjtree) NumericLiteral */
-  ASTNumericLiteral jjtn000 = new ASTNumericLiteral(this, JJTNUMERICLITERAL);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      switch (jj_nt.kind) {
-      case INTEGER_LITERAL:
-        IntegerLiteral();
-        break;
-      case DECIMAL_LITERAL:
-        DecimalLiteral();
-        break;
-      case DOUBLE_LITERAL:
-        DoubleLiteral();
-        break;
-      default:
-        jj_la1[43] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    } catch (Throwable jjte000) {
-                  if (jjtc000) {
-                    jjtree.clearNodeScope(jjtn000);
-                    jjtc000 = false;
-                  } else {
-                    jjtree.popNode();
-                  }
-                  if (jjte000 instanceof RuntimeException) {
-                    {if (true) throw (RuntimeException)jjte000;}
-                  }
-                  if (jjte000 instanceof ParseException) {
-                    {if (true) throw (ParseException)jjte000;}
-                  }
-                  {if (true) throw (Error)jjte000;}
-    } finally {
-                  if (jjtc000) {
-                    jjtree.closeNodeScope(jjtn000, true);
-                  }
+    switch (jj_nt.kind) {
+    case INTEGER_LITERAL:
+      IntegerLiteral();
+      break;
+    case DECIMAL_LITERAL:
+      DecimalLiteral();
+      break;
+    case DOUBLE_LITERAL:
+      DoubleLiteral();
+      break;
+    default:
+      jj_la1[43] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
@@ -2525,62 +2276,38 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
 
 // [54] http://www.w3.org/TR/xpath20/#doc-xpath-KindTest
   final public void KindTest() throws ParseException {
- /*@bgen(jjtree) KindTest */
-  ASTKindTest jjtn000 = new ASTKindTest(this, JJTKINDTEST);
-  boolean jjtc000 = true;
-  jjtree.openNodeScope(jjtn000);
-    try {
-      switch (jj_nt.kind) {
-      case KEYWORD_DOCUMENT_NODE:
-        DocumentTest();
-        break;
-      case KEYWORD_ELEMENT:
-        ElementTest();
-        break;
-      case KEYWORD_ATTRIBUTE:
-        AttributeTest();
-        break;
-      case KEYWORD_SCHEMA_ELEMENT:
-        SchemaElementTest();
-        break;
-      case KEYWORD_SCHEMA_ATTRIBUTE:
-        SchemaAttributeTest();
-        break;
-      case KEYWORD_PROCESSING_INSTRUCTION:
-        PITest();
-        break;
-      case KEYWORD_COMMENT:
-        CommentTest();
-        break;
-      case KEYWORD_TEXT:
-        TextTest();
-        break;
-      case KEYWORD_NODE:
-        AnyKindTest();
-        break;
-      default:
-        jj_la1[51] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-    } catch (Throwable jjte000) {
-                  if (jjtc000) {
-                    jjtree.clearNodeScope(jjtn000);
-                    jjtc000 = false;
-                  } else {
-                    jjtree.popNode();
-                  }
-                  if (jjte000 instanceof RuntimeException) {
-                    {if (true) throw (RuntimeException)jjte000;}
-                  }
-                  if (jjte000 instanceof ParseException) {
-                    {if (true) throw (ParseException)jjte000;}
-                  }
-                  {if (true) throw (Error)jjte000;}
-    } finally {
-                  if (jjtc000) {
-                    jjtree.closeNodeScope(jjtn000, true);
-                  }
+    switch (jj_nt.kind) {
+    case KEYWORD_DOCUMENT_NODE:
+      DocumentTest();
+      break;
+    case KEYWORD_ELEMENT:
+      ElementTest();
+      break;
+    case KEYWORD_ATTRIBUTE:
+      AttributeTest();
+      break;
+    case KEYWORD_SCHEMA_ELEMENT:
+      SchemaElementTest();
+      break;
+    case KEYWORD_SCHEMA_ATTRIBUTE:
+      SchemaAttributeTest();
+      break;
+    case KEYWORD_PROCESSING_INSTRUCTION:
+      PITest();
+      break;
+    case KEYWORD_COMMENT:
+      CommentTest();
+      break;
+    case KEYWORD_TEXT:
+      TextTest();
+      break;
+    case KEYWORD_NODE:
+      AnyKindTest();
+      break;
+    default:
+      jj_la1[51] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
@@ -3217,260 +2944,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     finally { jj_save(4, xla); }
   }
 
-  final private boolean jj_3R_99() {
-    if (jj_3R_111()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_98() {
-    if (jj_3R_110()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_131() {
-    if (jj_3R_134()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_97() {
-    if (jj_3R_109()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_94() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_97()) {
-    jj_scanpos = xsp;
-    if (jj_3R_98()) {
-    jj_scanpos = xsp;
-    if (jj_3R_99()) {
-    jj_scanpos = xsp;
-    if (jj_3R_100()) {
-    jj_scanpos = xsp;
-    if (jj_3R_101()) {
-    jj_scanpos = xsp;
-    if (jj_3R_102()) {
-    jj_scanpos = xsp;
-    if (jj_3R_103()) {
-    jj_scanpos = xsp;
-    if (jj_3R_104()) {
-    jj_scanpos = xsp;
-    if (jj_3R_105()) return true;
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_106() {
-    if (jj_scan_token(QNAME)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_95() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_106()) {
-    jj_scanpos = xsp;
-    if (jj_3R_107()) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_89() {
-    if (jj_3R_95()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_59() {
-    if (jj_3R_66()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_88() {
-    if (jj_3R_94()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_83() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_88()) {
-    jj_scanpos = xsp;
-    if (jj_3R_89()) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_58() {
-    if (jj_scan_token(STRING_LITERAL)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_129() {
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_130()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_3R_131()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_128() {
-    if (jj_3R_129()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_72() {
-    if (jj_scan_token(DOUBLE_LITERAL)) return true;
-    return false;
-  }
-
   final private boolean jj_3R_81() {
-    if (jj_scan_token(KEYWORD_ANCESTOR_OR_SELF)) return true;
-    if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_68() {
-    if (jj_scan_token(DOT_DOT)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_80() {
-    if (jj_scan_token(KEYWORD_PRECEDING)) return true;
-    if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_127() {
-    if (jj_3R_128()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_79() {
-    if (jj_scan_token(KEYWORD_PRECEDING_SIBLIING)) return true;
-    if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_71() {
-    if (jj_scan_token(DECIMAL_LITERAL)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_78() {
-    if (jj_scan_token(KEYWORD_ANCESTOR)) return true;
-    if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_32() {
-    if (jj_scan_token(PLUS)) return true;
-    return false;
-  }
-
-  final private boolean jj_3_5() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_67() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_77()) {
-    jj_scanpos = xsp;
-    if (jj_3R_78()) {
-    jj_scanpos = xsp;
-    if (jj_3R_79()) {
-    jj_scanpos = xsp;
-    if (jj_3R_80()) {
-    jj_scanpos = xsp;
-    if (jj_3R_81()) return true;
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_77() {
-    if (jj_scan_token(KEYWORD_PARENT)) return true;
-    if (jj_scan_token(COLON_COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_31() {
-    if (jj_scan_token(STAR)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_126() {
-    if (jj_3R_127()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_70() {
-    if (jj_scan_token(INTEGER_LITERAL)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_61() {
-    if (jj_3R_68()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_55() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_60()) {
-    jj_scanpos = xsp;
-    if (jj_3R_61()) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_60() {
-    if (jj_3R_67()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_125() {
-    if (jj_3R_126()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_30() {
-    if (jj_scan_token(QUESTION_MARK)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_17() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_30()) {
-    jj_scanpos = xsp;
-    if (jj_3R_31()) {
-    jj_scanpos = xsp;
-    if (jj_3R_32()) return true;
-    }
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_62() {
-    if (jj_3R_69()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_82() {
     if (jj_scan_token(AT)) return true;
     return false;
   }
@@ -3481,22 +2955,22 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_69() {
+  final private boolean jj_3R_68() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_82()) jj_scanpos = xsp;
-    if (jj_3R_83()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_124() {
-    if (jj_3R_125()) return true;
+    if (jj_3R_81()) jj_scanpos = xsp;
+    if (jj_3R_82()) return true;
     return false;
   }
 
   final private boolean jj_3R_28() {
     if (jj_scan_token(KEYWORD_FOLLOWING)) return true;
     if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_123() {
+    if (jj_3R_124()) return true;
     return false;
   }
 
@@ -3564,84 +3038,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_123() {
-    if (jj_3R_124()) return true;
-    return false;
-  }
-
   final private boolean jj_3R_33() {
-    if (jj_3R_42()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_47() {
-    if (jj_scan_token(QNAME)) return true;
-    if (jj_scan_token(OPEN_PAREN)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_50() {
-    if (jj_3R_56()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_112() {
-    if (jj_scan_token(KEYWORD_SCHEMA_ELEMENT)) return true;
-    if (jj_scan_token(OPEN_PAREN)) return true;
+    if (jj_3R_41()) return true;
     return false;
   }
 
   final private boolean jj_3R_46() {
-    if (jj_scan_token(DOT)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_54() {
-    if (jj_3R_59()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_3() {
-    if (jj_3R_16()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_56() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_3()) {
-    jj_scanpos = xsp;
-    if (jj_3R_62()) return true;
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_35() {
-    if (jj_scan_token(SLASH_SLASH)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_45() {
+    if (jj_scan_token(QNAME)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_54()) jj_scanpos = xsp;
-    if (jj_scan_token(CLOSE_PARAN)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_34() {
-    if (jj_scan_token(SLASH)) return true;
-    return false;
-  }
-
-  final private boolean jj_3_1() {
-    if (jj_3R_14()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_49() {
-    if (jj_3R_55()) return true;
     return false;
   }
 
@@ -3650,24 +3054,84 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_42() {
+  final private boolean jj_3R_49() {
+    if (jj_3R_55()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_111() {
+    if (jj_scan_token(KEYWORD_SCHEMA_ELEMENT)) return true;
+    if (jj_scan_token(OPEN_PAREN)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_45() {
+    if (jj_scan_token(DOT)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_53() {
+    if (jj_3R_58()) return true;
+    return false;
+  }
+
+  final private boolean jj_3_3() {
+    if (jj_3R_16()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_55() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_49()) {
+    if (jj_3_3()) {
     jj_scanpos = xsp;
-    if (jj_3R_50()) return true;
+    if (jj_3R_61()) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_34() {
+    if (jj_scan_token(SLASH_SLASH)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_44() {
+    if (jj_scan_token(OPEN_PAREN)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_53()) jj_scanpos = xsp;
+    if (jj_scan_token(CLOSE_PARAN)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_48() {
+    if (jj_3R_54()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_41() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_48()) {
+    jj_scanpos = xsp;
+    if (jj_3R_49()) return true;
     }
     if (jj_3R_21()) return true;
     return false;
   }
 
-  final private boolean jj_3R_110() {
+  final private boolean jj_3R_121() {
+    if (jj_3R_122()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_109() {
     if (jj_scan_token(KEYWORD_ELEMENT)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_53() {
+  final private boolean jj_3R_52() {
     if (jj_scan_token(QNAME)) return true;
     return false;
   }
@@ -3687,24 +3151,9 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_44() {
+  final private boolean jj_3R_43() {
     if (jj_scan_token(DOLLAR)) return true;
-    if (jj_3R_53()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_65() {
-    if (jj_3R_72()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_19() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_34()) {
-    jj_scanpos = xsp;
-    if (jj_3R_35()) return true;
-    }
+    if (jj_3R_52()) return true;
     return false;
   }
 
@@ -3713,20 +3162,12 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_119() {
-    if (jj_3R_122()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_57() {
+  final private boolean jj_3R_19() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_63()) {
+    if (jj_scan_token(11)) {
     jj_scanpos = xsp;
-    if (jj_3R_64()) {
-    jj_scanpos = xsp;
-    if (jj_3R_65()) return true;
-    }
+    if (jj_3R_34()) return true;
     }
     return false;
   }
@@ -3736,19 +3177,37 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_113() {
+  final private boolean jj_3R_118() {
+    if (jj_3R_121()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_56() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_62()) {
+    jj_scanpos = xsp;
+    if (jj_3R_63()) {
+    jj_scanpos = xsp;
+    if (jj_3R_64()) return true;
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_62() {
+    if (jj_3R_69()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_112() {
     if (jj_scan_token(KEYWORD_SCHEMA_ATTRIBUTE)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_92() {
+  final private boolean jj_3R_91() {
     if (jj_scan_token(KEYWORD_EVERY)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_108() {
-    if (jj_3R_119()) return true;
     return false;
   }
 
@@ -3762,23 +3221,13 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_52() {
-    if (jj_3R_58()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_137() {
+  final private boolean jj_3_1() {
     if (jj_3R_14()) return true;
     return false;
   }
 
-  final private boolean jj_3R_43() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_51()) {
-    jj_scanpos = xsp;
-    if (jj_3R_52()) return true;
-    }
+  final private boolean jj_3R_107() {
+    if (jj_3R_118()) return true;
     return false;
   }
 
@@ -3788,35 +3237,50 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
   }
 
   final private boolean jj_3R_136() {
-    if (jj_scan_token(SLASH_SLASH)) return true;
+    if (jj_3R_14()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_42() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_50()) {
+    jj_scanpos = xsp;
+    if (jj_3R_51()) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_50() {
+    if (jj_3R_56()) return true;
     return false;
   }
 
   final private boolean jj_3R_135() {
-    if (jj_scan_token(SLASH)) return true;
+    if (jj_scan_token(SLASH_SLASH)) return true;
     return false;
   }
 
   final private boolean jj_3R_134() {
+    if (jj_scan_token(SLASH)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_133() {
     Token xsp;
     xsp = jj_scanpos;
+    if (jj_3R_134()) {
+    jj_scanpos = xsp;
     if (jj_3R_135()) {
     jj_scanpos = xsp;
-    if (jj_3R_136()) {
-    jj_scanpos = xsp;
-    if (jj_3R_137()) return true;
+    if (jj_3R_136()) return true;
     }
     }
     return false;
   }
 
-  final private boolean jj_3R_96() {
-    if (jj_3R_108()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_40() {
-    if (jj_3R_47()) return true;
+  final private boolean jj_3R_95() {
+    if (jj_3R_107()) return true;
     return false;
   }
 
@@ -3825,19 +3289,14 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_111() {
-    if (jj_scan_token(KEYWORD_ATTRIBUTE)) return true;
-    if (jj_scan_token(OPEN_PAREN)) return true;
-    return false;
-  }
-
   final private boolean jj_3R_38() {
     if (jj_3R_45()) return true;
     return false;
   }
 
-  final private boolean jj_3R_93() {
-    if (jj_3R_96()) return true;
+  final private boolean jj_3R_110() {
+    if (jj_scan_token(KEYWORD_ATTRIBUTE)) return true;
+    if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
@@ -3846,23 +3305,33 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
+  final private boolean jj_3R_92() {
+    if (jj_3R_95()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_36() {
     if (jj_3R_43()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_35() {
+    if (jj_3R_42()) return true;
     return false;
   }
 
   final private boolean jj_3R_20() {
     Token xsp;
     xsp = jj_scanpos;
+    if (jj_3R_35()) {
+    jj_scanpos = xsp;
     if (jj_3R_36()) {
     jj_scanpos = xsp;
     if (jj_3R_37()) {
     jj_scanpos = xsp;
     if (jj_3R_38()) {
     jj_scanpos = xsp;
-    if (jj_3R_39()) {
-    jj_scanpos = xsp;
-    if (jj_3R_40()) return true;
+    if (jj_3R_39()) return true;
     }
     }
     }
@@ -3870,56 +3339,56 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_114() {
+  final private boolean jj_3R_113() {
     if (jj_scan_token(KEYWORD_PROCESSING_INSTRUCTION)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_87() {
-    if (jj_3R_93()) return true;
+  final private boolean jj_3R_86() {
+    if (jj_3R_92()) return true;
     return false;
   }
 
-  final private boolean jj_3R_115() {
+  final private boolean jj_3R_114() {
     if (jj_scan_token(KEYWORD_COMMENT)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_86() {
+  final private boolean jj_3R_85() {
     if (jj_scan_token(KEYWORD_IF)) return true;
     return false;
   }
 
-  final private boolean jj_3R_48() {
+  final private boolean jj_3R_47() {
     if (jj_scan_token(OPEN_BRACKET)) return true;
     return false;
   }
 
-  final private boolean jj_3R_116() {
+  final private boolean jj_3R_115() {
     if (jj_scan_token(KEYWORD_TEXT)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_91() {
+  final private boolean jj_3R_90() {
     if (jj_scan_token(KEYWORD_SOME)) return true;
     return false;
   }
 
-  final private boolean jj_3R_85() {
+  final private boolean jj_3R_84() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_91()) {
+    if (jj_3R_90()) {
     jj_scanpos = xsp;
-    if (jj_3R_92()) return true;
+    if (jj_3R_91()) return true;
     }
     return false;
   }
 
-  final private boolean jj_3R_41() {
-    if (jj_3R_48()) return true;
+  final private boolean jj_3R_40() {
+    if (jj_3R_47()) return true;
     return false;
   }
 
@@ -3927,18 +3396,18 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_41()) { jj_scanpos = xsp; break; }
+      if (jj_3R_40()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
-  final private boolean jj_3R_109() {
+  final private boolean jj_3R_108() {
     if (jj_scan_token(KEYWORD_DOCUMENT_NODE)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
     return false;
   }
 
-  final private boolean jj_3R_90() {
+  final private boolean jj_3R_89() {
     if (jj_scan_token(KEYWORD_FOR)) return true;
     return false;
   }
@@ -3949,36 +3418,15 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_121() {
+  final private boolean jj_3R_120() {
     if (jj_scan_token(STAR)) return true;
     if (jj_scan_token(COLON)) return true;
     return false;
   }
 
-  final private boolean jj_3R_117() {
+  final private boolean jj_3R_116() {
     if (jj_scan_token(KEYWORD_NODE)) return true;
     if (jj_scan_token(OPEN_PAREN)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_105() {
-    if (jj_3R_117()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_120() {
-    if (jj_scan_token(NCNAME)) return true;
-    if (jj_scan_token(COLON)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_84() {
-    if (jj_3R_90()) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_76() {
-    if (jj_3R_87()) return true;
     return false;
   }
 
@@ -3987,26 +3435,9 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_118() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_4()) {
-    jj_scanpos = xsp;
-    if (jj_3R_120()) {
-    jj_scanpos = xsp;
-    if (jj_3R_121()) return true;
-    }
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_75() {
-    if (jj_3R_86()) return true;
-    return false;
-  }
-
-  final private boolean jj_3_4() {
-    if (jj_scan_token(STAR)) return true;
+  final private boolean jj_3R_119() {
+    if (jj_scan_token(NCNAME)) return true;
+    if (jj_scan_token(COLON)) return true;
     return false;
   }
 
@@ -4015,8 +3446,31 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_74() {
-    if (jj_3R_85()) return true;
+  final private boolean jj_3R_83() {
+    if (jj_3R_89()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_75() {
+    if (jj_3R_86()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_117() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_4()) {
+    jj_scanpos = xsp;
+    if (jj_3R_119()) {
+    jj_scanpos = xsp;
+    if (jj_3R_120()) return true;
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3_4() {
+    if (jj_scan_token(STAR)) return true;
     return false;
   }
 
@@ -4025,24 +3479,8 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_66() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_73()) {
-    jj_scanpos = xsp;
-    if (jj_3R_74()) {
-    jj_scanpos = xsp;
-    if (jj_3R_75()) {
-    jj_scanpos = xsp;
-    if (jj_3R_76()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  final private boolean jj_3R_73() {
-    if (jj_3R_84()) return true;
+  final private boolean jj_3R_74() {
+    if (jj_3R_85()) return true;
     return false;
   }
 
@@ -4051,8 +3489,8 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_133() {
-    if (jj_scan_token(PLUS)) return true;
+  final private boolean jj_3R_73() {
+    if (jj_3R_84()) return true;
     return false;
   }
 
@@ -4061,23 +3499,307 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_132() {
-    if (jj_scan_token(MINUS)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_130() {
+  final private boolean jj_3R_65() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_132()) {
+    if (jj_3R_72()) {
     jj_scanpos = xsp;
-    if (jj_3R_133()) return true;
+    if (jj_3R_73()) {
+    jj_scanpos = xsp;
+    if (jj_3R_74()) {
+    jj_scanpos = xsp;
+    if (jj_3R_75()) return true;
+    }
+    }
     }
     return false;
   }
 
-  final private boolean jj_3R_107() {
-    if (jj_3R_118()) return true;
+  final private boolean jj_3R_72() {
+    if (jj_3R_83()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_132() {
+    if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_99() {
+    if (jj_3R_111()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_131() {
+    if (jj_scan_token(MINUS)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_129() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_131()) {
+    jj_scanpos = xsp;
+    if (jj_3R_132()) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_106() {
+    if (jj_3R_117()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_98() {
+    if (jj_3R_110()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_97() {
+    if (jj_3R_109()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_130() {
+    if (jj_3R_133()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_96() {
+    if (jj_3R_108()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_93() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_96()) {
+    jj_scanpos = xsp;
+    if (jj_3R_97()) {
+    jj_scanpos = xsp;
+    if (jj_3R_98()) {
+    jj_scanpos = xsp;
+    if (jj_3R_99()) {
+    jj_scanpos = xsp;
+    if (jj_3R_100()) {
+    jj_scanpos = xsp;
+    if (jj_3R_101()) {
+    jj_scanpos = xsp;
+    if (jj_3R_102()) {
+    jj_scanpos = xsp;
+    if (jj_3R_103()) {
+    jj_scanpos = xsp;
+    if (jj_3R_104()) return true;
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_105() {
+    if (jj_scan_token(QNAME)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_94() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_105()) {
+    jj_scanpos = xsp;
+    if (jj_3R_106()) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_88() {
+    if (jj_3R_94()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_87() {
+    if (jj_3R_93()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_82() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_87()) {
+    jj_scanpos = xsp;
+    if (jj_3R_88()) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_58() {
+    if (jj_3R_65()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_57() {
+    if (jj_scan_token(STRING_LITERAL)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_128() {
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_129()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_3R_130()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_71() {
+    if (jj_scan_token(DOUBLE_LITERAL)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_127() {
+    if (jj_3R_128()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_80() {
+    if (jj_scan_token(KEYWORD_ANCESTOR_OR_SELF)) return true;
+    if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_67() {
+    if (jj_scan_token(DOT_DOT)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_79() {
+    if (jj_scan_token(KEYWORD_PRECEDING)) return true;
+    if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_78() {
+    if (jj_scan_token(KEYWORD_PRECEDING_SIBLIING)) return true;
+    if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_126() {
+    if (jj_3R_127()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_70() {
+    if (jj_scan_token(DECIMAL_LITERAL)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_77() {
+    if (jj_scan_token(KEYWORD_ANCESTOR)) return true;
+    if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_32() {
+    if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  final private boolean jj_3_5() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_66() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_76()) {
+    jj_scanpos = xsp;
+    if (jj_3R_77()) {
+    jj_scanpos = xsp;
+    if (jj_3R_78()) {
+    jj_scanpos = xsp;
+    if (jj_3R_79()) {
+    jj_scanpos = xsp;
+    if (jj_3R_80()) return true;
+    }
+    }
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_76() {
+    if (jj_scan_token(KEYWORD_PARENT)) return true;
+    if (jj_scan_token(COLON_COLON)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_31() {
+    if (jj_scan_token(STAR)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_125() {
+    if (jj_3R_126()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_69() {
+    if (jj_scan_token(INTEGER_LITERAL)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_60() {
+    if (jj_3R_67()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_54() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_59()) {
+    jj_scanpos = xsp;
+    if (jj_3R_60()) return true;
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_59() {
+    if (jj_3R_66()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_30() {
+    if (jj_scan_token(QUESTION_MARK)) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_17() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_30()) {
+    jj_scanpos = xsp;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) return true;
+    }
+    }
+    return false;
+  }
+
+  final private boolean jj_3R_124() {
+    if (jj_3R_125()) return true;
+    return false;
+  }
+
+  final private boolean jj_3R_61() {
+    if (jj_3R_68()) return true;
     return false;
   }
 

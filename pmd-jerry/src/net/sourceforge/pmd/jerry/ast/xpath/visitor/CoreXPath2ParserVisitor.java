@@ -10,7 +10,6 @@ import net.sourceforge.pmd.jerry.ast.xpath.ASTAttribNameOrWildcard;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeDeclaration;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeName;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTAxisStep;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTCastExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTCastableExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTCommentTest;
@@ -24,25 +23,17 @@ import net.sourceforge.pmd.jerry.ast.xpath.ASTElementName;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTElementNameOrWildcard;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTElementTest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTExprSingle;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTFilterExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTForExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTForwardAxis;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTForwardStep;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTFunctionCall;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTGeneralComp;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTIfExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTInstanceofExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTIntegerLiteral;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTIntersectExceptExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTItemType;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTKindTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTLiteral;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTMultiplicativeExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTNameTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTNodeComp;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTNodeTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTNumericLiteral;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTOccurrenceIndicator;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTOrExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTPITest;
@@ -50,17 +41,15 @@ import net.sourceforge.pmd.jerry.ast.xpath.ASTParenthesizedExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTPathExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTPredicate;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTPredicateList;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTPrimaryExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTQuantifiedExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTRangeExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTRelativePathExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTReverseAxis;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTReverseStep;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTSchemaAttributeTest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTSchemaElementTest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTSequenceType;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTSimpleForClause;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTSingleType;
+import net.sourceforge.pmd.jerry.ast.xpath.ASTSlash;
+import net.sourceforge.pmd.jerry.ast.xpath.ASTSlashSlash;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTStepExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTStringLiteral;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTTextTest;
@@ -68,8 +57,6 @@ import net.sourceforge.pmd.jerry.ast.xpath.ASTTreatExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTTypeName;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTUnaryExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTUnionExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTValueComp;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTValueExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTVarName;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTVarRef;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTWildcard;
@@ -83,8 +70,8 @@ import net.sourceforge.pmd.jerry.xpath.OperatorEnum;
 public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 		XPath2ParserVisitor {
 
-	private void visitOperatorExpression(OperatorNode node,
-			int operatorIndex, Object data) {
+	private void visitOperatorExpression(OperatorNode node, int operatorIndex,
+			Object data) {
 
 		// If no operators, just visit the children
 		if (node.getNumOperators() == 0) {
@@ -363,12 +350,6 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return null;
 	}
 
-	public Object visit(ASTAxisStep node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
 	public Object visit(ASTCastableExpr node, Object data) {
 		switch (node.jjtGetNumChildren()) {
 		case 1:
@@ -472,18 +453,6 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return null;
 	}
 
-	public Object visit(ASTExprSingle node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTFilterExpr node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
 	public Object visit(ASTForExpr node, Object data) {
 		TODO(node);
 		node.childrenAccept(this, data);
@@ -496,20 +465,9 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return null;
 	}
 
-	public Object visit(ASTForwardStep node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
 	public Object visit(ASTFunctionCall node, Object data) {
 		TODO(node);
 		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTGeneralComp node, Object data) {
-		TODO(node);
 		return null;
 	}
 
@@ -574,18 +532,6 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return null;
 	}
 
-	public Object visit(ASTKindTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTLiteral node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
 	public Object visit(ASTMultiplicativeExpr node, Object data) {
 		visitOperatorExpression(node, 0, data);
 		return null;
@@ -597,19 +543,7 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return null;
 	}
 
-	public Object visit(ASTNodeComp node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
 	public Object visit(ASTNodeTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTNumericLiteral node, Object data) {
 		TODO(node);
 		node.childrenAccept(this, data);
 		return null;
@@ -640,6 +574,7 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 	}
 
 	public Object visit(ASTPathExpr node, Object data) {
+		/*
 		if (node.isRoot()) {
 			// TODO Spec has extra set of parens when there appears to be a
 			// RelativePathExpr, is it needed?
@@ -655,6 +590,8 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 						"Cannot have more than 1 axis specified on a PathExpr!");
 			}
 		}
+		*/
+		TODO(node);
 		node.childrenAccept(this, data);
 		return null;
 	}
@@ -672,12 +609,6 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 	}
 
 	public Object visit(ASTPredicateList node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTPrimaryExpr node, Object data) {
 		TODO(node);
 		node.childrenAccept(this, data);
 		return null;
@@ -713,19 +644,7 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return null;
 	}
 
-	public Object visit(ASTRelativePathExpr node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
 	public Object visit(ASTReverseAxis node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTReverseStep node, Object data) {
 		TODO(node);
 		node.childrenAccept(this, data);
 		return null;
@@ -749,13 +668,19 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return null;
 	}
 
-	public Object visit(ASTSimpleForClause node, Object data) {
+	public Object visit(ASTSingleType node, Object data) {
 		TODO(node);
 		node.childrenAccept(this, data);
 		return null;
 	}
 
-	public Object visit(ASTSingleType node, Object data) {
+	public Object visit(ASTSlash node, Object data) {
+		TODO(node);
+		node.childrenAccept(this, data);
+		return null;
+	}
+
+	public Object visit(ASTSlashSlash node, Object data) {
 		TODO(node);
 		node.childrenAccept(this, data);
 		return null;
@@ -820,18 +745,6 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 
 	public Object visit(ASTUnionExpr node, Object data) {
 		visitOperatorExpression(node, 0, data);
-		return null;
-	}
-
-	public Object visit(ASTValueComp node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTValueExpr node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
 		return null;
 	}
 
