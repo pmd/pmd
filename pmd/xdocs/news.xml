@@ -10,6 +10,8 @@
     <section name="Sites/Articles about PMD">
     <ul>
         <br/>
+        <li>July 2007 - Ryan Slobojan's article on <a href="http://www.infoq.com/news/2007/07/pmd">InfoQ</a> discusses the PMD 4.0 release.</li>
+        <br/>
         <li>October 2006 -Alan Berg's article "Light On Java Code" in <a href="http://www.stpmag.com/issues/stp-2006-10.pdf">Software Testing and Performance Magazine</a> discusses static code analysis using FindBugs and PMD.</li>
         <br/>
         <li>July 2006 - Paul Duvall's article "Automation for the people: Continuous Inspection" on <a href="http://www-128.ibm.com/developerworks/java/library/j-ap08016/index.html">developerWorks</a> discusses CPD.</li>
