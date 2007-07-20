@@ -1,10 +1,10 @@
-update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-4.0rc2.jar
-update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-4.0rc2
+update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-4.0.jar
+update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-4.0
 update the release date in the changelog
 update rulesets/rulesets.properties - add any new ruleset file names
 update release number and tag name in project.xml
 
-ensure all the new rules are listed in a rulesets/releases/4.0rc2.xml file
+ensure all the new rules are listed in a rulesets/releases/4.0.xml file
 
 ant clean test
 Check in everything
@@ -25,63 +25,63 @@ cd ..
 cd etc
 
 Prepare binary release:
-rm -rf ~/tmp/pmd-4.0rc2
-mkdir -p ~/tmp/pmd-4.0rc2/etc
-mkdir ~/tmp/pmd-4.0rc2/bin
-mkdir ~/tmp/pmd-4.0rc2/lib
-mkdir -p ~/tmp/pmd-4.0rc2/java14/lib
-mkdir ~/tmp/pmd-4.0rc2/java14/bin
-cp ../LICENSE.txt changelog.txt ~/tmp/pmd-4.0rc2/etc
+rm -rf ~/tmp/pmd-4.0
+mkdir -p ~/tmp/pmd-4.0/etc
+mkdir ~/tmp/pmd-4.0/bin
+mkdir ~/tmp/pmd-4.0/lib
+mkdir -p ~/tmp/pmd-4.0/java14/lib
+mkdir ~/tmp/pmd-4.0/java14/bin
+cp ../LICENSE.txt changelog.txt ~/tmp/pmd-4.0/etc
 cd ../bin/
-cp pmd.* cygwin-run.sh build.xml cpd.sh cpdgui.bat designer.* ~/tmp/pmd-4.0rc2/bin
+cp pmd.* cygwin-run.sh build.xml cpd.sh cpdgui.bat designer.* ~/tmp/pmd-4.0/bin
 cd ../etc/
-cp ../java14/lib/*.jar ~/tmp/pmd-4.0rc2/java14/lib/
-cp ../java14/bin/*.bat ../java14/bin/*.sh ~/tmp/pmd-4.0rc2/java14/bin/
-chmod 755 ~/tmp/pmd-4.0rc2/java14/bin/*
-cp ../lib/pmd-4.0rc2.jar ../lib/asm-3.0.jar ../lib/jaxen-1.1.jar ~/tmp/pmd-4.0rc2/lib/
-mkdir ~/tmp/pmd-4.0rc2/etc/xslt
-cp xslt/*.xslt xslt/*.js xslt/*.gif xslt/*.css ~/tmp/pmd-4.0rc2/etc/xslt/
-cp -R ../target/docs ~/tmp/pmd-4.0rc2
+cp ../java14/lib/*.jar ~/tmp/pmd-4.0/java14/lib/
+cp ../java14/bin/*.bat ../java14/bin/*.sh ~/tmp/pmd-4.0/java14/bin/
+chmod 755 ~/tmp/pmd-4.0/java14/bin/*
+cp ../lib/pmd-4.0.jar ../lib/asm-3.0.jar ../lib/jaxen-1.1.jar ~/tmp/pmd-4.0/lib/
+mkdir ~/tmp/pmd-4.0/etc/xslt
+cp xslt/*.xslt xslt/*.js xslt/*.gif xslt/*.css ~/tmp/pmd-4.0/etc/xslt/
+cp -R ../target/docs ~/tmp/pmd-4.0
 cd ~/tmp
-zip -q -r pmd-bin-4.0rc2.zip pmd-4.0rc2/
+zip -q -r pmd-bin-4.0.zip pmd-4.0/
 cd -
 
 Time to tag:
 
 cd ../../
-svn -m "4.0rc2 release tag" copy https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0rc2
+svn -m "4.0 release tag" copy https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0
 
 Prepare source release:
-rm -rf ~/tmp/pmd-4.0rc2
-rm -rf ~/tmp/pmd-src-4.0rc2.zip
+rm -rf ~/tmp/pmd-4.0
+rm -rf ~/tmp/pmd-src-4.0.zip
 cd pmd/bin/
 ant jarsrc
 cd ../../
 rm -rf tmp/
 mkdir tmp
 cd tmp
-svn -q export https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0rc2 pmd
-mv pmd/ pmd-4.0rc2
+svn -q export https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0 pmd
+mv pmd/ pmd-4.0
 cd ..
-cp pmd/lib/pmd-src-4.0rc2.jar tmp/pmd-4.0rc2/lib/
-mv tmp/pmd-4.0rc2/ ~/tmp/
-cp pmd/lib/pmd-4.0rc2.jar ~/tmp/pmd-4.0rc2/lib
-cp -R pmd/target/docs ~/tmp/pmd-4.0rc2/
-rm -f ~/tmp/pmd-4.0rc2/etc/clover.license
+cp pmd/lib/pmd-src-4.0.jar tmp/pmd-4.0/lib/
+mv tmp/pmd-4.0/ ~/tmp/
+cp pmd/lib/pmd-4.0.jar ~/tmp/pmd-4.0/lib
+cp -R pmd/target/docs ~/tmp/pmd-4.0/
+rm -f ~/tmp/pmd-4.0/etc/clover.license
 cd ~/tmp/
-zip -q -r pmd-src-4.0rc2.zip pmd-4.0rc2/
+zip -q -r pmd-src-4.0.zip pmd-4.0/
 
 if you see a bug and fix it, you can delete the release using:
-svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0rc2
+svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0
 and then retag it
 
-ncftpput upload.sourceforge.net incoming/ pmd-src-4.0rc2.zip pmd-bin-4.0rc2.zip
+ncftpput upload.sourceforge.net incoming/ pmd-src-4.0.zip pmd-bin-4.0.zip
 
 
 Go to Admin, File Releases, Add release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-4.0rc2.zip file
-Add the pmd-src-4.0rc2.zip file
+Add the pmd-bin-4.0.zip file
+Add the pmd-src-4.0.zip file
 Classify the file
 Click File Releases, Edit Release, set previous version to 'hidden'.
 

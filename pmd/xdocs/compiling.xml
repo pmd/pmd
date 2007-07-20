@@ -26,7 +26,7 @@ Now you'll need to either check out the source code or download the latest sourc
 <p>
     Now cd down into the <code>pmd/bin</code> directory:
     <pre>
-        [tom@hal building]$ cd pmd-4.0rc2/bin/
+        [tom@hal building]$ cd pmd-4.0/bin/
         [tom@hal bin]$ ls -l | grep build.xml
         -rw-rw-r--    1 tom      tom          5736 Jun 19 15:36 build.xml
         [tom@hal bin]$
