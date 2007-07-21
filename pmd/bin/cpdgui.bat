@@ -6,5 +6,5 @@ set JARPATH=%TOPDIR%/lib/asm-3.0.jar;%TOPDIR%/lib/jaxen-1.1.jar
 set OPTS=-Xmx512m
 set MAIN_CLASS=net.sourceforge.pmd.cpd.GUI
 
-java %OPTS% -cp %PMDJAR%;%JARPATH% %MAIN_CLASS% %*
+java %OPTS% -cp "%PMDJAR%;%JARPATH%" %MAIN_CLASS% %*
 
