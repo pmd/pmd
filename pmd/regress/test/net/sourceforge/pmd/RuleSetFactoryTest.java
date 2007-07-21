@@ -35,12 +35,27 @@ import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 import org.junit.Test;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 import java.util.Set;
+import java.util.StringTokenizer;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import junit.framework.JUnit4TestAdapter;
 public class RuleSetFactoryTest {
@@ -176,6 +191,137 @@ public class RuleSetFactoryTest {
         assertEquals(1, rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes())).size());
     }
 
+    @Test
+    public void testXmlSchema() throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
+		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+		saxParserFactory.setValidating(true);
+		saxParserFactory.setNamespaceAware(true);
+
+		// Hope we're using Xerces, or this may not work!
+		// Note: Features are listed here http://xerces.apache.org/xerces2-j/features.html
+		saxParserFactory.setFeature("http://xml.org/sax/features/validation", true);
+		saxParserFactory.setFeature("http://apache.org/xml/features/validation/schema", true);
+		saxParserFactory.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+		
+		boolean allValid = true;
+		List<String> ruleSetFileNames = getRuleSetFileNames();
+		for (String fileName : ruleSetFileNames) {
+	        InputStream inputStream = loadResourceAsStream(fileName);
+
+			SAXParser saxParser = saxParserFactory.newSAXParser();
+			ValidateDefaultHandler validateDefaultHandler = new ValidateDefaultHandler("etc/ruleset_xml_schema.xsd");
+			saxParser.parse(inputStream, validateDefaultHandler);
+			allValid = allValid && validateDefaultHandler.isValid();
+			if (! validateDefaultHandler.isValid()) {
+				System.err.println("Validation against XML Schema failed for: " + fileName);
+			}
+		}
+		assertTrue("All XML must parse without producing validation messages.", allValid);
+    }
+
+    @Test
+    public void testDtd() throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException  {
+		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+		saxParserFactory.setValidating(true);
+		saxParserFactory.setNamespaceAware(true);
+
+		boolean allValid = true;
+		List<String> ruleSetFileNames = getRuleSetFileNames();
+		for (String fileName : ruleSetFileNames) {
+	        InputStream inputStream = loadResourceAsStream(fileName);
+
+	        // Read file into memory
+	        StringBuffer buf = new StringBuffer(64 * 1024);
+	        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+	        String line;
+	        while ((line = reader.readLine()) != null) {
+	        	buf.append(line);
+	        	buf.append(PMD.EOL);
+	        }
+	        reader.close();
+
+	        // Remove XML Schema stuff, replace with DTD
+	        String file = buf.toString();
+	        file = file.replaceAll("<\\?xml version=\"1.0\"\\?>", "");
+	        file = file.replaceAll("xmlns=\"http://pmd.sf.net/ruleset/1.0.0\"", "");
+	        file = file.replaceAll("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "");
+	        file = file.replaceAll("xsi:schemaLocation=\"http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd\"", "");
+	        file = file.replaceAll("xsi:noNamespaceSchemaLocation=\"http://pmd.sf.net/ruleset_xml_schema.xsd\"", "");
+	        file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset SYSTEM \"ruleset.dtd\">" + PMD.EOL + file;
+	        inputStream = new ByteArrayInputStream(file.getBytes());
+
+			SAXParser saxParser = saxParserFactory.newSAXParser();
+			ValidateDefaultHandler validateDefaultHandler = new ValidateDefaultHandler("etc/ruleset.dtd");
+			saxParser.parse(inputStream, validateDefaultHandler);
+			allValid = allValid && validateDefaultHandler.isValid();
+			if (! validateDefaultHandler.isValid()) {
+				System.err.println("Validation against DTD failed for: " + fileName);
+			}
+		}
+		assertTrue("All XML must parse without producing validation messages.", allValid);
+    }
+
+    // Gets all test PMD Ruleset XML files
+    private List<String> getRuleSetFileNames() throws IOException, RuleSetNotFoundException {
+        Properties properties = new Properties();
+        properties.load(ResourceLoader.loadResourceAsStream("rulesets/rulesets.properties"));
+        String fileNames = properties.getProperty("rulesets.testnames");
+        StringTokenizer st = new StringTokenizer(fileNames, ",");
+        List<String> ruleSetFileNames = new ArrayList<String>();
+        while (st.hasMoreTokens()) {
+        	ruleSetFileNames.add(st.nextToken());
+        }
+        return ruleSetFileNames;
+    }
+
+    private class ValidateDefaultHandler extends DefaultHandler {
+    	private final String validateDocument;
+		private boolean valid = true;
+		
+		public ValidateDefaultHandler(String validateDocument) {
+			this.validateDocument = validateDocument;
+		}
+		public boolean isValid() {
+			return valid;
+		}
+		public void error(SAXParseException e) throws SAXException {
+			log("Error", e);
+		}
+		public void fatalError(SAXParseException e) throws SAXException {
+			log("FatalError", e);
+		}
+		public void warning(SAXParseException e) throws SAXException {
+			log("Warning", e);
+		}
+		private void log(String prefix, SAXParseException e) {
+			String message = prefix + " at (" + e.getLineNumber() + ", " + e.getColumnNumber() + "): " + e.getMessage();
+			System.err.println(message);
+			valid = false;
+		}
+		public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
+			if ("http://pmd.sf.net/ruleset_xml_schema.xsd".equals(systemId) || systemId.endsWith("ruleset.dtd")) {
+		        try {
+					InputStream inputStream = loadResourceAsStream(validateDocument);
+					return new InputSource(inputStream);
+				} catch (RuleSetNotFoundException e) {
+					System.err.println(e.getMessage());
+					throw new IOException(e.getMessage());
+				}
+			} else {
+				throw new IllegalArgumentException("No clue how to handle: publicId=" + publicId + ", systemId=" + systemId);
+			}
+		}
+    }
+
+    private InputStream loadResourceAsStream(String resource) throws RuleSetNotFoundException {
+    	InputStream inputStream = ResourceLoader.loadResourceAsStream(resource, this.getClass().getClassLoader());
+        if (inputStream == null) {
+            throw new RuleSetNotFoundException("Can't find resource " + resource + "  Make sure the resource is a valid file or URL or is on the CLASSPATH.  Here's the current classpath: " + System.getProperty("java.class.path"));
+        }
+        return inputStream;
+    }
+
+    
     private static final String REF_OVERRIDE_ORIGINAL_NAME =
             "<?xml version=\"1.0\"?>" + PMD.EOL +
             "<ruleset name=\"test\">" + PMD.EOL +
