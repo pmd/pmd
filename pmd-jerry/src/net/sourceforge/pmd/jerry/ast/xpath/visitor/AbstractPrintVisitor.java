@@ -70,16 +70,4 @@ public abstract class AbstractPrintVisitor {
 		indentLevel--;
 		applyIndent();
 	}
-
-	protected void TODO(Node node) {
-		StringBuffer buf = new StringBuffer(100);
-		buf.append("Visit for ");
-		buf.append(node);
-		if (node.jjtGetParent() != null) {
-			buf.append(" w/ parent ");
-			buf.append(node.jjtGetParent());
-		}
-		System.out.println(buf);
-	}
-
 }

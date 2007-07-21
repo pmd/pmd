@@ -1,42 +1,23 @@
 package net.sourceforge.pmd.jerry.ast.xpath.visitor;
 
+import java.io.Reader;
+import java.io.StringReader;
+
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAbbrevForwardStep;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAbbrevReverseStep;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAdditiveExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAndExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTAnyKindTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTAtomicType;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTAttribNameOrWildcard;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeDeclaration;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeName;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeTest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTCastExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTCastableExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTCommentTest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTComparisonExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTContextItemExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTDecimalLiteral;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTDocumentTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTDoubleLiteral;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTElementDeclaration;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTElementName;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTElementNameOrWildcard;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTElementTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTForExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTForwardAxis;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTFunctionCall;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTIfExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTInstanceofExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTIntegerLiteral;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTIntersectExceptExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTItemType;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTMultiplicativeExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTNameTest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTNodeTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTOccurrenceIndicator;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTOrExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTPITest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTParenthesizedExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTPathExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTPredicate;
@@ -44,34 +25,40 @@ import net.sourceforge.pmd.jerry.ast.xpath.ASTPredicateList;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTQuantifiedExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTRangeExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTReverseAxis;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTSchemaAttributeTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTSchemaElementTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTSequenceType;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTSingleType;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTSlash;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTSlashSlash;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTStepExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTStringLiteral;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTTextTest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTTreatExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTTypeName;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTUnaryExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTUnionExpr;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTVarName;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTVarRef;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTWildcard;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTXPath;
 import net.sourceforge.pmd.jerry.ast.xpath.Node;
 import net.sourceforge.pmd.jerry.ast.xpath.SimpleNode;
-import net.sourceforge.pmd.jerry.ast.xpath.XPath2ParserVisitor;
+import net.sourceforge.pmd.jerry.ast.xpath.XPath2Parser;
 import net.sourceforge.pmd.jerry.ast.xpath.custom.OperatorNode;
+import net.sourceforge.pmd.jerry.xpath.AxisEnum;
 import net.sourceforge.pmd.jerry.xpath.OperatorEnum;
 
-public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
-		XPath2ParserVisitor {
+public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 
-	private void visitOperatorExpression(OperatorNode node, int operatorIndex,
-			Object data) {
+	public static String toCore(String query) {
+		// First convert to unabbreviated XPath
+		String unabbreviated = PrintXPath2ParserVisitor.unabbreviate(query);
+
+		// Get XPath AST
+		Reader reader = new StringReader(unabbreviated);
+		XPath2Parser parser = new XPath2Parser(reader);
+		ASTXPath xpath = parser.XPath();
+		xpath.dump("");
+
+		// Output XPath Core
+		CoreXPath2ParserVisitor visitor = new CoreXPath2ParserVisitor();
+		xpath.jjtAccept(visitor, null);
+		return visitor.getOutput();
+	}
+
+	private void visitOperator(OperatorNode node, int operatorIndex, Object data) {
 
 		// If no operators, just visit the children
 		if (node.getNumOperators() == 0) {
@@ -123,64 +110,40 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 			convertExpected = "1.0E0";
 			break;
 		case VALUE_COMPARISION_EQUAL:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
+			operatorFunction = "fs:eq";
+			convertExpected = "string";
 			break;
 		case VALUE_COMPARISION_NOT_EQUAL:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
+			operatorFunction = "fs:ne";
+			convertExpected = "string";
 			break;
 		case VALUE_COMPARISION_LESSER_THAN:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
+			operatorFunction = "fs:lt";
+			convertExpected = "string";
 			break;
 		case VALUE_COMPARISION_LESSER_THAN_OR_EQUAL:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
+			operatorFunction = "fs:le";
+			convertExpected = "string";
 			break;
 		case VALUE_COMPARISION_GREATER_THAN:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
+			operatorFunction = "fs:gt";
+			convertExpected = "string";
 			break;
 		case VALUE_COMPARISION_GREATER_THAN_OR_EQUAL:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
-			break;
-		case GENERAL_COMPARISION_EQUAL:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
-			break;
-		case GENERAL_COMPARISION_NOT_EQUAL:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
-			break;
-		case GENERAL_COMPARISION_LESSER_THAN:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
-			break;
-		case GENERAL_COMPARISION_LESSER_THAN_OR_EQUAL:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
-			break;
-		case GENERAL_COMPARISION_GREATER_THAN:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
-			break;
-		case GENERAL_COMPARISION_GREATER_THAN_OR_EQUAL:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
+			operatorFunction = "fs:ge";
+			convertExpected = "string";
 			break;
 		case NODE_COMPARISION_IS:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
+			operatorFunction = "fs:is-same-node";
+			convertExpected = null;
 			break;
 		case NODE_COMPARISION_PRECEEDS:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
+			operatorFunction = "fs:node-before";
+			convertExpected = null;
 			break;
 		case NODE_COMPARISION_FOLLOWS:
-			if (true)
-				throw new IllegalStateException("Not implemented: " + operator);
+			operatorFunction = "fs:node-after";
+			convertExpected = null;
 			break;
 		case SEQUENCE_UNION:
 			postFunction = "fs:apply-ordering-mode";
@@ -203,13 +166,11 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 
 		// Start post function?
 		if (postFunction != null) {
-			println(postFunction + "(");
-			incrementIndent();
+			print(postFunction + "(");
 		}
 
 		// Start operator function
-		println(operatorFunction + "(");
-		incrementIndent();
+		print(operatorFunction + "(");
 
 		//
 		// 1st operand
@@ -217,17 +178,15 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 
 		// Convert?
 		if (convertExpected != null) {
-			println("fs:convert-operand(");
-			incrementIndent();
-			println("fn:data((");
-			incrementIndent();
+			print("fs:convert-operand(");
+			print("fn:data((");
 		}
 		if (operator.isBinary()) {
 			node.jjtGetChild(operatorIndex).jjtAccept(this, data);
 		} else {
 			// Not the last, then recurse
 			if (operatorIndex != node.getNumOperators() - 1) {
-				visitOperatorExpression(node, operatorIndex + 1, data);
+				visitOperator(node, operatorIndex + 1, data);
 			}
 			// Last
 			else {
@@ -235,255 +194,205 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 			}
 		}
 		if (convertExpected != null) {
-			decrementIndent();
-			println("))");
-			println(",");
-			println(convertExpected);
-			decrementIndent();
-			println(")");
+			print("))");
+			print(", ");
+			print(convertExpected);
+			print(")");
 		}
 
 		//
 		// 2nd operand?
 		//
 		if (operator.isBinary()) {
-			println(",");
+			print(", ");
 
 			// Convert?
 			if (convertExpected != null) {
-				println("fs:convert-operand(");
-				incrementIndent();
-				println("fn:data((");
-				incrementIndent();
+				print("fs:convert-operand(");
+				print("fn:data((");
 			}
 			// Not the last, then recurse
 			if (operatorIndex != node.getNumOperators() - 1) {
-				visitOperatorExpression(node, operatorIndex + 1, data);
+				visitOperator(node, operatorIndex + 1, data);
 			}
 			// Last
 			else {
 				node.jjtGetChild(operatorIndex + 1).jjtAccept(this, data);
 			}
 			if (convertExpected != null) {
-				decrementIndent();
-				println("))");
-				println(",");
-				println(convertExpected);
-				decrementIndent();
-				println(")");
+				print("))");
+				print(", ");
+				print(convertExpected);
+				print(")");
 			}
 		}
 
 		// End operator function
-		decrementIndent();
-		println(")");
+		print(")");
 
 		// End post function?
 		if (postFunction != null) {
-			decrementIndent();
-			println(")");
+			print(")");
 		}
 	}
 
 	public Object visit(ASTAbbrevForwardStep node, Object data) {
-		TODO(node);
+		if (node.getNumAxes() != 0) {
+			throw new IllegalStateException("AST must be unabbreviated!");
+		}
 		node.childrenAccept(this, data);
 		return null;
 	}
 
 	public Object visit(ASTAbbrevReverseStep node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
+		throw new IllegalStateException("AST must be unabbreviated!");
 	}
 
 	public Object visit(ASTAdditiveExpr node, Object data) {
-		visitOperatorExpression(node, 0, data);
+		visitOperator(node, 0, data);
 		return null;
 	}
 
 	public Object visit(ASTAndExpr node, Object data) {
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			if (i > 0) {
-				println();
-				println("and");
+				print(" and ");
 			}
-			Node child = node.jjtGetChild(i);
-			child.jjtAccept(this, data);
-		}
-		return null;
-	}
-
-	public Object visit(ASTAnyKindTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTAtomicType node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTAttribNameOrWildcard node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTAttributeDeclaration node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTAttributeName node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTAttributeTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTCastableExpr node, Object data) {
-		switch (node.jjtGetNumChildren()) {
-		case 1:
-			node.childrenAccept(this, data);
-			break;
-		case 2:
-			node.jjtGetChild(0).jjtAccept(this, data);
-			print(" castable as ");
-			node.jjtGetChild(1).jjtAccept(this, data);
-			break;
-		default:
-			throw new IllegalStateException("Cannot have more than 2 children!");
+			print("fn:boolean((");
+			node.jjtGetChild(i).jjtAccept(this, data);
+			print("))");
 		}
 		return null;
 	}
 
 	public Object visit(ASTCastExpr node, Object data) {
-		switch (node.jjtGetNumChildren()) {
-		case 1:
-			node.childrenAccept(this, data);
-			break;
-		case 2:
-			node.jjtGetChild(0).jjtAccept(this, data);
-			print(" cast as ");
-			node.jjtGetChild(1).jjtAccept(this, data);
-			break;
-		default:
-			throw new IllegalStateException("Cannot have more than 2 children!");
-		}
-		return null;
-	}
+		if (node.jjtGetNumChildren() == 2) {
+			Node expr = node.jjtGetChild(0);
+			ASTSingleType singleType = (ASTSingleType) node.jjtGetChild(1);
 
-	public Object visit(ASTCommentTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
+			print("let $v as xs:anyAtomicType := fn:data((");
+			expr.jjtAccept(this, data);
+			print(")) return ");
+			if ("?".equals(singleType.getImage())) {
+				print("typeswitch ($v)");
+				print(" case $fs:new as empty-sequence() return ()");
+				print(" default $fs:new return ");
+			}
+			print("$v cast as ");
+			singleType.jjtAccept(this, data);
+		} else {
+			node.childrenAccept(this, data);
+		}
 		return null;
 	}
 
 	public Object visit(ASTComparisonExpr node, Object data) {
-		// Nothing to do
-		node.childrenAccept(this, data);
-		return null;
-	}
+		if (node.jjtGetNumChildren() > 1) {
 
-	public Object visit(ASTContextItemExpr node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
+			OperatorEnum operator = node.getOperator(0);
+			if (operator.compareTo(OperatorEnum.GENERAL_COMPARISION_EQUAL) >= 0
+					&& operator
+							.compareTo(OperatorEnum.GENERAL_COMPARISION_GREATER_THAN_OR_EQUAL) <= 0) {
 
-	public Object visit(ASTDecimalLiteral node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTDocumentTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTDoubleLiteral node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTElementDeclaration node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTElementName node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTElementNameOrWildcard node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTElementTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTExpr node, Object data) {
-		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-			if (i > 0) {
-				println(",");
+				print("some $v1 in fn:data((");
+				node.jjtGetChild(0).jjtAccept(this, data);
+				print(")) satisfies");
+				print("some $v2 in fn:data((");
+				node.jjtGetChild(1).jjtAccept(this, data);
+				print(")) satisfies");
+				print("let $u1 := fs:convert-operand($v1, $v2) return");
+				print("let $u2 := fs:convert-operand($v2, $v1) return");
+				print("fs:");
+				switch (operator) {
+				case GENERAL_COMPARISION_EQUAL:
+					print("eq");
+					break;
+				case GENERAL_COMPARISION_NOT_EQUAL:
+					print("ne");
+					break;
+				case GENERAL_COMPARISION_LESSER_THAN:
+					print("lt");
+					break;
+				case GENERAL_COMPARISION_LESSER_THAN_OR_EQUAL:
+					print("le");
+					break;
+				case GENERAL_COMPARISION_GREATER_THAN:
+					print("gt");
+					break;
+				case GENERAL_COMPARISION_GREATER_THAN_OR_EQUAL:
+					print("ge");
+					break;
+				default:
+					throw new IllegalStateException("Unexpected operator: "
+							+ operator);
+				}
+				print("($u1, $u2)");
+			} else {
+				visitOperator(node, 0, data);
 			}
-			Node child = node.jjtGetChild(i);
-			child.jjtAccept(this, data);
+		} else {
+			node.childrenAccept(this, data);
 		}
 		return null;
 	}
 
+	public Object visit(ASTContextItemExpr node, Object data) {
+		print("fs:dot");
+		return null;
+	}
+
+	private void visitForExpr(ASTForExpr node, int varIndex, Object data) {
+		// Note: XPath does not have the full FLWOR as XQuery, so normalization
+		// is more straight forward.
+		if (node.jjtGetNumChildren() > 0) {
+			if (varIndex < (node.jjtGetNumChildren() - 1) / 2) {
+				print("for $");
+				node.jjtGetChild(varIndex * 2).jjtAccept(this, data);
+				print(" in ");
+				node.jjtGetChild(varIndex * 2 + 1).jjtAccept(this, data);
+				print(" ");
+				visitForExpr(node, varIndex+1, data);
+			} else {
+				print("return ");
+				node.jjtGetChild(node.jjtGetNumChildren() - 1).jjtAccept(this,
+						data);
+			}
+		}
+	}
+
 	public Object visit(ASTForExpr node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
+		visitForExpr(node, 0, data);
 		return null;
 	}
 
 	public Object visit(ASTForwardAxis node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTFunctionCall node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
+		AxisEnum axis = node.getAxis(0);
+		switch (axis) {
+		case FOLLOWING:
+			print("ancestor-or-self::node()/following-sibling::node()/descendant-or-self::");
+			break;
+		case FOLLOWING_SIBLING:
+			print("let $e := . return $e/parent::node()/child::");
+			break;
+		default:
+			print(axis);
+			print("::");
+			break;
+		}
 		return null;
 	}
 
 	public Object visit(ASTIfExpr node, Object data) {
-		print("if (");
+		print("if ");
+		print("(");
+		print("fn:boolean((");
 		node.jjtGetChild(0).jjtAccept(this, data);
-		println(")");
-		println("then");
-		incrementIndent();
+		print("))");
+		print(")");
+		print(" then ");
 		node.jjtGetChild(1).jjtAccept(this, data);
-		decrementIndent();
-		println("else");
-		incrementIndent();
+		print(" else ");
 		node.jjtGetChild(2).jjtAccept(this, data);
-		println();
-		decrementIndent();
 		return null;
 	}
 
@@ -493,21 +402,13 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 			node.childrenAccept(this, data);
 			break;
 		case 2:
-			println("typeswitch(");
-			incrementIndent();
+			print("typeswitch(");
 			node.jjtGetChild(0).jjtAccept(this, data);
-			decrementIndent();
-			println(")");
-			println("case $fs:new");
-			incrementIndent();
-			print("as ");
+			print(")");
+			print(" case $fs:new as ");
 			node.jjtGetChild(1).jjtAccept(this, data);
-			println("return fn:true()");
-			decrementIndent();
-			println("default $fs:new");
-			incrementIndent();
-			println("return fn:false()");
-			decrementIndent();
+			print(" return fn:true()");
+			print(" default $fs:new return fn:false()");
 			break;
 		default:
 			throw new IllegalStateException("Cannot have more than 2 children!");
@@ -515,99 +416,74 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return null;
 	}
 
-	public Object visit(ASTIntegerLiteral node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
 	public Object visit(ASTIntersectExceptExpr node, Object data) {
-		visitOperatorExpression(node, 0, data);
-		return null;
-	}
-
-	public Object visit(ASTItemType node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
+		visitOperator(node, 0, data);
 		return null;
 	}
 
 	public Object visit(ASTMultiplicativeExpr node, Object data) {
-		visitOperatorExpression(node, 0, data);
-		return null;
-	}
-
-	public Object visit(ASTNameTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTNodeTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTOccurrenceIndicator node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
+		visitOperator(node, 0, data);
 		return null;
 	}
 
 	public Object visit(ASTOrExpr node, Object data) {
 		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 			if (i > 0) {
-				println();
-				println("or");
+				print(" or ");
 			}
-			Node child = node.jjtGetChild(i);
-			child.jjtAccept(this, data);
+			print("fn:boolean((");
+			node.jjtGetChild(i).jjtAccept(this, data);
+			print("))");
 		}
 		return null;
 	}
 
 	public Object visit(ASTParenthesizedExpr node, Object data) {
-		TODO(node);
+		print("(");
 		node.childrenAccept(this, data);
+		print(")");
 		return null;
+	}
+
+	private void visitPathExpr(ASTPathExpr node, int stepExprIndex, Object data) {
+		//
+		// Note: The AST needs to be in unabbreviated already, which will cause
+		// the following to not be scenarios we need to deal with:
+		//
+		// /
+		// / RelativeExpr
+		// // RelativeExpr
+		// // RelativeExpr / StepExpr
+		//
+		if (stepExprIndex == 0) {
+			node.jjtGetChild(stepExprIndex).jjtAccept(this, data);
+		} else {
+			print("fs:apply-ordering-mode(");
+			print("fs:distinct-doc-order-or-atomic-sequence(");
+			print("let $fs:sequence as node()* := ");
+			visitPathExpr(node, stepExprIndex - 1, data);
+			print(" return");
+			print(" let $fs:last := fn:count($fs:sequence) return");
+			print(" for $fs:dot at $fs:position in $fs:sequence return ");
+			node.jjtGetChild(stepExprIndex).jjtAccept(this, data);
+			print("))");
+		}
 	}
 
 	public Object visit(ASTPathExpr node, Object data) {
-		/*
-		if (node.isRoot()) {
-			// TODO Spec has extra set of parens when there appears to be a
-			// RelativePathExpr, is it needed?
-			println("(fn:root(self::node()) treat as document-node())");
-			if (node.jjtGetNumChildren() > 0) {
-				println("/");
-			}
-			if (node.getNumAxes() == 1) {
-				println(node.getAxis(0).toString() + "::node()");
-				println("/");
-			} else if (node.getNumAxes() > 1) {
-				throw new IllegalStateException(
-						"Cannot have more than 1 axis specified on a PathExpr!");
-			}
-		}
-		*/
-		TODO(node);
-		node.childrenAccept(this, data);
+		visitPathExpr(node, node.jjtGetNumChildren() - 1, data);
 		return null;
 	}
 
-	public Object visit(ASTPITest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
+	// TODO Continue from here...
 	public Object visit(ASTPredicate node, Object data) {
+		// TODO Cannot do Predicate without first doing Step
 		TODO(node);
 		node.childrenAccept(this, data);
 		return null;
 	}
 
+	// TODO Not done
 	public Object visit(ASTPredicateList node, Object data) {
 		TODO(node);
 		node.childrenAccept(this, data);
@@ -615,92 +491,95 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 	}
 
 	public Object visit(ASTQuantifiedExpr node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
+		for (int i = 0; i < (node.jjtGetNumChildren() - 1) / 2; i++) {
+			if (node.isExistential()) {
+				print("some ");
+			} else {
+				print("every ");
+			}
+			print("$");
+			node.jjtGetChild(i * 2).jjtAccept(this, data);
+			print(" in ");
+			node.jjtGetChild(i * 2 + 1).jjtAccept(this, data);
+		}
+		print(" satisfies ");
+		print("fn:boolean((");
+		node.jjtGetChild(node.jjtGetNumChildren() - 1).jjtAccept(this, data);
+		print("))");
 		return null;
 	}
 
 	public Object visit(ASTRangeExpr node, Object data) {
-		switch (node.jjtGetNumChildren()) {
-		case 1:
-			// Nothing to do
-			node.childrenAccept(this, data);
-			break;
-		case 2:
-			// Normalize to the fs:to function
-			println("fs:to((");
-			incrementIndent();
+		if (node.jjtGetNumChildren() > 1) {
+			print("fs:to((");
 			node.jjtGetChild(0).jjtAccept(this, data);
-			decrementIndent();
-			println("), (");
-			incrementIndent();
+			print("), (");
 			node.jjtGetChild(1).jjtAccept(this, data);
-			decrementIndent();
-			println(")");
-			break;
-		default:
-			throw new IllegalStateException("Cannot have more than 2 children!");
+			print("))");
+		} else {
+			node.childrenAccept(this, data);
 		}
 		return null;
 	}
 
 	public Object visit(ASTReverseAxis node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
+		AxisEnum axis = node.getAxis(0);
+		switch (axis) {
+		case PRECEDING:
+			print("ancestor-or-self::node()/preceding-sibling::node()/descendant-or-self::");
+			break;
+		case PRECEDING_SIBLING:
+			print("let $e := . return $e/parent::node()/child::");
+			break;
+		default:
+			print(axis);
+			print("::");
+			break;
+		}
 		return null;
 	}
 
-	public Object visit(ASTSchemaAttributeTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTSchemaElementTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTSequenceType node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
+	private Object visitNodeTestReverseAxis(ASTReverseAxis node, Object data) {
+		AxisEnum axis = node.getAxis(0);
+		switch (axis) {
+		case PRECEDING_SIBLING:
+			// Goes after the NodeTest
+			print("[.<<$e]");
+			break;
+		default:
+			break;
+		}
 		return null;
 	}
 
 	public Object visit(ASTSingleType node, Object data) {
-		TODO(node);
+		// Note: Optional indicator handled in CastExpr
 		node.childrenAccept(this, data);
 		return null;
 	}
 
 	public Object visit(ASTSlash node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
+		throw new IllegalStateException("AST must be unabbreviated!");
 	}
 
 	public Object visit(ASTSlashSlash node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
+		throw new IllegalStateException("AST must be unabbreviated!");
 	}
 
 	public Object visit(ASTStepExpr node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTStringLiteral node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTTextTest node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
+		// Nothing to do, unabbreviation of the XPath query should handled
+		// normalization
+		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+			Node child = node.jjtGetChild(i);
+			child.jjtAccept(this, data);
+			// Need a post processing step when we encounter a
+			// ReverseAxis/NodeTest pairing
+			if (child instanceof ASTNodeTest && i > 0
+					&& node.jjtGetChild(i - 1) instanceof ASTReverseAxis) {
+				visitNodeTestReverseAxis((ASTReverseAxis) node
+						.jjtGetChild(i - 1), data);
+			}
+		}
 		return null;
 	}
 
@@ -710,21 +589,13 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 			node.childrenAccept(this, data);
 			break;
 		case 2:
-			println("typeswitch(");
-			incrementIndent();
+			print("typeswitch(");
 			node.jjtGetChild(0).jjtAccept(this, data);
-			decrementIndent();
-			println(")");
-			println("case $fs:new");
-			incrementIndent();
-			print("as ");
+			print(")");
+			print(" case $fs:new as ");
 			node.jjtGetChild(1).jjtAccept(this, data);
-			println("return $fs:new");
-			decrementIndent();
-			println("default $fs:new");
-			incrementIndent();
-			println("return fn:error()");
-			decrementIndent();
+			print(" return $fs:new");
+			print(" default $fs:new return fn:error()");
 			break;
 		default:
 			throw new IllegalStateException("Cannot have more than 2 children!");
@@ -732,47 +603,21 @@ public class CoreXPath2ParserVisitor extends AbstractPrintVisitor implements
 		return null;
 	}
 
-	public Object visit(ASTTypeName node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
 	public Object visit(ASTUnaryExpr node, Object data) {
-		visitOperatorExpression(node, 0, data);
+		visitOperator(node, 0, data);
 		return null;
 	}
 
 	public Object visit(ASTUnionExpr node, Object data) {
-		visitOperatorExpression(node, 0, data);
-		return null;
-	}
-
-	public Object visit(ASTVarName node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTVarRef node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
-	}
-
-	public Object visit(ASTWildcard node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
+		visitOperator(node, 0, data);
 		return null;
 	}
 
 	public Object visit(ASTXPath node, Object data) {
 		// TODO How are constructors handled?
-		println("{");
-		incrementIndent();
+		print("{");
 		node.childrenAccept(this, data);
-		decrementIndent();
-		println("}");
+		print("}");
 		return null;
 	}
 
