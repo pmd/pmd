@@ -8,5 +8,5 @@ set JARPATH=%JARPATH%;%RWPATH%
 set OPTS=
 set MAIN_CLASS=net.sourceforge.pmd.PMD
 
-java %OPTS% -cp %PMDJAR%;%JARPATH%;%CLASSPATH% %MAIN_CLASS% %*
+java %OPTS% -cp "%PMDJAR%;%JARPATH%;%CLASSPATH%" %MAIN_CLASS% %*
 
