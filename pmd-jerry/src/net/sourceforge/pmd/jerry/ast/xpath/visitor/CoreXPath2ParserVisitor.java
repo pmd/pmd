@@ -351,7 +351,7 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 				print(" in ");
 				node.jjtGetChild(varIndex * 2 + 1).jjtAccept(this, data);
 				print(" ");
-				visitForExpr(node, varIndex+1, data);
+				visitForExpr(node, varIndex + 1, data);
 			} else {
 				print("return ");
 				node.jjtGetChild(node.jjtGetNumChildren() - 1).jjtAccept(this,
@@ -539,7 +539,7 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 		return null;
 	}
 
-	private Object visitNodeTestReverseAxis(ASTReverseAxis node, Object data) {
+	private void visitNodeTestReverseAxis(ASTReverseAxis node) {
 		AxisEnum axis = node.getAxis(0);
 		switch (axis) {
 		case PRECEDING_SIBLING:
@@ -549,7 +549,6 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 		default:
 			break;
 		}
-		return null;
 	}
 
 	public Object visit(ASTSingleType node, Object data) {
@@ -577,7 +576,7 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 			if (child instanceof ASTNodeTest && i > 0
 					&& node.jjtGetChild(i - 1) instanceof ASTReverseAxis) {
 				visitNodeTestReverseAxis((ASTReverseAxis) node
-						.jjtGetChild(i - 1), data);
+						.jjtGetChild(i - 1));
 			}
 		}
 		return null;

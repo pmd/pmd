@@ -1,7 +1,5 @@
 package net.sourceforge.pmd.jerry.ast.xpath.visitor;
 
-import net.sourceforge.pmd.jerry.ast.xpath.Node;
-
 public abstract class AbstractPrintVisitor {
 
 	public static final String EOL = System.getProperty("line.separator");

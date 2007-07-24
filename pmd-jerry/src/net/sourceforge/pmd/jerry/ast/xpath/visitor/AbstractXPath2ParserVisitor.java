@@ -6,7 +6,6 @@ import net.sourceforge.pmd.jerry.ast.xpath.ASTAttribNameOrWildcard;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeDeclaration;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeName;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTAttributeTest;
-import net.sourceforge.pmd.jerry.ast.xpath.ASTCastExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTCastableExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTCommentTest;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTDecimalLiteral;
@@ -70,13 +69,10 @@ public abstract class AbstractXPath2ParserVisitor extends AbstractPrintVisitor
 	// exactly as expected.
 	protected Node findOnly(Node node, Class nodeType, int childCount) {
 		Node found = null;
-		if (node != null) {
-			if (node.jjtGetNumChildren() == childCount) {
-				for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-					if (nodeType.isAssignableFrom(node.jjtGetChild(i)
-							.getClass())) {
-						found = node.jjtGetChild(i);
-					}
+		if (node != null && node.jjtGetNumChildren() == childCount) {
+			for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+				if (nodeType.isAssignableFrom(node.jjtGetChild(i).getClass())) {
+					found = node.jjtGetChild(i);
 				}
 			}
 		}
@@ -223,7 +219,7 @@ public abstract class AbstractXPath2ParserVisitor extends AbstractPrintVisitor
 		}
 		return null;
 	}
-	
+
 	public final Object visit(ASTNodeTest node, Object data) {
 		// Nothing to do
 		node.childrenAccept(this, data);
