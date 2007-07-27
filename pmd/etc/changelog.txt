@@ -3,6 +3,7 @@
 July 20, 2007 - 4.0
 Fixed bug 1697397 - fixed false positives in ClassCastExceptionWithToArray
 Fixed bug 1728789 - removed redundant rule AvoidNonConstructorMethodsWithClassName; MethodWithSameNameAsEnclosingClass is faster and does the same thing.
+Fixed bug 1744065 - fixed false positive in BooleanInstantiation when custom Boolean is used
 
 July 12, 2007 - 4.0rc2:
 New rules:
