@@ -749,7 +749,7 @@ public final class Bar {
  ]]>
          </example>
        </rule>
-       
+
      <rule name="AssignmentToNonFinalStatic"
            message="Possible unsafe assignment to a non-final static field in a constructor."
            class="net.sourceforge.pmd.rules.design.AssignmentToNonFinalStatic"
@@ -1078,9 +1078,14 @@ class Foo {
       <property name="xpath">
           <value>
               <![CDATA[
-//PrimaryExpression[PrimaryPrefix[Name[ends-with(@Image, '.equals')]][..//Literal]]
-    [not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
-    [not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
+//PrimaryExpression[
+	PrimaryPrefix[Name
+		[ends-with(@Image, '.equals')]
+		]
+	[../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal]
+]
+[not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
+[not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
           ]]>
           </value>
       </property>
@@ -1132,7 +1137,7 @@ See Effective Java, item 48.
         </description>
         <priority>3</priority>
         <properties>
-            <property name="checkNonStaticMethods" 
+            <property name="checkNonStaticMethods"
                 description="Do not set this to false and checkNonStaticFields to true">
                 <value>true</value>
             </property>
@@ -1253,8 +1258,8 @@ public Foo() {
       class="net.sourceforge.pmd.rules.design.UnsynchronizedStaticDateFormatter"
       externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnsynchronizedStaticDateFormatter">
       <description>
-SimpleDateFormat is not synchronized. Sun recomends separate format instances 
-for each thread. If multiple threads must access a static formatter, the 
+SimpleDateFormat is not synchronized. Sun recomends separate format instances
+for each thread. If multiple threads must access a static formatter, the
 formatter must be synchronized either on method or block level.
       </description>
       <priority>3</priority>
@@ -1278,7 +1283,7 @@ public class Foo {
       class="net.sourceforge.pmd.rules.design.PreserveStackTrace"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PreserveStackTrace">
       <description>
-Throwing a new exception from a catch block without passing the original exception into the 
+Throwing a new exception from a catch block without passing the original exception into the
 new Exception will cause the true stack trace to be lost, and can make it difficult to
 debug effectively.
       </description>
@@ -1304,8 +1309,8 @@ public class Foo {
     ]]>
       </example>
     </rule>
-    
-    <rule name="UseCollectionIsEmpty" 
+
+    <rule name="UseCollectionIsEmpty"
          message="Substitute calls to size() == 0 (or size() != 0) with calls to isEmpty()"
          class="net.sourceforge.pmd.rules.design.UseCollectionIsEmpty"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseCollectionIsEmpty">

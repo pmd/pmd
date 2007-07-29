@@ -41,4 +41,40 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Test case from bug [1472195] - PositionLiteralsFirstInComparisons give many false positives
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo
+{
+	public void bug()
+	{
+		if (number.equals(new BigDecimal("123"))) {}
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Test case from bug [1472195] - PositionLiteralsFirstInComparisons give many false positives
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo
+{
+	public void testMethod(String str)
+	{
+		if (str.equals(getAnotherString("abc"))){}
+  	}
+
+  	private String getAnotherString(String str)
+	{
+		return "xyz";
+	}
+}
+     ]]></code>
+    </test-code>
+
 </test-data>
