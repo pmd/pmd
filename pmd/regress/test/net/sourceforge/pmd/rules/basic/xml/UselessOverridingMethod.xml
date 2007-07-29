@@ -61,7 +61,7 @@ call super with different argument 3
         <code><![CDATA[
 public class Buz{
  public String foo(String bar) {
-    super.foo("" + bar); 
+    super.foo("" + bar);
  }
 }
      ]]></code>
@@ -174,7 +174,7 @@ call super with different argument 4
         <code><![CDATA[
 public class Buz{
  public String foo(Object bar) {
-    super.foo(this); 
+    super.foo(this);
  }
 }
      ]]></code>
@@ -214,6 +214,20 @@ Constructors are OK
 public class Foo extends Bar {
 public Foo(String bar) {
     super(bar);
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Should ignore clone implementation ( see bug 1522517)
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo extends Bar
+{
+public Object clone() throws CloneNotSupportedException {
+	return super.clone();
 }
 }
      ]]></code>
