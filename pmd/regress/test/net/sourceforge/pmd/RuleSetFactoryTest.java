@@ -100,7 +100,7 @@ public class RuleSetFactoryTest {
         Set<String> expected = new HashSet<String>();
         expected.add("MockRuleName1");
         expected.add("MockRuleName2");
-        for (Iterator i = rs.getRules().iterator(); i.hasNext();) {
+        for (Iterator<Rule> i = rs.getRules().iterator(); i.hasNext();) {
             assertTrue(expected.contains(((Rule) i.next()).getName()));
         }
     }
