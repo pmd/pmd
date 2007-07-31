@@ -101,7 +101,7 @@ public class RuleSetFactoryTest {
         expected.add("MockRuleName1");
         expected.add("MockRuleName2");
         for (Iterator<Rule> i = rs.getRules().iterator(); i.hasNext();) {
-            assertTrue(expected.contains(((Rule) i.next()).getName()));
+            assertTrue(expected.contains(i.next().getName()));
         }
     }
 
