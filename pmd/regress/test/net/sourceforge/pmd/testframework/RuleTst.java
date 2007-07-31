@@ -37,7 +37,7 @@ import javax.xml.parsers.ParserConfigurationException;
  * Advanced methods for test cases
  */
 public abstract class RuleTst {
-    public static final SourceType DEFAULT_SOURCE_TYPE = SourceType.JAVA_14;
+    public static final SourceType DEFAULT_SOURCE_TYPE = SourceType.JAVA_15;
 
     /**
      * Find a rule in a certain ruleset by name
