@@ -18,6 +18,7 @@ public class ImportsRulesTest extends SimpleAggregatorTst {
         rules.add(findRule("imports", "DontImportJavaLang"));
         rules.add(findRule("imports", "DuplicateImports"));
         rules.add(findRule("imports", "ImportFromSamePackage"));
+        rules.add(findRule("imports", "TooManyStaticImports"));
         rules.add(findRule("imports", "UnusedImports"));
     }
 

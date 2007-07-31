@@ -25,6 +25,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         rules.add(findRule("design", "AvoidReassigningParameters"));
         rules.add(findRule("design", "AvoidSynchronizedAtMethodLevel"));
         rules.add(findRule("design", "BadComparison"));
+        rules.add(findRule("design", "ClassWithOnlyPrivateConstructorsShouldBeFinal"));
         rules.add(findRule("design", "CloseResource"));
         rules.add(findRule("design", "CompareObjectsWithEquals"));
         rules.add(findRule("design", "DefaultLabelNotLastInSwitchStmt"));

@@ -17,6 +17,7 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         rules.add(findRule("controversial", "AssignmentInOperand"));
         rules.add(findRule("controversial", "AtLeastOneConstructor"));
+        rules.add(findRule("controversial", "AvoidFinalLocalVariable"));
         rules.add(findRule("controversial", "BooleanInversion"));
         rules.add(findRule("controversial", "CallSuperInConstructor"));
         rules.add(findRule("controversial", "DataflowAnomalyAnalysis"));

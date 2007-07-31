@@ -394,13 +394,36 @@ public class Foo {
 	 int buz = 5;
 	 buz = 6; // redefinition of buz -> dd-anomaly
 	 foo(buz);
-	 buz = 2; 
+	 buz = 2;
     } // buz is undefined when leaving scope -> du-anomaly
 }
 ]]>
           </example>
         </rule>
 
+	<rule 	name="AvoidFinalLocalVariable"
+        	class="net.sourceforge.pmd.rules.XPathRule"
+        	message="Avoid using final local variables, turn them into fields"
+        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidFinalLocalVariable">
+	        <description><![CDATA[
+Avoid using final local variables, turn them into fields.
+         ]]></description>
+            <priority>3</priority>
+	        <properties>
+	            <property name="xpath">
+	                <value><![CDATA[
+//LocalVariableDeclaration[@Final = 'true']
+	             ]]></value>
+	            </property>
+	        </properties>
+	        <example><![CDATA[
+public class MyClass {
+    public void foo() {
+        final String finalLocalVariable;
+    }
+}
+	     ]]></example>
+    </rule>
 
 </ruleset>
 

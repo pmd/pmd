@@ -255,4 +255,75 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="DoNotCallSystemExit"
+    	message="System.exit() should not be used in J2EE/JEE apps"
+    	class="net.sourceforge.pmd.rules.XPathRule"
+    	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#DoNotCallSystemExit">
+    	<description><![CDATA[
+Web applications should not call System.exit(), since only the web container or the 
+application server should stop the JVM.
+     ]]></description>
+    	<priority>3</priority>
+    	<properties>
+    		<property name="xpath">
+    			<value><![CDATA[
+//Name[starts-with(@Image,'System.exit')]	
+    		]]></value>
+    		</property>
+    	</properties>
+    	<example>
+    		<![CDATA[
+public class Foo {
+    public void bar() {
+        // NEVER DO THIS IN A APP SERVER !!!
+        System.exit(0);
+    }
+}
+     ]]></example>
+    </rule>
+
+    <rule name="StaticEJBFieldShouldBeFinal"
+    	message="EJB's shouldn't have non-final static fields"
+    	class="net.sourceforge.pmd.rules.XPathRule"
+    	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#StaticEJBFieldShouldBeFinal">
+    	<description>
+According to the J2EE specification (p.494), an EJB should not have any static fields 
+with write access. However, static read only fields are allowed. This ensures proper 
+behavior especially when instances are distributed by the container on several JREs.
+    	</description>
+    	<priority>3</priority>
+    	<properties>
+    		<property name="xpath">
+    			<value><![CDATA[
+//ClassOrInterfaceDeclaration[
+    (
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'SessionBean')])
+    or
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBHome')])
+    or
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalObject')])
+    or
+    (./ImplementsList/ClassOrInterfaceType[ends-with(@Image,'EJBLocalHome')])
+    or
+    (./ExtendsList/ClassOrInterfaceType[ends-with(@Image,'EJBObject')])
+    )
+    and
+    (./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration[
+         (./FieldDeclaration[@Static = 'true'])
+         and
+         (./FieldDeclaration[@Final = 'false'])
+    ])
+]
+    		 ]]></value>
+    		</property>
+    	</properties>
+    	<example><![CDATA[
+public class SomeEJB extends EJBObject implements EJBLocalHome {
+	private static int BAD_STATIC_FIELD;
+
+	private static final int GOOD_STATIC_FIELD;
+}
+     ]]></example>
+    </rule>
+
 </ruleset>

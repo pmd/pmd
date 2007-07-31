@@ -1,4 +1,9 @@
 ????, 2007 - 4.1:
+New rules:
+	Controversial ruleset: AvoidFinalLocalVariable
+	Design ruleset: ClassWithOnlyPrivateConstructorsShouldBeFinal
+	Imports ruleset: TooManyStaticImports
+	J2ee ruleset: DoNotCallSystemExit, StaticEJBFieldShouldBeFinal
 Fixed bug 1472195 - fixed false positives in PositionLiteralsFirstInComparisons when the string is used as a parameter
 Fixed bug 1522517 - fixed false positive in UselessOverridingMethod for clone method 
 Fixed bug 1744065 - fixed false positive in BooleanInstantiation when a custom Boolean is used

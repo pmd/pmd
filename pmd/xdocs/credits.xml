@@ -56,7 +56,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
-            <li>Romain Pelisse - Various bugfix patches, restructured CPD tokenizers, patch to remove redundant rule, added Fortran tokenizer, DoNotExtendJavaLangError, JspEncoding, MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention</li>
+            <li>Romain Pelisse - Various bugfix patches, restructured CPD tokenizers, patch to remove redundant rule, added Fortran tokenizer, DoNotExtendJavaLangError, JspEncoding, MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention, AvoidFinalLocalVariable, ClassWithOnlyPrivateConstructorsShouldBeFinal, TooManyStaticImports, DoNotCallSystemExit, StaticEJBFieldShouldBeFinal</li>
             <li>Thomas Steininger - Noticed redundant rule</li>
             <li>Thomas Leplus - Rewrote UselessStringValueOf, nice patch for ClassCastExceptionWithToArray</li>
             <li>Paul Sundling - A nice documentation patch for ruleset links</li>

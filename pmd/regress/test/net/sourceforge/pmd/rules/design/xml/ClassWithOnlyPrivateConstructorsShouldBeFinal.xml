@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Simple violation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	private Foo() { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, class is final
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public final class Foo {
+	private Foo() { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+One public constructor, not required to be final
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	private Foo() { }
+
+	public Foo(String param) { }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, subclass using the private constructor
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Foo() { }
+
+    public static class Bar extends Foo {
+        public Bar() { }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, subclass using the private constructor of another subclass
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() { }
+
+    public static class Bar {
+        private Bar() { }
+    }
+
+    public static class Barbie extends Bar {
+        public Barbie() { }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, two classes 
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private Foo() { }
+}
+public class Bar extends Foo {
+    public Bar() { }
+}
+     ]]></code>
+    </test-code>
+</test-data>

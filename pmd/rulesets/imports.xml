@@ -86,7 +86,35 @@ public class Foo {}
      </example>
      </rule>
 
+	<rule	name="TooManyStaticImports"
+        	class="net.sourceforge.pmd.rules.XPathRule"
+        	message="Too many static imports may lead to messy code"
+       		externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#TooManyStaticImports">
+       		<description><![CDATA[
+If you overuse the static import feature, it can make your program unreadable and 
+unmaintainable, polluting its namespace with all the static members you import. 
+Readers of your code (including you, a few months after you wrote it) will not know 
+which class a static member comes from (Sun 1.5 Language Guide).
+		 ]]></description>
+			<priority>3</priority>
+       		<properties>
+	            <property name="xpath">
+	                <value><![CDATA[
+//TypeDeclaration[count(//ImportDeclaration[@Static = 'true']) > $maximumStaticImports]
+	             ]]></value>
+	            </property>
+	            <property name="maximumStaticImports" 
+	            description="All static imports can be disallowed by setting this to 0">
+	            	<value>4</value>
+	            </property>
+	        </properties>
+    	 	<example><![CDATA[
+import static Lennon;
+import static Ringo;
+import static George;
+import static Paul;
+import static Yoko; // Too much !
+		  ]]></example>
+    </rule>
+
 </ruleset>
-
-
-

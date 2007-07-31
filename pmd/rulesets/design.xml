@@ -1340,4 +1340,31 @@ Comparing the value of size() to 0 merely duplicates existing behavior.
       </example>
     </rule>
 
+    <rule name="ClassWithOnlyPrivateConstructorsShouldBeFinal"
+          class="net.sourceforge.pmd.rules.XPathRule"
+          message="A class which only has private constructors should be final"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ClassWithOnlyPrivateConstructorsShouldBeFinal">
+        <description>
+A class with only private constructors should be final, unless the private 
+constructor is called by a inner class.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+TypeDeclaration[count(../TypeDeclaration) = 1]/ClassOrInterfaceDeclaration
+[@Final = 'false']
+[count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Private = 'true']) >= 1 ]
+[count(./ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration[@Public = 'true'])  = 0 ]
+[not(.//ClassOrInterfaceDeclaration)]
+             ]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+public class Foo {  //Should be final
+    private Foo() { }
+}
+     ]]></example>
+    </rule>
+
 </ruleset>
