@@ -133,7 +133,7 @@ TOKEN :
 	|
 		<OPEN_PAREN : "(" > : DEFAULT
 	|
-		<CLOSE_PARAN : ")" > : DEFAULT
+		<CLOSE_PAREN : ")" > : DEFAULT
 	|
 		<OPEN_BRACKET : "[" > : DEFAULT
 	|
@@ -147,11 +147,11 @@ TOKEN :
 	|
 		<PLUS : "+" > : DEFAULT
 	|
-		<LESS_THAN : "<" > : DEFAULT
+		<LESSER_THAN : "<" > : DEFAULT
 	|
 		<PRECEEDS_OPERATOR : "<<" > : DEFAULT
 	|
-		<LESS_THAN_EQUAL : "<=" > : DEFAULT
+		<LESSER_THAN_EQUAL : "<=" > : DEFAULT
 	|
 		<EQUAL : "=" > : DEFAULT
 	|
@@ -262,7 +262,7 @@ TOKEN :
 	|
 		<KEYWORD_PRECEDING : "preceding" > : DELIMITING
 	|
-		<KEYWORD_PRECEDING_SIBLIING : "preceding-sibling" > : DELIMITING
+		<KEYWORD_PRECEDING_SIBLING : "preceding-sibling" > : DELIMITING
 	|
 		<KEYWORD_PROCESSING_INSTRUCTION : "processing-instruction" > : DELIMITING
 	|
@@ -803,7 +803,7 @@ void Expr() :
 {
 }
 {
-	ExprSingle() ("," ExprSingle())*
+	ExprSingle() (<COMMA> ExprSingle())*
 }
 
 // [3] http://www.w3.org/TR/xpath20/#doc-xpath-ExprSingle
@@ -825,7 +825,7 @@ void ForExpr() :
 {
 }
 {
-	SimpleForClause() "return" ExprSingle()
+	SimpleForClause() <KEYWORD_RETURN> ExprSingle()
 }
 
 // [5] http://www.w3.org/TR/xpath20/#prod-xpath-SimpleForClause
@@ -833,7 +833,7 @@ void SimpleForClause() #void :
 {
 }
 {
-	"for" "$" VarName() "in" ExprSingle() ("," "$" VarName() "in" ExprSingle())*
+	<KEYWORD_FOR> <DOLLAR> VarName() <KEYWORD_IN> ExprSingle() (<COMMA> <DOLLAR> VarName() <KEYWORD_IN> ExprSingle())*
 }
 
 // [6] http://www.w3.org/TR/xpath20/#doc-xpath-QuantifiedExpr
@@ -841,7 +841,7 @@ void QuantifiedExpr() :
 {
 }
 {
-	("some" { jjtThis.setExistential(true); } | "every" { jjtThis.setExistential(false); }) "$" VarName() "in" ExprSingle() ("," "$" VarName() "in" ExprSingle())* "satisfies" ExprSingle()
+	(<KEYWORD_SOME> { jjtThis.setExistential(true); } | <KEYWORD_EVERY> { jjtThis.setExistential(false); }) <DOLLAR> VarName() <KEYWORD_IN> ExprSingle() (<COMMA> <DOLLAR> VarName() <KEYWORD_IN> ExprSingle())* <KEYWORD_SATISFIES> ExprSingle()
 }
 
 // [7] http://www.w3.org/TR/xpath20/#doc-xpath-IfExpr
@@ -849,7 +849,7 @@ void IfExpr() :
 {
 }
 {
-	"if" "(" Expr() ")" "then" ExprSingle() "else" ExprSingle()
+	<KEYWORD_IF> <OPEN_PAREN> Expr() <CLOSE_PAREN> <KEYWORD_THEN> ExprSingle() <KEYWORD_ELSE> ExprSingle()
 }
 
 // [8] http://www.w3.org/TR/xpath20/#doc-xpath-OrExpr
@@ -857,7 +857,7 @@ void OrExpr() #OrExpr(>1) :
 {
 }
 {
-	AndExpr() ( "or" AndExpr() )*
+	AndExpr() ( <KEYWORD_OR> AndExpr() )*
 }
 
 // [9] http://www.w3.org/TR/xpath20/#doc-xpath-AndExpr
@@ -865,7 +865,7 @@ void AndExpr() #AndExpr(>1) :
 {
 }
 {
-	ComparisonExpr() ( "and" ComparisonExpr() )*
+	ComparisonExpr() ( <KEYWORD_AND> ComparisonExpr() )*
 }
 
 // [10] http://www.w3.org/TR/xpath20/#doc-xpath-ComparisonExpr
@@ -881,7 +881,7 @@ void RangeExpr() #RangeExpr(>1):
 {
 }
 {
-	AdditiveExpr() ( "to" AdditiveExpr() )?
+	AdditiveExpr() ( <KEYWORD_TO> AdditiveExpr() )?
 }
 
 // [12] http://www.w3.org/TR/xpath20/#doc-xpath-AdditiveExpr
@@ -892,9 +892,9 @@ void AdditiveExpr() #AdditiveExpr(>1) :
 	MultiplicativeExpr()
 	(
 		(
-				"+" { jjtThis.addOperator(OperatorEnum.ADDITION); }
+				<PLUS> { jjtThis.addOperator(OperatorEnum.ADDITION); }
 			|
-				"-" { jjtThis.addOperator(OperatorEnum.SUBTRACTION); }
+				<MINUS> { jjtThis.addOperator(OperatorEnum.SUBTRACTION); }
 		)
 		MultiplicativeExpr()
 	)*
@@ -908,13 +908,13 @@ void MultiplicativeExpr() #MultiplicativeExpr(>1) :
 	UnionExpr()
 	(
 		(
-				"*" { jjtThis.addOperator(OperatorEnum.MULTIPLICATION); }
+				<STAR> { jjtThis.addOperator(OperatorEnum.MULTIPLICATION); }
 			|
-				"div" { jjtThis.addOperator(OperatorEnum.DIVISION); }
+				<KEYWORD_DIV> { jjtThis.addOperator(OperatorEnum.DIVISION); }
 			|
-				"idiv" { jjtThis.addOperator(OperatorEnum.INTEGER_DIVISION); }
+				<KEYWORD_IDIV> { jjtThis.addOperator(OperatorEnum.INTEGER_DIVISION); }
 			|
-				"mod" { jjtThis.addOperator(OperatorEnum.MODULUS); }
+				<KEYWORD_MOD> { jjtThis.addOperator(OperatorEnum.MODULUS); }
 		)
 		UnionExpr()
 	)*
@@ -928,9 +928,9 @@ void UnionExpr() #UnionExpr(>1) :
 	IntersectExceptExpr()
 	(
 		(
-				"union" { jjtThis.addOperator(OperatorEnum.SEQUENCE_UNION); }
+				<KEYWORD_UNION> { jjtThis.addOperator(OperatorEnum.SEQUENCE_UNION); }
 			|
-				"|" { jjtThis.addOperator(OperatorEnum.SEQUENCE_UNION); }
+				<PIPE> { jjtThis.addOperator(OperatorEnum.SEQUENCE_UNION); }
 		)
 		IntersectExceptExpr()
 	)*
@@ -944,9 +944,9 @@ void IntersectExceptExpr() #IntersectExceptExpr(>1) :
 	InstanceofExpr()
 	(
 		(
-				"intersect" { jjtThis.addOperator(OperatorEnum.SEQUENCE_INTERSECT); }
+				<KEYWORD_INTERSECT> { jjtThis.addOperator(OperatorEnum.SEQUENCE_INTERSECT); }
 			|
-				"except" { jjtThis.addOperator(OperatorEnum.SEQUENCE_EXCEPT); }
+				<KEYWORD_EXCEPT> { jjtThis.addOperator(OperatorEnum.SEQUENCE_EXCEPT); }
 		)
 		InstanceofExpr()
 	)*
@@ -957,7 +957,7 @@ void InstanceofExpr() #InstanceofExpr(>1) :
 {
 }
 {
-	TreatExpr() ( "instance" "of" SequenceType() )?
+	TreatExpr() ( <KEYWORD_INSTANCE> <KEYWORD_OF> SequenceType() )?
 }
 
 // [17] http://www.w3.org/TR/xpath20/#doc-xpath-TreatExpr
@@ -965,7 +965,7 @@ void TreatExpr() #TreatExpr(>1) :
 {
 }
 {
-	CastableExpr() ( "treat" "as" SequenceType() )?
+	CastableExpr() ( <KEYWORD_TREAT> <KEYWORD_AS> SequenceType() )?
 }
 
 // [18] http://www.w3.org/TR/xpath20/#doc-xpath-CastableExpr
@@ -973,7 +973,7 @@ void CastableExpr() #CastableExpr(>1) :
 {
 }
 {
-	CastExpr() ( "castable" "as" SingleType() )?
+	CastExpr() ( <KEYWORD_CASTABLE> <KEYWORD_AS> SingleType() )?
 }
 
 // [19] http://www.w3.org/TR/xpath20/#doc-xpath-CastExpr
@@ -981,7 +981,7 @@ void CastExpr() #CastExpr(>1) :
 {
 }
 {
-	UnaryExpr() ( "cast" "as" SingleType() )?
+	UnaryExpr() ( <KEYWORD_CAST> <KEYWORD_AS> SingleType() )?
 }
 
 // [20] http://www.w3.org/TR/xpath20/#doc-xpath-UnaryExpr
@@ -991,9 +991,9 @@ void UnaryExpr() #UnaryExpr(keepUnaryExpr):
 }
 {
 	(
-			"-" { keepUnaryExpr = true; jjtThis.addOperator(OperatorEnum.UNARY_MINUS); }
+			<MINUS> { keepUnaryExpr = true; jjtThis.addOperator(OperatorEnum.UNARY_MINUS); }
 		|
-			"+" { keepUnaryExpr = true; jjtThis.addOperator(OperatorEnum.UNARY_PLUS); }
+			<PLUS> { keepUnaryExpr = true; jjtThis.addOperator(OperatorEnum.UNARY_PLUS); }
 	)*
 	ValueExpr()
 }
@@ -1011,17 +1011,17 @@ void GeneralComp(ASTComparisonExpr parent) #void :
 {
 }
 {
-		"=" { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_EQUAL); }
+		<EQUAL> { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_EQUAL); }
 	|
-		"!=" { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_NOT_EQUAL); }
+		<BANG_EQUAL> { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_NOT_EQUAL); }
 	|
-		"<" { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_LESSER_THAN); }
+		<LESSER_THAN> { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_LESSER_THAN); }
 	|
-		"<=" { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_LESSER_THAN_OR_EQUAL); }
+		<LESSER_THAN_EQUAL> { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_LESSER_THAN_OR_EQUAL); }
 	|
-		">" { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_GREATER_THAN); }
+		<GREATER_THAN> { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_GREATER_THAN); }
 	|
-		">=" { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_GREATER_THAN_OR_EQUAL); }
+		<GREATER_THAN_EQUAL> { parent.addOperator(OperatorEnum.GENERAL_COMPARISION_GREATER_THAN_OR_EQUAL); }
 }
 
 // [23] http://www.w3.org/TR/xpath20/#doc-xpath-ValueComp
@@ -1029,17 +1029,17 @@ void ValueComp(ASTComparisonExpr parent) #void :
 {
 }
 {
-		"eq" { parent.addOperator(OperatorEnum.VALUE_COMPARISION_EQUAL); }
+		<KEYWORD_EQ> { parent.addOperator(OperatorEnum.VALUE_COMPARISION_EQUAL); }
 	|
-		"ne" { parent.addOperator(OperatorEnum.VALUE_COMPARISION_NOT_EQUAL); }
+		<KEYWORD_NE> { parent.addOperator(OperatorEnum.VALUE_COMPARISION_NOT_EQUAL); }
 	|
-		"lt" { parent.addOperator(OperatorEnum.VALUE_COMPARISION_LESSER_THAN); }
+		<KEYWORD_LT> { parent.addOperator(OperatorEnum.VALUE_COMPARISION_LESSER_THAN); }
 	|
-		"le" { parent.addOperator(OperatorEnum.VALUE_COMPARISION_LESSER_THAN_OR_EQUAL); }
+		<KEYWORD_LE> { parent.addOperator(OperatorEnum.VALUE_COMPARISION_LESSER_THAN_OR_EQUAL); }
 	|
-		"gt" { parent.addOperator(OperatorEnum.VALUE_COMPARISION_GREATER_THAN); }
+		<KEYWORD_GT> { parent.addOperator(OperatorEnum.VALUE_COMPARISION_GREATER_THAN); }
 	|
-		"ge" { parent.addOperator(OperatorEnum.VALUE_COMPARISION_GREATER_THAN_OR_EQUAL); }
+		<KEYWORD_GE> { parent.addOperator(OperatorEnum.VALUE_COMPARISION_GREATER_THAN_OR_EQUAL); }
 }
 
 // [24] http://www.w3.org/TR/xpath20/#doc-xpath-NodeComp
@@ -1047,11 +1047,11 @@ void NodeComp(ASTComparisonExpr parent) #void :
 {
 }
 {
-		"is" { parent.addOperator(OperatorEnum.NODE_COMPARISION_IS); }
+		<KEYWORD_IS> { parent.addOperator(OperatorEnum.NODE_COMPARISION_IS); }
 	|
-		"<<" { parent.addOperator(OperatorEnum.NODE_COMPARISION_PRECEEDS); }
+		<PRECEEDS_OPERATOR> { parent.addOperator(OperatorEnum.NODE_COMPARISION_PRECEEDS); }
 	|
-		">>" { parent.addOperator(OperatorEnum.NODE_COMPARISION_FOLLOWS); }
+		<FOLLOWS_OPERATOR> { parent.addOperator(OperatorEnum.NODE_COMPARISION_FOLLOWS); }
 }
 
 // [25] http://www.w3.org/TR/xpath20/#doc-xpath-PathExpr
@@ -1059,9 +1059,9 @@ void PathExpr() #PathExpr(>1) :
 {
 }
 {
-		("/" #Slash(true) (LOOKAHEAD(2) RelativePathExpr())?)
+		(<SLASH> #Slash(true) (LOOKAHEAD(2) RelativePathExpr())?)
 	|
-		("//" #SlashSlash(true) RelativePathExpr())
+		(<SLASH_SLASH> #SlashSlash(true) RelativePathExpr())
 	|
 		RelativePathExpr()
 	// TODO
@@ -1076,9 +1076,9 @@ void RelativePathExpr() #void :
 	StepExpr()
 	(
 		(
-				"/"
+				<SLASH>
 			|
-				"//" #SlashSlash(true)
+				<SLASH_SLASH> #SlashSlash(true)
 		)
 		StepExpr()
 	)*
@@ -1113,21 +1113,21 @@ void ForwardAxis() :
 {
 }
 {
-		("child" { jjtThis.addAxis(AxisEnum.CHILD); } "::")
+		(<KEYWORD_CHILD> { jjtThis.addAxis(AxisEnum.CHILD); } <COLON_COLON>)
 	|
-		("descendant" { jjtThis.addAxis(AxisEnum.DESCENDANT); } "::")
+		(<KEYWORD_DESCENDANT> { jjtThis.addAxis(AxisEnum.DESCENDANT); } <COLON_COLON>)
 	|
-		("attribute" { jjtThis.addAxis(AxisEnum.ATTRIBUTE); } "::")
+		(<KEYWORD_ATTRIBUTE> { jjtThis.addAxis(AxisEnum.ATTRIBUTE); } <COLON_COLON>)
 	|
-		("self" { jjtThis.addAxis(AxisEnum.SELF); } "::")
+		(<KEYWORD_SELF> { jjtThis.addAxis(AxisEnum.SELF); } <COLON_COLON>)
 	|
-		("descendant-or-self" { jjtThis.addAxis(AxisEnum.DESCENDANT_OR_SELF); } "::")
+		(<KEYWORD_DESCENDANT_OR_SELF> { jjtThis.addAxis(AxisEnum.DESCENDANT_OR_SELF); } <COLON_COLON>)
 	|
-		("following-sibling" { jjtThis.addAxis(AxisEnum.FOLLOWING_SIBLING); } "::")
+		(<KEYWORD_FOLLOWING_SIBLING> { jjtThis.addAxis(AxisEnum.FOLLOWING_SIBLING); } <COLON_COLON>)
 	|
-		("following" { jjtThis.addAxis(AxisEnum.FOLLOWING); } "::")
+		(<KEYWORD_FOLLOWING> { jjtThis.addAxis(AxisEnum.FOLLOWING); } <COLON_COLON>)
 	|
-		("namespace" { jjtThis.addAxis(AxisEnum.NAMESPACE); } "::")
+		(<KEYWORD_NAMESPACE> { jjtThis.addAxis(AxisEnum.NAMESPACE); } <COLON_COLON>)
 }
 
 // [31] http://www.w3.org/TR/xpath20/#doc-xpath-AbbrevForwardStep
@@ -1135,7 +1135,7 @@ void AbbrevForwardStep() :
 {
 }
 {
-	("@" { jjtThis.addAxis(AxisEnum.ATTRIBUTE); } )? NodeTest()
+	(<AT> { jjtThis.addAxis(AxisEnum.ATTRIBUTE); } )? NodeTest()
 }
 
 // [32] http://www.w3.org/TR/xpath20/#doc-xpath-ReverseStep
@@ -1153,15 +1153,15 @@ void ReverseAxis() :
 {
 }
 {
-		("parent" { jjtThis.addAxis(AxisEnum.PARENT); } "::")
+		(<KEYWORD_PARENT> { jjtThis.addAxis(AxisEnum.PARENT); } <COLON_COLON>)
 	|
-		("ancestor" { jjtThis.addAxis(AxisEnum.ANCESTOR); } "::")
+		(<KEYWORD_ANCESTOR> { jjtThis.addAxis(AxisEnum.ANCESTOR); } <COLON_COLON>)
 	|
-		("preceding-sibling" { jjtThis.addAxis(AxisEnum.PRECEDING_SIBLING); } "::")
+		(<KEYWORD_PRECEDING_SIBLING> { jjtThis.addAxis(AxisEnum.PRECEDING_SIBLING); } <COLON_COLON>)
 	|
-		("preceding" { jjtThis.addAxis(AxisEnum.PRECEDING); } "::")
+		(<KEYWORD_PRECEDING> { jjtThis.addAxis(AxisEnum.PRECEDING); } <COLON_COLON>)
 	|
-		("ancestor-or-self" { jjtThis.addAxis(AxisEnum.ANCESTOR_OR_SELF); } "::")
+		(<KEYWORD_ANCESTOR_OR_SELF> { jjtThis.addAxis(AxisEnum.ANCESTOR_OR_SELF); } <COLON_COLON>)
 }
 
 // [34] http://www.w3.org/TR/xpath20/#doc-xpath-AbbrevReverseStep
@@ -1169,7 +1169,7 @@ void AbbrevReverseStep() :
 {
 }
 {
-	".."
+	<DOT_DOT>
 }
 
 // [35] http://www.w3.org/TR/xpath20/#doc-xpath-NodeTest
@@ -1198,12 +1198,12 @@ void Wildcard() :
 {
 }
 {
-		LOOKAHEAD(2) "*"
+		LOOKAHEAD(2) <STAR>
 	|
 		{ Token token; }
-		(token = <NCNAME> { jjtThis.setImage(token.image); jjtThis.setPrefix(true); } ":" "*")
+		(token = <NCNAME> { jjtThis.setImage(token.image); jjtThis.setPrefix(true); } <COLON> <STAR>)
 	|
-		("*" ":" token = <NCNAME> { jjtThis.setImage(token.image); jjtThis.setPrefix(false); })
+		(<STAR> <COLON> token = <NCNAME> { jjtThis.setImage(token.image); jjtThis.setPrefix(false); })
 	// TODO
 	/* ws: explicit */
 }
@@ -1229,7 +1229,7 @@ void Predicate() #Predicate(>0) :
 {
 }
 {
-	"[" Expr() "]"
+	<OPEN_BRACKET> Expr() <CLOSE_BRACKET>
 }
 
 // [41] http://www.w3.org/TR/xpath20/#doc-xpath-PrimaryExpr
@@ -1275,7 +1275,7 @@ void VarRef() :
 {
 }
 {
-	"$" VarName()
+	<DOLLAR> VarName()
 }
 
 // [45] http://www.w3.org/TR/xpath20/#doc-xpath-VarName
@@ -1292,7 +1292,7 @@ void ParenthesizedExpr() :
 {
 }
 {
-	"(" (Expr())? ")"
+	<OPEN_PAREN> (Expr())? <CLOSE_PAREN>
 }
 
 // [47] http://www.w3.org/TR/xpath20/#doc-xpath-ContextItemExpr
@@ -1300,7 +1300,7 @@ void ContextItemExpr() :
 {
 }
 {
-	"."
+	<DOT>
 }
 
 // [48] http://www.w3.org/TR/xpath20/#doc-xpath-FunctionCall
@@ -1309,7 +1309,7 @@ void FunctionCall() :
 }
 {
 	{ Token token; }
-	token = <QNAME> { jjtThis.setImage(token.image); } "(" (ExprSingle() ("," ExprSingle())*)? ")"
+	token = <QNAME> { jjtThis.setImage(token.image); } <OPEN_PAREN> (ExprSingle() (<COMMA> ExprSingle())*)? <CLOSE_PAREN>
 	// TODO
 	/* xgs: reserved-function-names */
 	// TODO
@@ -1322,7 +1322,7 @@ void SingleType() :
 }
 {
 	{ Token token; }
-	AtomicType() (token = "?" { jjtThis.setImage(token.image); })?
+	AtomicType() (token = <QUESTION_MARK> { jjtThis.setImage(token.image); })?
 }
 
 // [50] http://www.w3.org/TR/xpath20/#doc-xpath-SequenceType
@@ -1330,7 +1330,7 @@ void SequenceType() :
 {
 }
 {
-		("empty-sequence" "(" ")")
+		(<KEYWORD_EMPTY_SEQUENCE> <OPEN_PAREN> <CLOSE_PAREN>)
 	|
 		(ItemType() (LOOKAHEAD(2) OccurrenceIndicator())?)
 }
@@ -1341,11 +1341,11 @@ void OccurrenceIndicator() :
 }
 {
 	{ Token token; }
-		token = "?" { jjtThis.setImage(token.image); }
+		token = <QUESTION_MARK> { jjtThis.setImage(token.image); }
 	|
-		token = "*" { jjtThis.setImage(token.image); }
+		token = <STAR> { jjtThis.setImage(token.image); }
 	|
-		token = "+" { jjtThis.setImage(token.image); }
+		token = <PLUS> { jjtThis.setImage(token.image); }
 	// TODO
 	/* xgs: occurrence-indicators */
 }
@@ -1357,7 +1357,7 @@ void ItemType() :
 {
 		KindTest()
 	|
-		("item" "(" ")")
+		(<KEYWORD_ITEM> <OPEN_PAREN> <CLOSE_PAREN>)
 	|
 		AtomicType()
 }
@@ -1400,7 +1400,7 @@ void AnyKindTest() :
 {
 }
 {
-	"node" "(" ")"
+	<KEYWORD_NODE> <OPEN_PAREN> <CLOSE_PAREN>
 }
 
 // [56] http://www.w3.org/TR/xpath20/#doc-xpath-DocumentTest
@@ -1408,7 +1408,7 @@ void DocumentTest() :
 {
 }
 {
-	"document-node" "(" (ElementTest() | SchemaElementTest())? ")"
+	<KEYWORD_DOCUMENT_NODE> <OPEN_PAREN> (ElementTest() | SchemaElementTest())? <CLOSE_PAREN>
 }
 
 // [57] http://www.w3.org/TR/xpath20/#doc-xpath-TextTest
@@ -1416,7 +1416,7 @@ void TextTest() :
 {
 }
 {
-	"text" "(" ")"
+	<KEYWORD_TEXT> <OPEN_PAREN> <CLOSE_PAREN>
 }
 
 // [58] http://www.w3.org/TR/xpath20/#doc-xpath-CommentTest
@@ -1424,7 +1424,7 @@ void CommentTest() :
 {
 }
 {
-	"comment" "(" ")"
+	<KEYWORD_COMMENT> <OPEN_PAREN> <CLOSE_PAREN>
 }
 
 // [59] http://www.w3.org/TR/xpath20/#doc-xpath-PITest
@@ -1433,7 +1433,7 @@ void PITest() :
 }
 {
 	{ Token token; }
-	"processing-instruction" "(" (token = <NCNAME> { jjtThis.setImage(token.image); } | StringLiteral())? ")"
+	<KEYWORD_PROCESSING_INSTRUCTION> <OPEN_PAREN> (token = <NCNAME> { jjtThis.setImage(token.image); } | StringLiteral())? <CLOSE_PAREN>
 }
 
 // [60] http://www.w3.org/TR/xpath20/#doc-xpath-AttributeTest
@@ -1441,7 +1441,7 @@ void AttributeTest() :
 {
 }
 {
-	"attribute" "(" (AttribNameOrWildcard() ("," TypeName())?)? ")"
+	<KEYWORD_ATTRIBUTE> <OPEN_PAREN> (AttribNameOrWildcard() (<COMMA> TypeName())?)? <CLOSE_PAREN>
 }
 
 // [61] http://www.w3.org/TR/xpath20/#doc-xpath-AttribNameOrWildcard
@@ -1451,7 +1451,7 @@ void AttribNameOrWildcard() :
 {
 		AttributeName()
 	|
-		"*"
+		<STAR>
 }
 
 // [62] http://www.w3.org/TR/xpath20/#doc-xpath-SchemaAttributeTest
@@ -1459,7 +1459,7 @@ void SchemaAttributeTest() :
 {
 }
 {
-	"schema-attribute" "(" AttributeDeclaration() ")"
+	<KEYWORD_SCHEMA_ATTRIBUTE> <OPEN_PAREN> AttributeDeclaration() <CLOSE_PAREN>
 }
 
 // [63] http://www.w3.org/TR/xpath20/#doc-xpath-AttributeDeclaration
@@ -1476,7 +1476,7 @@ void ElementTest() :
 }
 {
 	{ Token token; }
-	"element" "(" (ElementNameOrWildcard() ("," TypeName() (token = "?" { jjtThis.setImage(token.image); })?)?)? ")"
+	<KEYWORD_ELEMENT> <OPEN_PAREN> (ElementNameOrWildcard() (<COMMA> TypeName() (token = <QUESTION_MARK> { jjtThis.setImage(token.image); })?)?)? <CLOSE_PAREN>
 }
 
 // [65] http://www.w3.org/TR/xpath20/#doc-xpath-ElementNameOrWildcard
@@ -1486,7 +1486,7 @@ void ElementNameOrWildcard() :
 {
 		ElementName()
 	|
-		"*"
+		<STAR>
 }
 
 // [66] http://www.w3.org/TR/xpath20/#doc-xpath-SchemaElementTest
@@ -1494,7 +1494,7 @@ void SchemaElementTest() :
 {
 }
 {
-	"schema-element" "(" ElementDeclaration() ")"
+	<KEYWORD_SCHEMA_ELEMENT> <OPEN_PAREN> ElementDeclaration() <CLOSE_PAREN>
 }
 
 // [67] http://www.w3.org/TR/xpath20/#doc-xpath-ElementDeclaration

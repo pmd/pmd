@@ -10,10 +10,14 @@ import net.sourceforge.pmd.jerry.ast.xpath.ASTAndExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTCastExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTComparisonExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTContextItemExpr;
+import net.sourceforge.pmd.jerry.ast.xpath.ASTDecimalLiteral;
+import net.sourceforge.pmd.jerry.ast.xpath.ASTDoubleLiteral;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTForExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTForwardAxis;
+import net.sourceforge.pmd.jerry.ast.xpath.ASTFunctionCall;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTIfExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTInstanceofExpr;
+import net.sourceforge.pmd.jerry.ast.xpath.ASTIntegerLiteral;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTIntersectExceptExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTMultiplicativeExpr;
 import net.sourceforge.pmd.jerry.ast.xpath.ASTNodeTest;
@@ -42,6 +46,16 @@ import net.sourceforge.pmd.jerry.xpath.OperatorEnum;
 
 public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 
+	// StepExpr types
+	private static enum StepExprTypeEnum {
+		FORWARD_STEP, REVERSE_STEP, PRIMARY_EXP;
+	}
+
+	// Predicate types
+	private static enum PredicateTypeEnum {
+		NUMERIC_LITERAL, LAST, EXPR;
+	}
+
 	public static String toCore(String query) {
 		// First convert to unabbreviated XPath
 		String unabbreviated = PrintXPath2ParserVisitor.unabbreviate(query);
@@ -50,7 +64,7 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 		Reader reader = new StringReader(unabbreviated);
 		XPath2Parser parser = new XPath2Parser(reader);
 		ASTXPath xpath = parser.XPath();
-		xpath.dump("");
+		//xpath.dump("");
 
 		// Output XPath Core
 		CoreXPath2ParserVisitor visitor = new CoreXPath2ParserVisitor();
@@ -297,12 +311,12 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 				print("some $v1 in fn:data((");
 				node.jjtGetChild(0).jjtAccept(this, data);
 				print(")) satisfies");
-				print("some $v2 in fn:data((");
+				print(" some $v2 in fn:data((");
 				node.jjtGetChild(1).jjtAccept(this, data);
 				print(")) satisfies");
-				print("let $u1 := fs:convert-operand($v1, $v2) return");
-				print("let $u2 := fs:convert-operand($v2, $v1) return");
-				print("fs:");
+				print(" let $u1 := fs:convert-operand($v1, $v2) return");
+				print(" let $u2 := fs:convert-operand($v2, $v1) return");
+				print(" fs:");
 				switch (operator) {
 				case GENERAL_COMPARISION_EQUAL:
 					print("eq");
@@ -461,6 +475,7 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 			print("fs:apply-ordering-mode(");
 			print("fs:distinct-doc-order-or-atomic-sequence(");
 			print("let $fs:sequence as node()* := ");
+			// Visit steps in reverse order
 			visitPathExpr(node, stepExprIndex - 1, data);
 			print(" return");
 			print(" let $fs:last := fn:count($fs:sequence) return");
@@ -471,23 +486,21 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 	}
 
 	public Object visit(ASTPathExpr node, Object data) {
+		// Visit last step first
 		visitPathExpr(node, node.jjtGetNumChildren() - 1, data);
 		return null;
 	}
 
-	// TODO Continue from here...
 	public Object visit(ASTPredicate node, Object data) {
-		// TODO Cannot do Predicate without first doing Step
-		TODO(node);
+		// Nothing to do
 		node.childrenAccept(this, data);
 		return null;
 	}
 
-	// TODO Not done
 	public Object visit(ASTPredicateList node, Object data) {
-		TODO(node);
-		node.childrenAccept(this, data);
-		return null;
+		// Processing of the StepExpr should handle the PredicateList
+		throw new IllegalStateException(
+				"Explicit visitation of PredicateList is should not occur.");
 	}
 
 	public Object visit(ASTQuantifiedExpr node, Object data) {
@@ -502,8 +515,8 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 			print(" in ");
 			node.jjtGetChild(i * 2 + 1).jjtAccept(this, data);
 		}
-		print(" satisfies ");
-		print("fn:boolean((");
+		print(" satisfies");
+		print(" fn:boolean((");
 		node.jjtGetChild(node.jjtGetNumChildren() - 1).jjtAccept(this, data);
 		print("))");
 		return null;
@@ -520,6 +533,18 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 			node.childrenAccept(this, data);
 		}
 		return null;
+	}
+
+	private void visitNodeTestReverseAxis(ASTReverseAxis node) {
+		AxisEnum axis = node.getAxis(0);
+		switch (axis) {
+		case PRECEDING_SIBLING:
+			// Goes after the NodeTest
+			print("[.<<$e]");
+			break;
+		default:
+			break;
+		}
 	}
 
 	public Object visit(ASTReverseAxis node, Object data) {
@@ -539,18 +564,6 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 		return null;
 	}
 
-	private void visitNodeTestReverseAxis(ASTReverseAxis node) {
-		AxisEnum axis = node.getAxis(0);
-		switch (axis) {
-		case PRECEDING_SIBLING:
-			// Goes after the NodeTest
-			print("[.<<$e]");
-			break;
-		default:
-			break;
-		}
-	}
-
 	public Object visit(ASTSingleType node, Object data) {
 		// Note: Optional indicator handled in CastExpr
 		node.childrenAccept(this, data);
@@ -566,20 +579,288 @@ public class CoreXPath2ParserVisitor extends AbstractXPath2ParserVisitor {
 	}
 
 	public Object visit(ASTStepExpr node, Object data) {
-		// Nothing to do, unabbreviation of the XPath query should handled
-		// normalization
-		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-			Node child = node.jjtGetChild(i);
-			child.jjtAccept(this, data);
-			// Need a post processing step when we encounter a
-			// ReverseAxis/NodeTest pairing
-			if (child instanceof ASTNodeTest && i > 0
-					&& node.jjtGetChild(i - 1) instanceof ASTReverseAxis) {
-				visitNodeTestReverseAxis((ASTReverseAxis) node
-						.jjtGetChild(i - 1));
+		// Sanity checks
+		if (node.jjtGetNumChildren() < 1) {
+			throw new IllegalArgumentException(
+					"Expecting at least 1 child node.");
+		}
+		if (node.jjtGetNumChildren() > 3) {
+			throw new IllegalArgumentException(
+					"Expecting at most 3 child nodes.");
+		}
+
+		//
+		// Normalization depends upon what the predicates are being applied.
+		//
+		Node firstChild = node.jjtGetChild(0);
+		final StepExprTypeEnum stepExprTypeEnum;
+		// 1) ForwardStep
+		if (firstChild instanceof ASTForwardAxis
+				|| firstChild instanceof ASTAbbrevForwardStep) {
+			stepExprTypeEnum = StepExprTypeEnum.FORWARD_STEP;
+		}
+		// 2) ReverseStep
+		else if (firstChild instanceof ASTReverseAxis
+				|| firstChild instanceof ASTAbbrevReverseStep) {
+			stepExprTypeEnum = StepExprTypeEnum.REVERSE_STEP;
+		}
+		// 3) PrimaryExpr
+		else {
+			stepExprTypeEnum = StepExprTypeEnum.PRIMARY_EXP;
+		}
+
+		//
+		// We need to visit the Predicates in the PredicateList in reverse
+		// order to normalize.
+		//
+		int predicateIndex = -1;
+		ASTPredicateList predicateList = null;
+		Node lastChild = node.jjtGetChild(node.jjtGetNumChildren() - 1);
+		if (lastChild instanceof ASTPredicateList) {
+			predicateList = (ASTPredicateList) lastChild;
+			predicateIndex = lastChild.jjtGetNumChildren() - 1;
+		}
+		visitStepExpr(node, data, stepExprTypeEnum, predicateList,
+				predicateIndex);
+		return null;
+	}
+
+	private void visitStepExpr(ASTStepExpr node, Object data,
+			StepExprTypeEnum stepExprTypeEnum, ASTPredicateList predicateList,
+			int predicateIndex) {
+		// Predicate
+		if (predicateIndex >= 0) {
+			ASTPredicate predicate = (ASTPredicate) predicateList
+					.jjtGetChild(predicateIndex);
+
+			//
+			// What kind of predicate is this? Normalization provides extra
+			// details for static typing for certain predicates.
+			//
+			// 1) NumericLiteral
+			// 2) fn:last()
+			// 3) other Expr
+			final PredicateTypeEnum predicateTypeEnum;
+			Node firstChild = predicate.jjtGetChild(0);
+			if (firstChild instanceof ASTIntegerLiteral
+					|| firstChild instanceof ASTDecimalLiteral
+					|| firstChild instanceof ASTDoubleLiteral) {
+				predicateTypeEnum = PredicateTypeEnum.NUMERIC_LITERAL;
+			} else if (firstChild instanceof ASTFunctionCall
+					&& firstChild.jjtGetNumChildren() == 0
+					&& "fn:last".equals(((ASTFunctionCall) firstChild)
+							.getImage())) {
+				predicateTypeEnum = PredicateTypeEnum.LAST;
+			} else {
+				predicateTypeEnum = PredicateTypeEnum.EXPR;
+			}
+
+			// Pre recursion visit
+			switch (stepExprTypeEnum) {
+			case FORWARD_STEP:
+			case REVERSE_STEP:
+				switch (predicateTypeEnum) {
+				case NUMERIC_LITERAL:
+				case LAST:
+				case EXPR:
+					print("let $fs:sequence := fs:apply-ordering-mode(fs:distinct-doc-order(");
+					break;
+				default:
+					throw new IllegalStateException(
+							"Unexpected predicateTypeEnum: "
+									+ predicateTypeEnum);
+				}
+				break;
+			case PRIMARY_EXP:
+				switch (predicateTypeEnum) {
+				case NUMERIC_LITERAL:
+				case LAST:
+				case EXPR:
+					print("let $fs:sequence := ");
+					break;
+				default:
+					throw new IllegalStateException(
+							"Unexpected predicateTypeEnum: "
+									+ predicateTypeEnum);
+				}
+				break;
+			default:
+				throw new IllegalStateException("Unexpected stepExprTypeEnum: "
+						+ stepExprTypeEnum);
+			}
+
+			// Recurse to next Predicate
+			visitStepExpr(node, data, stepExprTypeEnum, predicateList,
+					predicateIndex - 1);
+
+			// Pre Predicate visit
+			switch (stepExprTypeEnum) {
+			case FORWARD_STEP:
+				switch (predicateTypeEnum) {
+				case NUMERIC_LITERAL:
+					print(")) return fn:subsequence($fs:sequence, ");
+					break;
+				case LAST:
+					print(")) return let $fs:last := fn:count($fs:sequence) return fn:subsequence($fs:sequence, 1)");
+					break;
+				case EXPR:
+					print(" return let $fs:last := fn:count($fs:sequence) return for $fs:dot at $fs:position in $fs:sequence return if (");
+					break;
+				default:
+					throw new IllegalStateException(
+							"Unexpected predicateTypeEnum: "
+									+ predicateTypeEnum);
+				}
+				break;
+			case REVERSE_STEP:
+				switch (predicateTypeEnum) {
+				case NUMERIC_LITERAL:
+					print(")) return let $fs:last := fn:count($fs:sequence) return let $fs:position := fs:plus(1, fs:minus($fs:last, ");
+					break;
+				case LAST:
+					print(")) return fn:subsequence($fs:sequence, 1");
+					break;
+				case EXPR:
+					print(")) return let $fs:last := fn:count($fs:sequence) return for $fs:dot at $fs:new in $fs:sequence return let $fs:position := fs:plus(1, fs:minus($fs:last, $fs:new)) return if (");
+					break;
+				default:
+					throw new IllegalStateException(
+							"Unexpected predicateTypeEnum: "
+									+ predicateTypeEnum);
+				}
+				break;
+			case PRIMARY_EXP:
+				switch (predicateTypeEnum) {
+				case NUMERIC_LITERAL:
+					print(" return fn:subsequence($fs:sequence, ");
+					break;
+				case LAST:
+					print(" return fn:subsequence($fs:sequence, $fs:last, 1)");
+					break;
+				case EXPR:
+					print(" return let $fs:last := fn:count($fs:sequence) return for $fs:dot at $fs:position in $fs:sequence return if(");
+					break;
+				default:
+					throw new IllegalStateException(
+							"Unexpected predicateTypeEnum: "
+									+ predicateTypeEnum);
+				}
+				break;
+			default:
+				throw new IllegalStateException("Unexpected stepExprTypeEnum: "
+						+ stepExprTypeEnum);
+			}
+
+			// Visit Predicate
+			if (!((StepExprTypeEnum.REVERSE_STEP == stepExprTypeEnum && PredicateTypeEnum.LAST == predicateTypeEnum)
+					|| (StepExprTypeEnum.FORWARD_STEP == stepExprTypeEnum && PredicateTypeEnum.LAST == predicateTypeEnum) || (StepExprTypeEnum.PRIMARY_EXP == stepExprTypeEnum && PredicateTypeEnum.LAST == predicateTypeEnum))) {
+				predicateList.jjtGetChild(predicateIndex).jjtAccept(this, data);
+			}
+
+			// Post visit
+			switch (stepExprTypeEnum) {
+			case FORWARD_STEP:
+				switch (predicateTypeEnum) {
+				case NUMERIC_LITERAL:
+					print(", 1)");
+					break;
+				case LAST:
+					// Nothing to do
+					break;
+				case EXPR:
+					print(") then $fs:dot else ()");
+					break;
+				default:
+					throw new IllegalStateException(
+							"Unexpected predicateTypeEnum: "
+									+ predicateTypeEnum);
+				}
+				break;
+			case REVERSE_STEP:
+				switch (predicateTypeEnum) {
+				case NUMERIC_LITERAL:
+					print(")) return fn:subsequence($fs: sequence, $fs:position, 1)");
+					break;
+				case LAST:
+					print(", 1)");
+					break;
+				case EXPR:
+					print(") then $fs:dot else ()");
+					break;
+				default:
+					throw new IllegalStateException(
+							"Unexpected predicateTypeEnum: "
+									+ predicateTypeEnum);
+				}
+				break;
+			case PRIMARY_EXP:
+				switch (predicateTypeEnum) {
+				case NUMERIC_LITERAL:
+					print(", 1)");
+					break;
+				case LAST:
+					// Nothing to do
+					break;
+				case EXPR:
+					print(") then $fs:dot else ()");
+					break;
+				default:
+					throw new IllegalStateException(
+							"Unexpected predicateTypeEnum: "
+									+ predicateTypeEnum);
+				}
+				break;
+			default:
+				throw new IllegalStateException("Unexpected stepExprTypeEnum: "
+						+ stepExprTypeEnum);
 			}
 		}
-		return null;
+		// Standalone (no Predicates left)
+		else {
+			// Pre visit
+			switch (stepExprTypeEnum) {
+			case FORWARD_STEP:
+			case REVERSE_STEP:
+				print("fs:apply-ordering-mode(");
+				break;
+			case PRIMARY_EXP:
+				// Nothing to do
+				break;
+			default:
+				throw new IllegalStateException("Unexpected stepExprTypeEnum: "
+						+ stepExprTypeEnum);
+			}
+
+			// Visit everything except the PredicateList
+			for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+				Node child = node.jjtGetChild(i);
+				if (child instanceof ASTPredicateList) {
+					break;
+				}
+				child.jjtAccept(this, data);
+				// Need a post processing step when we encounter a
+				// ReverseAxis/NodeTest pairing
+				if (child instanceof ASTNodeTest && i > 0
+						&& node.jjtGetChild(i - 1) instanceof ASTReverseAxis) {
+					visitNodeTestReverseAxis((ASTReverseAxis) node
+							.jjtGetChild(i - 1));
+				}
+			}
+
+			// Post visit
+			switch (stepExprTypeEnum) {
+			case FORWARD_STEP:
+			case REVERSE_STEP:
+				print(")");
+				break;
+			case PRIMARY_EXP:
+				// Nothing to do
+				break;
+			default:
+				throw new IllegalStateException("Unexpected stepExprTypeEnum: "
+						+ stepExprTypeEnum);
+			}
+		}
 	}
 
 	public Object visit(ASTTreatExpr node, Object data) {

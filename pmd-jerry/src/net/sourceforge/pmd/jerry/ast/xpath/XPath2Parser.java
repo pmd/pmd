@@ -185,7 +185,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     case KEYWORD_NODE:
     case KEYWORD_PARENT:
     case KEYWORD_PRECEDING:
-    case KEYWORD_PRECEDING_SIBLIING:
+    case KEYWORD_PRECEDING_SIBLING:
     case KEYWORD_PROCESSING_INSTRUCTION:
     case KEYWORD_SCHEMA_ATTRIBUTE:
     case KEYWORD_SCHEMA_ELEMENT:
@@ -271,11 +271,11 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       switch (jj_nt.kind) {
       case KEYWORD_SOME:
         jj_consume_token(KEYWORD_SOME);
-                  jjtn000.setExistential(true);
+                          jjtn000.setExistential(true);
         break;
       case KEYWORD_EVERY:
         jj_consume_token(KEYWORD_EVERY);
-                                                              jjtn000.setExistential(false);
+                                                                              jjtn000.setExistential(false);
         break;
       default:
         jj_la1[3] = jj_gen;
@@ -335,7 +335,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       jj_consume_token(KEYWORD_IF);
       jj_consume_token(OPEN_PAREN);
       Expr();
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
       jj_consume_token(KEYWORD_THEN);
       ExprSingle();
       jj_consume_token(KEYWORD_ELSE);
@@ -455,9 +455,9 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       RangeExpr();
       switch (jj_nt.kind) {
       case BANG_EQUAL:
-      case LESS_THAN:
+      case LESSER_THAN:
       case PRECEEDS_OPERATOR:
-      case LESS_THAN_EQUAL:
+      case LESSER_THAN_EQUAL:
       case EQUAL:
       case GREATER_THAN:
       case GREATER_THAN_EQUAL:
@@ -479,8 +479,8 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           ValueComp(jjtn000);
           break;
         case BANG_EQUAL:
-        case LESS_THAN:
-        case LESS_THAN_EQUAL:
+        case LESSER_THAN:
+        case LESSER_THAN_EQUAL:
         case EQUAL:
         case GREATER_THAN:
         case GREATER_THAN_EQUAL:
@@ -583,11 +583,11 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         switch (jj_nt.kind) {
         case PLUS:
           jj_consume_token(PLUS);
-                                      jjtn000.addOperator(OperatorEnum.ADDITION);
+                                         jjtn000.addOperator(OperatorEnum.ADDITION);
           break;
         case MINUS:
           jj_consume_token(MINUS);
-                                      jjtn000.addOperator(OperatorEnum.SUBTRACTION);
+                                          jjtn000.addOperator(OperatorEnum.SUBTRACTION);
           break;
         default:
           jj_la1[11] = jj_gen;
@@ -641,19 +641,19 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         switch (jj_nt.kind) {
         case STAR:
           jj_consume_token(STAR);
-                                      jjtn000.addOperator(OperatorEnum.MULTIPLICATION);
+                                         jjtn000.addOperator(OperatorEnum.MULTIPLICATION);
           break;
         case KEYWORD_DIV:
           jj_consume_token(KEYWORD_DIV);
-                                        jjtn000.addOperator(OperatorEnum.DIVISION);
+                                                jjtn000.addOperator(OperatorEnum.DIVISION);
           break;
         case KEYWORD_IDIV:
           jj_consume_token(KEYWORD_IDIV);
-                                         jjtn000.addOperator(OperatorEnum.INTEGER_DIVISION);
+                                                 jjtn000.addOperator(OperatorEnum.INTEGER_DIVISION);
           break;
         case KEYWORD_MOD:
           jj_consume_token(KEYWORD_MOD);
-                                        jjtn000.addOperator(OperatorEnum.MODULUS);
+                                                jjtn000.addOperator(OperatorEnum.MODULUS);
           break;
         default:
           jj_la1[13] = jj_gen;
@@ -705,11 +705,11 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         switch (jj_nt.kind) {
         case KEYWORD_UNION:
           jj_consume_token(KEYWORD_UNION);
-                                          jjtn000.addOperator(OperatorEnum.SEQUENCE_UNION);
+                                                  jjtn000.addOperator(OperatorEnum.SEQUENCE_UNION);
           break;
         case PIPE:
           jj_consume_token(PIPE);
-                                      jjtn000.addOperator(OperatorEnum.SEQUENCE_UNION);
+                                         jjtn000.addOperator(OperatorEnum.SEQUENCE_UNION);
           break;
         default:
           jj_la1[15] = jj_gen;
@@ -761,11 +761,11 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         switch (jj_nt.kind) {
         case KEYWORD_INTERSECT:
           jj_consume_token(KEYWORD_INTERSECT);
-                                              jjtn000.addOperator(OperatorEnum.SEQUENCE_INTERSECT);
+                                                      jjtn000.addOperator(OperatorEnum.SEQUENCE_INTERSECT);
           break;
         case KEYWORD_EXCEPT:
           jj_consume_token(KEYWORD_EXCEPT);
-                                           jjtn000.addOperator(OperatorEnum.SEQUENCE_EXCEPT);
+                                                   jjtn000.addOperator(OperatorEnum.SEQUENCE_EXCEPT);
           break;
         default:
           jj_la1[17] = jj_gen;
@@ -972,11 +972,11 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         switch (jj_nt.kind) {
         case MINUS:
           jj_consume_token(MINUS);
-                              keepUnaryExpr = true; jjtn000.addOperator(OperatorEnum.UNARY_MINUS);
+                                  keepUnaryExpr = true; jjtn000.addOperator(OperatorEnum.UNARY_MINUS);
           break;
         case PLUS:
           jj_consume_token(PLUS);
-                              keepUnaryExpr = true; jjtn000.addOperator(OperatorEnum.UNARY_PLUS);
+                                 keepUnaryExpr = true; jjtn000.addOperator(OperatorEnum.UNARY_PLUS);
           break;
         default:
           jj_la1[23] = jj_gen;
@@ -1016,27 +1016,27 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     switch (jj_nt.kind) {
     case EQUAL:
       jj_consume_token(EQUAL);
-                      parent.addOperator(OperatorEnum.GENERAL_COMPARISION_EQUAL);
+                          parent.addOperator(OperatorEnum.GENERAL_COMPARISION_EQUAL);
       break;
     case BANG_EQUAL:
       jj_consume_token(BANG_EQUAL);
-                       parent.addOperator(OperatorEnum.GENERAL_COMPARISION_NOT_EQUAL);
+                               parent.addOperator(OperatorEnum.GENERAL_COMPARISION_NOT_EQUAL);
       break;
-    case LESS_THAN:
-      jj_consume_token(LESS_THAN);
-                      parent.addOperator(OperatorEnum.GENERAL_COMPARISION_LESSER_THAN);
+    case LESSER_THAN:
+      jj_consume_token(LESSER_THAN);
+                                parent.addOperator(OperatorEnum.GENERAL_COMPARISION_LESSER_THAN);
       break;
-    case LESS_THAN_EQUAL:
-      jj_consume_token(LESS_THAN_EQUAL);
-                       parent.addOperator(OperatorEnum.GENERAL_COMPARISION_LESSER_THAN_OR_EQUAL);
+    case LESSER_THAN_EQUAL:
+      jj_consume_token(LESSER_THAN_EQUAL);
+                                      parent.addOperator(OperatorEnum.GENERAL_COMPARISION_LESSER_THAN_OR_EQUAL);
       break;
     case GREATER_THAN:
       jj_consume_token(GREATER_THAN);
-                      parent.addOperator(OperatorEnum.GENERAL_COMPARISION_GREATER_THAN);
+                                 parent.addOperator(OperatorEnum.GENERAL_COMPARISION_GREATER_THAN);
       break;
     case GREATER_THAN_EQUAL:
       jj_consume_token(GREATER_THAN_EQUAL);
-                       parent.addOperator(OperatorEnum.GENERAL_COMPARISION_GREATER_THAN_OR_EQUAL);
+                                       parent.addOperator(OperatorEnum.GENERAL_COMPARISION_GREATER_THAN_OR_EQUAL);
       break;
     default:
       jj_la1[24] = jj_gen;
@@ -1050,27 +1050,27 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     switch (jj_nt.kind) {
     case KEYWORD_EQ:
       jj_consume_token(KEYWORD_EQ);
-                       parent.addOperator(OperatorEnum.VALUE_COMPARISION_EQUAL);
+                               parent.addOperator(OperatorEnum.VALUE_COMPARISION_EQUAL);
       break;
     case KEYWORD_NE:
       jj_consume_token(KEYWORD_NE);
-                       parent.addOperator(OperatorEnum.VALUE_COMPARISION_NOT_EQUAL);
+                               parent.addOperator(OperatorEnum.VALUE_COMPARISION_NOT_EQUAL);
       break;
     case KEYWORD_LT:
       jj_consume_token(KEYWORD_LT);
-                       parent.addOperator(OperatorEnum.VALUE_COMPARISION_LESSER_THAN);
+                               parent.addOperator(OperatorEnum.VALUE_COMPARISION_LESSER_THAN);
       break;
     case KEYWORD_LE:
       jj_consume_token(KEYWORD_LE);
-                       parent.addOperator(OperatorEnum.VALUE_COMPARISION_LESSER_THAN_OR_EQUAL);
+                               parent.addOperator(OperatorEnum.VALUE_COMPARISION_LESSER_THAN_OR_EQUAL);
       break;
     case KEYWORD_GT:
       jj_consume_token(KEYWORD_GT);
-                       parent.addOperator(OperatorEnum.VALUE_COMPARISION_GREATER_THAN);
+                               parent.addOperator(OperatorEnum.VALUE_COMPARISION_GREATER_THAN);
       break;
     case KEYWORD_GE:
       jj_consume_token(KEYWORD_GE);
-                       parent.addOperator(OperatorEnum.VALUE_COMPARISION_GREATER_THAN_OR_EQUAL);
+                               parent.addOperator(OperatorEnum.VALUE_COMPARISION_GREATER_THAN_OR_EQUAL);
       break;
     default:
       jj_la1[25] = jj_gen;
@@ -1084,15 +1084,15 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     switch (jj_nt.kind) {
     case KEYWORD_IS:
       jj_consume_token(KEYWORD_IS);
-                       parent.addOperator(OperatorEnum.NODE_COMPARISION_IS);
+                               parent.addOperator(OperatorEnum.NODE_COMPARISION_IS);
       break;
     case PRECEEDS_OPERATOR:
       jj_consume_token(PRECEEDS_OPERATOR);
-                       parent.addOperator(OperatorEnum.NODE_COMPARISION_PRECEEDS);
+                                      parent.addOperator(OperatorEnum.NODE_COMPARISION_PRECEEDS);
       break;
     case FOLLOWS_OPERATOR:
       jj_consume_token(FOLLOWS_OPERATOR);
-                       parent.addOperator(OperatorEnum.NODE_COMPARISION_FOLLOWS);
+                                     parent.addOperator(OperatorEnum.NODE_COMPARISION_FOLLOWS);
       break;
     default:
       jj_la1[26] = jj_gen;
@@ -1161,7 +1161,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       case KEYWORD_NODE:
       case KEYWORD_PARENT:
       case KEYWORD_PRECEDING:
-      case KEYWORD_PRECEDING_SIBLIING:
+      case KEYWORD_PRECEDING_SIBLING:
       case KEYWORD_PROCESSING_INSTRUCTION:
       case KEYWORD_SCHEMA_ATTRIBUTE:
       case KEYWORD_SCHEMA_ELEMENT:
@@ -1268,7 +1268,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         case KEYWORD_NODE:
         case KEYWORD_PARENT:
         case KEYWORD_PRECEDING:
-        case KEYWORD_PRECEDING_SIBLIING:
+        case KEYWORD_PRECEDING_SIBLING:
         case KEYWORD_PROCESSING_INSTRUCTION:
         case KEYWORD_SCHEMA_ATTRIBUTE:
         case KEYWORD_SCHEMA_ELEMENT:
@@ -1313,7 +1313,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     case KEYWORD_ANCESTOR_OR_SELF:
     case KEYWORD_PARENT:
     case KEYWORD_PRECEDING:
-    case KEYWORD_PRECEDING_SIBLIING:
+    case KEYWORD_PRECEDING_SIBLING:
       ReverseStep();
       break;
     case AT:
@@ -1386,42 +1386,42 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       switch (jj_nt.kind) {
       case KEYWORD_CHILD:
         jj_consume_token(KEYWORD_CHILD);
-                           jjtn000.addAxis(AxisEnum.CHILD);
+                                   jjtn000.addAxis(AxisEnum.CHILD);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_DESCENDANT:
         jj_consume_token(KEYWORD_DESCENDANT);
-                                jjtn000.addAxis(AxisEnum.DESCENDANT);
+                                        jjtn000.addAxis(AxisEnum.DESCENDANT);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_ATTRIBUTE:
         jj_consume_token(KEYWORD_ATTRIBUTE);
-                               jjtn000.addAxis(AxisEnum.ATTRIBUTE);
+                                       jjtn000.addAxis(AxisEnum.ATTRIBUTE);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_SELF:
         jj_consume_token(KEYWORD_SELF);
-                          jjtn000.addAxis(AxisEnum.SELF);
+                                  jjtn000.addAxis(AxisEnum.SELF);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_DESCENDANT_OR_SELF:
         jj_consume_token(KEYWORD_DESCENDANT_OR_SELF);
-                                        jjtn000.addAxis(AxisEnum.DESCENDANT_OR_SELF);
+                                                jjtn000.addAxis(AxisEnum.DESCENDANT_OR_SELF);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_FOLLOWING_SIBLING:
         jj_consume_token(KEYWORD_FOLLOWING_SIBLING);
-                                       jjtn000.addAxis(AxisEnum.FOLLOWING_SIBLING);
+                                               jjtn000.addAxis(AxisEnum.FOLLOWING_SIBLING);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_FOLLOWING:
         jj_consume_token(KEYWORD_FOLLOWING);
-                               jjtn000.addAxis(AxisEnum.FOLLOWING);
+                                       jjtn000.addAxis(AxisEnum.FOLLOWING);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_NAMESPACE:
         jj_consume_token(KEYWORD_NAMESPACE);
-                               jjtn000.addAxis(AxisEnum.NAMESPACE);
+                                       jjtn000.addAxis(AxisEnum.NAMESPACE);
         jj_consume_token(COLON_COLON);
         break;
       default:
@@ -1446,7 +1446,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       switch (jj_nt.kind) {
       case AT:
         jj_consume_token(AT);
-               jjtn000.addAxis(AxisEnum.ATTRIBUTE);
+                jjtn000.addAxis(AxisEnum.ATTRIBUTE);
         break;
       default:
         jj_la1[34] = jj_gen;
@@ -1481,7 +1481,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     case KEYWORD_ANCESTOR_OR_SELF:
     case KEYWORD_PARENT:
     case KEYWORD_PRECEDING:
-    case KEYWORD_PRECEDING_SIBLIING:
+    case KEYWORD_PRECEDING_SIBLING:
       ReverseAxis();
       NodeTest();
       break;
@@ -1505,27 +1505,27 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       switch (jj_nt.kind) {
       case KEYWORD_PARENT:
         jj_consume_token(KEYWORD_PARENT);
-                            jjtn000.addAxis(AxisEnum.PARENT);
+                                    jjtn000.addAxis(AxisEnum.PARENT);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_ANCESTOR:
         jj_consume_token(KEYWORD_ANCESTOR);
-                              jjtn000.addAxis(AxisEnum.ANCESTOR);
+                                      jjtn000.addAxis(AxisEnum.ANCESTOR);
         jj_consume_token(COLON_COLON);
         break;
-      case KEYWORD_PRECEDING_SIBLIING:
-        jj_consume_token(KEYWORD_PRECEDING_SIBLIING);
-                                       jjtn000.addAxis(AxisEnum.PRECEDING_SIBLING);
+      case KEYWORD_PRECEDING_SIBLING:
+        jj_consume_token(KEYWORD_PRECEDING_SIBLING);
+                                               jjtn000.addAxis(AxisEnum.PRECEDING_SIBLING);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_PRECEDING:
         jj_consume_token(KEYWORD_PRECEDING);
-                               jjtn000.addAxis(AxisEnum.PRECEDING);
+                                       jjtn000.addAxis(AxisEnum.PRECEDING);
         jj_consume_token(COLON_COLON);
         break;
       case KEYWORD_ANCESTOR_OR_SELF:
         jj_consume_token(KEYWORD_ANCESTOR_OR_SELF);
-                                      jjtn000.addAxis(AxisEnum.ANCESTOR_OR_SELF);
+                                              jjtn000.addAxis(AxisEnum.ANCESTOR_OR_SELF);
         jj_consume_token(COLON_COLON);
         break;
       default:
@@ -1672,9 +1672,9 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           jj_consume_token(STAR);
           jj_consume_token(COLON);
           token = jj_consume_token(NCNAME);
-                                            jjtree.closeNodeScope(jjtn000, true);
-                                            jjtc000 = false;
-                                            jjtn000.setImage(token.image); jjtn000.setPrefix(false);
+                                                   jjtree.closeNodeScope(jjtn000, true);
+                                                   jjtc000 = false;
+                                                   jjtn000.setImage(token.image); jjtn000.setPrefix(false);
           break;
         default:
           jj_la1[39] = jj_gen;
@@ -1918,7 +1918,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       case KEYWORD_NODE:
       case KEYWORD_PARENT:
       case KEYWORD_PRECEDING:
-      case KEYWORD_PRECEDING_SIBLIING:
+      case KEYWORD_PRECEDING_SIBLING:
       case KEYWORD_PROCESSING_INSTRUCTION:
       case KEYWORD_SCHEMA_ATTRIBUTE:
       case KEYWORD_SCHEMA_ELEMENT:
@@ -1936,7 +1936,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         jj_la1[44] = jj_gen;
         ;
       }
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -2014,7 +2014,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       case KEYWORD_NODE:
       case KEYWORD_PARENT:
       case KEYWORD_PRECEDING:
-      case KEYWORD_PRECEDING_SIBLIING:
+      case KEYWORD_PRECEDING_SIBLING:
       case KEYWORD_PROCESSING_INSTRUCTION:
       case KEYWORD_SCHEMA_ATTRIBUTE:
       case KEYWORD_SCHEMA_ELEMENT:
@@ -2045,7 +2045,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         jj_la1[46] = jj_gen;
         ;
       }
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -2079,7 +2079,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       switch (jj_nt.kind) {
       case QUESTION_MARK:
         token = jj_consume_token(QUESTION_MARK);
-                                    jjtn000.setImage(token.image);
+                                                jjtn000.setImage(token.image);
         break;
       default:
         jj_la1[47] = jj_gen;
@@ -2117,7 +2117,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       case KEYWORD_EMPTY_SEQUENCE:
         jj_consume_token(KEYWORD_EMPTY_SEQUENCE);
         jj_consume_token(OPEN_PAREN);
-        jj_consume_token(CLOSE_PARAN);
+        jj_consume_token(CLOSE_PAREN);
         break;
       case KEYWORD_ATTRIBUTE:
       case KEYWORD_COMMENT:
@@ -2174,21 +2174,21 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       case QUESTION_MARK:
           Token token;
         token = jj_consume_token(QUESTION_MARK);
-                              jjtree.closeNodeScope(jjtn000, true);
-                              jjtc000 = false;
-                              jjtn000.setImage(token.image);
+                                          jjtree.closeNodeScope(jjtn000, true);
+                                          jjtc000 = false;
+                                          jjtn000.setImage(token.image);
         break;
       case STAR:
         token = jj_consume_token(STAR);
-                              jjtree.closeNodeScope(jjtn000, true);
-                              jjtc000 = false;
-                              jjtn000.setImage(token.image);
+                                 jjtree.closeNodeScope(jjtn000, true);
+                                 jjtc000 = false;
+                                 jjtn000.setImage(token.image);
         break;
       case PLUS:
         token = jj_consume_token(PLUS);
-                              jjtree.closeNodeScope(jjtn000, true);
-                              jjtc000 = false;
-                              jjtn000.setImage(token.image);
+                                 jjtree.closeNodeScope(jjtn000, true);
+                                 jjtc000 = false;
+                                 jjtn000.setImage(token.image);
         break;
       default:
         jj_la1[49] = jj_gen;
@@ -2224,7 +2224,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       case KEYWORD_ITEM:
         jj_consume_token(KEYWORD_ITEM);
         jj_consume_token(OPEN_PAREN);
-        jj_consume_token(CLOSE_PARAN);
+        jj_consume_token(CLOSE_PAREN);
         break;
       case QNAME:
         AtomicType();
@@ -2320,7 +2320,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     try {
       jj_consume_token(KEYWORD_NODE);
       jj_consume_token(OPEN_PAREN);
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -2357,7 +2357,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         jj_la1[53] = jj_gen;
         ;
       }
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -2388,7 +2388,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     try {
       jj_consume_token(KEYWORD_TEXT);
       jj_consume_token(OPEN_PAREN);
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -2405,7 +2405,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     try {
       jj_consume_token(KEYWORD_COMMENT);
       jj_consume_token(OPEN_PAREN);
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
     } finally {
           if (jjtc000) {
             jjtree.closeNodeScope(jjtn000, true);
@@ -2429,7 +2429,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         switch (jj_nt.kind) {
         case NCNAME:
           token = jj_consume_token(NCNAME);
-                                                         jjtn000.setImage(token.image);
+                                                                          jjtn000.setImage(token.image);
           break;
         case STRING_LITERAL:
           StringLiteral();
@@ -2444,7 +2444,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         jj_la1[55] = jj_gen;
         ;
       }
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -2493,7 +2493,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         jj_la1[57] = jj_gen;
         ;
       }
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -2565,7 +2565,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       jj_consume_token(KEYWORD_SCHEMA_ATTRIBUTE);
       jj_consume_token(OPEN_PAREN);
       AttributeDeclaration();
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -2637,7 +2637,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
           switch (jj_nt.kind) {
           case QUESTION_MARK:
             token = jj_consume_token(QUESTION_MARK);
-                                                                              jjtn000.setImage(token.image);
+                                                                                                               jjtn000.setImage(token.image);
             break;
           default:
             jj_la1[59] = jj_gen;
@@ -2653,7 +2653,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
         jj_la1[61] = jj_gen;
         ;
       }
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -2725,7 +2725,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       jj_consume_token(KEYWORD_SCHEMA_ELEMENT);
       jj_consume_token(OPEN_PAREN);
       ElementDeclaration();
-      jj_consume_token(CLOSE_PARAN);
+      jj_consume_token(CLOSE_PAREN);
     } catch (Throwable jjte000) {
           if (jjtc000) {
             jjtree.clearNodeScope(jjtn000);
@@ -3054,6 +3054,11 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
+  final private boolean jj_3R_53() {
+    if (jj_3R_58()) return true;
+    return false;
+  }
+
   final private boolean jj_3R_49() {
     if (jj_3R_55()) return true;
     return false;
@@ -3067,11 +3072,6 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
 
   final private boolean jj_3R_45() {
     if (jj_scan_token(DOT)) return true;
-    return false;
-  }
-
-  final private boolean jj_3R_53() {
-    if (jj_3R_58()) return true;
     return false;
   }
 
@@ -3100,7 +3100,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_53()) jj_scanpos = xsp;
-    if (jj_scan_token(CLOSE_PARAN)) return true;
+    if (jj_scan_token(CLOSE_PAREN)) return true;
     return false;
   }
 
@@ -3148,6 +3148,11 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     jj_scanpos = xsp;
     if (jj_3R_33()) return true;
     }
+    return false;
+  }
+
+  final private boolean jj_3R_91() {
+    if (jj_scan_token(KEYWORD_EVERY)) return true;
     return false;
   }
 
@@ -3206,8 +3211,8 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
     return false;
   }
 
-  final private boolean jj_3R_91() {
-    if (jj_scan_token(KEYWORD_EVERY)) return true;
+  final private boolean jj_3_1() {
+    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -3218,11 +3223,6 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
       xsp = jj_scanpos;
       if (jj_3R_19()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  final private boolean jj_3_1() {
-    if (jj_3R_14()) return true;
     return false;
   }
 
@@ -3684,7 +3684,7 @@ public class XPath2Parser/*@bgen(jjtree)*/implements XPath2ParserTreeConstants, 
   }
 
   final private boolean jj_3R_78() {
-    if (jj_scan_token(KEYWORD_PRECEDING_SIBLIING)) return true;
+    if (jj_scan_token(KEYWORD_PRECEDING_SIBLING)) return true;
     if (jj_scan_token(COLON_COLON)) return true;
     return false;
   }
