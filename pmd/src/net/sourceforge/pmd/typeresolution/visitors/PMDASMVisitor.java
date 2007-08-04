@@ -64,8 +64,8 @@ public class PMDASMVisitor implements ClassVisitor {
 
 	private void parseClassName(String[] names) {
 		if (names != null) {
-			for (int i = 0; i < names.length; i++) {
-				parseClassName(names[i]);
+			for (String s : names) {
+				parseClassName(s);
 			}
 		}
 	}
