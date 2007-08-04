@@ -231,6 +231,15 @@
                 <role>Developer</role>
             </roles>
         </developer>
+
+        <developer>
+          <name>Romain Pelisse</name>
+            <id>rpelisse</id>
+            <email>rpelisse@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
 	</developers>
 
 
