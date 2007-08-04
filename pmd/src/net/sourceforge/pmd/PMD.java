@@ -57,7 +57,7 @@ public class PMD {
     public PMD() {}
 
     /**
-     * Processes the file read by the reader agains the rule set.
+     * Processes the file read by the reader against the rule set.
      *
      * @param reader   input stream reader
      * @param ruleSets set of rules to process against the file
