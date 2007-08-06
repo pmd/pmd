@@ -26,7 +26,6 @@ import net.sourceforge.pmd.ast.SimpleNode;
  * class
  * 
  * @author acaplan
- * 
  */
 public class CloneMethodMustImplementCloneable extends AbstractRule {
 
@@ -42,7 +41,7 @@ public class CloneMethodMustImplementCloneable extends AbstractRule {
                 } else if (type.getType().equals(Cloneable.class)) {
                     return data;
                 } else {
-                    List implementors = Arrays.asList(type.getType().getInterfaces());
+                    List<Class> implementors = Arrays.asList(type.getType().getInterfaces());
                     if (implementors.contains(Cloneable.class)) {
                         return data;
                     }
@@ -67,8 +66,9 @@ public class CloneMethodMustImplementCloneable extends AbstractRule {
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        
-        if (node.isFinal() || node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class).isFinal()) {
+        ASTClassOrInterfaceDeclaration classOrInterface = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+		if (classOrInterface != null && 	//Don't analyse enums, which cannot subclass clone()
+				(node.isFinal() || classOrInterface.isFinal())) {
             if (node.findChildrenOfType(ASTBlock.class).size() == 1) {
                 List<ASTBlockStatement> blocks = node.findChildrenOfType(ASTBlockStatement.class);
                 if (blocks.size() == 1) {

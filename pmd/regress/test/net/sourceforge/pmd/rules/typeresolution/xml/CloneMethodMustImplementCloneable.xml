@@ -129,4 +129,36 @@ throw new CloneNotSupportedException();
 }
      ]]></code>
     </test-code>
+    <!--test-code>
+        <description><![CDATA[
+Bug 1732593, extending a class which implements Clonable.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyAbstractClass implements Cloneable{
+}
+public class MyClonableClass extends MyAbstractClass{
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+}
+     ]]></code>
+    </test-code-->
+    <test-code>
+        <description><![CDATA[
+Bug 1765613, NullPointerException on enum
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum Foo {
+    BAR("bar");
+
+    private String bar;
+
+    public String getBar() {
+        return bar;
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
