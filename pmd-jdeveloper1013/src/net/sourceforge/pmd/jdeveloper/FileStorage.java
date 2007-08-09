@@ -3,6 +3,7 @@ package net.sourceforge.pmd.jdeveloper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
@@ -15,7 +16,7 @@ public class FileStorage implements SettingsStorage {
         this.file = file;
     }
 
-    public void save(Properties newProperties)  throws SettingsException {
+    public void save(Properties newProperties) throws SettingsException {
         try {
             Properties savedProperties = new Properties();
 
@@ -25,14 +26,16 @@ public class FileStorage implements SettingsStorage {
                 fis.close();
             }
 
-            for (Iterator i = newProperties.keySet().iterator(); i.hasNext();) {
+            for (Iterator i = newProperties.keySet().iterator(); i.hasNext(); 
+            ) {
                 String key = (String)i.next();
                 String value = newProperties.getProperty(key);
                 savedProperties.setProperty(key, value);
             }
 
             FileOutputStream fos = new FileOutputStream(file);
-            savedProperties.store(fos, "PMD-JDeveloper rule selections " + new Date());
+            savedProperties.store(fos, 
+                                  "PMD-JDeveloper rule selections " + new Date());
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();
