@@ -1,36 +1,27 @@
+change the build.xml, jdev1012-ext.xml, jdev9052-ext.xml to reflect pmd-jdeveloper release
 update the release date in the changelog
-change the build.xml to reflect pmd-jdeveloper release 1.8
-Update Plugin.version() to reflect release 1.8.
+Update Plugin.version() to reflect release
 
-Create the binary release:
+binary release:
 ant release
 TESTS:
 1) Does it unzip neatly on top of the jdev/ext/lib directory?
-2) Can you run it it on a file and find some unused code?
+2) Can you run it it on a project and find errors for all rules?
 3) Are options persistant?
 
-Check everything in
+src release:
+// TODO automation by ant, if subversion tasks are available
+checkin
+// TODO automation by ant, if subversion tasks are available
+copy to tags/pmd-jdeveloper/pmd_jdeveloper_release_X_X
+ant releasesrc
 
-Create the src release:
-
-CVSROOT=:ext:tomcopeland@cvs.sourceforge.net:/cvsroot/pmd && export CVSROOT
-cd ~/pmd/
-cvs -q tag -D tomorrow "pmd_jdeveloper_release_1_8" pmd-jdeveloper
-rm -rf ~/tmp/pmd-jdeveloper
-mkdir -p ~/tmp/pmd-jdeveloper
-cvs -q export -d tmp -r pmd_jdeveloper_release_1_8 pmd-jdeveloper
-mv tmp/* ~/tmp/pmd-jdeveloper
-rmdir tmp/
-cp pmd-jdeveloper/lib/pmd-jdeveloper-1.8.jar ~/tmp/pmd-jdeveloper/lib
-cd ~/tmp
-zip -q -r pmd-jdeveloper-src-1.8.zip pmd-jdeveloper
-ncftpput upload.sourceforge.net incoming/ pmd-jdeveloper-bin-1.8.zip pmd-jdeveloper-src-1.8.zip
-rm -rf pmd-jdeveloper/
-
+release on website:
+ant upload
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jdeveloper-src-1.8.zip file
-Add the pmd-jdeveloper-bin-1.8.zip file
+Add the pmd-jdeveloper-src-1.9.zip file
+Add the pmd-jdeveloper-bin-1.9.zip file
 Classify the file
 
 Submit some news saying "hey, new release of the jdeveloper plugin!"

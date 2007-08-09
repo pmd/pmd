@@ -1,3 +1,6 @@
+August 06, 2007 - 1.9:
+Updated PMD version to 4.0.
+
 March 10, 2005 - 1.8:
 Updated PMD version to 3.5.
 

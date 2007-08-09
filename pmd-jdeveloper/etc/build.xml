@@ -3,96 +3,129 @@
 	<property name="config" value="config/"/>
 	<property name="src" value="src/"/>
 	<property name="etc" value="etc/"/>
-	<property name="pmdjar" value="pmd-3.5.jar"/>
-	<property name="pluginversion" value="1.8"/>
-	<property name="jdeveloper9052.install.dir" value="/home/tom/pmd/ides/jdev9052/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
-	<property name="jdeveloper1012.install.dir" value="/home/tom/pmd/ides/jdev1012/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
-
+	<property name="pmdjar" value="pmd14-4.0.jar"/>
+	<property name="pluginversion" value="1.9"/>
+  <property name="release.dir" value="C:/Documents and Settings/Torsten/My Documents/Eigene Programme/Java/PMD/releases"/>
+  <property name="jdeveloper.dir" value="C:/Oracle/10gJD10122"/>
+	<property name="jdeveloper905.install.dir" value="${release.dir}/ides/jdev9052/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
+	<property name="jdeveloper1012.install.dir" value="${release.dir}/ides/jdev1012/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
+  <property name="jdeveloper905.release.zipname" value="${ant.project.name}905-bin-${pluginversion}.zip"/>
+  <property name="jdeveloper1012.release.zipname" value="${ant.project.name}1012-bin-${pluginversion}.zip"/>
+  <property name="release.src.zipname" value="${ant.project.name}-src-${pluginversion}.zip"/>
 
 	<path id="project.class.path">
 		<pathelement location="lib/${pmdjar}"/>
-		<pathelement location="lib/jdeveloper.jar"/>
-		<pathelement location="lib/javatools.jar"/>
-		<pathelement location="lib/ide.jar"/>
+		<pathelement location="${jdeveloper.dir}/jdev/lib/jdev.jar"/>
+		<pathelement location="${jdeveloper.dir}/ide/lib/javatools.jar"/>
+		<pathelement location="${jdeveloper.dir}/ide/lib/ide.jar"/>
 		<pathelement location="build"/>
 	</path>
 
-    <target name="delete">
-        <delete file="lib/${ant.project.name}.jar"/>
-        <delete file="${jdeveloper9052.install.dir}/${ant.project.name}.jar"/>
-        <delete file="${jdeveloper1012.install.dir}/${ant.project.name}.jar"/>
-		<delete dir="build"/>
-        <mkdir dir="build"/>
-    </target>
+  <target name="delete">
+    <delete file="lib/${ant.project.name}-${pluginversion}.jar"/>
+    <delete file="${jdeveloper905.install.dir}/${ant.project.name}.jar"/>
+    <delete file="${jdeveloper1012.install.dir}/${ant.project.name}.jar"/>
+    <delete dir="build"/>
+    <delete dir="classes"/>
+    <delete dir="tmp"/>
+  </target>
 
 	<target name="compile">
+    <mkdir dir="build"/>
 		<javac
-			srcdir="${src}"	destdir="build"	debug="on" deprecation="on">
+      srcdir="${src}"	destdir="build"	debug="on" deprecation="on">
 			<classpath refid="project.class.path"/>
 		</javac>
 	</target>
 
-    <target name="jarall" depends="compile">
-        <jar jarfile="lib/${ant.project.name}-${pluginversion}.jar">
-			<fileset dir="build" excludes="**/*.di,**/*.i"/>
+  <target name="jarall" depends="compile">
+    <jar jarfile="lib/${ant.project.name}-${pluginversion}.jar">
+    	<fileset dir="build" excludes="**/*.di,**/*.i"/>
 		</jar>
-    </target>
+  </target>
 
-    <target name="jar1012" depends="compile">
-        <copy file="etc/jdev1012-ext.xml" tofile="build/meta-inf/jdev-ext.xml"/>
-        <antcall target="jarall"/>
-    </target>
+  <target name="jar1012" depends="compile">
+    <copy file="etc/jdev1012-ext.xml" tofile="build/meta-inf/jdev-ext.xml"/>
+    <antcall target="jarall"/>
+  </target>
 
-    <target name="jar9052" depends="compile">
-        <copy file="etc/jdev9052-ext.xml" tofile="build/meta-inf/jdev-ext.xml"/>
-        <antcall target="jarall"/>
-    </target>
+  <target name="jar9052" depends="compile">
+    <copy file="etc/jdev9052-ext.xml" tofile="build/meta-inf/jdev-ext.xml"/>
+    <antcall target="jarall"/>
+  </target>
 
 	<target name="deploy1012" depends="delete,jar1012">
-        <mkdir dir="${jdeveloper1012.install.dir}/lib"/>
-        <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper1012.install.dir}/lib"/>
-        <copy file="lib/${pmdjar}" todir="${jdeveloper1012.install.dir}/lib"/>
-        <copy file="lib/jaxen-1.1-beta-7.jar" todir="${jdeveloper1012.install.dir}/lib"/>
-        <copy file="lib/jakarta-oro-2.0.8.jar" todir="${jdeveloper1012.install.dir}/lib"/>
-	</target>
+     <mkdir dir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/${pmdjar}" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/asm-3.0.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/asm-commons-3.0.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/asm-util-3.0.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/backport-util-concurrent.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/jaxen-1.1.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/retroweaver-rt-2.0.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+  </target>
 
-    <target name="deploy9052" depends="delete,jar9052">
-        <mkdir dir="${jdeveloper9052.install.dir}/lib"/>
-        <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper9052.install.dir}/lib"/>
-        <copy file="lib/${pmdjar}" todir="${jdeveloper9052.install.dir}/lib"/>
-        <copy file="lib/jaxen-1.1-beta-7.jar" todir="${jdeveloper9052.install.dir}/lib"/>
-        <copy file="lib/jakarta-oro-2.0.8.jar" todir="${jdeveloper9052.install.dir}/lib"/>
-    </target>
+  <target name="deploy9052" depends="delete,jar9052">
+    <mkdir dir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/${pmdjar}" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/asm-3.0.jar" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/asm-commons-3.0.jar" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/asm-util-3.0.jar" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/backport-util-concurrent.jar" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/jaxen-1.1.jar" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/retroweaver-rt-2.0.jar" todir="${jdeveloper905.install.dir}/lib"/>
+  </target>
 
-    <target name="releaseall">
-        <mkdir dir="tmp/${ant.project.name}-${pluginversion}/lib"/>
-        <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
-        <copy file="lib/${pmdjar}" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
-        <copy file="lib/jaxen-1.1-beta-7.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
-        <copy file="lib/jakarta-oro-2.0.8.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
-    </target>
+  <target name="releaseall">
+     <delete dir="tmp"/>
+     <mkdir dir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+     <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
+     <copy file="lib/${pmdjar}" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
+     <copy file="lib/asm-3.0.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+     <copy file="lib/asm-commons-3.0.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+     <copy file="lib/asm-util-3.0.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+     <copy file="lib/backport-util-concurrent.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+     <copy file="lib/jaxen-1.1.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+     <copy file="lib/retroweaver-rt-2.0.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+  </target>
 
-    <target name="release1012" depends="clean,jar1012,releaseall">
-        <zip zipfile="pmd-jdeveloper1012-bin-${pluginversion}.zip" basedir="tmp/"/>
-        <move file="pmd-jdeveloper1012-bin-${pluginversion}.zip" todir="/home/tom/tmp"/>
-        <delete dir="tmp"/>
-    </target>
+  <target name="release1012" depends="clean,jar1012,releaseall">
+     <zip zipfile="${jdeveloper1012.release.zipname}" basedir="tmp/"/>
+     <move file="${jdeveloper1012.release.zipname}" todir="${release.dir}"/>
+  </target>
 
-    <target name="release9052" depends="clean,jar9052,releaseall">
-        <zip zipfile="pmd-jdeveloper9052-bin-${pluginversion}.zip" basedir="tmp/"/>
-        <move file="pmd-jdeveloper9052-bin-${pluginversion}.zip" todir="/home/tom/tmp"/>
-        <delete dir="tmp"/>
-    </target>
+  <target name="release9052" depends="clean,jar9052,releaseall">
+     <zip zipfile="${jdeveloper905.release.zipname}" basedir="tmp/"/>
+     <move file="${jdeveloper905.release.zipname}" todir="${release.dir}"/>
+  </target>
+
+  <target name="releasesrc" depends="delete">
+     <zip zipfile="${release.src.zipname}" basedir="."/>
+     <move file="${release.src.zipname}" todir="${release.dir}"/>
+  </target>
 
 	<target name="clean" depends="delete,compile">
 	</target>
 
-    <target name="tomserver1012" depends="release1012">
-        <echo message="Uploading zip file"/>
-        <exec executable="scp" os="Linux">
-            <arg line=" /home/tom/tmp/pmd-jdeveloper1012-bin-${pluginversion}.zip tom@infoether.com:public_html/"/>
-        </exec>
-    </target>
+  <target name="tomserver1012" depends="release1012">
+    <echo message="Uploading zip file"/>
+    <exec executable="scp" os="Linux">
+      <arg line=" ${release.dir}/${jdeveloper1012.release.zipname} tom@infoether.com:public_html/"/>
+    </exec>
+  </target>
 
+  <target name="upload" depends="release1012,release9052,releasesrc">
+    <ftp server="upload.sourceforge.net" userid="anonymous"
+         password="tkleiber@users.sourceforge.net" remotedir="incoming"
+         binary="true" passive="true">
+      <fileset dir="${release.dir}">
+        <include name="${jdeveloper905.release.zipname}"></include>
+        <include name="${jdeveloper1012.release.zipname}"></include>
+        <include name="${release.src.zipname}"></include>
+      </fileset>
+    </ftp>
+  </target>
 
 </project>

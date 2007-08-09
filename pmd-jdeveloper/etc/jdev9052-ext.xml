@@ -1,15 +1,15 @@
 <?xml version = '1.0' encoding = 'windows-1252'?>
 <extensions xmlns="http://xmlns.oracle.com/jdeveloper/905/extensions">
   <feature>
-    <group name="" nlsclass="" exclusive="false">
-      <description>PMD static analysis plugin</description>
+    <group name="PMD JDeveloper Extension" nlsclass="" exclusive="false">
+      <description>PMD JDeveloper Extension</description>
       <extension>
         <addin>net.sourceforge.pmd.jdeveloper.Plugin</addin>
         <dependency_addin>oracle.jdeveloper.library.JLibraryManager</dependency_addin>
         <gallery>
             <name>net.sourceforge.pmd.jdeveloper.Plugin</name>
-            <description>PMD static analysis</description>
-            <help>PMD static analysis</help>
+            <description>PMD JDeveloper Extension</description>
+            <help>Provides integrated support for PMD 4.0 in JDeveloper 9.0.5.</help>
             <category>General</category>
             <folder>PMD</folder>
         </gallery>
