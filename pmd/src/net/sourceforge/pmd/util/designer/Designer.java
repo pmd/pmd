@@ -80,14 +80,17 @@ import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDK1_6;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
+import net.sourceforge.pmd.jaxen.TypeOfFunction;
 import net.sourceforge.pmd.jsp.ast.JspCharStream;
 import net.sourceforge.pmd.jsp.ast.JspParser;
+import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -136,7 +139,10 @@ public class Designer implements ClipboardOwner {
     private SimpleNode getCompilationUnit() {
     	    	
     	Parser parser = (Parser)sourceTypeSets[selectedSourceTypeIndex()][2];
-    	return parser.parse(new StringReader(codeEditorPane.getText()));
+    	ASTCompilationUnit n = (ASTCompilationUnit)parser.parse(new StringReader(codeEditorPane.getText()));
+        ClassTypeResolver ctr = new ClassTypeResolver();
+        n.jjtAccept(ctr, null);
+        return n;
     }
     
     private SourceType getSourceType() {
@@ -455,6 +461,7 @@ public class Designer implements ClipboardOwner {
     
     public Designer() {
         MatchesFunction.registerSelfInSimpleContext();
+        TypeOfFunction.registerSelfInSimpleContext();
 
         xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
         makeTextComponentUndoable(codeEditorPane);

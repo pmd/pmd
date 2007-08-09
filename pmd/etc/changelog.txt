@@ -9,6 +9,7 @@ Fixed bug 1522517 - fixed false positive in UselessOverridingMethod for clone me
 Fixed bug 1744065 - fixed false positive in BooleanInstantiation when a custom Boolean is used
 Fixed bug 1765613 - fixed NullPointerException in CloneMethodMustImplementCloneable when checking enum
 The Java 1.5 source code parser is now the default for testcode used in PMD's unit tests.
+Added TypeResolution to the XPath rule. Use typeof function to determine if a node is of a particular type
 
 July 20, 2007 - 4.0
 Fixed bug 1697397 - fixed false positives in ClassCastExceptionWithToArray

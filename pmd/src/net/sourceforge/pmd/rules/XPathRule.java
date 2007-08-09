@@ -18,6 +18,7 @@ import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
+import net.sourceforge.pmd.jaxen.TypeOfFunction;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -45,6 +46,7 @@ public class XPathRule extends CommonAbstractRule {
     // Mapping from Node name to applicable XPath queries
     private Map<String, List<XPath>> nodeNameToXPaths;
     private boolean regexpFunctionRegistered;
+    private boolean typeofFunctionRegistered;
 
     private static final String AST_ROOT = "_AST_ROOT_";
 
@@ -96,6 +98,11 @@ public class XPathRule extends CommonAbstractRule {
         if (!regexpFunctionRegistered) {
             MatchesFunction.registerSelfInSimpleContext();
             regexpFunctionRegistered = true;
+        }
+
+        if (!typeofFunctionRegistered) {
+            TypeOfFunction.registerSelfInSimpleContext();
+            typeofFunctionRegistered = true;
         }
 
         //
