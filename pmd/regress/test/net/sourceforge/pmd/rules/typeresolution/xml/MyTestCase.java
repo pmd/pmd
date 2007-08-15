@@ -2,6 +2,6 @@ package test.net.sourceforge.pmd.rules.typeresolution.xml;
 
 import junit.framework.TestCase;
 
-public class ExceptionSignatureDeclarationRuleTestHelper extends TestCase {
+public class MyTestCase extends TestCase {
 
 }
