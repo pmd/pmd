@@ -1,4 +1,4 @@
-package test.net.sourceforge.pmd.rules.typeresolution;
+package test.net.sourceforge.pmd.rules.typeresolution.xml;
 
 import junit.framework.TestCase;
 

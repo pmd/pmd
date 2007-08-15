@@ -89,7 +89,7 @@ skip junit setUp method where the superclass is TestCase
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo extends test.net.sourceforge.pmd.rules.typeresolution.ExceptionSignatureDeclarationRuleTestHelper {
+public class Foo extends test.net.sourceforge.pmd.rules.typeresolution.xml.ExceptionSignatureDeclarationRuleTestHelper {
  void setUp() throws Exception {}
 }
      ]]></code>
@@ -101,7 +101,7 @@ imported explicitly
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import test.net.sourceforge.pmd.rules.typeresolution.ExceptionSignatureDeclarationRuleTestHelper;
+import test.net.sourceforge.pmd.rules.typeresolution.xml.ExceptionSignatureDeclarationRuleTestHelper;
 public class Foo extends ExceptionSignatureDeclarationRuleTestHelper {
  void setUp() throws Exception {}
 }
@@ -114,7 +114,7 @@ but is imported implicitly
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import test.net.sourceforge.pmd.rules.typeresolution.*;
+import test.net.sourceforge.pmd.rules.typeresolution.xml.*;
 public class Foo extends ExceptionSignatureDeclarationRuleTestHelper {
  void setUp() throws Exception {}
 }
@@ -127,7 +127,7 @@ and is in the same package
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-package test.net.sourceforge.pmd.rules.typeresolution;
+package test.net.sourceforge.pmd.rules.typeresolution.xml;
 public class Foo extends ExceptionSignatureDeclarationRuleTestHelper {
  void setUp() throws Exception {}
 }
