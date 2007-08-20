@@ -8,6 +8,25 @@
 
   <body>
   <section name="Future Directions">
+  	<subsection name="Roadmap">
+        <p>This roadmap contains all the different 'workshops' PMD's developers are working right now.
+        	<ul>
+        		<li><b>TypeResolution Framework</b>: A framework to ease type resolution of a variable in both XPath and Java Rules.</li>
+        		<li><b>pmd-jerry</b>: An XPath2 engine for PMD.</li>
+        		<li><b>Migration to Maven 2</b>: Hardly a user-feature but worth mentionning here.</li>
+        		<li><b>French version of this website</b></li>
+        		<li><b>Better symbol analysis</b>: See below.</li>
+        		<li><b>Data Flow analysis</b>: See below.</li>
+        		<li><b>Code Cleanups</b>: See below.</li>
+        		<!--
+        			This next one is open for debate ! :)
+        			<![CDATA[
+        		<li><b>Multi-language support</b>: With a little refactoring, PMD support other language such as Ruby or <a href="">JavaScript</a>
+        			]]>
+        		-->
+        	</ul>
+        <i>Please note that, of course, there is no warranty about when those 'features' will be finished, if they ever are.</i></p>
+      </subsection>
       <subsection name="Better symbol analysis">
         <p>Currently PMD only looks at one source file at a time.  Instead, it
         should resolve symbols across classes.  This will eliminate some open
