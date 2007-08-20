@@ -281,6 +281,24 @@ Total time: 2 seconds
 </source>
 
       </subsection>
+      <subsection name="Memory Usage">
+      <p>On quite large project ( generally more than 500 classes ), the Ant task may fail with a OutOfMemoryError. There is a very easy
+      to fix this :
+      On Windows:
+      <source>
+      	<![CDATA[[
+      		  set ANT_OPTS=-Xmx1024m -Xms512m
+      	]]>
+      </source>
+      On Linux
+      <source>
+      	<![CDATA[[
+      		export ANT_OPTS="-Xmx1024m -Xms512m"
+      	]]>
+      </source>
+      Of course, you should adjust the size according to your available memory.
+      </p>
+      </subsection>
    </section>
  </body>
 </document>
