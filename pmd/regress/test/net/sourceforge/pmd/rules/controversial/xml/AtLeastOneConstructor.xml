@@ -80,4 +80,26 @@ public interface Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+skip static classes
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public static class Foo {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip classes with only static methods
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public static class Foo {
+	public static void method() {}
+	public static void otherMethods() {}
+}
+     ]]></code>
+    </test-code>
 </test-data>

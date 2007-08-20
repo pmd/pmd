@@ -163,9 +163,14 @@ Each class should declare at least one constructor.
       <property name="xpath">
           <value>
               <![CDATA[
-//ClassOrInterfaceDeclaration
- [not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)]
- [@Interface='false']
+//ClassOrInterfaceDeclaration[
+	not(ClassOrInterfaceBody/ClassOrInterfaceBodyDeclaration/ConstructorDeclaration)
+	and
+	(@Static = 'false')
+	and
+	(count(./descendant::MethodDeclaration[@Static]) < 1)
+]
+	[@Interface='false']
 ]]>
           </value>
       </property>
