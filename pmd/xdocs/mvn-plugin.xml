@@ -70,13 +70,13 @@
     		    In this file you can define which rules to use, add custom rules, and
     		    customizing which rules to include/exclude from official rulesets. More information on
     		    writing a ruleset can be found <a href="howtomakearuleset.html">here</a>.
-    		    Note that with if include other rulesets in your own rulesets, you have to be sure that the plugin
-    		    will be able to resolve their adresses too...
+    		    Note that if you include other rulesets in your own rulesets, you have to be sure that the plugin
+    		    will be able to resolve those other ruleset references.
    		    </p>
     	</subsection>
 		<subsection name="Other configurations">
 			<p>
-				The maven 2 pmd plugin allows to directly configure CPD, targetJdk, the use of XRef to link the report to html source files
+				The Maven 2 PMD plugin allows you to configure CPD, targetJDK, and the use of XRef to link the report to html source files, 
 				and the file encoding:
 				<source>
 					<![CDATA[
