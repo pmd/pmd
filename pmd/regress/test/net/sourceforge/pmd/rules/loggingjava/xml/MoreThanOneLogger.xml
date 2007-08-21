@@ -6,6 +6,7 @@ ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.apache.log4j.Logger;
 public class Foo {
  Logger log;
 }
@@ -17,6 +18,7 @@ two loggers
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import org.apache.log4j.Logger;
 public class Foo {
  Logger log;
  Logger log2;
@@ -29,6 +31,7 @@ different logger for inner class
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import org.apache.log4j.Logger;
 public class Foo {
  Logger log;
  class Bar {

@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTMarkerAnnotation extends SimpleJavaNode {
+public class ASTMarkerAnnotation extends SimpleJavaNode implements TypeNode {
     public ASTMarkerAnnotation(int id) {
         super(id);
     }
@@ -17,5 +17,14 @@ public class ASTMarkerAnnotation extends SimpleJavaNode {
      */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+    
+    private Class type;
+    public void setType(Class type){
+        this.type = type;
+    }
+    
+    public Class getType(){
+        return type;
     }
 }

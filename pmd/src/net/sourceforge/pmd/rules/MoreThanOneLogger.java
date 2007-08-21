@@ -14,6 +14,23 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.util.NumericConstants;
 
 public class MoreThanOneLogger extends AbstractRule {
+    
+    private static Class log4jLogger = null;
+
+    private static Class javaLogger = null;
+
+    static {
+        try {
+            log4jLogger = Class.forName("org.apache.log4j.Logger");
+        } catch (Throwable t) {
+            log4jLogger = null;
+        }
+        try {
+            javaLogger = Class.forName("java.util.logging.Logger");
+        } catch (Throwable t) {
+            log4jLogger = null;
+        }
+    }
 
 	private Stack<Integer> stack = new Stack<Integer>();
 
@@ -50,8 +67,11 @@ public class MoreThanOneLogger extends AbstractRule {
 			SimpleNode reftypeNode = (SimpleNode) type.jjtGetChild(0);
 			if (reftypeNode instanceof ASTReferenceType) {
                 SimpleNode classOrIntType = (SimpleNode) reftypeNode.jjtGetChild(0);
-                if (classOrIntType instanceof ASTClassOrInterfaceType && "Logger".equals(classOrIntType.getImage())) {
-                	++count;
+                if (classOrIntType instanceof ASTClassOrInterfaceType){
+                    Class clazzType = ((ASTClassOrInterfaceType)classOrIntType).getType();
+                    if((clazzType != null && (clazzType.equals(log4jLogger) || clazzType.equals(javaLogger))|| (clazzType == null&& "Logger".equals(classOrIntType.getImage())))) {
+                        ++count;
+                    }
                 }
 			}
 		}

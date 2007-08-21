@@ -6,7 +6,8 @@ setUp mispellings
      ]]></description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
  public void setup() {}
  public void SetUp() {}
 }
@@ -18,7 +19,8 @@ tearDown mispellings
      ]]></description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
  public void TearDown() {}
  public void teardown() {}
 }
@@ -30,7 +32,8 @@ ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
  public void setUp() {}
  public void tearDown() {}
 }
@@ -42,7 +45,8 @@ unrelated methods
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
  public void utility() {}
  public void foobr() {}
 }
@@ -54,8 +58,21 @@ overloaded setUp
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
  public void setup(String x) {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+No problem - not a JUnit test
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void setup() {}
+ public void SetUp() {}
 }
      ]]></code>
     </test-code>

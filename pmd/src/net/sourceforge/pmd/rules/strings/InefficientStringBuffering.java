@@ -15,6 +15,7 @@ import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 import java.util.List;
 
@@ -96,8 +97,7 @@ public class InefficientStringBuffering extends AbstractRule {
         if (argList == null || argList.jjtGetNumChildren() > 1) {
             return false;
         }
-
-        return ((VariableNameDeclaration)n.getNameDeclaration()).getTypeImage().equals("StringBuffer");
+        return TypeHelper.isA((VariableNameDeclaration)n.getNameDeclaration(), StringBuffer.class);
     }
 
     // TODO move this method to SimpleNode
@@ -119,7 +119,7 @@ public class InefficientStringBuffering extends AbstractRule {
         }
         // note that the child can be an ArrayDimsAndInits, for example, from java.lang.FloatingDecimal:  t = new int[ nWords+wordcount+1 ];
         ASTClassOrInterfaceType an = ao.getFirstChildOfType(ASTClassOrInterfaceType.class);
-        return an != null && (an.getImage().endsWith("StringBuffer") || an.getImage().endsWith("StringBuilder"));
+        return an != null && (TypeHelper.isA(an, StringBuffer.class) || TypeHelper.isA(an, StringBuilder.class));
     }
 }
 

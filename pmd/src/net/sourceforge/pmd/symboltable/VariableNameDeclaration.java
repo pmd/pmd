@@ -11,6 +11,7 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Dimensionable;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.TypeNode;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration {
 
@@ -59,6 +60,10 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 
     public ASTVariableDeclaratorId getDeclaratorId() {
         return (ASTVariableDeclaratorId) node;
+    }
+
+    public Class getType() {
+        return ((TypeNode) node).getType();
     }
 
     public boolean equals(Object o) {

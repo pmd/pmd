@@ -6,7 +6,8 @@ nonstatic is bad
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
  public TestSuite suite() {}
 }
      ]]></code>
@@ -17,7 +18,8 @@ public static with no params is OK
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
  public static TestSuite suite() {}
 }
      ]]></code>
@@ -28,7 +30,8 @@ private suite() is bad
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
  private static TestSuite suite() {}
 }
      ]]></code>
@@ -39,7 +42,8 @@ if there are params, just skip it
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
  protected static Test suite(Foo foo) {}
 }
      ]]></code>

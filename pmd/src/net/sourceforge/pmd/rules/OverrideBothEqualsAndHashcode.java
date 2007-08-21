@@ -39,10 +39,13 @@ public class OverrideBothEqualsAndHashcode extends AbstractRule {
 
     public Object visit(ASTImplementsList node, Object data) {
         for (int ix = 0; ix < node.jjtGetNumChildren(); ix++) {
-            if (node.jjtGetChild(ix).getClass().equals(ASTClassOrInterfaceType.class)
-                    && ((SimpleNode) node.jjtGetChild(ix)).hasImageEqualTo("Comparable")) {
-                implementsComparable = true;
-                return data;
+            if (node.jjtGetChild(ix).getClass().equals(ASTClassOrInterfaceType.class)) {
+                ASTClassOrInterfaceType cit = (ASTClassOrInterfaceType)node.jjtGetChild(ix);
+                Class clazz = cit.getType();
+                if ((clazz != null ) || (clazz == null && ((SimpleNode) node.jjtGetChild(ix)).hasImageEqualTo("Comparable"))) {
+                    implementsComparable = true;
+                    return data;
+                }
             }
         }
         return super.visit(node, data);

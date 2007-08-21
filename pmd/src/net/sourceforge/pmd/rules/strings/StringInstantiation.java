@@ -9,6 +9,7 @@ import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 import java.util.List;
 
@@ -19,8 +20,7 @@ public class StringInstantiation extends AbstractRule {
             return data;
         }
 
-        ASTClassOrInterfaceType clz = (ASTClassOrInterfaceType) node.jjtGetChild(0);
-        if (!clz.hasImageEqualTo("String")) {
+        if (!TypeHelper.isA((ASTClassOrInterfaceType) node.jjtGetChild(0), String.class)) {
             return data;
         }
 
@@ -47,7 +47,7 @@ public class StringInstantiation extends AbstractRule {
 
         VariableNameDeclaration vnd = (VariableNameDeclaration) nd;
         // nd == null in cases like: return new String(str);
-        if (vnd == null || vnd.getTypeImage().equals("String")) {
+        if (vnd == null || TypeHelper.isA(vnd, String.class)) {
             addViolation(data, node);
         }
         return data;

@@ -7,6 +7,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 import java.util.HashSet;
 import java.util.List;
@@ -57,7 +58,7 @@ public class UseStringBufferLength extends AbstractRule {
             return data;
         }
         VariableNameDeclaration vnd = (VariableNameDeclaration) nd;
-        if (!vnd.getTypeImage().equals("StringBuffer") || alreadySeen.contains(vnd)) {
+        if (alreadySeen.contains(vnd) || !TypeHelper.isA(vnd, StringBuffer.class)) {
             return data;
         }
         alreadySeen.add(vnd);

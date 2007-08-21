@@ -6,7 +6,8 @@ Contains assert
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
  public void test1() {
   assertEquals("1 == 1", 1, 1);
  }
@@ -19,7 +20,8 @@ Missing assert
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
  public void test1() {
  }
 }
@@ -31,7 +33,8 @@ All ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
  public void setUp() {
  }
  public void test1() {
@@ -49,7 +52,8 @@ Two wrong
      ]]></description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
  public void setUp() {
  }
  public void test1() {
@@ -67,7 +71,8 @@ Contains fail
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
  public void test1() {
   fail("1 == 1");
  }
@@ -80,7 +85,8 @@ One wrong
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
  public void setUp() {
  }
  public void test1() {
@@ -99,7 +105,8 @@ Skip interfaces
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public interface Foo {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
  public void setUp() throws Exception;
 }
      ]]></code>
@@ -110,7 +117,8 @@ Skip abstract methods
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
  public abstract void setUp() throws Exception;
 }
      ]]></code>
@@ -121,7 +129,8 @@ Another fail() case
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public abstract class AbstractAggregateCreator {
+import junit.framework.TestCase;
+public abstract class AbstractAggregateCreatorTest extends TestCase{
     public abstract int getType();
     public abstract ProfileAggregate create(DatabaseTransaction db,
         DailyProfileList profiles, ProfileType type, ProfileStatus status)
@@ -135,7 +144,8 @@ BUG 1105633 - False +: JUnit testcases could have fail() instead of assert
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class FooTest {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
  public void testNPEThrown() {
   try {
    methodCall(null);
@@ -154,7 +164,8 @@ BUG 1146116 PMDException with inner interfaces
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package at.herold.anthilltest;
-public class TestJunitRuleException {
+import junit.framework.TestCase;
+public class TestJunitRuleExceptionTest extends TestCase {
    interface I1 { 
       public void meth(); // this is ok
    }
@@ -170,7 +181,8 @@ skip static test methods
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
  public static void testfoo() {}
 }
      ]]></code>
@@ -181,7 +193,8 @@ exceptions shouldn't block it
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
  public void testfoo() throws Exception {}
 }
      ]]></code>

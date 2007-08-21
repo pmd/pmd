@@ -21,9 +21,11 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.TypeNode;
 import net.sourceforge.pmd.properties.IntegerProperty;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 import java.util.HashSet;
 import java.util.List;
@@ -304,11 +306,15 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
     }
 
     private static boolean isStringBuffer(ASTVariableDeclaratorId node) {
+
+        if (node.getType() != null) {
+            return node.getType().equals(StringBuffer.class);
+        }
         SimpleNode nn = node.getTypeNameNode();
         if (nn.jjtGetNumChildren() == 0) {
             return false;
         }
-        return "StringBuffer".equals(((SimpleNode) nn.jjtGetChild(0)).getImage());
+        return TypeHelper.isA((TypeNode)nn.jjtGetChild(0), StringBuffer.class);
     }
 
     protected Map<String, PropertyDescriptor> propertiesByName() {

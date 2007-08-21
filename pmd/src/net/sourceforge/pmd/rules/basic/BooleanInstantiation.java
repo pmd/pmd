@@ -11,6 +11,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 /**
  * Avoid instantiating Boolean objects; you can reference Boolean.TRUE,
@@ -52,11 +53,10 @@ public class BooleanInstantiation extends AbstractRule {
 	        if (node.findChildrenOfType(ASTArrayDimsAndInits.class).size() > 0) {
 	            return super.visit(node, data);
 	        }
-	        String typeName = ((ASTClassOrInterfaceType) node.jjtGetChild(0)).getImage();
-	        if ("Boolean".equals(typeName) || "java.lang.Boolean".equals(typeName)) {
-	            super.addViolation(data, node);
-	            return data;
-	        }
+	        if (TypeHelper.isA((ASTClassOrInterfaceType) node.jjtGetChild(0), Boolean.class)) {
+                super.addViolation(data, node);
+                return data;
+            }
     	}
         return super.visit(node, data);
     }

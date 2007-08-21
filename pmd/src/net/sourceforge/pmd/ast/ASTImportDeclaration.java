@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTImportDeclaration extends SimpleJavaNode {
+public class ASTImportDeclaration extends SimpleJavaNode implements TypeNode {
 
     private boolean isImportOnDemand;
     private boolean isStatic;
@@ -67,5 +67,23 @@ public class ASTImportDeclaration extends SimpleJavaNode {
      */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+
+    private Class type;
+    private Package pkg;
+    public void setType(Class type){
+        this.type = type;
+    }
+    
+    public Class getType(){
+        return type;
+    }
+    
+    public void setPackage(Package packge){
+        this.pkg = packge;
+    }
+    
+    public Package getPackage(){
+        return this.pkg;
     }
 }

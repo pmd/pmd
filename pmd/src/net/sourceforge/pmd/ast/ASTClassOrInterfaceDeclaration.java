@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTClassOrInterfaceDeclaration extends AccessNode {
+public class ASTClassOrInterfaceDeclaration extends AccessNode implements TypeNode {
     public ASTClassOrInterfaceDeclaration(int id) {
         super(id);
     }
@@ -39,4 +39,13 @@ public class ASTClassOrInterfaceDeclaration extends AccessNode {
         dumpChildren(prefix);
     }
 
+
+    private Class type;
+    public void setType(Class type){
+        this.type = type;
+    }
+    
+    public Class getType(){
+        return type;
+    }
 }

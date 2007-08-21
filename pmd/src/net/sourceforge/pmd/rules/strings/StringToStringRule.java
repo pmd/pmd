@@ -7,11 +7,12 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 public class StringToStringRule extends AbstractRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!node.getNameDeclaration().getTypeImage().equals("String")) {
+        if (!TypeHelper.isA(node.getNameDeclaration(), String.class)) {
             return data;
         }
         boolean isArray = node.isArray();

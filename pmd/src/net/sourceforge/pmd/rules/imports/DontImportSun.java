@@ -5,6 +5,8 @@ import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 public class DontImportSun extends AbstractRule {
+    
+    Package sun = Package.getPackage("sun");
 
     public Object visit(ASTImportDeclaration node, Object data) {
         String img = ((SimpleNode) node.jjtGetChild(0)).getImage();

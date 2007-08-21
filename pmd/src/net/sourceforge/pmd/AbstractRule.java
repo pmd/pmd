@@ -29,7 +29,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     private String ruleSetName;
     private boolean include;
     private boolean usesDFA;
-    private boolean usesTypeResolution;
+    private boolean usesTypeResolution = true;
     private int priority = LOWEST_PRIORITY;
     private String externalInfoUrl;
     private List<String> ruleChainVisits = new ArrayList<String>();

@@ -1,5 +1,8 @@
 package net.sourceforge.pmd.rules.basic;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.SourceType;
@@ -9,6 +12,7 @@ import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 public class BigIntegerInstantiation extends AbstractRule {
 
@@ -19,14 +23,8 @@ public class BigIntegerInstantiation extends AbstractRule {
             return super.visit(node, data);            
         }
         
-        String img = ((ASTClassOrInterfaceType) type).getImage();
-        if (img.startsWith("java.math.")) {
-            img = img.substring(10);
-        }
-
         boolean jdk15 = ((RuleContext) data).getSourceType().compareTo(SourceType.JAVA_15) >= 0;
-        
-        if (("BigInteger".equals(img) || (jdk15 && "BigDecimal".equals(img))) &&
+        if ((TypeHelper.isA((ASTClassOrInterfaceType) type, BigInteger.class) || (jdk15 && TypeHelper.isA((ASTClassOrInterfaceType) type, BigDecimal.class))) &&
                 (node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null)
         ) {
             ASTArguments args = node.getFirstChildOfType(ASTArguments.class);
@@ -36,7 +34,7 @@ public class BigIntegerInstantiation extends AbstractRule {
                     return super.visit(node, data);
                 }
 
-                img = literal.getImage();
+                String img = literal.getImage();
                 if ((img.length() > 2 && img.charAt(0) == '"')) {
                     img = img.substring(1, img.length() - 1);
                 }

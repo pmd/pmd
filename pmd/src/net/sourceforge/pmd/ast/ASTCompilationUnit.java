@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTCompilationUnit extends SimpleJavaNode implements CompilationUnit {
+public class ASTCompilationUnit extends SimpleJavaNode implements CompilationUnit, TypeNode {
     public ASTCompilationUnit(int id) {
         super(id);
     }
@@ -17,5 +17,13 @@ public class ASTCompilationUnit extends SimpleJavaNode implements CompilationUni
      */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
+    }
+    private Class type;
+    public void setType(Class type){
+        this.type = type;
+    }
+    
+    public Class getType(){
+        return type;
     }
 }

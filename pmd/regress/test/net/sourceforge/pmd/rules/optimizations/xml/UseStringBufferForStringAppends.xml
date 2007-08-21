@@ -6,6 +6,7 @@ failure case
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+package xxx;
 public class Foo {
  public void bar() {
   String x;

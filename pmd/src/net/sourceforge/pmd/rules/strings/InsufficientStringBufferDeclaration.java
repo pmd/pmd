@@ -21,6 +21,8 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,7 +48,7 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
 
-        if (!"StringBuffer".equals(node.getNameDeclaration().getTypeImage())) {
+        if (!TypeHelper.isA((VariableNameDeclaration)node.getNameDeclaration(), StringBuffer.class)) {
             return data;
         }
         Node rootNode = node;

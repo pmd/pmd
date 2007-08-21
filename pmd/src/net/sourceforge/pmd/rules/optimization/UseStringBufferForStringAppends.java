@@ -10,11 +10,12 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 public class UseStringBufferForStringAppends extends AbstractRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (node.getTypeNameNode().jjtGetNumChildren() == 0 || !"String".equals(((SimpleNode) node.getTypeNameNode().jjtGetChild(0)).getImage())) {
+        if (TypeHelper.isA(node, String.class)) {
             return data;
         }
         Node parent = node.jjtGetParent().jjtGetParent();
