@@ -15,7 +15,7 @@ import net.sourceforge.pmd.typeresolution.TypeHelper;
 public class UseStringBufferForStringAppends extends AbstractRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (TypeHelper.isA(node, String.class)) {
+        if (!TypeHelper.isA(node, String.class)) {
             return data;
         }
         Node parent = node.jjtGetParent().jjtGetParent();
