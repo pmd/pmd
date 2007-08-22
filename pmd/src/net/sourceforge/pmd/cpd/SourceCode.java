@@ -109,7 +109,7 @@ public class SourceCode {
         this.cl = cl;
     }
 
-    public List getCode() {
+    public List<String> getCode() {
         return cl.getCode();
     }
 

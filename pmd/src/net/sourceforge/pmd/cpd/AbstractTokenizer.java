@@ -6,64 +6,64 @@ package net.sourceforge.pmd.cpd;
 
 import java.util.List;
 
-import net.sourceforge.pmd.cpd.SourceCode;
-import net.sourceforge.pmd.cpd.TokenEntry;
-import net.sourceforge.pmd.cpd.Tokenizer;
-import net.sourceforge.pmd.cpd.Tokens;
-
 public abstract class AbstractTokenizer implements Tokenizer
 {
-	
+
 	protected List<String> stringToken;			// List<String>, should be setted by children classes
 	protected List<String> ignorableCharacter; 	// List<String>, should be setted by children classes
-										// FIXME:Maybe an array of 'char' would be better for perfomance ?
+												// FIXME:Maybe an array of 'char' would be better for perfomance ?
 	protected List<String> ignorableStmt; 		// List<String>, should be setted by children classes
 	protected char ONE_LINE_COMMENT_CHAR = '#'; // Most script language ( shell, ruby, python,...) use this symbol for comment line
+
+	private List<String> code;
+	private int lineNumber = 0;
+	private String currentLine;
+
+	protected boolean spanMultipleLinesString = true;	// Most language does, so default is true
 
 	private boolean downcaseString = true;
 
     public void tokenize(SourceCode tokens, Tokens tokenEntries) {
-        List code = tokens.getCode();
-        for (int i = 0; i < code.size(); i++)
-        {
-            String currentLine = (String) code.get(i);
+        this.code = tokens.getCode();
+
+        for ( this.lineNumber = 0; lineNumber < this.code.size(); lineNumber++ ) {
+        	this.currentLine = this.code.get(this.lineNumber);
             int loc = 0;
-            while (loc < currentLine.length())
-            {
+            while ( loc < currentLine.length() ) {
                 StringBuffer token = new StringBuffer();
-                loc = getTokenFromLine(currentLine, token, loc);
-                if (token.length() > 0 && !isIgnorableString(token.toString()))
-                {
-                    if (downcaseString)
-                    {
+                loc = getTokenFromLine(token,loc);
+                if (token.length() > 0 && !isIgnorableString(token.toString())) {
+                    if (downcaseString) {
                         token = new StringBuffer(token.toString().toLowerCase());
                     }
+                    if ( CPD.debugEnable )
+                    	System.out.println("Token added:" + token.toString());
                     tokenEntries.add(new TokenEntry(token.toString(),
                             tokens.getFileName(),
-                            i + 1));
+                            lineNumber));
+
                 }
             }
         }
         tokenEntries.add(TokenEntry.getEOF());
     }
 
-    private int getTokenFromLine(String line, StringBuffer token, int loc) {
-        for (int j = loc; j < line.length(); j++) {
-            char tok = line.charAt(j);
+    private int getTokenFromLine(StringBuffer token, int loc) {
+        for (int j = loc; j < this.currentLine.length(); j++) {
+            char tok = this.currentLine.charAt(j);
             if (!Character.isWhitespace(tok) && !ignoreCharacter(tok)) {
                 if (isComment(tok)) {
                     if (token.length() > 0) {
                         return j;
                     } else {
-                        return getCommentToken(line, token, loc);
+                        return getCommentToken(token, loc);
                     }
                 } else if (isString(tok)) {
                     if (token.length() > 0) {
-                        //if (loc == lin
                         return j; // we need to now parse the string as a seperate token.
                     } else {
                         // we are at the start of a string
-                        return parseString(line, token, j, tok);
+                        return parseString(token, j, tok);
                     }
                 } else {
                     token.append(tok);
@@ -78,40 +78,34 @@ public abstract class AbstractTokenizer implements Tokenizer
         return loc + 1;
     }
 
-    private int parseString(String line, StringBuffer token, int loc, char stringType) {
+    private int parseString(StringBuffer token, int loc, char stringDelimiter) {
         boolean escaped = false;
         boolean done = false;
-        //System.out.println("Parsing String:" + stringType);
-        //System.out.println("Starting loc:" + loc);
-        // FIXME: 	Still the problem of strings that span multiple lines :-(
-        //
         char tok = ' '; // this will be replaced.
-        while ((loc < line.length()) && !done) {
-            tok = line.charAt(loc);
-            if (escaped && tok == stringType)
-            {
-                //     System.out.println("Found an escaped string");
+        while ((loc < currentLine.length()) && ! done) {
+            tok = currentLine.charAt(loc);
+            if (escaped && tok == stringDelimiter) // Found an escaped string
                 escaped = false;
-            }
-            else if (tok == stringType && (token.length() > 0))
-            {
-                // we are done
-                //   System.out.println("Found an end string");
+            else if (tok == stringDelimiter && (token.length() > 0)) // We are done, we found the end of the string...
                 done = true;
-            }
-            else if (tok == '\\')
-            {
-                // System.out.println("Found an escaped char");
+            else if (tok == '\\') // Found an escaped char
                 escaped = true;
-            }
-            else
-            {
-                // System.out.println("Adding char:" + tok + ";loc:" + loc);
+            else	// Adding char...
                 escaped = false;
-            }
-            //System.out.println("Adding char to String:" + token.toString());
+            //Adding char to String:" + token.toString());
             token.append(tok);
             loc++;
+        }
+        // Handling multiple lines string
+        if ( 	! done &&	// ... we didn't find the end of the string
+        		loc >= currentLine.length() && // ... we have reach the end of the line ( the String is incomplete, for the moment at least)
+        		this.spanMultipleLinesString && // ... the language allow multiple line span Strings
+        		++this.lineNumber < this.code.size() // ... there is still more lines to parse
+        	) {
+        	// parsing new line
+        	this.currentLine = this.code.get(this.lineNumber);
+        	// Warning : recursive call !
+        	loc = this.parseString(token, loc, stringDelimiter);
         }
         return loc + 1;
     }
@@ -131,11 +125,11 @@ public abstract class AbstractTokenizer implements Tokenizer
         return tok == ONE_LINE_COMMENT_CHAR;
     }
 
-    private int getCommentToken(String line, StringBuffer token, int loc)
+    private int getCommentToken(StringBuffer token, int loc)
     {
-        while (loc < line.length())
+        while (loc < this.currentLine.length())
         {
-            token.append(line.charAt(loc++));
+            token.append(this.currentLine.charAt(loc++));
         }
         return loc;
     }

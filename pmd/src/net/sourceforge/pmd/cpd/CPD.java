@@ -22,7 +22,9 @@ public class CPD {
     private MatchAlgorithm matchAlgorithm;
     private Language language;
     private boolean skipDuplicates;
+    public static boolean debugEnable = false;
     private String encoding = System.getProperty("file.encoding");
+
 
     public CPD(int minimumTileSize, Language language) {
         this.minimumTileSize = minimumTileSize;

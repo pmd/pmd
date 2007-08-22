@@ -6,8 +6,8 @@ import java.util.ArrayList;
   * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
   * @authors: Zev Blut zb@ubit.com
   */
- 
- 
+
+
  public class RubyTokenizer extends AbstractTokenizer
  {
  	public RubyTokenizer()
@@ -24,9 +24,10 @@ import java.util.ArrayList;
  		this.ignorableCharacter.add(")");
  		this.ignorableCharacter.add(";");
  		this.ignorableCharacter.add(",");
- 
+
  		// setting markers for 'ignorable string' in Ruby
  		this.ignorableStmt = new ArrayList<String>();
+ 		this.ignorableStmt.add("while");
  		this.ignorableStmt.add("do");
  		this.ignorableStmt.add("end");
  	}
