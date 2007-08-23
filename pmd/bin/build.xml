@@ -185,6 +185,7 @@
 			<batchtest fork="yes" todir="${dir.build}">
 				<fileset dir="${dir.regress}">
 					<include name="test/**/*Test.java" />
+					<exclude name="test/**/Abstract*"/>
 				</fileset>
 			</batchtest>
 
