@@ -8,6 +8,7 @@ Fixed bug 1472195 - fixed false positives in PositionLiteralsFirstInComparisons 
 Fixed bug 1522517 - fixed false positive in UselessOverridingMethod for clone method 
 Fixed bug 1744065 - fixed false positive in BooleanInstantiation when a custom Boolean is used
 Fixed bug 1765613 - fixed NullPointerException in CloneMethodMustImplementCloneable when checking enum
+Fixed bug 1740480 - fixed false positive in ImmutableField when the assignment is inside an 'if'
 The Java 1.5 source code parser is now the default for testcode used in PMD's unit tests.
 Added TypeResolution to the XPath rule. Use typeof function to determine if a node is of a particular type
 

@@ -9,6 +9,7 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTDoStatement;
 import net.sourceforge.pmd.ast.ASTForStatement;
+import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
@@ -66,6 +67,12 @@ public class ImmutableField extends AbstractRule {
                 if (constructor != null) {
                     if (inLoopOrTry(node)) {
                         continue;
+                    }
+                    //Check for assigns in if-statements, which can depend on constructor 
+                    //args or other runtime knowledge and can be a valid reason to instantiate
+                    //in one constructor only
+                    if (node.getFirstParentOfType(ASTIfStatement.class) != null) {
+                    	methodInitCount++;
                     }
                     if (inAnonymousInnerClass(node)) {
                         methodInitCount++;

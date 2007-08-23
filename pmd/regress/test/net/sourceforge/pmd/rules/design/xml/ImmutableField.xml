@@ -263,7 +263,7 @@ public class Foo{
     </test-code>
     <test-code>
         <description><![CDATA[
-volitile variables can't be final
+volatile variables can't be final
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -272,5 +272,42 @@ public final class Foo {
     public Foo() {
     }
 }     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1740480, optional override of default value based on constructor argument check
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyClass {
+  private int positive = 1;
+
+  public MyClass (int value) {
+      // if negative keep default
+      if (value > 0) {
+          positive = value;
+      }
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1740480, assignment in single constructor based on constructor argument check
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyClass {
+  private int positive;
+
+  public MyClass (int value) {
+      if (value > 0) {
+          positive = value;
+      } else {
+          positive = 1;
+      }
+  }
+}
+     ]]></code>
     </test-code>
 </test-data>

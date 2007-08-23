@@ -57,6 +57,7 @@
         </subsection>
         <subsection name="Contributors">
         <ul>
+            <li>Caroline Rioux - Reported bug in ImmutableField</li>
             <li>Miroslav Šulc - Reported bug in CloneMethodMustImplementCloneable</li>
             <li>Thomas Steininger - Noticed redundant rule</li>
             <li>Thomas Leplus - Rewrote UselessStringValueOf, nice patch for ClassCastExceptionWithToArray</li>
