@@ -5,13 +5,14 @@ New rules:
 	Imports ruleset: TooManyStaticImports
 	J2ee ruleset: DoNotCallSystemExit, StaticEJBFieldShouldBeFinal
 Fixed bug 1472195 - fixed false positives in PositionLiteralsFirstInComparisons when the string is used as a parameter
-Fixed bug 1522517 - fixed false positive in UselessOverridingMethod for clone method 
+Fixed bug 1522517 - fixed false positive in UselessOverridingMethod for clone method
 Fixed bug 1744065 - fixed false positive in BooleanInstantiation when a custom Boolean is used
 Fixed bug 1765613 - fixed NullPointerException in CloneMethodMustImplementCloneable when checking enum
 Fixed bug 1740480 - fixed false positive in ImmutableField when the assignment is inside an 'if'
 Fixed bug 1702782 - fixed false positive in UselessOperationOnImmutable when an Immutable on which an operation is performed is compareTo'd
 The Java 1.5 source code parser is now the default for testcode used in PMD's unit tests.
 Added TypeResolution to the XPath rule. Use typeof function to determine if a node is of a particular type
+Adding support for multiple line span String in CPD's AbstractTokenizer, this may change, for the better, CPD's Ruby parsing.
 
 July 20, 2007 - 4.0
 Fixed bug 1697397 - fixed false positives in ClassCastExceptionWithToArray
@@ -42,7 +43,7 @@ Fixed bugs 1626201 & 1633683 - BrokenNullCheck now catches more cases
 Fixed bug 1626715 - UseAssertSameInsteadOfAssertTrue now correctly checks classes which contain the null constant
 Fixed bug 1531216 - ImmutableField. NameOccurrence.isSelfAssignment now recognizes this.x++ as a self assignment
 Fixed bug 1634078 - StringToString now recognizes toString on a String Array, rather than an element.
-Fixed bug 1631646 - UselessOperationOnImmutable doesn't throw on variable.method().variable. 
+Fixed bug 1631646 - UselessOperationOnImmutable doesn't throw on variable.method().variable.
 Fixed bug 1627830 - UseLocaleWithCaseConversions now works with compound string operations
 Fixed bug 1613807 - DontImportJavaLang rule allows import to Thread inner classes
 Fixed bug 1637573 - The PMD Ant task no longer closes System.out if toConsole is set
@@ -54,7 +55,7 @@ Fixed bug 1705716 - Annotation declarations now trigger a new scope level in the
 Fixed bug 1743938 - False +: InsufficientStringBufferDeclaration with multiply
 Fixed bug 1657957 - UseStringBufferForStringAppends now catches self-assignments
 Applied patch 1612455 - RFE 1411022 CompareObjectsWithEquals now catches the case where comparison is against new Object
-Implemented RFE 1562230 - Added migration rule to check for instantiation of Short/Byte/Long 
+Implemented RFE 1562230 - Added migration rule to check for instantiation of Short/Byte/Long
 Implemented RFE 1627581 - SuppressWarnings("unused") now suppresses all warnings in unusedcode.xml
 XPath rules are now chained together for an extra speedup in processing
 PMD now requires JDK 1.5 to be compiled. Java 1.4 support is provided using Retroweaver
@@ -436,7 +437,7 @@ Fixed bug 1198832 - AbstractClassWithoutAbstractMethod no longer flags classes w
 Implemented RFE 1193979 - BooleanInstantiation now catches cases like Boolean.valueOf(true)
 Implemented RFE 1171095 - LabeledStatement nodes now contain the image of the label.
 Implemented RFE 1176401 - UnusedFormalParameter now flags public methods.
-Implemented RFE 994338 - The msg produced by ConstructorCallsOverridableMethod now includes the offending method name. 
+Implemented RFE 994338 - The msg produced by ConstructorCallsOverridableMethod now includes the offending method name.
 Modified command line parameters; removed -jdk15 and -jdk13 parameters and added a -'targetjdk [1.3|1.4|1.5]' parameter.
 Modified CSVRenderer to include more columns.
 Optimized rules: FinalFieldCouldBeStatic (115 seconds to 7 seconds), SuspiciousConstantFieldName (48 seconds to 14 seconds), UnusedModifer (49 seconds to 4 seconds)
@@ -450,7 +451,7 @@ Fixed bug 1146116 - JUnitTestsShouldIncludeAssert no longer crashes on inner Int
 Fixed bug 1114625 - UnusedPrivateField no longer throws an NPE on standalone postfix expressions which are prefixed with 'this'.
 Fixed bug 1114020 - The Ant task now reports a complete stack trace when run with the -verbose flag.
 Fixed bug 1117983 - MethodArgumentCouldBeFinal no longer reports false positives on try..catch blocks.
-Fixed bug 797742 - PMD now parses JDK 1.5 source code.  Note that it's not perfect yet; more testing/bug reports are welcome!  
+Fixed bug 797742 - PMD now parses JDK 1.5 source code.  Note that it's not perfect yet; more testing/bug reports are welcome!
 Fixed a bug - the StatisticalRule no longer 'merges' data points when using the 'topscore' property.
 Fixed a bug - the PMD Ant task's failOnRuleViolation attribute no longer causes a BuildException in the case when no rule violations occur.
 Modified the XSLT to add a summary section.
@@ -478,7 +479,7 @@ CPD now contains a generic copy/paste checker for programs in any language
 December 15, 2004 - 2.1:
 New rules: AvoidProtectedFieldInFinalClass, SystemPrintln
 Fixed bug 1050173 - ImmutableFieldRule no longer reports false positives for static fields.
-Fixed bug 1050286 - ImmutableFieldRule no longer reports false positives for classes which have multiple constructors only a subset of which set certain fields. 
+Fixed bug 1050286 - ImmutableFieldRule no longer reports false positives for classes which have multiple constructors only a subset of which set certain fields.
 Fixed bug 1055346 - ImmutableFieldRule no longer reports false positive on preinc/predecrement/postfix expressions.
 Fixed bug 1041739 - EmptyStatementNotInLoop no longer reports false positives for nested class declarations in methods.
 Fixed bug 1039963 - CPD no longer fails to parse C++ files with multi-line macros.
