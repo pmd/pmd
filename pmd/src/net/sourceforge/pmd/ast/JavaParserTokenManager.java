@@ -1861,7 +1861,7 @@ static final long[] jjtoMore = {
 protected CharStream input_stream;
 private final int[] jjrounds = new int[68];
 private final int[] jjstateSet = new int[136];
-StringBuffer image;
+StringBuilder image;
 int jjimageLen;
 int lengthOfMatch;
 protected char curChar;
@@ -2045,7 +2045,7 @@ void SkipLexicalActions(Token matchedToken)
    {
       case 6 :
          if (image == null)
-            image = new StringBuffer();
+            image = new StringBuilder();
          image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
         int startOfNOPMD = matchedToken.image.indexOf(excludeMarker);
         if (startOfNOPMD != -1) {
@@ -2063,7 +2063,7 @@ void MoreLexicalActions()
    {
       case 7 :
          if (image == null)
-            image = new StringBuffer();
+            image = new StringBuilder();
          image.append(input_stream.GetSuffix(jjimageLen));
          jjimageLen = 0;
                    input_stream.backup(1);
@@ -2078,7 +2078,7 @@ void TokenLexicalActions(Token matchedToken)
    {
       case 120 :
         if (image == null)
-            image = new StringBuffer();
+            image = new StringBuilder();
             image.append(jjstrLiteralImages[120]);
      matchedToken.kind = GT;
      ((Token.GTToken)matchedToken).realKind = RUNSIGNEDSHIFT;
@@ -2087,7 +2087,7 @@ void TokenLexicalActions(Token matchedToken)
          break;
       case 121 :
         if (image == null)
-            image = new StringBuffer();
+            image = new StringBuilder();
             image.append(jjstrLiteralImages[121]);
      matchedToken.kind = GT;
      ((Token.GTToken)matchedToken).realKind = RSIGNEDSHIFT;

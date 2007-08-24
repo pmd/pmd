@@ -56,6 +56,7 @@ options {
   CACHE_TOKENS = true;
   STATIC = false;
   USER_CHAR_STREAM = true;
+  JDK_VERSION = "1.5";
   
   MULTI = true;
   VISITOR = true;
