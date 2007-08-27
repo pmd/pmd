@@ -20,6 +20,7 @@
 		<fileset dir="${dir.lib}">
 			<include name="jaxen-1.1.jar" />
 			<include name="asm-3.0.jar" />
+			<include name="junit-4.1.jar" />
 		</fileset>
 	</path>
 
