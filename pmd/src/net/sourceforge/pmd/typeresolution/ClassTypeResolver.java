@@ -3,12 +3,6 @@
  */
 package net.sourceforge.pmd.typeresolution;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -19,7 +13,17 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.TypeNode;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class ClassTypeResolver extends JavaParserVisitorAdapter {
+
+    private static final Logger LOG = Logger.getLogger(ClassTypeResolver.class.getName());
 
     private static Map<String, Class> myPrimitiveTypes;
 
@@ -82,20 +86,37 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private List<String> importedOnDemand;
 
-    private String className;
-
     public Object visit(ASTCompilationUnit node, Object data) {
 
+        String className = null;
         try {
             importedOnDemand = new ArrayList<String>();
-            populateClassName(node);
+            className = getClassName(node);
+            populateClassName(node, className);
         } catch (ClassNotFoundException e) {
-            // Implicit imports
+            LOG.log(Level.WARNING, "Could not find class {0}", className);
         } catch (NoClassDefFoundError e) {
+            LOG.log(Level.WARNING, "Could not find class {0}", className);
         } finally {
             populateImports(node);
         }
         return super.visit(node, data);
+    }
+
+    private String getClassName(ASTCompilationUnit node) {
+        String className = null;
+
+        ASTClassOrInterfaceDeclaration decl = node.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
+        if (decl != null) {
+            ASTPackageDeclaration pkgDecl = node.getFirstChildOfType(ASTPackageDeclaration.class);
+            if (pkgDecl == null) {
+                className = decl.getImage();
+            } else {
+                importedOnDemand.add(((ASTName) pkgDecl.jjtGetChild(0)).getImage());
+                className = ((ASTName) pkgDecl.jjtGetChild(0)).getImage() + "." + decl.getImage();
+            }
+        }
+        return className;
     }
 
     /**
@@ -122,16 +143,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         importedClasses.putAll(myJavaLang);
     }
 
-    private void populateClassName(ASTCompilationUnit node) throws ClassNotFoundException {
-        ASTClassOrInterfaceDeclaration decl = node.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
-        if (decl != null) {
-            ASTPackageDeclaration pkgDecl = node.getFirstChildOfType(ASTPackageDeclaration.class);
-            if (pkgDecl == null) {
-                className = decl.getImage();
-            } else {
-                importedOnDemand.add(((ASTName) pkgDecl.jjtGetChild(0)).getImage());
-                className = ((ASTName) pkgDecl.jjtGetChild(0)).getImage() + "." + decl.getImage();
-            }
+    private void populateClassName(ASTCompilationUnit node, String className) throws ClassNotFoundException {
+        if (className != null) {
             Class c = pmdClassLoader.loadClass(className);
             node.setType(c);
             importedClasses = pmdClassLoader.getImportedClasses(className);

@@ -6,7 +6,9 @@ failure case
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class FooTest {}
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
+}
      ]]></code>
     </test-code>
     <test-code>
@@ -15,7 +17,8 @@ success case
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class FooTest {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
    void testX(){}
 }
      ]]></code>
@@ -26,7 +29,8 @@ inner class should get checked
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class FooTest {
+import junit.framework.TestCase;
+public class FooTest extends TestCase {
    class Bar { void testX(){} } 
 }
      ]]></code>
@@ -37,7 +41,8 @@ inner class that's ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
    class BarTest { void testX(){} } 
 }
      ]]></code>
@@ -48,7 +53,8 @@ abstract classes are ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public abstract class FooTest {
+import junit.framework.TestCase;
+public abstract class FooTest extends TestCase {
 }
      ]]></code>
     </test-code>
@@ -59,6 +65,16 @@ ditto interfaces
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public interface FooTest {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case does not extend TestCase
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooTest {
 }
      ]]></code>
     </test-code>

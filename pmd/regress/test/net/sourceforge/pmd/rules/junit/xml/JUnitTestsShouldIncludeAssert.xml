@@ -199,4 +199,28 @@ public class FooTest extends TestCase {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Not a JUnit test (exceptions shouldn't block it)
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooTest {
+ public void testfoo() throws Exception {}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+JUnit 4 test (exceptions shouldn't block it)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+public class Foo {
+ @Test
+ public void testfoo() throws Exception {}
+}
+     ]]></code>
+    </test-code>
 </test-data>

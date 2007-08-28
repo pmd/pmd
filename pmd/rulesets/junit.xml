@@ -21,7 +21,7 @@ The suite() method in a JUnit test needs to be both public and static.
         <property name="xpath">
             <value>
                 <![CDATA[
-//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')]]
+//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //MethodDeclaration[not(@Static='true') or not(@Public='true')]
 [MethodDeclarator/@Image='suite']
 [MethodDeclarator/FormalParameters/@ParameterCount=0]
@@ -52,7 +52,7 @@ Some JUnit framework methods are easy to misspell.
       <property name="xpath">
           <value>
               <![CDATA[
-//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')]]
+//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //MethodDeclarator[(not(@Image = 'setUp')
  and translate(@Image, 'SETuP', 'setUp') = 'setUp')
  or (not(@Image = 'tearDown')
@@ -157,6 +157,7 @@ statements like assertTrue(true) and assertFalse(false).  If you just want a tes
           <property name="xpath">
               <value>
     <![CDATA[
+//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //StatementExpression
 [
 .//Name[@Image='assertTrue' or  @Image='assertFalse']
@@ -201,6 +202,7 @@ should be made by more specific methods, like assertEquals.
         <property name="xpath">
             <value>
                 <![CDATA[
+//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //PrimaryExpression[
     PrimaryPrefix/Name[@Image = 'assertTrue']
 ][
@@ -237,6 +239,7 @@ should be made by more specific methods, like assertSame, assertNotSame.
         <property name="xpath">
             <value>
                 <![CDATA[
+//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //PrimaryExpression[
     PrimaryPrefix/Name
      [@Image = 'assertTrue' or @Image = 'assertFalse']
@@ -274,6 +277,7 @@ public class FooTest extends TestCase {
          <property name="xpath">
              <value>
                  <![CDATA[
+//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //PrimaryExpression[
  PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
 ][
@@ -316,6 +320,7 @@ assertFalse(expr);
           <property name="xpath">
               <value>
     <![CDATA[
+//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //StatementExpression
 [
 .//Name[@Image='assertTrue' or  @Image='assertFalse']

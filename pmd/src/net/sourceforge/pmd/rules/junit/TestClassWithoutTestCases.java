@@ -3,15 +3,14 @@
  */
 package net.sourceforge.pmd.rules.junit;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class TestClassWithoutTestCases extends AbstractRule {
-
+public class TestClassWithoutTestCases extends AbstractJUnitRule {
+    
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isAbstract() || node.isInterface() || node.isNested()) {
             return data;

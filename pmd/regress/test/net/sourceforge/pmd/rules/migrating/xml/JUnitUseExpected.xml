@@ -2,7 +2,7 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-Contains assert
+JUnit 4 - Contains assert
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -28,7 +28,8 @@ Junit 3 format
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.lang.Thread;
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
     public void testFoo() throws Throwable {
         TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
         try {
@@ -48,7 +49,8 @@ Junit 3 format
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.lang.Thread;
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
     public void testFoo() throws Throwable {
         TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
         try {
@@ -74,7 +76,8 @@ Throws
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.lang.Thread;
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
     public void testFoo() throws Throwable {
         TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
         try {
@@ -94,7 +97,8 @@ This method can be broken into two, each checking
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import java.lang.Thread;
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
     public void testFoo() throws Throwable {
         TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
         try {
@@ -113,5 +117,24 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Not a JUnit class - Contains assert
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.Thread;
+public class Foo {
+    public void foo() throws Throwable {
+        TypeSet.Resolver r = new TypeSet.ImplicitImportResolver();
+        try {
+            r.resolve("PMD");
+            fail("Should have thrown an exception");
+        } catch (ClassNotFoundException cnfe) {
 
+        }
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>

@@ -6,7 +6,8 @@ assertFalse(!)
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
    void testBar() { 
     boolean bar; 
     assertFalse(!bar);
@@ -20,7 +21,8 @@ assertTrue(!)
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
    void testBar() { 
     boolean bar; 
     assertTrue(!bar);
@@ -34,11 +36,42 @@ ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Foo {
+import junit.framework.TestCase;
+public class Foo extends TestCase {
    void testBar() { 
     boolean bar; 
     assertTrue(bar);
     assertFalse(bar);
+   } 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+not a JUnit test - assertFalse(!)
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   void testBar() { 
+    boolean bar; 
+    assertFalse(!bar);
+   } 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+JUnit 4 - assertFalse(!)
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+public class Foo {
+   @Test
+   void testBar() { 
+    boolean bar; 
+    assertFalse(!bar);
    } 
 }
      ]]></code>

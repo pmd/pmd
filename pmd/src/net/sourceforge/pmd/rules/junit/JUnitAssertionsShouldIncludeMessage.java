@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.rules.junit;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
@@ -12,7 +11,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JUnitAssertionsShouldIncludeMessage extends AbstractRule {
+public class JUnitAssertionsShouldIncludeMessage extends AbstractJUnitRule {
 
     private static class AssertionCall {
         public int args;

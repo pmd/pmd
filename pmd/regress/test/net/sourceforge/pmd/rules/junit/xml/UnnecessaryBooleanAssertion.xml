@@ -6,6 +6,7 @@ failure case
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class Foo extends TestCase {
  void bar() {
   assertTrue(true); 
@@ -19,6 +20,7 @@ variations
      ]]></description>
         <expected-problems>4</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class Foo extends TestCase {
  void bar() {
   assertTrue(true); 
@@ -35,6 +37,7 @@ nested boolean literal
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class Foo extends TestCase {
  void bar() {
   assertTrue(foobar(fiddle, true)); 
@@ -48,6 +51,7 @@ asserting true a !
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class Foo extends TestCase {
  void bar() {
   assertTrue(!foo); 
@@ -61,6 +65,7 @@ asserting false a !
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class Foo extends TestCase {
  void bar() {
   assertFalse(!foo); 
@@ -74,9 +79,38 @@ buz
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+import junit.framework.TestCase;
 public class Foo extends TestCase {
  void bar() {
   assertTrue(!s.contains(new NameOccurrence(node, node.getImage()))); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+not a JUnit test - failure case
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  assertTrue(true); 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+JUnit 4 - failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.junit.Test;
+public class Foo {
+ @Test
+ void bar() {
+  assertTrue(true); 
  }
 }
      ]]></code>

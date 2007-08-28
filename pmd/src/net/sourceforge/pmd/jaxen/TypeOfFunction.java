@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.jaxen;
 
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.TypeNode;
 
 import org.jaxen.Context;
 import org.jaxen.Function;
@@ -24,10 +24,10 @@ public class TypeOfFunction implements Function {
             return Boolean.FALSE;
         }
         Node n = (Node) context.getNodeSet().get(0);
-        if (n instanceof ASTClassOrInterfaceType) {
+        if (n instanceof TypeNode) {
             List attributes = (List) args.get(0);
             Attribute attr = (Attribute) attributes.get(0);
-            Class type = ((ASTClassOrInterfaceType) n).getType();
+            Class type = ((TypeNode) n).getType();
             String typeName = (String) args.get(1);
             String shortName = (args.size() > 2) ? (String) args.get(2) : "";
             if (type == null) {
