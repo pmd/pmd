@@ -271,7 +271,7 @@
 		<sourceDirectory>src</sourceDirectory>
 		<unitTestSourceDirectory>regress</unitTestSourceDirectory>
 		<integrationUnitTestSourceDirectory/>
-		
+
 		<unitTest>
 			<includes>
 				<include>**/*Test.java</include>
@@ -292,6 +292,7 @@
 				<includes>
 					<include>rulesets/*.xml</include>
 					<include>rulesets/*.properties</include>
+					<include>etc/pmd-nicerhtml.xsl</include>
 				</includes>
 			</resource>
 			<!-- is this for including sources in jar?

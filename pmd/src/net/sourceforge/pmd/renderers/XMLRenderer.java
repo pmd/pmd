@@ -16,17 +16,19 @@ import java.util.Iterator;
 
 public class XMLRenderer extends OnTheFlyRenderer {
 
+    // FIXME - hardcoded character encoding, booooooo
+	protected String encoding = "UTF-8";
+
     public void start() throws IOException {
         Writer writer = getWriter();
         StringBuffer buf = new StringBuffer();
-        // FIXME - hardcoded character encoding, booooooo
-        buf.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>").append(PMD.EOL);
+        buf.append("<?xml version=\"1.0\" encoding=\"" + this.encoding + "\"?>").append(PMD.EOL);
         createVersionAttr(buf);
         createTimestampAttr(buf);
         // FIXME: elapsed time not available until the end of the processing
         //buf.append(createTimeElapsedAttr(report));
         buf.append('>').append(PMD.EOL);
-        writer.write(buf.toString());        
+        writer.write(buf.toString());
     }
 
     public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
