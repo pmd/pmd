@@ -13,6 +13,7 @@ import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.XSLTRenderer;
 import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import org.apache.tools.ant.BuildException;
@@ -44,6 +45,9 @@ public class Formatter {
     static {
         renderersByCode.put("xml", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new XMLRenderer(); }
+        });
+        renderersByCode.put("nicehtml", new RendererBuilder() {
+            public Renderer build(Object[] arg) { return new XSLTRenderer(); }
         });
         renderersByCode.put("html", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new HTMLRenderer((String) arg[0], (String) arg[1]); }

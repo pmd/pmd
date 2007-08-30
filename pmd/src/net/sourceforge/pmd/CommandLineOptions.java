@@ -13,6 +13,7 @@ import net.sourceforge.pmd.renderers.SummaryHTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.VBHTMLRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
+import net.sourceforge.pmd.renderers.XSLTRenderer;
 import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 
 import java.io.InputStreamReader;
@@ -112,6 +113,8 @@ public class CommandLineOptions {
             return new CSVRenderer();
         } else if (reportFormat.equals("html")) {
             return new HTMLRenderer();
+        } else if (reportFormat.equals("nicehtml")) {
+            return new XSLTRenderer();
         } else if (reportFormat.equals("yahtml")) {
             return new YAHTMLRenderer();
         } else if (reportFormat.equals("summaryhtml")) {
@@ -177,7 +180,7 @@ public class CommandLineOptions {
     public int getMinPriority() {
         return minPriority;
     }
-    
+
     public boolean benchmark() {
         return benchmark;
     }
@@ -224,4 +227,4 @@ public class CommandLineOptions {
 
 
 
-         
+
