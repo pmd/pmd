@@ -24,6 +24,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import net.sourceforge.pmd.ant.PMDTask;
+
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -51,12 +53,10 @@ public class XSLTRenderer extends XMLRenderer {
 	@Override
 	public void start() throws IOException {
 		// We keep the inital writer to put the final html output
-		System.out.println("render overrided");
 		this.outputWriter = getWriter();
 		// We use a new one to store the XML...
 		Writer w = new StringWriter();
 		setWriter(w);
-		System.out.println("Class of writer:" + getWriter().getClass());
 		// If don't find the xsl no need to bother doing the all report,
 		// so we check this here...
 		InputStream xslt = null;

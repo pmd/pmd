@@ -46,7 +46,7 @@ public class Formatter {
         renderersByCode.put("xml", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new XMLRenderer(); }
         });
-        renderersByCode.put("nicehtml", new RendererBuilder() {
+        renderersByCode.put("betterhtml", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new XSLTRenderer(); }
         });
         renderersByCode.put("html", new RendererBuilder() {
