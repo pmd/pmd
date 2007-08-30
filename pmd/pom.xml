@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>pmd</groupId>
+  <artifactId>pmd</artifactId>
+  <name>PMD</name>
+  <version>4.0</version>
+  <url>http://pmd.sourceforge.net/</url>
+  <issueManagement>
+    <url>http://www.sourceforge.net/tracker/?group_id=56262</url>
+  </issueManagement>
+  <ciManagement>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>tom@infoether.com</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <inceptionYear>2002</inceptionYear>
+  <mailingLists>
+    <mailingList>
+      <name>PMD development</name>
+      <subscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</subscribe>
+      <unsubscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</unsubscribe>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum=pmd-devel</archive>
+    </mailingList>
+  </mailingLists>
+  <developers>
+    <developer>
+      <id>tomcopeland</id>
+      <name>Tom Copeland</name>
+      <email>tom@infoether.com</email>
+      <organization>InfoEther</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>dpeugh</id>
+      <name>David Dixon-Peugh</name>
+      <email>ddp@apache.org</email>
+      <organization>Lockheed Martin Corporation</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>olemartin</id>
+      <name>Ole-Martin Mork</name>
+      <email>olemartin@users.sourceforge.net</email>
+      <organization>Bekk Consulting</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>mikkey</id>
+      <name>Miguel Griffa</name>
+      <email>mikkey@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>phherlin</id>
+      <name>Philippe Herlin</name>
+      <email>phherlin@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>jigerjava</id>
+      <name>Jiger Patel</name>
+      <email>jigerjava@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>kubacki</id>
+      <name>Radim Kubacki</name>
+      <email>kubacki@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>tomslot</id>
+      <name>Tomasz Slota</name>
+      <email>tomslot@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>tomslot</id>
+      <name>Alan Ezust</name>
+      <email>ezust@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>nascif</id>
+      <name>Nascif Abousalh Neto</name>
+      <email>nascif@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>allancaplan</id>
+      <name>Allan Caplan</name>
+      <email>allancaplan@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>holobender</id>
+      <name>Sven Jacob</name>
+      <email>holobender@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>wfzelle</id>
+      <name>Wouter Zelle</name>
+      <email>wfzelle@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>hooperbloob</id>
+      <name>Brian Remedios</name>
+      <email>hooperbloob@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>xlv</id>
+      <name>Xavier Le Vourch</name>
+      <email>xlv@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>rgustav</id>
+      <name>Ryan Gustafson</name>
+      <email>rgustav@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>bluejohn</id>
+      <name>Johan Nagels</name>
+      <email>bluejohn@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>tkleiber</id>
+      <name>Torsten Kleiber</name>
+      <email>tkleiber@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>rpelisse</id>
+      <name>Romain Pelisse</name>
+      <email>rpelisse@users.sourceforge.net</email>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd</connection>
+    <developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd</developerConnection>
+    <url>http://pmd.svn.sourceforge.net/viewvc/pmd/</url>
+  </scm>
+  <organization>
+    <name>InfoEther</name>
+    <url>http://pmd.sourceforge.net/</url>
+  </organization>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>regress</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>${basedir}</directory>
+        <includes>
+          <include>rulesets/*.xml</include>
+          <include>rulesets/*.properties</include>
+          <include>etc/pmd-nicerhtml.xsl</include>
+        </includes>
+      </resource>
+    </resources>
+    <testResources>
+      <testResource>
+        <directory>${basedir}/regress/</directory>
+        <includes>
+          <include>**/*.xml</include>
+        </includes>
+      </testResource>
+    </testResources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <forkMode>once</forkMode>
+          <skip>true</skip>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <encoding>utf8</encoding>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies>
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.6</version>
+    </dependency>
+    <dependency>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.1</version>
+    </dependency>
+  </dependencies>
+
+
+
+  <distributionManagement>
+    <repository>
+      <id>default</id>
+      <name>Default Repository</name>
+      <url>file:///home/groups/p/pm/pmd/</url>
+    </repository>
+    <site>
+      <id>default</id>
+      <name>Default Site</name>
+      <url>scp://pmd.sourceforge.net//home/groups/p/pm/pmd/htdocs</url>
+    </site>
+  </distributionManagement>
+</project>
+
+

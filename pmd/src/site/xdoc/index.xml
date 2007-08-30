@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<document>
+  <properties>
+    <title>Welcome to PMD</title>
+    <author email="jjensen@apache.org">Jeff Jensen</author>
+  </properties>
+  <body>
+    <section name="Welcome to PMD">
+      <p>PMD scans Java source code and looks for potential problems like:</p>
+      <ul>
+        <li>Possible bugs - empty try/catch/finally/switch statements</li>
+        <li>Dead code - unused local variables, parameters and private methods</li>
+        <li>Suboptimal code - wasteful String/StringBuffer usage</li>
+        <li>Overcomplicated expressions - unnecessary if statements, for loops that could be while loops</li>
+        <li>Duplicate code - copied/pasted code means copied/pasted bugs</li>
+      </ul>
+
+      <h3>Download</h3>
+      <p>You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
+
+      <h3>Integrations</h3>
+      <p>PMD is <a href="integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
+
+      <h3>BlueJ</h3>
+      <p>Welcome <a href="http://bluej.org/">BlueJ</a> users!  Notes on installing the PMD extension for BlueJ are <a href="integrations.html#bluej">here</a>.</p>
+    </section>
+  </body>
+</document>
+
+ 	  	 
