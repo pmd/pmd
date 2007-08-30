@@ -75,6 +75,11 @@ $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/
            <source>
 $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/source --language cpp
            </source>
+           <p>You may wish to check sources that are stored in differents directories:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/other/source  --files /path/to/other/source --files /path/to/other/source --language fortran
+           </source>
+			<p><span style="font-style : italic;">There should be no limit to the number of '--files', you may add... But if you stumble one, please tell us !</span></p>
            <p>And if you're checking a C source tree with duplicate files in different architecture directories
            you can skip those using --skip-duplicate-files:</p>
            <source>
