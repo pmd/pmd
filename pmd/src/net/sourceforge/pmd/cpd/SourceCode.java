@@ -115,9 +115,9 @@ public class SourceCode {
 
     public StringBuffer getCodeBuffer() {
         StringBuffer sb = new StringBuffer();
-        List lines = cl.getCode();
-        for (int i = 0; i < lines.size(); i++) {
-            sb.append((String) lines.get(i));
+        List<String> lines = cl.getCode();
+        for ( String line : lines ) {
+            sb.append(line);
             sb.append(PMD.EOL);
         }
         return sb;

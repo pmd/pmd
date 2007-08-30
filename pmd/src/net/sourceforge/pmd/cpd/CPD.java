@@ -157,7 +157,6 @@ public class CPD {
 
         try {
             boolean skipDuplicateFiles = findBooleanSwitch(args, "--skip-duplicate-files");
-            String pathToFiles = findRequiredStringValue(args, "--files");
             String languageString = findOptionalStringValue(args, "--language", "java");
             String formatString = findOptionalStringValue(args, "--format", "text");
             String encodingString = findOptionalStringValue(args, "--encoding", System.getProperty("file.encoding"));
@@ -170,7 +169,24 @@ public class CPD {
             if (skipDuplicateFiles) {
                 cpd.skipDuplicates();
             }
-            cpd.addRecursively(pathToFiles);
+            /* FIXME: Improve this !!!	*/
+            int position = 0;
+            String pathToFiles = "";
+            boolean missingFiles = true;
+            for (position = 0; position < args.length; position++) {
+                if (args[position].equals("--files")) {
+                	cpd.addRecursively(args[position + 1]);
+                	if ( missingFiles ) missingFiles = false;
+                }
+            }
+
+
+            if ( missingFiles ) {
+	            System.out.println("No " + "--files" + " value passed in");
+	            usage();
+	            throw new RuntimeException();
+            }
+
             cpd.go();
             System.out.println(renderer.render(cpd.getMatches()));
         } catch (Exception e) {
