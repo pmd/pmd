@@ -11,6 +11,7 @@ Fixed bug 1765613 - fixed NullPointerException in CloneMethodMustImplementClonea
 Fixed bug 1740480 - fixed false positive in ImmutableField when the assignment is inside an 'if'
 Fixed bug 1702782 - fixed false positive in UselessOperationOnImmutable when an Immutable on which an operation is performed is compareTo'd
 Fixed bugs 1764288/1744069/1744071 - When using Type Resolution all junit test cases will notice if you're using an extended TestCase
+Fixed bug 1793215 - pmd-nicerhtml.xsl does not display line numbers
 The Java 1.5 source code parser is now the default for testcode used in PMD's unit tests.
 Added TypeResolution to the XPath rule. Use typeof function to determine if a node is of a particular type
 Adding support for multiple line span String in CPD's AbstractTokenizer, this may change, for the better, CPD's Ruby parsing.
