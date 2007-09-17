@@ -42,6 +42,7 @@ public class CommandLineOptions {
     private boolean checkJspFiles;
 
     private String[] args;
+	private String xsltFilename;
 
     public CommandLineOptions(String[] args) {
 
@@ -94,7 +95,14 @@ public class CommandLineOptions {
                 reportFile = args[++i];
             } else if (args[i].equals("-benchmark")) {
                 benchmark = true;
+            } else if ( args[i].equals("-xslt") ) {
+            	i++;
+            	if ( i >= args.length ) {
+            		 throw new RuntimeException(usage());
+            	}
+            	this.xsltFilename = args[i];
             }
+
         }
     }
 
@@ -114,7 +122,7 @@ public class CommandLineOptions {
         } else if (reportFormat.equals("html")) {
             return new HTMLRenderer();
         } else if (reportFormat.equals("nicehtml")) {
-            return new XSLTRenderer();
+            return new XSLTRenderer(this.xsltFilename);
         } else if (reportFormat.equals("yahtml")) {
             return new YAHTMLRenderer();
         } else if (reportFormat.equals("summaryhtml")) {
@@ -209,10 +217,15 @@ public class CommandLineOptions {
                 "-jsp: check JSP/JSF files; default to do not check JSP/JSF files" + PMD.EOL +
                 "-reportfile: send report output to a file; default to System.out" + PMD.EOL +
                 "-benchmark: output a benchmark report upon completion; default to System.err" + PMD.EOL +
+                "-xslt: override default xslt for 'nicehtml' output." + PMD.EOL +
                 PMD.EOL +
-                "For example: " + PMD.EOL +
+                "For example on windows: " + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code text unusedcode,imports -targetjdk 1.5 -debug" + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code xml basic,design -encoding UTF-8" + PMD.EOL +
+                PMD.EOL +
+                "For example on *nix: " + PMD.EOL +
+                "$ java -jar pmd-" + PMD.VERSION + ".jar /home/workspace/src/main/java code nicehtml basic,design" + PMD.EOL +
+                "$ java -jar pmd-" + PMD.VERSION + ".jar /home/workspace/src/main/java code nicehtml basic,design -xslt my-own.xsl" + PMD.EOL +
                 PMD.EOL;
     }
 

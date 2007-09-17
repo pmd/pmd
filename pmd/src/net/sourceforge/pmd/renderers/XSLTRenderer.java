@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
 public class XSLTRenderer extends XMLRenderer {
 
 	private Transformer transformer;
-	private String xsltFilename = "etc/pmd-nicerhtml.xsl";
+	private String xsltFilename = "/etc/pmd-nicerhtml.xsl";
 	private Writer outputWriter;
 
 	public XSLTRenderer() {
@@ -47,7 +47,10 @@ public class XSLTRenderer extends XMLRenderer {
 	 * @param xsltFilename
 	 */
 	public XSLTRenderer(String xsltFilename) {
-		this.xsltFilename = xsltFilename;
+		File file = new File(xsltFilename);
+		if ( xsltFilename != null && file.exists() && file.canRead() ) {
+			this.xsltFilename = xsltFilename;
+		}
 	}
 
 	@Override
