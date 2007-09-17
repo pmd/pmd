@@ -1,5 +1,5 @@
 <xsl:stylesheet	version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-<xsl:output method="xml" indent="yes" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" 
+<xsl:output method="xml" indent="yes" doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
 doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 <xsl:decimal-format decimal-separator="." grouping-separator="," />
 
@@ -75,8 +75,8 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 	.p2 { background:#FFCC66; }
 	.p3 { background:#FFFF99; }
 	.p4 { background:#99FF99; }
-	.p5 { background:#a6caf0; }    
-    
+	.p5 { background:#a6caf0; }
+
 		</style>
 		</head>
 		<body>
@@ -93,10 +93,10 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 			<!-- Summary part -->
 			<xsl:apply-templates select="." mode="summary"/>
 			<hr size="1" width="100%" align="left"/>
-			
+
 			<!-- Rules part -->
 			<xsl:apply-templates select="." mode="rulelist"/>
-			<hr size="1" width="100%" align="left"/>			
+			<hr size="1" width="100%" align="left"/>
 
 			<!-- Package List part -->
 			<xsl:apply-templates select="." mode="filelist"/>
@@ -216,7 +216,7 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 					</td>
 					<td>
 						[<xsl:value-of select="@ruleset" />.<xsl:value-of select="@rule" />]
-						 - 
+						 -
 						 <xsl:choose>
 						 <xsl:when test="@externalInfoUrl">
 						 <a href="{@externalInfoUrl}"><xsl:value-of select="." disable-output-escaping="yes" /></a>
@@ -225,7 +225,7 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 						 </xsl:choose>
 					</td>
 					<td>
-						<xsl:value-of select="@line" />
+						<xsl:value-of select="@beginline" /> - <xsl:value-of select="@endline"/>
 					</td>
 				</tr>
 			</xsl:for-each>
@@ -270,6 +270,6 @@ doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
 	</xsl:template>
 </xsl:stylesheet>
 
- 	  	 
 
- 	  	 
+
+
