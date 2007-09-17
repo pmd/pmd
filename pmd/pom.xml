@@ -221,7 +221,8 @@
           <forkMode>once</forkMode>
           <skip>true</skip>
           <includes>
-            <include>**/*Test.java</include>
+			<include name="test/**/*Test.java" />
+			<exclude name="test/**/Abstract*"/>
           </includes>
         </configuration>
       </plugin>
@@ -272,6 +273,25 @@
       <url>scp://pmd.sourceforge.net//home/groups/p/pm/pmd/htdocs</url>
     </site>
   </distributionManagement>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<configuration>
+					<linkXref>true</linkXref>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.5</targetJdk>
+					<rulesets>
+						<ruleset>http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd/rulesets/internal/</ruleset>
+                	</rulesets>
+				</configuration>
+			</plugin>
+		</plugins>
+	</reporting>
+
 </project>
 
 
