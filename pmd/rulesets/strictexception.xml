@@ -123,10 +123,14 @@ Exception, or Error, use a subclassed exception or error instead.
             <![CDATA[
 //AllocationExpression
  /ClassOrInterfaceType[
- @Image='Throwable' or
- @Image='Exception' or
- @Image='Error' or
- @Image='RuntimeException']
+ (@Image='Throwable' and count(//ImportDeclaration/Name[ends-with(@Image,'Throwable')]) = 0)
+or
+ (@Image='Exception' and count(//ImportDeclaration/Name[ends-with(@Image,'Exception')]) = 0)
+or
+ (@Image='Error'  and count(//ImportDeclaration/Name[ends-with(@Image,'Error')]) = 0)
+or
+( @Image='RuntimeException'  and count(//ImportDeclaration/Name[ends-with(@Image,'RuntimeException')]) = 0)
+]
  ]]>
         </value>
       </property>
@@ -205,7 +209,7 @@ public class Foo {
   ]]>
     </example>
   </rule>
-  
+
   <rule
     name="DoNotExtendJavaLangError"
     message="Exceptions should not extend java.lang.Error"
@@ -231,5 +235,5 @@ public class Foo {
         public class Foo extends Error { }
     ]]></example>
   </rule>
-  
+
 </ruleset>
