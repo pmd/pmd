@@ -13,10 +13,11 @@ Fixed bug 1702782 - fixed false positive in UselessOperationOnImmutable when an 
 Fixed bugs 1764288/1744069/1744071 - When using Type Resolution all junit test cases will notice if you're using an extended TestCase
 Fixed bug 1793215 - pmd-nicerhtml.xsl does not display line numbers
 Fixes bug 1796928 - fixed false positive in AvoidThrowingRawExceptionTypes, when a Type name is the same as a RawException.
+
 The Java 1.5 source code parser is now the default for testcode used in PMD's unit tests.
 Added TypeResolution to the XPath rule. Use typeof function to determine if a node is of a particular type
 Adding support for multiple line span String in CPD's AbstractTokenizer, this may change, for the better, CPD's Ruby parsing.
-New HTML look available for PMD command line : "nicehtml" instead "html" will render a nicer html report. Use an XSLT transformation, default stylesheet maybe override with '-xslt filename'.
+This release adds 'nicehtml', with the plan for the next major release to make nicehtml->html, and html->oldhtml. This feature uses an XSLT transformation, default stylesheet maybe override with '-xslt filename'.
 New CPD command line feature : Using more than on directory for sources. You can now have several '--files' on the command line.
 
 July 20, 2007 - 4.0
