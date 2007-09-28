@@ -41,6 +41,7 @@
 
     <tr><td><a href="#idea">IntelliJ IDEA</a></td>
         <td>N/A</td>
+        <td>Amit Dev</td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
@@ -203,8 +204,9 @@ try deleting the ruleset.xml file in the .metadata/plugins/net.sourceforge.pmd.e
 
 
         <a name="idea"/><subsection name="IDEA">
-  <p>There's not a "real" - i.e., integrated into the same Java VM - plugin for IDEA, but using it as an IDEA "External Tool"
-  works OK.  Here's how to set it up:</p>
+          <p>You can use an integrated plugin or just use it as an IDEA "External Tool".</p>
+          <p>Amit Dev wrote an integrated plugin for IDEA; you can download that <a href="http://plugins.intellij.net/plugin/?id=1137">from the IntelliJ plugins site</a>.</p>
+        <p>Here's how to set it up as an "External Tool":</p>
   <ul>
   <li>Open IDEA and go to File->Settings</li>
   <li>Click on the "External Tools" icon</li>
