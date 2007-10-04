@@ -31,6 +31,7 @@ import java.util.ListIterator;
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  * @author David Konecny (david.konecny@)
+ * @author Romain PELISSE, belaran@gmail.com, patch bug#1807370
  */
 public class AccessorClassGeneration extends AbstractRule {
 
@@ -202,12 +203,14 @@ public class AccessorClassGeneration extends AbstractRule {
             return o;
         }
         // outer classes
+        if ( ! node.isStatic() ) {	// See bug# 1807370
         String className = node.getImage();
         classDataList.clear();
         setClassID(0);//first class
         classDataList.add(getClassID(), new ClassData(className));
+        }
         Object o = super.visit(node, data);
-        if (o != null) {
+        if (o != null && ! node.isStatic() ) { // See bug# 1807370
             processRule(o);
         } else {
             processRule(data);
