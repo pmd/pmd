@@ -94,7 +94,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             className = getClassName(node);
             populateClassName(node, className);
         } catch (ClassNotFoundException e) {
-            LOG.log(Level.WARNING, "Could not find class " + className);
+            LOG.log(Level.FINE, "Could not find class " + className);
         } catch (NoClassDefFoundError e) {
             LOG.log(Level.WARNING, "Could not find class " + className);
         } finally {
