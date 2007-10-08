@@ -47,4 +47,21 @@ import javax.servlet.http.*;
 public class Foo {}
      ]]></code>
     </test-code>
+    <!--test-code>
+        <description><![CDATA[
+674394, Disambiguation import should be allowed
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.awt.*;
+import java.util.*;
+import java.util.List; //False positive
+
+class Foo{
+    Color color;
+    List list;
+    Set set;
+}
+     ]]></code>
+    </test-code-->
 </test-data>
