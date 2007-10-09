@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+void return method, with no return statement.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+    public void couldBeAbstract()
+    {
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+non-void return method, with just a, most likely, dummy return statement.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+    public Object couldBeAbstract()
+    {
+	// Should be abstract method ?
+	return null;
+   }
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+A method with just a return statement, but a meaningfull one.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+    public int isUseFull(int i)
+    {
+	return (i +4 ) * 12;
+   }
+
+    public int anotherUseFull(int i)
+    {
+	return i++;
+   }
+}
+     ]]></code>
+    </test-code>
+</test-data>

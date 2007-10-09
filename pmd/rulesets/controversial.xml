@@ -430,6 +430,204 @@ public class MyClass {
 	     ]]></example>
     </rule>
 
+	<rule
+        name="AvoidUsingShortType"
+        message="Do not use the short type"
+        class="net.sourceforge.pmd.rules.XPathRule"
+    	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUseOfShortTypes">
+        <description>
+            <![CDATA[
+            Java uses the short type to reduce memory usage, not to optimize calculation. On the contrary, the jvm does not has an
+            arithmetic capabilities with the type short. So, the P-code msut convert the short into int, then do the proper caculation
+            and then again, convert int to short. So, use of the 'short' type may have a great effect on memory usage.
+            ]]>
+        </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+            //PrimitiveType[
+            starts-with(@Image,'short')
+            and
+            ends-with(@Image,'short')
+            ]
+					]]>
+                </value>
+            </property>
+        </properties>
+        <priority>1</priority>
+        <example>
+            <![CDATA[
+    public class UsingShort
+    {
+        private short doNotUseShort = 0;
+
+		public UsingShort() {
+			short shouldNotBeUsed = 1;
+			doNotUseShort += shouldNotBeUsed;
+		}
+ 	}
+ 			]]>
+ 		</example>
+ 	</rule>
+
+	<rule
+        name="AvoidUsingVolatile"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        message="Use of modifier volatile is not recommended."
+    	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUsingVolatile">
+
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                        //FieldDeclaration[
+                                contains(@Volatile,'true')
+                        ]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <description>
+            <![CDATA[
+Use of the keyword 'volatile' is general used to fine tune a Java application, and therefore, requires
+a good expertise of the Java Memory Model. Morover, its range of action is somewhat misknown. Therefore,
+the volatile keyword should not be used for maintenance purpose and portability.
+			]]>
+		</description>
+		<priority>2</priority>
+		<example>
+			<![CDATA[
+				public class ThrDeux {
+					private volatile String var;
+
+				}
+			]]>
+		</example>
+	</rule>
+
+
+	<rule
+		name="AvoidUsingNativeCode"
+        message="The use of native code is not recommended."
+        class="net.sourceforge.pmd.rules.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUsingNativeCode">
+        <description>
+            <![CDATA[
+                As JVM and Java language offer already many help in creating application, it should be
+                very rare to have to rely on non-java code. Even though, it is rare to actually have to
+                use Java Native Interface (JNI). As the use of JNI make application less portable, and
+                harder to maintain, it is not recommended.
+            ]]>
+        </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                        //PrimaryPrefix/Name[starts-with(@Image,'System.loadLibrary')]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <priority>2</priority>
+        <example>
+            <![CDATA[
+                public class SomeJNIClass {
+                        public SomeJNIClass() {
+                                System.loadLibrary("nativelib");
+                        }
+
+                        static {
+                             System.loadLibrary("nativelib");
+                        }
+
+                        public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
+                                System.loadLibrary("nativelib");
+                        }
+                }
+            ]]>
+        </example>
+    </rule>
+
+	<rule
+		name="AvoidAccessibilityAlteration"
+        message="You should modify visibility of class or methods using getDeclaredConstructors(), getDeclaredConstructor(Class[]), setAccessible() or PrivilegedAction."
+        class="net.sourceforge.pmd.rules.XPathRule"
+               externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidAccessibilityAlteration">
+        <description>
+            <![CDATA[
+            Methods such as getDeclaredConstructors(), getDeclaredConstructor(Class[]) and setAccessible(),
+            as the interface PrivilegedAction, allow to alter, at runtime, the visilibilty of variable, classes, or
+            methods, even if they are private. Obviously, no one should do so, as such behavior is against everything
+            encapsulation principal stands for.
+            ]]>
+        </description>
+        <properties>
+            <property name="xpath">
+                <value>
+                   <![CDATA[
+                        //PrimaryExpression[
+                        (
+                        (PrimarySuffix[
+                                ends-with(@Image,'getDeclaredConstructors')
+                                        or
+                                ends-with(@Image,'getDeclaredConstructor')
+                                        or
+                                ends-with(@Image,'setAccessible')
+                                ])
+                        or
+                        (PrimaryPrefix/Name[
+                                ends-with(@Image,'getDeclaredConstructor')
+                                or
+                                ends-with(@Image,'getDeclaredConstructors')
+                                or
+                                starts-with(@Image,'AccessibleObject.setAccessible')
+                                ])
+                        )
+                        and
+                        (//ImportDeclaration/Name[
+                                contains(@Image,'java.security.PrivilegedAction')])
+                ]
+                ]]>
+                </value>
+            </property>
+        </properties>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+
+			import java.lang.reflect.AccessibleObject;
+			import java.lang.reflect.Method;
+			import java.security.PrivilegedAction;
+
+			public class Violation {
+				public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
+					// Possible call to forbidden getDeclaredConstructors
+					Class[] arrayOfClass = new Class[1];
+					this.getClass().getDeclaredConstructors();
+					this.getClass().getDeclaredConstructor(arrayOfClass);
+					Class clazz = this.getClass();
+					clazz.getDeclaredConstructor(arrayOfClass);
+					clazz.getDeclaredConstructors();
+
+					// Possible call to forbidden setAccessible
+					clazz.getMethod("", arrayOfClass).setAccessible(false);
+					AccessibleObject.setAccessible(null, false);
+					Method.setAccessible(null, false);
+					Method[] methodsArray = clazz.getMethods();
+					int nbMethod;
+					for ( nbMethod = 0; nbMethod < methodsArray.length; nbMethod++ ) {
+						methodsArray[nbMethod].setAccessible(false);
+					}
+
+					// Possible call to forbidden PrivilegedAction
+					PrivilegedAction priv = (PrivilegedAction) new Object(); priv.run();
+				}
+			}
+					]]>
+			</example>
+		</rule>
+
 </ruleset>
 
 

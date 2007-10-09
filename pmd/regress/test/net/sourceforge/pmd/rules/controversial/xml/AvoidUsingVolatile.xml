@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Basic test case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+			    public class UsingVolatile {
+			        private volatile String field;
+				}
+		     ]]>
+		</code>
+    </test-code>
+</test-data>

@@ -1367,4 +1367,49 @@ public class Foo {  //Should be final
      ]]></example>
     </rule>
 
+
+    <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
+          class="net.sourceforge.pmd.rules.XPathRule"
+          message="An empty method in an abstract class should be abstract instead"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#which only has private constructors">
+        <description>
+An empty method in an abstract class should be abstract instead, as developer may rely on this empty implementation
+rather than code the appropriate one.
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                <![CDATA[
+					//MethodDeclaration[@Abstract = 'false']
+					[
+						(//ClassOrInterfaceDeclaration[@Abstract = 'true'])
+						and
+						( boolean(./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression) = 'true' )
+						or
+						( count (./Block/*) = 0 )
+					]
+             	]]>
+             </value>
+            </property>
+        </properties>
+        <example>
+        	<![CDATA[
+				public abstract class ShouldBeAbstract
+				{
+				    public Object couldBeAbstract()
+				    {
+					// Should be abstract method ?
+					return null;
+				   	}
+
+				    public void couldBeAbstract()
+				    {
+				    }
+				}
+	     	]]>
+    	</example>
+    </rule>
+
+
 </ruleset>

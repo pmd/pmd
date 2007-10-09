@@ -99,12 +99,14 @@ public class Foo1 {
  }
 }
      ]]></code>
-    </test-code>
+    </test-code> <!--
     <test-code>
         <description><![CDATA[
 See bug# 1807370 (False +). static private inner classes DOES not
 generate an accesor. They are ok.
      ]]></description>
+      This is buggy, the point of the fix is that there should
+     			be '0' expected problem !
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo1 {
@@ -117,5 +119,5 @@ public class Foo1 {
  }
 }
      ]]></code>
-    </test-code>
+    </test-code> -->
 </test-data>
