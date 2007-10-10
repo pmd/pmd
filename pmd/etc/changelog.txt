@@ -1,11 +1,10 @@
 ????, 2007 - 4.1:
 New rules:
-	Basic ruleset: AvoidHardCodedIP
+	Basic ruleset: AvoidUsingHardCodedIP
 	Controversial ruleset: AvoidFinalLocalVariable,AvoidUseOfShortType,AvoidUsingVolatile,AvoidUsingNativeCode
 	Design ruleset: ClassWithOnlyPrivateConstructorsShouldBeFinal,EmptyMethodInAbstractClassShouldBeAbstract
 	Imports ruleset: TooManyStaticImports
 	J2ee ruleset: DoNotCallSystemExit, StaticEJBFieldShouldBeFinal,DoNotUseThreads
-	JSP basic ruleset: ExternalizeJavascript
 
 Fixed bug 631681  - fixed false positive in UnusedPrivateField when field is accessed by outer class
 Fixed bug 1472195 - fixed false positives in PositionLiteralsFirstInComparisons when the string is used as a parameter
@@ -20,6 +19,7 @@ Fixes bug 1796928 - fixed false positive in AvoidThrowingRawExceptionTypes, when
 
 The Java 1.5 source code parser is now the default for testcode used in PMD's unit tests.
 Added TypeResolution to the XPath rule. Use typeof function to determine if a node is of a particular type
+Adding a GenericLiteralChecker, a generic rule that require a regex as property. It will log a violation if a Literal is matched by the regex. See the new rule AvoidUsingHardCodedIP for an exemple
 Adding support for multiple line span String in CPD's AbstractTokenizer, this may change, for the better, CPD's Ruby parsing.
 This release adds 'nicehtml', with the plan for the next major release to make nicehtml->html, and html->oldhtml. This feature uses an XSLT transformation, default stylesheet maybe override with '-xslt filename'.
 New CPD command line feature : Using more than on directory for sources. You can now have several '--files' on the command line.

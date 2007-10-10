@@ -996,20 +996,47 @@ public class Test {
             class="net.sourceforge.pmd.rules.basic.AvoidUsingOctalValues"
             externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingOctalValues">
     <description>
-    Integer literals should not start with zero.
-    Zero means that the rest of literal will be interpreted as an octal value.
+    	<![CDATA[
+		    Integer literals should not start with zero.
+		    Zero means that the rest of literal will be interpreted as an octal value.
+    	]]>
     </description>
     <priority>3</priority>
     <example>
-    <![CDATA[
-public class Foo {
-  int i = 012; // set i with 10 not 12
-  int j = 010; // set j with 8 not 10
-  k = i * j; // set k with 80 not 120
-}
-    ]]>
+		    <![CDATA[
+		public class Foo {
+		  int i = 012; // set i with 10 not 12
+		  int j = 010; // set j with 8 not 10
+		  k = i * j; // set k with 80 not 120
+		}
+		    ]]>
     </example>
     </rule>
+
+    <rule   name="AvoidUsingHardCodedIP"
+            message="Do not hard code IP, even 127.0.0.1 !"
+            class="net.sourceforge.pmd.rules.GenericLiteralChecker"
+            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP">
+	     <properties>
+            <property name="pattern" description="Regular Expression" value="[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}"/>
+        </properties>
+
+	    <description>
+	    	<![CDATA[
+				An application with hard coded IP may become impossible to deploy in some case. It never hurts
+				to externalize IP adresses.
+	    	]]>
+	    </description>
+	    <priority>3</priority>
+	    <example>
+	    <![CDATA[
+	public class Foo {
+	  String ip = "127.0.0.1"; // This is a really bad idea !
+	}
+	    ]]>
+	    </example>
+    </rule>
+
 
 </ruleset>
 
