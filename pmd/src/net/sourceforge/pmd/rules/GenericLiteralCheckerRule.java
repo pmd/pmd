@@ -47,7 +47,7 @@ public class GenericLiteralCheckerRule extends AbstractRule {
 	}
 
 	private boolean isPatternOk() {
-		if ( stringPattern != null && stringPattern.length() > 0 && ! "".equals(stringPattern) ) {
+		if ( stringPattern != null && stringPattern.length() > 0 ) {
 			return true;
 		}
 		return false;
@@ -59,7 +59,7 @@ public class GenericLiteralCheckerRule extends AbstractRule {
 	public Object visit(ASTLiteral node, Object data) {
 		if ( isPatternOk() ) { //otherwise, this is pointless
 			String image = node.getImage();
-			if ( image.length() > 0 && ! "".equals(image) && isAMatch(image) ) {
+			if ( image.length() > 0 && isAMatch(image) ) {
 				addViolation(data, node);
 			}
 		}
