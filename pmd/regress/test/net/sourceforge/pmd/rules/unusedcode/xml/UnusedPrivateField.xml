@@ -327,4 +327,40 @@ private String foo;
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+631681, private field is accessed by outer class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class XPathFunctionContext {
+
+    private class Singleton {
+        private String foo = "";
+    }
+
+    public String getFoo() {
+        return (new Singleton()).foo;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+631681, private field in singleton is accessed by outer class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class XPathFunctionContext {
+
+    private static class Singleton {
+        private static XPathFunctionContext instance = new XPathFunctionContext();
+    }
+
+    public static XPathFunctionContext getInstance() {
+        return Singleton.instance;
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
