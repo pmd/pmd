@@ -1015,7 +1015,7 @@ public class Test {
 
     <rule   name="AvoidUsingHardCodedIP"
             message="Do not hard code IP, even 127.0.0.1 !"
-            class="net.sourceforge.pmd.rules.GenericLiteralChecker"
+            class="net.sourceforge.pmd.rules.GenericLiteralCheckerRule"
             externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP">
 	     <properties>
             <property name="pattern" description="Regular Expression" value="[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}"/>
