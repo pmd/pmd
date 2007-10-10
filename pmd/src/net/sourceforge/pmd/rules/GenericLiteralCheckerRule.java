@@ -1,6 +1,5 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- *
  */
 package net.sourceforge.pmd.rules;
 
@@ -14,59 +13,44 @@ import net.sourceforge.pmd.properties.StringProperty;
 
 
 /**
- * This class allow to match a Literal (most likely a string) with a regex pattern.
- * Obviously, there is many application to it ( such as the AvoidUsingHardCodedIPRule)
- *
+ * This class allow to match a Literal (most likely a String) with a regex pattern.
+ * Obviously, there are many applications of it (such as basic.xml/AvoidUsingHardCodedIP).
  *
  * @author Romain PELISSE, belaran@gmail.com
- *
  */
 public class GenericLiteralCheckerRule extends AbstractRule {
 
 	private static final String PROPERTY_NAME = "pattern";
 	private static final String DESCRIPTION = "Regular Expression";
-	private String stringPattern = null;
-	private static 	Pattern pattern;
-
-	/**
-	 * Default constructor. Retrive the regex and compile it.
-	 *
-	 */
-	public GenericLiteralCheckerRule() {
-		init();
-	}
+	private Pattern pattern;
 
 	private void init() {
-		// Retrieving the pattern setted by user
-		PropertyDescriptor property = new StringProperty(PROPERTY_NAME,DESCRIPTION,"", 1.0f);
-		stringPattern = super.getStringProperty(property);
-		// if the pattern is not empty, we compile it once in for all
-		if ( isPatternOk() ) {
-			pattern = Pattern.compile(stringPattern);
+		if (pattern == null) {
+			// Retrieve the regex pattern set by user
+			PropertyDescriptor property = new StringProperty(PROPERTY_NAME,DESCRIPTION,"", 1.0f);
+			String stringPattern = super.getStringProperty(property);
+			// Compile the pattern only once
+			if ( stringPattern != null && stringPattern.length() > 0 ) {
+				pattern = Pattern.compile(stringPattern);
+			} else {
+				throw new IllegalArgumentException("Must provide a value for the '" + PROPERTY_NAME + "' property.");
+			}
 		}
-	}
-
-	private boolean isPatternOk() {
-		if ( stringPattern != null && stringPattern.length() > 0 ) {
-			return true;
-		}
-		return false;
 	}
 
 	/**
-	 * This method check if the Literal match the pattern. If it is, a violation is logged.
+	 * This method checks if the Literal matches the pattern. If it does, a violation is logged.
 	 */
 	public Object visit(ASTLiteral node, Object data) {
-		if ( isPatternOk() ) { //otherwise, this is pointless
-			String image = node.getImage();
-			if ( image.length() > 0 && isAMatch(image) ) {
-				addViolation(data, node);
-			}
+		init();
+		String image = node.getImage();
+		if ( image.length() > 0 && isMatch(image) ) {
+			addViolation(data, node);
 		}
 		return data;
 	}
 
-	private boolean isAMatch(String image) {
+	private boolean isMatch(String image) {
         Matcher matcher = pattern.matcher(image);
         if (matcher.find()) {
             return true;

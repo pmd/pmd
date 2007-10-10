@@ -1018,7 +1018,7 @@ public class Test {
             class="net.sourceforge.pmd.rules.GenericLiteralCheckerRule"
             externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP">
 	     <properties>
-            <property name="pattern" description="Regular Expression" value="[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}\\.[0-9]{3}"/>
+            <property name="pattern" description="Regular Expression" value="[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"/>
         </properties>
 
 	    <description>
