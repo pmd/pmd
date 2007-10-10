@@ -286,13 +286,13 @@ Total time: 2 seconds
       to fix this :
       On Windows:
       <source>
-      	<![CDATA[[
+      	<![CDATA[
       		  set ANT_OPTS=-Xmx1024m -Xms512m
       	]]>
       </source>
       On Linux
       <source>
-      	<![CDATA[[
+      	<![CDATA[
       		export ANT_OPTS="-Xmx1024m -Xms512m"
       	]]>
       </source>
