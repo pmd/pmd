@@ -70,6 +70,27 @@ public interface FooTest {
     </test-code>
     <test-code>
         <description><![CDATA[
+ditto enum
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum FooTest {
+	ONE, TWO;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ditto annotation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public @interface FooTest {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
 failure case does not extend TestCase
      ]]></description>
         <expected-problems>0</expected-problems>

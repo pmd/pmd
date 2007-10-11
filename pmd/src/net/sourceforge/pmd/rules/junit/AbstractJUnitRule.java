@@ -69,6 +69,9 @@ public abstract class AbstractJUnitRule extends AbstractRule {
             return true;
         } else if (node.getType() == null) {
             ASTClassOrInterfaceDeclaration cid = node.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
+            if (cid == null) {
+                return false;
+            }
             ASTExtendsList extendsList = cid.getFirstChildOfType(ASTExtendsList.class);
             if(extendsList == null){
                 return false;
