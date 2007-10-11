@@ -44,7 +44,7 @@ public class GenericLiteralCheckerRule extends AbstractRule {
 	public Object visit(ASTLiteral node, Object data) {
 		init();
 		String image = node.getImage();
-		if ( image.length() > 0 && isMatch(image) ) {
+		if ( image != null && image.length() > 0 && isMatch(image) ) {
 			addViolation(data, node);
 		}
 		return data;
