@@ -16,7 +16,7 @@ import java.util.Set;
 
 /**
  * This rule finds places where StringBuffer.toString() is called just to see if
- * the string is 0 length by either using .equals("") or toString().size()
+ * the string is 0 length by either using .equals("") or toString().length()
  * <p/>
  * <pre>
  * StringBuffer sb = new StringBuffer(&quot;some string&quot;);
@@ -75,7 +75,7 @@ public class UseStringBufferLength extends AbstractRule {
     }
 
     /**
-     * Check the given node if it calls either .equals or .size we need to check the target
+     * Check the given node if it calls either .equals or .length we need to check the target
      */
     private boolean isViolation(SimpleNode parent, SimpleNode achild) {
         if ("equals".equals(achild.getImage())) {
