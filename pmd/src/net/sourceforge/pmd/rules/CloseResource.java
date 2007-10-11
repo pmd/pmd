@@ -32,14 +32,14 @@ public class CloseResource extends AbstractRule
     {
       return data;
     }
-    if (types.isEmpty())
+    if (types.isEmpty() && getStringProperty("types") != null)
     {
       for (StringTokenizer st = new StringTokenizer(getStringProperty("types"), ","); st.hasMoreTokens();)
       {
         types.add(st.nextToken());
       }
     }
-    if (closers.isEmpty())
+    if (closers.isEmpty() && getStringProperty("closers") != null)
     {
       for (StringTokenizer st = new StringTokenizer(getStringProperty("closers"), ","); st.hasMoreTokens();)
       {
@@ -161,10 +161,6 @@ public class CloseResource extends AbstractRule
     {
       ASTImportDeclaration n = (ASTImportDeclaration)i.next();
       if (n.getPackageName().startsWith("java.sql"))
-      {
-        return true;
-      }
-      if (n.getPackageName().startsWith("com.renault.dao"))
       {
         return true;
       }

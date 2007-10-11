@@ -87,7 +87,7 @@ public class Foo {
      ]]></code-fragment>
     <test-code>
         <description><![CDATA[
-Bad, no closeTargets properties for statements
+Bad, no closers properties for statements
      ]]></description>
         <rule-property name="types">Connection,Statement,ResultSet</rule-property>
         <expected-problems>2</expected-problems>
@@ -95,9 +95,9 @@ Bad, no closeTargets properties for statements
     </test-code>
     <test-code reinitializeRule="true">
         <description><![CDATA[
-Ok, closeTargets properties for statements
+Ok, closers properties for statements
      ]]></description>
-        <rule-property name="closeTargets">MyHelper.close, cleanup</rule-property>
+        <rule-property name="closers">MyHelper.close, cleanup</rule-property>
         <rule-property name="types">Connection,Statement,ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="executeQuery"/>
@@ -125,7 +125,7 @@ readExternal(aStream);
         <description><![CDATA[
 OK
      ]]></description>
-        <rule-property name="closeTargets">MyHelper.close</rule-property>
+        <rule-property name="closers">MyHelper.close</rule-property>
         <rule-property name="types">Connection,Statement,ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
