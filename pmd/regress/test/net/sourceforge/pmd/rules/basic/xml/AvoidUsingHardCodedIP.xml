@@ -14,12 +14,36 @@ public class Foo {
 
     <test-code>
         <description><![CDATA[
-Common basic case
+Not detected via string concatenation.
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
   String badIdea = "127.0" + "0.1"; // this is not detected
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Null literal does not puke.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  String bar = null;
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+Non String literal does not puke.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  double bar = 123.47654;
 }
      ]]></code>
     </test-code>
