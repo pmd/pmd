@@ -16,6 +16,7 @@ public class J2EERulesTest extends SimpleAggregatorTst {
     @Before
     public void setUp() {
     	rules.add(findRule("j2ee", "DoNotCallSystemExit"));
+    	rules.add(findRule("j2ee", "DoNotUseThreads"));
         rules.add(findRule("j2ee", "LocalHomeNamingConvention"));
         rules.add(findRule("j2ee", "LocalInterfaceSessionNamingConvention"));
         rules.add(findRule("j2ee", "MDBAndSessionBeanNamingConvention"));

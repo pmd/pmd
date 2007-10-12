@@ -16,11 +16,13 @@ public class BasicRulesTest extends SimpleAggregatorTst {
     @Before
     public void setUp() {
         rules.add(findRule("basic", "AvoidThreadGroup"));
+        rules.add(findRule("basic", "AvoidUsingHardCodedIP"));
         rules.add(findRule("basic", "AvoidUsingOctalValues"));
         rules.add(findRule("basic", "AvoidDecimalLiteralsInBigDecimalConstructor"));
         rules.add(findRule("basic", "BigIntegerInstantiation"));
         rules.add(findRule("basic", "BooleanInstantiation"));
         rules.add(findRule("basic", "BrokenNullCheck"));
+        rules.add(findRule("basic", "CheckResultSet"));
         rules.add(findRule("basic", "ClassCastExceptionWithToArray"));
         rules.add(findRule("basic", "CollapsibleIfStatements"));
         rules.add(findRule("basic", "DoubleCheckedLocking"));
