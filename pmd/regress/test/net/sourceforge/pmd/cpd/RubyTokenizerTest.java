@@ -50,7 +50,7 @@ public class RubyTokenizerTest extends AbstractTokenizerTest {
 
 	@Test
 	public void tokenizeTest() throws IOException {
-		this.NB_EXCEPTED_TOKENS = 30;
+		this.expectedTokenCount = 30;
 		super.tokenizeTest();
 	}
 }

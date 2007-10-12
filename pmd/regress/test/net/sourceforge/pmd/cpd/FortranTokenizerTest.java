@@ -200,7 +200,7 @@ public class FortranTokenizerTest extends AbstractTokenizerTest {
 
 	@Test
 	public void tokenizeTest() throws IOException {
-		this.NB_EXCEPTED_TOKENS = 434;
+		this.expectedTokenCount = 434;
 		super.tokenizeTest();
 	}
 }

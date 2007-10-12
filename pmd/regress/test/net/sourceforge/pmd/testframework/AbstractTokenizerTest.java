@@ -19,7 +19,7 @@ import net.sourceforge.pmd.cpd.Tokens;
  */
 public abstract class AbstractTokenizerTest {
 
-	protected int NB_EXCEPTED_TOKENS;
+	protected int expectedTokenCount;
 	protected Tokenizer tokenizer;
 	protected SourceCode sourceCode;
 
@@ -31,7 +31,7 @@ public abstract class AbstractTokenizerTest {
 		Tokens tokens = new Tokens();
 		tokenizer.tokenize(sourceCode, tokens);
 		List<TokenEntry> entries = tokens.getTokens();
-		assertEquals(NB_EXCEPTED_TOKENS,entries.size());
+		assertEquals(expectedTokenCount,entries.size());
 	}
 
 }
