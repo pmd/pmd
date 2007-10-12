@@ -1381,15 +1381,16 @@ rather than code the appropriate one.
             <property name="xpath">
                 <value>
                 <![CDATA[
-					//MethodDeclaration[@Abstract = 'false']
-					[
-						(//ClassOrInterfaceDeclaration[@Abstract = 'true'])
-						and
-						( boolean(./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression) = 'true' )
-						or
-						( count (./Block/*) = 0 )
-					]
-             	]]>
+                    //ClassOrInterfaceDeclaration[@Abstract = 'true']
+                        /ClassOrInterfaceBody
+                        /ClassOrInterfaceBodyDeclaration
+                        /MethodDeclaration[@Abstract = 'false']
+                        [
+                            ( boolean(./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression) = 'true' )
+                            or
+                            ( count (./Block/*) = 0 )
+                        ]
+                ]]>
              </value>
             </property>
         </properties>

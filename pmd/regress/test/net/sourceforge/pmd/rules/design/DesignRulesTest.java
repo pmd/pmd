@@ -29,6 +29,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         rules.add(findRule("design", "CloseResource"));
         rules.add(findRule("design", "CompareObjectsWithEquals"));
         rules.add(findRule("design", "DefaultLabelNotLastInSwitchStmt"));
+        rules.add(findRule("design", "EmptyMethodInAbstractClassShouldBeAbstract"));
         rules.add(findRule("design", "EqualsNull"));
         rules.add(findRule("design", "FinalFieldCouldBeStatic"));
         rules.add(findRule("design", "IdempotentOperations"));

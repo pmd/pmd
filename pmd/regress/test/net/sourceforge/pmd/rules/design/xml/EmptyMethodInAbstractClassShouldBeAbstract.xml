@@ -51,4 +51,38 @@ public abstract class ShouldBeAbstract
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+nested abstract class
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class NotAbstract
+{
+    public abstract class ShouldBeAbstract
+    {
+        public void couldBeAbstract()
+        {
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+nested class in abstract class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+    public class NotAbstract
+    {
+        public void couldBeAbstract()
+        {
+        }
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
