@@ -26,6 +26,7 @@ public abstract class OnTheFlyRenderer extends AbstractRenderer {
         Iterator<IRuleViolation> violations = report.iterator();
         if (violations.hasNext()) {
             renderFileViolations(violations);
+            getWriter().flush();
         }
 
         /*
