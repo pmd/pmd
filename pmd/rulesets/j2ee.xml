@@ -331,6 +331,12 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
         class="net.sourceforge.pmd.rules.XPathRule"
         message="To be compliant to J2EE, a webapp should not use any thread."
     	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#NoThreadInJ2EEContainer">
+        <description>
+            <![CDATA[
+                The J2EE specification explicitly forbid use of threads.
+            ]]>
+        </description>
+        <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -349,12 +355,6 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
                 </value>
             </property>
         </properties>
-        <description>
-            <![CDATA[
-    The J2EE specification explicitly forbid use of threads.
-       ]]>
-        </description>
-        <priority>3</priority>
         <example>
             	<![CDATA[
             // This is not allowed

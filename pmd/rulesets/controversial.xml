@@ -442,6 +442,7 @@ public class MyClass {
             and then again, convert int to short. So, use of the 'short' type may have a great effect on memory usage.
             ]]>
         </description>
+        <priority>1</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -451,11 +452,10 @@ public class MyClass {
             and
             ends-with(@Image,'short')
             ]
-					]]>
+                    ]]>
                 </value>
             </property>
         </properties>
-        <priority>1</priority>
         <example>
             <![CDATA[
     public class UsingShort
@@ -477,6 +477,14 @@ public class MyClass {
         message="Use of modifier volatile is not recommended."
     	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUsingVolatile">
 
+        <description>
+            <![CDATA[
+Use of the keyword 'volatile' is general used to fine tune a Java application, and therefore, requires
+a good expertise of the Java Memory Model. Morover, its range of action is somewhat misknown. Therefore,
+the volatile keyword should not be used for maintenance purpose and portability.
+            ]]>
+        </description>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -488,14 +496,6 @@ public class MyClass {
                 </value>
             </property>
         </properties>
-        <description>
-            <![CDATA[
-Use of the keyword 'volatile' is general used to fine tune a Java application, and therefore, requires
-a good expertise of the Java Memory Model. Morover, its range of action is somewhat misknown. Therefore,
-the volatile keyword should not be used for maintenance purpose and portability.
-			]]>
-		</description>
-		<priority>2</priority>
 		<example>
 			<![CDATA[
 				public class ThrDeux {
@@ -520,6 +520,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
                 harder to maintain, it is not recommended.
             ]]>
         </description>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -529,7 +530,6 @@ the volatile keyword should not be used for maintenance purpose and portability.
                 </value>
             </property>
         </properties>
-        <priority>2</priority>
         <example>
             <![CDATA[
                 public class SomeJNIClass {
@@ -562,6 +562,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
             encapsulation principal stands for.
             ]]>
         </description>
+        <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -592,7 +593,6 @@ the volatile keyword should not be used for maintenance purpose and portability.
                 </value>
             </property>
         </properties>
-        <priority>3</priority>
         <example>
             <![CDATA[
 
