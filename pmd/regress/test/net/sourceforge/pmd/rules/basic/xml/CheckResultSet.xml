@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description>
+        	<![CDATA[
+				This is good behavior.
+     		]]>
+     	</description>
+        <expected-problems>0</expected-problems>
+        <code>
+        	<![CDATA[
+				public class ResultSetTesting
+				{
+				    public String goodBehavior() throws SQLException
+				    {
+				        String firsString = "";
+				        Statement stat = (Statement) conn.createStatement();
+				        ResultSet rst = stat.executeQuery("SELECT name FROM person");
+
+				        if (rst.next())
+				        {
+				            firsString = rst.getString(1);
+				        }
+				        else
+				        {
+				            // deal properly with the problem..
+				        }
+				        return firsString;
+				    }
+				}
+     		]]>
+ 		</code>
+    </test-code>
+    <test-code>
+        <description>
+        	<![CDATA[
+				This most common violation case
+     		]]>
+     	</description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+				public class ResultSetTesting
+				{
+					public void executeSql(Statement statement, String query) throws SQLException
+				    {
+				        ResultSet rs = statement.executeQuery(query);
+				        String object = rs.getString(1);
+				        rs.last();
+				        object.hashCode();
+				    }
+				}
+     		]]>
+ 		</code>
+    </test-code>
+</test-data>

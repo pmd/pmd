@@ -1037,6 +1037,77 @@ public class Test {
 	    </example>
     </rule>
 
+  <rule
+        name="CheckResultSet"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        message="Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet."
+        externalInfoUrl="http://refdoc.venezia.dev.impots/multiproject/pmdSODA/chapters/chapitre-11.1-jdbc.html#_JDBC-RS_">
+        <description>
+            <![CDATA[
+	            Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet. Indeed,
+	            if the value return is 'false', the developer should deal with it !
+            ]]>
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+		        	<![CDATA[
+//Type/ReferenceType/ClassOrInterfaceType[
+	(@Image = 'ResultSet')
+	and
+	(../../../descendant::Name[ends-with(@Image,'executeQuery')])
+	and
+	(
+		not (contains(
+			(./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
+			(concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.next') )
+		))
+		and
+		not (contains(
+			(./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
+			(concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.previous') )
+		) )
+		and
+		not (contains(
+			(./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
+			(concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.first') )
+		) )
+		and
+		not (contains(
+			(./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
+			(concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.last') )
+		) )
+	)
+]
+		        	]]>
+            	</value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[[
+            // This is NOT appropriate !
+            Statement stat = conn.createStatement();
+            ResultSet rst = stat.executeQuery("SELECT name FROM person");
+            rst.next(); // what if it returns a 'false' ?
+            String firstName = rst.getString(1);
+
+            // Ceci est un comportement correcte
+            Statement stat = conn.createStatement();
+            ResultSet rst = stat.executeQuery("SELECT name FROM person");
+            if (rst.next())
+            {
+                String firstName = rst.getString(1);
+            }
+            else
+            {
+                // traitement de l'erreur
+            }
+            ]]>
+        </example>
+    </rule>
+
+
 
 </ruleset>
 
