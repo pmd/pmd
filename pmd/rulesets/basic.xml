@@ -1091,7 +1091,7 @@ public class Test {
             rst.next(); // what if it returns a 'false' ?
             String firstName = rst.getString(1);
 
-            // Ceci est un comportement correcte
+            // This is appropriate...
             Statement stat = conn.createStatement();
             ResultSet rst = stat.executeQuery("SELECT name FROM person");
             if (rst.next())
@@ -1100,7 +1100,7 @@ public class Test {
             }
             else
             {
-                // traitement de l'erreur
+                // here you deal with the error ( at least log it)
             }
             ]]>
         </example>
