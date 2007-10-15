@@ -7,6 +7,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.rules.ImportWrapper;
+import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -26,9 +27,15 @@ public class DuplicateImportsRule extends AbstractRule {
         // import java.io.File;
         for (ImportWrapper thisImportOnDemand : importOnDemandImports) {
             for (ImportWrapper thisSingleTypeImport : singleTypeImports) {
-                String singleTypePkg = thisSingleTypeImport.getName().substring(0, thisSingleTypeImport.getName().lastIndexOf('.'));
-                if (thisImportOnDemand.getName().equals(singleTypePkg)) {
-                    addViolation(data, thisSingleTypeImport.getNode(), thisSingleTypeImport.getName());
+                String singleTypeFullName = thisSingleTypeImport.getName();	//java.io.File
+				
+                int lastDot = singleTypeFullName.lastIndexOf('.');
+				String singleTypePkg = singleTypeFullName.substring(0, lastDot);	//java.io
+                String singleTypeName = singleTypeFullName.substring(lastDot + 1);	//File
+
+                if (thisImportOnDemand.getName().equals(singleTypePkg) && 
+                		!isDisambiguationImport(singleTypePkg, singleTypeName)) {
+                    addViolation(data, thisSingleTypeImport.getNode(), singleTypeFullName);
                 }
             }
         }
@@ -37,7 +44,28 @@ public class DuplicateImportsRule extends AbstractRule {
         return data;
     }
 
-    public Object visit(ASTImportDeclaration node, Object data) {
+    /**
+     * Check whether this seemingly duplicate import is actually a disambiguation import.
+     * 
+     * Example:
+     * import java.awt.*;
+	 * import java.util.*;
+	 * import java.util.List;	//Needed because java.awt.List exists
+     */
+    private boolean isDisambiguationImport(String singleTypePkg, String singleTypeName) {
+    	for (ImportWrapper thisImportOnDemand : importOnDemandImports) {	//Loop over .* imports
+    		if (!thisImportOnDemand.getName().equals(singleTypePkg)) {		//Skip same package
+    			String fullyQualifiedClassName = thisImportOnDemand.getName() + "." + singleTypeName;
+    			if (ClassTypeResolver.classNameExists(fullyQualifiedClassName)) {
+    				return true;	//Class exists in another imported package
+    			}
+    		}
+    	}
+    	
+    	return false;	//This really is a duplicate import
+	}
+
+	public Object visit(ASTImportDeclaration node, Object data) {
         ImportWrapper wrapper = new ImportWrapper(node.getImportedName(), node.getImportedName(), node.getImportedNameNode());
 
         // blahhhh... this really wants to be ASTImportDeclaration to be polymorphic...

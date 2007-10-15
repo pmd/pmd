@@ -47,9 +47,9 @@ import javax.servlet.http.*;
 public class Foo {}
      ]]></code>
     </test-code>
-    <!--test-code>
+    <test-code>
         <description><![CDATA[
-674394, Disambiguation import should be allowed
+674394, disambiguation import should be allowed
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -63,5 +63,5 @@ class Foo{
     Set set;
 }
      ]]></code>
-    </test-code-->
+    </test-code>
 </test-data>

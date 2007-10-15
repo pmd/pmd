@@ -229,6 +229,18 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
             node.setType(myType);
         }
     }
+    
+    /**
+     * Check whether the supplied class name exists.
+     */
+    public static boolean classNameExists(String fullyQualifiedClassName) {
+        try {
+            pmdClassLoader.loadClass(fullyQualifiedClassName);
+            return true;	//Class found
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 
     private Class processOnDemand(String qualifiedName) {
         for (String entry : importedOnDemand) {

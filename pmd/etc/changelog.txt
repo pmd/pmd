@@ -6,6 +6,7 @@ New rules:
 	Imports ruleset: TooManyStaticImports
 	J2ee ruleset: DoNotCallSystemExit, StaticEJBFieldShouldBeFinal,DoNotUseThreads
 
+Fixed bug 674394  - fixed false positive in DuplicateImports for disambiguation import
 Fixed bug 631681  - fixed false positive in UnusedPrivateField when field is accessed by outer class
 Fixed bug 1472195 - fixed false positives in PositionLiteralsFirstInComparisons when the string is used as a parameter
 Fixed bug 1522517 - fixed false positive in UselessOverridingMethod for clone method
