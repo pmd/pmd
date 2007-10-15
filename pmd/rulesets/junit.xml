@@ -21,10 +21,10 @@ The suite() method in a JUnit test needs to be both public and static.
         <property name="xpath">
             <value>
                 <![CDATA[
-//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //MethodDeclaration[not(@Static='true') or not(@Public='true')]
 [MethodDeclarator/@Image='suite']
 [MethodDeclarator/FormalParameters/@ParameterCount=0]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]]
                 ]]>
             </value>
         </property>
@@ -52,12 +52,12 @@ Some JUnit framework methods are easy to misspell.
       <property name="xpath">
           <value>
               <![CDATA[
-//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //MethodDeclarator[(not(@Image = 'setUp')
  and translate(@Image, 'SETuP', 'setUp') = 'setUp')
  or (not(@Image = 'tearDown')
  and translate(@Image, 'TEARdOWN', 'tearDown') = 'tearDown')]
  [FormalParameters[count(*) = 0]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]]
               ]]>
           </value>
       </property>
@@ -157,7 +157,6 @@ statements like assertTrue(true) and assertFalse(false).  If you just want a tes
           <property name="xpath">
               <value>
     <![CDATA[
-//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //StatementExpression
 [
 .//Name[@Image='assertTrue' or  @Image='assertFalse']
@@ -173,6 +172,7 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
  /Expression/UnaryExpressionNotPlusMinus[@Image='!']
 /PrimaryExpression/PrimaryPrefix[Literal/BooleanLiteral or Name[count(../../*)=1]])
 ]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]]
 ]]>
               </value>
           </property>
@@ -202,13 +202,13 @@ should be made by more specific methods, like assertEquals.
         <property name="xpath">
             <value>
                 <![CDATA[
-//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //PrimaryExpression[
     PrimaryPrefix/Name[@Image = 'assertTrue']
 ][
     PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Name
     [ends-with(@Image, '.equals')]
 ]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]]
  ]]>
             </value>
         </property>
@@ -239,7 +239,6 @@ should be made by more specific methods, like assertSame, assertNotSame.
         <property name="xpath">
             <value>
                 <![CDATA[
-//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //PrimaryExpression[
     PrimaryPrefix/Name
      [@Image = 'assertTrue' or @Image = 'assertFalse']
@@ -247,6 +246,7 @@ should be made by more specific methods, like assertSame, assertNotSame.
 [PrimarySuffix/Arguments
  /ArgumentList/Expression
  /EqualityExpression[count(.//NullLiteral) = 0]]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]]
  ]]>
             </value>
         </property>
@@ -277,7 +277,6 @@ public class FooTest extends TestCase {
          <property name="xpath">
              <value>
                  <![CDATA[
-//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //PrimaryExpression[
  PrimaryPrefix/Name[@Image = 'assertTrue' or @Image = 'assertFalse']
 ][
@@ -285,6 +284,7 @@ public class FooTest extends TestCase {
   Expression/EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral
  ]
 ]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]]
   ]]>
              </value>
          </property>
@@ -320,7 +320,6 @@ assertFalse(expr);
           <property name="xpath">
               <value>
     <![CDATA[
-//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]
 //StatementExpression
 [
 .//Name[@Image='assertTrue' or  @Image='assertFalse']
@@ -329,6 +328,7 @@ PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
  /Expression/UnaryExpressionNotPlusMinus[@Image='!']
 /PrimaryExpression/PrimaryPrefix
 ]
+[ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]]
 ]]>
               </value>
           </property>
