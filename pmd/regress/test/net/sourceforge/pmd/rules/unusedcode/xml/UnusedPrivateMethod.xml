@@ -279,4 +279,38 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Calling method on instance of self
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo { 
+ private Foo fooField; 
+ 
+ public void bar() { 
+  Foo f = new Foo();
+  f.fooField.buz();
+ }
+ private void buz() {} 
+}
+     ]]></code>
+    </test-code>
+    <!--test-code>
+        <description><![CDATA[
+631681, call to instance of self, received from another class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo { 
+ private Foo fooField; 
+
+ public void bar() { 
+  Biz.getFoo().buz();
+ }
+
+ private void buz() {} 
+}
+     ]]></code>
+    </test-code-->
 </test-data>
