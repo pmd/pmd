@@ -2,162 +2,24 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-Basic test case : accesing methods reflectively.
+Basic test case : using native code
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>3</expected-problems>
         <code>
         	<![CDATA[
-			public class Violation {
-				public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-					// Possible call to forbidden getDeclaredConstructors
-					Class[] arrayOfClass = new Class[1];
-					this.getClass().getDeclaredConstructors();
-				}
-			}
-		     ]]>
-		</code>
-    </test-code>
-	<test-code>
-        <description>
-        	<![CDATA[
-				Basic test case : accesing methods reflectively.
-     		]]>
-     	</description>
-        <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
-			public class Violation {
-				public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-					// Possible call to forbidden getDeclaredConstructors
-					Class[] arrayOfClass = new Class[1];
-					this.getClass().getDeclaredConstructor(arrayOfClass);
-				}
-			}
-		     ]]>
-		</code>
-    </test-code>
-    <test-code>
-        <description>
-        	<![CDATA[
-				Basic test case : accesing methods reflectively.
-     		]]>
- 		</description>
-        <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
-			public class Violation {
-				public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-					// Possible call to forbidden getDeclaredConstructors
-					Class clazz = this.getClass();
-					clazz.getDeclaredConstructor(arrayOfClass);
-				}
-			}
-		     ]]>
-		</code>
-    </test-code>    <test-code>
-        <description><![CDATA[
-Basic test case : accesing methods reflectively.
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
+        	 public class SomeJNIClass {
+                        public SomeJNIClass() {
+                                System.loadLibrary("nativelib");
+                        }
 
-			public class Violation {
-				public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-					Class clazz = this.getClass();
-					clazz.getDeclaredConstructors();
-				}
-			}
-		     ]]>
-		</code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Basic test case : accesing methods reflectively.
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
+                        static {
+                             System.loadLibrary("nativelib");
+                        }
 
-			public class Violation {
-				public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-					Class clazz = this.getClass();
-					// Possible call to forbidden setAccessible
-					clazz.getMethod("", arrayOfClass).setAccessible(false);
-				}
-			}
-		     ]]>
-		</code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Basic test case : accesing methods reflectively.
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
-			public class Violation {
-				public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-					Class clazz = this.getClass();
-					AccessibleObject.setAccessible(null, false);
-				}
-			}
-		     ]]>
-		</code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Basic test case : accesing methods reflectively.
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
-			public class Violation {
-				public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-					// Possible call to forbidden getDeclaredConstructors
-					Method.setAccessible(null, false);
-				}
-			}
-		     ]]>
-		</code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-Basic test case : accesing methods reflectively.
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
-			public class Violation {
-				public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-					// Possible call to forbidden getDeclaredConstructors
-					Method[] methodsArray = clazz.getMethods();
-					int nbMethod;
-					for ( nbMethod = 0; nbMethod < methodsArray.length; nbMethod++ ) {
-						methodsArray[nbMethod].setAccessible(false);
-					}
-				}
-			}
-		     ]]>
-		</code>
-    </test-code>
-    <test-code>
-        <description>
-        	<![CDATA[
-				Basic test case : accesing methods reflectively.
-    		]]>
-    	</description>
-        <expected-problems>1</expected-problems>
-        <code>
-        	<![CDATA[
-			import java.security.PrivilegedAction;
-
-			public class Violation {
-				public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
-					// Possible call to forbidden PrivilegedAction
-					PrivilegedAction priv = (PrivilegedAction) new Object(); priv.run();
-				}
-			}
+                        public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
+                                System.loadLibrary("nativelib");
+                        }
+                }
 		     ]]>
 		</code>
     </test-code>

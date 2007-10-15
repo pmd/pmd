@@ -25,16 +25,6 @@ Short as local variable
 		public UsingShort() {
 			short shouldNotBeUsed = 1;
 		}
-
-		public void avoidCommonMisinterpretation()
-		{
-			// … is not an infraction !
-			int shortName = 0;
-			// … is not an infraction !
-			int shortName = 0;
-			TypeNameWithshort legal = new TypeNameWithshort(shortName);
-			}
-		}
 	}
      ]]></code>
     </test-code>
@@ -42,21 +32,15 @@ Short as local variable
         <description><![CDATA[
 Short as method return type
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code>
         <![CDATA[
-		    public class UsingShort
-		    {
-				public UsingShort() {
-					short shouldNotBeUsed = 1;
-				}
-
-				public short badReturntype()
-				{
-					short = 0;
-					return short;
-				}
+		 public class UsingShort {
+		   	public short badReturntype() {
+				short var = 0;
+				return var;
 			}
+		}
      	]]>
      	</code>
     </test-code>

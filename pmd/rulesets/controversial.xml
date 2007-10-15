@@ -525,7 +525,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
             <property name="xpath">
                 <value>
                     <![CDATA[
-                        //PrimaryPrefix/Name[starts-with(@Image,'System.loadLibrary')]
+                        //Name[starts-with(@Image,'System.loadLibrary')]
                     ]]>
                 </value>
             </property>

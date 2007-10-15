@@ -20,6 +20,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
+
         <description><![CDATA[
 connection not closed, should have failed
      ]]></description>
@@ -42,6 +43,7 @@ public class Foo {
 ResultSet not closed, should have failed
      ]]></description>
         <rule-property name="types">Connection,Statement,ResultSet</rule-property>
+
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 import java.sql.*;
@@ -60,6 +62,7 @@ Statement not closed, should have failed
      ]]></description>
         <rule-property name="types">Connection,Statement,ResultSet</rule-property>
         <expected-problems>1</expected-problems>
+
         <code><![CDATA[
 import java.sql.*;
 public class Foo {
@@ -87,20 +90,22 @@ public class Foo {
      ]]></code-fragment>
     <test-code>
         <description><![CDATA[
-Bad, no closers properties for statements
+Bad, no closeTargets properties for statements
      ]]></description>
         <rule-property name="types">Connection,Statement,ResultSet</rule-property>
         <expected-problems>2</expected-problems>
         <code-ref id="executeQuery"/>
+
     </test-code>
     <test-code reinitializeRule="true">
         <description><![CDATA[
-Ok, closers properties for statements
+Ok, closeTargets properties for statements
      ]]></description>
-        <rule-property name="closers">MyHelper.close, cleanup</rule-property>
+        <rule-property name="closeTargets">MyHelper.close, cleanup</rule-property>
         <rule-property name="types">Connection,Statement,ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="executeQuery"/>
+
     </test-code>
     <test-code reinitializeRule="true">
         <description><![CDATA[
@@ -111,21 +116,22 @@ Add type param
         <code><![CDATA[
 import java.io.*;
 public class BadClose {
-private void readData() {  
-File aFile = new File(FileName);  
-FileInputStream anInput = new FileInputStream(aFile);  
-ObjectInputStream aStream = new ObjectInputStream(anInput);  
- 
-readExternal(aStream);  
-} 
+private void readData() {
+File aFile = new File(FileName);
+FileInputStream anInput = new FileInputStream(aFile);
+ObjectInputStream aStream = new ObjectInputStream(anInput);
+
+readExternal(aStream);
+}
 }
      ]]></code>
     </test-code>
     <test-code reinitializeRule="true">
+
         <description><![CDATA[
 OK
      ]]></description>
-        <rule-property name="closers">MyHelper.close</rule-property>
+        <rule-property name="closeTargets">MyHelper.close</rule-property>
         <rule-property name="types">Connection,Statement,ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

@@ -33,8 +33,7 @@ implementing runnabel is not allowed
         <expected-problems>1</expected-problems>
         <code>
     	<![CDATA[
-			public class OtherThread implements Runnable {
-			}
+			public class OtherThread implements Runnable {}
 			]]>
         </code>
     </test-code>
@@ -42,14 +41,15 @@ implementing runnabel is not allowed
         <description><![CDATA[
 Use of runnable is also not allowed
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <code>
     		<![CDATA[
-				public void methode() {
+				public class Violation {
+					public void methode() {
 					Runnable thread = new Thread();
 					thread.run();
+					}
 				}
-			}
 			]]>
         </code>
     </test-code>
