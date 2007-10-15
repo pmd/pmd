@@ -62,6 +62,11 @@ public class DuplicateImportsRule extends AbstractRule {
     		}
     	}
     	
+    	String fullyQualifiedClassName = "java.lang." + singleTypeName;
+    	if (ClassTypeResolver.classNameExists(fullyQualifiedClassName)) {
+			return true;	//Class exists in another imported package
+		}
+    	
     	return false;	//This really is a duplicate import
 	}
 
