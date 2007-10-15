@@ -434,7 +434,7 @@ public class MyClass {
         name="AvoidUsingShortType"
         message="Do not use the short type"
         class="net.sourceforge.pmd.rules.XPathRule"
-    	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUseOfShortTypes">
+    	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUsingShortType">
         <description>
             <![CDATA[
             Java uses the short type to reduce memory usage, not to optimize calculation. On the contrary, the jvm does not has an
