@@ -22,7 +22,7 @@ public class PMDASMClassLoaderTest {
         String className = "test.net.sourceforge.pmd.typeresolution.ClassWithImportOnDemand";
         Class clazz = cl.loadClass(className);
         assertNotNull(clazz);
-        Map imports = cl.getImportedClasses(className);
+        Map<String, String> imports = cl.getImportedClasses(className);
         assertNotNull(imports);
         assertEquals(4, imports.size());
         assertEquals("java.util.List", imports.get("List"));
@@ -36,7 +36,7 @@ public class PMDASMClassLoaderTest {
         String className = "test.net.sourceforge.pmd.typeresolution.ClassWithImportInnerOnDemand";
         Class clazz = cl.loadClass(className);
         assertNotNull(clazz);
-        Map imports = cl.getImportedClasses(className);
+        Map<String, String> imports = cl.getImportedClasses(className);
         assertNotNull(imports);
         assertEquals(8, imports.size());
         assertEquals("java.util.Iterator", imports.get("Iterator"));
