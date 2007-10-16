@@ -39,6 +39,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+<!--
     <test-code>
         <description><![CDATA[
 Document Jaxen exception parsing Unicode chars
@@ -50,4 +51,5 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+-->
 </test-data>
