@@ -15,7 +15,7 @@ public class ScratchpadRulesTest extends SimpleAggregatorTst {
 
     @Before
     public void setUp() {
-        rules.add(findRule("scratchpad", "TRJUnitStaticSuite"));
+        //rules.add(findRule("scratchpad", "rulename"));
     }
 
     @Test

@@ -103,36 +103,4 @@ public class Foo {
 
        -->
 
-    <rule name="TRJUnitStaticSuite"
-          message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
-          typeResolution="true"
-          class="net.sourceforge.pmd.rules.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#JUnitStaticSuite">
-      <description>
-Duplicate of the JUnitStaticSuite which uses type resolution via XPath
-      </description>
-      <priority>3</priority>
-        <properties>
-        <property name="xpath">
-            <value>
-                <![CDATA[
-//ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')]]
-//MethodDeclaration[not(@Static='true') or not(@Public='true')]
-[MethodDeclarator/@Image='suite']
-[MethodDeclarator/FormalParameters/@ParameterCount=0]
-                ]]>
-            </value>
-        </property>
-        </properties>
-      <example>
-  <![CDATA[
-import junit.framework.*;
-public class Foo extends TestCase {
- public void suite() {} // oops, should be static
- private static void suite() {} // oops, should be public
-}
-  ]]>
-      </example>
-      </rule>
-
 </ruleset>
