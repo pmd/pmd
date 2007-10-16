@@ -145,4 +145,66 @@ public enum Buz {
      ]]></code>
         <source-type>java 1.5</source-type>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+985989, base line
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class SeniorClass {
+    public SeniorClass(){
+        toString(); //may throw NullPointerException if overridden
+    }
+    public String toString(){
+        return "IAmSeniorClass";
+    }
+}
+public class JuniorClass extends SeniorClass {
+    private String name;
+    
+    public JuniorClass() {
+        super(); //Automatic call leads to NullPointerException
+        name = "JuniorClass";
+    }
+    public String toString(){
+        return name.toUpperCase();
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+985989, inner static class should be checked as well
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+
+    public static class SeniorClass {
+        public SeniorClass(){
+            toString(); //may throw NullPointerException if overridden
+        }
+        public String toString(){
+            return "IAmSeniorClass";
+        }
+    }
+    public static class JuniorClass extends SeniorClass {
+        private String name;
+        
+        public JuniorClass() {
+            super(); //Automatic call leads to NullPointerException
+            name = "JuniorClass";
+        }
+        public String toString(){
+            return name.toUpperCase();
+        }
+    }
+    public static void main (String[] args) {
+        System.out.println(": "+new SeniorClass());
+        System.out.println(": "+new JuniorClass());
+    }
+
+}
+     ]]></code>
+    </test-code>
 </test-data>

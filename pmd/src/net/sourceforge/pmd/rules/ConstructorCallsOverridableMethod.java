@@ -537,12 +537,12 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
     }
 
     /**
-     * This check must be evaluated independelty for each class.  Inner classses
+     * This check must be evaluated independently for each class. Inner classes
      * get their own EvalPackage in order to perform independent evaluation.
      */
     private Object visitClassDec(ASTClassOrInterfaceDeclaration node, Object data) {
         String className = node.getImage();
-        if (!node.isFinal() && !node.isStatic()) {
+        if (!node.isFinal()) {
             putEvalPackage(new EvalPackage(className));
         } else {
             putEvalPackage(nullEvalPackage);
