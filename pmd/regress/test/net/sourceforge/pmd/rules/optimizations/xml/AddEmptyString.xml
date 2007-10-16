@@ -47,7 +47,7 @@ Document Jaxen exception parsing Unicode chars
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- String CONSTANT = "" + "\uFEFF";
+ String CONSTANT = "" + "'\uFEFF'";
 }
      ]]></code>
     </test-code>
