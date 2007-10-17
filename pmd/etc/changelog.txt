@@ -9,6 +9,7 @@ New rules:
 Fixed bug 674394  - fixed false positive in DuplicateImports for disambiguation import
 Fixed bug 631681  - fixed false positive in UnusedPrivateField when field is accessed by outer class
 Fixed bug 985989  - fixed false negative in ConstructorCallsOverridableMethod for inner static classes
+Fixed bug 1409944 - fixed false positive in SingularField for lock objects
 Fixed bug 1472195 - fixed false positives in PositionLiteralsFirstInComparisons when the string is used as a parameter
 Fixed bug 1522517 - fixed false positive in UselessOverridingMethod for clone method
 Fixed bug 1744065 - fixed false positive in BooleanInstantiation when a custom Boolean is used

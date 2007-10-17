@@ -343,4 +343,40 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+1409944, fields used to synchronize should not trigger
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    private final Object oSync = new Object();
+
+    public void foo() {
+        synchronized (oSync) {
+            bar();
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1409944, fields not used to synchronize should trigger
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private final Object sync = new Object();
+    private final Object noSync = new Object();
+
+    public void foo() {
+        synchronized (sync) {
+            bar(noSync);
+        }
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
