@@ -78,4 +78,25 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <!--test-code>
+        <description><![CDATA[
+1424989, use of variable with same name in inner loop. Wontfix because this is smelly code.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+* Falsely notes the second for loop as modifying the
+* i variable in the first for loop.
+*/
+public class Foo {
+    public void bar() {
+        for (int i=0; i<7; i++) {
+            for (int i=0; i<10; i++) {
+               System.out.println("" + i);
+            }
+        }
+    }
+}
+     ]]></code>
+    </test-code-->
 </test-data>
