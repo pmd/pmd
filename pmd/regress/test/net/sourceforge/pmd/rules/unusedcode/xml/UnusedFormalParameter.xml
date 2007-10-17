@@ -158,4 +158,23 @@ class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+	<description>
+		<![CDATA[
+			False - !
+		]]>
+	</description>
+	<expected-problems>1</expected-problems>
+	<code>
+	<![CDATA[
+	public class Foo {
+		public void bar2(Object paramA, Object paramB)
+		{
+			paramA.hashCode();
+		}
+	}
+	]]>
+	</code>
+	</test-code>
+
 </test-data>

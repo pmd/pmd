@@ -232,4 +232,39 @@ public Object clone() throws CloneNotSupportedException {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>
+        	<![CDATA[
+False +: Overriding method merely calls super
+See bug 1415525
+     		]]>
+     	</description>
+        <expected-problems>0</expected-problems>
+        <code>
+        	<![CDATA[
+private static class ExposingSerializer extends Serializer {
+
+	ExposingSerializer(OutputStream out, String encoding)
+	throws UnsupportedEncodingException {
+		super(out, encoding);
+	}
+
+	public void writeChild(Node node) throws IOException {
+	super.writeChild(node);
+	}
+
+	public void exposedWriteRaw(String text) throws IOException {
+		writeRaw(text);
+	}
+
+	public void exposedWriteEscaped(String text) throws IOException {
+		writeEscaped(text);
+	}
+
+	public void exposedWriteAttributeValue(String text) throws IOException {
+		writeAttributeValue(text);
+	}
+}
+     ]]></code>
+    </test-code>
 </test-data>
