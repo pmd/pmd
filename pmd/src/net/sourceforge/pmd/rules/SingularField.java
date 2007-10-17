@@ -23,13 +23,13 @@ public class SingularField extends AbstractRule {
 
     public Object visit(ASTFieldDeclaration node, Object data) {
         if (node.isPrivate() && !node.isStatic()) {
-            List list = node.findChildrenOfType(ASTVariableDeclaratorId.class);
-            ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId) list.get(0);
-            List usages = declaration.getUsages();
+            List<ASTVariableDeclaratorId> list = node.findChildrenOfType(ASTVariableDeclaratorId.class);
+            ASTVariableDeclaratorId declaration = list.get(0);
+            List<NameOccurrence> usages = declaration.getUsages();
             SimpleNode decl = null;
             boolean violation = true;
             for (int ix = 0; ix < usages.size(); ix++) {
-                NameOccurrence no = (NameOccurrence) usages.get(ix);
+                NameOccurrence no = usages.get(ix);
                 SimpleNode location = no.getLocation();
 
                 SimpleNode method = location.getFirstParentOfType(ASTMethodDeclaration.class);
