@@ -71,7 +71,7 @@ public class FloatProperty extends AbstractScalarProperty {
 	 * @return Object
 	 */
 	protected Object createFrom(String value) {
-		return new Float(value);
+		return Float.valueOf(value);
 	}
 
 	/**

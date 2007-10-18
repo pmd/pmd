@@ -71,7 +71,7 @@ public class DoubleProperty extends AbstractScalarProperty {
 	 * @return Object
 	 */
 	protected Object createFrom(String value) {
-		return new Double(value);
+		return Double.valueOf(value);
 	}
 
 	/**

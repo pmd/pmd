@@ -18,7 +18,7 @@ public class CharacterProperty extends AbstractPMDProperty {
 	 * @param theUIOrder float
 	 */
 	public CharacterProperty(String theName, String theDescription, char theDefault, float theUIOrder) {
-		super(theName, theDescription, new Character(theDefault), theUIOrder);
+		super(theName, theDescription, Character.valueOf(theDefault), theUIOrder);
 	}
 
 	/**
@@ -67,7 +67,7 @@ public class CharacterProperty extends AbstractPMDProperty {
 	 */
 	private static final Character[] asCharacters(char[] chars) {
 		Character[] characters = new Character[chars.length];
-		for (int i=0; i<chars.length; i++) characters[i] = new Character(chars[i]);
+		for (int i=0; i<chars.length; i++) characters[i] = Character.valueOf(chars[i]);
 		return characters;
 	}
 	
@@ -91,13 +91,13 @@ public class CharacterProperty extends AbstractPMDProperty {
 		
 		if (maxValueCount() == 1) {
 			if (valueString.length() > 1) throw new IllegalArgumentException(valueString);
-			return new Character(valueString.charAt(0));
+			return Character.valueOf(valueString.charAt(0));
 		}
 		
 		String[] values = StringUtil.substringsOf(valueString, multiValueDelimiter);
 		
 		Character[] chars = new Character[values.length];
-		for (int i=0; i<values.length; i++) chars[i] = new Character(values[i].charAt(0));
+		for (int i=0; i<values.length; i++) chars[i] = Character.valueOf(values[i].charAt(0));
 		return chars;
 	}
 }
