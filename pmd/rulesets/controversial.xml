@@ -299,28 +299,6 @@ making them look like a function call.
       </example>
     </rule>
 
-    <rule name="SingularField"
-              message="Perhaps ''{0}'' could be replaced by a local variable."
-              class="net.sourceforge.pmd.rules.SingularField"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SingularField">
-          <description>
-A field that's only used by one method could perhaps be replaced by a local variable.
-          </description>
-          <priority>3</priority>
-          <example>
-<![CDATA[
-public class Foo {
-    private int x;
-    public void foo(int y) {
-     x = y + 5;
-     return x;
-    }
-}
-]]>
-          </example>
-        </rule>
-
-
     <rule name="DefaultPackage"
         message="Use explicit scoping instead of the default package private level"
         class="net.sourceforge.pmd.rules.XPathRule"

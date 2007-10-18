@@ -29,7 +29,6 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
         rules.add(findRule("controversial", "DontImportSun"));
         rules.add(findRule("controversial", "NullAssignment"));
         rules.add(findRule("controversial", "OnlyOneReturn"));
-        rules.add(findRule("controversial", "SingularField"));
         rules.add(findRule("controversial", "SuspiciousOctalEscape"));
         rules.add(findRule("controversial", "UnnecessaryConstructor"));
         rules.add(findRule("controversial", "UnnecessaryParentheses"));

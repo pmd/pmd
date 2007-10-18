@@ -47,6 +47,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         rules.add(findRule("design", "SimplifyBooleanExpressions"));
         rules.add(findRule("design", "SimplifyBooleanReturns"));
         rules.add(findRule("design", "SimplifyConditional"));
+        rules.add(findRule("design", "SingularField"));
         rules.add(findRule("design", "SwitchDensity"));
         rules.add(findRule("design", "SwitchStmtsShouldHaveDefault"));
         rules.add(findRule("design", "UncommentedEmptyMethod"));

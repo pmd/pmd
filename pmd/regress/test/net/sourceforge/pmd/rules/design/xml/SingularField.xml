@@ -17,6 +17,22 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
+Ok, used for control flow
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ int bar(int y) {
+  if (y = 5)
+    x = y + 5; 
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
 ok
      ]]></description>
         <expected-problems>0</expected-problems>
@@ -135,50 +151,17 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-failure case in inner class
+ok case with Object
      ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- class Bar {
- private int x;
- int bar(int y) {
-  x = y + 5; 
-  return x;
- }
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-failure case with Object
-     ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  private Integer x = null;
  private Integer getFoo() {
-  if(x == null){; 
-      x = new Integer(1);; 
-  }; 
+  if(x == null){
+      x = new Integer(1);
+  }
   return x;
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-failure case in static inner class
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- static class Bar {
- private int x;
- int bar(int y) {
-   this.x = y + 5; 
- }
  }
 }
      ]]></code>
@@ -198,9 +181,9 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-failure case with self-instantiation
+ok case with self-instantiation
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  private Integer x = new Integer(1);
@@ -228,32 +211,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-failure case in two static inner classes
-     ]]></description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foo {
- static class Bar1 {
- private int x;
- int bar(int y) {
-   this.x = y + 5; 
- }
- }
- static class Bar2 {
- private int x;
- int getX() {
-   return x; 
- }
- int setX(int y) {
-   this.x = y + 5; 
- }
- }
-}
-     ]]></code>
-    </test-code>
-    <test-code>
-        <description><![CDATA[
-OK, instantiates own self internally
+Ok, instantiates own self internally
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -272,9 +230,9 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-failure, variable accessed twice in same method
+ok, variable accessed twice in same method
      ]]></description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
  private Map map = new SomeMap();
@@ -369,13 +327,109 @@ public class Foo {
         <code><![CDATA[
 public class Foo {
     private final Object sync = new Object();
-    private final Object noSync = new Object();
+    private final Object noSync;
 
     public void foo() {
         synchronized (sync) {
-            bar(noSync);
+            noSync = new String("test");
+            call(noSync);
         }
     }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1409944, field is used to change the flow of different calls
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private boolean bar = false;
+
+    public void foo() {
+        if (!bar) {
+            onlyOnce();
+            bar = true;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, used in outer class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private class Bar {
+        private int bar;
+        
+        private Bar(int barry) {
+            bar = barry;
+        }    
+    }
+    
+    public int foo() {
+        Bar bart = new Bar(5);
+        return bart.bar;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Not ok, since inner classes are checked
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <rule-property name="CheckInnerClasses">true</rule-property>
+        <code><![CDATA[
+public class Foo {
+    private class Bar {
+        private int bar;
+        
+        private Bar(int barry) {
+            bar = barry;
+        }    
+    }
+    
+    public int foo() {
+        Bar bart = new Bar(5);
+        return bart.bar;
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Not ok, violation with first usage = non-assignment
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <rule-property name="DisallowNotAssignment">true</rule-property>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ int bar(int y) {
+  x.snafu();
+  x = y + 5; 
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, field used to aggregate values
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x;
+ int bar(int y) {
+  x = x + y; 
+  return x;
+ }
 }
      ]]></code>
     </test-code>

@@ -1412,5 +1412,24 @@ rather than code the appropriate one.
     	</example>
     </rule>
 
+    <rule name="SingularField"
+          message="Perhaps ''{0}'' could be replaced by a local variable."
+          class="net.sourceforge.pmd.rules.design.SingularField"
+      externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SingularField">
+      <description>
+This field is used in only one method and the first usage is assigning a value 
+to the field. This probably means that the field can be changed to a local variable.
+      </description>
+      <priority>3</priority>
+      <example><![CDATA[
+public class Foo {
+    private int x;  //Why bother saving this?
+    public void foo(int y) {
+     x = y + 5;
+     return x;
+    }
+}
+   ]]></example>
+    </rule>
 
 </ruleset>
