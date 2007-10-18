@@ -120,11 +120,11 @@ public class RuleViolation implements IRuleViolation {
     private void setVariableNameIfExists(SimpleNode node) {
         variableName = (node.getClass().equals(ASTFieldDeclaration.class))
                 ? ((ASTFieldDeclaration) node).getVariableName() : "";
-        if (variableName == "") {
+        if ("".equals(variableName)) {
             variableName = (node.getClass().equals(ASTLocalVariableDeclaration.class))
                     ? ((ASTLocalVariableDeclaration) node).getVariableName() : "";
         }
-        if (variableName == "") {
+        if ("".equals(variableName)) {
             variableName = (node.getClass().equals(ASTVariableDeclaratorId.class))
                     ? node.getImage() : "";
         }

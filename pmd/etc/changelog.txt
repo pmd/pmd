@@ -5,6 +5,7 @@ New rules:
 	Design ruleset: ClassWithOnlyPrivateConstructorsShouldBeFinal,EmptyMethodInAbstractClassShouldBeAbstract
 	Imports ruleset: TooManyStaticImports
 	J2ee ruleset: DoNotCallSystemExit, StaticEJBFieldShouldBeFinal,DoNotUseThreads
+	Strings ruleset: UseEqualsToCompareStrings
 
 Fixed bug 674394  - fixed false positive in DuplicateImports for disambiguation import
 Fixed bug 631681  - fixed false positive in UnusedPrivateField when field is accessed by outer class

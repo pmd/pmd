@@ -323,5 +323,37 @@ class Foo {
     </example>
     </rule>
 
+<rule   name="UseEqualsToCompareStrings"
+        message="Use equals() to compare strings instead of ''=='' or ''!=''"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseEqualsToCompareStrings">
+    <description>
+Using '==' or '!=' to compare strings only works if intern version is used on both sides
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal
+   [starts-with(@Image, '"')]
+   [ends-with(@Image, '"')]
+]]>
+            </value>
+        </property>
+    </properties>
+    <example>
+<![CDATA[
+class Foo {
+  boolean test(String s) {
+    if (s == "one") return true; //Bad
+    if ("two".equals(s)) return true; //Better
+    return false;
+  }
+}
+]]>
+    </example>
+    </rule>
+
 </ruleset>
 

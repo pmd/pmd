@@ -19,6 +19,7 @@ This ruleset contains links to rules that are new in PMD v4.1
   <rule ref="rulesets/j2ee.xml/DoNotCallSystemExit"
   <rule ref="rulesets/j2ee.xml/DoNotUseThreads"
   <rule ref="rulesets/j2ee.xml/StaticEJBFieldShouldBeFinal"
+  <rule ref="rulesets/strings.xml/UseEqualsToCompareStrings"
 
 </ruleset>
   

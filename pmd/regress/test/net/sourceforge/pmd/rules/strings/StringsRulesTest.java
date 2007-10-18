@@ -24,6 +24,7 @@ public class StringsRulesTest extends SimpleAggregatorTst {
         rules.add(findRule("strings", "StringInstantiation"));
         rules.add(findRule("strings", "StringToString"));
         rules.add(findRule("strings", "UnnecessaryCaseChange"));
+        rules.add(findRule("strings", "UseEqualsToCompareStrings"));
         rules.add(findRule("strings", "UseIndexOfChar"));
         rules.add(findRule("strings", "UselessStringValueOf"));
         rules.add(findRule("strings", "UseStringBufferLength"));
