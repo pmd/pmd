@@ -5,28 +5,30 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.ast.Node;
 
 public class UnnecessaryCaseChange extends AbstractRule {
 
     public Object visit(ASTPrimaryExpression exp, Object data) {
-        if (exp.jjtGetNumChildren() < 4) {
+        int n = exp.jjtGetNumChildren();
+        if (n < 4) {
             return data;
         }
 
-        String first = getBadPrefixOrNull(exp);
-        if (first == null) {
+        int first = getBadPrefixOrNull(exp, n);
+        if (first == -1) {
             return data;
         }
 
-        String second = getBadSuffixOrNull(exp);
+        String second = getBadSuffixOrNull(exp, first + 2);
         if (second == null) {
             return data;
         }
 
-        if (!(exp.jjtGetChild(1) instanceof ASTPrimarySuffix)) {
+        if (!(exp.jjtGetChild(first + 1) instanceof ASTPrimarySuffix)) {
             return data;
         }
-        ASTPrimarySuffix methodCall = (ASTPrimarySuffix)exp.jjtGetChild(1);
+        ASTPrimarySuffix methodCall = (ASTPrimarySuffix)exp.jjtGetChild(first + 1);
         if (!methodCall.isArguments() || methodCall.getArgumentCount() > 0) {
             return data;
         }
@@ -35,31 +37,39 @@ public class UnnecessaryCaseChange extends AbstractRule {
         return data;
     }
 
-    private String getBadPrefixOrNull(ASTPrimaryExpression exp) {
+    private int getBadPrefixOrNull(ASTPrimaryExpression exp, int childrenCount) {
         // verify PrimaryPrefix/Name[ends-with(@Image, 'toUpperCase']
-        if (!(exp.jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
-            return null;
-        }
+        for(int i = 0; i < childrenCount - 3; i++) {
+            Node child = exp.jjtGetChild(i);
+            String image;
+            if (child instanceof ASTPrimaryPrefix) {
+                if (child.jjtGetNumChildren() != 1 || !(child.jjtGetChild(0) instanceof ASTName)) {
+                    continue;
+                }
+        
+                ASTName name = (ASTName) child.jjtGetChild(0);
+                image = name.getImage();
+            } else if (child instanceof ASTPrimarySuffix) {
+                image = ((ASTPrimarySuffix) child).getImage();
+            } else {
+                continue;
+            }
 
-        ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) exp.jjtGetChild(0);
-        if (prefix.jjtGetNumChildren() != 1 || !(prefix.jjtGetChild(0) instanceof ASTName)) {
-            return null;
+            if (image == null || !(image.endsWith("toUpperCase") || image.endsWith("toLowerCase"))) {
+                continue;
+            }
+            return i;
         }
-
-        ASTName name = (ASTName) prefix.jjtGetChild(0);
-        if (name.getImage() == null || !(name.getImage().endsWith("toUpperCase") || name.getImage().endsWith("toLowerCase"))) {
-            return null;
-        }
-        return name.getImage();
+        return -1;
     }
 
-    private String getBadSuffixOrNull(ASTPrimaryExpression exp) {
+    private String getBadSuffixOrNull(ASTPrimaryExpression exp, int equalsPosition) {
         // verify PrimarySuffix[@Image='equals']
-        if (!(exp.jjtGetChild(2) instanceof ASTPrimarySuffix)) {
+        if (!(exp.jjtGetChild(equalsPosition) instanceof ASTPrimarySuffix)) {
             return null;
         }
 
-        ASTPrimarySuffix suffix = (ASTPrimarySuffix) exp.jjtGetChild(2);
+        ASTPrimarySuffix suffix = (ASTPrimarySuffix) exp.jjtGetChild(equalsPosition);
         if (suffix.getImage() == null || !(suffix.hasImageEqualTo("equals") || suffix.hasImageEqualTo("equalsIgnoreCase"))) {
             return null;
         }

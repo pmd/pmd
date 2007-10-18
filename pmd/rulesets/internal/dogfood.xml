@@ -30,6 +30,8 @@ Rules to check PMD itself
     
     <rule ref="rulesets/optimizations.xml/AvoidArrayLoops"/>
     
+    <rule ref="rulesets/strings.xml/UnnecessaryCaseChange"/>
+
     <rule ref="rulesets/strings.xml/UselessStringValueOf"/>
 
     <rule ref="rulesets/strings.xml/AppendCharacterWithChar"/>

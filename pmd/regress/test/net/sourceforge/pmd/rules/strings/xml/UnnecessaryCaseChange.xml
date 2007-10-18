@@ -52,4 +52,21 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case with toLowerCase().equals()
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Object visit(ASTFieldDeclaration node, Object data) {
+        ASTClassOrInterfaceDeclaration cl = node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
+        if (cl != null && node.getVariableName().toLowerCase().equals(cl.getImage().toLowerCase())) {
+            addViolation(data, node);
+        }
+        return data;
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
