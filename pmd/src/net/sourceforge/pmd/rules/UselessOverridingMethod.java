@@ -61,7 +61,7 @@ public class UselessOverridingMethod extends AbstractRule {
     {
     	boolean result = false;
     	ASTResultType type = node.getResultType();
-    	if ( node != null && type != null ) {
+    	if ( type != null ) {
     		List results = null;
             try {
 	            results = type.findChildNodesWithXPath("./Type/ReferenceType/ClassOrInterfaceType[@Image = '" + methodType + "']");
