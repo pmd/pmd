@@ -427,8 +427,22 @@ Ok, field used to aggregate values
 public class Foo {
  private int x;
  int bar(int y) {
-  x = x + y; 
+  x = x + y;
   return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Ok, setting values
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Person p = new Person();
+ public Foo(String name) {
+  p.name = name;
  }
 }
      ]]></code>

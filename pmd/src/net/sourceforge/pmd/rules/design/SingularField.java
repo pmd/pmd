@@ -66,7 +66,8 @@ public class SingularField extends AbstractRule {
                 	
                 	//Is the first usage in an assignment?
                 	Node potentialStatement = primaryExpressionParent.jjtGetParent();
-	                if (!isInAssignment(potentialStatement)) {
+	                boolean assignmentToField = no.getImage().equals(location.getImage());	//Check the the assignment is not to a field inside the field object
+					if (!assignmentToField || !isInAssignment(potentialStatement)) {
 	                	violation = false;
 	                	break;		//Optimization
 	                } else {
