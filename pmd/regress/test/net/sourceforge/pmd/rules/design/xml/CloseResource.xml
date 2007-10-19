@@ -147,4 +147,37 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code reinitializeRule="true">
+        <description><![CDATA[
+New use case
+     ]]></description>
+        <rule-property name="closeTargets">commit,close,close,close</rule-property>
+        <rule-property name="types">DAOTransaction,Connection,Statement,ResulSet</rule-property>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+public class Foo {
+	public void bar() throws SQLException
+	{
+		DAOTransaction = null;
+		Connection cnx = null;
+		ResultSet rs = null;
+		Statement stmt = null;
+
+		try
+		{
+			// ...
+		}
+		finally
+		{
+			rs.close(); // Correct
+			//stmt.close(); // Error !!! you have to close the Statement
+			cnx.commit(); // Error !!! You have to use close() before doing this !
+			DAOTransaction.commit(); // Correct
+		}
+	}
+}
+     ]]></code>
+    </test-code>
+
 </test-data>
