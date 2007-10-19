@@ -35,6 +35,9 @@ import java.util.StringTokenizer;
  *  } finally {
  *   c.close();
  *  }
+ *
+ *  @author original author unknown
+ *  @author Contribution from Pierre Mathien
  * </pre>
  */
 public class CloseResource extends AbstractRule {
