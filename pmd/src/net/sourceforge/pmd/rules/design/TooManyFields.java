@@ -23,7 +23,6 @@ public class TooManyFields extends AbstractRule {
 
     private Map<String, Integer> stats;
     private Map<String, ASTClassOrInterfaceDeclaration> nodes;
-    private int maxFields;
 
     private static final PropertyDescriptor maxFieldsDescriptor = new IntegerProperty(
     		"maxfields", 
@@ -36,7 +35,7 @@ public class TooManyFields extends AbstractRule {
     
     public Object visit(ASTCompilationUnit node, Object data) {
     	
-        maxFields = getIntProperty(maxFieldsDescriptor);
+        int maxFields = getIntProperty(maxFieldsDescriptor);
 
         stats = new HashMap<String, Integer>(5);
         nodes = new HashMap<String, ASTClassOrInterfaceDeclaration>(5);

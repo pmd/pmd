@@ -35,13 +35,9 @@ public abstract class AbstractJUnitRule extends AbstractRule {
         }
     }
     
-    private boolean isJunit4Class = false;
-
-    private boolean isJunit3Class = false;
-    
     public Object visit(ASTCompilationUnit node, Object data){
-        isJunit3Class = isJUnit3Class(node);
-        isJunit4Class = isJUnit4Class(node);
+    	boolean isJunit3Class = isJUnit3Class(node);
+        boolean isJunit4Class = isJUnit4Class(node);
         if(isJunit3Class || isJunit4Class){
             return super.visit(node, data);
         }
