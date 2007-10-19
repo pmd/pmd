@@ -24,8 +24,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import net.sourceforge.pmd.ant.PMDTask;
-
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

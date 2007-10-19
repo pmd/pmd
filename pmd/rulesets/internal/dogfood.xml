@@ -24,6 +24,8 @@ Rules to check PMD itself
     
     <rule ref="rulesets/design.xml/SingularField"/>
     
+    <rule ref="rulesets/imports.xml"/>
+    
     <rule ref="rulesets/strictexception.xml/AvoidRethrowingException"/>
     
     <rule ref="rulesets/strictexception.xml/AvoidCatchingThrowable"/>
