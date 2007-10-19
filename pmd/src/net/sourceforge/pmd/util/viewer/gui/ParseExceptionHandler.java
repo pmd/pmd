@@ -19,7 +19,6 @@ import java.awt.event.ActionListener;
 
 public class ParseExceptionHandler extends JDialog implements ActionListener {
     private Exception exc;
-    private JTextArea errorArea;
     private JButton okBtn;
 
     /**
@@ -35,7 +34,7 @@ public class ParseExceptionHandler extends JDialog implements ActionListener {
     }
 
     private void init() {
-        errorArea = new JTextArea();
+    	JTextArea errorArea = new JTextArea();
         errorArea.setEditable(false);
         errorArea.setText(exc.getMessage() + "\n");
         getContentPane().setLayout(new BorderLayout());

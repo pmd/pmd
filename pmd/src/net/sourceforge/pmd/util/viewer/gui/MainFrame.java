@@ -30,14 +30,12 @@ public class MainFrame
         implements ActionListener, ActionCommands, ViewerModelListener {
     private ViewerModel model;
     private SourceCodePanel sourcePanel;
-    private ASTPanel astPanel;
     private XPathPanel xPathPanel;
-    private JButton compileBtn;
     private JButton evalBtn;
     private JLabel statusLbl;
     private JRadioButtonMenuItem jdk13MenuItem;
     private JRadioButtonMenuItem jdk14MenuItem;
-    private JRadioButtonMenuItem jdk15MenuItem;
+    private JRadioButtonMenuItem jdk15MenuItem;	//NOPMD
     private JRadioButtonMenuItem jdk16MenuItem;
 
     /**
@@ -52,7 +50,7 @@ public class MainFrame
         model = new ViewerModel();
         model.addViewerModelListener(this);
         sourcePanel = new SourceCodePanel(model);
-        astPanel = new ASTPanel(model);
+        ASTPanel astPanel = new ASTPanel(model);
         xPathPanel = new XPathPanel(model);
         getContentPane().setLayout(new BorderLayout());
         JSplitPane editingPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, sourcePanel, astPanel);
@@ -61,7 +59,7 @@ public class MainFrame
         interactionsPane.add(xPathPanel, BorderLayout.SOUTH);
         interactionsPane.add(editingPane, BorderLayout.CENTER);
         getContentPane().add(interactionsPane, BorderLayout.CENTER);
-        compileBtn = new JButton(NLS.nls("MAIN.FRAME.COMPILE_BUTTON.TITLE"));
+        JButton compileBtn = new JButton(NLS.nls("MAIN.FRAME.COMPILE_BUTTON.TITLE"));
         compileBtn.setActionCommand(COMPILE_ACTION);
         compileBtn.addActionListener(this);
         evalBtn = new JButton(NLS.nls("MAIN.FRAME.EVALUATE_BUTTON.TITLE"));
