@@ -6,20 +6,20 @@
 This ruleset contains links to rules that are new in PMD v4.1
   </description>
 
-  <rule ref="rulesets/basic.xml/AvoidUsingHardCodedIP"
-  <rule ref="rulesets/basic.xml/CheckResultSet"
-  <rule ref="rulesets/controversial.xml/AvoidAccessibilityAlteration"
-  <rule ref="rulesets/controversial.xml/AvoidFinalLocalVariable"
-  <rule ref="rulesets/controversial.xml/AvoidUsingNativeCode"
-  <rule ref="rulesets/controversial.xml/AvoidUsingShortType"
-  <rule ref="rulesets/controversial.xml/AvoidUsingVolatile"
-  <rule ref="rulesets/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"
-  <rule ref="rulesets/design.xml/EmptyMethodInAbstractClassShouldBeAbstract"
-  <rule ref="rulesets/imports.xml/TooManyStaticImports"
-  <rule ref="rulesets/j2ee.xml/DoNotCallSystemExit"
-  <rule ref="rulesets/j2ee.xml/DoNotUseThreads"
-  <rule ref="rulesets/j2ee.xml/StaticEJBFieldShouldBeFinal"
-  <rule ref="rulesets/strings.xml/UseEqualsToCompareStrings"
+  <rule ref="rulesets/basic.xml/AvoidUsingHardCodedIP"/>
+  <rule ref="rulesets/basic.xml/CheckResultSet"/>
+  <rule ref="rulesets/controversial.xml/AvoidAccessibilityAlteration"/>
+  <rule ref="rulesets/controversial.xml/AvoidFinalLocalVariable"/>
+  <rule ref="rulesets/controversial.xml/AvoidUsingNativeCode"/>
+  <rule ref="rulesets/controversial.xml/AvoidUsingShortType"/>
+  <rule ref="rulesets/controversial.xml/AvoidUsingVolatile"/>
+  <rule ref="rulesets/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
+  <rule ref="rulesets/design.xml/EmptyMethodInAbstractClassShouldBeAbstract"/>
+  <rule ref="rulesets/imports.xml/TooManyStaticImports"/>
+  <rule ref="rulesets/j2ee.xml/DoNotCallSystemExit"/>
+  <rule ref="rulesets/j2ee.xml/DoNotUseThreads"/>
+  <rule ref="rulesets/j2ee.xml/StaticEJBFieldShouldBeFinal"/>
+  <rule ref="rulesets/strings.xml/UseEqualsToCompareStrings"/>
 
 </ruleset>
   
