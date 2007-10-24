@@ -14,8 +14,6 @@ import test.net.sourceforge.pmd.testframework.AbstractTokenizerTest;
 
 public class RubyTokenizerTest extends AbstractTokenizerTest {
 
-
-
 	@Before
 	@Override
 	public void buildTokenizer() {
@@ -50,7 +48,11 @@ public class RubyTokenizerTest extends AbstractTokenizerTest {
 
 	@Test
 	public void tokenizeTest() throws IOException {
-		this.expectedTokenCount = 29;
+		this.expectedTokenCount = 30;
 		super.tokenizeTest();
 	}
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(RubyTokenizerTest.class);
+    }
 }

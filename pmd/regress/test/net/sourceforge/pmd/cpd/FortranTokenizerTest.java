@@ -203,4 +203,8 @@ public class FortranTokenizerTest extends AbstractTokenizerTest {
 		this.expectedTokenCount = 434;
 		super.tokenizeTest();
 	}
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(FortranTokenizerTest.class);
+    }
 }
