@@ -43,10 +43,17 @@ public abstract class SimpleAggregatorTst extends RuleTst {
 
     private List<Rule> rules = new ArrayList<Rule>();
 
+    /**
+     * Add new XML tests associated with the rule to the test suite. This should
+     * be called from the setup method.
+     */
     protected void addRule(String ruleSet, String ruleName) {
         rules.add(findRule(ruleSet, ruleName));
     }
 
+    /**
+     * Run a set of tests for all rules added in the setup method.
+     */
     @Test
     public void testAll() {
         for (Rule r : rules) {
