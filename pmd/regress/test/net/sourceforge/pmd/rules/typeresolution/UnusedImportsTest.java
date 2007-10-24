@@ -3,25 +3,15 @@
  */
 package test.net.sourceforge.pmd.rules.typeresolution;
 
-import net.sourceforge.pmd.Rule;
-
 import org.junit.Before;
-import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class UnusedImportsTest extends SimpleAggregatorTst {
 
-    private Rule rule;
-
     @Before
     public void setUp() {
-        rule = findRule("typeresolution", "UnusedImports");
-    }
-
-    @Test
-    public void testAll() {
-        runTests(rule);
+        addRule("typeresolution", "UnusedImports");
     }
 
     public static junit.framework.Test suite() {

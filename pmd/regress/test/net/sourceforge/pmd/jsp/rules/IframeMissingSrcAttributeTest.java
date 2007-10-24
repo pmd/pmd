@@ -1,23 +1,14 @@
 package test.net.sourceforge.pmd.jsp.rules;
 
-import net.sourceforge.pmd.Rule;
-
 import org.junit.Before;
-import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class IframeMissingSrcAttributeTest extends SimpleAggregatorTst {
-    private Rule rule;
 
     @Before
     public void setUp() {
-        rule = findRule("jsp", "IframeMissingSrcAttribute");
-    }
-
-    @Test
-    public void testAll() {
-        runTests(rule);
+        addRule("jsp", "IframeMissingSrcAttribute");
     }
 
     public static junit.framework.Test suite() {

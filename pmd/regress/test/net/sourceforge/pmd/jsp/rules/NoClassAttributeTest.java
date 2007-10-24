@@ -1,24 +1,15 @@
 
  package test.net.sourceforge.pmd.jsp.rules;
  
- import net.sourceforge.pmd.Rule;
-
-import org.junit.Before;
-import org.junit.Test;
+ import org.junit.Before;
 
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
  
  public class NoClassAttributeTest extends SimpleAggregatorTst {
-     private Rule rule;
- 
+
      @Before
      public void setUp() {
-         rule = findRule("jsp", "NoClassAttribute");
-     }
- 
-     @Test
-     public void testAll() {
-         runTests(rule);
+         addRule("jsp", "NoClassAttribute");
      }
 
      public static junit.framework.Test suite() {

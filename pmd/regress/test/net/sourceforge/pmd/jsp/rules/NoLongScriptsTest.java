@@ -1,27 +1,17 @@
-
- package test.net.sourceforge.pmd.jsp.rules;
- 
- import net.sourceforge.pmd.Rule;
+package test.net.sourceforge.pmd.jsp.rules;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
- 
- public class NoLongScriptsTest extends SimpleAggregatorTst {
-     private Rule rule;
- 
-     @Before
-     public void setUp() {
-         rule = findRule("jsp", "NoLongScripts");
-     }
- 
-     @Test
-     public void testAll() {
-         runTests(rule);
-     }
 
-     public static junit.framework.Test suite() {
-         return new junit.framework.JUnit4TestAdapter(NoLongScriptsTest.class);
-     }
+public class NoLongScriptsTest extends SimpleAggregatorTst {
+
+    @Before
+    public void setUp() {
+        addRule("jsp", "NoLongScripts");
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(NoLongScriptsTest.class);
+    }
 }

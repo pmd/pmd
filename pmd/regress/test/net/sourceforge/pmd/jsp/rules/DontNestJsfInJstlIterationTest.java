@@ -1,10 +1,6 @@
-
- package test.net.sourceforge.pmd.jsp.rules;
- 
- import net.sourceforge.pmd.Rule;
+package test.net.sourceforge.pmd.jsp.rules;
 
 import org.junit.Before;
-import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
  
@@ -14,16 +10,10 @@ import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
   * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
   */
  public class DontNestJsfInJstlIterationTest extends SimpleAggregatorTst {
-     private Rule rule;
  
      @Before 
      public void setUp() {
-         rule = findRule("jsf", "DontNestJsfInJstlIteration");
-     }
- 
-     @Test
-     public void testViolation() {
-         runTests(rule);
+         addRule("jsf", "DontNestJsfInJstlIteration");
      }
 
      public static junit.framework.Test suite() {

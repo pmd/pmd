@@ -3,6 +3,11 @@
  */
 package test.net.sourceforge.pmd.testframework;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.Test;
+
 import net.sourceforge.pmd.Rule;
 
 /**
@@ -33,6 +38,19 @@ public abstract class SimpleAggregatorTst extends RuleTst {
     public void runTests(TestDescriptor[] tests) {
         for (int i = 0; i < tests.length; i++) {
             runTest(tests[i]);
+        }
+    }
+
+    private List<Rule> rules = new ArrayList<Rule>();
+
+    protected void addRule(String ruleSet, String ruleName) {
+        rules.add(findRule(ruleSet, ruleName));
+    }
+
+    @Test
+    public void testAll() {
+        for (Rule r : rules) {
+            runTests(r);
         }
     }
 

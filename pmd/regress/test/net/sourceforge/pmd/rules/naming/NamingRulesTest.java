@@ -1,45 +1,31 @@
 package test.net.sourceforge.pmd.rules.naming;
 
-import net.sourceforge.pmd.Rule;
-
 import org.junit.Before;
-import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
-import java.util.List;
-import java.util.ArrayList;
-
 public class NamingRulesTest extends SimpleAggregatorTst {
-    private List<Rule> rules = new ArrayList<Rule>();
 
     @Before
     public void setUp() {
-        rules.add(findRule("naming", "AbstractNaming"));
-        rules.add(findRule("naming", "AvoidDollarSigns"));
-        rules.add(findRule("naming", "AvoidFieldNameMatchingMethodName"));
-        rules.add(findRule("naming", "AvoidFieldNameMatchingTypeName"));
-        rules.add(findRule("naming", "BooleanGetMethodName"));
-        rules.add(findRule("naming", "ClassNamingConventions"));
-        rules.add(findRule("naming", "LongVariable"));
-        rules.add(findRule("naming", "MethodNamingConventions"));
-        rules.add(findRule("naming", "MethodWithSameNameAsEnclosingClass"));
-        rules.add(findRule("naming", "MisleadingVariableName"));
-        rules.add(findRule("naming", "NoPackage"));
-        rules.add(findRule("naming", "PackageCase"));
-        rules.add(findRule("naming", "ShortMethodName"));
-        rules.add(findRule("naming", "ShortVariable"));
-        rules.add(findRule("naming", "SuspiciousConstantFieldName"));
-        rules.add(findRule("naming", "SuspiciousEqualsMethodName"));
-        rules.add(findRule("naming", "SuspiciousHashcodeMethodName"));
-        rules.add(findRule("naming", "VariableNamingConventions"));
-    }
-
-    @Test
-    public void testAll() {
-        for (Rule r : rules) {
-            runTests(r);
-        }
+        addRule("naming", "AbstractNaming");
+        addRule("naming", "AvoidDollarSigns");
+        addRule("naming", "AvoidFieldNameMatchingMethodName");
+        addRule("naming", "AvoidFieldNameMatchingTypeName");
+        addRule("naming", "BooleanGetMethodName");
+        addRule("naming", "ClassNamingConventions");
+        addRule("naming", "LongVariable");
+        addRule("naming", "MethodNamingConventions");
+        addRule("naming", "MethodWithSameNameAsEnclosingClass");
+        addRule("naming", "MisleadingVariableName");
+        addRule("naming", "NoPackage");
+        addRule("naming", "PackageCase");
+        addRule("naming", "ShortMethodName");
+        addRule("naming", "ShortVariable");
+        addRule("naming", "SuspiciousConstantFieldName");
+        addRule("naming", "SuspiciousEqualsMethodName");
+        addRule("naming", "SuspiciousHashcodeMethodName");
+        addRule("naming", "VariableNamingConventions");
     }
 
     public static junit.framework.Test suite() {
