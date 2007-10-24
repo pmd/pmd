@@ -84,7 +84,7 @@ public abstract class RuleTst {
                 t.printStackTrace();
                 throw new RuntimeException("Test \"" + test.getDescription() + "\" on Rule \"" + test.getRule().getName() + "\"failed");
             }
-            assertEquals("\"" + test.getDescription() + "\" test resulted in wrong number of failures,",
+            assertEquals("Test \"" + test.getDescription() + "\" on Rule \"" + test.getRule().getName() + "\" resulted in wrong number of failures,",
                     test.getNumberOfProblemsExpected(), res);
         } finally {
             //Restore old properties
