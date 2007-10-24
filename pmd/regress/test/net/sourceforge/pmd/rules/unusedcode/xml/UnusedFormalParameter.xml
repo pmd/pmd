@@ -158,12 +158,13 @@ class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code>
+    <test-code reinitializeRule="true">
 	<description>
 		<![CDATA[
 			False - !
 		]]>
 	</description>
+	<rule-property name="checkall">true</rule-property>
 	<expected-problems>1</expected-problems>
 	<code>
 	<![CDATA[

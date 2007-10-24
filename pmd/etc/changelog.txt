@@ -20,6 +20,7 @@ Fixed bug 1702782 - fixed false positive in UselessOperationOnImmutable when an 
 Fixed bugs 1764288/1744069/1744071 - When using Type Resolution all junit test cases will notice if you're using an extended TestCase
 Fixed bug 1793215 - pmd-nicerhtml.xsl does not display line numbers
 Fixes bug 1796928 - fixed false positive in AvoidThrowingRawExceptionTypes, when a Type name is the same as a RawException.
+Fixed bug 1811506 - False - : UnusedFormalParameter (property "checkall" needs to be set)
 Fixed false negative in UnnecessaryCaseChange
 
 The Java 1.5 source code parser is now the default for testcode used in PMD's unit tests.
