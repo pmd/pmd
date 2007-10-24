@@ -93,6 +93,12 @@ public class JavaParser {
     }
   }
 
+  private void checkForBadAnnotationUsage() {
+    if (!isJDK15) {
+      throw new ParseException("Can't use annotations when running in JDK 1.4 mode!");
+    }
+  }
+
   private void checkForBadGenericsUsage() {
     if (!isJDK15) {
       throw new ParseException("Can't use generics unless running in JDK 1.5 mode!");
@@ -1995,19 +2001,19 @@ void Annotation():
 void NormalAnnotation():
 {}
 {
-   "@" Name() "(" [ MemberValuePairs() ] ")"
+   "@" Name() "(" [ MemberValuePairs() ] ")" {checkForBadAnnotationUsage();}
 }
 
 void MarkerAnnotation():
 {}
 {
-  "@" Name()
+  "@" Name() {checkForBadAnnotationUsage();}
 }
 
 void SingleMemberAnnotation():
 {}
 {
-  "@" Name() "(" MemberValue() ")"
+  "@" Name() "(" MemberValue() ")" {checkForBadAnnotationUsage();}
 }
 
 void MemberValuePairs():
@@ -2047,7 +2053,7 @@ Token t;
 jjtThis.setModifiers(modifiers);
 }
 {
-  "@" "interface" t=<IDENTIFIER> {jjtThis.setImage(t.image);} AnnotationTypeBody()
+  "@" "interface" t=<IDENTIFIER> {checkForBadAnnotationUsage();jjtThis.setImage(t.image);} AnnotationTypeBody()
 }
 
 void AnnotationTypeBody():

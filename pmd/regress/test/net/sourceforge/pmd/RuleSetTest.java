@@ -30,7 +30,7 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.TargetJDK1_4;
+import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
 
@@ -213,7 +213,7 @@ public class RuleSetTest {
 
     protected List makeCompilationUnits() throws Throwable {
         List<ASTCompilationUnit> RC = new ArrayList<ASTCompilationUnit>();
-        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(javaCode));
+        JavaParser parser = TargetJDKVersion.DEFAULT_JDK_VERSION.createParser(new StringReader(javaCode));
         RC.add(parser.CompilationUnit());
         return RC;
     }

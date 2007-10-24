@@ -6,7 +6,7 @@ package test.net.sourceforge.pmd.ast;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.TargetJDK1_5;
+import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ParseException;
 
@@ -32,14 +32,14 @@ public class ASTImportDeclarationTest extends ParserTst {
 
     @Test
     public void testStaticImport() throws Throwable {
-        Set ops = getNodes(new TargetJDK1_5(), ASTImportDeclaration.class, TEST3);
+        Set ops = getNodes(ASTImportDeclaration.class, TEST3);
         ASTImportDeclaration i = (ASTImportDeclaration) (ops.iterator().next());
         assertTrue(i.isStatic());
     }
 
     @Test(expected = ParseException.class)
     public void testStaticImportFailsWithJDK14() throws Throwable {
-        getNodes(ASTImportDeclaration.class, TEST3);
+        getNodes(new TargetJDK1_4(), ASTImportDeclaration.class, TEST3);
     }
 
     private static final String TEST1 =

@@ -1,25 +1,28 @@
 package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.ast.ASTAnnotation;
 import net.sourceforge.pmd.ast.ParseException;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 public class ASTAnnotationTest extends ParserTst {
 
-    @Ignore("// FIXME fail(\"Should have failed to parse an annotation in JDK 1.4 mode\");")
-    @Test(expected = ParseException.class)
-    public void testAnnotationFailsWithJDK14() throws Throwable {
+    @Test
+    public void testAnnotationSucceedsWithDefaultMode() throws Throwable {
         getNodes(ASTAnnotation.class, TEST1);
     }
 
-    @Ignore("// FIXME fail(\"Should have failed to parse an annotation in JDK 1.5 mode\");")
     @Test(expected = ParseException.class)
+    public void testAnnotationFailsWithJDK14() throws Throwable {
+        getNodes(new TargetJDK1_4(), ASTAnnotation.class, TEST1);
+    }
+
+    @Test
     public void testAnnotationSucceedsWithJDK15() throws Throwable {
         getNodes(new TargetJDK1_5(), ASTAnnotation.class, TEST1);
     }

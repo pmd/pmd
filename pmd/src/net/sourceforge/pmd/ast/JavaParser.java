@@ -27,6 +27,12 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
     }
   }
 
+  private void checkForBadAnnotationUsage() {
+    if (!isJDK15) {
+      throw new ParseException("Can't use annotations when running in JDK 1.4 mode!");
+    }
+  }
+
   private void checkForBadGenericsUsage() {
     if (!isJDK15) {
       throw new ParseException("Can't use generics unless running in JDK 1.5 mode!");
@@ -5308,6 +5314,9 @@ jjtree.openNodeScope(jjtn000);Token t;
         ;
       }
       jj_consume_token(RPAREN);
+                                               jjtree.closeNodeScope(jjtn000, true);
+                                               jjtc000 = false;
+                                              checkForBadAnnotationUsage();
     } catch (Throwable jjte000) {
      if (jjtc000) {
        jjtree.clearNodeScope(jjtn000);
@@ -5337,6 +5346,9 @@ jjtree.openNodeScope(jjtn000);Token t;
     try {
       jj_consume_token(AT);
       Name();
+               jjtree.closeNodeScope(jjtn000, true);
+               jjtc000 = false;
+              checkForBadAnnotationUsage();
     } catch (Throwable jjte000) {
     if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
@@ -5369,6 +5381,9 @@ jjtree.openNodeScope(jjtn000);Token t;
       jj_consume_token(LPAREN);
       MemberValue();
       jj_consume_token(RPAREN);
+                                     jjtree.closeNodeScope(jjtn000, true);
+                                     jjtc000 = false;
+                                    checkForBadAnnotationUsage();
     } catch (Throwable jjte000) {
     if (jjtc000) {
       jjtree.clearNodeScope(jjtn000);
@@ -5626,7 +5641,7 @@ jjtn000.setModifiers(modifiers);
       jj_consume_token(AT);
       jj_consume_token(INTERFACE);
       t = jj_consume_token(IDENTIFIER);
-                                  jjtn000.setImage(t.image);
+                                  checkForBadAnnotationUsage();jjtn000.setImage(t.image);
       AnnotationTypeBody();
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -6208,28 +6223,6 @@ jjtn000.setModifiers(modifiers);
     try { return !jj_3_51(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(50, xla); }
-  }
-
-  private boolean jj_3R_258() {
-    if (jj_scan_token(SC_AND)) return true;
-    if (jj_3R_222()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_259() {
-    if (jj_3R_262()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_276()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_240() {
-    if (jj_scan_token(SC_OR)) return true;
-    if (jj_3R_205()) return true;
-    return false;
   }
 
   private boolean jj_3R_253() {
@@ -9298,6 +9291,28 @@ jjtn000.setModifiers(modifiers);
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_283()) jj_scanpos = xsp;
+    return false;
+  }
+
+  private boolean jj_3R_258() {
+    if (jj_scan_token(SC_AND)) return true;
+    if (jj_3R_222()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_259() {
+    if (jj_3R_262()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_276()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_240() {
+    if (jj_scan_token(SC_OR)) return true;
+    if (jj_3R_205()) return true;
     return false;
   }
 

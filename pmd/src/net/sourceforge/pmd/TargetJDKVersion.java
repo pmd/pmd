@@ -31,4 +31,9 @@ public interface TargetJDKVersion {
     public JavaParser createParser(Reader in);
 
     public String getVersionString();
+    
+    /**
+     * Default target version.
+     */
+    public static final TargetJDKVersion DEFAULT_JDK_VERSION = new TargetJDK1_5();
 }

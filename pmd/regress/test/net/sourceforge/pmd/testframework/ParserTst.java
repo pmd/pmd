@@ -3,7 +3,6 @@
  */
 package test.net.sourceforge.pmd.testframework;
 
-import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.JavaParser;
@@ -54,7 +53,7 @@ public abstract class ParserTst {
     }
 
     public <E> Set<E> getNodes(Class<E> clazz, String javaCode) throws Throwable {
-        return getNodes(new TargetJDK1_4(), clazz, javaCode);
+        return getNodes(TargetJDKVersion.DEFAULT_JDK_VERSION, clazz, javaCode);
     }
 
     public <E> Set<E> getNodes(TargetJDKVersion jdk, Class<E> clazz, String javaCode) throws Throwable {
@@ -68,7 +67,7 @@ public abstract class ParserTst {
 
     public <E> List<E> getOrderedNodes(Class<E> clazz, String javaCode) throws Throwable {
         Collector<E> coll = new Collector<E>(clazz, new ArrayList<E>());
-        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(javaCode));
+        JavaParser parser = TargetJDKVersion.DEFAULT_JDK_VERSION.createParser(new StringReader(javaCode));
         ASTCompilationUnit cu = parser.CompilationUnit();
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);
@@ -80,7 +79,7 @@ public abstract class ParserTst {
     }
 
     public ASTCompilationUnit buildDFA(String javaCode) throws Throwable {
-        JavaParser parser = (new TargetJDK1_4()).createParser(new StringReader(javaCode));
+        JavaParser parser = TargetJDKVersion.DEFAULT_JDK_VERSION.createParser(new StringReader(javaCode));
         ASTCompilationUnit cu = parser.CompilationUnit();
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, new Collector<ASTCompilationUnit>(ASTCompilationUnit.class));
         jpv.visit(cu, null);
