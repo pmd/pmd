@@ -11,6 +11,7 @@
 	<property name="version" value="4.0" />
 	<property name="keystore" value="${keystore.path}" />
 	<property name="retroweaver.version" value="2.0.1" />
+	<property name="junit.version" value="4.1" />
 
     <!--Settings-->
     <property name="outputTestResultsToFile" value="false" />
@@ -20,7 +21,7 @@
 		<fileset dir="${dir.lib}">
 			<include name="jaxen-1.1.jar" />
 			<include name="asm-3.0.jar" />
-			<include name="junit-4.1.jar" />
+			<include name="junit-${junit.version}.jar" />
 		</fileset>
 	</path>
 
@@ -72,20 +73,18 @@
 		</jar>
 	</target>
 
+	<taskdef name="retroweaver" classname="net.sourceforge.retroweaver.ant.RetroWeaverTask">
+		<classpath>
+			<pathelement location="${dir.lib14}/retroweaver-${retroweaver.version}.jar"/>
+			<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
+			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
+			<pathelement location="${dir.lib14}/asm-commons-3.0.jar"/>
+			<pathelement location="${dir.lib14}/asm-util-3.0.jar"/>
+			<pathelement location="${dir.lib}/asm-3.0.jar"/>
+		</classpath>
+	</taskdef>
+
 	<target name="weavejunit" depends="jar">
-		<fail unless="junit.jar" message="junit.jar location is not defined properly" />
-
-		<taskdef name="retroweaver" classname="net.sourceforge.retroweaver.ant.RetroWeaverTask">
-			<classpath>
-				<pathelement location="${dir.lib14}/retroweaver-${retroweaver.version}.jar"/>
-				<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
-				<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
-				<pathelement location="${dir.lib14}/asm-commons-3.0.jar"/>
-				<pathelement location="${dir.lib14}/asm-util-3.0.jar"/>
-				<pathelement location="${dir.lib}/asm-3.0.jar"/>
-			</classpath>
-		</taskdef>
-
 		<path id="retroweaverclasspath">
 			<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
 			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
@@ -96,7 +95,7 @@
 			<pathelement location="${ant.jar}" />
 		</path>
 
-		<retroweaver inputjar="${junit.jar}" outputjar="../${dir.lib14}/junit.jar" target="1.4" failonerror="true" verify="true">
+		<retroweaver inputjar="${dir.lib}/junit-${junit.version}.jar" outputjar="${dir.lib14}/junit.jar" target="1.4" failonerror="true" verify="true">
 			<classpath refid="retroweaverclasspath" />
 		</retroweaver>
 	</target>
@@ -105,19 +104,9 @@
 		<fail unless="ant.jar" message="ant.jar location is not defined properly" />
 		<fail unless="jvm14.runtime" message="jvm14.runtime (i.e. rt.jar) location is not defined properly" />
 
-		<taskdef name="retroweaver" classname="net.sourceforge.retroweaver.ant.RetroWeaverTask">
-			<classpath>
-				<pathelement location="${dir.lib14}/retroweaver-${retroweaver.version}.jar"/>
-				<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
-				<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
-				<pathelement location="${dir.lib14}/asm-commons-3.0.jar"/>
-				<pathelement location="${dir.lib14}/asm-util-3.0.jar"/>
-				<pathelement location="${dir.lib}/asm-3.0.jar"/>
-			</classpath>
-		</taskdef>
-
 		<path id="retroweaverclasspath">
 			<pathelement location="${dir.lib14}/pmd14-${version}.jar" />
+			<pathelement location="${dir.lib14}/pmd14-test-${version}.jar" />
 			<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
 			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
 			<pathelement location="${dir.lib}/asm-3.0.jar"/>
@@ -127,14 +116,16 @@
 			<pathelement location="${ant.jar}" />
 		</path>
 
-		<retroweaver inputjar="../${dir.lib}/pmd-${version}.jar" outputjar="../${dir.lib14}/pmd14-${version}.jar" target="1.4" failonerror="true" verify="true">
+		<retroweaver inputjar="${dir.lib}/pmd-${version}.jar" outputjar="${dir.lib14}/pmd14-${version}.jar" target="1.4" failonerror="true" verify="true">
 			<classpath refid="retroweaverclasspath" />
 		</retroweaver>
 
 		<jar jarfile="${dir.lib}/pmd-test-${version}.jar"
 		      includes="test/net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
 		      excludes="test/net/sourceforge/pmd/testframework/**/**" basedir="${dir.build}" />
-		<retroweaver inputjar="../${dir.lib}/pmd-test-${version}.jar" outputjar="../${dir.lib14}/pmd14-test-${version}.jar" target="1.4" failonerror="true" />
+		<retroweaver inputjar="${dir.lib}/pmd-test-${version}.jar" outputjar="${dir.lib14}/pmd14-test-${version}.jar" target="1.4" failonerror="true" verify="true">
+			<classpath refid="retroweaverclasspath" />
+		</retroweaver>
 	</target>
 
 	<target name="jarsrc" depends="copy,compile" description="Jars up the source directory">
@@ -179,11 +170,12 @@
             <istrue value="${outputTestResultsToFile}"/>
         </condition>
 
+	<mkdir dir="${dir.build}/reports/xml"/>
         <junit printsummary="yes" haltonfailure="no" forkmode="perBatch">
 			<classpath>
 				<path refid="dependencies.path" />
 			</classpath>
-			<batchtest fork="yes" todir="${dir.build}">
+			<batchtest fork="yes" todir="${dir.build}/reports/xml">
 				<fileset dir="${dir.regress}">
 					<include name="test/**/*Test.java" />
 					<exclude name="test/**/Abstract*"/>
@@ -192,11 +184,11 @@
 
             <formatter type="xml" if="testResultsToFile"/>
 		</junit>
-		<junitreport todir="${dir.build}">
-			<fileset dir="${dir.build}">
+		<junitreport todir="${dir.build}/reports/xml">
+			<fileset dir="${dir.build}/reports/xml">
 				<include name="TEST-*.xml" />
 			</fileset>
-			<report format="frames" todir="${dir.build}/html" />
+			<report format="frames" todir="${dir.build}/reports/html" />
 		</junitreport>
 	</target>
 
@@ -221,23 +213,25 @@
 			</fileset>
 		</path>
 
+		<mkdir dir="${dir.build}/reports14/xml"/>
 		<junit printsummary="yes" haltonfailure="no" jvm="${jvm14.exe}" forkmode="perBatch">
 			<classpath>
 				<path refid="dependencies14.path" />
 			</classpath>
-			<batchtest fork="yes" todir="${dir.build}">
+			<batchtest fork="yes" todir="${dir.build}/reports14/xml">
 				<fileset dir="${dir.regress}">
 					<include name="test/**/*Test.java" />
+					<exclude name="test/**/Abstract*"/>
 				</fileset>
 			</batchtest>
 
 			<formatter type="xml" if="testResultsToFile"/>
 		</junit>
-		<junitreport todir="${dir.build}">
-			<fileset dir="${dir.build}">
+		<junitreport todir="${dir.build}/reports14/xml">
+			<fileset dir="${dir.build}/reports14/xml">
 				<include name="TEST-*.xml" />
 			</fileset>
-			<report format="frames" todir="${dir.build}/html" />
+			<report format="frames" todir="${dir.build}/reports14/html" />
 		</junitreport>
 	</target>
 
