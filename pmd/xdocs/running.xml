@@ -31,7 +31,7 @@ C:\tmp\pmd-4.0\pmd\bin&gt;
 
        <li>If you are want to run PMD without the batch file, you can do a:</li>
        <source>
-C:\data\pmd\pmd>java -cp lib\pmd-4.0.jar;lib\jaxen-1.1.jar;lib\asm-3.0.jar
+C:\data\pmd\pmd>java -cp lib\pmd-4.0.jar;lib\jaxen-1.1.1.jar;lib\asm-3.0.jar
                      net.sourceforge.pmd.PMD
                      c:\j2sdk1.4.1_01\src\java\lang xml
                      rulesets/imports.xml

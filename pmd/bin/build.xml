@@ -19,7 +19,7 @@
 	<path id="dependencies.path">
 		<pathelement location="${dir.build}" />
 		<fileset dir="${dir.lib}">
-			<include name="jaxen-1.1.jar" />
+			<include name="jaxen-1.1.1.jar" />
 			<include name="asm-3.0.jar" />
 			<include name="junit-${junit.version}.jar" />
 		</fileset>
@@ -68,7 +68,7 @@
 		<jar jarfile="${dir.lib}/pmd-${version}.jar" includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**" basedir="${dir.build}">
 			<manifest>
 				<attribute name="Main-Class" value="net.sourceforge.pmd.PMD" />
-				<attribute name="Class-Path" value="jaxen-1.1.jar asm-3.0.jar" />
+				<attribute name="Class-Path" value="jaxen-1.1.1.jar asm-3.0.jar" />
 			</manifest>
 		</jar>
 	</target>
@@ -90,7 +90,7 @@
 			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
 			<pathelement location="${dir.lib}/asm-3.0.jar"/>
 			<pathelement location="${jvm14.runtime}" />
-			<pathelement location="${dir.lib}/jaxen-1.1.jar" />
+			<pathelement location="${dir.lib}/jaxen-1.1.1.jar" />
 			<pathelement location="${dir.lib14}/junit.jar" />
 			<pathelement location="${ant.jar}" />
 		</path>
@@ -111,7 +111,7 @@
 			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
 			<pathelement location="${dir.lib}/asm-3.0.jar"/>
 			<pathelement location="${jvm14.runtime}" />
-			<pathelement location="${dir.lib}/jaxen-1.1.jar" />
+			<pathelement location="${dir.lib}/jaxen-1.1.1.jar" />
 			<pathelement location="${dir.lib14}/junit.jar" />
 			<pathelement location="${ant.jar}" />
 		</path>
@@ -208,7 +208,7 @@
 				<include name="junit.jar" />
 			</fileset>
 			<fileset dir="${dir.lib}">
-				<include name="jaxen-1.1.jar" />
+				<include name="jaxen-1.1.1.jar" />
 				<include name="asm-3.0.jar" />
 			</fileset>
 		</path>

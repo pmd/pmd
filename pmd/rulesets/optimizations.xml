@@ -313,18 +313,11 @@ Finds empty string literals which are being added. This is an inefficient way
 to convert any type to a String.
         </description>
         <priority>3</priority>
-<!--TODO XPath should be changed to: 
-//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""'] 
-when we use a version of Jaxen with a bugfix for JAXEN-177. This change 
-can always be tried, if the junit tests do not fail, the change is good. -->
         <properties>
             <property name="xpath">
                 <value>
                     <![CDATA[ 
-//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal
-   [string-length(@Image)=2]
-   [starts-with(@Image, '"')]
-   [ends-with(@Image, '"')]
+//AdditiveExpression/PrimaryExpression/PrimaryPrefix/Literal[@Image='""']
                 ]]>
                 </value>
             </property>

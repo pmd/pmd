@@ -5,10 +5,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="var" path="JRE_LIB"/>
 	<classpathentry kind="var" path="ANT_HOME/ant.jar"/>
-	<classpathentry kind="var" path="JUNIT_HOME/junit.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.1.jar"/>
 	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt_3.1.0.jar"/>
 	<classpathentry kind="var" path="JDK1.5_HOME/lib/tools.jar"/>
-	<classpathentry kind="lib" path="lib/jaxen-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/jaxen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/asm-3.0.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

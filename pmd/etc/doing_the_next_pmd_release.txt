@@ -38,7 +38,7 @@ cd ../etc/
 cp ../java14/lib/*.jar ~/tmp/pmd-4.0/java14/lib/
 cp ../java14/bin/*.bat ../java14/bin/*.sh ~/tmp/pmd-4.0/java14/bin/
 chmod 755 ~/tmp/pmd-4.0/java14/bin/*
-cp ../lib/pmd-4.0.jar ../lib/asm-3.0.jar ../lib/jaxen-1.1.jar ~/tmp/pmd-4.0/lib/
+cp ../lib/pmd-4.0.jar ../lib/asm-3.0.jar ../lib/jaxen-1.1.1.jar ~/tmp/pmd-4.0/lib/
 mkdir ~/tmp/pmd-4.0/etc/xslt
 cp xslt/*.xslt xslt/*.js xslt/*.gif xslt/*.css ~/tmp/pmd-4.0/etc/xslt/
 cp -R ../target/docs ~/tmp/pmd-4.0
