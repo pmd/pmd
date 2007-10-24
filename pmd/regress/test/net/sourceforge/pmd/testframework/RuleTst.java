@@ -72,17 +72,20 @@ public abstract class RuleTst {
         Properties ruleProperties = rule.getProperties();
         Properties oldProperties = (Properties)ruleProperties.clone();
         try {
-            if (test.getProperties() != null) {
-                oldProperties = (Properties)ruleProperties.clone();
-                ruleProperties.putAll(test.getProperties());
+            int res;
+            try {
+                if (test.getProperties() != null) {
+                    oldProperties = (Properties)ruleProperties.clone();
+                    ruleProperties.putAll(test.getProperties());
+                }
+                
+                res = processUsingStringReader(test.getCode(), rule, test.getSourceType()).size();
+            } catch (Throwable t) {
+                t.printStackTrace();
+                throw new RuntimeException("Test \"" + test.getDescription() + "\" on Rule \"" + test.getRule().getName() + "\"failed");
             }
-            
-            int res = processUsingStringReader(test.getCode(), rule, test.getSourceType()).size();
             assertEquals("\"" + test.getDescription() + "\" test resulted in wrong number of failures,",
-                test.getNumberOfProblemsExpected(), res);
-        } catch (Throwable t) {
-            t.printStackTrace();
-            throw new RuntimeException("Test \"" + test.getDescription() + "\" on Rule \"" + test.getRule().getName() + "\"failed");
+                    test.getNumberOfProblemsExpected(), res);
         } finally {
             //Restore old properties
             ruleProperties.clear();
