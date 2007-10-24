@@ -161,7 +161,7 @@ class Foo {
     <test-code reinitializeRule="true">
 	<description>
 		<![CDATA[
-			False - !
+			False - ! if "checkall" property is not set
 		]]>
 	</description>
 	<rule-property name="checkall">true</rule-property>
