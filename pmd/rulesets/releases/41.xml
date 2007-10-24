@@ -15,6 +15,9 @@ This ruleset contains links to rules that are new in PMD v4.1
   <rule ref="rulesets/controversial.xml/AvoidUsingVolatile"/>
   <rule ref="rulesets/design.xml/ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
   <rule ref="rulesets/design.xml/EmptyMethodInAbstractClassShouldBeAbstract"/>
+  <!-- Although the rule below is not new, it works quite differently now and merits (re-)consideration -->
+  <rule ref="rulesets/design.xml/SingularField"/>
+  
   <rule ref="rulesets/imports.xml/TooManyStaticImports"/>
   <rule ref="rulesets/j2ee.xml/DoNotCallSystemExit"/>
   <rule ref="rulesets/j2ee.xml/DoNotUseThreads"/>
