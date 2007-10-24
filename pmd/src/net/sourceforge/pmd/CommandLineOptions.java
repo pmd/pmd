@@ -46,6 +46,8 @@ public class CommandLineOptions {
 
     public CommandLineOptions(String[] args) {
 
+        this.args = args; // needed by createRenderer
+        
         if (args == null || args.length < 3) {
             throw new RuntimeException(usage());
         }
