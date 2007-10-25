@@ -235,8 +235,7 @@ public Object clone() throws CloneNotSupportedException {
     <test-code>
         <description>
         	<![CDATA[
-False +: Overriding method merely calls super
-See bug 1415525
+False +: Overriding method merely calls super (see bug 1415525)
      		]]>
      	</description>
         <expected-problems>0</expected-problems>

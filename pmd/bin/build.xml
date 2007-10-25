@@ -162,63 +162,31 @@
 
 	<target name="requires-junit" description="Ensures JUnit is available">
 		<available classname="org.junit.Assert" property="junit.available" classpathref="dependencies.path" />
-		<fail unless="junit.available" message="Could find JUnit 4... please place a junit.jar file in the CLASSPATH." />
+		<fail unless="junit.available" message="Could not find JUnit 4... please place a junit.jar file in the CLASSPATH." />
 	</target>
+
+	<condition property="testResultsToFile">
+		<istrue value="${outputTestResultsToFile}"/>
+	</condition>
 
 	<target name="test" depends="requires-junit,compile,copy" description="Runs the unit tests">
-		<condition property="testResultsToFile">
-            <istrue value="${outputTestResultsToFile}"/>
-        </condition>
-
-	<mkdir dir="${dir.build}/reports/xml"/>
-        <junit printsummary="yes" haltonfailure="no" forkmode="perBatch">
-			<classpath>
-				<path refid="dependencies.path" />
-			</classpath>
-			<batchtest fork="yes" todir="${dir.build}/reports/xml">
-				<fileset dir="${dir.regress}">
-					<include name="test/**/*Test.java" />
-					<exclude name="test/**/Abstract*"/>
-				</fileset>
-			</batchtest>
-
-            <formatter type="xml" if="testResultsToFile"/>
-		</junit>
-		<junitreport todir="${dir.build}/reports/xml">
-			<fileset dir="${dir.build}/reports/xml">
-				<include name="TEST-*.xml" />
-			</fileset>
-			<report format="frames" todir="${dir.build}/reports/html" />
-		</junitreport>
+		<antcall target="test-execute">
+			<param name="test.outputdir" value="${dir.build}/reports"/>
+			<param name="test.jvm" value="java"/>
+			<param name="test.dependencies" value="dependencies.path"/>
+		</antcall>
+		<antcall target="test-report">
+			<param name="test.outputdir" value="${dir.build}/reports"/>
+		</antcall>
 	</target>
 
-	<target name="test14" depends="requires-junit,compile,copy,weavejunit,weave" description="Runs the unit tests with 1.4 jvm">
-		<fail unless="jvm14.exe" message="jvm14.exe location is not defined properly" />
-
-		<condition property="testResultsToFile">
-			<istrue value="${outputTestResultsToFile}"/>
-		</condition>
-
-		<path id="dependencies14.path">
-			<fileset dir="${dir.lib14}">
-				<include name="backport-util-concurrent.jar" />
-				<include name="pmd14-${version}.jar" />
-				<include name="pmd14-test-${version}.jar" />
-				<include name="retroweaver-rt-${retroweaver.version}.jar" />
-				<include name="junit.jar" />
-			</fileset>
-			<fileset dir="${dir.lib}">
-				<include name="jaxen-1.1.1.jar" />
-				<include name="asm-3.0.jar" />
-			</fileset>
-		</path>
-
-		<mkdir dir="${dir.build}/reports14/xml"/>
-		<junit printsummary="yes" haltonfailure="no" jvm="${jvm14.exe}" forkmode="perBatch">
+	<target name="test-execute" description="Runs the unit tests">
+		<mkdir dir="${test.outputdir}/xml"/>
+		<junit printsummary="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch">
 			<classpath>
-				<path refid="dependencies14.path" />
+				<path refid="${test.dependencies}" />
 			</classpath>
-			<batchtest fork="yes" todir="${dir.build}/reports14/xml">
+			<batchtest fork="yes" todir="${test.outputdir}/xml">
 				<fileset dir="${dir.regress}">
 					<include name="test/**/*Test.java" />
 					<exclude name="test/**/Abstract*"/>
@@ -227,12 +195,46 @@
 
 			<formatter type="xml" if="testResultsToFile"/>
 		</junit>
-		<junitreport todir="${dir.build}/reports14/xml">
-			<fileset dir="${dir.build}/reports14/xml">
+	</target>
+
+	<target name="test-report" if="testResultsToFile" description="generate reports">
+		<junitreport todir="${test.outputdir}/xml">
+			<fileset dir="${test.outputdir}/xml">
 				<include name="TEST-*.xml" />
 			</fileset>
-			<report format="frames" todir="${dir.build}/reports14/html" />
+			<report format="frames" todir="${test.outputdir}/html" />
 		</junitreport>
+		<xslt in="${test.outputdir}/xml/TESTS-TestSuites.xml" style="etc/xslt/junit-txt-output.xsl" out="${test.outputdir}/summary.txt" /> 
+		<concat> 
+			<filelist dir="${test.outputdir}" files="summary.txt"/>
+		</concat>
+	</target>
+
+	<path id="dependencies14.path">
+		<fileset dir="${dir.lib14}">
+			<include name="backport-util-concurrent.jar" />
+			<include name="pmd14-${version}.jar" />
+			<include name="pmd14-test-${version}.jar" />
+			<include name="retroweaver-rt-${retroweaver.version}.jar" />
+			<include name="junit.jar" />
+		</fileset>
+		<fileset dir="${dir.lib}">
+			<include name="jaxen-1.1.1.jar" />
+			<include name="asm-3.0.jar" />
+		</fileset>
+	</path>
+
+	<target name="test14" depends="requires-junit,compile,copy,weavejunit,weave" description="Runs the unit tests with 1.4 jvm">
+		<fail unless="jvm14.exe" message="jvm14.exe location is not defined properly" />
+
+		<antcall target="test-execute">
+			<param name="test.outputdir" value="${dir.build}/reports14"/>
+			<param name="test.jvm" value="${jvm14.exe}"/>
+			<param name="test.dependencies" value="dependencies14.path"/>
+		</antcall>
+		<antcall target="test-report">
+			<param name="test.outputdir" value="${dir.build}/reports14"/>
+		</antcall>
 	</target>
 
 	<target name="symtabtest" depends="compile" description="Runs the unit tests for the symboltable package">

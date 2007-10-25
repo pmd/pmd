@@ -6,13 +6,19 @@ package test.net.sourceforge.pmd.testframework;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
-
 import net.sourceforge.pmd.Rule;
+
+import org.junit.Test;
+import org.junit.internal.runners.TestClassMethodsRunner;
+import org.junit.runner.Description;
+import org.junit.runner.RunWith;
+import org.junit.runner.notification.Failure;
+import org.junit.runner.notification.RunNotifier;
 
 /**
  * Standard methods for (simple) testcases.
  */
+@RunWith(SimpleAggregatorTst.CustomXmlTestClassMethodsRunner.class)
 public abstract class SimpleAggregatorTst extends RuleTst {
     /**
      * Run a set of tests defined in an XML test-data file for a rule. The file
@@ -56,9 +62,45 @@ public abstract class SimpleAggregatorTst extends RuleTst {
      */
     @Test
     public void testAll() {
+        ArrayList<Failure> l = new ArrayList<Failure>();
         for (Rule r : rules) {
-            runTests(r);
+            TestDescriptor[] tests = extractTestsFromXml(r);
+            for (int i = 0; i < tests.length; i++) {
+                try {
+                    runTest(tests[i]);
+                } catch (Throwable t) {
+                    Failure f = CustomXmlTestClassMethodsRunner.createFailure(r, t);
+                    l.add(f);
+                }
+            }
+        }
+        for(Failure f: l) {
+            CustomXmlTestClassMethodsRunner.addFailure(f);
         }
     }
 
+    public static class CustomXmlTestClassMethodsRunner extends TestClassMethodsRunner {
+        public CustomXmlTestClassMethodsRunner(Class<?> klass) {
+            super(klass);
+        }
+
+        public static Failure createFailure(Rule rule, Throwable targetException) {
+            return new Failure(Description.createTestDescription(
+                    SimpleAggregatorTst.class, "xml." + rule.getRuleSetName() + '.' + rule.getName()),
+                    targetException);
+        }
+
+        public static void addFailure(Failure failure) {
+            NOTIFIER.fireTestFailure(failure);
+        }
+
+        @Override
+        public synchronized void run(RunNotifier n) {
+            // synchronized so that access to NOTIFIER is safe
+            NOTIFIER = n;
+            super.run(n);
+        }
+
+        private static RunNotifier NOTIFIER;
+    }
 }
