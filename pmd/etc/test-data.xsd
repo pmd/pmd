@@ -68,8 +68,8 @@
         </xs:annotation>
         <xs:restriction base="xs:string">
           <xs:enumeration value="java 1.3"/>
-          <xs:enumeration value="java 1.4"/> <!-- default -->
-          <xs:enumeration value="java 1.5"/>
+          <xs:enumeration value="java 1.4"/>
+          <xs:enumeration value="java 1.5"/> <!-- default -->
           <xs:enumeration value="java 1.6"/>
           <xs:enumeration value="JSP"/>
         </xs:restriction>
