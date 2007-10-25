@@ -47,4 +47,18 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+Not an ip address string
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  String ID_MD5 = "1.2.840.113549.2.5";
+  String bar = "testing 1.2.3.4";
+}
+     ]]></code>
+    </test-code>
+
 </test-data>

@@ -1025,7 +1025,7 @@ public class Test {
 	    </description>
 	    <priority>3</priority>
 	     <properties>
-            <property name="pattern" description="Regular Expression" value="[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"/>
+            <property name="pattern" description="Regular Expression" value='^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$'/>
         </properties>
 	    <example>
 	    <![CDATA[
