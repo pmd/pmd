@@ -1,29 +1,18 @@
-
- package test.net.sourceforge.pmd.rules;
- 
- import net.sourceforge.pmd.Rule;
+package test.net.sourceforge.pmd.rules;
 
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
- 
- public class UselessAssignmentRuleTest extends SimpleAggregatorTst {
-     private Rule rule;
- 
-     @Before
-     public void setUp() {
-         rule = findRule("rulesets/scratchpad.xml", "UselessAssignment");
-     }
- 
-     @Ignore("Scratchpad rule - throwing exception")
-     @Test
-     public void testAll() {
-         runTests(rule);
-     }
 
-     public static junit.framework.Test suite() {
-         return new junit.framework.JUnit4TestAdapter(UselessAssignmentRuleTest.class);
-     }
- }
+public class UselessAssignmentRuleTest extends SimpleAggregatorTst {
+
+    @Before
+    public void setUp() {
+        // addRule("scratchpad", "UselessAssignment");
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(
+                UselessAssignmentRuleTest.class);
+    }
+}
