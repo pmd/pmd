@@ -303,4 +303,47 @@ StringBuffer buffer = new StringBuffer(
 } }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+1503099, init with two string lengths
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(String str1, String str2) {
+  StringBuffer buf = new StringBuffer(str1.length() + str2.length());
+  buf.append(str1);
+  buf.append(str2);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+1503099, append with two string lengths
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(String str1, String str2) {
+  StringBuffer buf = new StringBuffer();
+  buf.append(str1.length() + str2.length());
+ }
+}
+     ]]></code>
+    </test-code>
+    <!--test-code>
+        <description><![CDATA[
+1503099, adding two integers
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(int a, int b) {
+  StringBuffer buf = new StringBuffer();
+  buf.append(a + b);
+ }
+}
+     ]]></code>
+    </test-code-->
 </test-data>

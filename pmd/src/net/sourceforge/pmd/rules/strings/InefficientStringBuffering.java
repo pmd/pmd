@@ -17,6 +17,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
 
+import java.util.Iterator;
 import java.util.List;
 
 /*
@@ -65,8 +66,16 @@ public class InefficientStringBuffering extends AbstractRule {
             }
         }
 
-
         if (bs.isAllocation()) {
+            for (Iterator<ASTName> iterator = nameNodes.iterator(); iterator.hasNext();) {
+            	ASTName name = iterator.next();
+    			if (!name.getImage().endsWith("length")) {
+    				break;
+    			} else if (!iterator.hasNext()) {
+    				return data;	//All names end with length
+    			}
+    		}
+        	
             if (isAllocatedStringBuffer(node)) {
                 addViolation(data, node);
             }
