@@ -12,11 +12,13 @@ import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-// Would this be simplified by using DFA somehow?
-
+// TODO - should check that this is not the first assignment.  e.g., this is OK:
+// Object x;
+// x = null;
 public class NullAssignmentRule extends AbstractRule {
 
     public Object visit(ASTNullLiteral node, Object data) {
+        
         if (node.getNthParent(5) instanceof ASTStatementExpression) {
             ASTStatementExpression n = (ASTStatementExpression) node.getNthParent(5);
 
@@ -28,9 +30,13 @@ public class NullAssignmentRule extends AbstractRule {
                 addViolation(data, node);
             }
         } else if (node.getNthParent(4) instanceof ASTConditionalExpression) {
-            checkTernary((ASTConditionalExpression) node.getNthParent(4), data, node);
+            if (isBadTernary((ASTConditionalExpression)node.getNthParent(4))) {
+                addViolation(data, node);
+            }
         } else if (node.getNthParent(5) instanceof ASTConditionalExpression) {
-            checkTernary((ASTConditionalExpression) node.getNthParent(5), data, node);
+            if (isBadTernary((ASTConditionalExpression)node.getNthParent(5))) {
+                addViolation(data, node);
+            }
         }
 
         return data;
@@ -43,9 +49,7 @@ public class NullAssignmentRule extends AbstractRule {
                 && ((VariableNameDeclaration) name.getNameDeclaration()).getAccessNodeParent().isFinal();
     }
 
-    private void checkTernary(ASTConditionalExpression n, Object data, ASTNullLiteral node) {
-        if (n.isTernary() && !(n.jjtGetChild(0) instanceof ASTEqualityExpression)) {
-            addViolation(data, node);
-        }
+    private boolean isBadTernary(ASTConditionalExpression n) {
+        return n.isTernary() && !(n.jjtGetChild(0) instanceof ASTEqualityExpression);
     }
 }
