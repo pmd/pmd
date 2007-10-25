@@ -13,8 +13,8 @@
 	<property name="retroweaver.version" value="2.0.1" />
 	<property name="junit.version" value="4.1" />
 
-    <!--Settings-->
-    <property name="outputTestResultsToFile" value="false" />
+	<!--Settings-->
+	<property name="outputTestResultsToFile" value="false" />
 
 	<path id="dependencies.path">
 		<pathelement location="${dir.build}" />
@@ -57,10 +57,10 @@
 				<include name="**/*.properties" />
 			</fileset>
 		</copy>
-        <copy todir="${dir.build}/test/net/sourceforge/pmd">
-            <fileset dir="${dir.regress}/test/net/sourceforge/pmd">
-                <include name="**/xml/*.xml" />
-            </fileset>
+		<copy todir="${dir.build}/test/net/sourceforge/pmd">
+			<fileset dir="${dir.regress}/test/net/sourceforge/pmd">
+				<include name="**/xml/*.xml" />
+			</fileset>
 		</copy>
 	</target>
 
@@ -121,8 +121,9 @@
 		</retroweaver>
 
 		<jar jarfile="${dir.lib}/pmd-test-${version}.jar"
-		      includes="test/net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
-		      excludes="test/net/sourceforge/pmd/testframework/**/**" basedir="${dir.build}" />
+			includes="test/net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
+			excludes="test/net/sourceforge/pmd/testframework/**/**" basedir="${dir.build}" />
+
 		<retroweaver inputjar="${dir.lib}/pmd-test-${version}.jar" outputjar="${dir.lib14}/pmd14-test-${version}.jar" target="1.4" failonerror="true" verify="true">
 			<classpath refid="retroweaverclasspath" />
 		</retroweaver>
@@ -145,20 +146,20 @@
 		</pmd>
 	</target>
 
-    <target name="pmdOnPmd" description="Runs PMD on PMD" depends="copy, compile">
-        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
-        <pmd rulesetfiles="${dir.rulesets}internal/dogfood.xml" shortFilenames="true" targetjdk="1.5">
-            <classpath>
-                <path refid="dependencies.path" />
-            </classpath>
-            <formatter type="text" toConsole="true"/>
-            <fileset dir="${dir.src}">
-                <include name="**/*.java" />
-                <exclude name="**/ast/*.java" />
-                <exclude name="**/cppast/*.java" />
-            </fileset>
-        </pmd>
-    </target>
+	<target name="pmdOnPmd" description="Runs PMD on PMD" depends="copy, compile">
+		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
+		<pmd rulesetfiles="${dir.rulesets}internal/dogfood.xml" shortFilenames="true" targetjdk="1.5">
+			<classpath>
+				<path refid="dependencies.path" />
+			</classpath>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${dir.src}">
+				<include name="**/*.java" />
+				<exclude name="**/ast/*.java" />
+				<exclude name="**/cppast/*.java" />
+			</fileset>
+		</pmd>
+	</target>
 
 	<target name="requires-junit" description="Ensures JUnit is available">
 		<available classname="org.junit.Assert" property="junit.available" classpathref="dependencies.path" />
@@ -291,32 +292,32 @@
 		<replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/ast/JavaCharStream.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException" />
-        <replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="extends Exception" value="extends RuntimeException" />
-        <replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
-        <replace file="src/net/sourceforge/pmd/ast/JavaParserVisitor.java" token="SimpleNode" value="SimpleJavaNode" />
-    </target>
+		<replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="extends Exception" value="extends RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/ast/JavaParserVisitor.java" token="SimpleNode" value="SimpleJavaNode" />
+	</target>
 
-    <target name="jspjjtree" description="Generates the JSP parser and AST source filesr">
-        <delete file="src/net/sourceforge/pmd/ast/jsp/JspParser.jj" />
-        <delete file="src/net/sourceforge/pmd/ast/jsp/JspParser.java" />
-        <delete file="src/net/sourceforge/pmd/ast/jsp/JspParserConstants.java" />
-        <delete file="src/net/sourceforge/pmd/ast/jsp/JspParserTreeConstants.java" />
-        <delete file="src/net/sourceforge/pmd/ast/jsp/JspParserTokenManager.java" />
-        <jjtree target="etc/grammar/JspParser.jjt" outputdirectory="src/net/sourceforge/pmd/jsp/ast/" javacchome="${javacc-home.path}" />
-        <javacc target="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" outputdirectory="src/net/sourceforge/pmd/jsp/ast" javacchome="${javacc-home.path}" />
-        <delete file="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" />
-        <replace file="src/net/sourceforge/pmd/jsp/ast/JspParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
-        <replace file="src/net/sourceforge/pmd/jsp/ast/JspParser.java" token="throw new Error" value="throw new RuntimeException" />
-        <replace file="src/net/sourceforge/pmd/jsp/ast/JspCharStream.java" token="throw new Error" value="throw new RuntimeException" />
-        <replace file="src/net/sourceforge/pmd/jsp/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException" />
-        <replace file="src/net/sourceforge/pmd/jsp/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
-    </target>
+	<target name="jspjjtree" description="Generates the JSP parser and AST source filesr">
+		<delete file="src/net/sourceforge/pmd/ast/jsp/JspParser.jj" />
+		<delete file="src/net/sourceforge/pmd/ast/jsp/JspParser.java" />
+		<delete file="src/net/sourceforge/pmd/ast/jsp/JspParserConstants.java" />
+		<delete file="src/net/sourceforge/pmd/ast/jsp/JspParserTreeConstants.java" />
+		<delete file="src/net/sourceforge/pmd/ast/jsp/JspParserTokenManager.java" />
+		<jjtree target="etc/grammar/JspParser.jjt" outputdirectory="src/net/sourceforge/pmd/jsp/ast/" javacchome="${javacc-home.path}" />
+		<javacc target="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" outputdirectory="src/net/sourceforge/pmd/jsp/ast" javacchome="${javacc-home.path}" />
+		<delete file="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" />
+		<replace file="src/net/sourceforge/pmd/jsp/ast/JspParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/jsp/ast/JspParser.java" token="throw new Error" value="throw new RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/jsp/ast/JspCharStream.java" token="throw new Error" value="throw new RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/jsp/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/jsp/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
+	</target>
 
 	<target name="cppjavacc" description="Generates the C++ grammar">
 		<delete>
 			<fileset dir="src/net/sourceforge/pmd/cpd/cppast">
 				<include name="*.java" />
-                <exclude name="TokenMgrError.java" /> <!-- TokenMgrError customized to report filename, so don't delete it -->
+				<exclude name="TokenMgrError.java" /> <!-- TokenMgrError customized to report filename, so don't delete it -->
 			</fileset>
 		</delete>
 		<javacc target="etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="${javacc-home.path}" />
@@ -357,13 +358,13 @@
 		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
 		<!-- ignoreIdentifiers="true" -->
 		<cpd language="cpp" minimumTokenCount="100" outputFile="cpd.xml" format="xml">
-      <fileset dir="/usr/local/src/apache_1.3.33/">
-        <!--<fileset dir="${java-source.path}/java/lang/ref">-->
+			<fileset dir="/usr/local/src/apache_1.3.33/">
+			<!--<fileset dir="${java-source.path}/java/lang/ref">-->
 				<include name="**/*.c" />
 			</fileset>
 		</cpd>
-        <xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
-    </target>
+		<xslt in="cpd.xml" style="etc/xslt/cpdhtml.xslt" out="cpd.html" />
+	</target>
 
 	<target name="javadoc" description="Generates Javadocs">
 		<mkdir dir="docs/api" />
@@ -378,7 +379,4 @@
 	</target>
 
 </project>
-
-
-
 
