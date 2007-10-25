@@ -3,6 +3,12 @@
  */
 package net.sourceforge.pmd.rules.strings;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
@@ -21,14 +27,7 @@ import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * This rule finds StringBuffers which may have been pre-sized incorrectly
@@ -38,17 +37,17 @@ import java.util.Set;
  */
 public class InsufficientStringBufferDeclaration extends AbstractRule {
 
-    private final static Set<Class> blockParents;
+    private final static Set<Class<? extends SimpleNode>> blockParents;
 
     static {
-        blockParents = new HashSet<Class>();
+        blockParents = new HashSet<Class<? extends SimpleNode>>();
         blockParents.add(ASTIfStatement.class);
         blockParents.add(ASTSwitchStatement.class);
     }
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
 
-        if (!TypeHelper.isA((VariableNameDeclaration)node.getNameDeclaration(), StringBuffer.class)) {
+        if (!TypeHelper.isA(node.getNameDeclaration(), StringBuffer.class)) {
             return data;
         }
         Node rootNode = node;
@@ -222,7 +221,7 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
         
         literal = block.findChildrenOfType(ASTLiteral.class);
         if (literal.isEmpty()) {
-            List name = block.findChildrenOfType(ASTName.class);
+            List<ASTName> name = block.findChildrenOfType(ASTName.class);
             if (!name.isEmpty()) {
                 iConstructorLength = -1;
             }
@@ -252,7 +251,6 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
 
     private int getInitialLength(SimpleNode node) {
         SimpleNode block = node.getFirstParentOfType(ASTBlockStatement.class);
-        List literal;
 
         if (block == null) {
             block = node.getFirstParentOfType(ASTFieldDeclaration.class);
@@ -260,9 +258,9 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
                 block = node.getFirstParentOfType(ASTFormalParameter.class);
             }
         }
-        literal = (block.findChildrenOfType(ASTLiteral.class));
+        List<ASTLiteral> literal = block.findChildrenOfType(ASTLiteral.class);
         if (literal.size() == 1) {
-            String str = ((SimpleNode) literal.get(0)).getImage();
+            String str = literal.get(0).getImage();
             if (str != null && isLiteral(str)) {
                 return str.length() - 2; // take off the quotes
             }
