@@ -5,6 +5,9 @@ package test.net.sourceforge.pmd.ast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
@@ -14,14 +17,12 @@ import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
-import java.util.Set;
-
 public class ASTImportDeclarationTest extends ParserTst {
 
     @Test
     public void testImportOnDemand() throws Throwable {
-        Set ops = getNodes(ASTImportDeclaration.class, TEST1);
-        assertTrue(((ASTImportDeclaration) (ops.iterator().next())).isImportOnDemand());
+        Set<ASTImportDeclaration> ops = getNodes(ASTImportDeclaration.class, TEST1);
+        assertTrue(ops.iterator().next().isImportOnDemand());
     }
 
     @Test
@@ -32,8 +33,8 @@ public class ASTImportDeclarationTest extends ParserTst {
 
     @Test
     public void testStaticImport() throws Throwable {
-        Set ops = getNodes(ASTImportDeclaration.class, TEST3);
-        ASTImportDeclaration i = (ASTImportDeclaration) (ops.iterator().next());
+        Set<ASTImportDeclaration> ops = getNodes(ASTImportDeclaration.class, TEST3);
+        ASTImportDeclaration i = ops.iterator().next();
         assertTrue(i.isStatic());
     }
 
