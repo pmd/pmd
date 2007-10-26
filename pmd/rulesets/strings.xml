@@ -306,9 +306,9 @@ StringBuffer size.
 [@Image='StringBuffer']
 /../Arguments/ArgumentList/Expression/PrimaryExpression
 /PrimaryPrefix/
-Literal [(starts-with(@Image, "'"))][(ends-with
-(@Image, "'"))]
-
+Literal
+  [starts-with(@Image, "'")]
+  [ends-with(@Image, "'")]
 ]]>
             </value>
         </property>
