@@ -341,16 +341,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
             <property name="xpath">
                 <value>
                     <![CDATA[
-                        //ClassOrInterfaceType
-                        [
-                                (starts-with(@Image,'Thread')
-                                and
-                                ends-with(@Image,'Thread')
-                                ) or
-                                (starts-with(@Image,'Runnable')
-                                and
-                                ends-with(@Image,'Runnable') )
-                        ]
+                        //ClassOrInterfaceType[@Image = 'Thread' or @Image = 'Runnable']
                     ]]>
                 </value>
             </property>
