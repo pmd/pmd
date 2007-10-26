@@ -425,11 +425,7 @@ public class MyClass {
             <property name="xpath">
                 <value>
                     <![CDATA[
-            //PrimitiveType[
-            starts-with(@Image,'short')
-            and
-            ends-with(@Image,'short')
-            ]
+            //PrimitiveType[@Image = 'short']
                     ]]>
                 </value>
             </property>
