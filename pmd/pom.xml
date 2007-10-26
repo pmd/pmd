@@ -219,11 +219,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkMode>once</forkMode>
-          <skip>true</skip>
-          <includes>
-			<include name="test/**/*Test.java" />
-			<exclude name="test/**/Abstract*"/>
-          </includes>
+          <skip>false</skip>
         </configuration>
       </plugin>
       <plugin>
