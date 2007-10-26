@@ -91,14 +91,19 @@ public abstract class SimpleAggregatorTst extends RuleTst {
         }
 
         public static void addFailure(Failure failure) {
-            NOTIFIER.fireTestFailure(failure);
+            synchronized(CustomXmlTestClassMethodsRunner.class) {
+                NOTIFIER.fireTestFailure(failure);
+            }
         }
 
         @Override
-        public synchronized void run(RunNotifier n) {
-            // synchronized so that access to NOTIFIER is safe
-            NOTIFIER = n;
-            super.run(n);
+        public void run(RunNotifier n) {
+            synchronized(CustomXmlTestClassMethodsRunner.class) {
+                // synchronized so that access to NOTIFIER is safe: only
+                // one runner at a time is active
+                NOTIFIER = n;
+                super.run(n);
+            }
         }
 
         private static RunNotifier NOTIFIER;
