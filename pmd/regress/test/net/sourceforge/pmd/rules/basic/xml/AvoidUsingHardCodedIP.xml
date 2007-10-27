@@ -61,4 +61,43 @@ public class Foo {
      ]]></code>
     </test-code>
 
+    <test-code>
+        <description><![CDATA[
+Not an IPv6 address string
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  String B1  = "2001:0db8:0000:0000:0000:0000:1428:57ab  testing";
+  String B2  = "::1  testing";
+  String B3  = ":::1";
+  String B4  = "::1:";
+  String B5  = "0";
+  String B6  = "0000000000000";
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+IPv6 addresses
+     ]]></description>
+        <expected-problems>11</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	String A1  = "2001:0db8:0000:0000:0000:0000:1428:57ab";
+	String A2  = "2001:0db8:0000:0000:0000::1428:57ab";
+	String A3  = "2001:0db8:0:0:0:0:1428:57ab";
+	String A4  = "2001:0db8:0:0::1428:57ab";
+	String A5  = "2001:0db8::1428:57ab";
+	String A6  = "2001:db8::1428:57ab";
+	String A7  = "::1";
+	String A8  = "::ffff:12.34.56.78";
+	String A9  = "::ffff:0c22:384e";
+	String A10 = "0:0:0:0:0:ffff:0c22:384e";
+	String A11 = "2001:0db8:0000:0000:0000:0000:12.34.56.78";
+}
+     ]]></code>
+    </test-code>
+
 </test-data>

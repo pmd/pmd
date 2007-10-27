@@ -1014,8 +1014,8 @@ public class Test {
     </rule>
 
     <rule   name="AvoidUsingHardCodedIP"
-            message="Do not hard code IP, even 127.0.0.1 !"
-            class="net.sourceforge.pmd.rules.GenericLiteralCheckerRule"
+            message="Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !"
+            class="net.sourceforge.pmd.rules.basic.AvoidUsingHardCodedIP"
             externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP">
 	    <description>
 	    	<![CDATA[

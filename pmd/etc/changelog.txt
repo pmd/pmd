@@ -1,6 +1,6 @@
 ????, 2007 - 4.1:
 New rules:
-	Basic ruleset: AvoidUsingHardCodedIPRule,CheckResultSet
+	Basic ruleset: AvoidUsingHardCodedIP,CheckResultSet
 	Controversial ruleset: AvoidFinalLocalVariable,AvoidUsingShortType,AvoidUsingVolatile,AvoidUsingNativeCode,AvoidAccessibilityAlteration
 	Design ruleset: ClassWithOnlyPrivateConstructorsShouldBeFinal,EmptyMethodInAbstractClassShouldBeAbstract
 	Imports ruleset: TooManyStaticImports
