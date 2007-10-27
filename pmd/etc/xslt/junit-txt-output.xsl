@@ -15,7 +15,7 @@ Test suite <xsl:value-of select="@name"/> failed (failures: <xsl:value-of select
       </xsl:for-each>
     </xsl:for-each>
   </xsl:for-each>
-Summary
+Summary: <xsl:value-of select="count(//testcase)"/> tests
   failures: <xsl:value-of select="count(//failure)"/>, errors: <xsl:value-of select="count(//error)"/>.
 </xsl:template>
 
