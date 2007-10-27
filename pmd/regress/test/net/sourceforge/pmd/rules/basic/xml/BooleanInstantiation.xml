@@ -147,4 +147,15 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Test for failure after rule with custom Boolean, should report failure if rule reset done correctly
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Boolean b = Boolean.valueOf("true");
+}
+     ]]></code>
+    </test-code>
 </test-data>

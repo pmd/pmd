@@ -5,6 +5,7 @@ import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
@@ -34,9 +35,12 @@ public class BooleanInstantiation extends AbstractRule {
 	 */
 	private boolean customBoolean;
 
-	public BooleanInstantiation() {
-		customBoolean = false;
-	}
+    public Object visit(ASTCompilationUnit decl,Object data) {
+        // customBoolean needs to be reset for each new file
+        customBoolean = false;
+
+        return super.visit(decl, data);
+    }
 
 	public Object visit(ASTImportDeclaration decl,Object data) {
 		// If the import actually import a Boolean class that overrides java.lang.Boolean
