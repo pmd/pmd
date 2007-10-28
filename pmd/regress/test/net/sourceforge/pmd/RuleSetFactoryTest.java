@@ -34,6 +34,7 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
 import net.sourceforge.pmd.util.ResourceLoader;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -59,6 +60,17 @@ import javax.xml.parsers.SAXParserFactory;
 
 import junit.framework.JUnit4TestAdapter;
 public class RuleSetFactoryTest {
+
+    private boolean isJdk14;
+
+    @Before
+    public void setUp() {
+        try {
+            Class.forName("java.lang.Appendable");
+        } catch (Throwable t) {
+            isJdk14 = true;
+        }
+    }
 
     @Test
     public void testRefs() throws Throwable {
@@ -193,6 +205,11 @@ public class RuleSetFactoryTest {
 
     @Test
     public void testXmlSchema() throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
+        if (isJdk14) {
+            // ignore failure with jdk 1.4
+            return;
+        }
+
 		SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
 		saxParserFactory.setValidating(true);
 		saxParserFactory.setNamespaceAware(true);
@@ -247,7 +264,10 @@ public class RuleSetFactoryTest {
 	        file = file.replaceAll("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "");
 	        file = file.replaceAll("xsi:schemaLocation=\"http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd\"", "");
 	        file = file.replaceAll("xsi:noNamespaceSchemaLocation=\"http://pmd.sf.net/ruleset_xml_schema.xsd\"", "");
-	        file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset SYSTEM \"ruleset.dtd\">" + PMD.EOL + file;
+
+	        file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset SYSTEM \"file://" +
+	            System.getProperty("user.dir") + "/etc/ruleset.dtd\">" + PMD.EOL + file;
+
 	        inputStream = new ByteArrayInputStream(file.getBytes());
 
 			SAXParser saxParser = saxParserFactory.newSAXParser();
