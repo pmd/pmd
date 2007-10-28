@@ -23,11 +23,12 @@ import net.sourceforge.pmd.ast.SimpleNode;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Searches through all methods and constructors called from constructors.  It
@@ -476,6 +477,27 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         }
     }
 
+    private static final int compareNodes(SimpleNode n1, SimpleNode n2) {
+        int l1 = n1.getBeginLine();
+        int l2 = n2.getBeginLine();
+        if (l1 == l2) {
+            return n1.getBeginColumn() - n2.getBeginColumn();
+        }
+        return l1 - l2;
+    }
+
+    private static class MethodHolderComparator implements Comparator<MethodHolder> {
+        public int compare(MethodHolder o1, MethodHolder o2) {
+            return compareNodes(o1.getASTMethodDeclarator(), o2.getASTMethodDeclarator());
+        }
+    }
+
+    private static class ConstructorHolderComparator implements Comparator<ConstructorHolder> {
+        public int compare(ConstructorHolder o1, ConstructorHolder o2) {
+            return compareNodes(o1.getASTConstructorDeclaration(), o2.getASTConstructorDeclaration());
+        }
+    }
+
     /**
      * 1 package per class. holds info for evaluating a single class.
      */
@@ -486,9 +508,9 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         public EvalPackage(String className) {
             m_ClassName = className;
             calledMethods = new ArrayList<MethodInvocation>();//meths called from constructor
-            allMethodsOfClass = new HashMap<MethodHolder, List<MethodInvocation>>();
+            allMethodsOfClass = new TreeMap<MethodHolder, List<MethodInvocation>>(new MethodHolderComparator());
             calledConstructors = new ArrayList<ConstructorInvocation>();//all constructors called from constructor
-            allPrivateConstructorsOfClass = new HashMap<ConstructorHolder, List<MethodInvocation>>();
+            allPrivateConstructorsOfClass = new TreeMap<ConstructorHolder, List<MethodInvocation>>(new ConstructorHolderComparator());
         }
 
         public String m_ClassName;
