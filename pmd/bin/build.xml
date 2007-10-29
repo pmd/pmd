@@ -182,8 +182,9 @@
 	</target>
 
 	<target name="test-execute" description="Runs the unit tests">
+		<delete dir="${test.outputdir}" />
 		<mkdir dir="${test.outputdir}/xml"/>
-		<junit printsummary="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch">
+		<junit printsummary="yes" showoutput="no" filtertrace="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch">
 			<classpath>
 				<path refid="${test.dependencies}" />
 			</classpath>
