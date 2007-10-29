@@ -22,16 +22,18 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
     private StringBuffer packageBuf = new StringBuffer();
     private StringBuffer classBuf = new StringBuffer();
     private int length;
+    private String baseDir;
 
     private static final String fs = System.getProperty("file.separator");
-    
+
+    public ReportHTMLPrintVisitor(String baseDir) {
+        this.baseDir = baseDir;
+    }
+
     /**
      * Writes the buffer to file.
      */
     private void write(String filename, StringBuffer buf) throws IOException {
-        
-        String baseDir = ".." + fs; // TODO output destination
-
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File(baseDir + fs + filename)));
         bw.write(buf.toString(), 0, buf.length());
         bw.close();

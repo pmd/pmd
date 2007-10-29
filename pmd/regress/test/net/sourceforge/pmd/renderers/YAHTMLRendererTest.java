@@ -6,24 +6,28 @@ import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 
 public class YAHTMLRendererTest extends AbstractRendererTst {
 
+    private static final String OUTPUT_DIR = System.getProperty("java.io.tmpdir");
+
     public AbstractRenderer getRenderer() {
-        return new YAHTMLRenderer();
+        return new YAHTMLRenderer(OUTPUT_DIR);
     }
 
+    private static final String EXPECTED_OUTPUT = "<h3 align=\"center\">The HTML files are located in '" + OUTPUT_DIR + "'.</h3>";
+
     public String getExpected() {
-        return "<h3 align=\"center\">The HTML files are created above the project directory.</h3>";
+        return EXPECTED_OUTPUT;
     }
 
     public String getExpectedEmpty() {
-        return "<h3 align=\"center\">The HTML files are created above the project directory.</h3>";
+        return EXPECTED_OUTPUT;
     }
     
     public String getExpectedMultiple() {
-        return "<h3 align=\"center\">The HTML files are created above the project directory.</h3>";
+        return EXPECTED_OUTPUT;
     }
     
     public String getExpectedError(ProcessingError error) {
-        return "<h3 align=\"center\">The HTML files are created above the project directory.</h3>";
+        return EXPECTED_OUTPUT;
     }
 
     public static junit.framework.Test suite() {
