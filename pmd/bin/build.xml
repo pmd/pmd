@@ -14,7 +14,7 @@
 	<property name="junit.version" value="4.1" />
 
 	<!--Settings-->
-	<property name="outputTestResultsToFile" value="false" />
+	<property name="outputTestResultsToFile" value="true" />
 
 	<path id="dependencies.path">
 		<pathelement location="${dir.build}" />
