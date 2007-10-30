@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="lib/backport-util-concurrent.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pmd14-4.0rc1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/retroweaver-rt-2.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/asm-3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pmd-3.9.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jaxen-1.1-beta-10.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jaxen-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/backport-util-concurrent.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.6.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlParserAPIs-2.6.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/castor-0.9.6-xml.jar"/>

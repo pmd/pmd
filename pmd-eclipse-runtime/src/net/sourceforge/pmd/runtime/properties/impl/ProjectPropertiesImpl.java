@@ -38,7 +38,9 @@ package net.sourceforge.pmd.runtime.properties.impl;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Iterator;
 
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
 import net.sourceforge.pmd.runtime.properties.IProjectProperties;
@@ -60,6 +62,9 @@ import org.eclipse.ui.IWorkingSet;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.2  2007/06/24 16:42:13  phherlin
+ * Fix 1703589 ConcurrentModificationException in RuleSet.apply
+ *
  * Revision 1.1  2006/05/22 21:37:35  phherlin
  * Refactor the plug-in architecture to better support future evolutions
  *
@@ -167,7 +172,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.runtime.properties.IProjectProperties#getProjectRuleSet()
      */
     public RuleSet getProjectRuleSet() throws PropertiesException {
-        return this.projectRuleSet;
+        return cloneRuleSet();
     }
 
     /**
@@ -296,6 +301,21 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     public void sync() throws PropertiesException {
         log.info("Commit properties for project " + this.project.getName());
         this.projectPropertiesManager.storeProjectProperties(this);
+    }
+    
+    /**
+     * Clone the PMD ruleset.
+     * @return a pmd ruleSetClone.
+     */
+    private RuleSet cloneRuleSet() {
+        final RuleSet clonedRuleSet = new RuleSet();
+        
+        for (final Iterator i = this.projectRuleSet.getRules().iterator(); i.hasNext();) {
+            final Rule rule = (Rule) i.next();
+            clonedRuleSet.addRule(rule);
+        }
+        
+        return clonedRuleSet;
     }
 
 }

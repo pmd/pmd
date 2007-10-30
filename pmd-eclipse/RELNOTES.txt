@@ -1,9 +1,22 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
 
-v3.2.1 15/02/2006
+v3.2.2 24/06/2006
 -----------------
 
+UPDATE
+------
+Include PMD 4.0rc1.
+The included version is the one for Java14.
+
+FIXED
+-----
+See changelog for complete list.
+
+
+----------------------------------------------------------------------------------------
+v3.2.1 15/02/2006
+-----------------
 
 FIXED
 -----

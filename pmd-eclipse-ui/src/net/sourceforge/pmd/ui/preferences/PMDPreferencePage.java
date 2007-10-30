@@ -59,6 +59,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.3  2007/06/24 15:54:54  phherlin
+ * Fix 1710977 Null Pointer Exception on click of Add Rule (remove button)
+ *
  * Revision 1.2  2007/01/24 22:46:17  hooperbloob
  * Cleanup rule description formatting & sorting bug crasher
  *
@@ -263,7 +266,7 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         rowLayout.pack = false;
         composite.setLayout(rowLayout);
 
-        buildAddRuleButton(composite);
+        // buildAddRuleButton(composite);
         removeRuleButton = buildRemoveRuleButton(composite);
         editRuleButton = buildEditRuleButton(composite);
         buildImportRuleSetButton(composite);
@@ -390,34 +393,6 @@ public class PMDPreferencePage extends PreferencePage implements IWorkbenchPrefe
         rulePropertiesTableViewer.setCellEditors(new CellEditor[] { null, new TextCellEditor(rulePropertiesTable)});
 
         return rulePropertiesTable;
-    }
-
-    /**
-     * Build the add rule button
-     */
-    private Button buildAddRuleButton(Composite parent) {
-        Button button = new Button(parent, SWT.PUSH | SWT.LEFT);
-        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_BUTTON_ADDRULE));
-        button.setEnabled(true);
-
-        button.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent event) {
-                RuleDialog dialog = new RuleDialog(getShell());
-                int result = dialog.open();
-                if (result == RuleDialog.OK) {
-                    ruleSet.addRule(dialog.getRule());
-                    setModified(true);
-                    try {
-                        refresh();
-                    } catch (Throwable t) {
-                        PMDUiPlugin.getDefault().logError("Exception when refreshing the rule table", t);
-                    }
-                    selectAndShowRule(dialog.getRule());
-                }
-            }
-        });
-
-        return button;
     }
 
     /**

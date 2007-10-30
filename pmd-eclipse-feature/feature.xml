@@ -2,7 +2,7 @@
 <feature
       id="net.sourceforge.pmd.eclipse"
       label="%feature.label"
-      version="3.2.1"
+      version="3.2.2"
       provider-name="%feature.provider_name"
       image="pmd_logo_small.jpg">
 
@@ -35,25 +35,25 @@
          id="net.sourceforge.pmd.eclipse"
          download-size="0"
          install-size="0"
-         version="3.2.1"
+         version="3.2.2"
          unpack="false"/>
 
    <plugin
          id="net.sourceforge.pmd.ui"
          download-size="0"
          install-size="0"
-         version="3.2.1"/>
+         version="3.2.2"/>
 
    <plugin
          id="net.sourceforge.pmd.runtime"
          download-size="0"
          install-size="0"
-         version="3.2.1"/>
+         version="3.2.2"/>
 
    <plugin
          id="net.sourceforge.pmd.core"
          download-size="0"
          install-size="0"
-         version="3.9.0"/>
+         version="4.0.1"/>
 
 </feature>

@@ -38,7 +38,6 @@ package net.sourceforge.pmd.ui.views;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -72,6 +71,10 @@ import org.eclipse.jface.viewers.Viewer;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.8  2007/06/24 15:10:26  phherlin
+ * Integrate PMD v4.0rc1
+ * Prepare release 3.2.2
+ *
  * Revision 1.7  2007/01/14 21:03:49  holobender
  * violation overview was not updated in some cases... fixed
  *

@@ -53,7 +53,10 @@ import org.osgi.framework.Bundle;
  * @author Philippe Herlin
  * @version $Revision$
  * 
- * $Log$
+ * $Log: PMDCorePlugin.java,v $
+ * Revision 1.6  2007/06/24 15:07:29  phherlin
+ * Integrate PMD v4.0rc1
+ *
  * Revision 1.5  2007/01/18 20:58:27  phherlin
  * Integrate PMD v3.9
  * Revision 1.4 2006/06/20 21:04:49 phherlin Enable
@@ -107,7 +110,7 @@ public class PMDCorePlugin extends Plugin {
      * @param t a possible throwable, may be null
      */
     public final void log(final int severity, final String message, final Throwable t) {
-        Bundle bundle = getBundle();
+        final Bundle bundle = getBundle();
         if (bundle != null) {
             getLog().log(new Status(severity, bundle.getSymbolicName(), 0, message, t));
         }

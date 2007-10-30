@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <toc label="PMD Plugin Documentation">
-	<topic label="PMD Documentation" href="pmd/index.html"/>
+	<topic label="PMD Documentation (remote)" href="http://pmd.sourceforge.net"/>
 	<anchor id="howto"/>
 </toc>

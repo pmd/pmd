@@ -29,6 +29,10 @@ import org.eclipse.swt.widgets.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2007/06/24 15:10:26  phherlin
+ * Integrate PMD v4.0rc1
+ * Prepare release 3.2.2
+ *
  * Revision 1.4  2007/01/18 22:37:05  phherlin
  * Fix 1583788 StackOverflowError in rule edit window
  *
@@ -311,12 +315,12 @@ public class RuleDialog extends Dialog {
         Text text = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         text.setFont(courierFont);
         if (mode == MODE_EDIT) {
-            text.setText(editedRule.getExample().trim());
+            text.setText(this.editedRule.getExamples().get(0).toString().trim());
         }
 
         if (mode == MODE_VIEW) {
             text.setEditable(false);
-            text.setText(editedRule.getExample().trim());
+            text.setText(this.editedRule.getExamples().get(0).toString().trim());
         }
 
         return text;
@@ -399,7 +403,7 @@ public class RuleDialog extends Dialog {
                 if (instance instanceof Rule) {
                     rule = (Rule) ruleClass.newInstance();
                     rule.setName(nameText.getText().trim());
-                    rule.setExample(exampleText.getText());
+                    rule.getExamples().set(0, this.exampleText.getText());
                     rule.setInclude(false);
                     rule.setMessage(messageText.getText().trim());
                     rule.setDescription(descriptionText.getText());
@@ -421,7 +425,7 @@ public class RuleDialog extends Dialog {
 
         // else only modify appropriate fields (edit mode)
         else {
-            editedRule.setExample(exampleText.getText());
+            editedRule.getExamples().set(0, this.exampleText.getText());
             editedRule.setMessage(messageText.getText().trim());
             editedRule.setDescription(descriptionText.getText());
         }

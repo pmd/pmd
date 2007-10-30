@@ -1,6 +1,19 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
+v3.2.2 - 24/06/2007
+
+Runtime
+-------
+. Add PMD v4.0rc1 (java 1.4 retroweaver support)
+. Fix 1671486 Rule set is not serialized/deserialized properly
+. Fix 1703589 ConcurrentModificationException in RuleSet.apply
+. Fix 1710977 Null Pointer Exception on click of Add Rule (remove the button)
+. Fix 1737975 CPD view double-click selection&jump bug
+. Remove the embedded PMD documentation and point to the PMD remote site.
+
+
+----------------------------------------------------------------------------------------
 v3.2.1 - 15/02/2007
 
 Runtime

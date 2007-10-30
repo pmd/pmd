@@ -13,8 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.rules.DynamicXPathRule;
-import net.sourceforge.pmd.rules.XPathRule;
 import net.sourceforge.pmd.runtime.writer.IRuleSetWriter;
 import net.sourceforge.pmd.runtime.writer.WriterException;
 
@@ -36,6 +34,13 @@ import org.w3c.dom.Text;
  * @version $Revision$
  * 
  * $Log$
+ * Revision 1.5  2007/06/24 16:41:31  phherlin
+ * Integrate PMD v4.0rc1
+ *
+ * Revision 1.4  2007/06/24 15:10:18  phherlin
+ * Integrate PMD v4.0rc1
+ * Prepare release 3.2.2
+ *
  * Revision 1.3  2007/02/15 22:27:15  phherlin
  * Fix 1641930 Creation of ruleset.xml file causes error in Eclipse
  *
@@ -164,10 +169,10 @@ class RuleSetWriterImpl implements IRuleSetWriter {
         ruleElement.setAttribute("name", rule.getName());
         ruleElement.setAttribute("message", rule.getMessage());
         
-        String className = rule.getClass().getName();
-        if (rule instanceof DynamicXPathRule) {
-            className = XPathRule.class.getName();
-        }
+        final String className = rule.getClass().getName();
+//        if (rule instanceof DynamicXPathRule) {
+//            className = XPathRule.class.getName();
+//        }
         ruleElement.setAttribute("class", className);
 
         if (rule.usesDFA()) {
@@ -180,7 +185,7 @@ class RuleSetWriterImpl implements IRuleSetWriter {
         final Element descriptionElement = getDescriptionElement(doc, rule.getDescription());
         ruleElement.appendChild(descriptionElement);
 
-        final Element exampleElement = getExampleElement(doc, rule.getExample());
+        final Element exampleElement = getExampleElement(doc, rule.getExamples().get(0).toString());
         ruleElement.appendChild(exampleElement);
 
         final Element priorityElement = getPriorityElement(doc, rule.getPriority());

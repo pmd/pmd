@@ -64,7 +64,10 @@ import org.eclipse.ui.texteditor.ITextEditor;
  * @author Sven
  * @version $Revision$
  * 
- * $Log$
+ * $Log: CPDViewDoubleClickEventListener.java,v $
+ * Revision 1.2  2007/06/24 16:36:24  phherlin
+ * Fix 1737975 CPD view double-click selection&jump bug
+ *
  * Revision 1.1  2006/11/16 17:11:08  holobender
  * Some major changes:
  * - new CPD View
@@ -117,7 +120,7 @@ public class CPDViewDoubleClickEventListener implements IDoubleClickListener {
                         final ITextEditor textEditor = (ITextEditor) part;
                         final IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
                         final int offset = document.getLineOffset(entry.getBeginLine()-1);
-                        final int length = document.getLineOffset(entry.getBeginLine()-1 + match.getLineCount()) - offset;
+                        final int length = document.getLineOffset(entry.getBeginLine()-1 + match.getLineCount()) - offset -1;
                         textEditor.selectAndReveal(offset, length); 
                     }                    
                 } catch (PartInitException pie) {
