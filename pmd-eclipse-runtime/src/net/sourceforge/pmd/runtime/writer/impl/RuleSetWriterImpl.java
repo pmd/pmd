@@ -185,8 +185,10 @@ class RuleSetWriterImpl implements IRuleSetWriter {
         final Element descriptionElement = getDescriptionElement(doc, rule.getDescription());
         ruleElement.appendChild(descriptionElement);
 
-        final Element exampleElement = getExampleElement(doc, rule.getExamples().get(0).toString());
-        ruleElement.appendChild(exampleElement);
+        if (rule.getExamples().size() > 0) {
+        	final Element exampleElement = getExampleElement(doc, rule.getExamples().get(0).toString());
+        	ruleElement.appendChild(exampleElement);
+        }
 
         final Element priorityElement = getPriorityElement(doc, rule.getPriority());
         ruleElement.appendChild(priorityElement);
