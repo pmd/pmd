@@ -407,6 +407,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         
         if (this.logLevelScale != null) {
             this.logLevelScale.setSelection(intLogLevel(IPreferences.LOG_LEVEL));
+            updateLogLevelValueLabel();
         }
     }
 
