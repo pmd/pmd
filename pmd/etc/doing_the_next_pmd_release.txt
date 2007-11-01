@@ -39,7 +39,7 @@ It will run:
 	generate the source zip file
 
 if you see a bug and fix it, you can delete the release using:
-svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0
+svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_<version>
 and then retag it
 
 ncftpput upload.sourceforge.net incoming/ pmd-src-<version>.zip pmd-bin-<version>.zip
