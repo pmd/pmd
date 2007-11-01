@@ -8,7 +8,7 @@
 	<property name="dir.build" value="build/" />
 	<property name="dir.rulesets" value="rulesets/" />
 	<property name="dir.regress" value="regress/" />
-	<property name="version" value="4.0" />
+	<property name="version" value="4.1rc1" />
 	<property name="keystore" value="${keystore.path}" />
 	<property name="retroweaver.version" value="2.0.1" />
 	<property name="junit.version" value="4.1" />

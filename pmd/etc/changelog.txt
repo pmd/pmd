@@ -1,4 +1,4 @@
-????, 2007 - 4.1:
+November 01, 2007 - 4.1rc1:
 New rules:
 	Basic ruleset: AvoidUsingHardCodedIP,CheckResultSet
 	Controversial ruleset: AvoidFinalLocalVariable,AvoidUsingShortType,AvoidUsingVolatile,AvoidUsingNativeCode,AvoidAccessibilityAlteration
