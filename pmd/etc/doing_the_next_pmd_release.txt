@@ -1,17 +1,22 @@
-update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-4.0.jar
-update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-4.0
-update the release date in the changelog
-update rulesets/rulesets.properties - add any new ruleset file names
-update release number and tag name in project.xml
 
-ensure all the new rules are listed in a rulesets/releases/4.0.xml file
+run version update script at the top level:
+
+./etc/update_version.sh <version>
+
+    tasks implemented by script:
+    update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-<version>.jar
+    update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-<version>
+    update the release date in the changelog
+    update release number and tag name in project.xml
+
+update rulesets/rulesets.properties - add any new ruleset file names
+ensure all the new rules are listed in a rulesets/releases/<version>.xml file
 
 ant clean test
 Check in everything
 
 ant dist test
 Do all the JUnit tests run?  OK, then:
-ant dist                
 
 TESTS: Can you
 1) run 1 file and get a report
@@ -20,68 +25,33 @@ TESTS: Can you
 2) run the Ant 'pmd' task and get a report
 ant pmd
 
-cd ..
-./docs.sh all
-cd etc
+run "./generate_release.sh <version>" in etc
 
-Prepare binary release:
-rm -rf ~/tmp/pmd-4.0
-mkdir -p ~/tmp/pmd-4.0/etc
-mkdir ~/tmp/pmd-4.0/bin
-mkdir ~/tmp/pmd-4.0/lib
-mkdir -p ~/tmp/pmd-4.0/java14/lib
-mkdir ~/tmp/pmd-4.0/java14/bin
-cp ../LICENSE.txt changelog.txt ~/tmp/pmd-4.0/etc
-cd ../bin/
-cp pmd.* cygwin-run.sh build.xml cpd.sh cpdgui.bat designer.* ~/tmp/pmd-4.0/bin
-cd ../etc/
-cp ../java14/lib/*.jar ~/tmp/pmd-4.0/java14/lib/
-cp ../java14/bin/*.bat ../java14/bin/*.sh ~/tmp/pmd-4.0/java14/bin/
-chmod 755 ~/tmp/pmd-4.0/java14/bin/*
-cp ../lib/pmd-4.0.jar ../lib/asm-3.0.jar ../lib/jaxen-1.1.1.jar ~/tmp/pmd-4.0/lib/
-mkdir ~/tmp/pmd-4.0/etc/xslt
-cp xslt/*.xslt xslt/*.js xslt/*.gif xslt/*.css ~/tmp/pmd-4.0/etc/xslt/
-cp -R ../target/docs ~/tmp/pmd-4.0
-cd ~/tmp
-zip -q -r pmd-bin-4.0.zip pmd-4.0/
-cd -
+It will run:
 
-Time to tag:
+	ant dist
+	./docs.sh all
 
-cd ../../
-svn -m "4.0 release tag" copy https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0
+	generate the binary zip file
 
-Prepare source release:
-rm -rf ~/tmp/pmd-4.0
-rm -rf ~/tmp/pmd-src-4.0.zip
-cd pmd/bin/
-ant jarsrc
-cd ../../
-rm -rf tmp/
-mkdir tmp
-cd tmp
-svn -q export https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0 pmd
-mv pmd/ pmd-4.0
-cd ..
-cp pmd/lib/pmd-src-4.0.jar tmp/pmd-4.0/lib/
-mv tmp/pmd-4.0/ ~/tmp/
-cp pmd/lib/pmd-4.0.jar ~/tmp/pmd-4.0/lib
-cp -R pmd/target/docs ~/tmp/pmd-4.0/
-rm -f ~/tmp/pmd-4.0/etc/clover.license
-cd ~/tmp/
-zip -q -r pmd-src-4.0.zip pmd-4.0/
+	svn tag if "yes" is pressed
+
+	generate the source zip file
 
 if you see a bug and fix it, you can delete the release using:
 svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_4_0
 and then retag it
 
-ncftpput upload.sourceforge.net incoming/ pmd-src-4.0.zip pmd-bin-4.0.zip
+ncftpput upload.sourceforge.net incoming/ pmd-src-<version>.zip pmd-bin-<version>.zip
+
+lftp -e "mput -O incoming/ pmd-src-<version>.zip pmd-bin-<version>.zip" upload.sourceforge.net
+
 
 
 Go to Admin, File Releases, Add release
 Paste stuff into the changelog/readme boxes
-Add the pmd-bin-4.0.zip file
-Add the pmd-src-4.0.zip file
+Add the pmd-bin-<version>.zip file
+Add the pmd-src-<version>.zip file
 Classify the file
 Click File Releases, Edit Release, set previous version to 'hidden'.
 
