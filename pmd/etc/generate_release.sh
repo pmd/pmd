@@ -63,9 +63,9 @@ read RESP;
 if [ "$RESP" = "yes" ]; then
 	echo
 	echo "Tagging release using"
-	echo "svn -m \"$version release tag\" copy https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag"
+	echo "svn copy -m \"$version release tag\" https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag"
 	echo
-	svn -m \"$version release tag\" copy https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag
+	svn copy -m \"$version release tag\" https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag
 else
 	echo
 	echo "Skipping svn tag!!!"
