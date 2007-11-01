@@ -94,14 +94,7 @@ public class CPDCheckProjectAction implements IObjectActionDelegate {
         final IWorkbenchPartSite site = targetPart.getSite();
         final ISelection sel = site.getSelectionProvider().getSelection();
         final Shell shell = site.getShell();
-        final String[] languages = {
-                LanguageFactory.JAVA_KEY,
-                LanguageFactory.CPP_KEY,
-                LanguageFactory.C_KEY,
-                LanguageFactory.JSP_KEY,
-                LanguageFactory.PHP_KEY,
-                LanguageFactory.RUBY_KEY
-        };
+        final String[] languages = LanguageFactory.supportedLanguages;
         
         final String[] formats = {
                 SIMPLE_KEY,

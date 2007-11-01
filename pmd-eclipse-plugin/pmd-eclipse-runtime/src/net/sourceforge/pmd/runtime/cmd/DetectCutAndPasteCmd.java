@@ -170,7 +170,7 @@ public class DetectCutAndPasteCmd extends AbstractDefaultCommand {
         this.setTerminated(false);
         this.setReportName(null);
         this.setRenderer(null);
-        this.setLanguage(LanguageFactory.JAVA_KEY);
+        this.setLanguage("java");
         this.setMinTileSize(PMDRuntimePlugin.getDefault().loadPreferences().getMinTileSize());
         this.setCreateReport(false);
         this.addPropertyListener(null);
