@@ -28,6 +28,7 @@
 	<target name="delete" description="Deletes the build directory and the pmd-x.x jar file.">
 		<delete dir="${dir.build}" />
 		<delete file="${dir.lib}/pmd-${version}.jar" />
+		<delete file="${dir.lib}/pmd-src-${version}.jar" />
 		<delete file="${dir.lib}/pmd-test-${version}.jar" />
 		<delete file="${dir.lib14}/pmd14-${version}.jar" />
 		<delete file="${dir.lib14}/pmd14-test-${version}.jar" />
