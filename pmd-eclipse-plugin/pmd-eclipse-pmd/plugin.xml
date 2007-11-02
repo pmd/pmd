@@ -23,6 +23,9 @@
       <library name="lib/jaxen-1.1.1.jar">
          <export name="*"/>
       </library>
+      <library name="lib/junit.jar">
+         <export name="*"/>
+      </library>
       <library name="lib/backport-util-concurrent.jar">
          <export name="*"/>
       </library>
