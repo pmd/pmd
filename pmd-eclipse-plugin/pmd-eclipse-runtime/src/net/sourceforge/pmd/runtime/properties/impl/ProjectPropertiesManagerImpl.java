@@ -69,6 +69,7 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.exolab.castor.util.LocalConfiguration;
 
 /**
  * This class manages the persistances of the ProjectProperies information structure
@@ -271,6 +272,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private void writeProjectProperties(final IProject project, final ProjectPropertiesTO projectProperties)
             throws PropertiesException {
         try {
+            LocalConfiguration.getInstance().getProperties().setProperty("org.exolab.castor.indent", "true");
+
             final Mapping mapping = new Mapping(this.getClass().getClassLoader());
             final URL mappingSpecUrl = this.getClass().getResource(PROPERTIES_MAPPING);
             mapping.loadMapping(mappingSpecUrl);
