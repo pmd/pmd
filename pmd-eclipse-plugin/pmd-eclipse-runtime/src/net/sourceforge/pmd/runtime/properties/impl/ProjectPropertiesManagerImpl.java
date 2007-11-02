@@ -247,7 +247,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private void setRuleSetFromProperties(IProjectProperties projectProperties, RuleSpecTO[] rules) throws PropertiesException {
         final RuleSet ruleSet = new RuleSet();
         final RuleSet pluginRuleSet = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet();
-        for (int i = 0; i < rules.length; i++) {
+        int n = rules==null?0:rules.length;
+        for (int i = 0; i < n; i++) {
             try {
                 final Rule rule = pluginRuleSet.getRuleByName(rules[i].getName());
                 ruleSet.addRule(rule);
