@@ -203,7 +203,7 @@ public class DataflowViewPage extends Page implements IPropertyListener, ISelect
 
                 public void mouseDown(MouseEvent e) {
                     if (textEditor != null) {
-                        final int row = (int)((double)e.y / DataflowGraphViewer.rowHeight);
+                        final int row = (int)((double)e.y / DataflowGraphViewer.ROW_HEIGHT);
                         graphViewer.getGraph().demark();
                         graphViewer.getGraph().markNode(row);
                         final int startLine = ((IDataFlowNode)pmdMethod.getDataFlowNode().getFlow().get(row)).getLine()-1;

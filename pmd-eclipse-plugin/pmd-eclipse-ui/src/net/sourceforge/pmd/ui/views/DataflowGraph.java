@@ -472,7 +472,7 @@ public class DataflowGraph extends Composite {
                 NodeCanvas node = (NodeCanvas)nodeIterator.next();                
                 node.addMouseListener(new MouseAdapter() {
                     public void mouseDown(MouseEvent e) {
-                        e.y += row * DataflowGraphViewer.rowHeight;
+                        e.y += row * DataflowGraphViewer.ROW_HEIGHT;
                         listener.mouseDown(e);
                     } 
                 });

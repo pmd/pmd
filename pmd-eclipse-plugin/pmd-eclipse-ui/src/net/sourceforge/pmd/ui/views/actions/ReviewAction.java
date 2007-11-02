@@ -54,7 +54,7 @@ import org.eclipse.swt.widgets.Shell;
  * 
  */
 public class ReviewAction extends ViolationSelectionAction {
-    private static Logger log = Logger.getLogger(ReviewAction.class);
+    private static final Logger log = Logger.getLogger(ReviewAction.class);
     private IProgressMonitor monitor;
 
     /**

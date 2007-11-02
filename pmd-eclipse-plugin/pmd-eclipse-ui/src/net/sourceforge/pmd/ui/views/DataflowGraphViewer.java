@@ -33,7 +33,7 @@ public class DataflowGraphViewer extends Composite {
 
     protected static final int NODE_RADIUS = 12;
     protected static final int LINE_LENGTH = 25;
-    protected static final int rowHeight = 2 * NODE_RADIUS + LINE_LENGTH;
+    protected static final int ROW_HEIGHT = 2 * NODE_RADIUS + LINE_LENGTH;
     protected int[] colWidths;
     protected Color bgColor;
     protected Color lineColor;
@@ -108,11 +108,11 @@ public class DataflowGraphViewer extends Composite {
         resourceString = resString;
 
         // set the Data for the Table
-        table.setRows(node.getDataFlowNode().getFlow().size(), rowHeight);
+        table.setRows(node.getDataFlowNode().getFlow().size(), ROW_HEIGHT);
         table.setTableData(createDataFields(node));
 
         // create the Graph
-        graph = new DataflowGraph(table.getGraphArea(), node, NODE_RADIUS, LINE_LENGTH, rowHeight);
+        graph = new DataflowGraph(table.getGraphArea(), node, NODE_RADIUS, LINE_LENGTH, ROW_HEIGHT);
     }
 
     /**

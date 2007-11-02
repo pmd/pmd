@@ -662,9 +662,7 @@ public class DataflowGraphTable extends Composite implements PaintListener {
 		
 		label.setLocation(coord.x, coord.y);
 		label.setBackground(bgColor);
-		if (text == null)
-			text = "";
-		label.setText(text);
+		label.setText(text==null?"":text);
 	}
 	
 	/**
