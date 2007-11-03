@@ -1,0 +1,16 @@
+August 06, 2007 - 1.9:
+Upgraded to PMD 4.0
+Upgraded for use in JDeveloper 10.1.3 to 11.1.1
+
+January 30, 2005 - 1.8:
+Better presentation of the rule violations.
+PMD menu item now appears on Package node
+Cleaned up code examples in preferences panel.
+Upgraded to PMD 3.5.
+
+Oct 18, 2005 - 1.7:
+Merged in changes from Olaf Heimburger to update plugin to work with JDev 10.1.3 early access.
+Modified to use "update center" functionality.  Update center location is http://pmd.sf.net/center.xml
+
+August 04, 2005 - 1.6:
+Forked plugin code to provide a 10.1.13 version.

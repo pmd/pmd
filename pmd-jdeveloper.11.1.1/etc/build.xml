@@ -1,0 +1,148 @@
+<project name="pmd-jdeveloper1013" default="compile" basedir="../">
+  <!-- property section start -->
+  <property name="config" value="config/"/>
+  <property name="src" value="src/"/>
+  <property name="etc" value="etc/"/>
+  <property name="pmdjar" value="pmd-4.0.jar"/>
+  <property name="pluginversion" value="1.9"/>
+  <property name="mainclass" value="net.sourceforge.pmd.jdeveloper"/>
+  <property name="jdeveloper.dir" value="C:/Oracle/10gJD10133"/>
+  <property name="jdeveloper.ext.subdir" value="jdev/extensions"/>
+  <property name="release.dir"
+            value="C:/Documents and Settings/Torsten/My Documents/Eigene Programme/Java/PMD/releases"/>
+  <property name="uploadbundle.scp.user" value="***"/>
+  <property name="uploadbundle.scp.pwd" value="***"/>
+  <property name="upload.ftp.pwd" value="***"/>
+  <!-- builded properties -->
+  <property name="release.dirname" value="${mainclass}.${pluginversion}"/>
+  <property name="release.jarname" value="${release.dirname}.jar"/>
+  <property name="release.zipname"
+            value="${ant.project.name}-bin-${pluginversion}.zip"/>
+  <property name="release.src.zipname"
+            value="${ant.project.name}-src-${pluginversion}.zip"/>
+  <property name="bundle.filename"
+            value="${ant.project.name}-${pluginversion}.zip"/>
+  <property name="jdeveloper.install.dir"
+            value="${jdeveloper.dir}/${jdeveloper.ext.subdir}"/>
+  <!-- property section end -->
+  <path id="project.class.path">
+    <pathelement location="lib/${pmdjar}"/>
+    <pathelement location="${jdeveloper.dir}/ide/lib/javax-ide.jar"/>
+    <pathelement location="${jdeveloper.dir}/ide/lib/javatools.jar"/>
+    <pathelement location="${jdeveloper.dir}/ide/lib/ide.jar"/>
+    <pathelement location="build"/>
+  </path>
+  <target name="delete">
+    <delete file="lib/${release.jarname}"/>
+    <delete dir="build"/>
+    <delete dir="classes"/>
+  </target>
+  <target name="deletedeployed">
+    <delete dir="${jdeveloper.install.dir}/${release.dirname}"/>
+    <delete file="${jdeveloper.install.dir}/${release.jarname}"/>
+  </target>
+  <target name="compile">
+    <mkdir dir="build"/>
+    <javac srcdir="${src}" destdir="build" debug="on" deprecation="on">
+      <classpath refid="project.class.path"/>
+      <!--compilerarg value="-Xlint:unchecked"/-->
+    </javac>
+  </target>
+  <target name="jar" depends="compile">
+    <delete dir="build/META-INF/"/>
+    <mkdir dir="build/META-INF"/>
+    <copy file="etc/extension.xml" todir="build/META-INF/"/>
+    <jar destfile="lib/${release.jarname}">
+      <fileset dir="build" excludes="**/*.di,**/*.i"/>
+    </jar>
+  </target>
+  <target name="deploy" depends="delete,deletedeployed,jar">
+    <mkdir dir="${jdeveloper.install.dir}"/>
+    <copy file="lib/${release.jarname}" todir="${jdeveloper.install.dir}"/>
+    <copy file="lib/${pmdjar}"
+          todir="${jdeveloper.install.dir}/${mainclass}.${pluginversion}/lib"/>
+    <copy file="lib/jaxen-1.1.jar"
+          todir="${jdeveloper.install.dir}/${mainclass}.${pluginversion}/lib"/>
+    <copy file="lib/asm-3.0.jar"
+          todir="${jdeveloper.install.dir}/${mainclass}.${pluginversion}/lib"/>
+  </target>
+  <target name="release" depends="clean,jar">
+    <mkdir dir="tmp/${release.dirname}/lib"/>
+    <copy file="lib/${release.jarname}" todir="tmp/"/>
+    <copy file="lib/${pmdjar}" todir="tmp/${release.dirname}/lib"/>
+    <copy file="lib/jaxen-1.1.jar" todir="tmp/${release.dirname}/lib"/>
+    <copy file="lib/asm-3.0.jar" todir="tmp/${release.dirname}/lib"/>
+    <zip destfile="${release.zipname}" basedir="tmp/"/>
+    <move file="${release.zipname}" todir="${release.dir}"/>
+    <delete dir="tmp"/>
+  </target>
+  <target name="releasesrc" depends="delete">
+    <zip destfile="${release.src.zipname}" basedir="."/>
+    <move file="${release.src.zipname}" todir="${release.dir}"/>
+  </target>
+  <target name="clean" depends="delete,compile"></target>
+  <target name="tomserver" depends="release">
+    <echo message="Uploading zip file"></echo>
+    <exec executable="scp" os="Linux">
+      <arg line=" ${release.dir}/${release.zipname} tom@infoether.com:public_html/"/>
+    </exec>
+  </target>
+  <target name="bundle" depends="clean,jar">
+    <delete dir="update-center-bundle/"/>
+    <mkdir dir="update-center-bundle/META-INF"/>
+    <copy file="etc/bundle.xml" todir="update-center-bundle/META-INF/"/>
+    <copy file="etc/center.xml" todir="update-center-bundle/"/>
+    <copy file="lib/${release.jarname}" todir="update-center-bundle/"/>
+    <copy file="lib/${pmdjar}"
+          todir="update-center-bundle/${mainclass}.${pluginversion}/lib/"/>
+    <copy file="lib/jaxen-1.1.jar"
+          todir="update-center-bundle/${mainclass}.${pluginversion}/lib/"/>
+    <copy file="lib/asm-3.0.jar"
+          todir="update-center-bundle/${mainclass}.${pluginversion}/lib/"/>
+    <zip destfile="update-center-bundle/${bundle.filename}"
+         basedir="update-center-bundle">
+      <exclude name="center.xml"/>
+    </zip>
+    <delete>
+      <fileset dir="update-center-bundle" includes="*.jar"/>
+    </delete>
+    <delete dir="update-center-bundle/${mainclass}.${pluginversion}"/>
+    <delete dir="update-center-bundle/lib"/>
+    <delete dir="update-center-bundle/META-INF"/>
+    <move file="update-center-bundle" todir="${release.dir}"/>
+  </target>
+  <target name="upload" depends="release,releasesrc">
+    <ftp server="upload.sourceforge.net" userid="anonymous"
+         password="${upload.ftp.pwd}" remotedir="incoming" binary="true"
+         passive="true">
+      <fileset dir="${release.dir}" includes="*.zip"/>
+    </ftp>
+  </target>
+  <target name="uploadbundle" depends="bundle">
+    <echo message="Uploading center.xml file"></echo>
+    <scp file="${release.dir}/update-center-bundle/center.xml"
+         todir="${uploadbundle.scp.user}@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"
+         password="${uploadbundle.scp.pwd}" trust="true"></scp>
+    <echo message="Uploading ${bundle.filename}"></echo>
+    <scp file="${release.dir}/update-center-bundle/${bundle.filename}"
+         todir="${uploadbundle.scp.user}@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"
+         password="${uploadbundle.scp.pwd}" trust="true"></scp>
+  </target>
+</project>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
