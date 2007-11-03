@@ -173,7 +173,7 @@ public class RuleTest extends TestCase {
     public void testEquals2() {
         Rule r = new Rule();
         r.setRef("A reference");
-        assertFalse("A rule cannot be equal to null", r.equals(null));
+        assertNotNull("A rule cannot be equal to null", r);
     }
     
     /**

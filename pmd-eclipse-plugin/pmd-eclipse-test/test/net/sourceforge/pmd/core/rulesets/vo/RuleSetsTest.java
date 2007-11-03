@@ -245,7 +245,7 @@ public class RuleSetsTest extends TestCase {
     public void testEquals3() {
         RuleSets rs1 = new RuleSets();
         
-        assertFalse("Rule sets should not be equal to null", rs1.equals(null));
+        assertNotNull("Rule sets should not be equal to null", rs1);
     }
     
     /**

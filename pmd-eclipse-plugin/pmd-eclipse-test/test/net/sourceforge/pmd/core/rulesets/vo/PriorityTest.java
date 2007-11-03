@@ -152,11 +152,11 @@ public class PriorityTest extends TestCase {
      *
      */
     public void testEquals2() {
-        assertFalse("Priority object (1) is not equal to null", Priority.LEVEL1.equals(null));
-        assertFalse("Priority object (2) is not equal to null", Priority.LEVEL2.equals(null));
-        assertFalse("Priority object (3) is not equal to null", Priority.LEVEL3.equals(null));
-        assertFalse("Priority object (4) is not equal to null", Priority.LEVEL4.equals(null));
-        assertFalse("Priority object (5) is not equal to null", Priority.LEVEL5.equals(null));
+        assertNotNull("Priority object (1) is not equal to null", Priority.LEVEL1);
+        assertNotNull("Priority object (2) is not equal to null", Priority.LEVEL2);
+        assertNotNull("Priority object (3) is not equal to null", Priority.LEVEL3);
+        assertNotNull("Priority object (4) is not equal to null", Priority.LEVEL4);
+        assertNotNull("Priority object (5) is not equal to null", Priority.LEVEL5);
     }
     
     /**

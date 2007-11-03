@@ -232,7 +232,7 @@ public class PropertiesTest extends TestCase {
         Properties p1 = new Properties();
         p1.setProperties(set1);
         
-        assertFalse("A properties object cannot be equals to null", p1.equals(null));
+        assertNotNull("A properties object cannot be equals to null", p1);
     }
     
     /**

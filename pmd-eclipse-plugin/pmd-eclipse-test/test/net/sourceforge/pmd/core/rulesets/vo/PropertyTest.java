@@ -171,7 +171,7 @@ public class PropertyTest extends TestCase {
         Property p1 = new Property();
         p1.setName("p1");
         p1.setValue("value1");
-        assertFalse("A property cannot be equals to null", p1.equals(null));
+        assertNotNull("A property cannot be equals to null", p1);
     }
     
     /**
