@@ -1,2 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rulesets xmlns:ns1="http://castor.exolab.org/" ns1:defaultRuleSet="basic"><ns1:ruleset ns1:name="basic" ns1:language="JAVA"><ns1:description></ns1:description><ns1:rule ns1:ref="rulesets/basic.xml/EmptyCatchBlock"/><ns1:rule ns1:ref="rulesets/basic.xml/EmptyIfStmt"/><ns1:rule ns1:ref="rulesets/basic.xml/EmptyWhileStmt"/><ns1:rule ns1:ref="rulesets/basic.xml/EmptyTryBlock"/><ns1:rule ns1:ref="rulesets/basic.xml/EmptyFinallyBlock"/><ns1:rule ns1:ref="rulesets/basic.xml/EmptySwitchStatements"/><ns1:rule ns1:ref="rulesets/basic.xml/JumbledIncrementer"/><ns1:rule ns1:ref="rulesets/basic.xml/ForLoopShouldBeWhileLoop"/><ns1:rule ns1:ref="rulesets/basic.xml/UnnecessaryConversionTemporary"/><ns1:rule ns1:ref="rulesets/basic.xml/OverrideBothEqualsAndHashcode"/><ns1:rule ns1:ref="rulesets/basic.xml/DoubleCheckedLocking"/><ns1:rule ns1:ref="rulesets/basic.xml/ReturnFromFinallyBlock"/><ns1:rule ns1:ref="rulesets/basic.xml/EmptySynchronizedBlock"/><ns1:rule ns1:ref="rulesets/basic.xml/UnnecessaryReturn"/><ns1:rule ns1:ref="rulesets/basic.xml/EmptyStaticInitializer"/><ns1:rule ns1:ref="rulesets/basic.xml/UnconditionalIfStatement"/><ns1:rule ns1:ref="rulesets/basic.xml/EmptyStatementNotInLoop"/><ns1:rule ns1:ref="rulesets/basic.xml/BooleanInstantiation"/><ns1:rule ns1:ref="rulesets/basic.xml/UnnecessaryFinalModifier"/><ns1:rule ns1:ref="rulesets/basic.xml/CollapsibleIfStatements"/><ns1:rule ns1:ref="rulesets/basic.xml/UselessOverridingMethod"/><ns1:rule ns1:ref="rulesets/basic.xml/ClassCastExceptionWithToArray"/><ns1:rule ns1:ref="rulesets/basic.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/><ns1:rule ns1:ref="rulesets/basic.xml/UselessOperationOnImmutable"/><ns1:rule ns1:ref="rulesets/basic.xml/MisplacedNullCheck"/><ns1:rule ns1:ref="rulesets/basic.xml/UnusedNullCheckInEquals"/><ns1:rule ns1:ref="rulesets/basic.xml/AvoidThreadGroup"/><ns1:rule ns1:ref="rulesets/basic.xml/BrokenNullCheck"/><ns1:rule ns1:ref="rulesets/basic.xml/BigIntegerInstantiation"/><ns1:rule ns1:ref="rulesets/basic.xml/AvoidUsingOctalValues"/></ns1:ruleset></rulesets>
+<rulesets xmlns:ns1="http://castor.exolab.org/" ns1:defaultRuleSet="basic">
+    <ns1:ruleset ns1:name="basic" ns1:language="JAVA">
+        <ns1:description></ns1:description>
+        <ns1:rule ns1:ref="rulesets/basic.xml/EmptyCatchBlock"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/EmptyIfStmt"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/EmptyWhileStmt"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/EmptyTryBlock"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/EmptyFinallyBlock"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/EmptySwitchStatements"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/JumbledIncrementer"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/ForLoopShouldBeWhileLoop"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/UnnecessaryConversionTemporary"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/OverrideBothEqualsAndHashcode"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/DoubleCheckedLocking"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/ReturnFromFinallyBlock"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/EmptySynchronizedBlock"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/UnnecessaryReturn"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/EmptyStaticInitializer"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/UnconditionalIfStatement"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/EmptyStatementNotInLoop"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/BooleanInstantiation"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/UnnecessaryFinalModifier"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/CollapsibleIfStatements"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/UselessOverridingMethod"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/ClassCastExceptionWithToArray"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/UselessOperationOnImmutable"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/MisplacedNullCheck"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/UnusedNullCheckInEquals"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/AvoidThreadGroup"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/BrokenNullCheck"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/BigIntegerInstantiation"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/AvoidUsingOctalValues"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/AvoidUsingHardCodedIP"/>
+        <ns1:rule ns1:ref="rulesets/basic.xml/CheckResultSet"/>
+    </ns1:ruleset>
+</rulesets>
