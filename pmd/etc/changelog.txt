@@ -1,3 +1,7 @@
+????, 2007 - 4.1:
+
+Fixed annotation bug: ClassCastException when a formal parameter had multiple annotations
+
 November 01, 2007 - 4.1rc1:
 New rules:
 	Basic ruleset: AvoidUsingHardCodedIP,CheckResultSet

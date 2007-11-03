@@ -37,9 +37,23 @@ public class ASTVariableDeclaratorIdTest extends ParserTst {
         assertEquals("String", name.getImage());
     }
 
+    @Test
+    public void testAnnotations() throws Throwable {
+        ASTCompilationUnit acu = super.getNodes(ASTCompilationUnit.class, TEST_ANNOTATIONS).iterator().next();
+        ASTVariableDeclaratorId id = acu.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);
+
+        ASTClassOrInterfaceType name = (ASTClassOrInterfaceType) id.getTypeNameNode().jjtGetChild(0);
+        assertEquals("String", name.getImage());
+    }
+
     private static final String TYPE_NAME_NODE =
             "public class Test {" + PMD.EOL +
             "  private String bar;" + PMD.EOL +
+            "}";
+
+    private static final String TEST_ANNOTATIONS =
+            "public class Foo {" + PMD.EOL +
+            "    public void bar(@A1 @A2 String s) {}" + PMD.EOL +
             "}";
 
     public static junit.framework.Test suite() {

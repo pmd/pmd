@@ -75,11 +75,12 @@ public class ASTVariableDeclaratorId extends SimpleJavaNode implements TypeNode 
     }
 
     private SimpleNode findTypeNameNode(Node node) {
-        if (node.jjtGetChild(0) instanceof ASTAnnotation) {
-            ASTType typeNode = (ASTType) node.jjtGetChild(1);
-            return (SimpleNode) typeNode.jjtGetChild(0);
+        int i = 0;
+        while (node.jjtGetChild(i) instanceof ASTAnnotation) {
+            // skip annotations
+            i++;
         }
-        ASTType typeNode = (ASTType) node.jjtGetChild(0);
+        ASTType typeNode = (ASTType) node.jjtGetChild(i);
         return (SimpleNode) typeNode.jjtGetChild(0);
     }
 
