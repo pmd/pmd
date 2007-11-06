@@ -1,4 +1,4 @@
-change the build.xml, bundle.xml, center.xml to reflect pmd-jdeveloper1013 release
+change the build.xml, bundle.xml, center.xml to reflect pmd-jdeveloper1111 release
 update the release date in the changelog
 Update Plugin.version() to reflect release
 
@@ -22,15 +22,15 @@ src release:
 // TODO automation by ant, if subversion tasks are available
 checkin 
 // TODO automation by ant, if subversion tasks are available
-copy to tags/pmd-jdeveloper/pmd_jdeveloper1013_release_X_X
+copy to tags/pmd-jdeveloper/pmd_jdeveloper1111_release_X_X
 ant releasesrc
 
 release on website:
 ant upload
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jdeveloper1013-src-1.9.zip file
-Add the pmd-jdeveloper1013-bin-1.9.zip file
+Add the pmd-jdeveloper1111-src-1.9.0.0.1.zip file
+Add the pmd-jdeveloper1111-bin-1.9.0.0.1.zip file
 Classify the file
 
-Submit some news saying "hey, new release of the jdeveloper 1013 plugin!"
+Submit some news saying "hey, new release of the jdeveloper 1111 plugin!"

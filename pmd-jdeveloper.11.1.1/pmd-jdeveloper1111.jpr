@@ -52,6 +52,7 @@
    <value n="dvt-geomap-visible-to-rendered" v="true"/>
    <value n="dvt-graph-visible-to-rendered" v="true"/>
    <hash n="extensiondtProperties">
+      <value n="extensiondt.manageclasspath" v="true"/>
       <url n="extensiondt.manifest" path="etc/extension.xml"/>
    </hash>
    <hash n="oracle.adfdtinternal.model.ide.settings.ADFMSettings">
@@ -148,38 +149,14 @@
    <hash n="oracle.jdevimpl.config.JProjectLibraries">
       <list n="exportedReferences">
          <hash>
-            <url n="id" path="../../../../../../../Oracle/10gJD10133/jdev/system/oracle.jdeveloper.10.1.3.41.57/PMD 4.0.library"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
-            <value n="id" v="JDeveloper Extension SDK"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
-            <value n="id" v="Oracle Java Compiler"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
-            <value n="id" v="EJB Data Control"/>
+            <url n="id" path="../../../../../Application Data/JDeveloper/system11.1.1.0.20.46.84/o.jdeveloper/Extension SDK Doc.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
       <hash n="internalDefinitions"/>
       <list n="libraryReferences">
          <hash>
-            <url n="id" path="../../../../../../../Oracle/10gJD10133/jdev/system/oracle.jdeveloper.10.1.3.41.57/PMD 4.0.library"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
-            <value n="id" v="JDeveloper Extension SDK"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
-            <value n="id" v="Oracle Java Compiler"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
-            <value n="id" v="EJB Data Control"/>
+            <url n="id" path="../../../../../Application Data/JDeveloper/system11.1.1.0.20.46.84/o.jdeveloper/Extension SDK Doc.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>

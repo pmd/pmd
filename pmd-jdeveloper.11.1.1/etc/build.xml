@@ -1,18 +1,18 @@
-<project name="pmd-jdeveloper1013" default="compile" basedir="../">
+<project name="pmd-jdeveloper1111" default="compile" basedir="../">
   <!-- property section start -->
   <property name="config" value="config/"/>
   <property name="src" value="src/"/>
   <property name="etc" value="etc/"/>
   <property name="pmdjar" value="pmd-4.0.jar"/>
-  <property name="pluginversion" value="1.9"/>
+  <property name="pluginversion" value="1.9.0.0.1"/>
   <property name="mainclass" value="net.sourceforge.pmd.jdeveloper"/>
-  <property name="jdeveloper.dir" value="C:/Oracle/10gJD10133"/>
+  <property name="jdeveloper.dir" value="C:\Oracle\11gJD11110"/>
   <property name="jdeveloper.ext.subdir" value="jdev/extensions"/>
   <property name="release.dir"
             value="C:/Documents and Settings/Torsten/My Documents/Eigene Programme/Java/PMD/releases"/>
-  <property name="uploadbundle.scp.user" value="***"/>
-  <property name="uploadbundle.scp.pwd" value="***"/>
-  <property name="upload.ftp.pwd" value="***"/>
+  <property name="uploadbundle.scp.user" value=""/>
+  <property name="uploadbundle.scp.pwd" value=""/>
+  <property name="upload.ftp.pwd" value=""/>
   <!-- builded properties -->
   <property name="release.dirname" value="${mainclass}.${pluginversion}"/>
   <property name="release.jarname" value="${release.dirname}.jar"/>
@@ -27,9 +27,10 @@
   <!-- property section end -->
   <path id="project.class.path">
     <pathelement location="lib/${pmdjar}"/>
-    <pathelement location="${jdeveloper.dir}/ide/lib/javax-ide.jar"/>
-    <pathelement location="${jdeveloper.dir}/ide/lib/javatools.jar"/>
-    <pathelement location="${jdeveloper.dir}/ide/lib/ide.jar"/>
+    <pathelement location="${jdeveloper.dir}/ide/extensions/oracle.ide.ceditor.jar"/>
+    <pathelement location="${jdeveloper.dir}/ide/extensions/oracle.ide.jar"/>
+    <pathelement location="${jdeveloper.dir}/ide/lib/idert.jar"/>
+    <pathelement location="${jdeveloper.dir}/jdev/lib/javacore.jar"/>
     <pathelement location="build"/>
   </path>
   <target name="delete">

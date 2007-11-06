@@ -57,6 +57,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import oracle.jdeveloper.compiler.BuildSystemConfiguration;
 import oracle.jdeveloper.compiler.OjcConfiguration;
 
 
@@ -167,6 +168,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     private boolean added;
     private Map pmdFileToNodeMap = new HashMap(); // whew, this is kludgey
     private Map cpdFileToNodeMap = new HashMap(); // whew, this is kludgey
+    private static BuildSystemConfiguration config;
 
     // Addin
 
@@ -206,8 +208,8 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         EditorManager.getEditorManager().getContextMenu().removeContextMenuListener(this);
     }
 
-    public float version() {
-        return 1.9f;
+    public String version() {
+        return "1.9.0.0.1";
     }
 
     public float ideVersion() {
@@ -265,17 +267,17 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                 e.getReason().printStackTrace();
                 JOptionPane.showMessageDialog(null, 
                                               "Error while running PMD: " + 
-                                              "\n" + e.getMessage() + "\n" + 
-                                              e.getReason().getMessage(), 
-                                              PMD_TITLE, 
-                                              JOptionPane.ERROR_MESSAGE);
+                                              "\n" +
+                        e.getMessage() + "\n" +
+                        e.getReason().getMessage(), PMD_TITLE, 
+                        JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
                 logMessage(e.getMessage());
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, 
                                               "Error while running PMD: " + 
-                                              "\n" + e.getMessage(), PMD_TITLE, 
-                                              JOptionPane.ERROR_MESSAGE);
+                                              "\n" +
+                        e.getMessage(), PMD_TITLE, JOptionPane.ERROR_MESSAGE);
             }
         } else if (ideAction.getCommandId() == RUN_CPD_CMD_ID) {
             try {
@@ -331,8 +333,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     }
 
     private void setJavaVersion(Context context, PMD pmd) {
-        OjcConfiguration config = 
-            OjcConfiguration.getInstance(context.getProject());
+        config = BuildSystemConfiguration.getInstance(context.getProject());
         String source = config.getSource();
         if (source.equals("1.6")) {
             pmd.setJavaVersion(SourceType.JAVA_16);
