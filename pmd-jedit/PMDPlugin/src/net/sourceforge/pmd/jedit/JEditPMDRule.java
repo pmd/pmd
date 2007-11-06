@@ -69,14 +69,6 @@ public class JEditPMDRule implements Rule
 	}
 
 	/* (non-Javadoc)
-	 * @see net.sourceforge.pmd.Rule#getExample()
-	 */
-	public String getExample()
-	{
-		return rule.getExample();
-	}
-
-	/* (non-Javadoc)
 	 * @see net.sourceforge.pmd.Rule#getExternalInfoUrl()
 	 */
 	public String getExternalInfoUrl()
@@ -173,14 +165,6 @@ public class JEditPMDRule implements Rule
 	}
 
 	/* (non-Javadoc)
-	 * @see net.sourceforge.pmd.Rule#setExample(java.lang.String)
-	 */
-	public void setExample(String example)
-	{
-		rule.setExample(example);
-	}
-
-	/* (non-Javadoc)
 	 * @see net.sourceforge.pmd.Rule#setExternalInfoUrl(java.lang.String)
 	 */
 	public void setExternalInfoUrl(String url)
@@ -265,6 +249,39 @@ public class JEditPMDRule implements Rule
 	public PropertyDescriptor propertyDescriptorFor(String propDesc)
 	{
 		return rule.propertyDescriptorFor(propDesc);
+	}
+
+	public void addExample(String example)
+	{
+		rule.addExample(example);
+	}
+
+	public void addRuleChainVisit(String astNodeName)
+	{
+		rule.addRuleChainVisit(astNodeName);
+	}
+
+	public List<String> getExamples()
+	{
+		return rule.getExamples();
+	}
+
+	public List<String> getRuleChainVisits()
+	{
+		return rule.getRuleChainVisits();
+	}
+
+	public boolean usesRuleChain()
+	{
+		return rule.usesRuleChain();
+	
+	}
+	/**
+	 * @deprecated - use getExamples() since we support multiple examples
+	 */
+	public String getExample()
+	{
+		return rule.getExample();
 	}
 }
 

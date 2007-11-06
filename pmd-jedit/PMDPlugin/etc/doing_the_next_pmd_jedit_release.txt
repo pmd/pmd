@@ -1,5 +1,5 @@
 update the release date in the changelog
-change config/pmd.props to reflect actual pmd.jar file version
+change to reflect actual pmd.jar file version
 change config/pmd.props to reflect the new pmd-jedit release version.
 change config/jedit.html to reflect the new pmd-jedit release version.
 change the build.xml to reflect pmd-jedit release

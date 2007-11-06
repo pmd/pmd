@@ -1,5 +1,5 @@
-???? - 2.7
-- Updated to PMD 3.8
+2007-11-06 - 2.7
+- Updated to PMD 4.0
 - Fixed Bug [1501422] PMD Plugin: example box is not updated when new items hover filed in jEdit Plugins Bug tracker.
 - Changed the way Rules are managed and given for execution to PMD due to addition of new languages to PMD and was giving error due to language mismatch.
 - Added new option "Print Rulename in ErrorList" which is helpful to trace down what rule is generating this error.

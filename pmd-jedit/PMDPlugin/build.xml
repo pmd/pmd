@@ -1,25 +1,26 @@
 <project name="PMDPlugin" default="jar" basedir=".">
 
-	<property file="build.properties"></property>
+	<property file="build.properties"/>
+    <property file="../build.properties"/>
 	<property name="config" value="."/>
 	<property name="src" value="src/"/>
-	<property name="lib" value="lib"/>
+	<property name="lib" value="${basedir}/lib"/>
 	<property name="build" value="build"/>
-	<property name="pmdjar" value="pmd-3.8.jar"/>
-	<property name="pluginversion" value="2.6"/>
+	<property name="pmdjar" value="pmd-4.0.jar"/>
+	<property name="pluginversion" value="2.7"/>
 	<property name="jedit.install.dir" value="../.."/>
-	<property name="jedit.jars.dir" value="${jedit.install.dir}\jars"/>
+	<property name="jedit.jars.dir" value="${jedit.install.dir}\jars" />
 	<property name="install.dir"  value="${jedit.jars.dir}"/>
 
 	<path id="project.class.path">
 		<pathelement location="${jedit.install.dir}/jedit.jar"/>
 		<pathelement location="${jedit.jars.dir}/ErrorList.jar"/>
 		<pathelement location="${build}"/>
-		<fileset id="pmd.libs" dir="${lib}">
+		<fileset casesensitive="false" id="pmd.libs" dir="${lib}">
 			<include name="${pmdjar}"/>
-			<include name="jaxen-core-1.0-fcs.jar"/>
+			<include name="jaxen-1.1.jar"/>
 			<include name="pmd-swingui-0.1.jar"/>
-			<include name="saxpath-1.0-fcs.jar"/>
+			<include name="jakarta-oro-2.0.8.jar"/>
 		</fileset>
 	</path>
 
@@ -54,8 +55,7 @@
 	<target name="dist">
         <antcall target="jar"/>
 		<copy todir="${jedit.jars.dir}" verbose="true">
-			<fileset casesensitive="false" refid="pmd.libs"></fileset>
-			<!-- <fileset casesensitive="false" dir="${lib}" includes="*.jar"></fileset> -->
+			<fileset  refid="pmd.libs" />
 		</copy>
 	</target>
 
@@ -65,7 +65,7 @@
         <mkdir dir="tmp/jars"/>
         <copy file="${install.dir}/${ant.project.name}.jar" todir="tmp/jars"/>
         <copy file="${install.dir}/${pmdjar}" todir="tmp/jars"/>
-        <copy file="${lib}/jaxen-core-1.0-fcs.jar" todir="tmp/jars"/>
+        <copy file="${lib}/jaxen-1.1.jar" todir="tmp/jars"/>
         <copy file="${lib}/saxpath-1.0-fcs.jar" todir="tmp/jars"/>
         <copy file="${lib}/pmd-swingui-0.1.jar" todir="tmp/jars"/>
         <zip zipfile="pmd-jedit-bin-${pluginversion}.zip" basedir="tmp"/>

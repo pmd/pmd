@@ -8,19 +8,34 @@ package net.sourceforge.pmd.jedit;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.io.*;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.plaf.basic.*;
-import javax.swing.tree.*;
-import org.gjt.sp.jedit.*;
-import org.gjt.sp.jedit.browser.*;
-import org.gjt.sp.jedit.io.*;
-import org.gjt.sp.jedit.msg.*;
-import org.gjt.sp.util.*;
-import errorlist.*;
-import net.sourceforge.pmd.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTextField;
+import javax.swing.border.EtchedBorder;
+import javax.swing.plaf.basic.BasicProgressBarUI;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.SourceFileSelector;
+import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.JavaTokenizer;
@@ -33,13 +48,33 @@ import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.renderers.TextRenderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 
+import org.gjt.sp.jedit.Buffer;
+import org.gjt.sp.jedit.EBMessage;
+import org.gjt.sp.jedit.EBPlugin;
+import org.gjt.sp.jedit.View;
+import org.gjt.sp.jedit.jEdit;
+import org.gjt.sp.jedit.browser.VFSBrowser;
+import org.gjt.sp.jedit.io.VFS;
+import org.gjt.sp.jedit.io.VFSFile;
+import org.gjt.sp.jedit.io.VFSManager;
+import org.gjt.sp.jedit.msg.BufferUpdate;
+import org.gjt.sp.util.Log;
 
+import errorlist.DefaultErrorSource;
+import errorlist.ErrorSource;
+
+/** jEdit plugin for PMD
+  @version $Id$
+**/ 
 public class PMDJEditPlugin extends EBPlugin
 {
 
+	public static final SourceType[] sourceTypes = 
+		new SourceType[]{SourceType.JAVA_14, SourceType.JAVA_15, SourceType.JAVA_16};
 	public static final String NAME = "PMD";
 	public static final String OPTION_RULES_PREFIX = "options.pmd.rules.";
 	public static final String DEFAULT_TILE_MINSIZE_PROPERTY = "pmd.cpd.defMinTileSize";
+	public static final String JAVA_VERSION_PROPERTY = "pmd.java.version";
 	public static final String RUN_PMD_ON_SAVE = "pmd.runPMDOnSave";
 	public static final String CUSTOM_RULES_PATH_KEY = "pmd.customRulesPath";
 	public static final String SHOW_PROGRESS = "pmd.showprogress";
@@ -215,14 +250,16 @@ public class PMDJEditPlugin extends EBPlugin
 			}
 
 			PMD pmd = new PMD();
+			int jvidx = jEdit.getIntegerProperty(JAVA_VERSION_PROPERTY, 1);
+			pmd.setJavaVersion(sourceTypes[jvidx]);
 			SelectedRules selectedRuleSets = new SelectedRules();
 			RuleContext ctx = new RuleContext();
 			ctx.setReport(new Report());
-			ctx.setSourceCodeFilename(buffer.getPath());
-
+			String path = buffer.getPath();
+			ctx.setSourceCodeFilename(path);
 			VFS vfs = buffer.getVFS();
 
-			pmd.processFile(vfs._createInputStream(vfs.createVFSSession(buffer.getPath(),view),buffer.getPath(),false,view),
+			pmd.processFile(vfs._createInputStream(vfs.createVFSSession(path, view), path, false, view),
 					System.getProperty("file.encoding"),
 					selectedRuleSets.getSelectedRules(), 
 					ctx);
@@ -235,7 +272,6 @@ public class PMDJEditPlugin extends EBPlugin
 
 			else
 			{
-				String path = buffer.getPath();
 				String rulename="";
 				
 				final boolean isPrintRule = jEdit.getBooleanProperty(PMDJEditPlugin.PRINT_RULE);
@@ -274,7 +310,7 @@ public class PMDJEditPlugin extends EBPlugin
 		}
 	}// check current buffer
 
-	public void process(final List files, final View view)
+	public void process(final List<File> files, final View view)
 	{
 		new Thread(new Runnable ()
 				   {
@@ -293,7 +329,7 @@ public class PMDJEditPlugin extends EBPlugin
 		instance.instanceCheck(buffer, view, true);
 	}
 
-	void processFiles(List files, View view)
+	void processFiles(List<File> files, View view)
 	{
 		unRegisterErrorSource();
 		errorSource.clear();
@@ -323,13 +359,13 @@ public class PMDJEditPlugin extends EBPlugin
 
 		RuleContext ctx = new RuleContext();
 
-		List reports = new ArrayList();
+		List<Report> reports = new ArrayList<Report>();
 		boolean foundProblems = false;
 
-		Iterator iter = files.iterator();
+		Iterator<File> iter = files.iterator();
 		while(iter.hasNext())
 		{
-			File file = (File)iter.next();
+			File file = iter.next();
 			//ctx.setReport(new Report());
 			ctx.setReport(new Report()); //NOPMD
 			ctx.setSourceCodeFilename(file.getAbsolutePath());
@@ -374,14 +410,14 @@ public class PMDJEditPlugin extends EBPlugin
 		else
 		{
 			registerErrorSource();
-			exportErrorAsReport(view, (Report[])reports.toArray(new Report[reports.size()]));
+			exportErrorAsReport(view, reports.toArray(new Report[reports.size()]));
 		}
 
 		endProgressBarDisplay(pbd);
 		pbd = null;
 	}
 
-	private List findFiles(String dir, boolean recurse)
+	private List<File> findFiles(String dir, boolean recurse)
 	{
 		FileFinder f  = new FileFinder();
 		return f.findFilesFrom(dir, new net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter(new SourceFileSelector()), recurse);
@@ -415,13 +451,13 @@ public class PMDJEditPlugin extends EBPlugin
 			return;
 		}
 
-		if(selectedFile[0].type == VFSFile.DIRECTORY)
+		if(selectedFile[0].getType() == VFSFile.DIRECTORY)
 		{
 			JOptionPane.showMessageDialog(view, "Selected file cannot be a Directory.", NAME, JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-
-		instance.instanceCPDCurrentFile(view, selectedFile[0].path, getFileType(selectedFile[0].path));
+		String path = selectedFile[0].getPath();
+		instance.instanceCPDCurrentFile(view, path, getFileType(path));
 	}
 
 	//TODO: Replace this method with a smart file type/mode detector.
@@ -429,17 +465,12 @@ public class PMDJEditPlugin extends EBPlugin
 	{
 		if(name != null)
 		{
-			if(name.endsWith("java"))
-			{
-				return LanguageFactory.JAVA_KEY;
+			for (String lang : LanguageFactory.supportedLanguages) {
+				if (name.endsWith(lang)) return lang;
 			}
-			else if(name.endsWith("php"))
+			if(name.endsWith("h") || name.endsWith("cxx") || name.endsWith("c++"))
 			{
-				return LanguageFactory.PHP_KEY;
-			}
-			else if(name.endsWith("c") || name.endsWith("cpp") || name.endsWith("c++"))
-			{
-				return LanguageFactory.CPP_KEY;
+				return "cpp";
 			}
 		}
 		return null;
@@ -535,12 +566,12 @@ public class PMDJEditPlugin extends EBPlugin
 				return;
 			}
 
-			if(selectedDir[0].type != VFSFile.DIRECTORY)
+			if(selectedDir[0].getType() != VFSFile.DIRECTORY)
 			{
 				JOptionPane.showMessageDialog(view, "Selected file must be a Directory.", NAME, JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			instance.instanceCPDDir(view, selectedDir[0].path, jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100), recursive);
+			instance.instanceCPDDir(view, selectedDir[0].getPath(), jEdit.getIntegerProperty(DEFAULT_TILE_MINSIZE_PROPERTY,100), recursive);
 		}
 	}
 
@@ -634,13 +665,13 @@ public class PMDJEditPlugin extends EBPlugin
 	{
 		if(view != null && de != null)
 		{
-			List files = new ArrayList();
+			List<File> files = new ArrayList<File>();
 
 			for(int i=0;i<de.length;i++)
 			{
-				if(de[i].type == VFSFile.FILE)
+				if(de[i].getType() == VFSFile.FILE)
 				{
-					files.add(new File(de[i].path)); //NOPMD
+					files.add(new File(de[i].getPath())); //NOPMD
 				}
 			}
 
@@ -652,13 +683,13 @@ public class PMDJEditPlugin extends EBPlugin
 	{
 		VFSFile de[] = browser.getSelectedFiles();
 
-		if(de == null || de.length == 0 || de[0].type != VFSFile.DIRECTORY)
+		if(de == null || de.length == 0 || de[0].getType() != VFSFile.DIRECTORY)
 		{
 			JOptionPane.showMessageDialog(view, "Selection must be a directory",NAME, JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
-		instance.process(instance.findFiles(de[0].path, recursive),view);
+		instance.process(instance.findFiles(de[0].getPath(), recursive),view);
 	}
 
 	public ProgressBar startProgressBarDisplay(View view, int min, int max)
@@ -712,13 +743,16 @@ public class PMDJEditPlugin extends EBPlugin
 			if(reports != null)
 			{
 				final StringBuffer strbuf = new StringBuffer();
-				String output = null;
-				for(int i=0;i<reports.length;i++)
-				{
-					output = renderer.render(reports[i]);
-					strbuf.append(output);
+				// String output = null;
+				try {
+					renderer.start();
+					for(int i=0;i<reports.length;i++)
+						renderer.renderFileReport(reports[i]);
+					renderer.end();
 				}
-
+				catch (IOException ioe) {
+					Log.log(Log.ERROR, this, "Renderer can't report.", ioe );
+				}
 				view.setBuffer(jEdit.newFile(view));
 				VFSManager.runInAWTThread(
 					new Runnable()
@@ -789,22 +823,22 @@ public class PMDJEditPlugin extends EBPlugin
 	{
 		Language lang;
 		LanguageFactory lf = new LanguageFactory();
-		if (fileType.equals(LanguageFactory.JAVA_KEY))
+		if (fileType.equals("java"))
 		{
 			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing java");
 			Properties props = new Properties();
 			props.setProperty(JavaTokenizer.IGNORE_LITERALS, String.valueOf(jEdit.getBooleanProperty(PMDJEditPlugin.IGNORE_LITERALS)));
-			lang = lf.createLanguage(LanguageFactory.JAVA_KEY, props);
+			lang = lf.createLanguage("java", props);
 		}
-		else if (fileType.equals(LanguageFactory.PHP_KEY))
+		else if (fileType.equals("php"))
 		{
 			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing PHP");
-			lang = lf.createLanguage(LanguageFactory.PHP_KEY);
+			lang = lf.createLanguage("php");
 		}
-		else if (fileType.equals(LanguageFactory.CPP_KEY))
+		else if (fileType.equals("cpp"))
 		{
 			//Log.log(Log.DEBUG, PMDJEditPlugin.class, "Doing C/C++");
-			lang = lf.createLanguage(LanguageFactory.CPP_KEY);
+			lang = lf.createLanguage("cpp");
 		}
 		else
 		{
