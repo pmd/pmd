@@ -12,7 +12,6 @@ public class VSRenderer implements Renderer {
 
     public String render(Iterator<Match> matches) {
         StringBuffer buffer = new StringBuffer(300);
-        //Match match;
         for (Match match; matches.hasNext();) {
             match = matches.next();
             TokenEntry mark;
