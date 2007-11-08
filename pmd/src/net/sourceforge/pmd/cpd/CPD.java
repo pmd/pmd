@@ -112,6 +112,8 @@ public class CPD {
             return new XMLRenderer(encoding);
         }  else if ("csv".equals(name)) {
             return new CSVRenderer();
+        }  else if ("vs".equals(name)) {
+            return new VSRenderer();
         }
         try {
             return (Renderer) Class.forName(name).newInstance();
@@ -170,16 +172,15 @@ public class CPD {
                 cpd.skipDuplicates();
             }
             /* FIXME: Improve this !!!	*/
-            int position = 0;
-            String pathToFiles = "";
             boolean missingFiles = true;
-            for (position = 0; position < args.length; position++) {
+            for (int position = 0; position < args.length; position++) {
                 if (args[position].equals("--files")) {
                 	cpd.addRecursively(args[position + 1]);
-                	if ( missingFiles ) missingFiles = false;
+                	if ( missingFiles ) {
+                        missingFiles = false;
+                    }
                 }
             }
-
 
             if ( missingFiles ) {
 	            System.out.println("No " + "--files" + " value passed in");
@@ -196,7 +197,7 @@ public class CPD {
 
     private static void usage() {
         System.out.println("Usage:");
-        System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--encoding xxx] [--format (xml|text|csv)] [--skip-duplicate-files] ");
+        System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens xxx --files xxx [--language xxx] [--encoding xxx] [--format (xml|text|csv|vs)] [--skip-duplicate-files] ");
         System.out.println("i.e: ");
         System.out.println(" java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files c:\\jdk14\\src\\java ");
         System.out.println("or: ");
