@@ -10,7 +10,7 @@
 	<property name="dir.regress" value="regress/" />
 	<property name="version" value="4.1rc1" />
 	<property name="keystore" value="${keystore.path}" />
-	<property name="retroweaver.version" value="2.0.1" />
+	<property name="retroweaver.version" value="2.0.2" />
 	<property name="junit.version" value="4.1" />
 
 	<!--Settings-->
@@ -20,7 +20,7 @@
 		<pathelement location="${dir.build}" />
 		<fileset dir="${dir.lib}">
 			<include name="jaxen-1.1.1.jar" />
-			<include name="asm-3.0.jar" />
+			<include name="asm-3.1.jar" />
 			<include name="junit-${junit.version}.jar" />
 		</fileset>
 	</path>
@@ -69,7 +69,7 @@
 		<jar jarfile="${dir.lib}/pmd-${version}.jar" includes="net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**,rulesets/**" basedir="${dir.build}">
 			<manifest>
 				<attribute name="Main-Class" value="net.sourceforge.pmd.PMD" />
-				<attribute name="Class-Path" value="jaxen-1.1.1.jar asm-3.0.jar" />
+				<attribute name="Class-Path" value="jaxen-1.1.1.jar asm-3.1.jar" />
 			</manifest>
 		</jar>
 	</target>
@@ -79,9 +79,9 @@
 			<pathelement location="${dir.lib14}/retroweaver-${retroweaver.version}.jar"/>
 			<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
 			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
-			<pathelement location="${dir.lib14}/asm-commons-3.0.jar"/>
-			<pathelement location="${dir.lib14}/asm-util-3.0.jar"/>
-			<pathelement location="${dir.lib}/asm-3.0.jar"/>
+			<pathelement location="${dir.lib14}/asm-commons-3.1.jar"/>
+			<pathelement location="${dir.lib14}/asm-util-3.1.jar"/>
+			<pathelement location="${dir.lib}/asm-3.1.jar"/>
 		</classpath>
 	</taskdef>
 
@@ -89,7 +89,7 @@
 		<path id="retroweaverclasspath">
 			<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
 			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
-			<pathelement location="${dir.lib}/asm-3.0.jar"/>
+			<pathelement location="${dir.lib}/asm-3.1.jar"/>
 			<pathelement location="${jvm14.runtime}" />
 			<pathelement location="${dir.lib}/jaxen-1.1.1.jar" />
 			<pathelement location="${dir.lib14}/junit.jar" />
@@ -110,7 +110,7 @@
 			<pathelement location="${dir.lib14}/pmd14-test-${version}.jar" />
 			<pathelement location="${dir.lib14}/retroweaver-rt-${retroweaver.version}.jar"/>
 			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
-			<pathelement location="${dir.lib}/asm-3.0.jar"/>
+			<pathelement location="${dir.lib}/asm-3.1.jar"/>
 			<pathelement location="${jvm14.runtime}" />
 			<pathelement location="${dir.lib}/jaxen-1.1.1.jar" />
 			<pathelement location="${dir.lib14}/junit.jar" />
@@ -223,7 +223,7 @@
 		</fileset>
 		<fileset dir="${dir.lib}">
 			<include name="jaxen-1.1.1.jar" />
-			<include name="asm-3.0.jar" />
+			<include name="asm-3.1.jar" />
 		</fileset>
 	</path>
 

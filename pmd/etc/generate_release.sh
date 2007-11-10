@@ -40,7 +40,7 @@ cd ../etc/
 cp ../java14/lib/*.jar $pmd_bin_dir/java14/lib/
 cp ../java14/bin/*.bat ../java14/bin/*.sh $pmd_bin_dir/java14/bin/
 chmod 755 $pmd_bin_dir/java14/bin/*
-cp ../lib/pmd-$version.jar ../lib/asm-3.0.jar ../lib/jaxen-1.1.1.jar ../lib/junit-4.1.jar $pmd_bin_dir/lib/
+cp ../lib/pmd-$version.jar ../lib/asm-3.1.jar ../lib/jaxen-1.1.1.jar ../lib/junit-4.1.jar $pmd_bin_dir/lib/
 mkdir $pmd_bin_dir/etc/xslt
 cp xslt/*.xslt xslt/*.js xslt/*.gif xslt/*.css $pmd_bin_dir/etc/xslt/
 cp -R ../target/docs $pmd_bin_dir
