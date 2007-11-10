@@ -1,7 +1,7 @@
 ????, 2007 - 4.1:
 Fixed annotation bug: ClassCastException when a formal parameter had multiple annotations
 Added a Visual Studio renderer for CPD; just use "--format vs".
-Dependencies updates: asm to 3.1, retroweaver to 2.0.2
+Dependencies updates: asm to 3.1, retroweaver to 2.0.2, junit to 4.4
 
 November 01, 2007 - 4.1rc1:
 New rules:

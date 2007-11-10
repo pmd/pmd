@@ -9,7 +9,8 @@ import java.util.List;
 import net.sourceforge.pmd.Rule;
 
 import org.junit.Test;
-import org.junit.internal.runners.TestClassMethodsRunner;
+import org.junit.internal.runners.InitializationError;
+import org.junit.internal.runners.JUnit4ClassRunner;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
@@ -79,8 +80,8 @@ public abstract class SimpleAggregatorTst extends RuleTst {
         }
     }
 
-    public static class CustomXmlTestClassMethodsRunner extends TestClassMethodsRunner {
-        public CustomXmlTestClassMethodsRunner(Class<?> klass) {
+    public static class CustomXmlTestClassMethodsRunner extends JUnit4ClassRunner {
+        public CustomXmlTestClassMethodsRunner(Class<?> klass) throws InitializationError {
             super(klass);
         }
 
@@ -108,4 +109,5 @@ public abstract class SimpleAggregatorTst extends RuleTst {
 
         private static RunNotifier NOTIFIER;
     }
+
 }
