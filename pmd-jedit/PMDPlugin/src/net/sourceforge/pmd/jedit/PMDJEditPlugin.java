@@ -33,7 +33,7 @@ import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.IRuleViolation;
 import net.sourceforge.pmd.SourceFileSelector;
 import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.cpd.CPD;
@@ -276,14 +276,13 @@ public class PMDJEditPlugin extends EBPlugin
 				
 				final boolean isPrintRule = jEdit.getBooleanProperty(PMDJEditPlugin.PRINT_RULE);
 				
-				for (Iterator i = ctx.getReport().iterator(); i.hasNext();)
+				for (Iterator<IRuleViolation> i = ctx.getReport().iterator(); i.hasNext();)
 				{
-					RuleViolation rv = (RuleViolation)i.next();
+					IRuleViolation rv = i.next();
 					if(isPrintRule)
 					{
 						rulename = rv.getRule().getName() +"->";
 					}
-					
 					
 					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.WARNING, path, rv.getBeginLine()-1,0,0,rulename + rv.getDescription())); //NOPMD
 				}
@@ -373,10 +372,10 @@ public class PMDJEditPlugin extends EBPlugin
 			try
 			{
 				pmd.processFile(new FileInputStream(file), System.getProperty("file.encoding"), selectedRuleSets.getSelectedRules(), ctx); //NOPMD
-				for (Iterator j = ctx.getReport().iterator(); j.hasNext();)
+				for (Iterator<IRuleViolation> j = ctx.getReport().iterator(); j.hasNext();)
 				{
 					foundProblems = true;
-					RuleViolation rv = (RuleViolation)j.next();
+					IRuleViolation rv = j.next();
 					errorSource.addError(new DefaultErrorSource.DefaultError(errorSource, ErrorSource.ERROR,  file.getAbsolutePath(), rv.getBeginLine()-1,0,0,rv.getDescription())); //NOPMD
 				}
 				if(!ctx.getReport().isEmpty())//That means Report contains some violations, so only cache such reports.
@@ -612,20 +611,20 @@ public class PMDJEditPlugin extends EBPlugin
 		dv.clearDuplicates();
 		boolean foundDuplicates = false;
 
-		for (Iterator i = cpd.getMatches(); i.hasNext();)
+		for (Iterator<Match> i = cpd.getMatches(); i.hasNext();)
 		{
 			if(!foundDuplicates) //Set foundDuplicates to true and that too only once.
 			{
 				foundDuplicates = true;
 			}
 
-			Match match = (Match)i.next();
+			Match match = i.next();
 
 			CPDDuplicateCodeViewer.Duplicates duplicates = dv.new Duplicates(match.getLineCount() + " duplicate lines", match.getSourceCodeSlice()); //NOPMD
 
-			for (Iterator occurrences = match.iterator(); occurrences.hasNext();)
+			for (Iterator<TokenEntry> occurrences = match.iterator(); occurrences.hasNext();)
 			{
-				TokenEntry mark = (TokenEntry)occurrences.next();
+				TokenEntry mark = occurrences.next();
 
 				int lastLine = mark.getBeginLine()+match.getLineCount();
 				Log.log(Log.DEBUG, this, "Begin line " + mark.getBeginLine() +" of file "+ mark.getTokenSrcID() +" Line Count "+ match.getLineCount() +" last line "+ lastLine);
