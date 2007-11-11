@@ -16,8 +16,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeSelectionModel;
 import java.awt.BorderLayout;
-import java.util.List;
-import java.util.ArrayList;
 //End of Imports
 
 /**
@@ -107,7 +105,7 @@ public class CPDDuplicateCodeViewer  extends JPanel
 
 	public class Duplicates extends DefaultMutableTreeNode
 	{
-		List vecduplicate = new ArrayList();
+		//List vecduplicate = new ArrayList();
 		String message, sourcecode;
 
 		public Duplicates(String message, String sourcecode)
