@@ -5,6 +5,13 @@
  */
 package net.sourceforge.pmd.jedit;
 
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
@@ -12,13 +19,6 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 
 import org.gjt.sp.jedit.jEdit;
-
-import javax.swing.JCheckBox;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
 
 
 /**
@@ -30,15 +30,12 @@ import java.util.TreeMap;
 public class SelectedRules
 {
 
-	// Rule -> JCheckBox
-	private final Map rules = new TreeMap(
-							new Comparator()
+	private final Set<RuleCheckBox> checkboxes = new TreeSet<RuleCheckBox>(
+							new Comparator<RuleCheckBox>()
 							{
-								public int compare(Object o1, Object o2)
+								public int compare(RuleCheckBox r1, RuleCheckBox r2)
 								{
-									Rule r1 = (Rule)o1;
-									Rule r2 = (Rule)o2;
-									return r1.getName().compareTo(r2.getName());
+									return r1.getRule().getName().compareTo(r2.getRule().getName());
 								}
 							});
 
@@ -51,9 +48,9 @@ public class SelectedRules
 	public SelectedRules() throws RuleSetNotFoundException
 	{
 		RuleSetFactory rsf = new RuleSetFactory();
-		for(Iterator i = rsf.getRegisteredRuleSets(); i.hasNext(); )
+		for(Iterator<RuleSet> i = rsf.getRegisteredRuleSets(); i.hasNext(); )
 		{
-			RuleSet rs = (RuleSet)i.next();
+			RuleSet rs = i.next();
 			//System.out.println("Added RuleSet " + rs.getName() + " descriprion "+ rs.getDescription() +" language "+ rs.getLanguage());
 			addRuleSet2Rules(rs);
 		}
@@ -79,74 +76,22 @@ public class SelectedRules
 
 
 	/**
-	 *  Description of the Method
-	 *
-	 * @return    Description of the Return Value
-	 */
-	public int size()
-	{
-		return rules.size();
-	}
-
-
-	/**
-	 *  Gets the rule attribute of the SelectedRules object
-	 *
-	 * @param  candidate  Description of the Parameter
-	 * @return            The rule value
-	 */
-	public Rule getRule(JCheckBox candidate)
-	{
-		for(Iterator i = rules.keySet().iterator(); i.hasNext(); )
-		{
-			Rule rule = (Rule)i.next();
-			JCheckBox box = (JCheckBox)rules.get(rule);
-			if(box.equals(candidate))
-			{
-				return rule;
-			}
-		}
-		throw new RuntimeException("Couldn't find a rule that mapped to the passed in JCheckBox " + candidate);
-	}
-
-
-	/**
-	 *  Description of the Method
-	 *
-	 * @param  key  Description of the Parameter
-	 * @return      Description of the Return Value
-	 */
-	public JCheckBox get(Object key)
-	{
-		return (JCheckBox)rules.get(key);
-	}
-
-
-	/**
 	 *  Gets the allBoxes attribute of the SelectedRules object
 	 *
 	 * @return    The allBoxes value
 	 */
-	public Object[] getAllBoxes()
+	public RuleCheckBox[] getAllBoxes()
 	{
-		Object[] foo = new Object[rules.size()];
-		int idx = 0;
-		for(Iterator i = rules.values().iterator(); i.hasNext(); )
-		{
-			foo[idx] = i.next();
-			idx++;
-		}
-		return foo;
+		return checkboxes.toArray(new RuleCheckBox[checkboxes.size()]);
 	}
 
 
 	/**  Description of the Method */
 	public void save()
 	{
-		for(Iterator i = rules.keySet().iterator(); i.hasNext(); )
+		for(RuleCheckBox box: checkboxes)
 		{
-			Rule rule = (Rule)i.next();
-			jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_RULES_PREFIX + rule.getName(), get(rule).isSelected());
+			jEdit.setBooleanProperty(PMDJEditPlugin.OPTION_RULES_PREFIX + box.getRule().getName(), box.isSelected());
 		}
 	}
 
@@ -160,14 +105,14 @@ public class SelectedRules
 	{
 		RuleSets newRuleSets = new RuleSets();
 		
-		Map rulesetmap = new HashMap();
+		Map<String, RuleSet> rulesetmap = new HashMap<String, RuleSet>();
 		
-		for(Iterator i = rules.keySet().iterator(); i.hasNext(); )
+		for(RuleCheckBox box: checkboxes)
 		{
-			Rule rule = (Rule)i.next();
-			if(get(rule).isSelected())
+			if(box.isSelected())
 			{
-				RuleSet rs = ((JEditPMDRule)rule).getRs();
+				Rule rule = box.getRule();
+				RuleSet rs = box.getRuleset();
 				if(rulesetmap.get(rs.getName()) != null)
 				{
 					RuleSet existingRs = (RuleSet) rulesetmap.get(rs.getName());
@@ -190,21 +135,6 @@ public class SelectedRules
 		return newRuleSets;
 	}
 
-
-	/**
-	 *  Description of the Method
-	 *
-	 * @param  name  Description of the Parameter
-	 * @return       Description of the Return Value
-	 */
-	private JCheckBox createCheckBox(String name)
-	{
-		JCheckBox box = new JCheckBox(name);
-		box.setSelected(jEdit.getBooleanProperty(PMDJEditPlugin.OPTION_RULES_PREFIX + name, true));
-		return box;
-	}
-
-
 	/**
 	 *  Adds a feature to the RuleSet2Rules attribute of the SelectedRules object
 	 *
@@ -212,10 +142,9 @@ public class SelectedRules
 	 */
 	private void addRuleSet2Rules(RuleSet rs)
 	{
-		for(Iterator j = rs.getRules().iterator(); j.hasNext(); )
+		for(Rule rule: rs.getRules())
 		{
-			Rule rule = (Rule)j.next();
-			rules.put(new JEditPMDRule(rule, rs), createCheckBox(rule.getName()));
+			checkboxes.add(new RuleCheckBox(rule, rs));
 		}
 	}
 }

@@ -60,10 +60,10 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane
 				int index = locationToIndex(e.getPoint());
 				if (index != -1)
 				{
-					JCheckBox box = (JCheckBox) getModel().getElementAt(index);
+					RuleCheckBox box = (RuleCheckBox) getModel().getElementAt(index);
 					// String example =
 					// rules.getRule(box).getExample();
-					List<String> examples = rules.getRule(box).getExamples();
+					List<String> examples = box.getRule().getExamples();
 					exampleTextArea.setText(StringList.join(examples, "\n---------\n"));
 					exampleTextArea.setCaretPosition(0);
 				}
@@ -75,7 +75,7 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane
 			public Component getListCellRendererComponent(JList list, Object value,
 				int index, boolean isSelected, boolean cellHasFocus)
 			{
-				JCheckBox box = (JCheckBox) value;
+				RuleCheckBox box = (RuleCheckBox) value;
 				box.setEnabled(isEnabled());
 				box.setFont(getFont());
 				box.setFocusPainted(false);
@@ -83,12 +83,12 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane
 				box.setBorder(isSelected ? UIManager
 					.getBorder("List.focusCellHighlightBorder")
 					: new EmptyBorder(1, 1, 1, 1));
-				box.setToolTipText(rules.getRule(box).getRuleSetName());
+				box.setToolTipText(box.getRule().getRuleSetName());
 				return box;
 			}
 		}
 
-		public CheckboxList(Object[] args)
+		public CheckboxList(RuleCheckBox[] args)
 		{
 			super(args);
 			setCellRenderer(new CheckboxListCellRenderer());
