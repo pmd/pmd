@@ -6,8 +6,8 @@
 	<classpathentry exported="true" kind="lib" path="lib/backport-util-concurrent.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xercesImpl-2.6.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xmlParserAPIs-2.6.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/castor-0.9.6-xml.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.8.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/castor-1.1.2.1-xml.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-logging.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>

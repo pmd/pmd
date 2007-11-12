@@ -35,10 +35,10 @@
       <library name="lib/xmlParserAPIs-2.6.2.jar">
          <export name="*"/>
       </library>
-      <library name="lib/castor-0.9.6-xml.jar">
+      <library name="lib/castor-1.1.2.1-xml.jar">
          <export name="*"/>
       </library>
-      <library name="lib/log4j-1.2.8.jar">
+      <library name="lib/log4j-1.2.15.jar">
          <export name="*"/>
       </library>
       <library name="lib/commons-logging.jar">
