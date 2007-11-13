@@ -202,7 +202,7 @@
 		<delete dir="${test.outputdir}" />
 		<mkdir dir="${test.outputdir}/xml"/>
 		<junit printsummary="yes" showoutput="no" filtertrace="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch">
-			<sysproperty key="regress" value="${test.regression}"/>
+			<sysproperty key="pmd.regress" value="${test.regression}"/>
 			<classpath>
 				<path refid="${test.dependencies}" />
 			</classpath>
