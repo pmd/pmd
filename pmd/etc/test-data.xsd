@@ -29,6 +29,9 @@
             <!-- Reinitialize the rule for this test. For rules with caching (ie. XPath 
             rules with properties), only works if the rule was created with findRule -->
             <xs:attribute name="reinitializeRule" type="xs:boolean" use="optional"/>
+            <!-- is the test a regression test, i.e. was it working in previous releases.
+            this defaults to true so that the attribute only needs to be set for failing tests -->
+            <xs:attribute name="regressionTest" type="xs:boolean" use="optional"/>
         </xs:complexType>
     </xs:element>
     

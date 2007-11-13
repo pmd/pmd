@@ -179,6 +179,19 @@
 			<param name="test.outputdir" value="${dir.build}/reports"/>
 			<param name="test.jvm" value="java"/>
 			<param name="test.dependencies" value="dependencies.path"/>
+			<param name="test.regression" value="false"/>
+		</antcall>
+		<antcall target="test-report">
+			<param name="test.outputdir" value="${dir.build}/reports"/>
+		</antcall>
+	</target>
+
+	<target name="regress" depends="requires-junit,compile,copy" description="Runs the regression unit tests">
+		<antcall target="test-execute">
+			<param name="test.outputdir" value="${dir.build}/reports"/>
+			<param name="test.jvm" value="java"/>
+			<param name="test.dependencies" value="dependencies.path"/>
+			<param name="test.regression" value="true"/>
 		</antcall>
 		<antcall target="test-report">
 			<param name="test.outputdir" value="${dir.build}/reports"/>
@@ -189,6 +202,7 @@
 		<delete dir="${test.outputdir}" />
 		<mkdir dir="${test.outputdir}/xml"/>
 		<junit printsummary="yes" showoutput="no" filtertrace="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch">
+			<sysproperty key="regress" value="${test.regression}"/>
 			<classpath>
 				<path refid="${test.dependencies}" />
 			</classpath>
@@ -237,6 +251,21 @@
 			<param name="test.outputdir" value="${dir.build}/reports14"/>
 			<param name="test.jvm" value="${jvm14.exe}"/>
 			<param name="test.dependencies" value="dependencies14.path"/>
+			<param name="test.regression" value="false"/>
+		</antcall>
+		<antcall target="test-report">
+			<param name="test.outputdir" value="${dir.build}/reports14"/>
+		</antcall>
+	</target>
+
+	<target name="regress14" depends="requires-junit,compile,copy,weavejunit,weave" description="Runs the regression unit tests with 1.4 jvm">
+		<fail unless="jvm14.exe" message="jvm14.exe location is not defined properly" />
+
+		<antcall target="test-execute">
+			<param name="test.outputdir" value="${dir.build}/reports14"/>
+			<param name="test.jvm" value="${jvm14.exe}"/>
+			<param name="test.dependencies" value="dependencies14.path"/>
+			<param name="test.regression" value="true"/>
 		</antcall>
 		<antcall target="test-report">
 			<param name="test.outputdir" value="${dir.build}/reports14"/>

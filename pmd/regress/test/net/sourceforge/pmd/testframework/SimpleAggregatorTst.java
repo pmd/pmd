@@ -63,12 +63,15 @@ public abstract class SimpleAggregatorTst extends RuleTst {
      */
     @Test
     public void testAll() {
+        boolean regressionTest = Boolean.getBoolean("regress"); // get the "regress" System property
         ArrayList<Failure> l = new ArrayList<Failure>();
         for (Rule r : rules) {
             TestDescriptor[] tests = extractTestsFromXml(r);
-            for (int i = 0; i < tests.length; i++) {
+            for (TestDescriptor test: tests) {
                 try {
-                    runTest(tests[i]);
+                    if (!regressionTest || test.isRegressionTest()) {
+                        runTest(test);
+                    }
                 } catch (Throwable t) {
                     Failure f = CustomXmlTestClassMethodsRunner.createFailure(r, t);
                     l.add(f);

@@ -767,4 +767,36 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+42, Using variable string array
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String[] a, int i) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(a[i]).append("Hello");
+        sb.append(a[i+1]).append("World");
+    }
+}
+     ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+43, Using variable char array
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    toString2(char[] a, int n){
+        StringBuffer sb = new StringBuffer();
+        sb.append("ab");
+        sb.append(a, 0, n);
+        sb.append('c');
+        return sb.toString();
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>

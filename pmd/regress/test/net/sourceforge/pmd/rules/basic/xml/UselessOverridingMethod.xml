@@ -232,7 +232,7 @@ public Object clone() throws CloneNotSupportedException {
 }
      ]]></code>
     </test-code>
-    <test-code>
+    <test-code regressionTest="false">
         <description>
         	<![CDATA[
 False +: Overriding method merely calls super (see bug 1415525)

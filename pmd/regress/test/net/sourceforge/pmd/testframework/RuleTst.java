@@ -194,7 +194,16 @@ public abstract class RuleTst {
                     reinitializeRule = true;
                 }
             }
-            
+           
+            boolean isRegressionTest = true;
+            Node regressionTestAttribute = testCode.getAttributes().getNamedItem("regressionTest");
+            if (regressionTestAttribute != null) {
+                String reinitializeRuleValue = regressionTestAttribute.getNodeValue();
+                if ("false".equalsIgnoreCase(reinitializeRuleValue)) {
+                    isRegressionTest = false;
+                }
+            }
+
             NodeList ruleProperties = testCode.getElementsByTagName("rule-property");
             Properties properties = new Properties();
             for (int j = 0; j < ruleProperties.getLength(); j++) {
@@ -238,6 +247,7 @@ public abstract class RuleTst {
                 }
             }
             tests[i].setReinitializeRule(reinitializeRule);
+            tests[i].setRegressionTest(isRegressionTest);
             tests[i].setProperties(properties);
         }
         return tests;

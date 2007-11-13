@@ -19,6 +19,7 @@ public class TestDescriptor {
     private String code;
     private SourceType sourceType;
     private boolean reinitializeRule = false;   //default
+    private boolean isRegressionTest = true;
 
     public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule) {
         this(code, description, numberOfProblemsExpected, rule, RuleTst.DEFAULT_SOURCE_TYPE);
@@ -66,5 +67,13 @@ public class TestDescriptor {
 
     public void setReinitializeRule(boolean reinitializeRule) {
         this.reinitializeRule = reinitializeRule;
+    }
+
+    public boolean isRegressionTest() {
+        return isRegressionTest;
+    }
+
+    public void setRegressionTest(boolean isRegressionTest) {
+        this.isRegressionTest = isRegressionTest;
     }
 }
