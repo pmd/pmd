@@ -9,7 +9,7 @@
 	<property name="pmdjar" value="pmd-4.1rc1.jar"/>
 	<property name="pluginversion" value="2.7"/>
 	<property name="jedit.install.dir" value="../.."/>
-	<property name="jedit.jars.dir" value="${jedit.install.dir}\jars" />
+	<property name="jedit.jars.dir" value="${jedit.install.dir}/jars" />
 	<property name="install.dir"  value="${jedit.jars.dir}"/>
 
 	<path id="project.class.path">
@@ -76,6 +76,6 @@
         <delete dir="tmp"/>
     </target>
 
-	<target name="clean" depends="delete,compile" />
+	<target name="clean" depends="delete" />
 
 </project>
