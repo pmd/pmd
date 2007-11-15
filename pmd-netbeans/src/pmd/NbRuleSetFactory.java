@@ -138,7 +138,7 @@ public class NbRuleSetFactory extends RuleSetFactory {
                     }
 
                     if (node.getNodeName() != null && node.getNodeName().equals("example")) {
-                        rule.setExample(node.getFirstChild().getNextSibling().getNodeValue());
+                        rule.addExample(node.getFirstChild().getNextSibling().getNodeValue());
                     }
 
                     if (node.getNodeName().equals("properties")) {

@@ -62,24 +62,6 @@ public abstract class ConfigUtils {
     }
     
     /**
-     * Registers extra rules that are available.
-     *
-     * @param rules Collection of Rule objects.
-     */
-    public static synchronized void addRuleSetFactory(RuleSetFactory fact) {
-        extraFactories.add(fact);
-    }
-
-    /**
-     * Unregisters extra rules previously registered.
-     *
-     * @param rules Collection of Rule objects.
-     */
-    public static synchronized void removeRuleSetFactory(RuleSetFactory fact) {
-        extraFactories.remove(fact);
-    }
-	
-    /**
      * Determines the list of rules to use. This is done by iterating over all
      * known rules and, for each one, checking whether its name appears in the
      * given string followed by a comma and a space. If it does appear, then it

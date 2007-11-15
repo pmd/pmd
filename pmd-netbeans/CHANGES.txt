@@ -1,3 +1,7 @@
+- [ 1790292 ] NPE while scanning closed document
+
+Version 2.0
+- Updated pmd to version 4.0
 - Requires NB6.0M9 or newer IDE build
 - [ 1722116 ] pmd.scan.Scanner.run fails with Netbeans 6.0
 - [ 1450727 ] PMD does not honour configured src file encoding

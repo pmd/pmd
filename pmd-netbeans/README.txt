@@ -5,18 +5,14 @@ INSTALL
 ------------------------
 
  1) Start NetBeans 
- 2) Goto Tools --> Module Manager
- 3) Press Update
- 4) Choose "Install Manually Downloaded Modules (.nbm Files).". 
- 5) Press Next
- 6) Choose Add
- 7) Goto the directory where you downloaded pmd-netbeans and choose the file "pmd.nbm".
- 8) Press OK
- 9) Press Next
-10) Press Next
-11) Press Accept
-12) Choose Include and confirm to install an usined module
-13) Press Finish
+ 2) Goto Tools --> Plugins
+ 3) Switch to 'Downloaded' tab
+ 4) Press 'Add plugins'
+ 5) Goto the directory where you downloaded pmd-netbeans and choose the file "pmd.nbm".
+ 6) Press OK
+ 7) Press Install
+ 8) Accept the license
+ 9) Confirm installation of an usigned module
 
 ------------------------
 USE
@@ -62,8 +58,4 @@ REALTIME SCANNING
 1) Start NetBeans 
 2) Goto Tools --> Options 
 3) Navigate to Miscelaneous section and expand PMD node
-4) Click on "Enable scan"
-5) Choose true to enable scan, false otherwise.
-6) Click on "Scan interval"
-7) Enter the number of seconds between each scan
-XX) NetBeans requires a restart to disable scanning
+4) Select "Enable scan"
