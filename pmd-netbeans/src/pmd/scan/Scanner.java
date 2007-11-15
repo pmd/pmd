@@ -91,6 +91,9 @@ public class Scanner implements CancellableTask<CompilationInfo> {
             LOG.fine(toString() + "started");
             cancelled = false;
             Document doc = info.getDocument();
+            if (doc == null) {
+                return;
+            }
             
             int tabSize = 8;
             if (doc instanceof BaseDocument) {
@@ -107,7 +110,7 @@ public class Scanner implements CancellableTask<CompilationInfo> {
                 return;
             }
             
-            LineCookie cookie = ( LineCookie )dobj.getCookie( LineCookie.class );
+            LineCookie cookie = dobj.getCookie(LineCookie.class);
             Line.Set lineset = cookie.getLineSet();
             List<DataObject> list = Collections.singletonList(dobj);
             // TODO try to avoid duplicate work in this method
