@@ -180,9 +180,7 @@
 			<param name="test.jvm" value="java"/>
 			<param name="test.dependencies" value="dependencies.path"/>
 			<param name="test.regression" value="false"/>
-		</antcall>
-		<antcall target="test-report">
-			<param name="test.outputdir" value="${dir.build}/reports"/>
+			<param name="test.printsummary" value="true"/>
 		</antcall>
 	</target>
 
@@ -192,16 +190,16 @@
 			<param name="test.jvm" value="java"/>
 			<param name="test.dependencies" value="dependencies.path"/>
 			<param name="test.regression" value="true"/>
-		</antcall>
-		<antcall target="test-report">
-			<param name="test.outputdir" value="${dir.build}/reports"/>
+			<param name="test.printsummary" value="false"/>
 		</antcall>
 	</target>
 
 	<target name="test-execute" description="Runs the unit tests">
 		<delete dir="${test.outputdir}" />
 		<mkdir dir="${test.outputdir}/xml"/>
-		<junit printsummary="yes" showoutput="no" filtertrace="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch">
+		<junit printsummary="${test.printsummary}" showoutput="no" filtertrace="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch"
+			failureProperty="test.failure" 
+		>
 			<sysproperty key="pmd.regress" value="${test.regression}"/>
 			<classpath>
 				<path refid="${test.dependencies}" />
@@ -215,6 +213,10 @@
 
 			<formatter type="xml" if="testResultsToFile"/>
 		</junit>
+		<antcall target="test-report">
+			<param name="test.outputdir" value="${test.outputdir}"/>
+		</antcall>
+		<fail if="test.failure"/>
 	</target>
 
 	<target name="test-report" if="testResultsToFile" description="generate reports">
@@ -252,9 +254,7 @@
 			<param name="test.jvm" value="${jvm14.exe}"/>
 			<param name="test.dependencies" value="dependencies14.path"/>
 			<param name="test.regression" value="false"/>
-		</antcall>
-		<antcall target="test-report">
-			<param name="test.outputdir" value="${dir.build}/reports14"/>
+			<param name="test.printsummary" value="true"/>
 		</antcall>
 	</target>
 
@@ -266,9 +266,7 @@
 			<param name="test.jvm" value="${jvm14.exe}"/>
 			<param name="test.dependencies" value="dependencies14.path"/>
 			<param name="test.regression" value="true"/>
-		</antcall>
-		<antcall target="test-report">
-			<param name="test.outputdir" value="${dir.build}/reports14"/>
+			<param name="test.printsummary" value="false"/>
 		</antcall>
 	</target>
 
