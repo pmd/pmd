@@ -1,33 +1,70 @@
 package test.net.sourceforge.pmd.renderers;
 
+import java.io.File;
+import java.io.IOException;
+
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.YAHTMLRenderer;
 
+import org.junit.After;
+import org.junit.Before;
+
 public class YAHTMLRendererTest extends AbstractRendererTst {
 
-    private static final String OUTPUT_DIR = System.getProperty("java.io.tmpdir");
+    private String outputDir;
 
-    public AbstractRenderer getRenderer() {
-        return new YAHTMLRenderer(OUTPUT_DIR);
+    @Before
+    public void setUp() throws IOException {
+        outputDir = getTemporaryDirectory("pmdtest").getAbsolutePath();
     }
 
-    private static final String EXPECTED_OUTPUT = "<h3 align=\"center\">The HTML files are located in '" + OUTPUT_DIR + "'.</h3>";
+    @After
+    public void cleanUp() {
+        deleteDirectory(new File(outputDir));
+    }
+
+    private File getTemporaryDirectory(String prefix) throws IOException {
+        // TODO: move to util class?
+        File dir = File.createTempFile(prefix, "");
+        dir.delete();
+        dir.mkdir();
+        return dir;
+    }
+
+    private void deleteDirectory(File dir) {
+        // TODO: move to util class?
+        File[] a = dir.listFiles();
+        if (a != null) {
+            for (File f: a) {
+                if (f.isDirectory()) {
+                    deleteDirectory(f);
+                } else {
+                    f.delete();
+                }
+            }
+        }
+        dir.delete();        
+    }
+
+    public AbstractRenderer getRenderer() {
+        return new YAHTMLRenderer(outputDir);
+    }
 
     public String getExpected() {
-        return EXPECTED_OUTPUT;
+        return "<h3 align=\"center\">The HTML files are located in '" + outputDir + "'.</h3>";
     }
 
     public String getExpectedEmpty() {
-        return EXPECTED_OUTPUT;
+        return getExpected();
     }
     
     public String getExpectedMultiple() {
-        return EXPECTED_OUTPUT;
+        return getExpected();
     }
     
     public String getExpectedError(ProcessingError error) {
-        return EXPECTED_OUTPUT;
+        return getExpected();
     }
 
     public static junit.framework.Test suite() {
