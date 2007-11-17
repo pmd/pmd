@@ -8,7 +8,7 @@
 	<property name="dir.build" value="build/" />
 	<property name="dir.rulesets" value="rulesets/" />
 	<property name="dir.regress" value="regress/" />
-	<property name="version" value="4.1rc1" />
+	<property name="version" value="4.1" />
 	<property name="keystore" value="${keystore.path}" />
 
 	<property name="asm.version" value="3.1" />
@@ -364,25 +364,25 @@
 		<signjar jar="${dir.lib}/pmd-${version}.jar" alias="myself" keystore="${keystore}" storepass="password" />
 		<echo message="Uploading jar file" />
 		<exec executable="scp" os="Linux">
-			<arg line=" /home/tom/pmd/pmd/lib/pmd-${version}.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs" />
+			<arg line=" ${dir.lib}/pmd-${version}.jar pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs" />
 		</exec>
 		<echo message="Uploading cpd.jnlp" />
 		<exec executable="scp" os="Linux">
-			<arg line=" /home/tom/pmd/pmd/etc/cpd.jnlp tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs" />
+			<arg line=" etc/cpd.jnlp pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs" />
 		</exec>
 	</target>
 
 	<target name="tomserver" depends="clean,jar" description="Uploads the current PMD jar file to Tom's web site">
 		<echo message="Uploading jar file" />
 		<exec executable="scp" os="Linux">
-			<arg line=" /home/tom/pmd/pmd/lib/pmd-${version}.jar tom@infoether.com:public_html/" />
+			<arg line=" ${dir.lib}/pmd-${version}.jar tom@infoether.com:public_html/" />
 		</exec>
 	</target>
 
 	<target name="win32tomserver" depends="dist" description="Uploads the current PMD jar file to Tom's web site">
 		<echo message="Uploading jar file" />
 		<exec executable="pscp" os="Windows">
-			<arg line=" c:/data/sourceforge/pmd/lib/pmd-${version}.jar tom@infoether.com:public_html/" />
+			<arg line=" ${dir.lib}/pmd-${version}.jar tom@infoether.com:public_html/" />
 		</exec>
 	</target>
 

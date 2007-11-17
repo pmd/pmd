@@ -15,7 +15,7 @@ ensure all the new rules are listed in a rulesets/releases/<version>.xml file
 ant clean test
 Check in everything
 
-ant dist test
+ant dist regress regress14
 Do all the JUnit tests run?  OK, then:
 
 TESTS: Can you
@@ -47,6 +47,9 @@ ncftpput upload.sourceforge.net incoming/ pmd-src-<version>.zip pmd-bin-<version
 lftp -e "mput -O incoming/ pmd-src-<version>.zip pmd-bin-<version>.zip" upload.sourceforge.net
 
 
+Extra:
+	update web site
+	update cpd.jnlp
 
 Go to Admin, File Releases, Add release
 Paste stuff into the changelog/readme boxes
@@ -59,7 +62,7 @@ cd ~/pmd/pmd/
 update the "download" and "what's new" link in navigation.xml
 ./docs.sh all
 ./docs.sh upload
-scp target/pmd-*-bundle.jar tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/
+scp target/pmd-*-bundle.jar pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/
 
 
 Open a JIRA Maven upload issue: http://maven.apache.org/maven-1.x/reference/repository-upload.html

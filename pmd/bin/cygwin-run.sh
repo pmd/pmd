@@ -6,7 +6,7 @@ esac
 FILE=$1
 FORMAT=$2
 RULESETFILES=$3
-VERSION=4.1rc1
+VERSION=4.1
 PMD_CLASSPATH=../lib/pmd-$VERSION.jar:../lib/jaxen-1.1.1.jar:../lib/asm-3.1.jar
 if $cygwin; then
   FILE=`cygpath --windows "$FILE"`

@@ -31,9 +31,9 @@ elif [ $option = "uploadcurrent" ]; then
   cd target
   rm -f $DOCS_FILE
   tar zcf $DOCS_FILE docs/
-  scp -i ~/.ssh/identity $DOCS_FILE tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/current/
+  scp $DOCS_FILE pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/current/
   cd ../
-  ssh -l tomcopeland pmd.sourceforge.net "cd /home/groups/p/pm/pmd/htdocs/current/ && tar -zxf docs.tar.gz && cp -R docs/* . && rm -rf docs && rm docs.tar.gz"
+  ssh pmd.sourceforge.net "cd /home/groups/p/pm/pmd/htdocs/current/ && tar -zxf docs.tar.gz && cp -R docs/* . && rm -rf docs && rm docs.tar.gz"
 elif [ $option = "upload" ]; then
   echo "Uploading xdocs"
   DOCS_FILE=docs.tar.gz
@@ -42,9 +42,9 @@ elif [ $option = "upload" ]; then
   rm -f $DOCS_FILE
   tar zcf $DOCS_FILE docs/
     echo "Starting secure copy"
-  scp -i ~/.ssh/identity $DOCS_FILE tomcopeland@pmd.sourceforge.net:/home/groups/p/pm/pmd/
+  scp $DOCS_FILE pmd.sourceforge.net:/home/groups/p/pm/pmd/
   cd ../
-  ssh -l tomcopeland pmd.sourceforge.net "cd /home/groups/p/pm/pmd/ &&  rm -rf xref && rm -rf apidocs && ./update_docs.sh"
+  ssh pmd.sourceforge.net "cd /home/groups/p/pm/pmd/ &&  rm -rf xref && rm -rf apidocs && ./update_docs.sh"
 fi
 if [ -e velocity.log ]; then
   rm velocity.log
