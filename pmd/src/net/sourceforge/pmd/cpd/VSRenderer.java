@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.util.StringUtil;
 
 import java.util.Iterator;
 
