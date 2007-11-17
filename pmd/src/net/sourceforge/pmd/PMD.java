@@ -128,10 +128,7 @@ public class PMD {
         } finally {
             try {
                 reader.close();
-            } catch (IOException e) {
-                throw new PMDException("Error while closing "
-                        + ctx.getSourceCodeFilename(), e);
-            }
+            } catch (IOException e) {}
         }
     }
 
