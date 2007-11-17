@@ -98,7 +98,8 @@ public class CollectionUtil {
 	 * Creates and returns a map populated with the keyValuesSets where
 	 * the value held by the tuples are they key and value in that order.
 	 * 
-	 * @param keyValueSets Object[][]
+	 * @param keys K[]
+	 * @param values V[]
 	 * @return Map
 	 */
 	public static <K, V> Map<K, V> mapFrom(K[] keys, V[] values) {

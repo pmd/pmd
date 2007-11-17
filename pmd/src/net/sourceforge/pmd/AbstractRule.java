@@ -386,7 +386,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     /**
      * Adds a violation to the report.
      *
-     * @param ctx  the RuleContext
+     * @param data the RuleContext
      * @param node the node that produces the violation
      */
     protected final void addViolation(Object data, SimpleNode node) {
@@ -397,7 +397,7 @@ public abstract class AbstractRule extends JavaParserVisitorAdapter implements R
     /**
      * Adds a violation to the report.
      *
-     * @param ctx  the RuleContext
+     * @param data the RuleContext
      * @param node the node that produces the violation
      * @param msg  specific message to put in the report
      */

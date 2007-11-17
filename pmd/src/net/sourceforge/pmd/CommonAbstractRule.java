@@ -200,7 +200,7 @@ public abstract class CommonAbstractRule implements Rule {
     /**
      * Adds a violation to the report.
      *
-     * @param ctx  the RuleContext
+     * @param data the RuleContext
      * @param node the node that produces the violation
      */
     protected final void addViolation(Object data, SimpleNode node) {
@@ -211,7 +211,7 @@ public abstract class CommonAbstractRule implements Rule {
     /**
      * Adds a violation to the report.
      *
-     * @param ctx  the RuleContext
+     * @param data the RuleContext
      * @param node the node that produces the violation
      * @param msg  specific message to put in the report
      */
@@ -223,7 +223,7 @@ public abstract class CommonAbstractRule implements Rule {
     /**
      * Adds a violation to the report.
      *
-     * @param ctx   the RuleContext
+     * @param data  the RuleContext
      * @param node  the node that produces the violation
      * @param embed a variable to embed in the rule violation message
      */
@@ -235,7 +235,7 @@ public abstract class CommonAbstractRule implements Rule {
     /**
      * Adds a violation to the report.
      *
-     * @param ctx  the RuleContext
+     * @param data the RuleContext
      * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
      * @param args objects to embed in the rule violation message
      */
