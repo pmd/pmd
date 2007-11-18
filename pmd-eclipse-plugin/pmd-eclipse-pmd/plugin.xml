@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.core"
    name="PMD For Eclipse Core Plug-in"
-   version="4.1.0.rc1"
+   version="4.1.0.v200711171830"
    provider-name="PMD Development Team"
    class="net.sourceforge.pmd.core.PMDCorePlugin">
 
@@ -11,13 +11,13 @@
       <library name="pmd-core.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd14-4.1rc1.jar">
+      <library name="lib/pmd14-4.1.jar">
          <export name="*"/>
       </library>
-      <library name="lib/retroweaver-rt-2.0.1.jar">
+      <library name="lib/retroweaver-rt-2.0.2.jar">
          <export name="*"/>
       </library>
-      <library name="lib/asm-3.0.jar">
+      <library name="lib/asm-3.1.jar">
          <export name="*"/>
       </library>
       <library name="lib/jaxen-1.1.1.jar">
