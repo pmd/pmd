@@ -104,19 +104,17 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     private String getClassName(ASTCompilationUnit node) {
-        String className = null;
-
         ASTClassOrInterfaceDeclaration decl = node.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
-        if (decl != null) {
-            ASTPackageDeclaration pkgDecl = node.getFirstChildOfType(ASTPackageDeclaration.class);
-            if (pkgDecl == null) {
-                className = decl.getImage();
-            } else {
-                importedOnDemand.add(((ASTName) pkgDecl.jjtGetChild(0)).getImage());
-                className = ((ASTName) pkgDecl.jjtGetChild(0)).getImage() + "." + decl.getImage();
-            }
+        if (decl == null) {
+            return null; // This might be an enum
         }
-        return className;
+        ASTPackageDeclaration pkgDecl = node.getPackageDeclaration();
+        if (pkgDecl == null) {
+            return decl.getImage();
+        } else {
+            importedOnDemand.add(pkgDecl.getPackageNameImage());
+            return pkgDecl.getPackageNameImage() + "." + decl.getImage();
+        }
     }
 
     /**
