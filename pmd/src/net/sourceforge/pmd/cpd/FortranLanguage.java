@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- * @authors:Romain PELISSE belaran@gmail.com
+ * @author Romain PELISSE belaran@gmail.com
  */
 package net.sourceforge.pmd.cpd;
 

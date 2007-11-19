@@ -1,6 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
- * @authors: Zev Blut zb@ubit.com
+ * @author Zev Blut zb@ubit.com
  */
 package net.sourceforge.pmd.cpd;
 
