@@ -415,9 +415,9 @@ public class MyClass {
     	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUsingShortType">
         <description>
             <![CDATA[
-            Java uses the short type to reduce memory usage, not to optimize calculation. On the contrary, the jvm does not has an
-            arithmetic capabilities with the type short. So, the P-code msut convert the short into int, then do the proper caculation
-            and then again, convert int to short. So, use of the 'short' type may have a great effect on memory usage.
+            Java uses the 'short' type to reduce memory usage, not to optimize calculation. In fact, the jvm does not have any
+            arithmetic capabilities for the short type: the jvm must convert the short into an int, do the proper caculation
+            and convert the int back to a short. So, the use of the 'short' type may have a greater impact than memory usage.
             ]]>
         </description>
         <priority>1</priority>
