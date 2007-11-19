@@ -1,4 +1,10 @@
 
+make sure code is up to date and everything is in svn:
+
+ant -f bin/build.xml delete
+svn update
+svn status
+
 run version update script at the top level:
 
 ./etc/update_version.sh <version>
@@ -12,18 +18,20 @@ run version update script at the top level:
 update rulesets/rulesets.properties - add any new ruleset file names
 ensure all the new rules are listed in a rulesets/releases/<version>.xml file
 
-ant clean test
+ant -f bin/build.xml pmdOnPmd
+
+ant -f bin/build.xml clean regress test
 Check in everything
 
-ant dist regress regress14
+ant -f bin/build.xml  dist regress regress14
 Do all the JUnit tests run?  OK, then:
 
 TESTS: Can you
 1) run 1 file and get a report
-./pmd.sh ~/tmp/Test.java xml unusedcode
-./pmd.sh ~/tmp/Test.java html rulesets/unusedcode.xml
+./bin/pmd.sh ~/tmp/Test.java xml unusedcode
+./bin/pmd.sh ~/tmp/Test.java html rulesets/unusedcode.xml
 2) run the Ant 'pmd' task and get a report
-ant pmd
+ant -f bin/build.xml pmd
 
 run "./generate_release.sh <version>" in etc
 
@@ -47,10 +55,6 @@ ncftpput upload.sourceforge.net incoming/ pmd-src-<version>.zip pmd-bin-<version
 lftp -e "mput -O incoming/ pmd-src-<version>.zip pmd-bin-<version>.zip" upload.sourceforge.net
 
 
-Extra:
-	update web site
-	update cpd.jnlp
-
 Go to Admin, File Releases, Add release
 Paste stuff into the changelog/readme boxes
 Add the pmd-bin-<version>.zip file
@@ -64,6 +68,7 @@ update the "download" and "what's new" link in navigation.xml
 ./docs.sh upload
 scp target/pmd-*-bundle.jar pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/
 
+update cpd.jnlp
 
 Open a JIRA Maven upload issue: http://maven.apache.org/maven-1.x/reference/repository-upload.html
 Submit news to SF
