@@ -27,6 +27,10 @@ public class ASTCompilationUnit extends SimpleJavaNode implements CompilationUni
         return type;
     }
 
+    public boolean declarationsAreInDefaultPackage() {
+        return getPackageDeclaration() == null;
+    }
+
     public ASTPackageDeclaration getPackageDeclaration() {
         return getFirstChildOfType(ASTPackageDeclaration.class);
     }
