@@ -94,7 +94,7 @@ public class PMDRuntimePlugin extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        configureLogs();
+        configureLogs(loadPreferences());
     }
 
     /**
@@ -180,7 +180,9 @@ public class PMDRuntimePlugin extends AbstractUIPlugin {
         Logger log = Logger.getLogger(ROOT_LOG_ID);
         log.setLevel(preferences.getLogLevel());
         RollingFileAppender appender = (RollingFileAppender) log.getAppender(PMD_ECLIPSE_APPENDER_NAME);
-        if (!appender.getFile().equals(preferences.getLogFileName())) {
+        if (appender == null) {
+            configureLogs(preferences);
+        } else if (!appender.getFile().equals(preferences.getLogFileName())) {
             appender.setFile(preferences.getLogFileName());
             appender.activateOptions();
         }
@@ -190,10 +192,8 @@ public class PMDRuntimePlugin extends AbstractUIPlugin {
      * Configure the logging
      *
      */
-    private void configureLogs() {
+    private void configureLogs(IPreferences preferences) {
         try {
-            IPreferences preferences = loadPreferences();
-
             Layout layout = new PatternLayout("%d{yyyy/MM/dd HH:mm:ss,SSS} %-5p %-32c{1} %m%n");
             
             RollingFileAppender appender = new RollingFileAppender(layout, preferences.getLogFileName());
