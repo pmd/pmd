@@ -31,7 +31,7 @@ public class ASTImportDeclaration extends SimpleJavaNode implements TypeNode {
         return isStatic;
     }
 
-    // TODO - this should go away
+    // TODO - this should go away, but the DuplicateImports rule still uses it (in a clunky way)
     public ASTName getImportedNameNode() {
         return (ASTName) jjtGetChild(0);
     }
@@ -69,6 +69,8 @@ public class ASTImportDeclaration extends SimpleJavaNode implements TypeNode {
         return visitor.visit(this, data);
     }
 
+    // TODO - some overlap between this and the string mungers above... I guess
+    // we have to keep both around in case the user doesn't want to use type resolution.
     private Class type;
     private Package pkg;
     public void setType(Class type){

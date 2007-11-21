@@ -24,11 +24,8 @@ import java.util.logging.Logger;
 public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private static final Logger LOG = Logger.getLogger(ClassTypeResolver.class.getName());
-
     private static Map<String, Class> myPrimitiveTypes;
-
     private static Map<String, String> myJavaLang;
-
     private static PMDASMClassLoader pmdClassLoader = new PMDASMClassLoader();
 
     static {
@@ -83,16 +80,16 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
     }
 
     private Map<String, String> importedClasses;
-
     private List<String> importedOnDemand;
 
     public Object visit(ASTCompilationUnit node, Object data) {
-
         String className = null;
         try {
             importedOnDemand = new ArrayList<String>();
             className = getClassName(node);
-            populateClassName(node, className);
+            if (className != null) {
+                populateClassName(node, className);
+            }
         } catch (ClassNotFoundException e) {
             LOG.log(Level.FINE, "Could not find class " + className);
         } catch (NoClassDefFoundError e) {
@@ -103,53 +100,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         return super.visit(node, data);
     }
 
-    private String getClassName(ASTCompilationUnit node) {
-        ASTClassOrInterfaceDeclaration classDecl = node.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
-        if (classDecl == null) {
-            return null; // Happens if this compilation unit only contains an enum
-        }
-        if (node.declarationsAreInDefaultPackage()) {
-            return classDecl.getImage();
-        }
-        ASTPackageDeclaration pkgDecl = node.getPackageDeclaration();
-        importedOnDemand.add(pkgDecl.getPackageNameImage());
-        return pkgDecl.getPackageNameImage() + "." + classDecl.getImage();
-    }
-
-    /**
-     * If the outer class wasn't found then we'll get in here
-     * 
-     * @param node
-     */
-    private void populateImports(ASTCompilationUnit node) {
-        List<ASTImportDeclaration> theImportDeclarations = node.findChildrenOfType(ASTImportDeclaration.class);
-        importedClasses = new HashMap<String, String>();
-
-        // go through the imports
-        for (ASTImportDeclaration anImportDeclaration : theImportDeclarations) {
-            String strPackage = anImportDeclaration.getPackageName();
-            if (anImportDeclaration.isImportOnDemand()) {
-                importedOnDemand.add(strPackage);
-            } else if (!anImportDeclaration.isImportOnDemand()) {
-                String strName = anImportDeclaration.getImportedName();
-                importedClasses.put(strName, strName);
-                importedClasses.put(strName.substring(strPackage.length() + 1), strName);
-            }
-        }
-
-        importedClasses.putAll(myJavaLang);
-    }
-
-    private void populateClassName(ASTCompilationUnit node, String className) throws ClassNotFoundException {
-        if (className != null) {
-            Class c = pmdClassLoader.loadClass(className);
-            node.setType(c);
-            importedClasses = pmdClassLoader.getImportedClasses(className);
-        }
-    }
-    
     public Object visit(ASTImportDeclaration node, Object data) {
-
         ASTName importedType = (ASTName) node.jjtGetChild(0);
         if(importedType.getType() != null){
            node.setType(importedType.getType()); 
@@ -160,12 +111,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         if(node.getType() != null){
             node.setPackage(node.getType().getPackage());
         }
-
         return data;
     }
 
     public Object visit(ASTClassOrInterfaceType node, Object data) {
-
         populateType(node, node.getImage());
         return data;
     }
@@ -248,4 +197,48 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
         }
         return null;
     }
+
+    private String getClassName(ASTCompilationUnit node) {
+        ASTClassOrInterfaceDeclaration classDecl = node.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
+        if (classDecl == null) {
+            return null; // Happens if this compilation unit only contains an enum
+        }
+        if (node.declarationsAreInDefaultPackage()) {
+            return classDecl.getImage();
+        }
+        ASTPackageDeclaration pkgDecl = node.getPackageDeclaration();
+        importedOnDemand.add(pkgDecl.getPackageNameImage());
+        return pkgDecl.getPackageNameImage() + "." + classDecl.getImage();
+    }
+
+    /**
+     * If the outer class wasn't found then we'll get in here
+     *
+     * @param node
+     */
+    private void populateImports(ASTCompilationUnit node) {
+        List<ASTImportDeclaration> theImportDeclarations = node.findChildrenOfType(ASTImportDeclaration.class);
+        importedClasses = new HashMap<String, String>();
+
+        // go through the imports
+        for (ASTImportDeclaration anImportDeclaration : theImportDeclarations) {
+            String strPackage = anImportDeclaration.getPackageName();
+            if (anImportDeclaration.isImportOnDemand()) {
+                importedOnDemand.add(strPackage);
+            } else if (!anImportDeclaration.isImportOnDemand()) {
+                String strName = anImportDeclaration.getImportedName();
+                importedClasses.put(strName, strName);
+                importedClasses.put(strName.substring(strPackage.length() + 1), strName);
+            }
+        }
+
+        importedClasses.putAll(myJavaLang);
+    }
+
+    private void populateClassName(ASTCompilationUnit node, String className) throws ClassNotFoundException {
+        node.setType(pmdClassLoader.loadClass(className));
+        importedClasses = pmdClassLoader.getImportedClasses(className);
+    }
+
+
 }
