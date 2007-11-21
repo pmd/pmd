@@ -34,7 +34,7 @@ Added TypeResolution to the XPath rule. Use typeof function to determine if a no
 Adding a GenericLiteralChecker, a generic rule that require a regex as property. It will log a violation if a Literal is matched by the regex. See the new rule AvoidUsingHardCodedIP for an example.
 Adding support for multiple line span String in CPD's AbstractTokenizer, this may change, for the better, CPD's Ruby parsing.
 This release adds 'nicehtml', with the plan for the next major release to make nicehtml->html, and html->oldhtml. This feature uses an XSLT transformation, default stylesheet maybe override with '-xslt filename'.
-New CPD command line feature : Using more than on directory for sources. You can now have several '--files' on the command line.
+New CPD command line feature : Using more than one directory for sources. You can now have several '--files' on the command line.
 SingularField greatly improved to generate very few false positives (none?). Moved from controversial to design. Two options added to restore old behaviour (mostly).
 Jaxen updated to 1.1.1, now Literal[@Image='""'] works in XPath expressions.
 
