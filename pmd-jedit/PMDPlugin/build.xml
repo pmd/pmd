@@ -6,7 +6,7 @@
 	<property name="src" value="src/"/>
 	<property name="lib" value="${basedir}/lib"/>
 	<property name="build" value="build"/>
-	<property name="pmdjar" value="pmd-4.1rc1.jar"/>
+	<property name="pmdjar" value="pmd-4.1.jar"/>
 	<property name="pluginversion" value="2.7"/>
 	<property name="jedit.install.dir" value="../.."/>
 	<property name="jedit.jars.dir" value="${jedit.install.dir}/jars" />
@@ -18,9 +18,9 @@
 		<pathelement location="${build}"/>
 		<fileset casesensitive="false" id="pmd.libs" dir="${lib}">
 			<include name="${pmdjar}"/>
-			<include name="asm-3.0.jar"/>
+			<include name="asm-3.1.jar"/>
 			<include name="jaxen-1.1.1.jar"/>
-			<include name="junit-4.1.jar"/>
+			<include name="junit-4.4.jar"/>
 			<include name="pmd-swingui-0.1.jar"/>
 			<include name="jakarta-oro-2.0.8.jar"/>
 		</fileset>
