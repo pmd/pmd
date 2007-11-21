@@ -1,10 +1,10 @@
 ---++ BUILDING 
 
-The NetBeans IDE version 6.0M9 is currently used for the development of plugin.
+The NetBeans IDE version 6.0rc1 is currently used for the development of plugin.
 Older version of harness (NB5.5) can fail to run tests.
 
 Read the documentation of this support to get details about the 
 configuration. Basically it tries to find Java platform called 'JDK 1.5' and 
-NetBeans platform named 'NetBeans IDE M6.0M9'
+NetBeans platform named 'NetBeans IDE 6.0'
 
-Released plugin versions are built with JDK 1.5 and against NetBeans6.0M9.
+Released plugin versions are built with JDK 1.5 and against NetBeans6.0.

@@ -2,9 +2,9 @@
 
     <import file="nbproject/build-impl.xml"/>
 
-    <property name="pmd.jar" value="pmd-4.0.jar"/>
+    <property name="pmd.jar" value="pmd-4.1.jar"/>
     <property name="nb.version" value="netbeans60"/>
-    <property name="VERSION" value="2.0"/>
+    <property name="VERSION" value="2.1"/>
 
     <property file="build.ant.properties"/>
 
@@ -31,8 +31,8 @@
         <copy todir="${cluster}/modules/ext">
           <fileset dir="lib">
             <include name="${pmd.jar}"/>
-            <include name="asm-3.0.jar"/>
-            <include name="jaxen-1.1.jar"/>
+            <include name="asm-3.1.jar"/>
+            <include name="jaxen-1.1.1.jar"/>
           </fileset>
         </copy>
     </target>
@@ -48,8 +48,8 @@
 				<include name="src/**/*"/>
 				<include name="libsrc/**/*"/>
 				<include name="lib/${pmd.jar}"/>
-				<include name="lib/jaxen-1.1.jar"/>
-                                <include name="lib/asm-3.0.jar"/>
+				<include name="lib/jaxen-1.1.1.jar"/>
+                                <include name="lib/asm-3.1.jar"/>
 			</zipfileset>
 			<zipfileset dir="." fullpath="pmd-${nb.version}-${VERSION}/pmd.nbm" includes="build/pmd.nbm"/>
 		</zip>
