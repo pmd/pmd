@@ -45,6 +45,7 @@
 				<include name="manifest.mf"/>
 				<include name="build.xml"/>
 				<include name="nbproject/*.*"/>
+				<include name="javahelp/**/*"/>
 				<include name="src/**/*"/>
 				<include name="libsrc/**/*"/>
 				<include name="lib/${pmd.jar}"/>
