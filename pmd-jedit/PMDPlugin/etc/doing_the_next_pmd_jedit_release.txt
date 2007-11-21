@@ -1,7 +1,6 @@
-update the release date in the changelog
 change to reflect actual pmd.jar file version
 change pmd.props to reflect the new pmd-jedit release version.
-change jedit.html to reflect the new pmd-jedit release version, and update its release notes
+change jedit.html to reflect the new pmd-jedit release version, and update its release date / notes
 change the build.xml to reflect pmd-jedit release
 update doing_the_next_pmd_jedit_release.txt(this file) to the new pmd-jedit release version
 commit the above changes FIRST!!
@@ -15,37 +14,15 @@ TESTS:
 4) Does CPD work?
 5) Check if the PMD Help shows correct data like Release notes, help/new features.
 6) Re-Commit if changes were made in the above steps first!!
-Create the src release:
-cvs -q rtag -D tomorrow "pmd_jedit_release_2_6" pmd-jedit
-rm -rf ~/tmp/pmd-jedit
-mkdir -p ~/tmp/pmd-jedit
-cvs -q export -d tmp -r pmd_jedit_release_2_6 pmd-jedit
-mv tmp/* ~/tmp/pmd-jedit
-rmdir tmp/
-cp pmd-jedit/PMDPlugin/lib/PMDPlugin.jar ~/tmp/pmd-jedit/PMDPlugin/lib
-copy other relevant libraries to ~/tmp/pmd-jedit/PMDPlugin/lib
-cd ~/tmp
-zip -q -r pmd-jedit-src-2.6.zip pmd-jedit
-rm -rf pmd-jedit
 
-ncftpput upload.sourceforge.net incoming/ pmd-jedit-src-2.6.zip pmd-jedit-bin-2.6.zip
+Tag the release in SVN:
+export SVNROOT=https://pmd.svn.sourceforge.net/svnroot/pmd
+svn cp $PMDSVN/trunk/pmd-jedit $PMDSVN/tags/pmd-jedit/pmd_jedit_release_2_8
 
-Go to Admin, Edit/Release Files, click on Add new release
-Paste stuff into the changelog/readme boxes
-Add the 2 zip files
-Classify the file
+Generate a plugin announcement. From jEdit 
+    macros - properties - generate plugin announcement
 
-Submit some news saying "hey, new release of the JEdit plugin!"
-
-
-Life saving commands :)
-
-To retag a file to a new version.
-To move a symbolic tag to a different version (using the numeric number), use the following:
-
-    cvs tag -r new-number -F symbolic-name filename
-
-For example, if you needed to update foo.c after testing, and the symbolic tag MPICH2_1_0_3_rc1 originally pointed at version 1.16 for this file but the corrected version was 1.17, use
-
-    cvs tag -r 1.17 -F MPICH2_1_0_3_rc1 foo.c
+Create a tracker item in plugin submissions
+    https://sourceforge.net/tracker/?group_id=588&atid=625093
+cut and paste the announcement into the body of the new tracker item
 
