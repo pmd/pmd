@@ -241,17 +241,17 @@
     <dependency>
       <groupId>jaxen</groupId>
       <artifactId>jaxen</artifactId>
-      <version>1.1</version>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>asm</groupId>
       <artifactId>asm</artifactId>
-      <version>3.0</version>
+      <version>3.1</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.1</version>
+      <version>4.4</version>
     </dependency>
   </dependencies>
 
