@@ -3,13 +3,15 @@ Change log for the PMD Eclipse plugin
 
 v3.2.3 - xx/xx/2007
 
-Runtime
--------
+. PMD updated to v4.1
+. dependency jars updated
+. Fix 1811828 RuntimeException in RuleSetFactory
+. Fix NPE on empty rulesets
+. Fix UI preference refresh bug
+. xml rulesets now use indentation: human readable and easier to modify
 
-- Fix 1811828 RuntimeException in RuleSetFactory
 
-. Updated PMD v4.1rc1
-
+----------------------------------------------------------------------------------------
 v3.2.2 - 24/06/2007
 
 Runtime

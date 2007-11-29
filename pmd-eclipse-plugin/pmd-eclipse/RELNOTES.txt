@@ -6,10 +6,16 @@ v3.2.3 xx/xx/2007
 
 UPDATE
 ------
-Include PMD 4.1rc1.
+
+PMD to 4.1
+dependency jars updated
 
 FIXED
 -----
+
+Bug #1811828 RuntimeException in RuleSetFactory
+
+
 See changelog for complete list.
 
 
