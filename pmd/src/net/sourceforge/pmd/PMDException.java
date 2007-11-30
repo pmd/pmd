@@ -32,8 +32,8 @@ public class PMDException extends Exception {
      * @deprecated use {@link #getCause()} instead
      */
     @Deprecated
-    public Throwable getReason() {
-        return getCause();
+    public Exception getReason() {
+        return (Exception) getCause();
     }
 
     public void setSeverity(int severity) {

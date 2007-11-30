@@ -403,7 +403,7 @@ public class PMD {
                 InputStream stream = new BufferedInputStream(dataSource.getInputStream());
                 processFile(stream, encoding, rs, ctx);
             } catch (PMDException pmde) {
-                LOG.log(Level.FINE, "Error while processing file", pmde.getReason());
+                LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
 
                 report.addError(
                         new Report.ProcessingError(pmde.getMessage(),
@@ -610,7 +610,7 @@ public class PMD {
                     InputStream stream = new BufferedInputStream(dataSource.getInputStream());
                     pmd.processFile(stream, encoding, rs, ctx);
                 } catch (PMDException pmde) {
-                    LOG.log(Level.FINE, "Error while processing file", pmde.getReason());
+                    LOG.log(Level.FINE, "Error while processing file", pmde.getCause());
 
                     report.addError(
                             new Report.ProcessingError(pmde.getMessage(),
@@ -671,7 +671,7 @@ public class PMD {
                         .getInputStream());
                 processFile(stream, encoding, rulesets, ctx);
             } catch (PMDException pmde) {
-                LOG.log(Level.FINE, "Error while processing files", pmde.getReason());
+                LOG.log(Level.FINE, "Error while processing files", pmde.getCause());
 
                 ctx.getReport().addError(new Report.ProcessingError(pmde.getMessage(), niceFileName));
             }
