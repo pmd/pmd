@@ -3,9 +3,6 @@
  */
 package net.sourceforge.pmd;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
 /**
  * A convenience exception wrapper.  Contains the original exception, if any.  Also, contains
  * a severity number (int).  Zero implies no severity.  The higher the number the greater the
@@ -16,8 +13,8 @@ import java.io.PrintWriter;
  * @since August 30, 2002
  */
 public class PMDException extends Exception {
+    private static final long serialVersionUID = 6938647389367956874L;
 
-    private Exception reason;
     private int severity;
 
     public PMDException(String message) {
@@ -25,32 +22,18 @@ public class PMDException extends Exception {
     }
 
     public PMDException(String message, Exception reason) {
-        super(message);
-        this.reason = reason;
+        super(message, reason);
     }
 
-    public void printStackTrace() {
-        printStackTrace(System.err);
-    }
-
-    public void printStackTrace(PrintStream s) {
-        super.printStackTrace(s);
-        if (this.reason != null) {
-            s.print("Caused by: ");
-            this.reason.printStackTrace(s);
-        }
-    }
-
-    public void printStackTrace(PrintWriter s) {
-        super.printStackTrace(s);
-        if (this.reason != null) {
-            s.print("Caused by: ");
-            this.reason.printStackTrace(s);
-        }
-    }
-
-    public Exception getReason() {
-        return reason;
+    /**
+     * Returns the cause of this exception or <code>null</code>
+     * 
+     * @return the cause of this exception or <code>null</code>
+     * @deprecated use {@link #getCause()} instead
+     */
+    @Deprecated
+    public Throwable getReason() {
+        return getCause();
     }
 
     public void setSeverity(int severity) {
