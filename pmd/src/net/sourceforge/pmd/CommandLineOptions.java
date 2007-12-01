@@ -22,6 +22,7 @@ import java.text.MessageFormat;
 public class CommandLineOptions {
 
     private boolean debugEnabled;
+    private boolean stressTestEnabled;
     private String targetJDK = "1.5";
     private boolean shortNamesEnabled;
     private int cpus = Runtime.getRuntime().availableProcessors();
@@ -63,6 +64,8 @@ public class CommandLineOptions {
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("-debug")) {
                 debugEnabled = true;
+            } else if (args[i].equals("-stress")) {
+                stressTestEnabled = true;
             } else if (args[i].equals("-shortnames")) {
                 shortNamesEnabled = true;
             } else if (args[i].equals("-encoding")) {
@@ -173,6 +176,10 @@ public class CommandLineOptions {
 
     public boolean debugEnabled() {
         return debugEnabled;
+    }
+
+    public boolean stressTestEnabled() {
+        return stressTestEnabled;
     }
 
     public int getCpus() {

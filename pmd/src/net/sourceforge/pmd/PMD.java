@@ -307,6 +307,7 @@ public class PMD {
                 Benchmark.mark(Benchmark.TYPE_LOAD_RULES, endLoadRules - startLoadRules, 0);
     
                 processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx, renderers,
+                        opts.stressTestEnabled(),
                         opts.getRulesets(), opts.shortNamesEnabled(),
                         opts.getInputPath(), opts.getEncoding(), opts.getExcludeMarker());
             } catch (RuleSetNotFoundException rsnfe) {
@@ -516,6 +517,18 @@ public class PMD {
     public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List<DataSource> files, RuleContext ctx,
             List<Renderer> renderers, String rulesets, final boolean shortNamesEnabled, final String inputPath,
             String encoding, String excludeMarker) {
+        processFiles(threadCount, ruleSetFactory, sourceType, files, ctx,
+                renderers, false, rulesets, shortNamesEnabled, inputPath,
+                encoding, excludeMarker);
+    }
+    /**
+     * Run PMD on a list of files using multiple threads.
+     *
+     * @throws IOException If one of the files could not be read
+     */
+    public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List<DataSource> files, RuleContext ctx,
+            List<Renderer> renderers, boolean stressTestEnabled, String rulesets, final boolean shortNamesEnabled, final String inputPath,
+            String encoding, String excludeMarker) {
 
         /*
          * Check if multithreaded is supported. 
@@ -524,13 +537,18 @@ public class PMD {
          */
         boolean useMT = mtSupported && (threadCount > 0);
 
-        Collections.sort(files, new Comparator<DataSource>() {
-            public int compare(DataSource d1,DataSource d2) {
-                String s1 = d1.getNiceFileName(shortNamesEnabled, inputPath);
-                String s2 = d2.getNiceFileName(shortNamesEnabled, inputPath);
-                return s1.compareTo(s2);
-            }
-        });
+        if (stressTestEnabled) {
+            // randomize processing order
+            Collections.shuffle(files);
+        } else {
+            Collections.sort(files, new Comparator<DataSource>() {
+                public int compare(DataSource d1,DataSource d2) {
+                    String s1 = d1.getNiceFileName(shortNamesEnabled, inputPath);
+                    String s2 = d2.getNiceFileName(shortNamesEnabled, inputPath);
+                    return s1.compareTo(s2);
+                }
+            });
+        }
 
         if (useMT) {
             PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory);
