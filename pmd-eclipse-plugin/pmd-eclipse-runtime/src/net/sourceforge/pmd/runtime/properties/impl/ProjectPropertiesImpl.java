@@ -200,6 +200,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      */
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) throws PropertiesException {
         log.debug("Set rule set stored in project for project " + this.project.getName() + ": " + ruleSetStoredInProject);
+        this.needRebuild |= this.ruleSetStoredInProject != ruleSetStoredInProject;
         this.ruleSetStoredInProject = ruleSetStoredInProject;
         if ((this.ruleSetStoredInProject) && (!isRuleSetFileExist())) {
             throw new PropertiesException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
@@ -220,6 +221,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
         log.debug("Set working set for project " + this.project.getName() + ": "
                 + (projectWorkingSet == null ? "none" : projectWorkingSet.getName()));
 
+        this.needRebuild |= (this.projectWorkingSet == null)?(projectWorkingSet != null):!this.projectWorkingSet.equals(projectWorkingSet);
         this.projectWorkingSet = projectWorkingSet;
     }
 
