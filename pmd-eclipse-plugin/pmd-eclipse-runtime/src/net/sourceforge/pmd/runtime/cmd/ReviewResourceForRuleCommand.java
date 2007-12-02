@@ -143,6 +143,8 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
                 pmdEngine.setJavaVersion(SourceType.JAVA_14);
             } else if (JavaCore.VERSION_1_5.equals(compilerCompliance)) {
                 pmdEngine.setJavaVersion(SourceType.JAVA_15);
+            } else if (JavaCore.VERSION_1_6.equals(compilerCompliance)) {
+                pmdEngine.setJavaVersion(SourceType.JAVA_16);
             } else {
                 throw new CommandException("The target JDK, " + compilerCompliance + " is not yet supported"); // TODO:
                 // NLS
