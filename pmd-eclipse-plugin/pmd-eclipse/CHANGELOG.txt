@@ -1,7 +1,7 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
-v3.2.3 - xx/xx/2007
+v3.2.3 - Dec 02 2007
 
 . PMD updated to v4.1
 . dependency jars updated
