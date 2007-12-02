@@ -5,6 +5,7 @@ v3.2.3 - xx/xx/2007
 
 . PMD updated to v4.1
 . dependency jars updated
+. Fix 1661524 Working set functionality doesn't work
 . Fix 1811828 RuntimeException in RuleSetFactory
 . Fix NPE on empty rulesets
 . Fix UI preference refresh bug

@@ -13,6 +13,7 @@ dependency jars updated
 FIXED
 -----
 
+Bug #1661524 Working set functionality doesn't work
 Bug #1811828 RuntimeException in RuleSetFactory
 
 

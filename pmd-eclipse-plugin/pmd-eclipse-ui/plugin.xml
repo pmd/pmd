@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.ui"
    name="PMD For Eclipse UI Plug-in"
-   version="3.2.3.alpha-200711282033"
+   version="3.2.3.v200712021445"
    provider-name="PMD Development Team"
    class="net.sourceforge.pmd.ui.PMDUiPlugin">
 
