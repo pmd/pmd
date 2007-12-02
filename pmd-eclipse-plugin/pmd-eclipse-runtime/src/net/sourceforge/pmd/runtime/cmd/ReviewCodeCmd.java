@@ -320,14 +320,9 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         if (javaProject.exists()) {
             final String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
             log.debug("compilerCompliance = " + compilerCompliance);
-            if (JavaCore.VERSION_1_3.equals(compilerCompliance)) {
-                pmdEngine.setJavaVersion(SourceType.JAVA_13);
-            } else if (JavaCore.VERSION_1_4.equals(compilerCompliance)) {
-                pmdEngine.setJavaVersion(SourceType.JAVA_14);
-            } else if (JavaCore.VERSION_1_5.equals(compilerCompliance)) {
-                pmdEngine.setJavaVersion(SourceType.JAVA_15);
-            } else if (JavaCore.VERSION_1_6.equals(compilerCompliance)) {
-                pmdEngine.setJavaVersion(SourceType.JAVA_16);
+            final SourceType s = SourceType.getSourceTypeForId("java " + compilerCompliance);
+            if (s != null) {
+                pmdEngine.setJavaVersion(s);
             } else {
                 throw new CommandException("The target JDK, " + compilerCompliance + " is not yet supported"); // TODO:
                 // NLS
