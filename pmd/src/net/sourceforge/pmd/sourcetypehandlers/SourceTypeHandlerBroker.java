@@ -14,11 +14,11 @@ public class SourceTypeHandlerBroker {
 
     private static final Map<SourceType, SourceTypeHandler> mapSourceTypeOnSourceTypeHandler = CollectionUtil
             .mapFrom(new SourceType[] { SourceType.JAVA_13, SourceType.JAVA_14,
-                    SourceType.JAVA_15, SourceType.JAVA_16, SourceType.JSP, },
+                    SourceType.JAVA_15, SourceType.JAVA_16, SourceType.JAVA_17, SourceType.JSP, },
 
             new SourceTypeHandler[] { new Java13Handler(), new Java14Handler(),
                     new Java15Handler(), new Java16Handler(),
-                    new JspTypeHandler(), });
+                    new Java17Handler(), new JspTypeHandler(), });
 
     /**
      * Never create one

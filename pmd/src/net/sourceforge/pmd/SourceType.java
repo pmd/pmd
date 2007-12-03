@@ -10,9 +10,10 @@ package net.sourceforge.pmd;
      public static final SourceType JAVA_14 = new SourceType("java 1.4");
      public static final SourceType JAVA_15 = new SourceType("java 1.5");
      public static final SourceType JAVA_16 = new SourceType("java 1.6");
+     public static final SourceType JAVA_17 = new SourceType("java 1.7");
      public static final SourceType JSP = new SourceType("jsp");
      
-     private static SourceType[] sourceTypes = new SourceType[]{JAVA_13, JAVA_14, JAVA_15, JAVA_16, JSP};
+     private static SourceType[] sourceTypes = new SourceType[]{JAVA_13, JAVA_14, JAVA_15, JAVA_16, JAVA_17, JSP};
  
      private String id;
  

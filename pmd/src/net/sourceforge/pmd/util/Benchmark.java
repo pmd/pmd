@@ -87,6 +87,8 @@ public class Benchmark {
             jdk = SourceType.JAVA_15;
         } else if (targetjdk.equals("1.6")) {
             jdk = SourceType.JAVA_16;
+        } else if (targetjdk.equals("1.7")) {
+            jdk = SourceType.JAVA_17;
         }
         boolean debug = findBooleanSwitch(args, "--debug");
         boolean parseOnly = findBooleanSwitch(args, "--parse-only");

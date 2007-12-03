@@ -31,7 +31,8 @@ public class SourceTypeTest {
                 { "java 1.3", SourceType.JAVA_13 }, 
                 { "java 1.4", SourceType.JAVA_14 }, 
                 { "java 1.5", SourceType.JAVA_15 }, 
-                { "java 1.6", SourceType.JAVA_16 } 
+                { "java 1.6", SourceType.JAVA_16 },
+                { "java 1.7", SourceType.JAVA_17 },
             });
     }
 

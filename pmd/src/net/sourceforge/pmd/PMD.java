@@ -269,6 +269,9 @@ public class PMD {
         } else if (opts.getTargetJDK().equals("1.6")) {
             LOG.fine("In JDK 1.6 mode");
             sourceType = SourceType.JAVA_16;
+        } else if (opts.getTargetJDK().equals("1.7")) {
+            LOG.fine("In JDK 1.7 mode");
+            sourceType = SourceType.JAVA_17;
         } else {
             LOG.fine("In JDK 1.4 mode");
             sourceType = SourceType.JAVA_14;

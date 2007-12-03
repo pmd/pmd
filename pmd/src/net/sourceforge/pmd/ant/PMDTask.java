@@ -177,6 +177,9 @@ public class PMDTask extends Task {
         } else if (targetJDK.equals("1.6")) {
             log("Targeting Java language version 1.6", Project.MSG_VERBOSE);
             sourceType = SourceType.JAVA_16;
+        } else if (targetJDK.equals("1.7")) {
+            log("Targeting Java language version 1.7", Project.MSG_VERBOSE);
+            sourceType = SourceType.JAVA_17;
         } else if(targetJDK.equals("jsp")){
             log("Targeting JSP", Project.MSG_VERBOSE);
             sourceType = SourceType.JSP;

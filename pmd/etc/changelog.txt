@@ -1,3 +1,7 @@
+????, 2007 - 4.2:
+
+1.7 added as a valid option for targetjdk.
+
 November 17, 2007 - 4.1:
 Fixed annotation bug: ClassCastException when a formal parameter had multiple annotations
 Added a Visual Studio renderer for CPD; just use "--format vs".

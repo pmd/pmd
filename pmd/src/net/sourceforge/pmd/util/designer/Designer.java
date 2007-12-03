@@ -80,6 +80,7 @@ import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDK1_6;
+import net.sourceforge.pmd.TargetJDK1_7;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.Node;
@@ -121,6 +122,10 @@ public class Designer implements ClipboardOwner {
 		public SimpleNode parse(StringReader sr) { return new TargetJDK1_6().createParser(sr).CompilationUnit(); }
 	};
 	
+	private static final Parser jdkParser1_7 = new Parser() {
+		public SimpleNode parse(StringReader sr) { return new TargetJDK1_7().createParser(sr).CompilationUnit(); }
+	};
+	
 	private static final Parser jspParser = new Parser() {
 		public SimpleNode parse(StringReader sr) { return new JspParser(new JspCharStream(sr)).CompilationUnit(); }
 	};
@@ -130,6 +135,7 @@ public class Designer implements ClipboardOwner {
 		{ "JDK 1.4", SourceType.JAVA_14, jdkParser1_4 },
 		{ "JDK 1.5", SourceType.JAVA_15, jdkParser1_5 },
 		{ "JDK 1.6", SourceType.JAVA_16, jdkParser1_6 },
+		{ "JDK 1.7", SourceType.JAVA_17, jdkParser1_7 },
 		{ "JSP", 	 SourceType.JSP, 	 jspParser }
 		};
 	
