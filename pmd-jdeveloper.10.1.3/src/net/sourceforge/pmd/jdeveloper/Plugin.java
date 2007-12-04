@@ -206,8 +206,8 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         EditorManager.getEditorManager().getContextMenu().removeContextMenuListener(this);
     }
 
-    public float version() {
-        return 1.9f;
+    public String version() {
+        return "4.1.2.0.0";
     }
 
     public float ideVersion() {
