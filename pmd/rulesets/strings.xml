@@ -335,9 +335,11 @@ Using '==' or '!=' to compare strings only works if intern version is used on bo
         <property name="xpath">
             <value>
 <![CDATA[
-//EqualityExpression/PrimaryExpression/PrimaryPrefix/Literal
+//EqualityExpression/PrimaryExpression
+[(PrimaryPrefix/Literal
    [starts-with(@Image, '"')]
    [ends-with(@Image, '"')]
+and count(PrimarySuffix) = 0)]
 ]]>
             </value>
         </property>

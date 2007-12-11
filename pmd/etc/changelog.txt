@@ -1,5 +1,7 @@
 ????, 2007 - 4.2:
 
+Fixed bug 1848888 - fixed false positive in UseEqualsToCompareStrings
+
 1.7 added as a valid option for targetjdk.
 
 November 17, 2007 - 4.1:
