@@ -315,6 +315,8 @@ class PreferencesManagerImpl implements IPreferencesManager {
                 PMDRuntimePlugin.getDefault().logError("File Not Found Exception when loading state ruleset file", e);
             } catch (IOException e) {
                 PMDRuntimePlugin.getDefault().logError("IO Exception when loading state ruleset file", e);
+            } catch (RuntimeException e) {
+            	PMDRuntimePlugin.getDefault().logError("Runtime Exception when loading state ruleset file", e);
             }
         }
 

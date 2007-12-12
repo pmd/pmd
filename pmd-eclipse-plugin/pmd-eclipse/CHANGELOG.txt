@@ -1,6 +1,12 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
 
+v3.2.4 - Dec xx 2007
+
+. Fix 1811828 RuntimeException in RuleSetFactory
+    default ruleset is used on error
+
+----------------------------------------------------------------------------------------
 v3.2.3 - Dec 02 2007
 
 . PMD updated to v4.1
