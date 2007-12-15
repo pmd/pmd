@@ -62,15 +62,16 @@ Add the pmd-src-<version>.zip file
 Classify the file
 Click File Releases, Edit Release, set previous version to 'hidden'.
 
+upload command below will create and upload the maven artifacts to sourceforge. Login info
+for 'pmd-repo' must be defined in ~/.m2/settings.xml
+
 cd ~/pmd/pmd/
 update the "download" and "what's new" link in navigation.xml
 ./docs.sh all
 ./docs.sh upload
-scp target/pmd-*-bundle.jar pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/
 
 update cpd.jnlp
 
-Open a JIRA Maven upload issue: http://maven.apache.org/maven-1.x/reference/repository-upload.html
 Submit news to SF
 Go to http://freshmeat.net/
 Submit news to java.net

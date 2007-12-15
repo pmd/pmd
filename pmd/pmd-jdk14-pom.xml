@@ -2,7 +2,7 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>pmd</groupId>
-  <artifactId>pmd</artifactId>
+  <artifactId>pmd-jdk14</artifactId>
   <name>PMD</name>
   <version>4.1.1</version>
   <description>
@@ -271,7 +271,17 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.4</version>
+      <version>3.8.2</version>
+    </dependency>
+    <dependency>
+      <groupId>backport-util-concurrent</groupId>
+      <artifactId>backport-util-concurrent</artifactId>
+      <version>3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.retroweaver</groupId>
+      <artifactId>retroweaver-rt</artifactId>
+      <version>2.0.2</version>
     </dependency>
   </dependencies>
 
