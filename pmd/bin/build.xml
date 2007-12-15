@@ -6,6 +6,7 @@
 	<property name="dir.lib14" value="java14/lib/" />
 	<property name="dir.src" value="src/" />
 	<property name="dir.build" value="build/" />
+	<property name="dir.target" value="target/" />
 	<property name="dir.rulesets" value="rulesets/" />
 	<property name="dir.regress" value="regress/" />
 	<property name="version" value="4.1" />
@@ -29,6 +30,7 @@
 
 	<target name="delete" description="Deletes the build directory and the pmd-x.x jar file.">
 		<delete dir="${dir.build}" />
+		<delete dir="${dir.target}" />
 		<delete file="${dir.lib}/pmd-${version}.jar" />
 		<delete file="${dir.lib}/pmd-src-${version}.jar" />
 		<delete file="${dir.lib}/pmd-test-${version}.jar" />
