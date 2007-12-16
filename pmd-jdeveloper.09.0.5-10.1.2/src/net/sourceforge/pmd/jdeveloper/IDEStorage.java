@@ -7,15 +7,15 @@ import java.util.Properties;
 
 public class IDEStorage implements SettingsStorage {
 
-    public void save(Properties props)  throws SettingsException {
-        for (Iterator i = props.keySet().iterator(); i.hasNext();) {
+    public void save(Properties props) throws SettingsException {
+        for (Iterator i = props.keySet().iterator(); i.hasNext(); ) {
             String key = (String)i.next();
             String value = props.getProperty(key);
             Ide.setProperty(key, value);
         }
     }
 
-    public String load(String key) throws SettingsException  {
+    public String load(String key) throws SettingsException {
         return Ide.getProperty(key);
     }
 }

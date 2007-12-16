@@ -1,18 +1,22 @@
 <project name="pmd-jdeveloper" default="compile" basedir="../">
-
-	<property name="config" value="config/"/>
-	<property name="src" value="src/"/>
-	<property name="etc" value="etc/"/>
-	<property name="pmdjar" value="pmd14-4.0.jar"/>
-	<property name="pluginversion" value="1.9"/>
+  <!-- property section start -->
+  <property name="config" value="config/"/>
+  <property name="src" value="src/"/>
+  <property name="etc" value="etc/"/>
+	<property name="pmdjar" value="pmd14-4.1.jar"/>
+  <!-- first and second number for the pmd plugin -->
+  <!-- third number JDeveloper Version 1:9.0.5-10.1.2, 2:10.1.3, 3:11.1.1 -->
+  <!-- fourth and fifth number minor version number for the JDeveloper Plugin -->
+  <property name="pluginversion" value="4.1.1.0.0"/>
   <property name="release.dir" value="C:/Documents and Settings/Torsten/My Documents/Eigene Programme/Java/PMD/releases"/>
   <property name="jdeveloper.dir" value="C:/Oracle/10gJD10122"/>
 	<property name="jdeveloper905.install.dir" value="${release.dir}/ides/jdev9052/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
 	<property name="jdeveloper1012.install.dir" value="${release.dir}/ides/jdev1012/jdev/lib/ext/${ant.project.name}-${pluginversion}"/>
   <property name="jdeveloper905.release.zipname" value="${ant.project.name}905-bin-${pluginversion}.zip"/>
   <property name="jdeveloper1012.release.zipname" value="${ant.project.name}1012-bin-${pluginversion}.zip"/>
-  <property name="release.src.zipname" value="${ant.project.name}-src-${pluginversion}.zip"/>
+  <property name="release.src.zipname" value="${ant.project.name}905-1012-src-${pluginversion}.zip"/>
 
+  <!-- property section end -->
 	<path id="project.class.path">
 		<pathelement location="lib/${pmdjar}"/>
 		<pathelement location="${jdeveloper.dir}/jdev/lib/jdev.jar"/>
@@ -20,7 +24,6 @@
 		<pathelement location="${jdeveloper.dir}/ide/lib/ide.jar"/>
 		<pathelement location="build"/>
 	</path>
-
   <target name="delete">
     <delete file="lib/${ant.project.name}-${pluginversion}.jar"/>
     <delete file="${jdeveloper905.install.dir}/${ant.project.name}.jar"/>
@@ -58,24 +61,24 @@
      <mkdir dir="${jdeveloper1012.install.dir}/lib"/>
      <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper1012.install.dir}/lib"/>
      <copy file="lib/${pmdjar}" todir="${jdeveloper1012.install.dir}/lib"/>
-     <copy file="lib/asm-3.0.jar" todir="${jdeveloper1012.install.dir}/lib"/>
-     <copy file="lib/asm-commons-3.0.jar" todir="${jdeveloper1012.install.dir}/lib"/>
-     <copy file="lib/asm-util-3.0.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/asm-3.1.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/asm-commons-3.1.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/asm-util-3.1.jar" todir="${jdeveloper1012.install.dir}/lib"/>
      <copy file="lib/backport-util-concurrent.jar" todir="${jdeveloper1012.install.dir}/lib"/>
-     <copy file="lib/jaxen-1.1.jar" todir="${jdeveloper1012.install.dir}/lib"/>
-     <copy file="lib/retroweaver-rt-2.0.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/jaxen-1.1.1.jar" todir="${jdeveloper1012.install.dir}/lib"/>
+     <copy file="lib/retroweaver-rt-2.0.2.jar" todir="${jdeveloper1012.install.dir}/lib"/>
   </target>
 
   <target name="deploy9052" depends="delete,jar9052">
     <mkdir dir="${jdeveloper905.install.dir}/lib"/>
     <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="${jdeveloper905.install.dir}/lib"/>
     <copy file="lib/${pmdjar}" todir="${jdeveloper905.install.dir}/lib"/>
-    <copy file="lib/asm-3.0.jar" todir="${jdeveloper905.install.dir}/lib"/>
-    <copy file="lib/asm-commons-3.0.jar" todir="${jdeveloper905.install.dir}/lib"/>
-    <copy file="lib/asm-util-3.0.jar" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/asm-3.1.jar" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/asm-commons-3.1.jar" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/asm-util-3.1.jar" todir="${jdeveloper905.install.dir}/lib"/>
     <copy file="lib/backport-util-concurrent.jar" todir="${jdeveloper905.install.dir}/lib"/>
-    <copy file="lib/jaxen-1.1.jar" todir="${jdeveloper905.install.dir}/lib"/>
-    <copy file="lib/retroweaver-rt-2.0.jar" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/jaxen-1.1.1.jar" todir="${jdeveloper905.install.dir}/lib"/>
+    <copy file="lib/retroweaver-rt-2.0.2.jar" todir="${jdeveloper905.install.dir}/lib"/>
   </target>
 
   <target name="releaseall">
@@ -83,12 +86,12 @@
      <mkdir dir="tmp/${ant.project.name}-${pluginversion}/lib"/>
      <copy file="lib/${ant.project.name}-${pluginversion}.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
      <copy file="lib/${pmdjar}" todir="tmp/${ant.project.name}-${pluginversion}/lib/"/>
-     <copy file="lib/asm-3.0.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
-     <copy file="lib/asm-commons-3.0.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
-     <copy file="lib/asm-util-3.0.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+     <copy file="lib/asm-3.1.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+     <copy file="lib/asm-commons-3.1.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+     <copy file="lib/asm-util-3.1.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
      <copy file="lib/backport-util-concurrent.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
-     <copy file="lib/jaxen-1.1.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
-     <copy file="lib/retroweaver-rt-2.0.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+     <copy file="lib/jaxen-1.1.1.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
+     <copy file="lib/retroweaver-rt-2.0.2.jar" todir="tmp/${ant.project.name}-${pluginversion}/lib"/>
   </target>
 
   <target name="release1012" depends="clean,jar1012,releaseall">

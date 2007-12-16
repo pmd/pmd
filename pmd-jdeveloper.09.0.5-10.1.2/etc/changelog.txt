@@ -1,3 +1,8 @@
+December 06, 2007 - 4.1:
+Updated PMD version to 4.1.
+Set PMD java version to project J2SE/target.
+Fix for showing rules examples in PMD property window.
+
 August 06, 2007 - 1.9:
 Updated PMD version to 4.0.
 

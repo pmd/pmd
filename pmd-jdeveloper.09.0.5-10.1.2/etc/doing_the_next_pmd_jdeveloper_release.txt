@@ -13,14 +13,14 @@ src release:
 // TODO automation by ant, if subversion tasks are available
 checkin
 // TODO automation by ant, if subversion tasks are available
-copy to tags/pmd-jdeveloper/pmd_jdeveloper_release_X_X
+copy to tags/pmd-jdeveloper/pmd_jdeveloperXXX_release_X_X_X_X_X
 ant releasesrc
 
 release on website:
 ant upload
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
-Add the pmd-jdeveloper-src-1.9.zip file
+Add the pmd-jdeveloperXXX-src-X.X.X.X.X.zip file
 Add the pmd-jdeveloper-bin-1.9.zip file
 Classify the file
 

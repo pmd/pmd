@@ -1,12 +1,14 @@
 package net.sourceforge.pmd.jdeveloper;
 
 import net.sourceforge.pmd.RuleSetNotFoundException;
+
 import oracle.ide.Ide;
 import oracle.ide.panels.DefaultTraversablePanel;
 import oracle.ide.panels.TraversableContext;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FileDialog;
@@ -15,14 +17,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
+import java.awt.event.MouseMotionListener;
+
 import java.io.File;
+
+import java.util.List;
 
 public class SettingsPanel extends DefaultTraversablePanel {
 
-
     private class FindListener implements ActionListener {
-        public void actionPerformed(ActionEvent evt){
-            FileDialog fdlg = new FileDialog(new Frame(), "Find", FileDialog.LOAD);
+        public void actionPerformed(ActionEvent evt) {
+            FileDialog fdlg = 
+                new FileDialog(new Frame(), "Find", FileDialog.LOAD);
             fdlg.setVisible(true);
             String selected = fdlg.getDirectory() + fdlg.getFile();
             if (fdlg.getFile() == null) {
@@ -36,16 +43,7 @@ public class SettingsPanel extends DefaultTraversablePanel {
 
         private class MyMouseAdapter extends MouseAdapter {
             public void mouseEntered(MouseEvent e) {
-                int index = locationToIndex(e.getPoint());
-                if (index != -1) {
-                    JCheckBox box = (JCheckBox)getModel().getElementAt(index);
-                    String example = rules.getRule(box).getExamples().toString();
-                    while (example.charAt(0) == '\r' || example.charAt(0) == '\n' || example.charAt(0) == '\t' || example.charAt(0) == ' ') {
-                        example = example.substring(1);
-                    }
-                    exampleTextArea.setText(example);
-                    exampleTextArea.setCaretPosition(0);
-                }
+                // No action needed when mouse is entered
             }
 
             public void mousePressed(MouseEvent e) {
@@ -58,14 +56,51 @@ public class SettingsPanel extends DefaultTraversablePanel {
             }
         }
 
+        private class MyMouseMotionListener implements MouseMotionListener {
+
+            public void mouseDragged(MouseEvent e) {
+                // No dragging actions needed
+            }
+
+            public void mouseMoved(MouseEvent e) {
+                int index = locationToIndex(e.getPoint());
+                if (index != -1) {
+                    JCheckBox box = (JCheckBox)getModel().getElementAt(index);
+                    List examples = rules.getRule(box).getExamples();
+                    StringBuffer examplesBuffer = new StringBuffer();
+                    if (!examples.isEmpty()) {
+                        for (int i = 0; i < examples.size(); i++) {
+                            examplesBuffer.append(examples.get(i));
+                        }
+                    }
+                    String example = examplesBuffer.toString();
+
+                    while (example.charAt(0) == '\r' || 
+                           example.charAt(0) == '\n' || 
+                           example.charAt(0) == '\t' || 
+                           example.charAt(0) == ' ') {
+                        example = example.substring(1);
+                    }
+                    exampleTextArea.setText(example);
+                    exampleTextArea.setCaretPosition(0);
+                }
+            }
+        }
+
         public class CheckboxListCellRenderer implements ListCellRenderer {
-            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            public Component getListCellRendererComponent(JList list, 
+                                                          Object value, 
+                                                          int index, 
+                                                          boolean isSelected, 
+                                                          boolean cellHasFocus) {
                 JCheckBox box = (JCheckBox)value;
                 box.setEnabled(isEnabled());
                 box.setFont(getFont());
                 box.setFocusPainted(false);
                 box.setBorderPainted(true);
-                box.setBorder(isSelected ? UIManager.getBorder("List.focusCellHighlightBorder") : new EmptyBorder(1,1,1,1));
+                box.setBorder(isSelected ? 
+                              UIManager.getBorder("List.focusCellHighlightBorder") : 
+                              new EmptyBorder(1, 1, 1, 1));
                 return box;
             }
         }
@@ -74,15 +109,18 @@ public class SettingsPanel extends DefaultTraversablePanel {
             super(args);
             setCellRenderer(new CheckboxListCellRenderer());
             addMouseListener(new MyMouseAdapter());
+            addMouseMotionListener(new MyMouseMotionListener());
         }
-
     }
 
-    public static final String RULE_SELECTIONS_STORED_SEPARATELY = "pmd.settings.separate";
-    public static final String RULE_SELECTIONS_FILENAME = "pmd.settings.separate.name";
+    public static final String RULE_SELECTIONS_STORED_SEPARATELY = 
+        "pmd.settings.separate";
+    public static final String RULE_SELECTIONS_FILENAME = 
+        "pmd.settings.separate.name";
 
-    private JTextArea exampleTextArea= new JTextArea(10, 50);
-    private JCheckBox selectedRulesStoredSeparatelyBox = new JCheckBox("", Boolean.valueOf(Ide.getProperty(RULE_SELECTIONS_STORED_SEPARATELY)).booleanValue());
+    private JTextArea exampleTextArea = new JTextArea(10, 50);
+    private JCheckBox selectedRulesStoredSeparatelyBox = 
+        new JCheckBox("", Boolean.valueOf(Ide.getProperty(RULE_SELECTIONS_STORED_SEPARATELY)).booleanValue());
     private JTextField selectedRulesSeparateFileNameField = new JTextField(30);
     private SelectedRules rules;
 
@@ -128,7 +166,8 @@ public class SettingsPanel extends DefaultTraversablePanel {
         selectedRulesStoredSeparatelyBox.setSelected(Boolean.valueOf(Ide.getProperty(RULE_SELECTIONS_STORED_SEPARATELY)).booleanValue());
 
         JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(new JLabel("                        InfoEther(tm) PMD JDeveloper plugin"), BorderLayout.NORTH);
+        topPanel.add(new JLabel("                        InfoEther(tm) PMD JDeveloper plugin"), 
+                     BorderLayout.NORTH);
         JPanel customStoragePanel = new JPanel(new BorderLayout());
         customStoragePanel.setBorder(BorderFactory.createTitledBorder("Settings storage"));
 
@@ -144,18 +183,26 @@ public class SettingsPanel extends DefaultTraversablePanel {
         findButton.addActionListener(new FindListener());
         customStorageTextFieldPanel.add(findButton);
 
-        customStoragePanel.add(customStorageTextFieldPanel, BorderLayout.SOUTH);
+        customStoragePanel.add(customStorageTextFieldPanel, 
+                               BorderLayout.SOUTH);
         topPanel.add(customStoragePanel, BorderLayout.CENTER);
         return topPanel;
     }
 
     public void onExit(TraversableContext tc) {
-        Ide.setProperty(RULE_SELECTIONS_STORED_SEPARATELY, String.valueOf(selectedRulesStoredSeparatelyBox.isSelected()));
-        Ide.setProperty(RULE_SELECTIONS_FILENAME, selectedRulesSeparateFileNameField.getText());
+        Ide.setProperty(RULE_SELECTIONS_STORED_SEPARATELY, 
+                        String.valueOf(selectedRulesStoredSeparatelyBox.isSelected()));
+        Ide.setProperty(RULE_SELECTIONS_FILENAME, 
+                        selectedRulesSeparateFileNameField.getText());
         try {
             rules.save(createSettingsStorage());
         } catch (SettingsException se) {
-            JOptionPane.showMessageDialog(null, "Can't save selected rules to the file " + selectedRulesSeparateFileNameField.getText() + ":" + se.getMessage(), "Can't save settings", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, 
+                                          "Can't save selected rules to the file " + 
+                                          selectedRulesSeparateFileNameField.getText() + 
+                                          ":" + se.getMessage(), 
+                                          "Can't save settings", 
+                                          JOptionPane.ERROR_MESSAGE);
         }
     }
 }

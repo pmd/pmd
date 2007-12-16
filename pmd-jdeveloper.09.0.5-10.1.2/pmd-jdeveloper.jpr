@@ -1,7 +1,8 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <project nselem="project" class="oracle.jdeveloper.model.JProject" xmlns="http://xmlns.oracle.com/jdeveloper/10120/jproject">
-   <defaultPackage>mypackage2</defaultPackage>
+   <defaultPackage>net.sourceforge.pmd.jdeveloper</defaultPackage>
    <defaultPackages class="java.util.ArrayList">
+      <Item class="java.lang.String">net.sourceforge.pmd.jdeveloper</Item>
       <Item class="java.lang.String">mypackage2</Item>
    </defaultPackages>
    <dependencyList/>
@@ -10,15 +11,15 @@
    <j2eeWebContextRoot>PMD 10-pmd-jdeveloper-context-root</j2eeWebContextRoot>
    <listOfChildren class="oracle.ide.model.DataList">
       <Item class="oracle.ide.model.Reference">
-         <URL path="lib/asm-3.0.jar"/>
+         <URL path="lib/asm-3.1.jar"/>
          <nodeClass>oracle.jdevimpl.jar.JarFolder</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
-         <URL path="lib/asm-commons-3.0.jar"/>
+         <URL path="lib/asm-commons-3.1.jar"/>
          <nodeClass>oracle.jdevimpl.jar.JarFolder</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
-         <URL path="lib/asm-util-3.0.jar"/>
+         <URL path="lib/asm-util-3.1.jar"/>
          <nodeClass>oracle.jdevimpl.jar.JarFolder</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
@@ -46,7 +47,7 @@
          <nodeClass>oracle.jdeveloper.model.JavaSourceNode</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
-         <URL path="lib/jaxen-1.1.jar"/>
+         <URL path="lib/jaxen-1.1.1.jar"/>
          <nodeClass>oracle.jdevimpl.jar.JarFolder</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
@@ -58,10 +59,6 @@
          <nodeClass>oracle.bali.xml.addin.XMLSourceNode</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
-         <URL path="src/net/sourceforge/pmd/jdeveloper/JumpingSelectionModel.java"/>
-         <nodeClass>oracle.jdeveloper.model.JavaSourceNode</nodeClass>
-      </Item>
-      <Item class="oracle.ide.model.Reference">
          <URL path="src/net/sourceforge/pmd/jdeveloper/Plugin.java"/>
          <nodeClass>oracle.jdeveloper.model.JavaSourceNode</nodeClass>
       </Item>
@@ -70,15 +67,11 @@
          <nodeClass>oracle.jdevimpl.jar.JarFolder</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
-         <URL path="lib/retroweaver-rt-2.0.jar"/>
+         <URL path="lib/retroweaver-rt-2.0.2.jar"/>
          <nodeClass>oracle.jdevimpl.jar.JarFolder</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
          <URL path="src/net/sourceforge/pmd/jdeveloper/RuleViolationPage.java"/>
-         <nodeClass>oracle.jdeveloper.model.JavaSourceNode</nodeClass>
-      </Item>
-      <Item class="oracle.ide.model.Reference">
-         <URL path="src/net/sourceforge/pmd/jdeveloper/RuleViolationWrapper.java"/>
          <nodeClass>oracle.jdeveloper.model.JavaSourceNode</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
@@ -95,6 +88,10 @@
       </Item>
       <Item class="oracle.ide.model.Reference">
          <URL path="src/net/sourceforge/pmd/jdeveloper/SettingsStorage.java"/>
+         <nodeClass>oracle.jdeveloper.model.JavaSourceNode</nodeClass>
+      </Item>
+      <Item class="oracle.ide.model.Reference">
+         <URL path="src/net/sourceforge/pmd/jdeveloper/Version.java"/>
          <nodeClass>oracle.jdeveloper.model.JavaSourceNode</nodeClass>
       </Item>
    </listOfChildren>

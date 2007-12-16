@@ -6,6 +6,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
 import javax.swing.*;
+
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
@@ -16,18 +17,18 @@ public class SelectedRules {
 
     // Rule -> JCheckBox
     private Map rules = new TreeMap(new Comparator() {
-        public int compare(Object o1, Object o2) {
-            Rule r1 = (Rule)o1;
-            Rule r2 = (Rule)o2;
-            return r1.getName().compareTo(r2.getName());
-        }
-    });
+                public int compare(Object o1, Object o2) {
+                    Rule r1 = (Rule)o1;
+                    Rule r2 = (Rule)o2;
+                    return r1.getName().compareTo(r2.getName());
+                }
+            });
 
     public SelectedRules(SettingsStorage settings) throws RuleSetNotFoundException {
         RuleSetFactory rsf = new RuleSetFactory();
-        for (Iterator i = rsf.getRegisteredRuleSets(); i.hasNext();) {
+        for (Iterator i = rsf.getRegisteredRuleSets(); i.hasNext(); ) {
             RuleSet rs = (RuleSet)i.next();
-            for (Iterator j = rs.getRules().iterator(); j.hasNext();) {
+            for (Iterator j = rs.getRules().iterator(); j.hasNext(); ) {
                 Rule rule = (Rule)j.next();
                 rules.put(rule, createCheckBox(rule.getName(), settings));
             }
@@ -39,14 +40,15 @@ public class SelectedRules {
     }
 
     public Rule getRule(JCheckBox candidate) {
-        for (Iterator i = rules.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = rules.keySet().iterator(); i.hasNext(); ) {
             Rule rule = (Rule)i.next();
             JCheckBox box = (JCheckBox)rules.get(rule);
             if (box.equals(candidate)) {
                 return rule;
             }
         }
-        throw new RuntimeException("Couldn't find a rule that mapped to the passed in JCheckBox " + candidate);
+        throw new RuntimeException("Couldn't find a rule that mapped to the passed in JCheckBox " + 
+                                   candidate);
     }
 
     public JCheckBox get(Object key) {
@@ -56,7 +58,7 @@ public class SelectedRules {
     public Object[] getAllBoxes() {
         Object[] foo = new Object[rules.size()];
         int idx = 0;
-        for (Iterator i = rules.values().iterator(); i.hasNext();) {
+        for (Iterator i = rules.values().iterator(); i.hasNext(); ) {
             foo[idx] = i.next();
             idx++;
         }
@@ -65,16 +67,17 @@ public class SelectedRules {
 
     public void save(SettingsStorage settings) throws SettingsException {
         Properties properties = new Properties();
-        for (Iterator i = rules.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = rules.keySet().iterator(); i.hasNext(); ) {
             Rule rule = (Rule)i.next();
-            properties.setProperty("pmd.rule." + rule.getName(),  String.valueOf(get(rule).isSelected()));
+            properties.setProperty("pmd.rule." + rule.getName(), 
+                                   String.valueOf(get(rule).isSelected()));
         }
         settings.save(properties);
     }
 
     public RuleSet getSelectedRules() {
         RuleSet newRuleSet = new RuleSet();
-        for (Iterator i = rules.keySet().iterator(); i.hasNext();) {
+        for (Iterator i = rules.keySet().iterator(); i.hasNext(); ) {
             Rule rule = (Rule)i.next();
             if (get(rule).isSelected()) {
                 newRuleSet.addRule(rule);
@@ -93,8 +96,10 @@ public class SelectedRules {
         return box;
     }
 
-    private boolean load(SettingsStorage settings, String name) throws SettingsException {
-        return Boolean.valueOf(settings.load("pmd.rule." + name)).booleanValue();
+    private boolean load(SettingsStorage settings, 
+                         String name) throws SettingsException {
+        return Boolean.valueOf(settings.load("pmd.rule." + 
+                                             name)).booleanValue();
     }
 
 }
