@@ -9,7 +9,6 @@ import net.sourceforge.pmd.cpd.CPD;
 import net.sourceforge.pmd.cpd.LanguageFactory;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.cpd.TokenEntry;
-import net.sourceforge.pmd.SourceType;
 
 import oracle.ide.Addin;
 import oracle.ide.AddinManager;
@@ -35,7 +34,6 @@ import oracle.ide.navigator.NavigatorManager;
 import oracle.ide.panels.Navigable;
 
 import oracle.jdeveloper.compiler.IdeLog;
-import oracle.jdeveloper.compiler.OjcConfigurationPanel;
 import oracle.jdeveloper.compiler.IdeStorage;
 import oracle.jdeveloper.model.JavaSourceNode;
 
@@ -56,10 +54,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import oracle.jdeveloper.compiler.BuildSystemConfiguration;
-import oracle.jdeveloper.compiler.OjcConfiguration;
-
 
 public class Plugin implements Addin, Controller, ContextMenuListener {
 
@@ -168,7 +162,6 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     private boolean added;
     private Map pmdFileToNodeMap = new HashMap(); // whew, this is kludgey
     private Map cpdFileToNodeMap = new HashMap(); // whew, this is kludgey
-    private static BuildSystemConfiguration config;
 
     // Addin
 
@@ -197,7 +190,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         IdeSettings.registerUI(new Navigable(PMD_TITLE, SettingsPanel.class, 
                                              new Navigable[] { }));
         Ide.getVersionInfo().addComponent(PMD_TITLE, 
-                                          " JDeveloper Extension " + version());
+                                          "JDeveloper Extension " + Version.version());
 
         ruleViolationPage = new RuleViolationPage();
         //        cpdViolationPage = new CPDViolationPage();
@@ -206,10 +199,6 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     public void shutdown() {
         NavigatorManager.getWorkspaceNavigatorManager().removeContextMenuListener(this);
         EditorManager.getEditorManager().getContextMenu().removeContextMenuListener(this);
-    }
-
-    public String version() {
-        return "1.9.0.0.1";
     }
 
     public float ideVersion() {
@@ -238,7 +227,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
             try {
                 pmdFileToNodeMap.clear();
                 PMD pmd = new PMD();
-                setJavaVersion(context, pmd);
+                Version.setJavaVersion(context, pmd);
 
                 SelectedRules rules = 
                     new SelectedRules(SettingsPanel.createSettingsStorage());
@@ -267,17 +256,17 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                 e.getReason().printStackTrace();
                 JOptionPane.showMessageDialog(null, 
                                               "Error while running PMD: " + 
-                                              "\n" +
-                        e.getMessage() + "\n" +
-                        e.getReason().getMessage(), PMD_TITLE, 
-                        JOptionPane.ERROR_MESSAGE);
+                                              "\n" + e.getMessage() + "\n" + 
+                                              e.getReason().getMessage(), 
+                                              PMD_TITLE, 
+                                              JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
                 logMessage(e.getMessage());
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, 
                                               "Error while running PMD: " + 
-                                              "\n" +
-                        e.getMessage(), PMD_TITLE, JOptionPane.ERROR_MESSAGE);
+                                              "\n" + e.getMessage(), PMD_TITLE, 
+                                              JOptionPane.ERROR_MESSAGE);
             }
         } else if (ideAction.getCommandId() == RUN_CPD_CMD_ID) {
             try {
@@ -330,20 +319,6 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
             }
         }
         return true;
-    }
-
-    private void setJavaVersion(Context context, PMD pmd) {
-        config = BuildSystemConfiguration.getInstance(context.getProject());
-        String source = config.getSource();
-        if (source.equals("1.6")) {
-            pmd.setJavaVersion(SourceType.JAVA_16);
-        } else if (source.equals("1.5")) {
-            pmd.setJavaVersion(SourceType.JAVA_15);
-        } else if (source.equals("1.4")) {
-            pmd.setJavaVersion(SourceType.JAVA_14);
-        } else if (source.equals("1.3")) {
-            pmd.setJavaVersion(SourceType.JAVA_13);
-        }
     }
 
     public boolean update(IdeAction ideAction, Context context) {
