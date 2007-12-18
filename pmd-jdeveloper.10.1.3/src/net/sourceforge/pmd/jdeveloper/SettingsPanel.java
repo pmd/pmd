@@ -85,7 +85,7 @@ public class SettingsPanel extends DefaultTraversablePanel {
                     exampleTextArea.setCaretPosition(0);
                 }
             }
-                }
+        }
 
         public class CheckboxListCellRenderer implements ListCellRenderer {
             public Component getListCellRendererComponent(JList list, 

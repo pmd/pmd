@@ -13,9 +13,9 @@
   <property name="jdeveloper.ext.subdir" value="jdev/extensions"/>
   <property name="release.dir"
             value="C:/Documents and Settings/Torsten/My Documents/Eigene Programme/Java/PMD/releases"/>
-  <property name="uploadbundle.scp.user" value="***"/>
-  <property name="uploadbundle.scp.pwd" value="***"/>
-  <property name="upload.ftp.pwd" value="***"/>
+  <property name="uploadbundle.scp.user" value=""/>
+  <property name="uploadbundle.scp.pwd" value=""/>
+  <property name="upload.ftp.pwd" value=""/>
   <!-- builded properties -->
   <property name="release.dirname" value="${mainclass}.${pluginversion}"/>
   <property name="release.jarname" value="${release.dirname}.jar"/>
@@ -24,7 +24,7 @@
   <property name="release.src.zipname"
             value="${ant.project.name}-src-${pluginversion}.zip"/>
   <property name="bundle.filename"
-            value="${ant.project.name}-${pluginversion}.zip"/>
+            value="${ant.project.name}-bundle-${pluginversion}.zip"/>
   <property name="jdeveloper.install.dir"
             value="${jdeveloper.dir}/${jdeveloper.ext.subdir}"/>
   <!-- property section end -->
@@ -112,13 +112,13 @@
     <delete dir="update-center-bundle/${mainclass}.${pluginversion}"/>
     <delete dir="update-center-bundle/lib"/>
     <delete dir="update-center-bundle/META-INF"/>
-    <move file="update-center-bundle" todir="${release.dir}"/>
+    <move file="update-center-bundle/${bundle.filename}" todir="${release.dir}"/>
   </target>
-  <target name="upload" depends="release,releasesrc">
+  <target name="upload" depends="release,releasesrc,bundle">
     <ftp server="upload.sourceforge.net" userid="anonymous"
          password="${upload.ftp.pwd}" remotedir="incoming" binary="true"
          passive="true">
-      <fileset dir="${release.dir}" includes="*.zip"/>
+      <fileset dir="${release.dir}" includes="${ant.project.name}*${pluginversion}.zip"/>
     </ftp>
   </target>
   <target name="uploadbundle" depends="bundle">
