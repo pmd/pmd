@@ -48,6 +48,36 @@ public abstract class ShouldBeAbstract
     {
 	return i++;
    }
+
+    public int anotherUseFull(int i)
+    {
+	return i;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Other valid methods.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+    public native int isUseFull();
+
+    int i;
+
+    public int anotherUseFull() {
+      i = i + 1;
+      return i;
+    }
+
+    public String anotherUseFull(int j) {
+      i = j;
+      return null;
+   }
+
 }
      ]]></code>
     </test-code>

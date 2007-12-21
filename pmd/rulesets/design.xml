@@ -1384,9 +1384,9 @@ rather than code the appropriate one.
                     //ClassOrInterfaceDeclaration[@Abstract = 'true']
                         /ClassOrInterfaceBody
                         /ClassOrInterfaceBodyDeclaration
-                        /MethodDeclaration[@Abstract = 'false']
+                        /MethodDeclaration[@Abstract = 'false' and @Native = 'false']
                         [
-                            ( boolean(./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression) = 'true' )
+                            ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = 'true' )
                             or
                             ( count (./Block/*) = 0 )
                         ]
