@@ -7,7 +7,7 @@ Fixed other false positives in EmptyMethodInAbstractClassShouldBeAbstract
 New rules:
 	Controversial ruleset: DoNotCallGarbageCollectionExplicitly
 	Design ruleset : ReturnEmptyArrayRatherThanNull
-	Codesize : TooManyMethod
+	Codesize : TooManyMethods
 
 1.7 added as a valid option for targetjdk.
 
