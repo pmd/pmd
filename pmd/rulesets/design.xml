@@ -1440,5 +1440,52 @@ public class Foo {
 }
    ]]></example>
     </rule>
+    
+    <rule
+        name="ReturnEmptyArrayRatherThanNull"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        message="Return an empty array rather than 'null'."
+        externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#ReturnEmptyArrayRatherThanNull">
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+                        //MethodDeclaration
+                        [
+                        (./ResultType/Type[@Array='true'])
+                        and
+                        (./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral)
+                        ]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <description>
+            <![CDATA[
+            For any method that return an array, it's a better behavior to return a size 0 array rather than a null reference.
+            ]]>
+        </description>
+        <priority>1</priority>
+        <example>
+            <![CDATA[
+            public class Example
+            {
+                // Not a good idea...
+                public int []badBehavior()
+                {
+                    // ...
+                    return null;
+                }
+
+                // Good behavior
+                public String[] bonnePratique()
+                {
+                    //...
+                    return new String[0];
+                }
+            }
+            ]]>
+        </example>
+    </rule>
 
 </ruleset>

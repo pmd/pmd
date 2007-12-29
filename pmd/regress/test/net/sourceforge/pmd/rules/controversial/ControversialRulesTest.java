@@ -20,6 +20,7 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
         addRule("controversial", "DataflowAnomalyAnalysis");
         addRule("controversial", "DefaultPackage");
         addRule("controversial", "DontImportSun");
+        addRule("controversial", "DoNotCallGarbageCollectionExplicitly");
         addRule("controversial", "NullAssignment");
         addRule("controversial", "OnlyOneReturn");
         addRule("controversial", "SuspiciousOctalEscape");

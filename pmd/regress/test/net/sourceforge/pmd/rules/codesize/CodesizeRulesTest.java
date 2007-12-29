@@ -17,6 +17,7 @@ public class CodesizeRulesTest extends SimpleAggregatorTst {
         addRule("codesize", "NcssTypeCount");
         addRule("codesize", "NPathComplexity");
         addRule("codesize", "TooManyFields");
+        addRule("codesize", "TooManyMethods");
     }
 
     public static junit.framework.Test suite() {

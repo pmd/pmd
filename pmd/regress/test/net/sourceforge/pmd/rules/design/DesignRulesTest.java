@@ -36,6 +36,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule("design", "OptimizableToArrayCall");
         addRule("design", "PositionLiteralsFirstInComparisons");
         addRule("design", "PreserveStackTrace");
+        addRule("design", "ReturnEmptyArrayRatherThanNull");
         addRule("design", "SimpleDateFormatNeedsLocale");
         addRule("design", "SimplifyBooleanExpressions");
         addRule("design", "SimplifyBooleanReturns");

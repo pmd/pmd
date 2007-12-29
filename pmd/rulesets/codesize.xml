@@ -311,6 +311,56 @@ public class Foo extends Bar {
    </example>
 </rule>
 
+    <rule
+        name="TooManyMethods"
+        class="net.sourceforge.pmd.rules.XPathRule"
+        message="This java classe has too many methods. Consider refactoring it."
+        externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#TooManyMethods">
+        <properties>
+	        	<property name="acceptableLimit" description="nb methods maximum" value="10"/>
+	            <property name="xpath">
+                <value>
+                	<!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines, 
+                				something like this:
+                					not (
+									(
+									starts-with(@Image,'get')
+										or
+									starts-with(@Image,'set') 
+									)	
+									and ( (
+										(../Block/attribute::endLine) 
+								 		-
+										(../Block/attribute::beginLine) ) <= 3 )
+									)
+								This will avoid discarding 'real' method...
+                	 -->
+                    <![CDATA[
+					 //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
+					[
+						count(descendant::MethodDeclarator[
+							not 
+							(
+							starts-with(@Image,'get')
+								or
+							starts-with(@Image,'set') 
+							)	
+						]) > $acceptableLimit
+					]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <description>
+            <![CDATA[
+A class with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to
+have more fine grained object.
+            ]]>
+        </description>
+        <priority>3</priority>
+    </rule>
+
+
 </ruleset>
 
 
