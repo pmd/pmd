@@ -607,6 +607,15 @@ the volatile keyword should not be used for maintenance purpose and portability.
 	        message="Do not programmaticly trigger Garbage Collection."
 	        class="net.sourceforge.pmd.rules.XPathRule"
 	        externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DoNotCallGarbageCollectionExplicitly">
+        <description>
+	        <![CDATA[
+		        Calls to System.gc, Runtime.getRuntime().gc, and System.runFinalization are not advised. Codeshould have the 
+		        same behavior regardless if the garbage collection is disable, using the option -Xdisableexplicitgc, or not.
+		        Morover, "modern" jvm does a very good job about this. If issue appears with memory usage, whithin a application, 
+		        it should fixed using JVM's options rather than inside the code itself ( not considering memory leak, of course).
+			]]>
+        </description>
+        <priority>1</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -628,15 +637,6 @@ the volatile keyword should not be used for maintenance purpose and portability.
                 </value>
             </property>
         </properties>
-        <description>
-	        <![CDATA[
-		        Calls to System.gc, Runtime.getRuntime().gc, and System.runFinalization are not advised. Codeshould have the 
-		        same behavior regardless if the garbage collection is disable, using the option -Xdisableexplicitgc, or not.
-		        Morover, "modern" jvm does a very good job about this. If issue appears with memory usage, whithin a application, 
-		        it should fixed using JVM's options rather than inside the code itself ( not considering memory leak, of course).
-			]]>
-        </description>
-        <priority>1</priority>
         <example>
             <![CDATA[[
             public class GCCall
@@ -660,7 +660,6 @@ public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); } }
 			]]> 
 		</example> 
 	</rule>
-
 
 </ruleset>
 

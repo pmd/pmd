@@ -316,6 +316,13 @@ public class Foo extends Bar {
         class="net.sourceforge.pmd.rules.XPathRule"
         message="This java classe has too many methods. Consider refactoring it."
         externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#TooManyMethods">
+        <description>
+            <![CDATA[
+A class with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to
+have more fine grained object.
+            ]]>
+        </description>
+        <priority>3</priority>
         <properties>
 	        	<property name="acceptableLimit" description="nb methods maximum" value="10"/>
 	            <property name="xpath">
@@ -351,13 +358,6 @@ public class Foo extends Bar {
                 </value>
             </property>
         </properties>
-        <description>
-            <![CDATA[
-A class with too many methods is probably a good suspect for refactoring, in order to reduce its complexity and find a way to
-have more fine grained object.
-            ]]>
-        </description>
-        <priority>3</priority>
     </rule>
 
 

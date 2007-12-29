@@ -1446,6 +1446,12 @@ public class Foo {
         class="net.sourceforge.pmd.rules.XPathRule"
         message="Return an empty array rather than 'null'."
         externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#ReturnEmptyArrayRatherThanNull">
+        <description>
+            <![CDATA[
+            For any method that return an array, it's a better behavior to return a size 0 array rather than a null reference.
+            ]]>
+        </description>
+        <priority>1</priority>
         <properties>
             <property name="xpath">
                 <value>
@@ -1460,12 +1466,6 @@ public class Foo {
                 </value>
             </property>
         </properties>
-        <description>
-            <![CDATA[
-            For any method that return an array, it's a better behavior to return a size 0 array rather than a null reference.
-            ]]>
-        </description>
-        <priority>1</priority>
         <example>
             <![CDATA[
             public class Example
