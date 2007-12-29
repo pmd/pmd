@@ -1448,7 +1448,7 @@ public class Foo {
         externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#ReturnEmptyArrayRatherThanNull">
         <description>
             <![CDATA[
-            For any method that return an array, it's a better behavior to return a size 0 array rather than a null reference.
+            For any method that returns an array, it's a better behavior to return an empty array rather than a null reference.
             ]]>
         </description>
         <priority>1</priority>

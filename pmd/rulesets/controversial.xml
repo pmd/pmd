@@ -604,15 +604,15 @@ the volatile keyword should not be used for maintenance purpose and portability.
 
 		<rule
 	        name="DoNotCallGarbageCollectionExplicitly"
-	        message="Do not programmaticly trigger Garbage Collection."
+	        message="Do not explicitly trigger a garbage collection."
 	        class="net.sourceforge.pmd.rules.XPathRule"
 	        externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DoNotCallGarbageCollectionExplicitly">
         <description>
 	        <![CDATA[
-		        Calls to System.gc, Runtime.getRuntime().gc, and System.runFinalization are not advised. Codeshould have the 
-		        same behavior regardless if the garbage collection is disable, using the option -Xdisableexplicitgc, or not.
-		        Morover, "modern" jvm does a very good job about this. If issue appears with memory usage, whithin a application, 
-		        it should fixed using JVM's options rather than inside the code itself ( not considering memory leak, of course).
+		        Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the 
+		        same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
+		        Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
+			leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
 			]]>
         </description>
         <priority>1</priority>
