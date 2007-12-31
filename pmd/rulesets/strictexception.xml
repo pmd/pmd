@@ -236,4 +236,49 @@ public class Foo {
     ]]></example>
   </rule>
 
+	<rule	name="DoNotThrowExceptionInFinally"
+		    message="A throw statement in a finally block makes the control flow hard to understand."
+		    class="net.sourceforge.pmd.rules.XPathRule"
+		    externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#DoNotExtendJavaLangError">
+    	<description>
+			<![CDATA[[
+			      Throwing exception in a finally block is confusing. It may mask exception or a defect of the code,
+			      it also render code cleanup uninstable.
+			Note: This is a PMD implementation of the Lint4j rule "A throw in a finally block"
+			]]>
+		</description>
+    	<priority>4</priority>
+    	<properties>
+			<property name="xpath">
+			  <value>
+			    <![CDATA[
+//FinallyStatement[descendant::ThrowStatement]
+			          ]]>
+			  </value>
+			</property>
+		</properties>
+    	<example>
+    		<![CDATA[
+				public class Foo 
+				{
+					public void bar()
+					{
+						try {
+							// Here do some stuff
+						}
+						catch( Exception e) {
+							// Handling the issue
+						}
+						finally 
+						{
+							// is this really a good idea ?
+							throw new Exception();
+						}
+					}
+				}
+	    	]]>
+    	</example>
+	</rule>
+
+
 </ruleset>

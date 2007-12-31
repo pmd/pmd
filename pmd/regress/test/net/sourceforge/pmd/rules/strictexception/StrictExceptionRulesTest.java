@@ -16,6 +16,7 @@ public class StrictExceptionRulesTest extends SimpleAggregatorTst {
         addRule("strictexception", "DoNotExtendJavaLangError");
         addRule("strictexception", "ExceptionAsFlowControl");
         addRule("strictexception", "SignatureDeclareThrowsException");
+        addRule("strictexception", "DoNotThrowExceptionInFinally");
     }
 
     public static junit.framework.Test suite() {

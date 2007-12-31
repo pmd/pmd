@@ -8,6 +8,7 @@ New rules:
 	Controversial ruleset: DoNotCallGarbageCollectionExplicitly
 	Design ruleset : ReturnEmptyArrayRatherThanNull
 	Codesize : TooManyMethods
+	StrictExceptions : DoNotThrowExceptionInFinally
 
 1.7 added as a valid option for targetjdk.
 
