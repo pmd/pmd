@@ -15,7 +15,11 @@ run version update script at the top level:
     update the release date in the changelog
     update release number and tag name in project.xml
 
-update rulesets/rulesets.properties - add any new ruleset file names
+then, run the script that will generate the proper rulesets/rulesets.properties
+
+./etc/updating_rulesets.sh
+	update rulesets/rulesets.properties - add any new ruleset file names
+
 ensure all the new rules are listed in a rulesets/releases/<version>.xml file
 
 ant -f bin/build.xml pmdOnPmd

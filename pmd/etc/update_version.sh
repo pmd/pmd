@@ -62,3 +62,7 @@ update_dir $1 xdocs/running.xml
 
 date=`date +"%B %d, %Y"`
 update_regexp "^????.*" "$date - $1:" etc/changelog.txt
+
+
+
+
