@@ -214,7 +214,7 @@ public class CommandLineOptions {
                 PMD.EOL +
                 "Optional arguments that may be put before or after the mandatory arguments: " + PMD.EOL +
                 "-debug: prints debugging information" + PMD.EOL +
-                "-targetjdk: specifies a language version to target - 1.3, 1.4, 1.5 or 1.6; default is 1.5" + PMD.EOL +
+                "-targetjdk: specifies a language version to target - 1.3, 1.4, 1.5, 1.6 or 1.7; default is 1.5" + PMD.EOL +
                 "-cpus: specifies the number of threads to create" + PMD.EOL +
                 "-encoding: specifies the character set encoding of the source code files PMD is reading (i.e., UTF-8)" + PMD.EOL +
                 "-excludemarker: specifies the String that marks the a line which PMD should ignore; default is NOPMD" + PMD.EOL +

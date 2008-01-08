@@ -14,6 +14,7 @@ import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDK1_6;
+import net.sourceforge.pmd.TargetJDK1_7;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.cpd.FileFinder;
@@ -136,8 +137,10 @@ public class Benchmark {
                 jdk = new TargetJDK1_4();
             } else if (t.equals(SourceType.JAVA_15)) {
                 jdk = new TargetJDK1_5();
-            } else {
+            } else if (t.equals(SourceType.JAVA_16)) {
                 jdk = new TargetJDK1_6();
+            } else {
+                jdk = new TargetJDK1_7();
             }
             JavaParser parser = jdk.createParser(new FileReader(file));
             parser.CompilationUnit();

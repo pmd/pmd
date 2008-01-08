@@ -298,8 +298,8 @@ public class PMDTask extends Task {
             ruleSetFiles = getNestedRuleSetFiles();
         }
 
-        if (!targetJDK.equals("1.3") && !targetJDK.equals("1.4") && !targetJDK.equals("1.5") && !targetJDK.equals("1.6") && !targetJDK.equals("jsp")) {
-            throw new BuildException("The targetjdk attribute, if used, must be set to either '1.3', '1.4', '1.5', '1.6' or 'jsp'");
+        if (!targetJDK.equals("1.3") && !targetJDK.equals("1.4") && !targetJDK.equals("1.5") && !targetJDK.equals("1.6") && !targetJDK.equals("1.7") && !targetJDK.equals("jsp")) {
+            throw new BuildException("The targetjdk attribute, if used, must be set to either '1.3', '1.4', '1.5', '1.6', '1.7' or 'jsp'");
         }
     }
 

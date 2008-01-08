@@ -4,6 +4,7 @@ import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.TargetJDK1_6;
+import net.sourceforge.pmd.TargetJDK1_7;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
@@ -37,6 +38,7 @@ public class MainFrame
     private JRadioButtonMenuItem jdk14MenuItem;
     private JRadioButtonMenuItem jdk15MenuItem;	//NOPMD
     private JRadioButtonMenuItem jdk16MenuItem;
+    private JRadioButtonMenuItem jdk17MenuItem;
 
     /**
      * constructs and shows the frame
@@ -93,6 +95,10 @@ public class MainFrame
         jdk16MenuItem.setSelected(false);
         group.add(jdk16MenuItem);
         menu.add(jdk16MenuItem);
+        jdk17MenuItem = new JRadioButtonMenuItem("JDK 1.7");
+        jdk17MenuItem.setSelected(false);
+        group.add(jdk17MenuItem);
+        menu.add(jdk17MenuItem);
         menuBar.add(menu);
         setJMenuBar(menuBar);
 
@@ -109,6 +115,8 @@ public class MainFrame
             return new TargetJDK1_3();
         } else if (jdk16MenuItem.isSelected()) {
             return new TargetJDK1_6();
+        } else if (jdk17MenuItem.isSelected()) {
+            return new TargetJDK1_7();
         }
         return new TargetJDK1_5();
     }
