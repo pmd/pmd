@@ -266,7 +266,7 @@
     <dependency>
       <groupId>asm</groupId>
       <artifactId>asm</artifactId>
-      <version>3.0</version>
+      <version>3.1</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -281,7 +281,7 @@
     <dependency>
       <groupId>net.sourceforge.retroweaver</groupId>
       <artifactId>retroweaver-rt</artifactId>
-      <version>2.0.2</version>
+      <version>2.0.3</version>
     </dependency>
   </dependencies>
 
