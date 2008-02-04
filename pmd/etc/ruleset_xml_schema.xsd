@@ -9,6 +9,8 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element ref="description" minOccurs="1" maxOccurs="1" />
+        <xs:element ref="exclude-pattern" minOccurs="0" maxOccurs="unbounded" />
+        <xs:element ref="include-pattern" minOccurs="0" maxOccurs="unbounded" />
         <xs:element ref="rule" minOccurs="1" maxOccurs="unbounded" />
       </xs:sequence>
       <xs:attribute name="name" type="xs:string" use="required" />
@@ -25,6 +27,12 @@
   </xs:element>
 
   <xs:element name="description" type="xs:string">
+  </xs:element>
+
+  <xs:element name="include-pattern" type="xs:string">
+  </xs:element>
+
+  <xs:element name="exclude-pattern" type="xs:string">
   </xs:element>
 
   <xs:element name="rule">

@@ -3,11 +3,13 @@
  */
 package net.sourceforge.pmd;
 
+import java.io.File;
 import java.util.Map;
 
 public class RuleContext {
 
     private Report report = new Report();
+    private File sourceCodeFile;
     private String sourceCodeFilename;
     private SourceType sourceType;
 
@@ -17,6 +19,14 @@ public class RuleContext {
 
     public void setReport(Report report) {
         this.report = report;
+    }
+
+    public File getSourceCodeFile() {
+        return sourceCodeFile;
+    }
+
+    public void setSourceCodeFile(File sourceCodeFile) {
+        this.sourceCodeFile = sourceCodeFile;
     }
 
     public String getSourceCodeFilename() {

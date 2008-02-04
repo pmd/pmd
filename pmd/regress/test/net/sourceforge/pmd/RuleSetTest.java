@@ -24,8 +24,10 @@ package test.net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
@@ -38,6 +40,7 @@ import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.MockRule;
 
+import java.io.File;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -184,6 +187,54 @@ public class RuleSetTest {
         s2.addRule(new MockRule("other rule", "desc", "msg", "rulesetname"));
 
         assertFalse("2 rulesets with same name but different rules must not be equals", s1.equals(s2));
+    }
+
+    @Test
+    public void testAddExcludePattern() {
+        RuleSet ruleSet = new RuleSet();
+        ruleSet.addExcludePattern("*");
+        assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
+        assertEquals("Invalid number of patterns", 1, ruleSet.getExcludePatterns().size());
+        assertEquals("Exclude pattern", "*", ruleSet.getExcludePatterns().get(0));
+    }
+
+    @Test
+    public void testAddIncludePattern() {
+        RuleSet ruleSet = new RuleSet();
+        ruleSet.addIncludePattern("*");
+        assertNotNull("Include patterns", ruleSet.getIncludePatterns());
+        assertEquals("Invalid number of patterns", 1, ruleSet.getIncludePatterns().size());
+        assertEquals("Exclude pattern", "*", ruleSet.getIncludePatterns().get(0));
+    }
+
+    @Test
+    public void testIncludeExcludeApplies() {
+    	File file = new File("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java");
+
+        RuleSet ruleSet = new RuleSet();
+        assertTrue("No patterns", ruleSet.applies(file));
+
+        ruleSet = new RuleSet();
+        ruleSet.addExcludePattern("nomatch");
+        assertTrue("Non-matching exclude", ruleSet.applies(file));
+
+        ruleSet = new RuleSet();
+        ruleSet.addExcludePattern("nomatch");
+        ruleSet.addExcludePattern(".*/package/.*");
+        assertFalse("Matching exclude", ruleSet.applies(file));
+
+        ruleSet = new RuleSet();
+        ruleSet.addExcludePattern("nomatch");
+        ruleSet.addExcludePattern(".*/package/.*");
+        ruleSet.addIncludePattern(".*/randomX/.*");
+        assertFalse("Non-matching include", ruleSet.applies(file));
+
+        ruleSet = new RuleSet();
+        ruleSet.addExcludePattern("nomatch");
+        ruleSet.addExcludePattern(".*/package/.*");
+        ruleSet.addIncludePattern(".*/randomX/.*");
+        ruleSet.addIncludePattern(".*/random/.*");
+        assertTrue("Matching include", ruleSet.applies(file));
     }
 
     protected void verifyRuleSet(RuleSet IUT, int size, Set values) throws Throwable {

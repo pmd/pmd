@@ -202,6 +202,22 @@ public class RuleSetFactoryTest {
         rsf.setMinimumPriority(4);
         assertEquals(1, rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes())).size());
     }
+    
+    @Test
+    public void testIncludeExcludePatterns() {
+    	RuleSet ruleSet = loadRuleSet(INCLUDE_EXCLUDE_RULESET);
+
+    	assertNotNull("Include patterns", ruleSet.getIncludePatterns());
+    	assertEquals("Include patterns size", 2, ruleSet.getIncludePatterns().size());
+    	assertEquals("Include pattern #1", "include1", ruleSet.getIncludePatterns().get(0));
+    	assertEquals("Include pattern #2", "include2", ruleSet.getIncludePatterns().get(1));
+
+    	assertNotNull("Exclude patterns", ruleSet.getExcludePatterns());
+    	assertEquals("Exclude patterns size", 3, ruleSet.getExcludePatterns().size());
+    	assertEquals("Exclude pattern #1", "exclude1", ruleSet.getExcludePatterns().get(0));
+    	assertEquals("Exclude pattern #2", "exclude2", ruleSet.getExcludePatterns().get(1));
+    	assertEquals("Exclude pattern #3", "exclude3", ruleSet.getExcludePatterns().get(2));
+    }
 
     @Test
     public void testXmlSchema() throws IOException, RuleSetNotFoundException, ParserConfigurationException, SAXException {
@@ -491,6 +507,17 @@ public class RuleSetFactoryTest {
             "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" +
             "<priority>3</priority>" + PMD.EOL +
             "</rule></ruleset>";
+
+    private static final String INCLUDE_EXCLUDE_RULESET =
+            "<?xml version=\"1.0\"?>" + PMD.EOL +
+            "<ruleset name=\"test\">" + PMD.EOL +
+            "<description>testdesc</description>" + PMD.EOL +
+            "<include-pattern>include1</include-pattern>" + PMD.EOL +
+            "<include-pattern>include2</include-pattern>" + PMD.EOL +
+            "<exclude-pattern>exclude1</exclude-pattern>" + PMD.EOL +
+            "<exclude-pattern>exclude2</exclude-pattern>" + PMD.EOL +
+            "<exclude-pattern>exclude3</exclude-pattern>" + PMD.EOL +
+            "</ruleset>";
 
 
     private Rule loadFirstRule(String ruleSetName) {

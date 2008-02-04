@@ -195,6 +195,10 @@ public class RuleSetFactory {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     if (node.getNodeName().equals("description")) {
                         ruleSet.setDescription(parseTextNode(node));
+                    } else if (node.getNodeName().equals("include-pattern")) {
+                        ruleSet.addIncludePattern(parseTextNode(node));
+                    } else if (node.getNodeName().equals("exclude-pattern")) {
+                        ruleSet.addExcludePattern(parseTextNode(node));
                     } else if (node.getNodeName().equals("rule")) {
                         parseRuleNode(ruleSet, node, classLoader);
                     }

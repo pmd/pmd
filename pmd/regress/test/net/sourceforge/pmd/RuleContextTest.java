@@ -24,6 +24,9 @@ package test.net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import java.io.File;
+
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 
@@ -44,11 +47,19 @@ public class RuleContextTest {
     }
 
     @Test
-    public void testFilename() {
+    public void testSourceCodeFilename() {
         RuleContext ctx = new RuleContext();
         assertNull("filename should be null", ctx.getSourceCodeFilename());
         ctx.setSourceCodeFilename("foo");
         assertEquals("filename mismatch", "foo", ctx.getSourceCodeFilename());
+    }
+
+    @Test
+    public void testSourceCodeFile() {
+    	RuleContext ctx = new RuleContext();
+    	assertNull("file should be null", ctx.getSourceCodeFile());
+    	ctx.setSourceCodeFile(new File("somefile.java"));
+    	assertEquals("filename mismatch", new File("somefile.java"), ctx.getSourceCodeFile());
     }
 
     public static junit.framework.Test suite() {

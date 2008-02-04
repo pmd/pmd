@@ -1,5 +1,6 @@
 package net.sourceforge.pmd;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -77,6 +78,21 @@ public class RuleSets {
             result.addAll(r.getRules());
         }
         return result;
+    }
+    
+    /**
+     * Check if a given source file should be checked by rules in this RuleSets.
+     * 
+     * @param file the source file to check
+     * @return <code>true</code> if the file should be checked, <code>false</code> otherwise
+     */
+    public boolean applies(File file) {
+        for (Iterator i = ruleSets.iterator(); i.hasNext();) {
+            if (((RuleSet)i.next()).applies(file)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

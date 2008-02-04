@@ -3,10 +3,15 @@
  */
 package net.sourceforge.pmd;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.util.Benchmark;
 
@@ -18,10 +23,15 @@ import net.sourceforge.pmd.util.Benchmark;
  */
 public class RuleSet {
 
+    private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
     private List<Rule> rules = new ArrayList<Rule>();
     private String name = "";
     private String description = "";
     private Language language;
+    private List<String> includePatterns = new ArrayList<String>(0);
+    private List<String> excludePatterns = new ArrayList<String>(0);
+    private List<Matcher> includePatternMatchers;
+    private List<Matcher> excludePatternMatchers;
 
     /**
      * Returns the number of rules in this ruleset
@@ -91,6 +101,62 @@ public class RuleSet {
         rules.addAll(rules.size(), ruleSet.getRules());
     }
 
+   /**
+    * Check if a given source file should be checked by rules in this RuleSet.  A file
+    * should not be checked if there is an <code>exclude</code> pattern which matches
+    * the file, unless there is an <code>include</code> pattern which also matches
+    * the file.  In other words, <code>include</code> patterns override <code>exclude</code>
+    * patterns.
+    *
+    * @param file the source file to check
+    * @return <code>true</code> if the file should be checked, <code>false</code> otherwise
+    */
+    public boolean applies(File file) {
+    	// Initialize matchers based on patterns
+        if (includePatternMatchers == null) {
+            includePatternMatchers = new ArrayList<Matcher>(includePatterns.size());
+            excludePatternMatchers = new ArrayList<Matcher>(excludePatterns.size());
+            for (String includePattern : includePatterns) {
+                includePatternMatchers.add(Pattern.compile(includePattern.trim()).matcher(""));
+            }
+            for (String excludePattern : excludePatterns) {
+                excludePatternMatchers.add(Pattern.compile(excludePattern).matcher(""));
+            }
+        }
+
+        // Apply include/exclude matchers
+        boolean included = false;
+        boolean excluded = false;
+        if (file != null) {
+            String path = file.getPath();
+            // Standardize the paths separators so the same patterns can be used cross platform
+            path = path.replace('\\', '/');
+            LOG.log(Level.FINE, "path={0}", path);
+            for (Matcher matcher : includePatternMatchers) {
+                matcher.reset(path);
+                included = matcher.matches();
+                LOG.log(Level.FINE, "include-pattern={0}", matcher);
+                LOG.log(Level.FINE, "included={0}", included);
+                if (included) {
+                    break;
+                }
+            }
+            if (!included) {
+                for (Matcher matcher : excludePatternMatchers) {
+                    matcher.reset(path);
+                    excluded = matcher.matches();
+                    LOG.log(Level.FINE, "exclude-pattern={0}", matcher);
+                    LOG.log(Level.FINE, "excluded={0}", excluded);
+                    if (excluded) {
+                    	break;
+                    }
+                }
+            }
+        }
+        // Include patterns override exclude patterns.
+        return included || !excluded;
+    }
+
     public void apply(List acuList, RuleContext ctx) {
         long start = System.nanoTime();
         for (Rule rule: rules) {
@@ -148,6 +214,22 @@ public class RuleSet {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<String> getIncludePatterns() {
+        return this.includePatterns;
+    }
+ 
+    public void addIncludePattern(String pattern) {
+        this.includePatterns.add(pattern);
+    }
+
+    public List<String> getExcludePatterns() {
+        return this.excludePatterns;
+    }
+
+    public void addExcludePattern(String pattern) {
+        this.excludePatterns.add(pattern);
     }
 
 	public boolean usesTypeResolution() {

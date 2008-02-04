@@ -12,6 +12,7 @@ New rules:
 	StrictExceptions : DoNotThrowExceptionInFinally
 
 1.7 added as a valid option for targetjdk.
+New elements under <ruleset>: <exclude-pattern> to match files exclude from processing, with <include-pattern> to override.
 
 November 17, 2007 - 4.1:
 Fixed annotation bug: ClassCastException when a formal parameter had multiple annotations

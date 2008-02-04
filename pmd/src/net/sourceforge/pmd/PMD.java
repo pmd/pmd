@@ -85,40 +85,42 @@ public class PMD {
     public void processFile(Reader reader, RuleSets ruleSets, RuleContext ctx,
                             SourceType sourceType) throws PMDException {
         try {
-            SourceTypeHandler sourceTypeHandler = SourceTypeHandlerBroker.getVisitorsFactoryForSourceType(sourceType);
-            ctx.setSourceType(sourceType);
-            Parser parser = sourceTypeHandler.getParser();
-            parser.setExcludeMarker(excludeMarker);
-            long start = System.nanoTime();
-            CompilationUnit rootNode = (CompilationUnit) parser.parse(reader);
-            ctx.excludeLines(parser.getExcludeMap());
-            long end = System.nanoTime();
-            Benchmark.mark(Benchmark.TYPE_PARSER, end - start, 0);
-            start = System.nanoTime();
-            sourceTypeHandler.getSymbolFacade().start(rootNode);
-            end = System.nanoTime();
-            Benchmark.mark(Benchmark.TYPE_SYMBOL_TABLE, end - start, 0);
-
-            Language language = SourceTypeToRuleLanguageMapper.getMappedLanguage(sourceType);
-
-            if (ruleSets.usesDFA(language)) {
-                start = System.nanoTime();
-                sourceTypeHandler.getDataFlowFacade().start(rootNode);
-                end = System.nanoTime();
-                Benchmark.mark(Benchmark.TYPE_DFA, end - start, 0);
-            }
-
-            if (ruleSets.usesTypeResolution(language)) {
-                start = System.nanoTime();
-                sourceTypeHandler.getTypeResolutionFacade().start(rootNode);
-                end = System.nanoTime();
-                Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, end - start, 0);
-            }
-
-            List<CompilationUnit> acus = new ArrayList<CompilationUnit>();
-            acus.add(rootNode);
-
-            ruleSets.apply(acus, ctx, language);
+        	if (ruleSets.applies(ctx.getSourceCodeFile())) {
+	            SourceTypeHandler sourceTypeHandler = SourceTypeHandlerBroker.getVisitorsFactoryForSourceType(sourceType);
+	            ctx.setSourceType(sourceType);
+	            Parser parser = sourceTypeHandler.getParser();
+	            parser.setExcludeMarker(excludeMarker);
+	            long start = System.nanoTime();
+	            CompilationUnit rootNode = (CompilationUnit) parser.parse(reader);
+	            ctx.excludeLines(parser.getExcludeMap());
+	            long end = System.nanoTime();
+	            Benchmark.mark(Benchmark.TYPE_PARSER, end - start, 0);
+	            start = System.nanoTime();
+	            sourceTypeHandler.getSymbolFacade().start(rootNode);
+	            end = System.nanoTime();
+	            Benchmark.mark(Benchmark.TYPE_SYMBOL_TABLE, end - start, 0);
+	
+	            Language language = SourceTypeToRuleLanguageMapper.getMappedLanguage(sourceType);
+	
+	            if (ruleSets.usesDFA(language)) {
+	                start = System.nanoTime();
+	                sourceTypeHandler.getDataFlowFacade().start(rootNode);
+	                end = System.nanoTime();
+	                Benchmark.mark(Benchmark.TYPE_DFA, end - start, 0);
+	            }
+	
+	            if (ruleSets.usesTypeResolution(language)) {
+	                start = System.nanoTime();
+	                sourceTypeHandler.getTypeResolutionFacade().start(rootNode);
+	                end = System.nanoTime();
+	                Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, end - start, 0);
+	            }
+	
+	            List<CompilationUnit> acus = new ArrayList<CompilationUnit>();
+	            acus.add(rootNode);
+	
+	            ruleSets.apply(acus, ctx, language);
+        	}
         } catch (ParseException pe) {
             throw new PMDException("Error while parsing "
                     + ctx.getSourceCodeFilename(), pe);
