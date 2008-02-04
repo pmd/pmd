@@ -84,18 +84,21 @@ Bug [1843273] False -
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public boolean isTrue(Boolean value)
-   {
-       boolean result = true;
+public class Bug1843273
+{
+	public boolean isTrue(Boolean value)
+	   {
+	       boolean result = true;
 
-       if (value.booleanValue())
-       {
-           return result;
-       }
-       else
-       {
-           return ! result;
-       }
+	       if (value.booleanValue())
+	       {
+	           return result;
+	       }
+	       else
+	       {
+	           return ! result;
+	       }
+	   }
    }
      ]]></code>
     </test-code>

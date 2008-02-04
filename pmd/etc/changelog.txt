@@ -1,6 +1,7 @@
 ????, 2007 - 4.2:
 
-Fixed bug 1848888 - fixed false positive in UseEqualsToCompareStrings
+Fixed bug 1843273 - False - on SimplifyBooleanReturns
+Fixed bug 1848888 - Fixed false positive in UseEqualsToCompareStrings
 Fixed bug 1855409 - False + in EmptyMethodInAbstractClassShouldBeAbstract
 Fixed other false positives in EmptyMethodInAbstractClassShouldBeAbstract
 
