@@ -86,7 +86,7 @@ public interface Rule {
 	/**
 	 * Set a URL for external information about this Rule.
 	 */
-	void setExternalInfoUrl(String url);
+	void setExternalInfoUrl(String externalInfoUrl);
 
 	/**
 	 * Get the priority of this Rule.

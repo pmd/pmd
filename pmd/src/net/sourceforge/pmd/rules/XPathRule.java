@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.Map.Entry;
 
-import net.sourceforge.pmd.CommonAbstractRule;
+import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
@@ -41,7 +41,7 @@ import org.jaxen.saxpath.Axis;
  * <p/>
  * This rule needs a property "xpath".
  */
-public class XPathRule extends CommonAbstractRule {
+public class XPathRule extends AbstractJavaRule {
 
     // Mapping from Node name to applicable XPath queries
     private Map<String, List<XPath>> nodeNameToXPaths;
@@ -69,6 +69,7 @@ public class XPathRule extends CommonAbstractRule {
                 List results = xpath.selectNodes(compilationUnit);
                 for (Iterator j = results.iterator(); j.hasNext();) {
                     SimpleNode n = (SimpleNode) j.next();
+                    // FUTURE Figure out a way to make adding a violation be AST independent, so XPathRule can be used on AST for any language.
                     if (n instanceof ASTVariableDeclaratorId && getBooleanProperty("pluginname")) {
                         addViolation(data, n, n.getImage());
                     } else {

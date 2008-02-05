@@ -1,264 +1,396 @@
 package net.sourceforge.pmd;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
-
 /**
- * Basic abstract implementation of all parser-independent methods of the
- * Rule interface.
- *
+ * Basic abstract implementation of all parser-independent methods of the Rule
+ * interface.
+ * 
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
+// FUTURE Rename to AbstractRule when cleaning up @deprecated
+// FUTURE Move PropertyDescriptor APIs up to Rule interface
 public abstract class CommonAbstractRule implements Rule {
-    private String name = getClass().getName();
-    private Properties properties = new Properties();
-    private String message;
-    private String description;
-    private List<String> examples = new ArrayList<String>();
-    private String ruleSetName;
-    private boolean include;
-    private boolean usesDFA;
-    private boolean usesTypeResolution;
-    private int priority = LOWEST_PRIORITY;
-    private String externalInfoUrl;
-    private List<String> ruleChainVisits = new ArrayList<String>();
 
-    public String getRuleSetName() {
-        return ruleSetName;
-    }
+	// TODO Remove - Temporary flag during conversion.
+	private static final boolean IN_OLD_PROPERTY_MODE = true;
 
-    public void setRuleSetName(String ruleSetName) {
-        this.ruleSetName = ruleSetName;
-    }
+	private String name = getClass().getName();
+	private String ruleSetName;
+	private String message;
+	private String description;
+	private List<String> examples = new ArrayList<String>();
+	private String externalInfoUrl;
+	private int priority = LOWEST_PRIORITY;
+	// FUTURE Remove when cleaning up @deprecated
+	private boolean include;
+	private Properties properties = new Properties();
+	private boolean usesDFA;
+	private boolean usesTypeResolution;
+	private List<String> ruleChainVisits = new ArrayList<String>();
 
-    public String getDescription() {
-        return description;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public List<String> getExamples() {
-        return examples;
-    }
-    
-    /**
-     * Still used by the JDeveloper plugin
-     * 
-     * @deprecated use getExamples(), since we now support multiple examples
-     */
-    public String getExample() {
-        if (examples.isEmpty()) {
-            return null;
-        } else {
-            //We return the last example, so the override still works
-            return examples.get(examples.size()-1);
-        }
-    }
+	public String getRuleSetName() {
+		return ruleSetName;
+	}
 
-    public void addExample(String example) {
-        examples.add(example);
-    }
+	public void setRuleSetName(String ruleSetName) {
+		this.ruleSetName = ruleSetName;
+	}
 
-    public boolean hasProperty(String name) {
-        return properties.containsKey(name);
-    }
+	public String getMessage() {
+		return message;
+	}
 
-    public void addProperty(String name, String value) {
-        properties.setProperty(name, value);
-    }
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
-    public void addProperties(Properties properties) {
-        this.properties.putAll(properties);
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public double getDoubleProperty(String name) {
-        return Double.parseDouble(properties.getProperty(name));
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public int getIntProperty(String name) {
-        return Integer.parseInt(properties.getProperty(name));
-    }
+	public List<String> getExamples() {
+		return examples;
+	}
 
-    public boolean getBooleanProperty(String name) {
-        return Boolean.parseBoolean(properties.getProperty(name));
-    }
+	// FUTURE Remove when cleaning up @deprecated
+	public String getExample() {
+		if (examples.isEmpty()) {
+			return null;
+		} else {
+			// We return the last example, so the override still works
+			return examples.get(examples.size() - 1);
+		}
+	}
 
-    public String getStringProperty(String name) {
-        return properties.getProperty(name);
-    }
+	public void addExample(String example) {
+		examples.add(example);
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getExternalInfoUrl() {
+		return externalInfoUrl;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setExternalInfoUrl(String externalInfoUrl) {
+		this.externalInfoUrl = externalInfoUrl;
+	}
 
-    public String getMessage() {
-        return message;
-    }
+	public int getPriority() {
+		return priority;
+	}
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
 
-    public String getExternalInfoUrl() {
-        return externalInfoUrl;
-    }
+	public String getPriorityName() {
+		return PRIORITIES[getPriority() - 1];
+	}
 
-    public void setExternalInfoUrl(String url) {
-        this.externalInfoUrl = url;
-    }
+	// FUTURE Remove when cleaning up @deprecated
+	public boolean include() {
+		return include;
+	}
 
-    /**
-     * Test if rules are equals. Rules are equals if
-     * 1. they have the same implementation class
-     * 2. they have the same name
-     * 3. they have the same priority
-     * 4. they share the same properties/values
-     */
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false; // trivial
-        }
+	// FUTURE Remove when cleaning up @deprecated
+	public void setInclude(boolean include) {
+		this.include = include;
+	}
 
-        if (this == o) {
-            return true;  // trivial
-        }
+	/**
+	 * @deprecated - retrieve by name using get<type>Property or get<type>Properties
+	 */
+	public Properties getProperties() {
+		return properties;
+	}
 
-        Rule rule = null;
-        boolean equality = this.getClass().getName().equals(o.getClass().getName());
+	/**
+	 * @deprecated
+	 */
+	public void addProperty(String name, String value) {
+		getProperties().setProperty(name, value);
+	}
 
-        if (equality) {
-            rule = (Rule) o;
-            equality = this.getName().equals(rule.getName())
-                    && this.getPriority() == rule.getPriority()
-                    && this.getProperties().equals(rule.getProperties());
-        }
+	/**
+	 * @deprecated
+	 */
+	public void addProperties(Properties properties) {
+		getProperties().putAll(properties);
+	}
 
-        return equality;
-    }
+	/**
+	 * @deprecated - property values will be guaranteed available via default
+	 *             values
+	 */
+	public boolean hasProperty(String name) {
+		return IN_OLD_PROPERTY_MODE ? // TODO -remove
+		getProperties().containsKey(name)
+				: propertiesByName().containsKey(name);
+	}
 
-    /**
-     * Return a hash code to conform to equality. Try with a string.
-     */
-    public int hashCode() {
-        String s = this.getClass().getName() + this.getName() + this.getPriority() + this.getProperties().toString();
-        return s.hashCode();
-    }
+	/**
+	 * @deprecated - use getBooleanProperty(PropertyDescriptor) instead
+	 */
+	public boolean getBooleanProperty(String name) {
+		return Boolean.parseBoolean(getProperties().getProperty(name));
+	}
 
+	public boolean getBooleanProperty(PropertyDescriptor descriptor) {
 
-    public Properties getProperties() {
-        return properties;
-    }
+		return ((Boolean)getProperty(descriptor)).booleanValue();
+	}
 
-    public boolean include() {
-        return include;
-    }
+	// TODO
+	public boolean[] getBooleanProperties(PropertyDescriptor descriptor) {
+		Boolean[] values = (Boolean[])getProperties(descriptor);
+		boolean[] bools = new boolean[values.length];
+		for (int i = 0; i < bools.length; i++)
+			bools[i] = values[i].booleanValue();
+		return bools;
+	}
 
-    public void setInclude(boolean include) {
-        this.include = include;
-    }
+	/**
+	 * @deprecated - use getIntProperty(PropertyDescriptor) instead
+	 */
+	public int getIntProperty(String name) {
+		return Integer.parseInt(getProperties().getProperty(name));
+	}
 
-    public int getPriority() {
-        return priority;
-    }
+	public int getIntProperty(PropertyDescriptor descriptor) {
 
-    public String getPriorityName() {
-        return PRIORITIES[getPriority() - 1];
-    }
+		return ((Number)getProperty(descriptor)).intValue();
+	}
 
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
+	// TODO
+	public int[] getIntProperties(PropertyDescriptor descriptor) {
+		Number[] values = (Number[])getProperties(descriptor);
+		int[] ints = new int[values.length];
+		for (int i = 0; i < ints.length; i++)
+			ints[i] = values[i].intValue();
+		return ints;
+	}
 
-    public void setUsesDFA() {
-        this.usesDFA = true;
-    }
+	/**
+	 * @deprecated - use getDoubleProperty(PropertyDescriptor) instead
+	 */
+	public double getDoubleProperty(String name) {
+		return Double.parseDouble(getProperties().getProperty(name));
+	}
 
-    public boolean usesDFA() {
-        return this.usesDFA;
-    }
+	public double getDoubleProperty(PropertyDescriptor descriptor) {
+		return ((Number)getProperty(descriptor)).doubleValue();
+	}
 
-    public void setUsesTypeResolution() {
-        this.usesTypeResolution= true;
-    }
+	// TODO
+	public double[] getDoubleProperties(PropertyDescriptor descriptor) {
+		Number[] values = (Number[])getProperties(descriptor);
+		double[] doubles = new double[values.length];
+		for (int i = 0; i < doubles.length; i++)
+			doubles[i] = values[i].doubleValue();
+		return doubles;
+	}
 
-    public boolean usesTypeResolution() {
-        return this.usesTypeResolution;
-    }
+	/**
+	 * @deprecated - use getStringProperty(PropertyDescriptor) instead
+	 */
+	public String getStringProperty(String name) {
+		return getProperties().getProperty(name);
+	}
 
+	public String getStringProperty(PropertyDescriptor descriptor) {
+		return (String)getProperty(descriptor);
+	}
 
-    /**
-     * Adds a violation to the report.
-     *
-     * @param data the RuleContext
-     * @param node the node that produces the violation
-     */
-    protected final void addViolation(Object data, SimpleNode node) {
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node));
-    }
+	public String[] getStringProperties(PropertyDescriptor descriptor) {
+		return (String[])getProperties(descriptor);
+	}
 
-    /**
-     * Adds a violation to the report.
-     *
-     * @param data the RuleContext
-     * @param node the node that produces the violation
-     * @param msg  specific message to put in the report
-     */
-    protected final void addViolationWithMessage(Object data, SimpleNode node, String msg) {
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, msg));
-    }
+	public Class[] getTypeProperties(PropertyDescriptor descriptor) {
+		return (Class[])getProperties(descriptor);
+	}
 
-    /**
-     * Adds a violation to the report.
-     *
-     * @param data  the RuleContext
-     * @param node  the node that produces the violation
-     * @param embed a variable to embed in the rule violation message
-     */
-    protected final void addViolation(Object data, SimpleNode node, String embed) {
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, MessageFormat.format(getMessage(), embed)));
-    }
+	public Class getTypeProperty(PropertyDescriptor descriptor) {
+		return (Class)getProperty(descriptor);
+	}
 
-    /**
-     * Adds a violation to the report.
-     *
-     * @param data the RuleContext
-     * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
-     * @param args objects to embed in the rule violation message
-     */
-    protected final void addViolation(Object data, Node node, Object[] args) {
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, (SimpleNode) node, MessageFormat.format(getMessage(), args)));
-    }
+	private Object getProperty(PropertyDescriptor descriptor) {
+		if (descriptor.maxValueCount() > 1) {
+			propertyGetError(descriptor, true);
+		}
+		String rawValue = getProperties().getProperty(descriptor.name());
+		return rawValue == null || rawValue.length() == 0 ? descriptor
+				.defaultValue() : descriptor.valueFrom(rawValue);
+	}
 
-    public PropertyDescriptor propertyDescriptorFor(String name) {
-    	return null;	// TODO not implemented yet
-    }
+	public void setProperty(PropertyDescriptor descriptor, Object value) {
+		if (descriptor.maxValueCount() > 1) {
+			propertySetError(descriptor, true);
+		}
+		getProperties().setProperty(descriptor.name(),
+				descriptor.asDelimitedString(value));
+	}
 
-    public boolean usesRuleChain() {
-        return !getRuleChainVisits().isEmpty();
-    }
+	private Object[] getProperties(PropertyDescriptor descriptor) {
+		if (descriptor.maxValueCount() == 1) {
+			propertyGetError(descriptor, false);
+		}
+		String rawValue = getProperties().getProperty(descriptor.name());
+		return rawValue == null || rawValue.length() == 0 ? (Object[])descriptor
+				.defaultValue()
+				: (Object[])descriptor.valueFrom(rawValue);
+	}
 
-    public List<String> getRuleChainVisits() {
-        return ruleChainVisits;
-    }
+	public void setProperties(PropertyDescriptor descriptor, Object[] values) {
+		if (descriptor.maxValueCount() == 1) {
+			propertySetError(descriptor, false);
+		}
+		getProperties().setProperty(descriptor.name(),
+				descriptor.asDelimitedString(values));
+	}
 
-    public void addRuleChainVisit(String astNodeName) {
-        if (!ruleChainVisits.contains(astNodeName)) {
-            ruleChainVisits.add(astNodeName);
-        }
-    }
+	/**
+	 * Return all the relevant properties for the receiver by overriding in
+	 * subclasses as necessary.
+	 * 
+	 * @return Map
+	 */
+	protected Map<String, PropertyDescriptor> propertiesByName() {
+		return Collections.emptyMap();
+	}
+
+	public PropertyDescriptor propertyDescriptorFor(String name) {
+		PropertyDescriptor descriptor = propertiesByName().get(name);
+		if (descriptor == null) {
+			throw new IllegalArgumentException("Unknown property: " + name);
+		}
+		return descriptor;
+	}
+
+	private void propertyGetError(PropertyDescriptor descriptor,
+			boolean requestedSingleValue) {
+
+		if (requestedSingleValue) {
+			throw new RuntimeException(
+					"Cannot retrieve a single value from a multi-value property field");
+		}
+		throw new RuntimeException(
+				"Cannot retrieve multiple values from a single-value property field");
+	}
+
+	private void propertySetError(PropertyDescriptor descriptor,
+			boolean setSingleValue) {
+
+		if (setSingleValue) {
+			throw new RuntimeException(
+					"Cannot set a single value within a multi-value property field");
+		}
+		throw new RuntimeException(
+				"Cannot set multiple values within a single-value property field");
+	}
+
+	public void setUsesDFA() {
+		this.usesDFA = true;
+	}
+
+	public boolean usesDFA() {
+		return this.usesDFA;
+	}
+
+	public void setUsesTypeResolution() {
+		this.usesTypeResolution = true;
+	}
+
+	public boolean usesTypeResolution() {
+		return this.usesTypeResolution;
+	}
+
+	public boolean usesRuleChain() {
+		return !getRuleChainVisits().isEmpty();
+	}
+
+	public List<String> getRuleChainVisits() {
+		return ruleChainVisits;
+	}
+
+	public void addRuleChainVisit(String astNodeName) {
+		if (!ruleChainVisits.contains(astNodeName)) {
+			ruleChainVisits.add(astNodeName);
+		}
+	}
+
+	/**
+	 * Rules are equal if:
+	 * <ol>
+	 * <li>They have the same implementation class.</li>
+	 * <li>They have the same name.</li>
+	 * <li>They have the same priority.</li>
+	 * <li>They share the same properties.</li>
+	 * </ol>
+	 */
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) {
+			return false; // trivial
+		}
+
+		if (this == o) {
+			return true; // trivial
+		}
+
+		boolean equality = this.getClass().getName().equals(
+				o.getClass().getName());
+
+		if (equality) {
+			Rule that = (Rule)o;
+			equality = this.getName().equals(that.getName())
+					&& this.getPriority() == that.getPriority()
+					&& this.getProperties().equals(that.getProperties());
+		}
+
+		return equality;
+	}
+
+	/**
+	 * @see #equals(Object)
+	 */
+	@Override
+	public int hashCode() {
+		return this.getClass().getName().hashCode()
+				+ (this.getName() != null ? this.getName().hashCode() : 0)
+				+ this.getPriority()
+				+ (this.getProperties() != null ? this.getProperties()
+						.hashCode() : 0);
+	}
+
+	protected static Map<String, PropertyDescriptor> asFixedMap(
+			PropertyDescriptor[] descriptors) {
+		Map<String, PropertyDescriptor> descriptorsByName = new HashMap<String, PropertyDescriptor>(
+				descriptors.length);
+		for (PropertyDescriptor descriptor : descriptors) {
+			descriptorsByName.put(descriptor.name(), descriptor);
+		}
+		return Collections.unmodifiableMap(descriptorsByName);
+	}
+
+	protected static Map<String, PropertyDescriptor> asFixedMap(
+			PropertyDescriptor descriptor) {
+		return asFixedMap(new PropertyDescriptor[] { descriptor });
+	}
 }

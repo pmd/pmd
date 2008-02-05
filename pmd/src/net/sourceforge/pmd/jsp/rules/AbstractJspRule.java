@@ -4,273 +4,213 @@
 package net.sourceforge.pmd.jsp.rules;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.CommonAbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.jsp.ast.JspParserVisitorAdapter;
+import net.sourceforge.pmd.jsp.ast.ASTAttribute;
+import net.sourceforge.pmd.jsp.ast.ASTAttributeValue;
+import net.sourceforge.pmd.jsp.ast.ASTCData;
+import net.sourceforge.pmd.jsp.ast.ASTCommentTag;
+import net.sourceforge.pmd.jsp.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.jsp.ast.ASTContent;
+import net.sourceforge.pmd.jsp.ast.ASTDeclaration;
+import net.sourceforge.pmd.jsp.ast.ASTDoctypeDeclaration;
+import net.sourceforge.pmd.jsp.ast.ASTDoctypeExternalId;
+import net.sourceforge.pmd.jsp.ast.ASTElExpression;
+import net.sourceforge.pmd.jsp.ast.ASTElement;
+import net.sourceforge.pmd.jsp.ast.ASTJspComment;
+import net.sourceforge.pmd.jsp.ast.ASTJspDeclaration;
+import net.sourceforge.pmd.jsp.ast.ASTJspDirective;
+import net.sourceforge.pmd.jsp.ast.ASTJspDirectiveAttribute;
+import net.sourceforge.pmd.jsp.ast.ASTJspExpression;
+import net.sourceforge.pmd.jsp.ast.ASTJspExpressionInAttribute;
+import net.sourceforge.pmd.jsp.ast.ASTJspScriptlet;
+import net.sourceforge.pmd.jsp.ast.ASTText;
+import net.sourceforge.pmd.jsp.ast.ASTUnparsedText;
+import net.sourceforge.pmd.jsp.ast.ASTValueBinding;
+import net.sourceforge.pmd.jsp.ast.JspParserVisitor;
 import net.sourceforge.pmd.jsp.ast.SimpleNode;
 
-public abstract class AbstractJspRule extends JspParserVisitorAdapter implements Rule {
+public abstract class AbstractJspRule extends CommonAbstractRule implements
+		JspParserVisitor {
 
-    private String name = getClass().getName();
-    private Properties properties = new Properties();
-    private String message;
-    private String description;
-    private List<String> examples = new ArrayList<String>();
-    private String ruleSetName;
-    private boolean include;
-    private boolean usesDFA;
-    private int priority = LOWEST_PRIORITY;
-    private String externalInfoUrl;
-    private List<String> ruleChainVisits = new ArrayList<String>();
+	@Override
+	public void setUsesTypeResolution() {
+		// No Type resolution for JSP rules?
+	}
 
-    public String getRuleSetName() {
-        return ruleSetName;
-    }
+	/**
+	 * Adds a violation to the report.
+	 * 
+	 * @param ctx
+	 *            the RuleContext
+	 * @param node
+	 *            the node that produces the violation
+	 */
+	protected final void addViolation(Object data, SimpleNode node) {
+		RuleContext ctx = (RuleContext)data;
+		ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node));
+	}
 
-    public void setRuleSetName(String ruleSetName) {
-        this.ruleSetName = ruleSetName;
-    }
+	/**
+	 * Adds a violation to the report.
+	 * 
+	 * @param ctx
+	 *            the RuleContext
+	 * @param node
+	 *            the node that produces the violation
+	 * @param msg
+	 *            specific message to put in the report
+	 */
+	protected final void addViolationWithMessage(Object data, SimpleNode node,
+			String msg) {
+		RuleContext ctx = (RuleContext)data;
+		ctx.getReport().addRuleViolation(
+				new RuleViolation(this, ctx, node, msg));
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	/**
+	 * Adds a violation to the report.
+	 * 
+	 * @param ctx
+	 *            the RuleContext
+	 * @param node
+	 *            the node that produces the violation
+	 * @param embed
+	 *            a variable to embed in the rule violation message
+	 */
+	protected final void addViolation(Object data, SimpleNode node, String embed) {
+		RuleContext ctx = (RuleContext)data;
+		ctx.getReport().addRuleViolation(
+				new RuleViolation(this, ctx, node, MessageFormat.format(
+						getMessage(), embed)));
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	/**
+	 * Adds a violation to the report.
+	 * 
+	 * @param ctx
+	 *            the RuleContext
+	 * @param node
+	 *            the node that produces the violation, may be null, in which
+	 *            case all line and column info will be set to zero
+	 * @param args
+	 *            objects to embed in the rule violation message
+	 */
+	protected final void addViolation(Object data, Node node, Object[] args) {
+		RuleContext ctx = (RuleContext)data;
+		ctx.getReport().addRuleViolation(
+				new RuleViolation(this, ctx, (SimpleNode)node, MessageFormat
+						.format(getMessage(), args)));
+	}
 
-    public List<String> getExamples() {
-        return examples;
-    }
-    
-    /**
-     * Still used by the JDeveloper plugin
-     * 
-     * @deprecated use getExamples(), since we now support multiple examples
-     */
-    public String getExample() {
-        if (examples.isEmpty()) {
-            return null;
-        } else {
-            //We return the last example, so the override still works
-            return examples.get(examples.size()-1);
-        }
-    }
+	public void apply(List acus, RuleContext ctx) {
+		visitAll(acus, ctx);
+	}
 
-    public void addExample(String example) {
-        examples.add(example);
-    }
+	protected void visitAll(List acus, RuleContext ctx) {
+		for (Iterator i = acus.iterator(); i.hasNext();) {
+			SimpleNode node = (SimpleNode)i.next();
+			visit(node, ctx);
+		}
+	}
 
-    public boolean hasProperty(String name) {
-        return properties.containsKey(name);
-    }
+	//
+	// The following APIs are identical to those in JspParserVisitorAdapter.
+	// Due to Java single inheritance, it preferred to extend from the more
+	// complex Rule base class instead of from relatively simple Visitor.
+	//
 
-    public void addProperty(String name, String value) {
-        properties.setProperty(name, value);
-    }
+	public Object visit(SimpleNode node, Object data) {
+		node.childrenAccept(this, data);
+		return null;
+	}
 
-    public void addProperties(Properties properties) {
-        this.properties.putAll(properties);
-    }
+	public Object visit(ASTCompilationUnit node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public double getDoubleProperty(String name) {
-        return Double.parseDouble(properties.getProperty(name));
-    }
+	public Object visit(ASTContent node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public int getIntProperty(String name) {
-        return Integer.parseInt(properties.getProperty(name));
-    }
+	public Object visit(ASTJspDirective node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public boolean getBooleanProperty(String name) {
-        return Boolean.parseBoolean(properties.getProperty(name));
-    }
+	public Object visit(ASTJspDirectiveAttribute node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public String getStringProperty(String name) {
-        return properties.getProperty(name);
-    }
+	public Object visit(ASTJspScriptlet node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Object visit(ASTJspExpression node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public Object visit(ASTJspDeclaration node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public String getMessage() {
-        return message;
-    }
+	public Object visit(ASTJspComment node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+	public Object visit(ASTText node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public String getExternalInfoUrl() {
-        return externalInfoUrl;
-    }
+	public Object visit(ASTUnparsedText node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public void setExternalInfoUrl(String url) {
-        this.externalInfoUrl = url;
-    }
+	public Object visit(ASTElExpression node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    /**
-     * Test if rules are equals. Rules are equals if
-     * 1. they have the same implementation class
-     * 2. they have the same name
-     * 3. they have the same priority
-     * 4. they share the same properties/values
-     */
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false; // trivial
-        }
+	public Object visit(ASTValueBinding node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-        if (this == o) {
-            return true;  // trivial
-        }
+	public Object visit(ASTCData node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-        Rule rule = null;
-        boolean equality = this.getClass().getName().equals(o.getClass().getName());
+	public Object visit(ASTElement node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-        if (equality) {
-            rule = (Rule) o;
-            equality = this.getName().equals(rule.getName())
-                    && this.getPriority() == rule.getPriority()
-                    && this.getProperties().equals(rule.getProperties());
-        }
+	public Object visit(ASTAttribute node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-        return equality;
-    }
+	public Object visit(ASTAttributeValue node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    /**
-     * Return a hash code to conform to equality. Try with a string.
-     */
-    public int hashCode() {
-        String s = this.getClass().getName() + this.getName() + this.getPriority() + this.getProperties().toString();
-        return s.hashCode();
-    }
+	public Object visit(ASTJspExpressionInAttribute node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public void apply(List acus, RuleContext ctx) {
-        visitAll(acus, ctx);
-    }
+	public Object visit(ASTCommentTag node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
+	public Object visit(ASTDeclaration node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public Properties getProperties() {
-        return properties;
-    }
+	public Object visit(ASTDoctypeDeclaration node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 
-    public boolean include() {
-        return include;
-    }
-
-    public void setInclude(boolean include) {
-        this.include = include;
-    }
-
-    public int getPriority() {
-        return priority;
-    }
-
-    public String getPriorityName() {
-        return PRIORITIES[getPriority() - 1];
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    public void setUsesDFA() {
-        this.usesDFA = true;
-    }
-
-    public boolean usesDFA() {
-        return this.usesDFA;
-    }
-
-    public void setUsesTypeResolution() {
-    }
-
-    public boolean usesTypeResolution() {
-        return false;
-    }
-
-    protected void visitAll(List acus, RuleContext ctx) {
-        for (Iterator i = acus.iterator(); i.hasNext();) {
-            SimpleNode node = (SimpleNode) i.next();
-            visit(node, ctx);
-        }
-    }
-
-    /**
-     * Adds a violation to the report.
-     *
-     * @param data the RuleContext
-     * @param node the node that produces the violation
-     */
-    protected final void addViolation(Object data, SimpleNode node) {
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node));
-    }
-
-    /**
-     * Adds a violation to the report.
-     *
-     * @param data the RuleContext
-     * @param node the node that produces the violation
-     * @param msg  specific message to put in the report
-     */
-    protected final void addViolationWithMessage(Object data, SimpleNode node, String msg) {
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, msg));
-    }
-
-    /**
-     * Adds a violation to the report.
-     *
-     * @param data  the RuleContext
-     * @param node  the node that produces the violation
-     * @param embed a variable to embed in the rule violation message
-     */
-    protected final void addViolation(Object data, SimpleNode node, String embed) {
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node, MessageFormat.format(getMessage(), embed)));
-    }
-
-    /**
-     * Adds a violation to the report.
-     *
-     * @param data the RuleContext
-     * @param node the node that produces the violation, may be null, in which case all line and column info will be set to zero
-     * @param args objects to embed in the rule violation message
-     */
-    protected final void addViolation(Object data, Node node, Object[] args) {
-        RuleContext ctx = (RuleContext) data;
-        ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, (SimpleNode) node, MessageFormat.format(getMessage(), args)));
-    }
-    
-    public PropertyDescriptor propertyDescriptorFor(String name) {
-    	return null;	// TODO not implemented yet
-    }
-
-    public boolean usesRuleChain() {
-        return !getRuleChainVisits().isEmpty();
-    }
-
-    public List<String> getRuleChainVisits() {
-        return ruleChainVisits;
-    }
-
-    public void addRuleChainVisit(String astNodeName) {
-        if (!ruleChainVisits.contains(astNodeName)) {
-            ruleChainVisits.add(astNodeName);
-        }
-    }
+	public Object visit(ASTDoctypeExternalId node, Object data) {
+		return visit((SimpleNode)node, data);
+	}
 }
