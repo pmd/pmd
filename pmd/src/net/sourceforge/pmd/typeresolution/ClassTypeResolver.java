@@ -24,60 +24,60 @@ import java.util.logging.Logger;
 public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
     private static final Logger LOG = Logger.getLogger(ClassTypeResolver.class.getName());
-    private static Map<String, Class> myPrimitiveTypes;
+	private static Map<String, Class> myPrimitiveTypes;
     private static Map<String, String> myJavaLang;
-    private static PMDASMClassLoader pmdClassLoader = new PMDASMClassLoader();
+	private static PMDASMClassLoader pmdClassLoader = new PMDASMClassLoader();
 
-    static {
-        Map<String, Class> thePrimitiveTypes = new HashMap<String, Class>();
-        thePrimitiveTypes.put("short", Short.TYPE);
-        thePrimitiveTypes.put("byte", Byte.TYPE);
-        thePrimitiveTypes.put("char", Character.TYPE);
-        thePrimitiveTypes.put("int", Integer.TYPE);
-        thePrimitiveTypes.put("long", Long.TYPE);
-        thePrimitiveTypes.put("float", Float.TYPE);
-        thePrimitiveTypes.put("double", Double.TYPE);
-        thePrimitiveTypes.put("boolean", Boolean.TYPE);
-        thePrimitiveTypes.put("void", Void.TYPE);
-        myPrimitiveTypes = Collections.unmodifiableMap(thePrimitiveTypes);
+	static {
+		Map<String, Class> thePrimitiveTypes = new HashMap<String, Class>();
+		thePrimitiveTypes.put("void", Void.TYPE);
+		thePrimitiveTypes.put("boolean", Boolean.TYPE);
+		thePrimitiveTypes.put("byte", Byte.TYPE);
+		thePrimitiveTypes.put("char", Character.TYPE);
+		thePrimitiveTypes.put("short", Short.TYPE);
+		thePrimitiveTypes.put("int", Integer.TYPE);
+		thePrimitiveTypes.put("long", Long.TYPE);
+		thePrimitiveTypes.put("float", Float.TYPE);
+		thePrimitiveTypes.put("double", Double.TYPE);
+		myPrimitiveTypes = Collections.unmodifiableMap(thePrimitiveTypes);
 
-        myJavaLang = new HashMap<String, String>();
-        myJavaLang.put("Boolean", "java.lang.Boolean");
-        myJavaLang.put("Byte", "java.lang.Byte");
-        myJavaLang.put("Character", "java.lang.Character");
-        myJavaLang.put("CharSequence", "java.lang.CharSequence");
-        myJavaLang.put("Class", "java.lang.Class");
-        myJavaLang.put("ClassLoader", "java.lang.ClassLoader");
-        myJavaLang.put("Cloneable", "java.lang.Cloneable");
-        myJavaLang.put("Comparable", "java.lang.Comparable");
-        myJavaLang.put("Compiler", "java.lang.Compiler");
-        myJavaLang.put("Double", "java.lang.Double");
-        myJavaLang.put("Float", "java.lang.Float");
-        myJavaLang.put("InheritableThreadLocal", "java.lang.InheritableThreadLocal");
-        myJavaLang.put("Integer", "java.lang.Integer");
-        myJavaLang.put("Long", "java.lang.Long");
-        myJavaLang.put("Math", "java.lang.Math");
-        myJavaLang.put("Number", "java.lang.Number");
-        myJavaLang.put("Object", "java.lang.Object");
-        myJavaLang.put("Package", "java.lang.Package");
-        myJavaLang.put("Process", "java.lang.Process");
-        myJavaLang.put("Runnable", "java.lang.Runnable");
-        myJavaLang.put("Runtime", "java.lang.Runtime");
-        myJavaLang.put("RuntimePermission", "java.lang.RuntimePermission");
-        myJavaLang.put("SecurityManager", "java.lang.SecurityManager");
-        myJavaLang.put("Short", "java.lang.Short");
-        myJavaLang.put("StackTraceElement", "java.lang.StackTraceElement");
-        myJavaLang.put("StrictMath", "java.lang.StrictMath");
-        myJavaLang.put("String", "java.lang.String");
-        myJavaLang.put("StringBuffer", "java.lang.StringBuffer");
-        myJavaLang.put("System", "java.lang.System");
-        myJavaLang.put("Thread", "java.lang.Thread");
-        myJavaLang.put("ThreadGroup", "java.lang.ThreadGroup");
-        myJavaLang.put("ThreadLocal", "java.lang.ThreadLocal");
-        myJavaLang.put("Throwable", "java.lang.Throwable");
-        myJavaLang.put("Void", "java.lang.Void");
-
-    }
+		Map<String, String> theJavaLang = new HashMap<String, String>();
+        theJavaLang.put("Boolean", "java.lang.Boolean");
+        theJavaLang.put("Byte", "java.lang.Byte");
+        theJavaLang.put("Character", "java.lang.Character");
+        theJavaLang.put("CharSequence", "java.lang.CharSequence");
+        theJavaLang.put("Class", "java.lang.Class");
+        theJavaLang.put("ClassLoader", "java.lang.ClassLoader");
+        theJavaLang.put("Cloneable", "java.lang.Cloneable");
+        theJavaLang.put("Comparable", "java.lang.Comparable");
+        theJavaLang.put("Compiler", "java.lang.Compiler");
+        theJavaLang.put("Double", "java.lang.Double");
+        theJavaLang.put("Float", "java.lang.Float");
+        theJavaLang.put("InheritableThreadLocal", "java.lang.InheritableThreadLocal");
+        theJavaLang.put("Integer", "java.lang.Integer");
+        theJavaLang.put("Long", "java.lang.Long");
+        theJavaLang.put("Math", "java.lang.Math");
+        theJavaLang.put("Number", "java.lang.Number");
+        theJavaLang.put("Object", "java.lang.Object");
+        theJavaLang.put("Package", "java.lang.Package");
+        theJavaLang.put("Process", "java.lang.Process");
+        theJavaLang.put("Runnable", "java.lang.Runnable");
+        theJavaLang.put("Runtime", "java.lang.Runtime");
+        theJavaLang.put("RuntimePermission", "java.lang.RuntimePermission");
+        theJavaLang.put("SecurityManager", "java.lang.SecurityManager");
+        theJavaLang.put("Short", "java.lang.Short");
+        theJavaLang.put("StackTraceElement", "java.lang.StackTraceElement");
+        theJavaLang.put("StrictMath", "java.lang.StrictMath");
+        theJavaLang.put("String", "java.lang.String");
+        theJavaLang.put("StringBuffer", "java.lang.StringBuffer");
+        theJavaLang.put("System", "java.lang.System");
+        theJavaLang.put("Thread", "java.lang.Thread");
+        theJavaLang.put("ThreadGroup", "java.lang.ThreadGroup");
+        theJavaLang.put("ThreadLocal", "java.lang.ThreadLocal");
+        theJavaLang.put("Throwable", "java.lang.Throwable");
+        theJavaLang.put("Void", "java.lang.Void");
+        myJavaLang = Collections.unmodifiableMap(theJavaLang);
+	}
 
     private Map<String, String> importedClasses;
     private List<String> importedOnDemand;
@@ -127,11 +127,17 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
          * not
          */
         if (node.getNameDeclaration() == null) {
-            String name = node.getImage();
-            if (name.indexOf('.') != -1) {
-                name = name.substring(0, name.indexOf('.'));
-            }
-            populateType(node, name);
+        	// Skip these scenarios as there is no type to populate in these cases:
+        	// 1) Parent is a PackageDeclaration, which is not a type
+        	// 2) Parent is a ImportDeclaration, this is handled elsewhere.
+        	if (!(node.jjtGetParent() instanceof ASTPackageDeclaration
+        			|| node.jjtGetParent() instanceof ASTImportDeclaration)) {
+	        	String name = node.getImage();
+	            if (name.indexOf('.') != -1) {
+	                name = name.substring(0, name.indexOf('.'));
+	            }
+	            populateType(node, name);
+        	}
         }
         return super.visit(node, data);
     }
