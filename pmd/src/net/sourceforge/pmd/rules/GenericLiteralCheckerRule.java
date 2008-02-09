@@ -6,7 +6,7 @@ package net.sourceforge.pmd.rules;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.properties.StringProperty;
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.properties.StringProperty;
  *
  * @author Romain PELISSE, belaran@gmail.com
  */
-public class GenericLiteralCheckerRule extends AbstractRule {
+public class GenericLiteralCheckerRule extends AbstractJavaRule {
 
 	private static final String PROPERTY_NAME = "pattern";
 	private static final String DESCRIPTION = "Regular Expression";
@@ -41,6 +41,7 @@ public class GenericLiteralCheckerRule extends AbstractRule {
 	/**
 	 * This method checks if the Literal matches the pattern. If it does, a violation is logged.
 	 */
+	@Override
 	public Object visit(ASTLiteral node, Object data) {
 		init();
 		String image = node.getImage();
