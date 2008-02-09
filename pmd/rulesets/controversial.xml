@@ -602,14 +602,13 @@ the volatile keyword should not be used for maintenance purpose and portability.
 			</example>
 		</rule>
 
-		<rule
-	        name="DoNotCallGarbageCollectionExplicitly"
-	        message="Do not explicitly trigger a garbage collection."
-	        class="net.sourceforge.pmd.rules.XPathRule"
-	        externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DoNotCallGarbageCollectionExplicitly">
+		<rule	name="DoNotCallGarbageCollectionExplicitly"
+	        	message="Do not explicitly trigger a garbage collection."
+	        	class="net.sourceforge.pmd.rules.XPathRule"
+	        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DoNotCallGarbageCollectionExplicitly">
         <description>
 	        <![CDATA[
-		        Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the 
+		        Calls to System.gc(), Runtime.getRuntime().gc(), and System.runFinalization() are not advised. Code should have the
 		        same behavior whether the garbage collection is disabled using the option -Xdisableexplicitgc or not.
 		        Moreover, "modern" jvms do a very good job handling garbage collections. If memory usage issues unrelated to memory
 			leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
@@ -647,18 +646,18 @@ the volatile keyword should not be used for maintenance purpose and portability.
                         System.gc();
                 	}
 	public void doSomething()
-	 { 
-		// Explicit gc call ! 	
+	 {
+		// Explicit gc call !
 		Runtime.getRuntime().gc();
 	}
 
 public explicitGCcall() { // Explicit gc call ! System.gc(); }
 
-public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); } } 
+public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); } }
 
 
-			]]> 
-		</example> 
+			]]>
+		</example>
 	</rule>
 
 </ruleset>

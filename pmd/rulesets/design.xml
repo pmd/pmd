@@ -1345,7 +1345,7 @@ Comparing the value of size() to 0 merely duplicates existing behavior.
           message="A class which only has private constructors should be final"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ClassWithOnlyPrivateConstructorsShouldBeFinal">
         <description>
-A class with only private constructors should be final, unless the private 
+A class with only private constructors should be final, unless the private
 constructor is called by a inner class.
         </description>
         <priority>1</priority>
@@ -1415,15 +1415,17 @@ rather than code the appropriate one.
     <rule name="SingularField"
           message="Perhaps ''{0}'' could be replaced by a local variable."
           class="net.sourceforge.pmd.rules.design.SingularField"
-      externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SingularField">
-      <description>
-This field is used in only one method and the first usage is assigning a value 
+      	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SingularField">
+		<description>
+      		<![CDATA[
+This field is used in only one method and the first usage is assigning a value
 to the field. This probably means that the field can be changed to a local variable.
+			]]>
       </description>
       <priority>3</priority>
       <properties>
-        <!-- Disabled by default because these options generate false positives -->
-        <property name="CheckInnerClasses" description="Check inner classes">
+		<!-- Disabled by default because these options generate false positives -->
+		<property name="CheckInnerClasses" description="Check inner classes">
             <value>false</value>
         </property>
         <property name="DisallowNotAssignment" description="Disallow violations where the first usage is not an assignment">
@@ -1440,12 +1442,11 @@ public class Foo {
 }
    ]]></example>
     </rule>
-    
-    <rule
-        name="ReturnEmptyArrayRatherThanNull"
-        class="net.sourceforge.pmd.rules.XPathRule"
-        message="Return an empty array rather than 'null'."
-        externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#ReturnEmptyArrayRatherThanNull">
+
+    <rule	name="ReturnEmptyArrayRatherThanNull"
+        	class="net.sourceforge.pmd.rules.XPathRule"
+        	message="Return an empty array rather than 'null'."
+        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#ReturnEmptyArrayRatherThanNull">
         <description>
             <![CDATA[
             For any method that returns an array, it's a better behavior to return an empty array rather than a null reference.
@@ -1488,4 +1489,111 @@ public class Foo {
         </example>
     </rule>
 
+    <rule	name="AbstractClassWithoutAnyMethod"
+        	class="net.sourceforge.pmd.rules.XPathRule"
+        	message="No abstract method which means that the  keyword is most likely used to prevent instantiation. use a private or protected constructor instead."
+        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AbstractClassWithoutAnyMethod">
+        <description>
+            <![CDATA[
+			If the abstract class does not provides any methods, it may be just a data container that is not to be instantiated. In this case, it's probably
+			better to use a private or a protected constructor in order to prevent instantiation than make the class misleadingly abstract.
+            ]]>
+        </description>
+        <priority>1</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassOrInterfaceDeclaration[
+	(@Abstract = 'true')
+	and
+	(count(//MethodDeclaration) = 0)
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class abstract Example {
+	String field;
+	int otherField;
+}
+            ]]>
+        </example>
+    </rule>
+
+        <rule	name="TooFewBranchesForASwitchStatement"
+	        	class="net.sourceforge.pmd.rules.XPathRule"
+	        	message="A switch with less than 3 branches is inefficient, use a if statement instead."
+	        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#TooFewBranchesForASwitchStatement">
+        <description>
+            <![CDATA[
+				Swith are designed complex branches, and allow branches to share treatement. Using a switch for only 2
+				branches is ill advised, as switches are not as easy to understand as if. In this case, it's most likely
+				is a good idea to use a if statement instead, at least to increase code readability.
+            ]]>
+        </description>
+        <priority>1</priority>
+        <properties>
+        	<property name="minimumNumberCaseForASwitch" description="Minimum number of branches for a switch" value="3"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//SwitchStatement[
+	(count(/SwitchLabel) < $minimumNumberCaseForASwitch)
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class abstract Example {
+	String field;
+	int otherField;
+}
+            ]]>
+        </example>
+    </rule>
+
+<!--
+Works still in progress in this one ...
+	<rule 	name="TooManyHttpFilter"
+          	message="Too many Http Filter inside a web application can make very it complex to understand and to deploy."
+          	class="net.sourceforge.pmd.rules.design.GenericClassCounterRule"
+      		externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#TooManyHttpFilter">
+		<description>
+			<![CDATA[
+The Http Filter are generally used to create session for the Object Relation Mapping tools and for security purpose or logging. Too many of them may
+lead to a complex architecture where everything is by "intercepting" the http request (pretty like aspect programming object). It can be elegant but
+far too complex.
+			]]>
+		</description>
+		<priority>4</priority>
+		<properties> -->
+			<!-- Must be a full java name to ensure type control !!! -->
+			<!--
+			<property 	name="typeMatch"
+						description="A series of regex to match on implements/extends classname"
+						value="javax.servlet.Filter"/>  -->
+			<!-- Define after how many occurences one should log a violation -->
+			<!--
+			<property 	name="threshold"
+						description="Defines how many occurences are legal"
+						value="2"/>
+      	</properties>
+		<example>
+			<![CDATA[
+public class Foo {
+    private int x;  //Why bother saving this?
+    public void foo(int y) {
+     x = y + 5;
+     return x;
+    }
+}
+			]]>
+		</example>
+	</rule>
+	 -->
 </ruleset>

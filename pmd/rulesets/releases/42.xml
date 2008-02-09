@@ -9,6 +9,8 @@ This ruleset contains links to rules that are new in PMD v4.2
   	<rule ref="rulesets/codesize.xml/TooManyMethods"/>
   	<rule ref="rulesets/controversial.xml/DoNotCallGarbageCollectionExplicitly"/>
   	<rule ref="rulesets/design.xml/ReturnEmptyArrayRatherThanNull"/>
+  	<rule ref="rulesets/design.xml/AbstractClassWithoutAnyMethod"/>
+  	<rule ref="rulesets/design.xml/TooFewBranchesForASwitchStatement"/>
   	<rule ref="rulesets/strictexception.xml/DoNotThrowExceptionInFinally"/>
 	<rule ref="rulesets/strings.xml/AvoidStringBufferField"/>
 

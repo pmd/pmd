@@ -9,6 +9,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
     @Before
     public void setUp() {
         addRule("design", "AbstractClassWithoutAbstractMethod");
+        addRule("design","AbstractClassWithoutAbstractMethod");
         addRule("design", "AccessorClassGeneration");
         addRule("design", "AssignmentToNonFinalStatic");
         addRule("design", "AvoidConstantsInterface");
@@ -51,6 +52,9 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule("design", "UseLocaleWithCaseConversions");
         addRule("design", "UseNotifyAllInsteadOfNotify");
         addRule("design", "UseSingleton");
+        addRule("design", "TooFewBranchesForASwitchStatement");
+//        addRule("design", "TooManyHttpFilter.xml");
+
     }
 
     public static junit.framework.Test suite() {
