@@ -280,6 +280,66 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
         <p>Thanks to Miguel Griffa for writing a longer  <a href="xpathruletutorial.html">XPath tutorial</a>.</p>
     </subsection>
 
+	<subsection name="I want to implement a rule that analyse more than the class !">
+		<p>
+			An obvious limitation of the previous mechanism is the "class-centric" focus of the rule. How can you implement a rule that wants to checks stuff accross the
+			all source code ? Let's take a dummy example, you want to implement a rule that count how many Expression Node you have in your source code (I told it was
+			a dummy example). You can do this quite easily using a static field and the Rule.start() and Rule.end() hook:
+		</p>
+		<source>
+			<![CDATA[[
+			package net.sourceforge.pmd.rules;
+
+			import java.util.concurrent.atomic.AtomicLong;
+
+			import net.sourceforge.pmd.AbstractJavaRule;
+			import net.sourceforge.pmd.RuleContext;
+			import net.sourceforge.pmd.ast.ASTExpression;
+
+			public class CountRule extends AbstractJavaRule {
+
+			       private static final String COUNT = "count";
+
+			       @Override
+			       public void start(RuleContext ctx) {
+			               ctx.setAttribute(COUNT, new AtomicLong());
+			               super.start(ctx);
+			       }
+
+			       @Override
+			       public Object visit(ASTExpression node, Object data) {
+			               // How many Expression nodes are there in all files parsed!  I must know!
+			               RuleContext ctx = (RuleContext)data;
+			               AtomicLong total = (AtomicLong)ctx.getAttribute(COUNT);
+			               total.incrementAndGet();
+			               return super.visit(node, data);
+			       }
+
+			       @Override
+			       public void end(RuleContext ctx) {
+			               AtomicLong total = (AtomicLong)ctx.getAttribute(COUNT);
+			               addViolation(ctx, null, new Object[] { total });
+			               ctx.removeAttribute(COUNT);
+			               super.start(ctx);
+			       }
+			}
+			]]>
+		</source>
+		<p>
+			As you can see in this example, the method start will be call the first time the rule is going to be used, so you can initialize properly
+			your rule here. Once the rule will have finished to parses the source code, the method end() will be invoke you can assert there if, or not,
+			your rule has been violated.
+		</p>
+		<p>
+			<i>
+				Note that the example log a violation <strong>without</strong> a proper classname. This is not really a good idea. Indeed, a lot of aggregating
+				tools that PMD (Such as <a href="http://xradar.sourceforge.net">XRadar</a>, or <a href="http://sonar.hortis.ch/">Sonar</a>) probably uses this kind
+				of meta data on their aggregation processes. So, when implements such a rule, always try to find a way to add
+				classname to the violation report.
+			</i>
+		</p>
+	</subsection>
+
     <subsection name="Bundle it up">
         <p>To use your rules as part of a nightly build or whatever, it's helpful to bundle up both
         the rule and the ruleset.xml file in a jar file.  Then you can put that jar file on the CLASSPATH of
