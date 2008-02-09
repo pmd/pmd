@@ -109,6 +109,15 @@ public class RuleSets {
         return (languageOfSource.equals(languageOfRule) || (languageOfSource
                 .equals(Language.JAVA) && (null == languageOfRule)));
     }
+    
+    /**
+     * Notify all rules of the start of processing.
+     */
+    public void start(RuleContext ctx) {
+        for (RuleSet ruleSet: ruleSets) {
+        	ruleSet.start(ctx);
+        }
+    }
 
     /**
      * Apply all applicable rules to the compilation units.
@@ -126,6 +135,15 @@ public class RuleSets {
             if (applies(language, ruleSet.getLanguage())) {
                 ruleSet.apply(acuList, ctx);
             }
+        }
+    }
+    
+    /**
+     * Notify all rules of the end of processing.
+     */
+    public void end(RuleContext ctx) {
+        for (RuleSet ruleSet: ruleSets) {
+        	ruleSet.end(ctx);
         }
     }
 

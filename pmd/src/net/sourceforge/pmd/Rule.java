@@ -205,10 +205,20 @@ public interface Rule {
 	 * Adds an AST node name to be visited by the Rule on the RuleChain.
 	 */
 	void addRuleChainVisit(String astNodeName);
+	
+	/**
+	 * Start processing. Called once, before apply() is first called. 
+	 */
+	void start(RuleContext ctx);
 
 	/**
 	 * Apply this rule to the given collection of compilation units, using the
 	 * given context.
 	 */
 	void apply(List<?> astCompilationUnits, RuleContext ctx);
+	
+	/**
+	 * End processing. Called once, after apply() is last called. 
+	 */
+	void end(RuleContext ctx);
 }

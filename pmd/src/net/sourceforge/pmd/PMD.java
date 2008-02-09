@@ -329,7 +329,12 @@ public class PMD {
                 w = null;
             }
         } catch (Exception e) {
-            LOG.severe(e.getMessage());
+        	String message = e.getMessage();
+        	if (message != null) {
+        		LOG.severe(message);
+        	} else {
+                LOG.log(Level.SEVERE, "Exception during processing", e);
+        	}
             
             LOG.log(Level.FINE, "Exception during processing", e);	//Only displayed when debug logging is on
  
@@ -440,15 +445,17 @@ public class PMD {
 
     private static class PmdThreadFactory implements ThreadFactory {
 
-        public PmdThreadFactory(RuleSetFactory ruleSetFactory) {
-            this.ruleSetFactory = ruleSetFactory;
-        }
-
         private final RuleSetFactory ruleSetFactory;
+        private final RuleContext ctx;
         private final AtomicInteger counter = new AtomicInteger();
 
+        public PmdThreadFactory(RuleSetFactory ruleSetFactory, RuleContext ctx) {
+            this.ruleSetFactory = ruleSetFactory;
+            this.ctx = ctx;
+        }
+
         public Thread newThread(Runnable r) {
-            PmdThread t = new PmdThread(counter.incrementAndGet(), r, ruleSetFactory);
+            PmdThread t = new PmdThread(counter.incrementAndGet(), r, ruleSetFactory, ctx);
             threadList.add(t);
             return t;
         }
@@ -459,10 +466,10 @@ public class PMD {
 
     private static class PmdThread extends Thread {
 
-        public PmdThread(int id, Runnable r, RuleSetFactory ruleSetFactory) {
+        public PmdThread(int id, Runnable r, RuleSetFactory ruleSetFactory, RuleContext ctx) {
             super(r, "PmdThread " + id);
             this.id = id;
-            context = new RuleContext();
+            context = new RuleContext(ctx);
             this.ruleSetFactory = ruleSetFactory;
         }
         
@@ -556,7 +563,15 @@ public class PMD {
         }
 
         if (useMT) {
-            PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory);
+            RuleSets rs = null;
+            try {
+                rs = ruleSetFactory.createRuleSets(rulesets);
+            } catch (RuleSetNotFoundException rsnfe) {
+                // should not happen: parent already created a ruleset
+            }
+            rs.start(ctx);
+
+            PmdThreadFactory factory = new PmdThreadFactory(ruleSetFactory, ctx);
             ExecutorService executor = Executors.newFixedThreadPool(threadCount, factory);
             List<Future<Report>> tasks = new LinkedList<Future<Report>>();
 
@@ -601,6 +616,19 @@ public class PMD {
                 } catch (IOException ioe) {
                 }
             }
+
+            try {
+                rs.end(ctx);
+                long start = System.nanoTime();
+                for (Renderer r: renderers) {
+                    r.renderFileReport(ctx.getReport());
+                }
+                long end = System.nanoTime();
+                Benchmark.mark(Benchmark.TYPE_REPORTING, end - start, 1);
+            } catch (IOException ioe) {
+            }
+
+
         } else {
             // single threaded execution
 
@@ -625,6 +653,8 @@ public class PMD {
                 if (LOG.isLoggable(Level.FINE)) {
                     LOG.fine("Processing " + ctx.getSourceCodeFilename());
                 }
+                rs.start(ctx);
+
                 for(Renderer r: renderers) {
                     r.startFileAnalysis(dataSource);
                 }
@@ -653,6 +683,8 @@ public class PMD {
                             new Report.ProcessingError(re.getMessage(),
                                     niceFileName));
                 }
+
+                rs.end(ctx);
 
                 try {
                     long start = System.nanoTime();

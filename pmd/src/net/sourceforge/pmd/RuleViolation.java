@@ -72,48 +72,55 @@ public class RuleViolation implements IRuleViolation {
         this.filename = ctx.getSourceCodeFilename();
         this.description = specificMsg;
 
-        if (node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) == null) {
-            // This takes care of nodes which are outside a class definition - i.e., import declarations
-            className = "";
+        if (node != null) {
+	        if (node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) == null) {
+	            // This takes care of nodes which are outside a class definition - i.e., import declarations
+	            className = "";
+	        } else {
+	            // default to symbol table lookup
+	            className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : node.getScope().getEnclosingClassScope().getClassName();
+	        }
+	
+	        setVariableNameIfExists(node);
+	        
+	        methodName = node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : node.getScope().getEnclosingMethodScope().getName();
+	
+	        packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
+	
+	        beginLine = node.getBeginLine();
+	        endLine = node.getEndLine();
+	        beginColumn = node.getBeginColumn();
+	        endColumn = node.getEndColumn();
+	
+	        // TODO combine this duplicated code
+	        // TODO same for duplicated code in ASTTypeDeclaration && ASTClassOrInterfaceBodyDeclaration
+	        List<SimpleNode> parentTypes = new ArrayList<SimpleNode>(node.getParentsOfType(ASTTypeDeclaration.class));
+	        if (node instanceof ASTTypeDeclaration) {
+	            parentTypes.add(node);
+	        }
+	        parentTypes.addAll(node.getParentsOfType(ASTClassOrInterfaceBodyDeclaration.class));
+	        if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
+	            parentTypes.add(node);
+	        }
+	        parentTypes.addAll(node.getParentsOfType(ASTFormalParameter.class));
+	        if (node instanceof ASTFormalParameter) {
+	            parentTypes.add(node);
+	        }
+	        parentTypes.addAll(node.getParentsOfType(ASTLocalVariableDeclaration.class));
+	        if (node instanceof ASTLocalVariableDeclaration) {
+	            parentTypes.add(node);
+	        }
+	        for (Iterator i = parentTypes.iterator(); i.hasNext();) {
+	            CanSuppressWarnings t = (CanSuppressWarnings) i.next();
+	            if (t.hasSuppressWarningsAnnotationFor(getRule())) {
+	                isSuppressed = true;
+	            }
+	        }
         } else {
-            // default to symbol table lookup
-            className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : node.getScope().getEnclosingClassScope().getClassName();
-        }
-
-        setVariableNameIfExists(node);
-        
-        methodName = node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : node.getScope().getEnclosingMethodScope().getName();
-
-        packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
-
-        beginLine = node.getBeginLine();
-        endLine = node.getEndLine();
-        beginColumn = node.getBeginColumn();
-        endColumn = node.getEndColumn();
-
-        // TODO combine this duplicated code
-        // TODO same for duplicated code in ASTTypeDeclaration && ASTClassOrInterfaceBodyDeclaration
-        List<SimpleNode> parentTypes = new ArrayList<SimpleNode>(node.getParentsOfType(ASTTypeDeclaration.class));
-        if (node instanceof ASTTypeDeclaration) {
-            parentTypes.add(node);
-        }
-        parentTypes.addAll(node.getParentsOfType(ASTClassOrInterfaceBodyDeclaration.class));
-        if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
-            parentTypes.add(node);
-        }
-        parentTypes.addAll(node.getParentsOfType(ASTFormalParameter.class));
-        if (node instanceof ASTFormalParameter) {
-            parentTypes.add(node);
-        }
-        parentTypes.addAll(node.getParentsOfType(ASTLocalVariableDeclaration.class));
-        if (node instanceof ASTLocalVariableDeclaration) {
-            parentTypes.add(node);
-        }
-        for (Iterator i = parentTypes.iterator(); i.hasNext();) {
-            CanSuppressWarnings t = (CanSuppressWarnings) i.next();
-            if (t.hasSuppressWarningsAnnotationFor(getRule())) {
-                isSuppressed = true;
-            }
+        	className = "";
+        	methodName = "";
+        	packageName = "";
+        	filename = "";
         }
     }
 

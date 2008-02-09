@@ -156,6 +156,12 @@ public class RuleSet {
         // Include patterns override exclude patterns.
         return included || !excluded;
     }
+    
+    public void start(RuleContext ctx) {
+        for (Rule rule: rules) {
+            rule.start(ctx);
+        }
+    }
 
     public void apply(List acuList, RuleContext ctx) {
         long start = System.nanoTime();
@@ -166,6 +172,12 @@ public class RuleSet {
                 Benchmark.mark(Benchmark.TYPE_RULE, rule.getName(), end - start, 1);
                 start = end;
             }
+        }
+    }
+    
+    public void end(RuleContext ctx) {
+        for (Rule rule: rules) {
+            rule.end(ctx);
         }
     }
 

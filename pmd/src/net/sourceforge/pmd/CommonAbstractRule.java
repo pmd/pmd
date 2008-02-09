@@ -335,6 +335,14 @@ public abstract class CommonAbstractRule implements Rule {
 		}
 	}
 
+	public void start(RuleContext ctx) {
+		// Override as needed
+	}
+
+	public void end(RuleContext ctx) {
+		// Override as needed
+	}
+
 	/**
 	 * Rules are equal if:
 	 * <ol>
