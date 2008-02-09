@@ -10,6 +10,7 @@ New rules:
 	Design ruleset : ReturnEmptyArrayRatherThanNull
 	Codesize : TooManyMethods
 	StrictExceptions : DoNotThrowExceptionInFinally
+	Strings : AvoidStringBufferField
 
 1.7 added as a valid option for targetjdk.
 New elements under <ruleset>: <exclude-pattern> to match files exclude from processing, with <include-pattern> to override.

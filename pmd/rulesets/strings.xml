@@ -222,7 +222,7 @@ public class Foo {
         class="net.sourceforge.pmd.rules.strings.InefficientEmptyStringCheck"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InefficientEmptyStringCheck">
     <description>
-String.trim().length() is an inefficient way to check if a String is really empty, as it 
+String.trim().length() is an inefficient way to check if a String is really empty, as it
 creates a new String object just to check its size. Consider creating a static function that
 loops through a string, checking Character.isWhitespace() on each character and returning
 false if a non-whitespace character is found.
@@ -232,9 +232,9 @@ false if a non-whitespace character is found.
 <![CDATA[
 public class Foo {
     void bar(String string) {
-        if (string != null && string.trim().size() > 0) { 
+        if (string != null && string.trim().size() > 0) {
 		    doSomething();
-        } 
+        }
     }
 }
 ]]>
@@ -246,10 +246,10 @@ public class Foo {
         class="net.sourceforge.pmd.rules.strings.InsufficientStringBufferDeclaration"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InsufficientStringBufferDeclaration">
     <description>
-Failing to pre-size a StringBuffer properly could cause it to re-size many times 
+Failing to pre-size a StringBuffer properly could cause it to re-size many times
 during runtime. This rule checks the characters that are actually passed into
-StringBuffer.append(), but represents a best guess "worst case" scenario. An 
-empty StringBuffer constructor initializes the object to 16 characters. This default 
+StringBuffer.append(), but represents a best guess "worst case" scenario. An
+empty StringBuffer constructor initializes the object to 16 characters. This default
 is assumed if the length of the constructor can not be determined.
     </description>
        <priority>3</priority>
@@ -258,7 +258,7 @@ is assumed if the length of the constructor can not be determined.
 public class Foo {
     void bar() {
         StringBuffer bad = new StringBuffer();
-        bad.append("This is a long string, will exceed the default 16 characters");//bad 
+        bad.append("This is a long string, will exceed the default 16 characters");//bad
         StringBuffer good = new StringBuffer(41);
         good.append("This is a long string, which is pre-sized");//good
     }
@@ -356,6 +356,36 @@ class Foo {
 ]]>
     </example>
     </rule>
+
+	<rule   name="AvoidStringBufferField"
+        	message="StringBuffers can grow quite a lot, and so may become a source of memory leak (if the owning class has a long life time)."
+        	class="net.sourceforge.pmd.rules.XPathRule"
+        	externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AvoidStringBufferField">
+    <description>
+		<![CDATA[[
+			StringBuffers can grow quite a lot, and so may become a source of memory leak (if the owning class has a long life time).
+		]]>
+    </description>
+    <priority>3</priority>
+    <properties>
+        <property name="xpath">
+            <value>
+<![CDATA[
+//FieldDeclaration/Type/ReferenceType/ClassOrInterfaceType[@Image = 'StringBuffer']
+]]>
+			</value>
+		</property>
+		</properties>
+    	<example>
+<![CDATA[
+class Foo {
+	private StringBuffer memoryLeak;
+}
+]]>
+		</example>
+	</rule>
+
+
 
 </ruleset>
 
