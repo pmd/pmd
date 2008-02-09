@@ -10,6 +10,7 @@ import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.rules.regex.RegexHelper;
 
 
 /**
@@ -45,17 +46,9 @@ public class GenericLiteralCheckerRule extends AbstractJavaRule {
 	public Object visit(ASTLiteral node, Object data) {
 		init();
 		String image = node.getImage();
-		if ( image != null && image.length() > 0 && isMatch(image) ) {
+		if ( image != null && image.length() > 0 && RegexHelper.isMatch(this.pattern,image) ) {
 			addViolation(data, node);
 		}
 		return data;
-	}
-
-	private boolean isMatch(String image) {
-        Matcher matcher = pattern.matcher(image);
-        if (matcher.find()) {
-            return true;
-        }
-		return false;
 	}
 }

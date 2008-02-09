@@ -6,15 +6,18 @@ package net.sourceforge.pmd.rules.design;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
-
-import org.omg.CosNaming.NamingContextOperations;
+import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.rules.regex.RegexHelper;
+
+import org.jaxen.JaxenException;
 
 /**
  * <p>A generic rule that can be configurer to "count" classes of certains
@@ -26,6 +29,7 @@ import net.sourceforge.pmd.properties.StringProperty;
  * 		<!-- Several regexes may be provided to ensure a match... -->
  * 		<property 	name="nameMatch" description="a regex on which to match"
  * 					value="^Abstract.*Bean*$,^*EJB*$"/>
+ * 		<!-- An operand to refine match strategy TODO: Not implemented yet !!! -->
  * 		<property 	name"operand"	description=""
  * 					value="and"/> <!-- possible values are and/or -->
  * 		<!-- Must be a full name to ensure type control !!! -->
@@ -34,6 +38,7 @@ import net.sourceforge.pmd.properties.StringProperty;
  * 		<!-- Define after how many occurences one should log a violation -->
  * 		<property 	name="threshold"	description="Defines how many occurences are legal"
  * 					value="2"/>
+ * 		<!-- TODO: Add a parameter to allow "ignore" pattern based on name -->
  * </p>
  *
  * @author Ryan Gutafson, rgustav@users.sourceforge.net
@@ -56,8 +61,11 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 			"Defines how many occurences are legal",new String(),4.0f);
 
 
-	private List<String> namesMatch;
-	private List<String> typesMatch;
+	private List<Pattern> namesMatch;
+	private List<Pattern> typesMatch;
+	private List<SimpleNode> matches;
+	private List<String> simpleClassname;
+
 
 	private String operand;
 	private int threshold;
@@ -83,11 +91,14 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		// Creating the attribute name for the rule context
 		COUNTER_LABEL = this.getClass().getSimpleName() + ".number of match";
 		// Constructing the request from the input parameters
-		this.namesMatch = arrayAsList(getStringProperties(nameMatchDescriptor));
+		this.namesMatch = RegexHelper.compilePatternFromList(arrayAsList(getStringProperties(nameMatchDescriptor)));
 		this.operand = getStringProperty(operandDescriptor);
-		this.typesMatch = arrayAsList(getStringProperties(typeMatchDescriptor));
+		this.typesMatch = RegexHelper.compilePatternFromList(arrayAsList(getStringProperties(typeMatchDescriptor)));
 		String thresholdAsString = getStringProperty(thresholdDescriptor);
 		this.threshold = Integer.valueOf(thresholdAsString);
+		// Initializing list of match
+		this.matches = new ArrayList<SimpleNode>();
+
 	}
 
 	 @Override
@@ -100,40 +111,75 @@ public class GenericClassCounterRule extends AbstractJavaRule {
      @Override
      public Object visit(ASTImportDeclaration node, Object data) {
     	 // Is there any imported types that match ?
-    	 // TODO:
+    	 for (Pattern pattern : this.typesMatch) {
+    		 if ( RegexHelper.isMatch(pattern,node.getImage())) {
+    			 if ( simpleClassname == null )
+    				 simpleClassname = new ArrayList<String>(1);
+    			 simpleClassname.add(node.getImportedName());
+    		 }
+    		 // FIXME: use type resolution framework to deal with star import ?
+    	 }
          return super.visit(node, data);
      }
 
-     @Override
-     public Object visit(ASTClassOrInterfaceType classType,Object data) {
-    	 boolean match = false;
-    	 // Correlate type list from the import parsing with implements/extends list
-    	 // TODO
-    	 // Is there any name that match ?
-    	 //
-    	 if ( match ) {
-    		 // We have a match, we increment
-    		 RuleContext ctx = (RuleContext)data;
-    		 AtomicLong total = (AtomicLong)ctx.getAttribute(COUNTER_LABEL);
-             total.incrementAndGet();
-             // TODO: Keep a list of the matched classes...
-    	 }
-    	 return super.visit(classType, data);
-     }
+	@Override
+	public Object visit(ASTClassOrInterfaceType classType,Object data) {
+		// Is extends/implements list using one of the previous match on import ?
+		// FIXME: use type resolution framework to deal with star import ?
+		for (String matchType : simpleClassname) {
+			if ( searchForAMatch(matchType,classType)) {
+				addAMatch(classType, data);
+			}
+		}
+		// TODO: implements the "operand" functionnality
+		// Is there any names that actually match ?
+		for (Pattern pattern : this.namesMatch)
+			if ( RegexHelper.isMatch(pattern, classType.getImage()))
+				addAMatch(classType, data);
+		return super.visit(classType, data);
+	}
 
-     @Override
-     public void end(RuleContext ctx) {
-             AtomicLong total = (AtomicLong)ctx.getAttribute(COUNTER_LABEL);
-             // Do we have a violation ?
-             if ( total.get() > this.threshold ) {
-            	 //FIXME: Hum... No classname for the violation, this is an issue
-            	 // A lot of tools using PMD uses this...
-            	 //FIX: Add a violation BY classe's matched, this is a bit overkill
-            	 // but i think is better this way
-                 addViolation(ctx, null, new Object[] { total });
-             }
-             // Cleaning the context for the others rules
-             ctx.removeAttribute(COUNTER_LABEL);
-             super.start(ctx);
+	private void addAMatch(SimpleNode node,Object data) {
+		// We have a match, we increment
+		RuleContext ctx = (RuleContext)data;
+		AtomicLong total = (AtomicLong)ctx.getAttribute(COUNTER_LABEL);
+		total.incrementAndGet();
+		// And we keep a ref on the node for the report generation
+		this.matches.add(node);
+	}
+
+	@SuppressWarnings("unchecked")
+    private boolean searchForAMatch(String matchType,SimpleNode node) {
+		boolean status = false;
+    	 String xpathQuery = "//ClassOrInterfaceDeclaration[" +
+							"(./ExtendsList/ClassOrInterfaceType[@Image = '" + matchType + "'])" +
+							"or" +
+							"(./ImplementsList/ClassOrInterfaceType[@Image = '" + matchType + "'])" +
+							"]";
+		try
+		{
+			List list = node.findChildNodesWithXPath(xpathQuery);
+			if ( list != null && list.size() > 0 ) {
+				// We got a match !
+				status = true;
+			}
+		}
+		catch (JaxenException e) {
+			// Most likely, a should never happen exception...
+			e.printStackTrace();
+		}
+		return status;
+	}
+
+	@Override
+    public void end(RuleContext ctx) {
+		AtomicLong total = (AtomicLong)ctx.getAttribute(COUNTER_LABEL);
+        // Do we have a violation ?
+        if ( total.get() > this.threshold )
+        	for (SimpleNode node : this.matches)
+        		addViolation(ctx,node , new Object[] { total });
+		// Cleaning the context for the others rules
+		ctx.removeAttribute(COUNTER_LABEL);
+		super.start(ctx);
      }
 }
