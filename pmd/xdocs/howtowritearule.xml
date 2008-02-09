@@ -282,9 +282,12 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
 
 	<subsection name="I want to implement a rule that analyse more than the class !">
 		<p>
-			An obvious limitation of the previous mechanism is the "class-centric" focus of the rule. How can you implement a rule that wants to checks stuff accross the
-			all source code ? Let's take a dummy example, you want to implement a rule that count how many Expression Node you have in your source code (I told it was
-			a dummy example). You can do this quite easily using a static field and the Rule.start() and Rule.end() hook:
+			An obvious limitation of the previous mechanism is the "class-centric" focus of the rule. How can you implement a rule that checks stuff accross the
+			all source code ? Let's take a dummy example. Let's say you want to implement a rule that count how many Expression Node you have in your source code
+			(told you, it was a dummy example :) ).</p>
+		<p>
+		You realize quite simply. You just have to add static field to the RulesContext, as an attribute, and uses Rule.start() and Rule.end() hook
+		to initialized and finalize your rule's implementation :
 		</p>
 		<source>
 			<![CDATA[[
