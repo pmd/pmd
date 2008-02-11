@@ -35,7 +35,6 @@ import java.util.zip.ZipFile;
 
 import net.sourceforge.pmd.ast.CompilationUnit;
 import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
 import net.sourceforge.pmd.parsers.Parser;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -43,6 +42,7 @@ import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
 import net.sourceforge.pmd.util.Benchmark;
 import net.sourceforge.pmd.util.ConsoleLogHandler;
+import net.sourceforge.pmd.util.FileFinder;
 
 public class PMD {
     public static final String EOL = System.getProperty("line.separator", "\n");

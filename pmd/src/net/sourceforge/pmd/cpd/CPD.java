@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.util.FileFinder;
+
 public class CPD {
 
     private Map<String, SourceCode> source = new HashMap<String, SourceCode>();

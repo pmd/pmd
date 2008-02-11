@@ -5,9 +5,9 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.dcd.graph.UsageGraph;
 import net.sourceforge.pmd.dcd.graph.UsageGraphBuilder;
+import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.filter.Filter;
 import net.sourceforge.pmd.util.filter.FilterBuilder;
 
@@ -83,7 +83,6 @@ public class DCD {
 	}
 
 	public static void main(String[] args) throws Exception {
-
 		// 1) Directories
 		List<File> directories = new ArrayList<File>();
 		directories.add(new File("C:/pmd/workspace/pmd-trunk/src"));
@@ -104,7 +103,7 @@ public class DCD {
 				}
 			}
 		};
-
+		
 		// 2) Filename filters
 		List<FilenameFilter> filters = new ArrayList<FilenameFilter>();
 		filters.add(javaFilter);

@@ -1,5 +1,20 @@
 package net.sourceforge.pmd.util;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
@@ -17,23 +32,7 @@ import net.sourceforge.pmd.TargetJDK1_6;
 import net.sourceforge.pmd.TargetJDK1_7;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.cpd.FileFinder;
 import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class Benchmark {
 
