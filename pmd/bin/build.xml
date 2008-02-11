@@ -166,6 +166,21 @@
 		</pmd>
 	</target>
 
+	<target name="cpdOnPmd" description="Runs CPD on PMD" depends="copy, compile">
+		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" classpathref="dependencies.path" />
+		<cpd language="java" minimumTokenCount="50" format="text">
+			<fileset dir="${dir.src}">
+				<include name="**/*.java" />
+				<exclude name="**/*ast/ParseException.java" />
+				<exclude name="**/*ast/TokenMgrError.java" />
+				<exclude name="**/*ast/Token.java" />
+				<exclude name="**/*ast/*Parser.java" />
+				<exclude name="**/*ast/*ParserTokenManager.java" />
+				<exclude name="**/*ast/*CharStream.java" />
+			</fileset>
+		</cpd>
+	</target>
+
 	<target name="requires-junit" description="Ensures JUnit is available">
 		<available classname="org.junit.Assert" property="junit.available" classpathref="dependencies.path" />
 		<fail unless="junit.available" message="Could not find JUnit 4... please place a junit.jar file in the CLASSPATH." />

@@ -93,7 +93,9 @@ public class CPDTask extends Task {
         }
         Renderer renderer = createRenderer();
         FileReporter reporter;
-        if (outputFile.isAbsolute()) {
+        if (outputFile == null) {
+        	reporter = new FileReporter(encoding);
+        } else if (outputFile.isAbsolute()) {
             reporter = new FileReporter(outputFile, encoding);
         } else {
             reporter = new FileReporter(new File(getProject().getBaseDir(), outputFile.toString()), encoding);
@@ -132,8 +134,6 @@ public class CPDTask extends Task {
     private void validateFields() throws BuildException {
         if (minimumTokenCount == 0) {
             throw new BuildException("minimumTokenCount is required and must be greater than zero");
-        } else if (outputFile == null) {
-            throw new BuildException("outputFile is a required attribute");
         } else if (filesets.isEmpty()) {
             throw new BuildException("Must include at least one FileSet");
         }
