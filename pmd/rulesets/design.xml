@@ -1388,6 +1388,12 @@ rather than code the appropriate one.
                         [
                             ( boolean(./Block[count(./BlockStatement) =  1]/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal/NullLiteral) = 'true' )
                             or
+							(
+								(boolean(./Block/BlockStatement/Statement/ReturnStatement/Expression/PrimaryExpression/PrimaryPrefix/Literal) = 'true' )
+								and
+								( count (./Block/*) = 1 )
+							)
+                            or
                             ( count (./Block/*) = 0 )
                         ]
                 ]]>
@@ -1557,8 +1563,6 @@ public class abstract Example {
         </example>
     </rule>
 
-<!--
-Works still in progress in this one ...
 	<rule 	name="TooManyHttpFilter"
           	message="Too many Http Filter inside a web application can make very it complex to understand and to deploy."
           	class="net.sourceforge.pmd.rules.design.GenericClassCounterRule"
@@ -1571,29 +1575,31 @@ far too complex.
 			]]>
 		</description>
 		<priority>4</priority>
-		<properties> -->
+		<properties>
 			<!-- Must be a full java name to ensure type control !!! -->
-			<!--
 			<property 	name="typeMatch"
 						description="A series of regex to match on implements/extends classname"
-						value="javax.servlet.Filter"/>  -->
+						value="javax.servlet.Filter,javax.servlet.HttpFilter"/>
 			<!-- Define after how many occurences one should log a violation -->
-			<!--
+
 			<property 	name="threshold"
 						description="Defines how many occurences are legal"
 						value="2"/>
       	</properties>
 		<example>
 			<![CDATA[
-public class Foo {
-    private int x;  //Why bother saving this?
-    public void foo(int y) {
-     x = y + 5;
-     return x;
-    }
+import javax.servlet.Filter;
+
+public class FooFilter implements Filter {
+	public FooFilter() { }
+
+	// Adding two private filter to emulate the others
+	private class BarFilter implements Filter {}
+
+	private class OneTooMuchFilter() implements Filter {}
+
 }
 			]]>
 		</example>
 	</rule>
-	 -->
 </ruleset>

@@ -115,4 +115,73 @@ public abstract class ShouldBeAbstract
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1888967 : Detection of dummy method
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+	public boolean couldBeAbstract()
+    {
+    	return true;
+    }
+
+   	public int couldBeAbstract()
+    {
+    	return 0;
+    }
+
+    public String couldBeAbstract()
+    {
+    	return "";
+    }
+
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1888967 : Those methods should not be detected as a violation.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+	public boolean notAbstract(String str)
+    {
+    	return Boolean.valueOf(str);
+    }
+
+	public int neitherThisOne(int i)
+	{
+		return i + 3;
+	}
+
+	public int neitherThisOne(String str)
+	{
+		return Integer.valueOf(str);
+	}
+
+
+}
+     ]]></code>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+Bug 1888967 : This method should not be detected as a violation.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class ShouldBeAbstract
+{
+	public boolean couldBeAbstract(String str)
+    {
+    	return Boolean.valueOf(str);
+    }
+
+}
+     ]]></code>
+    </test-code>
 </test-data>
