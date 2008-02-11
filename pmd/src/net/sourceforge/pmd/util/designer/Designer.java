@@ -633,7 +633,7 @@ public class Designer implements ClipboardOwner {
         makeTextComponentUndoable(codeEditorPane);
 
         p.add(new JLabel("Source code:"), BorderLayout.NORTH);
-        p.add(codeEditorPane, BorderLayout.CENTER);
+        p.add(new JScrollPane(codeEditorPane), BorderLayout.CENTER);
 
         return p;
     }
