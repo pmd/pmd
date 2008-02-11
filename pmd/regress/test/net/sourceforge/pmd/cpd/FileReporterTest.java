@@ -20,9 +20,10 @@ import java.io.IOException;
  */
 public class FileReporterTest {
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void testCreation() {
-        new FileReporter(null);
+        new FileReporter((String)null);
+        new FileReporter((File)null);
     }
 
     @Test
