@@ -18,10 +18,10 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
     </p>
     </subsection>
     <subsection name="What is the Abstract Syntax Tree (AST)?">
-    <p>From <a href="http://foldoc.doc.ic.ac.uk/foldoc/foldoc.cgi?abstract+syntax+tree">FOLDOC</a> an AST is 'A data structure 
-    representing something which has been parsed, often used as 
-    a compiler or interpreter's internal representation of a 
-    program while it is being optimised and from which code 
+    <p>From <a href="http://foldoc.doc.ic.ac.uk/foldoc/foldoc.cgi?abstract+syntax+tree">FOLDOC</a> an AST is 'A data structure
+    representing something which has been parsed, often used as
+    a compiler or interpreter's internal representation of a
+    program while it is being optimised and from which code
     generation is performed'.</p>
     <p>
     	In our context, this means that we basically have a tree representation
@@ -29,12 +29,12 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
         And since it's conceptually similar to XML, it can be queried with XPath to find a pattern.
     </p>
     </subsection>
-    
+
     <section name="Using Designer">
     <p> PMD comes with a handy tool that you will love if you want to write an XPath rule.
     Designer, runnable from a script in <code>bin/</code>, is a very simple and useful utility for writing rules.
     </p>
-    <p>The basic steps involved in writing XPath rules are these: 
+    <p>The basic steps involved in writing XPath rules are these:
     	<ol>
 		    <li>Write a simple Java example source snippet in Designer</li>
 		    <li>See the AST for the class you wrote</li>
@@ -72,7 +72,7 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
 	declarations is, well, using the FieldDeclaration node. This expression
 	matches only the two fields declared in the class:</p>
 	<source>//FieldDeclaration</source>
-	<p>In a similar way, you can match only local variables with this 
+	<p>In a similar way, you can match only local variables with this
 	expression</p>
 	<source>//LocalVariableDeclaration</source>
 	<p>With local variables we need to be more careful.  Consider the
@@ -82,18 +82,18 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
 		final int one;
 		int two;
 
-		{ 
+		{
 			int a;
 		}
-	}	
+	}
 }]]></source>
-	<p>Local variable declarations will match 'a', since it is a perfectly 
+	<p>Local variable declarations will match 'a', since it is a perfectly
 	legal Java local variable. Now, a more interesting expression is
-	to match variables declared in a method, and not on an internal block, 
+	to match variables declared in a method, and not on an internal block,
 	nor in the class. Maybe you'll start with an expression like this:</p>
 	<source>//MethodDeclaration//LocalVariableDeclaration</source>
 	<p>You'll quickly see that all three local variables are matched.  A possible
-	solution for this is to request that the parent of the local variable 
+	solution for this is to request that the parent of the local variable
 	declaration is the MethodDeclaration node:</p>
 	<source>
         <![CDATA[
@@ -101,15 +101,17 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
  ]]>
     </source>
 	<subsection name="Matching variables by name">
-	<p>Let's consider that we are writing rules for logger. Let's assume we 
+	<p>Let's consider that we are writing rules for logger. Let's assume we
 	use the Java logging API and we want to find all classes that have more
 	than one logger. The following expression returns all variable declarations
 	whose type is 'Logger'. </p>
-	<source><![CDATA[//VariableDeclarator[../Type/Name[@Image='Logger']]]]></source>
-	<p>Finding a class with more than one logger is quite easy now. This 
+	<source><![CDATA[//VariableDeclarator[../Type/ReferenceType/ClassOrInterfaceType[@Image='Log
+ger']]]]></source>
+	<p>Finding a class with more than one logger is quite easy now. This
 	expression matches the classes we are looking for.</p>
-	<source><![CDATA[TypeDeclaration[count(//VariableDeclarator[../Type/Name[@Image='Logger']])>1]]]></source>
-	<p>But let's refine this expression a little bit more. Consider the 
+	<source><![CDATA[TypeDeclaration[count(//VariableDeclarator[../Type/ReferenceType/ClassOrInt
+erfaceType[@Image='Logger']])>1]]]></source>
+	<p>But let's refine this expression a little bit more. Consider the
 	following class:</p>
 	<source><![CDATA[public class a {
 	Logger log = null;
@@ -130,7 +132,7 @@ Writing PMD rules with XPath can be a bit easier than writing rules with Java co
 	<p>With this class we will only be matching one violation, when we
 	probably would have wanted to produce two violations (one for each class).
 	The following refined expression matches classes that contain more than one logger.</p>
-	<source><![CDATA[//ClassBody[count(//VariableDeclarator[../Type/Name[@Image='Logger']])>1]]]></source>
+	<source><![CDATA[//ClassOrInterfaceBodyDeclaration[count(//VariableDeclarator[../Type/ReferenceType/ClassOrInterfaceType[@Image='Logger']])>1]]]></source>
 	<p>Let's assume we have a Factory class, that could be always declared final.
 	We'll search an xpath expression that matches all declarations of Factory
 	and reports a violation if it is not declared final.
