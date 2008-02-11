@@ -23,6 +23,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -53,13 +55,18 @@ import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.text.JTextComponent;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
@@ -91,6 +98,16 @@ import net.sourceforge.pmd.jaxen.MatchesFunction;
 import net.sourceforge.pmd.jaxen.TypeOfFunction;
 import net.sourceforge.pmd.jsp.ast.JspCharStream;
 import net.sourceforge.pmd.jsp.ast.JspParser;
+import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
+import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
+import net.sourceforge.pmd.sourcetypehandlers.VisitorStarter;
+import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
+import net.sourceforge.pmd.symboltable.LocalScope;
+import net.sourceforge.pmd.symboltable.MethodScope;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.symboltable.Scope;
+import net.sourceforge.pmd.symboltable.SourceFileScope;
+import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
@@ -148,6 +165,9 @@ public class Designer implements ClipboardOwner {
     	ASTCompilationUnit n = (ASTCompilationUnit)parser.parse(new StringReader(codeEditorPane.getText()));
         ClassTypeResolver ctr = new ClassTypeResolver();
         n.jjtAccept(ctr, null);
+        SourceTypeHandler sourceTypeHandler = SourceTypeHandlerBroker.getVisitorsFactoryForSourceType(getSourceType());
+    	VisitorStarter symbolFacade = sourceTypeHandler.getSymbolFacade();
+    	symbolFacade.start(n);
         return n;
     }
     
@@ -232,6 +252,12 @@ public class Designer implements ClipboardOwner {
 		public boolean getAllowsChildren() { return false;	}
 		public boolean isLeaf() { return node.jjtGetNumChildren() == 0;	}
 		public TreeNode getParent() { return parent; }
+
+		public Scope getScope() {
+    		if (node instanceof SimpleNode)
+    			return ((SimpleNode)node).getScope();
+    		return null;
+    	}
 		
 		public Enumeration children() {
 			
@@ -281,52 +307,19 @@ public class Designer implements ClipboardOwner {
 		}
     }
     
-    // Create our own renderer to ensure we don't show the default icon
-    // and render any node image data in a different colour to hightlight 
-    // it.
-    
-    private class ASTCellRenderer extends DefaultTreeCellRenderer {
-    	
-    	private ASTTreeNode node;
-
-    	public Icon getIcon() { return null; }
-    	
-    	public Component getTreeCellRendererComponent(JTree tree, Object value,	boolean sel,boolean expanded,boolean leaf, int row,  boolean hasFocus) {
-
-    		if (value instanceof ASTTreeNode) {
-    			node = (ASTTreeNode)value;
-    		}
-    		return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-    	}
-    	
-    	// overwrite the image data (if present) in a different colour
-    	public void paint(Graphics g) {
-    		
-    		super.paint(g);
-    		
-    		if (node == null) return;
-    		
-    		String text = node.label();
-    		int separatorPos = text.indexOf(LABEL_IMAGE_SEPARATOR);
-    		if (separatorPos < 0) return;
-    		    		
-    		String label = text.substring(0, separatorPos+1);
-    		String image = text.substring(separatorPos+1);
-
-    		FontMetrics fm = g.getFontMetrics();
-    		int width = SwingUtilities.computeStringWidth(fm, label);
-    		
-    		g.setColor(IMAGE_TEXT_COLOR);
-    		g.drawString(image, width, fm.getMaxAscent());
-    	}
+    private TreeCellRenderer createNoImageTreeCellRenderer() {
+    	DefaultTreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
+    	treeCellRenderer.setLeafIcon(null);
+    	treeCellRenderer.setOpenIcon(null);
+    	treeCellRenderer.setClosedIcon(null);
+    	return treeCellRenderer;
     }
     
     // Special tree variant that knows how to retrieve node labels and
     // provides the ability to expand all nodes at once.
-    
-    private class ASTTreeWidget extends JTree {
+    private class TreeWidget extends JTree {
     	
-    	public ASTTreeWidget(Object[] items) {
+    	public TreeWidget(Object[] items) {
     		super(items);
     	}
     	
@@ -364,12 +357,17 @@ public class Designer implements ClipboardOwner {
             }
         }        
     }
-    
-    private void loadTreeData(TreeNode rootNode) {
-    	astWidget.setModel(new DefaultTreeModel(rootNode));
-    	astWidget.expandAll(true);
+        
+    private void loadASTTreeData(TreeNode rootNode) {
+    	astTreeWidget.setModel(new DefaultTreeModel(rootNode));
+    	astTreeWidget.expandAll(true);
     }
-    
+
+    private void loadSymbolTableTreeData(TreeNode rootNode) {
+    	symbolTableTreeWidget.setModel(new DefaultTreeModel(rootNode));
+    	symbolTableTreeWidget.expandAll(true);
+    }
+
     private class ShowListener implements ActionListener {
         public void actionPerformed(ActionEvent ae) {
             MyPrintStream ps = new MyPrintStream();
@@ -382,7 +380,7 @@ public class Designer implements ClipboardOwner {
             	tn = new ExceptionNode(pe);
             	}
             
-            loadTreeData(tn);
+            loadASTTreeData(tn);
         }
     }
 
@@ -421,7 +419,7 @@ public class Designer implements ClipboardOwner {
         public void actionPerformed(ActionEvent ae) {
             xpathResults.clear();
             if (xpathQueryArea.getText().length() == 0) {
-                xpathResults.addElement("XPath query field is empty");
+                xpathResults.addElement("XPath query field is empty.");
                 xpathResultList.repaint();
                 codeEditorPane.requestFocus();
                 return;
@@ -456,11 +454,63 @@ public class Designer implements ClipboardOwner {
         }
     }
 
+    private class SymbolTableListener implements TreeSelectionListener {
+    	public void valueChanged(TreeSelectionEvent e) {
+    		if (e.getNewLeadSelectionPath() != null) {
+    			ASTTreeNode astTreeNode = (ASTTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
+    			
+    			DefaultMutableTreeNode symbolTableTreeNode = new DefaultMutableTreeNode();
+    			DefaultMutableTreeNode selectedAstTreeNode = new DefaultMutableTreeNode("AST Node: " + astTreeNode.label());
+    			symbolTableTreeNode.add(selectedAstTreeNode);
+    			
+	    		List<Scope> scopes = new ArrayList<Scope>();
+	    		Scope scope = astTreeNode.getScope();
+	    		while (scope != null)
+	    		{
+	    			scopes.add(scope);
+	    			scope = scope.getParent();
+	    		}
+	    		Collections.reverse(scopes);
+	    		for (int i = 0; i < scopes.size(); i++) {
+	    			scope = scopes.get(i);
+	    			DefaultMutableTreeNode scopeTreeNode =  new DefaultMutableTreeNode("Scope: " + scope.getClass().getSimpleName());
+	    			selectedAstTreeNode.add(scopeTreeNode);
+	    			if (!(scope instanceof MethodScope || scope instanceof LocalScope)) {
+	    				if (!scope.getClassDeclarations().isEmpty()) {
+				    		for (ClassNameDeclaration classNameDeclaration: scope.getClassDeclarations().keySet()) {
+				    			DefaultMutableTreeNode classNameDeclarationTreeNode = new DefaultMutableTreeNode("Class name declaration: " + classNameDeclaration);
+				    			scopeTreeNode.add(classNameDeclarationTreeNode);
+				    			for (NameOccurrence nameOccurrence: scope.getClassDeclarations().get(classNameDeclaration)) {
+					    			DefaultMutableTreeNode nameOccurenceTreeNode = new DefaultMutableTreeNode("Name occurrence: " + nameOccurrence);
+					    			classNameDeclarationTreeNode.add(nameOccurenceTreeNode);
+				    			}
+				    		}
+	    				}
+	    			}
+	    			if (!(scope instanceof SourceFileScope)) {
+	    				if (!scope.getVariableDeclarations().isEmpty()) {
+				    		for (VariableNameDeclaration variableNameDeclaration: scope.getVariableDeclarations().keySet()) {
+				    			DefaultMutableTreeNode variableNameDeclarationTreeNode = new DefaultMutableTreeNode("Variable name declaration: " + variableNameDeclaration);
+				    			scopeTreeNode.add(variableNameDeclarationTreeNode);
+				    			for (NameOccurrence nameOccurrence: scope.getVariableDeclarations().get(variableNameDeclaration)) {
+					    			DefaultMutableTreeNode nameOccurenceTreeNode = new DefaultMutableTreeNode("Name occurrence: " + nameOccurrence);
+					    			variableNameDeclarationTreeNode.add(nameOccurenceTreeNode);
+				    			}
+				    		}
+	    				}
+	    			}
+	    		}
+	    		loadSymbolTableTreeData(symbolTableTreeNode);
+    		}
+        }
+    }
+
     private final CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
-    private final ASTTreeWidget astWidget			= new ASTTreeWidget(new Object[0]);
+    private final TreeWidget astTreeWidget			= new TreeWidget(new Object[0]);
     private DefaultListModel xpathResults			= new DefaultListModel();
     private final JList xpathResultList				= new JList(xpathResults);
     private final JTextArea xpathQueryArea			= new JTextArea(15, 30);
+    private final TreeWidget symbolTableTreeWidget	= new TreeWidget(new Object[0]);
     private final JFrame frame 						= new JFrame("PMD Rule Designer");
     private final DFAPanel dfaPanel					= new DFAPanel();
     private final JRadioButtonMenuItem[] sourceTypeMenuItems = new JRadioButtonMenuItem[sourceTypeSets.length];
@@ -470,12 +520,12 @@ public class Designer implements ClipboardOwner {
         TypeOfFunction.registerSelfInSimpleContext();
 
         xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
-        makeTextComponentUndoable(codeEditorPane);
-        JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(codeEditorPane), createXPathQueryPanel());
-        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createASTPanel(), createXPathResultPanel());
+        JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createCodeEditorPanel(), createXPathQueryPanel());
+        JSplitPane resultsXPathSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createASTPanel(), createXPathResultPanel());
+        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsXPathSplitPane, createSymbolTableResultPanel());
 
         JTabbedPane tabbed = new JTabbedPane();
-        tabbed.addTab("Abstract Syntax Tree / XPath", resultsSplitPane);
+        tabbed.addTab("Abstract Syntax Tree / XPath / Symbol Table", resultsSplitPane);
         tabbed.addTab("Data Flow Analysis", dfaPanel);
         try {
             // Remove when minimal runtime support is >= JDK 1.4
@@ -515,7 +565,8 @@ public class Designer implements ClipboardOwner {
         frame.setSize((screenWidth*3/4),(screenHeight*3/4));
         frame.setLocation((screenWidth -frame.getWidth()) / 2, (screenHeight  - frame.getHeight()) / 2);
         frame.setVisible(true);    
-        resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation() / 2));
+        resultsXPathSplitPane.setDividerLocation(resultsXPathSplitPane.getMaximumDividerLocation());
+        resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation() / 3));
         containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
     }
 
@@ -573,14 +624,29 @@ public class Designer implements ClipboardOwner {
         xmlframe.setLocation((screenWidth - xmlframe.getWidth()) / 2, (screenHeight - xmlframe.getHeight()) / 2);
         xmlframe.setVisible(true);
     }
+    
+    private JComponent createCodeEditorPanel()
+    {
+        JPanel p = new JPanel();
+        p.setLayout(new BorderLayout());
+        codeEditorPane.setBorder(BorderFactory.createLineBorder(Color.black));
+        makeTextComponentUndoable(codeEditorPane);
+
+        p.add(new JLabel("Source code:"), BorderLayout.NORTH);
+        p.add(codeEditorPane, BorderLayout.CENTER);
+
+        return p;
+    }
 
     private JComponent createASTPanel() {
-    	astWidget.setCellRenderer(new ASTCellRenderer());    	
-        return new JScrollPane(astWidget);
+    	astTreeWidget.setCellRenderer(createNoImageTreeCellRenderer());    	
+    	astTreeWidget.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    	astTreeWidget.getSelectionModel().addTreeSelectionListener(new SymbolTableListener());
+        return new JScrollPane(astTreeWidget);
     }
     
     private JComponent createXPathResultPanel() {
-        xpathResults.addElement("No results yet");
+        xpathResults.addElement("No XPath results yet, run an XPath Query first.");
         xpathResultList.setBorder(BorderFactory.createLineBorder(Color.black));
         xpathResultList.setFixedCellWidth(300);
         JScrollPane scrollPane = new JScrollPane();
@@ -598,11 +664,16 @@ public class Designer implements ClipboardOwner {
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         final JButton b = createGoButton();
 
-        p.add(new JLabel("XPath Query (if any)"), BorderLayout.NORTH);
+        p.add(new JLabel("XPath Query (if any):"), BorderLayout.NORTH);
         p.add(scrollPane, BorderLayout.CENTER);
         p.add(b, BorderLayout.SOUTH);
 
         return p;
+    }
+
+    private JComponent createSymbolTableResultPanel() {
+    	symbolTableTreeWidget.setCellRenderer(createNoImageTreeCellRenderer());    	
+        return new JScrollPane(symbolTableTreeWidget);
     }
 
     private JButton createGoButton() {

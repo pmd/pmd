@@ -16,6 +16,7 @@ New rules:
 1.7 added as a valid option for targetjdk.
 New elements under <ruleset>: <exclude-pattern> to match files exclude from processing, with <include-pattern> to override.
 Rules can now be written which produce violations based upon aggregate file processing (i.e. cross/multiple file violations).
+PMD Rule Designer can now shows Symbol Table contents for the selected AST node.
 
 November 17, 2007 - 4.1:
 Fixed annotation bug: ClassCastException when a formal parameter had multiple annotations
