@@ -30,6 +30,32 @@ public class Filters {
 	}
 
 	/**
+	 * Get a File Filter for files with the given extensions, ignoring case.
+	 * @param extensions The extensions to filter.
+	 * @return A File Filter.
+	 */
+	public static Filter<File> getFileExtensionFilter(String... extensions) {
+		return new FileExtensionFilter(extensions);
+	}
+
+	/**
+	 * Get a File Filter for directories.
+	 * @return A File Filter.
+	 */
+	public static Filter<File> getDirectoryFilter() {
+		return DirectoryFilter.INSTANCE;
+	}
+
+	/**
+	 * Get a File Filter for directories or for files with the given extensions, ignoring case.
+	 * @param extensions The extensions to filter.
+	 * @return A File Filter.
+	 */
+	public static Filter<File> getFileExtensionOrDirectoryFilter(String... extensions) {
+		return new OrFilter<File>(getFileExtensionFilter(extensions), getDirectoryFilter());
+	}
+
+	/**
 	 * Given a String Filter, expose as a File Filter.  The File paths are
 	 * normalized to a standard pattern using <code>/</code> as a path separator
 	 * which can be used cross platform easily in a regular expression based
