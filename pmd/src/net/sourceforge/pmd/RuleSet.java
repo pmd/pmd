@@ -8,12 +8,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.util.Benchmark;
+import net.sourceforge.pmd.util.filter.Filter;
+import net.sourceforge.pmd.util.filter.Filters;
 
 
 /**
@@ -30,8 +29,7 @@ public class RuleSet {
     private Language language;
     private List<String> includePatterns = new ArrayList<String>(0);
     private List<String> excludePatterns = new ArrayList<String>(0);
-    private List<Matcher> includePatternMatchers;
-    private List<Matcher> excludePatternMatchers;
+    private Filter<File> filter;
 
     /**
      * Returns the number of rules in this ruleset
@@ -112,49 +110,13 @@ public class RuleSet {
     * @return <code>true</code> if the file should be checked, <code>false</code> otherwise
     */
     public boolean applies(File file) {
-    	// Initialize matchers based on patterns
-        if (includePatternMatchers == null) {
-            includePatternMatchers = new ArrayList<Matcher>(includePatterns.size());
-            excludePatternMatchers = new ArrayList<Matcher>(excludePatterns.size());
-            for (String includePattern : includePatterns) {
-                includePatternMatchers.add(Pattern.compile(includePattern.trim()).matcher(""));
-            }
-            for (String excludePattern : excludePatterns) {
-                excludePatternMatchers.add(Pattern.compile(excludePattern).matcher(""));
-            }
+    	// Initialize filter based on patterns
+        if (filter == null) {
+        	Filter<String> regexFilter = Filters.buildRegexFilterIncludeOverExclude(includePatterns, excludePatterns);
+        	filter = Filters.toNormalizedFileFilter(regexFilter);
         }
-
-        // Apply include/exclude matchers
-        boolean included = false;
-        boolean excluded = false;
-        if (file != null) {
-            String path = file.getPath();
-            // Standardize the paths separators so the same patterns can be used cross platform
-            path = path.replace('\\', '/');
-            LOG.log(Level.FINE, "path={0}", path);
-            for (Matcher matcher : includePatternMatchers) {
-                matcher.reset(path);
-                included = matcher.matches();
-                LOG.log(Level.FINE, "include-pattern={0}", matcher);
-                LOG.log(Level.FINE, "included={0}", included);
-                if (included) {
-                    break;
-                }
-            }
-            if (!included) {
-                for (Matcher matcher : excludePatternMatchers) {
-                    matcher.reset(path);
-                    excluded = matcher.matches();
-                    LOG.log(Level.FINE, "exclude-pattern={0}", matcher);
-                    LOG.log(Level.FINE, "excluded={0}", excluded);
-                    if (excluded) {
-                    	break;
-                    }
-                }
-            }
-        }
-        // Include patterns override exclude patterns.
-        return included || !excluded;
+ 
+        return file != null ? filter.filter(file) : true;
     }
     
     public void start(RuleContext ctx) {

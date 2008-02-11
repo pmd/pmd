@@ -3,13 +3,14 @@ package net.sourceforge.pmd.dcd;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.dcd.graph.UsageGraph;
 import net.sourceforge.pmd.dcd.graph.UsageGraphBuilder;
 import net.sourceforge.pmd.util.FileFinder;
 import net.sourceforge.pmd.util.filter.Filter;
-import net.sourceforge.pmd.util.filter.FilterBuilder;
+import net.sourceforge.pmd.util.filter.Filters;
 
 /**
  * The Dead Code Detector is used to find dead code.  What is dead code?
@@ -137,9 +138,9 @@ public class DCD {
 
 		// Define filter for "indirect users" and "dead code candidates".
 		// TODO Need to support these are different concepts.
-		String[] includeRegexes = new String[] { "net\\.sourceforge\\.pmd\\.dcd.*", "us\\..*" };
-		String[] excludeRegexes = new String[] { "java\\..*", "javax\\..*", ".*\\.twa\\..*" };
-		Filter<String> classFilter = FilterBuilder.buildRegexFilter(includeRegexes, excludeRegexes);
+		List<String> includeRegexes = Arrays.asList(new String[] { "net\\.sourceforge\\.pmd\\.dcd.*", "us\\..*" });
+		List<String> excludeRegexes = Arrays.asList(new String[] { "java\\..*", "javax\\..*", ".*\\.twa\\..*" });
+		Filter<String> classFilter = Filters.buildRegexFilterExcludeOverInclude(includeRegexes, excludeRegexes);
 		System.out.println("Class filter: " + classFilter);
 
 		// Index each of the "direct users"

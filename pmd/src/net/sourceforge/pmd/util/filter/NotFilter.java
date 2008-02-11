@@ -6,22 +6,13 @@ package net.sourceforge.pmd.util.filter;
  * @param <T>
  *            The underlying type on which the filter applies.
  */
-public class NotFilter<T> implements Filter<T> {
-	protected Filter<T> filter;
-
+public class NotFilter<T> extends AbstractDelegateFilter<T> {
 	public NotFilter() {
+		super();
 	}
 
 	public NotFilter(Filter<T> filter) {
-		this.filter = filter;
-	}
-
-	public Filter<T> getFilter() {
-		return filter;
-	}
-
-	public void setFilter(Filter<T> filter) {
-		this.filter = filter;
+		super(filter);
 	}
 
 	public boolean filter(T obj) {
