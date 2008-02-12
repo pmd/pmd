@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
 
 import net.sourceforge.pmd.util.Benchmark;
 import net.sourceforge.pmd.util.filter.Filter;
@@ -22,7 +21,6 @@ import net.sourceforge.pmd.util.filter.Filters;
  */
 public class RuleSet {
 
-    private static final Logger LOG = Logger.getLogger(RuleSet.class.getName());
     private List<Rule> rules = new ArrayList<Rule>();
     private String name = "";
     private String description = "";

@@ -28,6 +28,11 @@ public interface Rule {
 	void setName(String name);
 
 	/**
+	 * Get the class of this Rule.
+	 */
+	String getRuleClass();
+
+	/**
 	 * Get the name of the RuleSet containing this Rule.
 	 * 
 	 * @see RuleSet

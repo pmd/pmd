@@ -57,6 +57,10 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
             for (int j = 0; j < nodeNames.size(); j++) {
                 List<SimpleNode> nodes = nodeNameToNodes.get(nodeNames.get(j));
                 for (SimpleNode node: nodes) {
+                	// Visit with underlying Rule, not the RuleReference
+                	if (rule instanceof RuleReference) {
+                		rule = ((RuleReference)rule).getRule();
+                	}
                     visit(rule, node, ctx);
                 }
                 visits += nodes.size();

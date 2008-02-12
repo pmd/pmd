@@ -21,6 +21,7 @@ public abstract class CommonAbstractRule implements Rule {
 	private static final boolean IN_OLD_PROPERTY_MODE = true;
 
 	private String name = getClass().getName();
+	private String ruleClass = getClass().getName();
 	private String ruleSetName;
 	private String message;
 	private String description;
@@ -40,6 +41,10 @@ public abstract class CommonAbstractRule implements Rule {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getRuleClass() {
+		return ruleClass;
 	}
 
 	public String getRuleSetName() {
@@ -67,6 +72,7 @@ public abstract class CommonAbstractRule implements Rule {
 	}
 
 	public List<String> getExamples() {
+		// TODO Needs to be externally immutable
 		return examples;
 	}
 
@@ -118,6 +124,7 @@ public abstract class CommonAbstractRule implements Rule {
 	 * @deprecated - retrieve by name using get<type>Property or get<type>Properties
 	 */
 	public Properties getProperties() {
+		// TODO Needs to be externally immutable
 		return properties;
 	}
 
