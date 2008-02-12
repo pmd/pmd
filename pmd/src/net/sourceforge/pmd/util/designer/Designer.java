@@ -91,6 +91,8 @@ import net.sourceforge.pmd.TargetJDK1_6;
 import net.sourceforge.pmd.TargetJDK1_7;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.AccessNode;
+import net.sourceforge.pmd.ast.JavaNode;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -117,6 +119,8 @@ import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 
+import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
+
 public class Designer implements ClipboardOwner {
 
 	private static final char LABEL_IMAGE_SEPARATOR = ':';
@@ -127,27 +131,27 @@ public class Designer implements ClipboardOwner {
 	private static final Parser jdkParser1_3 = new Parser() {
 		public SimpleNode parse(StringReader sr) { return new TargetJDK1_3().createParser(sr).CompilationUnit(); }
 	};
-	
+
 	private static final Parser jdkParser1_4 = new Parser() {
 		public SimpleNode parse(StringReader sr) { return new TargetJDK1_4().createParser(sr).CompilationUnit(); }
 	};
-	
+
 	private static final Parser jdkParser1_5 = new Parser() {
 		public SimpleNode parse(StringReader sr) { return new TargetJDK1_5().createParser(sr).CompilationUnit(); }
 	};
-	
+
 	private static final Parser jdkParser1_6 = new Parser() {
 		public SimpleNode parse(StringReader sr) { return new TargetJDK1_6().createParser(sr).CompilationUnit(); }
 	};
-	
+
 	private static final Parser jdkParser1_7 = new Parser() {
 		public SimpleNode parse(StringReader sr) { return new TargetJDK1_7().createParser(sr).CompilationUnit(); }
 	};
-	
+
 	private static final Parser jspParser = new Parser() {
 		public SimpleNode parse(StringReader sr) { return new JspParser(new JspCharStream(sr)).CompilationUnit(); }
 	};
-	
+
 	private static final Object[][] sourceTypeSets = new Object[][] {
 		{ "JDK 1.3", SourceType.JAVA_13, jdkParser1_3 },
 		{ "JDK 1.4", SourceType.JAVA_14, jdkParser1_4 },
@@ -156,12 +160,12 @@ public class Designer implements ClipboardOwner {
 		{ "JDK 1.7", SourceType.JAVA_17, jdkParser1_7 },
 		{ "JSP", 	 SourceType.JSP, 	 jspParser }
 		};
-	
+
 	private static final int defaultSourceTypeSelectionIndex = 2; // Java 1.5
-	
+
 
     private SimpleNode getCompilationUnit() {
-    	    	
+
     	Parser parser = (Parser)sourceTypeSets[selectedSourceTypeIndex()][2];
     	ASTCompilationUnit n = (ASTCompilationUnit)parser.parse(new StringReader(codeEditorPane.getText()));
         ClassTypeResolver ctr = new ClassTypeResolver();
@@ -171,34 +175,34 @@ public class Designer implements ClipboardOwner {
     	symbolFacade.start(n);
         return n;
     }
-    
+
     private SourceType getSourceType() {
-    	
+
     	return (SourceType)sourceTypeSets[selectedSourceTypeIndex()][1];
     }
-    
+
     private int selectedSourceTypeIndex() {
     	for (int i=0; i<sourceTypeMenuItems.length; i++) {
     		if (sourceTypeMenuItems[i].isSelected()) return i;
     	}
     	throw new RuntimeException("Initial default source type not specified");
     }
-    
+
     private class ExceptionNode implements TreeNode {
 
-    	private Object 			item;    	
+    	private Object 			item;
     	private ExceptionNode[] kids;
-    	
+
     	public ExceptionNode(Object theItem) {
     		item = theItem;
-    		
+
     		if (item instanceof ParseException) createKids();
     	}
-    	
+
     	// each line in the error message becomes a separate tree node
     	private void createKids() {
-    		    		
-    		String message = ((ParseException)item).getMessage();    		
+
+    		String message = ((ParseException)item).getMessage();
             String[] lines = StringUtil.substringsOf(message, PMD.EOL);
 
 			kids = new ExceptionNode[lines.length];
@@ -206,18 +210,18 @@ public class Designer implements ClipboardOwner {
 				kids[i] = new ExceptionNode(lines[i]);
 			}
     	}
-    	
+
 		public int getChildCount() { return kids == null ? 0 : kids.length; }
 		public boolean getAllowsChildren() {return false; }
 		public boolean isLeaf() { return kids == null; }
 		public TreeNode getParent() { return null; }
 		public TreeNode getChildAt(int childIndex) { return kids[childIndex]; }
 		public String label() {	return item.toString();	}
-		
+
 		public Enumeration children() {
 			Enumeration e = new Enumeration() {
 				int i = 0;
-				public boolean hasMoreElements() { 
+				public boolean hasMoreElements() {
 					return kids != null && i < kids.length;
 				}
 
@@ -225,7 +229,7 @@ public class Designer implements ClipboardOwner {
 				};
 			return e;
 		}
-		
+
 		public int getIndex(TreeNode node) {
 			for (int i=0; i<kids.length; i++) {
 				if (kids[i] == node) return i;
@@ -233,7 +237,7 @@ public class Designer implements ClipboardOwner {
 			return -1;
 		}
     }
-    
+
     // Tree node that wraps the AST node for the tree widget and
     // any possible children they may have.
     private class ASTTreeNode implements TreeNode {
@@ -241,14 +245,14 @@ public class Designer implements ClipboardOwner {
     	private Node 			node;
     	private ASTTreeNode 	parent;
     	private ASTTreeNode[] 	kids;
-    	
+
     	public ASTTreeNode(Node theNode) {
     		node = theNode;
-    		
+
     		Node prnt = node.jjtGetParent();
-    		if (prnt != null) parent = new ASTTreeNode(prnt);    		
+    		if (prnt != null) parent = new ASTTreeNode(prnt);
     	}
-    	
+
 		public int getChildCount() { return node.jjtGetNumChildren(); }
 		public boolean getAllowsChildren() { return false;	}
 		public boolean isLeaf() { return node.jjtGetNumChildren() == 0;	}
@@ -259,14 +263,14 @@ public class Designer implements ClipboardOwner {
     			return ((SimpleNode)node).getScope();
     		return null;
     	}
-		
+
 		public Enumeration children() {
-			
+
 			if (getChildCount() > 0) getChildAt(0);	// force it to build kids
-			
+
 			Enumeration e = new Enumeration() {
 				int i = 0;
-				public boolean hasMoreElements() { 
+				public boolean hasMoreElements() {
 					return kids != null && i < kids.length;
 				}
 				public Object nextElement() { return kids[i++]; }
@@ -275,13 +279,13 @@ public class Designer implements ClipboardOwner {
 		}
 
 		public TreeNode getChildAt(int childIndex) {
-			
+
 			if (kids == null) {
 				kids = new ASTTreeNode[node.jjtGetNumChildren()];
     			for (int i=0; i<kids.length; i++) {
     				kids[i] = new ASTTreeNode(node.jjtGetChild(i));
     				}
-				}			
+				}
 			return kids[childIndex];
 		}
 
@@ -292,7 +296,7 @@ public class Designer implements ClipboardOwner {
 			}
 			return -1;
 		}
-    	
+
 		public String label() {
 			if (node instanceof SimpleNode) {
 				SimpleNode sn = (SimpleNode)node;
@@ -306,16 +310,33 @@ public class Designer implements ClipboardOwner {
 			}
 			return node.toString();
 		}
-		
+
 		public String getToolTipText() {
+			String tooltip = "";
 		    if (node instanceof SimpleNode) {
 		        SimpleNode sn = (SimpleNode)node;
-		        return "Line: " + sn.getBeginLine() + " Column: " + sn.getBeginColumn();
+		        tooltip = "Line: " + sn.getBeginLine() + " Column: " + sn.getBeginColumn();
 		    }
-		    return null;
+
+		    if (node instanceof AccessNode)
+		    {
+		    	AccessNode accessNode = (AccessNode)node;
+		    	if ( ! "".equals(tooltip))
+		    		tooltip += ",";
+		    	tooltip += accessNode.isAbstract() ? " Abstract" : "";
+		    	tooltip += accessNode.isStatic() ? " Static" : "";
+		    	tooltip += accessNode.isFinal() ? " Final" : "";
+		    	tooltip += accessNode.isNative() ? " Native" : "";
+		    	tooltip += accessNode.isPrivate() ? " Private" : "";
+		    	tooltip += accessNode.isSynchronized() ? " Synchronised" : "";
+		    	tooltip += accessNode.isTransient() ? " Transient" : "";
+		    	tooltip += accessNode.isVolatile() ? " Volatile" : "";
+		    	tooltip += accessNode.isStrictfp() ? " Strictfp" : "";
+		    }
+		    return tooltip;
 		}
     }
-    
+
     private TreeCellRenderer createNoImageTreeCellRenderer() {
     	DefaultTreeCellRenderer treeCellRenderer = new DefaultTreeCellRenderer();
     	treeCellRenderer.setLeafIcon(null);
@@ -323,29 +344,29 @@ public class Designer implements ClipboardOwner {
     	treeCellRenderer.setClosedIcon(null);
     	return treeCellRenderer;
     }
-    
+
     // Special tree variant that knows how to retrieve node labels and
     // provides the ability to expand all nodes at once.
     private class TreeWidget extends JTree {
-    	
+
     	public TreeWidget(Object[] items) {
     		super(items);
             setToolTipText("");
     	}
-    	
+
         public String convertValueToText(Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
         	if (value == null) return "";
         	if (value instanceof ASTTreeNode) {
         		return ((ASTTreeNode)value).label();
-        	}        	
+        	}
         	if (value instanceof ExceptionNode) {
         		return ((ExceptionNode)value).label();
-        	}        	
+        	}
         	return value.toString();
     	}
-        
+
         public String getToolTipText(MouseEvent e) {
-            if (getRowForLocation(e.getX(), e.getY()) == -1) return null;    
+            if (getRowForLocation(e.getX(), e.getY()) == -1) return null;
             TreePath curPath = getPathForLocation(e.getX(), e.getY());
             return ((ASTTreeNode)curPath.getLastPathComponent()).getToolTipText();
         }
@@ -354,7 +375,7 @@ public class Designer implements ClipboardOwner {
             TreeNode root = (TreeNode)getModel().getRoot();
             expandAll(new TreePath(root), expand);
         }
-        
+
         private void expandAll(TreePath parent, boolean expand) {
             // Traverse children
             TreeNode node = (TreeNode)parent.getLastPathComponent();
@@ -365,15 +386,15 @@ public class Designer implements ClipboardOwner {
                     expandAll(path, expand);
                 }
             }
-        
+
             if (expand) {
                 expandPath(parent);
             } else {
                 collapsePath(parent);
             }
-        }        
+        }
     }
-        
+
     private void loadASTTreeData(TreeNode rootNode) {
     	astTreeWidget.setModel(new DefaultTreeModel(rootNode));
     	astTreeWidget.expandAll(true);
@@ -392,10 +413,10 @@ public class Designer implements ClipboardOwner {
             try {
                 SimpleNode lastCompilationUnit = getCompilationUnit();
                 tn = new ASTTreeNode(lastCompilationUnit);
-            } catch (ParseException pe) {            	
+            } catch (ParseException pe) {
             	tn = new ExceptionNode(pe);
             	}
-            
+
             loadASTTreeData(tn);
         }
     }
@@ -414,7 +435,7 @@ public class Designer implements ClipboardOwner {
            StringReader reader = new StringReader(codeEditorPane.getText());
            PMD pmd = new PMD();
            pmd.setJavaVersion(sourceType);
-           
+
            try {
                 pmd.processFile(reader, rs, ctx);
 //           } catch (PMDException pmde) {
@@ -422,7 +443,7 @@ public class Designer implements ClipboardOwner {
            } catch (Exception e) {
                e.printStackTrace();
            		}
-           
+
            List<ASTMethodDeclaration> methods = dfaGraphRule.getMethods();
            if (methods != null && !methods.isEmpty()) {
                dfaPanel.resetTo(methods, codeEditorPane);
@@ -474,11 +495,11 @@ public class Designer implements ClipboardOwner {
     	public void valueChanged(TreeSelectionEvent e) {
     		if (e.getNewLeadSelectionPath() != null) {
     			ASTTreeNode astTreeNode = (ASTTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
-    			
+
     			DefaultMutableTreeNode symbolTableTreeNode = new DefaultMutableTreeNode();
     			DefaultMutableTreeNode selectedAstTreeNode = new DefaultMutableTreeNode("AST Node: " + astTreeNode.label());
     			symbolTableTreeNode.add(selectedAstTreeNode);
-    			
+
 	    		List<Scope> scopes = new ArrayList<Scope>();
 	    		Scope scope = astTreeNode.getScope();
 	    		while (scope != null)
@@ -527,7 +548,7 @@ public class Designer implements ClipboardOwner {
                 ASTTreeNode selected = (ASTTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
                 if (selected != null && selected.node instanceof SimpleNode) {
                     SimpleNode node = (SimpleNode) selected.node;
-           
+
                     codeEditorPane.select(node.getBeginLine(), node.getBeginColumn(),
                             node.getEndLine(), node.getEndColumn());
                 }
@@ -544,7 +565,7 @@ public class Designer implements ClipboardOwner {
     private final JFrame frame 						= new JFrame("PMD Rule Designer");
     private final DFAPanel dfaPanel					= new DFAPanel();
     private final JRadioButtonMenuItem[] sourceTypeMenuItems = new JRadioButtonMenuItem[sourceTypeSets.length];
-    
+
     public Designer() {
         MatchesFunction.registerSelfInSimpleContext();
         TypeOfFunction.registerSelfInSimpleContext();
@@ -590,11 +611,11 @@ public class Designer implements ClipboardOwner {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenHeight = screenSize.height;
         int screenWidth = screenSize.width;
-        
+
         frame.pack();
         frame.setSize((screenWidth*3/4),(screenHeight*3/4));
         frame.setLocation((screenWidth -frame.getWidth()) / 2, (screenHeight  - frame.getHeight()) / 2);
-        frame.setVisible(true);    
+        frame.setVisible(true);
         resultsXPathSplitPane.setDividerLocation(resultsXPathSplitPane.getMaximumDividerLocation());
         resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation() / 3));
         containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
@@ -604,7 +625,7 @@ public class Designer implements ClipboardOwner {
         JMenuBar menuBar = new JMenuBar();
         JMenu menu = new JMenu("JDK");
         ButtonGroup group = new ButtonGroup();
-                
+
         for (int i=0; i<sourceTypeSets.length; i++) {
         	JRadioButtonMenuItem button = new JRadioButtonMenuItem(sourceTypeSets[i][0].toString());
         	sourceTypeMenuItems[i] = button;
@@ -629,8 +650,8 @@ public class Designer implements ClipboardOwner {
             }
         });
         actionsMenu.add(createRuleXMLItem);
-        menuBar.add(actionsMenu);        
-        
+        menuBar.add(actionsMenu);
+
         return menuBar;
     }
 
@@ -654,7 +675,7 @@ public class Designer implements ClipboardOwner {
         xmlframe.setLocation((screenWidth - xmlframe.getWidth()) / 2, (screenHeight - xmlframe.getHeight()) / 2);
         xmlframe.setVisible(true);
     }
-    
+
     private JComponent createCodeEditorPanel()
     {
         JPanel p = new JPanel();
@@ -669,14 +690,14 @@ public class Designer implements ClipboardOwner {
     }
 
     private JComponent createASTPanel() {
-    	astTreeWidget.setCellRenderer(createNoImageTreeCellRenderer());    	
+    	astTreeWidget.setCellRenderer(createNoImageTreeCellRenderer());
     	TreeSelectionModel model = astTreeWidget.getSelectionModel();
     	model.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     	model.addTreeSelectionListener(new SymbolTableListener());
     	model.addTreeSelectionListener(new CodeHighlightListener());
         return new JScrollPane(astTreeWidget);
     }
-    
+
     private JComponent createXPathResultPanel() {
         xpathResults.addElement("No XPath results yet, run an XPath Query first.");
         xpathResultList.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -704,7 +725,7 @@ public class Designer implements ClipboardOwner {
     }
 
     private JComponent createSymbolTableResultPanel() {
-    	symbolTableTreeWidget.setCellRenderer(createNoImageTreeCellRenderer());    	
+    	symbolTableTreeWidget.setCellRenderer(createNoImageTreeCellRenderer());
         return new JScrollPane(symbolTableTreeWidget);
     }
 
@@ -739,13 +760,13 @@ public class Designer implements ClipboardOwner {
 		         }
         	 });
         inputMap.put(KeyStroke.getKeyStroke("control Z"), "Undo");
-          
+
         actionMap.put("Redo", new AbstractAction("Redo") {
 			    public void actionPerformed(ActionEvent evt) {
 			        try {
 			            if (undoManager.canRedo()) {
 			                undoManager.redo();
-			            } 
+			            }
 			        } catch (CannotRedoException e) {
 			        }
 			    }
@@ -775,12 +796,12 @@ public class Designer implements ClipboardOwner {
 
     /**
      * Returns an unformatted xml string (without the declaration)
-     * 
+     *
      * @throws TransformerException if the XML cannot be converted to a string
      */
     private String getXmlString(SimpleNode node) throws TransformerException {
         StringWriter writer = new StringWriter();
-        
+
         Source source = new DOMSource(node.asXml());
         Result result = new StreamResult(writer);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -793,7 +814,7 @@ public class Designer implements ClipboardOwner {
         xformer.setOutputProperty(OutputKeys.INDENT, "yes");
         xformer.setOutputProperty("{http://xml.apache.org/xalan}indent-amount", "4");   //For java 1.4
         xformer.transform(source, result);
-        
+
         return writer.toString();
     }
 
