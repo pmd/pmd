@@ -5,11 +5,8 @@ package net.sourceforge.pmd.util.designer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
@@ -35,7 +32,6 @@ import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
-import javax.swing.Icon;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -54,7 +50,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -92,7 +87,6 @@ import net.sourceforge.pmd.TargetJDK1_7;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.AccessNode;
-import net.sourceforge.pmd.ast.JavaNode;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -119,12 +113,9 @@ import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
-
 public class Designer implements ClipboardOwner {
 
 	private static final char LABEL_IMAGE_SEPARATOR = ':';
-	private static final Color IMAGE_TEXT_COLOR = Color.BLUE;
 
 	private interface Parser { public SimpleNode parse(StringReader sr); }
 
