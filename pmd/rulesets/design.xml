@@ -1562,7 +1562,7 @@ public class abstract Example {
             ]]>
         </example>
     </rule>
-
+<!--
 	<rule 	name="TooManyHttpFilter"
           	message="Too many Http Filter inside a web application can make very it complex to understand and to deploy."
           	class="net.sourceforge.pmd.rules.design.GenericClassCounterRule"
@@ -1576,12 +1576,15 @@ far too complex.
 		</description>
 		<priority>4</priority>
 		<properties>
+		 -->
 			<!-- Must be a full java name to ensure type control !!! -->
+			<!--
 			<property 	name="typeMatch"
 						description="A series of regex to match on implements/extends classname"
 						value="javax.servlet.Filter,javax.servlet.HttpFilter"/>
+						 -->
 			<!-- Define after how many occurences one should log a violation -->
-
+<!--
 			<property 	name="threshold"
 						description="Defines how many occurences are legal"
 						value="2"/>
@@ -1602,4 +1605,5 @@ public class FooFilter implements Filter {
 			]]>
 		</example>
 	</rule>
+	 -->
 </ruleset>
