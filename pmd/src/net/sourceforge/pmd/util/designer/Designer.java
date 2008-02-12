@@ -340,7 +340,9 @@ public class Designer implements ClipboardOwner {
     // provides the ability to expand all nodes at once.
     private class TreeWidget extends JTree {
 
-    	public TreeWidget(Object[] items) {
+		private static final long serialVersionUID = 1L;
+
+		public TreeWidget(Object[] items) {
     		super(items);
             setToolTipText("");
     	}
@@ -563,8 +565,12 @@ public class Designer implements ClipboardOwner {
 
         xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
         JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createCodeEditorPanel(), createXPathQueryPanel());
-        JSplitPane resultsXPathSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createASTPanel(), createXPathResultPanel());
-        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, resultsXPathSplitPane, createSymbolTableResultPanel());
+
+        JSplitPane astAndSymbolTablePanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, createASTPanel(), createSymbolTableResultPanel());
+
+        JSplitPane resultsXPathSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astAndSymbolTablePanel, createXPathResultPanel());
+
+        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astAndSymbolTablePanel,resultsXPathSplitPane);
 
         JTabbedPane tabbed = new JTabbedPane();
         tabbed.addTab("Abstract Syntax Tree / XPath / Symbol Table", resultsSplitPane);
