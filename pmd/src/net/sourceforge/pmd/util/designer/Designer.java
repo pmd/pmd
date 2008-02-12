@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -305,6 +306,14 @@ public class Designer implements ClipboardOwner {
 			}
 			return node.toString();
 		}
+		
+		public String getToolTipText() {
+		    if (node instanceof SimpleNode) {
+		        SimpleNode sn = (SimpleNode)node;
+		        return "Line: " + sn.getBeginLine() + " Column: " + sn.getBeginColumn();
+		    }
+		    return null;
+		}
     }
     
     private TreeCellRenderer createNoImageTreeCellRenderer() {
@@ -321,6 +330,7 @@ public class Designer implements ClipboardOwner {
     	
     	public TreeWidget(Object[] items) {
     		super(items);
+            setToolTipText("");
     	}
     	
         public String convertValueToText(Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
@@ -334,6 +344,12 @@ public class Designer implements ClipboardOwner {
         	return value.toString();
     	}
         
+        public String getToolTipText(MouseEvent e) {
+            if (getRowForLocation(e.getX(), e.getY()) == -1) return null;    
+            TreePath curPath = getPathForLocation(e.getX(), e.getY());
+            return ((ASTTreeNode)curPath.getLastPathComponent()).getToolTipText();
+        }
+
         public void expandAll(boolean expand) {
             TreeNode root = (TreeNode)getModel().getRoot();
             expandAll(new TreePath(root), expand);
@@ -505,6 +521,20 @@ public class Designer implements ClipboardOwner {
         }
     }
 
+    private class CodeHighlightListener implements TreeSelectionListener {
+        public void valueChanged(TreeSelectionEvent e) {
+            if (e.getNewLeadSelectionPath() != null) {
+                ASTTreeNode selected = (ASTTreeNode)e.getNewLeadSelectionPath().getLastPathComponent();
+                if (selected != null && selected.node instanceof SimpleNode) {
+                    SimpleNode node = (SimpleNode) selected.node;
+           
+                    codeEditorPane.select(node.getBeginLine(), node.getBeginColumn(),
+                            node.getEndLine(), node.getEndColumn());
+                }
+            }
+        }
+    }
+
     private final CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
     private final TreeWidget astTreeWidget			= new TreeWidget(new Object[0]);
     private DefaultListModel xpathResults			= new DefaultListModel();
@@ -640,8 +670,10 @@ public class Designer implements ClipboardOwner {
 
     private JComponent createASTPanel() {
     	astTreeWidget.setCellRenderer(createNoImageTreeCellRenderer());    	
-    	astTreeWidget.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-    	astTreeWidget.getSelectionModel().addTreeSelectionListener(new SymbolTableListener());
+    	TreeSelectionModel model = astTreeWidget.getSelectionModel();
+    	model.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+    	model.addTreeSelectionListener(new SymbolTableListener());
+    	model.addTreeSelectionListener(new CodeHighlightListener());
         return new JScrollPane(astTreeWidget);
     }
     
