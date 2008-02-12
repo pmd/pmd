@@ -89,11 +89,11 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
 
     /**
      * Initialize the RuleChainVisitor to be ready to perform visitations. This
-     * method should not be called until it is know that all Rules participating
+     * method should not be called until it is known that all Rules participating
      * in the RuleChain are ready to be initialized themselves.  Some rules
      * may require full initialization to determine if they will participate in
      * the RuleChain, so this has been delayed as long as possible to ensure
-     * that manipulation of the Rules is no longer occuring.
+     * that manipulation of the Rules is no longer occurring.
      */
     protected void initialize() {
         if (nodeNameToNodes != null) {

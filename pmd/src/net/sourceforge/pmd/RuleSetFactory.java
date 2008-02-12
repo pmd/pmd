@@ -162,10 +162,10 @@ public class RuleSetFactory {
     }
 
     /**
-     * Create a ruleset from an inputsteam. Same as createRuleSet(inputStream,
+     * Create a ruleset from an inputstream. Same as createRuleSet(inputStream,
      * ruleSetFactory.getClassLoader()).
      *
-     * @param inputStream an input stream that contains a ruleset descripion
+     * @param inputStream an input stream that contains a ruleset description
      * @return a new ruleset
      */
     public RuleSet createRuleSet(InputStream inputStream) {
@@ -175,7 +175,7 @@ public class RuleSetFactory {
     /**
      * Create a ruleset from an input stream with a specified class loader
      *
-     * @param inputStream an input stream that contains a ruleset descripion
+     * @param inputStream an input stream that contains a ruleset description
      * @param classLoader a class loader used to load rule classes
      * @return a new ruleset
      */
@@ -324,7 +324,7 @@ public class RuleSetFactory {
     /**
      * Process a reference to a rule
      *
-     * @param ruleSet  the ruleset being constructucted
+     * @param ruleSet  the ruleset being constructed
      * @param ruleNode must be a rule element node
      */
     private void parseExternallyDefinedRuleNode(RuleSet ruleSet, Node ruleNode)

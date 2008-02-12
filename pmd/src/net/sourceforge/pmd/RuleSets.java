@@ -22,7 +22,7 @@ public class RuleSets {
     private Collection<RuleSet> ruleSets = new ArrayList<RuleSet>();
 
     /**
-     * RuleChain for effecient AST visitation.
+     * RuleChain for efficient AST visitation.
      */
     private RuleChain ruleChain = new RuleChain();
 

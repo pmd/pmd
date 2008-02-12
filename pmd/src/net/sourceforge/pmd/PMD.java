@@ -155,7 +155,7 @@ public class PMD {
     }
 
     /**
-     * Processes the file read by the reader agains the rule set.
+     * Processes the file read by the reader against the rule set.
      *
      * @param reader  input stream reader
      * @param ruleSet set of rules to process against the file
@@ -169,7 +169,7 @@ public class PMD {
     }
 
     /**
-     * Processes the input stream agains a rule set using the given input encoding.
+     * Processes the input stream against a rule set using the given input encoding.
      *
      * @param fileContents an input stream to analyze
      * @param encoding     input stream's encoding
@@ -190,7 +190,7 @@ public class PMD {
     }
 
     /**
-     * Processes the input stream agains a rule set using the given input encoding.
+     * Processes the input stream against a rule set using the given input encoding.
      *
      * @param fileContents an input stream to analyze
      * @param encoding     input stream's encoding

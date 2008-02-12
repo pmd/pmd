@@ -10,7 +10,7 @@ import net.sourceforge.pmd.jsp.ast.JspRuleChainVisitor;
 
 /**
  * The RuleChain is a means by which Rules can participate in a uniform
- * visitation of the AST, and not need perform their own independant visitation.
+ * visitation of the AST, and not need perform their own independent visitation.
  * The RuleChain exists as a means to improve the speed of PMD when there are
  * many Rules.
  */
