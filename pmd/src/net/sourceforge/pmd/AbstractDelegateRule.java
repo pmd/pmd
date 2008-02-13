@@ -32,6 +32,10 @@ public class AbstractDelegateRule implements Rule {
 		return rule.getRuleClass();
 	}
 
+	public void setRuleClass(String ruleClass) {
+		rule.setRuleClass(ruleClass);
+	}
+
 	public String getRuleSetName() {
 		return rule.getRuleSetName();
 	}

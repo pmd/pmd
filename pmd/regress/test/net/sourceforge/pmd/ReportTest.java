@@ -24,8 +24,14 @@ package test.net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
+import java.util.Map;
+
+import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.MockRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportListener;
@@ -43,13 +49,7 @@ import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import org.junit.Test;
 
-import test.net.sourceforge.pmd.testframework.MockRule;
 import test.net.sourceforge.pmd.testframework.RuleTst;
-
-import java.util.Iterator;
-import java.util.Map;
-
-import junit.framework.JUnit4TestAdapter;
 
 public class ReportTest extends RuleTst implements ReportListener {
 

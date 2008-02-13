@@ -116,7 +116,7 @@ public class RuleSetFactoryTest {
 		assertEquals(1, rs.size());
 		Rule r = rs.getRules().iterator().next();
 		assertEquals("MockRuleName", r.getName());
-		assertEquals("test.net.sourceforge.pmd.testframework.MockRule", r.getRuleClass());
+		assertEquals("net.sourceforge.pmd.MockRule", r.getRuleClass());
 		assertEquals("avoid the mock rule", r.getMessage());
 	}
 
@@ -555,20 +555,20 @@ public class RuleSetFactoryTest {
 	private static final String SINGLE_RULE = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 			+ "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
 			+ "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + "<priority>3</priority>" + PMD.EOL
+			+ "class=\"net.sourceforge.pmd.MockRule\">" + "<priority>3</priority>" + PMD.EOL
 			+ "</rule></ruleset>";
 
 	private static final String MULTIPLE_RULES = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
 			+ PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule name=\"MockRuleName1\" " + PMD.EOL
 			+ "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + PMD.EOL + "</rule>" + PMD.EOL
+			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL + "</rule>" + PMD.EOL
 			+ "<rule name=\"MockRuleName2\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + PMD.EOL + "</rule></ruleset>";
+			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL + "</rule></ruleset>";
 
 	private static final String PROPERTIES = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 			+ "<description>testdesc</description>" + PMD.EOL + "<rule name=\"MockRuleName\" " + PMD.EOL
 			+ "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + PMD.EOL
+			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL
 			+ "<description>testdesc2</description>" + PMD.EOL + "<properties>" + PMD.EOL
 			+ "<property name=\"fooBoolean\" value=\"true\"/>" + PMD.EOL
 			+ "<property name=\"fooDouble\" value=\"1.0\" />" + PMD.EOL + "<property name=\"foo\" value=\"bar\"/>"
@@ -578,7 +578,7 @@ public class RuleSetFactoryTest {
 	private static final String XPATH = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 			+ "<description>testdesc</description>" + PMD.EOL + "<priority>3</priority>" + PMD.EOL
 			+ "<rule name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + PMD.EOL
+			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL
 			+ "<description>testdesc2</description>" + PMD.EOL + "<properties>" + PMD.EOL + "<property name=\"xpath\">"
 			+ PMD.EOL + "<value>" + PMD.EOL + "<![CDATA[ //Block ]]>" + PMD.EOL + "</value>" + PMD.EOL + "</property>"
 			+ PMD.EOL + "</properties>" + PMD.EOL + "</rule></ruleset>";
@@ -586,7 +586,7 @@ public class RuleSetFactoryTest {
 	private static final String XPATH_PLUGINNAME = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
 			+ PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<priority>3</priority>" + PMD.EOL
 			+ "<rule name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + PMD.EOL
+			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL
 			+ "<description>testdesc2</description>" + PMD.EOL + "<properties>" + PMD.EOL
 			+ "<property name=\"xpath\" pluginname=\"true\">" + PMD.EOL + "<value>" + PMD.EOL + "<![CDATA[ //Block ]]>"
 			+ PMD.EOL + "</value>" + PMD.EOL + "</property>" + PMD.EOL + "</properties>" + PMD.EOL
@@ -595,13 +595,13 @@ public class RuleSetFactoryTest {
 	private static final String PRIORITY = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 			+ "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
 			+ "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + "<priority>3</priority>" + PMD.EOL
+			+ "class=\"net.sourceforge.pmd.MockRule\">" + "<priority>3</priority>" + PMD.EOL
 			+ "</rule></ruleset>";
 
 	private static final String DFA = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 			+ "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
 			+ "message=\"avoid the mock rule\" " + PMD.EOL + "dfa=\"true\" " + PMD.EOL
-			+ "class=\"test.net.sourceforge.pmd.testframework.MockRule\">" + "<priority>3</priority>" + PMD.EOL
+			+ "class=\"net.sourceforge.pmd.MockRule\">" + "<priority>3</priority>" + PMD.EOL
 			+ "</rule></ruleset>";
 
 	private static final String INCLUDE_EXCLUDE_RULESET = "<?xml version=\"1.0\"?>" + PMD.EOL

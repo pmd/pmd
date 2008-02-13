@@ -47,6 +47,10 @@ public abstract class CommonAbstractRule implements Rule {
 		return ruleClass;
 	}
 
+	public void setRuleClass(String ruleClass) {
+		this.ruleClass = ruleClass;
+	}
+
 	public String getRuleSetName() {
 		return ruleSetName;
 	}
