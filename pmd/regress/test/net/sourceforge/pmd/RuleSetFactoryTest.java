@@ -295,9 +295,9 @@ public class RuleSetFactoryTest {
 			writer2.close();
 			String xml3 = new String(outputStream2.toByteArray());
 
-			System.out.println("xml1: " + xml1);
-			System.out.println("xml2: " + xml2);
-			System.out.println("xml3: " + xml3);
+			// System.out.println("xml1: " + xml1);
+			// System.out.println("xml2: " + xml2);
+			// System.out.println("xml3: " + xml3);
 
 			// Read RuleSet from XML, second time
 			RuleSet ruleSet3 = ruleSetFactory.createRuleSet(new ByteArrayInputStream(outputStream2.toByteArray()));
