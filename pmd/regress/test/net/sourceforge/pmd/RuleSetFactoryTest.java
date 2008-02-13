@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -42,8 +41,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -61,11 +58,6 @@ import net.sourceforge.pmd.util.ResourceLoader;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -317,7 +309,7 @@ public class RuleSetFactoryTest {
 			// All 3 versions of the RuleSet should be the same
 			assertEqualsRuleSet("Original RuleSet and 1st roundtrip Ruleset not the same", ruleSet1, ruleSet2);
 			assertEqualsRuleSet("1st roundtrip Ruleset and 2nd roundtrip RuleSet not the same", ruleSet2, ruleSet3);
-			
+
 			// It's hard to compare the XML DOMs.  At least the roundtrip ones should textually be the same.
 			assertEquals("1st roundtrip RuleSet XML and 2nd roundtrip RuleSet XML", xml2, xml3);
 
@@ -420,8 +412,7 @@ public class RuleSetFactoryTest {
 		String file = readFullyToString(inputStream);
 
 		// Remove XML Schema stuff, replace with DTD
-		file = file.replaceAll("<\\?xml version=\"1.0\"\\?>", "");
-		file = file.replaceAll("<\\?xml version=\"1.0\" encoding=\"UTF-8\"\\?>", "");
+		file = file.replaceAll("<\\?xml [ a-zA-Z0-9=\".-]*\\?>", "");
 		file = file.replaceAll("xmlns=\"http://pmd.sf.net/ruleset/1.0.0\"", "");
 		file = file.replaceAll("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"", "");
 		file = file.replaceAll(
@@ -430,6 +421,7 @@ public class RuleSetFactoryTest {
 
 		file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset SYSTEM \"file://"
 				+ System.getProperty("user.dir") + "/etc/ruleset.dtd\">" + PMD.EOL + file;
+		
 
 		inputStream = new ByteArrayInputStream(file.getBytes());
 
@@ -554,21 +546,18 @@ public class RuleSetFactoryTest {
 
 	private static final String SINGLE_RULE = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 			+ "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
-			+ "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"net.sourceforge.pmd.MockRule\">" + "<priority>3</priority>" + PMD.EOL
-			+ "</rule></ruleset>";
+			+ "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.MockRule\">"
+			+ "<priority>3</priority>" + PMD.EOL + "</rule></ruleset>";
 
 	private static final String MULTIPLE_RULES = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
 			+ PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule name=\"MockRuleName1\" " + PMD.EOL
-			+ "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL + "</rule>" + PMD.EOL
-			+ "<rule name=\"MockRuleName2\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL + "</rule></ruleset>";
+			+ "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL
+			+ "</rule>" + PMD.EOL + "<rule name=\"MockRuleName2\" " + PMD.EOL + "message=\"avoid the mock rule\" "
+			+ PMD.EOL + "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL + "</rule></ruleset>";
 
 	private static final String PROPERTIES = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 			+ "<description>testdesc</description>" + PMD.EOL + "<rule name=\"MockRuleName\" " + PMD.EOL
-			+ "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL
+			+ "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL
 			+ "<description>testdesc2</description>" + PMD.EOL + "<properties>" + PMD.EOL
 			+ "<property name=\"fooBoolean\" value=\"true\"/>" + PMD.EOL
 			+ "<property name=\"fooDouble\" value=\"1.0\" />" + PMD.EOL + "<property name=\"foo\" value=\"bar\"/>"
@@ -578,31 +567,28 @@ public class RuleSetFactoryTest {
 	private static final String XPATH = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 			+ "<description>testdesc</description>" + PMD.EOL + "<priority>3</priority>" + PMD.EOL
 			+ "<rule name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL
-			+ "<description>testdesc2</description>" + PMD.EOL + "<properties>" + PMD.EOL + "<property name=\"xpath\">"
-			+ PMD.EOL + "<value>" + PMD.EOL + "<![CDATA[ //Block ]]>" + PMD.EOL + "</value>" + PMD.EOL + "</property>"
-			+ PMD.EOL + "</properties>" + PMD.EOL + "</rule></ruleset>";
+			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL + "<description>testdesc2</description>" + PMD.EOL
+			+ "<properties>" + PMD.EOL + "<property name=\"xpath\">" + PMD.EOL + "<value>" + PMD.EOL
+			+ "<![CDATA[ //Block ]]>" + PMD.EOL + "</value>" + PMD.EOL + "</property>" + PMD.EOL + "</properties>"
+			+ PMD.EOL + "</rule></ruleset>";
 
 	private static final String XPATH_PLUGINNAME = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
 			+ PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<priority>3</priority>" + PMD.EOL
 			+ "<rule name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL
-			+ "<description>testdesc2</description>" + PMD.EOL + "<properties>" + PMD.EOL
-			+ "<property name=\"xpath\" pluginname=\"true\">" + PMD.EOL + "<value>" + PMD.EOL + "<![CDATA[ //Block ]]>"
-			+ PMD.EOL + "</value>" + PMD.EOL + "</property>" + PMD.EOL + "</properties>" + PMD.EOL
-			+ "</rule></ruleset>";
+			+ "class=\"net.sourceforge.pmd.MockRule\">" + PMD.EOL + "<description>testdesc2</description>" + PMD.EOL
+			+ "<properties>" + PMD.EOL + "<property name=\"xpath\" pluginname=\"true\">" + PMD.EOL + "<value>"
+			+ PMD.EOL + "<![CDATA[ //Block ]]>" + PMD.EOL + "</value>" + PMD.EOL + "</property>" + PMD.EOL
+			+ "</properties>" + PMD.EOL + "</rule></ruleset>";
 
 	private static final String PRIORITY = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 			+ "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
-			+ "message=\"avoid the mock rule\" " + PMD.EOL
-			+ "class=\"net.sourceforge.pmd.MockRule\">" + "<priority>3</priority>" + PMD.EOL
-			+ "</rule></ruleset>";
+			+ "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.MockRule\">"
+			+ "<priority>3</priority>" + PMD.EOL + "</rule></ruleset>";
 
 	private static final String DFA = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 			+ "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
 			+ "message=\"avoid the mock rule\" " + PMD.EOL + "dfa=\"true\" " + PMD.EOL
-			+ "class=\"net.sourceforge.pmd.MockRule\">" + "<priority>3</priority>" + PMD.EOL
-			+ "</rule></ruleset>";
+			+ "class=\"net.sourceforge.pmd.MockRule\">" + "<priority>3</priority>" + PMD.EOL + "</rule></ruleset>";
 
 	private static final String INCLUDE_EXCLUDE_RULESET = "<?xml version=\"1.0\"?>" + PMD.EOL
 			+ "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL
