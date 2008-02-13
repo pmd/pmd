@@ -1547,7 +1547,7 @@ public class abstract Example {
                 <value>
                     <![CDATA[
 //SwitchStatement[
-	(count(/SwitchLabel) < $minimumNumberCaseForASwitch)
+	(count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
 ]
                     ]]>
                 </value>
