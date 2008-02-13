@@ -5,6 +5,7 @@ package net.sourceforge.pmd.util.designer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -49,8 +50,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
+import javax.swing.ListCellRenderer;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.UndoableEditEvent;
@@ -458,17 +463,12 @@ public class Designer implements ClipboardOwner {
             try {
                 XPath xpath = new BaseXPath(xpathQueryArea.getText(), new DocumentNavigator());
                 for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
-                    StringBuffer sb = new StringBuffer();
                     Object obj = iter.next();
                     if (obj instanceof String) {
                         System.out.println("Result was a string: " + ((String) obj));
                     } else if (!(obj instanceof Boolean)) {
                         // if it's a Boolean and it's 'false', what does that mean?
-                        SimpleNode node = (SimpleNode) obj;
-                        String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
-                        String line = " at line " + node.getBeginLine();
-                        sb.append(name).append(line).append(PMD.EOL);
-                        xpathResults.addElement(sb.toString().trim());
+                        xpathResults.addElement(obj);
                     }
                 }
                 if (xpathResults.isEmpty()) {
@@ -542,8 +542,55 @@ public class Designer implements ClipboardOwner {
                 if (selected != null && selected.node instanceof SimpleNode) {
                     SimpleNode node = (SimpleNode) selected.node;
 
-                    codeEditorPane.select(node.getBeginLine(), node.getBeginColumn(),
-                            node.getEndLine(), node.getEndColumn());
+                    codeEditorPane.select(node);
+                }
+            }
+        }
+    }
+
+    private class ASTListCellRenderer extends JLabel implements ListCellRenderer {
+        private static final long serialVersionUID = 1L;
+
+        public Component getListCellRendererComponent(
+                JList list,
+                Object value,
+                int index,
+                boolean isSelected,
+                boolean cellHasFocus) {
+
+            if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+            } else {
+                setBackground(list.getBackground());
+                setForeground(list.getForeground());
+            }
+
+            String text;
+            if (value instanceof SimpleNode) {
+                SimpleNode node = (SimpleNode) value;
+                StringBuffer sb = new StringBuffer();
+                String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
+                sb.append(name)
+                    .append(" at line ").append(node.getBeginLine())
+                    .append(" column ").append(node.getBeginColumn())
+                    .append(PMD.EOL);
+                text = sb.toString();
+            } else {
+                text = value.toString();
+            }
+            setText(text);
+            return this;
+        }       
+    }
+
+    private class ASTSelectionListener implements ListSelectionListener {
+        public void valueChanged(ListSelectionEvent e) {
+            ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+            if (!lsm.isSelectionEmpty()) {
+                Object o = xpathResults.get(lsm.getMinSelectionIndex());
+                if (o instanceof SimpleNode) {
+                    codeEditorPane.select((SimpleNode) o);
                 }
             }
         }
@@ -699,6 +746,9 @@ public class Designer implements ClipboardOwner {
         xpathResults.addElement("No XPath results yet, run an XPath Query first.");
         xpathResultList.setBorder(BorderFactory.createLineBorder(Color.black));
         xpathResultList.setFixedCellWidth(300);
+        xpathResultList.setCellRenderer(new ASTListCellRenderer());
+        xpathResultList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        xpathResultList.getSelectionModel().addListSelectionListener(new ASTSelectionListener());
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().setView(xpathResultList);
         return scrollPane;

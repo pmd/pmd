@@ -11,6 +11,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.JTextPane;
 
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.util.LineGetter;
 
 public class CodeEditorTextPane extends JTextPane implements LineGetter, ActionListener {
@@ -56,10 +57,11 @@ public class CodeEditorTextPane extends JTextPane implements LineGetter, ActionL
         throw new RuntimeException("Line " + line + " not found");
     }
 
-    public void select(int beginLine, int beginColumn, int endLine, int endColumn) {
+    public void select(SimpleNode node) {
         String[] lines = getText().split(LINE_SEPARATOR);
-        setSelectionStart(getPosition(lines, beginLine, beginColumn));
-        setSelectionEnd(getPosition(lines, endLine, endColumn)+1);
+        setSelectionStart(getPosition(lines, node.getBeginLine(), node.getBeginColumn()));
+        setSelectionEnd(getPosition(lines, node.getEndLine(), node.getEndColumn())+1);
+        requestFocus();
     }
 
     public void actionPerformed(ActionEvent ae) {
