@@ -106,5 +106,15 @@ Testing new parameter showMethodsMethods
         <expected-problems>1</expected-problems>
        <code-ref id="basic-violation"/>
     </test-code>
-
+  <test-code>
+        <description>
+        	<![CDATA[
+Testing default value of showClassMethods and showClassesComplexity
+     		]]>
+     	</description>
+        <rule-property name="showClassesComplexity">""</rule-property>
+        <rule-property name="showMethodsComplexity">""</rule-property>
+        <expected-problems>2</expected-problems>
+       <code-ref id="basic-violation"/>
+    </test-code>
 </test-data>
