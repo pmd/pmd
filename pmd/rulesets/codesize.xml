@@ -128,10 +128,10 @@ method entry.  The decision points are 'if', 'while', 'for', and 'case labels'. 
    <properties>
       <property name="reportLevel" description="The Cyclomatic Complexity reporting threshold"  value="10"/>
       <property name="showClassesComplexity"
-      			description="The Cyclomatic Complexity reporting threshold"
+      			description="Indicate if class average violation should be added to the report"
       			value="true"/>
       <property name="showMethodsComplexity"
-      			description="The Cyclomatic Complexity reporting threshold"
+      			description="Indicate if class average violation should be added to the report"
       			value="true"/>
 
    </properties>
