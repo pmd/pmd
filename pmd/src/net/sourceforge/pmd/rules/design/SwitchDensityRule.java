@@ -10,7 +10,8 @@ import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.StatisticalRule;
 
 /**
- * @author dpeugh
+ * @author David Dixon-Peugh
+ *
  *         <p/>
  *         Switch Density - This is the number of statements over the
  *         number of cases within a switch.  The higher the value, the
