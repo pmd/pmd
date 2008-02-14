@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.properties.DoubleProperty;
@@ -19,7 +19,7 @@ import net.sourceforge.pmd.properties.IntegerProperty;
  * @author David Dixon-Peugh
  *         Aug 8, 2002 StatisticalRule.java
  */
-public abstract class StatisticalRule extends AbstractRule {
+public abstract class StatisticalRule extends AbstractJavaRule {
 
     public static final double DELTA = 0.000005; // Within this range. . .
 
@@ -31,20 +31,20 @@ public abstract class StatisticalRule extends AbstractRule {
     private static final PropertyDescriptor sigmaDescriptor = new DoubleProperty(
     	"sigma", "Sigma value",	0,	1.0f
     	);
-   
+
     private static final PropertyDescriptor minimumDescriptor = new DoubleProperty(
         "minimum", "Minimum value",	0,	1.0f
         );
-    
+
     private static final PropertyDescriptor topScoreDescriptor = new IntegerProperty(
         "topscore", "Top score value",	0,	1.0f
-        );    
-    
+        );
+
     private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap( new PropertyDescriptor[] {
     	sigmaDescriptor, minimumDescriptor, topScoreDescriptor
     	});
-  
-    
+
+
     public void addDataPoint(DataPoint point) {
         count++;
         total += point.getScore();
@@ -140,7 +140,7 @@ public abstract class StatisticalRule extends AbstractRule {
             addViolationWithMessage(ctx, point.getNode(), point.getMessage());
         }
     }
-    
+
     protected Map<String, PropertyDescriptor> propertiesByName() {
     	return propertyDescriptorsByName;
     }
