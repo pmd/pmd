@@ -112,19 +112,28 @@ public class Foo {
  </rule>
 
 
-    <rule name="CyclomaticComplexity"
-      message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
-      class="net.sourceforge.pmd.rules.CyclomaticComplexity"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#CyclomaticComplexity">
+    <rule 	name="CyclomaticComplexity"
+      		message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
+	      	class="net.sourceforge.pmd.rules.CyclomaticComplexity"
+	      	externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#CyclomaticComplexity">
    <description>
+   		<![CDATA[
 Complexity is determined by the number of decision points in a method plus one for the
 method entry.  The decision points are 'if', 'while', 'for', and 'case labels'.  Generally,
 1-4 is low complexity, 5-7 indicates moderate complexity, 8-10 is high complexity,
  and 11+ is very high complexity.
+		]]>
    </description>
    <priority>3</priority>
    <properties>
       <property name="reportLevel" description="The Cyclomatic Complexity reporting threshold"  value="10"/>
+      <property name="showClassesComplexity"
+      			description="The Cyclomatic Complexity reporting threshold"
+      			value="true"/>
+      <property name="showMethodsComplexity"
+      			description="The Cyclomatic Complexity reporting threshold"
+      			value="true"/>
+
    </properties>
    <example>
 <![CDATA[
@@ -227,7 +236,7 @@ public class Person {
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssMethodCount">
     <description>
 This rule uses the NCSS (Non Commenting Source Statements) algorithm to determine the number of lines
-of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm, 
+of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
@@ -239,11 +248,11 @@ lines of code that are split are counted as one.
 public class Foo extends Bar {
  public int methd() {
      super.methd();
- 
- 
- 
- 
- 
+
+
+
+
+
  //this method only has 1 NCSS lines
       return 1;
  }
@@ -253,11 +262,11 @@ public class Foo extends Bar {
    </rule>
 
 <rule name="NcssTypeCount" message="The type has an NCSS line count of {0}"
-   class="net.sourceforge.pmd.rules.codesize.NcssTypeCount" 
+   class="net.sourceforge.pmd.rules.codesize.NcssTypeCount"
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssTypeCount">
     <description>
 This rule uses the NCSS (Non Commenting Source Statements) algorithm to determine the number of lines
-of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm, 
+of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
@@ -270,11 +279,11 @@ public class Foo extends Bar {
  public Foo() {
  //this class only has 6 NCSS lines
      super();
- 
- 
- 
- 
- 
+
+
+
+
+
       super.foo();
  }
 }
@@ -282,11 +291,11 @@ public class Foo extends Bar {
    </example></rule>
 
 <rule name="NcssConstructorCount" message="The constructor with {0} parameters has an NCSS line count of {1}"
-   class="net.sourceforge.pmd.rules.codesize.NcssConstructorCount" 
+   class="net.sourceforge.pmd.rules.codesize.NcssConstructorCount"
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssConstructorCount">
     <description>
 This rule uses the NCSS (Non Commenting Source Statements) algorithm to determine the number of lines
-of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm, 
+of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
@@ -298,11 +307,11 @@ lines of code that are split are counted as one.
 public class Foo extends Bar {
  public Foo() {
      super();
- 
- 
- 
- 
- 
+
+
+
+
+
  //this constructor only has 1 NCSS lines
       super.foo();
  }
@@ -327,16 +336,16 @@ have more fine grained objects.
                 <property name="maxmethods"  description="The method count reporting threshold " value="10"/>
                 <property name="xpath">
                 <value>
-                    <!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines, 
+                    <!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines,
                                 something like this:
                                     not (
                                     (
                                     starts-with(@Image,'get')
                                         or
-                                    starts-with(@Image,'set') 
-                                    )    
+                                    starts-with(@Image,'set')
+                                    )
                                     and ( (
-                                        (../Block/attribute::endLine) 
+                                        (../Block/attribute::endLine)
                                          -
                                         (../Block/attribute::beginLine) ) <= 3 )
                                     )
@@ -346,12 +355,12 @@ have more fine grained objects.
                      //ClassOrInterfaceDeclaration/ClassOrInterfaceBody
                     [
                         count(descendant::MethodDeclarator[
-                            not 
+                            not
                             (
                             starts-with(@Image,'get')
                                 or
-                            starts-with(@Image,'set') 
-                            )    
+                            starts-with(@Image,'set')
+                            )
                         ]) > $maxmethods
                     ]
                     ]]>

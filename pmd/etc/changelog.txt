@@ -14,6 +14,8 @@ New rules:
 	StrictExceptions : DoNotThrowExceptionInFinally
 	Strings : AvoidStringBufferField
 
+Rule upgrade:
+	CyclomaticComplexity now can be configure to display only classes average complexity or methods complexity, or both.
 
 1.7 added as a valid option for targetjdk.
 New elements under <ruleset>: <exclude-pattern> to match files exclude from processing, with <include-pattern> to override.

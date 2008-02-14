@@ -5,7 +5,7 @@ package net.sourceforge.pmd.rules;
 
 import java.util.Stack;
 
-import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTCatchStatement;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
@@ -27,13 +27,16 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.rules.design.NpathComplexity;
 
 /**
- * @author Donald A. Leckie
+ * @author Donald A. Leckie,
+ *
  * @version $Revision$, $Date$
  * @since January 14, 2003
  */
-public class CyclomaticComplexity extends AbstractRule {
+public class CyclomaticComplexity extends AbstractJavaRule {
 
   private int reportLevel;
+  private boolean showClassesComplexity = true;
+  private boolean showMethodsComplexity = true;
 
   private static class Entry {
     private SimpleNode node;
@@ -62,7 +65,9 @@ public class CyclomaticComplexity extends AbstractRule {
   private Stack<Entry> entryStack = new Stack<Entry>();
 
   public Object visit(ASTCompilationUnit node, Object data) {
-    reportLevel = getIntProperty( "reportLevel" );
+    reportLevel = getIntProperty("reportLevel" );
+    showClassesComplexity = getBooleanProperty("showClassesComplexity");
+    showMethodsComplexity = getBooleanProperty("showMethodsComplexity");
     super.visit( node, data );
     return data;
   }
@@ -157,14 +162,16 @@ public class CyclomaticComplexity extends AbstractRule {
 
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
-    Entry classEntry = entryStack.pop();
-    if ( ( classEntry.getComplexityAverage() >= reportLevel )
-        || ( classEntry.highestDecisionPoints >= reportLevel ) ) {
-      addViolation( data, node, new String[] {
-          "class",
-          node.getImage(),
-          classEntry.getComplexityAverage() + " (Highest = "
-              + classEntry.highestDecisionPoints + ')' } );
+    if ( showClassesComplexity ) {
+    	Entry classEntry = entryStack.pop();
+	    if ( ( classEntry.getComplexityAverage() >= reportLevel )
+	        || ( classEntry.highestDecisionPoints >= reportLevel ) ) {
+	      addViolation( data, node, new String[] {
+	          "class",
+	          node.getImage(),
+	          classEntry.getComplexityAverage() + " (Highest = "
+	              + classEntry.highestDecisionPoints + ')' } );
+	    }
     }
     return data;
   }
@@ -172,31 +179,32 @@ public class CyclomaticComplexity extends AbstractRule {
   public Object visit(ASTMethodDeclaration node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
-    Entry methodEntry = entryStack.pop();
-    int methodDecisionPoints = methodEntry.decisionPoints;
-    Entry classEntry = entryStack.peek();
-    classEntry.methodCount++;
-    classEntry.bumpDecisionPoints( methodDecisionPoints );
+    if ( showMethodsComplexity ) {
+	    Entry methodEntry = entryStack.pop();
+	    int methodDecisionPoints = methodEntry.decisionPoints;
+	    Entry classEntry = entryStack.peek();
+	    classEntry.methodCount++;
+	    classEntry.bumpDecisionPoints( methodDecisionPoints );
 
-    if ( methodDecisionPoints > classEntry.highestDecisionPoints ) {
-      classEntry.highestDecisionPoints = methodDecisionPoints;
+	    if ( methodDecisionPoints > classEntry.highestDecisionPoints ) {
+	      classEntry.highestDecisionPoints = methodDecisionPoints;
+	    }
+
+	    ASTMethodDeclarator methodDeclarator = null;
+	    for ( int n = 0; n < node.jjtGetNumChildren(); n++ ) {
+	      Node childNode = node.jjtGetChild( n );
+	      if ( childNode instanceof ASTMethodDeclarator ) {
+	        methodDeclarator = (ASTMethodDeclarator) childNode;
+	        break;
+	      }
+	    }
+
+	    if ( methodEntry.decisionPoints >= reportLevel ) {
+	        addViolation( data, node, new String[] { "method",
+	            ( methodDeclarator == null ) ? "" : methodDeclarator.getImage(),
+	            String.valueOf( methodEntry.decisionPoints ) } );
+	      }
     }
-
-    ASTMethodDeclarator methodDeclarator = null;
-    for ( int n = 0; n < node.jjtGetNumChildren(); n++ ) {
-      Node childNode = node.jjtGetChild( n );
-      if ( childNode instanceof ASTMethodDeclarator ) {
-        methodDeclarator = (ASTMethodDeclarator) childNode;
-        break;
-      }
-    }
-
-    if ( methodEntry.decisionPoints >= reportLevel ) {
-      addViolation( data, node, new String[] { "method",
-          ( methodDeclarator == null ) ? "" : methodDeclarator.getImage(),
-          String.valueOf( methodEntry.decisionPoints ) } );
-    }
-
     return data;
   }
 
