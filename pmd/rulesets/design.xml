@@ -15,10 +15,12 @@ The Design Ruleset contains a collection of rules that find questionable designs
         class="net.sourceforge.pmd.rules.design.UseSingleton"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseSingleton">
     <description>
+    	<![CDATA[
 If you have a class that has nothing but static methods, consider making it a Singleton.
 Note that this doesn't apply to abstract classes, since their subclasses may
 well include non-static methods.  Also, if you want this class to be a Singleton,
 remember to add a private constructor to prevent instantiation.
+		]]>
     </description>
       <priority>3</priority>
     <example>
@@ -1079,13 +1081,20 @@ class Foo {
           <value>
               <![CDATA[
 //PrimaryExpression[
-	PrimaryPrefix[Name
-		[ends-with(@Image, '.equals')]
-		]
-	[../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal]
+        PrimaryPrefix[Name
+                [
+	(ends-with(@Image, '.equals'))
+                ]
+        ]
+        [
+                   (../PrimarySuffix/Arguments/ArgumentList/Expression/PrimaryExpression/PrimaryPrefix/Literal)
+	and
+	( count(../PrimarySuffix/Arguments/ArgumentList/Expression) = 1 )
+        ]
 ]
 [not(ancestor::Expression/ConditionalAndExpression//EqualityExpression[@Image='!=']//NullLiteral)]
 [not(ancestor::Expression/ConditionalOrExpression//EqualityExpression[@Image='==']//NullLiteral)]
+
           ]]>
           </value>
       </property>
@@ -1593,13 +1602,11 @@ far too complex.
 			<![CDATA[
 import javax.servlet.Filter;
 
-public class FooFilter implements Filter {
+public class FooFilter implements Filter
+{
 	public FooFilter() { }
 
-	// Adding two private filter to emulate the others
-	private class BarFilter implements Filter {}
-
-	private class OneTooMuchFilter() implements Filter {}
+	private class OneTooMuchFilter implements Filter {}
 
 }
 			]]>
