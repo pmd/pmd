@@ -25,6 +25,7 @@ package test.net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -74,6 +75,22 @@ public class RuleSetFactoryTest {
 		} catch (Throwable t) {
 			isJdk14 = true;
 		}
+	}
+
+	@Test
+	public void testRuleSetFileName() throws RuleSetNotFoundException {
+		RuleSet rs = loadRuleSet(EMPTY_RULESET);
+		assertNull("RuleSet file name not expected", rs.getFileName());
+
+		RuleSetFactory rsf = new RuleSetFactory();
+		rs = rsf.createSingleRuleSet("rulesets/basic.xml");
+		assertEquals("wrong RuleSet file name", rs.getFileName(), "rulesets/basic.xml");
+	}
+
+	@Test
+	public void testNoRuleSetFileName() {
+		RuleSet rs = loadRuleSet(EMPTY_RULESET);
+		assertNull("RuleSet file name not expected", rs.getFileName());
 	}
 
 	@Test

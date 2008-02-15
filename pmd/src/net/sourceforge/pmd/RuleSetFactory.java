@@ -119,7 +119,7 @@ public class RuleSetFactory {
 	 * @throws RuleSetNotFoundException if unable to find a resource.
 	 */
 	public RuleSet createSingleRuleSet(String ruleSetFileName) throws RuleSetNotFoundException {
-		return createRuleSet(tryToGetStreamTo(ruleSetFileName, getClass().getClassLoader()));
+		return createSingleRuleSet(ruleSetFileName, getClass().getClassLoader());
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class RuleSetFactory {
 	 */
 	private RuleSet createSingleRuleSet(String ruleSetFileName, ClassLoader classLoader)
 			throws RuleSetNotFoundException {
-		return createRuleSet(tryToGetStreamTo(ruleSetFileName, classLoader), classLoader);
+		return parseRuleSetNode(ruleSetFileName, tryToGetStreamTo(ruleSetFileName, classLoader), classLoader);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class RuleSetFactory {
 	 * @return A new RuleSet.
 	 */
 	public RuleSet createRuleSet(InputStream inputStream, ClassLoader classLoader) {
-		return parseRuleSetNode(inputStream, classLoader);
+		return parseRuleSetNode(null, inputStream, classLoader);
 	}
 
 	/**
@@ -184,13 +184,14 @@ public class RuleSetFactory {
 	 * @param classLoader The ClassLoader to load Classes and resources.
 	 * @return The new RuleSet.
 	 */
-	private RuleSet parseRuleSetNode(InputStream inputStream, ClassLoader classLoader) {
+	private RuleSet parseRuleSetNode(String fileName, InputStream inputStream, ClassLoader classLoader) {
 		try {
 			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document document = builder.parse(inputStream);
 			Element ruleSetElement = document.getDocumentElement();
 
 			RuleSet ruleSet = new RuleSet();
+			ruleSet.setFileName(fileName);
 			ruleSet.setName(ruleSetElement.getAttribute("name"));
 			ruleSet.setLanguage(Language.getByName(ruleSetElement.getAttribute("language")));
 
@@ -269,7 +270,7 @@ public class RuleSetFactory {
 
 		RuleSetReference ruleSetReference = new RuleSetReference();
 		ruleSetReference.setAllRules(true);
-		ruleSetReference.setRuleSetName(ref);
+		ruleSetReference.setRuleSetFileName(ref);
 		NodeList excludeNodes = ruleElement.getChildNodes();
 		for (int i = 0; i < excludeNodes.getLength(); i++) {
 			if ((excludeNodes.item(i).getNodeType() == Node.ELEMENT_NODE)
@@ -366,7 +367,7 @@ public class RuleSetFactory {
 
 		RuleSetReference ruleSetReference = new RuleSetReference();
 		ruleSetReference.setAllRules(false);
-		ruleSetReference.setRuleSetName(externalRuleID.getFilename());
+		ruleSetReference.setRuleSetFileName(externalRuleID.getFilename());
 
 		RuleReference ruleReference = new RuleReference();
 		ruleReference.setRuleSetReference(ruleSetReference);

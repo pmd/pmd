@@ -31,7 +31,7 @@ import org.w3c.dom.Text;
 public class RuleSetWriter {
 	private final OutputStream outputStream;
 	private Document document;
-	private Set<String> ruleSetNames;
+	private Set<String> ruleSetFileNames;
 
 	public RuleSetWriter(OutputStream outputStream) {
 		this.outputStream = outputStream;
@@ -47,7 +47,7 @@ public class RuleSetWriter {
 			DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 			this.document = documentBuilder.newDocument();
-			this.ruleSetNames = new HashSet<String>();
+			this.ruleSetFileNames = new HashSet<String>();
 
 			Element ruleSetElement = createRuleSetElement(ruleSet);
 			document.appendChild(ruleSetElement);
@@ -122,8 +122,8 @@ public class RuleSetWriter {
 			RuleReference ruleReference = (RuleReference)rule;
 			RuleSetReference ruleSetReference = ruleReference.getRuleSetReference();
 			if (ruleSetReference.isAllRules()) {
-				if (!ruleSetNames.contains(ruleSetReference.getRuleSetName())) {
-					ruleSetNames.add(ruleSetReference.getRuleSetName());
+				if (!ruleSetFileNames.contains(ruleSetReference.getRuleSetFileName())) {
+					ruleSetFileNames.add(ruleSetReference.getRuleSetFileName());
 					Element ruleSetReferenceElement = createRuleSetReferenceElement(ruleSetReference);
 					return ruleSetReferenceElement;
 				} else {
@@ -131,7 +131,7 @@ public class RuleSetWriter {
 				}
 			} else {
 				String name = ruleReference.getOverriddenName();
-				String ref = ruleReference.getRuleSetReference().getRuleSetName() + "/" + ruleReference.getName();
+				String ref = ruleReference.getRuleSetReference().getRuleSetFileName() + "/" + ruleReference.getName();
 				String message = ruleReference.getOverriddenMessage();
 				String externalInfoUrl = ruleReference.getOverriddenExternalInfoUrl();
 				String description = ruleReference.getOverriddenDescription();
@@ -199,7 +199,7 @@ public class RuleSetWriter {
 
 	private Element createRuleSetReferenceElement(RuleSetReference ruleSetReference) {
 		Element ruleSetReferenceElement = document.createElement("rule");
-		ruleSetReferenceElement.setAttribute("ref", ruleSetReference.getRuleSetName());
+		ruleSetReferenceElement.setAttribute("ref", ruleSetReference.getRuleSetFileName());
 		for (String exclude : ruleSetReference.getExcludes()) {
 			Element excludeElement = createExcludeElement(exclude);
 			ruleSetReferenceElement.appendChild(excludeElement);

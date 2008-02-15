@@ -105,12 +105,6 @@ public class RuleReference extends AbstractDelegateRule {
 		super.setPriority(priority);
 	}
 
-	@Override
-	public void setRuleSetName(String ruleSetName) {
-		ruleSetReference.setRuleSetName(ruleSetName);
-		super.setRuleSetName(ruleSetName);
-	}
-
 	public RuleSetReference getRuleSetReference() {
 		return ruleSetReference;
 	}

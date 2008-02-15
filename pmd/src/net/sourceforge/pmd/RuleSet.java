@@ -22,6 +22,7 @@ import net.sourceforge.pmd.util.filter.Filters;
 public class RuleSet {
 
     private List<Rule> rules = new ArrayList<Rule>();
+    private String fileName;
     private String name = "";
     private String description = "";
     private Language language;
@@ -46,6 +47,30 @@ public class RuleSet {
     public void addRule(Rule rule) {
         if (rule == null) {
             throw new RuntimeException("Null Rule reference added to a RuleSet; that's a bug somewhere in PMD");
+        }
+        rules.add(rule);
+    }
+
+    /**
+     * Add a new rule by reference to this ruleset.
+     *
+     * @param ruleSetFileName the ruleset which contains the rule
+     * @param rule the rule to be added
+     */
+    public void addRuleByReference(String ruleSetFileName, Rule rule) {
+        if (ruleSetFileName == null) {
+            throw new RuntimeException("Adding a rule by reference is not allowed with a null rule set file name.");
+        }
+        if (rule == null) {
+            throw new RuntimeException("Null Rule reference added to a RuleSet; that's a bug somewhere in PMD");
+        }
+        if (!(rule instanceof RuleReference)) {
+        	RuleSetReference ruleSetReference = new RuleSetReference();
+        	ruleSetReference.setRuleSetFileName(ruleSetFileName);
+	        RuleReference ruleReference = new RuleReference();
+	        ruleReference.setRule(rule);
+	        ruleReference.setRuleSetReference(ruleSetReference);
+	        rule = ruleReference;
         }
         rules.add(rule);
     }
@@ -95,6 +120,29 @@ public class RuleSet {
      */
     public void addRuleSet(RuleSet ruleSet) {
         rules.addAll(rules.size(), ruleSet.getRules());
+    }
+
+    /**
+     * Add all rules by reference from one RuleSet to this RuleSet.  The rules
+     * can be added as individual references, or collectively as an all rule
+     * reference.
+     *
+     * @param ruleSet the RuleSet to add
+     * @param allRules 
+     */
+    public void addRuleSetByReference(RuleSet ruleSet, boolean allRules) {
+    	if (ruleSet.getFileName() == null) {
+            throw new RuntimeException("Adding a rule by reference is not allowed with a null rule set file name.");
+    	}
+    	RuleSetReference ruleSetReference = new RuleSetReference();
+    	ruleSetReference.setRuleSetFileName(ruleSet.getFileName());
+    	ruleSetReference.setAllRules(allRules);
+    	for(Rule rule: ruleSet.getRules()) {
+    		RuleReference ruleReference = new RuleReference();
+    		ruleReference.setRule(rule);
+    		ruleReference.setRuleSetReference(ruleSetReference);
+    		rules.add(ruleReference);
+    	}
     }
 
    /**
@@ -172,7 +220,15 @@ public class RuleSet {
         this.language = language;
     }
 
-    public String getName() {
+    public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public String getName() {
         return name;
     }
 

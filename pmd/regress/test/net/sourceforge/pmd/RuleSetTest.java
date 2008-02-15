@@ -39,7 +39,9 @@ import java.util.Set;
 
 import net.sourceforge.pmd.MockRule;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleReference;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.TargetJDKVersion;
@@ -72,6 +74,8 @@ public class RuleSetTest {
     @Test
     public void testAccessors() {
         RuleSet rs = new RuleSet();
+        rs.setFileName("baz");
+        assertEquals("file name mismatch", "baz", rs.getFileName());
         rs.setName("foo");
         assertEquals("name mismatch", "foo", rs.getName());
         rs.setDescription("bar");
@@ -121,6 +125,49 @@ public class RuleSetTest {
         set2.addRule(new MockRule("name2", "desc", "msg", "rulesetname"));
         set1.addRuleSet(set2);
         assertEquals("ruleset size wrong", 2, set1.size());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testAddRuleSetByReferenceBad() {
+        RuleSet set1 = new RuleSet();
+        set1.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
+        RuleSet set2 = new RuleSet();
+        set2.addRule(new MockRule("name2", "desc", "msg", "rulesetname"));
+		set1.addRuleSetByReference(set2, false);
+    }
+
+    @Test
+    public void testAddRuleSetByReferenceAllRule() {
+        RuleSet set1 = new RuleSet();
+        RuleSet set2 = new RuleSet();
+        set2.setFileName("foo");
+        set2.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
+        set2.addRule(new MockRule("name2", "desc", "msg", "rulesetname"));
+		set1.addRuleSetByReference(set2, true);
+		assertEquals("wrong rule size", 2, set1.getRules().size());
+		for (Rule rule : set1.getRules()) {
+			assertTrue("not a rule reference", rule instanceof RuleReference);
+			RuleReference ruleReference = (RuleReference)rule;
+			assertEquals("wrong ruleset file name", "foo", ruleReference.getRuleSetReference().getRuleSetFileName());
+			assertTrue("not all rule reference", ruleReference.getRuleSetReference().isAllRules());
+		}
+    }
+
+    @Test
+    public void testAddRuleSetByReferenceSingleRule() {
+        RuleSet set1 = new RuleSet();
+        RuleSet set2 = new RuleSet();
+        set2.setFileName("foo");
+        set2.addRule(new MockRule("name", "desc", "msg", "rulesetname"));
+        set2.addRule(new MockRule("name2", "desc", "msg", "rulesetname"));
+		set1.addRuleSetByReference(set2, false);
+		assertEquals("wrong rule size", 2, set1.getRules().size());
+		for (Rule rule : set1.getRules()) {
+			assertTrue("not a rule reference", rule instanceof RuleReference);
+			RuleReference ruleReference = (RuleReference)rule;
+			assertEquals("wrong ruleset file name", "foo", ruleReference.getRuleSetReference().getRuleSetFileName());
+			assertFalse("should not be all rule reference", ruleReference.getRuleSetReference().isAllRules());
+		}
     }
 
     @Test

@@ -7,16 +7,16 @@ import java.util.Set;
  * This class represents a reference to RuleSet.
  */
 public class RuleSetReference {
-	private String ruleSetName;
+	private String ruleSetFileName;
 	private boolean allRules;
 	private Set<String> excludes = new LinkedHashSet<String>(0);
 
-	public String getRuleSetName() {
-		return ruleSetName;
+	public String getRuleSetFileName() {
+		return ruleSetFileName;
 	}
 
-	public void setRuleSetName(String ruleSetName) {
-		this.ruleSetName = ruleSetName;
+	public void setRuleSetFileName(String ruleSetFileName) {
+		this.ruleSetFileName = ruleSetFileName;
 	}
 
 	public boolean isAllRules() {
