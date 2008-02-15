@@ -12,6 +12,7 @@ import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.properties.StringProperty;
@@ -61,22 +62,22 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 			"Defines how many occurences are legal",new String(),4.0f);
 
 
-	private List<Pattern> namesMatch;
-	private List<Pattern> typesMatch;
-	private List<SimpleNode> matches;
-	private List<String> simpleClassname;
+	private List<Pattern> namesMatch = new ArrayList<Pattern>(0);
+	private List<Pattern> typesMatch = new ArrayList<Pattern>(0);
+	private List<SimpleNode> matches = new ArrayList<SimpleNode>(0);
+	private List<String> simpleClassname = new ArrayList<String>(0);
 
 
 	private String operand;
 	private int threshold;
 
 	private static String COUNTER_LABEL;
+
 	/**
 	 *	Default empty constructor
 	 */
 	public GenericClassCounterRule() {
 		super();
-		init();
 	}
 
 	private List<String> arrayAsList(String[] array) {
@@ -106,6 +107,12 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		 // Adding the proper attribute to the context
          ctx.setAttribute(COUNTER_LABEL, new AtomicLong());
          super.start(ctx);
+     }
+
+     @Override
+     public Object visit(ASTCompilationUnit node, Object data) {
+    	 init();
+    	 return super.visit(node,data);
      }
 
      @Override
