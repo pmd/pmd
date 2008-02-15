@@ -11,6 +11,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTTypeParameters;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 import java.util.List;
@@ -18,9 +19,12 @@ import java.util.List;
 public abstract class AbstractJUnitRule extends AbstractRule {
     
     public static Class junit4Class = null;
-
+    
     public static Class junit3Class = null;
-
+    
+    private boolean isJUnit3Class;
+    private boolean isJUnit4Class;
+    
     static {
         try {
             junit4Class = Class.forName("org.junit.Test");
@@ -36,33 +40,50 @@ public abstract class AbstractJUnitRule extends AbstractRule {
     }
     
     public Object visit(ASTCompilationUnit node, Object data){
-    	boolean isJunit3Class = isJUnit3Class(node);
-        boolean isJunit4Class = isJUnit4Class(node);
-        if(isJunit3Class || isJunit4Class){
+    	
+    	isJUnit3Class = isJUnit4Class = false;
+    	
+    	isJUnit3Class = isJUnit3Class(node);
+    	if (!isJUnit3Class) {
+    		isJUnit4Class = isJUnit4Class(node);
+    	}
+    	        
+        if(isJUnit3Class || isJUnit4Class){
             return super.visit(node, data);
         }
         return data;
     }
     
     public boolean isJUnitMethod(ASTMethodDeclaration method, Object data) {
+    	    	
         if (!method.isPublic() || method.isAbstract() || method.isNative() || method.isStatic()) {
             return false; // skip various inapplicable method variations
         }
-
-        Node node = method.jjtGetChild(0);
+        
+        if (isJUnit3Class) {
+        	return isJUnit3Method(method); 
+        }
+        else {
+        	return isJUnit4Method(method);
+        }
+    }
+    
+    private boolean isJUnit4Method(ASTMethodDeclaration method){
+    	return doesNodeContainJUnitAnnotation((SimpleNode)method.jjtGetParent());
+    }
+    
+    private boolean isJUnit3Method(ASTMethodDeclaration method) {
+    	Node node = method.jjtGetChild(0);
         if (node instanceof ASTTypeParameters) {
             node = method.jjtGetChild(1);
         }
         return ((ASTResultType) node).isVoid() && method.getMethodName().startsWith("test");
     }
-    
-    public boolean isJUnit4Method(){
-        return false;
-    }
-    
-    public boolean isJUnit3Class(ASTCompilationUnit node) {
-        if (node.getType() != null && TypeHelper.isA(node, junit3Class)) {
+        
+    private boolean isJUnit3Class(ASTCompilationUnit node) {
+    	if (node.getType() != null && TypeHelper.isA(node, junit3Class)) {
             return true;
+                        
         } else if (node.getType() == null) {
             ASTClassOrInterfaceDeclaration cid = node.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
             if (cid == null) {
@@ -71,8 +92,7 @@ public abstract class AbstractJUnitRule extends AbstractRule {
             ASTExtendsList extendsList = cid.getFirstChildOfType(ASTExtendsList.class);
             if(extendsList == null){
                 return false;
-            }
-
+            } 
             if(((ASTClassOrInterfaceType)extendsList.jjtGetChild(0)).getImage().endsWith("TestCase")){
                 return true;
             }
@@ -81,19 +101,25 @@ public abstract class AbstractJUnitRule extends AbstractRule {
         }
         return false;
     }
-
-    public boolean isJUnit4Class(ASTCompilationUnit node){
-        List<ASTMarkerAnnotation> lstAnnotations = node.findChildrenOfType(ASTMarkerAnnotation.class);
+    
+    private boolean isJUnit4Class(ASTCompilationUnit node){
+        return doesNodeContainJUnitAnnotation(node);
+    }
+        
+    private boolean doesNodeContainJUnitAnnotation(SimpleNode node) {
+    	List<ASTMarkerAnnotation> lstAnnotations = node.findChildrenOfType(ASTMarkerAnnotation.class);
         for(ASTMarkerAnnotation annotation : lstAnnotations){
-            if(annotation.getType() == null){
+        	if(annotation.getType() == null){
                 ASTName name = (ASTName)annotation.jjtGetChild(0);
                 if("Test".equals(name.getImage())){
                     return true;
                 }
-            } else if(annotation.getType().equals(junit4Class)){
+            } 
+            else if(annotation.getType().equals(junit4Class)){
                 return true;
             }
         }
         return false;
     }
+    
 }

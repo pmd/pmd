@@ -204,9 +204,9 @@ JUnit 4 - assertEquals
 import org.junit.Test;
 public class Foo {
  @Test
- public void test1() {
+ public void foo() {
   assertEquals(1, 1);
- }
+ } 
 }
      ]]></code>
     </test-code>

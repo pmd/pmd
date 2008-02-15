@@ -219,7 +219,7 @@ JUnit 4 test (exceptions shouldn't block it)
 import org.junit.Test;
 public class Foo {
  @Test
- public void testfoo() throws Exception {}
+ public void foo() throws Exception {}
 }
      ]]></code>
     </test-code>
