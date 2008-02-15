@@ -5,6 +5,9 @@ Fixed bug 1848888 - Fixed false positive in UseEqualsToCompareStrings
 Fixed bug 1874313 - Documentation bugs
 Fixed bug 1855409 - False + in EmptyMethodInAbstractClassShouldBeAbstract
 Fixed bug 1888967 - Updated xpath query to detect more "empty" methods.
+Fixed bug 1891399 -	Check for JUnit4 test method fails
+Fixed bug 1882457 - PositionLiteralsFirstInComparisons rule not working OK
+Fixed bug 1842505 - XML output incorrect for inner classes
 Fixed other false positives in EmptyMethodInAbstractClassShouldBeAbstract
 
 New rules:
@@ -16,6 +19,11 @@ New rules:
 
 Rule upgrade:
 	CyclomaticComplexity now can be configure to display only classes average complexity or methods complexity, or both.
+
+Designer upgrade:
+	A new panel for symbols and a tooltips on AST node that displays line, colunm and access node attributes (private,
+	static, abstract,...)
+
 
 1.7 added as a valid option for targetjdk.
 New elements under <ruleset>: <exclude-pattern> to match files exclude from processing, with <include-pattern> to override.
