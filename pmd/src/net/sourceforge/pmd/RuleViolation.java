@@ -3,6 +3,10 @@
  */
 package net.sourceforge.pmd;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
@@ -13,11 +17,6 @@ import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.CanSuppressWarnings;
 import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ArrayList;
 
 public class RuleViolation implements IRuleViolation {
 
@@ -80,18 +79,32 @@ public class RuleViolation implements IRuleViolation {
 	            // default to symbol table lookup
 	            className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : node.getScope().getEnclosingClassScope().getClassName();
 	        }
-	
+	        // default to symbol table lookup
+	        String qualifiedName = null;
+	        List<ASTClassOrInterfaceDeclaration> parents = node.getParentsOfType(ASTClassOrInterfaceDeclaration.class);
+	        for ( ASTClassOrInterfaceDeclaration parent : parents )
+	        {
+	        	if (qualifiedName == null) {
+	        		qualifiedName = parent.getScope().getEnclosingClassScope().getClassName();
+	            } else {
+	            	qualifiedName = qualifiedName + "$" + parent.getScope().getEnclosingClassScope().getClassName();
+	            }
+	        }
+	        // Sourcefile does not have an enclosing class scope...
+	        if ( ! "net.sourceforge.pmd.symboltable.SourceFileScope".equals(node.getScope().getClass().getName() ) ) {
+	        	className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : qualifiedName;
+	        }
 	        setVariableNameIfExists(node);
-	        
+
 	        methodName = node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : node.getScope().getEnclosingMethodScope().getName();
-	
+
 	        packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
-	
+
 	        beginLine = node.getBeginLine();
 	        endLine = node.getEndLine();
 	        beginColumn = node.getBeginColumn();
 	        endColumn = node.getEndColumn();
-	
+
 	        // TODO combine this duplicated code
 	        // TODO same for duplicated code in ASTTypeDeclaration && ASTClassOrInterfaceBodyDeclaration
 	        List<SimpleNode> parentTypes = new ArrayList<SimpleNode>(node.getParentsOfType(ASTTypeDeclaration.class));
@@ -110,8 +123,8 @@ public class RuleViolation implements IRuleViolation {
 	        if (node instanceof ASTLocalVariableDeclaration) {
 	            parentTypes.add(node);
 	        }
-	        for (Iterator i = parentTypes.iterator(); i.hasNext();) {
-	            CanSuppressWarnings t = (CanSuppressWarnings) i.next();
+	        for (SimpleNode parentType : parentTypes) {
+	            CanSuppressWarnings t = (CanSuppressWarnings) parentType;
 	            if (t.hasSuppressWarningsAnnotationFor(getRule())) {
 	                isSuppressed = true;
 	            }
