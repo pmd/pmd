@@ -13,9 +13,9 @@ public class FooTest extends TestCase {
     </test-code>
     <test-code>
         <description><![CDATA[
-success case
+test method should be public 
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class FooTest extends TestCase {
@@ -37,9 +37,9 @@ public class FooTest extends TestCase {
     </test-code>
     <test-code>
         <description><![CDATA[
-inner class that's ok 
+test method in inner class not valid
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;
 public class Foo extends TestCase {

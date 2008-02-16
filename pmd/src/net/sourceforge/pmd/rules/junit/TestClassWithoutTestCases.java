@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.rules.junit;
 
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
 import java.util.Iterator;
@@ -15,30 +16,27 @@ public class TestClassWithoutTestCases extends AbstractJUnitRule {
         if (node.isAbstract() || node.isInterface() || node.isNested()) {
             return data;
         }
-
-        String className = node.getImage();
-        if (className.endsWith("Test")) {
-            List<ASTMethodDeclarator> m = node.findChildrenOfType(ASTMethodDeclarator.class);
-            boolean testsFound = false;
-            if (m != null) {
-                for (Iterator<ASTMethodDeclarator> it = m.iterator(); it.hasNext() && !testsFound;) {
-                    ASTMethodDeclarator md = it.next();
-                    if (!isInInnerClassOrInterface(md)
-                            && md.getImage().startsWith("test")) {
-                        testsFound = true;
-                    }
-                }
-            }
-
-            if (!testsFound) {
-                addViolation(data, node);
-            }
-
+                	
+        List<ASTMethodDeclaration> m = node.findChildrenOfType(ASTMethodDeclaration.class);
+        boolean testsFound = false;
+                        
+        if (m != null) {
+        	for (Iterator<ASTMethodDeclaration> it = m.iterator(); it.hasNext() && !testsFound;) {
+        		ASTMethodDeclaration md = it.next();
+        		if (!isInInnerClassOrInterface(md)
+        				&& isJUnitMethod(md, data)) 
+                        	testsFound = true;
+            }	
         }
+        
+        if (!testsFound) {
+        	addViolation(data, node);
+        }
+
         return data;
     }
 
-    private boolean isInInnerClassOrInterface(ASTMethodDeclarator md) {
+    private boolean isInInnerClassOrInterface(ASTMethodDeclaration md) {
         ASTClassOrInterfaceDeclaration p = md.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
         return p != null && p.isNested();
     }
