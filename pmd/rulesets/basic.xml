@@ -640,6 +640,7 @@ public class Foo {
     </rule>
 
     <rule name="UselessOverridingMethod"
+    since="3.3"
     message="Overriding method merely calls super"
     class="net.sourceforge.pmd.rules.UselessOverridingMethod"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOverridingMethod">

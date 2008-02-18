@@ -244,6 +244,24 @@ public class RuleSetFactoryTest {
 	}
 
 	@Test
+	public void testAllPMDBuiltInRulesNeedSince() throws IOException, RuleSetNotFoundException, ParserConfigurationException,
+			SAXException {
+		boolean allValid = true;
+		List<String> ruleSetFileNames = getRuleSetFileNames();
+		for (String fileName : ruleSetFileNames) {
+			RuleSet ruleSet = loadRuleSetByFileName(fileName);
+			for (Rule rule : ruleSet.getRules()) {
+				assertNotNull("Rule " + fileName + "/" + rule.getName()
+						+ " is missing 'since' attribute, all built-in PMD rules need this attribute.",
+						rule.getSince());
+			}
+			boolean valid = validateAgainstDtd(fileName);
+			allValid = allValid && valid;
+		}
+		assertTrue("All XML must parse without producing validation messages.", allValid);
+	}
+
+	@Test
 	public void testXmlSchema() throws IOException, RuleSetNotFoundException, ParserConfigurationException,
 			SAXException {
 		if (isJdk14) {
@@ -438,7 +456,6 @@ public class RuleSetFactoryTest {
 
 		file = "<?xml version=\"1.0\"?>" + PMD.EOL + "<!DOCTYPE ruleset SYSTEM \"file://"
 				+ System.getProperty("user.dir") + "/etc/ruleset.dtd\">" + PMD.EOL + file;
-		
 
 		inputStream = new ByteArrayInputStream(file.getBytes());
 

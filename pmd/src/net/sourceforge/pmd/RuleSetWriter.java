@@ -138,22 +138,25 @@ public class RuleSetWriter {
 				Integer priority = ruleReference.getOverriddenPriority();
 				Properties properties = ruleReference.getOverriddenProperties();
 				List<String> examples = ruleReference.getOverriddenExamples();
-				return createSingleRuleElement(name, ref, message, externalInfoUrl, null, null, null, description,
-						priority, properties, examples);
+				return createSingleRuleElement(name, null, ref, message, externalInfoUrl, null, null, null,
+						description, priority, properties, examples);
 			}
 		} else {
-			return createSingleRuleElement(rule.getName(), null, rule.getMessage(), rule.getExternalInfoUrl(),
-					rule.getRuleClass(), rule.usesDFA(), rule.usesTypeResolution(), rule.getDescription(),
-					rule.getPriority(), rule.getProperties(), rule.getExamples());
+			return createSingleRuleElement(rule.getName(), rule.getSince(), null, rule.getMessage(),
+					rule.getExternalInfoUrl(), rule.getRuleClass(), rule.usesDFA(), rule.usesTypeResolution(),
+					rule.getDescription(), rule.getPriority(), rule.getProperties(), rule.getExamples());
 		}
 	}
 
-	private Element createSingleRuleElement(String name, String ref, String message, String externalInfoUrl,
-			String clazz, Boolean dfa, Boolean typeResolution, String description, Integer priority,
-			Properties properties, List<String> examples) {
+	private Element createSingleRuleElement(String name, String since, String ref, String message,
+			String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution, String description,
+			Integer priority, Properties properties, List<String> examples) {
 		Element ruleElement = document.createElement("rule");
 		if (name != null) {
 			ruleElement.setAttribute("name", name);
+		}
+		if (since != null) {
+			ruleElement.setAttribute("since", since);
 		}
 		if (ref != null) {
 			ruleElement.setAttribute("ref", ref);

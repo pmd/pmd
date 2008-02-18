@@ -372,6 +372,7 @@ public class Foo {
 
 
     <rule name="NoPackage"
+        since="3.3"
         message="All classes and interfaces must belong to a named package"
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#NoPackage">
@@ -398,6 +399,7 @@ public class ClassInDefaultPackage {
   </rule>
 
     <rule name="PackageCase"
+            since="3.3"
             message="Package name contains upper case characters"
             class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#PackageCase">

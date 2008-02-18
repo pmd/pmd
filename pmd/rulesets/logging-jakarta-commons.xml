@@ -46,6 +46,7 @@ public class Main {
 	</rule>
 
     <rule name="ProperLogger"
+         since="3.3"
          message="Logger should be defined private static final and have the correct class"
          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-jakarta-commons.html#ProperLogger">

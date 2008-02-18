@@ -97,6 +97,7 @@ public class Foo {
     </rule>
 
     <rule name="UnnecessaryCaseChange"
+          since="3.3"
           message="Using equalsIgnoreCase() is cleaner than using toUpperCase/toLowerCase().equals()."
            class="net.sourceforge.pmd.rules.strings.UnnecessaryCaseChange"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UnnecessaryCaseChange">

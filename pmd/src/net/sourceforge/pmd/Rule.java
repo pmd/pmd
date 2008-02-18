@@ -27,7 +27,18 @@ public interface Rule {
 	 * Set the name of this Rule.
 	 */
 	void setName(String name);
-
+	
+	/**
+	 * Get the version of PMD in which this Rule was added.
+	 * Return <code>null</code> if not applicable.
+	 */
+	String getSince();
+	
+	/**
+	 * Set the version of PMD in which this Rule was added.
+	 */
+	void setSince(String since);
+	
 	/**
 	 * Get the class of this Rule.
 	 */

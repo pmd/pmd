@@ -45,6 +45,7 @@
         <xs:element ref="example" minOccurs="0" maxOccurs="unbounded" />
       </xs:sequence>
       <xs:attribute name="name" type="xs:ID" use="optional" />
+      <xs:attribute name="since" type="xs:string" use="optional" />
       <xs:attribute name="ref" type="xs:string" use="optional" />
       <xs:attribute name="message" type="xs:string" use="optional" />
       <xs:attribute name="externalInfoUrl" type="xs:string" use="optional" />

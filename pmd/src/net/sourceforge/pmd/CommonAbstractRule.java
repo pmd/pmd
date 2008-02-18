@@ -22,6 +22,7 @@ public abstract class CommonAbstractRule implements Rule {
 	private static final boolean IN_OLD_PROPERTY_MODE = true;
 
 	private String name = getClass().getName();
+	private String since;
 	private String ruleClass = getClass().getName();
 	private String ruleSetName;
 	private String message;
@@ -42,6 +43,14 @@ public abstract class CommonAbstractRule implements Rule {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getSince() {
+		return since;
+	}
+
+	public void setSince(String since) {
+		this.since = since;
 	}
 
 	public String getRuleClass() {

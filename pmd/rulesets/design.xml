@@ -1069,6 +1069,7 @@ class Foo {
 
 
 <rule name="PositionLiteralsFirstInComparisons"
+  since="3.3"
   message="Position literals first in String comparisons"
   class="net.sourceforge.pmd.rules.XPathRule"
   externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PositionLiteralsFirstInComparisons">
@@ -1112,6 +1113,7 @@ class Foo {
 </rule>
 
     <rule name="UnnecessaryLocalBeforeReturn"
+          since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
           class="net.sourceforge.pmd.rules.design.UnnecessaryLocalBeforeReturn"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn">

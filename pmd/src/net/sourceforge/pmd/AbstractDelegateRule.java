@@ -28,6 +28,14 @@ public class AbstractDelegateRule implements Rule {
 		rule.setName(name);
 	}
 
+	public String getSince() {
+		return rule.getSince();
+	}
+
+	public void setSince(String since) {
+		rule.setSince(since);
+	}
+
 	public String getRuleClass() {
 		return rule.getRuleClass();
 	}

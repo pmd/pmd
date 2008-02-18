@@ -6,6 +6,7 @@
 <!ELEMENT include-pattern ( #PCDATA ) >
 <!ELEMENT rule ( description? , priority? , properties? , exclude* , example* ) >
 <!ATTLIST rule name ID #IMPLIED >
+<!ATTLIST rule since CDATA #IMPLIED >
 <!ATTLIST rule ref CDATA #IMPLIED >
 <!ATTLIST rule message CDATA #IMPLIED >
 <!ATTLIST rule externalInfoUrl CDATA #IMPLIED >

@@ -309,6 +309,10 @@ public class RuleSetFactory {
 		Rule rule = (Rule)c.newInstance();
 
 		rule.setName(ruleElement.getAttribute("name"));
+		String since = ruleElement.getAttribute("since");
+		if (since.length() > 0) {
+			rule.setSince(since);
+		}
 		rule.setMessage(ruleElement.getAttribute("message"));
 		rule.setRuleSetName(ruleSet.getName());
 		rule.setExternalInfoUrl(ruleElement.getAttribute("externalInfoUrl"));
