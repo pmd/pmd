@@ -21,10 +21,11 @@ import net.sourceforge.pmd.rules.regex.RegexHelper;
 import org.jaxen.JaxenException;
 
 /**
- * <p>A generic rule that can be configurer to "count" classes of certains
- * types based on either their name (full name, prefix, suffixes anything can
+ * <p>A generic rule that can be configured to "count" classes of certain
+ * type based on either their name (full name, prefix, suffixes anything can
  * be matched with a regex), and/or
  * their type.</p>
+ *
  * <p>Example of configurations:
  * 		<!-- Property order is MANDATORY !!! -->
  * 		<!-- Several regexes may be provided to ensure a match... -->
@@ -119,7 +120,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
      public Object visit(ASTImportDeclaration node, Object data) {
     	 // Is there any imported types that match ?
     	 for (Pattern pattern : this.typesMatch) {
-    		 if ( RegexHelper.isMatch(pattern,node.getImage())) {
+    		 if ( RegexHelper.isMatch(pattern,node.getImportedName())) {
     			 if ( simpleClassname == null )
     				 simpleClassname = new ArrayList<String>(1);
     			 simpleClassname.add(node.getImportedName());
