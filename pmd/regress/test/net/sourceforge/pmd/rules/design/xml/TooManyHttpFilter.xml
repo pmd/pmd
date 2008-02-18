@@ -19,7 +19,7 @@ public class FooFilter implements Filter {
 	// Adding two private filter to emulate the others
 	private class BarFilter implements Filter {}
 
-	private class OneTooMuchFilter() implements Filter {}
+	private class OneTooMuchFilter implements Filter {}
 
 }
      ]]></code>
