@@ -9,6 +9,7 @@ import java.util.Properties;
 /**
  * This is the basic Rule interface for PMD rules.
  */
+//FUTURE Implement Cloneable and clone()
 public interface Rule {
 	// FUTURE Use enum
 	public static final int LOWEST_PRIORITY = 5;

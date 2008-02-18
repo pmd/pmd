@@ -19,6 +19,7 @@ import net.sourceforge.pmd.util.filter.Filters;
  *
  * @see Rule
  */
+//FUTURE Implement Cloneable and clone()
 public class RuleSet {
 
     private List<Rule> rules = new ArrayList<Rule>();
@@ -248,16 +249,24 @@ public class RuleSet {
         return this.includePatterns;
     }
  
-    public void addIncludePattern(String pattern) {
-        this.includePatterns.add(pattern);
+    public void addIncludePattern(String includePattern) {
+        this.includePatterns.add(includePattern);
+    }
+    
+    public void addIncludePatterns(List<String> includePatterns) {
+        this.includePatterns.addAll(includePatterns);
     }
 
     public List<String> getExcludePatterns() {
         return this.excludePatterns;
     }
 
-    public void addExcludePattern(String pattern) {
-        this.excludePatterns.add(pattern);
+    public void addExcludePattern(String excludePattern) {
+        this.excludePatterns.add(excludePattern);
+    }
+
+    public void addExcludePatterns(List<String> excludePatterns) {
+        this.excludePatterns.addAll(excludePatterns);
     }
 
 	public boolean usesTypeResolution() {

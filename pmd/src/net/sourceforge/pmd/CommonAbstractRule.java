@@ -15,6 +15,7 @@ import java.util.Properties;
  */
 // FUTURE Rename to AbstractRule when cleaning up @deprecated
 // FUTURE Move PropertyDescriptor APIs up to Rule interface
+// FUTURE Implement Cloneable and clone()
 public abstract class CommonAbstractRule implements Rule {
 
 	// TODO Remove - Temporary flag during conversion.
