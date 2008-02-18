@@ -265,6 +265,7 @@ public class FooTest extends TestCase {
     </rule>
 
     <rule name="UseAssertNullInsteadOfAssertTrue"
+           since="3.5"
            message="Use assertNull(x) instead of assertTrue(x==null), or assertNotNull(x) vs assertFalse(x==null)"
            class="net.sourceforge.pmd.rules.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UseAssertNullInsteadOfAssertTrue">
@@ -305,6 +306,7 @@ public class FooTest extends TestCase {
      </rule>
 
     <rule name="SimplifyBooleanAssertion"
+       since="3.6"
 	    message="assertTrue(!expr) can be replaced by assertFalse(expr)"
         class="net.sourceforge.pmd.rules.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#SimplifyBooleanAssertion">

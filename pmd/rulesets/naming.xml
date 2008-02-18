@@ -426,6 +426,7 @@ public class SomeClass {
       </rule>
 
     <rule name="MisleadingVariableName"
+          since="3.4"
           message="Avoid naming non-fields with the prefix 'm_'"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#MisleadingVariableName">
@@ -458,6 +459,7 @@ indicates a field and thus is confusing.
     </rule>
 
     <rule name="BooleanGetMethodName"
+        since="4.0"
         message="A 'getX()' method which returns a boolean should be named 'isX()'"
         class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#BooleanGetMethodName">

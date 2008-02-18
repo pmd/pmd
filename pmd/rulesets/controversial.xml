@@ -300,6 +300,7 @@ making them look like a function call.
     </rule>
 
     <rule name="DefaultPackage"
+        since="3.4"
         message="Use explicit scoping instead of the default package private level"
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DefaultPackage">
@@ -323,6 +324,7 @@ or MethodDeclaration[@PackagePrivate='true']
     </rule>
 
     <rule name="BooleanInversion"
+          since="3.5"
           message="Use bitwise inversion to invert boolean values"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#BooleanInversion">
@@ -385,6 +387,7 @@ public class Foo {
         </rule>
 
 	<rule 	name="AvoidFinalLocalVariable"
+	      since="4.1"
         	class="net.sourceforge.pmd.rules.XPathRule"
         	message="Avoid using final local variables, turn them into fields"
         	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidFinalLocalVariable">
@@ -410,6 +413,7 @@ public class MyClass {
 
 	<rule
         name="AvoidUsingShortType"
+        since="4.1"
         message="Do not use the short type"
         class="net.sourceforge.pmd.rules.XPathRule"
     	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUsingShortType">
@@ -447,6 +451,7 @@ public class MyClass {
 
 	<rule
         name="AvoidUsingVolatile"
+        since="4.1"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="Use of modifier volatile is not recommended."
     	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUsingVolatile">
@@ -454,7 +459,7 @@ public class MyClass {
         <description>
             <![CDATA[
 Use of the keyword 'volatile' is general used to fine tune a Java application, and therefore, requires
-a good expertise of the Java Memory Model. Morover, its range of action is somewhat misknown. Therefore,
+a good expertise of the Java Memory Model. Moreover, its range of action is somewhat misknown. Therefore,
 the volatile keyword should not be used for maintenance purpose and portability.
             ]]>
         </description>
@@ -483,6 +488,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 
 	<rule
 		name="AvoidUsingNativeCode"
+		  since="4.1"
         message="The use of native code is not recommended."
         class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUsingNativeCode">
@@ -525,6 +531,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 
 	<rule
 		name="AvoidAccessibilityAlteration"
+		  since="4.1"
         message="You should modify visibility of class or methods using getDeclaredConstructors(), getDeclaredConstructor(Class[]), setAccessible() or PrivilegedAction."
         class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidAccessibilityAlteration">
@@ -603,6 +610,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 		</rule>
 
 		<rule	name="DoNotCallGarbageCollectionExplicitly"
+		      since="4.2"
 	        	message="Do not explicitly trigger a garbage collection."
 	        	class="net.sourceforge.pmd.rules.XPathRule"
 	        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DoNotCallGarbageCollectionExplicitly">

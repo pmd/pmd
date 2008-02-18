@@ -87,6 +87,7 @@ public class Foo {}
      </rule>
 
 	<rule	name="TooManyStaticImports"
+	      since="4.1"
         	class="net.sourceforge.pmd.rules.XPathRule"
         	message="Too many static imports may lead to messy code"
        		externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#TooManyStaticImports">

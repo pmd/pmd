@@ -177,6 +177,7 @@ public class Foo {
     </rule>
 
   <rule name="AvoidRethrowingException"
+    since="3.8"
     message="A catch statement that catches an exception only to rethrow it should be avoided."
     class="net.sourceforge.pmd.rules.XPathRule"
     externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidRethrowingException">
@@ -212,6 +213,7 @@ public class Foo {
 
   <rule
     name="DoNotExtendJavaLangError"
+    since="4.0"
     message="Exceptions should not extend java.lang.Error"
     class="net.sourceforge.pmd.rules.XPathRule"
     externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#DoNotExtendJavaLangError">
@@ -237,6 +239,7 @@ public class Foo {
   </rule>
 
 	<rule	name="DoNotThrowExceptionInFinally"
+	       since="4.2"
 		    message="A throw statement in a finally block makes the control flow hard to understand."
 		    class="net.sourceforge.pmd.rules.XPathRule"
 		    externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#DoNotExtendJavaLangError">

@@ -120,6 +120,7 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
      </rule>
 
     <rule name="UseStringBufferLength"
+          since="3.4"
           message="This is an inefficient use of StringBuffer.toString; call StringBuffer.length instead."
           class="net.sourceforge.pmd.rules.strings.UseStringBufferLength"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseStringBufferLength">
@@ -146,6 +147,7 @@ public class Foo {
 
 
     <rule name="AppendCharacterWithChar"
+        since="3.5"
         message="Avoid appending characters as strings in StringBuffer.append."
         class="net.sourceforge.pmd.rules.strings.AppendCharacterWithChar"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AppendCharacterWithChar">
@@ -171,6 +173,7 @@ public class Foo {
     </rule>
 
         <rule name="ConsecutiveLiteralAppends"
+        since="3.5"
         message="StringBuffer.append is called {0} consecutive times with literal Strings. Use a single append with a single String."
         class="net.sourceforge.pmd.rules.strings.ConsecutiveLiteralAppends"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#ConsecutiveLiteralAppends">
@@ -196,6 +199,7 @@ public class Foo {
 
 
     <rule name="UseIndexOfChar"
+        since="3.5"
         message="String.indexOf(char) is faster than String.indexOf(String)."
         class="net.sourceforge.pmd.rules.strings.UseIndexOfChar"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseIndexOfChar">
@@ -219,6 +223,7 @@ public class Foo {
     </rule>
 
     <rule name="InefficientEmptyStringCheck"
+        since="3.6"
         message="String.trim().length()==0 is an inefficient way to validate an empty String."
         class="net.sourceforge.pmd.rules.strings.InefficientEmptyStringCheck"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InefficientEmptyStringCheck">
@@ -243,6 +248,7 @@ public class Foo {
     </rule>
 
     <rule name="InsufficientStringBufferDeclaration"
+        since="3.6"
         message="StringBuffer constructor is initialized with size {0}, but has at least {1} characters appended."
         class="net.sourceforge.pmd.rules.strings.InsufficientStringBufferDeclaration"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InsufficientStringBufferDeclaration">
@@ -269,6 +275,7 @@ public class Foo {
     </rule>
 
     <rule name="UselessStringValueOf"
+          since="3.8"
           message="No need to call String.valueOf to append to a string."
           class="net.sourceforge.pmd.rules.strings.UselessStringValueOf"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UselessStringValueOf">
@@ -290,6 +297,7 @@ public String convert(int i) {
 
 
 <rule   name="StringBufferInstantiationWithChar"
+        since="3.9"
         message="Do not instantiate a StringBuffer with a char"
         class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringBufferInstantiationWithChar">
@@ -325,6 +333,7 @@ class Foo {
     </rule>
 
 <rule   name="UseEqualsToCompareStrings"
+        since="4.1"
         message="Use equals() to compare strings instead of ''=='' or ''!=''"
         class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseEqualsToCompareStrings">
@@ -359,6 +368,7 @@ class Foo {
     </rule>
 
 	<rule   name="AvoidStringBufferField"
+	      since="4.2"
         	message="StringBuffers can grow quite a lot, and so may become a source of memory leak (if the owning class has a long life time)."
         	class="net.sourceforge.pmd.rules.XPathRule"
         	externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AvoidStringBufferField">

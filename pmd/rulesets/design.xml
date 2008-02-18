@@ -1134,6 +1134,7 @@ Avoid unnecessarily creating local variables
     </rule>
 
     <rule name="NonThreadSafeSingleton"
+    since="3.4"
     message="Singleton is not thread safe"
     class="net.sourceforge.pmd.rules.design.NonThreadSafeSingleton"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#NonThreadSafeSingleton">
@@ -1172,6 +1173,7 @@ public static Foo getFoo() {
 
 
     <rule name="UncommentedEmptyMethod"
+          since="3.4"
           message="Document empty method"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UncommentedEmptyMethod">
@@ -1200,6 +1202,7 @@ public void doSomething() {
     </rule>
 
     <rule name="UncommentedEmptyConstructor"
+          since="3.4"
           message="Document empty constructor"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UncommentedEmptyConstructor">
@@ -1232,6 +1235,7 @@ public Foo() {
     </rule>
 
 <rule name="AvoidConstantsInterface"
+      since="3.5"
       message="An Interface should be used only to model a behaviour; consider converting this to a class."
       class="net.sourceforge.pmd.rules.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidConstantsInterface">
@@ -1265,6 +1269,7 @@ public Foo() {
     </rule>
 
   <rule name="UnsynchronizedStaticDateFormatter"
+      since="3.6"
       message="Static DateFormatter objects should be accessed in a synchronized manner"
       class="net.sourceforge.pmd.rules.design.UnsynchronizedStaticDateFormatter"
       externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnsynchronizedStaticDateFormatter">
@@ -1290,6 +1295,7 @@ public class Foo {
     </rule>
 
   <rule name="PreserveStackTrace"
+      since="3.7"
       message="Caught exception is rethrown, original stack trace may be lost"
       class="net.sourceforge.pmd.rules.design.PreserveStackTrace"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PreserveStackTrace">
@@ -1322,6 +1328,7 @@ public class Foo {
     </rule>
 
     <rule name="UseCollectionIsEmpty"
+         since="3.9"
          message="Substitute calls to size() == 0 (or size() != 0) with calls to isEmpty()"
          class="net.sourceforge.pmd.rules.design.UseCollectionIsEmpty"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseCollectionIsEmpty">
@@ -1352,6 +1359,7 @@ Comparing the value of size() to 0 merely duplicates existing behavior.
     </rule>
 
     <rule name="ClassWithOnlyPrivateConstructorsShouldBeFinal"
+          since="4.1"
           class="net.sourceforge.pmd.rules.XPathRule"
           message="A class which only has private constructors should be final"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ClassWithOnlyPrivateConstructorsShouldBeFinal">
@@ -1380,6 +1388,7 @@ public class Foo {  //Should be final
 
 
     <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
+          since="4.1"
           class="net.sourceforge.pmd.rules.XPathRule"
           message="An empty method in an abstract class should be abstract instead"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#which only has private constructors">
@@ -1430,6 +1439,7 @@ rather than code the appropriate one.
     </rule>
 
     <rule name="SingularField"
+          since="4.1"
           message="Perhaps ''{0}'' could be replaced by a local variable."
           class="net.sourceforge.pmd.rules.design.SingularField"
       	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SingularField">
@@ -1461,6 +1471,7 @@ public class Foo {
     </rule>
 
     <rule	name="ReturnEmptyArrayRatherThanNull"
+         since="4.2"
         	class="net.sourceforge.pmd.rules.XPathRule"
         	message="Return an empty array rather than 'null'."
         	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#ReturnEmptyArrayRatherThanNull">
@@ -1507,6 +1518,7 @@ public class Foo {
     </rule>
 
     <rule	name="AbstractClassWithoutAnyMethod"
+         since="4.2"
         	class="net.sourceforge.pmd.rules.XPathRule"
         	message="No abstract method which means that the  keyword is most likely used to prevent instantiation. use a private or protected constructor instead."
         	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AbstractClassWithoutAnyMethod">
@@ -1541,6 +1553,7 @@ public class abstract Example {
     </rule>
 
         <rule	name="TooFewBranchesForASwitchStatement"
+            since="4.2"
 	        	class="net.sourceforge.pmd.rules.XPathRule"
 	        	message="A switch with less than 3 branches is inefficient, use a if statement instead."
 	        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#TooFewBranchesForASwitchStatement">
@@ -1575,6 +1588,7 @@ public class abstract Example {
     </rule>
 <!--
 	<rule 	name="TooManyHttpFilter"
+	         since="4.2"
           	message="Too many Http Filter inside a web application can make very it complex to understand and to deploy."
           	class="net.sourceforge.pmd.rules.design.GenericClassCounterRule"
       		externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#TooManyHttpFilter">

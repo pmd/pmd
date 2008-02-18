@@ -161,6 +161,7 @@ public class Foo {
         </rule>
 
   <rule name="UseArraysAsList"
+     since="3.5"
      message="Use asList instead of tight loops"
       class="net.sourceforge.pmd.rules.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseArraysAsList">
@@ -225,6 +226,7 @@ public class Foo {
 
 
     <rule name="AvoidArrayLoops"
+      since="3.5"
       message="System.arraycopy is more efficient"
       class="net.sourceforge.pmd.rules.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#AvoidArrayLoops">
@@ -280,6 +282,7 @@ public class Test {
     </rule>
 
     <rule name="UnnecessaryWrapperObjectCreation"
+          since="3.8"
           message="Unnecessary wrapper object creation"
           class="net.sourceforge.pmd.rules.optimization.UnnecessaryWrapperObjectCreation"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UnnecessaryWrapperObjectCreation">
@@ -305,6 +308,7 @@ public int convert(String s) {
     </rule>
 
     <rule name="AddEmptyString"
+        since="4.0"
         message="Do not add empty strings"
         class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#AddEmptyString">

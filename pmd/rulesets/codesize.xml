@@ -11,6 +11,7 @@ The Code Size Ruleset contains a collection of rules that find code size related
   </description>
 
 <rule name="NPathComplexity"
+      since="3.9"
       message="The method {0}() has an NPath complexity of {1}"
       class="net.sourceforge.pmd.rules.design.NpathComplexity"
       externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NPathComplexity">
@@ -232,6 +233,7 @@ public class Person {
     </rule>
 
 <rule name="NcssMethodCount" message="The method {0}() has an NCSS line count of {1}"
+   since="3.9"
    class="net.sourceforge.pmd.rules.codesize.NcssMethodCount"
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssMethodCount">
     <description>
@@ -262,6 +264,7 @@ public class Foo extends Bar {
    </rule>
 
 <rule name="NcssTypeCount" message="The type has an NCSS line count of {0}"
+   since="3.9"
    class="net.sourceforge.pmd.rules.codesize.NcssTypeCount"
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssTypeCount">
     <description>
@@ -291,6 +294,7 @@ public class Foo extends Bar {
    </example></rule>
 
 <rule name="NcssConstructorCount" message="The constructor with {0} parameters has an NCSS line count of {1}"
+   since="3.9"
    class="net.sourceforge.pmd.rules.codesize.NcssConstructorCount"
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssConstructorCount">
     <description>
@@ -322,6 +326,7 @@ public class Foo extends Bar {
 
     <rule
         name="TooManyMethods"
+        since="4.2"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="This class has too many methods, consider refactoring it."
         externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#TooManyMethods">

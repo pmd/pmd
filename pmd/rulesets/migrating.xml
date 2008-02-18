@@ -12,6 +12,7 @@ Contains rules about migrating from one JDK version to another.  Don't use these
   </description>
 
 <rule name="ReplaceVectorWithList"
+  since="3.4"
   message="Consider replacing this Vector with the newer java.util.List"
   class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ReplaceVectorWithList">
@@ -40,6 +41,7 @@ public class Foo {
 </rule>
 
     <rule name="ReplaceHashtableWithMap"
+      since="3.4"
       message="Consider replacing this Hashtable with the newer java.util.Map"
       class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ReplaceHashtableWithMap">
@@ -68,6 +70,7 @@ public class Foo {
     </rule>
 
     <rule name="ReplaceEnumerationWithIterator"
+      since="3.4"
       message="Consider replacing this Enumeration with the newer java.util.Iterator"
       class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ReplaceEnumerationWithIterator">
@@ -100,6 +103,7 @@ public class Foo implements Enumeration {
     </rule>
 
     <rule name="AvoidEnumAsIdentifier"
+          since="3.4"
           message="Avoid using enum as an identifier; it's a reserved word in JDK 1.5"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#AvoidEnumAsIdentifier">
@@ -126,6 +130,7 @@ public class Foo implements Enumeration {
     </rule>
 
     <rule name="AvoidAssertAsIdentifier"
+          since="3.4"
           message="Avoid using assert as an identifier; it's a reserved word in JDK 1.4"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#AvoidAssertAsIdentifier">
@@ -152,6 +157,7 @@ public class Foo implements Enumeration {
     </rule>
 
     <rule name="IntegerInstantiation"
+          since="3.5"
           message="Avoid instantiating Integer objects. Call Integer.valueOf() instead."
 	  class="net.sourceforge.pmd.rules.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#IntegerInstantiation">
@@ -179,6 +185,7 @@ public class Foo {
       </example>
     </rule>
 	<rule name="ByteInstantiation"
+	       since="4.0"
           message="Avoid instantiating Byte objects. Call Byte.valueOf() instead"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ByteInstantiation">
@@ -209,6 +216,7 @@ Byte.valueOf(0);
 </rule>
 
     <rule name="ShortInstantiation"
+          since="4.0"
           message="Avoid instantiating Short objects. Call Short.valueOf() instead"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#ShortInstantiation">
@@ -239,6 +247,7 @@ Short.valueOf(0);
 </rule>
 
 <rule name="LongInstantiation"
+   since="4.0"
 	message="Avoid instantiating Long objects.Call Long.valueOf() instead"
     class="net.sourceforge.pmd.rules.XPathRule"
 	externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#LongInstantiation">
@@ -269,6 +278,7 @@ Long.valueOf(0);
 
 
     <rule name="JUnit4TestShouldUseBeforeAnnotation"
+          since="4.0"
           message="JUnit 4 tests that set up tests should use the @Before annotation"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#JUnit4TestShouldUseBeforeAnnotation">
@@ -303,6 +313,7 @@ public class MyTest2 {
       </example>
     </rule>
     <rule name="JUnit4TestShouldUseAfterAnnotation"
+          since="4.0"
           message="JUnit 4 tests that clean up tests should use the @After annotation"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#JUnit4TestShouldUseAfterAnnotation">
@@ -337,6 +348,7 @@ public class MyTest2 {
       </example>
     </rule>
     <rule name="JUnit4TestShouldUseTestAnnotation"
+          since="4.0"
           message="JUnit 4 tests that execute tests should use the @Test annotation"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#JUnit4TestShouldUseTestAnnotation">
@@ -371,6 +383,7 @@ public class MyTest {
       </example>
     </rule>
     <rule name="JUnit4SuitesShouldUseSuiteAnnotation"
+          since="4.0"
           message="JUnit 4 indicates test suites via annotations, not the suite method."
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#JUnit4SuitesShouldUseSuiteAnnotation">
@@ -407,6 +420,7 @@ public class GoodTest {
     </rule>
     
     <rule name="JUnitUseExpected"
+          since="4.0"
           message="In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions"
           class="net.sourceforge.pmd.rules.migration.JUnitUseExpected"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#JUnitUseExpected">

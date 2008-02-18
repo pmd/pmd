@@ -11,6 +11,7 @@
   </description>
 
   <rule name="UseProperClassLoader"
+   since="3.7"
    message="In J2EE, getClassLoader() might not work as expected.  Use Thread.currentThread().getContextClassLoader() instead."
    class="net.sourceforge.pmd.rules.XPathRule"
    externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#UseProperClassLoader">
@@ -38,6 +39,7 @@ public class Foo {
 
     <rule
         name="MDBAndSessionBeanNamingConvention"
+        since="4.0"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="SessionBean or MessageBean should be suffixed by Bean"
         externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#MDBAndSessionBeanNamingConvention">
@@ -80,6 +82,7 @@ public class Foo {
 
     <rule
         name="RemoteSessionInterfaceNamingConvention"
+        since="4.0"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="Remote Home interface of a Session EJB should be suffixed by 'Home'"
         externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#RemoteSessionInterfaceNamingConvention">
@@ -122,6 +125,7 @@ public class Foo {
 
     <rule
         name="LocalInterfaceSessionNamingConvention"
+        since="4.0"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="The Local Interface of a Session EJB should be suffixed by 'Local'"
         externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#LocalInterfaceSessionNamingConvention">
@@ -164,6 +168,7 @@ public class Foo {
 
     <rule
         name="LocalHomeNamingConvention"
+        since="4.0"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="The Local Home interface of a Session EJB should be suffixed by 'LocalHome'"
         externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#LocalHomeNamingConvention">
@@ -206,6 +211,7 @@ public class Foo {
 
     <rule
         name="RemoteInterfaceNamingConvention"
+        since="4.0"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="Remote Interface of a Session EJB should NOT be suffixed"
         externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#RemoteInterfaceNamingConvention">
@@ -256,6 +262,7 @@ public class Foo {
     </rule>
 
     <rule name="DoNotCallSystemExit"
+      since="4.1"
     	message="System.exit() should not be used in J2EE/JEE apps"
     	class="net.sourceforge.pmd.rules.XPathRule"
     	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#DoNotCallSystemExit">
@@ -283,6 +290,7 @@ public class Foo {
     </rule>
 
     <rule name="StaticEJBFieldShouldBeFinal"
+      since="4.1"
     	message="EJB's shouldn't have non-final static fields"
     	class="net.sourceforge.pmd.rules.XPathRule"
     	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#StaticEJBFieldShouldBeFinal">
@@ -328,6 +336,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
 
 	<rule
         name="DoNotUseThreads"
+        since="4.1"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="To be compliant to J2EE, a webapp should not use any thread."
     	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#NoThreadInJ2EEContainer">

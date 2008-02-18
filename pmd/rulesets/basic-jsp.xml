@@ -10,6 +10,7 @@
 	<description>Rules concerning basic JSP guidelines.</description>
 	
 	<rule name="NoLongScripts"
+	   since="3.6"
 		message="Avoid having long scripts (e.g. Javascript) inside a JSP file."
 		class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoLongScripts">
@@ -53,6 +54,7 @@ onload=calcDays;
 	</rule>
 	
 	<rule name="NoScriptlets"
+	     since="3.6"
         message="Avoid having scriptlets inside a JSP file."
 		class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoScriptlets">
@@ -87,6 +89,7 @@ response.setHeader("Pragma", "No-cache");
 	</rule>
 	
 	<rule name="NoInlineStyleInformation"
+	     since="3.6"
         message="Avoid having style information in JSP files."
 		class="net.sourceforge.pmd.jsp.rules.NoInlineStyleInformation"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoInlineStyleInformation">
@@ -102,6 +105,7 @@ response.setHeader("Pragma", "No-cache");
 	
 	
 	<rule name="NoClassAttribute"
+	   since="3.6"
 		message="Do not use an attribute called 'class'."
 		class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoClassAttribute">
@@ -125,6 +129,7 @@ response.setHeader("Pragma", "No-cache");
 	</rule>
 	
 	<rule name="NoJspForward"
+	   since="3.6"
 		message="Do not do a forward from within a JSP file."
 		class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoJspForward">
@@ -146,6 +151,7 @@ response.setHeader("Pragma", "No-cache");
 	</rule>
 
 	<rule name="IframeMissingSrcAttribute"
+	   since="3.6"
 		message="IFrames must have a src attribute."
 		class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#IframeMissingSrcAttribute">
@@ -177,6 +183,7 @@ response.setHeader("Pragma", "No-cache");
 	</rule>
 
 	<rule name="NoHtmlComments"
+	   since="3.6"
 		message="Use JSP comments instead of HTML comments"
 		class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoHtmlComments">
@@ -209,6 +216,7 @@ response.setHeader("Pragma", "No-cache");
 	</rule>
 	
 	<rule name="DuplicateJspImports"
+	     since="3.7"
         message="Avoid duplicate imports such as ''{0}''"
 		class="net.sourceforge.pmd.jsp.rules.DuplicateJspImports"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#DuplicateJspImports">

@@ -661,6 +661,7 @@ public String foo() {
     </rule>
 
  <rule name="ClassCastExceptionWithToArray"
+       since="3.4"
        message="This usage of the Collection.toArray() method will throw a ClassCastException."
        class="net.sourceforge.pmd.rules.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ClassCastExceptionWithToArray">
@@ -714,6 +715,7 @@ if executed)
 
 
 <rule  name="AvoidDecimalLiteralsInBigDecimalConstructor"
+       since="3.4"
        message="Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal"
        class="net.sourceforge.pmd.rules.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor">
@@ -766,6 +768,7 @@ public class Test {
 
 
     <rule  name="UselessOperationOnImmutable"
+           since="3.5"
            message="An operation on an Immutable object (BigDecimal or BigInteger) won't change the object itself"
            class="net.sourceforge.pmd.rules.UselessOperationOnImmutable"
            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOperationOnImmutable">
@@ -792,6 +795,7 @@ class Test {
     </rule>
 
     <rule  name="MisplacedNullCheck"
+           since="3.5"
            message="The null check here is misplaced; if the variable is null there'll be a NullPointerException"
            class="net.sourceforge.pmd.rules.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#MisplacedNullCheck">
@@ -836,6 +840,7 @@ public class Foo {
     </rule>
 
     <rule name="UnusedNullCheckInEquals"
+        since="3.5"
         message="Invoke equals() on the object you''ve already ensured is not null"
         class="net.sourceforge.pmd.rules.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnusedNullCheckInEquals">
@@ -907,6 +912,7 @@ if (method1().equals(a)) {
 
 
     <rule  name="AvoidThreadGroup"
+      since="3.6"
       message="Avoid using ThreadGroup; it is not thread safe"
       class="net.sourceforge.pmd.rules.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
@@ -940,6 +946,7 @@ Avoid using ThreadGroup; although it is intended to be used in a threaded enviro
     </rule>
 
     <rule name="BrokenNullCheck"
+          since="3.8"
           message="Method call on object which may be null"
           class="net.sourceforge.pmd.rules.basic.BrokenNullCheck"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BrokenNullCheck">
@@ -965,6 +972,7 @@ class Foo {
     </rule>
 
 <rule name="BigIntegerInstantiation"
+  since="3.9"
   message="Don't create instances of already existing
 BigInteger and BigDecimal (ZERO, ONE, TEN)"
   class="net.sourceforge.pmd.rules.basic.BigIntegerInstantiation"
@@ -993,6 +1001,7 @@ public class Test {
 </rule>
 
     <rule   name="AvoidUsingOctalValues"
+            since="3.9"
             message="Do not start a literal by 0 unless it's an octal value"
             class="net.sourceforge.pmd.rules.basic.AvoidUsingOctalValues"
             externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingOctalValues">
@@ -1015,6 +1024,7 @@ public class Test {
     </rule>
 
     <rule   name="AvoidUsingHardCodedIP"
+            since="4.1"
             message="Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !"
             class="net.sourceforge.pmd.rules.basic.AvoidUsingHardCodedIP"
             externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP">
@@ -1039,6 +1049,7 @@ public class Test {
 
   <rule
         name="CheckResultSet"
+        since="4.1"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet."
         externalInfoUrl="http://refdoc.venezia.dev.impots/multiproject/pmdSODA/chapters/chapitre-11.1-jdbc.html#_JDBC-RS_">
