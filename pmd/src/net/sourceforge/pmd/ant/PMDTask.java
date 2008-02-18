@@ -13,8 +13,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sourceforge.pmd.DataSource;
 import net.sourceforge.pmd.FileDataSource;
@@ -30,6 +30,7 @@ import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.ScopedLogHandlersManager;
 import net.sourceforge.pmd.util.AntLogHandler;
 
 import org.apache.tools.ant.AntClassLoader;
@@ -123,17 +124,9 @@ public class PMDTask extends Task {
 
     public void setClasspathRef(Reference r) {
         createLongClasspath().setRefid(r);
-    }
-
-    public void execute() throws BuildException {
-        validate();
-
-        //Some magic to enable Ant logging for code that uses a Logger
-        Logger rootLogger = Logger.getLogger("");
-        rootLogger.setLevel(Level.FINEST);   //The Ant logger filters itself
-        rootLogger.removeHandler(rootLogger.getHandlers()[0]);
-        rootLogger.addHandler(new AntLogHandler(this));
-        
+    }    
+    
+    private void doTask(){
         ruleSetFiles = new SimpleRuleSetNameMapper(ruleSetFiles).getRuleSets();
 
         RuleSetFactory ruleSetFactory = new RuleSetFactory() {
@@ -212,7 +205,7 @@ public class PMDTask extends Task {
                 public void startFileAnalysis(DataSource dataSource) {
                     log("Processing file " + dataSource.getNiceFileName(false, inputPath), Project.MSG_VERBOSE);
                 }
-                
+
                 public void renderFileReport(Report r) {
                     int size = r.size();
                     if (size > 0) {
@@ -267,6 +260,17 @@ public class PMDTask extends Task {
 
         if (failOnRuleViolation && problemCount > 0) {
             throw new BuildException("Stopping build since PMD found " + problemCount + " rule violations in the code");
+        }
+    }
+    
+    public void execute() throws BuildException {
+        validate();
+        final Handler antLogHandler = new AntLogHandler(this);
+        final ScopedLogHandlersManager logManager = new ScopedLogHandlersManager(Level.FINEST,antLogHandler);
+        try{
+            doTask();
+        }finally{
+            logManager.close();
         }
     }
 

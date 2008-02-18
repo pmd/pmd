@@ -28,6 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -238,13 +239,8 @@ public class PMD {
     public void setJavaVersion(SourceType javaVersion) {
         sourceTypeDiscoverer.setSourceTypeOfJavaFiles(javaVersion);
     }
-
-    public static void main(String[] args) {
-        long start = System.nanoTime();
-        CommandLineOptions opts = new CommandLineOptions(args);
-
-        initializeLogger(opts.debugEnabled());
-        
+    
+    private static void doPMD(CommandLineOptions opts){
         long startFiles = System.nanoTime();
         SourceFileSelector fileSelector = new SourceFileSelector();
 
@@ -350,25 +346,27 @@ public class PMD {
             reportEnd = System.nanoTime();
             Benchmark.mark(Benchmark.TYPE_REPORTING, reportEnd - reportStart, 0);
         }
-        
-        if (opts.benchmark()) {
-            long end = System.nanoTime();
-            Benchmark.mark(Benchmark.TYPE_TOTAL_PMD, end - start, 0);
-            System.err.println(Benchmark.report());
-        }
     }
 
-    private static void initializeLogger(boolean debugEnabled) {
-        Logger rootLogger = Logger.getLogger("");
-        rootLogger.removeHandler(rootLogger.getHandlers()[0]);
-        rootLogger.addHandler(new ConsoleLogHandler());
-        if (debugEnabled) {
-            rootLogger.setLevel(Level.FINER);
-            LOG.setLevel(Level.FINER);              //Need to do this, since the static logger has already been initialized at this point
-        } else {
-            //Info-level and up is normally logged, which matches Ant logging
-            rootLogger.setLevel(Level.INFO);
-            LOG.setLevel(Level.INFO);
+    public static void main(String[] args) {
+        long start = System.nanoTime();
+        final CommandLineOptions opts = new CommandLineOptions(args);
+
+        final Level logLevel = opts.debugEnabled() ? Level.FINER : Level.INFO;
+        final Handler logHandler = new ConsoleLogHandler();
+        final ScopedLogHandlersManager logHandlerManager = new ScopedLogHandlersManager(logLevel, logHandler);
+        final Level oldLogLevel = LOG.getLevel();
+        LOG.setLevel(logLevel); //Need to do this, since the static logger has already been initialized at this point
+        try{
+            doPMD(opts);
+        }finally{
+            logHandlerManager.close();
+            LOG.setLevel(oldLogLevel);
+            if (opts.benchmark()) {
+                long end = System.nanoTime();
+                Benchmark.mark(Benchmark.TYPE_TOTAL_PMD, end - start, 0);
+                System.err.println(Benchmark.report());
+            }
         }
     }
 
