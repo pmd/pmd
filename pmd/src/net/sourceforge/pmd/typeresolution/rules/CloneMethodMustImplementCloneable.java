@@ -6,7 +6,7 @@ package net.sourceforge.pmd.typeresolution.rules;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
@@ -27,9 +27,10 @@ import net.sourceforge.pmd.ast.SimpleNode;
  * 
  * @author acaplan
  */
-public class CloneMethodMustImplementCloneable extends AbstractRule {
+public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
 
-    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    @SuppressWarnings("unchecked")
+	public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         ASTImplementsList impl = node.getFirstChildOfType(ASTImplementsList.class);
         if (impl != null && impl.jjtGetParent().equals(node)) {
             for (int ix = 0; ix < impl.jjtGetNumChildren(); ix++) {

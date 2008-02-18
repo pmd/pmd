@@ -6,7 +6,7 @@ package net.sourceforge.pmd.typeresolution.rules;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
@@ -32,7 +32,7 @@ import net.sourceforge.pmd.properties.BooleanProperty;
  * @author acaplan
  * @author Wouter Zelle
  */
-public class SignatureDeclareThrowsException extends AbstractRule {
+public class SignatureDeclareThrowsException extends AbstractJavaRule {
     private static final PropertyDescriptor ignoreJUnitCompletelyDescriptor = new BooleanProperty("IgnoreJUnitCompletely",
         "If true, all methods in a JUnit testcase may throw Exception", false, 1.0f);
     

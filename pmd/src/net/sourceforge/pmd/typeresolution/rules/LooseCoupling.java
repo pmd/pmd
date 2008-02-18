@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.typeresolution.rules;
 
-import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
@@ -14,7 +14,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * This is a separate rule, uses the type resolution facade
  */
-public class LooseCoupling extends AbstractRule {
+public class LooseCoupling extends AbstractJavaRule {
 
 	public LooseCoupling() {
 		super();
