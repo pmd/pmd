@@ -49,7 +49,7 @@ public class RegexHelper {
 	 * @return
 	 */
  	public static boolean isMatch(Pattern pattern,String subject) {
- 		if ( subject != null && "".equals(subject) ) {
+ 		if ( subject != null && ! "".equals(subject) ) {
 	        Matcher matcher = pattern.matcher(subject);
 	        if (matcher.find()) {
 	            return true;
