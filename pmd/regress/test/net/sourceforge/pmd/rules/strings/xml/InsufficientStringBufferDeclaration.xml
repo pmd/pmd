@@ -592,6 +592,20 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
+35, Append of 'null' literal.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  sb.append((String)null);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
 Initialization with multiply - bug 1743938 
      ]]></description>
         <expected-problems>0</expected-problems>
