@@ -24,8 +24,8 @@ public class ScopedLogHandlersManager {
 
     public ScopedLogHandlersManager(Level level, Handler... handlers) {
         newHandlers = handlers;
-        oldHandlers = logger.getHandlers();
         logger = Logger.getLogger(PACKAGE_NAME);
+        oldHandlers = logger.getHandlers();
         oldLogLevel = logger.getLevel();
         logger.setLevel(level);
         //The Ant logger filters itself

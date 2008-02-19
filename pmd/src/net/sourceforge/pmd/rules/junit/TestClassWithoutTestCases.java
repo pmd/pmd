@@ -3,32 +3,31 @@
  */
 package net.sourceforge.pmd.rules.junit;
 
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-
 import java.util.Iterator;
 import java.util.List;
 
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+
 public class TestClassWithoutTestCases extends AbstractJUnitRule {
-    
+
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isAbstract() || node.isInterface() || node.isNested()) {
             return data;
         }
-                	
+
         List<ASTMethodDeclaration> m = node.findChildrenOfType(ASTMethodDeclaration.class);
         boolean testsFound = false;
-                        
+
         if (m != null) {
         	for (Iterator<ASTMethodDeclaration> it = m.iterator(); it.hasNext() && !testsFound;) {
         		ASTMethodDeclaration md = it.next();
         		if (!isInInnerClassOrInterface(md)
-        				&& isJUnitMethod(md, data)) 
+        				&& isJUnitMethod(md, data))
                         	testsFound = true;
-            }	
+            }
         }
-        
+
         if (!testsFound) {
         	addViolation(data, node);
         }

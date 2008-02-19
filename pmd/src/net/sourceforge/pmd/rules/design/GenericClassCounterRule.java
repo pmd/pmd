@@ -69,6 +69,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 	private List<String> simpleClassname = new ArrayList<String>(0);
 
 
+	@SuppressWarnings("PMD") // When the rule is finished, this field will be used.
 	private String operand;
 	private int threshold;
 

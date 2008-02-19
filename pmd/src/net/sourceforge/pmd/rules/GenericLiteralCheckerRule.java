@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.rules;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.AbstractJavaRule;
