@@ -8,10 +8,11 @@ public class BasicRulesTest extends SimpleAggregatorTst {
 
     @Before
     public void setUp() {
+        addRule("basic", "AvoidDecimalLiteralsInBigDecimalConstructor");
+    	addRule("basic", "AvoidMultipleUnaryOperators");
         addRule("basic", "AvoidThreadGroup");
         addRule("basic", "AvoidUsingHardCodedIP");
         addRule("basic", "AvoidUsingOctalValues");
-        addRule("basic", "AvoidDecimalLiteralsInBigDecimalConstructor");
         addRule("basic", "BigIntegerInstantiation");
         addRule("basic", "BooleanInstantiation");
         addRule("basic", "BrokenNullCheck");

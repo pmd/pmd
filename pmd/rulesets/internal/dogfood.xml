@@ -10,6 +10,8 @@
 Rules to check PMD itself
   </description>
 
+    <rule ref="rulesets/basic.xml/AvoidMultipleUnaryOperators"/>
+  
     <rule ref="rulesets/basic.xml/UselessOverridingMethod"/>
    
     <rule ref="rulesets/basic.xml/BooleanInstantiation"/>

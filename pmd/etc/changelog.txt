@@ -13,6 +13,7 @@ Fixed bug 1842505 - XML output incorrect for inner classes
 Fixed other false positives in EmptyMethodInAbstractClassShouldBeAbstract
 
 New rules:
+	Basic ruleset: AvoidMultipleUnaryOperators
 	Controversial ruleset: DoNotCallGarbageCollectionExplicitly
 	Design ruleset : ReturnEmptyArrayRatherThanNull,TooFewBranchesForASwitchStatement,AbstractClassWithoutAnyMethod
 	Codesize : TooManyMethods

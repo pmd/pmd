@@ -31,6 +31,7 @@
 		<x:expr select="@name"/>
 	</j:set>
 	<subsection name="${rulename}">
+		<p>Since: PMD <x:expr select="@since"/></p>
 		<p><x:expr select="./description"/></p>
 		<j:set trim="true" var="isxpath">
             <x:expr select="count(properties/property[@name='xpath'])"/>
