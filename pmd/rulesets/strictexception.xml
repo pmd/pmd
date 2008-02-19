@@ -10,6 +10,7 @@ These rules provide some strict guidelines about throwing and catching exception
   </description>
 
    <rule name="AvoidCatchingThrowable"
+   		since="1.2"
          message="A catch statement should never catch throwable since it includes errors."
           class="net.sourceforge.pmd.rules.strictexception.AvoidCatchingThrowable"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidCatchingThrowable">
@@ -33,6 +34,7 @@ public class Foo {
     </rule>
 
    <rule name="SignatureDeclareThrowsException"
+   		since="1.2"
          message="A method/constructor shouldn't explicitly throw java.lang.Exception"
           class="net.sourceforge.pmd.rules.strictexception.ExceptionSignatureDeclaration"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#SignatureDeclareThrowsException">
@@ -51,6 +53,7 @@ public void methodThrowingException() throws Exception {
     </rule>
 
     <rule name="ExceptionAsFlowControl"
+    		 since="1.8"
           message="Avoid using exceptions as flow control."
           class="net.sourceforge.pmd.rules.design.ExceptionAsFlowControl"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#ExceptionAsFlowControl">
@@ -78,6 +81,7 @@ public class Foo {
     </rule>
 
 <rule name="AvoidCatchingNPE"
+	 since="1.8"
     message="Avoid catching NullPointerException; consider removing the cause of the NPE."
     class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidCatchingNPE">
@@ -109,6 +113,7 @@ public class Foo {
   </rule>
 
   <rule name="AvoidThrowingRawExceptionTypes"
+      since="1.8"
       message="Avoid throwing raw exception types."
       class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidThrowingRawExceptionTypes">
@@ -147,6 +152,7 @@ public void bar() throws Exception {
   </rule>
 
     <rule name="AvoidThrowingNullPointerException"
+    	  since="1.8"
         message="Avoid throwing null pointer exceptions."
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidThrowingNullPointerException">

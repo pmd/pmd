@@ -11,6 +11,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
 
 
     <rule name="EmptyCatchBlock"
+    		 since="0.1"
           message="Avoid empty catch blocks"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
@@ -50,6 +51,7 @@ public void doSomething() {
     </rule>
 
     <rule name="EmptyIfStmt"
+    		 since="0.1"
           message="Avoid empty 'if' statements"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt">
@@ -82,6 +84,7 @@ public class Foo {
 
 
     <rule name="EmptyWhileStmt"
+    		 since="0.2"
           message="Avoid empty 'while' statements"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
@@ -115,6 +118,7 @@ public class Foo {
 
 
     <rule name="EmptyTryBlock"
+    		 since="0.4"
           message="Avoid empty try blocks"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyTryBlock">
@@ -146,6 +150,7 @@ public class Foo {
     </rule>
 
     <rule name="EmptyFinallyBlock"
+    		 since="0.4"
           message="Avoid empty finally blocks"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyFinallyBlock">
@@ -179,6 +184,7 @@ public class Foo {
 
 
     <rule name="EmptySwitchStatements"
+    		 since="1.0"
           message="Avoid empty switch statements"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptySwitchStatements">
@@ -211,6 +217,7 @@ public class Foo {
 
 
     <rule name="JumbledIncrementer"
+    		since="1.0"
          message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
          class="net.sourceforge.pmd.rules.XPathRule"
          externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#JumbledIncrementer">
@@ -248,6 +255,7 @@ public class JumbledIncrementerRule1 {
      </rule>
 
     <rule name="ForLoopShouldBeWhileLoop"
+    		 since="1.02"
           message="This for loop could be simplified to a while loop"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ForLoopShouldBeWhileLoop">
@@ -281,6 +289,7 @@ public class Foo {
 
 
     <rule name="UnnecessaryConversionTemporary"
+    		 since="0.1"
           message="Avoid unnecessary temporaries when converting primitives to Strings"
           class="net.sourceforge.pmd.rules.UnnecessaryConversionTemporary"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryConversionTemporary">
@@ -301,6 +310,7 @@ public String convert(int x) {
     </rule>
 
     <rule name="OverrideBothEqualsAndHashcode"
+    		 since="0.4"
           message="Ensure you override both equals() and hashCode()"
           class="net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcode"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode">
@@ -338,6 +348,7 @@ public class Foo {
     </rule>
 
     <rule name="DoubleCheckedLocking"
+    		 since="1.04"
           message="Double checked locking is not thread safe in Java."
           class="net.sourceforge.pmd.rules.DoubleCheckedLocking"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#DoubleCheckedLocking">
@@ -367,6 +378,7 @@ public class Foo {
     </rule>
 
     <rule name="ReturnFromFinallyBlock"
+    		 since="1.05"
           message="Avoid returning from a finally block"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ReturnFromFinallyBlock">
@@ -401,6 +413,7 @@ public class Bar {
     </rule>
 
     <rule name="EmptySynchronizedBlock"
+    		 since="1.3"
           message="Avoid empty synchronized blocks"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptySynchronizedBlock">
@@ -431,6 +444,7 @@ public class Foo {
     </rule>
 
     <rule name="UnnecessaryReturn"
+    		 since="1.3"
           message="Avoid unnecessary return statements"
           class="net.sourceforge.pmd.rules.basic.UnnecessaryReturn"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryReturn">
@@ -452,6 +466,7 @@ public class Foo {
 
 
     <rule name="EmptyStaticInitializer"
+    		  since="1.5"
            message="Empty static initializer was found"
            class="net.sourceforge.pmd.rules.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStaticInitializer">
@@ -512,6 +527,7 @@ public class Foo {
     </rule>
 
     <rule name="EmptyStatementNotInLoop"
+    		 since="1.5"
           message="An empty statement (semicolon) not part of a loop"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop">
@@ -555,6 +571,7 @@ public class MyClass {
      </rule>
 
     <rule name="BooleanInstantiation"
+    	 since="1.2"
        message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
        class="net.sourceforge.pmd.rules.basic.BooleanInstantiation"
        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BooleanInstantiation">
@@ -573,6 +590,7 @@ public class Foo {
    </rule>
 
     <rule name="UnnecessaryFinalModifier"
+    		 since="3.0"
           message="Unnecessary final modifier in final class"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier">
@@ -604,6 +622,7 @@ public final class Foo {
     </rule>
 
     <rule name="CollapsibleIfStatements"
+    		 since="3.1"
           message="These nested if statements could be combined"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">

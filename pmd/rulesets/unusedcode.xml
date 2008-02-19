@@ -10,6 +10,7 @@ The Unused Code Ruleset contains a collection of rules that find unused code.
   </description>
 
   <rule name="UnusedPrivateField"
+  		  since="0.1"
         message="Avoid unused private fields such as ''{0}''."
         class="net.sourceforge.pmd.rules.UnusedPrivateFieldRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField">
@@ -32,6 +33,7 @@ public class Something {
   </rule>
 
 <rule name="UnusedLocalVariable"
+		  since="0.1"
         message="Avoid unused local variables such as ''{0}''."
         class="net.sourceforge.pmd.rules.UnusedLocalVariableRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable">
@@ -52,6 +54,7 @@ public class Foo {
   </rule>
 
     <rule name="UnusedPrivateMethod"
+    	  since="0.7"
         message="Avoid unused private methods such as ''{0}''."
         class="net.sourceforge.pmd.rules.UnusedPrivateMethodRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateMethod">
@@ -70,6 +73,7 @@ public class Something {
 
 
   <rule name="UnusedFormalParameter"
+  		  since="0.8"
         message="Avoid unused {0} parameters such as ''{1}''."
         class="net.sourceforge.pmd.rules.UnusedFormalParameterRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter">

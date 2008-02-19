@@ -17,6 +17,7 @@ import java.util.List;
  * @version 1.0
  * @since 1.2
  */
+// FUTURE Rename to SignatureDeclareThrowsExceptionRule
 public class ExceptionSignatureDeclaration extends AbstractRule {
 
     private boolean junitImported;

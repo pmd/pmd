@@ -11,6 +11,7 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
 
 
   <rule name="ShortVariable"
+  		  since="0.3"
         message="Avoid variables with short names like {0}"
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ShortVariable">
@@ -45,6 +46,7 @@ public class Something {
   </rule>
 
   <rule name="LongVariable"
+  		  since="0.3"
         message="Avoid excessively long variable names like {0}"
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#LongVariable">
@@ -78,6 +80,7 @@ public class Something {
   </rule>
 
   <rule name="ShortMethodName"
+  		  since="0.3"
         message="Avoid using short method names"
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ShortMethodName">
@@ -106,6 +109,7 @@ public class ShortMethod {
 
 
     <rule name="VariableNamingConventions"
+    since="1.2"
     message="{0} variable {1} should begin with {2}"
     class="net.sourceforge.pmd.rules.VariableNamingConventions"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#VariableNamingConventions">
@@ -133,6 +137,7 @@ public class Foo {
     </rule>
 
     <rule name="MethodNamingConventions"
+    			  since="1.2"
               message="Method name does not begin with a lower case character."
               class="net.sourceforge.pmd.rules.MethodNamingConventions"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#MethodNamingConventions">
@@ -151,6 +156,7 @@ public class Foo {
         </rule>
 
     <rule name="ClassNamingConventions"
+    		 since="1.2"
           message="Class names should begin with an uppercase character"
           class="net.sourceforge.pmd.rules.ClassNamingConventions"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ClassNamingConventions">
@@ -166,6 +172,7 @@ public class Foo {}
     </rule>
 
     <rule name="AbstractNaming"
+    		 since="1.4"
           message="Abstract classes should be named 'AbstractXXX'"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AbstractNaming">
@@ -193,6 +200,7 @@ public abstract class Foo { // should be AbstractFoo
     </rule>
 
     <rule name="AvoidDollarSigns"
+    		  since="1.5"
            message="Avoid using dollar signs in variable/method/class/interface names"
            class="net.sourceforge.pmd.rules.naming.AvoidDollarSigns"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidDollarSigns">
@@ -209,6 +217,7 @@ Avoid using dollar signs in variable/method/class/interface names.
      </rule>
 
     <rule name="MethodWithSameNameAsEnclosingClass"
+    		 since="1.5"
           message="Classes should not have non-constructor methods with the same name as the class"
           class="net.sourceforge.pmd.rules.MethodWithSameNameAsEnclosingClass"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#MethodWithSameNameAsEnclosingClass">
@@ -229,6 +238,7 @@ public class MyClass {
      </rule>
 
     <rule name="SuspiciousHashcodeMethodName"
+    		 since="1.5"
           message="The method name and return type are suspiciously close to hashCode()"
           class="net.sourceforge.pmd.rules.naming.SuspiciousHashcodeMethodName"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#SuspiciousHashcodeMethodName">
@@ -249,6 +259,7 @@ public class Foo {
      </rule>
 
     <rule name="SuspiciousConstantFieldName"
+    		 since="2.0"
           message="The field name indicates a constant but its modifiers do not"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#SuspiciousConstantFieldName">
@@ -283,6 +294,7 @@ public class Foo {
 
     <rule
         name="SuspiciousEqualsMethodName"
+        since="2.0"
         message="The method name and parameter number are suspiciously close to equals(Object)"
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#SuspiciousEqualsMethodName">
@@ -329,6 +341,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidFieldNameMatchingTypeName"
+    		 since="3.0"
           message="It is somewhat confusing to have a field name matching the declaring class name"
           class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingTypeName"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidFieldNameMatchingTypeName">
@@ -348,6 +361,7 @@ public class Foo extends Bar {
     </rule>
 
     <rule name="AvoidFieldNameMatchingMethodName"
+    		 since="3.0"
           message="It is somewhat confusing to have a field name with the same name as a method"
           class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingMethodName"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidFieldNameMatchingMethodName">

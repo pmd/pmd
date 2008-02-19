@@ -68,6 +68,7 @@ public class Foo {
    </rule>
 
     <rule name="LooseCoupling"
+    		 since="0.7"
           message="Avoid using implementation types like ''{0}''; use the interface instead"
           class="net.sourceforge.pmd.rules.design.LooseCoupling"
           externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling">

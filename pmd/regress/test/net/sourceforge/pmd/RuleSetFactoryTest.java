@@ -244,22 +244,42 @@ public class RuleSetFactoryTest {
 	}
 
 	@Test
-	public void testAllPMDBuiltInRulesNeedSince() throws IOException, RuleSetNotFoundException, ParserConfigurationException,
-			SAXException {
+	public void testAllPMDBuiltInRulesNeedSince() throws IOException, RuleSetNotFoundException,
+			ParserConfigurationException, SAXException {
 		boolean allValid = true;
 		List<String> ruleSetFileNames = getRuleSetFileNames();
 		for (String fileName : ruleSetFileNames) {
 			RuleSet ruleSet = loadRuleSetByFileName(fileName);
 			for (Rule rule : ruleSet.getRules()) {
-				assertNotNull("Rule " + fileName + "/" + rule.getName()
-						+ " is missing 'since' attribute, all built-in PMD rules need this attribute.",
-						rule.getSince());
+				if (rule.getSince() == null) {
+					allValid = false;
+					System.err.println("Rule " + fileName + "/" + rule.getName() + " is missing 'since' attribute");
+				}
 			}
-			boolean valid = validateAgainstDtd(fileName);
-			allValid = allValid && valid;
 		}
-		assertTrue("All XML must parse without producing validation messages.", allValid);
+		assertTrue("All built-in PMD rules need 'since' attribute.", allValid);
 	}
+
+	// FUTURE Enable this test when we're ready to rename rules
+	/*
+	@Test
+	public void testAllPMDBuiltInRulesShouldEndWithRule() throws IOException, RuleSetNotFoundException,
+			ParserConfigurationException, SAXException {
+		boolean allValid = true;
+		List<String> ruleSetFileNames = getRuleSetFileNames();
+		for (String fileName : ruleSetFileNames) {
+			RuleSet ruleSet = loadRuleSetByFileName(fileName);
+			for (Rule rule : ruleSet.getRules()) {
+				if (!rule.getRuleClass().endsWith("Rule")) {
+					allValid = false;
+					System.err.println("Rule " + fileName + "/" + rule.getName()
+							+ " does not have 'ruleClass' that ends with 'Rule': " + rule.getRuleClass());
+				}
+			}
+		}
+		assertTrue("All built-in PMD rule classes should end with 'Rule'.", allValid);
+	}
+	*/
 
 	@Test
 	public void testXmlSchema() throws IOException, RuleSetNotFoundException, ParserConfigurationException,

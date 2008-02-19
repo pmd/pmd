@@ -14,6 +14,7 @@ most people really dislike :-)
   </description>
 
     <rule name="UnnecessaryConstructor"
+    		 since="1.0"
           message="Avoid unnecessary constructors - the compiler will generate these for you"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UnnecessaryConstructor">
@@ -49,6 +50,7 @@ public class Foo {
 
 
     <rule name="NullAssignment"
+    		 since="1.02"
           message="Assigning an Object to null is a code smell.  Consider refactoring."
           class="net.sourceforge.pmd.rules.design.NullAssignmentRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#NullAssignment">
@@ -77,6 +79,7 @@ public class Foo {
     </rule>
 
     <rule name="OnlyOneReturn"
+    		since="1.0"
          message="A method should have only one exit point, and that should be the last statement in the method"
          class="net.sourceforge.pmd.rules.design.OnlyOneReturnRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#OnlyOneReturn">
@@ -99,6 +102,7 @@ A method should have only one exit point, and that should be the last statement 
      </rule>
 
     <rule name="UnusedModifier"
+    		since="1.02"
          message="Avoid modifiers which are implied by the context"
          class="net.sourceforge.pmd.rules.UnusedModifier"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UnusedModifier">
@@ -127,6 +131,7 @@ public class Bar {
      </rule>
 
     <rule name="AssignmentInOperand"
+      since="1.03"
       message="Avoid assignments in operands"
       class="net.sourceforge.pmd.rules.AssignmentInOperand"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AssignmentInOperand">
@@ -152,6 +157,7 @@ public class Foo {
 </rule>
 
     <rule name="AtLeastOneConstructor"
+    	since="1.04"
       message="Each class should declare at least one constructor"
       class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AtLeastOneConstructor">
@@ -185,6 +191,7 @@ public class Foo {
 </rule>
 
     <rule name="DontImportSun"
+    	 since="1.5"
        message="Avoid importing anything from the 'sun.*' packages"
        class="net.sourceforge.pmd.rules.imports.DontImportSun"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DontImportSun">
@@ -201,6 +208,7 @@ public class Foo {}
     </rule>
 
     <rule name="SuspiciousOctalEscape"
+    	 since="1.5"
        message="Suspicious decimal characters following octal escape in string literal"
           class="net.sourceforge.pmd.rules.SuspiciousOctalEscape"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SuspiciousOctalEscape">
@@ -230,6 +238,7 @@ public class Foo {
     </rule>
 
     <rule name="CallSuperInConstructor"
+    		 since="3.0"
           message="It is a good practice to call super() in a constructor"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#CallSuperInConstructor">
@@ -268,6 +277,7 @@ public class Foo extends Bar{
     </rule>
 
     <rule name="UnnecessaryParentheses"
+    		 since="3.1"
           message="This statement may have some unnecessary parentheses"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UnnecessaryParentheses">

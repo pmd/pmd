@@ -11,6 +11,7 @@ The Design Ruleset contains a collection of rules that find questionable designs
   </description>
 
   <rule name="UseSingleton"
+  		  since="0.3"
         message="All methods are static.  Consider using Singleton instead.  Alternatively, you could add a private constructor or make the class abstract to silence this warning."
         class="net.sourceforge.pmd.rules.design.UseSingleton"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseSingleton">
@@ -35,6 +36,7 @@ public class MaybeASingleton {
 
 
   <rule name="SimplifyBooleanReturns"
+  		  since="0.9"
         message="Avoid unnecessary if..then..else statements when returning a boolean"
         class="net.sourceforge.pmd.rules.SimplifyBooleanReturns"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyBooleanReturns">
@@ -62,6 +64,7 @@ public class Foo {
   </rule>
 
     <rule name="SimplifyBooleanExpressions"
+    		 since="1.05"
           message="Avoid unnecessary comparisons in boolean expressions"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyBooleanExpressions">
@@ -93,6 +96,7 @@ public class Bar {
     </rule>
 
   <rule name="SwitchStmtsShouldHaveDefault"
+  		  since="1.0"
         message="Switch statements should have a default label"
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SwitchStmtsShouldHaveDefault">
@@ -124,6 +128,7 @@ public class Foo {
     </rule>
 
   <rule name="AvoidDeeplyNestedIfStmts"
+  		  since="1.0"
         message="Deeply nested if..then statements are hard to read"
         class="net.sourceforge.pmd.rules.AvoidDeeplyNestedIfStmtsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidDeeplyNestedIfStmts">
@@ -153,6 +158,7 @@ public class Foo {
 
 
     <rule name="AvoidReassigningParameters"
+    	  since="1.0"
         message="Avoid reassigning parameters such as ''{0}''"
         class="net.sourceforge.pmd.rules.AvoidReassigningParameters"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidReassigningParameters">
@@ -172,6 +178,7 @@ public class Foo {
   </rule>
 
     <rule name="SwitchDensity"
+    		 since="1.02"
           message="A high ratio of statements to labels in a switch statement.  Consider refactoring."
           class="net.sourceforge.pmd.rules.design.SwitchDensityRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SwitchDensity">
@@ -204,6 +211,7 @@ public class Foo {
     </rule>
 
     <rule name="ConstructorCallsOverridableMethod"
+    		 since="1.04"
           message="Overridable {0} called during object construction"
           class="net.sourceforge.pmd.rules.ConstructorCallsOverridableMethod"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ConstructorCallsOverridableMethod">
@@ -243,6 +251,7 @@ public class JuniorClass extends SeniorClass {
     </rule>
 
     <rule name="AccessorClassGeneration"
+    		 since="1.04"
           message="Avoid instantiation through private constructors from outside of the constructor's class."
           class="net.sourceforge.pmd.rules.AccessorClassGeneration"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AccessorClassGeneration">
@@ -269,6 +278,7 @@ public class Outer {
     </rule>
 
     <rule name="FinalFieldCouldBeStatic"
+    		 since="1.1"
           message="This final field could be made static"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#FinalFieldCouldBeStatic">
@@ -301,6 +311,7 @@ public class Foo {
 
 
   <rule name="CloseResource"
+  		  since="1.2.2"
         message="Ensure that resources like this {0} object are closed after use"
         class="net.sourceforge.pmd.rules.CloseResource"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource">
@@ -331,6 +342,7 @@ public class Bar {
   </rule>
 
     <rule name="NonStaticInitializer"
+    		  since="1.5"
            message="Non-static initializers are confusing"
            class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#NonStaticInitializer">
@@ -362,6 +374,7 @@ public class MyClass {
      </rule>
 
     <rule name="DefaultLabelNotLastInSwitchStmt"
+    		  since="1.5"
            message="The default label should be the last label in a switch statement"
            class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#DefaultLabelNotLastInSwitchStmt">
@@ -398,6 +411,7 @@ public class Foo {
      </rule>
 
     <rule name="NonCaseLabelInSwitchStatement"
+    		  since="1.5"
            message="A non-case label was present in a switch statement"
            class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#NonCaseLabelInSwitchStatement">
@@ -435,6 +449,7 @@ public class Foo {
      </rule>
 
     <rule name="OptimizableToArrayCall"
+    		 since="1.8"
           message="This call to Collection.toArray() may be optimizable"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#OptimizableToArrayCall">
@@ -475,6 +490,7 @@ class Foo {
 
 
     <rule name="BadComparison"
+    		 since="1.8"
           message="Avoid equality comparisons with Double.NaN"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#BadComparison">
@@ -503,6 +519,7 @@ public class Bar {
     </rule>
 
     <rule name="EqualsNull"
+    			since="1.9"
             message="Avoid using equals() to compare against null"
             class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#EqualsNull">
@@ -543,6 +560,7 @@ class Bar {
         </rule>
 
       <rule name="ConfusingTernary"
+        since="1.9"
         message="Avoid if (x != y) ..; else ..;"
         class="net.sourceforge.pmd.rules.design.ConfusingTernary"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ConfusingTernary">
@@ -570,6 +588,7 @@ public class Foo {
       </rule>
 
     <rule name="InstantiationToGetClass"
+    		 since="2.0"
           message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#InstantiationToGetClass">
@@ -604,6 +623,7 @@ public class Foo {
       </rule>
 
     <rule name="IdempotentOperations"
+    		 since="2.0"
           message="Avoid idempotent operations (like assigning a variable to itself)."
           class="net.sourceforge.pmd.rules.IdempotentOperations"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#IdempotentOperations">
@@ -626,6 +646,7 @@ public class Foo {
 
     <rule
         name="SimpleDateFormatNeedsLocale"
+        since="2.0"
         message="When instantiating a SimpleDateFormat object, specify a Locale"
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimpleDateFormatNeedsLocale">
@@ -655,6 +676,7 @@ public class Foo {
     </rule>
 
     <rule name="ImmutableField"
+    		 since="2.0"
           message="Private field ''{0}'' could be made final; it is only initialized in the declaration or constructor."
           class="net.sourceforge.pmd.rules.design.ImmutableField"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ImmutableField">
@@ -680,6 +702,7 @@ public class Foo {
     </rule>
 
     <rule name="UseLocaleWithCaseConversions"
+    		 since="2.0"
           message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseLocaleWithCaseConversions">
@@ -722,6 +745,7 @@ class Foo {
     </rule>
 
     <rule name="AvoidProtectedFieldInFinalClass"
+    			 since="2.1"
              message="Avoid protected fields in a final class.  Change to private or package access."
              class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidProtectedFieldInFinalClass">
@@ -753,6 +777,7 @@ public final class Bar {
        </rule>
 
      <rule name="AssignmentToNonFinalStatic"
+     		  since="2.2"
            message="Possible unsafe assignment to a non-final static field in a constructor."
            class="net.sourceforge.pmd.rules.design.AssignmentToNonFinalStatic"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AssignmentToNonFinalStatic">
@@ -773,6 +798,7 @@ public class StaticField {
      </rule>
 
     <rule name="MissingStaticMethodInNonInstantiatableClass"
+    		 since="3.0"
           message="Class cannot be instantiated and does not provide any static methods or fields"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#MissingStaticMethodInNonInstantiatableClass">
@@ -813,6 +839,7 @@ public class Foo {
 
 
     <rule name="AvoidSynchronizedAtMethodLevel"
+    		 since="3.0"
           message="Use block level rather than method level synchronization"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidSynchronizedAtMethodLevel">
@@ -847,6 +874,7 @@ public class Foo {
     </rule>
 
     <rule name="MissingBreakInSwitch"
+    		 since="3.0"
           message="A switch statement does not contain a break"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#MissingBreakInSwitch">
@@ -889,6 +917,7 @@ public class Foo {
 
 
     <rule name="UseNotifyAllInsteadOfNotify"
+    		 since="3.0"
           message="Call Thread.notifyAll() rather than Thread.notify()"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseNotifyAllInsteadOfNotify">
@@ -928,6 +957,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidInstanceofChecksInCatchClause"
+    		 since="3.0"
           message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidInstanceofChecksInCatchClause">
@@ -968,6 +998,7 @@ try {  // Prefer this:
     </rule>
 
     <rule name="AbstractClassWithoutAbstractMethod"
+    		 since="3.0"
           message="This abstract class does not have any abstract methods"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AbstractClassWithoutAbstractMethod">
@@ -1003,6 +1034,7 @@ public abstract class Foo {
     </rule>
 
     <rule name="SimplifyConditional"
+    		 since="3.1"
               message="No need to check for null before an instanceof"
               class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyConditional">
@@ -1048,6 +1080,7 @@ class Foo {
         </rule>
 
 <rule  name="CompareObjectsWithEquals"
+  since="3.2"
   message="Use equals() to compare object references."
   class="net.sourceforge.pmd.rules.design.CompareObjectsWithEquals"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CompareObjectsWithEquals">
@@ -1439,7 +1472,7 @@ rather than code the appropriate one.
     </rule>
 
     <rule name="SingularField"
-          since="4.1"
+          since="3.1"
           message="Perhaps ''{0}'' could be replaced by a local variable."
           class="net.sourceforge.pmd.rules.design.SingularField"
       	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SingularField">

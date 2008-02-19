@@ -11,6 +11,7 @@ These rules deal with different problems that can occur with manipulation of the
 
 
     <rule name="AvoidDuplicateLiterals"
+    	  since="1.0"
         message="The String literal {0} appears {1} times in this file; the first occurrence is on line {2}"
         class="net.sourceforge.pmd.rules.strings.AvoidDuplicateLiteralsRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AvoidDuplicateLiterals">
@@ -37,6 +38,7 @@ public class Foo {
   </rule>
 
     <rule name="StringInstantiation"
+    	  since="1.0"
         message="Avoid instantiating String objects; this is usually unnecessary."
         class="net.sourceforge.pmd.rules.strings.StringInstantiation"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringInstantiation">
@@ -54,6 +56,7 @@ public class Foo {
     </rule>
 
    <rule name="StringToString"
+   	  since="1.0"
         message="Avoid calling toString() on String objects; this is unnecessary."
         class="net.sourceforge.pmd.rules.strings.StringToStringRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringToString">

@@ -10,6 +10,7 @@ These rules deal with different optimizations that generally apply to performanc
   </description>
 
     <rule name="LocalVariableCouldBeFinal"
+    	 since="2.2"
 	    message="Local variable ''{0}'' could be declared final"
           class="net.sourceforge.pmd.rules.optimization.LocalVariableCouldBeFinal"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#LocalVariableCouldBeFinal">
@@ -30,6 +31,7 @@ public class Bar {
       </rule>
 
     <rule name="MethodArgumentCouldBeFinal"
+    		 since="2.2"
           message="Parameter ''{0}'' is not assigned and could be declared final"
           class="net.sourceforge.pmd.rules.optimization.MethodArgumentCouldBeFinal"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#MethodArgumentCouldBeFinal">
@@ -48,6 +50,7 @@ public void foo (String param) {
       </rule>
 
   <rule name="AvoidInstantiatingObjectsInLoops"
+  		  since="2.2"
         message="Avoid instantiating new objects inside loops"
         class="net.sourceforge.pmd.rules.optimization.AvoidInstantiatingObjectsInLoops"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#AvoidInstantiatingObjectsInLoops">
@@ -69,6 +72,7 @@ public class Something {
   </rule>
   
     <rule name="UseArrayListInsteadOfVector"
+    		 since="3.0"
           message="Use ArrayList instead of Vector"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseArrayListInsteadOfVector">
@@ -100,6 +104,7 @@ public class SimpleTest extends TestCase {
     </rule>
 
     <rule name="SimplifyStartsWith"
+    		 since="3.1"
           message="This call to String.startsWith can be rewritten using String.charAt(0)"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#SimplifyStartsWith">
@@ -137,6 +142,7 @@ public class Foo {
     </rule>
 
     <rule name="UseStringBufferForStringAppends"
+    		 since="3.1"
           message="Prefer StringBuffer over += for concatenating strings"
           class="net.sourceforge.pmd.rules.optimization.UseStringBufferForStringAppends"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseStringBufferForStringAppends">

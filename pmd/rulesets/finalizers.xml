@@ -11,6 +11,7 @@ These rules deal with different problems that can occur with finalizers.
   </description>
 
     <rule name="EmptyFinalizer"
+    		 since="1.5"
           message="Avoid empty finalize methods"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#EmptyFinalizer">
@@ -38,6 +39,7 @@ public class Foo {
      </rule>
 
     <rule name="FinalizeOnlyCallsSuperFinalize"
+    		 since="1.5"
           message="Finalize should do something besides just calling super.finalize()"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#FinalizeOnlyCallsSuperFinalize">
@@ -72,6 +74,7 @@ public class Foo {
      </rule>
 
 <rule name="FinalizeOverloaded"
+		since="1.5"
       message="Finalize methods should not be overloaded"
       class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#FinalizeOverloaded">
@@ -103,6 +106,7 @@ public class Foo {
  </rule>
 
     <rule name="FinalizeDoesNotCallSuperFinalize"
+    		 since="1.5"
           message="Last statement in finalize method should be a call to super.finalize()"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#FinalizeDoesNotCallSuperFinalize">
@@ -140,6 +144,7 @@ public class Foo {
      </rule>
 
     <rule name="FinalizeShouldBeProtected"
+    		 since="1.1"
           message="If you override finalize(), make it protected"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#FinalizeShouldBeProtected">
@@ -172,6 +177,7 @@ public class Foo {
 
 
     <rule name="AvoidCallingFinalize"
+    		 since="3.0"
           message="Avoid calling finalize() explicitly"
           class="net.sourceforge.pmd.rules.AvoidCallingFinalize"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#AvoidCallingFinalize">

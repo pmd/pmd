@@ -13,6 +13,7 @@ import net.sourceforge.pmd.util.NumericConstants;
  * so the numbers may not match up.  (But topcount and sigma
  * should work.)
  */
+// FUTURE Rename to ExcessiveParameterListRule
 public class LongParameterListRule extends ExcessiveNodeCountRule {
     public LongParameterListRule() {
         super(ASTFormalParameters.class);

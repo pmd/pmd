@@ -11,6 +11,7 @@ These rules deal with different problems that can occur with a class' import sta
   </description>
 
   <rule name="DuplicateImports"
+  		  since="0.5"
         message="Avoid duplicate imports such as ''{0}''"
         class="net.sourceforge.pmd.rules.imports.DuplicateImportsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#DuplicateImports">
@@ -28,6 +29,7 @@ public class Foo {}
     </rule>
 
   <rule name="DontImportJavaLang"
+  		  since="0.5"
         message="Avoid importing anything from the package 'java.lang'"
         class="net.sourceforge.pmd.rules.imports.DontImportJavaLang"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#DontImportJavaLang">
@@ -52,6 +54,7 @@ public class Foo {}
     </rule>
 
   <rule name="UnusedImports"
+  		  since="1.0"
         message="Avoid unused imports such as ''{0}''"
         class="net.sourceforge.pmd.rules.imports.UnusedImportsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports">
@@ -69,6 +72,7 @@ public class Foo {}
     </rule>
 
     <rule name="ImportFromSamePackage"
+    		since="1.02"
          message="No need to import a type that lives in the same package"
          class="net.sourceforge.pmd.rules.imports.ImportFromSamePackageRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#ImportFromSamePackage">

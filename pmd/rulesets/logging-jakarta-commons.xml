@@ -10,6 +10,7 @@ The Jakarta Commons Logging ruleset contains a collection of rules that find que
   </description>
 
 	<rule name="UseCorrectExceptionLogging"
+		  since="3.2"
         message="Use the correct logging statement for logging exceptions"
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-jakarta-commons.html#UseCorrectExceptionLogging">

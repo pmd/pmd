@@ -12,6 +12,7 @@ The JavaBeans Ruleset catches instances of bean rules not being followed.
 
 
   <rule name="BeanMembersShouldSerialize"
+  		  since="1.1"
         message="Found non-transient, non-static member. Please mark as transient or provide accessors."
         class="net.sourceforge.pmd.rules.BeanMembersShouldSerializeRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/javabeans.html#BeanMembersShouldSerialize">
@@ -48,6 +49,7 @@ provide getFoo and setFoo methods.
   </rule>
 
     <rule name="MissingSerialVersionUID"
+    		 since="3.0"
           message="Classes implementing Serializable should set a serialVersionUID"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/javabeans.html#MissingSerialVersionUID">

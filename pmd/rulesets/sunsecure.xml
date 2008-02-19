@@ -10,6 +10,7 @@ These rules check the security guidelines from Sun, published at http://java.sun
   </description>
 
     <rule name="MethodReturnsInternalArray"
+    	    since="2.2"
           message="Returning ''{0}'' may expose an internal array."
           class="net.sourceforge.pmd.rules.sunsecure.MethodReturnsInternalArray"
           externalInfoUrl="http://pmd.sourceforge.net/rules/sunsecure.html#MethodReturnsInternalArray">
@@ -32,6 +33,7 @@ public class SecureSystem {
       </rule>
 
     <rule name="ArrayIsStoredDirectly"
+    	  since="2.2"
         message="The user-supplied array ''{0}'' is stored directly."
           class="net.sourceforge.pmd.rules.sunsecure.ArrayIsStoredDirectly"
           externalInfoUrl="http://pmd.sourceforge.net/rules/sunsecure.html#ArrayIsStoredDirectly">

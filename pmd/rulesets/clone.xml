@@ -10,6 +10,7 @@ The Clone Implementation ruleset contains a collection of rules that find questi
   </description>
 
     <rule name="ProperCloneImplementation"
+    		since="1.4"
          message="Object clone() should be implemented with super.clone()"
          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/clone.html#ProperCloneImplementation">
@@ -46,6 +47,7 @@ class Foo{
      </rule>
 
     <rule name="CloneThrowsCloneNotSupportedException"
+    		since="1.9"
          message="clone() method should throw CloneNotSupportedException"
          class="net.sourceforge.pmd.rules.XPathRule"
          externalInfoUrl="http://pmd.sourceforge.net/rules/clone.html#CloneThrowsCloneNotSupportedException">
@@ -84,6 +86,7 @@ and count(NameList/Name[contains
      </rule>
 
     <rule name="CloneMethodMustImplementCloneable"
+    	  since="1.9"
         message="clone() method should be implemented only if implementing Cloneable interface"
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/clone.html#CloneMethodMustImplementCloneable">

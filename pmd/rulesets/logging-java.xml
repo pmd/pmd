@@ -11,6 +11,7 @@ The Java Logging ruleset contains a collection of rules that find questionable u
   </description>
 
     <rule name="MoreThanOneLogger"
+    	   since="2.0"
          message="Class contains more than one logger."
          class="net.sourceforge.pmd.rules.MoreThanOneLogger"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#MoreThanOneLogger">
@@ -31,6 +32,7 @@ class Foo{
      </rule>
 
      <rule name="LoggerIsNotStaticFinal"
+     		since="2.0"
          message="The Logger variable declaration does not contain the static and final modifiers"
          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#LoggerIsNotStaticFinal">
@@ -100,6 +102,7 @@ first -->
 
 
     <rule name="SystemPrintln"
+    		since="2.1"
          message="System.out.print is used"
          class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln">
@@ -135,6 +138,7 @@ class Foo{
      </rule>
 
     <rule  name="AvoidPrintStackTrace"
+    		  since="3.2"
            message="Avoid printStackTrace(); use a logger call instead."
            class="net.sourceforge.pmd.rules.XPathRule"
 		   externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace">

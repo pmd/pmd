@@ -10,6 +10,7 @@ These rules deal with different problems that can occur with JUnit tests.
   </description>
 
     <rule name="JUnitStaticSuite"
+    		 since="1.0"
           message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#JUnitStaticSuite">
@@ -41,6 +42,7 @@ public class Foo extends TestCase {
       </rule>
 
   <rule name="JUnitSpelling"
+  		  since="1.0"
         message="You may have misspelled a JUnit framework method (setUp or tearDown)"
         class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#JUnitSpelling">
@@ -74,6 +76,7 @@ public class Foo extends TestCase {
     </rule>
 
     <rule name="JUnitAssertionsShouldIncludeMessage"
+    		 since="1.04"
           message="JUnit assertions should include a message"
           class="net.sourceforge.pmd.rules.junit.JUnitAssertionsShouldIncludeMessage"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#JUnitAssertionsShouldIncludeMessage">
@@ -97,6 +100,7 @@ public class Foo extends TestCase {
     </rule>
 
     <rule name="JUnitTestsShouldIncludeAssert"
+    		 since="2.0"
           message="JUnit tests should include assert() or fail()"
           class="net.sourceforge.pmd.rules.junit.JUnitTestsShouldContainAsserts"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#JUnitTestsShouldIncludeAssert">
@@ -120,6 +124,7 @@ public class Foo extends TestCase {
       </rule>
 
     <rule name="TestClassWithoutTestCases"
+    		 since="3.0"
           message="This class name ends with 'Test' but contains no test cases"
           class="net.sourceforge.pmd.rules.junit.TestClassWithoutTestCases"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#TestClassWithoutTestCases">
@@ -144,6 +149,7 @@ public class CarTest {
     </rule>
 
     <rule name="UnnecessaryBooleanAssertion"
+    		 since="3.0"
           message="assertTrue(true) or similar statements are unnecessary"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UnnecessaryBooleanAssertion">
@@ -190,6 +196,7 @@ public class SimpleTest extends TestCase {
     </rule>
 
     <rule name="UseAssertEqualsInsteadOfAssertTrue"
+    		 since="3.1"
           message="Use assertEquals(x, y) instead of assertTrue(x.equals(y))"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UseAssertEqualsInsteadOfAssertTrue">
@@ -227,6 +234,7 @@ public class FooTest extends TestCase {
     </rule>
 
    <rule name="UseAssertSameInsteadOfAssertTrue"
+   		 since="3.1"
           message="Use assertSame(x, y) instead of assertTrue(x==y), or assertNotSame(x,y) vs assertFalse(x==y)"
           class="net.sourceforge.pmd.rules.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UseAssertSameInsteadOfAssertTrue">
