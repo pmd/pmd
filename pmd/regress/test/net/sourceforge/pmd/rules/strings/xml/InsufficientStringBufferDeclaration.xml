@@ -606,7 +606,22 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-Initialization with multiply - bug 1743938 
+36, Append of boolean literal.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer();
+  sb.append(false);
+  sb.append(true);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+37, Initialization with multiply - bug 1743938 
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

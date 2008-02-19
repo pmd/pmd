@@ -46,7 +46,6 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
     }
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-
         if (!TypeHelper.isA(node.getNameDeclaration(), StringBuffer.class)) {
             return data;
         }
@@ -183,13 +182,15 @@ public class InsufficientStringBufferDeclaration extends AbstractRule {
         ASTPrimaryPrefix xn = sn.getFirstChildOfType(ASTPrimaryPrefix.class);
         if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0).getClass().equals(ASTLiteral.class)) {
             String str = ((SimpleNode) xn.jjtGetChild(0)).getImage();
-            if(isLiteral(str)){
-                anticipatedLength += str.length() - 2;
-            } else if(str.startsWith("0x")){
-                anticipatedLength += 1;
-            } else {
-                anticipatedLength += str.length();
-            }            
+            if (str != null) {
+	            if(isLiteral(str)){
+	                anticipatedLength += str.length() - 2;
+	            } else if(str.startsWith("0x")){
+	                anticipatedLength += 1;
+	            } else {
+	                anticipatedLength += str.length();
+	            }
+            }
         }
         return anticipatedLength;
     }
