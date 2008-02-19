@@ -1119,7 +1119,7 @@ public class Test {
     </rule>
 	<rule name="AvoidMultipleUnaryOperators"
 		since="4.2"
-		class="net.sourceforge.pmd.rules.XPathRule"
+		class="net.sourceforge.pmd.rules.basic.AvoidMultipleUnaryOperators"
 		message="Using multiple unary operators may be a bug, and/or is confusing."
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidMultipleUnaryOperators">
         <description>

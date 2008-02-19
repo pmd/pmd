@@ -55,14 +55,17 @@ public class Foo {
 }
      ]]></code>
 	</test-code>
-	<test-code regressionTest="false">
+	<test-code>
 		<description><![CDATA[
 		Multiple levels of nested parentheses
      ]]></description>
-		<expected-problems>1</expected-problems>
+		<expected-problems>4</expected-problems>
 		<code><![CDATA[
 public class Foo {
 	int i = +((+1));
+	int j = -((-1));
+	int k = ~((~1));
+	boolean b = !((!true));
 }
      ]]></code>
 	</test-code>
