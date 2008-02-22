@@ -11,6 +11,7 @@
   </description>
 
     <rule name="CouplingBetweenObjects"
+    		  since="1.04"
         message="High amount of different objects as members denotes a high coupling"
         class="net.sourceforge.pmd.rules.CouplingBetweenObjects"
           externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#CouplingBetweenObjects">
@@ -43,6 +44,7 @@ public class Foo {
   </rule>
 
   <rule name="ExcessiveImports"
+    		  since="1.04"
      message="A high number of imports can indicate a high degree of coupling within an object."
      class="net.sourceforge.pmd.rules.ExcessiveImports"
           externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#ExcessiveImports">

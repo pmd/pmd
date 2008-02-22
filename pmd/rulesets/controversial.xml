@@ -366,6 +366,7 @@ public class Foo {
     </rule>
 
     <rule name="DataflowAnomalyAnalysis"
+    		  since="3.9"
               message="Found ''{0}''-anomaly for variable ''{1}'' (lines ''{2}''-''{3}'')."
               class="net.sourceforge.pmd.dfa.DaaRule"
               dfa="true"

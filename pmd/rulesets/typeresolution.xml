@@ -12,6 +12,7 @@
 
 
     <rule name="LooseCoupling"
+   	  since="3.9"
           message="Avoid using implementation types like ''{0}''; use the interface instead"
           class="net.sourceforge.pmd.typeresolution.rules.LooseCoupling"
           typeResolution="true"
@@ -37,6 +38,7 @@ public class Bar {
     </rule>
 
     <rule name="CloneMethodMustImplementCloneable"
+   	  since="3.9"
         message="clone() method should be implemented only if implementing Cloneable interface"
         class="net.sourceforge.pmd.typeresolution.rules.CloneMethodMustImplementCloneable"
         typeResolution="true"
@@ -60,6 +62,7 @@ public class MyClass {
     </rule>
 
   <rule name="UnusedImports"
+   	  since="4.0"
         message="Avoid unused imports such as ''{0}''"
         class="net.sourceforge.pmd.typeresolution.rules.imports.UnusedImports"
         typeResolution="true"
@@ -78,6 +81,7 @@ public class Foo {}
     </rule>
     
     <rule name="SignatureDeclareThrowsException"
+   	  since="4.0"
          message="A method/constructor shouldn't explicitly throw java.lang.Exception"
           class="net.sourceforge.pmd.typeresolution.rules.SignatureDeclareThrowsException"
           externalInfoUrl="http://pmd.sourceforge.net/rules/typeresolution.html#SignatureDeclareThrowsException"
