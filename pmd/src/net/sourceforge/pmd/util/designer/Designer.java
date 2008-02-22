@@ -596,6 +596,7 @@ public class Designer implements ClipboardOwner {
         }
     }
 
+	private boolean exitOnClose = true;
     private final CodeEditorTextPane codeEditorPane = new CodeEditorTextPane();
     private final TreeWidget astTreeWidget			= new TreeWidget(new Object[0]);
     private DefaultListModel xpathResults			= new DefaultListModel();
@@ -606,18 +607,20 @@ public class Designer implements ClipboardOwner {
     private final DFAPanel dfaPanel					= new DFAPanel();
     private final JRadioButtonMenuItem[] sourceTypeMenuItems = new JRadioButtonMenuItem[sourceTypeSets.length];
 
-    public Designer() {
-        MatchesFunction.registerSelfInSimpleContext();
+	public Designer(String[] args) {
+		if (args.length > 0) {
+			exitOnClose = !args[0].equals("-noexitonclose");
+		}
+
+		MatchesFunction.registerSelfInSimpleContext();
         TypeOfFunction.registerSelfInSimpleContext();
 
         xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
         JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createCodeEditorPanel(), createXPathQueryPanel());
 
-        JSplitPane astAndSymbolTablePanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, createASTPanel(), createSymbolTableResultPanel());
+        JSplitPane astAndSymbolTablePane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, createASTPanel(), createSymbolTableResultPanel());
 
-        JSplitPane resultsXPathSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astAndSymbolTablePanel, createXPathResultPanel());
-
-        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astAndSymbolTablePanel,resultsXPathSplitPane);
+        JSplitPane resultsSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, astAndSymbolTablePane, createXPathResultPanel());
 
         JTabbedPane tabbed = new JTabbedPane();
         tabbed.addTab("Abstract Syntax Tree / XPath / Symbol Table", resultsSplitPane);
@@ -650,7 +653,7 @@ public class Designer implements ClipboardOwner {
         JMenuBar menuBar = createMenuBar();
         frame.setJMenuBar(menuBar);
         frame.getContentPane().add(containerSplitPane);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenHeight = screenSize.height;
@@ -660,9 +663,11 @@ public class Designer implements ClipboardOwner {
         frame.setSize((screenWidth*3/4),(screenHeight*3/4));
         frame.setLocation((screenWidth -frame.getWidth()) / 2, (screenHeight  - frame.getHeight()) / 2);
         frame.setVisible(true);
-        resultsXPathSplitPane.setDividerLocation(resultsXPathSplitPane.getMaximumDividerLocation());
-        resultsSplitPane.setDividerLocation(resultsSplitPane.getMaximumDividerLocation() - (resultsSplitPane.getMaximumDividerLocation() / 3));
+        int horozontalMiddleLocation = controlSplitPane.getMaximumDividerLocation() * 3 / 5;
+        controlSplitPane.setDividerLocation(horozontalMiddleLocation);
         containerSplitPane.setDividerLocation(containerSplitPane.getMaximumDividerLocation() / 2);
+        astAndSymbolTablePane.setDividerLocation(astAndSymbolTablePane.getMaximumDividerLocation()/3);
+        resultsSplitPane.setDividerLocation(horozontalMiddleLocation);
     }
 
     private JMenuBar createMenuBar() {
@@ -822,7 +827,7 @@ public class Designer implements ClipboardOwner {
     }
 
     public static void main(String[] args) {
-        new Designer();
+        new Designer(args);
     }
 
     private final void copyXmlToClipboard() {
