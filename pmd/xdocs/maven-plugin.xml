@@ -33,8 +33,8 @@
     		<p>
     		    A clean strategy for customizing which rules to use for a project is to write a ruleset file.
     		    In this file you can define which rules to use, add custom rules, and
-    		    customizing which rules to include/exclude from official rulesets. More information on 
-    		    writing a ruleset can be found <a href="howtomakearuleset.html">here</a>. 
+    		    customizing which rules to include/exclude from official rulesets. More information on
+    		    writing a ruleset can be found <a href="howtomakearuleset.html">here</a>.
    		    </p>
    		    <p>
    		        Add to the root of your Maven project a pmd.xml file which contains the ruleset mentioned in
@@ -45,9 +45,9 @@
     </section>
     <section name="Reference">
     	<p>
-    		See the PMD plugin project page here: 
-    		<a href="http://maven.apache.org/reference/plugins/pmd/">http://maven.apache.org/reference/plugins/pmd/</a>
+    		See the PMD plugin project page here:
+    		<a href="http://maven.apache.org/maven-1.x/plugins/pmd/">http://maven.apache.org/maven-1.x/plugins/pmd/</a>
     	</p>
-   	</section>    
+   	</section>
  </body>
 </document>
