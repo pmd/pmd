@@ -94,7 +94,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         // Create parent composite
         Composite composite = new Composite(parent, SWT.NONE);
         GridLayout layout = new GridLayout(1, false);
-        layout.verticalSpacing = 20;
+        layout.verticalSpacing = 10;
         composite.setLayout(layout);
 
         // Create chidls
@@ -435,7 +435,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
      */
     protected void validateTextIsNumeric(Text text) {
         try {
-            Integer value = Integer.valueOf(text.getText());
+            Integer.valueOf(text.getText());
             setMessage(getMessage(StringKeys.MSGKEY_PREF_GENERAL_HEADER), NONE);
             setValid(true);
         } catch (NumberFormatException e) {

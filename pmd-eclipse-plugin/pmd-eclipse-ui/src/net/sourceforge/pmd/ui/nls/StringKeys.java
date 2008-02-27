@@ -120,6 +120,7 @@ public class StringKeys {
     public static final String MSGKEY_PROPERTY_LABEL_NO_WORKINGSET = "property.label.no_workingset";
     public static final String MSGKEY_PROPERTY_LABEL_SELECTED_WORKINGSET = "property.label.selected_workingset";
     public static final String MSGKEY_PROPERTY_BUTTON_STORE_RULESET_PROJECT = "property.button.store_ruleset_project";
+    public static final String MSGKEY_PROPERTY_BUTTON_RULESET_BROWSE = "property.button.ruleset_browse";
     public static final String MSGKEY_PROPERTY_BUTTON_INCLUDE_DERIVED_FILES = "property.button.include_derived_files";
     
     public static final String MSGKEY_PREF_GENERAL_HEADER = "preference.pmd.header";
@@ -149,18 +150,27 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULESET_REMOVE = "preference.ruleset.remove";
     public static final String MSGKEY_PREF_RULESET_LABEL_RULETABLE = "preference.ruleset.label.ruletable";
     public static final String MSGKEY_PREF_RULESET_LABEL_RULEPROPSTABLE = "preference.ruleset.label.rulepropstable";
-    public static final String MSGKEY_PREF_RULESET_COLUMN_NAME = "preference.ruleset.column.name";
+    public static final String MSGKEY_PREF_RULESET_LABEL_EXCLUDE_PATTERNS_TABLE = "preference.ruleset.label.exclude_patterns_table";
+    public static final String MSGKEY_PREF_RULESET_LABEL_INCLUDE_PATTERNS_TABLE = "preference.ruleset.label.include_patterns_table";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_RULESET_NAME = "preference.ruleset.column.ruleset_name";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_RULE_NAME = "preference.ruleset.column.rule_name";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_SINCE = "preference.ruleset.column.since";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PRIORITY = "preference.ruleset.column.priority";
     public static final String MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION = "preference.ruleset.column.description";
     public static final String MSGKEY_PREF_RULESET_COLUMN_PROPERTY = "preference.ruleset.column.property";
     public static final String MSGKEY_PREF_RULESET_COLUMN_VALUE = "preference.ruleset.column.value";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_EXCLUDE_PATTERN = "preference.ruleset.column.exclude_pattern";
+    public static final String MSGKEY_PREF_RULESET_COLUMN_INCLUDE_PATTERN = "preference.ruleset.column.include_pattern";
     public static final String MSGKEY_PREF_RULESET_BUTTON_ADDRULE = "preference.ruleset.button.addrule";
     public static final String MSGKEY_PREF_RULESET_BUTTON_REMOVERULE = "preference.ruleset.button.removerule";
     public static final String MSGKEY_PREF_RULESET_BUTTON_EDITRULE = "preference.ruleset.button.editrule";
     public static final String MSGKEY_PREF_RULESET_BUTTON_IMPORTRULESET = "preference.ruleset.button.importruleset";
     public static final String MSGKEY_PREF_RULESET_BUTTON_EXPORTRULESET = "preference.ruleset.button.exportruleset";
     public static final String MSGKEY_PREF_RULESET_BUTTON_CLEARALL = "preference.ruleset.button.clearall";
+    public static final String MSGKEY_PREF_RULESET_BUTTON_RULEDESIGNER = "preference.ruleset.button.ruledesigner";
     public static final String MSGKEY_PREF_RULESET_BUTTON_ADDPROPERTY = "preference.ruleset.button.addproperty";
+    public static final String MSGKEY_PREF_RULESET_BUTTON_ADD_EXCLUDE_PATTERN = "preference.ruleset.button.add_exclude_pattern";
+    public static final String MSGKEY_PREF_RULESET_BUTTON_ADD_INCLUDE_PATTERN = "preference.ruleset.button.add_include_pattern";
     public static final String MSGKEY_PREF_RULESET_DIALOG_TITLE = "preference.ruleset.dialog.title";
     public static final String MSGKEY_PREF_RULESET_DIALOG_RULESET_DESCRIPTION = "preference.ruleset.dialog.ruleset_description";
     public static final String MSGKEY_PREF_RULESET_DIALOG_PROPERTY_NAME = "preference.ruleset.dialog.property_name";
@@ -168,14 +178,26 @@ public class StringKeys {
     public static final String MSGKEY_PREF_RULESETSELECTION_LABEL_ENTER_RULESET = "preference.rulesetselection.label.enter_ruleset";
     public static final String MSGKEY_PREF_RULESETSELECTION_TOOLTIP_RULESET = "preference.rulesetselection.tooltip.ruleset";
     public static final String MSGKEY_PREF_RULESETSELECTION_BUTTON_BROWSE = "preference.rulesetselection.button.browse";
+    public static final String MSGKEY_PREF_RULESETSELECTION_BUTTON_REFERENCE = "preference.rulesetselection.button.reference";
+    public static final String MSGKEY_PREF_RULESETSELECTION_BUTTON_COPY = "preference.rulesetselection.button.copy";
     
+    public static final String MSGKEY_PREF_RULEEDIT_LABEL_RULESET_NAME = "preference.ruleedit.label.ruleset_name";
+    public static final String MSGKEY_PREF_RULEEDIT_LABEL_SINCE = "preference.ruleedit.label.since";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_NAME = "preference.ruleedit.label.name";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_IMPLEMENTATION_CLASS = "preference.ruleedit.label.implementation_class";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_MESSAGE = "preference.ruleedit.label.message";
+    public static final String MSGKEY_PREF_RULEEDIT_LABEL_PRIORITY = "preference.ruleedit.label.priority";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_DESCRIPTION = "preference.ruleedit.label.description";
+    public static final String MSGKEY_PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL = "preference.ruleedit.label.external_info_url";
     public static final String MSGKEY_PREF_RULEEDIT_LABEL_EXAMPLE = "preference.ruleedit.label.example";
+    public static final String MSGKEY_PREF_RULEEDIT_LABEL_XPATH = "preference.ruleedit.label.xpath";
+    public static final String MSGKEY_PREF_RULEEDIT_BUTTON_RULE_REFERENCE = "preference.ruleedit.button.rule_reference";
     public static final String MSGKEY_PREF_RULEEDIT_BUTTON_XPATH_RULE = "preference.ruleedit.button.xpath_rule";
+    public static final String MSGKEY_PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION = "preference.ruleedit.button.uses_type_resolution";
+    public static final String MSGKEY_PREF_RULEEDIT_BUTTON_USES_DFA = "preference.ruleedit.button.uses_dfa";
+    public static final String MSGKEY_PREF_RULEEDIT_BUTTON_OPEN_EXTERNAL_INFO_URL = "preference.ruleedit.button.open_external_info_url";
 
+    public static final String MSGKEY_PREF_CPD_GROUP_GENERAL = "preference.cpd.group.general";
     public static final String MSGKEY_PREF_CPD_TITLE = "preference.cpd.title";
     public static final String MSGKEY_PREF_CPD_TILESIZE = "preference.cpd.tilesize";
     
@@ -307,7 +329,9 @@ public class StringKeys {
     
     public static final String MSGKEY_WARNING_TITLE = "message.warning.title";
     public static final String MSGKEY_WARNING_NAME_MANDATORY = "message.warning.name_mandatory";
+    public static final String MSGKEY_WARNING_PRIORITY_MANDATORY = "message.warning.priority_mandatory";
     public static final String MSGKEY_WARNING_MESSAGE_MANDATORY = "message.warning.message_mandatory";
+    public static final String MSGKEY_WARNING_XPATH_MANDATORY = "message.warning.xpath_mandatory";
     public static final String MSGKEY_WARNING_CLASS_INVALID = "message.warning.class_invalid";
     
     public static final String MSGKEY_PRIORITY_ERROR_HIGH   = "priority.error_high";

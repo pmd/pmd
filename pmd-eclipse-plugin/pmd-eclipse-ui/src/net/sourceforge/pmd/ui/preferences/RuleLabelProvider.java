@@ -3,10 +3,6 @@ package net.sourceforge.pmd.ui.preferences;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
 
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.swt.graphics.Image;
-
 /**
  * Implements a label provider for the rules item to be displayed in the
  * rule table of the PMD Preference page
@@ -29,16 +25,9 @@ import org.eclipse.swt.graphics.Image;
  *
  *
  */
-public class RuleLabelProvider implements ITableLabelProvider {
+public class RuleLabelProvider extends AbstractTableLabelProvider {
     private static final String PRIORITY_ILLEGAL = "* illegal *";
     private static final String[] PRIORITY_LABEL = PMDUiPlugin.getDefault().getPriorityLabels();
-
-    /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(Object, int)
-     */
-    public Image getColumnImage(Object element, int columnIndex) {
-        return null;
-    }
 
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object, int)
@@ -48,14 +37,28 @@ public class RuleLabelProvider implements ITableLabelProvider {
         if (element instanceof Rule) {
             Rule rule = (Rule) element;
             if (columnIndex == 0) {
-                result = rule.getName();
+                result = rule.getRuleSetName();
+                /*
+                if (rule instanceof RuleReference) {
+                	RuleReference ruleReference = (RuleReference)rule;
+                	String fileName = ruleReference.getRuleSetReference().getRuleSetFileName();
+                	if (fileName != null) {
+                		result = result + " : " + fileName;
+                	}
+                }
+                */
             } else if (columnIndex == 1) {
+                result = rule.getName();
+            } else if (columnIndex == 2) {
+                result = rule.getSince();
+                result = (result == null) ? "n/a" : result;
+            } else if (columnIndex == 3) {
                 if ((rule.getPriority() <= PRIORITY_LABEL.length) && (rule.getPriority() > 0)) {
                     result = PRIORITY_LABEL[rule.getPriority() - 1];
                 } else {
                     result = PRIORITY_ILLEGAL;
                 }
-            } else if (columnIndex == 2) {
+            } else if (columnIndex == 4) {
                 result = rule.getDescription();
                 result = (result == null) ? "" : result.trim();
             }
@@ -63,30 +66,4 @@ public class RuleLabelProvider implements ITableLabelProvider {
 
         return result;
     }
-
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(ILabelProviderListener)
-     */
-    public void addListener(ILabelProviderListener listener) {
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-     */
-    public void dispose() {
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(Object, String)
-     */
-    public boolean isLabelProperty(Object element, String property) {
-        return true;
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(ILabelProviderListener)
-     */
-    public void removeListener(ILabelProviderListener listener) {
-    }
-
 }

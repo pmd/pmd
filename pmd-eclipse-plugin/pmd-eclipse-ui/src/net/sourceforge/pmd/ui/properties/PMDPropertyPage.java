@@ -36,6 +36,7 @@
 package net.sourceforge.pmd.ui.properties;
 
 import java.util.Collection;
+import java.util.Comparator;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
@@ -44,12 +45,11 @@ import net.sourceforge.pmd.ui.nls.StringKeys;
 import net.sourceforge.pmd.ui.preferences.PMDPreferencePage;
 import net.sourceforge.pmd.ui.preferences.RuleLabelProvider;
 import net.sourceforge.pmd.ui.preferences.RuleSetContentProvider;
+import net.sourceforge.pmd.ui.preferences.RuleTableViewerSorter;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -59,10 +59,12 @@ import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.dialogs.PropertyPage;
 
@@ -162,6 +164,10 @@ public class PMDPropertyPage extends PropertyPage {
     private Button deselectWorkingSetButton;
     private Button includeDerivedFilesButton;
     protected Button ruleSetStoredInProjectButton;
+    protected Text ruleSetFileText;
+    protected Button ruleSetBrowseButton;
+
+    private final RuleTableViewerSorter availableRuleTableViewerSorter = new RuleTableViewerSorter(RuleTableViewerSorter.RULE_DEFAULT_COMPARATOR);
 
     /**
      * @see PropertyPage#createContents(Composite)
@@ -205,7 +211,7 @@ public class PMDPropertyPage extends PropertyPage {
             selectedWorkingSetLabel.setLayoutData(data);
 
             final Composite workingSetPanel = new Composite(composite, SWT.NONE);
-            final RowLayout rowLayout = new RowLayout();
+            RowLayout rowLayout = new RowLayout();
             rowLayout.type = SWT.HORIZONTAL;
             rowLayout.justify = true;
             rowLayout.pack = false;
@@ -230,12 +236,28 @@ public class PMDPropertyPage extends PropertyPage {
             data.heightHint = 50;
             availableRulesTable.setLayoutData(data);
 
-            this.ruleSetStoredInProjectButton = buildStoreRuleSetInProjectButton(composite);
+            final Composite ruleSetPanel = new Composite(composite, SWT.NONE);
+            GridLayout gridLayout = new GridLayout();
+            gridLayout.numColumns = 3;
+            ruleSetPanel.setLayout(gridLayout);
+            data = new GridData();
+            data.grabExcessHorizontalSpace = true;
+            data.horizontalAlignment = GridData.FILL;
+            ruleSetPanel.setLayoutData(data);
+            
+            this.ruleSetStoredInProjectButton = buildStoreRuleSetInProjectButton(ruleSetPanel);
+            this.ruleSetFileText = buildRuleSetFileText(ruleSetPanel);
+            this.ruleSetBrowseButton = buildRuleSetBrowseButton(ruleSetPanel);
+
+            data = new GridData(SWT.FILL, SWT.NONE, true, false);
+            ruleSetFileText.setLayoutData(data);
+            
+            refreshRuleSetInProject();
 
         } else {
             setValid(false);
         }
-
+        
         log.debug("Property page created");
         return composite;
     }
@@ -275,10 +297,44 @@ public class PMDPropertyPage extends PropertyPage {
 
         button.addSelectionListener(new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                final Table ruleTable = availableRulesTableViewer.getTable();
-                ruleTable.setEnabled(!ruleSetStoredInProjectButton.getSelection());
+            	refreshRuleSetInProject();
             }
         });       
+
+        return button;
+    }
+
+    /**
+     * Create the the rule set file name text.
+     * @param parent the parent composite
+     */
+    private Text buildRuleSetFileText(Composite parent) {
+        Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+        String ruleSetFile = model.getRuleSetFile();
+        if (ruleSetFile != null) {
+        	text.setText(ruleSetFile);
+        }
+        return text;
+    }
+
+    /**
+     * Create the button for browsing for a ruleset file.
+     * @param parent the parent composite
+     */
+    private Button buildRuleSetBrowseButton(final Composite parent) {
+        final Button button = new Button(parent, SWT.PUSH);
+        button.setText(getMessage(StringKeys.MSGKEY_PROPERTY_BUTTON_RULESET_BROWSE));
+
+        button.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent e) {
+            	// TODO EMF's ResourceDialog would be better.
+            	FileDialog fileDialog = new FileDialog(getShell(), SWT.OPEN);
+            	String path = fileDialog.open();
+				if (path != null) {
+					ruleSetFileText.setText(path);
+				}
+            }
+        });
 
         return button;
     }
@@ -315,50 +371,49 @@ public class PMDPropertyPage extends PropertyPage {
         availableRulesTableViewer = new TableViewer(parent, tableStyle);
 
         final Table ruleTable = availableRulesTableViewer.getTable();
-        final TableColumn ruleNameColumn = new TableColumn(ruleTable, SWT.LEFT);
-        ruleNameColumn.setResizable(true);
-        ruleNameColumn.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_NAME));
-        ruleNameColumn.setWidth(200);
 
-        final TableColumn rulePriorityColumn = new TableColumn(ruleTable, SWT.LEFT);
-        rulePriorityColumn.setResizable(true);
-        rulePriorityColumn.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY));
-        rulePriorityColumn.setWidth(110);
-
-        final TableColumn ruleDescriptionColumn = new TableColumn(ruleTable, SWT.LEFT);
-        ruleDescriptionColumn.setResizable(true);
-        ruleDescriptionColumn.setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION));
-        ruleDescriptionColumn.setWidth(200);
+        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULESET_NAME), 110, RuleTableViewerSorter.RULE_RULESET_NAME_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_RULE_NAME), 170, RuleTableViewerSorter.RULE_NAME_COMPARATOR);
+		addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_SINCE), 40, RuleTableViewerSorter.RULE_SINCE_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, false, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_PRIORITY), 80, RuleTableViewerSorter.RULE_PRIORITY_COMPARATOR);
+        addColumnTo(ruleTable, SWT.LEFT, true, getMessage(StringKeys.MSGKEY_PREF_RULESET_COLUMN_DESCRIPTION), 300, RuleTableViewerSorter.RULE_DESCRIPTION_COMPARATOR);
 
         ruleTable.setLinesVisible(true);
         ruleTable.setHeaderVisible(true);
 
         this.availableRulesTableViewer.setContentProvider(new RuleSetContentProvider());
         this.availableRulesTableViewer.setLabelProvider(new RuleLabelProvider());
+        this.availableRulesTableViewer.setSorter(this.availableRuleTableViewerSorter);
         this.availableRulesTableViewer.setColumnProperties(
             new String[] {
-                PMDPreferencePage.PROPERTY_NAME,
+                PMDPreferencePage.PROPERTY_RULESET_NAME,
+                PMDPreferencePage.PROPERTY_RULE_NAME,
+                PMDPreferencePage.PROPERTY_SINCE,
                 PMDPreferencePage.PROPERTY_PRIORITY,
                 PMDPreferencePage.PROPERTY_DESCRIPTION });
 
-        this.availableRulesTableViewer.setSorter(new ViewerSorter() {
-            public int compare(Viewer viewer, Object e1, Object e2) {
-                int result = 0;
-                if ((e1 instanceof Rule) && (e2 instanceof Rule)) {
-                    result = ((Rule) e1).getName().compareTo(((Rule) e2).getName());
-                }
-                return result;
-            }
-
-            public boolean isSorterProperty(Object element, String property) {
-                return property.equals(PMDPreferencePage.PROPERTY_NAME);
-            }
-        });
-
         populateAvailableRulesTable();
-        ruleTable.setEnabled(!model.isRuleSetStoredInProject());
 
         return ruleTable;
+    }
+    
+    /**
+     * Helper method to add new table columns
+     */
+    private void addColumnTo(Table table, int alignment, boolean resizable, String text, int width, final Comparator comparator) {
+        
+    	TableColumn newColumn = new TableColumn(table, alignment);
+    	newColumn.setResizable(resizable);
+    	newColumn.setText(text);
+    	newColumn.setWidth(width);
+    	if (comparator != null) {
+	    	newColumn.addSelectionListener(new SelectionAdapter() {
+	            public void widgetSelected(SelectionEvent e) {
+                    availableRuleTableViewerSorter.setComparator(comparator);
+                    refresh();
+	            }
+	        });
+    	}
     }
 
     /**
@@ -421,6 +476,7 @@ public class PMDPropertyPage extends PropertyPage {
         this.model.setProjectWorkingSet(this.selectedWorkingSet);
         this.model.setProjectRuleSet(this.getProjectRuleSet());
         this.model.setRuleSetStoredInProject(this.ruleSetStoredInProjectButton.getSelection());
+        this.model.setRuleSetFile(this.ruleSetFileText.getText());
         this.model.setIncludeDerivedFiles(this.includeDerivedFilesButton.getSelection());
         
         return controller.performOk();
@@ -492,4 +548,33 @@ public class PMDPropertyPage extends PropertyPage {
         return PMDUiPlugin.getDefault().getStringTable().getString(key);
     }
 
+    /**
+     * Refresh the list
+     */
+    protected void refresh() {
+        try {
+            availableRulesTableViewer.getControl().setRedraw(false);
+            availableRulesTableViewer.refresh();
+        } catch (ClassCastException e) {
+            PMDUiPlugin.getDefault().logError("Ignoring exception while refreshing table", e);
+        } finally {
+        	availableRulesTableViewer.getControl().setRedraw(true);
+        }
+    }
+
+    /**
+     * Refresh based up whether using rule set in project or not
+     */
+    protected void refreshRuleSetInProject() {
+        final Table ruleTable = availableRulesTableViewer.getTable();
+        if (ruleSetStoredInProjectButton.getSelection()) {
+            ruleTable.setEnabled(false);
+            ruleSetBrowseButton.setEnabled(true);
+            ruleSetFileText.setEnabled(true);
+        } else {
+            ruleTable.setEnabled(true);
+            ruleSetBrowseButton.setEnabled(false);
+            ruleSetFileText.setEnabled(false);
+        }
+    }
 }

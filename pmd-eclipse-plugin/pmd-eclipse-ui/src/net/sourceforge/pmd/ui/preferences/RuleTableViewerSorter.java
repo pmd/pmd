@@ -38,6 +38,8 @@ package net.sourceforge.pmd.ui.preferences;
 
 import java.util.Comparator;
 
+import net.sourceforge.pmd.Rule;
+
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 
@@ -58,6 +60,65 @@ import org.eclipse.jface.viewers.ViewerSorter;
  */
 
 public class RuleTableViewerSorter extends ViewerSorter {
+
+    /**
+     * Default Rule comparator for tabular display of Rules.
+     */
+    public static final Comparator RULE_DEFAULT_COMPARATOR = new Comparator() {
+        public int compare(Object e1, Object e2) {
+        	int cmp = RULE_RULESET_NAME_COMPARATOR.compare(e1, e2);
+        	if (cmp == 0) {
+        		cmp = RULE_NAME_COMPARATOR.compare(e1, e2);
+        	}
+        	return cmp;
+        }
+    };
+
+    /**
+     * Rule Name comparator for tabular display of Rules.
+     */
+    public static final Comparator RULE_RULESET_NAME_COMPARATOR = new Comparator() {
+        public int compare(Object e1, Object e2) {
+        	return compareStrings(((Rule)e1).getRuleSetName(), ((Rule)e2).getRuleSetName());
+        }
+    };
+
+    /**
+     * Rule Name comparator for tabular display of Rules.
+     */
+    public static final Comparator RULE_NAME_COMPARATOR = new Comparator() {
+        public int compare(Object e1, Object e2) {
+        	return compareStrings(((Rule)e1).getName(), ((Rule)e2).getName());
+        }
+    };
+
+    /**
+     * Rule Since comparator for tabular display of Rules.
+     */
+    public static final Comparator RULE_SINCE_COMPARATOR = new Comparator() {
+        public int compare(Object e1, Object e2) {
+        	return compareStrings(((Rule)e1).getSince(), ((Rule)e2).getSince());
+        }
+    };   
+
+    /**
+     * Rule Priority comparator for tabular display of Rules.
+     */
+    public static final Comparator RULE_PRIORITY_COMPARATOR = new Comparator() {
+        public int compare(Object e1, Object e2) {
+            return ((Rule) e1).getPriority() - (((Rule) e2).getPriority());
+        }
+    };   
+
+    /**
+     * Rule Description comparator for tabular display of Rules.
+     */
+    public static final Comparator RULE_DESCRIPTION_COMPARATOR = new Comparator() {
+        public int compare(Object e1, Object e2) {
+        	return compareStrings(((Rule)e1).getDescription(), ((Rule)e2).getDescription());
+            }
+    };
+
     private Comparator comparator;
     private boolean sortDescending = false;
     
@@ -111,5 +172,16 @@ public class RuleTableViewerSorter extends ViewerSorter {
         return this.sortDescending ? 0 - result : result;
     }
 
-    
+    /**
+     * Compare string pairs while handling nulls and trimming whitespace.
+     * 
+     * @param s1
+     * @param s2
+     * @return int
+     */
+    private static int compareStrings(String s1, String s2) {
+    	String str1 = s1 == null ? "" : s1.trim().toUpperCase();
+    	String str2 = s2 == null ? "" : s2.trim().toUpperCase();
+     	return str1.compareTo(str2);
+    }
 }

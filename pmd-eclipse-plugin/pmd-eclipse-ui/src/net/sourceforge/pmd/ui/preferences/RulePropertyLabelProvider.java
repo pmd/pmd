@@ -1,9 +1,6 @@
 package net.sourceforge.pmd.ui.preferences;
 
 import org.apache.log4j.Logger;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * Implements a label provider for the item of the rule properties table of
@@ -24,15 +21,8 @@ import org.eclipse.swt.graphics.Image;
  *
  *
  */
-public class RulePropertyLabelProvider implements ITableLabelProvider {
+public class RulePropertyLabelProvider extends AbstractTableLabelProvider {
     private static final Logger log = Logger.getLogger(RulePropertyLabelProvider.class);
-
-    /**
-     * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(Object, int)
-     */
-    public Image getColumnImage(Object element, int columnIndex) {
-        return null;
-    }
 
     /**
      * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(Object, int)
@@ -51,30 +41,4 @@ public class RulePropertyLabelProvider implements ITableLabelProvider {
         }
         return result;
     }
-
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(ILabelProviderListener)
-     */
-    public void addListener(ILabelProviderListener listener) {
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-     */
-    public void dispose() {
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(Object, String)
-     */
-    public boolean isLabelProperty(Object element, String property) {
-        return true;
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(ILabelProviderListener)
-     */
-    public void removeListener(ILabelProviderListener listener) {
-    }
-
 }

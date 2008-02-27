@@ -151,6 +151,7 @@ public class PMDPropertyPageController {
                 this.propertyPageBean.setProjectWorkingSet(properties.getProjectWorkingSet());
                 this.propertyPageBean.setProjectRuleSet(properties.getProjectRuleSet());
                 this.propertyPageBean.setRuleSetStoredInProject(properties.isRuleSetStoredInProject());
+                this.propertyPageBean.setRuleSetFile(properties.getRuleSetFile());
                 this.propertyPageBean.setIncludeDerivedFiles(properties.isIncludeDerivedFiles());
                 this.pmdAlreadyActivated = properties.isPmdEnabled();
 
@@ -187,6 +188,7 @@ public class PMDPropertyPageController {
             cmd.setProjectWorkingSet(this.propertyPageBean.getProjectWorkingSet());
             cmd.setProjectRuleSet(this.propertyPageBean.getProjectRuleSet());
             cmd.setRuleSetStoredInProject(this.propertyPageBean.isRuleSetStoredInProject());
+            cmd.setRuleSetFile(this.propertyPageBean.getRuleSetFile());
             cmd.setIncludeDerivedFiles(this.propertyPageBean.isIncludeDerivedFiles());
             cmd.setUserInitiated(true);
             cmd.performExecute();

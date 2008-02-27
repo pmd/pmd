@@ -1,8 +1,6 @@
 package net.sourceforge.pmd.ui.preferences;
 
 import net.sourceforge.pmd.RuleSet;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 
 /**
  * This class implements a content provider for the rule table of
@@ -20,7 +18,7 @@ import org.eclipse.jface.viewers.Viewer;
  *
  *
  */
-public class RuleSetContentProvider implements IStructuredContentProvider {
+public class RuleSetContentProvider extends AbstractStructuredContentProvider {
 
     /**
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(Object)
@@ -35,17 +33,4 @@ public class RuleSetContentProvider implements IStructuredContentProvider {
         
         return elements;
     }
-
-    /**
-     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-     */
-    public void dispose() {
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(Viewer, Object, Object)
-     */
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-    }
-
 }

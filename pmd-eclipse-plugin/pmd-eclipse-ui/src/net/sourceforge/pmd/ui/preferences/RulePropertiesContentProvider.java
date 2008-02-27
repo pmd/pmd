@@ -5,8 +5,6 @@ import java.util.Enumeration;
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
 
 /**
  * This class implements a content provider for the rule properties table of
@@ -24,7 +22,7 @@ import org.eclipse.jface.viewers.Viewer;
  *
  *
  */
-public class RulePropertiesContentProvider implements IStructuredContentProvider {
+public class RulePropertiesContentProvider extends AbstractStructuredContentProvider {
 
     /**
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(Object)
@@ -44,17 +42,4 @@ public class RulePropertiesContentProvider implements IStructuredContentProvider
         
         return result;
     }
-
-    /**
-     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-     */
-    public void dispose() {
-    }
-
-    /**
-     * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(Viewer, Object, Object)
-     */
-    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-    }
-
 }

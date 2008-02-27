@@ -15,6 +15,7 @@ import net.sourceforge.pmd.ui.nls.StringKeys;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -53,10 +54,13 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class RuleSetSelectionDialog extends Dialog {
     protected Combo inputCombo;
+    private Button referenceButton;
+    private Button copyButton;
     private String importedRuleSetName;
     private final RuleSet[] ruleSets;
     private final String[] ruleSetNames;
     private RuleSet selectedRuleSet;
+    private boolean importByReference;
 
     /**
      * Constructor for RuleSetSelectionDialog.
@@ -95,23 +99,36 @@ public class RuleSetSelectionDialog extends Dialog {
     protected Control createDialogArea(Composite parent) {
         Composite dlgArea = new Composite(parent, SWT.NULL);
 
-        // Create controls (order is important)
-        buildLabel(dlgArea, getMessage(StringKeys.MSGKEY_PREF_RULESETSELECTION_LABEL_ENTER_RULESET));
-        buildLabel(dlgArea, "");
-        inputCombo = buildInputCombo(dlgArea);
-        buildBrowseButton(dlgArea);
-
         // Layout controls
         GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 2;
+        gridLayout.numColumns = 3;
         dlgArea.setLayout(gridLayout);
 
+        // Create controls (order is important)
+        Label enterRuleSetLabel = buildLabel(dlgArea, getMessage(StringKeys.MSGKEY_PREF_RULESETSELECTION_LABEL_ENTER_RULESET));
         GridData data = new GridData();
-        data.horizontalAlignment = GridData.FILL;
-        data.grabExcessHorizontalSpace = true;
+        data.horizontalSpan = 3;
         data.widthHint = 200;
+        enterRuleSetLabel.setLayoutData(data);
+
+        inputCombo = buildInputCombo(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.horizontalSpan = 2;
+        data.grabExcessHorizontalSpace = true;
         inputCombo.setLayoutData(data);
         
+        buildBrowseButton(dlgArea);
+
+        referenceButton = buildReferenceButton(dlgArea);
+
+        copyButton = buildCopyButton(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.horizontalSpan = 2;
+        data.grabExcessHorizontalSpace = true;
+        copyButton.setLayoutData(data);
+
         // Set the window title
         getShell().setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_TITLE));
 
@@ -162,6 +179,41 @@ public class RuleSetSelectionDialog extends Dialog {
     }
 
     /**
+     * Build the reference button
+     */
+    private Button buildReferenceButton(Composite parent) {
+        final Button button = new Button(parent, SWT.CHECK);
+        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESETSELECTION_BUTTON_REFERENCE));
+        button.setSelection(true);
+        importByReference = true;
+        button.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+            	copyButton.setSelection(false);
+            	importByReference = true;
+            }
+        });
+
+        return button;
+    }
+
+    /**
+     * Build the copy button
+     */
+    private Button buildCopyButton(Composite parent) {
+        final Button button = new Button(parent, SWT.CHECK);
+        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULESETSELECTION_BUTTON_COPY));
+        button.setSelection(false);
+        button.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+            	referenceButton.setSelection(false);
+            	importByReference = false;
+            }
+        });
+
+        return button;
+    }
+
+    /**
      * Returns the importedRuleSetName.
      * @return String
      */
@@ -174,6 +226,13 @@ public class RuleSetSelectionDialog extends Dialog {
      */
     public RuleSet getSelectedRuleSet() {
         return this.selectedRuleSet;
+    }
+    
+    /**
+     * @return import by reference
+     */
+    public boolean isImportByReference() {
+    	return importByReference;
     }
 
     /**

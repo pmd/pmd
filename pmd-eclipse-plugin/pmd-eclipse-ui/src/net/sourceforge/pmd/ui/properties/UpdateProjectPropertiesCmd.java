@@ -78,6 +78,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
     private IWorkingSet projectWorkingSet;
     private RuleSet projectRuleSet;
     private boolean ruleSetStoredInProject;
+    private String ruleSetFile;
     private boolean needRebuild;
     private boolean ruleSetFileExists;
     private boolean includeDerivedFiles;
@@ -105,6 +106,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
             properties.setProjectRuleSet(this.projectRuleSet);
             properties.setProjectWorkingSet(this.projectWorkingSet);
             properties.setRuleSetStoredInProject(this.ruleSetStoredInProject);
+            properties.setRuleSetFile(this.ruleSetFile);
             properties.setIncludeDerivedFiles(this.includeDerivedFiles);
             properties.sync();
             this.needRebuild = properties.isNeedRebuild();
@@ -153,6 +155,13 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
     }
 
     /**
+     * @param ruleSetFile The ruleSetFile to set.
+     */
+    public void setRuleSetFile(String ruleSetFile) {
+		this.ruleSetFile = ruleSetFile;
+	}
+
+	/**
      * @param includeDerivedFiles The includeDerivedFiles to set.
      */
     public void setIncludeDerivedFiles(boolean includeDerivedFiles) {
@@ -181,6 +190,7 @@ public class UpdateProjectPropertiesCmd extends AbstractDefaultCommand {
         this.setPmdEnabled(false);
         this.setProjectRuleSet(null);
         this.setRuleSetStoredInProject(false);
+        this.setRuleSetFile(null);
         this.setIncludeDerivedFiles(false);
         this.setTerminated(false);
     }

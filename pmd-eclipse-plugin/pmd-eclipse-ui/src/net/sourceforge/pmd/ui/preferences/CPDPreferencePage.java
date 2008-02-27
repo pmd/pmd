@@ -11,6 +11,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
@@ -50,21 +51,47 @@ public class CPDPreferencePage extends PreferencePage implements IWorkbenchPrefe
      * @see PreferencePage#createContents
      */
     protected Control createContents(Composite parent) {
-        Composite entryTable = new Composite(parent, SWT.NULL);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
-        entryTable.setLayout(layout);
 
-        minTileLabel = new Label(entryTable, SWT.NULL);
+        // Create parent composite
+        Composite composite = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout(1, false);
+        layout.verticalSpacing = 10;
+        composite.setLayout(layout);
+
+        // Create children
+        Group generalGroup = buildGeneralGroup(composite);
+        
+        // Layout children
+        generalGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+        return composite;
+    }
+
+    /**
+     * Build the group of general preferences
+     * @param parent the parent composite
+     * @return the group widget
+     */
+    private Group buildGeneralGroup(final Composite parent) {
+        
+        // build the group
+        Group group = new Group(parent, SWT.SHADOW_IN);
+        group.setText(getMessage(StringKeys.MSGKEY_PREF_CPD_GROUP_GENERAL));
+        group.setLayout(new GridLayout(2, false));
+
+        // build the children
+        minTileLabel = new Label(group, SWT.NULL);
         minTileLabel.setText(getMessage(StringKeys.MSGKEY_PREF_CPD_TILESIZE));
 
-        minTileText = new Text(entryTable, SWT.BORDER);
+        minTileText = new Text(group, SWT.BORDER);
         minTileText.setText(String.valueOf(this.preferences.getMinTileSize()));
+
+        // layout children
         GridData data = new GridData(GridData.FILL_HORIZONTAL);
         data.grabExcessHorizontalSpace = true;
         minTileText.setLayoutData(data);
 
-        return entryTable;
+        return group;
     }
 
     /**

@@ -1,6 +1,10 @@
 package net.sourceforge.pmd.ui.preferences;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleReference;
 import net.sourceforge.pmd.rules.XPathRule;
 import net.sourceforge.pmd.ui.PMDUiPlugin;
 import net.sourceforge.pmd.ui.nls.StringKeys;
@@ -10,15 +14,20 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.browser.IWebBrowser;
 
 /**
  * Implements a dialog for adding or editing a rule. When editing, the rule is
@@ -62,11 +71,20 @@ public class RuleDialog extends Dialog {
     private int mode = MODE_ADD;
     private Rule editedRule;
     private Rule rule;
+    private Text ruleSetNameText;
+    private Button ruleReferenceButton;
+    private Text sinceText;
     private Text nameText;
     private Button xpathRuleButton;
     private Text messageText;
+    private Combo priorityCombo;
+    protected Button usesTypeResolutionButton;
+    protected Button usesDfaButton;
     private Text descriptionText;
+    private Text externalInfoUrlText;
+    protected Button openExternalInfoUrlButton;
     private Text exampleText;
+    protected Text xpathText;
     private Font courierFont;
 
     /**
@@ -110,17 +128,44 @@ public class RuleDialog extends Dialog {
         Composite dlgArea = new Composite(parent, SWT.NULL);
 
         GridLayout gridLayout = new GridLayout();
-        gridLayout.numColumns = 2;
+        gridLayout.numColumns = 4;
         dlgArea.setLayout(gridLayout);
 
-        Label nameLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_NAME);
+        Label ruleSetNameLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_RULESET_NAME);
         GridData data = new GridData();
+        data.horizontalSpan = 1;
+        ruleSetNameLabel.setLayoutData(data);
+
+        ruleSetNameText = buildRuleSetNameText(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
         data.horizontalSpan = 2;
+        data.grabExcessHorizontalSpace = true;
+        ruleSetNameText.setLayoutData(data);
+
+        ruleReferenceButton = buildRuleReferenceButton(dlgArea);
+
+        Label sinceLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_SINCE);
+        data = new GridData();
+        data.horizontalSpan = 1;
+        sinceLabel.setLayoutData(data);
+
+        sinceText = buildSinceText(dlgArea);
+        data = new GridData();
+//        data.horizontalAlignment = GridData.;
+        data.horizontalSpan = 3;
+        data.grabExcessHorizontalSpace = false;
+        sinceText.setLayoutData(data);
+
+        Label nameLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_NAME);
+        data = new GridData();
+        data.horizontalSpan = 4;
         nameLabel.setLayoutData(data);
 
         nameText = buildNameText(dlgArea);
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
+        data.horizontalSpan = 3;
         data.grabExcessHorizontalSpace = true;
         nameText.setLayoutData(data);
 
@@ -128,62 +173,110 @@ public class RuleDialog extends Dialog {
 
         Label implementationClassLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_IMPLEMENTATION_CLASS);
         data = new GridData();
-        data.horizontalSpan = 2;
+        data.horizontalSpan = 4;
         implementationClassLabel.setLayoutData(data);
 
         implementationClassText = buildImplementationClassText(dlgArea);
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
-        data.horizontalSpan = 2;
+        data.horizontalSpan = 4;
         data.grabExcessHorizontalSpace = true;
         implementationClassText.setLayoutData(data);
 
         Label messageLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_MESSAGE);
         data = new GridData();
-        data.horizontalSpan = 2;
+        data.horizontalSpan = 4;
         messageLabel.setLayoutData(data);
 
         messageText = buildMessageText(dlgArea);
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
-        data.horizontalSpan = 2;
+        data.horizontalSpan = 4;
         data.grabExcessHorizontalSpace = true;
         messageText.setLayoutData(data);
 
+        Label priorityLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_PRIORITY);
+        data = new GridData();
+        data.horizontalSpan = 1;
+        priorityLabel.setLayoutData(data);
+
+        priorityCombo = buildPriorityCombo(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.horizontalSpan = 1;
+        data.grabExcessHorizontalSpace = true;
+        priorityCombo.setLayoutData(data);
+
+        usesTypeResolutionButton = buildUsesTypeResolutionButton(dlgArea);
+
+        usesDfaButton = buildUsesDfaButton(dlgArea);
+
         Label descriptionLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_DESCRIPTION);
         data = new GridData();
-        data.horizontalSpan = 2;
+        data.horizontalSpan = 4;
         descriptionLabel.setLayoutData(data);
 
         descriptionText = buildDescriptionText(dlgArea);
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.verticalAlignment = GridData.FILL;
-        data.horizontalSpan = 2;
+        data.horizontalSpan = 4;
         data.grabExcessHorizontalSpace = true;
         data.grabExcessVerticalSpace = true;
         data.widthHint = 300;
         data.heightHint = 100;
         descriptionText.setLayoutData(data);
 
+        Label externalInfoUrlLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_EXTERNAL_INFO_URL);
+        data = new GridData();
+        data.horizontalSpan = 3;
+        externalInfoUrlLabel.setLayoutData(data);
+
+        openExternalInfoUrlButton = buildOpenExternalInfoUrlButton(dlgArea);
+
+        externalInfoUrlText = buildExternalInfoUrlText(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.horizontalSpan = 4;
+        data.grabExcessHorizontalSpace = true;
+        externalInfoUrlText.setLayoutData(data);
+
         Label exampleLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_EXAMPLE);
         data = new GridData();
-        data.horizontalSpan = 2;
+        data.horizontalSpan = 4;
         exampleLabel.setLayoutData(data);
 
         exampleText = buildExampleText(dlgArea);
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
         data.verticalAlignment = GridData.FILL;
-        data.horizontalSpan = 2;
+        data.horizontalSpan = 4;
+        data.grabExcessHorizontalSpace = true;
+        data.grabExcessVerticalSpace = true;
+        data.widthHint = 300;
+        data.heightHint = 70;
+        exampleText.setLayoutData(data);
+
+        Label xpathLabel = buildLabel(dlgArea, StringKeys.MSGKEY_PREF_RULEEDIT_LABEL_XPATH);
+        data = new GridData();
+        data.horizontalSpan = 4;
+        xpathLabel.setLayoutData(data);
+
+        xpathText = buildXPathText(dlgArea);
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.verticalAlignment = GridData.FILL;
+        data.horizontalSpan = 4;
         data.grabExcessHorizontalSpace = true;
         data.grabExcessVerticalSpace = true;
         data.widthHint = 300;
         data.heightHint = 100;
-        exampleText.setLayoutData(data);
-
+        xpathText.setLayoutData(data);
+        
         // Set the window title
         getShell().setText(getMessage(StringKeys.MSGKEY_PREF_RULESET_DIALOG_TITLE));
+        
+        refreshOverridden();
 
         return dlgArea;
     }
@@ -198,6 +291,68 @@ public class RuleDialog extends Dialog {
     }
 
     /**
+     * Build the rule set name text
+     */
+    private Text buildRuleSetNameText(Composite parent) {
+        Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+        if (mode == MODE_ADD) {
+        	text.setText("pmd-eclipse");
+        	text.setEnabled(false);
+        }
+
+        if (mode == MODE_EDIT) {
+       		text.setText(editedRule.getRuleSetName());
+            text.setEnabled(false);
+        }
+
+        if (mode == MODE_VIEW) {
+       		text.setText(editedRule.getRuleSetName());
+            text.setEnabled(false);
+        }
+
+        return text;
+    }
+
+    /**
+     * Build the rule reference button
+     */
+    private Button buildRuleReferenceButton(Composite parent) {
+        final Button button = new Button(parent, SWT.CHECK);
+        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_RULE_REFERENCE));
+        button.setEnabled(false);
+        button.setSelection(editedRule instanceof RuleReference);
+        return button;
+    }
+
+    /**
+     * Build the since text
+     */
+    private Text buildSinceText(Composite parent) {
+        Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+    	text.setEnabled(false);
+
+    	String since = "n/a";
+    	if (editedRule != null && editedRule.getSince() != null)
+    	{
+    		since = editedRule.getSince();
+    	}
+
+    	if (mode == MODE_ADD) {
+        	text.setText(since);
+        }
+
+        if (mode == MODE_EDIT) {
+        	text.setText(since);
+        }
+
+        if (mode == MODE_VIEW) {
+        	text.setText(since);
+        }
+
+        return text;
+    }
+
+    /**
      * Build the rule name text
      */
     private Text buildNameText(Composite parent) {
@@ -207,7 +362,7 @@ public class RuleDialog extends Dialog {
         }
 
         if (mode == MODE_EDIT) {
-            text.setText(editedRule.getName());
+       		text.setText(editedRule.getName());
             text.setEnabled(false);
         }
 
@@ -230,11 +385,11 @@ public class RuleDialog extends Dialog {
             button.setVisible(false);
         } else {
             if (mode == MODE_EDIT) {
-                button.setSelection(editedRule instanceof XPathRule);
+                button.setSelection(editedRule.getRuleClass().endsWith("XPathRule"));
                 button.setEnabled(false);
             } else {
                 button.setEnabled(true);
-                button.setSelection(false);
+                button.setSelection(true);
             }
 
             button.addSelectionListener(new SelectionAdapter() {
@@ -242,9 +397,20 @@ public class RuleDialog extends Dialog {
                     if (button.getSelection()) {
                         implementationClassText.setText(XPathRule.class.getName());
                         implementationClassText.setEnabled(false);
+                        xpathText.setEnabled(true);
+                        usesTypeResolutionButton.setEnabled(false);
+                        usesTypeResolutionButton.setSelection(true);
+                        usesDfaButton.setEnabled(false);
+                        usesDfaButton.setSelection(false);
                     } else {
                         implementationClassText.setText("");
                         implementationClassText.setEnabled(true);
+                        xpathText.setText("");
+                        xpathText.setEnabled(false);
+                        usesTypeResolutionButton.setEnabled(true);
+                        usesTypeResolutionButton.setSelection(true);
+                        usesDfaButton.setEnabled(true);
+                        usesDfaButton.setSelection(false);
                     }
                 }
             });
@@ -259,13 +425,18 @@ public class RuleDialog extends Dialog {
     private Text buildImplementationClassText(Composite parent) {
         Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
         if (mode == MODE_EDIT) {
-            text.setText(editedRule.getClass().getName());
+            text.setText(editedRule.getRuleClass());
             text.setEnabled(false);
         }
 
         if (mode == MODE_VIEW) {
             text.setEditable(false);
-            text.setText(editedRule.getClass().getName());
+            text.setText(editedRule.getRuleClass());
+        }
+        
+        if (mode == MODE_ADD) {
+        	text.setText(XPathRule.class.getName());
+            text.setEnabled(false);
         }
 
         return text;
@@ -290,12 +461,87 @@ public class RuleDialog extends Dialog {
     }
 
     /**
+     * Build the priority combo
+     */
+    private Combo buildPriorityCombo(Composite parent) {
+        Combo combo = new Combo(parent, SWT.SINGLE | SWT.BORDER);
+    	String[] labels = PMDUiPlugin.getDefault().getPriorityLabels();
+    	int index = 3-1;
+		if (editedRule != null && editedRule.getPriority() >= 0 && editedRule.getPriority() <= labels.length) {
+			index = editedRule.getPriority() - 1;
+		}
+    	for (int i = 0; i < labels.length; i++) {
+    		String label = labels[i];
+    		combo.add(label);
+    	}
+    	combo.select(index);
+
+        if (mode == MODE_VIEW) {
+    		combo.setEnabled(false);
+        }
+        else if (mode == MODE_EDIT) {
+    		combo.setEnabled(true);
+        }
+	    else if (mode == MODE_ADD) {
+    		combo.setEnabled(true);
+	    }
+        return combo;
+    }
+
+    /**
+     * Build the uses type resolution button
+     */
+    private Button buildUsesTypeResolutionButton(Composite parent) {
+        final Button button = new Button(parent, SWT.CHECK);
+        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_USES_TYPE_RESOLUTION));
+
+        if (mode == MODE_VIEW) {
+            button.setVisible(false);
+        } else {
+            if (mode == MODE_EDIT) {
+                button.setEnabled(false);
+                button.setSelection(editedRule.usesTypeResolution());
+            } else {
+                button.setEnabled(false);
+                button.setSelection(true);
+            }
+        }
+
+        return button;
+    }
+
+    /**
+     * Build the uses dfa button
+     */
+    private Button buildUsesDfaButton(Composite parent) {
+        final Button button = new Button(parent, SWT.CHECK);
+        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_USES_DFA));
+
+        if (mode == MODE_VIEW) {
+            button.setVisible(false);
+        } else {
+            if (mode == MODE_EDIT) {
+                button.setEnabled(false);
+                button.setSelection(editedRule.usesDFA());
+            } else {
+                button.setEnabled(false);
+                button.setSelection(false);
+            }
+        }
+
+        return button;
+    }
+
+    /**
      * Build the description text
      */
     private Text buildDescriptionText(Composite parent) {
         Text text = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP);
 
-        String description = this.editedRule.getDescription();
+        String description = null;
+        if (editedRule != null) {
+        	description = editedRule.getDescription();
+        }
         if (description == null) {
             description = "";
         }
@@ -309,21 +555,121 @@ public class RuleDialog extends Dialog {
     }
 
     /**
+     * Build the external info url text
+     */
+    private Text buildExternalInfoUrlText(Composite parent) {
+        Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+
+        String externalInfoUrl = null;
+        if (editedRule != null) {
+        	externalInfoUrl = editedRule.getExternalInfoUrl();
+        }
+        if (externalInfoUrl == null) {
+        	externalInfoUrl = "";
+        }
+        text.setText(externalInfoUrl.trim());
+
+        if (mode == MODE_VIEW) {
+            text.setEditable(false);
+        }
+
+        return text;
+    }
+
+    /**
+     * Build the open external info url button
+     */
+    private Button buildOpenExternalInfoUrlButton(Composite parent) {
+        final Button button = new Button(parent, SWT.PUSH);
+        button.setText(getMessage(StringKeys.MSGKEY_PREF_RULEEDIT_BUTTON_OPEN_EXTERNAL_INFO_URL));
+
+        button.addSelectionListener(new SelectionAdapter() {
+            public void widgetSelected(SelectionEvent event) {
+            	String url = externalInfoUrlText.getText().trim();
+            	if (url.length() > 0) {
+            		try {
+						IWebBrowser browser = PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser();
+						browser.openURL(new URL(url));
+					} catch (PartInitException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (MalformedURLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+            	}
+            }
+        });
+
+        return button;
+    }
+    
+    /**
      * Build the example text
      */
     private Text buildExampleText(Composite parent) {
         Text text = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         text.setFont(courierFont);
         if (mode == MODE_EDIT) {
-            text.setText(this.editedRule.getExamples().get(0).toString().trim());
+            text.setText(this.editedRule.getExample().trim());
         }
 
         if (mode == MODE_VIEW) {
             text.setEditable(false);
-            text.setText(this.editedRule.getExamples().get(0).toString().trim());
+            text.setText(this.editedRule.getExample().trim());
         }
 
         return text;
+    }
+
+    /**
+     * Build the xpath text
+     */
+    private Text buildXPathText(Composite parent) {
+        Text text = new Text(parent, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+        text.setFont(courierFont);
+        
+        if (mode == MODE_ADD) {
+            text.setEditable(true);
+            text.setEnabled(true);
+        }
+        
+        if (mode == MODE_EDIT) {
+        	if (this.editedRule.hasProperty("xpath")) {
+                text.setText(this.editedRule.getStringProperty("xpath").trim());
+                text.setEditable(true);
+        	}
+        }
+
+        if (mode == MODE_VIEW) {
+            text.setEditable(false);
+        	if (this.editedRule.hasProperty("xpath")) {
+                text.setText(this.editedRule.getStringProperty("xpath").trim());
+        	}
+        }
+
+        return text;
+    }
+    
+    /**
+     * Based on current settings of a RuleReference being edited, update the visual
+     * indicators of whether an override of the underlying Rule is occurring
+     * or not. 
+     */
+    protected void refreshOverridden() {
+    	if (mode == MODE_EDIT || mode == MODE_VIEW) {
+    		if (editedRule instanceof RuleReference) {
+    			RuleReference ruleReference = (RuleReference)editedRule;
+    			Color lightBlue = new Color(null, 196, 196, 255);
+    			nameText.setBackground(ruleReference.getOverriddenName() != null ? lightBlue: null);
+    			messageText.setBackground(ruleReference.getOverriddenMessage() != null ? lightBlue: null);
+    			priorityCombo.setBackground(ruleReference.getOverriddenPriority() != null ? lightBlue: null);
+    			descriptionText.setBackground(ruleReference.getOverriddenDescription() != null ? lightBlue: null);
+    			externalInfoUrlText.setBackground(ruleReference.getOverriddenExternalInfoUrl() != null ? lightBlue: null);
+    			exampleText.setBackground(ruleReference.getOverriddenExamples() != null ? lightBlue: null);
+    			xpathText.setBackground(ruleReference.getOverriddenProperties() != null && ruleReference.getOverriddenProperties().containsKey("xpath") ? lightBlue: null);
+    		}
+    	}
     }
 
     /**
@@ -351,7 +697,7 @@ public class RuleDialog extends Dialog {
      * Perform the form validation
      */
     private boolean validateForm() {
-        return validateName() && validateMessage() && validateImplementationClass();
+        return validateName() && validatePriority() && validateMessage() && validateImplementationClass();
     }
 
     /**
@@ -365,6 +711,22 @@ public class RuleDialog extends Dialog {
             MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
                     getMessage(StringKeys.MSGKEY_WARNING_NAME_MANDATORY));
             nameText.setFocus();
+            flValid = false;
+        }
+
+        return flValid;
+    }
+
+    /**
+     * Perform the priority validation
+     */
+    private boolean validatePriority() {
+        boolean flValid = true;
+
+        if (priorityCombo.getSelectionIndex() < 0) {
+            MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
+                    getMessage(StringKeys.MSGKEY_WARNING_PRIORITY_MANDATORY));
+            priorityCombo.setFocus();
             flValid = false;
         }
 
@@ -394,6 +756,7 @@ public class RuleDialog extends Dialog {
     private boolean validateImplementationClass() {
         boolean flValid = true;
         boolean flClassError = false;
+        boolean flXPathError = false;
 
         // Instantiate the rule (add mode)
         if (mode == MODE_ADD) {
@@ -403,13 +766,29 @@ public class RuleDialog extends Dialog {
                 if (instance instanceof Rule) {
                     rule = (Rule) ruleClass.newInstance();
                     rule.setName(nameText.getText().trim());
-                    rule.getExamples().set(0, this.exampleText.getText());
-                    rule.setInclude(false);
+                    rule.setRuleSetName("pmd-eclipse");
                     rule.setMessage(messageText.getText().trim());
                     rule.setDescription(descriptionText.getText());
-                    rule.setPriority(3);
+                    rule.getExamples().add(exampleText.getText());
+                    rule.setInclude(false);
+                    rule.setPriority(priorityCombo.getSelectionIndex()+1);
+                    rule.setExternalInfoUrl(externalInfoUrlText.getText());
+                    if (usesTypeResolutionButton.getSelection()) {
+                    	rule.setUsesTypeResolution();
+                    }
+                    if (usesDfaButton.getSelection()) {
+                    	rule.setUsesDFA();
+                    }
                     if (rule instanceof XPathRule) {
-                        rule.addProperty("xpath", "");
+                    	String xpath = xpathText.getText().trim();
+                    	if (xpath.length() != 0) {
+                            rule.addProperty("xpath", xpath);
+                    	} else {
+                            MessageDialog.openWarning(getShell(), getMessage(StringKeys.MSGKEY_WARNING_TITLE),
+                                    getMessage(StringKeys.MSGKEY_WARNING_XPATH_MANDATORY));
+                            xpathText.setFocus();
+                            flValid = false;
+                    	}
                     }
                 } else {
                     flClassError = true;
@@ -422,12 +801,17 @@ public class RuleDialog extends Dialog {
                 flClassError = true;
             }
         }
-
         // else only modify appropriate fields (edit mode)
         else {
-            editedRule.getExamples().set(0, this.exampleText.getText());
             editedRule.setMessage(messageText.getText().trim());
+            editedRule.setPriority(priorityCombo.getSelectionIndex() + 1);
             editedRule.setDescription(descriptionText.getText());
+            editedRule.setExternalInfoUrl(externalInfoUrlText.getText());
+            editedRule.addExample(this.exampleText.getText());
+            String xpath = xpathText.getText().trim();
+            if (xpath.length() > 0) {
+            	editedRule.addProperty("xpath", xpath);
+            }
         }
 
         // Display class error if needed

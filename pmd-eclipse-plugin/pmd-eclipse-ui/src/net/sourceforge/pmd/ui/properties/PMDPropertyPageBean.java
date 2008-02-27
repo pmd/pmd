@@ -72,6 +72,7 @@ public class PMDPropertyPageBean {
     private IWorkingSet projectWorkingSet;
     private RuleSet projectRuleSet;
     private boolean ruleSetStoredInProject;
+    private String ruleSetFile;
     private boolean includeDerivedFiles;
     
     /**
@@ -115,8 +116,22 @@ public class PMDPropertyPageBean {
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) {
         this.ruleSetStoredInProject = ruleSetStoredInProject;
     }
-    
+
     /**
+     * @return Returns the ruleSetFile.
+     */
+    public String getRuleSetFile() {
+		return ruleSetFile;
+	}
+
+    /**
+     * @param ruleSetFile The ruleSetFile to set.
+     */
+	public void setRuleSetFile(String ruleSetFile) {
+		this.ruleSetFile = ruleSetFile;
+	}
+
+	/**
      * @return Returns the projectWorkingSet.
      */
     public IWorkingSet getProjectWorkingSet() {
