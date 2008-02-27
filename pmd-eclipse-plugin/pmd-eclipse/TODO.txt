@@ -2,8 +2,6 @@
 ### Short term (before next release)
 ###
 
-When Exclude/Include patterns are modified at workspace, should take immediate effect on Projects.
-
 ###
 ### Medium term (following release, or soon after)
 ###
