@@ -1,10 +1,29 @@
 Change log for the PMD Eclipse plugin
 -------------------------------------
+v3.2.4 - Mar ?? 2008
 
-v3.2.4 - Dec xx 2007
-
+Runtime
+-------
 . Fix 1811828 RuntimeException in RuleSetFactory
     default ruleset is used on error
+. PMD updated to v4.2
+. Use new standard PMD RuleSet serialization mechanism
+. Use new PMD support for RuleReferences in RuleSets, instead of using Rule copies
+. Error type PMD Violations now show in Problems View for manual PMD invocations
+. Workspace Rules Configuration Rule table now shows RuleSet name
+. Workspace Rules Configuration Rule table now shows Since attribute
+. Workspace Rules Configuration now has Add Rule... button, defaulting to adding of an XPath Rule
+. Workspace Rules Configuration Import Rule... dialog nows supports importing Rules by Reference (default) or by Copy
+. Workspace Rules Configuration supports editing/adding of Exclude/Include patterns
+. Workspace Rules Configuration supports launching of the PMD Rule Designer GUI
+. Workspace Rules Configuration Rule editing dialog greatly enhanced to support presentation/editing of nearly all Rule details
+. Workspace Rules Configuration Rule editing dialog shows when a Rule is a RuleReference
+. Workspace Rules Configuration Rule editing dialog allows opening External Info URL in Browser
+. Workspace Rules Configuration Rule editing dialog shows blue background when a Rule detail is overridden (e.g. what exactly have you customized)
+. Project PMD Preference Rule table now sorts just like the Workspace Preferences version
+. Project PMD Preference Rule table now shows RuleSet name
+. Project PMD Preference Rule table now shows Rule Since attribute
+. Project PMD Preference supports specifying arbitrary RuleSet file, default remains .ruleset
 
 ----------------------------------------------------------------------------------------
 v3.2.3 - Dec 02 2007

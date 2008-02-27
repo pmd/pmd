@@ -1,6 +1,30 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
+v3.2.4 Mar ?? 2008
+------------------
 
+NEW
+---
+
+Workspace level Rule editor enhanced to show nearly all Rule details, lots of little things.
+New exclude/include patterns from PMD 4.2 are supported.
+Projects can now specify a custom ruleset file explicitly, default remains .ruleset
+
+UPDATE
+------
+
+PMD to 4.2
+
+FIXED
+-----
+
+Bug #1811828 RuntimeException in RuleSetFactory, default RuleSet used on error
+
+
+See changelog for complete list.
+
+
+----------------------------------------
 v3.2.3 Dec 02 2007
 ------------------
 
