@@ -504,7 +504,11 @@ public class PMDPropertyPage extends PropertyPage {
 //                log.debug("Adding rule " + rule.getName() + " in the project ruleset");
             }
         }
-        
+
+        final RuleSet activeRuleSet = model.getProjectRuleSet();
+        ruleSet.addExcludePatterns(activeRuleSet.getExcludePatterns());
+        ruleSet.addIncludePatterns(activeRuleSet.getIncludePatterns());
+
         return ruleSet;
     }
     
