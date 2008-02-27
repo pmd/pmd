@@ -209,7 +209,13 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
                 PMDRuntimePlugin.getDefault().logInformation(
                         "Review code command terminated. " + this.rulesCount + " rules were executed against " + this.filesCount
                                 + " files. Actual PMD duration is about " + this.pmdDuration + "ms, that is about "
-                                + (this.pmdDuration / ((long) this.filesCount * (long) this.rulesCount)));
+                                + ((float)this.pmdDuration / (this.filesCount))
+                                + " ms/file, "
+                                + ((float)this.pmdDuration / (this.rulesCount))
+                                + " ms/rule, "
+                                + ((float)this.pmdDuration / ((long) this.filesCount * (long) this.rulesCount))
+                                + " ms/filerule"
+                                );
             } else {
                 PMDRuntimePlugin.getDefault().logInformation(
                         "Review code command terminated. " + this.rulesCount + " rules were executed against " + this.filesCount
