@@ -318,13 +318,16 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
         bean.setIncludeDerivedFiles(projectProperties.isIncludeDerivedFiles());
 
         if (!projectProperties.isRuleSetStoredInProject()) {
+        	final RuleSet ruleSet = projectProperties.getProjectRuleSet();
             final List rules = new ArrayList();
-            final Iterator i = projectProperties.getProjectRuleSet().getRules().iterator();
+            final Iterator i = ruleSet.getRules().iterator();
             while (i.hasNext()) {
                 final Rule rule = (Rule) i.next();
                 rules.add(new RuleSpecTO(rule.getName(), rule.getRuleSetName())); // NOPMD:AvoidInstantiatingObjectInLoop
             }
             bean.setRules((RuleSpecTO[]) rules.toArray(new RuleSpecTO[rules.size()]));
+            bean.setExcludePatterns((String[])ruleSet.getExcludePatterns().toArray(new String[ruleSet.getExcludePatterns().size()]));
+            bean.setIncludePatterns((String[])ruleSet.getIncludePatterns().toArray(new String[ruleSet.getIncludePatterns().size()]));
         }
 
         return bean;

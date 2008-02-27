@@ -27,6 +27,22 @@
                         <bind-xml name="ruleSetFile" node="element"/>
                 </field>
 
+                <field name="ExcludePatterns"
+                       type="java.lang.String"
+                       collection="array"
+                       get-method="getExcludePatterns"
+                       set-method="setExcludePatterns">
+                        <bind-xml name="excludePattern" location="excludePatterns" node="element"/>
+                </field>
+
+                <field name="IncludePatterns"
+                       type="java.lang.String"
+                       collection="array"
+                       get-method="getIncludePatterns"
+                       set-method="setIncludePatterns">
+                        <bind-xml name="includePattern" location="includePatterns" node="element"/>
+                </field>
+
                 <field name="Rules"
                        type="net.sourceforge.pmd.runtime.properties.impl.RuleSpecTO"
                        collection="array"

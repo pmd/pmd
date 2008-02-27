@@ -63,6 +63,8 @@ package net.sourceforge.pmd.runtime.properties.impl;
  */
 public class ProjectPropertiesTO {
     private RuleSpecTO[] rules;
+    private String[] excludePatterns;
+    private String[] includePatterns;
     private String workingSetName;
     private boolean ruleSetStoredInProject;
     private String ruleSetFile;
@@ -86,6 +88,40 @@ public class ProjectPropertiesTO {
     }
     
     /**
+     * @return an array of String objects for exclude patterns
+     * for the current project.
+     */
+    public String[] getExcludePatterns() {
+		return excludePatterns;
+	}
+    
+    /**
+     * Set the exclude patterns for a project
+     * @param excludePatterns an array of String objects for exclude patterns
+     * for the current project.
+     */
+	public void setExcludePatterns(String[] excludePatterns) {
+		this.excludePatterns = excludePatterns;
+	}
+
+    /**
+     * @return an array of String objects for include patterns
+     * for the current project.
+     */
+	public String[] getIncludePatterns() {
+		return includePatterns;
+	}
+
+    /**
+     * Set the include patterns for a project
+     * @param includePatterns an array of String objects for include patterns
+     * for the current project.
+     */
+	public void setIncludePatterns(String[] includePatterns) {
+		this.includePatterns = includePatterns;
+	}
+
+	/**
      * @return ruleSetStoredInProject tells whether the project use a ruleset
      * stored in the project or the global plugin ruleset.
      */

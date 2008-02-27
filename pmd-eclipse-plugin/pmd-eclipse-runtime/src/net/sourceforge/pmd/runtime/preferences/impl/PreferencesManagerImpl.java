@@ -42,6 +42,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -151,11 +152,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
      * @see net.sourceforge.pmd.runtime.preferences.IPreferencesManager#setRuleSet(net.sourceforge.pmd.RuleSet)
      */
     public void setRuleSet(RuleSet newRuleSet) {
-        Set newRules = getNewRules(newRuleSet);
-        if (!newRules.isEmpty()) {
-            addNewRulesToConfiguredProjects(newRules);
-        }
-
+        updateConfiguredProjects(newRuleSet);
         ruleSet = newRuleSet;
         storeRuleSetInStateLocation(ruleSet);
     }
@@ -356,12 +353,13 @@ class PreferencesManagerImpl implements IPreferencesManager {
     }
 
     /**
-     * Add new rules to already configured projects
+     * Add new rules to already configured projects, and update the exclude/include patterns
      */
-    private void addNewRulesToConfiguredProjects(Set addedRules) {
-        log.debug("Add new rules to configured projects");
+    private void updateConfiguredProjects(RuleSet updatedRuleSet) {
+    	log.debug("Updating configured projects");
         RuleSet addedRuleSet = new RuleSet();
-        Iterator ruleIterator = addedRules.iterator();
+        Set newRules = getNewRules(updatedRuleSet);
+        Iterator ruleIterator = newRules.iterator();
         while (ruleIterator.hasNext()) {
             Rule rule = (Rule) ruleIterator.next();
             addedRuleSet.addRule(rule);
@@ -377,6 +375,9 @@ class PreferencesManagerImpl implements IPreferencesManager {
                     RuleSet projectRuleSet = properties.getProjectRuleSet();
                     if (projectRuleSet != null) {
                         projectRuleSet.addRuleSet(addedRuleSet);
+                        projectRuleSet.setExcludePatterns(new ArrayList(updatedRuleSet.getExcludePatterns()));
+                        projectRuleSet.setIncludePatterns(new ArrayList(updatedRuleSet.getIncludePatterns()));
+                        properties.setProjectRuleSet(projectRuleSet);
                         properties.sync();
                     }
                 } catch (PropertiesException e) {
