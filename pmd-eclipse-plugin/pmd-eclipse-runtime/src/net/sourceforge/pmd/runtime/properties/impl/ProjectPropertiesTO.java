@@ -65,6 +65,7 @@ public class ProjectPropertiesTO {
     private RuleSpecTO[] rules;
     private String workingSetName;
     private boolean ruleSetStoredInProject;
+    private String ruleSetFile;
     private boolean includeDerivedFiles;
     
     /**
@@ -100,7 +101,21 @@ public class ProjectPropertiesTO {
     public void setRuleSetStoredInProject(final boolean ruleSetStoredInProject) {
         this.ruleSetStoredInProject = ruleSetStoredInProject;
     }
-    
+
+    /**
+     * @return Returns the rule set file.
+     */
+    public String getRuleSetFile() {
+    	return ruleSetFile;
+    }
+
+    /**
+     * @param ruleSetFile The rule set file.
+     */
+    public void setRuleSetFile(String ruleSetFile) {
+    	this.ruleSetFile = ruleSetFile;
+    }
+
     /**
      * @return workingSetName the name of the project workingSet
      */

@@ -36,6 +36,7 @@
 package net.sourceforge.pmd.runtime.properties.impl;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -65,11 +66,11 @@ import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
 import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.util.LocalConfiguration;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
-import org.exolab.castor.util.LocalConfiguration;
 
 /**
  * This class manages the persistances of the ProjectProperies information structure
@@ -94,8 +95,6 @@ import org.exolab.castor.util.LocalConfiguration;
  */
 public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private static final Logger log = Logger.getLogger(ProjectPropertiesManagerImpl.class);
-
-    static final String PROJECT_RULESET_FILE = ".ruleset"; // NOPMD by Herlin on 08/07/06 15:18
 
     private static final String PROPERTIES_FILE = ".pmd";
     private static final String PROPERTIES_MAPPING = "/net/sourceforge/pmd/runtime/properties/impl/mapping.xml";
@@ -163,16 +162,15 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
      */
     private void loadRuleSetFromProject(IProjectProperties projectProperties) throws PropertiesException {
         if (projectProperties.isRuleSetFileExist()) {
-            log.debug("Loading ruleset from project ruleset file");
+            log.debug("Loading ruleset from project ruleset file: " + projectProperties.getRuleSetFile());
             try {
                 final RuleSetFactory factory = new RuleSetFactory();
-                final IFile ruleSetFile = projectProperties.getProject().getFile(PROJECT_RULESET_FILE);
-                projectProperties
-                        .setProjectRuleSet(factory.createRuleSets(ruleSetFile.getLocation().toOSString()).getAllRuleSets()[0]);
+                final File ruleSetFile = projectProperties.getResolvedRuleSetFile();
+                projectProperties.setProjectRuleSet(factory.createRuleSets(ruleSetFile.getPath()).getAllRuleSets()[0]);
             } catch (RuleSetNotFoundException e) {
                 PMDRuntimePlugin.getDefault().logError(
                         "Project RuleSet cannot be loaded for project " + projectProperties.getProject().getName()
-                                + ". Using the rules from properties.", e);
+                                + " using RuleSet file name " + projectProperties.getRuleSetFile() + ". Using the rules from properties.", e);
             }
         }
     }
@@ -227,6 +225,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
             projectProperties.setProjectWorkingSet(workingSetManager.getWorkingSet(to.getWorkingSetName()));
 
             projectProperties.setRuleSetStoredInProject(to.isRuleSetStoredInProject());
+            projectProperties.setRuleSetFile(to.getRuleSetFile());
             projectProperties.setPmdEnabled(projectProperties.getProject().hasNature(PMDNature.PMD_NATURE));
             projectProperties.setIncludeDerivedFiles(to.isIncludeDerivedFiles());
 
@@ -257,6 +256,8 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
                 log.debug("The rule " + rules[i].getName() + " cannot be found. ignore.");
             }
         }
+        ruleSet.addExcludePatterns(pluginRuleSet.getExcludePatterns());
+        ruleSet.addIncludePatterns(pluginRuleSet.getIncludePatterns());
 
         projectProperties.setProjectRuleSet(ruleSet);
     }
@@ -312,6 +313,7 @@ public class ProjectPropertiesManagerImpl implements IProjectPropertiesManager {
     private ProjectPropertiesTO fillTransferObject(IProjectProperties projectProperties) throws PropertiesException {
         final ProjectPropertiesTO bean = new ProjectPropertiesTO();
         bean.setRuleSetStoredInProject(projectProperties.isRuleSetStoredInProject());
+        bean.setRuleSetFile(projectProperties.getRuleSetFile());
         bean.setWorkingSetName(projectProperties.getProjectWorkingSet() == null ? null : projectProperties.getProjectWorkingSet().getName());
         bean.setIncludeDerivedFiles(projectProperties.isIncludeDerivedFiles());
 

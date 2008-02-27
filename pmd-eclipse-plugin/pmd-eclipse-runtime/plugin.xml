@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.runtime"
    name="PMD For Eclipse Runtime Plug-in"
-   version="3.2.3.v200712041040"
+   version="3.2.4"
    provider-name="PMD Development Team"
    class="net.sourceforge.pmd.runtime.PMDRuntimePlugin">
 

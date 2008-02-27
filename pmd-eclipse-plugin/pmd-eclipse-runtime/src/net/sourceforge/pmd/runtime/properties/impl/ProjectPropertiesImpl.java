@@ -37,6 +37,7 @@ package net.sourceforge.pmd.runtime.properties.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -124,11 +125,14 @@ import org.eclipse.ui.IWorkingSet;
 public class ProjectPropertiesImpl implements IProjectProperties {
     private static final Logger log = Logger.getLogger(ProjectPropertiesImpl.class);
 
+    private static final String PROJECT_RULESET_FILE = ".ruleset";
+
     private final IProjectPropertiesManager projectPropertiesManager;
     private final IProject project;
     private boolean needRebuild;
     private boolean pmdEnabled;
     private boolean ruleSetStoredInProject;
+    private String ruleSetFile;
     private RuleSet projectRuleSet;
     private IWorkingSet projectWorkingSet;
     private boolean includeDerivedFiles;
@@ -208,6 +212,29 @@ public class ProjectPropertiesImpl implements IProjectProperties {
     }
 
     /**
+     * @see net.sourceforge.pmd.runtime.properties.IProjectProperties#getRuleSetFile()
+     */
+    public String getRuleSetFile() {
+    	if (this.ruleSetFile == null || this.ruleSetFile.trim().length() == 0) {
+    		return PROJECT_RULESET_FILE;
+    	} else {
+    		return this.ruleSetFile;
+    	}
+	}
+
+    /**
+     * @see net.sourceforge.pmd.runtime.properties.IProjectProperties#setRuleSetFile(String)
+     */
+	public void setRuleSetFile(String ruleSetFile) throws PropertiesException {
+        log.debug("Set rule set file for project " + this.project.getName() + ": " + ruleSetFile);
+        this.needRebuild |= this.ruleSetFile == null || !ruleSetFile.equals(ruleSetFile);
+        this.ruleSetFile = ruleSetFile;
+        if ((this.ruleSetStoredInProject) && (!isRuleSetFileExist())) {
+            throw new PropertiesException("The project ruleset file cannot be found for project " + this.project.getName()); // TODO NLS
+        }
+	}
+
+	/**
      * @see net.sourceforge.pmd.runtime.properties.IProjectProperties#getProjectWorkingSet()
      */
     public IWorkingSet getProjectWorkingSet() {
@@ -247,8 +274,27 @@ public class ProjectPropertiesImpl implements IProjectProperties {
      * @see net.sourceforge.pmd.runtime.properties.IProjectProperties#isRuleSetFileExist()
      */
     public final boolean isRuleSetFileExist() {
-        final IFile file = this.project.getFile(ProjectPropertiesManagerImpl.PROJECT_RULESET_FILE);
-        return file.exists() && file.isAccessible();
+    	return getResolvedRuleSetFile().exists();
+    }
+
+    /**
+     * @see net.sourceforge.pmd.runtime.properties.IProjectProperties#getResolvedRuleSetFile()
+     */
+    public File getResolvedRuleSetFile() {
+    	// Check as project file, otherwise as standard file
+        final IFile file = this.project.getFile(getRuleSetFile());
+        boolean exists = file.exists() && file.isAccessible();
+        File f;
+        if (exists) {
+        	f =  new File(file.getLocation().toOSString());
+        	// For some reason IFile says exists when it doesn't!  So double check.
+        	if (!f.exists()) {
+            	f = new  File(getRuleSetFile());
+        	}
+        } else {
+        	f = new  File(getRuleSetFile());
+        }
+        return f;
     }
     
     /**
@@ -263,7 +309,7 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             writer.write(baos, this.projectRuleSet);
             baos.close();
             
-            final IFile file = this.project.getFile(ProjectPropertiesManagerImpl.PROJECT_RULESET_FILE);
+            final IFile file = this.project.getFile(PROJECT_RULESET_FILE);
             if (file.exists() && file.isAccessible()) {
                 throw new PropertiesException("Project ruleset file already exists");
             } else {
@@ -316,6 +362,8 @@ public class ProjectPropertiesImpl implements IProjectProperties {
             final Rule rule = (Rule) i.next();
             clonedRuleSet.addRule(rule);
         }
+        clonedRuleSet.addExcludePatterns(this.projectRuleSet.getExcludePatterns());
+        clonedRuleSet.addIncludePatterns(this.projectRuleSet.getIncludePatterns());
         
         return clonedRuleSet;
     }

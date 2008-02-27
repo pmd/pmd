@@ -20,6 +20,13 @@
                         <bind-xml name="useProjectRuleSet" node="element"/>
                 </field>
 
+                <field name="RuleSetFile"
+                       type="java.lang.String"
+                       get-method="getRuleSetFile"
+                       set-method="setRuleSetFile">
+                        <bind-xml name="ruleSetFile" node="element"/>
+                </field>
+
                 <field name="Rules"
                        type="net.sourceforge.pmd.runtime.properties.impl.RuleSpecTO"
                        collection="array"

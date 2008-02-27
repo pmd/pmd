@@ -35,6 +35,8 @@
  */
 package net.sourceforge.pmd.runtime.properties;
 
+import java.io.File;
+
 import net.sourceforge.pmd.RuleSet;
 
 import org.eclipse.core.resources.IProject;
@@ -111,6 +113,21 @@ public interface IProjectProperties {
      * the project.
      */
     void setRuleSetStoredInProject(boolean ruleSetStoredInProject) throws PropertiesException;
+
+    /**
+     * @return Returns the rule set file.
+     */
+    String getRuleSetFile() throws PropertiesException;
+
+    /**
+     * @param ruleSetFile The rule set file.
+     */
+    void setRuleSetFile(String ruleSetFile) throws PropertiesException;
+    
+    /**
+     * @return Returns the resolved RuleSet File suitable for loading a rule set.
+     */
+    File getResolvedRuleSetFile() throws PropertiesException;
 
     /**
      * @return Returns the project Working Set.

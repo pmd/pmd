@@ -168,6 +168,7 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
 
             try {
                 this.context = new RuleContext();
+                this.context.setSourceCodeFile(file.getFullPath().toFile());
                 this.context.setSourceCodeFilename(file.getName());
                 this.context.setReport(new Report());
                 

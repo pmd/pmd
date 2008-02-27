@@ -330,7 +330,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
             Iterator i = ruleSetManager.getDefaultRuleSets().iterator();
             while (i.hasNext()) {
                 RuleSet ruleSet = (RuleSet) i.next();
-                preferedRuleSet.addRuleSet(ruleSet);
+                preferedRuleSet.addRuleSetByReference(ruleSet, false);
             }
         }
 

@@ -293,6 +293,7 @@ public class BaseVisitor {
                     Timer timer = new Timer();
                     
                     final RuleContext context = new RuleContext();
+                    context.setSourceCodeFile(file.getFullPath().toFile());
                     context.setSourceCodeFilename(file.getName());
                     context.setReport(new Report());
 
@@ -394,7 +395,9 @@ public class BaseVisitor {
                     maxViolations = violation.getRule().getIntProperty(PMDRuntimeConstants.RULE_PROPERTY_MAXVIOLATIONS);
                 }
                 if (counter.intValue() < maxViolations) {
-                    markerSet.add(getMarkerInfo(violation, fTask ? PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER));
+                	// Ryan Gustafson 02/16/2008 - Always use PMD_MARKER, as people get confused as to why PMD problems don't always show up on Problems view like they do when you do build.
+                    // markerSet.add(getMarkerInfo(violation, fTask ? PMDRuntimeConstants.PMD_TASKMARKER : PMDRuntimeConstants.PMD_MARKER));
+                    markerSet.add(getMarkerInfo(violation, PMDRuntimeConstants.PMD_MARKER));
                     /*
                     if (isDfaEnabled && violation.getRule().usesDFA()) {
                         markerSet.add(getMarkerInfo(violation, PMDRuntimeConstants.PMD_DFA_MARKER));
