@@ -27,8 +27,8 @@ public class RuleSet {
     private String name = "";
     private String description = "";
     private Language language;
-    private List<String> includePatterns = new ArrayList<String>(0);
     private List<String> excludePatterns = new ArrayList<String>(0);
+    private List<String> includePatterns = new ArrayList<String>(0);
     private Filter<File> filter;
 
     /**
@@ -245,6 +245,22 @@ public class RuleSet {
         this.description = description;
     }
 
+    public List<String> getExcludePatterns() {
+        return this.excludePatterns;
+    }
+
+    public void addExcludePattern(String excludePattern) {
+        this.excludePatterns.add(excludePattern);
+    }
+
+    public void addExcludePatterns(List<String> excludePatterns) {
+        this.excludePatterns.addAll(excludePatterns);
+    }
+
+    public void setExcludePatterns(List<String> excludePatterns) {
+    	this.excludePatterns = excludePatterns;
+    }
+
     public List<String> getIncludePatterns() {
         return this.includePatterns;
     }
@@ -257,16 +273,8 @@ public class RuleSet {
         this.includePatterns.addAll(includePatterns);
     }
 
-    public List<String> getExcludePatterns() {
-        return this.excludePatterns;
-    }
-
-    public void addExcludePattern(String excludePattern) {
-        this.excludePatterns.add(excludePattern);
-    }
-
-    public void addExcludePatterns(List<String> excludePatterns) {
-        this.excludePatterns.addAll(excludePatterns);
+    public void setIncludePatterns(List<String> includePatterns) {
+    	this.includePatterns = includePatterns;
     }
 
 	public boolean usesTypeResolution() {
