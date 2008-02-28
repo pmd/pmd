@@ -11,6 +11,7 @@ Runtime
 . Use new PMD support for RuleReferences in RuleSets, instead of using Rule copies
 . Use Java Project Build Path when invoking PMD to allow Type Resolution to work better
 . Error type PMD Violations now show in Problems View for manual PMD invocations
+. Workspace PMD Preferences allows enabling/disabling use of Java Project Build Path
 . Workspace Rules Configuration Rule table now shows RuleSet name
 . Workspace Rules Configuration Rule table now shows Since attribute
 . Workspace Rules Configuration now has Add Rule... button, defaulting to adding of an XPath Rule
