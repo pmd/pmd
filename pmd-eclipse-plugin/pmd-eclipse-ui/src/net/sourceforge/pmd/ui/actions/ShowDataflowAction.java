@@ -42,11 +42,7 @@ public class ShowDataflowAction implements IObjectActionDelegate {
 	
 	/* @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection) */
 	public void selectionChanged(IAction action, ISelection selection) {
-		if (PMDRuntimePlugin.getDefault().loadPreferences().isDfaEnabled()) {
-			action.setEnabled(true);
-		} else {
-			action.setEnabled(false);
-		}
+		action.setEnabled(true);
 	}
 }
 
