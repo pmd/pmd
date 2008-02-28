@@ -2,7 +2,7 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-bad
+1, bad
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -19,7 +19,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-bad
+2, bad
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -35,7 +35,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-ok
+3, ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -45,6 +45,23 @@ public class Foo {
    return null;
   } else {}
   return null;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+4, ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() { 
+  if (true) {
+   return;
+  } else {
+   return null;
+  }
  }
 }
      ]]></code>
