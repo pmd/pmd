@@ -60,7 +60,7 @@ public class Foo {
   if (true) {
    return;
   } else {
-   return null;
+   return;
   }
  }
 }
