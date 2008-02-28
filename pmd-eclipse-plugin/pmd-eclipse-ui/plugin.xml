@@ -93,7 +93,7 @@
                class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdCheckProjectAction">
+               id="net.sourceforge.pmd.ui.pmdPopupCheckProjectAction">
          </action>
          <action
                label="%action.clearpmd"
@@ -101,7 +101,7 @@
                class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdRemoveMarkersAction">
+               id="net.sourceforge.pmd.ui.pmdPopupRemoveMarkersAction">
          </action>
          <action
                label="%action.checkcpd"
@@ -117,7 +117,7 @@
                class="net.sourceforge.pmd.ui.actions.ClearReviewsAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdClearReviewsAction">
+               id="net.sourceforge.pmd.ui.pmdPopupClearReviewsAction">
          </action>
          <action
                label="%action.generatereport"
@@ -147,7 +147,7 @@
                class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdCheckProjectAction">
+               id="net.sourceforge.pmd.ui.pmdFolderCheckProjectAction">
          </action>
          <action
                label="%action.clearpmd"
@@ -155,7 +155,7 @@
                class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdRemoveMarkersAction">
+               id="net.sourceforge.pmd.ui.pmdFolderRemoveMarkersAction">
          </action>
          <action
                label="%action.clearreviews"
@@ -163,7 +163,7 @@
                class="net.sourceforge.pmd.ui.actions.ClearReviewsAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdClearReviewsAction">
+               id="net.sourceforge.pmd.ui.pmdFolderClearReviewsAction">
          </action>
       </objectContribution>
       <objectContribution
@@ -185,7 +185,7 @@
                class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdCheckFileAction">
+               id="net.sourceforge.pmd.ui.pmdFileCheckFileAction">
          </action>
          <action
                label="%action.clearpmd"
@@ -193,7 +193,7 @@
                class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdRemoveMarkersAction">
+               id="net.sourceforge.pmd.ui.pmdFileRemoveMarkersAction">
          </action>
          <action
                label="%action.ast"
@@ -209,7 +209,7 @@
                class="net.sourceforge.pmd.ui.actions.ClearReviewsAction"
                menubarPath="pmd.menu/group"
                enablesFor="+"
-               id="net.sourceforge.pmd.ui.pmdClearReviewsAction">
+               id="net.sourceforge.pmd.ui.pmdFileClearReviewsAction">
          </action>
       </objectContribution>
       <viewerContribution
@@ -218,18 +218,18 @@
          <action
                class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
                icon="icons/pmd-icon-16.gif"
-               id="net.sourceforge.pmd.ui.pmdRemoveAllMarkersAction"
+               id="net.sourceforge.pmd.ui.pmdTaskListRemoveAllMarkersAction"
                label="%action.clearall"
                menubarPath="additions">
          </action>
       </viewerContribution>
       <viewerContribution
-            id="net.sourceforge.pmd.ui.pmdVioaltionViewContribution"
+            id="net.sourceforge.pmd.ui.pmdViolationViewContribution"
             targetID="net.sourceforge.pmd.ui.views.ViolationView">
          <action
                class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
                icon="icons/pmd-icon-16.gif"
-               id="net.sourceforge.pmd.ui.pmdRemoveAllMarkersAction"
+               id="net.sourceforge.pmd.ui.pmdViolationViewRemoveAllMarkersAction"
                label="%action.clearall"
                menubarPath="additions">
          </action>
@@ -242,7 +242,7 @@
                icon="icons/pmd-icon-16.gif"
                class="net.sourceforge.pmd.ui.actions.ClearReviewsAction"
                menubarPath="additions"
-               id="net.sourceforge.pmd.ui.pmdClearReviewsAction"/>
+               id="net.sourceforge.pmd.ui.pmdOutlineClearReviewsAction"/>
       </viewerContribution>
       <objectContribution
             adaptable="true"
@@ -252,37 +252,37 @@
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="net.sourceforge.pmd.ui.pmdOverviewContribution"
+            id="net.sourceforge.pmd.ui.pmdRemoveMarkersContribution"
             objectClass="net.sourceforge.pmd.ui.model.AbstractPMDRecord">
          <action
                class="net.sourceforge.pmd.ui.actions.PMDRemoveMarkersAction"
                enablesFor="+"
                icon="icons/pmd-icon-16.gif"
-               id="net.sourceforge.pmd.ui.pmdRemoveMarkersAction"
+               id="net.sourceforge.pmd.ui.pmdPackageRemoveMarkersAction"
                label="%action.clearpmd"
                menubarPath="additions"/>
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="net.sourceforge.pmd.ui.pmdOverviewContribution"
+            id="net.sourceforge.pmd.ui.pmdCheckPackageContribution"
             objectClass="net.sourceforge.pmd.ui.model.PackageRecord">
          <action
                class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
                enablesFor="+"
                icon="icons/pmd-icon-16.gif"
-               id="net.sourceforge.pmd.ui.pmdCheckProjectAction"
+               id="net.sourceforge.pmd.ui.pmdPackageCheckProjectAction"
                label="%action.checkpmd"
                menubarPath="additions"/>
       </objectContribution>                 
       <objectContribution
             adaptable="false"
-            id="net.sourceforge.pmd.ui.pmdOverviewContribution"
+            id="net.sourceforge.pmd.ui.pmdCheckFileContribution"
             objectClass="net.sourceforge.pmd.ui.model.FileRecord">
          <action
                class="net.sourceforge.pmd.ui.actions.PMDCheckAction"
                enablesFor="+"
                icon="icons/pmd-icon-16.gif"
-               id="net.sourceforge.pmd.ui.pmdCheckProjectAction"
+               id="net.sourceforge.pmd.ui.pmdCheckFileAction"
                label="%action.checkpmd"
                menubarPath="additions"/>
       </objectContribution>                               
