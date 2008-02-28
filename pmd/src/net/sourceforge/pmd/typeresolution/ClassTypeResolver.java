@@ -25,9 +25,23 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	private static final Logger LOG = Logger.getLogger(ClassTypeResolver.class.getName());
 
+	private static final Map<String, Class<?>> myPrimitiveTypes;
 	private static final Map<String, String> myJavaLang;
 
 	static {
+		// Note: Assumption here that primitives come from same parent ClassLoader regardless of what ClassLoader we are passed
+		Map<String, Class<?>> thePrimitiveTypes = new HashMap<String, Class<?>>();
+		thePrimitiveTypes.put("void", Void.TYPE);
+		thePrimitiveTypes.put("boolean", Boolean.TYPE);
+		thePrimitiveTypes.put("byte", Byte.TYPE);
+		thePrimitiveTypes.put("char", Character.TYPE);
+		thePrimitiveTypes.put("short", Short.TYPE);
+		thePrimitiveTypes.put("int", Integer.TYPE);
+		thePrimitiveTypes.put("long", Long.TYPE);
+		thePrimitiveTypes.put("float", Float.TYPE);
+		thePrimitiveTypes.put("double", Double.TYPE);
+		myPrimitiveTypes = Collections.unmodifiableMap(thePrimitiveTypes);
+
 		Map<String, String> theJavaLang = new HashMap<String, String>();
 		theJavaLang.put("Boolean", "java.lang.Boolean");
 		theJavaLang.put("Byte", "java.lang.Byte");
@@ -66,7 +80,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		myJavaLang = Collections.unmodifiableMap(theJavaLang);
 	}
 
-	private final Map<String, Class<?>> myPrimitiveTypes;
 	private final PMDASMClassLoader pmdClassLoader;
 	private Map<String, String> importedClasses;
 	private List<String> importedOnDemand;
@@ -77,19 +90,6 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	public ClassTypeResolver(ClassLoader classLoader) {
 		pmdClassLoader = new PMDASMClassLoader(classLoader);
-
-		// Note: Assumption here that primitives come from same parent ClassLoader regardless of what ClassLoader we are passed
-		Map<String, Class<?>> thePrimitiveTypes = new HashMap<String, Class<?>>();
-		thePrimitiveTypes.put("void", Void.TYPE);
-		thePrimitiveTypes.put("boolean", Boolean.TYPE);
-		thePrimitiveTypes.put("byte", Byte.TYPE);
-		thePrimitiveTypes.put("char", Character.TYPE);
-		thePrimitiveTypes.put("short", Short.TYPE);
-		thePrimitiveTypes.put("int", Integer.TYPE);
-		thePrimitiveTypes.put("long", Long.TYPE);
-		thePrimitiveTypes.put("float", Float.TYPE);
-		thePrimitiveTypes.put("double", Double.TYPE);
-		myPrimitiveTypes = Collections.unmodifiableMap(thePrimitiveTypes);
 	}
 
 	public Object visit(ASTCompilationUnit node, Object data) {
