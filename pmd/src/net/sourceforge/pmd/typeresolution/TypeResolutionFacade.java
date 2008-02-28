@@ -11,9 +11,10 @@ import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
  */
 public class TypeResolutionFacade extends JavaParserVisitorAdapter {
 
-    public void initializeWith(ASTCompilationUnit node) {
-        ClassTypeResolver ctr = new ClassTypeResolver();
-        node.jjtAccept(ctr, null);
+    public void initializeWith(ClassLoader classLoader, ASTCompilationUnit node) {
+        ClassTypeResolver classTypeResolver = new ClassTypeResolver(classLoader);
+        node.setClassTypeResolver(classTypeResolver);
+        node.jjtAccept(classTypeResolver, null);
     }
 
 }

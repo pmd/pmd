@@ -3,14 +3,13 @@
  */
 package net.sourceforge.pmd.rules.imports;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.rules.ImportWrapper;
-import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class DuplicateImportsRule extends AbstractRule {
 
@@ -34,7 +33,7 @@ public class DuplicateImportsRule extends AbstractRule {
                 String singleTypeName = singleTypeFullName.substring(lastDot + 1);	//File
 
                 if (thisImportOnDemand.getName().equals(singleTypePkg) && 
-                		!isDisambiguationImport(singleTypePkg, singleTypeName)) {
+                		!isDisambiguationImport(node, singleTypePkg, singleTypeName)) {
                     addViolation(data, thisSingleTypeImport.getNode(), singleTypeFullName);
                 }
             }
@@ -52,18 +51,18 @@ public class DuplicateImportsRule extends AbstractRule {
 	 * import java.util.*;
 	 * import java.util.List;	//Needed because java.awt.List exists
      */
-    private boolean isDisambiguationImport(String singleTypePkg, String singleTypeName) {
+    private boolean isDisambiguationImport(ASTCompilationUnit node, String singleTypePkg, String singleTypeName) {
     	for (ImportWrapper thisImportOnDemand : importOnDemandImports) {	//Loop over .* imports
     		if (!thisImportOnDemand.getName().equals(singleTypePkg)) {		//Skip same package
     			String fullyQualifiedClassName = thisImportOnDemand.getName() + "." + singleTypeName;
-    			if (ClassTypeResolver.classNameExists(fullyQualifiedClassName)) {
+    			if (node.getClassTypeResolver().classNameExists(fullyQualifiedClassName)) {
     				return true;	//Class exists in another imported package
     			}
     		}
     	}
     	
     	String fullyQualifiedClassName = "java.lang." + singleTypeName;
-    	if (ClassTypeResolver.classNameExists(fullyQualifiedClassName)) {
+    	if (node.getClassTypeResolver().classNameExists(fullyQualifiedClassName)) {
 			return true;	//Class exists in another imported package
 		}
     	

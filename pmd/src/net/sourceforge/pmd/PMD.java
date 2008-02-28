@@ -54,6 +54,7 @@ public class PMD {
 
     private String excludeMarker = EXCLUDE_MARKER;
     private SourceTypeDiscoverer sourceTypeDiscoverer = new SourceTypeDiscoverer();
+    private ClassLoader classLoader = getClass().getClassLoader();
 
     public PMD() {}
 
@@ -112,7 +113,7 @@ public class PMD {
 	
 	            if (ruleSets.usesTypeResolution(language)) {
 	                start = System.nanoTime();
-	                sourceTypeHandler.getTypeResolutionFacade().start(rootNode);
+	                sourceTypeHandler.getTypeResolutionFacade(classLoader).start(rootNode);
 	                end = System.nanoTime();
 	                Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, end - start, 0);
 	            }
@@ -240,7 +241,28 @@ public class PMD {
         sourceTypeDiscoverer.setSourceTypeOfJavaFiles(javaVersion);
     }
     
-    private static void doPMD(CommandLineOptions opts){
+    /**
+     * Get the ClassLoader being used by PMD when processing Rules.
+     * @return The ClassLoader being used
+     */
+    public ClassLoader getClassLoader() {
+		return classLoader;
+	}
+
+    /**
+     * Set the ClassLoader being used by PMD when processing Rules.
+     * Setting a value of <code>null</code> will cause the default
+     * ClassLoader to be used.
+     * @param classLoader The ClassLoader to use
+     */
+	public void setClassLoader(ClassLoader classLoader) {
+		if (classLoader == null) {
+			classLoader = getClass().getClassLoader();
+		}
+		this.classLoader = classLoader;
+	}
+
+	private static void doPMD(CommandLineOptions opts){
         long startFiles = System.nanoTime();
         SourceFileSelector fileSelector = new SourceFileSelector();
 

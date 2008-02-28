@@ -34,9 +34,10 @@ public interface SourceTypeHandler {
     /**
      * Get the getTypeResolutionFacade.
      *
+     * @param classLoader A ClassLoader to use for resolving Types.
      * @return VisitorStarter 
      */
-    VisitorStarter getTypeResolutionFacade();
+    VisitorStarter getTypeResolutionFacade(ClassLoader classLoader);
     
         
 }

@@ -23,9 +23,10 @@ public class ClassTypeResolverTest {
             "}";
 
 	public void testClassNameExists() {
-		assertEquals(true, ClassTypeResolver.classNameExists("java.lang.System"));
-		assertEquals(false, ClassTypeResolver.classNameExists("im.sure.that.this.does.not.Exist"));
-		assertEquals(true, ClassTypeResolver.classNameExists("java.awt.List"));
+		ClassTypeResolver classTypeResolver = new ClassTypeResolver();
+		assertEquals(true, classTypeResolver.classNameExists("java.lang.System"));
+		assertEquals(false, classTypeResolver.classNameExists("im.sure.that.this.does.not.Exist"));
+		assertEquals(true, classTypeResolver.classNameExists("java.awt.List"));
     }
 
     @Test

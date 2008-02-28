@@ -14,7 +14,7 @@ public class PMDASMClassLoaderTest {
     
     @Before
     public void setUp() throws Exception {
-        cl = new PMDASMClassLoader();
+        cl = new PMDASMClassLoader(getClass().getClassLoader());
     }
 
     @Test

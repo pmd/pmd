@@ -29,10 +29,10 @@ public abstract class JavaTypeHandler implements SourceTypeHandler {
         };
     }
     
-    public VisitorStarter getTypeResolutionFacade() {
+    public VisitorStarter getTypeResolutionFacade(final ClassLoader classLoader) {
         return new VisitorStarter() {
             public void start(Object rootNode) {
-                new TypeResolutionFacade().initializeWith((ASTCompilationUnit) rootNode);
+                new TypeResolutionFacade().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
             }
         };
     }

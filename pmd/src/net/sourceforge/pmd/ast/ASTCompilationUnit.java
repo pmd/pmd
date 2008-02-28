@@ -2,7 +2,12 @@
 
 package net.sourceforge.pmd.ast;
 
+import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
+
 public class ASTCompilationUnit extends SimpleJavaNode implements CompilationUnit, TypeNode {
+
+    private ClassTypeResolver classTypeResolver;
+
     public ASTCompilationUnit(int id) {
         super(id);
     }
@@ -33,5 +38,13 @@ public class ASTCompilationUnit extends SimpleJavaNode implements CompilationUni
 
     public ASTPackageDeclaration getPackageDeclaration() {
         return getFirstChildOfType(ASTPackageDeclaration.class);
+    }
+
+    public ClassTypeResolver getClassTypeResolver() {
+    	return classTypeResolver;
+    }
+
+    public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {
+    	this.classTypeResolver = classTypeResolver;
     }
 }

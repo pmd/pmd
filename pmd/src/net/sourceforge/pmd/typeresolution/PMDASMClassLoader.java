@@ -23,7 +23,8 @@ import java.util.Set;
  */
 public class PMDASMClassLoader extends ClassLoader {
 
-    public PMDASMClassLoader() {
+    public PMDASMClassLoader(ClassLoader parent) {
+    	super(parent);
     }
 
     private Set<String> dontBother = new HashSet<String>();
