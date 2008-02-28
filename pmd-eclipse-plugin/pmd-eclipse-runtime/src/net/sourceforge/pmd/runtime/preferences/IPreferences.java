@@ -55,7 +55,6 @@ public interface IPreferences {
 
     // General Preferences
     
-    boolean DFA_ENABLED_DEFAULT = false;
     boolean PROJECT_BUILD_PATH_ENABLED_DEFAULT = true;
     boolean PMD_PERSPECTIVE_ENABLED_DEFAULT = true;
     int MAX_VIOLATIONS_PFPR_DEFAULT = 5;
@@ -64,17 +63,6 @@ public interface IPreferences {
     int MIN_TILE_SIZE_DEFAULT = 25;
     String LOG_FILENAME_DEFAULT = "pmd-eclipse.log";
     Level LOG_LEVEL = Level.WARN;
-
-
-    /**
-     * Should the Data flow analysis to be used ?
-     */
-    boolean isDfaEnabled();
-    
-    /**
-     * Set whether the data flow analysis is enabled
-     */
-    void setDfaEnabled(boolean dfaEnabled);
 
     /**
      * Should the Project Build Path be used?

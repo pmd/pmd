@@ -56,7 +56,6 @@ import net.sourceforge.pmd.runtime.preferences.IPreferencesManager;
 
 class PreferencesImpl implements IPreferences {
     private IPreferencesManager preferencesManager;
-    private boolean dfaEnabled;
     private boolean projectBuildPathEnabled;
     private boolean pmdPerspectiveEnabled;
     private int maxViolationsPerFilePerRule;
@@ -73,20 +72,6 @@ class PreferencesImpl implements IPreferences {
     public PreferencesImpl(IPreferencesManager preferencesManager) {
         super();
         this.preferencesManager = preferencesManager;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.runtime.preferences.IPreferences#isDfaEnabled()
-     */
-    public boolean isDfaEnabled() {
-        return this.dfaEnabled;
-    }
-
-    /**
-     * @see net.sourceforge.pmd.runtime.preferences.IPreferences#setDfaEnabled(boolean)
-     */
-    public void setDfaEnabled(boolean dfaEnabled) {
-        this.dfaEnabled = dfaEnabled;
     }
 
     /**

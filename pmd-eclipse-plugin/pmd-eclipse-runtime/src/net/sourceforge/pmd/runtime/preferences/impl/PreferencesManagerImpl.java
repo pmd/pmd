@@ -85,7 +85,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 class PreferencesManagerImpl implements IPreferencesManager {
     private static final Logger log = Logger.getLogger(PreferencesManagerImpl.class);
     
-    private static final String DFA_ENABLED = PMDRuntimePlugin.PLUGIN_ID + ".dfa_enabled";
     private static final String PROJECT_BUILD_PATH_ENABLED = PMDRuntimePlugin.PLUGIN_ID + ".project_build_path_enabled";
     private static final String PMD_PERSPECTIVE_ENABLED = PMDRuntimePlugin.PLUGIN_ID + ".pmd_perspective_enabled";
     private static final String MAX_VIOLATIONS_PFPR = PMDRuntimePlugin.PLUGIN_ID + ".max_violations_pfpr";
@@ -109,7 +108,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
             IPreferencesFactory factory = new PreferencesFactoryImpl();
             this.preferences = factory.newPreferences(this);
             
-            loadDfaEnabled();
             loadProjectBuildPathEnabled();
             loadPmdPerspectiveEnabled();
             loadMaxViolationsPerFilePerRule();
@@ -129,7 +127,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
     public void storePreferences(IPreferences preferences) {
         this.preferences = preferences;
 
-        storeDfaEnabled();
         storeProjectBuildPathEnabled();
         storePmdPerspectiveEnabled();
         storeMaxViolationsPerFilePerRule();
@@ -158,15 +155,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
         updateConfiguredProjects(newRuleSet);
         ruleSet = newRuleSet;
         storeRuleSetInStateLocation(ruleSet);
-    }
-
-    /**
-     * Read the dfaEnabled flag
-     *
-     */
-    private void loadDfaEnabled() {
-        this.preferencesStore.setDefault(DFA_ENABLED, IPreferences.DFA_ENABLED_DEFAULT);
-        this.preferences.setDfaEnabled(this.preferencesStore.getBoolean(DFA_ENABLED));
     }
 
     /**
@@ -239,14 +227,6 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private void loadLogLevel() {
         this.preferencesStore.setDefault(LOG_LEVEL, IPreferences.LOG_LEVEL.toString());
         this.preferences.setLogLevel(Level.toLevel(this.preferencesStore.getString(LOG_LEVEL)));
-    }
-
-    /**
-     * Write the dfaEnabled flag
-     *
-     */
-    private void storeDfaEnabled() {
-        this.preferencesStore.setValue(DFA_ENABLED, this.preferences.isDfaEnabled());
     }
 
     /**

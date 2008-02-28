@@ -128,11 +128,6 @@ public class BaseVisitor {
         super();
 
         this.hiddenRules = new RuleSet();
-/*        if (PMDRuntimePlugin.getDefault().loadPreferences().isDfaEnabled()) {
-            DaaRule daaRule = new DaaRule();
-            daaRule.setUsesDFA();
-            this.hiddenRules.addRule(daaRule);
-        }*/
     }
 
     /**
@@ -371,7 +366,6 @@ public class BaseVisitor {
         final Iterator iter = context.getReport().iterator();
         final IPreferences preferences = PMDRuntimePlugin.getDefault().loadPreferences();
         final int maxViolationsPerFilePerRule = preferences.getMaxViolationsPerFilePerRule();
-        final boolean isDfaEnabled = preferences.isDfaEnabled();
         final Map violationsCounter = new HashMap();
         
         while (iter.hasNext()) {
