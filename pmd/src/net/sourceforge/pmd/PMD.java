@@ -332,7 +332,7 @@ public class PMD {
                 processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx, renderers,
                         opts.stressTestEnabled(),
                         opts.getRulesets(), opts.shortNamesEnabled(),
-                        opts.getInputPath(), opts.getEncoding(), opts.getExcludeMarker());
+                        opts.getInputPath(), opts.getEncoding(), opts.getExcludeMarker(), PMD.class.getClassLoader());
             } catch (RuleSetNotFoundException rsnfe) {
                 LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
                 System.out.println(opts.usage());
@@ -401,7 +401,7 @@ public class PMD {
         private final List<Renderer> renderers;
 
         public PmdRunnable(ExecutorService executor, DataSource dataSource, String fileName, SourceType sourceType,
-                List<Renderer> renderers, String encoding, String rulesets, String excludeMarker) {
+                List<Renderer> renderers, String encoding, String rulesets, String excludeMarker, ClassLoader classLoader) {
             this.executor = executor;
             this.dataSource = dataSource;
             this.fileName = fileName;
@@ -411,6 +411,7 @@ public class PMD {
 
             setJavaVersion(sourceType);
             setExcludeMarker(excludeMarker);
+            setClassLoader(classLoader);
         }
 
         public Report call() {
@@ -548,10 +549,10 @@ public class PMD {
      */
     public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List<DataSource> files, RuleContext ctx,
             List<Renderer> renderers, String rulesets, final boolean shortNamesEnabled, final String inputPath,
-            String encoding, String excludeMarker) {
+            String encoding, String excludeMarker, ClassLoader classLoader) {
         processFiles(threadCount, ruleSetFactory, sourceType, files, ctx,
                 renderers, false, rulesets, shortNamesEnabled, inputPath,
-                encoding, excludeMarker);
+                encoding, excludeMarker, classLoader);
     }
     /**
      * Run PMD on a list of files using multiple threads.
@@ -560,7 +561,7 @@ public class PMD {
      */
     public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory, SourceType sourceType, List<DataSource> files, RuleContext ctx,
             List<Renderer> renderers, boolean stressTestEnabled, String rulesets, final boolean shortNamesEnabled, final String inputPath,
-            String encoding, String excludeMarker) {
+            String encoding, String excludeMarker, ClassLoader classLoader) {
 
         /*
          * Check if multithreaded is supported. 
@@ -600,7 +601,7 @@ public class PMD {
                         inputPath);
     
                 PmdRunnable r = new PmdRunnable(executor, dataSource, niceFileName, sourceType, renderers,
-                                                encoding, rulesets, excludeMarker);
+                                                encoding, rulesets, excludeMarker, classLoader);
     
                 Future<Report> future = executor.submit(r);
                 tasks.add(future);

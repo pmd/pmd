@@ -226,7 +226,7 @@ public class PMDTask extends Task {
                 PMD.processFiles(cpus, ruleSetFactory, sourceType, files, ctx,
                     renderers, ruleSetFiles,
                     shortFilenames, inputPath,
-                    encoding, excludeMarker);
+                    encoding, excludeMarker, getClass().getClassLoader());
             } catch (RuntimeException pmde) {
                 pmde.printStackTrace();
                 log(pmde.toString(), Project.MSG_VERBOSE);
