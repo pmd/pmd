@@ -8,7 +8,10 @@ NEW
 
 Workspace level Rule editor enhanced to show nearly all Rule details, lots of little things.
 New exclude/include patterns from PMD 4.2 are supported.
+Support for storing RuleSets using Rule References (new PMD 4.2) is now default behavior. 
 Projects can now specify a custom ruleset file explicitly, default remains .ruleset
+Type Resolution using Project Build Path settings is now possible. To use this feature, the
+Eclipse JVM must be able to read the version of .class files produced by the Projects.
 
 UPDATE
 ------

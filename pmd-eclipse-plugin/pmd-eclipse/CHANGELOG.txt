@@ -9,6 +9,7 @@ Runtime
 . PMD updated to v4.2
 . Use new standard PMD RuleSet serialization mechanism
 . Use new PMD support for RuleReferences in RuleSets, instead of using Rule copies
+. Use Java Project Build Path when invoking PMD to allow Type Resolution to work better
 . Error type PMD Violations now show in Problems View for manual PMD invocations
 . Workspace Rules Configuration Rule table now shows RuleSet name
 . Workspace Rules Configuration Rule table now shows Since attribute

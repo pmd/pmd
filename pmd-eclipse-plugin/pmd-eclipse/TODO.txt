@@ -2,6 +2,8 @@
 ### Short term (before next release)
 ###
 
+Need to add support for disabling of Java Project Build Path by PMD, in case user cannot run Eclipse using JVM capable of reading Project .class files.
+
 ###
 ### Medium term (following release, or soon after)
 ###
