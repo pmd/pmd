@@ -19,6 +19,7 @@ FIXED
 -----
 
 Bug #1811828 RuntimeException in RuleSetFactory, default RuleSet used on error
+Bug #1903578 Handler error in Eclipse log
 
 
 See changelog for complete list.
