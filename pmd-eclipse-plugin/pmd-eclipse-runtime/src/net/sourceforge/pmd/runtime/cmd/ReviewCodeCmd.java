@@ -46,7 +46,6 @@ import name.herlin.command.CommandException;
 import name.herlin.command.Timer;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
 import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
 import net.sourceforge.pmd.runtime.properties.IProjectProperties;
@@ -310,34 +309,6 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
         }
 
         return rule;
-    }
-
-    /**
-     * Return a PMD Engine for that project. The engine is parameterized
-     * according to the target JDK of that project.
-     * 
-     * @param project
-     * @return
-     */
-    private PMD getPmdEngineForProject(final IProject project) throws CommandException {
-        final IJavaProject javaProject = JavaCore.create(project);
-        final PMD pmdEngine = new PMD();
-
-        if (javaProject.exists()) {
-            final String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-            log.debug("compilerCompliance = " + compilerCompliance);
-            final SourceType s = SourceType.getSourceTypeForId("java " + compilerCompliance);
-            if (s != null) {
-                pmdEngine.setJavaVersion(s);
-            } else {
-                throw new CommandException("The target JDK, " + compilerCompliance + " is not yet supported"); // TODO:
-                // NLS
-            }
-        } else {
-            throw new CommandException("The project " + project.getName() + " is not a Java project"); // TODO:
-            // NLS
-        }
-        return pmdEngine;
     }
 
     /**

@@ -37,8 +37,14 @@ package net.sourceforge.pmd.runtime.cmd;
 
 import name.herlin.command.AbstractProcessableCommand;
 import name.herlin.command.CommandException;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.SourceType;
 
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 
 /**
  * This is a base implementation for a command inside the PMD plugin.
@@ -74,6 +80,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
  *
  */
 public abstract class AbstractDefaultCommand extends AbstractProcessableCommand {
+    private static final Logger log = Logger.getLogger(AbstractDefaultCommand.class);
+
     private boolean readOnly;
     private boolean outputProperties;
     private boolean readyToExecute;
@@ -263,5 +271,32 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
         if (this.monitor != null) {
             this.monitor.worked(work);
         }
+    }
+    
+    /**
+     * Return a PMD Engine for that project. The engine is parameterized
+     * according to the target JDK of that project.
+     * 
+     * @param project
+     * @return
+     */
+    protected PMD getPmdEngineForProject(final IProject project) throws CommandException {
+        final IJavaProject javaProject = JavaCore.create(project);
+        final PMD pmdEngine = new PMD();
+
+        if (javaProject.exists()) {
+            final String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
+            log.debug("compilerCompliance = " + compilerCompliance);
+            final SourceType s = SourceType.getSourceTypeForId("java " + compilerCompliance);
+            if (s != null) {
+                pmdEngine.setJavaVersion(s);
+            } else {
+                throw new CommandException("The target JDK, " + compilerCompliance + " is not yet supported"); // TODO NLS
+            }
+            pmdEngine.setClassLoader(new JavaProjectClassLoader(pmdEngine.getClassLoader(), javaProject));
+        } else {
+            throw new CommandException("The project " + project.getName() + " is not a Java project"); // TODO NLS
+        }
+        return pmdEngine;
     }
 }

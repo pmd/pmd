@@ -43,16 +43,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IPropertyListener;
-
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
@@ -60,8 +50,15 @@ import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
+
+import org.apache.log4j.Logger;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IPropertyListener;
 
 /**
  * This command reviews a resource - a file - for a specific rule.
@@ -121,34 +118,6 @@ public class ReviewResourceForRuleCommand extends AbstractDefaultCommand {
         setResource(null);
         setRule(null);
         this.listenerList = new ArrayList();
-    }
-    
-    /**
-     * Return a PMD Engine for that project. The engine is parameterized
-     * according to the target JDK of that project.
-     * 
-     * @param project
-     * @return
-     */
-    private PMD getPmdEngineForProject(final IProject project) throws CommandException {
-        final IJavaProject javaProject = JavaCore.create(project);
-        final PMD pmdEngine = new PMD();
-
-        if (javaProject.exists()) {
-            final String compilerCompliance = javaProject.getOption(JavaCore.COMPILER_COMPLIANCE, true);
-            log.debug("compilerCompliance = " + compilerCompliance);
-            final SourceType s = SourceType.getSourceTypeForId("java " + compilerCompliance);
-            if (s != null) {
-                pmdEngine.setJavaVersion(s);
-            } else {
-                throw new CommandException("The target JDK, " + compilerCompliance + " is not yet supported"); // TODO:
-                // NLS
-            }
-        } else {
-            throw new CommandException("The project " + project.getName() + " is not a Java project"); // TODO:
-            // NLS
-        }
-        return pmdEngine;
     }
     
     /* (non-Javadoc)
