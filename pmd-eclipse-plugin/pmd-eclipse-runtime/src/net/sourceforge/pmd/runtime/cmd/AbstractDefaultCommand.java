@@ -39,6 +39,8 @@ import name.herlin.command.AbstractProcessableCommand;
 import name.herlin.command.CommandException;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.SourceType;
+import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.runtime.preferences.IPreferences;
 
 import org.apache.log4j.Logger;
 import org.eclipse.core.resources.IProject;
@@ -293,7 +295,10 @@ public abstract class AbstractDefaultCommand extends AbstractProcessableCommand 
             } else {
                 throw new CommandException("The target JDK, " + compilerCompliance + " is not yet supported"); // TODO NLS
             }
-            pmdEngine.setClassLoader(new JavaProjectClassLoader(pmdEngine.getClassLoader(), javaProject));
+            final IPreferences preferences = PMDRuntimePlugin.getDefault().loadPreferences();
+            if (preferences.isProjectBuildPathEnabled()) {
+            	pmdEngine.setClassLoader(new JavaProjectClassLoader(pmdEngine.getClassLoader(), javaProject));
+            }
         } else {
             throw new CommandException("The project " + project.getName() + " is not a Java project"); // TODO NLS
         }

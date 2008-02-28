@@ -86,6 +86,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private static final Logger log = Logger.getLogger(PreferencesManagerImpl.class);
     
     private static final String DFA_ENABLED = PMDRuntimePlugin.PLUGIN_ID + ".dfa_enabled";
+    private static final String PROJECT_BUILD_PATH_ENABLED = PMDRuntimePlugin.PLUGIN_ID + ".project_build_path_enabled";
     private static final String PMD_PERSPECTIVE_ENABLED = PMDRuntimePlugin.PLUGIN_ID + ".pmd_perspective_enabled";
     private static final String MAX_VIOLATIONS_PFPR = PMDRuntimePlugin.PLUGIN_ID + ".max_violations_pfpr";
     private static final String REVIEW_ADDITIONAL_COMMENT = PMDRuntimePlugin.PLUGIN_ID + ".review_additional_comment";
@@ -109,6 +110,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
             this.preferences = factory.newPreferences(this);
             
             loadDfaEnabled();
+            loadProjectBuildPathEnabled();
             loadPmdPerspectiveEnabled();
             loadMaxViolationsPerFilePerRule();
             loadReviewAdditionalComment();
@@ -128,6 +130,7 @@ class PreferencesManagerImpl implements IPreferencesManager {
         this.preferences = preferences;
 
         storeDfaEnabled();
+        storeProjectBuildPathEnabled();
         storePmdPerspectiveEnabled();
         storeMaxViolationsPerFilePerRule();
         storeReviewAdditionalComment();
@@ -164,6 +167,15 @@ class PreferencesManagerImpl implements IPreferencesManager {
     private void loadDfaEnabled() {
         this.preferencesStore.setDefault(DFA_ENABLED, IPreferences.DFA_ENABLED_DEFAULT);
         this.preferences.setDfaEnabled(this.preferencesStore.getBoolean(DFA_ENABLED));
+    }
+
+    /**
+     * Read the projectBuildPathEnabled flag
+     *
+     */
+    private void loadProjectBuildPathEnabled() {
+        this.preferencesStore.setDefault(PROJECT_BUILD_PATH_ENABLED, IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
+        this.preferences.setProjectBuildPathEnabled(this.preferencesStore.getBoolean(PROJECT_BUILD_PATH_ENABLED));
     }
 
     /**
@@ -235,6 +247,13 @@ class PreferencesManagerImpl implements IPreferencesManager {
      */
     private void storeDfaEnabled() {
         this.preferencesStore.setValue(DFA_ENABLED, this.preferences.isDfaEnabled());
+    }
+
+    /**
+     * Write the projectBuildPathEnabled flag
+     */
+    private void storeProjectBuildPathEnabled() {
+        this.preferencesStore.setValue(PROJECT_BUILD_PATH_ENABLED, this.preferences.isProjectBuildPathEnabled());
     }
 
     /**

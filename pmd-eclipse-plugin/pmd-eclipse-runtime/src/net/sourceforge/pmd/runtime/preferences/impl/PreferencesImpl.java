@@ -57,6 +57,7 @@ import net.sourceforge.pmd.runtime.preferences.IPreferencesManager;
 class PreferencesImpl implements IPreferences {
     private IPreferencesManager preferencesManager;
     private boolean dfaEnabled;
+    private boolean projectBuildPathEnabled;
     private boolean pmdPerspectiveEnabled;
     private int maxViolationsPerFilePerRule;
     private String reviewAdditionalComment;
@@ -89,6 +90,20 @@ class PreferencesImpl implements IPreferences {
     }
 
     /**
+     * @see net.sourceforge.pmd.runtime.preferences.IPreferences#isProjectBuildPathEnabled()
+     */
+    public boolean isProjectBuildPathEnabled() {
+    	return this.projectBuildPathEnabled;
+	}
+
+    /**
+     * @see net.sourceforge.pmd.runtime.preferences.IPreferences#setProjectBuildPathEnabled(boolean)
+     */
+	public void setProjectBuildPathEnabled(boolean projectBuildPathEnabled) {
+		this.projectBuildPathEnabled = projectBuildPathEnabled;
+	}
+
+	/**
      * @see net.sourceforge.pmd.runtime.preferences.IPreferences#isPmdPerspectiveEnabled()
      */
     public boolean isPmdPerspectiveEnabled() {
