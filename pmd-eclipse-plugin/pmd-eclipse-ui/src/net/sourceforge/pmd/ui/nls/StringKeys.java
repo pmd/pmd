@@ -133,6 +133,7 @@ public class StringKeys {
     public static final String MSGKEY_PREF_GENERAL_GROUP_GENERAL = "preference.pmd.group.general";
     public static final String MSGKEY_PREF_GENERAL_LABEL_SHOW_PERSPECTIVE = "preference.pmd.label.perspective_on_check";
     public static final String MSGKEY_PREF_GENERAL_LABEL_USE_DFA = "preference.pmd.label.use_dfa";
+    public static final String MSGKEY_PREF_GENERAL_LABEL_USE_PROJECT_BUILD_PATH = "preference.pmd.label.use_project_build_path";
     public static final String MSGKEY_PREF_GENERAL_LABEL_MAX_VIOLATIONS_PFPR = "preference.pmd.label.max_violations_pfpr";
     public static final String MSGKEY_PREF_GENERAL_TOOLTIP_MAX_VIOLATIONS_PFPR = "preference.pmd.tooltip.max_violations_pfpr";
     public static final String MSGKEY_PREF_GENERAL_MESSAGE_INVALID_NUMERIC_VALUE ="preference.pmd.message.invalid_numeric_value";

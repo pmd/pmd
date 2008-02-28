@@ -66,6 +66,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
     private Label sampleLabel;
     private Button showPerspectiveBox;
     private Button useDFABox;
+    private Button useProjectBuildPath;
     private Text maxViolationsPerFilePerRule;
     private Button reviewPmdStyleBox;
     private IPreferences preferences;
@@ -129,6 +130,7 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         // build the children
         this.showPerspectiveBox = buildShowPerspectiveBoxButton(group);
         this.useDFABox = buildUseDfaBoxButton(group);
+        this.useProjectBuildPath = buildUseProjectBuildPathButton(group);
         Label separator = new Label(group, SWT.SEPARATOR | SWT.SHADOW_IN | SWT.HORIZONTAL);
         this.maxViolationsPerFilePerRule = buildMaxViolationsPerFilePerRuleText(group);
         
@@ -142,6 +144,11 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         data.horizontalAlignment = GridData.FILL;
         data.grabExcessHorizontalSpace = true;
         this.useDFABox.setLayoutData(data);
+
+        data = new GridData();
+        data.horizontalAlignment = GridData.FILL;
+        data.grabExcessHorizontalSpace = true;
+        this.useProjectBuildPath.setLayoutData(data);
         
         data = new GridData();
         data.horizontalAlignment = GridData.FILL;
@@ -341,6 +348,17 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
         button.setEnabled(false);
         return button;
     }
+    
+    /**
+     * Build the check box for enabling using Project Build Path
+     * @param viewGroup the parent composite
+     */
+    private Button buildUseProjectBuildPathButton(final Composite viewGroup) {
+        Button button = new Button(viewGroup, SWT.CHECK);
+        button.setText(getMessage(StringKeys.MSGKEY_PREF_GENERAL_LABEL_USE_PROJECT_BUILD_PATH));
+        button.setSelection(this.preferences.isProjectBuildPathEnabled());
+        return button;
+    }
 
     /**
      * Build the text for maximum violations per file per rule
@@ -391,6 +409,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         if (this.useDFABox != null) {
             this.useDFABox.setSelection(IPreferences.DFA_ENABLED_DEFAULT);
+        }
+
+        if (this.useProjectBuildPath != null) {
+            this.useProjectBuildPath.setSelection(IPreferences.PROJECT_BUILD_PATH_ENABLED_DEFAULT);
         }
         
         if (this.maxViolationsPerFilePerRule != null) {
@@ -479,6 +501,10 @@ public class GeneralPreferencesPage extends PreferencePage implements IWorkbench
 
         if (this.useDFABox != null) {
             this.preferences.setDfaEnabled(this.useDFABox.getSelection());
+        }
+
+        if (this.useProjectBuildPath != null) {
+            this.preferences.setProjectBuildPathEnabled(this.useProjectBuildPath.getSelection());
         }
         
         if (this.maxViolationsPerFilePerRule != null) {
