@@ -51,9 +51,9 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-4, ok
+4, bad
      ]]></description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
  public void foo() { 
