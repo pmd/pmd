@@ -7,7 +7,7 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void foo() {   
+ public void foo() {
   if (true) {
    return true;
   } else {
@@ -24,10 +24,10 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public boolean foo() {        
-  if (true) 
+ public boolean foo() {
+  if (true)
    return true;
-   else 
+   else
   return false;
  }
 }
@@ -40,7 +40,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
- public Object foo() { 
+ public Object foo() {
   if (!true) {
    return null;
   } else {}
