@@ -94,9 +94,9 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		// Creating the attribute name for the rule context
 		COUNTER_LABEL = this.getClass().getSimpleName() + ".number of match";
 		// Constructing the request from the input parameters
-		this.namesMatch = RegexHelper.compilePatternFromList(arrayAsList(getStringProperties(nameMatchDescriptor)));
+		this.namesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getStringProperties(nameMatchDescriptor)));
 		this.operand = getStringProperty(operandDescriptor);
-		this.typesMatch = RegexHelper.compilePatternFromList(arrayAsList(getStringProperties(typeMatchDescriptor)));
+		this.typesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getStringProperties(typeMatchDescriptor)));
 		String thresholdAsString = getStringProperty(thresholdDescriptor);
 		this.threshold = Integer.valueOf(thresholdAsString);
 		// Initializing list of match

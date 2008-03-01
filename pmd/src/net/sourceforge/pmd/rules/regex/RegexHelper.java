@@ -6,8 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * <p>A simple helper class to regroup a bunch of method
- * generally used by rules using regex.</p>
+ * A simple helper class to regroup a bunch of method
+ * generally used by rules using regex.
  *
  * @author Romain PELISSE, belaran@gmail.com
  *
@@ -20,11 +20,11 @@ public class RegexHelper {
 	private RegexHelper() {}
 
 	/**
-	 * <p>Compile a List of regex
-	 * @param list
-	 * @return
+	 * Compiles a list of regex into a list of patterns.
+	 * @param list the regex list
+	 * @return the pattern list
 	 */
-	public static List<Pattern> compilePatternFromList(List<String> list) {
+	public static List<Pattern> compilePatternsFromList(List<String> list) {
 		List<Pattern> patterns;
 		if (list != null && list.size() > 0) {
 			patterns = new ArrayList<Pattern>(list.size());
@@ -40,13 +40,13 @@ public class RegexHelper {
 	}
 
 	/**
-	 * <p>Simple commidity method (also designed to increase readability of source code,
-	 * and to decrease import in the calling class).</p>
-	 * <p>Provide a pattern and a subject, it'll do the proper matching.</p>
+	 * Simple commodity method (also designed to increase readability of source code,
+	 * and to decrease import in the calling class).
+	 * Provide a pattern and a subject, it'll do the proper matching.
 	 *
-	 * @param pattern, a compiled regex pattern.
-	 * @param subject, a String to match
-	 * @return
+	 * @param pattern a compiled regex pattern
+	 * @param subject a String to match
+	 * @return {@code true} if there is a match; {@code false} otherwise
 	 */
  	public static boolean isMatch(Pattern pattern,String subject) {
  		if ( subject != null && ! "".equals(subject) ) {

@@ -35,7 +35,7 @@ import java.util.List;
  * In JUnit 4, use
  * 
  * <pre>
- *  @Test(expected = Exception.class)
+ *  &#064;Test(expected = Exception.class)
  * </pre>
  * 
  * @author acaplan

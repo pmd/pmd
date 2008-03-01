@@ -142,7 +142,7 @@ public interface Rule {
 	/**
 	 * Get all properties for this Rule.
 	 * 
-	 * @return
+	 * @return the properties for the rule
 	 */
 	Properties getProperties();
 

@@ -46,7 +46,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	/**
 	 * Adds a violation to the report.
 	 * 
-	 * @param ctx
+	 * @param data
 	 *            the RuleContext
 	 * @param node
 	 *            the node that produces the violation
@@ -59,7 +59,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	/**
 	 * Adds a violation to the report.
 	 * 
-	 * @param ctx
+	 * @param data
 	 *            the RuleContext
 	 * @param node
 	 *            the node that produces the violation
@@ -76,7 +76,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	/**
 	 * Adds a violation to the report.
 	 * 
-	 * @param ctx
+	 * @param data
 	 *            the RuleContext
 	 * @param node
 	 *            the node that produces the violation
@@ -93,7 +93,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	/**
 	 * Adds a violation to the report.
 	 * 
-	 * @param ctx
+	 * @param data
 	 *            the RuleContext
 	 * @param node
 	 *            the node that produces the violation, may be null, in which
