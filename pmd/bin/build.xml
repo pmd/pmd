@@ -416,7 +416,7 @@
 	<target name="javadoc" description="Generates Javadocs">
 		<mkdir dir="docs/api" />
 
-		<javadoc packagenames="com.*, net.*, org.*" sourcepath="${dir.src}" destdir="docs/api" doctitle="PMD API ${version}" failonerror="yes">
+		<javadoc packagenames="com.*, net.*, org.*" sourcepath="${dir.src}" destdir="docs/api" doctitle="PMD ${version} API" failonerror="yes">
 			<tag name="todo" enabled="false"/>
 			<classpath>
 				<fileset dir="${dir.lib}">
