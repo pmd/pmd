@@ -87,7 +87,7 @@ public class RuleViolation implements IRuleViolation {
 	        	if (qualifiedName == null) {
 	        		qualifiedName = parent.getScope().getEnclosingClassScope().getClassName();
 	            } else {
-	            	qualifiedName = qualifiedName + "$" + parent.getScope().getEnclosingClassScope().getClassName();
+	            	qualifiedName = parent.getScope().getEnclosingClassScope().getClassName() + "$" + qualifiedName;
 	            }
 	        }
 	        // Sourcefile does not have an enclosing class scope...
