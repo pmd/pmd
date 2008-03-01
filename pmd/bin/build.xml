@@ -416,14 +416,18 @@
 	<target name="javadoc" description="Generates Javadocs">
 		<mkdir dir="docs/api" />
 
-		<javadoc packagenames="com.*, net.*, org.*" sourcepath="${dir.src}" destdir="docs/api" doctitle="PMD API">
+		<javadoc packagenames="com.*, net.*, org.*" sourcepath="${dir.src}" destdir="docs/api" doctitle="PMD API ${version}" failonerror="yes">
+			<tag name="todo" enabled="false"/>
 			<classpath>
 				<fileset dir="${dir.lib}">
 					<include name="*.jar" />
 				</fileset>
+				<pathelement location="${ant.jar}" />
 			</classpath>
 		</javadoc>
 	</target>
+
+	<target name="qa" depends="dist, regress, regress14, pmdOnPmd, cpdOnPmd, symtabtest, dfatest, cpdtest, javadoc" description="Runs all tests (used for continuous integration tests with cruise control)"/>
 
 </project>
 
