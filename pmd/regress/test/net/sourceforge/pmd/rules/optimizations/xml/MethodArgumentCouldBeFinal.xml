@@ -86,8 +86,8 @@ Shouldn't trigger on try blocks
         <code><![CDATA[
 public class Foo {
  public void bar(final List batch) {
-   try {} catch (Exception e) {} 
-   try {} catch (Exception ee) {} 
+   try {} catch (Exception e) {}
+   try {} catch (Exception ee) {}
  }
 }
      ]]></code>
@@ -149,6 +149,20 @@ same as above but with extra parenthesis
 public class Foo {
  public void bar(int a) {
   x[--(a)] = 1;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bug 1808158 - Constructor args could also be final
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ int field;
+ public Foo(int a) {
+  this.field = a;
  }
 }
      ]]></code>

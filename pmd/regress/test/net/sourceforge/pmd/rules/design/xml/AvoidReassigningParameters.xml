@@ -105,8 +105,8 @@ public class Foo {
  void foo(int x) {
    try {
      x = 2;
-   } catch (Throwable t) { 
-   } 
+   } catch (Throwable t) {
+   }
  }
 }
      ]]></code>
@@ -148,6 +148,21 @@ public class Foo {
  void foo(int x[]) {
   x = y;
  }
+}
+     ]]></code>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+The rule should also detect parameter reassignement in constructors (at least to help young programmers still learning java basic)
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public Foo(int arg, String arg2, Object arg3) {
+		arg = arg + 3;
+		arg += arg + "some other string";
+		arg3 = arg3.clone();
+	}
 }
      ]]></code>
     </test-code>
