@@ -7,7 +7,7 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- public void foo() {
+ public boolean foo() {
   if (true) {
    return true;
   } else {
