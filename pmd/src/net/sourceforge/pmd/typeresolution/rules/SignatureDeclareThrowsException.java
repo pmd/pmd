@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.typeresolution.rules;
 
-import java.util.Arrays;
 import java.util.List;
 
 import net.sourceforge.pmd.AbstractJavaRule;
@@ -47,40 +46,46 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
         if (impl != null && impl.jjtGetParent().equals(node)) {
             for (int ix = 0; ix < impl.jjtGetNumChildren(); ix++) {
                 ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) impl.jjtGetChild(ix);
-                if (type.getType() == null) {
-                    if ("junit.framework.Test".equals(type.getImage())) {
-                        junitImported = true;
-                        return super.visit(node, data);
-                    }
-                } else if (type.getType().equals(junit.framework.Test.class)) {
+                if (isJUnitTest(type)) {
                     junitImported = true;
                     return super.visit(node, data);
-                } else {
-                    List implementors = Arrays.asList(type.getType().getInterfaces());
-                    if (implementors.contains(junit.framework.Test.class)) {
-                        junitImported = true;
-                        return super.visit(node, data);
-                    }
                 }
             }
         }
         if (node.jjtGetNumChildren() != 0 && node.jjtGetChild(0).getClass().equals(ASTExtendsList.class)) {
             ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) ((SimpleNode) node.jjtGetChild(0)).jjtGetChild(0);
-            Class clazz = type.getType();
-            if (clazz != null && clazz.equals(junit.framework.Test.class)) {
+            if (isJUnitTest(type)) {
                 junitImported = true;
                 return super.visit(node, data);
-            }
-            while (clazz != null && !Object.class.equals(clazz)) {
-                if (Arrays.asList(clazz.getInterfaces()).contains(junit.framework.Test.class)) {
-                    junitImported = true;
-                    return super.visit(node, data);
-                }
-                clazz = clazz.getSuperclass();
             }
         }
 
         return super.visit(node, data);
+    }
+    
+    private boolean isJUnitTest(ASTClassOrInterfaceType type) {
+    	Class<?> clazz = type.getType();
+        if (clazz == null) {
+            if ("junit.framework.Test".equals(type.getImage())) {
+            	return true;
+            }
+        } else if (isJUnitTest(clazz)) {
+        	return true;
+        } else {
+        	while (clazz != null && !Object.class.equals(clazz)) {
+	        	for(Class<?> intf : clazz.getInterfaces()) {
+	        		if (isJUnitTest(intf)) {
+	        			return true;
+	        		}
+	        	}
+                clazz = clazz.getSuperclass();
+        	}
+        }
+        return false;
+    }
+
+    private boolean isJUnitTest(Class<?> clazz) {
+    	return clazz.getName().equals("junit.framework.Test");
     }
     
     public Object visit(ASTImportDeclaration node, Object o) {
