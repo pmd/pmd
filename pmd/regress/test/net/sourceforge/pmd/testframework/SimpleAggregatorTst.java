@@ -63,8 +63,7 @@ public abstract class SimpleAggregatorTst extends RuleTst {
      */
     @Test
     public void testAll() {
-        // get the "pmd.regress" System property
-        boolean regressionTest = Boolean.getBoolean("pmd.regress");
+        boolean regressionTest = TestDescriptor.inRegressionTestMode();
         ArrayList<Failure> l = new ArrayList<Failure>();
         for (Rule r : rules) {
             TestDescriptor[] tests = extractTestsFromXml(r);
