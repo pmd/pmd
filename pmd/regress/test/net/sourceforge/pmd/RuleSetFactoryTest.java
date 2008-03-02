@@ -64,6 +64,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import test.net.sourceforge.pmd.testframework.TestDescriptor;
+
 public class RuleSetFactoryTest {
 
 	private boolean isJdk14;
@@ -312,64 +314,79 @@ public class RuleSetFactoryTest {
 	@Test
 	public void testReadWriteRoundTrip() throws IOException, RuleSetNotFoundException, ParserConfigurationException,
 			SAXException {
-		boolean allValid = true;
+
 		List<String> ruleSetFileNames = getRuleSetFileNames();
 		for (String fileName : ruleSetFileNames) {
-
-			// Load original XML
-			String xml1 = readFullyToString(ResourceLoader.loadResourceAsStream(fileName));
-
-			// Load the original RuleSet
-			RuleSet ruleSet1 = loadRuleSetByFileName(fileName);
-
-			// Write to XML, first time
-			ByteArrayOutputStream outputStream1 = new ByteArrayOutputStream();
-			RuleSetWriter writer1 = new RuleSetWriter(outputStream1);
-			writer1.write(ruleSet1);
-			writer1.close();
-			String xml2 = new String(outputStream1.toByteArray());
-
-			// Read RuleSet from XML, first time
-			RuleSetFactory ruleSetFactory = new RuleSetFactory();
-			RuleSet ruleSet2 = ruleSetFactory.createRuleSet(new ByteArrayInputStream(outputStream1.toByteArray()));
-
-			// Do write/read a 2nd time, just to be sure
-
-			// Write to XML, second time
-			ByteArrayOutputStream outputStream2 = new ByteArrayOutputStream();
-			RuleSetWriter writer2 = new RuleSetWriter(outputStream2);
-			writer2.write(ruleSet2);
-			writer2.close();
-			String xml3 = new String(outputStream2.toByteArray());
-
-			// System.out.println("xml1: " + xml1);
-			// System.out.println("xml2: " + xml2);
-			// System.out.println("xml3: " + xml3);
-
-			// Read RuleSet from XML, second time
-			RuleSet ruleSet3 = ruleSetFactory.createRuleSet(new ByteArrayInputStream(outputStream2.toByteArray()));
-
-			// The 2 written XMLs should all be valid w.r.t Schema/DTD
-			if (!isJdk14) {
-				assertTrue("1st roundtrip RuleSet XML is not valid against Schema",
-						validateAgainstSchema(new ByteArrayInputStream(xml2.getBytes())));
-				assertTrue("2nd roundtrip RuleSet XML is not valid against Schema",
-						validateAgainstSchema(new ByteArrayInputStream(xml3.getBytes())));
-			}
-			assertTrue("1st roundtrip RuleSet XML is not valid against DTD",
-					validateAgainstDtd(new ByteArrayInputStream(xml2.getBytes())));
-			assertTrue("2nd roundtrip RuleSet XML is not valid against DTD",
-					validateAgainstDtd(new ByteArrayInputStream(xml3.getBytes())));
-
-			// All 3 versions of the RuleSet should be the same
-			assertEqualsRuleSet("Original RuleSet and 1st roundtrip Ruleset not the same", ruleSet1, ruleSet2);
-			assertEqualsRuleSet("1st roundtrip Ruleset and 2nd roundtrip RuleSet not the same", ruleSet2, ruleSet3);
-
-			// It's hard to compare the XML DOMs.  At least the roundtrip ones should textually be the same.
-			assertEquals("1st roundtrip RuleSet XML and 2nd roundtrip RuleSet XML", xml2, xml3);
-
+		    testRuleSet(fileName);
 		}
-		assertTrue("All XML must parse without producing validation messages.", allValid);
+	}
+
+    @Test
+    public void testWindowsJdk14Bug() throws IOException, RuleSetNotFoundException, ParserConfigurationException,
+            SAXException {
+
+        if (TestDescriptor.inRegressionTestMode()) {
+            // skip this test if we're only running regression tests
+            return;
+        }
+        // This fails only on Windows running the weaved pmd version
+        testRuleSet("regress/test/net/sourceforge/pmd/xml/j2ee.xml");
+    }
+
+	public void testRuleSet(String fileName) throws IOException, RuleSetNotFoundException, ParserConfigurationException,
+	        SAXException {
+
+		// Load original XML
+		String xml1 = readFullyToString(ResourceLoader.loadResourceAsStream(fileName));
+
+		// Load the original RuleSet
+		RuleSet ruleSet1 = loadRuleSetByFileName(fileName);
+
+		// Write to XML, first time
+		ByteArrayOutputStream outputStream1 = new ByteArrayOutputStream();
+		RuleSetWriter writer1 = new RuleSetWriter(outputStream1);
+		writer1.write(ruleSet1);
+		writer1.close();
+		String xml2 = new String(outputStream1.toByteArray());
+
+		// Read RuleSet from XML, first time
+		RuleSetFactory ruleSetFactory = new RuleSetFactory();
+		RuleSet ruleSet2 = ruleSetFactory.createRuleSet(new ByteArrayInputStream(outputStream1.toByteArray()));
+
+		// Do write/read a 2nd time, just to be sure
+
+		// Write to XML, second time
+		ByteArrayOutputStream outputStream2 = new ByteArrayOutputStream();
+		RuleSetWriter writer2 = new RuleSetWriter(outputStream2);
+		writer2.write(ruleSet2);
+		writer2.close();
+		String xml3 = new String(outputStream2.toByteArray());
+
+		// System.out.println("xml1: " + xml1);
+		// System.out.println("xml2: " + xml2);
+		// System.out.println("xml3: " + xml3);
+
+		// Read RuleSet from XML, second time
+		RuleSet ruleSet3 = ruleSetFactory.createRuleSet(new ByteArrayInputStream(outputStream2.toByteArray()));
+
+		// The 2 written XMLs should all be valid w.r.t Schema/DTD
+		if (!isJdk14) {
+			assertTrue("1st roundtrip RuleSet XML is not valid against Schema",
+					validateAgainstSchema(new ByteArrayInputStream(xml2.getBytes())));
+			assertTrue("2nd roundtrip RuleSet XML is not valid against Schema",
+					validateAgainstSchema(new ByteArrayInputStream(xml3.getBytes())));
+		}
+		assertTrue("1st roundtrip RuleSet XML is not valid against DTD",
+				validateAgainstDtd(new ByteArrayInputStream(xml2.getBytes())));
+		assertTrue("2nd roundtrip RuleSet XML is not valid against DTD",
+				validateAgainstDtd(new ByteArrayInputStream(xml3.getBytes())));
+
+		// All 3 versions of the RuleSet should be the same
+		assertEqualsRuleSet("Original RuleSet and 1st roundtrip Ruleset not the same", ruleSet1, ruleSet2);
+		assertEqualsRuleSet("1st roundtrip Ruleset and 2nd roundtrip RuleSet not the same", ruleSet2, ruleSet3);
+
+		// It's hard to compare the XML DOMs.  At least the roundtrip ones should textually be the same.
+		assertEquals("1st roundtrip RuleSet XML and 2nd roundtrip RuleSet XML", xml2, xml3);
 	}
 
 	private void assertEqualsRuleSet(String message, RuleSet ruleSet1, RuleSet ruleSet2) {
