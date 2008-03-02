@@ -266,10 +266,9 @@ public class Foo {
     	message="System.exit() should not be used in J2EE/JEE apps"
     	class="net.sourceforge.pmd.rules.XPathRule"
     	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#DoNotCallSystemExit">
-    	<description><![CDATA[
-Web applications should not call System.exit(), since only the web container or the
+    	<description>Web applications should not call System.exit(), since only the web container or the
 application server should stop the JVM.
-     ]]></description>
+	</description>
     	<priority>3</priority>
     	<properties>
     		<property name="xpath">
