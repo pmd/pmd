@@ -373,48 +373,48 @@ public class RuleSetFactoryTest {
 	}
 
 	private void assertEqualsRuleSet(String message, RuleSet ruleSet1, RuleSet ruleSet2) {
-		assertEquals("RuleSet name", ruleSet1.getName(), ruleSet2.getName());
-		assertEquals("RuleSet description", ruleSet1.getDescription(), ruleSet2.getDescription());
-		assertEquals("RuleSet language", ruleSet1.getLanguage(), ruleSet2.getLanguage());
-		assertEquals("RuleSet exclude patterns", ruleSet1.getExcludePatterns(), ruleSet2.getExcludePatterns());
-		assertEquals("RuleSet include patterns", ruleSet1.getIncludePatterns(), ruleSet2.getIncludePatterns());
-		assertEquals("RuleSet rule count", ruleSet1.getRules().size(), ruleSet2.getRules().size());
+		assertEquals(message + ", RuleSet name", ruleSet1.getName(), ruleSet2.getName());
+		assertEquals(message + ", RuleSet description", ruleSet1.getDescription(), ruleSet2.getDescription());
+		assertEquals(message + ", RuleSet language", ruleSet1.getLanguage(), ruleSet2.getLanguage());
+		assertEquals(message + ", RuleSet exclude patterns", ruleSet1.getExcludePatterns(), ruleSet2.getExcludePatterns());
+		assertEquals(message + ", RuleSet include patterns", ruleSet1.getIncludePatterns(), ruleSet2.getIncludePatterns());
+		assertEquals(message + ", RuleSet rule count", ruleSet1.getRules().size(), ruleSet2.getRules().size());
 
 		for (int i = 0; i < ruleSet1.getRules().size(); i++) {
 			Rule rule1 = ((List<Rule>)ruleSet1.getRules()).get(i);
 			Rule rule2 = ((List<Rule>)ruleSet2.getRules()).get(i);
 
-			assertFalse("Different RuleReference",
+			assertFalse(message + ", Different RuleReference",
 					((rule1 instanceof RuleReference) && !(rule2 instanceof RuleReference))
 							|| (!(rule1 instanceof RuleReference) && (rule2 instanceof RuleReference)));
 
 			if (rule1 instanceof RuleReference) {
 				RuleReference ruleReference1 = (RuleReference)rule1;
 				RuleReference ruleReference2 = (RuleReference)rule2;
-				assertEquals("RuleReference overridden name", ruleReference1.getOverriddenName(),
+				assertEquals(message + ", RuleReference overridden name", ruleReference1.getOverriddenName(),
 						ruleReference2.getOverriddenName());
-				assertEquals("RuleReference overridden description", ruleReference1.getOverriddenDescription(),
+				assertEquals(message + ", RuleReference overridden description", ruleReference1.getOverriddenDescription(),
 						ruleReference2.getOverriddenDescription());
-				assertEquals("RuleReference overridden message", ruleReference1.getOverriddenMessage(),
+				assertEquals(message + ", RuleReference overridden message", ruleReference1.getOverriddenMessage(),
 						ruleReference2.getOverriddenMessage());
-				assertEquals("RuleReference overridden external info url",
+				assertEquals(message + ", RuleReference overridden external info url",
 						ruleReference1.getOverriddenExternalInfoUrl(), ruleReference2.getOverriddenExternalInfoUrl());
-				assertEquals("RuleReference overridden priority", ruleReference1.getOverriddenPriority(),
+				assertEquals(message + ", RuleReference overridden priority", ruleReference1.getOverriddenPriority(),
 						ruleReference2.getOverriddenPriority());
-				assertEquals("RuleReference overridden examples", ruleReference1.getOverriddenExamples(),
+				assertEquals(message + ", RuleReference overridden examples", ruleReference1.getOverriddenExamples(),
 						ruleReference2.getOverriddenExamples());
-				assertEquals("RuleReference overridden properties", ruleReference1.getOverriddenProperties(),
+				assertEquals(message + ", RuleReference overridden properties", ruleReference1.getOverriddenProperties(),
 						ruleReference2.getOverriddenProperties());
 			}
 
-			assertEquals("Rule name", rule1.getName(), rule2.getName());
-			assertEquals("Rule class", rule1.getRuleClass(), rule2.getRuleClass());
-			assertEquals("Rule description", rule1.getDescription(), rule2.getDescription());
-			assertEquals("Rule message", rule1.getMessage(), rule2.getMessage());
-			assertEquals("Rule external info url", rule1.getExternalInfoUrl(), rule2.getExternalInfoUrl());
-			assertEquals("Rule priority", rule1.getPriority(), rule2.getPriority());
-			assertEquals("Rule examples", rule1.getExamples(), rule2.getExamples());
-			assertEquals("Rule properties", rule1.getProperties(), rule2.getProperties());
+			assertEquals(message + ", Rule name", rule1.getName(), rule2.getName());
+			assertEquals(message + ", Rule class", rule1.getRuleClass(), rule2.getRuleClass());
+			assertEquals(message + ", Rule description", rule1.getDescription(), rule2.getDescription());
+			assertEquals(message + ", Rule message", rule1.getMessage(), rule2.getMessage());
+			assertEquals(message + ", Rule external info url", rule1.getExternalInfoUrl(), rule2.getExternalInfoUrl());
+			assertEquals(message + ", Rule priority", rule1.getPriority(), rule2.getPriority());
+			assertEquals(message + ", Rule examples", rule1.getExamples(), rule2.getExamples());
+			assertEquals(message + ", Rule properties", rule1.getProperties(), rule2.getProperties());
 		}
 	}
 
