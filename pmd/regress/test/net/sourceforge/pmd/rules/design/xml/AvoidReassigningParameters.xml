@@ -198,5 +198,23 @@ public class RealClass {
     		]]>
     	</code>
     </test-code>
+    <test-code>
+    	<description>local variables should not be flagged</description>
+    	<expected-problems>0</expected-problems>
+    	<code>
+    		<![CDATA[
+public class RealClass {
+	public void setString(int thisParam, int superParam) {
+		int foo;
+		foo = 2;
+	}
+	public RealClass(int thisParam, int superParam) {
+		int foo;
+		foo = 2;
+	}
+}
+    		]]>
+    	</code>
+    </test-code>
 
 </test-data>
