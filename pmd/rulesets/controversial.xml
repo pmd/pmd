@@ -638,18 +638,14 @@ the volatile keyword should not be used for maintenance purpose and portability.
             <property name="xpath">
                 <value>
                     <![CDATA[
-//PrimaryExpression
-[
-	PrimaryPrefix/Name[starts-with(@Image,'Runtime.getRuntime')]
-	and
-	PrimarySuffix[ends-with(@Image,'gc')]
-	or
-	./PrimaryPrefix/Name
-	[
-		starts-with(@Image, 'System.gc')
-    		or
-    		starts-with(@Image, 'System.runFinalization')
-	]
+//Name[
+(starts-with(@Image, 'System.') and
+(starts-with(@Image, 'System.gc') or
+starts-with(@Image, 'System.runFinalization'))) or
+(
+starts-with(@Image,'Runtime.getRuntime') and
+../../PrimarySuffix[ends-with(@Image,'gc')]
+)
 ]
 ]]>
                 </value>
