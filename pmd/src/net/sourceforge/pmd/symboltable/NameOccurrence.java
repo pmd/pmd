@@ -27,6 +27,9 @@ public class NameOccurrence {
     private final static String THIS = "this";
     private final static String SUPER = "super";
 
+    private final static String THIS_DOT = "this.";
+    private final static String SUPER_DOT = "super.";
+
     public NameOccurrence(SimpleNode location, String image) {
         this.location = location;
         this.image = image;
@@ -127,12 +130,12 @@ public class NameOccurrence {
     }
 
     /**
-     * Assert it the occurence is a self assignement such as:
+     * Assert it the occurrence is a self assignment such as:
      * <code>
      * 		i += 3;
      * </code>
      *
-     * @return true, if the occurence is self-assignement, false, otherwise.
+     * @return true, if the occurrence is self-assignment, false, otherwise.
      */
     public boolean isSelfAssignment() {
         Node l = location;
@@ -182,21 +185,19 @@ public class NameOccurrence {
     }
 
     /**
-     * Simply return if the image start with keyworkd 'this' or 'super'.
+     * Simply return if the image start with keyword 'this' or 'super'.
      *
      * @return true, if keyword is used, false otherwise.
      */
     public boolean useThisOrSuper() {
-    	if ( location instanceof Node ) {
-    		Node node = ((Node)location).jjtGetParent();
-    		if ( node instanceof ASTPrimaryExpression ) {
-    			ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression)node;
-    			ASTPrimaryPrefix prefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
-    			if ( prefix != null )
-    				return (prefix.usesSuperModifier() || prefix.usesThisModifier());
-    		}
-    	}
-    	return image.startsWith(THIS) || image.startsWith(SUPER);
+		Node node = location.jjtGetParent();
+		if ( node instanceof ASTPrimaryExpression ) {
+			ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression)node;
+			ASTPrimaryPrefix prefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+			if ( prefix != null )
+				return (prefix.usesSuperModifier() || prefix.usesThisModifier());
+		}
+    	return image.startsWith(THIS_DOT) || image.startsWith(SUPER_DOT);
     }
 
     @Override

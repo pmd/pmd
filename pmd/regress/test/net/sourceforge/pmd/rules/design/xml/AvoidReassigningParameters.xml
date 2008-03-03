@@ -184,5 +184,19 @@ public class RealClass extends AbstractClass {
     		]]>
     	</code>
     </test-code>
+    <test-code>
+    	<description>parameter name starting with "this" or "super" should still be flagged</description>
+    	<expected-problems>2</expected-problems>
+    	<code>
+    		<![CDATA[
+public class RealClass {
+	public void setString(int thisParam, int superParam) {
+		thisParam = 1;
+		superParam = 2;
+	}
+}
+    		]]>
+    	</code>
+    </test-code>
 
 </test-data>
