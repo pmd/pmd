@@ -23,6 +23,22 @@ public abstract class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
+An abstract method with constructors
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public abstract class Foo extends Error {
+	public Foo() {
+		super();
+	}
+	public Foo(String s) {
+		super(s);
+	}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
 An abstract class with method, no violation
      ]]></description>
         <expected-problems>0</expected-problems>
@@ -31,7 +47,7 @@ public abstract class Foo {
 	private String field;
 	public int otherField;
 
-	public abstract m();
+	public abstract void m();
 }
      ]]></code>
     </test-code>

@@ -9,7 +9,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
     @Before
     public void setUp() {
         addRule("design", "AbstractClassWithoutAbstractMethod");
-        addRule("design","AbstractClassWithoutAbstractMethod");
+        addRule("design", "AbstractClassWithoutAnyMethod");
         addRule("design", "AccessorClassGeneration");
         addRule("design", "AssignmentToNonFinalStatic");
         addRule("design", "AvoidConstantsInterface");

@@ -1569,7 +1569,7 @@ public class Foo {
 //ClassOrInterfaceDeclaration[
 	(@Abstract = 'true')
 	and
-	(count(//MethodDeclaration) = 0)
+	(count(//MethodDeclaration) + count(//ConstructorDeclaration) = 0)
 ]
                     ]]>
                 </value>
