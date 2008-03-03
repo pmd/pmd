@@ -28,6 +28,7 @@ public class AvoidReassigningParameters extends AbstractJavaRule {
             for (NameOccurrence occ: usages) {
                 if ((occ.isOnLeftHandSide() || occ.isSelfAssignment()) &&
                     occ.getNameForWhichThisIsAQualifier() == null &&
+                    (! occ.useThisOrSuper()) &&
                     (!decl.isArray() || occ.getLocation().jjtGetParent().jjtGetParent().jjtGetNumChildren() == 1))
                 {
                     // not an array or no primary suffix to access the array values

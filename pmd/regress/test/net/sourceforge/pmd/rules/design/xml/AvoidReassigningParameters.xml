@@ -151,7 +151,7 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-        <test-code>
+    <test-code>
         <description><![CDATA[
 The rule should also detect parameter reassignement in constructors (at least to help young programmers still learning java basic)
      ]]></description>
@@ -166,4 +166,23 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+    	<description>
+    		<![CDATA[
+The rule should take into account uses of field names, inherited or not, matching the method parameter name.
+    		]]>
+    	</description>
+    	<expected-problems>0</expected-problems>
+    	<code>
+    		<![CDATA[
+public class RealClass extends AbstractClass {
+	public void setString(String string) {
+		super.string = string; //violation
+		this.string = string; // or violation
+	}
+}
+    		]]>
+    	</code>
+    </test-code>
+
 </test-data>

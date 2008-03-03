@@ -24,6 +24,9 @@ public class NameOccurrence {
     private boolean isMethodOrConstructorInvocation;
     private int argumentCount;
 
+    private final static String THIS = "this";
+    private final static String SUPER = "super";
+
     public NameOccurrence(SimpleNode location, String image) {
         this.location = location;
         this.image = image;
@@ -123,6 +126,14 @@ public class NameOccurrence {
         return thirdChild instanceof ASTName && ((ASTName) thirdChild).getImage().indexOf('.') == -1;
     }
 
+    /**
+     * Assert it the occurence is a self assignement such as:
+     * <code>
+     * 		i += 3;
+     * </code>
+     *
+     * @return true, if the occurence is self-assignement, false, otherwise.
+     */
     public boolean isSelfAssignment() {
         Node l = location;
         while (true) {
@@ -132,7 +143,7 @@ public class NameOccurrence {
             if (node instanceof ASTPreDecrementExpression || node instanceof ASTPreIncrementExpression || node instanceof ASTPostfixExpression) {
                 return true;
             }
-    
+
             if (node instanceof ASTStatementExpression) {
                 ASTStatementExpression exp = (ASTStatementExpression) node;
                 if (exp.jjtGetNumChildren() >= 2 && exp.jjtGetChild(1) instanceof ASTAssignmentOperator) {
@@ -142,7 +153,7 @@ public class NameOccurrence {
                     }
                 }
             }
-    
+
             // deal with extra parenthesis: "(i)++"
             if (p instanceof ASTPrimaryPrefix && p.jjtGetNumChildren() == 1 &&
                     gp instanceof ASTPrimaryExpression && gp.jjtGetNumChildren() == 1&&
@@ -151,25 +162,50 @@ public class NameOccurrence {
                 l = node;
                 continue;
             }
-            
+
             // catch this.i++ or ++this.i
             if (gp instanceof ASTPreDecrementExpression || gp instanceof ASTPreIncrementExpression || gp instanceof ASTPostfixExpression) {
                 return true;
             }
-    
+
             return false;
         }
     }
 
+    /**
+     * Simply return true is the image is equal to keyword 'this' or 'super'.
+     *
+     * @return return true if image equal to 'this' or 'super'.
+     */
     public boolean isThisOrSuper() {
-        return image.equals("this") || image.equals("super");
+        return image.equals(THIS) || image.equals(SUPER);
     }
 
+    /**
+     * Simply return if the image start with keyworkd 'this' or 'super'.
+     *
+     * @return true, if keyword is used, false otherwise.
+     */
+    public boolean useThisOrSuper() {
+    	if ( location instanceof Node ) {
+    		Node node = ((Node)location).jjtGetParent();
+    		if ( node instanceof ASTPrimaryExpression ) {
+    			ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression)node;
+    			ASTPrimaryPrefix prefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
+    			if ( prefix != null )
+    				return (prefix.usesSuperModifier() || prefix.usesThisModifier());
+    		}
+    	}
+    	return image.startsWith(THIS) || image.startsWith(SUPER);
+    }
+
+    @Override
     public boolean equals(Object o) {
         NameOccurrence n = (NameOccurrence) o;
         return n.getImage().equals(getImage());
     }
 
+    @Override
     public int hashCode() {
         return getImage().hashCode();
     }
@@ -178,6 +214,7 @@ public class NameOccurrence {
         return image;
     }
 
+    @Override
     public String toString() {
         return getImage() + ":" + location.getBeginLine() + ":" + location.getClass() + (this.isMethodOrConstructorInvocation() ? "(method call)" : "");
     }

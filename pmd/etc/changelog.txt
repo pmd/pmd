@@ -11,6 +11,7 @@ Fixed bug 1894821 - False - for Test Class without Test Cases
 Fixed bug 1882457 - PositionLiteralsFirstInComparisons rule not working OK
 Fixed bug 1842505 - XML output incorrect for inner classes
 Fixed bug 1808158 - Constructor args could also be final
+Fixed bug 1902351 - AvoidReassigningParameters not identify parent field
 Fixed other false positives in EmptyMethodInAbstractClassShouldBeAbstract
 Fixed other issues in SimplifyBooleanReturns
 Modified AvoidReassigningParameter to also check constructor arguments for reassignement
