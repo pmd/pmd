@@ -158,8 +158,38 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     }
 
     public Object visit(ASTConstructorDeclaration node, Object data) {
+        /*
+         * Local variables declared inside the constructor need to 
+         * be in a different scope so special handling is needed
+         */
         createMethodScope(node);
-        cont(node);
+
+        Scope methodScope = node.getScope();
+
+        Node formalParameters = node.jjtGetChild(0);
+        int i = 1;
+        int n = node.jjtGetNumChildren();
+        if (!(formalParameters instanceof ASTFormalParameters)) {
+            visit((ASTTypeParameters) formalParameters, data);
+            formalParameters = node.jjtGetChild(1);
+            i++;
+        }
+        visit((ASTFormalParameters)formalParameters, data);
+
+        createLocalScope(node);
+        Scope localScope = node.getScope();
+        for (;i<n;i++) {
+            SimpleJavaNode b = (SimpleJavaNode) node.jjtGetChild(i);
+            visit(b, data);
+            b.setScope(localScope);
+        }
+        // pop the local and method scopes
+        scopes.pop();
+        scopes.pop();
+        
+        // reset the correct scope for the constructor
+        node.setScope(methodScope);
+
         return data;
     }
 
