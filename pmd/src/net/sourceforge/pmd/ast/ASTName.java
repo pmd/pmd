@@ -4,7 +4,7 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 
-public class ASTName extends SimpleJavaNode implements TypeNode {
+public class ASTName extends SimpleJavaTypeNode {
     public ASTName(int id) {
         super(id);
     }
@@ -29,14 +29,5 @@ public class ASTName extends SimpleJavaNode implements TypeNode {
      */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-
-    private Class type;
-    public void setType(Class type){
-        this.type = type;
-    }
-    
-    public Class getType(){
-        return type;
     }
 }

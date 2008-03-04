@@ -7,7 +7,7 @@ import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import java.util.List;
 
-public class ASTVariableDeclaratorId extends SimpleJavaNode implements TypeNode {
+public class ASTVariableDeclaratorId extends SimpleJavaTypeNode {
 
     public ASTVariableDeclaratorId(int id) {
         super(id);
@@ -83,14 +83,4 @@ public class ASTVariableDeclaratorId extends SimpleJavaNode implements TypeNode 
         ASTType typeNode = (ASTType) node.jjtGetChild(i);
         return (SimpleNode) typeNode.jjtGetChild(0);
     }
-
-    private Class type;
-    public void setType(Class type){
-        this.type = type;
-    }
-    
-    public Class getType(){
-        return type;
-    }
-
 }

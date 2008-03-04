@@ -1,8 +1,19 @@
 package net.sourceforge.pmd.ast;
 
+/**
+ * This interface allows a Java Class to be associtated with a node.
+ */
 public interface TypeNode {
 
-    public Class getType();
+	/**
+	 * Get the Java Class associated with this node.
+	 * @return The Java Class, may return <code>null</code>.
+	 */
+	public Class<?> getType();
 
-    public void setType(Class type);
+	/**
+	 * Set the Java Class associated with this node.
+	 * @param type A Java Class
+	 */
+	public void setType(Class<?> type);
 }

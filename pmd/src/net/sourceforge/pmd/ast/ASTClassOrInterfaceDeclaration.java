@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTClassOrInterfaceDeclaration extends AccessNode implements TypeNode {
+public class ASTClassOrInterfaceDeclaration extends SimpleJavaAccessTypeNode {
     public ASTClassOrInterfaceDeclaration(int id) {
         super(id);
     }
@@ -37,15 +37,5 @@ public class ASTClassOrInterfaceDeclaration extends AccessNode implements TypeNo
         String innerStr = isNested() ? "(nested)" : "";
         System.out.println(toString(prefix) + "(" + getImage() + ")(" + interfaceStr + ")" + innerStr);
         dumpChildren(prefix);
-    }
-
-
-    private Class type;
-    public void setType(Class type){
-        this.type = type;
-    }
-    
-    public Class getType(){
-        return type;
     }
 }

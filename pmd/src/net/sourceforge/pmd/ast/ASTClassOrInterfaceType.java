@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTClassOrInterfaceType extends SimpleJavaNode implements TypeNode {
+public class ASTClassOrInterfaceType extends SimpleJavaTypeNode {
     public ASTClassOrInterfaceType(int id) {
         super(id);
     }
@@ -18,14 +18,4 @@ public class ASTClassOrInterfaceType extends SimpleJavaNode implements TypeNode 
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-    
-    private Class type;
-    public void setType(Class type){
-        this.type = type;
-    }
-    
-    public Class getType(){
-        return type;
-    }
-
 }

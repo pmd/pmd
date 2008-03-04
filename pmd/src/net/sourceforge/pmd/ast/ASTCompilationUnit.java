@@ -4,7 +4,8 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
 
-public class ASTCompilationUnit extends SimpleJavaNode implements CompilationUnit, TypeNode {
+// FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
+public class ASTCompilationUnit extends SimpleJavaTypeNode implements CompilationUnit {
 
     private ClassTypeResolver classTypeResolver;
 
@@ -22,14 +23,6 @@ public class ASTCompilationUnit extends SimpleJavaNode implements CompilationUni
      */
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
-    }
-    private Class type;
-    public void setType(Class type){
-        this.type = type;
-    }
-    
-    public Class getType(){
-        return type;
     }
 
     public boolean declarationsAreInDefaultPackage() {

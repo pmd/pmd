@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTImportDeclaration extends SimpleJavaNode implements TypeNode {
+public class ASTImportDeclaration extends SimpleJavaTypeNode {
 
     private boolean isImportOnDemand;
     private boolean isStatic;
@@ -68,19 +68,8 @@ public class ASTImportDeclaration extends SimpleJavaNode implements TypeNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-
-    // TODO - some overlap between this and the string mungers above... I guess
-    // we have to keep both around in case the user doesn't want to use type resolution.
-    private Class type;
+    
     private Package pkg;
-    public void setType(Class type){
-        this.type = type;
-    }
-    
-    public Class getType(){
-        return type;
-    }
-    
     public void setPackage(Package packge){
         this.pkg = packge;
     }
