@@ -2,7 +2,7 @@
 
 <document>
   <properties>
-    <author>Xavier Le Vourch, Ryan Gustavson, Romain Pelisse</author>
+    <author>Xavier Le Vourch, Ryan Gustafson, Romain Pelisse</author>
     <title>Last touches to a rules</title>
   </properties>
 
@@ -29,8 +29,13 @@ So we skip priority one. However, as explicit call to gc may really hinder appli
 
 <section name="Performance issues">
 <p>
-when writing a new rule, using command line option "-benchmark" on a few rules can give an indication on how the rule compares to others.
+When writing a new rule, using command line option "-benchmark" on a few rules can give an indication on how the rule compares to others.
 To get the full picture, use the rulesets/internal/all-java.xml ruleset with "-benchmark".
+</p>
+<p>
+Rules which use the RuleChain to visit the AST are faster than rules which perform manual visitation of the AST.  The difference is small
+for an individual Java rule, but when running 100s of rules, it is measurable.  For XPath rules, the difference is extremely noticeable due
+to Jaxen overhead for AST navigation.  Make sure your XPath rules using the RuleChain. (TODO How does one know except by running in a debugger or horrendous performance?).
 </p>
 </section>
 <section name="Adding test cases">
@@ -41,6 +46,12 @@ To get the full picture, use the rulesets/internal/all-java.xml ruleset with "-b
 If you want to contribute a java rule to PMD, you should run PMD on it (Using the dogfood rulesets), to ensure that you rule follow the rules defined by the PMD community.
 </p>
 <p>Also note, that if this is not a strong policy, most developers uses the berkeley braces syntax.</p>
+</section>
+
+<section name="Committing">
+<p>
+Before committing changes, make sure the 'qa' target in the Ant build works.  Drink a beer while you wait for it to finish.
+Then read the output to make sure no fatal errors are present. 
 </section>
 
 </body>
