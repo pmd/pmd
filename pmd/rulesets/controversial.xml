@@ -621,7 +621,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 		</rule>
 
 		<rule	name="DoNotCallGarbageCollectionExplicitly"
-		      since="4.2"
+			    since="4.2"
 	        	message="Do not explicitly trigger a garbage collection."
 	        	class="net.sourceforge.pmd.rules.XPathRule"
 	        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DoNotCallGarbageCollectionExplicitly">
@@ -633,7 +633,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 			leaks develop within an application, it should be dealt with JVM options rather than within the code itself.
 			]]>
         </description>
-        <priority>1</priority>
+        <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value>
