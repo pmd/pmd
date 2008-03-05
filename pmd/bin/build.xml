@@ -219,6 +219,7 @@
 			<sysproperty key="pmd.regress" value="${test.regression}"/>
 			<classpath>
 				<path refid="${test.dependencies}" />
+				<path path="${dir.regress}"/>
 			</classpath>
 			<batchtest fork="yes" todir="${test.outputdir}/xml">
 				<fileset dir="${dir.regress}">
