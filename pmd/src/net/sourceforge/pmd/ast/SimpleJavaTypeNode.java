@@ -16,13 +16,13 @@ public class SimpleJavaTypeNode extends SimpleJavaNode implements TypeNode {
 		super(p, i);
 	}
 
-	private Class<?> type;
+	private Class type;
 
-	public Class<?> getType() {
+	public Class getType() {
 		return type;
 	}
 
-	public void setType(Class<?> type) {
+	public void setType(Class type) {
 		this.type = type;
 	}
 }
