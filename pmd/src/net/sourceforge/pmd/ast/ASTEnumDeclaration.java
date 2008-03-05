@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTEnumDeclaration extends AccessNode {
+public class ASTEnumDeclaration extends SimpleJavaAccessTypeNode {
     public ASTEnumDeclaration(int id) {
         super(id);
     }

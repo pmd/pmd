@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTNullLiteral extends SimpleJavaNode {
+public class ASTNullLiteral extends SimpleJavaTypeNode {
     public ASTNullLiteral(int id) {
         super(id);
     }

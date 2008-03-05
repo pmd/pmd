@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTFieldDeclaration extends AccessNode implements Dimensionable {
+public class ASTFieldDeclaration extends SimpleJavaAccessTypeNode implements Dimensionable {
 
     public ASTFieldDeclaration(int id) {
         super(id);

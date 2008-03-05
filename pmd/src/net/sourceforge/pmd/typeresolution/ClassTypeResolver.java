@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTAndExpression;
+import net.sourceforge.pmd.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.ast.ASTCastExpression;
@@ -23,9 +24,11 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.ast.ASTConditionalOrExpression;
+import net.sourceforge.pmd.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTExclusiveOrExpression;
 import net.sourceforge.pmd.ast.ASTExpression;
+import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTInclusiveOrExpression;
 import net.sourceforge.pmd.ast.ASTInstanceOfExpression;
@@ -45,8 +48,10 @@ import net.sourceforge.pmd.ast.ASTReferenceType;
 import net.sourceforge.pmd.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.ast.ASTShiftExpression;
 import net.sourceforge.pmd.ast.ASTType;
+import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.ast.ASTUnaryExpressionNotPlusMinus;
+import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.Node;
@@ -163,12 +168,28 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return data;
 	}
 
+	public Object visit(ASTTypeDeclaration node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnary(node);
+		return data;
+	}
+
 	public Object visit(ASTClassOrInterfaceType node, Object data) {
 		populateType(node, node.getImage());
 		return data;
 	}
 
 	public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+		populateType(node, node.getImage());
+		return super.visit(node, data);
+	}
+
+	public Object visit(ASTEnumDeclaration node, Object data) {
+		populateType(node, node.getImage());
+		return super.visit(node, data);
+	}
+
+	public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
 		populateType(node, node.getImage());
 		return super.visit(node, data);
 	}
@@ -193,6 +214,18 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 			}
 		}
 		return super.visit(node, data);
+	}
+
+	public Object visit(ASTFieldDeclaration node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnary(node);
+		return data;
+	}
+
+	public Object visit(ASTVariableDeclarator node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnary(node);
+		return data;
 	}
 
 	public Object visit(ASTVariableDeclaratorId node, Object data) {
@@ -380,27 +413,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 				if (image.endsWith("l") || image.endsWith("L")) {
 					populateType(node, "long");
 				} else {
-					final int radix;
-					if (image.startsWith("0")) {
-						if (image.indexOf('x') >= 0 || image.indexOf('X') >= 0) {
-							radix = 16;
-						} else {
-							radix = 8;
-						}
-					} else {
-						radix = 10;
-					}
 					try {
-						Integer.parseInt(image, radix);
+						Integer.decode(image);
 						populateType(node, "int");
 					} catch (NumberFormatException e) {
-						// Doesn't fit in an 'int', try 'long'
-						try {
-							Long.parseLong(image, radix);
-							populateType(node, "long");
-						} catch (NumberFormatException e1) {
-							// That's strange
-						}
+						// Bad literal, 'long' requires use of 'l' or 'L' suffix.
 					}
 				}
 			} else if (node.isFloatLiteral()) {
@@ -411,16 +428,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 					populateType(node, "double");
 				} else {
 					try {
-						Float.parseFloat(image);
-						populateType(node, "float");
+						Double.parseDouble(image);
+						populateType(node, "double");
 					} catch (NumberFormatException e) {
-						// Doesn't fit in an 'float', try 'double'
-						try {
-							Double.parseDouble(image);
-							populateType(node, "double");
-						} catch (NumberFormatException e1) {
-							// That's strange
-						}
+						// Bad literal, 'float' requires use of 'f' or 'F' suffix.
 					}
 				}
 			} else if (node.isCharLiteral()) {
