@@ -3,6 +3,12 @@
 package net.sourceforge.pmd.ast;
 
 public class ASTLiteral extends SimpleJavaTypeNode {
+	
+	private boolean isInt;
+	private boolean isFloat;
+	private boolean isChar;
+	private boolean isString;
+	
     public ASTLiteral(int id) {
         super(id);
     }
@@ -17,8 +23,32 @@ public class ASTLiteral extends SimpleJavaTypeNode {
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
+    
+    public void setIntLiteral() {
+    	this.isInt = true;
+    }
+    public boolean isIntLiteral() {
+    	return isInt;
+    }
 
+    public void setFloatLiteral() {
+    	this.isFloat = true;
+    }
+    public boolean isFloatLiteral() {
+    	return isFloat;
+    }
+
+    public void setCharLiteral() {
+    	this.isChar = true;
+    }
+    public boolean isCharLiteral() {
+    	return isChar;
+    }
+
+    public void setStringLiteral() {
+    	this.isString = true;
+    }
     public boolean isStringLiteral() {
-        return getImage() != null && getImage().startsWith("\"") && getImage().endsWith("\"");
+    	return isString;
     }
 }

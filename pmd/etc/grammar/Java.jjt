@@ -1672,11 +1672,11 @@ void Literal() :
 {}
 {
 { Token t;}
-  t=<INTEGER_LITERAL> {jjtThis.setImage(t.image);}
-| t=<FLOATING_POINT_LITERAL> {jjtThis.setImage(t.image);}
-| t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); jjtThis.setImage(t.image);}
-| t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image);}
-| t=<STRING_LITERAL> {jjtThis.setImage(t.image);}
+  t=<INTEGER_LITERAL> {jjtThis.setImage(t.image); jjtThis.setIntLiteral();}
+| t=<FLOATING_POINT_LITERAL> {jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
+| t=<HEX_FLOATING_POINT_LITERAL> { checkForBadHexFloatingPointLiteral(); jjtThis.setImage(t.image); jjtThis.setFloatLiteral();}
+| t=<CHARACTER_LITERAL> {jjtThis.setImage(t.image); jjtThis.setCharLiteral();}
+| t=<STRING_LITERAL> {jjtThis.setImage(t.image); jjtThis.setStringLiteral();}
 | BooleanLiteral()
 | NullLiteral()
 }

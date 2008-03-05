@@ -375,7 +375,61 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		if (node.jjtGetNumChildren() != 0) {
 			rollupTypeUnary(node);
 		} else {
-			// TODO Modify Parser to tell us kind of literal.
+			if (node.isIntLiteral()) {
+				String image = node.getImage();
+				if (image.endsWith("l") || image.endsWith("L")) {
+					populateType(node, "long");
+				} else {
+					final int radix;
+					if (image.startsWith("0")) {
+						if (image.indexOf('x') >= 0 || image.indexOf('X') >= 0) {
+							radix = 16;
+						} else {
+							radix = 8;
+						}
+					} else {
+						radix = 10;
+					}
+					try {
+						Integer.parseInt(image, radix);
+						populateType(node, "int");
+					} catch (NumberFormatException e) {
+						// Doesn't fit in an 'int', try 'long'
+						try {
+							Long.parseLong(image, radix);
+							populateType(node, "long");
+						} catch (NumberFormatException e1) {
+							// That's strange
+						}
+					}
+				}
+			} else if (node.isFloatLiteral()) {
+				String image = node.getImage();
+				if (image.endsWith("f") || image.endsWith("F")) {
+					populateType(node, "float");
+				} else if (image.endsWith("d") || image.endsWith("D")) {
+					populateType(node, "double");
+				} else {
+					try {
+						Float.parseFloat(image);
+						populateType(node, "float");
+					} catch (NumberFormatException e) {
+						// Doesn't fit in an 'float', try 'double'
+						try {
+							Double.parseDouble(image);
+							populateType(node, "double");
+						} catch (NumberFormatException e1) {
+							// That's strange
+						}
+					}
+				}
+			} else if (node.isCharLiteral()) {
+				populateType(node, "char");
+			} else if (node.isStringLiteral()) {
+				populateType(node, "java.lang.String");
+			} else {
+				throw new IllegalStateException("PMD error, unknown literal type!");
+			}
 		}
 		return data;
 	}
