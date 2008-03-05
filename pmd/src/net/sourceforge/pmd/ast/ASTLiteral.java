@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTLiteral extends SimpleJavaNode {
+public class ASTLiteral extends SimpleJavaTypeNode {
     public ASTLiteral(int id) {
         super(id);
     }

@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTAllocationExpression extends SimpleJavaNode {
+public class ASTAllocationExpression extends SimpleJavaTypeNode {
     public ASTAllocationExpression(int id) {
         super(id);
     }

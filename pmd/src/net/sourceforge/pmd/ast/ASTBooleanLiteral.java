@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTBooleanLiteral extends SimpleJavaNode {
+public class ASTBooleanLiteral extends SimpleJavaTypeNode {
     public ASTBooleanLiteral(int id) {
         super(id);
     }

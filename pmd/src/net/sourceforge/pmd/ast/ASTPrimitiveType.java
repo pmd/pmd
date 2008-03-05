@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTPrimitiveType extends SimpleJavaNode implements Dimensionable {
+public class ASTPrimitiveType extends SimpleJavaTypeNode implements Dimensionable {
 
     public ASTPrimitiveType(int id) {
         super(id);

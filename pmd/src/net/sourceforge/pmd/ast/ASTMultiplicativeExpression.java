@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTMultiplicativeExpression extends SimpleJavaNode {
+public class ASTMultiplicativeExpression extends SimpleJavaTypeNode {
     public ASTMultiplicativeExpression(int id) {
         super(id);
     }
