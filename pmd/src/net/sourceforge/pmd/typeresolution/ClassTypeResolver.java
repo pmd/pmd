@@ -439,11 +439,24 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 		if ((node.jjtGetNumChildren() >= 2 && node.jjtGetChild(1) instanceof ASTArrayDimsAndInits)
 				|| (node.jjtGetNumChildren() >= 3 && node.jjtGetChild(2) instanceof ASTArrayDimsAndInits)) {
+			//
 			// Classes for Array types cannot be found directly using reflection.
 			// As far as I can tell you have to create an array instance of the necessary
 			// dimensionality, and then ask for the type from the instance.  OMFG that's ugly.
+			//
 
+			// TODO Need to create utility method to allow array type creation which will use
+			// caching to avoid repeated object creation.
 			// TODO Modify Parser to tell us array dimensions count.
+			// TODO Parser seems to do some work to handle arrays in certain case already.
+			// Examine those to figure out what's going on, make sure _all_ array scenarios
+			// are ultimately covered.  Appears to use a Dimensionable interface to handle
+			// only a part of the APIs (not bump), but is implemented several times, so
+			// look at refactoring to eliminate duplication.  Dimensionable is also used
+			// on AccessNodes for some scenarios, need to account for that.  Might be
+			// missing some TypeNode candidates we can add to the AST and have to deal
+			// with here (e.g. FormalParameter)?  Plus some existing usages may be
+			// incorrect.
 		} else {
 			rollupTypeUnary(node);
 		}
