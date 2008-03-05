@@ -430,13 +430,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		}
 	}
 
-	// Roll up the type based on type of the first child node.
+	// Roll up the type based on type of the first and second child nodes using Unary Numeric Promotion per JLS 5.6.2
 	private void rollupTypeBinaryNumericPromotion(TypeNode typeNode) {
 		if (typeNode instanceof SimpleNode) {
 			SimpleNode simpleNode = (SimpleNode)typeNode;
 			if (simpleNode.jjtGetNumChildren() >= 2) {
 				Node child1 = simpleNode.jjtGetChild(0);
-				Node child2 = simpleNode.jjtGetChild(0);
+				Node child2 = simpleNode.jjtGetChild(1);
 				if (child1 instanceof TypeNode && child2 instanceof TypeNode) {
 					Class<?> type1 = ((TypeNode)child1).getType();
 					Class<?> type2 = ((TypeNode)child2).getType();
