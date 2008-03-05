@@ -176,19 +176,29 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         }
         visit((ASTFormalParameters)formalParameters, data);
 
-        createLocalScope(node);
-        Scope localScope = node.getScope();
+        Scope localScope = null;
         for (;i<n;i++) {
             SimpleJavaNode b = (SimpleJavaNode) node.jjtGetChild(i);
-            visit(b, data);
-            b.setScope(localScope);
+            if (b instanceof ASTBlockStatement) {
+                if (localScope == null) {
+                    createLocalScope(node);
+                    localScope = node.getScope();
+                }
+                b.setScope(localScope);
+                visit(b, data);
+            } else {
+                visit(b, data);
+            }
         }
-        // pop the local and method scopes
+        if (localScope != null) {
+            // pop the local scope
+            scopes.pop();
+
+            // reset the correct scope for the constructor
+            node.setScope(methodScope);            
+        }
+        // pop the method scope
         scopes.pop();
-        scopes.pop();
-        
-        // reset the correct scope for the constructor
-        node.setScope(methodScope);
 
         return data;
     }
