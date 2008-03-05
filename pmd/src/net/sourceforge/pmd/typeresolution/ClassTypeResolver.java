@@ -11,15 +11,53 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.pmd.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.ast.ASTAndExpression;
+import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
+import net.sourceforge.pmd.ast.ASTBooleanLiteral;
+import net.sourceforge.pmd.ast.ASTCastExpression;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTConditionalAndExpression;
+import net.sourceforge.pmd.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.ast.ASTConditionalOrExpression;
+import net.sourceforge.pmd.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.ast.ASTExclusiveOrExpression;
+import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.ast.ASTInclusiveOrExpression;
+import net.sourceforge.pmd.ast.ASTInstanceOfExpression;
+import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.ast.ASTMultiplicativeExpression;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.ast.ASTPostfixExpression;
+import net.sourceforge.pmd.ast.ASTPreDecrementExpression;
+import net.sourceforge.pmd.ast.ASTPreIncrementExpression;
+import net.sourceforge.pmd.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.ast.ASTReferenceType;
+import net.sourceforge.pmd.ast.ASTRelationalExpression;
+import net.sourceforge.pmd.ast.ASTShiftExpression;
+import net.sourceforge.pmd.ast.ASTType;
+import net.sourceforge.pmd.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.TypeNode;
+
+//
+// Helpful reading:
+// http://www.janeg.ca/scjp/oper/promotions.html
+// http://java.sun.com/docs/books/jls/second_edition/html/conversions.doc.html
+//
 
 public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
@@ -92,6 +130,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		pmdClassLoader = new PMDASMClassLoader(classLoader);
 	}
 
+	// FUTURE ASTCompilationUnit should not be a TypeNode.  Clean this up accordingly.
 	public Object visit(ASTCompilationUnit node, Object data) {
 		String className = null;
 		try {
@@ -129,6 +168,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return data;
 	}
 
+	public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+		populateType(node, node.getImage());
+		return super.visit(node, data);
+	}
+
 	public Object visit(ASTName node, Object data) {
 		/*
 		 * Only doing this for nodes where getNameDeclaration is null this means
@@ -161,6 +205,258 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		}
 		populateType(node, name);
 		return super.visit(node, data);
+	}
+
+	public Object visit(ASTType node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnary(node);
+		return data;
+	}
+
+	public Object visit(ASTReferenceType node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnary(node);
+		return data;
+	}
+
+	public Object visit(ASTPrimitiveType node, Object data) {
+		populateType(node, node.getImage());
+		return super.visit(node, data);
+	}
+
+	public Object visit(ASTExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnary(node);
+		return data;
+	}
+
+	public Object visit(ASTConditionalExpression node, Object data) {
+		super.visit(node, data);
+		if (node.isTernary()) {
+			// TODO Rules for Ternary are complex
+		} else {
+			rollupTypeUnary(node);
+		}
+		return data;
+	}
+
+	public Object visit(ASTConditionalOrExpression node, Object data) {
+		populateType(node, "boolean");
+		return super.visit(node, data);
+	}
+
+	public Object visit(ASTConditionalAndExpression node, Object data) {
+		populateType(node, "boolean");
+		return super.visit(node, data);
+	}
+
+	public Object visit(ASTInclusiveOrExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeBinaryNumericPromotion(node);
+		return data;
+	}
+
+	public Object visit(ASTExclusiveOrExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeBinaryNumericPromotion(node);
+		return data;
+	}
+
+	public Object visit(ASTAndExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeBinaryNumericPromotion(node);
+		return data;
+	}
+
+	public Object visit(ASTEqualityExpression node, Object data) {
+		populateType(node, "boolean");
+		return super.visit(node, data);
+	}
+
+	public Object visit(ASTInstanceOfExpression node, Object data) {
+		populateType(node, "boolean");
+		return super.visit(node, data);
+	}
+
+	public Object visit(ASTRelationalExpression node, Object data) {
+		populateType(node, "boolean");
+		return super.visit(node, data);
+	}
+
+	public Object visit(ASTShiftExpression node, Object data) {
+		super.visit(node, data);
+		// Unary promotion on LHS is type of a shift operation
+		rollupTypeUnaryNumericPromotion(node);
+		return data;
+	}
+
+	public Object visit(ASTAdditiveExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeBinaryNumericPromotion(node);
+		return data;
+	}
+
+	public Object visit(ASTMultiplicativeExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeBinaryNumericPromotion(node);
+		return data;
+	}
+
+	public Object visit(ASTUnaryExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnaryNumericPromotion(node);
+		return data;
+	}
+
+	public Object visit(ASTPreIncrementExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnary(node);
+		return data;
+	}
+
+	public Object visit(ASTPreDecrementExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnary(node);
+		return data;
+	}
+
+	public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) {
+		super.visit(node, data);
+		if ("!".equals(node.getImage())) {
+			populateType(node, "boolean");
+		} else {
+			rollupTypeUnary(node);
+		}
+		return data;
+	}
+
+	public Object visit(ASTPostfixExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnary(node);
+		return data;
+	}
+
+	public Object visit(ASTCastExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnary(node);
+		return data;
+	}
+
+	public Object visit(ASTPrimaryExpression node, Object data) {
+		super.visit(node, data);
+		// TODO OMG, this is complicated.  PrimaryExpression, PrimaryPrefix and PrimarySuffix are all related.
+		return data;
+	}
+
+	public Object visit(ASTPrimaryPrefix node, Object data) {
+		super.visit(node, data);
+		// TODO OMG, this is complicated.  PrimaryExpression, PrimaryPrefix and PrimarySuffix are all related.
+		return data;
+	}
+
+	public Object visit(ASTPrimarySuffix node, Object data) {
+		super.visit(node, data);
+		// TODO OMG, this is complicated.  PrimaryExpression, PrimaryPrefix and PrimarySuffix are all related.
+		return data;
+	}
+
+	public Object visit(ASTNullLiteral node, Object data) {
+		// No explicit type
+		return super.visit(node, data);
+	}
+
+	public Object visit(ASTBooleanLiteral node, Object data) {
+		populateType(node, "boolean");
+		return super.visit(node, data);
+	}
+
+	public Object visit(ASTLiteral node, Object data) {
+		super.visit(node, data);
+		if (node.jjtGetNumChildren() != 0) {
+			rollupTypeUnary(node);
+		} else {
+			// TODO Modify Parser to tell us kind of literal.
+		}
+		return data;
+	}
+
+	public Object visit(ASTAllocationExpression node, Object data) {
+		super.visit(node, data);
+
+		if ((node.jjtGetNumChildren() >= 2 && node.jjtGetChild(1) instanceof ASTArrayDimsAndInits)
+				|| (node.jjtGetNumChildren() >= 3 && node.jjtGetChild(2) instanceof ASTArrayDimsAndInits)) {
+			// Classes for Array types cannot be found directly using reflection.
+			// As far as I can tell you have to create an array instance of the necessary
+			// dimensionality, and then ask for the type from the instance.  OMFG that's ugly.
+
+			// TODO Modify Parser to tell us array dimensions count.
+		} else {
+			rollupTypeUnary(node);
+		}
+		return data;
+	}
+
+	// Roll up the type based on type of the first child node.
+	private void rollupTypeUnary(TypeNode typeNode) {
+		if (typeNode instanceof SimpleNode) {
+			SimpleNode simpleNode = (SimpleNode)typeNode;
+			if (simpleNode.jjtGetNumChildren() >= 1) {
+				Node child = simpleNode.jjtGetChild(0);
+				if (child instanceof TypeNode) {
+					typeNode.setType(((TypeNode)child).getType());
+				}
+			}
+		}
+	}
+
+	// Roll up the type based on type of the first child node using Unary Numeric Promotion per JLS 5.6.1
+	private void rollupTypeUnaryNumericPromotion(TypeNode typeNode) {
+		if (typeNode instanceof SimpleNode) {
+			SimpleNode simpleNode = (SimpleNode)typeNode;
+			if (simpleNode.jjtGetNumChildren() >= 1) {
+				Node child = simpleNode.jjtGetChild(0);
+				if (child instanceof TypeNode) {
+					Class<?> type = ((TypeNode)child).getType();
+					if (type != null) {
+						if ("byte".equals(type.getName()) || "short".equals(type.getName())
+								|| "char".equals(type.getName())) {
+							populateType(typeNode, "int");
+						} else {
+							typeNode.setType(((TypeNode)child).getType());
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// Roll up the type based on type of the first child node.
+	private void rollupTypeBinaryNumericPromotion(TypeNode typeNode) {
+		if (typeNode instanceof SimpleNode) {
+			SimpleNode simpleNode = (SimpleNode)typeNode;
+			if (simpleNode.jjtGetNumChildren() >= 2) {
+				Node child1 = simpleNode.jjtGetChild(0);
+				Node child2 = simpleNode.jjtGetChild(0);
+				if (child1 instanceof TypeNode && child2 instanceof TypeNode) {
+					Class<?> type1 = ((TypeNode)child1).getType();
+					Class<?> type2 = ((TypeNode)child2).getType();
+					if (type1 != null && type2 != null) {
+						// Yeah, String is not numeric, but easiest place to handle it, only affects ASTAdditiveExpression
+						if ("java.lang.String".equals(type1.getName()) || "java.lang.String".equals(type2.getName())) {
+							populateType(typeNode, "java.lang.String");
+						} else if ("double".equals(type1.getName()) || "double".equals(type2.getName())) {
+							populateType(typeNode, "double");
+						} else if ("float".equals(type1.getName()) || "float".equals(type2.getName())) {
+							populateType(typeNode, "float");
+						} else if ("long".equals(type1.getName()) || "long".equals(type2.getName())) {
+							populateType(typeNode, "long");
+						} else {
+							populateType(typeNode, "int");
+						}
+					}
+				}
+			}
+		}
 	}
 
 	private void populateType(TypeNode node, String className) {
@@ -203,7 +499,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		}
 	}
 
-	private Class processOnDemand(String qualifiedName) {
+	private Class<?> processOnDemand(String qualifiedName) {
 		for (String entry : importedOnDemand) {
 			try {
 				return pmdClassLoader.loadClass(entry + "." + qualifiedName);
