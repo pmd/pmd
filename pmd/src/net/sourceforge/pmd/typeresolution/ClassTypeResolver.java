@@ -586,6 +586,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 					myType = pmdClassLoader.loadClass(qualifiedName);
 				} catch (ClassNotFoundException e) {
 					myType = processOnDemand(qualifiedName);
+				} catch (NoClassDefFoundError e) {
+					myType = processOnDemand(qualifiedName);
 				}
 			}
 		}
