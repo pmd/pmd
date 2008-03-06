@@ -377,13 +377,21 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	public Object visit(ASTPrimaryExpression node, Object data) {
 		super.visit(node, data);
-		// TODO OMG, this is complicated.  PrimaryExpression, PrimaryPrefix and PrimarySuffix are all related.
+		if (node.jjtGetNumChildren() == 1) {
+			rollupTypeUnary(node);
+		} else {
+			// TODO OMG, this is complicated.  PrimaryExpression, PrimaryPrefix and PrimarySuffix are all related.
+		}
 		return data;
 	}
 
 	public Object visit(ASTPrimaryPrefix node, Object data) {
 		super.visit(node, data);
-		// TODO OMG, this is complicated.  PrimaryExpression, PrimaryPrefix and PrimarySuffix are all related.
+		if (node.getImage() == null) {
+			rollupTypeUnary(node);
+		} else {
+			// TODO OMG, this is complicated.  PrimaryExpression, PrimaryPrefix and PrimarySuffix are all related.
+		}
 		return data;
 	}
 
@@ -530,6 +538,13 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 							populateType(typeNode, "long");
 						} else {
 							populateType(typeNode, "int");
+						}
+					} else if (type1 != null || type2 != null) {
+						// If one side is known to be a String, then the result is a String
+						// Yeah, String is not numeric, but easiest place to handle it, only affects ASTAdditiveExpression
+						if ((type1 != null && "java.lang.String".equals(type1.getName()))
+								|| (type2 != null && "java.lang.String".equals(type2.getName()))) {
+							populateType(typeNode, "java.lang.String");
 						}
 					}
 				}

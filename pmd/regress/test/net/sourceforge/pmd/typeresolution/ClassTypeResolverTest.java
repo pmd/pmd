@@ -14,6 +14,7 @@ import net.sourceforge.pmd.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTLiteral;
@@ -37,6 +38,7 @@ import test.net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import test.net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
 import test.net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import test.net.sourceforge.pmd.typeresolution.testdata.Literals;
+import test.net.sourceforge.pmd.typeresolution.testdata.Promotion;
 
 public class ClassTypeResolverTest {
 
@@ -288,6 +290,110 @@ public class ClassTypeResolverTest {
 
 		// Make sure we got them all.
 		assertEquals("All literals not tested", index, literals.size());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testUnaryNumericPromotion() throws JaxenException {
+		ASTCompilationUnit acu = parseAndTypeResolveForClass(Promotion.class);
+		List<ASTExpression> expressions = acu.findChildNodesWithXPath("//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericPromotion']]//Expression[UnaryExpression]");
+		int index = 0;
+
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+
+		// Make sure we got them all.
+		assertEquals("All expressions not tested", index, expressions.size());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testBinaryNumericPromotion() throws JaxenException {
+		ASTCompilationUnit acu = parseAndTypeResolveForClass(Promotion.class);
+		List<ASTExpression> expressions = acu.findChildNodesWithXPath("//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryNumericPromotion']]//Expression[AdditiveExpression]");
+		int index = 0;
+
+		// LHS = byte
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		// LHS = short
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		// LHS = char
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		// LHS = int
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		// LHS = long
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		// LHS = float
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Float.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		// LHS = double
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+
+		// Make sure we got them all.
+		assertEquals("All expressions not tested", index, expressions.size());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testBinaryStringPromotion() throws JaxenException {
+		ASTCompilationUnit acu = parseAndTypeResolveForClass(Promotion.class);
+		List<ASTExpression> expressions = acu.findChildNodesWithXPath("//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryStringPromotion']]//Expression");
+		int index = 0;
+
+		assertEquals(String.class, expressions.get(index++).getType());
+		assertEquals(String.class, expressions.get(index++).getType());
+		assertEquals(String.class, expressions.get(index++).getType());
+		assertEquals(String.class, expressions.get(index++).getType());
+		assertEquals(String.class, expressions.get(index++).getType());
+
+		// Make sure we got them all.
+		assertEquals("All expressions not tested", index, expressions.size());
 	}
 
 	public static junit.framework.Test suite() {
