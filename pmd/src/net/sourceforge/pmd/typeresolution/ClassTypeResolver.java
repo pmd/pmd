@@ -47,6 +47,7 @@ import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTReferenceType;
 import net.sourceforge.pmd.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.ast.ASTShiftExpression;
+import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTUnaryExpression;
@@ -211,6 +212,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 					name = name.substring(0, name.indexOf('.'));
 				}
 				populateType(node, name);
+			}
+		} else {
+			// Carry over the type from the declaration
+			if (node.getNameDeclaration().getNode() instanceof TypeNode) {
+				node.setType(((TypeNode)node.getNameDeclaration().getNode()).getType());
 			}
 		}
 		return super.visit(node, data);
@@ -482,6 +488,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return data;
 	}
 
+	public Object visit(ASTStatementExpression node, Object data) {
+		super.visit(node, data);
+		rollupTypeUnary(node);
+		return data;
+	}
+
 	// Roll up the type based on type of the first child node.
 	private void rollupTypeUnary(TypeNode typeNode) {
 		if (typeNode instanceof SimpleNode) {
@@ -516,7 +528,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		}
 	}
 
-	// Roll up the type based on type of the first and second child nodes using Unary Numeric Promotion per JLS 5.6.2
+	// Roll up the type based on type of the first and second child nodes using Binary Numeric Promotion per JLS 5.6.2
 	private void rollupTypeBinaryNumericPromotion(TypeNode typeNode) {
 		if (typeNode instanceof SimpleNode) {
 			SimpleNode simpleNode = (SimpleNode)typeNode;
@@ -530,6 +542,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 						// Yeah, String is not numeric, but easiest place to handle it, only affects ASTAdditiveExpression
 						if ("java.lang.String".equals(type1.getName()) || "java.lang.String".equals(type2.getName())) {
 							populateType(typeNode, "java.lang.String");
+						} else if ("boolean".equals(type1.getName()) || "boolean".equals(type2.getName())) {
+							populateType(typeNode, "boolean");
 						} else if ("double".equals(type1.getName()) || "double".equals(type2.getName())) {
 							populateType(typeNode, "double");
 						} else if ("float".equals(type1.getName()) || "float".equals(type2.getName())) {

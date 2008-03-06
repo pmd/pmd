@@ -20,10 +20,12 @@ import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTReferenceType;
+import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.TypeNode;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
 import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
@@ -38,6 +40,7 @@ import test.net.sourceforge.pmd.typeresolution.testdata.ArrayListFound;
 import test.net.sourceforge.pmd.typeresolution.testdata.ExtraTopLevelClass;
 import test.net.sourceforge.pmd.typeresolution.testdata.InnerClass;
 import test.net.sourceforge.pmd.typeresolution.testdata.Literals;
+import test.net.sourceforge.pmd.typeresolution.testdata.Operators;
 import test.net.sourceforge.pmd.typeresolution.testdata.Promotion;
 
 public class ClassTypeResolverTest {
@@ -391,6 +394,111 @@ public class ClassTypeResolverTest {
 		assertEquals(String.class, expressions.get(index++).getType());
 		assertEquals(String.class, expressions.get(index++).getType());
 		assertEquals(String.class, expressions.get(index++).getType());
+
+		// Make sure we got them all.
+		assertEquals("All expressions not tested", index, expressions.size());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testUnaryLogicalOperators() throws JaxenException {
+		ASTCompilationUnit acu = parseAndTypeResolveForClass(Operators.class);
+		List<ASTExpression> expressions = acu.findChildNodesWithXPath("//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryLogicalOperators']]//Expression");
+		int index = 0;
+
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+
+		// Make sure we got them all.
+		assertEquals("All expressions not tested", index, expressions.size());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testBinaryLogicalOperators() throws JaxenException {
+		ASTCompilationUnit acu = parseAndTypeResolveForClass(Operators.class);
+		List<ASTExpression> expressions = acu.findChildNodesWithXPath("//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryLogicalOperators']]//Expression");
+		int index = 0;
+
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+		assertEquals(Boolean.TYPE, expressions.get(index++).getType());
+
+		// Make sure we got them all.
+		assertEquals("All expressions not tested", index, expressions.size());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testUnaryNumericOperators() throws JaxenException {
+		ASTCompilationUnit acu = parseAndTypeResolveForClass(Operators.class);
+		List<TypeNode> expressions = new ArrayList<TypeNode>();
+		expressions.addAll(acu.findChildNodesWithXPath("//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericOperators']]//Expression"));
+		expressions.addAll(acu.findChildNodesWithXPath("//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericOperators']]//PostfixExpression"));
+		expressions.addAll(acu.findChildNodesWithXPath("//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericOperators']]//PreIncrementExpression"));
+		expressions.addAll(acu.findChildNodesWithXPath("//Block[preceding-sibling::MethodDeclarator[@Image = 'unaryNumericOperators']]//PreDecrementExpression"));
+		int index = 0;
+
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+		assertEquals(Double.TYPE, expressions.get(index++).getType());
+
+		// Make sure we got them all.
+		assertEquals("All expressions not tested", index, expressions.size());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testBinaryNumericOperators() throws JaxenException {
+		ASTCompilationUnit acu = parseAndTypeResolveForClass(Operators.class);
+		List<ASTExpression> expressions = acu.findChildNodesWithXPath("//Block[preceding-sibling::MethodDeclarator[@Image = 'binaryNumericOperators']]//Expression");
+		int index = 0;
+
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+		assertEquals(Integer.TYPE, expressions.get(index++).getType());
+
+		// Make sure we got them all.
+		assertEquals("All expressions not tested", index, expressions.size());
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testAssignmentOperators() throws JaxenException {
+		ASTCompilationUnit acu = parseAndTypeResolveForClass(Operators.class);
+		List<ASTStatementExpression> expressions = acu.findChildNodesWithXPath("//Block[preceding-sibling::MethodDeclarator[@Image = 'assignmentOperators']]//StatementExpression");
+		int index = 0;
+
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
+		assertEquals(Long.TYPE, expressions.get(index++).getType());
 
 		// Make sure we got them all.
 		assertEquals("All expressions not tested", index, expressions.size());
