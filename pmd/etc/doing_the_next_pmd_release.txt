@@ -74,7 +74,10 @@ update the "download" and "what's new" link in navigation.xml
 ./docs.sh all
 ./docs.sh upload
 
-update cpd.jnlp
+update cpd.jnlp by running:
+
+ant -f bin/build.xml cpdjnlp
+
 
 Submit news to SF
 Go to http://freshmeat.net/
