@@ -603,7 +603,7 @@ public class Designer implements ClipboardOwner {
     private final JList xpathResultList				= new JList(xpathResults);
     private final JTextArea xpathQueryArea			= new JTextArea(15, 30);
     private final TreeWidget symbolTableTreeWidget	= new TreeWidget(new Object[0]);
-    private final JFrame frame 						= new JFrame("PMD Rule Designer");
+    private final JFrame frame 						= new JFrame("PMD Rule Designer (v " + PMD.VERSION + ')');
     private final DFAPanel dfaPanel					= new DFAPanel();
     private final JRadioButtonMenuItem[] sourceTypeMenuItems = new JRadioButtonMenuItem[sourceTypeSets.length];
 

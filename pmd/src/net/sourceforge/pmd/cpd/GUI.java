@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import net.sourceforge.pmd.PMD;
 
 public class GUI implements CPDListener {
 
@@ -250,7 +251,7 @@ public class GUI implements CPDListener {
     }
     
     public GUI() {
-        frame = new JFrame("PMD Duplicate Code Detector");
+        frame = new JFrame("PMD Duplicate Code Detector (v " + PMD.VERSION + ')');
 
         timeField.setEditable(false);
 
