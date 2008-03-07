@@ -279,7 +279,7 @@
     <repository>
       <id>pmd-repo</id>
       <name>Default Repository</name>
-      <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2</url>
+      <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2.beta</url>
     </repository>
     <site>
       <id>pmd-site</id>

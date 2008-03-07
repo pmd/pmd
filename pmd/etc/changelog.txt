@@ -1,4 +1,4 @@
-????, 2008 - 4.2rc1:
+March 07, 2008 - 4.2rc1:
 
 Fixed bug 1866198 - PMD should not register global Logger
 Fixed bug 1843273 - False - on SimplifyBooleanReturns
