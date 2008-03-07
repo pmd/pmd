@@ -52,6 +52,7 @@ If you want to contribute a java rule to PMD, you should run PMD on it (Using th
 <p>
 Before committing changes, make sure the 'qa' target in the Ant build works.  Drink a beer while you wait for it to finish.
 Then read the output to make sure no fatal errors are present. 
+</p>
 </section>
 
 </body>
