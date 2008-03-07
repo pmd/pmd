@@ -4,7 +4,8 @@
 
 # The following variable contains a list of keyword to remove rulesets files that 
 # shouldn't appear in the rulesets.properties
-EXCLUSION_LIST="migrating 
+EXCLUSION_LIST="migrating_
+favorites
 scratchpad 
 basic-jsf.xml 
 basic-jsp.xml 
