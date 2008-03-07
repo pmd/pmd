@@ -11,10 +11,10 @@
       <library name="pmd-core.jar">
          <export name="*"/>
       </library>
-      <library name="lib/pmd14-4.1.jar">
+      <library name="lib/pmd14-4.2rc1.jar">
          <export name="*"/>
       </library>
-      <library name="lib/retroweaver-rt-2.0.2.jar">
+      <library name="lib/retroweaver-rt-2.0.5.jar">
          <export name="*"/>
       </library>
       <library name="lib/asm-3.1.jar">
