@@ -3,7 +3,7 @@
 <plugin
    id="net.sourceforge.pmd.core"
    name="PMD For Eclipse Core Plug-in"
-   version="4.2.0"
+   version="4.2.0.v200803071500"
    provider-name="PMD Development Team"
    class="net.sourceforge.pmd.core.PMDCorePlugin">
 
