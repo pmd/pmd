@@ -1,6 +1,6 @@
 @echo off
 set TOPDIR=%~dp0/../..
-set VERSION=4.1
+set VERSION=4.2rc1
 set PMDJAR=%TOPDIR%/java14/lib/pmd14-%VERSION%.jar
 set JARPATH=%TOPDIR%/lib/asm-3.1.jar;%TOPDIR%/lib/jaxen-1.1.1.jar
 set RWPATH=%TOPDIR%/java14/lib/retroweaver-rt-2.0.2.jar;%TOPDIR%/java14/lib/backport-util-concurrent.jar

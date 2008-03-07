@@ -1,6 +1,6 @@
 @echo off
 set TOPDIR=%~dp0/..
-set VERSION=4.1
+set VERSION=4.2rc1
 set PMDJAR=%TOPDIR%/lib/pmd-%VERSION%.jar
 set JARPATH=%TOPDIR%/lib/asm-3.1.jar;%TOPDIR%/lib/jaxen-1.1.1.jar
 set OPTS=
