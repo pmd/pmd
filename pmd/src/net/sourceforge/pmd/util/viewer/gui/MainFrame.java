@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.util.viewer.gui;
 
+import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.TargetJDK1_3;
 import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.TargetJDK1_5;
@@ -44,7 +45,7 @@ public class MainFrame
      * constructs and shows the frame
      */
     public MainFrame() {
-        super(NLS.nls("MAIN.FRAME.TITLE"));
+        super(NLS.nls("MAIN.FRAME.TITLE") + " (v " + PMD.VERSION + ')');
         init();
     }
 
