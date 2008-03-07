@@ -25,12 +25,11 @@ New rules:
 	Strings : AvoidStringBufferField
 
 Rule upgrade:
-	CyclomaticComplexity now can be configure to display only classes average complexity or methods complexity, or both.
+	CyclomaticComplexity now can be configured to display only class average complexity or method complexity, or both.
 
 Designer upgrade:
-	A new panel for symbols and a tooltips on AST node that displays line, colunm and access node attributes (private,
+	A new panel for symbols and a tooltips on AST node that displays line, column and access node attributes (private,
 	static, abstract,...)
-
 
 1.7 added as a valid option for targetjdk.
 New elements under <ruleset>: <exclude-pattern> to match files exclude from processing, with <include-pattern> to override.
@@ -39,6 +38,7 @@ PMD Rule Designer can now shows Symbol Table contents for the selected AST node.
 PMD Rule Designer shows position info in tooltip for AST nodes and highlights matching code for selected AST node in code window.
 CPD Ant task will report to System.out when 'outputFile' not given.
 RuleSetWriter class can be used to Serialize a RuleSet to XML in a standard fashion.  Recommend PMD IDE plugins standardize their behavior.
+retroweaver updated to version 2.0.5.
 
 November 17, 2007 - 4.1:
 Fixed annotation bug: ClassCastException when a formal parameter had multiple annotations
