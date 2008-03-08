@@ -50,7 +50,7 @@
         <ul>
             <li>Pieter Vanraemdonck - JSP grammar/integration/documentation, DontNestJsfInJstlIteration, NoLongScripts, NoScriptlets, NoInlineStyleInformation, NoClassAttribute, NoJspForward</li>
             <li>Raik Schroeder - data flow analyis layer, YAHTMLRenderer</li>
-            <li><a href="http://www.ourhomestead.net/jststeve/">Steve Hawkins</a> - rewrite of CPD based on Karp-Rabin string matching</li>
+            <li>Steve Hawkins - rewrite of CPD based on Karp-Rabin string matching</li>
             <li><a href="http://www.jroller.com/comments/soxbox/Weblog">Daniel Sheppard</a> - XPath engine integration concept and implementation, advice on Jaxen extension function naming</li>
             <li>Brian Ewins - complete rewrite of CPD based on the Burrows-Wheeler transform, fixed DocumentNavigator bug</li>
         </ul>
