@@ -19,7 +19,7 @@ import org.eclipse.jdt.core.JavaModelException;
  * This is a ClassLoader for the Build Path of an IJavaProject.
  */
 public class JavaProjectClassLoader extends URLClassLoader {
-	private static final Logger log = Logger.getLogger(ReviewCodeCmd.class);
+	private static final Logger log = Logger.getLogger(JavaProjectClassLoader.class);
 
 	private Set javaProjects = new HashSet();
 	private IWorkspaceRoot workspaceRoot;
