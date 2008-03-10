@@ -34,9 +34,11 @@ public class UnusedImports extends UnusedImportsRule {
         }
         if (TypeNode.class.isAssignableFrom(node.getClass()) && ((TypeNode) node).getType() != null) {
             Class c = ((TypeNode) node).getType();
-            candidate = new ImportWrapper(c.getPackage().getName(), null, new SimpleJavaNode(-1));
-            if (imports.contains(candidate)) {
-                imports.remove(candidate);
+            if (c.getPackage() != null) {
+	            candidate = new ImportWrapper(c.getPackage().getName(), null, new SimpleJavaNode(-1));
+	            if (imports.contains(candidate)) {
+	                imports.remove(candidate);
+	            }
             }
         }
     }
