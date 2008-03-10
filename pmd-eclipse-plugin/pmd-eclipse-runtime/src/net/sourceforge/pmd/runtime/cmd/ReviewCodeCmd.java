@@ -71,6 +71,7 @@ import org.eclipse.core.runtime.jobs.MultiRule;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.core.JavaProject;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IPerspectiveRegistry;
 import org.eclipse.ui.IWorkbench;
@@ -367,6 +368,11 @@ public class ReviewCodeCmd extends AbstractDefaultCommand {
      */
     private void processProject(IProject project) throws CommandException {
         try {
+            // Only for Java projects
+            if (!JavaProject.hasJavaNature(project)) {
+                log.debug("Skipping non-Java natured project " + project.getName());
+            	return;
+            }
             setStepsCount(countResourceElement(project));
             log.debug("Visiting  project " + project.getName() + " : " + getStepsCount());
 
