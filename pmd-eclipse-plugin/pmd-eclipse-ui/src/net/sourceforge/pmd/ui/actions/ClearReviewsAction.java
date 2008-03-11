@@ -266,6 +266,10 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
      * @return
      */
     private String removeReviews(IFile file) {
+    	String name = file.getName().toLowerCase();
+    	if (!(name.endsWith(".java") || name.endsWith(".jsp"))) {
+    		return null;
+    	}
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         boolean noChange = true;
         try {
@@ -277,6 +281,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
                 String origLine = reader.readLine();
                 String line = origLine.trim();
                 int index = origLine.indexOf(PMDRuntimeConstants.PMD_STYLE_REVIEW_COMMENT);
+                int quoteIndex = origLine.indexOf('"');
                 
                 if (line.startsWith("/*")) {
                     if (line.indexOf("*/") == -1) {
@@ -288,7 +293,7 @@ public class ClearReviewsAction implements IObjectActionDelegate, IResourceVisit
                     out.println(origLine);
                 } else if (!comment && line.startsWith(PMDRuntimeConstants.PLUGIN_STYLE_REVIEW_COMMENT)) {
                     noChange = false;
-                } else if (!comment && (index != -1)) {
+                } else if (!comment && (index != -1) && !(quoteIndex != -1 && quoteIndex < index && index < origLine.lastIndexOf('"'))) {
                     noChange = false;
                     out.println(origLine.substring(0, index));
                 } else {
