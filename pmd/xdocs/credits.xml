@@ -27,7 +27,7 @@
             <li>Xavier Le Vourch - PMD core, numerous bug fixes, UselessStringValueOf, UnnecessaryWrapperObjectCreation, SimplifyBooleanAssertion</li>
             <li>Sven Jacob - DFA subsystem, Eclipse plugin</li>
             <li>Wouter Zelle - Lots of bugfixes and cleanups, JUnit test XML design, introduced java.util.logging, BrokenNullCheck, NonThreadSafeSingleton, DefaultPackage rule, UselessOverridingMethod, ProperLogger, AvoidPrintStackTrace, SimplifyConditional</li>
-            <li>Ryan Gustafson - patch to chain XPath rules together, Better benchmarking code, patch to add more annotation suppression tests, patch to fix bug in AvoidDecimalLiteralsInBigDecimalConstructor, patch to add "ref" overrides to RuleSetFactory, patch to fix JDK 1.3 incompatibilities in PMD 2.0, patch to support classpaths with spaces in pmd.bat, patch to fix controversial/DefaultPackage XPath rule</li>
+            <li>Ryan Gustafson - PMD core, assists with Eclipse plugin</li>
             <li>Torsten Kleiber - JDeveloper plugin</li>
             <li>Romain Pelisse - Various bugfix patches, restructured CPD tokenizers, patch to remove redundant rule, added Fortran tokenizer, DoNotExtendJavaLangError, JspEncoding, MDBAndSessionBeanNamingConvention, RemoteSessionInterfaceNamingConvention, LocalInterfaceSessionNamingConvention, LocalHomeNamingConvention, RemoteInterfaceNamingConvention, AvoidFinalLocalVariable, ClassWithOnlyPrivateConstructorsShouldBeFinal, TooManyStaticImports, DoNotCallSystemExit, StaticEJBFieldShouldBeFinal</li>
         </ul>
@@ -312,6 +312,7 @@
             <li>Jacques Lebourgeois - Eclipse fix malformed UTF-8 characters</li>
             <li>Chris Grindstaff - Eclipse fix SWTException when PMD is run on a file with syntax error</li>
             <li>jmichelberger - wrote Byte/Short/Long Instantiation migration rules</li>
+            <li>Edwin Chan - Support for -auxclasspath for use with Type Resolution</li>
         </ul>
         </subsection>
         <subsection name="Organizations">

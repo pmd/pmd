@@ -42,6 +42,7 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
 import net.sourceforge.pmd.util.Benchmark;
+import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.ConsoleLogHandler;
 import net.sourceforge.pmd.util.FileFinder;
 
@@ -261,6 +262,27 @@ public class PMD {
 		}
 		this.classLoader = classLoader;
 	}
+	
+	/**
+	 * Create a ClassLoader which loads classes using a CLASSPATH like String.
+	 * If the String looks like a URL to a file (e.g. starts with <code>file://</code>)
+	 * the file will be read with each line representing an entry on the classpath.
+	 * <p>
+	 * The ClassLoader used to load the <code>net.sourceforge.pmd.PMD</code> class
+	 * will be used as the parent ClassLoader of the created ClassLoader.
+	 * 
+	 * @param classpath The classpath String.
+	 * @return A ClassLoader
+	 * @throws IOException
+	 * @see ClasspathClassLoader
+	 */
+	public static ClassLoader createClasspathClassLoader(String classpath) throws IOException {
+		ClassLoader classLoader = PMD.class.getClassLoader();
+		if (classpath != null) {
+			classLoader = new ClasspathClassLoader(classpath, classLoader);
+		}
+		return classLoader;
+	}
 
 	private static void doPMD(CommandLineOptions opts){
         long startFiles = System.nanoTime();
@@ -297,6 +319,15 @@ public class PMD {
             sourceType = SourceType.JAVA_14;
         }
 
+        final ClassLoader classLoader;
+        try {
+        	classLoader = createClasspathClassLoader(opts.getAuxClasspath());
+        } catch (IOException e) {
+        	LOG.log(Level.SEVERE, "Bad -auxclasspath argument", e);
+        	System.out.println(opts.usage());        	
+        	return;
+        }
+        
         long reportStart, reportEnd;
         Renderer renderer;
         Writer w = null;
@@ -332,7 +363,7 @@ public class PMD {
                 processFiles(opts.getCpus(), ruleSetFactory, sourceType, files, ctx, renderers,
                         opts.stressTestEnabled(),
                         opts.getRulesets(), opts.shortNamesEnabled(),
-                        opts.getInputPath(), opts.getEncoding(), opts.getExcludeMarker(), PMD.class.getClassLoader());
+                        opts.getInputPath(), opts.getEncoding(), opts.getExcludeMarker(), classLoader);
             } catch (RuleSetNotFoundException rsnfe) {
                 LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
                 System.out.println(opts.usage());

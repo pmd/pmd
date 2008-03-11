@@ -37,20 +37,20 @@ public class CommandLineOptions {
     private String linkPrefix;
     private int minPriority = Rule.LOWEST_PRIORITY;
     private boolean benchmark;
-
+	private String xsltFilename;
+	private String auxClasspath;
 
     private boolean checkJavaFiles = true;
     private boolean checkJspFiles;
 
     private String[] args;
-	private String xsltFilename;
-
+	
     public CommandLineOptions(String[] args) {
 
         this.args = args; // needed by createRenderer
         
         if (args == null || args.length < 3) {
-            throw new RuntimeException(usage());
+            throw new IllegalArgumentException(usage());
         }
         int optIndex = 0;
         if (args[0].charAt(0) == '-') {
@@ -74,7 +74,7 @@ public class CommandLineOptions {
                 try {
                     cpus = Integer.parseInt(args[++i]);
                 } catch (NumberFormatException e) {
-                    throw new RuntimeException(MessageFormat.format(
+                    throw new IllegalArgumentException(MessageFormat.format(
                             "cpus parameter must be a whole number, {0} received", args[i]));
                 }
             } else if (args[i].equals("-targetjdk")) {
@@ -93,7 +93,7 @@ public class CommandLineOptions {
                 try {
                     minPriority = Integer.parseInt(args[++i]);
                 } catch (NumberFormatException e) {
-                    throw new RuntimeException(MessageFormat.format(
+                    throw new IllegalArgumentException(MessageFormat.format(
                             "minimumpriority parameter must be a whole number, {0} received", args[i]));
                 }
             } else if (args[i].equals("-reportfile")) {
@@ -103,11 +103,16 @@ public class CommandLineOptions {
             } else if ( args[i].equals("-xslt") ) {
             	i++;
             	if ( i >= args.length ) {
-            		 throw new RuntimeException(usage());
+            		 throw new IllegalArgumentException(usage());
             	}
             	this.xsltFilename = args[i];
+            } else if (args[i].equals("-auxclasspath")) {
+            	i++;
+            	if ( i >= args.length ) {
+            		throw new IllegalArgumentException(usage());
+	           	}
+                this.auxClasspath = args[i];            	
             }
-
         }
     }
 
@@ -202,6 +207,10 @@ public class CommandLineOptions {
         return benchmark;
     }
 
+    public String getAuxClasspath() {
+    	return auxClasspath;
+    }
+
     public String usage() {
         return PMD.EOL + PMD.EOL +
                 "Mandatory arguments:" + PMD.EOL +
@@ -227,14 +236,19 @@ public class CommandLineOptions {
                 "-reportfile: send report output to a file; default to System.out" + PMD.EOL +
                 "-benchmark: output a benchmark report upon completion; default to System.err" + PMD.EOL +
                 "-xslt: override default xslt for 'nicehtml' output." + PMD.EOL +
+                "-auxclasspath: specifies the classpath for libraries used by the source code (used by type resolution)" + PMD.EOL +
+                "   (alternatively, a 'file://' URL to a text file containing path elements on consecutive lines)" + PMD.EOL +
                 PMD.EOL +
                 "For example on windows: " + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code text unusedcode,imports -targetjdk 1.5 -debug" + PMD.EOL +
                 "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code xml basic,design -encoding UTF-8" + PMD.EOL +
+                "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html typeresolution -auxclasspath commons-collections.jar;derby.jar" + PMD.EOL +                
+                "c:\\> java -jar pmd-" + PMD.VERSION + ".jar c:\\my\\source\\code html typeresolution -auxclasspath file:///C:/my/classpathfile" + PMD.EOL +
                 PMD.EOL +
                 "For example on *nix: " + PMD.EOL +
-                "$ java -jar pmd-" + PMD.VERSION + ".jar /home/workspace/src/main/java code nicehtml basic,design" + PMD.EOL +
-                "$ java -jar pmd-" + PMD.VERSION + ".jar /home/workspace/src/main/java code nicehtml basic,design -xslt my-own.xsl" + PMD.EOL +
+                "$ java -jar pmd-" + PMD.VERSION + ".jar /home/workspace/src/main/java/code nicehtml basic,design" + PMD.EOL +
+                "$ java -jar pmd-" + PMD.VERSION + ".jar /home/workspace/src/main/java/code nicehtml basic,design -xslt my-own.xsl" + PMD.EOL +
+                "$ java -jar pmd-" + PMD.VERSION + ".jar /home/workspace/src/main/java/code nicehtml typeresolution -auxclasspath commons-collections.jar:derby.jar" + PMD.EOL +
                 PMD.EOL;
     }
 

@@ -1,3 +1,6 @@
+March ??, 2008 - 4.2:
+Add -auxclasspath option for specifying Type Resolution classpath from command line.
+
 March 07, 2008 - 4.2rc1:
 
 Fixed bug 1866198 - PMD should not register global Logger

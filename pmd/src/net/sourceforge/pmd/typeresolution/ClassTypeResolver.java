@@ -149,6 +149,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 			LOG.log(Level.FINE, "Could not find class " + className);
 		} catch (NoClassDefFoundError e) {
 			LOG.log(Level.WARNING, "Could not find class " + className);
+		} catch (ClassFormatError e) {
+			LOG.log(Level.WARNING, "Could not find class " + className);
 		} finally {
 			populateImports(node);
 		}
@@ -587,6 +589,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 				} catch (ClassNotFoundException e) {
 					myType = processOnDemand(qualifiedName);
 				} catch (NoClassDefFoundError e) {
+					myType = processOnDemand(qualifiedName);
+				} catch (ClassFormatError e) {
 					myType = processOnDemand(qualifiedName);
 				}
 			}

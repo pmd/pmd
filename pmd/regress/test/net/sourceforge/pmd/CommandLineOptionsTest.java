@@ -182,6 +182,17 @@ public class CommandLineOptionsTest {
         assertTrue(opt.debugEnabled());
     }
 
+    @Test
+    public void testAuxilaryClasspath() {
+		CommandLineOptions opt = new CommandLineOptions(new String[] { "-auxclasspath", "classpath", "file", "format", "basic" });
+		assertEquals("classpath", opt.getAuxClasspath());
+	}
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAuxilaryClasspathIllegal() {
+		CommandLineOptions opt = new CommandLineOptions(new String[] { "file", "format", "basic", "-auxclasspath" });
+	}
+
     public static junit.framework.Test suite() {
         return new JUnit4TestAdapter(CommandLineOptionsTest.class);
     }
