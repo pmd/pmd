@@ -6,6 +6,7 @@ Runtime
 -------
 . Fix 1811828 RuntimeException in RuleSetFactory, default ruleset is used on error
 . Fix 1903578 Handler error in Eclipse log
+. Fix 1909929 clean violation review is not selective enough
 . PMD updated to v4.2
 . Use new standard PMD RuleSet serialization mechanism
 . Use new PMD support for RuleReferences in RuleSets, instead of using Rule copies
