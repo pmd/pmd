@@ -34,6 +34,9 @@ Designer upgrade:
 	A new panel for symbols and a tooltips on AST node that displays line, column and access node attributes (private,
 	static, abstract,...)
 
+Ant task upgrade:
+	Added a new attribute 'maxRuleCount' to indicate whether or not to fail the build if PMD finds that much violations.
+
 1.7 added as a valid option for targetjdk.
 New elements under <ruleset>: <exclude-pattern> to match files exclude from processing, with <include-pattern> to override.
 Rules can now be written which produce violations based upon aggregate file processing (i.e. cross/multiple file violations).

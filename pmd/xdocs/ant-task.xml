@@ -66,6 +66,11 @@
       <td valign="top" align="center">No</td>
     </tr>
     <tr>
+      <td valign="top">maxRuleViolations</td>
+      <td valign="top">Whether or not to fail the build if PMD finds more than the value of this attribute.</td>
+      <td valign="top" align="center">No</td>
+    </tr>
+    <tr>
       <td valign="top">debug</td>
       <td valign="top">Whether or not to show debug messages in the console</td>
       <td valign="top" align="center">No</td>

@@ -53,6 +53,7 @@ public class PMDTask extends Task {
     private String encoding = System.getProperty("file.encoding");
     private boolean failOnError;
     private boolean failOnRuleViolation;
+	private int maxRuleViolations = 0;
     private String targetJDK = "1.5";
     private String failuresPropertyName;
     private String excludeMarker = PMD.EXCLUDE_MARKER;
@@ -78,6 +79,13 @@ public class PMDTask extends Task {
     public void setFailOnRuleViolation(boolean fail) {
         this.failOnRuleViolation = fail;
     }
+
+	public void setMaxRuleViolations(int max) {
+	    if (max > 0) {
+		    this.maxRuleViolations = max;
+		}
+	}
+	
 
     public void setRuleSetFiles(String ruleSetFiles) {
         this.ruleSetFiles = ruleSetFiles;
@@ -258,7 +266,7 @@ public class PMDTask extends Task {
             log("Setting property " + failuresPropertyName + " to " + problemCount, Project.MSG_VERBOSE);
         }
 
-        if (failOnRuleViolation && problemCount > 0) {
+        if (failOnRuleViolation && problemCount > maxRuleViolations) {
             throw new BuildException("Stopping build since PMD found " + problemCount + " rule violations in the code");
         }
     }
