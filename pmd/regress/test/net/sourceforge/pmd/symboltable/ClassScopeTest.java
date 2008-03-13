@@ -103,7 +103,7 @@ public class ClassScopeTest extends STBBaseTst {
 
 
     @Test
-    public final void testOneParams() throws Throwable {
+    public final void testOneParam() throws Throwable {
         parseCode(ONE_PARAM);
         ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
@@ -127,6 +127,24 @@ public class ClassScopeTest extends STBBaseTst {
         Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
         MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
         assertEquals("()", mnd.getParameterDisplaySignature());
+    }
+
+    @Test
+    public final void testOneParamVararg() throws Throwable {
+    	parseCode15(ONE_PARAM_VARARG);
+        ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
+        MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
+        assertEquals("(String...)", mnd.getParameterDisplaySignature());
+    }
+
+    @Test
+    public final void testTwoParamsVararg() throws Throwable {
+    	parseCode15(TWO_PARAMS_VARARG);
+        ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        Map m = ((ClassScope) n.getScope()).getMethodDeclarations();
+        MethodNameDeclaration mnd = (MethodNameDeclaration) m.keySet().iterator().next();
+        assertEquals("(String,String...)", mnd.getParameterDisplaySignature());
     }
 
 
@@ -256,6 +274,18 @@ public class ClassScopeTest extends STBBaseTst {
     private static final String NO_PARAMS =
             "public class Test {" + PMD.EOL +
             "  void bar() {" + PMD.EOL +
+            "  }" + PMD.EOL +
+            "}";
+
+    private static final String ONE_PARAM_VARARG =
+            "public class Test {" + PMD.EOL +
+            "  void bar(String... s) {" + PMD.EOL +
+            "  }" + PMD.EOL +
+            "}";
+
+    private static final String TWO_PARAMS_VARARG =
+            "public class Test {" + PMD.EOL +
+            "  void bar(String s1, String... s2) {" + PMD.EOL +
             "  }" + PMD.EOL +
             "}";
 

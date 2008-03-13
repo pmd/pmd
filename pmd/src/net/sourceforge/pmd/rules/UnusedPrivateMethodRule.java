@@ -53,7 +53,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
         Set<MethodNameDeclaration> unique = new HashSet<MethodNameDeclaration>();
         Set<String> sigs = new HashSet<String>();
         for (MethodNameDeclaration mnd: methods.keySet()) {
-            String sig = mnd.getImage() + mnd.getParameterCount();
+            String sig = mnd.getImage() + mnd.getParameterCount() + mnd.isVarargs();
             if (!sigs.contains(sig)) {
                 unique.add(mnd);
             }

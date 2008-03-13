@@ -137,7 +137,7 @@ public class ClassScope extends AbstractScope {
             for (MethodNameDeclaration mnd: methodNames.keySet()) {
                 if (mnd.getImage().equals(occurrence.getImage())) {
                     int args = occurrence.getArgumentCount();
-                    if (args == mnd.getParameterCount()) {
+                    if (args == mnd.getParameterCount() || (mnd.isVarargs() && args >= mnd.getParameterCount() - 1)) {
                         // FIXME if several methods have the same name
                         // and parameter count, only one will get caught here
                         // we need to make some attempt at type lookup and discrimination

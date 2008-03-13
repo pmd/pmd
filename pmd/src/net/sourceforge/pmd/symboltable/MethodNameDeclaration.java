@@ -19,6 +19,17 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         return ((ASTMethodDeclarator) node).getParameterCount();
     }
 
+    public boolean isVarargs() {
+        ASTFormalParameters params = (ASTFormalParameters) node.jjtGetChild(0);
+        for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
+            ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
+            if (p.isVarargs()) {
+            	return true;
+            }
+        }
+        return false;
+    }
+
     public ASTMethodDeclarator getMethodNameDeclaratorNode() {
         return (ASTMethodDeclarator) node;
     }
@@ -31,6 +42,9 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter p = (ASTFormalParameter) params.jjtGetChild(i);
             sb.append(p.getTypeNode().getTypeImage());
+            if (p.isVarargs()) {
+            	sb.append("...");
+            }
             sb.append(',');
         }
         if (sb.charAt(sb.length() - 1) == ',') {
@@ -59,6 +73,11 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter myParam = (ASTFormalParameter) myParams.jjtGetChild(i);
             ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.jjtGetChild(i);
+
+            // Compare vararg
+            if (myParam.isVarargs() != otherParam.isVarargs()) {
+            	return false;
+            }
 
             SimpleNode myTypeNode = (SimpleNode) myParam.getTypeNode().jjtGetChild(0);
             SimpleNode otherTypeNode = (SimpleNode) otherParam.getTypeNode().jjtGetChild(0);

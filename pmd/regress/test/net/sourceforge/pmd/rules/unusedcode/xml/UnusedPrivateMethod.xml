@@ -313,4 +313,32 @@ public class Foo {
 }
      ]]></code>
     </test-code-->
+    <test-code>
+        <description><![CDATA[
+Calling one arg varargs method
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo { 
+ public void bar() { 
+  buz("baz");
+ }
+ private void buz(String... s) {} 
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Calling two arg varargs method
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo { 
+ public void bar() { 
+  buz("baz");
+ }
+ private void buz(String s, String... args) {} 
+}
+     ]]></code>
+    </test-code>
 </test-data>
