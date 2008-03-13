@@ -142,4 +142,16 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+On demand import
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+	List list = new ArrayList();
+}
+     ]]></code>
+    </test-code>
 </test-data>

@@ -171,13 +171,13 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-Glob import
+On demand import
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import foo.*;
+import java.util.*;
 public class Foo {
-	int i = foo.Bar.VALUE;
+	List list = new ArrayList();
 }
      ]]></code>
     </test-code>
