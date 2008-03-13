@@ -104,7 +104,9 @@ import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
 import net.sourceforge.pmd.sourcetypehandlers.VisitorStarter;
 import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
+import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.LocalScope;
+import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.symboltable.MethodScope;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.Scope;
@@ -517,6 +519,19 @@ public class Designer implements ClipboardOwner {
 				    			for (NameOccurrence nameOccurrence: scope.getClassDeclarations().get(classNameDeclaration)) {
 					    			DefaultMutableTreeNode nameOccurenceTreeNode = new DefaultMutableTreeNode("Name occurrence: " + nameOccurrence);
 					    			classNameDeclarationTreeNode.add(nameOccurenceTreeNode);
+				    			}
+				    		}
+	    				}
+	    			}
+	    			if (scope instanceof ClassScope) {
+	    				ClassScope classScope = (ClassScope)scope;
+	    				if (!classScope.getMethodDeclarations().isEmpty()) {
+				    		for (MethodNameDeclaration methodNameDeclaration: classScope.getMethodDeclarations().keySet()) {
+				    			DefaultMutableTreeNode methodNameDeclarationTreeNode = new DefaultMutableTreeNode("Method name declaration: " + methodNameDeclaration);
+				    			scopeTreeNode.add(methodNameDeclarationTreeNode);
+				    			for (NameOccurrence nameOccurrence: classScope.getMethodDeclarations().get(methodNameDeclaration)) {
+					    			DefaultMutableTreeNode nameOccurenceTreeNode = new DefaultMutableTreeNode("Name occurrence: " + nameOccurrence);
+					    			methodNameDeclarationTreeNode.add(nameOccurenceTreeNode);
 				    			}
 				    		}
 	    				}
