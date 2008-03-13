@@ -169,4 +169,16 @@ public class Foo {
      ]]></code>
      <source-type>java 1.5</source-type>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+Glob import
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.*;
+public class Foo {
+	int i = foo.Bar.VALUE;
+}
+     ]]></code>
+    </test-code>
 </test-data>
