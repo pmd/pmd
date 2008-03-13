@@ -366,7 +366,11 @@ public class Designer implements ClipboardOwner {
         public String getToolTipText(MouseEvent e) {
             if (getRowForLocation(e.getX(), e.getY()) == -1) return null;
             TreePath curPath = getPathForLocation(e.getX(), e.getY());
-            return ((ASTTreeNode)curPath.getLastPathComponent()).getToolTipText();
+            if (curPath.getLastPathComponent() instanceof ASTTreeNode) {
+            	return ((ASTTreeNode)curPath.getLastPathComponent()).getToolTipText();
+            } else {
+            	return super.getToolTipText(e);
+            }
         }
 
         public void expandAll(boolean expand) {
