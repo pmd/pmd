@@ -405,8 +405,12 @@ public class Designer implements ClipboardOwner {
     }
 
     private void loadSymbolTableTreeData(TreeNode rootNode) {
-    	symbolTableTreeWidget.setModel(new DefaultTreeModel(rootNode));
-    	symbolTableTreeWidget.expandAll(true);
+    	if (rootNode != null) {
+	    	symbolTableTreeWidget.setModel(new DefaultTreeModel(rootNode));
+	    	symbolTableTreeWidget.expandAll(true);
+    	} else {
+    		symbolTableTreeWidget.setModel(null);
+    	}
     }
 
     private class ShowListener implements ActionListener {
@@ -422,6 +426,7 @@ public class Designer implements ClipboardOwner {
             	}
 
             loadASTTreeData(tn);
+            loadSymbolTableTreeData(null);
         }
     }
 
