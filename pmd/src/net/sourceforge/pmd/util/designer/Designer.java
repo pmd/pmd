@@ -84,12 +84,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.SourceType;
-import net.sourceforge.pmd.TargetJDK1_3;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDK1_5;
-import net.sourceforge.pmd.TargetJDK1_6;
-import net.sourceforge.pmd.TargetJDK1_7;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Node;
@@ -98,11 +92,9 @@ import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
 import net.sourceforge.pmd.jaxen.TypeOfFunction;
-import net.sourceforge.pmd.jsp.ast.JspCharStream;
-import net.sourceforge.pmd.jsp.ast.JspParser;
+import net.sourceforge.pmd.parsers.Parser;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
-import net.sourceforge.pmd.sourcetypehandlers.VisitorStarter;
 import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.LocalScope;
@@ -112,7 +104,6 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -124,54 +115,24 @@ public class Designer implements ClipboardOwner {
 
 	private static final char LABEL_IMAGE_SEPARATOR = ':';
 
-	private interface Parser { public SimpleNode parse(StringReader sr); }
-
-	private static final Parser jdkParser1_3 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return new TargetJDK1_3().createParser(sr).CompilationUnit(); }
-	};
-
-	private static final Parser jdkParser1_4 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return new TargetJDK1_4().createParser(sr).CompilationUnit(); }
-	};
-
-	private static final Parser jdkParser1_5 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return new TargetJDK1_5().createParser(sr).CompilationUnit(); }
-	};
-
-	private static final Parser jdkParser1_6 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return new TargetJDK1_6().createParser(sr).CompilationUnit(); }
-	};
-
-	private static final Parser jdkParser1_7 = new Parser() {
-		public SimpleNode parse(StringReader sr) { return new TargetJDK1_7().createParser(sr).CompilationUnit(); }
-	};
-
-	private static final Parser jspParser = new Parser() {
-		public SimpleNode parse(StringReader sr) { return new JspParser(new JspCharStream(sr)).CompilationUnit(); }
-	};
-
 	private static final Object[][] sourceTypeSets = new Object[][] {
-		{ "JDK 1.3", SourceType.JAVA_13, jdkParser1_3 },
-		{ "JDK 1.4", SourceType.JAVA_14, jdkParser1_4 },
-		{ "JDK 1.5", SourceType.JAVA_15, jdkParser1_5 },
-		{ "JDK 1.6", SourceType.JAVA_16, jdkParser1_6 },
-		{ "JDK 1.7", SourceType.JAVA_17, jdkParser1_7 },
-		{ "JSP", 	 SourceType.JSP, 	 jspParser }
+		{ "JDK 1.3", SourceType.JAVA_13 },
+		{ "JDK 1.4", SourceType.JAVA_14 },
+		{ "JDK 1.5", SourceType.JAVA_15 },
+		{ "JDK 1.6", SourceType.JAVA_16 },
+		{ "JDK 1.7", SourceType.JAVA_17 },
+		{ "JSP", 	 SourceType.JSP }
 		};
 
 	private static final int defaultSourceTypeSelectionIndex = 2; // Java 1.5
 
-
     private SimpleNode getCompilationUnit() {
-
-    	Parser parser = (Parser)sourceTypeSets[selectedSourceTypeIndex()][2];
-    	ASTCompilationUnit n = (ASTCompilationUnit)parser.parse(new StringReader(codeEditorPane.getText()));
-        ClassTypeResolver ctr = new ClassTypeResolver();
-        n.jjtAccept(ctr, null);
-        SourceTypeHandler sourceTypeHandler = SourceTypeHandlerBroker.getVisitorsFactoryForSourceType(getSourceType());
-    	VisitorStarter symbolFacade = sourceTypeHandler.getSymbolFacade();
-    	symbolFacade.start(n);
-        return n;
+    	SourceTypeHandler handler = SourceTypeHandlerBroker.getVisitorsFactoryForSourceType(getSourceType());
+    	Parser parser = handler.getParser();
+    	SimpleNode simpleNode = (SimpleNode)parser.parse(new StringReader(codeEditorPane.getText()));
+    	handler.getSymbolFacade().start(simpleNode);
+    	handler.getTypeResolutionFacade(null).start(simpleNode);
+    	return simpleNode;
     }
 
     private SourceType getSourceType() {
@@ -605,7 +566,7 @@ public class Designer implements ClipboardOwner {
             }
             setText(text);
             return this;
-        }       
+        }
     }
 
     private class ASTSelectionListener implements ListSelectionListener {
