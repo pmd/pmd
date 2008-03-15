@@ -81,11 +81,12 @@ public class PMDTask extends Task {
     }
 
 	public void setMaxRuleViolations(int max) {
-	    if (max > 0) {
+	    if (max >= 0) {
 		    this.maxRuleViolations = max;
+		    this.failOnRuleViolation = true;
 		}
 	}
-	
+
 
     public void setRuleSetFiles(String ruleSetFiles) {
         this.ruleSetFiles = ruleSetFiles;
@@ -132,8 +133,8 @@ public class PMDTask extends Task {
 
     public void setClasspathRef(Reference r) {
         createLongClasspath().setRefid(r);
-    }    
-    
+    }
+
     private void doTask(){
         ruleSetFiles = new SimpleRuleSetNameMapper(ruleSetFiles).getRuleSets();
 
@@ -270,7 +271,7 @@ public class PMDTask extends Task {
             throw new BuildException("Stopping build since PMD found " + problemCount + " rule violations in the code");
         }
     }
-    
+
     public void execute() throws BuildException {
         validate();
         final Handler antLogHandler = new AntLogHandler(this);

@@ -9,7 +9,7 @@
           href="http://pmdapplied.com/"/>
       <item name="SourceForge.net Project Page"
             href="http://sourceforge.net/projects/pmd" />
-      <item name="Hosted by SourceForge" 
+      <item name="Hosted by SourceForge"
             href="http://sourceforge.net" />
     </links>
     <menu name="Overview">
@@ -41,6 +41,7 @@
         <item name="Writing XPath rules" href="/xpathruletutorial.html" />
         <item name="How to make a rule set" href="/howtomakearuleset.html" />
         <item name="How it works" href="/howitworks.html" />
+        <item name="Last touches" href="finalising-rules.html"/>
     </menu>
     <menu name="For example">
       <item name="Run PMD on a Sourceforge project" href="/scoreboard.html" />
