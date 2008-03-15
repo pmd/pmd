@@ -558,7 +558,15 @@ public class PMDPropertyPage extends PropertyPage {
     protected void refresh() {
         try {
             availableRulesTableViewer.getControl().setRedraw(false);
+        	// Preserve the checked rules across a refresh.  Checked rules seem to be cleared when table is sorted.
+            Collection rules = getProjectRuleSet().getRules();
             availableRulesTableViewer.refresh();
+            TableItem[] items = availableRulesTableViewer.getTable().getItems();
+            for (int i = 0; i < items.length; i++) {
+            	if (rules.contains(items[i].getData())) {
+            		items[i].setChecked(true);
+            	}
+            }
         } catch (ClassCastException e) {
             PMDUiPlugin.getDefault().logError("Ignoring exception while refreshing table", e);
         } finally {
