@@ -1,7 +1,7 @@
 March ??, 2008 - 4.2:
 Fixed bug 1912831 - False + UnusedPrivateMethod with varargs
 Fixed bug 1913536 - Rule Designer does not recognize JSP(XML)
-Add -auxclasspath option for specifying Type Resolution classpath from command line.
+Add -auxclasspath option for specifying Type Resolution classpath from command line and auxclasspath nested element for ant task.
 
 Ant task upgrade:
 	Added a new attribute 'maxRuleCount' to indicate whether or not to fail the build if PMD finds that much violations.

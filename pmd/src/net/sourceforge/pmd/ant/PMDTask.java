@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.ant;
 
+import java.io.IOException;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -32,6 +33,7 @@ import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.ScopedLogHandlersManager;
 import net.sourceforge.pmd.util.AntLogHandler;
+import net.sourceforge.pmd.util.ClasspathClassLoader;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
@@ -45,6 +47,7 @@ import org.apache.tools.ant.types.Reference;
 public class PMDTask extends Task {
 
     private Path classpath;
+    private Path auxClasspath;
     private List<Formatter> formatters = new ArrayList<Formatter>();
     private List<FileSet> filesets = new ArrayList<FileSet>();
     private int minPriority = Rule.LOWEST_PRIORITY;
@@ -135,17 +138,50 @@ public class PMDTask extends Task {
         createLongClasspath().setRefid(r);
     }
 
+    public void setAuxClasspath(Path auxClasspath) {
+        this.auxClasspath = auxClasspath;
+    }
+
+    public Path getAuxClasspath() {
+        return auxClasspath;
+    }
+
+    public Path createAuxClasspath() {
+        if (auxClasspath == null) {
+            auxClasspath = new Path(getProject());
+        }
+        return auxClasspath.createPath();
+    }
+
+    public void setAuxClasspathRef(Reference r) {
+        createLongAuxClasspath().setRefid(r);
+    }
+
     private void doTask(){
         ruleSetFiles = new SimpleRuleSetNameMapper(ruleSetFiles).getRuleSets();
 
+        ClassLoader cl;
+        if (classpath == null) {
+            log("Using the normal ClassLoader", Project.MSG_VERBOSE);
+            cl = getClass().getClassLoader();
+        } else {
+            log("Using the AntClassLoader", Project.MSG_VERBOSE);
+            cl = new AntClassLoader(getProject(), classpath);
+        }
+        if (auxClasspath != null) {
+            log("Using auxclasspath: " + auxClasspath, Project.MSG_VERBOSE);
+            try {
+                cl = new ClasspathClassLoader(auxClasspath.toString(), cl);
+            } catch (IOException ioe) {
+                throw new BuildException(ioe.getMessage());
+            }
+        }
+
+        final ClassLoader classLoader = cl;
+        log("Using classLoader type: " + classLoader.getClass(), Project.MSG_VERBOSE);
         RuleSetFactory ruleSetFactory = new RuleSetFactory() {
             public RuleSets createRuleSets(String ruleSetFileNames) throws RuleSetNotFoundException {
-                if (classpath == null) {
-                    return super.createRuleSets(ruleSetFiles);
-                } else {
-                    return createRuleSets(ruleSetFiles, new AntClassLoader(getProject(), classpath));
-
-                }
+                return createRuleSets(ruleSetFiles, classLoader);
             }
         };
         for (Formatter formatter: formatters) {
@@ -157,13 +193,7 @@ public class PMDTask extends Task {
             // This is just used to validate and display rules. Each thread will create its own ruleset
             RuleSets rules;
             ruleSetFactory.setMinimumPriority(minPriority);
-            if (classpath == null) {
-                log("Using the normal ClassLoader", Project.MSG_VERBOSE);
-                rules = ruleSetFactory.createRuleSets(ruleSetFiles);
-            } else {
-                log("Using the AntClassLoader", Project.MSG_VERBOSE);
-                rules = ruleSetFactory.createRuleSets(ruleSetFiles, new AntClassLoader(getProject(), classpath));
-            }
+            rules = ruleSetFactory.createRuleSets(ruleSetFiles, classLoader);
             logRulesUsed(rules);
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage());
@@ -235,7 +265,7 @@ public class PMDTask extends Task {
                 PMD.processFiles(cpus, ruleSetFactory, sourceType, files, ctx,
                     renderers, ruleSetFiles,
                     shortFilenames, inputPath,
-                    encoding, excludeMarker, getClass().getClassLoader());
+                    encoding, excludeMarker, classLoader);
             } catch (RuntimeException pmde) {
                 pmde.printStackTrace();
                 log(pmde.toString(), Project.MSG_VERBOSE);
@@ -333,6 +363,13 @@ public class PMDTask extends Task {
             classpath = new Path(getProject());
         }
         return classpath.createPath();
+    }
+
+    private Path createLongAuxClasspath() {
+        if (auxClasspath == null) {
+            auxClasspath = new Path(getProject());
+        }
+        return auxClasspath.createPath();
     }
 
     public void addRuleset(RuleSetWrapper r) {

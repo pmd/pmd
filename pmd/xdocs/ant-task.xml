@@ -106,6 +106,8 @@
      element are in the Ant documentation <a href="http://ant.apache.org/manual/using.html#path">here</a> and there's
      an example below.</p>
 
+     <p><code>auxclasspath</code> nested element - extra classpath used for Type Resolution rules.</p>
+
      <p><code>ruleset</code> nested element - another way to specify rulesets.  Here's an example:</p>
           <source>
 <![CDATA[
