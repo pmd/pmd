@@ -178,7 +178,6 @@ public class PMDTask extends Task {
         }
 
         final ClassLoader classLoader = cl;
-        log("Using classLoader type: " + classLoader.getClass(), Project.MSG_VERBOSE);
         RuleSetFactory ruleSetFactory = new RuleSetFactory() {
             public RuleSets createRuleSets(String ruleSetFileNames) throws RuleSetNotFoundException {
                 return createRuleSets(ruleSetFiles, classLoader);
