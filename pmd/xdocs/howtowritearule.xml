@@ -290,7 +290,7 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
 		to initialized and finalize your rule's implementation :
 		</p>
 		<source>
-			<![CDATA[[
+			<![CDATA[
 			package net.sourceforge.pmd.rules;
 
 			import java.util.concurrent.atomic.AtomicLong;
@@ -342,6 +342,13 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
 			</i>
 		</p>
 	</subsection>
+<!--
+TODO: TR documentation
+	<subsection name="I need somekind of Type Resolution for my rule !">
+		<p>
+		</p>
+	</subsection>
+-->
 
     <subsection name="Bundle it up">
         <p>To use your rules as part of a nightly build or whatever, it's helpful to bundle up both
