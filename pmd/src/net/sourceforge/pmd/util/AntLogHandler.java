@@ -5,6 +5,7 @@ package net.sourceforge.pmd.util;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -20,6 +21,8 @@ import org.apache.tools.ant.Task;
  */
 public class AntLogHandler extends Handler {
     private Task antTask;
+
+    private static final Formatter FORMATTER = new PmdLogFormatter();
 
     public AntLogHandler(Task antTask) {
         this.antTask = antTask;
@@ -42,7 +45,7 @@ public class AntLogHandler extends Handler {
         else
             throw new IllegalStateException("Unknown logging level");   //shouldn't get ALL or NONE
         
-        antTask.log(logRecord.getMessage(), antLevel);
+        antTask.log(FORMATTER.format(logRecord), antLevel);
         if (logRecord.getThrown() != null) {
             StringWriter stringWriter = new StringWriter();
             PrintWriter printWriter = new PrintWriter(stringWriter, true);
