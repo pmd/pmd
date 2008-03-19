@@ -1072,7 +1072,7 @@ public class Test {
         since="4.1"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet."
-        externalInfoUrl="http://refdoc.venezia.dev.impots/multiproject/pmdSODA/chapters/chapitre-11.1-jdbc.html#_JDBC-RS_">
+        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CheckResultSet">
         <description>
             <![CDATA[
 	            Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet. Indeed,
