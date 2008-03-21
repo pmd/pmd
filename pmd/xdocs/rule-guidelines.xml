@@ -27,6 +27,14 @@ So we skip priority one. However, as explicit call to gc may really hinder appli
 </p>
 </section>
 
+<section name="Correctness">
+<p>
+You should try to run the rule on a large code base, like the jdk source code for instance. This will help ensure that the rule does not raise exceptions when dealing with unusual constructs.
+</p>
+<p>
+If your rule is stateful, make sure that it is reinitialized correctly. The "-stress" command line option can be used as the files will then not be ordered but processed randomly. Running pmd with the "-stress" option several times and sorting the text output should produce identical results if the state information is correctly reset.
+</p>
+</section>
 <section name="Performance issues">
 <p>
 When writing a new rule, using command line option "-benchmark" on a few rules can give an indication on how the rule compares to others.
