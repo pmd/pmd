@@ -27,6 +27,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -248,9 +249,9 @@ public class RuleSetFactoryTest {
 	@Test
 	public void testAllPMDBuiltInRulesNeedSinceAndCheckURL() throws IOException, RuleSetNotFoundException,
 			ParserConfigurationException, SAXException {
-		boolean allValid = true;	//FIXME use the counters below instead of allValid
 		int invalidExternalInfoURL = 0;
 		int invalidSinceAttributes = 0;
+		String messages = "";
 		List<String> ruleSetFileNames = getRuleSetFileNames();
 		System.err.print("\n\n"); // just to improve output
 		for (String fileName : ruleSetFileNames) {
@@ -258,27 +259,27 @@ public class RuleSetFactoryTest {
 			for (Rule rule : ruleSet.getRules()) {
 				// Is since missing ?
 				if (rule.getSince() == null) {
-					allValid = false;
 					invalidSinceAttributes++;
-					System.err.println("Rule " + fileName + "/" + rule.getName() + " is missing 'since' attribute");
+					messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'since' attribute\n";
 				}
 				// Is URL valid ?
 				if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
-					System.err.println("Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute");
-					allValid = false;
+					messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute\n";
 				}
 				else {
 					  String expectedExternalInfoURL = "http://pmd.sourceforge.net/rules/" + fileName.replaceAll("rulesets/","").replaceAll(".xml","") + ".html#" + rule.getName();
 					  if ( ! expectedExternalInfoURL.equals(rule.getExternalInfoUrl())) {
-							System.err.println("Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'externalInfoURL' value (" + rule.getExternalInfoUrl() + "), it should be:" + expectedExternalInfoURL);
+							messages += "Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'externalInfoURL' value (" + rule.getExternalInfoUrl() + "), it should be:" + expectedExternalInfoURL + "\n";
 							invalidExternalInfoURL++;
-							allValid = false;
 					  }
 				}
 			}
 		}
 		System.err.print("\n\n"); // just to improve output
-		assertTrue("All built-in PMD rules need 'since' attribute ("+ invalidSinceAttributes + " are missing) and a proper ExternalURLInfo (" + invalidExternalInfoURL + "are invalid)", allValid);
+		// We do this at the end to ensure we test ALL the rules before failing the test
+		if ( invalidExternalInfoURL > 0 || invalidSinceAttributes > 0 ) {
+			fail("All built-in PMD rules need 'since' attribute ("+ invalidSinceAttributes + " are missing) and a proper ExternalURLInfo (" + invalidExternalInfoURL + " are invalid)" + "\n" + messages);
+		}
 	}
 
 

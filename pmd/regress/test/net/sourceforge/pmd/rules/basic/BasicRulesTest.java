@@ -15,7 +15,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
     	addRule("basic", "AvoidMultipleUnaryOperators");
         addRule("basic", "AvoidThreadGroup");
         addRule("basic", "AvoidUsingHardCodedIP");
-        addRule("basic", "AvoidUsingHardCodedURL");
+//        addRule("basic", "AvoidUsingHardCodedURL");
         addRule("basic", "AvoidUsingOctalValues");
         addRule("basic", "BigIntegerInstantiation");
         addRule("basic", "BooleanInstantiation");
