@@ -3,10 +3,10 @@ package net.sourceforge.pmd.rules.basic;
 import java.net.InetAddress;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.ast.ASTLiteral;
 
-public class AvoidUsingHardCodedIP extends AbstractRule {
+public class AvoidUsingHardCodedIP extends AbstractJavaRule {
 
     private static final String IPv4_REGEXP = "^\"[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\"$";
     private static final String IPv6_REGEXP = "^\"[0-9a-fA-F:]+:[0-9a-fA-F]+\"$";
