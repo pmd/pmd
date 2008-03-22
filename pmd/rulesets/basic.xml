@@ -1085,31 +1085,37 @@ public class Test {
                 <value>
 		        	<![CDATA[
 //Type/ReferenceType/ClassOrInterfaceType[
-	(@Image = 'ResultSet')
-	and
-	(../../../descendant::Name[ends-with(@Image,'executeQuery')])
-	and
-	(
-		not (contains(
-			(./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
-			(concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.next') )
-		))
-		and
-		not (contains(
-			(./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
-			(concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.previous') )
-		) )
-		and
-		not (contains(
-			(./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
-			(concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.first') )
-		) )
-		and
-		not (contains(
-			(./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
-			(concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.last') )
-		) )
-	)
+        (@Image = 'ResultSet')
+        and
+        (../../../descendant::Name[ends-with(@Image,'executeQuery')])
+        and
+        (
+	(not (contains(
+                        (./ancestor::Block/descendant::WhileStatement/descendant::Name/attribute::Image),
+                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.next')
+		)  ) )
+	and ( not ( contains(
+                        (./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
+                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.next')
+		) ) )
+	and (not (contains(
+                        (./ancestor::Block/descendant::WhileStatement/descendant::Name/attribute::Image),
+                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.previous')
+		)  ) )
+	and ( not ( contains(
+                        (./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
+                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.previous')
+		) ) )
+	and ( not ( contains(
+                        (./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
+                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.last')
+		) ) )
+	and ( not ( contains(
+                        (./ancestor::Block/descendant::IfStatement/descendant::Name/attribute::Image),
+                        concat(../../../VariableDeclarator/VariableDeclaratorId/attribute::Image,'.first')
+		) ) )
+
+         )
 ]
 		        	]]>
             	</value>
@@ -1137,6 +1143,7 @@ public class Test {
             ]]>
         </example>
     </rule>
+
 	<rule name="AvoidMultipleUnaryOperators"
 		since="4.2"
 		class="net.sourceforge.pmd.rules.basic.AvoidMultipleUnaryOperators"
@@ -1192,5 +1199,33 @@ public class Test {
             ]]>
         </example>
     </rule>
+
+        <rule   name="AvoidUsingHardCodedURL"
+            	since="4.3"
+            	message="Do not hard code URL addresses, even 127.0.0.1 !"
+            	class="net.sourceforge.pmd.rules.GenericLiteralCheckerRule"
+            	externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP">
+	    <description>
+	    	<![CDATA[
+				An application with hard coded URL may become impossible to deploy in some case. It never hurts
+				to externalize URL adresses.
+	    	]]>
+	    </description>
+	    <priority>3</priority>
+	    <properties>
+        	<property name="pattern"	value='^"http:.*"$'/>
+        </properties>
+	    <example>
+	    <![CDATA[
+	public class Foo {
+	  String ip = "http://127.0.0.1"; // This is a really bad idea !
+	  URL url = new URL("http://testing-website.com/");
+	}
+	    ]]>
+	    </example>
+    </rule>
+
+
+
 </ruleset>
 

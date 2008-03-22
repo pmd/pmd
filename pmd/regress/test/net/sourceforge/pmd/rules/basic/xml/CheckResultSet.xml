@@ -3,7 +3,7 @@
     <test-code>
         <description>
         	<![CDATA[
-				This is good behavior.
+				The result set is appropriately tested before using it, no violation.
      		]]>
      	</description>
         <expected-problems>0</expected-problems>
@@ -34,7 +34,7 @@
     <test-code>
         <description>
         	<![CDATA[
-				This most common violation case
+				This most common violation case, not testing is done before a call to 'last()'.
      		]]>
      	</description>
         <expected-problems>1</expected-problems>
@@ -48,6 +48,51 @@
 				        String object = rs.getString(1);
 				        rs.last();
 				        object.hashCode();
+				    }
+				}
+     		]]>
+ 		</code>
+    </test-code>
+        <test-code>
+        <description>
+        	<![CDATA[
+				This most common violation case, not testing is done before a call to 'first()'.
+     		]]>
+     	</description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+				public class ResultSetTesting
+				{
+					public void executeSql(Statement statement, String query) throws SQLException
+				    {
+				        ResultSet rs = statement.executeQuery(query);
+				        String object = rs.getString(1);
+				        rs.first();
+				        object.hashCode();
+				    }
+				}
+     		]]>
+ 		</code>
+    </test-code>
+        <test-code>
+        <description>
+        	<![CDATA[
+				Using a 'while' instead of 'if' shouldn't result in a violation.
+     		]]>
+     	</description>
+        <expected-problems>0</expected-problems>
+        <code>
+        	<![CDATA[
+				public class ResultSetTesting
+				{
+					public void executeSql(Statement statement, String query) throws SQLException
+				    {
+				        ResultSet rst = stat.executeQuery("SELECT name FROM person");
+				        while (rst.next())
+				        {
+				            firsString = rst.getString(1);
+				        }
 				    }
 				}
      		]]>

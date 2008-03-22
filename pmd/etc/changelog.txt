@@ -1,3 +1,6 @@
+???? ??, 2008 - 4.2
+Fixed bug 1920155 - CheckResultSet: Does not pass for loop conditionals
+
 March 21, 2008 - 4.2rc2:
 Fixed bug 1912831 - False + UnusedPrivateMethod with varargs
 Fixed bug 1913536 - Rule Designer does not recognize JSP(XML)
