@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd;
 
 import java.text.MessageFormat;
@@ -17,7 +20,7 @@ public abstract class AbstractJavaRule extends CommonAbstractRule implements
 
 	/**
 	 * Adds a violation to the report.
-	 * 
+	 *
 	 * @param data
 	 *            the RuleContext
 	 * @param node
@@ -30,7 +33,7 @@ public abstract class AbstractJavaRule extends CommonAbstractRule implements
 
 	/**
 	 * Adds a violation to the report.
-	 * 
+	 *
 	 * @param data
 	 *            the RuleContext
 	 * @param node
@@ -47,7 +50,7 @@ public abstract class AbstractJavaRule extends CommonAbstractRule implements
 
 	/**
 	 * Adds a violation to the report.
-	 * 
+	 *
 	 * @param data
 	 *            the RuleContext
 	 * @param node
@@ -64,7 +67,7 @@ public abstract class AbstractJavaRule extends CommonAbstractRule implements
 
 	/**
 	 * Adds a violation to the report.
-	 * 
+	 *
 	 * @param data
 	 *            the RuleContext
 	 * @param node
@@ -94,7 +97,7 @@ public abstract class AbstractJavaRule extends CommonAbstractRule implements
 	/**
 	 * Gets the Image of the first parent node of type
 	 * ASTClassOrInterfaceDeclaration or <code>null</code>
-	 * 
+	 *
 	 * @param node
 	 *            the node which will be searched
 	 */
