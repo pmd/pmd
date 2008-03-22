@@ -1,6 +1,6 @@
-Fixed in Subversion, and you can download a new pmd-4.2rc1.jar file here:
+Fixed in Subversion, and you can download a new pmd-4.2rc2.jar file here:
 
-http://infoether.com/~tom/pmd-4.2rc1.jar
+http://infoether.com/~tom/pmd-4.2rc2.jar
 
 that contains that fix.
 

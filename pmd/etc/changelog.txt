@@ -1,4 +1,4 @@
-March ??, 2008 - 4.2:
+March 21, 2008 - 4.2rc2:
 Fixed bug 1912831 - False + UnusedPrivateMethod with varargs
 Fixed bug 1913536 - Rule Designer does not recognize JSP(XML)
 Add -auxclasspath option for specifying Type Resolution classpath from command line and auxclasspath nested element for ant task.
