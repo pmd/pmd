@@ -290,17 +290,33 @@
 
   <reporting>
     <plugins>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-jxr-plugin</artifactId>
+        </plugin>
+		<plugin>
+        	<groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+        </plugin>
+		<plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+    	    <artifactId>maven-pmd-plugin</artifactId>
+        	<configuration>
+				<linkXref>true</linkXref>
+				<sourceEncoding>utf-8</sourceEncoding>
+				<minimumTokens>100</minimumTokens>
+				<targetJdk>1.5</targetJdk>
+				<rulesets>
+            		<ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset>
+				</rulesets>
+        	</configuration>
+      </plugin>
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <linkXref>true</linkXref>
-          <sourceEncoding>utf-8</sourceEncoding>
-          <minimumTokens>100</minimumTokens>
-          <targetJdk>1.5</targetJdk>
-          <rulesets>
-            <ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset>
-          </rulesets>
+          <configLocation>etc/checkstyle-config.xml</configLocation>
         </configuration>
       </plugin>
     </plugins>
