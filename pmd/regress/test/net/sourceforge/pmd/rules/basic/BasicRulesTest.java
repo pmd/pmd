@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package test.net.sourceforge.pmd.rules.basic;
 
 import org.junit.Before;
@@ -12,6 +15,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
     	addRule("basic", "AvoidMultipleUnaryOperators");
         addRule("basic", "AvoidThreadGroup");
         addRule("basic", "AvoidUsingHardCodedIP");
+        addRule("basic", "AvoidUsingHardCodedURL");
         addRule("basic", "AvoidUsingOctalValues");
         addRule("basic", "BigIntegerInstantiation");
         addRule("basic", "BooleanInstantiation");
