@@ -253,7 +253,6 @@ public class RuleSetFactoryTest {
 		int invalidSinceAttributes = 0;
 		String messages = "";
 		List<String> ruleSetFileNames = getRuleSetFileNames();
-		System.err.print("\n\n"); // just to improve output
 		for (String fileName : ruleSetFileNames) {
 			RuleSet ruleSet = loadRuleSetByFileName(fileName);
 			for (Rule rule : ruleSet.getRules()) {
@@ -275,7 +274,6 @@ public class RuleSetFactoryTest {
 				}
 			}
 		}
-		System.err.print("\n\n"); // just to improve output
 		// We do this at the end to ensure we test ALL the rules before failing the test
 		if ( invalidExternalInfoURL > 0 || invalidSinceAttributes > 0 ) {
 			fail("All built-in PMD rules need 'since' attribute ("+ invalidSinceAttributes + " are missing) and a proper ExternalURLInfo (" + invalidExternalInfoURL + " are invalid)" + "\n" + messages);
