@@ -1424,7 +1424,7 @@ public class Foo {  //Should be final
           since="4.1"
           class="net.sourceforge.pmd.rules.XPathRule"
           message="An empty method in an abstract class should be abstract instead"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#which only has private constructors">
+          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#EmptyMethodInAbstractClassShouldBeAbstract">
         <description>
 An empty method in an abstract class should be abstract instead, as developer may rely on this empty implementation
 rather than code the appropriate one.
@@ -1475,7 +1475,7 @@ rather than code the appropriate one.
           since="3.1"
           message="Perhaps ''{0}'' could be replaced by a local variable."
           class="net.sourceforge.pmd.rules.design.SingularField"
-      	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SingularField">
+      	externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField">
 		<description>
       		<![CDATA[
 This field is used in only one method and the first usage is assigning a value
@@ -1507,7 +1507,7 @@ public class Foo {
          since="4.2"
         	class="net.sourceforge.pmd.rules.XPathRule"
         	message="Return an empty array rather than 'null'."
-        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#ReturnEmptyArrayRatherThanNull">
+        	externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ReturnEmptyArrayRatherThanNull">
         <description>
             <![CDATA[
             For any method that returns an array, it's a better behavior to return an empty array rather than a null reference.
@@ -1554,7 +1554,7 @@ public class Foo {
          since="4.2"
         	class="net.sourceforge.pmd.rules.XPathRule"
         	message="No abstract method which means that the  keyword is most likely used to prevent instantiation. use a private or protected constructor instead."
-        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AbstractClassWithoutAnyMethod">
+        	externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AbstractClassWithoutAnyMethod">
         <description>
             <![CDATA[
 			If the abstract class does not provides any methods, it may be just a data container that is not to be instantiated. In this case, it's probably
@@ -1589,7 +1589,7 @@ public class abstract Example {
             since="4.2"
 	        	class="net.sourceforge.pmd.rules.XPathRule"
 	        	message="A switch with less than 3 branches is inefficient, use a if statement instead."
-	        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#TooFewBranchesForASwitchStatement">
+	        	externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#TooFewBranchesForASwitchStatement">
         <description>
             <![CDATA[
 				Swith are designed complex branches, and allow branches to share treatement. Using a switch for only 2

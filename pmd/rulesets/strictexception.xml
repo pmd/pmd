@@ -248,7 +248,7 @@ public class Foo {
 	       since="4.2"
 		    message="A throw statement in a finally block makes the control flow hard to understand."
 		    class="net.sourceforge.pmd.rules.XPathRule"
-		    externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#DoNotExtendJavaLangError">
+		    externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#DoNotThrowExceptionInFinally">
     	<description>
 			<![CDATA[[
 			      Throwing exception in a finally block is confusing. It may mask exception or a defect of the code,

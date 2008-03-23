@@ -338,7 +338,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
         since="4.1"
         class="net.sourceforge.pmd.rules.XPathRule"
         message="To be compliant to J2EE, a webapp should not use any thread."
-    	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#NoThreadInJ2EEContainer">
+    	externalInfoUrl="http://pmd.sourceforge.net/rules/j2ee.html#DoNotUseThreads">
         <description>
             <![CDATA[
                 The J2EE specification explicitly forbid use of threads.
