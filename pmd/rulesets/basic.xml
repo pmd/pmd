@@ -1200,32 +1200,5 @@ public class Test {
         </example>
     </rule>
 
-        <rule   name="AvoidUsingHardCodedURL"
-            	since="4.3"
-            	message="Do not hard code URL addresses, even 127.0.0.1 !"
-            	class="net.sourceforge.pmd.rules.GenericLiteralCheckerRule"
-            	externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP">
-	    <description>
-	    	<![CDATA[
-				An application with hard coded URL may become impossible to deploy in some case. It never hurts
-				to externalize URL adresses.
-	    	]]>
-	    </description>
-	    <priority>3</priority>
-	    <properties>
-        	<property name="pattern"	value='^"http:.*"$'/>
-        </properties>
-	    <example>
-	    <![CDATA[
-	public class Foo {
-	  String ip = "http://127.0.0.1"; // This is a really bad idea !
-	  URL url = new URL("http://testing-website.com/");
-	}
-	    ]]>
-	    </example>
-    </rule>
-
-
-
 </ruleset>
 
