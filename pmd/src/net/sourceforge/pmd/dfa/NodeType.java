@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.dfa;
 
 /**
@@ -30,10 +33,10 @@ public interface NodeType {
     int RETURN_STATEMENT = 50;
     int BREAK_STATEMENT = 51;
     int CONTINUE_STATEMENT = 52;
-    
+
     int LABEL_STATEMENT = 60;
     int LABEL_LAST_STATEMENT = 61;
-    
+
     // TODO - throw statements?
     int THROW_STATEMENT = 70;
 }

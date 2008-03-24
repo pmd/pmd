@@ -1,5 +1,5 @@
-/*
- * Created on 11.07.2004
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.dfa;
 
@@ -58,8 +58,8 @@ public class Structure {
      */
     protected void pushOnStack(int type, IDataFlowNode node) {
         StackObject obj = new StackObject(type, node);
-        if (type == NodeType.RETURN_STATEMENT 
-        		|| type == NodeType.BREAK_STATEMENT 
+        if (type == NodeType.RETURN_STATEMENT
+        		|| type == NodeType.BREAK_STATEMENT
         		|| type == NodeType.CONTINUE_STATEMENT
         		|| type == NodeType.THROW_STATEMENT) {
             // ugly solution - stores the type information in two ways

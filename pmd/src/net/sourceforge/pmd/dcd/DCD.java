@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.dcd;
 
 import java.io.File;
@@ -39,6 +42,8 @@ import net.sourceforge.pmd.util.filter.Filters;
  * a lot of code to be considered as dead code.  You may need to expand the
  * <em>direct users</em> or <em>indirect users</em> sets, or explore using
  * different options.
+ *
+ * @author Ryan Gustafson <ryan.gustafson@gmail.com>,
  */
 public class DCD {
 	//
@@ -104,7 +109,7 @@ public class DCD {
 				}
 			}
 		};
-		
+
 		// 2) Filename filters
 		List<FilenameFilter> filters = new ArrayList<FilenameFilter>();
 		filters.add(javaFilter);

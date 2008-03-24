@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.dcd.graph;
 
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ import net.sourceforge.pmd.util.filter.Filter;
  * usage to interesting classes.  For example, the <code>java.util</code>
  * package is very often used, and tracking usages would require a massive
  * bookkeeping effort which has little value.
- * 
+ *
  * @see UsageGraphBuilder
  * @see ClassNode
  * @see MemberNode

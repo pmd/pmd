@@ -1,5 +1,5 @@
-/*
- * Created on 12.07.2004
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.dfa;
 

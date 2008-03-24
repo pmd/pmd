@@ -1,5 +1,5 @@
-/*
- * Created on 11.07.2004
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.dfa;
 
@@ -90,7 +90,7 @@ public class SequenceChecker {
 
         Status labelNode = new Status(NodeType.LABEL_STATEMENT);
         Status labelEnd = new Status(NodeType.LABEL_LAST_STATEMENT, true);
-        
+
         root.addStep(ifNode);
         root.addStep(whileNode);
         root.addStep(switchNode);
@@ -109,7 +109,7 @@ public class SequenceChecker {
 
         labelNode.addStep(labelEnd);
         labelEnd.addStep(root);
-        
+
         whileNode.addStep(whileSt);
         whileSt.addStep(root);
 

@@ -1,5 +1,5 @@
-/*
- * Created on 12.07.2004
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.dfa;
 
@@ -66,7 +66,7 @@ public class Linker {
                 case NodeType.DO_BEFORE_FIRST_STATEMENT:
                     this.computeDo(sc.getFirstIndex(), sc.getLastIndex());
                     break;
-                                      
+
                 default:
             }
 
@@ -88,11 +88,11 @@ public class Linker {
                     IDataFlowNode lastNode = node.getFlow().get(node.getFlow().size() - 1);
                     node.addPathToChild(lastNode);
                     continueBreakReturnStack.remove(0);
-                    break;                
+                    break;
                 case NodeType.BREAK_STATEMENT:
                     IDataFlowNode last = getNodeToBreakStatement(node);
                     node.removePathToChild(node.getChildren().get(0));
-                    node.addPathToChild(last);                    
+                    node.addPathToChild(last);
                     continueBreakReturnStack.remove(0);
                     break;
 
@@ -167,13 +167,13 @@ public class Linker {
         // What about breaks to labels above if statements?
         List bList = node.getFlow();
         int findEnds = 1; // ignore ends of other for's while's etc.
-       
-        
+
+
         // find out index of the node where the path goes to after the break
-        int index = bList.indexOf(node); 
+        int index = bList.indexOf(node);
         for (; index < bList.size()-2; index++) {
             IDataFlowNode n = (IDataFlowNode) bList.get(index);
-            if (n.isType(NodeType.DO_EXPR) || 
+            if (n.isType(NodeType.DO_EXPR) ||
                     n.isType(NodeType.FOR_INIT) ||
                     n.isType(NodeType.WHILE_EXPR) ||
                     n.isType(NodeType.SWITCH_START)) {
@@ -182,7 +182,7 @@ public class Linker {
             if (n.isType(NodeType.WHILE_LAST_STATEMENT) ||
                     n.isType(NodeType.SWITCH_END) ||
                     n.isType(NodeType.FOR_END) ||
-                    n.isType(NodeType.DO_EXPR)) {                            
+                    n.isType(NodeType.DO_EXPR)) {
                 if (findEnds > 1) {
                     // thats not the right node
                     findEnds--;
@@ -190,11 +190,11 @@ public class Linker {
                     break;
                 }
             }
-            
+
             if (n.isType(NodeType.LABEL_LAST_STATEMENT)) {
                 SimpleNode parentNode = n.getSimpleNode().getFirstParentOfType(ASTLabeledStatement.class);
                 if (parentNode == null) {
-                    break;                                
+                    break;
                 } else {
                     String label = node.getSimpleNode().getImage();
                     if (label == null || label.equals(parentNode.getImage())) {

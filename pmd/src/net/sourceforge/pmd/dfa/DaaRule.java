@@ -1,5 +1,5 @@
-/*
- * Created on 20.07.2004
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.dfa;
 
@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  * Starts path search for each method and runs code if found.
- * 
+ *
  * @author raik
  * @author Sven Jacob
  */
@@ -33,7 +33,7 @@ public class DaaRule extends AbstractRule implements Executable {
     private List<DaaRuleViolation> daaRuleViolations;
     private int maxRuleViolations;
     private int currentRuleViolationCount;
-   
+
     private static final PropertyDescriptor maxPathDescriptor = new IntegerProperty(
             "maxpaths", "Maximum number of paths per method", 5000, 1.0f
             );
@@ -41,14 +41,14 @@ public class DaaRule extends AbstractRule implements Executable {
     private static final PropertyDescriptor maxViolationsDescriptor = new IntegerProperty(
             "maxviolations", "Maximum number of anomalys per class", 1000, 2.0f
             );
-        
+
     private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(
             new PropertyDescriptor[] { maxPathDescriptor, maxViolationsDescriptor});
-            
+
     protected Map<String, PropertyDescriptor> propertiesByName() {
         return propertyDescriptorsByName;
     }
-    
+
     private static class Usage {
         public int accessType;
         public IDataFlowNode node;
@@ -62,20 +62,20 @@ public class DaaRule extends AbstractRule implements Executable {
             return "accessType = " + accessType + ", line = " + node.getLine();
         }
     }
-    
+
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         this.maxRuleViolations = getIntProperty(maxViolationsDescriptor);
         this.currentRuleViolationCount = 0;
         return super.visit(node, data);
     }
-    
+
     public Object visit(ASTMethodDeclaration methodDeclaration, Object data) {
         this.rc = (RuleContext) data;
         this.daaRuleViolations = new ArrayList<DaaRuleViolation>();
-        
+
         final IDataFlowNode node = methodDeclaration.getDataFlowNode().getFlow().get(0);
-        
-        final DAAPathFinder pathFinder = new DAAPathFinder(node, this, getIntProperty(maxPathDescriptor));       
+
+        final DAAPathFinder pathFinder = new DAAPathFinder(node, this, getIntProperty(maxPathDescriptor));
         pathFinder.run();
 
         super.visit(methodDeclaration, data);
@@ -87,9 +87,9 @@ public class DaaRule extends AbstractRule implements Executable {
             // dont execute this path if the limit is already reached
             return;
         }
-        
+
         final Map<String, Usage> hash = new HashMap<String, Usage>();
-        
+
         final Iterator<IDataFlowNode> pathIterator = path.iterator();
         while (pathIterator.hasNext()) {
             // iterate all nodes in this path
@@ -98,14 +98,14 @@ public class DaaRule extends AbstractRule implements Executable {
                 // iterate all variables of this node
                 for (int g = 0; g < inode.getVariableAccess().size(); g++) {
                     final VariableAccess va = inode.getVariableAccess().get(g);
-                    
+
                     // get the last usage of the current variable
                     final Usage lastUsage = hash.get(va.getVariableName());
                     if (lastUsage != null) {
                         // there was a usage to this variable before
                         checkVariableAccess(inode, va, lastUsage);
                     }
-                    
+
                     final Usage newUsage = new Usage(va.getAccessType(), inode);
                     // put the new usage for the variable
                     hash.put(va.getVariableName(), newUsage);
@@ -123,10 +123,10 @@ public class DaaRule extends AbstractRule implements Executable {
         // get the start and end line
         final int startLine = u.node.getLine();
         final int endLine = inode.getLine();
-        
+
         final SimpleNode lastNode = inode.getSimpleNode();
         final SimpleNode firstNode = u.node.getSimpleNode();
-        
+
         if (va.accessTypeMatches(u.accessType) && va.isDefinition() ) { // DD
             addDaaViolation(rc, lastNode, "DD", va.getVariableName(), startLine, endLine);
         } else if (u.accessType == VariableAccess.UNDEFINITION && va.isReference()) { // UR
@@ -135,7 +135,7 @@ public class DaaRule extends AbstractRule implements Executable {
             addDaaViolation(rc, firstNode, "DU", va.getVariableName(), startLine, endLine);
         }
     }
-    
+
     /**
      * Adds a daa violation to the report.
      *
@@ -144,7 +144,7 @@ public class DaaRule extends AbstractRule implements Executable {
      * @param msg  specific message to put in the report
      */
     private final void addDaaViolation(Object data, SimpleNode node, String type, String var, int startLine, int endLine) {
-        if (!maxNumberOfViolationsReached() 
+        if (!maxNumberOfViolationsReached()
                 && !violationAlreadyExists(type, var, startLine, endLine)
                 && node != null) {
             final RuleContext ctx = (RuleContext) data;
@@ -166,7 +166,7 @@ public class DaaRule extends AbstractRule implements Executable {
     private boolean maxNumberOfViolationsReached() {
         return this.currentRuleViolationCount >= this.maxRuleViolations;
     }
-    
+
     /**
      * Checks if a violation already exists.
      * This is needed because on the different paths same anomalies can occur.

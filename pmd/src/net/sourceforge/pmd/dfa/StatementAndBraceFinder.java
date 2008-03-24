@@ -1,5 +1,5 @@
-/*
- * Created on 11.07.2004
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 package net.sourceforge.pmd.dfa;
 
@@ -79,7 +79,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         } else if (node.jjtGetParent() instanceof ASTDoStatement) {
             dataFlow.createNewNode(node); // DO EXPR
             dataFlow.pushOnStack(NodeType.DO_EXPR, dataFlow.getLast());
-        } 
+        }
 
         return super.visit(node, data);
     }
@@ -111,7 +111,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         dataFlow.pushOnStack(NodeType.FOR_UPDATE, dataFlow.getLast());
         return data;
     }
-    
+
 // 	----------------------------------------------------------------------------
 //  BRANCH OUT
 
@@ -127,7 +127,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         } else if (node.jjtGetParent() instanceof ASTDoStatement) {
             dataFlow.pushOnStack(NodeType.DO_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
             dataFlow.createNewNode((SimpleNode) node.jjtGetParent());
-        } 
+        }
 
         super.visit(node, data);
 
@@ -212,9 +212,9 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         Structure dataFlow = (Structure) data;
         dataFlow.createNewNode(node);
         dataFlow.pushOnStack(NodeType.THROW_STATEMENT, dataFlow.getLast());
-        return super.visit(node, data);    	
+        return super.visit(node, data);
     }
-    
+
     /*
      * The method handles the special "for" loop. It creates always an
      * expression node even if the loop looks like for(;;).
