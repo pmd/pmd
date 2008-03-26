@@ -75,5 +75,7 @@ public class SimpleRuleSetNameMapper {
         nameMap.put("38", "rulesets/releases/38.xml");
         nameMap.put("39", "rulesets/releases/39.xml");
         nameMap.put("40rc1", "rulesets/releases/40rc1.xml");
+        nameMap.put("41", "rulesets/releases/41.xml");
+        nameMap.put("42", "rulesets/releases/42.xml");
     }
 }
