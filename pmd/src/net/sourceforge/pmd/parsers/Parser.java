@@ -1,16 +1,26 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.parsers;
-
-import net.sourceforge.pmd.ast.ParseException;
 
 import java.io.Reader;
 import java.util.Map;
+
+import net.sourceforge.pmd.ast.ParseException;
 
 /**
  * Common interface for calling tree-building parsers or source files.
  *
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  */
+// FUTURE Parser implementations need to be moved into Language specific packages
 public interface Parser {
+    /**
+     * Get a TokenManager for the given source.
+     * @param source Reader that provides the source code to tokenize.
+     * @return A TokenManager for reading token.
+     */
+    TokenManager getTokenManager(Reader source);
 
     /**
      * Parse source code and return the root node of the AST.
@@ -22,8 +32,12 @@ public interface Parser {
      */
     Object parse(Reader source) throws ParseException;
 
+    // TODO Document
     Map<Integer, String> getExcludeMap();
 
-    void setExcludeMarker(String marker);
+    // TODO Document
+    String getExcludeMarker();
 
+    // TODO Document
+    void setExcludeMarker(String marker);
 }

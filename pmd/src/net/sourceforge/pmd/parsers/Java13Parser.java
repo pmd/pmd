@@ -1,34 +1,24 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.parsers;
 
-import net.sourceforge.pmd.ast.JavaCharStream;
+import java.io.Reader;
+
 import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
-
-import java.io.Reader;
-import java.util.Map;
 
 /**
  * Adapter for the JavaParser, using Java 1.3 grammar.
  *
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  */
-public class Java13Parser implements Parser {
+public class Java13Parser extends AbstractJavaParser {
 
-    private JavaParser parser;
-    private String marker;
-
-    public Object parse(Reader source) throws ParseException {
-        parser = new JavaParser(new JavaCharStream(source));
-        parser.setJDK13();
-        parser.setExcludeMarker(marker);
-        return parser.CompilationUnit();
-    }
-
-    public Map<Integer, String> getExcludeMap() {
-        return parser.getExcludeMap();
-    }
-
-    public void setExcludeMarker(String marker) {
-        this.marker = marker;
+    @Override
+    protected JavaParser createJavaParser(Reader source) throws ParseException {
+	JavaParser javaParser = super.createJavaParser(source);
+	javaParser.setJDK13();
+	return javaParser;
     }
 }

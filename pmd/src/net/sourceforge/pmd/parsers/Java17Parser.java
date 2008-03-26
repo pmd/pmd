@@ -1,34 +1,10 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.parsers;
-
-import net.sourceforge.pmd.ast.JavaCharStream;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.ParseException;
-
-import java.io.Reader;
-import java.util.Map;
 
 /**
  * Adapter for the JavaParser, using Java 1.7 grammar.
- *
  */
-public class Java17Parser implements Parser {
-
-    private JavaParser parser;
-    private String marker;
-
-    public Object parse(Reader source) throws ParseException {
-        parser = new JavaParser(new JavaCharStream(source));
-        parser.setJDK15();
-        parser.setExcludeMarker(marker);
-        return parser.CompilationUnit();
-    }
-
-    public Map<Integer, String> getExcludeMap() {
-        return parser.getExcludeMap();
-    }
-
-    public void setExcludeMarker(String marker) {
-        this.marker = marker;
-    }
-
+public class Java17Parser extends Java15Parser {
 }
