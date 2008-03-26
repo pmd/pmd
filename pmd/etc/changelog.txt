@@ -1,3 +1,7 @@
+???? - 4.2.1:
+
+'41' and '42' shortcuts for rulesets added
+
 March 25, 2008 - 4.2:
 
 Fixed bug 1920155 - CheckResultSet: Does not pass for loop conditionals
