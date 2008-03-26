@@ -1,4 +1,5 @@
-???? ??, 2008 - 4.2
+March 25, 2008 - 4.2:
+
 Fixed bug 1920155 - CheckResultSet: Does not pass for loop conditionals
 
 March 21, 2008 - 4.2rc2:

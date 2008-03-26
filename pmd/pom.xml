@@ -4,7 +4,7 @@
   <groupId>pmd</groupId>
   <artifactId>pmd</artifactId>
   <name>PMD</name>
-  <version>4.2rc2</version>
+  <version>4.2</version>
   <description>
     <![CDATA[
 <p>PMD scans Java source code and looks for potential problems like:</p>
@@ -279,7 +279,7 @@
     <repository>
       <id>pmd-repo</id>
       <name>Default Repository</name>
-      <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2.beta</url>
+      <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2</url>
     </repository>
     <site>
       <id>pmd-site</id>
