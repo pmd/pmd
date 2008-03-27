@@ -1,10 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 	These are default Java conventions from Eclipse 3.3.2 with the following changes:
 	1) Line lengths to 120
 	2) Disable all Comment formatting options
 -->
-
-<?xml version="1.0" encoding="UTF-8"?>
 <profiles version="11">
 <profile kind="CodeFormatterProfile" name="PMD" version="11">
 <setting id="org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_if" value="do not insert"/>
