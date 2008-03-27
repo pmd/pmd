@@ -11,9 +11,9 @@ import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 
 /**
- * This is a generic Java specific implementation of the Parser interface.
- * It creates a JavaParser instance, and sets the exclude marker. It also
- * exposes the exclude map from the JavaParser instance.
+ * This is a generic Java specific implementation of the Parser interface. It
+ * creates a JavaParser instance, and sets the exclude marker. It also exposes
+ * the exclude map from the JavaParser instance.
  * 
  * @see Parser
  * @see AbstractParser
@@ -31,7 +31,10 @@ public abstract class AbstractJavaParser extends AbstractParser {
      */
     protected JavaParser createJavaParser(Reader source) throws ParseException {
 	parser = new JavaParser(new JavaCharStream(source));
-	parser.setExcludeMarker(super.getExcludeMarker());
+	String excludeMarker = getExcludeMarker();
+	if (excludeMarker != null) {
+	    parser.setExcludeMarker(excludeMarker);
+	}
 	return parser;
     }
 

@@ -9,13 +9,13 @@ package net.sourceforge.pmd.parsers;
  * @see Parser
  */
 public abstract class AbstractParser implements Parser {
-    private String marker;
+    private String excludeMarker;
 
     public String getExcludeMarker() {
-	return marker;
+	return excludeMarker;
     }
 
-    public void setExcludeMarker(String marker) {
-	this.marker = marker;
+    public void setExcludeMarker(String excludeMarker) {
+	this.excludeMarker = excludeMarker;
     }
 }
