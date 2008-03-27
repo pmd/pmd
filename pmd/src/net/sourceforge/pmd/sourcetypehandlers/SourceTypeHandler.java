@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.sourcetypehandlers;
 
 import net.sourceforge.pmd.parsers.Parser;
@@ -8,6 +11,7 @@ import net.sourceforge.pmd.parsers.Parser;
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
+// FUTURE Rename to LanguageVersionHandler
 public interface SourceTypeHandler {
 
     /**
@@ -38,6 +42,4 @@ public interface SourceTypeHandler {
      * @return VisitorStarter 
      */
     VisitorStarter getTypeResolutionFacade(ClassLoader classLoader);
-    
-        
 }
