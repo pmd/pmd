@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
@@ -23,7 +23,7 @@ public class BigIntegerInstantiation extends AbstractRule {
             return super.visit(node, data);            
         }
         
-        boolean jdk15 = ((RuleContext) data).getSourceType().compareTo(SourceType.JAVA_15) >= 0;
+        boolean jdk15 = ((RuleContext) data).getLanguageVersion().compareTo(LanguageVersion.JAVA_15) >= 0;
         if ((TypeHelper.isA((ASTClassOrInterfaceType) type, BigInteger.class) || (jdk15 && TypeHelper.isA((ASTClassOrInterfaceType) type, BigDecimal.class))) &&
                 (node.getFirstChildOfType(ASTArrayDimsAndInits.class) == null)
         ) {

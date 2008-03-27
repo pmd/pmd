@@ -8,7 +8,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.SourceType;
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
@@ -27,7 +27,6 @@ import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.TypeNode;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
-import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
 import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
 
 import org.jaxen.JaxenException;
@@ -517,11 +516,10 @@ public class ClassTypeResolverTest {
 		if (is == null) {
 			throw new IllegalArgumentException("Unable to find source file " + sourceFile + " for " + clazz);
 		}
-		SourceTypeHandler sourceTypeHandler = SourceTypeHandlerBroker.getVisitorsFactoryForSourceType(SourceType.JAVA_15);
-		ASTCompilationUnit acu = (ASTCompilationUnit)sourceTypeHandler.getParser().parse(new InputStreamReader(is));
-		sourceTypeHandler.getSymbolFacade().start(acu);
-		sourceTypeHandler.getTypeResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
+		SourceTypeHandler languageVersionHandler = LanguageVersion.JAVA_15.getLanguageVersionHandler();
+		ASTCompilationUnit acu = (ASTCompilationUnit)languageVersionHandler.getParser().parse(new InputStreamReader(is));
+		languageVersionHandler.getSymbolFacade().start(acu);
+		languageVersionHandler.getTypeResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
 		return acu;
-
 	}
 }

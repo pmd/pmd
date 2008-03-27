@@ -5,6 +5,21 @@ package test.net.sourceforge.pmd.testframework;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+
+import net.sourceforge.pmd.Language;
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
@@ -15,29 +30,18 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
-import net.sourceforge.pmd.SourceType;
-import net.sourceforge.pmd.SourceTypeToRuleLanguageMapper;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.util.Properties;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
 /**
  * Advanced methods for test cases
  */
 public abstract class RuleTst {
-    public static final SourceType DEFAULT_SOURCE_TYPE = SourceType.JAVA_15;
+    public static final LanguageVersion DEFAULT_LANGUAGE_VERSION = LanguageVersion.JAVA_15;
+    public static final Language DEFAULT_LANGUAGE = DEFAULT_LANGUAGE_VERSION.getLanguage();
 
     /**
      * Find a rule in a certain ruleset by name
@@ -79,7 +83,7 @@ public abstract class RuleTst {
                     ruleProperties.putAll(test.getProperties());
                 }
                 
-                res = processUsingStringReader(test.getCode(), rule, test.getSourceType()).size();
+                res = processUsingStringReader(test.getCode(), rule, test.getLanguageVersion()).size();
             } catch (Throwable t) {
                 t.printStackTrace();
                 throw new RuntimeException('"' + test.getDescription() + "\" failed");
@@ -94,25 +98,25 @@ public abstract class RuleTst {
     }
 
     private Report processUsingStringReader(String code, Rule rule,
-                                            SourceType sourceType) throws PMDException {
+   			LanguageVersion languageVersion) throws PMDException {
         Report report = new Report();
-        runTestFromString(code, rule, report, sourceType);
+        runTestFromString(code, rule, report, languageVersion);
         return report;
     }
 
     /**
      * Run the rule on the given code and put the violations in the report.
      */
-    public void runTestFromString(String code, Rule rule, Report report, SourceType sourceType) throws PMDException {
+    public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) throws PMDException {
         PMD p = new PMD();
-        p.setJavaVersion(sourceType);
+        p.setDefaultLanguageVersion(languageVersion);
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         ctx.setSourceCodeFilename("n/a");
         RuleSet rules = new RuleSet();
         rules.addRule(rule);
-        rules.setLanguage(SourceTypeToRuleLanguageMapper.getMappedLanguage(sourceType));
-        p.processFile(new StringReader(code), new RuleSets(rules), ctx, sourceType);
+        rules.setLanguage(languageVersion.getLanguage());
+        p.processFile(new StringReader(code), new RuleSets(rules), ctx, languageVersion);
     }
     
     /**
@@ -235,15 +239,15 @@ public abstract class RuleTst {
                 }
             }
             
-            String sourceTypeString = getNodeValue(testCode, "source-type", false);
-            if (sourceTypeString == null) {
+            String languageVersionString = getNodeValue(testCode, "source-type", false);
+            if (languageVersionString == null) {
                 tests[i] = new TestDescriptor(code, description, expectedProblems, rule);
             } else {
-                SourceType sourceType = SourceType.getSourceTypeForId(sourceTypeString);
-                if (sourceType != null) {
-                    tests[i] = new TestDescriptor(code, description, expectedProblems, rule, sourceType);
+            	 LanguageVersion languageVersion = LanguageVersion.findByTerseName(languageVersionString);
+                if (languageVersion != null) {
+                    tests[i] = new TestDescriptor(code, description, expectedProblems, rule, languageVersion);
                 } else {
-                    throw new RuntimeException("Unknown sourceType for test: " + sourceTypeString);
+                    throw new RuntimeException("Unknown LanguageVersion for test: " + languageVersionString);
                 }
             }
             tests[i].setReinitializeRule(reinitializeRule);
@@ -279,10 +283,10 @@ public abstract class RuleTst {
     }
     
     /**
-     * Run the test using the DEFAULT_SOURCE_TYPE and put the violations in the report.
+     * Run the test using the DEFAULT_LANGUAGE_VERSION and put the violations in the report.
      * Convenience method.
      */
     public void runTestFromString(String code, Rule rule, Report report) throws PMDException {
-        runTestFromString(code, rule, report, DEFAULT_SOURCE_TYPE);
+        runTestFromString(code, rule, report, DEFAULT_LANGUAGE_VERSION);
     }
 }

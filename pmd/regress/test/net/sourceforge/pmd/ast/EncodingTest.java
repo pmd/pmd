@@ -1,15 +1,17 @@
 package test.net.sourceforge.pmd.ast;
 import static org.junit.Assert.assertEquals;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStreamReader;
+
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.TargetJDK1_4;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStreamReader;
 public class EncodingTest {
 
     @Ignore("FIXME")
@@ -21,7 +23,7 @@ public class EncodingTest {
 
         String code = new String(TEST_UTF8.getBytes(), encoding);
         InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(code.getBytes()));
-        ASTCompilationUnit acu = new TargetJDK1_4().createParser(isr).CompilationUnit();
+        ASTCompilationUnit acu = (ASTCompilationUnit)LanguageVersion.JAVA_14.getLanguageVersionHandler().getParser().parse(isr);
         String methodName = acu.findChildrenOfType(ASTMethodDeclarator.class).get(0).getImage();
         assertEquals(new String("é".getBytes(), encoding), methodName);
     }

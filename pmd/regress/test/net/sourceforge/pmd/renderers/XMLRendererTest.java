@@ -5,12 +5,19 @@ package test.net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
+import java.io.IOException;
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 
@@ -20,12 +27,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import test.net.sourceforge.pmd.testframework.RuleTst;
-
-import java.io.IOException;
-import java.io.StringReader;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 public class XMLRendererTest extends RuleTst {
 
@@ -103,7 +104,7 @@ public class XMLRendererTest extends RuleTst {
         FooRule rule = new FooRule();
         runTestFromString(TEST2, rule, report);
         PMD p = new PMD();
-        p.setJavaVersion(SourceType.JAVA_14);
+        p.setDefaultLanguageVersion(LanguageVersion.JAVA_14);
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         ctx.setSourceCodeFilename("bar");

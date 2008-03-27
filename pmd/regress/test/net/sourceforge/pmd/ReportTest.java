@@ -12,6 +12,7 @@ import java.util.Map;
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.MockRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -19,7 +20,6 @@ import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -106,7 +106,7 @@ public class ReportTest extends RuleTst implements ReportListener {
     @Test
     public void testExclusionsInReportWithAnnotations() throws Throwable {
         Report rpt = new Report();
-        runTestFromString(TEST2, new FooRule(), rpt, SourceType.JAVA_15);
+        runTestFromString(TEST2, new FooRule(), rpt, LanguageVersion.JAVA_15);
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
     }

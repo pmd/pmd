@@ -1,6 +1,57 @@
-???? - 4.3:
+??? ??, 2008 - 5.0:
+
+TODO - Release blockers - Must implement before this release can be finished
+   o We need to figure out how to allow PMD to introspect the capabilities of
+     each LanguageVersion.  Can we parse the language? Can we use DFA?  Can we
+     use Type Resolution, etc.  Essentially introspection on the stuff on the
+     LanguageVersionHandler and related support classes.  This would be useful
+     to allow the PMD Rule Designer to drive its behavior without hard-coding
+     knowledge it rightly should not give a shit about.
+   o Change RuleSets to not specify Language.  Move Language onto Rules.  This
+     will allow mixed Language RuleSets.  Will also allow users to run multiple
+     source files in a single PMD run using a single RuleSet (ie. PMD can sort
+     it all out based on file extension!).
+   o Additional changes to Rule organization withing RuleSets as discussed on
+     this forum thread:
+     http://sourceforge.net/forum/forum.php?thread_id=1323593&forum_id=188194
+   o Change PMD command line/Ant options to allow specifying Version for
+     multiple languages, not just Java (e.g. remove -targetjdk).  Something like
+     "-version java 1.5", one specification per Language.  Drop kludgey -jsp and
+     -nojava options.
+   o CPD needs work on use of Language.  It currently is hardcoded to only
+     handled Java 1.4.  Integrate CPD needs into core PMD where appropriate.
+     Otherwise, drive CPD behavior based off of core PMD, instead of duplicating
+     some logic.
+
+---
+
+This version of PMD breaks API compatibility with prior versions of PMD, as well
+as RuleSet XML compatibility.  The decision to break compatibility, allows PMD
+internals and code organization to be improved to better handle additional
+languages.  This opportunity was used to remove depreciated APIs, and beat up
+any code which has thumbed its nose at the developers over the years. ;)
+
+The following is relatively complete list of the major changes:
+
+	API Change - Unification of treatment of languages within PMD core:
+	   Added - net.sourceforge.pmd.Language (now an 'enum')
+	   Added - net.sourceforge.pmd.LanguageVersion
+	   Added - net.sourceforge.pmd.LanguageVersionDiscoverer
+	   Deleted - net.sourceforge.pmd.SourceType
+	   Deleted - net.sourceforge.pmd.SourceTypeDiscoverer
+	   Deleted - net.sourceforge.pmd.SourceTypeToRuleLanguageMapper
+	   Deleted - net.sourceforge.pmd.TargetJDK1_3
+	   Deleted - net.sourceforge.pmd.TargetJDK1_4
+	   Deleted - net.sourceforge.pmd.TargetJDK1_5
+	   Deleted - net.sourceforge.pmd.TargetJDK1_6
+	   Deleted - net.sourceforge.pmd.TargetJDK1_7
+	   Deleted - net.sourceforge.pmd.TargetJDKVersion
+	   Deleted - net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker
+
+Other changes:
 
 '41' and '42' shortcuts for rulesets added
+The default Java version processed by PMD is now uniformly Java 1.5.
 
 March 25, 2008 - 4.2:
 

@@ -3,8 +3,8 @@ package net.sourceforge.pmd.rules.optimization;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
@@ -44,7 +44,7 @@ public class UnnecessaryWrapperObjectCreation extends AbstractRule {
             image = image.substring(10);
         }
 
-        boolean checkBoolean = ((RuleContext) data).getSourceType().compareTo(SourceType.JAVA_15) >= 0;
+        boolean checkBoolean = ((RuleContext) data).getLanguageVersion().compareTo(LanguageVersion.JAVA_15) >= 0;
 
         if (prefixSet.contains(image)||(checkBoolean && "Boolean.valueOf".equals(image))) {
             ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();

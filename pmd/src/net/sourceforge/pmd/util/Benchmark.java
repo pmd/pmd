@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import net.sourceforge.pmd.Language;
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
@@ -24,15 +26,8 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.SourceFileSelector;
-import net.sourceforge.pmd.SourceType;
-import net.sourceforge.pmd.TargetJDK1_3;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDK1_5;
-import net.sourceforge.pmd.TargetJDK1_6;
-import net.sourceforge.pmd.TargetJDK1_7;
-import net.sourceforge.pmd.TargetJDKVersion;
-import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
+import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
 
 public class Benchmark {
 
@@ -79,23 +74,19 @@ public class Benchmark {
         String srcDir = findOptionalStringValue(args, "--source-directory", "/usr/local/java/src/java/lang/");
         List<File> files = new FileFinder().findFilesFrom(srcDir, new SourceFileOrDirectoryFilter(new SourceFileSelector()), true);
 
-        SourceType jdk = SourceType.JAVA_14;
         String targetjdk = findOptionalStringValue(args, "--targetjdk", "1.4");
-        if (targetjdk.equals("1.3")) {
-            jdk = SourceType.JAVA_13;
-        } else if (targetjdk.equals("1.5")) {
-            jdk = SourceType.JAVA_15;
-        } else if (targetjdk.equals("1.6")) {
-            jdk = SourceType.JAVA_16;
-        } else if (targetjdk.equals("1.7")) {
-            jdk = SourceType.JAVA_17;
+        Language language = Language.JAVA;
+        LanguageVersion languageVersion = language.getVersion(targetjdk);
+        if (languageVersion == null) {
+        	languageVersion = language.getDefaultVersion();
         }
+
         boolean debug = findBooleanSwitch(args, "--debug");
         boolean parseOnly = findBooleanSwitch(args, "--parse-only");
 
-        if (debug) System.out.println("Using JDK " + jdk.getId());
+        if (debug)  System.out.println("Using " +language.getName() + " " + languageVersion.getVersion());
         if (parseOnly) {
-            parseStress(jdk, files);
+            parseStress(languageVersion, files);
         } else {
             String ruleset = findOptionalStringValue(args, "--ruleset", "");
             if (debug) System.out.println("Checking directory " + srcDir);
@@ -103,11 +94,11 @@ public class Benchmark {
             RuleSetFactory factory = new RuleSetFactory();
             if (ruleset.length() > 0) {
                 SimpleRuleSetNameMapper mapper = new SimpleRuleSetNameMapper(ruleset);
-                stress(jdk, factory.createSingleRuleSet(mapper.getRuleSets()), files, results, debug);
+                stress(languageVersion, factory.createSingleRuleSet(mapper.getRuleSets()), files, results, debug);
             } else {
                 Iterator<RuleSet> i = factory.getRegisteredRuleSets();
                 while (i.hasNext()) {
-                    stress(jdk, i.next(), files, results, debug);
+                    stress(languageVersion, i.next(), files, results, debug);
                 }
             }
             System.out.println("=========================================================");
@@ -126,30 +117,18 @@ public class Benchmark {
         System.out.println("=========================================================");
     }
 
-    private static void parseStress(SourceType t, List<File> files) throws FileNotFoundException {
+    private static void parseStress(LanguageVersion languageVersion, List<File> files) throws FileNotFoundException {
         long start = System.currentTimeMillis();
         for (File file: files) {
-            TargetJDKVersion jdk;
-            if (t.equals(SourceType.JAVA_13)) {
-                jdk = new TargetJDK1_3();
-            } else if (t.equals(SourceType.JAVA_14)) {
-                jdk = new TargetJDK1_4();
-            } else if (t.equals(SourceType.JAVA_15)) {
-                jdk = new TargetJDK1_5();
-            } else if (t.equals(SourceType.JAVA_16)) {
-                jdk = new TargetJDK1_6();
-            } else {
-                jdk = new TargetJDK1_7();
-            }
-            JavaParser parser = jdk.createParser(new FileReader(file));
-            parser.CompilationUnit();
+            SourceTypeHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+            languageVersionHandler.getParser().parse(new FileReader(file));
         }
         long end = System.currentTimeMillis();
         long elapsed = end - start;
         System.out.println("That took " + elapsed + " ms");
     }
 
-    private static void stress(SourceType t, RuleSet ruleSet, List<File> files, Set<Result> results, boolean debug) throws PMDException, IOException {
+    private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<File> files, Set<Result> results, boolean debug) throws PMDException, IOException {
         Collection<Rule> rules = ruleSet.getRules();
         for (Rule rule: rules) {
             if (debug) System.out.println("Starting " + rule.getName());
@@ -158,7 +137,7 @@ public class Benchmark {
             working.addRule(rule);
 
             PMD p = new PMD();
-            p.setJavaVersion(t);
+            p.setDefaultLanguageVersion(languageVersion);
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
             for (File file: files) {

@@ -4,7 +4,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.TargetJDKVersion;
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.ast.SimpleNode;
@@ -32,8 +32,8 @@ public class ViewerModel {
      * commits source code to the model.
      * all existing source will be replaced
      */
-    public void commitSource(String source, TargetJDKVersion jdk) {
-        ASTCompilationUnit compilationUnit = jdk.createParser(new StringReader(source)).CompilationUnit();
+    public void commitSource(String source, LanguageVersion languageVersion) {
+        ASTCompilationUnit compilationUnit = (ASTCompilationUnit)languageVersion.getLanguageVersionHandler().getParser().parse(new StringReader(source));
         rootNode = compilationUnit;
         fireViewerModelEvent(new ViewerModelEvent(this, ViewerModelEvent.CODE_RECOMPILED));
     }

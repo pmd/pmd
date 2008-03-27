@@ -1,19 +1,16 @@
 package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.TargetJDK1_4;
 
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
-import java.io.StringReader;
-
 public class ParserCornersTest extends ParserTst {
 
     @Test
     public final void testGetFirstASTNameImageNull() throws Throwable {
-        new TargetJDK1_4().createParser(new StringReader(ABSTRACT_METHOD_LEVEL_CLASS_DECL)).CompilationUnit();
+        parseJava14(ABSTRACT_METHOD_LEVEL_CLASS_DECL);
     }
 
     private static final String ABSTRACT_METHOD_LEVEL_CLASS_DECL =

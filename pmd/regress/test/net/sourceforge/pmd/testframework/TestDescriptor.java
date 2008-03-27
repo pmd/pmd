@@ -5,8 +5,8 @@ package test.net.sourceforge.pmd.testframework;
 
 import java.util.Properties;
 
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.SourceType;
 
 /**
  * Stores the information required to run a complete test.
@@ -17,20 +17,20 @@ public class TestDescriptor {
     private String description;
     private int numberOfProblemsExpected;
     private String code;
-    private SourceType sourceType;
+    private LanguageVersion languageVersion;
     private boolean reinitializeRule = false;   //default
     private boolean isRegressionTest = true;
 
     public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule) {
-        this(code, description, numberOfProblemsExpected, rule, RuleTst.DEFAULT_SOURCE_TYPE);
+        this(code, description, numberOfProblemsExpected, rule, RuleTst.DEFAULT_LANGUAGE_VERSION);
     }
     
-    public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule, SourceType sourceType) {
+    public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule, LanguageVersion languageVersion) {
         this.rule = rule;
         this.code = code;
         this.description = description;
         this.numberOfProblemsExpected = numberOfProblemsExpected;
-        this.sourceType = sourceType;
+        this.languageVersion = languageVersion;
     }
 
     public void setProperties(Properties properties) {
@@ -45,8 +45,8 @@ public class TestDescriptor {
         return code;
     }
 
-    public SourceType getSourceType() {
-        return sourceType;
+    public LanguageVersion getLanguageVersion() {
+        return languageVersion;
     }
 
     public String getDescription() {

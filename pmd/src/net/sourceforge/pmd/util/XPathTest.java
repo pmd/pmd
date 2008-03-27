@@ -1,10 +1,17 @@
 package net.sourceforge.pmd.util;
 
-import net.sourceforge.pmd.*;
-import net.sourceforge.pmd.rules.XPathRule;
-
 import java.io.FileReader;
 import java.util.Iterator;
+
+import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.Language;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.rules.XPathRule;
 
 /**
  * To use this, do this:
@@ -43,7 +50,7 @@ public class XPathTest {
         ctx.setReport(report);
         ctx.setSourceCodeFilename(filename);
 
-        pmd.processFile(new FileReader(filename), new RuleSets(ruleSet), ctx, SourceType.JAVA_15);
+        pmd.processFile(new FileReader(filename), new RuleSets(ruleSet), ctx, Language.JAVA.getDefaultVersion());
 
         for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
             IRuleViolation rv = i.next();

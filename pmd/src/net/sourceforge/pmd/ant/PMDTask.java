@@ -3,8 +3,8 @@
  */
 package net.sourceforge.pmd.ant;
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -19,6 +19,8 @@ import java.util.logging.Level;
 
 import net.sourceforge.pmd.DataSource;
 import net.sourceforge.pmd.FileDataSource;
+import net.sourceforge.pmd.Language;
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -27,11 +29,10 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.ScopedLogHandlersManager;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
-import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.ScopedLogHandlersManager;
 import net.sourceforge.pmd.util.AntLogHandler;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 
@@ -198,26 +199,14 @@ public class PMDTask extends Task {
             throw new BuildException(e.getMessage());
         }
 
-        SourceType sourceType;
-        if (targetJDK.equals("1.3")) {
-            log("Targeting Java language version 1.3", Project.MSG_VERBOSE);
-            sourceType = SourceType.JAVA_13;
-        } else if (targetJDK.equals("1.5")) {
-            log("Targeting Java language version 1.5", Project.MSG_VERBOSE);
-            sourceType = SourceType.JAVA_15;
-        } else if (targetJDK.equals("1.6")) {
-            log("Targeting Java language version 1.6", Project.MSG_VERBOSE);
-            sourceType = SourceType.JAVA_16;
-        } else if (targetJDK.equals("1.7")) {
-            log("Targeting Java language version 1.7", Project.MSG_VERBOSE);
-            sourceType = SourceType.JAVA_17;
-        } else if(targetJDK.equals("jsp")){
-            log("Targeting JSP", Project.MSG_VERBOSE);
-            sourceType = SourceType.JSP;
-        } else {
-            log("Targeting Java language version 1.4", Project.MSG_VERBOSE);
-            sourceType = SourceType.JAVA_14;
+        List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
+        Language language = Language.JAVA;
+        LanguageVersion languageVersion = language.getVersion(targetJDK);
+        if (languageVersion == null) {
+        	languageVersion = language.getDefaultVersion();
         }
+        languageVersions.add(languageVersion);
+        log("Targeting " + languageVersion.getShortName(), Project.MSG_VERBOSE);
 
         if (excludeMarker != null) {
             log("Setting exclude marker to be " + excludeMarker, Project.MSG_VERBOSE);
@@ -261,7 +250,7 @@ public class PMDTask extends Task {
                 renderers.add(formatter.getRenderer());
             }
             try {
-                PMD.processFiles(cpus, ruleSetFactory, sourceType, files, ctx,
+                PMD.processFiles(cpus, ruleSetFactory, languageVersions, files, ctx,
                     renderers, ruleSetFiles,
                     shortFilenames, inputPath,
                     encoding, excludeMarker, classLoader);

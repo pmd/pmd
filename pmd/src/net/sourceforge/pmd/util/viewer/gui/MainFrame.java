@@ -1,23 +1,28 @@
 package net.sourceforge.pmd.util.viewer.gui;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JSplitPane;
+import javax.swing.SwingConstants;
+
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.TargetJDK1_3;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDK1_5;
-import net.sourceforge.pmd.TargetJDK1_6;
-import net.sourceforge.pmd.TargetJDK1_7;
-import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
-
-import javax.swing.*;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 
 /**
@@ -109,17 +114,17 @@ public class MainFrame
         setVisible(true);
     }
 
-    private TargetJDKVersion createJDKVersion() {
+    private LanguageVersion getLanguageVersion() {
         if (jdk14MenuItem.isSelected()) {
-            return new TargetJDK1_4();
+            return LanguageVersion.JAVA_14;
         } else if (jdk13MenuItem.isSelected()) {
-            return new TargetJDK1_3();
+            return LanguageVersion.JAVA_13;
         } else if (jdk16MenuItem.isSelected()) {
-            return new TargetJDK1_6();
+            return LanguageVersion.JAVA_16;
         } else if (jdk17MenuItem.isSelected()) {
-            return new TargetJDK1_7();
+            return LanguageVersion.JAVA_16;
         }
-        return new TargetJDK1_5();
+        return LanguageVersion.JAVA_15;
     }
 
     /**
@@ -131,7 +136,7 @@ public class MainFrame
         if (command.equals(COMPILE_ACTION)) {
             try {
                 t0 = System.currentTimeMillis();
-                model.commitSource(sourcePanel.getSourceCode(), createJDKVersion());
+                model.commitSource(sourcePanel.getSourceCode(), getLanguageVersion());
                 t1 = System.currentTimeMillis();
                 setStatus(NLS.nls("MAIN.FRAME.COMPILATION.TOOK") + " " + (t1 - t0) + " ms");
             } catch (ParseException exc) {

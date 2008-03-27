@@ -80,10 +80,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import net.sourceforge.pmd.Language;
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Node;
@@ -94,7 +95,6 @@ import net.sourceforge.pmd.jaxen.MatchesFunction;
 import net.sourceforge.pmd.jaxen.TypeOfFunction;
 import net.sourceforge.pmd.parsers.Parser;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
-import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker;
 import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.LocalScope;
@@ -114,33 +114,28 @@ import org.jaxen.XPath;
 public class Designer implements ClipboardOwner {
 
     private static final char LABEL_IMAGE_SEPARATOR = ':';
-
-    private static final Object[][] sourceTypeSets = new Object[][] { { "JDK 1.3", SourceType.JAVA_13 },
-	    { "JDK 1.4", SourceType.JAVA_14 }, { "JDK 1.5", SourceType.JAVA_15 }, { "JDK 1.6", SourceType.JAVA_16 },
-	    { "JDK 1.7", SourceType.JAVA_17 }, { "JSP", SourceType.JSP } };
-
-    private static final int defaultSourceTypeSelectionIndex = 2; // Java 1.5
+    private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Language.JAVA.getDefaultVersion().ordinal();
 
     private SimpleNode getCompilationUnit() {
-	SourceTypeHandler handler = SourceTypeHandlerBroker.getVisitorsFactoryForSourceType(getSourceType());
-	Parser parser = handler.getParser();
+	LanguageVersion languageVersion = getLanguageVersion();
+	SourceTypeHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+	Parser parser = languageVersionHandler.getParser();
 	SimpleNode simpleNode = (SimpleNode) parser.parse(new StringReader(codeEditorPane.getText()));
-	handler.getSymbolFacade().start(simpleNode);
-	handler.getTypeResolutionFacade(null).start(simpleNode);
+	languageVersionHandler.getSymbolFacade().start(simpleNode);
+	languageVersionHandler.getTypeResolutionFacade(null).start(simpleNode);
 	return simpleNode;
     }
 
-    private SourceType getSourceType() {
-
-	return (SourceType) sourceTypeSets[selectedSourceTypeIndex()][1];
+    private LanguageVersion getLanguageVersion() {
+	return LanguageVersion.values()[selectedLanguageVersionIndex()];
     }
 
-    private int selectedSourceTypeIndex() {
-	for (int i = 0; i < sourceTypeMenuItems.length; i++) {
-	    if (sourceTypeMenuItems[i].isSelected())
+    private int selectedLanguageVersionIndex() {
+	for (int i = 0; i < languageVersionMenuItems.length; i++) {
+	    if (languageVersionMenuItems[i].isSelected())
 		return i;
 	}
-	throw new RuntimeException("Initial default source type not specified");
+	throw new RuntimeException("Initial default language version not specified");
     }
 
     private class ExceptionNode implements TreeNode {
@@ -434,20 +429,20 @@ public class Designer implements ClipboardOwner {
 
 	    DFAGraphRule dfaGraphRule = new DFAGraphRule();
 	    RuleSet rs = new RuleSet();
-	    SourceType sourceType = getSourceType();
-	    if (!sourceType.equals(SourceType.JSP)) {
+	    LanguageVersion languageVersion = getLanguageVersion();
+	    if (languageVersion.getLanguage().equals(Language.JAVA)) {
 		rs.addRule(dfaGraphRule);
 	    }
 	    RuleContext ctx = new RuleContext();
 	    ctx.setSourceCodeFilename("[no filename]");
 	    StringReader reader = new StringReader(codeEditorPane.getText());
 	    PMD pmd = new PMD();
-	    pmd.setJavaVersion(sourceType);
+	    pmd.setDefaultLanguageVersion(languageVersion);
 
 	    try {
 		pmd.processFile(reader, rs, ctx);
-		//           } catch (PMDException pmde) {
-		//               loadTreeData(new ExceptionNode(pmde));
+		//	    } catch (PMDException pmde) {
+		//		loadTreeData(new ExceptionNode(pmde));
 	    } catch (Exception e) {
 		e.printStackTrace();
 	    }
@@ -634,7 +629,7 @@ public class Designer implements ClipboardOwner {
     private final TreeWidget symbolTableTreeWidget = new TreeWidget(new Object[0]);
     private final JFrame frame = new JFrame("PMD Rule Designer (v " + PMD.VERSION + ')');
     private final DFAPanel dfaPanel = new DFAPanel();
-    private final JRadioButtonMenuItem[] sourceTypeMenuItems = new JRadioButtonMenuItem[sourceTypeSets.length];
+    private final JRadioButtonMenuItem[] languageVersionMenuItems = new JRadioButtonMenuItem[LanguageVersion.values().length];
 
     public Designer(String[] args) {
 	if (args.length > 0) {
@@ -708,13 +703,14 @@ public class Designer implements ClipboardOwner {
 	JMenu menu = new JMenu("JDK");
 	ButtonGroup group = new ButtonGroup();
 
-	for (int i = 0; i < sourceTypeSets.length; i++) {
-	    JRadioButtonMenuItem button = new JRadioButtonMenuItem(sourceTypeSets[i][0].toString());
-	    sourceTypeMenuItems[i] = button;
+	for (int i = 0; i < LanguageVersion.values().length; i++) {
+	    LanguageVersion languageVersion = LanguageVersion.values()[i];
+	    JRadioButtonMenuItem button = new JRadioButtonMenuItem(languageVersion.getShortName());
+	    languageVersionMenuItems[i] = button;
 	    group.add(button);
 	    menu.add(button);
 	}
-	sourceTypeMenuItems[defaultSourceTypeSelectionIndex].setSelected(true);
+	languageVersionMenuItems[DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX].setSelected(true);
 	menuBar.add(menu);
 
 	JMenu actionsMenu = new JMenu("Actions");

@@ -193,7 +193,7 @@ public class RuleSetFactory {
 			RuleSet ruleSet = new RuleSet();
 			ruleSet.setFileName(fileName);
 			ruleSet.setName(ruleSetElement.getAttribute("name"));
-			ruleSet.setLanguage(Language.getByName(ruleSetElement.getAttribute("language")));
+			ruleSet.setLanguage(Language.findByTerseName(ruleSetElement.getAttribute("language")));
 
 			NodeList nodeList = ruleSetElement.getChildNodes();
 			for (int i = 0; i < nodeList.getLength(); i++) {
@@ -245,7 +245,7 @@ public class RuleSetFactory {
 	 */
 	private void parseRuleNode(RuleSet ruleSet, Node ruleNode, ClassLoader classLoader) throws ClassNotFoundException,
 			InstantiationException, IllegalAccessException, RuleSetNotFoundException {
-		Element ruleElement = (Element)ruleNode;
+		Element ruleElement = (Element) ruleNode;
 		String ref = ruleElement.getAttribute("ref");
 		if (ref.endsWith("xml")) {
 			parseRuleSetReferenceNode(ruleSet, ruleElement, ref);
@@ -275,7 +275,7 @@ public class RuleSetFactory {
 		for (int i = 0; i < excludeNodes.getLength(); i++) {
 			if ((excludeNodes.item(i).getNodeType() == Node.ELEMENT_NODE)
 					&& (excludeNodes.item(i).getNodeName().equals("exclude"))) {
-				Element excludeElement = (Element)excludeNodes.item(i);
+				Element excludeElement = (Element) excludeNodes.item(i);
 				ruleSetReference.addExclude(excludeElement.getAttribute("name"));
 			}
 		}
@@ -302,11 +302,11 @@ public class RuleSetFactory {
 	 */
 	private void parseSingleRuleNode(RuleSet ruleSet, Node ruleNode, ClassLoader classLoader)
 			throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-		Element ruleElement = (Element)ruleNode;
+		Element ruleElement = (Element) ruleNode;
 
 		String attribute = ruleElement.getAttribute("class");
 		Class<?> c = classLoader.loadClass(attribute);
-		Rule rule = (Rule)c.newInstance();
+		Rule rule = (Rule) c.newInstance();
 
 		rule.setName(ruleElement.getAttribute("name"));
 		String since = ruleElement.getAttribute("since");
@@ -338,7 +338,7 @@ public class RuleSetFactory {
 					Properties p = new Properties();
 					parsePropertiesNode(p, node);
 					for (Map.Entry<Object, Object> entry : p.entrySet()) {
-						rule.addProperty((String)entry.getKey(), (String)entry.getValue());
+						rule.addProperty((String) entry.getKey(), (String) entry.getValue());
 					}
 				}
 			}
@@ -362,7 +362,8 @@ public class RuleSetFactory {
 		RuleSetFactory ruleSetFactory = new RuleSetFactory();
 
 		ExternalRuleID externalRuleID = new ExternalRuleID(ref);
-		RuleSet externalRuleSet = ruleSetFactory.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID.getFilename()));
+		RuleSet externalRuleSet = ruleSetFactory.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID
+				.getFilename()));
 		Rule externalRule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
 		if (externalRule == null) {
 			throw new IllegalArgumentException("Unable to find rule " + externalRuleID.getRuleName()
@@ -377,7 +378,7 @@ public class RuleSetFactory {
 		ruleReference.setRuleSetReference(ruleSetReference);
 		ruleReference.setRule(externalRule);
 
-		Element ruleElement = (Element)ruleNode;
+		Element ruleElement = (Element) ruleNode;
 		if (ruleElement.hasAttribute("name")) {
 			ruleReference.setName(ruleElement.getAttribute("name"));
 		}
@@ -431,7 +432,7 @@ public class RuleSetFactory {
 	 * @param propertyNode Must be a property element node.
 	 */
 	private static void parsePropertyNode(Properties p, Node propertyNode) {
-		Element propertyElement = (Element)propertyNode;
+		Element propertyElement = (Element) propertyNode;
 		String name = propertyElement.getAttribute("name");
 		String value = propertyElement.getAttribute("value");
 		// TODO String description = propertyElement.getAttribute("description");

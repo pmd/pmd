@@ -3,17 +3,18 @@ package test.net.sourceforge.pmd.ast;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
+import java.util.Set;
+
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.ParserTst;
-
-import java.util.Iterator;
-import java.util.Set;
 
 public class ASTFormalParameterTest extends ParserTst {
 
@@ -22,7 +23,7 @@ public class ASTFormalParameterTest extends ParserTst {
         int nrOfVarArgs   = 0;
         int nrOfNoVarArgs = 0;
         
-        Set ops = getNodes(new TargetJDK1_5(), ASTFormalParameter.class, TEST1);
+        Set ops = getNodes(LanguageVersion.JAVA_15, ASTFormalParameter.class, TEST1);
         for (Iterator iter = ops.iterator(); iter.hasNext();) {
             ASTFormalParameter b = (ASTFormalParameter) iter.next();
             ASTVariableDeclaratorId variableDeclId = b.getFirstChildOfType(ASTVariableDeclaratorId.class);

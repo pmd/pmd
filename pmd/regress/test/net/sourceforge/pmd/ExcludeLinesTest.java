@@ -3,23 +3,22 @@
  
  import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.io.StringReader;
+
+import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.SourceTypeToRuleLanguageMapper;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.RuleTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
-
-import java.io.StringReader;
-
-import junit.framework.JUnit4TestAdapter;
 
  public class ExcludeLinesTest extends RuleTst {
      private Rule rule;
@@ -45,8 +44,8 @@ import junit.framework.JUnit4TestAdapter;
          ctx.setSourceCodeFilename("n/a");
          RuleSet rules = new RuleSet();
          rules.addRule(rule);
-         rules.setLanguage(SourceTypeToRuleLanguageMapper.getMappedLanguage(DEFAULT_SOURCE_TYPE));
-         p.processFile(new StringReader(TEST3), new RuleSets(rules), ctx, DEFAULT_SOURCE_TYPE);
+         rules.setLanguage(DEFAULT_LANGUAGE);
+         p.processFile(new StringReader(TEST3), new RuleSets(rules), ctx, DEFAULT_LANGUAGE_VERSION);
          assertTrue(r.isEmpty());
          assertEquals(r.getSuppressedRuleViolations().size(), 1);
      }

@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.Language;
 import net.sourceforge.pmd.MockRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -25,9 +26,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleReference;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.JavaParser;
 
 import org.junit.Test;
 
@@ -355,8 +354,8 @@ public class RuleSetTest {
 
     protected List makeCompilationUnits() throws Throwable {
         List<ASTCompilationUnit> RC = new ArrayList<ASTCompilationUnit>();
-        JavaParser parser = TargetJDKVersion.DEFAULT_JDK_VERSION.createParser(new StringReader(javaCode));
-        RC.add(parser.CompilationUnit());
+        ASTCompilationUnit cu = (ASTCompilationUnit)Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getParser().parse(new StringReader(javaCode));
+        RC.add(cu);
         return RC;
     }
 

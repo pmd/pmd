@@ -1,8 +1,7 @@
 package test.net.sourceforge.pmd.ast;
 
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDK1_5;
 import net.sourceforge.pmd.ast.ASTAnnotation;
 import net.sourceforge.pmd.ast.ParseException;
 
@@ -19,12 +18,12 @@ public class ASTAnnotationTest extends ParserTst {
 
     @Test(expected = ParseException.class)
     public void testAnnotationFailsWithJDK14() throws Throwable {
-        getNodes(new TargetJDK1_4(), ASTAnnotation.class, TEST1);
+        getNodes(LanguageVersion.JAVA_14, ASTAnnotation.class, TEST1);
     }
 
     @Test
     public void testAnnotationSucceedsWithJDK15() throws Throwable {
-        getNodes(new TargetJDK1_5(), ASTAnnotation.class, TEST1);
+        getNodes(LanguageVersion.JAVA_15, ASTAnnotation.class, TEST1);
     }
 
     private static final String TEST1 =

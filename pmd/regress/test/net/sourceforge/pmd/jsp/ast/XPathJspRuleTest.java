@@ -1,7 +1,11 @@
 package test.net.sourceforge.pmd.jsp.ast;
 
 import static org.junit.Assert.assertEquals;
+
+import java.io.StringReader;
+
 import net.sourceforge.pmd.Language;
+import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -9,14 +13,11 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.SourceType;
 import net.sourceforge.pmd.rules.XPathRule;
 
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.RuleTst;
-
-import java.io.StringReader;
 
 public class XPathJspRuleTest extends RuleTst {
 
@@ -41,7 +42,7 @@ public class XPathJspRuleTest extends RuleTst {
 
         PMD p = new PMD();
 
-        p.processFile(new StringReader(MATCH), new RuleSets(rules), ctx, SourceType.JSP);
+        p.processFile(new StringReader(MATCH), new RuleSets(rules), ctx, LanguageVersion.JSP);
 
         assertEquals("One violation expected!", 1, report.size());
 

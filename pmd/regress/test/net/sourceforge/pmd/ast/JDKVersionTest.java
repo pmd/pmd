@@ -1,178 +1,145 @@
 package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.TargetJDK1_3;
-import net.sourceforge.pmd.TargetJDK1_4;
-import net.sourceforge.pmd.TargetJDK1_5;
-import net.sourceforge.pmd.TargetJDKVersion;
-import net.sourceforge.pmd.ast.JavaParser;
 import net.sourceforge.pmd.ast.ParseException;
 
 import org.junit.Test;
 
-import java.io.StringReader;
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
-public class JDKVersionTest {
+public class JDKVersionTest extends ParserTst {
 
     // enum keyword/identifier
     @Test(expected = ParseException.class)
     public void testEnumAsKeywordShouldFailWith14() throws Throwable {
-        JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_ENUM));
-        p.CompilationUnit();
+        parseJava15(JDK14_ENUM);
     }
 
     @Test
     public void testEnumAsIdentifierShouldPassWith14() throws Throwable {
-        JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK14_ENUM));
-        p.CompilationUnit();
+        parseJava14(JDK14_ENUM);
     }
 
     @Test
     public void testEnumAsKeywordShouldPassWith15() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_ENUM));
-        p.CompilationUnit();
+        parseJava15(JDK15_ENUM);
     }
 
     @Test(expected = ParseException.class)
     public void testEnumAsIdentifierShouldFailWith15() throws Throwable {
-        TargetJDKVersion jdk = new TargetJDK1_5();
-        JavaParser p = jdk.createParser(new StringReader(JDK14_ENUM));
-        p.CompilationUnit();
+        parseJava15(JDK14_ENUM);
     }
     // enum keyword/identifier
 
     // assert keyword/identifier
     @Test
     public void testAssertAsKeywordVariantsSucceedWith1_4() {
-        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST1)).CompilationUnit();
-        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST2)).CompilationUnit();
-        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST3)).CompilationUnit();
-        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST4)).CompilationUnit();
+        parseJava14(ASSERT_TEST1);
+        parseJava14(ASSERT_TEST2);
+        parseJava14(ASSERT_TEST3);
+        parseJava14(ASSERT_TEST4);
     }
 
     @Test(expected = ParseException.class)
     public void testAssertAsVariableDeclIdentifierFailsWith1_4() {
-        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST5)).CompilationUnit();
+        parseJava14(ASSERT_TEST5);
     }
 
     @Test(expected = ParseException.class)
     public void testAssertAsMethodNameIdentifierFailsWith1_4() {
-        (new TargetJDK1_4()).createParser(new StringReader(ASSERT_TEST7)).CompilationUnit();
+        parseJava14(ASSERT_TEST7);
     }
 
     @Test
     public void testAssertAsIdentifierSucceedsWith1_3() {
-        JavaParser jp = (new TargetJDK1_3()).createParser(new StringReader(ASSERT_TEST5));
-        jp.CompilationUnit();
+        parseJava13(ASSERT_TEST5);
     }
 
     @Test(expected = ParseException.class)
     public void testAssertAsKeywordFailsWith1_3() {
-        JavaParser jp = (new TargetJDK1_3()).createParser(new StringReader(ASSERT_TEST6));
-        jp.CompilationUnit();
+        parseJava13(ASSERT_TEST6);
     }
     // assert keyword/identifier
 
     @Test
     public void testVarargsShouldPassWith15() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_VARARGS));
-        p.CompilationUnit();
+        parseJava15(JDK15_VARARGS);
     }
 
     @Test(expected = ParseException.class)
     public void testVarargsShouldFailWith14() throws Throwable {
-        JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_VARARGS));
-        p.CompilationUnit();
+        parseJava14(JDK15_VARARGS);
     }
 
     @Test
     public void testJDK15ForLoopSyntaxShouldPassWith15() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_FORLOOP));
-        p.CompilationUnit();
+        parseJava15(JDK15_FORLOOP);
     }
 
     @Test
     public void testJDK15ForLoopSyntaxWithModifiers() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_FORLOOP_WITH_MODIFIER));
-        p.CompilationUnit();
+        parseJava15(JDK15_FORLOOP_WITH_MODIFIER);
     }
 
     @Test(expected = ParseException.class)
     public void testJDK15ForLoopShouldFailWith14() throws Throwable {
-        JavaParser p = new TargetJDK1_4().createParser(new StringReader(JDK15_FORLOOP));
-        p.CompilationUnit();
+        parseJava14(JDK15_FORLOOP);
     }
 
     @Test
     public void testJDK15GenericsSyntaxShouldPassWith15() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(JDK15_GENERICS));
-        p.CompilationUnit();
+        parseJava15(JDK15_GENERICS);
     }
 
     @Test
     public void testVariousParserBugs() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(FIELDS_BUG));
-        p.CompilationUnit();
-        p = new TargetJDK1_5().createParser(new StringReader(GT_BUG));
-        p.CompilationUnit();
-        p = new TargetJDK1_5().createParser(new StringReader(ANNOTATIONS_BUG));
-        p.CompilationUnit();
-        p = new TargetJDK1_5().createParser(new StringReader(GENERIC_IN_FIELD));
-        p.CompilationUnit();
+        parseJava15(FIELDS_BUG);
+        parseJava15(GT_BUG);
+        parseJava15(ANNOTATIONS_BUG);
+        parseJava15(GENERIC_IN_FIELD);
     }
 
     @Test
     public void testNestedClassInMethodBug() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(INNER_BUG));
-        p.CompilationUnit();
-        p = new TargetJDK1_5().createParser(new StringReader(INNER_BUG2));
-        p.CompilationUnit();
+        parseJava15(INNER_BUG);
+        parseJava15(INNER_BUG2);
     }
 
     @Test
     public void testGenericsInMethodCall() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERIC_IN_METHOD_CALL));
-        p.CompilationUnit();
+        parseJava15(GENERIC_IN_METHOD_CALL);
     }
 
     @Test
     public void testGenericINAnnotation() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERIC_IN_ANNOTATION));
-        p.CompilationUnit();
+        parseJava15(GENERIC_IN_ANNOTATION);
     }
 
     @Test
     public void testGenericReturnType() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(GENERIC_RETURN_TYPE));
-        p.CompilationUnit();
+        parseJava15(GENERIC_RETURN_TYPE);
     }
 
     @Test
     public void testMultipleGenerics() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(FUNKY_GENERICS));
-        p.CompilationUnit();
-        p = new TargetJDK1_5().createParser(new StringReader(MULTIPLE_GENERICS));
-        p.CompilationUnit();
+        parseJava15(FUNKY_GENERICS);
+        parseJava15(MULTIPLE_GENERICS);
     }
 
     @Test
     public void testAnnotatedParams() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(ANNOTATED_PARAMS));
-        p.CompilationUnit();
+        parseJava15(ANNOTATED_PARAMS);
     }
 
     @Test
     public void testAnnotatedLocals() throws Throwable {
-        JavaParser p = new TargetJDK1_5().createParser(new StringReader(ANNOTATED_LOCALS));
-        p.CompilationUnit();
+        parseJava15(ANNOTATED_LOCALS);
     }
 
     @Test
     public void testAssertAsIdentifierSucceedsWith1_3_test2() {
-        JavaParser jp = (new TargetJDK1_3()).createParser(new StringReader(ASSERT_TEST5_a));
-        jp.CompilationUnit();
+        parseJava13(ASSERT_TEST5_a);
     }
-
 
     private static final String ANNOTATED_LOCALS =
             "public class Foo {" + PMD.EOL +

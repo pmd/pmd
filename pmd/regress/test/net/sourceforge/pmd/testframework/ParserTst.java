@@ -3,13 +3,6 @@
  */
 package test.net.sourceforge.pmd.testframework;
 
-import net.sourceforge.pmd.TargetJDKVersion;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.JavaParser;
-import net.sourceforge.pmd.ast.JavaParserVisitor;
-import net.sourceforge.pmd.dfa.DataFlowFacade;
-import net.sourceforge.pmd.symboltable.SymbolFacade;
-
 import java.io.StringReader;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -19,6 +12,13 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import net.sourceforge.pmd.Language;
+import net.sourceforge.pmd.LanguageVersion;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.JavaParserVisitor;
+import net.sourceforge.pmd.dfa.DataFlowFacade;
+import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 public abstract class ParserTst {
 
@@ -53,13 +53,12 @@ public abstract class ParserTst {
     }
 
     public <E> Set<E> getNodes(Class<E> clazz, String javaCode) throws Throwable {
-        return getNodes(TargetJDKVersion.DEFAULT_JDK_VERSION, clazz, javaCode);
+        return getNodes(Language.JAVA.getDefaultVersion(), clazz, javaCode);
     }
 
-    public <E> Set<E> getNodes(TargetJDKVersion jdk, Class<E> clazz, String javaCode) throws Throwable {
+    public <E> Set<E> getNodes(LanguageVersion languageVersion, Class<E> clazz, String javaCode) throws Throwable {
         Collector<E> coll = new Collector<E>(clazz);
-        JavaParser parser = jdk.createParser(new StringReader(javaCode));
-        ASTCompilationUnit cu = parser.CompilationUnit();
+        ASTCompilationUnit cu = (ASTCompilationUnit)languageVersion.getLanguageVersionHandler().getParser().parse(new StringReader(javaCode));
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);
         return (Set<E>) coll.getCollection();
@@ -67,8 +66,7 @@ public abstract class ParserTst {
 
     public <E> List<E> getOrderedNodes(Class<E> clazz, String javaCode) throws Throwable {
         Collector<E> coll = new Collector<E>(clazz, new ArrayList<E>());
-        JavaParser parser = TargetJDKVersion.DEFAULT_JDK_VERSION.createParser(new StringReader(javaCode));
-        ASTCompilationUnit cu = parser.CompilationUnit();
+        ASTCompilationUnit cu = (ASTCompilationUnit)Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getParser().parse(new StringReader(javaCode));
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, coll);
         jpv.visit(cu, null);
         SymbolFacade sf = new SymbolFacade();
@@ -79,12 +77,24 @@ public abstract class ParserTst {
     }
 
     public ASTCompilationUnit buildDFA(String javaCode) throws Throwable {
-        JavaParser parser = TargetJDKVersion.DEFAULT_JDK_VERSION.createParser(new StringReader(javaCode));
-        ASTCompilationUnit cu = parser.CompilationUnit();
+        ASTCompilationUnit cu = (ASTCompilationUnit)Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getParser().parse(new StringReader(javaCode));
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, new Collector<ASTCompilationUnit>(ASTCompilationUnit.class));
         jpv.visit(cu, null);
         new SymbolFacade().initializeWith(cu);
         new DataFlowFacade().initializeWith(cu);
         return cu;
+    }
+    
+    public ASTCompilationUnit parseJava13(String code) {
+        return parseJava(LanguageVersion.JAVA_13, code);
+    }
+    public ASTCompilationUnit parseJava14(String code) {
+        return parseJava(LanguageVersion.JAVA_14, code);
+    }
+    public ASTCompilationUnit parseJava15(String code) {
+        return parseJava(LanguageVersion.JAVA_15, code);
+    }
+    public ASTCompilationUnit parseJava(LanguageVersion languageVersion, String code) {
+        return (ASTCompilationUnit)languageVersion.getLanguageVersionHandler().getParser().parse(new StringReader(code));
     }
 }
