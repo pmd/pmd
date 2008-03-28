@@ -72,6 +72,10 @@ Rules to check PMD itself
     <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable"/>
     <!-- Unused code End-->
 
-    <rule ref="rulesets/migrating.xml"/>
+    <!-- Specifically reference via other referencing RuleSets to test Reference to Reference -->
+    <rule ref="rulesets/migrating_to_13.xml"/>
+    <rule ref="rulesets/migrating_to_14.xml"/>
+    <rule ref="rulesets/migrating_to_15.xml"/>
+    <rule ref="rulesets/migrating_to_junit4.xml"/>
 
 </ruleset>
