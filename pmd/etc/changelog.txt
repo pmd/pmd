@@ -52,6 +52,7 @@ Other changes:
 
 '41' and '42' shortcuts for rulesets added
 The default Java version processed by PMD is now uniformly Java 1.5.
+Fixed bug 1928009 - Error using migration ruleset in PMD 4.2
 
 March 25, 2008 - 4.2:
 
