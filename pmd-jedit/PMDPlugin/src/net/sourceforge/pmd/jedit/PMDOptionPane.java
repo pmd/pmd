@@ -1,11 +1,12 @@
 /*
- * User: tom
- * Date: Jul 8, 2002
- * Time: 4:29:19 PM
- */
+* User: tom
+* Date: Jul 8, 2002
+* Time: 4:29:19 PM
+*/
 package net.sourceforge.pmd.jedit;
 
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.jedit.checkboxtree.*;
 
 import org.gjt.sp.jedit.AbstractOptionPane;
 import org.gjt.sp.jedit.OptionPane;
@@ -16,212 +17,157 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.ListCellRenderer;
-import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
-public class PMDOptionPane extends AbstractOptionPane implements OptionPane
-{
+public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
 
-	public class CheckboxList extends JList
-	{
+    SelectedRules rules;
 
-		private class MyMouseAdapter extends MouseAdapter
-		{
-			public void mousePressed(MouseEvent e)
-			{
-				int index = locationToIndex(e.getPoint());
-				if (index != -1)
-				{
-					JCheckBox box = (JCheckBox) getModel().getElementAt(index);
-					box.setSelected(!box.isSelected());
-					repaint();
-				}
-			}
-		}
+    JTextArea exampleTextArea = new JTextArea( 15, 50 );
 
-		private class MyMouseMotionAdapter extends java.awt.event.MouseMotionAdapter
-		{
-			public void mouseMoved(MouseEvent e)
-			{
-				int index = locationToIndex(e.getPoint());
-				if (index != -1)
-				{
-					RuleCheckBox box = (RuleCheckBox) getModel().getElementAt(index);
-					// String example =
-					// rules.getRule(box).getExample();
-					List<String> examples = box.getRule().getExamples();
-					exampleTextArea.setText(StringList.join(examples, "\n---------\n"));
-					exampleTextArea.setCaretPosition(0);
-				}
-			}
-		}
+    private JCheckBox chkRunPMDOnSave, chkShowProgressBar, chkIgnoreLiterals, chkPrintRule;
 
-		public class CheckboxListCellRenderer implements ListCellRenderer
-		{
-			public Component getListCellRendererComponent(JList list, Object value,
-				int index, boolean isSelected, boolean cellHasFocus)
-			{
-				RuleCheckBox box = (RuleCheckBox) value;
-				box.setEnabled(isEnabled());
-				box.setFont(getFont());
-				box.setFocusPainted(false);
-				box.setBorderPainted(true);
-				box.setBorder(isSelected ? UIManager
-					.getBorder("List.focusCellHighlightBorder")
-					: new EmptyBorder(1, 1, 1, 1));
-				box.setToolTipText(box.getRule().getRuleSetName());
-				return box;
-			}
-		}
+    JTextField txtMinTileSize;
 
-		public CheckboxList(RuleCheckBox[] args)
-		{
-			super(args);
-			setCellRenderer(new CheckboxListCellRenderer());
-			addMouseListener(new MyMouseAdapter());
-			addMouseMotionListener(new MyMouseMotionAdapter());
-		}
+    JTextField txtCustomRules;
 
-	}
+    JComboBox comboRenderer;
 
-	SelectedRules rules;
+    JComboBox javaVersionBox;
 
-	JTextArea exampleTextArea = new JTextArea(10, 50);
+    CheckboxTree tree;
 
-	private JCheckBox chkRunPMDOnSave, chkShowProgressBar, chkIgnoreLiterals, chkPrintRule;
+    public PMDOptionPane() {
+        super( PMDJEditPlugin.NAME );
+        try {
+            rules = new SelectedRules();
+        }
+        catch ( RuleSetNotFoundException rsne ) {
+            rsne.printStackTrace();
+        }
+    }
 
-	JTextField txtMinTileSize;
+    public void _init() {
+        removeAll();
 
-	JTextField txtCustomRules;
+        setLayout( new FlowLayout( FlowLayout.LEADING ) );
 
-	JComboBox comboRenderer;
-	
-	JComboBox javaVersionBox;
+        JPanel rulesPanel = new JPanel( new BorderLayout() );
+        rulesPanel.add( new JLabel( "Please see http://pmd.sf.net/ for more information" ), BorderLayout.NORTH );
+        rulesPanel.setBorder( BorderFactory.createTitledBorder( "Rules" ) );
 
-	public PMDOptionPane()
-	{
-		super(PMDJEditPlugin.NAME);
-		try
-		{
-			rules = new SelectedRules();
-		}
-		catch (RuleSetNotFoundException rsne)
-		{
-			rsne.printStackTrace();
-		}
-	}
+        // use a checkbox tree for displaying the rules.  This lets the rules be
+        // grouped by ruleset, and makes it very easy to select an entire set of
+        // rules with a single click. The tree is only 2 levels
+        // deep, the first level is the ruleset level, the second level contains the
+        // individual rules.  Using the PROPAGATE_PRESERVING_UNCHECK checking mode
+        // means the ruleset will be checked if one or more of the rules it contains
+        // is checked.
+        tree = new CheckboxTree( rules.getRoot() );
+        tree.getCheckingModel().setCheckingMode( TreeCheckingModel.CheckingMode.PROPAGATE_PRESERVING_UNCHECK );
+        tree.setCheckingPaths( rules.getCheckingModel().getCheckingPaths() );
+        tree.setRootVisible( false );
+        tree.addMouseMotionListener( new MyMouseMotionAdapter() );
+        rulesPanel.add( new JScrollPane( tree ), BorderLayout.CENTER );
 
-	public void _init()
-	{
-		removeAll();
+        // Custom Rule Panel Definition.
+        JPanel pnlCustomRules = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
+        pnlCustomRules.add( new JLabel( "Path to custom rules.xml files(seperated by comma)" ) );
+        pnlCustomRules.add( ( txtCustomRules = new JTextField( jEdit.getProperty( PMDJEditPlugin.CUSTOM_RULES_PATH_KEY, "" ), 30 ) ) );
 
-		setLayout(new FlowLayout(FlowLayout.LEADING));
-		addComponent(new JLabel("Please see http://pmd.sf.net/ for more information"));
+        rulesPanel.add( pnlCustomRules, BorderLayout.SOUTH );
 
-		JPanel rulesPanel = new JPanel(new BorderLayout());
-		rulesPanel.setBorder(BorderFactory.createTitledBorder("Rules"));
-		JList list = new CheckboxList(rules.getAllBoxes());
-		list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		rulesPanel.add(new JScrollPane(list), BorderLayout.CENTER);
-		// Custom Rule Panel Defination.
-		JPanel pnlCustomRules = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		pnlCustomRules
-			.add(new JLabel("Path to custom rules.xml files(seperated by comma)"));
-		pnlCustomRules.add((txtCustomRules = new JTextField(jEdit.getProperty(
-			PMDJEditPlugin.CUSTOM_RULES_PATH_KEY, ""), 30)));
+        JPanel textPanel = new JPanel( new BorderLayout() );
+        textPanel.setBorder( BorderFactory.createTitledBorder( "Example" ) );
+        textPanel.add( new JScrollPane( exampleTextArea ), BorderLayout.CENTER );
+        javaVersionBox = new JComboBox( PMDJEditPlugin.sourceTypes );
 
-		rulesPanel.add(pnlCustomRules, BorderLayout.SOUTH);
+        chkRunPMDOnSave = new JCheckBox( "Run PMD on Save", jEdit.getBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE ) );
+        chkShowProgressBar = new JCheckBox( "Show PMD Progress Bar", jEdit.getBooleanProperty( PMDJEditPlugin.SHOW_PROGRESS ) );
+        chkIgnoreLiterals = new JCheckBox( "Ignore Literals & identifiers when detecting Duplicate Code", jEdit.getBooleanProperty( PMDJEditPlugin.IGNORE_LITERALS ) );
+        chkPrintRule = new JCheckBox( "Print Rulename in ErrorList", jEdit.getBooleanProperty( PMDJEditPlugin.PRINT_RULE ) );
 
-		JPanel textPanel = new JPanel();
-		textPanel.setBorder(BorderFactory.createTitledBorder("Example"));
-		textPanel.add(new JScrollPane(exampleTextArea));
-		javaVersionBox = new JComboBox(PMDJEditPlugin.sourceTypes);
-		
-		chkRunPMDOnSave = new JCheckBox("Run PMD on Save", jEdit
-			.getBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE));
-		chkShowProgressBar = new JCheckBox("Show PMD Progress Bar", jEdit
-			.getBooleanProperty(PMDJEditPlugin.SHOW_PROGRESS));
-		chkIgnoreLiterals = new JCheckBox(
-			"Ignore Literals & identifiers when detecting Duplicate Code", jEdit
-				.getBooleanProperty(PMDJEditPlugin.IGNORE_LITERALS));
-		chkPrintRule = new JCheckBox("Print Rulename in ErrorList", jEdit
-			.getBooleanProperty(PMDJEditPlugin.PRINT_RULE));
+        JPanel pnlSouth = new JPanel( new GridLayout( 0, 1 ) );
 
-		JPanel pnlSouth = new JPanel(new GridLayout(0, 1));
+        JPanel pnlTileSize = new JPanel();
+        ( ( FlowLayout ) pnlTileSize.getLayout() ).setAlignment( FlowLayout.LEFT );
+        JLabel lblMinTileSize = new JLabel( "Minimum Tile Size :" );
+        txtMinTileSize = new JTextField( jEdit.getProperty( PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY, "100" ), 5 );
+        pnlTileSize.add( lblMinTileSize );
+        pnlTileSize.add( txtMinTileSize );
 
-		JPanel pnlTileSize = new JPanel();
-		((FlowLayout) pnlTileSize.getLayout()).setAlignment(FlowLayout.LEFT);
-		JLabel lblMinTileSize = new JLabel("Minimum Tile Size :");
-		txtMinTileSize = new JTextField(jEdit.getProperty(
-			PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY, "100"), 5);
-		pnlTileSize.add(lblMinTileSize);
-		pnlTileSize.add(txtMinTileSize);
+        comboRenderer = new JComboBox( new String[] { "None", "Text", "Html", "XML", "CSV" } );
+        comboRenderer.setSelectedItem( jEdit.getProperty( PMDJEditPlugin.RENDERER ) );
+        JLabel lblRenderer = new JLabel( "Export Output as " );
 
-		comboRenderer = new JComboBox(new String[] { "None", "Text", "Html", "XML", "CSV" });
-		comboRenderer.setSelectedItem(jEdit.getProperty(PMDJEditPlugin.RENDERER));
-		JLabel lblRenderer = new JLabel("Export Output as ");
+        pnlTileSize.add( lblRenderer );
+        pnlTileSize.add( comboRenderer );
 
-		pnlTileSize.add(lblRenderer);
-		pnlTileSize.add(comboRenderer);
-		
-		
+        int stidx = jEdit.getIntegerProperty( PMDJEditPlugin.JAVA_VERSION_PROPERTY, 1 );
+        javaVersionBox.setSelectedIndex( stidx );
 
+        pnlTileSize.add( chkShowProgressBar );
 
-		int stidx = jEdit.getIntegerProperty(PMDJEditPlugin.JAVA_VERSION_PROPERTY, 1);
-		javaVersionBox.setSelectedIndex(stidx);
-		
-		pnlTileSize.add(chkShowProgressBar);
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout( new BorderLayout() );
 
-		JPanel mainPanel = new JPanel();
-		mainPanel.setLayout(new GridLayout(0, 1));
+        mainPanel.add( rulesPanel, BorderLayout.NORTH );
+        mainPanel.add( textPanel, BorderLayout.CENTER );
 
-		mainPanel.add(rulesPanel);
-		mainPanel.add(textPanel);
+        pnlSouth.add( javaVersionBox );
+        pnlSouth.add( chkRunPMDOnSave );
+        pnlSouth.add( chkIgnoreLiterals );
+        pnlSouth.add( chkPrintRule );
+        pnlSouth.add( pnlTileSize );
+        mainPanel.add( pnlSouth, BorderLayout.SOUTH );
+        addComponent( mainPanel );
+    }
 
-		pnlSouth.add(javaVersionBox);
-		pnlSouth.add(chkRunPMDOnSave);
-		pnlSouth.add(chkIgnoreLiterals);
-		pnlSouth.add(chkPrintRule);
-		pnlSouth.add(pnlTileSize);
-		mainPanel.add(pnlSouth);
-		addComponent(mainPanel);
-	}
+    public void _save() {
+        rules.save( tree.getCheckingModel() );
 
-	public void _save()
-	{
-		rules.save();
-		jEdit.setIntegerProperty(PMDJEditPlugin.JAVA_VERSION_PROPERTY,
-			javaVersionBox.getSelectedIndex());
-		jEdit.setIntegerProperty(PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,
-			(txtMinTileSize.getText().length() == 0) ? 100 : Integer
-				.parseInt(txtMinTileSize.getText()));
-		jEdit.setBooleanProperty(PMDJEditPlugin.RUN_PMD_ON_SAVE, 
-			(chkRunPMDOnSave.isSelected()));
-		jEdit.setBooleanProperty(PMDJEditPlugin.IGNORE_LITERALS, 
-			(chkIgnoreLiterals.isSelected()));
-		jEdit.setProperty(PMDJEditPlugin.RENDERER, (String) comboRenderer.getSelectedItem());
-		jEdit.setBooleanProperty(PMDJEditPlugin.SHOW_PROGRESS, chkShowProgressBar
-			.isSelected());
-		jEdit.setBooleanProperty(PMDJEditPlugin.PRINT_RULE, chkPrintRule.isSelected());
+        jEdit.setIntegerProperty( PMDJEditPlugin.JAVA_VERSION_PROPERTY,
+                javaVersionBox.getSelectedIndex() );
+        jEdit.setIntegerProperty( PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,
+                ( txtMinTileSize.getText().length() == 0 ) ? 100 : Integer
+                .parseInt( txtMinTileSize.getText() ) );
+        jEdit.setBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE,
+                ( chkRunPMDOnSave.isSelected() ) );
+        jEdit.setBooleanProperty( PMDJEditPlugin.IGNORE_LITERALS,
+                ( chkIgnoreLiterals.isSelected() ) );
+        jEdit.setProperty( PMDJEditPlugin.RENDERER, ( String ) comboRenderer.getSelectedItem() );
+        jEdit.setBooleanProperty( PMDJEditPlugin.SHOW_PROGRESS, chkShowProgressBar
+                .isSelected() );
+        jEdit.setBooleanProperty( PMDJEditPlugin.PRINT_RULE, chkPrintRule.isSelected() );
 
-		if (txtCustomRules != null)
-		{
-			jEdit.setProperty(PMDJEditPlugin.CUSTOM_RULES_PATH_KEY, txtCustomRules
-				.getText());
-		}
-	}
+        if ( txtCustomRules != null ) {
+            jEdit.setProperty( PMDJEditPlugin.CUSTOM_RULES_PATH_KEY, txtCustomRules
+                    .getText() );
+        }
+    }
+
+    private class MyMouseMotionAdapter extends java.awt.event.MouseMotionAdapter {
+        public void mouseMoved( MouseEvent e ) {
+            TreePath path = tree.getPathForLocation( e.getX(), e.getY() );
+            DefaultMutableTreeNode node = ( DefaultMutableTreeNode ) path.getLastPathComponent();
+            if ( node != null ) {
+                Object userObject = node.getUserObject();
+                if ( userObject instanceof RuleNode ) {
+                    List<String> examples = ( ( ( RuleNode ) userObject ).getRule() ).getExamples();
+                    exampleTextArea.setText( StringList.join( examples, "\n---------\n" ) );
+                    exampleTextArea.setCaretPosition( 0 );
+                }
+            }
+        }
+    }
 }
