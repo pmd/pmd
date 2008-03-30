@@ -49,13 +49,6 @@ public class ASTAttribute extends SimpleNode {
                 : name);
     }
 
-    /* (non-Javadoc)
-     * @see com.applicationengineers.pmd4jsp.ast.SimpleNode#toString(java.lang.String)
-     */
-    public String toString(String prefix) {
-        return super.toString(prefix) + " name=[" + name + "]";
-    }
-
 /* END CUSTOM CODE */
 
 

@@ -106,19 +106,6 @@ public class ASTFieldDeclaration extends SimpleJavaAccessTypeNode implements Dim
         return ((ASTVariableDeclaratorId) (jjtGetChild(1).jjtGetChild(0))).getArrayDepth();
     }
 
-    public void dump(String prefix) {
-        String out = collectDumpedModifiers(prefix);
-        if (isArray()) {
-            out += "(array";
-            for (int i = 0; i < getArrayDepth(); i++) {
-                out += "[";
-            }
-            out += ")";
-        }
-        System.out.println(out);
-        dumpChildren(prefix);
-    }
-
     /**
      * Gets the variable name of this field.
      * This method searches the first VariableDeclartorId node and returns it's image or <code>null</code> if the child node is not found.

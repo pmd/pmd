@@ -48,17 +48,6 @@ public class ASTDoctypeExternalId extends SimpleNode {
     public void setPublicId(String publicId) {
         this.publicId = publicId;
     }
-
-    /* (non-Javadoc)
-     * @see com.applicationengineers.pmd4jsp.ast.SimpleNode#toString(java.lang.String)
-     */
-    public String toString(String prefix) {
-        return
-                super.toString(prefix)
-                + " uri=[" + uri + "] "
-                + (null == publicId ? "" : "publicId=[" + publicId + "] ");
-    }
-	
 /* END CUSTOM CODE */
 
 

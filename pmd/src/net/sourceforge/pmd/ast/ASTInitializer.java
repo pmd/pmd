@@ -28,10 +28,4 @@ public class ASTInitializer extends SimpleJavaNode {
     public void setStatic() {
         isStatic = true;
     }
-
-    public void dump(String prefix) {
-        System.out.println(toString(prefix) + ":(" + (isStatic ? "static" : "nonstatic") + ")");
-        dumpChildren(prefix);
-    }
-
 }

@@ -36,10 +36,4 @@ public class ASTConstructorDeclaration extends AccessNode {
     public void setContainsComment() {
         this.containsComment = true;
     }
-
-    public void dump(String prefix) {
-        System.out.println(collectDumpedModifiers(prefix));
-        dumpChildren(prefix);
-    }
-
 }

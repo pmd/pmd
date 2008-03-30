@@ -69,13 +69,6 @@ public abstract class SimpleNode implements Node {
         return beginLine;
     }
 
-    // A label is a more visually useful image, e.g.
-    // int[[ for a primary suffix that's a 2D array of ints
-    // this is used only by the Designer to show nodes more helpfully
-    public String getLabel() {
-        return null;        
-    }
-
     public boolean hasImageEqualTo(String arg) {
     	return image != null && image.equals(arg);
     }
@@ -228,10 +221,6 @@ public abstract class SimpleNode implements Node {
         return (children == null) ? 0 : children.length;
     }
 
-    public String toString(String prefix) {
-        return prefix + toString();
-    }
-
     public Document asXml() {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -263,25 +252,6 @@ public abstract class SimpleNode implements Node {
             child.appendElement(element);
         }
     }
-
-    /* Override this method if you want to customize how the node dumps
-       out its children. */
-    public void dump(String prefix) {
-        System.out.println(toString(prefix) + (image == null ? "" : ":" + image));
-        dumpChildren(prefix);
-    }
-
-    protected void dumpChildren(String prefix) {
-        if (children != null) {
-            for (int i = 0; i < children.length; ++i) {
-                SimpleNode n = (SimpleNode) children[i];
-                if (n != null) {
-                    n.dump(prefix + " ");
-                }
-            }
-        }
-    }
-
 
     /**
      * Traverses down the tree to find the first child instance of type childType

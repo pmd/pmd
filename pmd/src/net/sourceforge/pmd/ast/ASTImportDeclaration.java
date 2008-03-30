@@ -52,16 +52,6 @@ public class ASTImportDeclaration extends SimpleJavaTypeNode {
         return importName.substring(0, lastDot);
     }
 
-
-    public void dump(String prefix) {
-        String out = "";
-        if (isStatic()) {
-            out += "(static)";
-        }
-        System.out.println(toString(prefix) + out);
-        dumpChildren(prefix);
-    }
-
     /**
      * Accept the visitor. *
      */

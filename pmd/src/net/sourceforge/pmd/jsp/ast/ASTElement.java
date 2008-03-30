@@ -72,13 +72,6 @@ public class ASTElement extends SimpleNode {
     public void setEmpty(boolean empty) {
         this.empty = empty;
     }
-
-    /* (non-Javadoc)
-     * @see com.applicationengineers.pmd4jsp.ast.SimpleNode#toString(java.lang.String)
-     */
-    public String toString(String prefix) {
-        return super.toString(prefix) + " name=[" + name + "] ";
-    }
 /* END CUSTOM CODE */
 
 

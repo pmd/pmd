@@ -73,9 +73,4 @@ public class ASTFormalParameter extends AccessNode implements Dimensionable, Can
         return getDecl().getArrayDepth();
     }
 
-    public void dump(String prefix) {
-        System.out.println(collectDumpedModifiers(prefix));
-        dumpChildren(prefix);
-    }
-
 }

@@ -167,42 +167,4 @@ public class SimpleJavaAccessNode extends SimpleJavaNode implements AccessNodeIn
 	public boolean isPackagePrivate() {
 		return !isPrivate() && !isPublic() && !isProtected();
 	}
-
-	public String collectDumpedModifiers(String prefix) {
-		String out = toString(prefix) + ":";
-		if (isPackagePrivate()) {
-			out += "(package private)";
-		}
-		if (isPrivate()) {
-			out += "(private)";
-		}
-		if (isPublic()) {
-			out += "(public)";
-		}
-		if (isProtected()) {
-			out += "(protected)";
-		}
-		if (isAbstract()) {
-			out += "(abstract)";
-		}
-		if (isStatic()) {
-			out += "(static)";
-		}
-		if (isFinal()) {
-			out += "(final)";
-		}
-		if (isSynchronized()) {
-			out += "(synchronized)";
-		}
-		if (isNative()) {
-			out += "(native)";
-		}
-		if (isStrictfp()) {
-			out += "(strict)";
-		}
-		if (isTransient()) {
-			out += "(transient)";
-		}
-		return out;
-	}
 }

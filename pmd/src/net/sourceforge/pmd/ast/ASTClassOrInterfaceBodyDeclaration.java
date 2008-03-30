@@ -41,11 +41,4 @@ public class ASTClassOrInterfaceBodyDeclaration extends SimpleJavaNode implement
     public boolean isEnumChild() {
         return jjtGetParent().jjtGetParent() instanceof ASTEnumConstant;
     }
-
-    public void dump(String prefix) {
-        String isAnonyString = isAnonymousInnerClass() ? ": (anonymous inner class)" : "";
-        System.out.println(toString(prefix) + isAnonyString);
-        dumpChildren(prefix);
-    }
-
 }

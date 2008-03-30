@@ -1,6 +1,10 @@
 package net.sourceforge.pmd.sourcetypehandlers;
 
+import java.io.Writer;
+
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.DumpFacade;
+import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.dfa.DataFlowFacade;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 import net.sourceforge.pmd.typeresolution.TypeResolutionFacade;
@@ -36,6 +40,12 @@ public abstract class JavaTypeHandler implements SourceTypeHandler {
             }
         };
     }
-    
-    
+
+    public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
+        return new VisitorStarter() {
+            public void start(Object rootNode) {
+                new DumpFacade().initializeWith(writer, prefix, recurse, (SimpleJavaNode)rootNode);
+            }
+        };
+    }
 }

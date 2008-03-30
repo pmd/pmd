@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.sourcetypehandlers;
 
+import java.io.Writer;
+
 import net.sourceforge.pmd.parsers.Parser;
 
 /**
@@ -36,10 +38,18 @@ public interface SourceTypeHandler {
     VisitorStarter getSymbolFacade();
     
     /**
-     * Get the getTypeResolutionFacade.
+     * Get the TypeResolutionFacade.
      *
      * @param classLoader A ClassLoader to use for resolving Types.
      * @return VisitorStarter 
      */
     VisitorStarter getTypeResolutionFacade(ClassLoader classLoader);
+
+    /**
+     * Get the DumpFacade.
+     *
+     * @param writer The writer to dump to.
+     * @return VisitorStarter 
+     */
+    VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse); 
 }

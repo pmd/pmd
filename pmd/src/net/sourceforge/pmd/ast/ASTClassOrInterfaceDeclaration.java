@@ -31,11 +31,4 @@ public class ASTClassOrInterfaceDeclaration extends SimpleJavaAccessTypeNode {
     public void setInterface() {
         this.isInterface = true;
     }
-
-    public void dump(String prefix) {
-        String interfaceStr = isInterface ? "interface" : "class";
-        String innerStr = isNested() ? "(nested)" : "";
-        System.out.println(toString(prefix) + "(" + getImage() + ")(" + interfaceStr + ")" + innerStr);
-        dumpChildren(prefix);
-    }
 }

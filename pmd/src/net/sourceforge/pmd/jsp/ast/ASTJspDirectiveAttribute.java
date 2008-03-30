@@ -22,13 +22,6 @@ public class ASTJspDirectiveAttribute extends SimpleNode {
         this.name = name;
     }
 
-    /* (non-Javadoc)
-     * @see com.applicationengineers.pmd4jsp.ast.SimpleNode#toString(java.lang.String)
-     */
-    public String toString(String prefix) {
-        return super.toString(prefix) + " name=[" + name + "] value=[" + value + "]";
-    }
-
     /**
      * @return Returns the value.
      */

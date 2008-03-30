@@ -113,12 +113,10 @@ import org.jaxen.XPath;
 
 public class Designer implements ClipboardOwner {
 
-    private static final char LABEL_IMAGE_SEPARATOR = ':';
     private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Language.JAVA.getDefaultVersion().ordinal();
 
     private SimpleNode getCompilationUnit() {
-	LanguageVersion languageVersion = getLanguageVersion();
-	SourceTypeHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+	SourceTypeHandler languageVersionHandler = getLanguageVersionHandler();
 	Parser parser = languageVersionHandler.getParser();
 	SimpleNode simpleNode = (SimpleNode) parser.parse(new StringReader(codeEditorPane.getText()));
 	languageVersionHandler.getSymbolFacade().start(simpleNode);
@@ -136,6 +134,11 @@ public class Designer implements ClipboardOwner {
 		return i;
 	}
 	throw new RuntimeException("Initial default language version not specified");
+    }
+    
+    private SourceTypeHandler getLanguageVersionHandler() {
+	LanguageVersion languageVersion = getLanguageVersion();
+	return languageVersion.getLanguageVersionHandler();
     }
 
     private class ExceptionNode implements TreeNode {
@@ -289,14 +292,10 @@ public class Designer implements ClipboardOwner {
 
 	public String label() {
 	    if (node instanceof SimpleNode) {
-		SimpleNode sn = (SimpleNode) node;
-		if (sn.getLabel() != null) {
-		    return node.toString() + LABEL_IMAGE_SEPARATOR + sn.getLabel();
-		}
-		if (sn.getImage() == null) {
-		    return node.toString();
-		}
-		return node.toString() + LABEL_IMAGE_SEPARATOR + sn.getImage();
+		SourceTypeHandler languageVersionHandler = getLanguageVersionHandler();
+		StringWriter writer = new StringWriter();
+		languageVersionHandler.getDumpFacade(writer, "", false).start(node);
+		return writer.toString();
 	    }
 	    return node.toString();
 	}
@@ -430,11 +429,12 @@ public class Designer implements ClipboardOwner {
 	    DFAGraphRule dfaGraphRule = new DFAGraphRule();
 	    RuleSet rs = new RuleSet();
 	    LanguageVersion languageVersion = getLanguageVersion();
+	    rs.setLanguage(languageVersion.getLanguage());
 	    if (languageVersion.getLanguage().equals(Language.JAVA)) {
 		rs.addRule(dfaGraphRule);
 	    }
 	    RuleContext ctx = new RuleContext();
-	    ctx.setSourceCodeFilename("[no filename]");
+	    ctx.setSourceCodeFilename("[no filename]." + languageVersion.getLanguage().getExtensions().get(0));
 	    StringReader reader = new StringReader(codeEditorPane.getText());
 	    PMD pmd = new PMD();
 	    pmd.setDefaultLanguageVersion(languageVersion);

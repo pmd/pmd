@@ -61,22 +61,6 @@ public class ASTLocalVariableDeclaration extends AccessNode implements Dimension
     private int checkDecl() {
         return getDecl().getArrayDepth();
     }
-
-    public void dump(String prefix) {
-        String out = "";
-        if (isArray()) {
-            out += "(array";
-            for (int i = 0; i < getArrayDepth(); i++) {
-                out += "[";
-            }
-            out += ")";
-        }
-        if (isFinal()) {
-            out += "(final)";
-        }
-        System.out.println(toString(prefix) + out);
-        dumpChildren(prefix);
-    }
     
     /**
      * Gets the variable name of this field.
