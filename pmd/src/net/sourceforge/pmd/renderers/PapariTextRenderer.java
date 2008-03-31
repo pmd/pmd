@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 
@@ -88,10 +88,10 @@ public class PapariTextRenderer extends AbstractRenderer {
         int numberOfErrors = 0;
         int numberOfWarnings = 0;
 
-        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
+        for (Iterator<RuleViolation> i = report.iterator(); i.hasNext();) {
             buf.setLength(0);
             numberOfWarnings++;
-            IRuleViolation rv = i.next();
+            RuleViolation rv = i.next();
             if (!rv.getFilename().equals(lastFile)) {
                 lastFile = rv.getFilename();
                 buf.append(this.yellowBold + "*" + this.colorReset + " file: " + this.whiteBold + this.getRelativePath(lastFile) + this.colorReset + PMD.EOL);

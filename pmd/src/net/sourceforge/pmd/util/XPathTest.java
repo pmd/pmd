@@ -3,7 +3,7 @@ package net.sourceforge.pmd.util;
 import java.io.FileReader;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Language;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -52,8 +52,8 @@ public class XPathTest {
 
         pmd.processFile(new FileReader(filename), new RuleSets(ruleSet), ctx, Language.JAVA.getDefaultVersion());
 
-        for (Iterator<IRuleViolation> i = report.iterator(); i.hasNext();) {
-            IRuleViolation rv = i.next();
+        for (Iterator<RuleViolation> i = report.iterator(); i.hasNext();) {
+            RuleViolation rv = i.next();
             String res = "Match at line " + rv.getBeginLine() + " column " + rv.getBeginColumn();
             if (rv.getPackageName() != null && !rv.getPackageName().equals("")) {
                 res += "; package name '" + rv.getPackageName() + "'";

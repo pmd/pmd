@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.util.StringUtil;
@@ -52,9 +52,9 @@ public class HTMLRenderer extends OnTheFlyRenderer {
         writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
     }
 
-    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+    public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
-        glomIRuleViolations(writer, violations);
+        glomRuleViolations(writer, violations);
     }
 
     public void end() throws IOException {
@@ -67,10 +67,10 @@ public class HTMLRenderer extends OnTheFlyRenderer {
         writer.write("</body></html>");
     }
 
-    private void glomIRuleViolations(Writer writer, Iterator<IRuleViolation> violations) throws IOException {
+    private void glomRuleViolations(Writer writer, Iterator<RuleViolation> violations) throws IOException {
         StringBuffer buf = new StringBuffer(500);
         while (violations.hasNext()) {
-            IRuleViolation rv = violations.next();
+            RuleViolation rv = violations.next();
             buf.setLength(0);
             buf.append("<tr");
             if (colorize) {

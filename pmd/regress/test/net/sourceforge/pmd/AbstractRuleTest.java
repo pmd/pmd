@@ -6,7 +6,12 @@ package test.net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.JavaRuleViolation;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
@@ -17,9 +22,6 @@ import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 public class AbstractRuleTest {
 	
     private static class MyRule extends AbstractRule {
@@ -68,7 +70,7 @@ public class AbstractRuleTest {
         s.testingOnly__setBeginColumn(5);
         s.testingOnly__setBeginLine(5);
         s.setScope(new SourceFileScope("foo"));
-        RuleViolation rv = new RuleViolation(r, ctx, s);
+        RuleViolation rv = new JavaRuleViolation(r, ctx, s);
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -85,7 +87,7 @@ public class AbstractRuleTest {
         s.testingOnly__setBeginColumn(5);
         s.testingOnly__setBeginLine(5);
         s.setScope(new SourceFileScope("foo"));
-        RuleViolation rv = new RuleViolation(r, ctx, s, "specificdescription");
+        RuleViolation rv = new JavaRuleViolation(r, ctx, s, "specificdescription");
         assertEquals("Line number mismatch!", 5, rv.getBeginLine());
         assertEquals("Filename mismatch!", "filename", rv.getFilename());
         assertEquals("Rule object mismatch!", r, rv.getRule());
@@ -105,7 +107,7 @@ public class AbstractRuleTest {
         n.testingOnly__setBeginColumn(5);
         n.testingOnly__setBeginLine(5);
         n.setScope(new SourceFileScope("foo"));
-        RuleViolation rv = new RuleViolation(r, ctx, n, "specificdescription");
+        RuleViolation rv = new JavaRuleViolation(r, ctx, n, "specificdescription");
         ctx.getReport().addRuleViolation(rv);
         assertTrue(ctx.getReport().isEmpty());
     }

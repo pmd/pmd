@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 
@@ -21,7 +21,7 @@ public class VBHTMLRenderer extends OnTheFlyRenderer {
         getWriter().write(header());      
     }
 
-    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+    public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         if (!violations.hasNext()) {
             return;
         }
@@ -34,7 +34,7 @@ public class VBHTMLRenderer extends OnTheFlyRenderer {
         boolean colorize = false;
         while (violations.hasNext()) {
             sb.setLength(0);
-            IRuleViolation rv = violations.next();
+            RuleViolation rv = violations.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {
                     sb.append("</table></br>");

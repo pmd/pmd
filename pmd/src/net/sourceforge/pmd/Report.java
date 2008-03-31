@@ -8,6 +8,7 @@ import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.NumericConstants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -75,11 +76,11 @@ public class Report {
     }
 
     public static class SuppressedViolation {
-        private final IRuleViolation rv;
+        private final RuleViolation rv;
         private final boolean isNOPMD;
         private final String userMessage;
 
-        public SuppressedViolation(IRuleViolation rv, boolean isNOPMD, String userMessage) {
+        public SuppressedViolation(RuleViolation rv, boolean isNOPMD, String userMessage) {
             this.isNOPMD = isNOPMD;
             this.rv = rv;
             this.userMessage = userMessage;
@@ -93,7 +94,7 @@ public class Report {
             return !this.isNOPMD;
         }
 
-        public IRuleViolation getRuleViolation() {
+        public RuleViolation getRuleViolation() {
             return this.rv;
         }
 
@@ -102,17 +103,15 @@ public class Report {
         }
     }
 
-    private static final RuleViolation.RuleViolationComparator COMPARATOR = new RuleViolation.RuleViolationComparator();
-
     /*
      * The idea is to store the violations in a tree instead of a list, to do
      * better and faster sort and filter mechanism and to visualize the result
-     * als tree. (ide plugins).
-     * */
+     * as tree. (ide plugins).
+     */
     private final ReportTree violationTree = new ReportTree();
 
     // Note that this and the above data structure are both being maintained for a bit
-    private final Set<IRuleViolation> violations = new TreeSet<IRuleViolation>(COMPARATOR);
+    private final List<RuleViolation> violations = new ArrayList<RuleViolation>();
     private final Set<Metric> metrics = new HashSet<Metric>();
     private final List<ReportListener> listeners = new ArrayList<ReportListener>();
     private final List<ProcessingError> errors = new ArrayList<ProcessingError>();
@@ -128,8 +127,8 @@ public class Report {
 
     public Map<String, Integer> getCountSummary() {
         Map<String, Integer> summary = new HashMap<String, Integer>();
-        for (Iterator<IRuleViolation> iter = violationTree.iterator(); iter.hasNext();) {
-            IRuleViolation rv = iter.next();
+        for (Iterator<RuleViolation> iter = violationTree.iterator(); iter.hasNext();) {
+            RuleViolation rv = iter.next();
             String key = "";
             if (rv.getPackageName() != null && rv.getPackageName().length() != 0) {
                 key = rv.getPackageName() + '.' + rv.getClassName();
@@ -154,7 +153,7 @@ public class Report {
      */
     public Map<String, Integer> getSummary() {
         Map<String, Integer> summary = new HashMap<String, Integer>();
-        for (IRuleViolation rv: violations) {
+        for (RuleViolation rv: violations) {
             String name = rv.getRule().getName();
             if (!summary.containsKey(name)) {
                 summary.put(name, NumericConstants.ZERO);
@@ -173,7 +172,7 @@ public class Report {
         return suppressedRuleViolations;
     }
 
-    public void addRuleViolation(IRuleViolation violation) {
+    public void addRuleViolation(RuleViolation violation) {
 
         // NOPMD excluder
         int line = violation.getBeginLine();
@@ -188,7 +187,8 @@ public class Report {
         }
 
 
-        violations.add(violation);
+        int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
+        violations.add(index < 0 ? -index - 1 : index, violation);
         violationTree.addRuleViolation(violation);
         for (ReportListener listener: listeners) {
             listener.ruleViolationAdded(violation);
@@ -215,10 +215,11 @@ public class Report {
         while (m.hasNext()) {
             addMetric(m.next());
         }
-        Iterator<IRuleViolation> v = r.iterator();
+        Iterator<RuleViolation> v = r.iterator();
         while (v.hasNext()) {
-            IRuleViolation violation = v.next();
-            violations.add(violation);
+            RuleViolation violation = v.next();
+            int index = Collections.binarySearch(violations, violation, RuleViolationComparator.INSTANCE);
+            violations.add(index < 0 ? -index - 1 : index, violation);
             violationTree.addRuleViolation(violation);
         }
         Iterator<SuppressedViolation> s = r.getSuppressedRuleViolations().iterator();
@@ -243,11 +244,11 @@ public class Report {
         return !violationTree.iterator().hasNext();
     }
 
-    public Iterator<IRuleViolation> treeIterator() {
+    public Iterator<RuleViolation> treeIterator() {
         return violationTree.iterator();
     }
 
-    public Iterator<IRuleViolation> iterator() {
+    public Iterator<RuleViolation> iterator() {
         return violations.iterator();
     }
 

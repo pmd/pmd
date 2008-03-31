@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.dfa.report;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
 
 import java.io.BufferedWriter;
@@ -42,7 +42,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
     /**
      * Generates a html table with violation information.
      */
-    private String displayRuleViolation(IRuleViolation vio) {
+    private String displayRuleViolation(RuleViolation vio) {
  
     	StringBuffer sb = new StringBuffer(200);
         sb.append("<table border=\"0\">");
@@ -99,7 +99,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
         if (node instanceof ViolationNode) {
             ViolationNode vnode = (ViolationNode) node;
             vnode.getParent().addNumberOfViolation(1);
-            IRuleViolation vio = vnode.getRuleViolation();
+            RuleViolation vio = vnode.getRuleViolation();
             classBuf.append("<tr>" +
                     " <td>" + vio.getMethodName() + "</td>" +
                     " <td>" + this.displayRuleViolation(vio) + "</td>" +

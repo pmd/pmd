@@ -11,7 +11,7 @@ import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.JavaRuleViolation;
 import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.MockRule;
 import net.sourceforge.pmd.PMD;
@@ -60,7 +60,7 @@ public class ReportTest extends RuleTst implements ReportListener {
     private boolean violationSemaphore;
     private boolean metricSemaphore;
 
-    public void ruleViolationAdded(IRuleViolation ruleViolation) {
+    public void ruleViolationAdded(RuleViolation ruleViolation) {
         violationSemaphore = true;
     }
 
@@ -136,10 +136,10 @@ public class ReportTest extends RuleTst implements ReportListener {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo");
         SimpleNode s = getNode(10, 5, ctx.getSourceCodeFilename());
-        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s));
+        r.addRuleViolation(new JavaRuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s));
         ctx.setSourceCodeFilename("bar");
         SimpleNode s1 = getNode(10, 5, ctx.getSourceCodeFilename());
-        r.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s1));
+        r.addRuleViolation(new JavaRuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s1));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
         assertTrue("sort order wrong", result.indexOf("bar") < result.indexOf("foo"));
@@ -151,10 +151,10 @@ public class ReportTest extends RuleTst implements ReportListener {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
         SimpleNode s = getNode(10, 5, ctx.getSourceCodeFilename());
-        r.addRuleViolation(new RuleViolation(new MockRule("rule2", "rule2", "msg", "rulesetname"), ctx, s));
+        r.addRuleViolation(new JavaRuleViolation(new MockRule("rule2", "rule2", "msg", "rulesetname"), ctx, s));
         ctx.setSourceCodeFilename("foo2");
         SimpleNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
-        r.addRuleViolation(new RuleViolation(new MockRule("rule1", "rule1", "msg", "rulesetname"), ctx, s1));
+        r.addRuleViolation(new JavaRuleViolation(new MockRule("rule1", "rule1", "msg", "rulesetname"), ctx, s1));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
         assertTrue("sort order wrong", result.indexOf("rule2") < result.indexOf("rule1"));
@@ -168,7 +168,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("file");
         SimpleNode s = getNode(5, 5, ctx.getSourceCodeFilename());
-        rpt.addRuleViolation(new RuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s));
+        rpt.addRuleViolation(new JavaRuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s));
         assertTrue(violationSemaphore);
 
         metricSemaphore = false;
@@ -184,13 +184,13 @@ public class ReportTest extends RuleTst implements ReportListener {
         ctx.setSourceCodeFilename("foo1");
         SimpleNode s = getNode(5, 5, ctx.getSourceCodeFilename());
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
-        r.addRuleViolation(new RuleViolation(rule, ctx, s));
+        r.addRuleViolation(new JavaRuleViolation(rule, ctx, s));
         ctx.setSourceCodeFilename("foo2");
         Rule mr = new MockRule("rule1", "rule1", "msg", "rulesetname");
         SimpleNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
         SimpleNode s2 = getNode(30, 5, ctx.getSourceCodeFilename());
-        r.addRuleViolation(new RuleViolation(mr, ctx, s1));
-        r.addRuleViolation(new RuleViolation(mr, ctx, s2));
+        r.addRuleViolation(new JavaRuleViolation(mr, ctx, s1));
+        r.addRuleViolation(new JavaRuleViolation(mr, ctx, s2));
         Map summary = r.getSummary();
         assertEquals(summary.keySet().size(), 2);
         assertTrue(summary.values().contains(new Integer(1)));

@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -29,11 +29,11 @@ public class CSVRenderer extends OnTheFlyRenderer {
         getWriter().write(buf.toString());
     }
 
-    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+    public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         StringBuffer buf = new StringBuffer(300);
         Writer writer = getWriter();
 
-		IRuleViolation rv;
+		RuleViolation rv;
         while (violations.hasNext()) {
             buf.setLength(0);
             rv = violations.next();

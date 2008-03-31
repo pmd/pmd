@@ -48,10 +48,19 @@ The following is relatively complete list of the major changes:
 	   Deleted - net.sourceforge.pmd.TargetJDKVersion
 	   Deleted - net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker
 
+	API Change - Generalize RuleViolation treatment
+	   Renamed - net.sourceforge.pmd.IRuleViolation to net.sourceforge.pmd.RuleViolation
+	   Renamed - net.sourceforge.pmd.RuleViolation to net.sourceforge.pmd.AbstractRuleViolation
+	   Added - net.sourceforge.pmd.AbstractRuleViolation
+	   Added - net.sourceforge.pmd.RuleViolationComparator
+	   Added - net.sourceforge.pmd.JavaRuleViolation
+	   Added - net.sourceforge.pmd.jsp.JspRuleViolation
+
 Other changes:
 
 '41' and '42' shortcuts for rulesets added
 The default Java version processed by PMD is now uniformly Java 1.5.
+RuleViolations in Reports now uses List internally, and RuleViolationComparator is no longer broken
 Fixed bug 1928009 - Error using migration ruleset in PMD 4.2
 
 March 25, 2008 - 4.2:

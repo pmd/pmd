@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 
@@ -19,14 +19,14 @@ public class TextRenderer extends OnTheFlyRenderer {
         empty = true;
     }
 
-    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+    public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
         StringBuffer buf = new StringBuffer();
 
         empty = !violations.hasNext();
         while (violations.hasNext()) {
             buf.setLength(0);
-            IRuleViolation rv = violations.next();
+            RuleViolation rv = violations.next();
             buf.append(PMD.EOL).append(rv.getFilename());
             buf.append(':').append(Integer.toString(rv.getBeginLine()));
             buf.append('\t').append(rv.getDescription());

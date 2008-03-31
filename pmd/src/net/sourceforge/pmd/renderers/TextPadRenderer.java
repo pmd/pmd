@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
 
 import java.io.IOException;
@@ -29,11 +29,11 @@ public class TextPadRenderer extends OnTheFlyRenderer {
 
     public void start() throws IOException {}
 
-    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+    public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
         StringBuffer buf = new StringBuffer();
         while (violations.hasNext()) {
-            IRuleViolation rv = violations.next();
+            RuleViolation rv = violations.next();
             buf.setLength(0);
             //Filename
             buf.append(PMD.EOL).append(rv.getFilename() + "(");

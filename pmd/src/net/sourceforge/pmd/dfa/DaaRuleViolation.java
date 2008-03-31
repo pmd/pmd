@@ -3,9 +3,9 @@
  */
 package net.sourceforge.pmd.dfa;
 
+import net.sourceforge.pmd.JavaRuleViolation;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.SimpleNode;
 
 /**
@@ -15,7 +15,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
  * @author Sven Jacob
  *
  */
-public class DaaRuleViolation extends RuleViolation {
+public class DaaRuleViolation extends JavaRuleViolation {
     private String variableName;
     private int beginLine;
     private int endLine;

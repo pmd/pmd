@@ -3,203 +3,100 @@
  */
 package net.sourceforge.pmd;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+/**
+ * A RuleViolation is created by a Rule when it identifies a violation of the
+ * Rule constraints.
+ * 
+ * @see Rule
+ */
+public interface RuleViolation {
 
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTFormalParameter;
-import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.CanSuppressWarnings;
-import net.sourceforge.pmd.ast.SimpleNode;
+    /**
+     * Get the Rule which identified this violation.
+     * @return The identifying Rule.
+     */
+    Rule getRule();
 
-public class RuleViolation implements IRuleViolation {
+    /**
+     * Get the description of this violation.
+     * 
+     * @return The description.
+     */
+    String getDescription();
 
-    public static class RuleViolationComparator implements Comparator<IRuleViolation> {
-        //
-        // Changed logic of Comparator so that rules in the same file
-        // get grouped together in the output report.
-        // DDP 7/11/2002
-        //
-        public int compare(IRuleViolation r1, IRuleViolation r2) {
-            if (!r1.getFilename().equals(r2.getFilename())) {
-                return r1.getFilename().compareTo(r2.getFilename());
-            }
+    /**
+     * Indicates whether this violation has been suppressed.
+     * @return <code>true</code> if this violation is suppressed, <code>false</code> otherwise.
+     */
+    boolean isSuppressed();
 
-            if (r1.getBeginLine() != r2.getBeginLine())
-                return r1.getBeginLine() - r2.getBeginLine();
+    /**
+     * Get the source file name in which this violation was identified.
+     * 
+     * @return The source file name.
+     */
+    String getFilename();
 
-            if (r1.getDescription() != null && r2.getDescription() != null && !r1.getDescription().equals(r2.getDescription())) {
-                return r1.getDescription().compareTo(r2.getDescription());
-            }
+    /**
+     * Get the begin line number in the source file in which this violation was
+     * identified.
+     * 
+     * @return Begin line number.
+     */
+    int getBeginLine();
 
-            if (r1.getBeginLine() == r2.getBeginLine()) {
-                return 1;
-            }
-            
-            // line number diff maps nicely to compare()
-            return r1.getBeginLine() - r2.getBeginLine();
-        }
-    }
+    /**
+     * Get the column number of the begin line in the source file
+     * in which this violation was identified.
+     * 
+     * @return Begin column number.
+     */
+    int getBeginColumn();
 
-    private Rule rule;
-    private String description;
-    private String filename;
+    /**
+     * Get the end line number in the source file in which this violation was
+     * identified.
+     * 
+     * @return End line number.
+     */
+    int getEndLine();
 
-    private String className;
-    private String methodName;
-    private String variableName;
-    private String packageName;
-    private int beginLine;
-    private int endLine;
+    /**
+     * Get the column number of the end line in the source file
+     * in which this violation was identified.
+     * 
+     * @return End column number.
+     */
+    int getEndColumn();
 
-    private int beginColumn;
-    private int endColumn;
-    private boolean isSuppressed;
+    /**
+     * Get the package name of the Class in which this violation was identified.
+     * 
+     * @return The package name.
+     */
+    // TODO Isn't this Java specific?
+    String getPackageName();
 
-    public RuleViolation(Rule rule, RuleContext ctx, SimpleNode node) {
-        this(rule, ctx, node, rule.getMessage());
-    }
+    /**
+     * Get the name of the Class in which this violation was identified.
+     * 
+     * @return The Class name.
+     */
+    // TODO Isn't this Java specific?
+    String getClassName();
 
-    public RuleViolation(Rule rule, RuleContext ctx, SimpleNode node, String specificMsg) {
-        this.rule = rule;
-        this.filename = ctx.getSourceCodeFilename();
-        this.description = specificMsg;
+    /**
+     * Get the method name in which this violation was identified.
+     * 
+     * @return The method name.
+     */
+    // TODO Isn't this Java specific?
+    String getMethodName();
 
-        if (node != null) {
-	        if (node.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class) == null) {
-	            // This takes care of nodes which are outside a class definition - i.e., import declarations
-	            className = "";
-	        } else {
-	            // default to symbol table lookup
-	            className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : node.getScope().getEnclosingClassScope().getClassName();
-	        }
-	        // default to symbol table lookup
-	        String qualifiedName = null;
-	        List<ASTClassOrInterfaceDeclaration> parents = node.getParentsOfType(ASTClassOrInterfaceDeclaration.class);
-	        for ( ASTClassOrInterfaceDeclaration parent : parents )
-	        {
-	        	if (qualifiedName == null) {
-	        		qualifiedName = parent.getScope().getEnclosingClassScope().getClassName();
-	            } else {
-	            	qualifiedName = parent.getScope().getEnclosingClassScope().getClassName() + "$" + qualifiedName;
-	            }
-	        }
-	        // Sourcefile does not have an enclosing class scope...
-	        if ( ! "net.sourceforge.pmd.symboltable.SourceFileScope".equals(node.getScope().getClass().getName() ) ) {
-	        	className = node.getScope().getEnclosingClassScope().getClassName() == null ? "" : qualifiedName;
-	        }
-	        setVariableNameIfExists(node);
-
-	        methodName = node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : node.getScope().getEnclosingMethodScope().getName();
-
-	        packageName = node.getScope().getEnclosingSourceFileScope().getPackageName() == null ? "" : node.getScope().getEnclosingSourceFileScope().getPackageName();
-
-	        beginLine = node.getBeginLine();
-	        endLine = node.getEndLine();
-	        beginColumn = node.getBeginColumn();
-	        endColumn = node.getEndColumn();
-
-	        // TODO combine this duplicated code
-	        // TODO same for duplicated code in ASTTypeDeclaration && ASTClassOrInterfaceBodyDeclaration
-	        List<SimpleNode> parentTypes = new ArrayList<SimpleNode>(node.getParentsOfType(ASTTypeDeclaration.class));
-	        if (node instanceof ASTTypeDeclaration) {
-	            parentTypes.add(node);
-	        }
-	        parentTypes.addAll(node.getParentsOfType(ASTClassOrInterfaceBodyDeclaration.class));
-	        if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
-	            parentTypes.add(node);
-	        }
-	        parentTypes.addAll(node.getParentsOfType(ASTFormalParameter.class));
-	        if (node instanceof ASTFormalParameter) {
-	            parentTypes.add(node);
-	        }
-	        parentTypes.addAll(node.getParentsOfType(ASTLocalVariableDeclaration.class));
-	        if (node instanceof ASTLocalVariableDeclaration) {
-	            parentTypes.add(node);
-	        }
-	        for (SimpleNode parentType : parentTypes) {
-	            CanSuppressWarnings t = (CanSuppressWarnings) parentType;
-	            if (t.hasSuppressWarningsAnnotationFor(getRule())) {
-	                isSuppressed = true;
-	            }
-	        }
-        } else {
-        	className = "";
-        	methodName = "";
-        	packageName = "";
-        	filename = "";
-        }
-    }
-
-    private void setVariableNameIfExists(SimpleNode node) {
-        variableName = (node.getClass().equals(ASTFieldDeclaration.class))
-                ? ((ASTFieldDeclaration) node).getVariableName() : "";
-        if ("".equals(variableName)) {
-            variableName = (node.getClass().equals(ASTLocalVariableDeclaration.class))
-                    ? ((ASTLocalVariableDeclaration) node).getVariableName() : "";
-        }
-        if ("".equals(variableName)) {
-            variableName = (node.getClass().equals(ASTVariableDeclaratorId.class))
-                    ? node.getImage() : "";
-        }
-    }
-
-    public Rule getRule() {
-        return rule;
-    }
-
-    public boolean isSuppressed() {
-        return this.isSuppressed;
-    }
-
-    public int getBeginColumn() {
-        return beginColumn;
-    }
-
-    public int getEndColumn() {
-        return endColumn;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getFilename() {
-        return filename;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public String getMethodName() {
-        return methodName;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public int getBeginLine() {
-        return beginLine;
-    }
-
-    public int getEndLine() {
-        return endLine;
-    }
-
-    public String getVariableName() {
-        return variableName;
-    }
-
-    public String toString() {
-        return getFilename() + ":" + getRule() + ":" + getDescription() + ":" + beginLine;
-    }
-
+    /**
+     * Get the variable name on which this violation was identified.
+     * 
+     * @return The variable name.
+     */
+    String getVariableName();
 }

@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Report;
 
 public abstract class OnTheFlyRenderer extends AbstractRenderer {
@@ -23,7 +23,7 @@ public abstract class OnTheFlyRenderer extends AbstractRenderer {
     }
 
     public void renderFileReport(Report report) throws IOException {
-        Iterator<IRuleViolation> violations = report.iterator();
+        Iterator<RuleViolation> violations = report.iterator();
         if (violations.hasNext()) {
             renderFileViolations(violations);
             getWriter().flush();
@@ -44,7 +44,7 @@ public abstract class OnTheFlyRenderer extends AbstractRenderer {
 
     public abstract void start() throws IOException;
 
-    public abstract void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException;
+    public abstract void renderFileViolations(Iterator<RuleViolation> violations) throws IOException;
 
     public abstract void end() throws IOException;
 

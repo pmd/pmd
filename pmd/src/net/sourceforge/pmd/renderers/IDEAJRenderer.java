@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
 
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class IDEAJRenderer extends OnTheFlyRenderer {
 
     public void start() throws IOException {}
 
-    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+    public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
         if (args[4].equals(".method")) {
             // working on a directory tree
@@ -62,12 +62,12 @@ public class IDEAJRenderer extends OnTheFlyRenderer {
 
     public void end() throws IOException {}
 
-    private void render(Writer writer, Iterator<IRuleViolation> violations, String sourcePathString) throws IOException {
+    private void render(Writer writer, Iterator<RuleViolation> violations, String sourcePathString) throws IOException {
         SourcePath sourcePath = new SourcePath(sourcePathString);
         StringBuffer buf = new StringBuffer();
         while (violations.hasNext()) {
             buf.setLength(0);
-            IRuleViolation rv = violations.next();
+            RuleViolation rv = violations.next();
             buf.append(rv.getDescription() + PMD.EOL);
             buf.append(" at ").append(getFullyQualifiedClassName(rv.getFilename(), sourcePath)).append(".method(");
             buf.append(getSimpleFileName(rv.getFilename())).append(':').append(rv.getBeginLine()).append(')').append(PMD.EOL);
@@ -75,11 +75,11 @@ public class IDEAJRenderer extends OnTheFlyRenderer {
         }
     }
 
-    private void render(Writer writer, Iterator<IRuleViolation> violations, String classAndMethod, String file) throws IOException {
+    private void render(Writer writer, Iterator<RuleViolation> violations, String classAndMethod, String file) throws IOException {
         StringBuffer buf = new StringBuffer();
         while (violations.hasNext()) {
             buf.setLength(0);
-            IRuleViolation rv = violations.next();
+            RuleViolation rv = violations.next();
             buf.append(rv.getDescription()).append(PMD.EOL);
             buf.append(" at ").append(classAndMethod).append('(').append(file).append(':').append(rv.getBeginLine()).append(')').append(PMD.EOL);
             writer.write(buf.toString());

@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.util.StringUtil;
@@ -31,7 +31,7 @@ public class XMLRenderer extends OnTheFlyRenderer {
         writer.write(buf.toString());
     }
 
-    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+    public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
         StringBuffer buf = new StringBuffer();
         String filename = null;
@@ -39,7 +39,7 @@ public class XMLRenderer extends OnTheFlyRenderer {
         // rule violations
         while (violations.hasNext()) {
             buf.setLength(0);
-            IRuleViolation rv = violations.next();
+            RuleViolation rv = violations.next();
             if (!rv.getFilename().equals(filename)) { // New File
                 if (filename != null) {// Not first file ?
                     buf.append("</file>").append(PMD.EOL);

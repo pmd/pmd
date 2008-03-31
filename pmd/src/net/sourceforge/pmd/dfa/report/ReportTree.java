@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.dfa.report;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 
 import java.util.Iterator;
 
@@ -9,7 +9,7 @@ public class ReportTree {
     private PackageNode rootNode = new PackageNode("");
     private AbstractReportNode level;
 
-    private class TreeIterator implements Iterator<IRuleViolation> {
+    private class TreeIterator implements Iterator<RuleViolation> {
 
         private AbstractReportNode iterNode = rootNode;
         private boolean hasNextFlag;
@@ -23,7 +23,7 @@ public class ReportTree {
             return this.getNext() != null;
         }
 
-        public IRuleViolation next() {
+        public RuleViolation next() {
 
             if (!this.hasNextFlag) {
                 this.getNext();
@@ -84,13 +84,13 @@ public class ReportTree {
     }
 
 
-    public Iterator<IRuleViolation> iterator() {
+    public Iterator<RuleViolation> iterator() {
         return new TreeIterator();
     }
 
     public int size() {
         int count = 0;
-        for (Iterator<IRuleViolation> i = iterator(); i.hasNext();) {
+        for (Iterator<RuleViolation> i = iterator(); i.hasNext();) {
             i.next();
             count++;
         }
@@ -105,7 +105,7 @@ public class ReportTree {
      * Adds the RuleViolation to the tree. Splits the package name. Each
      * package, class and violation gets there own tree node.
      */
-    public void addRuleViolation(IRuleViolation violation) {
+    public void addRuleViolation(RuleViolation violation) {
         String pack = violation.getPackageName();
         String[] a = {};
         if (pack == null) {

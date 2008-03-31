@@ -9,8 +9,8 @@ import java.util.List;
 
 import net.sourceforge.pmd.CommonAbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.jsp.JspRuleViolation;
 import net.sourceforge.pmd.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.jsp.ast.ASTAttributeValue;
 import net.sourceforge.pmd.jsp.ast.ASTCData;
@@ -53,7 +53,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	 */
 	protected final void addViolation(Object data, SimpleNode node) {
 		RuleContext ctx = (RuleContext)data;
-		ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node));
+		ctx.getReport().addRuleViolation(new JspRuleViolation(this, ctx, node));
 	}
 
 	/**
@@ -70,7 +70,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 			String msg) {
 		RuleContext ctx = (RuleContext)data;
 		ctx.getReport().addRuleViolation(
-				new RuleViolation(this, ctx, node, msg));
+				new JspRuleViolation(this, ctx, node, msg));
 	}
 
 	/**
@@ -86,7 +86,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	protected final void addViolation(Object data, SimpleNode node, String embed) {
 		RuleContext ctx = (RuleContext)data;
 		ctx.getReport().addRuleViolation(
-				new RuleViolation(this, ctx, node, MessageFormat.format(
+				new JspRuleViolation(this, ctx, node, MessageFormat.format(
 						getMessage(), embed)));
 	}
 
@@ -104,7 +104,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	protected final void addViolation(Object data, Node node, Object[] args) {
 		RuleContext ctx = (RuleContext)data;
 		ctx.getReport().addRuleViolation(
-				new RuleViolation(this, ctx, (SimpleNode)node, MessageFormat
+				new JspRuleViolation(this, ctx, (SimpleNode)node, MessageFormat
 						.format(getMessage(), args)));
 	}
 

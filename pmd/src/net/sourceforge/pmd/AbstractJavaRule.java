@@ -28,7 +28,7 @@ public abstract class AbstractJavaRule extends CommonAbstractRule implements
 	 */
 	protected final void addViolation(Object data, SimpleNode node) {
 		RuleContext ctx = (RuleContext)data;
-		ctx.getReport().addRuleViolation(new RuleViolation(this, ctx, node));
+		ctx.getReport().addRuleViolation(new JavaRuleViolation(this, ctx, node));
 	}
 
 	/**
@@ -45,7 +45,7 @@ public abstract class AbstractJavaRule extends CommonAbstractRule implements
 			String msg) {
 		RuleContext ctx = (RuleContext)data;
 		ctx.getReport().addRuleViolation(
-				new RuleViolation(this, ctx, node, msg));
+				new JavaRuleViolation(this, ctx, node, msg));
 	}
 
 	/**
@@ -61,7 +61,7 @@ public abstract class AbstractJavaRule extends CommonAbstractRule implements
 	protected final void addViolation(Object data, SimpleNode node, String embed) {
 		RuleContext ctx = (RuleContext)data;
 		ctx.getReport().addRuleViolation(
-				new RuleViolation(this, ctx, node, MessageFormat.format(
+				new JavaRuleViolation(this, ctx, node, MessageFormat.format(
 						getMessage(), embed)));
 	}
 
@@ -79,7 +79,7 @@ public abstract class AbstractJavaRule extends CommonAbstractRule implements
 	protected final void addViolation(Object data, Node node, Object[] args) {
 		RuleContext ctx = (RuleContext)data;
 		ctx.getReport().addRuleViolation(
-				new RuleViolation(this, ctx, (SimpleNode)node, MessageFormat
+				new JavaRuleViolation(this, ctx, (SimpleNode)node, MessageFormat
 						.format(getMessage(), args)));
 	}
 

@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.renderers;
 
-import net.sourceforge.pmd.IRuleViolation;
+import net.sourceforge.pmd.RuleViolation;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -15,11 +15,11 @@ public class EmacsRenderer extends OnTheFlyRenderer {
 
     public void start() throws IOException {}
 
-    public void renderFileViolations(Iterator<IRuleViolation> violations) throws IOException {
+    public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
         StringBuffer buf = new StringBuffer();
         while (violations.hasNext()) {
-            IRuleViolation rv = violations.next();
+            RuleViolation rv = violations.next();
             buf.setLength(0);
             buf.append(EOL).append(rv.getFilename());
             buf.append(':').append(Integer.toString(rv.getBeginLine()));

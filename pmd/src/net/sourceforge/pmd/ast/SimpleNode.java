@@ -80,6 +80,14 @@ public abstract class SimpleNode implements Node {
     public void testingOnly__setBeginColumn(int i) {
         this.beginColumn = i;
     }
+    
+    public void testingOnly__setEndLine(int i) {
+        this.endLine = i;
+    }
+
+    public void testingOnly__setEndColumn(int i) {
+        this.endColumn = i;
+    }
 
     public int getBeginColumn() {
         if (beginColumn != -1) {
