@@ -141,8 +141,15 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         jEdit.setIntegerProperty( PMDJEditPlugin.DEFAULT_TILE_MINSIZE_PROPERTY,
                 ( txtMinTileSize.getText().length() == 0 ) ? 100 : Integer
                 .parseInt( txtMinTileSize.getText() ) );
-        jEdit.setBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE,
-                ( chkRunPMDOnSave.isSelected() ) );
+
+        // If the user has checked "Run PMD on save", set the plugin to load on jEdit
+        // start up so that the "run on save" feature works right away.  Unchecking
+        // "Run PMD on save" sets the "activate" property back to "defer", which is
+        // the default.
+        boolean on_save = chkRunPMDOnSave.isSelected();
+        jEdit.setBooleanProperty( PMDJEditPlugin.RUN_PMD_ON_SAVE, on_save );
+        jEdit.setProperty( "plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.activate", on_save ? "startup" : "defer" );
+
         jEdit.setBooleanProperty( PMDJEditPlugin.IGNORE_LITERALS,
                 ( chkIgnoreLiterals.isSelected() ) );
         jEdit.setProperty( PMDJEditPlugin.RENDERER, ( String ) comboRenderer.getSelectedItem() );
