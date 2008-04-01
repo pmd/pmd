@@ -63,11 +63,11 @@
          <nodeClass>oracle.jdeveloper.model.JavaSourceNode</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
-         <URL path="lib/pmd14-4.0rc2.jar"/>
+         <URL path="lib/pmd14-4.2.jar"/>
          <nodeClass>oracle.jdevimpl.jar.JarFolder</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
-         <URL path="lib/retroweaver-rt-2.0.2.jar"/>
+         <URL path="lib/retroweaver-rt-2.0.5.jar"/>
          <nodeClass>oracle.jdevimpl.jar.JarFolder</nodeClass>
       </Item>
       <Item class="oracle.ide.model.Reference">
@@ -225,7 +225,7 @@
                      <Value class="oracle.jdevimpl.config.JProjectLibraries">
                         <jdkName>1.4.2_06</jdkName>
                         <jdkVersionNumber>1.4.2_06</jdkVersionNumber>
-                        <libraries>PMD 4.0;Oracle Java Compiler;JDeveloper Extension SDK</libraries>
+                        <libraries>PMD 4.2;Oracle Java Compiler;JDeveloper Extension SDK</libraries>
                      </Value>
                   </Item>
                   <Item>

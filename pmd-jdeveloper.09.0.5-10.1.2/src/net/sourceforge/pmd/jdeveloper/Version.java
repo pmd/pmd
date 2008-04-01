@@ -24,7 +24,7 @@ class Version {
     }
 
     public static String version() {
-        return "4.1.1.0.0";
+        return "4.2.1.0.0";
     }
 
 }

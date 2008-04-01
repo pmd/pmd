@@ -202,7 +202,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     }
 
     public float version() {
-          return 4.1f;
+          return 4.2f;
     }
     public float ideVersion() {
         return 0.1f;
@@ -253,11 +253,11 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
             } catch (PMDException e) {
                 // TODO reroute the whole printStackTrace to the IDE log window
                 e.printStackTrace();
-                e.getReason().printStackTrace();
+                e.getCause().printStackTrace();
                 JOptionPane.showMessageDialog(null, 
                                               "Error while running PMD: " + 
                                               "\n" + e.getMessage() + "\n" + 
-                                              e.getReason().getMessage(), 
+                                              e.getCause().getMessage(), 
                                               PMD_TITLE, 
                                               JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {

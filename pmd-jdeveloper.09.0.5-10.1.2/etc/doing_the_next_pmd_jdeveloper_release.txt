@@ -21,7 +21,7 @@ ant upload
 Go to Admin, Edit/Release Files, click on Add new release
 Paste stuff into the changelog/readme boxes
 Add the pmd-jdeveloperXXX-src-X.X.X.X.X.zip file
-Add the pmd-jdeveloper-bin-1.9.zip file
+Add the pmd-jdeveloperXXX-bin-X.X.X.X.X.zip file
 Classify the file
 
 Submit some news saying "hey, new release of the jdeveloper plugin!"
