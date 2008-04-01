@@ -3,7 +3,7 @@
 #
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.name=PMDPlugin
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.author=Jiger Patel, Tom Copeland, Alan Ezust, Dale Anson
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=2.8
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.version=2.9
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.docs=jedit.html
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.0=jdk 1.5
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.depend.1=jedit 04.03.03.00
@@ -15,7 +15,7 @@ plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.description=The PMD plugin is a 
 #
 
 #New jEdit 4.2 properties
-plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.activate=startup
+plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.activate=defer
 
 plugin.net.sourceforge.pmd.jedit.PMDJEditPlugin.menu.label=$PMD
 
