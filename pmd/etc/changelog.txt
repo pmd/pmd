@@ -2,6 +2,7 @@
 
 '41' and '42' shortcuts for rulesets added
 Fixed bug 1928009 - Error using migration ruleset in PMD 4.2
+Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +
 
 March 25, 2008 - 4.2:
 
