@@ -184,4 +184,20 @@ public abstract class ShouldBeAbstract
 }
      ]]></code>
     </test-code>
+    <test-code>
+    	<description><![CDATA[
+    	Bug 1932242 : False +, returning a String does not count as an Empty Method
+    	]]></description>
+    	<expected-problems>0</expected-problems>
+    	<code><![CDATA[
+public abstract class Foo
+{
+	protected String bar()
+	{
+		return "A valid, not null, string";
+	}
+
+}
+    	]]></code>
+    </test-code>
 </test-data>

@@ -61,6 +61,8 @@ Other changes:
 '41' and '42' shortcuts for rulesets added
 The default Java version processed by PMD is now uniformly Java 1.5.
 RuleViolations in Reports now uses List internally, and RuleViolationComparator is no longer broken
+
+Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +
 Fixed bug 1928009 - Error using migration ruleset in PMD 4.2
 
 March 25, 2008 - 4.2:
