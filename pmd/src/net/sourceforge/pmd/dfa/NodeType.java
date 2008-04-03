@@ -6,6 +6,7 @@ package net.sourceforge.pmd.dfa;
 /**
  * @author raik
  */
+// TODO This should be an enum?
 public interface NodeType {
 
     int IF_EXPR = 1;

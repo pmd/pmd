@@ -4,15 +4,16 @@
 package test.net.sourceforge.pmd.dfa;
 
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.dfa.DataFlowNode;
 
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.ParserTst;
-
-import java.util.List;
 public class AcceptanceTest extends ParserTst {
 
     @Test
@@ -44,9 +45,9 @@ public class AcceptanceTest extends ParserTst {
     private boolean check(int[][] array, List methodNodes) {
         for (int i = 0; i < methodNodes.size(); i++) {
             ASTMethodDeclarator decl = (ASTMethodDeclarator) methodNodes.get(i);
-            IDataFlowNode inode = decl.getDataFlowNode();
+            DataFlowNode inode = decl.getDataFlowNode();
             for (int j = 0; j < inode.getChildren().size(); j++) {
-                IDataFlowNode child = inode.getChildren().get(j);
+        	DataFlowNode child = inode.getChildren().get(j);
                 if (array[i][j] != child.getIndex() - 1) {
                     return false;
                 }

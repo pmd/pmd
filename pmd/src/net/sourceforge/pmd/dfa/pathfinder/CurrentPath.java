@@ -1,28 +1,28 @@
 package net.sourceforge.pmd.dfa.pathfinder;
 
-import net.sourceforge.pmd.dfa.IDataFlowNode;
-import net.sourceforge.pmd.dfa.NodeType;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import net.sourceforge.pmd.dfa.DataFlowNode;
+import net.sourceforge.pmd.dfa.NodeType;
+
 public class CurrentPath {
 
-    private LinkedList<IDataFlowNode> list;
+    private LinkedList<DataFlowNode> list;
 
     public CurrentPath() {
-        list = new LinkedList<IDataFlowNode>();
+        list = new LinkedList<DataFlowNode>();
     }
 
     public int getLength() {
         return list.size();
     }
     
-    public Iterator<IDataFlowNode> iterator() {
+    public Iterator<DataFlowNode> iterator() {
         return list.iterator();
     }
 
-    public IDataFlowNode getLast() {
+    public DataFlowNode getLast() {
         return list.getLast();
     }
 
@@ -34,7 +34,7 @@ public class CurrentPath {
         return list.isEmpty();
     }
 
-    public void addLast(IDataFlowNode n) {
+    public void addLast(DataFlowNode n) {
         list.addLast(n);
         //System.out.println("adding: " + n);
     }
@@ -47,10 +47,10 @@ public class CurrentPath {
         return isFirstDoStatement(list.getLast());
     }
 
-    public IDataFlowNode getDoBranchNodeFromFirstDoStatement() {
-        IDataFlowNode inode = list.getLast();
+    public DataFlowNode getDoBranchNodeFromFirstDoStatement() {
+	DataFlowNode inode = list.getLast();
         if (!isFirstDoStatement()) return null;
-        for (IDataFlowNode parent: inode.getParents()) {
+        for (DataFlowNode parent: inode.getParents()) {
             if (parent.isType(NodeType.DO_EXPR)) {
                 return parent;
             }
@@ -67,10 +67,10 @@ public class CurrentPath {
         return list.getLast().getChildren().size() > 1;
     }
 
-    private boolean isFirstDoStatement(IDataFlowNode inode) {
+    private boolean isFirstDoStatement(DataFlowNode inode) {
         int index = inode.getIndex() - 1;
         if (index < 0) return false;
-        return ((IDataFlowNode) inode.getFlow().get(index)).isType(NodeType.DO_BEFORE_FIRST_STATEMENT);
+        return ((DataFlowNode) inode.getFlow().get(index)).isType(NodeType.DO_BEFORE_FIRST_STATEMENT);
     }
 }
 

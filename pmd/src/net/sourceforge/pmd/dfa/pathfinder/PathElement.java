@@ -1,18 +1,18 @@
 package net.sourceforge.pmd.dfa.pathfinder;
 
-import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.dfa.DataFlowNode;
 
 public class PathElement {
 
     public int currentChild;
-    public IDataFlowNode node;
-    public IDataFlowNode pseudoRef;
+    public DataFlowNode node;
+    public DataFlowNode pseudoRef;
 
-    PathElement(IDataFlowNode node) {
+    PathElement(DataFlowNode node) {
         this.node = node;
     }
 
-    PathElement(IDataFlowNode node, IDataFlowNode ref) {
+    PathElement(DataFlowNode node, DataFlowNode ref) {
         this.node = node;
         this.pseudoRef = ref;
     }

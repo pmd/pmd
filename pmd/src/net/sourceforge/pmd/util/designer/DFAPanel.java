@@ -1,21 +1,30 @@
 package net.sourceforge.pmd.util.designer;
 
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
-import net.sourceforge.pmd.util.LineGetter;
-import net.sourceforge.pmd.util.StringUtil;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.dfa.DataFlowNode;
+import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.util.LineGetter;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class DFAPanel extends JComponent implements ListSelectionListener {
 
@@ -46,17 +55,17 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
         	sb.append(va.getVariableName()).append(')');
         }
 
-        private String childIndicesOf(IDataFlowNode node, String separator) {
+        private String childIndicesOf(DataFlowNode node, String separator) {
 
         	List kids = node.getChildren();
         	if (kids.isEmpty()) return "";
 
         	StringBuffer sb = new StringBuffer();
-        	sb.append(((IDataFlowNode)kids.get(0)).getIndex());
+        	sb.append(((DataFlowNode)kids.get(0)).getIndex());
 
         	for (int j = 1; j < node.getChildren().size(); j++) {
         		sb.append(separator);
-        		sb.append(((IDataFlowNode)kids.get(j)).getIndex());
+        		sb.append(((DataFlowNode)kids.get(j)).getIndex());
         	 }
         	return sb.toString();
         }
@@ -68,7 +77,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
         	String[] labels = new String[flow.size()];
 
         	for (int i=0; i<labels.length; i++) {
-        		List access = ((IDataFlowNode) flow.get(i)).getVariableAccess();
+        		List access = ((DataFlowNode) flow.get(i)).getVariableAccess();
 
         		if (access == null || access.isEmpty()) {
         			continue;	// leave a null at this slot
@@ -114,7 +123,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
             int maxAccessLabelWidth = maxWidthOf(accessLabels, fm);
 
             for (int i = 0; i < flow.size(); i++) {
-                IDataFlowNode inode = (IDataFlowNode) flow.get(i);
+        	DataFlowNode inode = (DataFlowNode) flow.get(i);
 
                 y = computeDrawPos(inode.getIndex());
 
@@ -132,7 +141,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
                 }
 
                 for (int j = 0; j < inode.getChildren().size(); j++) {
-                    IDataFlowNode n = inode.getChildren().get(j);
+                    DataFlowNode n = inode.getChildren().get(j);
                     drawMyLine(inode.getIndex(), n.getIndex(), g);
                 }
                 String childIndices = childIndicesOf(inode, ", ");

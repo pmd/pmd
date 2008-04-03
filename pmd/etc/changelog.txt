@@ -22,6 +22,18 @@ TODO - Release blockers - Must implement before this release can be finished
      handled Java 1.4.  Integrate CPD needs into core PMD where appropriate.
      Otherwise, drive CPD behavior based off of core PMD, instead of duplicating
      some logic.
+   o DFA needs a bunch of work yet to be abstracted further to support alternate
+     ASTs, very Java specific at this time.
+   o We need a new Rule, specifically for application in PMD (initially):
+     Essentially cannot use  Package A, or it's sub packages outside of Package A.
+     This would be applied to each of the pmd.lang.<Language> packages, ensuring
+     that we do not get code leaking out into the rest of PMD, breaking the
+     Language abstraction layer.  Only the LanguageVersion would be allowed to
+     have a direct reference to the LanguageVersionHandler for each of the
+     Lanugages (e.g. // NOPMD usage).  Essentially, controlled leakage but only
+     through the authorized abstraction interface.  Hmm, perhaps the Rule should
+     allow a list of classes which are authorized "leakers", that would make it
+     a bit more practical.
 
 ---
 
@@ -55,6 +67,11 @@ The following is relatively complete list of the major changes:
 	   Added - net.sourceforge.pmd.RuleViolationComparator
 	   Added - net.sourceforge.pmd.JavaRuleViolation
 	   Added - net.sourceforge.pmd.jsp.JspRuleViolation
+
+	API Change - Generalize DFA treatment
+	   Renamed - net.sourceforge.pmd.dfa.IDataFlowNode to net.sourceforge.pmd.dfa.DataFlowNode   
+	   Renamed - net.sourceforge.pmd.dfa.DataFlowNode to net.sourceforge.pmd.dfa.AbstractDataFlowNode
+	   Added - net.sourceforge.pmd.ast.JavaDataFlowNode
 
 Other changes:
 

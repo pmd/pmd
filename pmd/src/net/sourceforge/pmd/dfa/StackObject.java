@@ -6,14 +6,14 @@ package net.sourceforge.pmd.dfa;
 public class StackObject {
 
     private int type;
-    private IDataFlowNode node;
+    private DataFlowNode node;
 
-    protected StackObject(int type, IDataFlowNode node) {
+    protected StackObject(int type, DataFlowNode node) {
         this.type = type;
         this.node = node;
     }
 
-    public IDataFlowNode getDataFlowNode() {
+    public DataFlowNode getDataFlowNode() {
         return this.node;
     }
 

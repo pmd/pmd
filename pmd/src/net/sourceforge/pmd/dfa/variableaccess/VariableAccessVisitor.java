@@ -3,6 +3,12 @@
  */
 package net.sourceforge.pmd.dfa.variableaccess;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
@@ -10,16 +16,10 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.dfa.DataFlowNode;
 import net.sourceforge.pmd.dfa.StartOrEndDataFlowNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author raik, Sven Jacob
@@ -40,20 +40,20 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     }
 
     private void computeNow(SimpleNode node) {
-        IDataFlowNode inode = node.getDataFlowNode();
+	DataFlowNode inode = node.getDataFlowNode();
 
         List<VariableAccess> undefinitions = markUsages(inode);
 
         // all variables are first in state undefinition 
-        IDataFlowNode firstINode = inode.getFlow().get(0);
+        DataFlowNode firstINode = inode.getFlow().get(0);
         firstINode.setVariableAccess(undefinitions);
 
         // all variables are getting undefined when leaving scope
-        IDataFlowNode lastINode = inode.getFlow().get(inode.getFlow().size() - 1);
+        DataFlowNode lastINode = inode.getFlow().get(inode.getFlow().size() - 1);
         lastINode.setVariableAccess(undefinitions);
     }
 
-    private List<VariableAccess> markUsages(IDataFlowNode inode) {
+    private List<VariableAccess> markUsages(DataFlowNode inode) {
         // undefinitions was once a field... seems like it works fine as a local
         List<VariableAccess> undefinitions = new ArrayList<VariableAccess>();
         Set<Map<VariableNameDeclaration, List<NameOccurrence>>> variableDeclarations = collectDeclarations(inode);
@@ -81,11 +81,11 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
         return undefinitions;
     }
 
-    private Set<Map<VariableNameDeclaration, List<NameOccurrence>>> collectDeclarations(IDataFlowNode inode) {
+    private Set<Map<VariableNameDeclaration, List<NameOccurrence>>> collectDeclarations(DataFlowNode inode) {
         Set<Map<VariableNameDeclaration, List<NameOccurrence>>> decls = new HashSet<Map<VariableNameDeclaration, List<NameOccurrence>>>();
         Map<VariableNameDeclaration, List<NameOccurrence>> varDecls;
         for (int i = 0; i < inode.getFlow().size(); i++) {
-            IDataFlowNode n = inode.getFlow().get(i);
+            DataFlowNode n = inode.getFlow().get(i);
             if (n instanceof StartOrEndDataFlowNode) {
                 continue;
             }
@@ -97,7 +97,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
         return decls;
     }
 
-    private void addAccess(NameOccurrence occurrence, IDataFlowNode inode) {
+    private void addAccess(NameOccurrence occurrence, DataFlowNode inode) {
         if (occurrence.isOnLeftHandSide()) {
             this.addVariableAccess(occurrence.getLocation(), new VariableAccess(VariableAccess.DEFINITION, occurrence.getImage()), inode.getFlow());
         } else if (occurrence.isOnRightHandSide() || (!occurrence.isOnLeftHandSide() && !occurrence.isOnRightHandSide())) {
@@ -114,7 +114,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
     private void addVariableAccess(SimpleNode node, VariableAccess va, List flow) {
         // backwards to find the right inode (not a method declaration) 
         for (int i = flow.size()-1; i > 0; i--) { 
-            IDataFlowNode inode = (IDataFlowNode) flow.get(i);
+            DataFlowNode inode = (DataFlowNode) flow.get(i);
             if (inode.getSimpleNode() == null) {
                 continue;
             }

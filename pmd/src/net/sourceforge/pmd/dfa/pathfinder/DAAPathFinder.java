@@ -3,10 +3,10 @@
  */
 package net.sourceforge.pmd.dfa.pathfinder;
 
-import net.sourceforge.pmd.dfa.IDataFlowNode;
-import net.sourceforge.pmd.dfa.NodeType;
-
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import net.sourceforge.pmd.dfa.DataFlowNode;
+import net.sourceforge.pmd.dfa.NodeType;
 
 /**
  * @author raik
@@ -17,19 +17,19 @@ import javax.swing.tree.DefaultMutableTreeNode;
 public class DAAPathFinder {
     private static final int MAX_PATHS = 5000;
 
-    private IDataFlowNode rootNode;
+    private DataFlowNode rootNode;
     private Executable shim;
     private CurrentPath currentPath = new CurrentPath();
     private DefaultMutableTreeNode stack = new DefaultMutableTreeNode();
     private int maxPaths;
 
-    public DAAPathFinder(IDataFlowNode rootNode, Executable shim) {
+    public DAAPathFinder(DataFlowNode rootNode, Executable shim) {
         this.rootNode = rootNode;
         this.shim = shim;
         this.maxPaths = MAX_PATHS;
     }
     
-    public DAAPathFinder(IDataFlowNode rootNode, Executable shim, int maxPaths) {
+    public DAAPathFinder(DataFlowNode rootNode, Executable shim, int maxPaths) {
         this.rootNode = rootNode;
         this.shim = shim;
         this.maxPaths = maxPaths;
@@ -124,15 +124,15 @@ public class DAAPathFinder {
     private void addCurrentChild() {
         if (currentPath.isBranch()) { // TODO WHY????
             PathElement last = (PathElement) stack.getLastLeaf().getUserObject();
-            IDataFlowNode inode = currentPath.getLast();
+            DataFlowNode inode = currentPath.getLast();
             if (inode.getChildren().size() > last.currentChild) { 
                 // for some unknown reasons last.currentChild might not be a children of inode, see bug 1597987 
-                IDataFlowNode child = inode.getChildren().get(last.currentChild);
+        	DataFlowNode child = inode.getChildren().get(last.currentChild);
                 this.currentPath.addLast(child);
             }
         } else {
-            IDataFlowNode inode = currentPath.getLast();
-            IDataFlowNode child = inode.getChildren().get(0); //TODO ???? IMPORTANT - ERROR?
+            DataFlowNode inode = currentPath.getLast();
+            DataFlowNode child = inode.getChildren().get(0); //TODO ???? IMPORTANT - ERROR?
             this.currentPath.addLast(child);
         }
     }
@@ -147,7 +147,7 @@ public class DAAPathFinder {
     private void addNodeToTree() {
         if (currentPath.isFirstDoStatement()) {
             DefaultMutableTreeNode level = stack;
-            IDataFlowNode doBranch = currentPath.getDoBranchNodeFromFirstDoStatement();
+            DataFlowNode doBranch = currentPath.getDoBranchNodeFromFirstDoStatement();
 
             while (true) {
                 if (level.getChildCount() != 0) {
@@ -230,7 +230,7 @@ public class DAAPathFinder {
     /*
      * Needed for do loops
      * */
-    private void addNewPseudoPathElement(DefaultMutableTreeNode level, IDataFlowNode ref) {
+    private void addNewPseudoPathElement(DefaultMutableTreeNode level, DataFlowNode ref) {
         addNode(level, new PathElement(currentPath.getLast(), ref));
     }
 
@@ -242,7 +242,7 @@ public class DAAPathFinder {
     }
 
     private boolean equalsPseudoPathElementWithDoBranchNodeInLevel(DefaultMutableTreeNode level) {
-        IDataFlowNode inode = currentPath.getLast();
+	DataFlowNode inode = currentPath.getLast();
 
         if (!inode.isType(NodeType.DO_EXPR)) return false;
 
@@ -260,7 +260,7 @@ public class DAAPathFinder {
     }
 
     private PathElement getDoBranchNodeInLevel(DefaultMutableTreeNode level) {
-        IDataFlowNode inode = currentPath.getLast();
+	DataFlowNode inode = currentPath.getLast();
         if (!inode.isType(NodeType.DO_EXPR)) return null;
 
         int childCount = level.getChildCount();
@@ -283,7 +283,7 @@ public class DAAPathFinder {
     }
 
     private PathElement isNodeInLevel(DefaultMutableTreeNode level) {
-        IDataFlowNode inode = currentPath.getLast();
+	DataFlowNode inode = currentPath.getLast();
         DefaultMutableTreeNode child = (DefaultMutableTreeNode) level.getFirstChild();
 
         if (child != null) {

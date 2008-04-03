@@ -77,7 +77,7 @@ public class Linker {
 
         while (!continueBreakReturnStack.isEmpty()) {
             StackObject stackObject = (StackObject) continueBreakReturnStack.get(0);
-            IDataFlowNode node = stackObject.getDataFlowNode();
+            DataFlowNode node = stackObject.getDataFlowNode();
 
             switch (stackObject.getType()) {
             	case NodeType.THROW_STATEMENT:
@@ -85,12 +85,12 @@ public class Linker {
                 case NodeType.RETURN_STATEMENT:
                     // remove all children (should contain only one child)
                     node.removePathToChild(node.getChildren().get(0));
-                    IDataFlowNode lastNode = node.getFlow().get(node.getFlow().size() - 1);
+                    DataFlowNode lastNode = node.getFlow().get(node.getFlow().size() - 1);
                     node.addPathToChild(lastNode);
                     continueBreakReturnStack.remove(0);
                     break;
                 case NodeType.BREAK_STATEMENT:
-                    IDataFlowNode last = getNodeToBreakStatement(node);
+                    DataFlowNode last = getNodeToBreakStatement(node);
                     node.removePathToChild(node.getChildren().get(0));
                     node.addPathToChild(last);
                     continueBreakReturnStack.remove(0);
@@ -163,7 +163,7 @@ public class Linker {
         }
     }
 
-    private IDataFlowNode getNodeToBreakStatement(IDataFlowNode node) {
+    private DataFlowNode getNodeToBreakStatement(DataFlowNode node) {
         // What about breaks to labels above if statements?
         List bList = node.getFlow();
         int findEnds = 1; // ignore ends of other for's while's etc.
@@ -172,7 +172,7 @@ public class Linker {
         // find out index of the node where the path goes to after the break
         int index = bList.indexOf(node);
         for (; index < bList.size()-2; index++) {
-            IDataFlowNode n = (IDataFlowNode) bList.get(index);
+            DataFlowNode n = (DataFlowNode) bList.get(index);
             if (n.isType(NodeType.DO_EXPR) ||
                     n.isType(NodeType.FOR_INIT) ||
                     n.isType(NodeType.WHILE_EXPR) ||
@@ -199,7 +199,7 @@ public class Linker {
                     String label = node.getSimpleNode().getImage();
                     if (label == null || label.equals(parentNode.getImage())) {
                         node.removePathToChild(node.getChildren().get(0));
-                        IDataFlowNode last = (IDataFlowNode) bList.get(index + 1);
+                        DataFlowNode last = (DataFlowNode) bList.get(index + 1);
                         node.addPathToChild(last);
                         break;
                     }
@@ -210,24 +210,24 @@ public class Linker {
     }
 
     private void computeDo(int first, int last) {
-        IDataFlowNode doSt = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
-        IDataFlowNode doExpr = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
-        IDataFlowNode doFirst = doSt.getFlow().get(doSt.getIndex() + 1);
+	DataFlowNode doSt = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
+	DataFlowNode doExpr = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
+	DataFlowNode doFirst = doSt.getFlow().get(doSt.getIndex() + 1);
         if (doFirst.getIndex() != doExpr.getIndex()) {
             doExpr.addPathToChild(doFirst);
         }
     }
 
     private void computeFor(int firstIndex, int lastIndex) {
-        IDataFlowNode fExpr = null;
-        IDataFlowNode fUpdate = null;
-        IDataFlowNode fSt = null;
-        IDataFlowNode fEnd = null;
+	DataFlowNode fExpr = null;
+	DataFlowNode fUpdate = null;
+	DataFlowNode fSt = null;
+	DataFlowNode fEnd = null;
         boolean isUpdate = false;
 
         for (int i = firstIndex; i <= lastIndex; i++) {
             StackObject so = (StackObject) this.braceStack.get(i);
-            IDataFlowNode node = so.getDataFlowNode();
+            DataFlowNode node = so.getDataFlowNode();
 
             if (so.getType() == NodeType.FOR_EXPR) {
                 fExpr = node;
@@ -240,9 +240,9 @@ public class Linker {
                 fEnd = node;
             }
         }
-        IDataFlowNode end = fEnd.getFlow().get(fEnd.getIndex() + 1);
+        DataFlowNode end = fEnd.getFlow().get(fEnd.getIndex() + 1);
 
-        IDataFlowNode firstSt = fSt.getChildren().get(0);
+        DataFlowNode firstSt = fSt.getChildren().get(0);
 
         if (isUpdate) {
             if (fSt.getIndex() != fEnd.getIndex()) {
@@ -272,13 +272,13 @@ public class Linker {
         int diff = lastIndex - firstIndex;
         boolean defaultStatement = false;
 
-        IDataFlowNode sStart = ((StackObject) this.braceStack.get(firstIndex)).getDataFlowNode();
-        IDataFlowNode sEnd = ((StackObject) this.braceStack.get(lastIndex)).getDataFlowNode();
-        IDataFlowNode end = sEnd.getChildren().get(0);
+        DataFlowNode sStart = ((StackObject) this.braceStack.get(firstIndex)).getDataFlowNode();
+        DataFlowNode sEnd = ((StackObject) this.braceStack.get(lastIndex)).getDataFlowNode();
+        DataFlowNode end = sEnd.getChildren().get(0);
 
         for (int i = 0; i < diff - 2; i++) {
             StackObject so = (StackObject) this.braceStack.get(firstIndex + 2 + i);
-            IDataFlowNode node = so.getDataFlowNode();
+            DataFlowNode node = so.getDataFlowNode();
 
             sStart.addPathToChild(node.getChildren().get(0));
 
@@ -291,10 +291,10 @@ public class Linker {
     }
 
     private void computeWhile(int first, int last) {
-        IDataFlowNode wStart = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
-        IDataFlowNode wEnd = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
+	DataFlowNode wStart = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
+	DataFlowNode wEnd = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
 
-        IDataFlowNode end = wEnd.getFlow().get(wEnd.getIndex() + 1);
+	DataFlowNode end = wEnd.getFlow().get(wEnd.getIndex() + 1);
 
         if (wStart.getIndex() != wEnd.getIndex()) {
             end.reverseParentPathsTo(wStart);
@@ -303,12 +303,12 @@ public class Linker {
     }
 
     private void computeIf(int first, int second, int last) {
-        IDataFlowNode ifStart = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
-        IDataFlowNode ifEnd = ((StackObject) this.braceStack.get(second)).getDataFlowNode();
-        IDataFlowNode elseEnd = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
+	DataFlowNode ifStart = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
+	DataFlowNode ifEnd = ((StackObject) this.braceStack.get(second)).getDataFlowNode();
+	DataFlowNode elseEnd = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
 
-        IDataFlowNode elseStart = ifEnd.getFlow().get(ifEnd.getIndex() + 1);
-        IDataFlowNode end = elseEnd.getFlow().get(elseEnd.getIndex() + 1);
+	DataFlowNode elseStart = ifEnd.getFlow().get(ifEnd.getIndex() + 1);
+	DataFlowNode end = elseEnd.getFlow().get(elseEnd.getIndex() + 1);
 
         // if if-statement and else-statement contains statements or expressions
         if (ifStart.getIndex() != ifEnd.getIndex() &&
@@ -329,12 +329,12 @@ public class Linker {
     }
 
     private void computeIf(int first, int last) {
-        IDataFlowNode ifStart = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
-        IDataFlowNode ifEnd = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
+	DataFlowNode ifStart = ((StackObject) this.braceStack.get(first)).getDataFlowNode();
+	DataFlowNode ifEnd = ((StackObject) this.braceStack.get(last)).getDataFlowNode();
 
         // only if the if-statement contains another Statement or Expression
         if (ifStart.getIndex() != ifEnd.getIndex()) {
-            IDataFlowNode end = ifEnd.getFlow().get(ifEnd.getIndex() + 1);
+            DataFlowNode end = ifEnd.getFlow().get(ifEnd.getIndex() + 1);
             ifStart.addPathToChild(end);
         }
     }

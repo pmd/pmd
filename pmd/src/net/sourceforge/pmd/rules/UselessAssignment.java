@@ -1,17 +1,17 @@
 package net.sourceforge.pmd.rules;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
+import net.sourceforge.pmd.dfa.DataFlowNode;
 import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 public class UselessAssignment extends AbstractRule implements Executable {
 
@@ -42,9 +42,9 @@ public class UselessAssignment extends AbstractRule implements Executable {
 
     private static class Usage {
         public int accessType;
-        public IDataFlowNode node;
+        public DataFlowNode node;
 
-        public Usage(int accessType, IDataFlowNode node) {
+        public Usage(int accessType, DataFlowNode node) {
             this.accessType = accessType;
             this.node = node;
         }
@@ -57,9 +57,9 @@ public class UselessAssignment extends AbstractRule implements Executable {
     public void execute(CurrentPath path) {
         Map<String, Usage> hash = new HashMap<String, Usage>();
         //System.out.println("path size is " + path.size());
-        for (Iterator<IDataFlowNode> i = path.iterator(); i.hasNext();) {
+        for (Iterator<DataFlowNode> i = path.iterator(); i.hasNext();) {
             //System.out.println("i = " + i);
-            IDataFlowNode inode = i.next();
+            DataFlowNode inode = i.next();
             if (inode.getVariableAccess() == null) {
                 continue;
             }

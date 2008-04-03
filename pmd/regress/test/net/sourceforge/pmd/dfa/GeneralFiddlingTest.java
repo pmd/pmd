@@ -1,17 +1,17 @@
 package test.net.sourceforge.pmd.dfa;
 
-import org.junit.Test;
+import java.util.Iterator;
+import java.util.List;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.dfa.DataFlowNode;
-import net.sourceforge.pmd.dfa.IDataFlowNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
-import test.net.sourceforge.pmd.testframework.ParserTst;
 
-import java.util.Iterator;
-import java.util.List;
+import org.junit.Test;
+
+import test.net.sourceforge.pmd.testframework.ParserTst;
 
 public class GeneralFiddlingTest extends ParserTst {
 
@@ -19,7 +19,7 @@ public class GeneralFiddlingTest extends ParserTst {
     public void test1() throws Throwable {
         ASTCompilationUnit acu = buildDFA(TEST1);
         ASTMethodDeclarator meth = acu.findChildrenOfType(ASTMethodDeclarator.class).get(0);
-        IDataFlowNode n = meth.getDataFlowNode();
+        DataFlowNode n = meth.getDataFlowNode();
         List f = n.getFlow();
         for (Iterator i = f.iterator(); i.hasNext();) {
             DataFlowNode dfan = (DataFlowNode) i.next();

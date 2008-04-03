@@ -51,9 +51,9 @@ public class DaaRule extends AbstractRule implements Executable {
 
     private static class Usage {
         public int accessType;
-        public IDataFlowNode node;
+        public DataFlowNode node;
 
-        public Usage(int accessType, IDataFlowNode node) {
+        public Usage(int accessType, DataFlowNode node) {
             this.accessType = accessType;
             this.node = node;
         }
@@ -73,7 +73,7 @@ public class DaaRule extends AbstractRule implements Executable {
         this.rc = (RuleContext) data;
         this.daaRuleViolations = new ArrayList<DaaRuleViolation>();
 
-        final IDataFlowNode node = methodDeclaration.getDataFlowNode().getFlow().get(0);
+        final DataFlowNode node = methodDeclaration.getDataFlowNode().getFlow().get(0);
 
         final DAAPathFinder pathFinder = new DAAPathFinder(node, this, getIntProperty(maxPathDescriptor));
         pathFinder.run();
@@ -90,10 +90,10 @@ public class DaaRule extends AbstractRule implements Executable {
 
         final Map<String, Usage> hash = new HashMap<String, Usage>();
 
-        final Iterator<IDataFlowNode> pathIterator = path.iterator();
+        final Iterator<DataFlowNode> pathIterator = path.iterator();
         while (pathIterator.hasNext()) {
             // iterate all nodes in this path
-            IDataFlowNode inode = pathIterator.next();
+            DataFlowNode inode = pathIterator.next();
             if (inode.getVariableAccess() != null) {
                 // iterate all variables of this node
                 for (int g = 0; g < inode.getVariableAccess().size(); g++) {
@@ -119,7 +119,7 @@ public class DaaRule extends AbstractRule implements Executable {
      * @param va
      * @param o
      */
-    private void checkVariableAccess(IDataFlowNode inode, VariableAccess va, final Usage u) {
+    private void checkVariableAccess(DataFlowNode inode, VariableAccess va, final Usage u) {
         // get the start and end line
         final int startLine = u.node.getLine();
         final int endLine = inode.getLine();
