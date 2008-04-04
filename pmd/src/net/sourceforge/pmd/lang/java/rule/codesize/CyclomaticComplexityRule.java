@@ -71,7 +71,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
   }
 
   public Object visit(ASTIfStatement node, Object data) {
-    int boolCompIf = NpathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompIf = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
     // If statement always has a complexity of at least 1
     boolCompIf++;
 
@@ -87,7 +87,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
   }
 
   public Object visit(ASTForStatement node, Object data) {
-    int boolCompFor = NpathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompFor = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
     // For statement always has a complexity of at least 1
     boolCompFor++;
 
@@ -97,7 +97,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
   }
 
   public Object visit(ASTDoStatement node, Object data) {
-    int boolCompDo = NpathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompDo = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
     // Do statement always has a complexity of at least 1
     boolCompDo++;
 
@@ -109,7 +109,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
   public Object visit(ASTSwitchStatement node, Object data) {
     Entry entry = entryStack.peek();
 
-    int boolCompSwitch = NpathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
     entry.bumpDecisionPoints( boolCompSwitch );
 
     int childCount = node.jjtGetNumChildren();
@@ -132,7 +132,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
   }
 
   public Object visit(ASTWhileStatement node, Object data) {
-    int boolCompWhile = NpathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
+    int boolCompWhile = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
     // While statement always has a complexity of at least 1
     boolCompWhile++;
 
@@ -143,7 +143,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
 
   public Object visit(ASTConditionalExpression node, Object data) {
     if ( node.isTernary() ) {
-      int boolCompTern = NpathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
+      int boolCompTern = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
       // Ternary statement always has a complexity of at least 1
       boolCompTern++;
 

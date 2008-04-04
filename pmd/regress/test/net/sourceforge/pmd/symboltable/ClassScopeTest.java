@@ -34,7 +34,8 @@ public class ClassScopeTest extends STBBaseTst {
     // FIXME - these will break when this goes from Anonymous$1 to Foo$1
     @Test
     public void testAnonymousInnerClassName() {
-        ClassScope s = new ClassScope();
+        ClassScope s = new ClassScope("Foo");
+        s = new ClassScope();
         assertEquals("Anonymous$1", s.getClassName());
         s = new ClassScope();
         assertEquals("Anonymous$2", s.getClassName());

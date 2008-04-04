@@ -13,7 +13,7 @@ The Code Size Ruleset contains a collection of rules that find code size related
 <rule name="NPathComplexity"
       since="3.9"
       message="The method {0}() has an NPath complexity of {1}"
-      class="net.sourceforge.pmd.lang.java.rule.codesize.NpathComplexityRule"
+      class="net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NPathComplexity">
    <description>
    The NPath complexity of a method is the number of acyclic execution paths through that method.
