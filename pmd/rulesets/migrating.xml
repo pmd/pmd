@@ -422,7 +422,7 @@ public class GoodTest {
     <rule name="JUnitUseExpected"
           since="4.0"
           message="In JUnit4, use the @Test(expected) annotation to denote tests that should throw exceptions"
-          class="net.sourceforge.pmd.rules.migration.JUnitUseExpected"
+          class="net.sourceforge.pmd.lang.java.rule.migrating.JUnitUseExpectedRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/migrating.html#JUnitUseExpected">
       <description>
       </description>

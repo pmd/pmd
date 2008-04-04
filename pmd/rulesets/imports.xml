@@ -13,7 +13,7 @@ These rules deal with different problems that can occur with a class' import sta
   <rule name="DuplicateImports"
   		  since="0.5"
         message="Avoid duplicate imports such as ''{0}''"
-        class="net.sourceforge.pmd.rules.imports.DuplicateImportsRule"
+        class="net.sourceforge.pmd.lang.java.rule.imports.DuplicateImportsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#DuplicateImports">
     <description>
     Avoid duplicate import statements.
@@ -31,7 +31,7 @@ public class Foo {}
   <rule name="DontImportJavaLang"
   		  since="0.5"
         message="Avoid importing anything from the package 'java.lang'"
-        class="net.sourceforge.pmd.rules.imports.DontImportJavaLang"
+        class="net.sourceforge.pmd.lang.java.rule.imports.DontImportJavaLangRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#DontImportJavaLang">
     <description>
 Avoid importing anything from the package 'java.lang'.  These classes are automatically imported (JLS 7.5.3).
@@ -56,7 +56,7 @@ public class Foo {}
   <rule name="UnusedImports"
   		  since="1.0"
         message="Avoid unused imports such as ''{0}''"
-        class="net.sourceforge.pmd.rules.imports.UnusedImportsRule"
+        class="net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#UnusedImports">
     <description>
     Avoid unused import statements.
@@ -74,7 +74,7 @@ public class Foo {}
     <rule name="ImportFromSamePackage"
     		since="1.02"
          message="No need to import a type that lives in the same package"
-         class="net.sourceforge.pmd.rules.imports.ImportFromSamePackageRule"
+         class="net.sourceforge.pmd.lang.java.rule.imports.ImportFromSamePackageRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/imports.html#ImportFromSamePackage">
      <description>
  No need to import a type that lives in the same package.

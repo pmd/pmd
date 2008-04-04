@@ -12,7 +12,7 @@ These rules provide some strict guidelines about throwing and catching exception
    <rule name="AvoidCatchingThrowable"
    		since="1.2"
          message="A catch statement should never catch throwable since it includes errors."
-          class="net.sourceforge.pmd.rules.strictexception.AvoidCatchingThrowable"
+          class="net.sourceforge.pmd.lang.java.rule.strictexception.AvoidCatchingThrowableRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidCatchingThrowable">
       <description>
 This is dangerous because it casts too wide a net; it can catch things like OutOfMemoryError.
@@ -36,7 +36,7 @@ public class Foo {
    <rule name="SignatureDeclareThrowsException"
    		since="1.2"
          message="A method/constructor shouldn't explicitly throw java.lang.Exception"
-          class="net.sourceforge.pmd.rules.strictexception.ExceptionSignatureDeclaration"
+          class="net.sourceforge.pmd.lang.java.rule.strictexception.SignatureDeclareThrowsExceptionRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#SignatureDeclareThrowsException">
       <description>
 It is unclear which exceptions that can be thrown from the methods.
@@ -55,7 +55,7 @@ public void methodThrowingException() throws Exception {
     <rule name="ExceptionAsFlowControl"
     		 since="1.8"
           message="Avoid using exceptions as flow control."
-          class="net.sourceforge.pmd.rules.design.ExceptionAsFlowControl"
+          class="net.sourceforge.pmd.lang.java.rule.strictexception.ExceptionAsFlowControlRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#ExceptionAsFlowControl">
       <description>
           Using Exceptions as flow control leads to GOTOish code and obscures true exceptions when debugging.

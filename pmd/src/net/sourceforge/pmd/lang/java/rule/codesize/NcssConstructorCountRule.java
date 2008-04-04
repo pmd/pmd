@@ -1,0 +1,40 @@
+package net.sourceforge.pmd.lang.java.rule.codesize;
+
+import java.util.Set;
+
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
+import net.sourceforge.pmd.stat.DataPoint;
+import net.sourceforge.pmd.util.NumericConstants;
+
+/**
+ * Non-commented source statement counter for constructors.
+ * 
+ * @author Jason Bennett
+ */
+public class NcssConstructorCountRule extends AbstractNcssCountRule {
+
+  /**
+   * Count constructor declarations. This includes any explicit super() calls.
+   */
+  public NcssConstructorCountRule() {
+    super( ASTConstructorDeclaration.class );
+  }
+
+  public Object visit(ASTExplicitConstructorInvocation node, Object data) {
+    return NumericConstants.ONE;
+  }
+
+  protected void makeViolations(RuleContext ctx, Set<DataPoint> p) {
+    for ( DataPoint point: p ) {
+      // TODO need to put class name or constructor ID in string
+      addViolation(
+          ctx,
+          point.getNode(),
+          new String[] {
+              String.valueOf( ( (ASTConstructorDeclaration) point.getNode() ).getParameterCount() ),
+              String.valueOf( (int) point.getScore() ) } );
+    }
+  }
+}

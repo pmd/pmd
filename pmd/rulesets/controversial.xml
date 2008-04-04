@@ -52,7 +52,7 @@ public class Foo {
     <rule name="NullAssignment"
     		 since="1.02"
           message="Assigning an Object to null is a code smell.  Consider refactoring."
-          class="net.sourceforge.pmd.rules.design.NullAssignmentRule"
+          class="net.sourceforge.pmd.lang.java.rule.controversial.NullAssignmentRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#NullAssignment">
       <description>
  Assigning a "null" to a variable (outside of its declaration) is usually
@@ -81,7 +81,7 @@ public class Foo {
     <rule name="OnlyOneReturn"
     		since="1.0"
          message="A method should have only one exit point, and that should be the last statement in the method"
-         class="net.sourceforge.pmd.rules.design.OnlyOneReturnRule"
+         class="net.sourceforge.pmd.lang.java.rule.controversial.OnlyOneReturnRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#OnlyOneReturn">
      <description>
 A method should have only one exit point, and that should be the last statement in the method.
@@ -101,39 +101,10 @@ A method should have only one exit point, and that should be the last statement 
      </example>
      </rule>
 
-    <rule name="UnusedModifier"
-    		since="1.02"
-         message="Avoid modifiers which are implied by the context"
-         class="net.sourceforge.pmd.rules.UnusedModifier"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UnusedModifier">
-     <description>
- Fields in interfaces are automatically public static final, and
- methods are public abstract.
- Classes or interfaces nested in an interface are automatically public
- and static (all nested interfaces are automatically static).
- For historical reasons, modifiers which are implied by the context
- are accepted by the compiler, but are superfluous.
-     </description>
-        <priority>3</priority>
-     <example>
- <![CDATA[
-public interface Foo {
- public abstract void bar(); // both abstract and public are ignored by the compiler
- public static final int X = 0; // public, static, and final all ignored
- public static class Bar {} // public, static ignored
- public static interface Baz {} // ditto
-}
-public class Bar {
- public static interface Baz {} // static ignored
-}
- ]]>
-     </example>
-     </rule>
-
     <rule name="AssignmentInOperand"
       since="1.03"
       message="Avoid assignments in operands"
-      class="net.sourceforge.pmd.rules.AssignmentInOperand"
+      class="net.sourceforge.pmd.lang.java.rule.controversial.AssignmentInOperandRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AssignmentInOperand">
   <description>
 Avoid assignments in operands; this can make code more complicated and harder to read.
@@ -193,7 +164,7 @@ public class Foo {
     <rule name="DontImportSun"
     	 since="1.5"
        message="Avoid importing anything from the 'sun.*' packages"
-       class="net.sourceforge.pmd.rules.imports.DontImportSun"
+       class="net.sourceforge.pmd.lang.java.rule.controversial.DontImportSunRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DontImportSun">
        <description>
 Avoid importing anything from the 'sun.*' packages.  These packages are not portable and are likely to change.
@@ -210,7 +181,7 @@ public class Foo {}
     <rule name="SuspiciousOctalEscape"
     	 since="1.5"
        message="Suspicious decimal characters following octal escape in string literal"
-          class="net.sourceforge.pmd.rules.SuspiciousOctalEscape"
+          class="net.sourceforge.pmd.lang.java.rule.controversial.SuspiciousOctalEscapeRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#SuspiciousOctalEscape">
       <description>
 A suspicious octal escape sequence was found inside a String literal.
@@ -368,7 +339,7 @@ public class Foo {
     <rule name="DataflowAnomalyAnalysis"
     		  since="3.9"
               message="Found ''{0}''-anomaly for variable ''{1}'' (lines ''{2}''-''{3}'')."
-              class="net.sourceforge.pmd.dfa.DaaRule"
+              class="net.sourceforge.pmd.lang.java.rule.controversial.DataflowAnomalyAnalysisRule"
               dfa="true"
               externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DataflowAnomalyAnalysis">
           <description>The dataflow analysis tracks local definitions, undefinitions and references to variables on different paths on the data flow.

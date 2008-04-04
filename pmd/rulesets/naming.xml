@@ -111,7 +111,7 @@ public class ShortMethod {
     <rule name="VariableNamingConventions"
     since="1.2"
     message="{0} variable {1} should begin with {2}"
-    class="net.sourceforge.pmd.rules.VariableNamingConventions"
+    class="net.sourceforge.pmd.lang.java.rule.naming.VariableNamingConventionsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#VariableNamingConventions">
         <description>
 A variable naming conventions rule - customize this to your liking.  Currently, it
@@ -139,7 +139,7 @@ public class Foo {
     <rule name="MethodNamingConventions"
     			  since="1.2"
               message="Method name does not begin with a lower case character."
-              class="net.sourceforge.pmd.rules.MethodNamingConventions"
+              class="net.sourceforge.pmd.lang.java.rule.naming.MethodNamingConventionsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#MethodNamingConventions">
           <description>
 Method names should always begin with a lower case character, and should not contain underscores.
@@ -158,7 +158,7 @@ public class Foo {
     <rule name="ClassNamingConventions"
     		 since="1.2"
           message="Class names should begin with an uppercase character"
-          class="net.sourceforge.pmd.rules.ClassNamingConventions"
+          class="net.sourceforge.pmd.lang.java.rule.naming.ClassNamingConventionsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ClassNamingConventions">
       <description>
 Class names should always begin with an upper case character.
@@ -202,7 +202,7 @@ public abstract class Foo { // should be AbstractFoo
     <rule name="AvoidDollarSigns"
     		  since="1.5"
            message="Avoid using dollar signs in variable/method/class/interface names"
-           class="net.sourceforge.pmd.rules.naming.AvoidDollarSigns"
+           class="net.sourceforge.pmd.lang.java.rule.naming.AvoidDollarSignsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidDollarSigns">
        <description>
 Avoid using dollar signs in variable/method/class/interface names.
@@ -219,7 +219,7 @@ Avoid using dollar signs in variable/method/class/interface names.
     <rule name="MethodWithSameNameAsEnclosingClass"
     		 since="1.5"
           message="Classes should not have non-constructor methods with the same name as the class"
-          class="net.sourceforge.pmd.rules.MethodWithSameNameAsEnclosingClass"
+          class="net.sourceforge.pmd.lang.java.rule.naming.MethodWithSameNameAsEnclosingClassRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#MethodWithSameNameAsEnclosingClass">
        <description>
 Non-constructor methods should not have the same name as the enclosing class.
@@ -240,7 +240,7 @@ public class MyClass {
     <rule name="SuspiciousHashcodeMethodName"
     		 since="1.5"
           message="The method name and return type are suspiciously close to hashCode()"
-          class="net.sourceforge.pmd.rules.naming.SuspiciousHashcodeMethodName"
+          class="net.sourceforge.pmd.lang.java.rule.naming.SuspiciousHashcodeMethodNameRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#SuspiciousHashcodeMethodName">
        <description>
 The method name and return type are suspiciously close to hashCode(), which
@@ -343,7 +343,7 @@ public class Foo {
     <rule name="AvoidFieldNameMatchingTypeName"
     		 since="3.0"
           message="It is somewhat confusing to have a field name matching the declaring class name"
-          class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingTypeName"
+          class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingTypeNameRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidFieldNameMatchingTypeName">
       <description>
 It is somewhat confusing to have a field name matching the declaring class name.
@@ -363,7 +363,7 @@ public class Foo extends Bar {
     <rule name="AvoidFieldNameMatchingMethodName"
     		 since="3.0"
           message="It is somewhat confusing to have a field name with the same name as a method"
-          class="net.sourceforge.pmd.rules.AvoidFieldNameMatchingMethodName"
+          class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingMethodNameRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidFieldNameMatchingMethodName">
       <description>
 It is somewhat confusing to have a field name with the same name as a method.

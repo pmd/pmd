@@ -291,7 +291,7 @@ public class Foo {
     <rule name="UnnecessaryConversionTemporary"
     		 since="0.1"
           message="Avoid unnecessary temporaries when converting primitives to Strings"
-          class="net.sourceforge.pmd.rules.UnnecessaryConversionTemporary"
+          class="net.sourceforge.pmd.lang.java.rule.basic.UnnecessaryConversionTemporaryRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryConversionTemporary">
       <description>
 Avoid unnecessary temporaries when converting primitives to Strings
@@ -312,7 +312,7 @@ public String convert(int x) {
     <rule name="OverrideBothEqualsAndHashcode"
     		 since="0.4"
           message="Ensure you override both equals() and hashCode()"
-          class="net.sourceforge.pmd.rules.OverrideBothEqualsAndHashcode"
+          class="net.sourceforge.pmd.lang.java.rule.basic.OverrideBothEqualsAndHashcodeRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OverrideBothEqualsAndHashcode">
       <description>
 Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
@@ -350,7 +350,7 @@ public class Foo {
     <rule name="DoubleCheckedLocking"
     		 since="1.04"
           message="Double checked locking is not thread safe in Java."
-          class="net.sourceforge.pmd.rules.DoubleCheckedLocking"
+          class="net.sourceforge.pmd.lang.java.rule.basic.DoubleCheckedLockingRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#DoubleCheckedLocking">
       <description>
 Partially created objects can be returned by the Double Checked Locking pattern when used in Java.
@@ -446,7 +446,7 @@ public class Foo {
     <rule name="UnnecessaryReturn"
     		 since="1.3"
           message="Avoid unnecessary return statements"
-          class="net.sourceforge.pmd.rules.basic.UnnecessaryReturn"
+          class="net.sourceforge.pmd.lang.java.rule.basic.UnnecessaryReturnRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryReturn">
       <description>
 Avoid unnecessary return statements
@@ -574,7 +574,7 @@ public class MyClass {
     <rule name="BooleanInstantiation"
     	 since="1.2"
        message="Avoid instantiating Boolean objects; reference Boolean.TRUE or Boolean.FALSE or call Boolean.valueOf() instead."
-       class="net.sourceforge.pmd.rules.basic.BooleanInstantiation"
+       class="net.sourceforge.pmd.lang.java.rule.basic.BooleanInstantiationRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BooleanInstantiation">
    <description>
 Avoid instantiating Boolean objects; you can reference Boolean.TRUE, Boolean.FALSE, or call Boolean.valueOf() instead.
@@ -662,7 +662,7 @@ public class Foo {
     <rule name="UselessOverridingMethod"
     since="3.3"
     message="Overriding method merely calls super"
-    class="net.sourceforge.pmd.rules.UselessOverridingMethod"
+    class="net.sourceforge.pmd.lang.java.rule.basic.UselessOverridingMethodRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOverridingMethod">
         <description>
 The overriding method merely calls the same method defined in a superclass
@@ -790,7 +790,7 @@ public class Test {
     <rule  name="UselessOperationOnImmutable"
            since="3.5"
            message="An operation on an Immutable object (BigDecimal or BigInteger) won't change the object itself"
-           class="net.sourceforge.pmd.rules.UselessOperationOnImmutable"
+           class="net.sourceforge.pmd.lang.java.rule.basic.UselessOperationOnImmutableRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOperationOnImmutable">
       <description>
     An operation on an Immutable object (BigDecimal or BigInteger) won't change the object itself. The
@@ -968,7 +968,7 @@ Avoid using ThreadGroup; although it is intended to be used in a threaded enviro
     <rule name="BrokenNullCheck"
           since="3.8"
           message="Method call on object which may be null"
-          class="net.sourceforge.pmd.rules.basic.BrokenNullCheck"
+          class="net.sourceforge.pmd.lang.java.rule.basic.BrokenNullCheckRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BrokenNullCheck">
         <description>
 The null check is broken since it will throw a NullPointerException itself.
@@ -995,7 +995,7 @@ class Foo {
   since="3.9"
   message="Don't create instances of already existing
 BigInteger and BigDecimal (ZERO, ONE, TEN)"
-  class="net.sourceforge.pmd.rules.basic.BigIntegerInstantiation"
+  class="net.sourceforge.pmd.lang.java.rule.basic.BigIntegerInstantiationRule"
   externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BigIntegerInstantiation">
   <description>
 Don't create instances of already existing BigInteger
@@ -1023,7 +1023,7 @@ public class Test {
     <rule   name="AvoidUsingOctalValues"
             since="3.9"
             message="Do not start a literal by 0 unless it's an octal value"
-            class="net.sourceforge.pmd.rules.basic.AvoidUsingOctalValues"
+            class="net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingOctalValuesRule"
             externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingOctalValues">
     <description>
     	<![CDATA[
@@ -1046,7 +1046,7 @@ public class Test {
     <rule   name="AvoidUsingHardCodedIP"
             since="4.1"
             message="Do not hard code IPv4 or IPv6 addresses, even 127.0.0.1 !"
-            class="net.sourceforge.pmd.rules.basic.AvoidUsingHardCodedIP"
+            class="net.sourceforge.pmd.lang.java.rule.basic.AvoidUsingHardCodedIPRule"
             externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidUsingHardCodedIP">
 	    <description>
 	    	<![CDATA[
@@ -1146,7 +1146,7 @@ public class Test {
 
 	<rule name="AvoidMultipleUnaryOperators"
 		since="4.2"
-		class="net.sourceforge.pmd.rules.basic.AvoidMultipleUnaryOperators"
+		class="net.sourceforge.pmd.lang.java.rule.basic.AvoidMultipleUnaryOperatorsRule"
 		message="Using multiple unary operators may be a bug, and/or is confusing."
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidMultipleUnaryOperators">
         <description>

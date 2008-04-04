@@ -78,7 +78,7 @@ public class Foo extends TestCase {
     <rule name="JUnitAssertionsShouldIncludeMessage"
     		 since="1.04"
           message="JUnit assertions should include a message"
-          class="net.sourceforge.pmd.rules.junit.JUnitAssertionsShouldIncludeMessage"
+          class="net.sourceforge.pmd.lang.java.rule.junit.JUnitAssertionsShouldIncludeMessageRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#JUnitAssertionsShouldIncludeMessage">
       <description>
 JUnit assertions should include a message - i.e., use the three argument version of
@@ -102,7 +102,7 @@ public class Foo extends TestCase {
     <rule name="JUnitTestsShouldIncludeAssert"
     		 since="2.0"
           message="JUnit tests should include assert() or fail()"
-          class="net.sourceforge.pmd.rules.junit.JUnitTestsShouldContainAsserts"
+          class="net.sourceforge.pmd.lang.java.rule.junit.JUnitTestsShouldIncludeAssertRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#JUnitTestsShouldIncludeAssert">
         <description>
 JUnit tests should include at least one assertion.  This makes the tests more robust, and
@@ -126,7 +126,7 @@ public class Foo extends TestCase {
     <rule name="TestClassWithoutTestCases"
     		 since="3.0"
           message="This class name ends with 'Test' but contains no test cases"
-          class="net.sourceforge.pmd.rules.junit.TestClassWithoutTestCases"
+          class="net.sourceforge.pmd.lang.java.rule.junit.TestClassWithoutTestCasesRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#TestClassWithoutTestCases">
       <description>
 Test classes end with the suffix Test. Having a non-test class with that name is

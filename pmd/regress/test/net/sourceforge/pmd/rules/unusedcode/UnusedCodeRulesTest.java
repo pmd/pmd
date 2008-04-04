@@ -12,6 +12,7 @@ public class UnusedCodeRulesTest extends SimpleAggregatorTst {
         addRule("unusedcode", "UnusedLocalVariable");
         addRule("unusedcode", "UnusedPrivateField");
         addRule("unusedcode", "UnusedPrivateMethod");
+        addRule("unusedcode", "UnusedModifier");
     }
 
     public static junit.framework.Test suite() {

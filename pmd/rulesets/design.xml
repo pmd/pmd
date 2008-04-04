@@ -13,7 +13,7 @@ The Design Ruleset contains a collection of rules that find questionable designs
   <rule name="UseSingleton"
   		  since="0.3"
         message="All methods are static.  Consider using Singleton instead.  Alternatively, you could add a private constructor or make the class abstract to silence this warning."
-        class="net.sourceforge.pmd.rules.design.UseSingleton"
+        class="net.sourceforge.pmd.lang.java.rule.design.UseSingletonRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseSingleton">
     <description>
     	<![CDATA[
@@ -38,7 +38,7 @@ public class MaybeASingleton {
   <rule name="SimplifyBooleanReturns"
   		  since="0.9"
         message="Avoid unnecessary if..then..else statements when returning a boolean"
-        class="net.sourceforge.pmd.rules.SimplifyBooleanReturns"
+        class="net.sourceforge.pmd.lang.java.rule.design.SimplifyBooleanReturnsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyBooleanReturns">
     <description>
 Avoid unnecessary if..then..else statements when returning a boolean.
@@ -130,7 +130,7 @@ public class Foo {
   <rule name="AvoidDeeplyNestedIfStmts"
   		  since="1.0"
         message="Deeply nested if..then statements are hard to read"
-        class="net.sourceforge.pmd.rules.AvoidDeeplyNestedIfStmtsRule"
+        class="net.sourceforge.pmd.lang.java.rule.design.AvoidDeeplyNestedIfStmtsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidDeeplyNestedIfStmts">
     <description>
 Deeply nested if..then statements are hard to read.
@@ -160,7 +160,7 @@ public class Foo {
     <rule name="AvoidReassigningParameters"
     	  since="1.0"
         message="Avoid reassigning parameters such as ''{0}''"
-        class="net.sourceforge.pmd.rules.AvoidReassigningParameters"
+        class="net.sourceforge.pmd.lang.java.rule.design.AvoidReassigningParametersRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidReassigningParameters">
     <description>
 Reassigning values to parameters is a questionable practice.  Use a temporary local variable instead.
@@ -180,7 +180,7 @@ public class Foo {
     <rule name="SwitchDensity"
     		 since="1.02"
           message="A high ratio of statements to labels in a switch statement.  Consider refactoring."
-          class="net.sourceforge.pmd.rules.design.SwitchDensityRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.SwitchDensityRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SwitchDensity">
       <description>
  A high ratio of statements to labels in a switch statement implies that the switch
@@ -213,7 +213,7 @@ public class Foo {
     <rule name="ConstructorCallsOverridableMethod"
     		 since="1.04"
           message="Overridable {0} called during object construction"
-          class="net.sourceforge.pmd.rules.ConstructorCallsOverridableMethod"
+          class="net.sourceforge.pmd.lang.java.rule.design.ConstructorCallsOverridableMethodRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ConstructorCallsOverridableMethod">
       <description>
 Calling overridable methods during construction poses a risk of invoking methods on an
@@ -253,7 +253,7 @@ public class JuniorClass extends SeniorClass {
     <rule name="AccessorClassGeneration"
     		 since="1.04"
           message="Avoid instantiation through private constructors from outside of the constructor's class."
-          class="net.sourceforge.pmd.rules.AccessorClassGeneration"
+          class="net.sourceforge.pmd.lang.java.rule.design.AccessorClassGenerationRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AccessorClassGeneration">
       <description>
 Instantiation by way of private constructors from outside of the constructor's class often causes the generation of an accessor.
@@ -313,7 +313,7 @@ public class Foo {
   <rule name="CloseResource"
   		  since="1.2.2"
         message="Ensure that resources like this {0} object are closed after use"
-        class="net.sourceforge.pmd.rules.CloseResource"
+        class="net.sourceforge.pmd.lang.java.rule.design.CloseResourceRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource">
     <description>
 Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
@@ -562,7 +562,7 @@ class Bar {
       <rule name="ConfusingTernary"
         since="1.9"
         message="Avoid if (x != y) ..; else ..;"
-        class="net.sourceforge.pmd.rules.design.ConfusingTernary"
+        class="net.sourceforge.pmd.lang.java.rule.design.ConfusingTernaryRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ConfusingTernary">
         <description>
 In an "if" expression with an "else" clause, avoid negation in
@@ -625,7 +625,7 @@ public class Foo {
     <rule name="IdempotentOperations"
     		 since="2.0"
           message="Avoid idempotent operations (like assigning a variable to itself)."
-          class="net.sourceforge.pmd.rules.IdempotentOperations"
+          class="net.sourceforge.pmd.lang.java.rule.design.IdempotentOperationsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#IdempotentOperations">
       <description>
 Avoid idempotent operations - they are have no effect.
@@ -678,7 +678,7 @@ public class Foo {
     <rule name="ImmutableField"
     		 since="2.0"
           message="Private field ''{0}'' could be made final; it is only initialized in the declaration or constructor."
-          class="net.sourceforge.pmd.rules.design.ImmutableField"
+          class="net.sourceforge.pmd.lang.java.rule.design.ImmutableFieldRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ImmutableField">
       <description>
 Identifies private fields whose values never change once they are initialized either in the declaration of the field or by
@@ -779,7 +779,7 @@ public final class Bar {
      <rule name="AssignmentToNonFinalStatic"
      		  since="2.2"
            message="Possible unsafe assignment to a non-final static field in a constructor."
-           class="net.sourceforge.pmd.rules.design.AssignmentToNonFinalStatic"
+           class="net.sourceforge.pmd.lang.java.rule.design.AssignmentToNonFinalStaticRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AssignmentToNonFinalStatic">
        <description>
 Identifies a possible unsafe usage of a static field.
@@ -1082,7 +1082,7 @@ class Foo {
 <rule  name="CompareObjectsWithEquals"
   since="3.2"
   message="Use equals() to compare object references."
-  class="net.sourceforge.pmd.rules.design.CompareObjectsWithEquals"
+  class="net.sourceforge.pmd.lang.java.rule.design.CompareObjectsWithEqualsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CompareObjectsWithEquals">
   <description>
  Use equals() to compare object references; avoid comparing them with ==.
@@ -1148,7 +1148,7 @@ class Foo {
     <rule name="UnnecessaryLocalBeforeReturn"
           since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
-          class="net.sourceforge.pmd.rules.design.UnnecessaryLocalBeforeReturn"
+          class="net.sourceforge.pmd.lang.java.rule.design.UnnecessaryLocalBeforeReturnRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn">
       <description>
 Avoid unnecessarily creating local variables
@@ -1169,7 +1169,7 @@ Avoid unnecessarily creating local variables
     <rule name="NonThreadSafeSingleton"
     since="3.4"
     message="Singleton is not thread safe"
-    class="net.sourceforge.pmd.rules.design.NonThreadSafeSingleton"
+    class="net.sourceforge.pmd.lang.java.rule.design.NonThreadSafeSingletonRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#NonThreadSafeSingleton">
         <description>
 Non-thread safe singletons can result in bad state changes. Eliminate
@@ -1304,7 +1304,7 @@ public Foo() {
   <rule name="UnsynchronizedStaticDateFormatter"
       since="3.6"
       message="Static DateFormatter objects should be accessed in a synchronized manner"
-      class="net.sourceforge.pmd.rules.design.UnsynchronizedStaticDateFormatter"
+      class="net.sourceforge.pmd.lang.java.rule.design.UnsynchronizedStaticDateFormatterRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnsynchronizedStaticDateFormatter">
       <description>
 SimpleDateFormat is not synchronized. Sun recomends separate format instances
@@ -1330,7 +1330,7 @@ public class Foo {
   <rule name="PreserveStackTrace"
       since="3.7"
       message="Caught exception is rethrown, original stack trace may be lost"
-      class="net.sourceforge.pmd.rules.design.PreserveStackTrace"
+      class="net.sourceforge.pmd.lang.java.rule.design.PreserveStackTraceRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PreserveStackTrace">
       <description>
 Throwing a new exception from a catch block without passing the original exception into the
@@ -1363,7 +1363,7 @@ public class Foo {
     <rule name="UseCollectionIsEmpty"
          since="3.9"
          message="Substitute calls to size() == 0 (or size() != 0) with calls to isEmpty()"
-         class="net.sourceforge.pmd.rules.design.UseCollectionIsEmpty"
+         class="net.sourceforge.pmd.lang.java.rule.design.UseCollectionIsEmptyRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseCollectionIsEmpty">
          <description>
 The isEmpty() method on java.util.Collection is provided to see if a collection has any elements.
@@ -1480,7 +1480,7 @@ rather than code the appropriate one.
     <rule name="SingularField"
           since="3.1"
           message="Perhaps ''{0}'' could be replaced by a local variable."
-          class="net.sourceforge.pmd.rules.design.SingularField"
+          class="net.sourceforge.pmd.lang.java.rule.design.SingularFieldRule"
       	externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField">
 		<description>
       		<![CDATA[
@@ -1626,7 +1626,7 @@ public class abstract Example {
 	<rule 	name="TooManyHttpFilter"
 	         since="4.2"
           	message="Too many Http Filter inside a web application can make very it complex to understand and to deploy."
-          	class="net.sourceforge.pmd.rules.design.GenericClassCounterRule"
+          	class="net.sourceforge.pmd.lang.java.rule.design.GenericClassCounterRule"
       		externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#TooManyHttpFilter">
 		<description>
 			<![CDATA[

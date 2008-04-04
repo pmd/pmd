@@ -13,7 +13,7 @@ The Code Size Ruleset contains a collection of rules that find code size related
 <rule name="NPathComplexity"
       since="3.9"
       message="The method {0}() has an NPath complexity of {1}"
-      class="net.sourceforge.pmd.rules.design.NpathComplexity"
+      class="net.sourceforge.pmd.lang.java.rule.codesize.NpathComplexityRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NPathComplexity">
    <description>
    The NPath complexity of a method is the number of acyclic execution paths through that method.
@@ -37,7 +37,7 @@ The Code Size Ruleset contains a collection of rules that find code size related
  <rule name="ExcessiveMethodLength"
  		 since="0.6"
        message="Avoid really long methods."
-       class="net.sourceforge.pmd.rules.design.LongMethodRule"
+       class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveMethodLengthRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#ExcessiveMethodLength">
    <description>
 Violations of this rule usually indicate that the method is doing
@@ -65,7 +65,7 @@ public class Foo {
  <rule name="ExcessiveParameterList"
  		 since="0.9"
        message="Avoid really long parameter lists."
-       class="net.sourceforge.pmd.rules.design.LongParameterListRule"
+       class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveParameterListRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#ExcessiveParameterList">
    <description>
 Long parameter lists can indicate that a new object should be created to
@@ -93,7 +93,7 @@ public class Foo {
  <rule name="ExcessiveClassLength"
  		 since="0.6"
        message="Avoid really long classes."
-       class="net.sourceforge.pmd.rules.design.LongClassRule"
+       class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessiveClassLengthRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#ExcessiveClassLength">
    <description>
 Long Class files are indications that the class may be trying to
@@ -119,7 +119,7 @@ public class Foo {
     <rule 	name="CyclomaticComplexity"
     			since="1.03"
       		message = "The {0} ''{1}'' has a Cyclomatic Complexity of {2}."
-	      	class="net.sourceforge.pmd.rules.CyclomaticComplexity"
+	      	class="net.sourceforge.pmd.lang.java.rule.codesize.CyclomaticComplexityRule"
 	      	externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#CyclomaticComplexity">
    <description>
    		<![CDATA[
@@ -186,7 +186,7 @@ public class Foo {
     <rule name="ExcessivePublicCount"
     since="1.04"
     message="This class has a bunch of public methods and attributes"
-    class="net.sourceforge.pmd.rules.ExcessivePublicCount"
+    class="net.sourceforge.pmd.lang.java.rule.codesize.ExcessivePublicCountRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#ExcessivePublicCount">
     <description>
 A large number of public methods and attributes declared in a class can indicate the
@@ -215,7 +215,7 @@ public class Foo {
     <rule name="TooManyFields"
     		 since="3.0"
           message="Too many fields"
-          class="net.sourceforge.pmd.rules.design.TooManyFields"
+          class="net.sourceforge.pmd.lang.java.rule.codesize.TooManyFieldsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#TooManyFields">
       <description>
 Classes that have too many fields could be redesigned to have fewer fields, possibly
@@ -240,7 +240,7 @@ public class Person {
 
 <rule name="NcssMethodCount" message="The method {0}() has an NCSS line count of {1}"
    since="3.9"
-   class="net.sourceforge.pmd.rules.codesize.NcssMethodCount"
+   class="net.sourceforge.pmd.lang.java.rule.codesize.NcssMethodCountRule"
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssMethodCount">
     <description>
 This rule uses the NCSS (Non Commenting Source Statements) algorithm to determine the number of lines
@@ -271,7 +271,7 @@ public class Foo extends Bar {
 
 <rule name="NcssTypeCount" message="The type has an NCSS line count of {0}"
    since="3.9"
-   class="net.sourceforge.pmd.rules.codesize.NcssTypeCount"
+   class="net.sourceforge.pmd.lang.java.rule.codesize.NcssTypeCountRule"
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssTypeCount">
     <description>
 This rule uses the NCSS (Non Commenting Source Statements) algorithm to determine the number of lines
@@ -301,7 +301,7 @@ public class Foo extends Bar {
 
 <rule name="NcssConstructorCount" message="The constructor with {0} parameters has an NCSS line count of {1}"
    since="3.9"
-   class="net.sourceforge.pmd.rules.codesize.NcssConstructorCount"
+   class="net.sourceforge.pmd.lang.java.rule.codesize.NcssConstructorCountRule"
    externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#NcssConstructorCount">
     <description>
 This rule uses the NCSS (Non Commenting Source Statements) algorithm to determine the number of lines

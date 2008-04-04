@@ -14,7 +14,7 @@ The JavaBeans Ruleset catches instances of bean rules not being followed.
   <rule name="BeanMembersShouldSerialize"
   		  since="1.1"
         message="Found non-transient, non-static member. Please mark as transient or provide accessors."
-        class="net.sourceforge.pmd.rules.BeanMembersShouldSerializeRule"
+        class="net.sourceforge.pmd.lang.java.rule.javabeans.BeanMembersShouldSerializeRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/javabeans.html#BeanMembersShouldSerialize">
     <description>
 If a class is a bean, or is referenced by a bean directly or indirectly

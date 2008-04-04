@@ -36,7 +36,9 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSetWriter;
-import net.sourceforge.pmd.rules.UnusedLocalVariableRule;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 import org.junit.Before;
@@ -228,60 +230,57 @@ public class RuleSetFactoryTest {
 	}
 
 	@Test
-	public void testAllPMDBuiltInRulesNeedSinceAndCheckURL() throws IOException, RuleSetNotFoundException,
+	public void testAllPMDBuiltInRulesMeetConventions() throws IOException, RuleSetNotFoundException,
 			ParserConfigurationException, SAXException {
-		int invalidExternalInfoURL = 0;
 		int invalidSinceAttributes = 0;
+		int invalidExternalInfoURL = 0;
+		int invalidClassName = 0;
 		String messages = "";
+		// TODO Need to handle each Language
 		List<String> ruleSetFileNames = getRuleSetFileNames();
 		for (String fileName : ruleSetFileNames) {
 			RuleSet ruleSet = loadRuleSetByFileName(fileName);
 			for (Rule rule : ruleSet.getRules()) {
+				Language language = ruleSet.getLanguage();
+				if (language == null) {
+				    language = Language.JAVA;
+				}
+				String group = fileName.substring(fileName.indexOf('/')+1);
+				group = group.substring(0, group.indexOf(".xml"));
+				if (group.indexOf('-') >= 0) {
+				    group = group.substring(0, group.indexOf('-'));
+				}
+
 				// Is since missing ?
 				if (rule.getSince() == null) {
 					invalidSinceAttributes++;
-					messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'since' attribute\n";
+					messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'since' attribute" + PMD.EOL;
 				}
 				// Is URL valid ?
 				if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
-					messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute\n";
+					invalidExternalInfoURL++;
+					messages += "Rule " + fileName + "/" + rule.getName() + " is missing 'externalInfoURL' attribute" + PMD.EOL;
 				}
 				else {
 					  String expectedExternalInfoURL = "http://pmd.sourceforge.net/rules/" + fileName.replaceAll("rulesets/","").replaceAll(".xml","") + ".html#" + rule.getName();
 					  if ( ! expectedExternalInfoURL.equals(rule.getExternalInfoUrl())) {
-							messages += "Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'externalInfoURL' value (" + rule.getExternalInfoUrl() + "), it should be:" + expectedExternalInfoURL + "\n";
 							invalidExternalInfoURL++;
+							messages += "Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'externalInfoURL' value (" + rule.getExternalInfoUrl() + "), it should be:" + expectedExternalInfoURL + PMD.EOL;
 					  }
+				}
+				// Proper class name/packaging?
+				String expectedClassName = "net.sourceforge.pmd.lang." + language.getTerseName() + ".rule." + group + "." + rule.getName() + "Rule";
+				if (!rule.getRuleClass().equals(expectedClassName) && !rule.getRuleClass().equals(XPathRule.class.getName())) {
+					invalidClassName++;
+					messages += "Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'class' value (" + rule.getRuleClass() + "), it should be:" + expectedClassName + PMD.EOL;
 				}
 			}
 		}
 		// We do this at the end to ensure we test ALL the rules before failing the test
-		if ( invalidExternalInfoURL > 0 || invalidSinceAttributes > 0 ) {
-			fail("All built-in PMD rules need 'since' attribute ("+ invalidSinceAttributes + " are missing) and a proper ExternalURLInfo (" + invalidExternalInfoURL + " are invalid)" + "\n" + messages);
+		if ( invalidSinceAttributes > 0 || invalidExternalInfoURL > 0 || invalidClassName > 0 ) {
+			fail("All built-in PMD rules need 'since' attribute ("+ invalidSinceAttributes + " are missing), a proper ExternalURLInfo (" + invalidExternalInfoURL + " are invalid) and a class name meeting conventions ("+ invalidClassName + " are invalid)" + PMD.EOL + messages);
 		}
 	}
-
-
-	// FUTURE Enable this test when we're ready to rename rules
-	/*
-	@Test
-	public void testAllPMDBuiltInRulesShouldEndWithRule() throws IOException, RuleSetNotFoundException,
-			ParserConfigurationException, SAXException {
-		boolean allValid = true;
-		List<String> ruleSetFileNames = getRuleSetFileNames();
-		for (String fileName : ruleSetFileNames) {
-			RuleSet ruleSet = loadRuleSetByFileName(fileName);
-			for (Rule rule : ruleSet.getRules()) {
-				if (!rule.getRuleClass().endsWith("Rule")) {
-					allValid = false;
-					System.err.println("Rule " + fileName + "/" + rule.getName()
-							+ " does not have 'ruleClass' that ends with 'Rule': " + rule.getRuleClass());
-				}
-			}
-		}
-		assertTrue("All built-in PMD rule classes should end with 'Rule'.", allValid);
-	}
-	*/
 
 	@Test
 	public void testXmlSchema() throws IOException, RuleSetNotFoundException, ParserConfigurationException,

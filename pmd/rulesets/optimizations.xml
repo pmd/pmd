@@ -12,7 +12,7 @@ These rules deal with different optimizations that generally apply to performanc
     <rule name="LocalVariableCouldBeFinal"
     	 since="2.2"
 	    message="Local variable ''{0}'' could be declared final"
-          class="net.sourceforge.pmd.rules.optimization.LocalVariableCouldBeFinal"
+          class="net.sourceforge.pmd.lang.java.rule.optimizations.LocalVariableCouldBeFinalRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#LocalVariableCouldBeFinal">
       <description>
 A local variable assigned only once can be declared final.
@@ -33,7 +33,7 @@ public class Bar {
     <rule name="MethodArgumentCouldBeFinal"
     		 since="2.2"
           message="Parameter ''{0}'' is not assigned and could be declared final"
-          class="net.sourceforge.pmd.rules.optimization.MethodArgumentCouldBeFinal"
+          class="net.sourceforge.pmd.lang.java.rule.optimizations.MethodArgumentCouldBeFinalRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#MethodArgumentCouldBeFinal">
       <description>
 A method argument that is never assigned can be declared final.
@@ -52,7 +52,7 @@ public void foo (String param) {
   <rule name="AvoidInstantiatingObjectsInLoops"
   		  since="2.2"
         message="Avoid instantiating new objects inside loops"
-        class="net.sourceforge.pmd.rules.optimization.AvoidInstantiatingObjectsInLoops"
+        class="net.sourceforge.pmd.lang.java.rule.optimizations.AvoidInstantiatingObjectsInLoopsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#AvoidInstantiatingObjectsInLoops">
     <description>
 Detects when a new object is created inside a loop
@@ -144,7 +144,7 @@ public class Foo {
     <rule name="UseStringBufferForStringAppends"
     		 since="3.1"
           message="Prefer StringBuffer over += for concatenating strings"
-          class="net.sourceforge.pmd.rules.optimization.UseStringBufferForStringAppends"
+          class="net.sourceforge.pmd.lang.java.rule.optimizations.UseStringBufferForStringAppendsRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseStringBufferForStringAppends">
            <description>
 Finds usages of += for appending strings.
@@ -290,7 +290,7 @@ public class Test {
     <rule name="UnnecessaryWrapperObjectCreation"
           since="3.8"
           message="Unnecessary wrapper object creation"
-          class="net.sourceforge.pmd.rules.optimization.UnnecessaryWrapperObjectCreation"
+          class="net.sourceforge.pmd.lang.java.rule.optimizations.UnnecessaryWrapperObjectCreationRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UnnecessaryWrapperObjectCreation">
       <description>
 Parsing method should be called directy instead.

@@ -91,7 +91,7 @@ response.setHeader("Pragma", "No-cache");
 	<rule name="NoInlineStyleInformation"
 	     since="3.6"
         message="Avoid having style information in JSP files."
-		class="net.sourceforge.pmd.jsp.rules.NoInlineStyleInformation"
+		class="net.sourceforge.pmd.lang.jsp.rule.basic.NoInlineStyleInformationRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoInlineStyleInformation">
 		<description><![CDATA[ Style information should be put in CSS files, not in JSPs.
 			Therefore, don't use <B> or <FONT> tags, or attributes like "align='center'". ]]> </description>
@@ -218,7 +218,7 @@ response.setHeader("Pragma", "No-cache");
 	<rule name="DuplicateJspImports"
 	     since="3.7"
         message="Avoid duplicate imports such as ''{0}''"
-		class="net.sourceforge.pmd.jsp.rules.DuplicateJspImports"
+		class="net.sourceforge.pmd.lang.jsp.rule.basic.DuplicateJspImportsRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#DuplicateJspImports">
 		<description><![CDATA[Avoid duplicate import statements inside JSP's. ]]> </description>
 		<priority>3</priority>

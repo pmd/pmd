@@ -8,8 +8,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.rules.ImportWrapper;
-import net.sourceforge.pmd.rules.imports.UnusedImportsRule;
+import net.sourceforge.pmd.lang.java.rule.ImportWrapper;
+import net.sourceforge.pmd.lang.java.rule.imports.UnusedImportsRule;
 
 public class UnusedImports extends UnusedImportsRule {
 

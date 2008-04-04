@@ -179,7 +179,7 @@ public class Foo {
     <rule name="AvoidCallingFinalize"
     		 since="3.0"
           message="Avoid calling finalize() explicitly"
-          class="net.sourceforge.pmd.rules.AvoidCallingFinalize"
+          class="net.sourceforge.pmd.lang.java.rule.finalizers.AvoidCallingFinalizeRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#AvoidCallingFinalize">
       <description>
 Object.finalize() is called by the garbage collector on an object when garbage collection determines

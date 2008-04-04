@@ -6,7 +6,7 @@ package test.net.sourceforge.pmd.rules.strings;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.strings.AvoidDuplicateLiteralsRule;
+import net.sourceforge.pmd.lang.java.rule.strings.AvoidDuplicateLiteralsRule;
 
 import org.junit.Test;
 

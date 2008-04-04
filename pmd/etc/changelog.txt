@@ -47,6 +47,11 @@ TODO - Release blockers - Must implement before this release can be finished
         net.sourceforge.pmd.typeresolution
         net.sourceforge.pmd.properties
    o Move AST from CPD for CPP into pmd.lang.cpp package.
+   o Need a JUnit test to check for "dead" Rules, that is those not used by any RuleSet.
+   o Rule JUnit tests should verify the Test class follows expected naming
+     conventions just like the Rules need to.
+   o Need to organize the ruleset XML files based upon Language.  Need to come
+     up with a solution for the "rulesets.properties" files.
 
 ---
 
@@ -82,7 +87,9 @@ The following is relatively complete list of the major changes:
 	   Renamed - net.sourceforge.pmd.sourcetypehandlers.VisitorStarter to net.sourceforge.pmd.lang.VisitorStarter
 	   Renamed - net.sourceforge.pmd.sourcetypehandlers.* into net.sourceforge.pmd.lang.{Language}
 	   Renamed - net.sourceforge.pmd.ast.* into net.sourceforge.pmd.lang.java.ast.*
+	   Renamed - net.sourceforge.pmd.rules.* into net.sourceforge.pmd.lang.java.rule.* and updated to follow conventions
 	   Renamed - net.sourceforge.pmd.jsp.ast.* into net.sourceforge.pmd.lang.jsp.ast.*
+	   Renamed - net.sourceforge.pmd.jsp.rules.* into net.sourceforge.pmd.lang.jsp.ast.rule.* and updated to follow conventions
 	   Deleted - net.sourceforge.pmd.CommonAbstractRule
 	   Deleted - net.sourceforge.pmd.SourceType
 	   Deleted - net.sourceforge.pmd.SourceTypeDiscoverer

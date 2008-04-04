@@ -13,7 +13,7 @@ These rules deal with different problems that can occur with manipulation of the
     <rule name="AvoidDuplicateLiterals"
     	  since="1.0"
         message="The String literal {0} appears {1} times in this file; the first occurrence is on line {2}"
-        class="net.sourceforge.pmd.rules.strings.AvoidDuplicateLiteralsRule"
+        class="net.sourceforge.pmd.lang.java.rule.strings.AvoidDuplicateLiteralsRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AvoidDuplicateLiterals">
     <description>
 Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
@@ -40,7 +40,7 @@ public class Foo {
     <rule name="StringInstantiation"
     	  since="1.0"
         message="Avoid instantiating String objects; this is usually unnecessary."
-        class="net.sourceforge.pmd.rules.strings.StringInstantiation"
+        class="net.sourceforge.pmd.lang.java.rule.strings.StringInstantiationRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringInstantiation">
     <description>
 Avoid instantiating String objects; this is usually unnecessary.
@@ -58,7 +58,7 @@ public class Foo {
    <rule name="StringToString"
    	  since="1.0"
         message="Avoid calling toString() on String objects; this is unnecessary."
-        class="net.sourceforge.pmd.rules.strings.StringToStringRule"
+        class="net.sourceforge.pmd.lang.java.rule.strings.StringToStringRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#StringToString">
     <description>
     Avoid calling toString() on String objects; this is unnecessary.
@@ -79,7 +79,7 @@ public class Foo {
     <rule name="InefficientStringBuffering"
    	  since="3.4"
         message="Avoid concatenating nonliterals in a StringBuffer constructor or append()."
-        class="net.sourceforge.pmd.rules.strings.InefficientStringBuffering"
+        class="net.sourceforge.pmd.lang.java.rule.strings.InefficientStringBufferingRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InefficientStringBuffering">
     <description>
 Avoid concatenating non literals in a StringBuffer constructor or append().
@@ -103,7 +103,7 @@ public class Foo {
     <rule name="UnnecessaryCaseChange"
           since="3.3"
           message="Using equalsIgnoreCase() is cleaner than using toUpperCase/toLowerCase().equals()."
-           class="net.sourceforge.pmd.rules.strings.UnnecessaryCaseChange"
+           class="net.sourceforge.pmd.lang.java.rule.strings.UnnecessaryCaseChangeRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UnnecessaryCaseChange">
        <description>
 Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
@@ -126,7 +126,7 @@ Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()
     <rule name="UseStringBufferLength"
           since="3.4"
           message="This is an inefficient use of StringBuffer.toString; call StringBuffer.length instead."
-          class="net.sourceforge.pmd.rules.strings.UseStringBufferLength"
+          class="net.sourceforge.pmd.lang.java.rule.strings.UseStringBufferLengthRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseStringBufferLength">
       <description>
  Use StringBuffer.length() to determine StringBuffer length rather than using StringBuffer.toString().equals("")
@@ -153,7 +153,7 @@ public class Foo {
     <rule name="AppendCharacterWithChar"
         since="3.5"
         message="Avoid appending characters as strings in StringBuffer.append."
-        class="net.sourceforge.pmd.rules.strings.AppendCharacterWithChar"
+        class="net.sourceforge.pmd.lang.java.rule.strings.AppendCharacterWithCharRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AppendCharacterWithChar">
     <description>
 Avoid concatenating characters as strings in StringBuffer.append.
@@ -179,7 +179,7 @@ public class Foo {
         <rule name="ConsecutiveLiteralAppends"
         since="3.5"
         message="StringBuffer.append is called {0} consecutive times with literal Strings. Use a single append with a single String."
-        class="net.sourceforge.pmd.rules.strings.ConsecutiveLiteralAppends"
+        class="net.sourceforge.pmd.lang.java.rule.strings.ConsecutiveLiteralAppendsRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#ConsecutiveLiteralAppends">
     <description>
 Consecutively calling StringBuffer.append with String literals
@@ -205,7 +205,7 @@ public class Foo {
     <rule name="UseIndexOfChar"
         since="3.5"
         message="String.indexOf(char) is faster than String.indexOf(String)."
-        class="net.sourceforge.pmd.rules.strings.UseIndexOfChar"
+        class="net.sourceforge.pmd.lang.java.rule.strings.UseIndexOfCharRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UseIndexOfChar">
     <description>
 Use String.indexOf(char) when checking for the index of a single character; it executes faster.
@@ -229,7 +229,7 @@ public class Foo {
     <rule name="InefficientEmptyStringCheck"
         since="3.6"
         message="String.trim().length()==0 is an inefficient way to validate an empty String."
-        class="net.sourceforge.pmd.rules.strings.InefficientEmptyStringCheck"
+        class="net.sourceforge.pmd.lang.java.rule.strings.InefficientEmptyStringCheckRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InefficientEmptyStringCheck">
     <description>
 String.trim().length() is an inefficient way to check if a String is really empty, as it
@@ -254,7 +254,7 @@ public class Foo {
     <rule name="InsufficientStringBufferDeclaration"
         since="3.6"
         message="StringBuffer constructor is initialized with size {0}, but has at least {1} characters appended."
-        class="net.sourceforge.pmd.rules.strings.InsufficientStringBufferDeclaration"
+        class="net.sourceforge.pmd.lang.java.rule.strings.InsufficientStringBufferDeclarationRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#InsufficientStringBufferDeclaration">
     <description>
 Failing to pre-size a StringBuffer properly could cause it to re-size many times
@@ -281,7 +281,7 @@ public class Foo {
     <rule name="UselessStringValueOf"
           since="3.8"
           message="No need to call String.valueOf to append to a string."
-          class="net.sourceforge.pmd.rules.strings.UselessStringValueOf"
+          class="net.sourceforge.pmd.lang.java.rule.strings.UselessStringValueOfRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#UselessStringValueOf">
       <description>
 No need to call String.valueOf to append to a string; just use the valueOf() argument directly.

@@ -26,7 +26,6 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
         addRule("controversial", "SuspiciousOctalEscape");
         addRule("controversial", "UnnecessaryConstructor");
         addRule("controversial", "UnnecessaryParentheses");
-        addRule("controversial", "UnusedModifier");
     }
 
     public static junit.framework.Test suite() {

@@ -43,7 +43,7 @@ public class Foo {
     <!--
     <rule name="UselessAssignment"
            message="This assignment to ''{0}'' is useless"
-           class="net.sourceforge.pmd.rules.UselessAssignment"
+           class="net.sourceforge.pmd.lang.java.rule.UselessAssignment"
            dfa="true">
        <description>
 This assignment is useless.
@@ -67,7 +67,7 @@ public class Foo {
 
      <rule name="PositionalIterator"
            message="Avoid positional iterators"
-           class="net.sourceforge.pmd.rules.design.PositionalIteratorRule">
+           class="net.sourceforge.pmd.lang.java.rule.design.PositionalIteratorRule">
        <description>
        Avoid positional iterators.   This doesn't work yet,
        it breaks on stuff like this:

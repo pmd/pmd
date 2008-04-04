@@ -13,7 +13,7 @@ The Java Logging ruleset contains a collection of rules that find questionable u
     <rule name="MoreThanOneLogger"
     	   since="2.0"
          message="Class contains more than one logger."
-         class="net.sourceforge.pmd.rules.MoreThanOneLogger"
+         class="net.sourceforge.pmd.lang.java.rule.logging.MoreThanOneLoggerRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#MoreThanOneLogger">
      <description>
 Normally only one logger is used in each class.
