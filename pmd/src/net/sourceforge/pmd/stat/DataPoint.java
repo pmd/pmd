@@ -3,9 +3,9 @@
  */
 package net.sourceforge.pmd.stat;
 
-import net.sourceforge.pmd.ast.SimpleNode;
-
 import java.util.Random;
+
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * @author David Dixon-Peugh
@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class DataPoint implements Comparable<DataPoint> {
 
-    private SimpleNode node;
+    private Node node;
     private int random;
     private double score;
     private String message;
@@ -38,11 +38,11 @@ public class DataPoint implements Comparable<DataPoint> {
         return random - rhs.random;
     }
 
-    public SimpleNode getNode() {
+    public Node getNode() {
         return node;
     }
 
-    public void setNode(SimpleNode node) {
+    public void setNode(Node node) {
         this.node = node;
     }
 

@@ -1,73 +1,58 @@
 package test.net.sourceforge.pmd.jaxen;
 
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.ast.JavaParserVisitor;
-import net.sourceforge.pmd.ast.Node;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.jaxen.Attribute;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
+import net.sourceforge.pmd.lang.ast.AbstractNode;
 
 import org.jaxen.Context;
 import org.jaxen.FunctionCallException;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MatchesFunctionTest implements Node {
-
-    public void jjtOpen() {
-    }
-
-    public void jjtClose() {
-    }
-
-    public void jjtSetParent(Node n) {
-    }
-
-    public Node jjtGetParent() {
-        return null;
-    }
-
-    public void jjtAddChild(Node n, int i) {
-    }
-
-    public Node jjtGetChild(int i) {
-        return null;
-    }
-
-    public int jjtGetNumChildren() {
-        return 0;
-    }
-
-    public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return null;
-    }
-
-    private String className;
-
-    public String getValue() {
-        return className;
-    }
+public class MatchesFunctionTest {
+    
+    public static class MyNode extends AbstractNode
+    {
+	private String className;
+	public MyNode() {
+	    super(1);
+	}
+	public String toString() {
+	    return "MyNode";
+	}
+	public void setClassName(String className) {
+	   this.className = className;
+	}
+	public String getClassName() {
+	    return className;
+	}
+    };
 
     @Test
     public void testMatch() throws FunctionCallException, NoSuchMethodException {
-        className = "Foo";
-        assertTrue(tryRegexp("Foo") instanceof List);
+	MyNode myNode = new MyNode();
+	myNode.setClassName("Foo");
+        assertTrue(tryRegexp(myNode, "Foo") instanceof List);
     }
 
     @Test
     public void testNoMatch() throws FunctionCallException, NoSuchMethodException {
-        className = "bar";
-        assertTrue(tryRegexp("Foo") instanceof Boolean);
-        className = "FobboBar";
-        assertTrue(tryRegexp("Foo") instanceof Boolean);
+	MyNode myNode = new MyNode();
+	myNode.setClassName("bar");
+        assertTrue(tryRegexp(myNode, "Foo") instanceof Boolean);
+	myNode.setClassName("FobboBar");
+        assertTrue(tryRegexp(myNode, "Foo") instanceof Boolean);
     }
 
-    private Object tryRegexp(String exp) throws FunctionCallException, NoSuchMethodException {
+    private Object tryRegexp(MyNode myNode, String exp) throws FunctionCallException, NoSuchMethodException {
         MatchesFunction function = new MatchesFunction();
         List<Object> list = new ArrayList<Object>();
         List<Attribute> attrs = new ArrayList<Attribute>();
-        attrs.add(new Attribute(this, "matches", getClass().getMethod("getValue", new Class[0])));
+        attrs.add(new Attribute(myNode, "matches", myNode.getClass().getMethod("getClassName", new Class[0])));
         list.add(attrs);
         list.add(exp);
         Context c = new Context(null);

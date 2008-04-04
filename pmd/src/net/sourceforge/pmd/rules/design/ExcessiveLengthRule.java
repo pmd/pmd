@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.ast.SimpleJavaNode;
+import net.sourceforge.pmd.ast.JavaNode;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.StatisticalRule;
 
@@ -24,7 +24,7 @@ public class ExcessiveLengthRule extends StatisticalRule {
         this.nodeClass = nodeClass;
     }
 
-    public Object visit(SimpleJavaNode node, Object data) {
+    public Object visit(JavaNode node, Object data) {
         if (nodeClass.isInstance(node)) {
             DataPoint point = new DataPoint();
             point.setNode(node);

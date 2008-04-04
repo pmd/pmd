@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.jsp.ast;
 
-public class ASTJspDirective extends SimpleNode {
+public class ASTJspDirective extends AbstractJspNode {
 
     /* BEGIN CUSTOM CODE */
 

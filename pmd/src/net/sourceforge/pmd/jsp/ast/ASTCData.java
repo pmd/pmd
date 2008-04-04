@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.jsp.ast;
 
-public class ASTCData extends SimpleNode {
+public class ASTCData extends AbstractJspNode {
     public ASTCData(int id) {
         super(id);
     }

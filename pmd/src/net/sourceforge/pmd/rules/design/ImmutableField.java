@@ -3,6 +3,12 @@
  */
 package net.sourceforge.pmd.rules.design;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
@@ -14,15 +20,9 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Olander
@@ -54,15 +54,15 @@ public class ImmutableField extends AbstractRule {
     }
 
     private boolean initializedWhenDeclared(VariableNameDeclaration field) {
-        return !field.getAccessNodeParent().findChildrenOfType(ASTVariableInitializer.class).isEmpty();
+        return !((Node)field.getAccessNodeParent()).findChildrenOfType(ASTVariableInitializer.class).isEmpty();
     }
 
     private int initializedInConstructor(List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
         int result = MUTABLE, methodInitCount = 0;
-        Set<SimpleNode> consSet = new HashSet<SimpleNode>();
+        Set<Node> consSet = new HashSet<Node>();
         for (NameOccurrence occ: usages) {
             if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {
-                SimpleNode node = occ.getLocation();
+        	Node node = occ.getLocation();
                 ASTConstructorDeclaration constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
                     if (inLoopOrTry(node)) {
@@ -97,14 +97,14 @@ public class ImmutableField extends AbstractRule {
         return result;
     }
 
-    private boolean inLoopOrTry(SimpleNode node) {
+    private boolean inLoopOrTry(Node node) {
         return node.getFirstParentOfType(ASTTryStatement.class) != null ||
                 node.getFirstParentOfType(ASTForStatement.class) != null ||
                 node.getFirstParentOfType(ASTWhileStatement.class) != null ||
                 node.getFirstParentOfType(ASTDoStatement.class) != null;
     }
 
-    private boolean inAnonymousInnerClass(SimpleNode node) {
+    private boolean inAnonymousInnerClass(Node node) {
         ASTClassOrInterfaceBodyDeclaration parent = node.getFirstParentOfType(ASTClassOrInterfaceBodyDeclaration.class);
         return parent != null && parent.isAnonymousInnerClass();
     }

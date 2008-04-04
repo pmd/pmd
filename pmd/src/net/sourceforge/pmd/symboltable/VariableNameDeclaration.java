@@ -10,8 +10,8 @@ import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.AccessNode;
 import net.sourceforge.pmd.ast.Dimensionable;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.TypeNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration {
 
@@ -34,21 +34,21 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
     }
 
     public boolean isPrimitiveType() {
-        return getAccessNodeParent().jjtGetChild(0).jjtGetChild(0) instanceof ASTPrimitiveType;
+        return ((Node)getAccessNodeParent()).jjtGetChild(0).jjtGetChild(0) instanceof ASTPrimitiveType;
     }
 
     public String getTypeImage() {
         if (isPrimitiveType()) {
-            return ((SimpleNode) (getAccessNodeParent().jjtGetChild(0).jjtGetChild(0))).getImage();
+            return ((Node) getAccessNodeParent()).jjtGetChild(0).jjtGetChild(0).getImage();
         }
-        return ((SimpleNode) getAccessNodeParent().jjtGetChild(0).jjtGetChild(0).jjtGetChild(0)).getImage();
+        return ((Node) getAccessNodeParent()).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).getImage();
     }
 
     /**
      * Note that an array of primitive types (int[]) is a reference type.
      */
     public boolean isReferenceType() {
-        return getAccessNodeParent().jjtGetChild(0).jjtGetChild(0) instanceof ASTReferenceType;
+        return ((Node)getAccessNodeParent()).jjtGetChild(0).jjtGetChild(0) instanceof ASTReferenceType;
     }
 
     public AccessNode getAccessNodeParent() {

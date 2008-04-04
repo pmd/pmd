@@ -3,14 +3,14 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class ImportWrapper {
-    private SimpleNode node;
+    private Node node;
     private String name;
     private String fullname;
 
-    public ImportWrapper(String fullname, String name, SimpleNode node) {
+    public ImportWrapper(String fullname, String name, Node node) {
         this.fullname = fullname;
         this.name = name;
         this.node = node;
@@ -40,7 +40,7 @@ public class ImportWrapper {
         return fullname;
     }
 
-    public SimpleNode getNode() {
+    public Node getNode() {
         return node;
     }
 }

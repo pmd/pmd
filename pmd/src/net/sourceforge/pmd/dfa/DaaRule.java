@@ -3,24 +3,24 @@
  */
 package net.sourceforge.pmd.dfa;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
-import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
-import net.sourceforge.pmd.dfa.pathfinder.Executable;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
-import net.sourceforge.pmd.properties.IntegerProperty;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
+import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
+import net.sourceforge.pmd.dfa.pathfinder.Executable;
+import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.properties.IntegerProperty;
 
 /**
  * Starts path search for each method and runs code if found.
@@ -124,8 +124,8 @@ public class DaaRule extends AbstractRule implements Executable {
         final int startLine = u.node.getLine();
         final int endLine = inode.getLine();
 
-        final SimpleNode lastNode = inode.getSimpleNode();
-        final SimpleNode firstNode = u.node.getSimpleNode();
+        final Node lastNode = inode.getNode();
+        final Node firstNode = u.node.getNode();
 
         if (va.accessTypeMatches(u.accessType) && va.isDefinition() ) { // DD
             addDaaViolation(rc, lastNode, "DD", va.getVariableName(), startLine, endLine);
@@ -143,7 +143,7 @@ public class DaaRule extends AbstractRule implements Executable {
      * @param node the node that produces the violation
      * @param msg  specific message to put in the report
      */
-    private final void addDaaViolation(Object data, SimpleNode node, String type, String var, int startLine, int endLine) {
+    private final void addDaaViolation(Object data, Node node, String type, String var, int startLine, int endLine) {
         if (!maxNumberOfViolationsReached()
                 && !violationAlreadyExists(type, var, startLine, endLine)
                 && node != null) {

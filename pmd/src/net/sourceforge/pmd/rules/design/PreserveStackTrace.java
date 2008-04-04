@@ -1,5 +1,9 @@
 package net.sourceforge.pmd.rules.design;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTArgumentList;
@@ -10,25 +14,21 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class PreserveStackTrace extends AbstractRule {
 
     private List<ASTName> nameNodes = new ArrayList<ASTName>();
 
     public Object visit(ASTCatchStatement node, Object data) {
-        String target = (((SimpleNode) node.jjtGetChild(0).jjtGetChild(1)).getImage());
+        String target = node.jjtGetChild(0).jjtGetChild(1).getImage();
         List<ASTThrowStatement> lstThrowStatements = node.findChildrenOfType(ASTThrowStatement.class);
         for (ASTThrowStatement throwStatement : lstThrowStatements) {
-            SimpleNode sn = (SimpleNode) throwStatement.jjtGetChild(0).jjtGetChild(0);
-            if (sn.getClass().equals(ASTCastExpression.class)) {
-                ASTPrimaryExpression expr = (ASTPrimaryExpression) sn.jjtGetChild(1);
+            Node n = throwStatement.jjtGetChild(0).jjtGetChild(0);
+            if (n.getClass().equals(ASTCastExpression.class)) {
+                ASTPrimaryExpression expr = (ASTPrimaryExpression) n.jjtGetChild(1);
                 if (expr.jjtGetNumChildren() > 1 && expr.jjtGetChild(1).getClass().equals(ASTPrimaryPrefix.class)) {
                     RuleContext ctx = (RuleContext) data;
                     addViolation(ctx, throwStatement);
@@ -40,16 +40,16 @@ public class PreserveStackTrace extends AbstractRule {
             if (args != null) {
                 ck(data, target, throwStatement, args);
             } else {
-                SimpleNode child = (SimpleNode) throwStatement.jjtGetChild(0);
+        	Node child = throwStatement.jjtGetChild(0);
                 while (child != null && child.jjtGetNumChildren() > 0
                         && !child.getClass().equals(ASTName.class)) {
-                    child = (SimpleNode) child.jjtGetChild(0);
+                    child = child.jjtGetChild(0);
                 }
                 if (child != null){
                     if( child.getClass().equals(ASTName.class) && (!target.equals(child.getImage()) && !child.hasImageEqualTo(target + ".fillInStackTrace"))) {
                         Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((ASTName) child).getScope().getVariableDeclarations();
 	                    for (VariableNameDeclaration decl: vars.keySet()) {
-	                        args = ((SimpleNode) decl.getNode().jjtGetParent())
+	                        args = decl.getNode().jjtGetParent()
 	                                .getFirstChildOfType(ASTArgumentList.class);
 	                        if (args != null) {
 	                            ck(data, target, throwStatement, args);

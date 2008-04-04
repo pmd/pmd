@@ -6,7 +6,8 @@ package net.sourceforge.pmd.dfa;
 import net.sourceforge.pmd.JavaRuleViolation;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.JavaNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * The RuleViolation is extended by the VariableName. The VariableName 
@@ -21,8 +22,8 @@ public class DaaRuleViolation extends JavaRuleViolation {
     private int endLine;
     private String type;
     
-    public DaaRuleViolation(Rule rule, RuleContext ctx, SimpleNode node, String type, String msg, String var, int beginLine, int endLine) {
-        super(rule, ctx, node, msg);
+    public DaaRuleViolation(Rule rule, RuleContext ctx, Node node, String type, String msg, String var, int beginLine, int endLine) {
+        super(rule, ctx, (JavaNode)node, msg);
         this.variableName = var;
         this.beginLine = beginLine;
         this.endLine = endLine;

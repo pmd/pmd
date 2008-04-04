@@ -22,9 +22,9 @@ import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
+import net.sourceforge.pmd.ast.JavaNode;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * @author raik
@@ -37,7 +37,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
 
     private Structure dataFlow;
 
-    public void buildDataFlowFor(SimpleJavaNode node) {
+    public void buildDataFlowFor(JavaNode node) {
         if (!(node instanceof ASTMethodDeclaration) && !(node instanceof ASTConstructorDeclaration)) {
             throw new RuntimeException("Can't build a data flow for anything other than a method or a constructor");
         }
@@ -147,7 +147,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
             dataFlow.pushOnStack(NodeType.FOR_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
         } else if (node.jjtGetParent() instanceof ASTDoStatement) {
             dataFlow.pushOnStack(NodeType.DO_BEFORE_FIRST_STATEMENT, dataFlow.getLast());
-            dataFlow.createNewNode((SimpleNode) node.jjtGetParent());
+            dataFlow.createNewNode(node.jjtGetParent());
         }
 
         super.visit(node, data);
@@ -240,7 +240,7 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
      * The method handles the special "for" loop. It creates always an
      * expression node even if the loop looks like for(;;).
      * */
-    private void addForExpressionNode(SimpleNode node, Structure dataFlow) {
+    private void addForExpressionNode(Node node, Structure dataFlow) {
         ASTForStatement parent = (ASTForStatement) node.jjtGetParent();
         boolean hasExpressionChild = false;
         boolean hasForInitNode = false;

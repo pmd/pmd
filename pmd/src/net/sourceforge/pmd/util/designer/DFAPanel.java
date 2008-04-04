@@ -20,9 +20,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.DataFlowNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.LineGetter;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -33,7 +33,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
         private static final int NODE_RADIUS = 12;
         private static final int NODE_DIAMETER = 2 * NODE_RADIUS;
 
-        private SimpleNode node;
+        private Node node;
 
         private int x = 150;
         private int y = 50;
@@ -153,7 +153,7 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
             this.lines = h;
         }
 
-        public void setMethod(SimpleNode node) {
+        public void setMethod(Node node) {
             this.node = node;
         }
 

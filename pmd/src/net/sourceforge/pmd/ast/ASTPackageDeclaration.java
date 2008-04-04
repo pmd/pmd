@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTPackageDeclaration extends SimpleJavaNode {
+public class ASTPackageDeclaration extends AbstractJavaNode {
     public ASTPackageDeclaration(int id) {
         super(id);
     }

@@ -1,9 +1,9 @@
 package net.sourceforge.pmd.util.viewer.gui.menu;
 
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.util.viewer.model.ViewerModel;
+import javax.swing.JPopupMenu;
 
-import javax.swing.*;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 
 /**
  * context sensetive menu for the AST Panel
@@ -13,9 +13,9 @@ import javax.swing.*;
  */
 public class ASTNodePopupMenu extends JPopupMenu {
     private ViewerModel model;
-    private SimpleNode node;
+    private Node node;
 
-    public ASTNodePopupMenu(ViewerModel model, SimpleNode node) {
+    public ASTNodePopupMenu(ViewerModel model, Node node) {
         this.model = model;
         this.node = node;
         init();

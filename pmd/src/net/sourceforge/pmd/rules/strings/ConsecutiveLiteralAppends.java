@@ -3,6 +3,11 @@
  */
 package net.sourceforge.pmd.rules.strings;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
@@ -19,18 +24,12 @@ import net.sourceforge.pmd.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.TypeNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.IntegerProperty;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * This rule finds concurrent calls to StringBuffer.append where String literals
@@ -92,7 +91,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
         Node lastBlock = getFirstParentBlock(node);
         Node currentBlock = lastBlock;
         Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope().getVariableDeclarations();
-        SimpleNode rootNode = null;
+        Node rootNode = null;
         // only want the constructor flagged if it's really containing strings
         if (concurrentCount == 1) {
             rootNode = node;
@@ -100,7 +99,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: decls.entrySet()) {
             List<NameOccurrence> decl = entry.getValue();
             for (NameOccurrence no: decl) {
-                SimpleNode n = no.getLocation();
+        	Node n = no.getLocation();
 
                 currentBlock = getFirstParentBlock(n);
 
@@ -114,7 +113,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
                 ASTPrimaryExpression s = n.getFirstParentOfType(ASTPrimaryExpression.class);
                 int numChildren = s.jjtGetNumChildren();
                 for (int jx = 0; jx < numChildren; jx++) {
-                    SimpleNode sn = (SimpleNode) s.jjtGetChild(jx);
+                    Node sn = s.jjtGetChild(jx);
                     if (!(sn instanceof ASTPrimarySuffix)
                             || sn.getImage() != null) {
                         continue;
@@ -162,8 +161,8 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
     private int checkConstructor(ASTVariableDeclaratorId node, Object data) {
         Node parent = node.jjtGetParent();
         if (parent.jjtGetNumChildren() >= 2) {
-            ASTArgumentList list = ((SimpleNode) parent
-                    .jjtGetChild(1)).getFirstChildOfType(ASTArgumentList.class);
+            ASTArgumentList list = parent
+                    .jjtGetChild(1).getFirstChildOfType(ASTArgumentList.class);
             if (list != null) {
                 ASTLiteral literal = list.getFirstChildOfType(ASTLiteral.class);
                 if (!isAdditive(list) && literal != null
@@ -177,7 +176,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
     }
 
     private int processAdditive(Object data, int concurrentCount,
-                                SimpleNode sn, SimpleNode rootNode) {
+	    Node sn, Node rootNode) {
         ASTAdditiveExpression additive = sn.getFirstChildOfType(ASTAdditiveExpression.class);
         if (additive == null) {
             return 0;
@@ -185,7 +184,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
         int count = concurrentCount;
         boolean found = false;
         for (int ix = 0; ix < additive.jjtGetNumChildren(); ix++) {
-            SimpleNode childNode = (SimpleNode) additive.jjtGetChild(ix);
+            Node childNode = additive.jjtGetChild(ix);
             if (childNode.jjtGetNumChildren() != 1
                     || childNode.findChildrenOfType(ASTName.class).size() != 0) {
                 if (!found) {
@@ -218,7 +217,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
      * @return true if the node has an additive expression (i.e. "Hello " +
      *         Const.WORLD)
      */
-    private boolean isAdditive(SimpleNode n) {
+    private boolean isAdditive(Node n) {
         List lstAdditive = n.findChildrenOfType(ASTAdditiveExpression.class);
         if (lstAdditive.isEmpty()) {
             return false;
@@ -288,7 +287,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
      * Helper method checks to see if a violation occured, and adds a
      * RuleViolation if it did
      */
-    private void checkForViolation(SimpleNode node, Object data,
+    private void checkForViolation(Node node, Object data,
                                    int concurrentCount) {
         if (concurrentCount > threshold) {
             String[] param = {String.valueOf(concurrentCount)};
@@ -296,11 +295,11 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
         }
     }
 
-    private boolean isAppendingStringLiteral(SimpleNode node) {
-        SimpleNode n = node;
+    private boolean isAppendingStringLiteral(Node node) {
+	Node n = node;
         while (n.jjtGetNumChildren() != 0
                 && !n.getClass().equals(ASTLiteral.class)) {
-            n = (SimpleNode) n.jjtGetChild(0);
+            n = n.jjtGetChild(0);
         }
         return n.getClass().equals(ASTLiteral.class);
     }
@@ -310,7 +309,7 @@ public class ConsecutiveLiteralAppends extends AbstractRule {
         if (node.getType() != null) {
             return node.getType().equals(StringBuffer.class);
         }
-        SimpleNode nn = node.getTypeNameNode();
+        Node nn = node.getTypeNameNode();
         if (nn.jjtGetNumChildren() == 0) {
             return false;
         }

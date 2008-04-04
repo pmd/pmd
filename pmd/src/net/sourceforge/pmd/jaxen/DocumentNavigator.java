@@ -3,14 +3,15 @@
  */
 package net.sourceforge.pmd.jaxen;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import net.sourceforge.pmd.ast.CompilationUnit;
-import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.lang.ast.Node;
+
 import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
 import org.jaxen.util.SingleObjectIterator;
-
-import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * @author daniels

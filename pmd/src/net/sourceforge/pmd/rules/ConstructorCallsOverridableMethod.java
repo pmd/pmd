@@ -3,6 +3,15 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
@@ -18,17 +27,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.AccessNode;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Searches through all methods and constructors called from constructors.  It
@@ -477,7 +476,7 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
         }
     }
 
-    private static final int compareNodes(SimpleNode n1, SimpleNode n2) {
+    private static final int compareNodes(Node n1, Node n2) {
         int l1 = n1.getBeginLine();
         int l2 = n2.getBeginLine();
         if (l1 == l2) {
@@ -804,25 +803,19 @@ public final class ConstructorCallsOverridableMethod extends AbstractRule {
                 h.setCalledMethod(decl.getMethodName());
             }
             List<MethodInvocation> l = new ArrayList<MethodInvocation>();
-            addCalledMethodsOfNode((SimpleNode) parent, l, getCurrentEvalPackage().m_ClassName);
+            addCalledMethodsOfNode((Node)parent, l, getCurrentEvalPackage().m_ClassName);
             getCurrentEvalPackage().allMethodsOfClass.put(h, l);
         }
         return super.visit(node, data);
     }
 
 
-    private static void addCalledMethodsOfNode(AccessNode node, List<MethodInvocation> calledMethods, String className) {
-        List<ASTPrimaryExpression> expressions = new ArrayList<ASTPrimaryExpression>();
-        node.findChildrenOfType(ASTPrimaryExpression.class, expressions, false);
-        addCalledMethodsOfNodeImpl(expressions, calledMethods, className);
-    }
-
     /**
      * Adds all methods called on this instance from within this Node.
      */
-    private static void addCalledMethodsOfNode(SimpleNode node, List<MethodInvocation> calledMethods, String className) {
+    private static void addCalledMethodsOfNode(Node node, List<MethodInvocation> calledMethods, String className) {
         List<ASTPrimaryExpression> expressions = new ArrayList<ASTPrimaryExpression>();
-        node.findChildrenOfType(ASTPrimaryExpression.class, expressions);
+        node.findChildrenOfType(ASTPrimaryExpression.class, expressions, !(node instanceof AccessNode));
         addCalledMethodsOfNodeImpl(expressions, calledMethods, className);
     }
 

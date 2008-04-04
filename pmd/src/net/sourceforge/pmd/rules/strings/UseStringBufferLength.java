@@ -1,17 +1,17 @@
 package net.sourceforge.pmd.rules.strings;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 
 /**
@@ -63,9 +63,9 @@ public class UseStringBufferLength extends AbstractRule {
         }
         alreadySeen.add(vnd);
 
-        SimpleNode parent = (SimpleNode) decl.jjtGetParent().jjtGetParent();
+        Node parent = decl.jjtGetParent().jjtGetParent();
         for (int jx = 0; jx < parent.jjtGetNumChildren(); jx++) {
-            SimpleNode achild = (SimpleNode) parent.jjtGetChild(jx);
+            Node achild = parent.jjtGetChild(jx);
             if (isViolation(parent, achild)) {
                 addViolation(data, decl);
             }
@@ -77,10 +77,10 @@ public class UseStringBufferLength extends AbstractRule {
     /**
      * Check the given node if it calls either .equals or .length we need to check the target
      */
-    private boolean isViolation(SimpleNode parent, SimpleNode achild) {
+    private boolean isViolation(Node parent, Node achild) {
         if ("equals".equals(achild.getImage())) {
-            List literals = parent.findChildrenOfType(ASTLiteral.class);
-            return (!literals.isEmpty() && "\"\"".equals(((SimpleNode) literals.get(0)).getImage()));
+            List<ASTLiteral> literals = parent.findChildrenOfType(ASTLiteral.class);
+            return (!literals.isEmpty() && "\"\"".equals(literals.get(0).getImage()));
         } else if ("length".equals(achild.getImage())) {
             return true;
         }

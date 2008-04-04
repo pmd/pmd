@@ -6,22 +6,23 @@ package test.net.sourceforge.pmd.symboltable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTCatchStatement;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 import org.junit.Ignore;
 import org.junit.Test;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 public class AcceptanceTest extends STBBaseTst {
 
     @Ignore
@@ -64,7 +65,7 @@ public class AcceptanceTest extends STBBaseTst {
         Map m = s.getVariableDeclarations();
         for (Iterator i = m.keySet().iterator(); i.hasNext();) {
             VariableNameDeclaration vnd = (VariableNameDeclaration)i.next();
-            SimpleNode node = vnd.getNode();
+            Node node = vnd.getNode();
             //System.out.println();
         }
         //System.out.println(m.size());

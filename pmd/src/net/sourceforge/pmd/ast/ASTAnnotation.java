@@ -7,7 +7,7 @@ import net.sourceforge.pmd.Rule;
 import java.util.Arrays;
 import java.util.List;
 
-public class ASTAnnotation extends SimpleJavaNode {
+public class ASTAnnotation extends AbstractJavaNode {
 
     private static List unusedRules = Arrays.asList(new String[]{"UnusedPrivateField","UnusedLocalVariable","UnusedPrivateMethod","UnusedFormalParameter"});
 

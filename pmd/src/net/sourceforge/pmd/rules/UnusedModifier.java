@@ -4,8 +4,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class UnusedModifier extends AbstractRule {
 
@@ -38,7 +37,7 @@ public class UnusedModifier extends AbstractRule {
         return super.visit(node, data);
     }
 
-    private void check(SimpleNode fieldOrMethod, Object data) {
+    private void check(Node fieldOrMethod, Object data) {
         // third ancestor could be an AllocationExpression
         // if this is a method in an anonymous inner class
         Node parent = fieldOrMethod.jjtGetParent().jjtGetParent().jjtGetParent();

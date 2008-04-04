@@ -9,7 +9,7 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 
 /**
@@ -21,7 +21,7 @@ import net.sourceforge.pmd.ast.SimpleNode;
 
 public class ASTModel implements TreeModel {
 	
-    private SimpleNode root;
+    private Node root;
     private List<TreeModelListener> listeners = new ArrayList<TreeModelListener>(1);
 
     /**
@@ -29,7 +29,7 @@ public class ASTModel implements TreeModel {
      *
      * @param root tree's root
      */
-    public ASTModel(SimpleNode root) {
+    public ASTModel(Node root) {
         this.root = root;
     }
 
@@ -37,21 +37,21 @@ public class ASTModel implements TreeModel {
      * @see javax.swing.tree.TreeModel
      */
     public Object getChild(Object parent, int index) {
-        return ((SimpleNode) parent).jjtGetChild(index);
+        return ((Node) parent).jjtGetChild(index);
     }
 
     /**
      * @see javax.swing.tree.TreeModel#getChildCount(java.lang.Object)
      */
     public int getChildCount(Object parent) {
-        return ((SimpleNode) parent).jjtGetNumChildren();
+        return ((Node) parent).jjtGetNumChildren();
     }
 
     /**
      * @see javax.swing.tree.TreeModel#getIndexOfChild(java.lang.Object,java.lang.Object)
      */
     public int getIndexOfChild(Object parent, Object child) {
-        SimpleNode node = ((SimpleNode) parent);
+	Node node = (Node) parent;
         for (int i = 0; i < node.jjtGetNumChildren(); i++)
             if (node.jjtGetChild(i).equals(child)) {
                 return i;
@@ -63,7 +63,7 @@ public class ASTModel implements TreeModel {
      * @see javax.swing.tree.TreeModel#isLeaf(java.lang.Object)
      */
     public boolean isLeaf(Object node) {
-        return ((SimpleNode) node).jjtGetNumChildren() == 0;
+        return ((Node) node).jjtGetNumChildren() == 0;
     }
 
     /**

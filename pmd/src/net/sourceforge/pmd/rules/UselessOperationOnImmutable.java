@@ -12,8 +12,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -42,8 +41,8 @@ public class UselessOperationOnImmutable extends AbstractRule {
         String variableName = var.getImage();
         for (NameOccurrence no: var.getUsages()) {
             // FIXME - getUsages will return everything with the same name as the variable, 
-            // see JUnit test, case 6. Changing to SimpleNode below, revisit when getUsages is fixed
-            SimpleNode sn = no.getLocation();
+            // see JUnit test, case 6. Changing to Node below, revisit when getUsages is fixed
+            Node sn = no.getLocation();
             Node primaryExpression = sn.jjtGetParent().jjtGetParent();
 			Class<? extends Node> parentClass = primaryExpression.jjtGetParent().getClass();
             if (!(parentClass.equals(ASTExpression.class) || parentClass.equals(ASTConditionalExpression.class) || 

@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.ast.CompilationUnit;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.Benchmark;
 
 /**
@@ -26,7 +26,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * This is a mapping from node names to nodes instances for the current AST.
      */
-    protected Map<String, List<SimpleNode>> nodeNameToNodes;
+    protected Map<String, List<Node>> nodeNameToNodes;
 
     /**
      * @see RuleChainVisitor#add(Rule)
@@ -55,8 +55,8 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
         for (Rule rule: rules) {
             final List<String> nodeNames = rule.getRuleChainVisits();
             for (int j = 0; j < nodeNames.size(); j++) {
-                List<SimpleNode> nodes = nodeNameToNodes.get(nodeNames.get(j));
-                for (SimpleNode node: nodes) {
+                List<Node> nodes = nodeNameToNodes.get(nodeNames.get(j));
+                for (Node node: nodes) {
                     // Visit with underlying Rule, not the RuleReference
                     while (rule instanceof RuleReference) {
                         rule = ((RuleReference)rule).getRule();
@@ -74,7 +74,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * Visit the given rule to the given node.
      */
-    protected abstract void visit(Rule rule, SimpleNode node, RuleContext ctx);
+    protected abstract void visit(Rule rule, Node node, RuleContext ctx);
 
     /**
      * Index all nodes for visitation by rules.
@@ -84,8 +84,8 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * Index a single node for visitation by rules.
      */
-    protected void indexNode(SimpleNode node) {
-        List<SimpleNode> nodes = nodeNameToNodes.get(node.toString());
+    protected void indexNode(Node node) {
+        List<Node> nodes = nodeNameToNodes.get(node.toString());
         if (nodes != null) {
             nodes.add(node);
         }
@@ -120,9 +120,9 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
         // Setup the data structure to manage mapping node names to node
         // instances.  We intend to reuse this data structure between
         // visits to different ASTs.
-        nodeNameToNodes = new HashMap<String, List<SimpleNode>>();
+        nodeNameToNodes = new HashMap<String, List<Node>>();
         for (String s: visitedNodes) {
-            List<SimpleNode> nodes = new ArrayList<SimpleNode>(100);
+            List<Node> nodes = new ArrayList<Node>(100);
             nodeNameToNodes.put(s, nodes);
         }
     }
@@ -132,7 +132,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
      * between visiting different ASTs.
      */
     protected void clear() {
-        for (List<SimpleNode> l: nodeNameToNodes.values()) {
+        for (List<Node> l: nodeNameToNodes.values()) {
             l.clear();
         }
     }

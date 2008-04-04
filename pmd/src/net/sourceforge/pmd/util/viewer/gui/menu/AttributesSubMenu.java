@@ -1,14 +1,15 @@
 package net.sourceforge.pmd.util.viewer.gui.menu;
 
-import net.sourceforge.pmd.ast.SimpleNode;
+import java.text.MessageFormat;
+
+import javax.swing.JMenu;
+
 import net.sourceforge.pmd.jaxen.Attribute;
 import net.sourceforge.pmd.jaxen.AttributeAxisIterator;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.viewer.model.AttributeToolkit;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.util.NLS;
-
-import javax.swing.*;
-import java.text.MessageFormat;
 
 
 /**
@@ -20,9 +21,9 @@ import java.text.MessageFormat;
 public class AttributesSubMenu
         extends JMenu {
     private ViewerModel model;
-    private SimpleNode node;
+    private Node node;
 
-    public AttributesSubMenu(ViewerModel model, SimpleNode node) {
+    public AttributesSubMenu(ViewerModel model, Node node) {
         super(MessageFormat.format(NLS.nls("AST.MENU.ATTRIBUTES"), node.toString()));
         this.model = model;
         this.node = node;

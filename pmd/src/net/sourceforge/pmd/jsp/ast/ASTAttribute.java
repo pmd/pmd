@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.jsp.ast;
 
-public class ASTAttribute extends SimpleNode {
+public class ASTAttribute extends AbstractJspNode {
     /* BEGIN CUSTOM CODE */
     private String name;
 

@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.jsp.ast;
 
-public class ASTDoctypeDeclaration extends SimpleNode {
+public class ASTDoctypeDeclaration extends AbstractJspNode {
 
     /* BEGIN CUSTOM CODE */
 

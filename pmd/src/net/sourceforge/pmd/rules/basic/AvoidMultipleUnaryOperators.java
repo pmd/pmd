@@ -6,8 +6,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.ast.ASTUnaryExpressionNotPlusMinus;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class AvoidMultipleUnaryOperators extends AbstractJavaRule {
 
@@ -28,7 +27,7 @@ public class AvoidMultipleUnaryOperators extends AbstractJavaRule {
 		return data;
 	}
 
-	private void checkUnaryDescendent(SimpleNode node, Object data) {
+	private void checkUnaryDescendent(Node node, Object data) {
 		boolean match = false;
 		if (node.jjtGetNumChildren() == 1) {
 			Node child = node.jjtGetChild(0);

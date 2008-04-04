@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
@@ -25,7 +26,7 @@ public class LocalVariableCouldBeFinal extends AbstractOptimizationRule {
                 continue;
             }
             if (!assigned(entry.getValue())) {
-                addViolation(data, var.getAccessNodeParent(), var.getImage());
+                addViolation(data, (Node)var.getAccessNodeParent(), var.getImage());
             }
         }
         return data;

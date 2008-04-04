@@ -3,10 +3,33 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.*;
-
 import java.util.List;
 import java.util.Stack;
+
+import net.sourceforge.pmd.ast.ASTAnnotationTypeDeclaration;
+import net.sourceforge.pmd.ast.ASTBlock;
+import net.sourceforge.pmd.ast.ASTBlockStatement;
+import net.sourceforge.pmd.ast.ASTCatchStatement;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
+import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.ast.ASTFinallyStatement;
+import net.sourceforge.pmd.ast.ASTForStatement;
+import net.sourceforge.pmd.ast.ASTFormalParameters;
+import net.sourceforge.pmd.ast.ASTIfStatement;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.ast.ASTPackageDeclaration;
+import net.sourceforge.pmd.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.ast.ASTTryStatement;
+import net.sourceforge.pmd.ast.ASTTypeParameters;
+import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.AbstractJavaNode;
+import net.sourceforge.pmd.ast.JavaNode;
+import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Visitor for scope creation.
@@ -37,7 +60,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @param node     the AST node for which the scope is to be set.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void addScope(Scope newScope, SimpleNode node) {
+    private void addScope(Scope newScope, Node node) {
         newScope.setParent(scopes.peek());
         scopes.push(newScope);
         node.setScope(newScope);
@@ -51,7 +74,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void createLocalScope(SimpleNode node) {
+    private void createLocalScope(Node node) {
         addScope(new LocalScope(), node);
     }
 
@@ -63,7 +86,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void createMethodScope(SimpleNode node) {
+    private void createMethodScope(Node node) {
         addScope(new MethodScope(node), node);
     }
 
@@ -75,7 +98,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void createClassScope(SimpleNode node) {
+    private void createClassScope(Node node) {
         if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
             addScope(new ClassScope(), node);
         } else {
@@ -89,13 +112,13 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      *
      * @param node the AST node for which the scope has to be created.
      */
-    private void createSourceFileScope(SimpleNode node) {
+    private void createSourceFileScope(Node node) {
         // When we do full symbol resolution, we'll need to add a truly top-level GlobalScope.
         Scope scope;
         List packages = node.findChildrenOfType(ASTPackageDeclaration.class);
         if (!packages.isEmpty()) {
             Node n = (Node) packages.get(0);
-            scope = new SourceFileScope(((SimpleNode) n.jjtGetChild(0)).getImage());
+            scope = new SourceFileScope(n.jjtGetChild(0).getImage());
         } else {
             scope = new SourceFileScope();
         }
@@ -111,7 +134,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         createClassScope(node);
-        Scope s = ((SimpleNode) node.jjtGetParent()).getScope();
+        Scope s = node.jjtGetParent().getScope();
         s.addDeclaration(new ClassNameDeclaration(node));
         cont(node);
         return data;
@@ -178,7 +201,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
 
         Scope localScope = null;
         for (;i<n;i++) {
-            SimpleJavaNode b = (SimpleJavaNode) node.jjtGetChild(i);
+            JavaNode b = (JavaNode)node.jjtGetChild(i);
             if (b instanceof ASTBlockStatement) {
                 if (localScope == null) {
                     createLocalScope(node);
@@ -243,7 +266,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
         return data;
     }
 
-    private void cont(SimpleJavaNode node) {
+    private void cont(AbstractJavaNode node) {
         super.visit(node, null);
         scopes.pop();
     }

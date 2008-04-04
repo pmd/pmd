@@ -3,7 +3,7 @@
 package net.sourceforge.pmd.ast;
 
 
-public class ASTMethodDeclarator extends SimpleJavaNode {
+public class ASTMethodDeclarator extends AbstractJavaNode {
     public ASTMethodDeclarator(int id) {
         super(id);
     }

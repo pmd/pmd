@@ -3,16 +3,16 @@ package net.sourceforge.pmd.ast;
 /**
  * An extension of the SimpleJavaNode which implements the TypeNode interface.
  * 
- * @see SimpleJavaNode
+ * @see AbstractJavaNode
  * @see TypeNode
  */
-public class SimpleJavaTypeNode extends SimpleJavaNode implements TypeNode {
+public abstract class AbstractJavaTypeNode extends AbstractJavaNode implements TypeNode {
 
-	public SimpleJavaTypeNode(int i) {
+	public AbstractJavaTypeNode(int i) {
 		super(i);
 	}
 
-	public SimpleJavaTypeNode(JavaParser p, int i) {
+	public AbstractJavaTypeNode(JavaParser p, int i) {
 		super(p, i);
 	}
 

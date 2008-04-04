@@ -6,15 +6,15 @@
 
 package net.sourceforge.pmd.rules.design;
 
+import java.util.List;
+import java.util.Map;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
-
-import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -42,8 +42,8 @@ public class AssignmentToNonFinalStatic extends AbstractRule {
 
         for (NameOccurrence occ: usages) {
             if (occ.isOnLeftHandSide()) { // specifically omitting prefix and postfix operators as there are legitimate usages of these with static fields, e.g. typesafe enum pattern.
-                SimpleNode node = occ.getLocation();
-                SimpleNode constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
+        	Node node = occ.getLocation();
+        	Node constructor = node.getFirstParentOfType(ASTConstructorDeclaration.class);
                 if (constructor != null) {
                     initInConstructor = true;
                 }

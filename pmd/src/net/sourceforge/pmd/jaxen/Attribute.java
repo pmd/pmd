@@ -3,10 +3,10 @@
  */
 package net.sourceforge.pmd.jaxen;
 
-import net.sourceforge.pmd.ast.Node;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * @author daniels

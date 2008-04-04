@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTContinueStatement extends SimpleJavaNode {
+public class ASTContinueStatement extends AbstractJavaNode {
     public ASTContinueStatement(int id) {
         super(id);
     }

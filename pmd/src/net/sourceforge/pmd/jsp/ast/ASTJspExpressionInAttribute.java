@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.jsp.ast;
 
-public class ASTJspExpressionInAttribute extends SimpleNode {
+public class ASTJspExpressionInAttribute extends AbstractJspNode {
     public ASTJspExpressionInAttribute(int id) {
         super(id);
     }

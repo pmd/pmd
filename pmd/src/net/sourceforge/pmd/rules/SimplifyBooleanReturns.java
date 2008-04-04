@@ -17,8 +17,7 @@ import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.ASTUnaryExpressionNotPlusMinus;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class SimplifyBooleanReturns extends AbstractRule {
 
@@ -60,8 +59,8 @@ public class SimplifyBooleanReturns extends AbstractRule {
           addViolation(data, node);
         }
         else {
-          SimpleNode returnStatement1 = (SimpleNode)node.jjtGetChild(1).jjtGetChild(0);
-          SimpleNode returnStatement2 = (SimpleNode)node.jjtGetChild(2).jjtGetChild(0);
+            Node returnStatement1 = node.jjtGetChild(1).jjtGetChild(0);
+            Node returnStatement2 = node.jjtGetChild(2).jjtGetChild(0);
 
           if (returnStatement1 instanceof ASTReturnStatement && returnStatement2 instanceof ASTReturnStatement) {
             //if we have 2 return;
@@ -81,8 +80,8 @@ public class SimplifyBooleanReturns extends AbstractRule {
               addViolation(data, node);
             }
             else {
-              SimpleNode expression1 = (SimpleNode)returnStatement1.jjtGetChild(0).jjtGetChild(0);
-              SimpleNode expression2 = (SimpleNode)returnStatement2.jjtGetChild(0).jjtGetChild(0);
+        	Node expression1 = returnStatement1.jjtGetChild(0).jjtGetChild(0);
+        	Node expression2 = returnStatement2.jjtGetChild(0).jjtGetChild(0);
               if(terminatesInBooleanLiteral(returnStatement1) && terminatesInBooleanLiteral(returnStatement2)) {
                 addViolation(data, node);
               }
@@ -109,10 +108,10 @@ public class SimplifyBooleanReturns extends AbstractRule {
                 }
               }
             }
-          } else if (hasOneBlockStmt((SimpleNode) node.jjtGetChild(1)) && hasOneBlockStmt((SimpleNode) node.jjtGetChild(2))) {
+          } else if (hasOneBlockStmt(node.jjtGetChild(1)) && hasOneBlockStmt(node.jjtGetChild(2))) {
             //We have blocks so we must go down three levels (BlockStatement, Statement, ReturnStatement)
-            returnStatement1 = (SimpleNode)returnStatement1.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
-            returnStatement2 = (SimpleNode)returnStatement2.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+            returnStatement1 = returnStatement1.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+            returnStatement2 = returnStatement2.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
 
             //if we have 2 return;
             if(isSimpleReturn(returnStatement1) && isSimpleReturn(returnStatement2)) {
@@ -138,9 +137,9 @@ public class SimplifyBooleanReturns extends AbstractRule {
               addViolation(data, node);
             }
             else {
-              SimpleNode expression1 = getDescendant(returnStatement1, 4);
-              SimpleNode expression2 = getDescendant(returnStatement2, 4);
-              if(terminatesInBooleanLiteral((SimpleNode)node.jjtGetChild(1).jjtGetChild(0)) && terminatesInBooleanLiteral((SimpleNode) node.jjtGetChild(2).jjtGetChild(0))) {
+        	Node expression1 = getDescendant(returnStatement1, 4);
+        	Node expression2 = getDescendant(returnStatement2, 4);
+              if(terminatesInBooleanLiteral(node.jjtGetChild(1).jjtGetChild(0)) && terminatesInBooleanLiteral(node.jjtGetChild(2).jjtGetChild(0))) {
                 addViolation(data, node);
               } else if (expression1 instanceof ASTUnaryExpressionNotPlusMinus ^ expression2 instanceof ASTUnaryExpressionNotPlusMinus) {
                 //We get the nodes under the '!' operator
@@ -177,14 +176,14 @@ public class SimplifyBooleanReturns extends AbstractRule {
         return super.visit(node, data);
     }
 
-    private boolean hasOneBlockStmt(SimpleNode node) {
+    private boolean hasOneBlockStmt(Node node) {
         return node.jjtGetChild(0) instanceof ASTBlock && node.jjtGetChild(0).jjtGetNumChildren() == 1 && node.jjtGetChild(0).jjtGetChild(0) instanceof ASTBlockStatement && node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTStatement && node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0) instanceof ASTReturnStatement;
     }
 
     /**
      * Returns the first child node going down 'level' levels or null if level is invalid
      */
-    private SimpleNode getDescendant(SimpleNode node, int level) {
+    private Node getDescendant(Node node, int level) {
         Node n = node;
         for(int i = 0; i < level; i++) {
             if (n.jjtGetNumChildren() == 0) {
@@ -192,47 +191,47 @@ public class SimplifyBooleanReturns extends AbstractRule {
             }
             n = n.jjtGetChild(0);
         }
-        return (SimpleNode) n;
+        return n;
     }
 
-    private boolean terminatesInBooleanLiteral(SimpleNode node) {
+    private boolean terminatesInBooleanLiteral(Node node) {
 
         return eachNodeHasOneChild(node) && (getLastChild(node) instanceof ASTBooleanLiteral);
     }
 
-    private boolean eachNodeHasOneChild(SimpleNode node) {
+    private boolean eachNodeHasOneChild(Node node) {
         if (node.jjtGetNumChildren() > 1) {
             return false;
         }
         if (node.jjtGetNumChildren() == 0) {
             return true;
         }
-        return eachNodeHasOneChild((SimpleNode) node.jjtGetChild(0));
+        return eachNodeHasOneChild(node.jjtGetChild(0));
     }
 
-    private SimpleNode getLastChild(SimpleNode node) {
+    private Node getLastChild(Node node) {
         if (node.jjtGetNumChildren() == 0) {
             return node;
         }
-        return getLastChild((SimpleNode) node.jjtGetChild(0));
+        return getLastChild(node.jjtGetChild(0));
     }
 
-    private boolean isNodesEqualWithUnaryExpression(SimpleNode n1, SimpleNode n2) {
-      SimpleNode node1, node2;
+    private boolean isNodesEqualWithUnaryExpression(Node n1, Node n2) {
+	Node node1, node2;
       if(n1 instanceof ASTUnaryExpressionNotPlusMinus) {
-        node1 = (SimpleNode)n1.jjtGetChild(0);
+        node1 = n1.jjtGetChild(0);
       } else {
         node1 = n1;
       }
       if(n2 instanceof ASTUnaryExpressionNotPlusMinus) {
-        node2 = (SimpleNode)n2.jjtGetChild(0);
+        node2 = n2.jjtGetChild(0);
       } else {
         node2 = n2;
       }
       return isNodesEquals(node1, node2);
     }
 
-    private boolean isNodesEquals(SimpleNode n1, SimpleNode n2) {
+    private boolean isNodesEquals(Node n1, Node n2) {
         int numberChild1 = n1.jjtGetNumChildren();
         int numberChild2 = n2.jjtGetNumChildren();
         if(numberChild1 != numberChild2)
@@ -242,13 +241,13 @@ public class SimplifyBooleanReturns extends AbstractRule {
         if(!n1.toString().equals(n2.toString()))
           return false;
         for(int i = 0 ; i < numberChild1 ; i++) {
-          if( !isNodesEquals( (SimpleNode)n1.jjtGetChild(i), (SimpleNode)n2.jjtGetChild(i) ) )
+          if( !isNodesEquals(n1.jjtGetChild(i), n2.jjtGetChild(i) ) )
             return false;
         }
         return true;
     }
 
-    private boolean isSimpleReturn(SimpleNode node) {
+    private boolean isSimpleReturn(Node node) {
       return ( ( node instanceof ASTReturnStatement ) && ( node.jjtGetNumChildren() == 0 ) );
     }
 

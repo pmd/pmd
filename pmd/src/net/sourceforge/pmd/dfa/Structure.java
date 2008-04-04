@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Stack;
 
 import net.sourceforge.pmd.ast.JavaDataFlowNode;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 
 /**
@@ -29,7 +29,7 @@ public class Structure {
      * add the created instance to the LinkedList.  I think it'd be clearer if we did
      * that more "procedurally", i.e., create the object, then add it to the list.
      */
-    public DataFlowNode createNewNode(SimpleNode node) {
+    public DataFlowNode createNewNode(Node node) {
 	// FUTURE Keep working on generalizing beyond just Java support
         return new JavaDataFlowNode(this.dataFlow, node);
     }

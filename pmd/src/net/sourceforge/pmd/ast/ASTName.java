@@ -4,7 +4,7 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 
-public class ASTName extends SimpleJavaTypeNode {
+public class ASTName extends AbstractJavaTypeNode {
     public ASTName(int id) {
         super(id);
     }

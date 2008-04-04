@@ -3,10 +3,10 @@
  */
 package net.sourceforge.pmd.jaxen;
 
-import net.sourceforge.pmd.ast.Node;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * @author daniels

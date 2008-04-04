@@ -2,13 +2,18 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTClassOrInterfaceDeclaration extends SimpleJavaAccessTypeNode {
+public class ASTClassOrInterfaceDeclaration extends AbstractJavaAccessTypeNode {
     public ASTClassOrInterfaceDeclaration(int id) {
         super(id);
     }
 
     public ASTClassOrInterfaceDeclaration(JavaParser p, int id) {
         super(p, id);
+    }
+    
+    @Override
+    public boolean isFindBoundary() {
+	return isNested();
     }
 
     /**

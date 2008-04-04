@@ -14,7 +14,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.rules.regex.RegexHelper;
 
@@ -65,7 +65,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 
 	private List<Pattern> namesMatch = new ArrayList<Pattern>(0);
 	private List<Pattern> typesMatch = new ArrayList<Pattern>(0);
-	private List<SimpleNode> matches = new ArrayList<SimpleNode>(0);
+	private List<Node> matches = new ArrayList<Node>(0);
 	private List<String> simpleClassname = new ArrayList<String>(0);
 
 
@@ -100,7 +100,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		String thresholdAsString = getStringProperty(thresholdDescriptor);
 		this.threshold = Integer.valueOf(thresholdAsString);
 		// Initializing list of match
-		this.matches = new ArrayList<SimpleNode>();
+		this.matches = new ArrayList<Node>();
 
 	}
 
@@ -148,7 +148,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		return super.visit(classType, data);
 	}
 
-	private void addAMatch(SimpleNode node,Object data) {
+	private void addAMatch(Node node,Object data) {
 		// We have a match, we increment
 		RuleContext ctx = (RuleContext)data;
 		AtomicLong total = (AtomicLong)ctx.getAttribute(COUNTER_LABEL);
@@ -158,7 +158,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 	}
 
 	@SuppressWarnings("unchecked")
-    private boolean searchForAMatch(String matchType,SimpleNode node) {
+    private boolean searchForAMatch(String matchType,Node node) {
 		boolean status = false;
     	 String xpathQuery = "//ClassOrInterfaceDeclaration[" +
 							"(./ExtendsList/ClassOrInterfaceType[@Image = '" + matchType + "'])" +
@@ -185,7 +185,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		AtomicLong total = (AtomicLong)ctx.getAttribute(COUNTER_LABEL);
         // Do we have a violation ?
         if ( total.get() > this.threshold )
-        	for (SimpleNode node : this.matches)
+        	for (Node node : this.matches)
         		addViolation(ctx,node , new Object[] { total });
 		// Cleaning the context for the others rules
 		ctx.removeAttribute(COUNTER_LABEL);

@@ -3,19 +3,19 @@
  */
 package net.sourceforge.pmd.rules.imports;
 
-import net.sourceforge.pmd.AbstractRule;
+import java.util.HashSet;
+import java.util.Set;
+
+import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.DummyJavaNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.rules.ImportWrapper;
 
-import java.util.HashSet;
-import java.util.Set;
-
-public class UnusedImportsRule extends AbstractRule {
+public class UnusedImportsRule extends AbstractJavaRule {
 
     protected Set<ImportWrapper> imports = new HashSet<ImportWrapper>();
 
@@ -54,7 +54,7 @@ public class UnusedImportsRule extends AbstractRule {
         return data;
     }
 
-    protected void check(SimpleNode node) {
+    protected void check(Node node) {
         if (imports.isEmpty()) {
             return;
         }
@@ -64,14 +64,14 @@ public class UnusedImportsRule extends AbstractRule {
         }
     }
 
-    protected ImportWrapper getImportWrapper(SimpleNode node) {
+    protected ImportWrapper getImportWrapper(Node node) {
         String name;
         if (!isQualifiedName(node)) {
             name = node.getImage();
         } else {
             name = node.getImage().substring(0, node.getImage().indexOf('.'));
         }
-        ImportWrapper candidate = new ImportWrapper(node.getImage(), name, new SimpleJavaNode(-1));
+        ImportWrapper candidate = new ImportWrapper(node.getImage(), name, new DummyJavaNode(-1));
         return candidate;
     }
 }

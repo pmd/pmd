@@ -24,18 +24,6 @@ package test.net.sourceforge.pmd.stat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.stat.DataPoint;
-import net.sourceforge.pmd.stat.Metric;
-import net.sourceforge.pmd.stat.StatisticalRule;
-import net.sourceforge.pmd.symboltable.SourceFileScope;
-
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +32,17 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.AssertionFailedError;
+import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.ast.DummyJavaNode;
+import net.sourceforge.pmd.stat.DataPoint;
+import net.sourceforge.pmd.stat.Metric;
+import net.sourceforge.pmd.stat.StatisticalRule;
+import net.sourceforge.pmd.symboltable.SourceFileScope;
+
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * This class tests the Statistical Rules in PMD.
@@ -109,7 +108,7 @@ public class StatisticalRuleTest  {
             for (int i = 0; i < POINTS; i++) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
-                SimpleNode s = new SimpleJavaNode(1);
+                DummyJavaNode s = new DummyJavaNode(1);
                 s.setScope(new SourceFileScope("foo"));
                 s.testingOnly__setBeginLine(i);
                 s.testingOnly__setBeginColumn(1);
@@ -122,7 +121,7 @@ public class StatisticalRuleTest  {
             for (int i = POINTS - 1; i >= 0; i--) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
-                SimpleNode s = new SimpleJavaNode(1);
+                DummyJavaNode s = new DummyJavaNode(1);
                 s.setScope(new SourceFileScope("foo"));
                 s.testingOnly__setBeginLine(i);
                 s.testingOnly__setBeginColumn(1);
@@ -136,7 +135,7 @@ public class StatisticalRuleTest  {
             for (int i = 0; i < POINTS; i++) {
                 points[i] = new DataPoint();
                 points[i].setScore(1.0 * i);
-                SimpleNode s = new SimpleJavaNode(1);
+                DummyJavaNode s = new DummyJavaNode(1);
                 s.setScope(new SourceFileScope("foo"));
                 s.testingOnly__setBeginLine(i);
                 s.testingOnly__setBeginColumn(1);
@@ -279,7 +278,7 @@ public class StatisticalRuleTest  {
 
         DataPoint point = new DataPoint();
         point.setScore(POINTS + 1.0);
-        SimpleNode s = new SimpleJavaNode(1);
+        DummyJavaNode s = new DummyJavaNode(1);
         s.setScope(new SourceFileScope("foo"));
         s.testingOnly__setBeginLine(POINTS + 1);
         s.testingOnly__setBeginColumn(1);

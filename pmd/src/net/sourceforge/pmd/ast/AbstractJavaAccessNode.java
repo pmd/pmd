@@ -1,14 +1,14 @@
 package net.sourceforge.pmd.ast;
 
-public class SimpleJavaAccessNode extends SimpleJavaNode implements AccessNodeInterface {
+public abstract class AbstractJavaAccessNode extends AbstractJavaNode implements AccessNode {
 
 	private int modifiers;
 
-	public SimpleJavaAccessNode(int i) {
+	public AbstractJavaAccessNode(int i) {
 		super(i);
 	}
 
-	public SimpleJavaAccessNode(JavaParser parser, int i) {
+	public AbstractJavaAccessNode(JavaParser parser, int i) {
 		super(parser, i);
 	}
 

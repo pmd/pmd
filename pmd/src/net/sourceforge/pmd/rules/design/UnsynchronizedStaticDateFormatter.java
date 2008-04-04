@@ -3,17 +3,17 @@
  */
 package net.sourceforge.pmd.rules.design;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Using a DateFormatter (SimpleDateFormatter) which is static can cause
@@ -47,7 +47,7 @@ public class UnsynchronizedStaticDateFormatter extends AbstractRule {
         }
         ASTVariableDeclaratorId var = node.getFirstChildOfType(ASTVariableDeclaratorId.class);
         for (NameOccurrence occ: var.getUsages()) {
-            SimpleNode n = occ.getLocation();
+            Node n = occ.getLocation();
             if (n.getFirstParentOfType(ASTSynchronizedStatement.class) != null) {
                 continue;
             }

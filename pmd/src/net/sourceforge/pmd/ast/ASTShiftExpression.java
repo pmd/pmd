@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTShiftExpression extends SimpleJavaTypeNode {
+public class ASTShiftExpression extends AbstractJavaTypeNode {
     public ASTShiftExpression(int id) {
         super(id);
     }

@@ -3,6 +3,10 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
@@ -14,13 +18,9 @@ import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTReferenceType;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTType;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.IntegerProperty;
 import net.sourceforge.pmd.symboltable.ClassScope;
-
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -66,13 +66,13 @@ public class CouplingBetweenObjects extends AbstractRule {
 
     public Object visit(ASTResultType node, Object data) {
         for (int x = 0; x < node.jjtGetNumChildren(); x++) {
-            SimpleNode tNode = (SimpleNode) node.jjtGetChild(x);
+            Node tNode = node.jjtGetChild(x);
             if (tNode instanceof ASTType) {
-                SimpleNode reftypeNode = (SimpleNode) tNode.jjtGetChild(0);
+        	Node reftypeNode = tNode.jjtGetChild(0);
                 if (reftypeNode instanceof ASTReferenceType) {
-                    SimpleNode classOrIntType = (SimpleNode) reftypeNode.jjtGetChild(0);
+                    Node classOrIntType = reftypeNode.jjtGetChild(0);
                     if (classOrIntType instanceof ASTClassOrInterfaceType) {
-                        SimpleNode nameNode = classOrIntType;
+                	Node nameNode = classOrIntType;
                         this.checkVariableType(nameNode, nameNode.getImage());
                     }
                 }
@@ -93,10 +93,10 @@ public class CouplingBetweenObjects extends AbstractRule {
 
     public Object visit(ASTFieldDeclaration node, Object data) {
         for (int x = 0; x < node.jjtGetNumChildren(); ++x) {
-            SimpleNode firstStmt = (SimpleNode) node.jjtGetChild(x);
+            Node firstStmt = node.jjtGetChild(x);
             if (firstStmt instanceof ASTType) {
                 ASTType tp = (ASTType) firstStmt;
-                SimpleNode nd = (SimpleNode) tp.jjtGetChild(0);
+                Node nd = tp.jjtGetChild(0);
                 checkVariableType(nd, nd.getImage());
             }
         }
@@ -108,11 +108,11 @@ public class CouplingBetweenObjects extends AbstractRule {
      * convience method to handle hierarchy. This is probably too much
      * work and will go away once I figure out the framework
      */
-    private void handleASTTypeChildren(SimpleNode node) {
+    private void handleASTTypeChildren(Node node) {
         for (int x = 0; x < node.jjtGetNumChildren(); x++) {
-            SimpleNode sNode = (SimpleNode) node.jjtGetChild(x);
+            Node sNode = node.jjtGetChild(x);
             if (sNode instanceof ASTType) {
-                SimpleNode nameNode = (SimpleNode) sNode.jjtGetChild(0);
+        	Node nameNode = sNode.jjtGetChild(0);
                 checkVariableType(nameNode, nameNode.getImage());
             }
         }
@@ -124,7 +124,7 @@ public class CouplingBetweenObjects extends AbstractRule {
      *
      * @param String variableType
      */
-    private void checkVariableType(SimpleNode nameNode, String variableType) {
+    private void checkVariableType(Node nameNode, String variableType) {
         // TODO - move this into the symbol table somehow?
         if (nameNode.getParentsOfType(ASTClassOrInterfaceDeclaration.class).isEmpty()) {
             return;

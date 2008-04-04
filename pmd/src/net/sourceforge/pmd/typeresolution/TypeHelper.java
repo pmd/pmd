@@ -3,8 +3,8 @@ package net.sourceforge.pmd.typeresolution;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.TypeNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 public class TypeHelper {
@@ -21,7 +21,7 @@ public class TypeHelper {
     public static boolean subclasses(TypeNode n, Class clazz) {
         Class type = n.getType();
         if (type == null) {
-            return (clazz.getSimpleName().equals(((SimpleNode) n).getImage()) || clazz.getName().equals(((SimpleNode) n).getImage()));
+            return (clazz.getSimpleName().equals(((Node) n).getImage()) || clazz.getName().equals(((Node) n).getImage()));
         }
 
         if (type.equals(clazz)) {

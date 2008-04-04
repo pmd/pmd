@@ -4,7 +4,7 @@ package net.sourceforge.pmd.jsp.ast;
 
 public interface JspParserVisitor
 {
-  public Object visit(SimpleNode node, Object data);
+  public Object visit(JspNode node, Object data);
   public Object visit(ASTCompilationUnit node, Object data);
   public Object visit(ASTContent node, Object data);
   public Object visit(ASTJspDirective node, Object data);

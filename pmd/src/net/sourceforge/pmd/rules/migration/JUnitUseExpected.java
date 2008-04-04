@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.rules.migration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.ast.ASTAnnotation;
 import net.sourceforge.pmd.ast.ASTBlock;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
@@ -12,12 +15,8 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.rules.junit.AbstractJUnitRule;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * This rule finds code like this:
@@ -48,7 +47,7 @@ public class JUnitUseExpected extends AbstractJUnitRule {
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
             if (ASTAnnotation.class.equals(child.getClass())) {
-                ASTName annotationName = ((SimpleNode) child).getFirstChildOfType(ASTName.class);
+                ASTName annotationName = child.getFirstChildOfType(ASTName.class);
                 if ("Test".equals(annotationName.getImage())) {
                     inAnnotation = true;
                     continue;
@@ -57,9 +56,9 @@ public class JUnitUseExpected extends AbstractJUnitRule {
             if (ASTMethodDeclaration.class.equals(child.getClass())) {
                 boolean isJUnitMethod = isJUnitMethod((ASTMethodDeclaration) child, data);
                 if (inAnnotation || isJUnitMethod) {
-                    List<SimpleNode> found = new ArrayList<SimpleNode>();
-                    found.addAll((List<SimpleNode>) visit((ASTMethodDeclaration) child, data));
-                    for (SimpleNode name : found) {
+                    List<Node> found = new ArrayList<Node>();
+                    found.addAll((List<Node>) visit((ASTMethodDeclaration) child, data));
+                    for (Node name : found) {
                         addViolation(data, name);
                     }
                 }
@@ -72,7 +71,7 @@ public class JUnitUseExpected extends AbstractJUnitRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         List<ASTTryStatement> catches = node.findChildrenOfType(ASTTryStatement.class);
-        List<SimpleNode> found = new ArrayList<SimpleNode>();
+        List<Node> found = new ArrayList<Node>();
         if (catches.isEmpty()) {
             return found;
         }
@@ -83,7 +82,7 @@ public class JUnitUseExpected extends AbstractJUnitRule {
                 if (block.jjtGetNumChildren() != 0) {
                     continue;
                 }
-                List<ASTBlockStatement> blocks = ((SimpleNode) trySt.jjtGetChild(0)).findChildrenOfType(ASTBlockStatement.class);
+                List<ASTBlockStatement> blocks = trySt.jjtGetChild(0).findChildrenOfType(ASTBlockStatement.class);
                 if (blocks.isEmpty()) {
                     continue;
                 }

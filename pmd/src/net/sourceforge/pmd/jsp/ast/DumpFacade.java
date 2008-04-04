@@ -6,12 +6,14 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 public class DumpFacade extends JspParserVisitorAdapter {
 
     private PrintWriter writer;
     private boolean recurse;
 
-    public void initializeWith(Writer writer, String prefix, boolean recurse, SimpleNode node) {
+    public void initializeWith(Writer writer, String prefix, boolean recurse, JspNode node) {
 	this.writer = (writer instanceof PrintWriter) ? (PrintWriter) writer : new PrintWriter(writer);
 	this.recurse = recurse;
 	this.visit(node, prefix);
@@ -23,7 +25,7 @@ public class DumpFacade extends JspParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(SimpleNode node, Object data) {
+    public Object visit(JspNode node, Object data) {
 	dump(node, (String) data);
 	if (recurse) {
 	    return super.visit(node, data + " ");
@@ -32,7 +34,7 @@ public class DumpFacade extends JspParserVisitorAdapter {
 	}
     }
 
-    private void dump(SimpleNode node, String prefix) {
+    private void dump(Node node, String prefix) {
 	//
 	// Dump format is generally composed of the following items...
 	//
@@ -46,7 +48,7 @@ public class DumpFacade extends JspParserVisitorAdapter {
 	//
 	// If there are any additional details, then:
 	// 1) A colon
-	// 2) The SimpleNode.getImage() if it is non-empty
+	// 2) The Node.getImage() if it is non-empty
 	// 3) Extras in parentheses
 	//
 

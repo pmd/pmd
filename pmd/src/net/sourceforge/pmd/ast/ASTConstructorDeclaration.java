@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTConstructorDeclaration extends AccessNode {
+public class ASTConstructorDeclaration extends AbstractJavaAccessNode {
     public ASTConstructorDeclaration(int id) {
         super(id);
     }

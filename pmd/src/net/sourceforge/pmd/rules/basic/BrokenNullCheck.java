@@ -17,8 +17,7 @@ import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class BrokenNullCheck extends AbstractRule {
 
@@ -39,7 +38,7 @@ public class BrokenNullCheck extends AbstractRule {
     }
 
 
-    private void checkForViolations(ASTIfStatement node, Object data, SimpleJavaNode conditionalExpression) {
+    private void checkForViolations(ASTIfStatement node, Object data, Node conditionalExpression) {
         ASTEqualityExpression equalityExpression = getFirstDirectChildOfType(ASTEqualityExpression.class, conditionalExpression);
         if (equalityExpression == null) {
             return;
@@ -69,7 +68,7 @@ public class BrokenNullCheck extends AbstractRule {
         
         //Now we find the expression to compare to and do the comparison
         for (int i = 0; i < conditionalExpression.jjtGetNumChildren(); i++) {
-            SimpleJavaNode conditionalSubnode = (SimpleJavaNode)conditionalExpression.jjtGetChild(i);
+            Node conditionalSubnode = conditionalExpression.jjtGetChild(i);
             
             //We skip the null compare branch
             ASTEqualityExpression nullEqualityExpression = nullLiteral.getFirstParentOfType(ASTEqualityExpression.class);
@@ -166,9 +165,9 @@ public class BrokenNullCheck extends AbstractRule {
 
     private <T> T getFirstDirectChildOfType(Class<T> childType, Node node) {
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild(i);
-            if (simpleNode.getClass().equals(childType))
-                return (T)simpleNode;
+            Node n = node.jjtGetChild(i);
+            if (n.getClass().equals(childType))
+                return (T)n;
         }
         return null;
     }

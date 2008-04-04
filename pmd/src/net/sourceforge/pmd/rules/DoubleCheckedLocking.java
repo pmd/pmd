@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTIfStatement;
@@ -17,10 +20,7 @@ import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.ast.ASTType;
-import net.sourceforge.pmd.ast.Node;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * void method() {

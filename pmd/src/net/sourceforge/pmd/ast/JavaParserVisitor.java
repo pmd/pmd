@@ -3,7 +3,7 @@ package net.sourceforge.pmd.ast;
 
 public interface JavaParserVisitor
 {
-  public Object visit(SimpleJavaNode node, Object data);
+  public Object visit(JavaNode node, Object data);
   public Object visit(ASTCompilationUnit node, Object data);
   public Object visit(ASTPackageDeclaration node, Object data);
   public Object visit(ASTImportDeclaration node, Object data);

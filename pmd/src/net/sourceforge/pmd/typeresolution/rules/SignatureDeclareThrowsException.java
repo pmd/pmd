@@ -15,8 +15,7 @@ import net.sourceforge.pmd.ast.ASTImplementsList;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.BooleanProperty;
 
 /**
@@ -53,7 +52,7 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
             }
         }
         if (node.jjtGetNumChildren() != 0 && node.jjtGetChild(0).getClass().equals(ASTExtendsList.class)) {
-            ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) ((SimpleNode) node.jjtGetChild(0)).jjtGetChild(0);
+            ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0);
             if (isJUnitTest(type)) {
                 junitImported = true;
                 return super.visit(node, data);
@@ -123,7 +122,7 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     /**
      * Search the list of thrown exceptions for Exception
      */
-    private void checkExceptions(SimpleNode method, Object o) {
+    private void checkExceptions(Node method, Object o) {
         List<ASTName> exceptionList = method.findChildrenOfType(ASTName.class);
         if (!exceptionList.isEmpty()) {
             evaluateExceptions(exceptionList, o);

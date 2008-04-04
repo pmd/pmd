@@ -22,8 +22,7 @@ import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.rules.design.NpathComplexity;
 
 /**
@@ -39,12 +38,12 @@ public class CyclomaticComplexity extends AbstractJavaRule {
   private boolean showMethodsComplexity = true;
 
   private static class Entry {
-    private SimpleNode node;
+    private Node node;
     private int decisionPoints = 1;
     public int highestDecisionPoints;
     public int methodCount;
 
-    private Entry(SimpleNode node) {
+    private Entry(Node node) {
       this.node = node;
     }
 

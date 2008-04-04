@@ -5,7 +5,7 @@ import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
-import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class AssignmentInOperand extends AbstractRule {
 

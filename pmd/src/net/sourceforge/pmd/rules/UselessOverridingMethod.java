@@ -25,8 +25,7 @@ import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 import org.jaxen.JaxenException;
 
@@ -136,7 +135,7 @@ public class UselessOverridingMethod extends AbstractRule {
         if (statement.jjtGetChild(0).jjtGetNumChildren() == 0) {
             return data;     // skips empty return statements
         }
-        SimpleNode statementGrandChild = (SimpleNode) statement.jjtGetChild(0).jjtGetChild(0);
+        Node statementGrandChild = statement.jjtGetChild(0).jjtGetChild(0);
         ASTPrimaryExpression primaryExpression;
 
         if (statementGrandChild instanceof ASTPrimaryExpression)
@@ -200,7 +199,7 @@ public class UselessOverridingMethod extends AbstractRule {
 
 
 
-	public <T> List<T> findFirstDegreeChildrenOfType(SimpleNode n, Class<T> targetType) {
+	public <T> List<T> findFirstDegreeChildrenOfType(Node n, Class<T> targetType) {
         List<T> l = new ArrayList<T>();
         lclFindChildrenOfType(n, targetType, l);
         return l;

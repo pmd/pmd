@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTSynchronizedStatement extends SimpleJavaNode {
+public class ASTSynchronizedStatement extends AbstractJavaNode {
     public ASTSynchronizedStatement(int id) {
         super(id);
     }

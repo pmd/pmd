@@ -3,6 +3,11 @@
  */
 package net.sourceforge.pmd.rules;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
@@ -10,15 +15,10 @@ import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.AccessNode;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class UnusedPrivateMethodRule extends AbstractRule {
 
@@ -65,7 +65,7 @@ public class UnusedPrivateMethodRule extends AbstractRule {
     private boolean calledFromOutsideItself(List<NameOccurrence> occs, MethodNameDeclaration mnd) {
         int callsFromOutsideMethod = 0;
         for (NameOccurrence occ: occs) {
-            SimpleNode occNode = occ.getLocation();
+            Node occNode = occ.getLocation();
             ASTConstructorDeclaration enclosingConstructor = occNode.getFirstParentOfType(ASTConstructorDeclaration.class);
             if (enclosingConstructor != null) {
                 callsFromOutsideMethod++;

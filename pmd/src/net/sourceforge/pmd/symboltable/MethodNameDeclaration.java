@@ -7,7 +7,7 @@ import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTFormalParameters;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
 
@@ -79,8 +79,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
             	return false;
             }
 
-            SimpleNode myTypeNode = (SimpleNode) myParam.getTypeNode().jjtGetChild(0);
-            SimpleNode otherTypeNode = (SimpleNode) otherParam.getTypeNode().jjtGetChild(0);
+            Node myTypeNode = myParam.getTypeNode().jjtGetChild(0);
+            Node otherTypeNode = otherParam.getTypeNode().jjtGetChild(0);
 
             // compare primitive vs reference type
             if (myTypeNode.getClass() != otherTypeNode.getClass()) {
@@ -97,8 +97,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
                 myTypeImg = myTypeNode.getImage();
                 otherTypeImg = otherTypeNode.getImage();
             } else {
-                myTypeImg = ((SimpleNode) (myTypeNode.jjtGetChild(0))).getImage();
-                otherTypeImg = ((SimpleNode) (otherTypeNode.jjtGetChild(0))).getImage();
+                myTypeImg = myTypeNode.jjtGetChild(0).getImage();
+                otherTypeImg = otherTypeNode.jjtGetChild(0).getImage();
             }
 
             if (!myTypeImg.equals(otherTypeImg)) {

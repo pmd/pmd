@@ -13,7 +13,7 @@ import net.sourceforge.pmd.ast.ASTIfStatement;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTUnaryExpressionNotPlusMinus;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * if (x != y) { diff(); } else { same(); } and<br>
@@ -41,10 +41,10 @@ public class ConfusingTernary extends AbstractRule {
     public Object visit(ASTIfStatement node, Object data) {
         // look for "if (match) ..; else .."
         if (node.jjtGetNumChildren() == 3) {
-            SimpleNode inode = (SimpleNode) node.jjtGetChild(0);
+            Node inode = node.jjtGetChild(0);
             if (inode instanceof ASTExpression &&
                     inode.jjtGetNumChildren() == 1) {
-                SimpleNode jnode = (SimpleNode) inode.jjtGetChild(0);
+        	Node jnode = inode.jjtGetChild(0);
                 if (isMatch(jnode)) {
                     addViolation(data, node);
                 }
@@ -56,7 +56,7 @@ public class ConfusingTernary extends AbstractRule {
     public Object visit(ASTConditionalExpression node, Object data) {
         // look for "match ? .. : .."
         if (node.jjtGetNumChildren() > 0) {
-            SimpleNode inode = (SimpleNode) node.jjtGetChild(0);
+            Node inode = node.jjtGetChild(0);
             if (isMatch(inode)) {
                 addViolation(data, node);
             }
@@ -65,7 +65,7 @@ public class ConfusingTernary extends AbstractRule {
     }
 
     // recursive!
-    private static boolean isMatch(SimpleNode node) {
+    private static boolean isMatch(Node node) {
         return
                 isUnaryNot(node) ||
                 isNotEquals(node) ||
@@ -73,21 +73,21 @@ public class ConfusingTernary extends AbstractRule {
                 isParenthesisAroundMatch(node);
     }
 
-    private static boolean isUnaryNot(SimpleNode node) {
+    private static boolean isUnaryNot(Node node) {
         // look for "!x"
         return
                 node instanceof ASTUnaryExpressionNotPlusMinus &&
                 "!".equals(node.getImage());
     }
 
-    private static boolean isNotEquals(SimpleNode node) {
+    private static boolean isNotEquals(Node node) {
         // look for "x != y"
         return
                 node instanceof ASTEqualityExpression &&
                 "!=".equals(node.getImage());
     }
 
-    private static boolean isConditionalWithAllMatches(SimpleNode node) {
+    private static boolean isConditionalWithAllMatches(Node node) {
         // look for "match && match" or "match || match"
         if (!(node instanceof ASTConditionalAndExpression) &&
                 !(node instanceof ASTConditionalOrExpression)) {
@@ -98,7 +98,7 @@ public class ConfusingTernary extends AbstractRule {
             return false;
         }
         for (int i = 0; i < i_max; i++) {
-            SimpleNode inode = (SimpleNode) node.jjtGetChild(i);
+            Node inode = node.jjtGetChild(i);
             // recurse!
             if (!isMatch(inode)) {
                 return false;
@@ -108,23 +108,23 @@ public class ConfusingTernary extends AbstractRule {
         return true;
     }
 
-    private static boolean isParenthesisAroundMatch(SimpleNode node) {
+    private static boolean isParenthesisAroundMatch(Node node) {
         // look for "(match)"
         if (!(node instanceof ASTPrimaryExpression) ||
                 (node.jjtGetNumChildren() != 1)) {
             return false;
         }
-        SimpleNode inode = (SimpleNode) node.jjtGetChild(0);
+        Node inode = node.jjtGetChild(0);
         if (!(inode instanceof ASTPrimaryPrefix) ||
                 (inode.jjtGetNumChildren() != 1)) {
             return false;
         }
-        SimpleNode jnode = (SimpleNode) inode.jjtGetChild(0);
+        Node jnode = inode.jjtGetChild(0);
         if (!(jnode instanceof ASTExpression) ||
                 (jnode.jjtGetNumChildren() != 1)) {
             return false;
         }
-        SimpleNode knode = (SimpleNode) jnode.jjtGetChild(0);
+        Node knode = jnode.jjtGetChild(0);
         // recurse!
         return isMatch(knode);
     }

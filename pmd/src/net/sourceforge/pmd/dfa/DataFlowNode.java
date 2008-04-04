@@ -5,8 +5,8 @@ package net.sourceforge.pmd.dfa;
 
 import java.util.List;
 
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public interface DataFlowNode {
     List<VariableAccess> getVariableAccess();
@@ -25,7 +25,7 @@ public interface DataFlowNode {
 
     List<DataFlowNode> getFlow();
 
-    SimpleNode getSimpleNode();
+    Node getNode();
 
     void setVariableAccess(List<VariableAccess> variableAccess);
 

@@ -10,8 +10,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class IdempotentOperations extends AbstractRule {
 
@@ -27,12 +26,12 @@ public class IdempotentOperations extends AbstractRule {
             return super.visit(node, data);
         }
 
-        SimpleNode lhs = (SimpleNode) node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+        Node lhs = node.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
         if (!(lhs instanceof ASTName)) {
             return super.visit(node, data);
         }
 
-        SimpleNode rhs = (SimpleNode) node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
+        Node rhs = node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
         if (!(rhs instanceof ASTName)) {
             return super.visit(node, data);
         }

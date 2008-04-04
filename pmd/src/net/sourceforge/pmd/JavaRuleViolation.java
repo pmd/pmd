@@ -15,7 +15,8 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.CanSuppressWarnings;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.JavaNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 
@@ -32,11 +33,11 @@ import net.sourceforge.pmd.symboltable.SourceFileScope;
  * </ul>
  */
 public class JavaRuleViolation extends AbstractRuleViolation {
-    public JavaRuleViolation(Rule rule, RuleContext ctx, SimpleNode node) {
+    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node) {
 	this(rule, ctx, node, rule.getMessage());
     }
 
-    public JavaRuleViolation(Rule rule, RuleContext ctx, SimpleNode node, String specificMsg) {
+    public JavaRuleViolation(Rule rule, RuleContext ctx, JavaNode node, String specificMsg) {
 	super(rule, ctx, node, specificMsg);
 
 	if (node != null) {
@@ -68,7 +69,7 @@ public class JavaRuleViolation extends AbstractRuleViolation {
 	    setVariableNameIfExists(node);
 
 	    // Check for suppression
-	    List<SimpleNode> parentTypes = new ArrayList<SimpleNode>();
+	    List<Node> parentTypes = new ArrayList<Node>();
 	    if (node instanceof ASTTypeDeclaration || node instanceof ASTClassOrInterfaceBodyDeclaration
 		    || node instanceof ASTFormalParameter || node instanceof ASTLocalVariableDeclaration) {
 		parentTypes.add(node);
@@ -77,7 +78,7 @@ public class JavaRuleViolation extends AbstractRuleViolation {
 	    parentTypes.addAll(node.getParentsOfType(ASTClassOrInterfaceBodyDeclaration.class));
 	    parentTypes.addAll(node.getParentsOfType(ASTFormalParameter.class));
 	    parentTypes.addAll(node.getParentsOfType(ASTLocalVariableDeclaration.class));
-	    for (SimpleNode parentType : parentTypes) {
+	    for (Node parentType : parentTypes) {
 		CanSuppressWarnings t = (CanSuppressWarnings) parentType;
 		if (t.hasSuppressWarningsAnnotationFor(getRule())) {
 		    isSuppressed = true;
@@ -87,7 +88,7 @@ public class JavaRuleViolation extends AbstractRuleViolation {
 	}
     }
 
-    private void setVariableNameIfExists(SimpleNode node) {
+    private void setVariableNameIfExists(Node node) {
 	variableName = "";
 	if (node instanceof ASTFieldDeclaration) {
 	    variableName = ((ASTFieldDeclaration) node).getVariableName();

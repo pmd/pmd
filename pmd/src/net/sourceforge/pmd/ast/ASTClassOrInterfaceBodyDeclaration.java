@@ -4,7 +4,7 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.Rule;
 
-public class ASTClassOrInterfaceBodyDeclaration extends SimpleJavaNode implements CanSuppressWarnings {
+public class ASTClassOrInterfaceBodyDeclaration extends AbstractJavaNode implements CanSuppressWarnings {
 
     public ASTClassOrInterfaceBodyDeclaration(int id) {
         super(id);
@@ -14,6 +14,10 @@ public class ASTClassOrInterfaceBodyDeclaration extends SimpleJavaNode implement
         super(p, id);
     }
 
+    @Override
+    public boolean isFindBoundary() {
+	return isAnonymousInnerClass();
+    }
 
     public boolean hasSuppressWarningsAnnotationFor(Rule rule) {
         for (int i = 0; i < jjtGetNumChildren(); i++) {

@@ -3,14 +3,14 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.util.Applier;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.Applier;
 
 public class ClassScope extends AbstractScope {
 
@@ -59,7 +59,7 @@ public class ClassScope extends AbstractScope {
                 // TODO may be a class name: Foo.this.super();
             } else {
                 nameOccurrences.add(occurrence);
-                SimpleNode n = occurrence.getLocation();
+                Node n = occurrence.getLocation();
                 if (n instanceof ASTName) {
                     ((ASTName) n).setNameDeclaration(decl);
                 } // TODO what to do with PrimarySuffix case?
@@ -71,7 +71,7 @@ public class ClassScope extends AbstractScope {
                 // TODO may be a class name
             } else {
                 nameOccurrences.add(occurrence);
-                SimpleNode n = occurrence.getLocation();
+                Node n = occurrence.getLocation();
                 if (n instanceof ASTName) {
                     ((ASTName) n).setNameDeclaration(decl);
                 } // TODO what to do with PrimarySuffix case?

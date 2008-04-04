@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTSwitchLabel extends SimpleJavaNode {
+public class ASTSwitchLabel extends AbstractJavaNode {
     public ASTSwitchLabel(int id) {
         super(id);
     }

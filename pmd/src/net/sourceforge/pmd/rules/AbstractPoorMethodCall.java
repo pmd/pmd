@@ -1,14 +1,14 @@
 package net.sourceforge.pmd.rules;
 
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-
-import java.util.List;
 
 /**
  * Detects and flags the occurrences of specific method calls against an instance of
@@ -95,7 +95,7 @@ public abstract class AbstractPoorMethodCall extends AbstractRule {
         
         for (NameOccurrence occ: node.getUsages()) {
             if (isNotedMethod(occ.getNameForWhichThisIsAQualifier())) {
-                SimpleNode parent = (SimpleNode)occ.getLocation().jjtGetParent().jjtGetParent();
+        	Node parent = occ.getLocation().jjtGetParent().jjtGetParent();
                 if (parent instanceof ASTPrimaryExpression) {
                     // bail out if it's something like indexOf("a" + "b")
                     List additives = parent.findChildrenOfType(ASTAdditiveExpression.class);

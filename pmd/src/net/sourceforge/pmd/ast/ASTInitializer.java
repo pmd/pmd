@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTInitializer extends SimpleJavaNode {
+public class ASTInitializer extends AbstractJavaNode {
     public ASTInitializer(int id) {
         super(id);
     }

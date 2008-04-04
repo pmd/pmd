@@ -3,17 +3,17 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public abstract class AbstractNameDeclaration implements NameDeclaration {
 
-    protected SimpleNode node;
+    protected Node node;
 
-    public AbstractNameDeclaration(SimpleNode node) {
+    public AbstractNameDeclaration(Node node) {
         this.node = node;
     }
 
-    public SimpleNode getNode() {
+    public Node getNode() {
         return node;
     }
 

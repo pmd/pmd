@@ -3,22 +3,22 @@
  */
 package net.sourceforge.pmd.rules.design;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
-import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class PositionalIteratorRule extends AbstractRule {
 
     public Object visit(ASTWhileStatement node, Object data) {
-        if (hasNameAsChild((SimpleNode) node.jjtGetChild(0))) {
-            String exprName = getName((SimpleNode) node.jjtGetChild(0));
+        if (hasNameAsChild(node.jjtGetChild(0))) {
+            String exprName = getName(node.jjtGetChild(0));
             if (exprName.indexOf(".hasNext") != -1 && node.jjtGetNumChildren() > 1) {
 
-                SimpleNode loopBody = (SimpleNode) node.jjtGetChild(1);
+        	Node loopBody = node.jjtGetChild(1);
                 List<String> names = new ArrayList<String>();
                 collectNames(getVariableName(exprName), names, loopBody);
                 int nextCount = 0;
@@ -41,9 +41,9 @@ public class PositionalIteratorRule extends AbstractRule {
         return exprName.substring(0, exprName.indexOf('.'));
     }
 
-    private void collectNames(String target, List<String> names, SimpleNode node) {
+    private void collectNames(String target, List<String> names, Node node) {
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            SimpleNode child = (SimpleNode) node.jjtGetChild(i);
+            Node child = node.jjtGetChild(i);
             if (child.jjtGetNumChildren() > 0) {
                 collectNames(target, names, child);
             } else {
@@ -54,22 +54,22 @@ public class PositionalIteratorRule extends AbstractRule {
         }
     }
 
-    private boolean hasNameAsChild(SimpleNode node) {
+    private boolean hasNameAsChild(Node node) {
         while (node.jjtGetNumChildren() > 0) {
             if (node.jjtGetChild(0) instanceof ASTName) {
                 return true;
             }
-            return hasNameAsChild((SimpleNode) node.jjtGetChild(0));
+            return hasNameAsChild(node.jjtGetChild(0));
         }
         return false;
     }
 
-    private String getName(SimpleNode node) {
+    private String getName(Node node) {
         while (node.jjtGetNumChildren() > 0) {
             if (node.jjtGetChild(0) instanceof ASTName) {
                 return ((ASTName) node.jjtGetChild(0)).getImage();
             }
-            return getName((SimpleNode) node.jjtGetChild(0));
+            return getName(node.jjtGetChild(0));
         }
         throw new IllegalArgumentException("Check with hasNameAsChild() first!");
     }

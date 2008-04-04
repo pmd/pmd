@@ -9,8 +9,8 @@ import net.sourceforge.pmd.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.ast.ASTReferenceType;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.JavaNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.NumericConstants;
 
 public class MoreThanOneLogger extends AbstractRule {
@@ -44,7 +44,7 @@ public class MoreThanOneLogger extends AbstractRule {
 		return init (node, data);
 	}	
 
-	private Object init(SimpleJavaNode node, Object data) {
+	private Object init(JavaNode node, Object data) {
 		stack.push(count);
 		count = NumericConstants.ZERO;
 
@@ -62,11 +62,11 @@ public class MoreThanOneLogger extends AbstractRule {
 		if (count > 1) {
 			return super.visit(node, data);
 		}
-		SimpleNode type = ((SimpleNode) node.jjtGetParent()).getFirstChildOfType(ASTType.class);
+		Node type = node.jjtGetParent().getFirstChildOfType(ASTType.class);
 		if (type != null) {
-			SimpleNode reftypeNode = (SimpleNode) type.jjtGetChild(0);
+		    Node reftypeNode = type.jjtGetChild(0);
 			if (reftypeNode instanceof ASTReferenceType) {
-                SimpleNode classOrIntType = (SimpleNode) reftypeNode.jjtGetChild(0);
+			    Node classOrIntType = reftypeNode.jjtGetChild(0);
                 if (classOrIntType instanceof ASTClassOrInterfaceType){
                     Class clazzType = ((ASTClassOrInterfaceType)classOrIntType).getType();
                     if((clazzType != null && (clazzType.equals(log4jLogger) || clazzType.equals(javaLogger))|| (clazzType == null&& "Logger".equals(classOrIntType.getImage())))) {

@@ -55,9 +55,8 @@ import net.sourceforge.pmd.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.ast.TypeNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 //
 // Helpful reading:
@@ -498,10 +497,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	// Roll up the type based on type of the first child node.
 	private void rollupTypeUnary(TypeNode typeNode) {
-		if (typeNode instanceof SimpleNode) {
-			SimpleNode simpleNode = (SimpleNode)typeNode;
-			if (simpleNode.jjtGetNumChildren() >= 1) {
-				Node child = simpleNode.jjtGetChild(0);
+		if (typeNode instanceof Node) {
+			Node node = (Node)typeNode;
+			if (node.jjtGetNumChildren() >= 1) {
+				Node child = node.jjtGetChild(0);
 				if (child instanceof TypeNode) {
 					typeNode.setType(((TypeNode)child).getType());
 				}
@@ -511,10 +510,10 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	// Roll up the type based on type of the first child node using Unary Numeric Promotion per JLS 5.6.1
 	private void rollupTypeUnaryNumericPromotion(TypeNode typeNode) {
-		if (typeNode instanceof SimpleNode) {
-			SimpleNode simpleNode = (SimpleNode)typeNode;
-			if (simpleNode.jjtGetNumChildren() >= 1) {
-				Node child = simpleNode.jjtGetChild(0);
+		if (typeNode instanceof Node) {
+			Node node = (Node)typeNode;
+			if (node.jjtGetNumChildren() >= 1) {
+				Node child = node.jjtGetChild(0);
 				if (child instanceof TypeNode) {
 					Class<?> type = ((TypeNode)child).getType();
 					if (type != null) {
@@ -532,11 +531,11 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	// Roll up the type based on type of the first and second child nodes using Binary Numeric Promotion per JLS 5.6.2
 	private void rollupTypeBinaryNumericPromotion(TypeNode typeNode) {
-		if (typeNode instanceof SimpleNode) {
-			SimpleNode simpleNode = (SimpleNode)typeNode;
-			if (simpleNode.jjtGetNumChildren() >= 2) {
-				Node child1 = simpleNode.jjtGetChild(0);
-				Node child2 = simpleNode.jjtGetChild(1);
+		if (typeNode instanceof Node) {
+			Node node = (Node)typeNode;
+			if (node.jjtGetNumChildren() >= 2) {
+				Node child1 = node.jjtGetChild(0);
+				Node child2 = node.jjtGetChild(1);
 				if (child1 instanceof TypeNode && child2 instanceof TypeNode) {
 					Class<?> type1 = ((TypeNode)child1).getType();
 					Class<?> type2 = ((TypeNode)child2).getType();

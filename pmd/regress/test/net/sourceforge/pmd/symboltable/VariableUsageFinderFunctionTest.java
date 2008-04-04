@@ -1,19 +1,20 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
+import net.sourceforge.pmd.ast.DummyJavaNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableUsageFinderFunction;
 import net.sourceforge.pmd.util.Applier;
 
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 public class VariableUsageFinderFunctionTest {
 
     @Test
@@ -22,7 +23,7 @@ public class VariableUsageFinderFunctionTest {
         variableDeclarationIdNode.setImage("x");
         VariableNameDeclaration nameDeclaration = new VariableNameDeclaration(variableDeclarationIdNode);
         List<NameOccurrence> nameOccurrences = new ArrayList<NameOccurrence>();
-        nameOccurrences.add(new NameOccurrence(new SimpleJavaNode(2), "x"));
+        nameOccurrences.add(new NameOccurrence(new DummyJavaNode(2), "x"));
 
         Map<VariableNameDeclaration, List<NameOccurrence>> declarations = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
         declarations.put(nameDeclaration, nameOccurrences);

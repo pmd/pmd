@@ -1,5 +1,9 @@
 package net.sourceforge.pmd.rules.migration;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTCastExpression;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
@@ -7,12 +11,8 @@ import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 public class UnnecessaryCast extends AbstractRule {
 
@@ -51,7 +51,7 @@ public class UnnecessaryCast extends AbstractRule {
         return process(node, data);
     }
 
-    private Object process(SimpleNode node, Object data) {
+    private Object process(Node node, Object data) {
         ASTClassOrInterfaceType cit = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
         if (cit == null || !implClassNames.contains(cit.getImage())) {
             return data;
@@ -64,7 +64,7 @@ public class UnnecessaryCast extends AbstractRule {
         List<NameOccurrence> usages = decl.getUsages();
         for (NameOccurrence no: usages) {
             ASTName name = (ASTName) no.getLocation();
-            SimpleNode n = (SimpleNode) name.jjtGetParent().jjtGetParent().jjtGetParent();
+            Node n = name.jjtGetParent().jjtGetParent().jjtGetParent();
             if (ASTCastExpression.class.equals(n.getClass())) {
                 addViolation(data, n);
             }

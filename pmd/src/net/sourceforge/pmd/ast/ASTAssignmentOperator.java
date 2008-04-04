@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTAssignmentOperator extends SimpleJavaNode {
+public class ASTAssignmentOperator extends AbstractJavaNode {
     public ASTAssignmentOperator(int id) {
         super(id);
     }

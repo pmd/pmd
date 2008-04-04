@@ -7,8 +7,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
 
@@ -23,13 +22,13 @@ public class UseStringBufferForStringAppends extends AbstractRule {
             return data;
         }
         for (NameOccurrence no: node.getUsages()) {
-            SimpleNode name = no.getLocation();
+            Node name = no.getLocation();
             ASTStatementExpression statement = name.getFirstParentOfType(ASTStatementExpression.class);
             if (statement == null) {
                 continue;
             }
             if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0).getClass().equals(ASTPrimaryExpression.class)) {
-                ASTName astName = ((SimpleNode) statement.jjtGetChild(0)).getFirstChildOfType(ASTName.class);
+                ASTName astName = statement.jjtGetChild(0).getFirstChildOfType(ASTName.class);
                 if(astName != null){
                     if (astName.equals(name)) {
                         ASTAssignmentOperator assignmentOperator = statement.getFirstChildOfType(ASTAssignmentOperator.class);

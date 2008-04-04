@@ -3,7 +3,7 @@
 package net.sourceforge.pmd.ast;
 
 
-public class ASTTryStatement extends SimpleJavaNode {
+public class ASTTryStatement extends AbstractJavaNode {
 
     public ASTTryStatement(int id) {
         super(id);

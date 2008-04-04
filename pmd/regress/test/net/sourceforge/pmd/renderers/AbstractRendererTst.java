@@ -9,7 +9,6 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 
 import org.junit.Test;
@@ -34,7 +33,7 @@ public abstract class AbstractRendererTst extends RuleTst {
         public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
             if (c.getImage().equals("Foo")) {
                 addViolation(ctx, c);
-                addViolation(ctx, (SimpleNode) c.jjtGetChild(0));
+                addViolation(ctx, c.jjtGetChild(0));
             }
             return ctx;
         }

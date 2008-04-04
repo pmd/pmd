@@ -3,16 +3,16 @@
  */
 package net.sourceforge.pmd.symboltable;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
+
 import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.LinkedList;
-import java.util.List;
-import java.util.StringTokenizer;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class NameFinder {
 
@@ -26,7 +26,7 @@ public class NameFinder {
             add(new NameOccurrence(prefix, "this"));
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            checkForNameChild((SimpleNode) node.jjtGetChild(i));
+            checkForNameChild(node.jjtGetChild(i));
         }
     }
 
@@ -34,7 +34,7 @@ public class NameFinder {
         return names;
     }
 
-    private void checkForNameChild(SimpleNode node) {
+    private void checkForNameChild(Node node) {
         if (node.getImage() != null) {
             add(new NameOccurrence(node, node.getImage()));
         }

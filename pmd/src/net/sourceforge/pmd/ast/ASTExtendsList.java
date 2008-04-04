@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTExtendsList extends SimpleJavaNode {
+public class ASTExtendsList extends AbstractJavaNode {
     public ASTExtendsList(int id) {
         super(id);
     }

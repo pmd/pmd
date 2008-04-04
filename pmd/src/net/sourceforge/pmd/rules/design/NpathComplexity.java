@@ -19,7 +19,7 @@ import net.sourceforge.pmd.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTTryStatement;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
+import net.sourceforge.pmd.ast.JavaNode;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.StatisticalRule;
 import net.sourceforge.pmd.util.NumericConstants;
@@ -33,43 +33,33 @@ import net.sourceforge.pmd.util.NumericConstants;
 public class NpathComplexity extends StatisticalRule {
 
 	
-	private int complexityMultipleOf(SimpleJavaNode node, int npathStart, Object data) {
+	private int complexityMultipleOf(JavaNode node, int npathStart, Object data) {
 		
 		int npath = npathStart;		
-		SimpleJavaNode simpleNode;
+		JavaNode n;
 		
 	    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-	        simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
-	        npath *= ((Integer) simpleNode.jjtAccept( this, data ));
+	        n = (JavaNode) node.jjtGetChild( i );
+	        npath *= ((Integer) n.jjtAccept( this, data ));
 	      }
 	    
 	    return npath;
 	}
 	
-	private int complexitySumOf(SimpleJavaNode node, int npathStart, Object data) {
+	private int complexitySumOf(JavaNode node, int npathStart, Object data) {
 		
 		int npath = npathStart;		
-		SimpleJavaNode simpleNode;
+		JavaNode n;
 		
 	    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-	        simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
-	        npath += (Integer) simpleNode.jjtAccept( this, data );
+	        n = (JavaNode) node.jjtGetChild( i );
+	        npath += (Integer) n.jjtAccept( this, data );
 	      }
 	    
 	    return npath;
 	}
 	
   public Object visit(ASTMethodDeclaration node, Object data) {
-
-//    int npath = 1;
-//
-//    // Basic NPath functionality multiplies the complexity of peer nodes
-//    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-//      SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
-//      Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
-//      npath *= complexity.intValue();
-//    }
-	  
 	  int npath = complexityMultipleOf(node, 1, data);
 
     DataPoint point = new DataPoint();
@@ -81,17 +71,8 @@ public class NpathComplexity extends StatisticalRule {
     return Integer.valueOf( npath );
   }
 
-  public Object visit(SimpleJavaNode node, Object data) {
-//    int npath = 1;
-//
-//    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-//      SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
-//      Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
-//      npath *= complexity.intValue();
-//    }
-
+  public Object visit(JavaNode node, Object data) {
 	 int npath = complexityMultipleOf(node, 1, data);
-	 
     return Integer.valueOf( npath );
   }
 
@@ -102,10 +83,10 @@ public class NpathComplexity extends StatisticalRule {
 
     int complexity = 0;
 
-    List<SimpleJavaNode> statementChildren = new ArrayList<SimpleJavaNode>();
+    List<JavaNode> statementChildren = new ArrayList<JavaNode>();
     for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
       if ( node.jjtGetChild( i ).getClass() == ASTStatement.class ) {
-        statementChildren.add((SimpleJavaNode) node.jjtGetChild( i ) );
+        statementChildren.add((JavaNode) node.jjtGetChild( i ) );
       }
     }
 
@@ -120,7 +101,7 @@ public class NpathComplexity extends StatisticalRule {
       complexity++;
     }
 
-    for (SimpleJavaNode element: statementChildren) {
+    for (JavaNode element: statementChildren) {
       complexity += (Integer) element.jjtAccept( this, data );
     }
 
@@ -132,7 +113,7 @@ public class NpathComplexity extends StatisticalRule {
 
     int boolCompWhile = sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
 
-    Integer nPathWhile = (Integer) ( (SimpleJavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
+    Integer nPathWhile = (Integer) ( (JavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
         this, data );
 
     return Integer.valueOf( boolCompWhile + nPathWhile + 1 );
@@ -143,7 +124,7 @@ public class NpathComplexity extends StatisticalRule {
 
     int boolCompDo = sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
 
-    Integer nPathDo = (Integer) ( (SimpleJavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
+    Integer nPathDo = (Integer) ( (JavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
         this, data );
 
     return Integer.valueOf( boolCompDo + nPathDo + 1 );
@@ -154,7 +135,7 @@ public class NpathComplexity extends StatisticalRule {
 
     int boolCompFor = sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
 
-    Integer nPathFor = (Integer) ( (SimpleJavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
+    Integer nPathFor = (Integer) ( (JavaNode) node.getFirstChildOfType( ASTStatement.class ) ).jjtAccept(
         this, data );
 
     return Integer.valueOf( boolCompFor + nPathFor + 1 );
@@ -187,14 +168,14 @@ public class NpathComplexity extends StatisticalRule {
     int npath = 0;
     int caseRange = 0;
     for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-      SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
+	JavaNode n = (JavaNode) node.jjtGetChild( i );
 
       // Fall-through labels count as 1 for complexity
-      if ( simpleNode instanceof ASTSwitchLabel ) {
+      if ( n instanceof ASTSwitchLabel ) {
         npath += caseRange;
         caseRange = 1;
       } else {
-        Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
+        Integer complexity = (Integer) n.jjtAccept( this, data );
         caseRange *= complexity;
       }
     }
@@ -210,15 +191,6 @@ public class NpathComplexity extends StatisticalRule {
      * implementation, this code will add the complexity of the try to the
      * complexities of the catch and finally blocks.
      */
-
-//    int npath = 0;
-//
-//    for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-//      SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
-//      Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
-//      npath += complexity.intValue();
-//    }
-
 	  int npath = complexitySumOf(node, 0, data);
 	  
     return Integer.valueOf( npath );
@@ -227,13 +199,6 @@ public class NpathComplexity extends StatisticalRule {
 
   public Object visit(ASTConditionalExpression node, Object data) {
     if ( node.isTernary() ) {
-//      int npath = 0;
-//
-//      for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-//        SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
-//        Integer complexity = (Integer) simpleNode.jjtAccept( this, data );
-//        npath += complexity.intValue();
-//      }
     	int npath = complexitySumOf(node, 0, data);
     	
       npath += 2;

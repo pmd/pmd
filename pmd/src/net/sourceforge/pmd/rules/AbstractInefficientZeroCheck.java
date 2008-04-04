@@ -1,15 +1,15 @@
 package net.sourceforge.pmd.rules;
 
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
-
-import java.util.List;
 
 /**
  * This is an abstract rule for patterns which compare a method invocation to 0.
@@ -25,7 +25,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractRule {
     public abstract boolean isTargetMethod(NameOccurrence occ);
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        SimpleNode nameNode = node.getTypeNameNode();
+	Node nameNode = node.getTypeNameNode();
         if (nameNode instanceof ASTPrimitiveType) {
             return data;
         }
@@ -38,7 +38,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractRule {
             if (!isTargetMethod(occ)) {
                 continue;
             }
-            SimpleNode expr = (SimpleNode) occ.getLocation().jjtGetParent().jjtGetParent().jjtGetParent();
+            Node expr = occ.getLocation().jjtGetParent().jjtGetParent().jjtGetParent();
             if ((expr instanceof ASTEqualityExpression ||
                     (expr instanceof ASTRelationalExpression && ">".equals(expr.getImage())))
                 && isCompareZero(expr)) {
@@ -54,7 +54,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractRule {
      * @param equality
      * @return true if this is comparing to 0 else false
      */
-    private boolean isCompareZero(SimpleNode equality) {
+    private boolean isCompareZero(Node equality) {
         return (checkComparison(equality, 0) || checkComparison(equality, 1));
 
     }
@@ -68,12 +68,12 @@ public abstract class AbstractInefficientZeroCheck extends AbstractRule {
      *            The ordinal in the equality expression to check
      * @return true if the value in position i is 0, else false
      */
-    private boolean checkComparison(SimpleNode equality, int i) {
-        SimpleNode target = (SimpleNode) equality.jjtGetChild(i).jjtGetChild(0);
+    private boolean checkComparison(Node equality, int i) {
+	Node target = equality.jjtGetChild(i).jjtGetChild(0);
         if (target.jjtGetNumChildren() == 0) {
             return false;
         }
-        target = (SimpleNode) target.jjtGetChild(0);
+        target = target.jjtGetChild(0);
         return (target instanceof ASTLiteral && "0".equals(target.getImage()));
     }
 

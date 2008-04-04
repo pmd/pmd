@@ -3,15 +3,15 @@
  */
 package net.sourceforge.pmd.rules.design;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
-import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class OnlyOneReturnRule extends AbstractRule {
 
@@ -31,7 +31,7 @@ public class OnlyOneReturnRule extends AbstractRule {
         node.findChildrenOfType(ASTReturnStatement.class, returnNodes, false);
         if (returnNodes.size() > 1) {
             for (Iterator<ASTReturnStatement> i = returnNodes.iterator(); i.hasNext();) {
-                SimpleNode problem = i.next();
+        	Node problem = i.next();
                 // skip the last one, it's OK
                 if (!i.hasNext()) {
                     continue;

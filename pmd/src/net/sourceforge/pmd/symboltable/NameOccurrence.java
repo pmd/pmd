@@ -12,12 +12,11 @@ import net.sourceforge.pmd.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class NameOccurrence {
 
-    private SimpleNode location;
+    private Node location;
     private String image;
     private NameOccurrence qualifiedName;
 
@@ -30,7 +29,7 @@ public class NameOccurrence {
     private final static String THIS_DOT = "this.";
     private final static String SUPER_DOT = "super.";
 
-    public NameOccurrence(SimpleNode location, String image) {
+    public NameOccurrence(Node location, String image) {
         this.location = location;
         this.image = image;
     }
@@ -63,23 +62,23 @@ public class NameOccurrence {
         return qualifiedName != null;
     }
 
-    public SimpleNode getLocation() {
+    public Node getLocation() {
         return location;
     }
 
     public boolean isOnRightHandSide() {
-        SimpleNode node = (SimpleNode) location.jjtGetParent().jjtGetParent().jjtGetParent();
+	Node node = location.jjtGetParent().jjtGetParent().jjtGetParent();
         return node instanceof ASTExpression && node.jjtGetNumChildren() == 3;
     }
 
 
     public boolean isOnLeftHandSide() {
         // I detest this method with every atom of my being
-        SimpleNode primaryExpression;
+	Node primaryExpression;
         if (location.jjtGetParent() instanceof ASTPrimaryExpression) {
-            primaryExpression = (SimpleNode) location.jjtGetParent().jjtGetParent();
+            primaryExpression = location.jjtGetParent().jjtGetParent();
         } else if (location.jjtGetParent().jjtGetParent() instanceof ASTPrimaryExpression) {
-            primaryExpression = (SimpleNode) location.jjtGetParent().jjtGetParent().jjtGetParent();
+            primaryExpression = location.jjtGetParent().jjtGetParent().jjtGetParent();
         } else {
             throw new RuntimeException("Found a NameOccurrence that didn't have an ASTPrimary Expression as parent or grandparent.  Parent = " + location.jjtGetParent() + " and grandparent = " + location.jjtGetParent().jjtGetParent());
         }
@@ -107,11 +106,11 @@ public class NameOccurrence {
         return true;
     }
 
-    private boolean isCompoundAssignment(SimpleNode primaryExpression) {
+    private boolean isCompoundAssignment(Node primaryExpression) {
         return ((ASTAssignmentOperator) (primaryExpression.jjtGetChild(1))).isCompound();
     }
 
-    private boolean isStandAlonePostfix(SimpleNode primaryExpression) {
+    private boolean isStandAlonePostfix(Node primaryExpression) {
         if (!(primaryExpression instanceof ASTPostfixExpression) || !(primaryExpression.jjtGetParent() instanceof ASTStatementExpression)) {
             return false;
         }
@@ -124,7 +123,7 @@ public class NameOccurrence {
         return thirdChildHasDottedName(primaryExpression);
     }
 
-    private boolean thirdChildHasDottedName(SimpleNode primaryExpression) {
+    private boolean thirdChildHasDottedName(Node primaryExpression) {
         Node thirdChild = primaryExpression.jjtGetChild(0).jjtGetChild(0).jjtGetChild(0);
         return thirdChild instanceof ASTName && ((ASTName) thirdChild).getImage().indexOf('.') == -1;
     }

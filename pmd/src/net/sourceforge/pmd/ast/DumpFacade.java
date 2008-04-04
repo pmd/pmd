@@ -11,7 +11,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
     private PrintWriter writer;
     private boolean recurse;
 
-    public void initializeWith(Writer writer, String prefix, boolean recurse, SimpleJavaNode node) {
+    public void initializeWith(Writer writer, String prefix, boolean recurse, JavaNode node) {
 	this.writer = (writer instanceof PrintWriter) ? (PrintWriter) writer : new PrintWriter(writer);
 	this.recurse = recurse;
 	this.visit(node, prefix);
@@ -23,7 +23,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
     }
 
     @Override
-    public Object visit(SimpleJavaNode node, Object data) {
+    public Object visit(JavaNode node, Object data) {
 	dump(node, (String) data);
 	if (recurse) {
 	    return super.visit(node, data + " ");
@@ -32,7 +32,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
 	}
     }
 
-    private void dump(SimpleNode node, String prefix) {
+    private void dump(JavaNode node, String prefix) {
 	//
 	// Dump format is generally composed of the following items...
 	//
@@ -46,7 +46,7 @@ public class DumpFacade extends JavaParserVisitorAdapter {
 	//
 	// If there are any additional details, then:
 	// 1) A colon
-	// 2) The SimpleNode.getImage() if it is non-empty
+	// 2) The Node.getImage() if it is non-empty
 	// 3) Extras in parentheses
 	//
 

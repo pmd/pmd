@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTImportDeclaration extends SimpleJavaTypeNode {
+public class ASTImportDeclaration extends AbstractJavaTypeNode {
 
     private boolean isImportOnDemand;
     private boolean isStatic;

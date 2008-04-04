@@ -21,8 +21,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
@@ -48,11 +47,11 @@ public class SingularField extends AbstractRule {
             List<ASTVariableDeclaratorId> list = node.findChildrenOfType(ASTVariableDeclaratorId.class);
             ASTVariableDeclaratorId declaration = list.get(0);
             List<NameOccurrence> usages = declaration.getUsages();
-            SimpleNode decl = null;
+            Node decl = null;
             boolean violation = true;
             for (int ix = 0; ix < usages.size(); ix++) {
                 NameOccurrence no = usages.get(ix);
-                SimpleNode location = no.getLocation();
+                Node location = no.getLocation();
 
                 ASTPrimaryExpression primaryExpressionParent = location.getFirstParentOfType(ASTPrimaryExpression.class);
                 if (ix==0 && !disallowNotAssignment) {
@@ -72,7 +71,7 @@ public class SingularField extends AbstractRule {
 	                	break;		//Optimization
 	                } else {
 	                	if (usages.size() > ix + 1) {
-	                		SimpleNode secondUsageLocation = usages.get(ix + 1).getLocation();
+	                	    Node secondUsageLocation = usages.get(ix + 1).getLocation();
 	                		
 	                		List<ASTStatementExpression> parentStatements = secondUsageLocation.getParentsOfType(ASTStatementExpression.class);
 	                		for (ASTStatementExpression statementExpression : parentStatements) {
@@ -102,7 +101,7 @@ public class SingularField extends AbstractRule {
                 	break;			//Optimization
                 }
                 
-                SimpleNode method = location.getFirstParentOfType(ASTMethodDeclaration.class);
+                Node method = location.getFirstParentOfType(ASTMethodDeclaration.class);
                 if (method == null) {
                     method = location.getFirstParentOfType(ASTConstructorDeclaration.class);
                     if (method == null) {

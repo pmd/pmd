@@ -5,8 +5,7 @@ import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 public class UselessStringValueOf extends AbstractRule {
@@ -24,7 +23,7 @@ public class UselessStringValueOf extends AbstractRule {
             if (parent.jjtGetNumChildren() != 2) {
                 return super.visit(node, data);
             }
-            SimpleJavaNode gp = (SimpleJavaNode) parent.jjtGetParent();
+            Node gp = parent.jjtGetParent();
             if (parent instanceof ASTPrimaryExpression &&
                     gp instanceof ASTAdditiveExpression &&
                     "+".equals(gp.getImage())) {

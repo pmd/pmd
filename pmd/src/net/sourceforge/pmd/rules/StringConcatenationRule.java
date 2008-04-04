@@ -6,7 +6,7 @@ package net.sourceforge.pmd.rules;
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTForStatement;
-import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class StringConcatenationRule extends AbstractRule {
 

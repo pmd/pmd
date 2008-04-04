@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTReturnStatement extends SimpleJavaNode {
+public class ASTReturnStatement extends AbstractJavaNode {
     public ASTReturnStatement(int id) {
         super(id);
     }

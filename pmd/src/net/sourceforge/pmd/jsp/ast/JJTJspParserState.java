@@ -2,6 +2,8 @@
 
 package net.sourceforge.pmd.jsp.ast;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 class JJTJspParserState {
     private java.util.Stack nodes;
     private java.util.Stack marks;

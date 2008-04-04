@@ -5,8 +5,7 @@ import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.ast.ASTInitializer;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 public class CompareObjectsWithEquals extends AbstractRule {
@@ -43,7 +42,7 @@ public class CompareObjectsWithEquals extends AbstractRule {
         }
 
         // skip if either is a qualified name
-        if (isQualifiedName((SimpleNode) c0.jjtGetChild(0)) || isQualifiedName((SimpleNode) c1.jjtGetChild(0))) {
+        if (isQualifiedName(c0.jjtGetChild(0)) || isQualifiedName(c1.jjtGetChild(0))) {
             return data;
         }
 

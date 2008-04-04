@@ -3,22 +3,22 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.util.Applier;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.util.Applier;
+
 public class MethodScope extends AbstractScope {
 
     protected Map<VariableNameDeclaration, List<NameOccurrence>> variableNames = new HashMap<VariableNameDeclaration, List<NameOccurrence>>();
-    private SimpleNode node;
+    private Node node;
 
-    public MethodScope(SimpleNode node) {
+    public MethodScope(Node node) {
         this.node = node;
     }
 
@@ -36,7 +36,7 @@ public class MethodScope extends AbstractScope {
         NameDeclaration decl = findVariableHere(occurrence);
         if (decl != null && !occurrence.isThisOrSuper()) {
             variableNames.get(decl).add(occurrence);
-            SimpleNode n = occurrence.getLocation();
+            Node n = occurrence.getLocation();
             if (n instanceof ASTName) {
                 ((ASTName) n).setNameDeclaration(decl);
             } // TODO what to do with PrimarySuffix case?
@@ -64,7 +64,7 @@ public class MethodScope extends AbstractScope {
         if (node instanceof ASTConstructorDeclaration) {
             return this.getEnclosingClassScope().getClassName();
         }
-        return ((SimpleNode) node.jjtGetChild(1)).getImage();
+        return node.jjtGetChild(1).getImage();
     }
 
     public String toString() {

@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.jsp.ast;
 
-public class ASTJspDeclaration extends SimpleNode {
+public class ASTJspDeclaration extends AbstractJspNode {
     public ASTJspDeclaration(int id) {
         super(id);
     }

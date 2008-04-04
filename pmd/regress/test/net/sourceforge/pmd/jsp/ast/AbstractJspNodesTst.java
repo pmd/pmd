@@ -1,13 +1,15 @@
 package test.net.sourceforge.pmd.jsp.ast;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.jsp.ast.JspCharStream;
-import net.sourceforge.pmd.jsp.ast.JspParser;
 
 import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
+
+import net.sourceforge.pmd.jsp.ast.JspCharStream;
+import net.sourceforge.pmd.jsp.ast.JspParser;
+import net.sourceforge.pmd.lang.ast.Node;
+
 public abstract class AbstractJspNodesTst {
 
     public <T> void assertNumberOfNodes(Class<T> clazz, String source, int number) {

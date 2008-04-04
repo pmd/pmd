@@ -7,6 +7,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.fail;
+
+import java.util.Iterator;
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -15,8 +19,8 @@ import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTStatement;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
+import net.sourceforge.pmd.lang.ast.Node;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -25,9 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.RuleTst;
-
-import java.util.Iterator;
-import java.util.List;
 
 public class DocumentNavigatorTest extends RuleTst {
 

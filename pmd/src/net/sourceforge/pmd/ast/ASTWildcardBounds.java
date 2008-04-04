@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTWildcardBounds extends SimpleJavaNode {
+public class ASTWildcardBounds extends AbstractJavaNode {
     public ASTWildcardBounds(int id) {
         super(id);
     }

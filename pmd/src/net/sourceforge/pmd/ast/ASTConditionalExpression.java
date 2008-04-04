@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTConditionalExpression extends SimpleJavaTypeNode {
+public class ASTConditionalExpression extends AbstractJavaTypeNode {
     public ASTConditionalExpression(int id) {
         super(id);
     }

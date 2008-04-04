@@ -7,6 +7,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTBlock;
@@ -22,39 +28,32 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 public class SimpleNodeTest extends ParserTst {
 
     @Test
     public void testMethodDiffLines() throws Throwable {
-        Set methods = getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
-        Iterator iter = methods.iterator();
-        verifyNode((SimpleNode) iter.next(), 2, 9, 4, 2);
+        Set<ASTMethodDeclaration> methods = getNodes(ASTMethodDeclaration.class, METHOD_DIFF_LINES);
+        verifyNode(methods.iterator().next(), 2, 9, 4, 2);
     }
 
     @Test
     public void testMethodSameLine() throws Throwable {
-        Set methods = getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
-        verifyNode((SimpleNode) methods.iterator().next(), 2, 9, 2, 21);
+        Set<ASTMethodDeclaration> methods = getNodes(ASTMethodDeclaration.class, METHOD_SAME_LINE);
+        verifyNode(methods.iterator().next(), 2, 9, 2, 21);
     }
 
     @Test
     public void testNoLookahead() throws Throwable {
         String code = NO_LOOKAHEAD; // 1, 8 -> 1, 20
-        Set uCD = getNodes(ASTClassOrInterfaceDeclaration.class, code);
-        verifyNode((SimpleNode) uCD.iterator().next(), 1, 8, 1, 20);
+        Set<ASTClassOrInterfaceDeclaration> uCD = getNodes(ASTClassOrInterfaceDeclaration.class, code);
+        verifyNode(uCD.iterator().next(), 1, 8, 1, 20);
     }
 
     @Test
@@ -87,10 +86,10 @@ public class SimpleNodeTest extends ParserTst {
 
     @Test
     public void testColumnsOnQualifiedName() throws Throwable {
-        Set name = getNodes(ASTName.class, QUALIFIED_NAME);
-        Iterator i = name.iterator();
+        Set<ASTName> name = getNodes(ASTName.class, QUALIFIED_NAME);
+        Iterator<ASTName> i = name.iterator();
         while (i.hasNext()) {
-            SimpleNode node = (SimpleNode) i.next();
+            Node node = i.next();
             if (node.getImage().equals("java.io.File")) {
                 verifyNode(node, 1, 8, 1, 19);
             }
@@ -99,10 +98,10 @@ public class SimpleNodeTest extends ParserTst {
 
     @Test
     public void testLineNumbersForNameSplitOverTwoLines() throws Throwable {
-        Set name = getNodes(ASTName.class, BROKEN_LINE_IN_NAME);
-        Iterator i = name.iterator();
+        Set<ASTName> name = getNodes(ASTName.class, BROKEN_LINE_IN_NAME);
+        Iterator<ASTName> i = name.iterator();
         while (i.hasNext()) {
-            SimpleNode node = (SimpleNode) i.next();
+            Node node = i.next();
             if (node.getImage().equals("java.io.File")) {
                 verifyNode(node, 1, 8, 2, 4);
             }
@@ -259,7 +258,7 @@ public class SimpleNodeTest extends ParserTst {
         assertTrue(nodes.get(0) instanceof ASTFieldDeclaration);
     }
 
-    private void verifyNode(SimpleNode node, int beginLine, int beginCol, int endLine, int endCol) {
+    private void verifyNode(Node node, int beginLine, int beginCol, int endLine, int endCol) {
         assertEquals("Unexpected beginning line: ", beginLine, node.getBeginLine());
         assertEquals("Unexpected beginning column: ", beginCol, node.getBeginColumn());
         assertEquals("Unexpected ending line:", endLine, node.getEndLine());

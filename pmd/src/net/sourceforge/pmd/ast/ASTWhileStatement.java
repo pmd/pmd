@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTWhileStatement extends SimpleJavaNode {
+public class ASTWhileStatement extends AbstractJavaNode {
     public ASTWhileStatement(int id) {
         super(id);
     }

@@ -5,6 +5,8 @@
  */
 package net.sourceforge.pmd.rules.sunsecure;
 
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
@@ -13,9 +15,7 @@ import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.List;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Utility methods for the package
@@ -73,7 +73,7 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
      * @param node the ASTMethodDeclaration where the local variable name will be searched
      * @return <code>true</code> if the method declaration contains any local variable named vn and <code>false</code> in other case
      */
-    protected boolean isLocalVariable(String vn, SimpleNode node) {
+    protected boolean isLocalVariable(String vn, Node node) {
         final List<ASTLocalVariableDeclaration> lvars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
         if (lvars != null) {
             for (ASTLocalVariableDeclaration lvd: lvars) {
@@ -87,12 +87,12 @@ public abstract class AbstractSunSecureRule extends AbstractRule {
     }
 
     /**
-     * Gets the image of the first ASTName node found by {@link SimpleNode#getFirstChildOfType(Class)}
+     * Gets the image of the first ASTName node found by {@link Node#getFirstChildOfType(Class)}
      *
      * @param n the node to search
      * @return the image of the first ASTName or <code>null</code>
      */
-    protected String getFirstNameImage(SimpleNode n) {
+    protected String getFirstNameImage(Node n) {
         ASTName name = n.getFirstChildOfType(ASTName.class);
         if (name != null)
             return name.getImage();

@@ -11,7 +11,7 @@ import net.sourceforge.pmd.ast.ASTArguments;
 import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTLiteral;
-import net.sourceforge.pmd.ast.Node;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 public class BigIntegerInstantiation extends AbstractRule {

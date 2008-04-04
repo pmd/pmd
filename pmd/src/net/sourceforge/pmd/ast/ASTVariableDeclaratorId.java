@@ -2,12 +2,13 @@
 
 package net.sourceforge.pmd.ast;
 
+import java.util.List;
+
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-import java.util.List;
-
-public class ASTVariableDeclaratorId extends SimpleJavaTypeNode {
+public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
 
     public ASTVariableDeclaratorId(int id) {
         super(id);
@@ -55,7 +56,7 @@ public class ASTVariableDeclaratorId extends SimpleJavaTypeNode {
         return jjtGetParent().jjtGetParent() instanceof ASTTryStatement;
     }
 
-    public SimpleNode getTypeNameNode() {
+    public Node getTypeNameNode() {
         if (jjtGetParent() instanceof ASTFormalParameter) {
             return findTypeNameNode(jjtGetParent());
         } else if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
@@ -68,19 +69,19 @@ public class ASTVariableDeclaratorId extends SimpleJavaTypeNode {
         if (jjtGetParent() instanceof ASTFormalParameter) {
             return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
         } else if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
-            SimpleNode n = (SimpleNode) jjtGetParent().jjtGetParent();
+            Node n = jjtGetParent().jjtGetParent();
             return n.getFirstChildOfType(ASTType.class);
         }
         throw new RuntimeException("Don't know how to get the type for anything other than ASTLocalVariableDeclaration/ASTFormalParameter/ASTFieldDeclaration");
     }
 
-    private SimpleNode findTypeNameNode(Node node) {
+    private Node findTypeNameNode(Node node) {
         int i = 0;
         while (node.jjtGetChild(i) instanceof ASTAnnotation) {
             // skip annotations
             i++;
         }
         ASTType typeNode = (ASTType) node.jjtGetChild(i);
-        return (SimpleNode) typeNode.jjtGetChild(0);
+        return typeNode.jjtGetChild(0);
     }
 }

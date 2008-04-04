@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTMemberValue extends SimpleJavaNode {
+public class ASTMemberValue extends AbstractJavaNode {
     public ASTMemberValue(int id) {
         super(id);
     }

@@ -10,6 +10,7 @@ import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.AccessNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
@@ -31,7 +32,7 @@ public class MethodArgumentCouldBeFinal extends AbstractOptimizationRule {
             VariableNameDeclaration var = entry.getKey();
             AccessNode node = var.getAccessNodeParent();
             if (!node.isFinal() && (node instanceof ASTFormalParameter) && !assigned(entry.getValue())) {
-                addViolation(data, node, var.getImage());
+                addViolation(data, (Node)node, var.getImage());
             }
         }
 	}

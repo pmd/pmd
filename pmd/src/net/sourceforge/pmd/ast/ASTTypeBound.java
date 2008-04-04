@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTTypeBound extends SimpleJavaNode {
+public class ASTTypeBound extends AbstractJavaNode {
     public ASTTypeBound(int id) {
         super(id);
     }

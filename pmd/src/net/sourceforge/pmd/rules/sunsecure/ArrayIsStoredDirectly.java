@@ -5,6 +5,9 @@
  */
 package net.sourceforge.pmd.rules.sunsecure;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
@@ -18,10 +21,7 @@ import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.List;
-import java.util.ArrayList;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * @author mgriffa
@@ -82,7 +82,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                     assignedVar = suffix.getImage();
                 }
 
-                SimpleNode n = pe.getFirstParentOfType(ASTMethodDeclaration.class);
+                Node n = pe.getFirstParentOfType(ASTMethodDeclaration.class);
                 if (n == null) {
 					n = pe.getFirstParentOfType(ASTConstructorDeclaration.class);
 					if (n == null) {
@@ -117,7 +117,7 @@ public class ArrayIsStoredDirectly extends AbstractSunSecureRule {
                     }
 
                     if (val.equals(varName)) {
-                        SimpleNode md = parameter.getFirstParentOfType(ASTMethodDeclaration.class);
+                	Node md = parameter.getFirstParentOfType(ASTMethodDeclaration.class);
                         if (md == null) {
                         	md = pe.getFirstParentOfType(ASTConstructorDeclaration.class);
         				}

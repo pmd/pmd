@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTStatementExpressionList extends SimpleJavaNode {
+public class ASTStatementExpressionList extends AbstractJavaNode {
     public ASTStatementExpressionList(int id) {
         super(id);
     }

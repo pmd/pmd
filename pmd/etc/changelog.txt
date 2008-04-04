@@ -1,5 +1,8 @@
 ??? ??, 2008 - 5.0:
 
+// TODO Refactor AST
+	o SimpleNode.dump() needs to be implemented as a Visitor
+
 TODO - Release blockers - Must implement before this release can be finished
    o We need to figure out how to allow PMD to introspect the capabilities of
      each LanguageVersion.  Can we parse the language? Can we use DFA?  Can we
@@ -30,10 +33,16 @@ TODO - Release blockers - Must implement before this release can be finished
      that we do not get code leaking out into the rest of PMD, breaking the
      Language abstraction layer.  Only the LanguageVersion would be allowed to
      have a direct reference to the LanguageVersionHandler for each of the
-     Lanugages (e.g. // NOPMD usage).  Essentially, controlled leakage but only
+     Languages (e.g. // NOPMD usage).  Essentially, controlled leakage but only
      through the authorized abstraction interface.  Hmm, perhaps the Rule should
      allow a list of classes which are authorized "leakers", that would make it
      a bit more practical.
+   o Do we have a rule to style check for multiple declarations and chained
+     assignments? (e.g. int a, b;  int a = b = x;)
+   o Need to refactor the regression test packages to reflect new packaging.
+   o XPathRule needs changes to support many Languages.  Need to move adding
+     RuleViolation onto the Language used by a Rule, and not on Rule class
+     hierarchy.
 
 ---
 
@@ -72,6 +81,22 @@ The following is relatively complete list of the major changes:
 	   Renamed - net.sourceforge.pmd.dfa.IDataFlowNode to net.sourceforge.pmd.dfa.DataFlowNode   
 	   Renamed - net.sourceforge.pmd.dfa.DataFlowNode to net.sourceforge.pmd.dfa.AbstractDataFlowNode
 	   Added - net.sourceforge.pmd.ast.JavaDataFlowNode
+	   
+	API Change - Generalize AST treatment
+	   Added - net.sourceforge.pmd.lang.ast.Node (interface extracted from old Node/SimpleNode)
+	   Added - net.sourceforge.pmd.lang.ast.AbstractNode
+	   Added - net.sourceforge.pmd.ast.DummyJavaNode
+	   Added - net.sourceforge.pmd.jsp.ast.AbstractJspNode
+	   Added - net.sourceforge.pmd.jsp.ast.JspNode
+	   Renamed - net.sourceforge.pmd.ast.SimpleJavaNode to net.sourceforge.pmd.ast.AbstractJavaNode
+	   Renamed - net.sourceforge.pmd.ast.SimpleJavaTypeNode to net.sourceforge.pmd.ast.AbstractJavaTypeNode
+	   Renamed - net.sourceforge.pmd.ast.SimpleJavaAccessNode to net.sourceforge.pmd.ast.AbstractJavaAccessNode
+	   Renamed - net.sourceforge.pmd.ast.SimpleJavaAccessTypeNode to net.sourceforge.pmd.ast.AbstractJavaAccessTypeNode
+	   Deleted - net.sourceforge.pmd.ast.Node
+	   Deleted - net.sourceforge.pmd.ast.SimpleNode
+	   Deleted - net.sourceforge.pmd.ast.AccessNodeInterface
+	   Deleted - net.sourceforge.pmd.jsp.ast.Node
+	   Deleted - net.sourceforge.pmd.jsp.ast.SimpleNode
 
 Other changes:
 

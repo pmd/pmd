@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd;
 
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public abstract class AbstractRuleViolation implements RuleViolation {
 
@@ -23,11 +23,11 @@ public abstract class AbstractRuleViolation implements RuleViolation {
     protected String methodName;
     protected String variableName;
 
-    public AbstractRuleViolation(Rule rule, RuleContext ctx, SimpleNode node) {
+    public AbstractRuleViolation(Rule rule, RuleContext ctx, Node node) {
 	this(rule, ctx, node, rule.getMessage());
     }
 
-    public AbstractRuleViolation(Rule rule, RuleContext ctx, SimpleNode node, String specificMsg) {
+    public AbstractRuleViolation(Rule rule, RuleContext ctx, Node node, String specificMsg) {
 	this.rule = rule;
 	this.description = specificMsg;
 	this.filename = ctx.getSourceCodeFilename();

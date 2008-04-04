@@ -7,8 +7,8 @@ import java.util.List;
 import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
+import net.sourceforge.pmd.lang.ast.Node;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -17,14 +17,14 @@ import org.jaxen.XPath;
 public class ViewerModel {
 	
     private List<ViewerModelListener> listeners;
-    private SimpleNode	rootNode;
+    private Node	rootNode;
     private List		evaluationResults;
 
     public ViewerModel() {
         listeners = new ArrayList<ViewerModelListener>(5);
     }
 
-    public SimpleNode getRootNode() {
+    public Node getRootNode() {
         return rootNode;
     }
 
@@ -77,7 +77,7 @@ public class ViewerModel {
      * @param node     node to be selected
      * @param selector object which requests the selection
      */
-    public void selectNode(SimpleNode node, Object selector) {
+    public void selectNode(Node node, Object selector) {
         fireViewerModelEvent(new ViewerModelEvent(selector, ViewerModelEvent.NODE_SELECTED, node));
     }
 

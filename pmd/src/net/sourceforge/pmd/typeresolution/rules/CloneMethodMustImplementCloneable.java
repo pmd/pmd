@@ -16,7 +16,6 @@ import net.sourceforge.pmd.ast.ASTFormalParameters;
 import net.sourceforge.pmd.ast.ASTImplementsList;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.SimpleNode;
 
 /**
  * The method clone() should only be implemented if the class implements the
@@ -50,7 +49,7 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
             }
         }
         if (node.jjtGetNumChildren() != 0 && node.jjtGetChild(0).getClass().equals(ASTExtendsList.class)) {
-            ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) ((SimpleNode) node.jjtGetChild(0)).jjtGetChild(0);
+            ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0);
             Class clazz = type.getType();
             if (clazz != null && clazz.equals(Cloneable.class)) {
                 return data;

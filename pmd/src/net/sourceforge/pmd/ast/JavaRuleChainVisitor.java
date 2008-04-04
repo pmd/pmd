@@ -5,6 +5,7 @@ import java.util.List;
 import net.sourceforge.pmd.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.rules.XPathRule;
 
 public class JavaRuleChainVisitor extends AbstractRuleChainVisitor {
@@ -13,7 +14,7 @@ public class JavaRuleChainVisitor extends AbstractRuleChainVisitor {
 		JavaParserVisitor javaParserVistor = new JavaParserVisitorAdapter() {
 			// Perform a visitation of the AST to index nodes which need
 			// visiting by type
-			public Object visit(SimpleJavaNode node, Object data) {
+			public Object visit(JavaNode node, Object data) {
 				indexNode(node);
 				return super.visit(node, data);
 			}
@@ -24,12 +25,12 @@ public class JavaRuleChainVisitor extends AbstractRuleChainVisitor {
 		}
 	}
 
-	protected void visit(Rule rule, SimpleNode node, RuleContext ctx) {
+	protected void visit(Rule rule, Node node, RuleContext ctx) {
 		// Rule better either be a JavaParserVisitor, or a XPathRule
 		if (rule instanceof XPathRule) {
 			((XPathRule)rule).evaluate(node, ctx);
 		} else {
-			((SimpleJavaNode)node).jjtAccept((JavaParserVisitor)rule, ctx);
+			((JavaNode)node).jjtAccept((JavaParserVisitor)rule, ctx);
 		}
 	}
 }

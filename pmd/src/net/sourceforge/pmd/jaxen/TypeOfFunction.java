@@ -1,16 +1,16 @@
 package net.sourceforge.pmd.jaxen;
 
-import net.sourceforge.pmd.ast.Node;
+import java.util.Arrays;
+import java.util.List;
+
 import net.sourceforge.pmd.ast.TypeNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 import org.jaxen.Context;
 import org.jaxen.Function;
 import org.jaxen.FunctionCallException;
 import org.jaxen.SimpleFunctionContext;
 import org.jaxen.XPathFunctionContext;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class TypeOfFunction implements Function {
 

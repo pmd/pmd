@@ -18,7 +18,8 @@ import net.sourceforge.pmd.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
+import net.sourceforge.pmd.ast.JavaNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.StatisticalRule;
 import net.sourceforge.pmd.util.NumericConstants;
@@ -43,12 +44,12 @@ public abstract class AbstractNcssCount extends StatisticalRule {
     this.nodeClass = nodeClass;
   }
 
-  public Object visit(SimpleJavaNode node, Object data) {
+  public Object visit(JavaNode node, Object data) {
     int numNodes = 0;
 
     for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-      SimpleJavaNode simpleNode = (SimpleJavaNode) node.jjtGetChild( i );
-      Integer treeSize = (Integer) simpleNode.jjtAccept( this, data );
+      JavaNode n = (JavaNode) node.jjtGetChild( i );
+      Integer treeSize = (Integer) n.jjtAccept( this, data );
       numNodes += treeSize.intValue();
     }
 
@@ -75,11 +76,11 @@ public abstract class AbstractNcssCount extends StatisticalRule {
    *          node data
    * @return count of the number of children of the node, plus one
    */
-  protected Integer countNodeChildren(SimpleJavaNode node, Object data) {
+  protected Integer countNodeChildren(Node node, Object data) {
     Integer nodeCount = null;
     int lineCount = 0;
     for ( int i = 0; i < node.jjtGetNumChildren(); i++ ) {
-      nodeCount = (Integer) ( (SimpleJavaNode) node.jjtGetChild( i ) ).jjtAccept(
+      nodeCount = (Integer) ( (JavaNode) node.jjtGetChild( i ) ).jjtAccept(
           this, data );
       lineCount += nodeCount.intValue();
     }

@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.rules;
 
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
@@ -7,9 +9,7 @@ import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTFormalParameters;
 import net.sourceforge.pmd.ast.ASTImplementsList;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.SimpleNode;
-
-import java.util.List;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class OverrideBothEqualsAndHashcode extends AbstractRule {
 
@@ -19,7 +19,7 @@ public class OverrideBothEqualsAndHashcode extends AbstractRule {
 
     private boolean containsHashCode = false;
     
-    private SimpleNode nodeFound = null;
+    private Node nodeFound = null;
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {
@@ -42,7 +42,7 @@ public class OverrideBothEqualsAndHashcode extends AbstractRule {
             if (node.jjtGetChild(ix).getClass().equals(ASTClassOrInterfaceType.class)) {
                 ASTClassOrInterfaceType cit = (ASTClassOrInterfaceType)node.jjtGetChild(ix);
                 Class clazz = cit.getType();
-                if (clazz != null || ((SimpleNode) node.jjtGetChild(ix)).hasImageEqualTo("Comparable")) {
+                if (clazz != null || node.jjtGetChild(ix).hasImageEqualTo("Comparable")) {
                     implementsComparable = true;
                     return data;
                 }
@@ -59,7 +59,7 @@ public class OverrideBothEqualsAndHashcode extends AbstractRule {
         int iFormalParams = 0;
         String paramName = null;
         for (int ix = 0; ix < node.jjtGetNumChildren(); ix++) {
-            SimpleNode sn = (SimpleNode) node.jjtGetChild(ix);
+            Node sn = node.jjtGetChild(ix);
             if (sn.getClass().equals(ASTFormalParameters.class)) {
                 List<ASTFormalParameter> allParams = ((ASTFormalParameters) sn).findChildrenOfType(ASTFormalParameter.class);
                 for (ASTFormalParameter formalParam: allParams) {

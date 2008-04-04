@@ -3,7 +3,7 @@ package net.sourceforge.pmd.sourcetypehandlers;
 import java.io.Writer;
 
 import net.sourceforge.pmd.jsp.ast.DumpFacade;
-import net.sourceforge.pmd.jsp.ast.SimpleNode;
+import net.sourceforge.pmd.jsp.ast.JspNode;
 import net.sourceforge.pmd.parsers.JspParser;
 import net.sourceforge.pmd.parsers.Parser;
 import net.sourceforge.pmd.symboltable.JspSymbolFacade;
@@ -34,7 +34,7 @@ public class JspTypeHandler implements SourceTypeHandler {
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
         return new VisitorStarter() {
             public void start(Object rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (SimpleNode)rootNode);
+                new DumpFacade().initializeWith(writer, prefix, recurse, (JspNode)rootNode);
             }
         };
     }

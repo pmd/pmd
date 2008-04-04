@@ -1,12 +1,12 @@
 package net.sourceforge.pmd.util.viewer.gui.menu;
 
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import java.text.MessageFormat;
+
+import javax.swing.JMenu;
+
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.util.NLS;
-
-import javax.swing.*;
-import java.text.MessageFormat;
 
 
 /**
@@ -18,7 +18,7 @@ import java.text.MessageFormat;
 public class SimpleNodeSubMenu
         extends JMenu {
     private ViewerModel model;
-    private SimpleNode node;
+    private Node node;
 
     /**
      * constructs the submenu
@@ -26,7 +26,7 @@ public class SimpleNodeSubMenu
      * @param model model to which the actions will be forwarded
      * @param node  menu's owner
      */
-    public SimpleNodeSubMenu(ViewerModel model, SimpleNode node) {
+    public SimpleNodeSubMenu(ViewerModel model, Node node) {
         super(MessageFormat.format(NLS.nls("AST.MENU.NODE.TITLE"), node.toString()));
         this.model = model;
         this.node = node;

@@ -9,7 +9,6 @@ import java.util.List;
 
 import net.sourceforge.pmd.CommonAbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.jsp.JspRuleViolation;
 import net.sourceforge.pmd.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.jsp.ast.ASTAttributeValue;
@@ -32,8 +31,9 @@ import net.sourceforge.pmd.jsp.ast.ASTJspScriptlet;
 import net.sourceforge.pmd.jsp.ast.ASTText;
 import net.sourceforge.pmd.jsp.ast.ASTUnparsedText;
 import net.sourceforge.pmd.jsp.ast.ASTValueBinding;
+import net.sourceforge.pmd.jsp.ast.JspNode;
 import net.sourceforge.pmd.jsp.ast.JspParserVisitor;
-import net.sourceforge.pmd.jsp.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public abstract class AbstractJspRule extends CommonAbstractRule implements
 		JspParserVisitor {
@@ -51,7 +51,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	 * @param node
 	 *            the node that produces the violation
 	 */
-	protected final void addViolation(Object data, SimpleNode node) {
+	protected final void addViolation(Object data, JspNode node) {
 		RuleContext ctx = (RuleContext)data;
 		ctx.getReport().addRuleViolation(new JspRuleViolation(this, ctx, node));
 	}
@@ -66,7 +66,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	 * @param msg
 	 *            specific message to put in the report
 	 */
-	protected final void addViolationWithMessage(Object data, SimpleNode node,
+	protected final void addViolationWithMessage(Object data, JspNode node,
 			String msg) {
 		RuleContext ctx = (RuleContext)data;
 		ctx.getReport().addRuleViolation(
@@ -83,7 +83,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	 * @param embed
 	 *            a variable to embed in the rule violation message
 	 */
-	protected final void addViolation(Object data, SimpleNode node, String embed) {
+	protected final void addViolation(Object data, JspNode node, String embed) {
 		RuleContext ctx = (RuleContext)data;
 		ctx.getReport().addRuleViolation(
 				new JspRuleViolation(this, ctx, node, MessageFormat.format(
@@ -104,7 +104,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	protected final void addViolation(Object data, Node node, Object[] args) {
 		RuleContext ctx = (RuleContext)data;
 		ctx.getReport().addRuleViolation(
-				new JspRuleViolation(this, ctx, (SimpleNode)node, MessageFormat
+				new JspRuleViolation(this, ctx, (JspNode)node, MessageFormat
 						.format(getMessage(), args)));
 	}
 
@@ -114,7 +114,7 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 
 	protected void visitAll(List acus, RuleContext ctx) {
 		for (Iterator i = acus.iterator(); i.hasNext();) {
-			SimpleNode node = (SimpleNode)i.next();
+			JspNode node = (JspNode)i.next();
 			visit(node, ctx);
 		}
 	}
@@ -125,92 +125,92 @@ public abstract class AbstractJspRule extends CommonAbstractRule implements
 	// complex Rule base class instead of from relatively simple Visitor.
 	//
 
-	public Object visit(SimpleNode node, Object data) {
+	public Object visit(JspNode node, Object data) {
 		node.childrenAccept(this, data);
 		return null;
 	}
 
 	public Object visit(ASTCompilationUnit node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTContent node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTJspDirective node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTJspDirectiveAttribute node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTJspScriptlet node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTJspExpression node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTJspDeclaration node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTJspComment node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTText node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTUnparsedText node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTElExpression node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTValueBinding node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTCData node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTElement node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTAttribute node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTAttributeValue node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTJspExpressionInAttribute node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTCommentTag node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTDeclaration node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTDoctypeDeclaration node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 
 	public Object visit(ASTDoctypeExternalId node, Object data) {
-		return visit((SimpleNode)node, data);
+		return visit((JspNode)node, data);
 	}
 }

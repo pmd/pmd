@@ -21,8 +21,8 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.DummyJavaNode;
+import net.sourceforge.pmd.ast.JavaNode;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
@@ -135,10 +135,10 @@ public class ReportTest extends RuleTst implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo");
-        SimpleNode s = getNode(10, 5, ctx.getSourceCodeFilename());
+        JavaNode s = getNode(10, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new JavaRuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s));
         ctx.setSourceCodeFilename("bar");
-        SimpleNode s1 = getNode(10, 5, ctx.getSourceCodeFilename());
+        JavaNode s1 = getNode(10, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new JavaRuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s1));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
@@ -150,10 +150,10 @@ public class ReportTest extends RuleTst implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
-        SimpleNode s = getNode(10, 5, ctx.getSourceCodeFilename());
+        JavaNode s = getNode(10, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new JavaRuleViolation(new MockRule("rule2", "rule2", "msg", "rulesetname"), ctx, s));
         ctx.setSourceCodeFilename("foo2");
-        SimpleNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
+        JavaNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new JavaRuleViolation(new MockRule("rule1", "rule1", "msg", "rulesetname"), ctx, s1));
         Renderer rend = new XMLRenderer();
         String result = rend.render(r);
@@ -167,7 +167,7 @@ public class ReportTest extends RuleTst implements ReportListener {
         violationSemaphore = false;
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("file");
-        SimpleNode s = getNode(5, 5, ctx.getSourceCodeFilename());
+        JavaNode s = getNode(5, 5, ctx.getSourceCodeFilename());
         rpt.addRuleViolation(new JavaRuleViolation(new MockRule("name", "desc", "msg", "rulesetname"), ctx, s));
         assertTrue(violationSemaphore);
 
@@ -182,13 +182,13 @@ public class ReportTest extends RuleTst implements ReportListener {
         Report r = new Report();
         RuleContext ctx = new RuleContext();
         ctx.setSourceCodeFilename("foo1");
-        SimpleNode s = getNode(5, 5, ctx.getSourceCodeFilename());
+        JavaNode s = getNode(5, 5, ctx.getSourceCodeFilename());
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         r.addRuleViolation(new JavaRuleViolation(rule, ctx, s));
         ctx.setSourceCodeFilename("foo2");
         Rule mr = new MockRule("rule1", "rule1", "msg", "rulesetname");
-        SimpleNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
-        SimpleNode s2 = getNode(30, 5, ctx.getSourceCodeFilename());
+        JavaNode s1 = getNode(20, 5, ctx.getSourceCodeFilename());
+        JavaNode s2 = getNode(30, 5, ctx.getSourceCodeFilename());
         r.addRuleViolation(new JavaRuleViolation(mr, ctx, s1));
         r.addRuleViolation(new JavaRuleViolation(mr, ctx, s2));
         Map summary = r.getSummary();
@@ -197,9 +197,9 @@ public class ReportTest extends RuleTst implements ReportListener {
         assertTrue(summary.values().contains(new Integer(2)));
     }
     
-    private SimpleNode getNode(int line, int column, String scopeName){
-        SimpleNode s = new SimpleJavaNode(2);
-        SimpleNode parent = new SimpleJavaNode(1);
+    private JavaNode getNode(int line, int column, String scopeName){
+	DummyJavaNode s = new DummyJavaNode(2);
+        DummyJavaNode parent = new DummyJavaNode(1);
         parent.testingOnly__setBeginLine(line);
         parent.testingOnly__setBeginColumn(column);
         s.jjtSetParent(parent);

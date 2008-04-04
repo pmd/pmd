@@ -15,7 +15,7 @@ import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTResultType;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
@@ -38,12 +38,12 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
 		return data;
 	}
 	
-	private static String[] imagesOf(List<? extends SimpleNode> simpleNodes) {
+	private static String[] imagesOf(List<? extends Node> nodes) {
 		
-        String[] imageArray = new String[simpleNodes.size()];
+        String[] imageArray = new String[nodes.size()];
         
-        for (int i = 0; i < simpleNodes.size(); i++) {
-        	imageArray[i] = simpleNodes.get(i).getImage();
+        for (int i = 0; i < nodes.size(); i++) {
+        	imageArray[i] = nodes.get(i).getImage();
         }
         return imageArray;
 	}

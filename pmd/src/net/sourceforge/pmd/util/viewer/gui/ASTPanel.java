@@ -1,23 +1,27 @@
 package net.sourceforge.pmd.util.viewer.gui;
 
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.LinkedList;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.viewer.gui.menu.ASTNodePopupMenu;
 import net.sourceforge.pmd.util.viewer.model.ASTModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
 import net.sourceforge.pmd.util.viewer.util.NLS;
-
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-import java.awt.BorderLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.LinkedList;
 
 /**
  * tree panel GUI
@@ -51,7 +55,7 @@ public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelecti
                 if (e.isPopupTrigger()) {
                     TreePath path = tree.getClosestPathForLocation(e.getX(), e.getY());
                     tree.setSelectionPath(path);
-                    JPopupMenu menu = new ASTNodePopupMenu(model, (SimpleNode) path.getLastPathComponent());
+                    JPopupMenu menu = new ASTNodePopupMenu(model, (Node) path.getLastPathComponent());
                     menu.show(tree, e.getX(), e.getY());
                 }
             }
@@ -86,6 +90,6 @@ public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelecti
      * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
      */
     public void valueChanged(TreeSelectionEvent e) {
-        model.selectNode((SimpleNode) e.getNewLeadSelectionPath().getLastPathComponent(), this);
+        model.selectNode((Node) e.getNewLeadSelectionPath().getLastPathComponent(), this);
     }
 }

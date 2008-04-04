@@ -5,7 +5,7 @@ package net.sourceforge.pmd.ast;
 import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
-public class ASTCompilationUnit extends SimpleJavaTypeNode implements CompilationUnit {
+public class ASTCompilationUnit extends AbstractJavaTypeNode implements CompilationUnit {
 
     private ClassTypeResolver classTypeResolver;
 

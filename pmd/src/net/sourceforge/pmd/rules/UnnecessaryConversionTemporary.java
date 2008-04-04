@@ -10,7 +10,6 @@ import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public class UnnecessaryConversionTemporary extends AbstractRule {
@@ -43,7 +42,7 @@ public class UnnecessaryConversionTemporary extends AbstractRule {
         if (!inPrimaryExpressionContext || !(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
             return super.visit(node, data);
         }
-        if (!primitiveWrappers.contains(((SimpleNode) node.jjtGetChild(0)).getImage())) {
+        if (!primitiveWrappers.contains(node.jjtGetChild(0).getImage())) {
             return super.visit(node, data);
         }
         usingPrimitiveWrapperAllocation = true;

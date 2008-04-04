@@ -7,10 +7,11 @@ import java.util.LinkedList;
 
 import net.sourceforge.pmd.dfa.AbstractDataFlowNode;
 import net.sourceforge.pmd.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 public class JavaDataFlowNode extends AbstractDataFlowNode {
 
-    public JavaDataFlowNode(LinkedList<DataFlowNode> dataFlow, SimpleNode node) {
+    public JavaDataFlowNode(LinkedList<DataFlowNode> dataFlow, Node node) {
 	super(dataFlow, node);
     }
 

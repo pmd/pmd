@@ -1,14 +1,14 @@
 package net.sourceforge.pmd.rules.strictexception;
 
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.Node;
-
-import java.util.List;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * <p/>

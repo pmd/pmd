@@ -16,8 +16,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleViolationComparator;
-import net.sourceforge.pmd.ast.SimpleJavaNode;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.ast.DummyJavaNode;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import org.junit.Test;
@@ -74,7 +73,7 @@ public class RuleViolationComparatorTest {
 	    int beginColumn, int endLine, int endColumn) {
 	RuleContext ruleContext = new RuleContext();
 	ruleContext.setSourceCodeFilename(fileName);
-	SimpleNode simpleNode = new SimpleJavaNode(1);
+	DummyJavaNode simpleNode = new DummyJavaNode(1);
 	simpleNode.setScope(new SourceFileScope(fileName));
 	simpleNode.testingOnly__setBeginLine(beginLine);
 	simpleNode.testingOnly__setBeginColumn(beginColumn);

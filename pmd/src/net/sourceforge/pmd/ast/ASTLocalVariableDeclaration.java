@@ -4,7 +4,7 @@ package net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.Rule;
 
-public class ASTLocalVariableDeclaration extends AccessNode implements Dimensionable, CanSuppressWarnings {
+public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implements Dimensionable, CanSuppressWarnings {
 
     public ASTLocalVariableDeclaration(int id) {
         super(id);

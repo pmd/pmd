@@ -12,7 +12,7 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.IntegerProperty;
 import net.sourceforge.pmd.util.NumericConstants;
 
@@ -53,7 +53,7 @@ public class TooManyFields extends AbstractRule {
         }
         for (String k : stats.keySet()) {
             int val = stats.get(k);
-            SimpleNode n = nodes.get(k);
+            Node n = nodes.get(k);
             if (val > maxFields) {
                 addViolation(data, n);
             }

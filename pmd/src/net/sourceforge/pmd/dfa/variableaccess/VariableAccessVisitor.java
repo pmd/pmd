@@ -15,9 +15,9 @@ import net.sourceforge.pmd.ast.ASTFormalParameter;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTVariableInitializer;
 import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.dfa.DataFlowNode;
 import net.sourceforge.pmd.dfa.StartOrEndDataFlowNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
@@ -39,7 +39,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
         this.computeNow(node);
     }
 
-    private void computeNow(SimpleNode node) {
+    private void computeNow(Node node) {
 	DataFlowNode inode = node.getDataFlowNode();
 
         List<VariableAccess> undefinitions = markUsages(inode);
@@ -64,7 +64,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
                 if (vnd.getAccessNodeParent() instanceof ASTFormalParameter) {
                     // no definition/undefinition/references for parameters
                     continue;
-                } else if (vnd.getAccessNodeParent().getFirstChildOfType(ASTVariableInitializer.class) != null) {
+                } else if (((Node)vnd.getAccessNodeParent()).getFirstChildOfType(ASTVariableInitializer.class) != null) {
                     // add definition for initialized variables
                     addVariableAccess(
                             vnd.getNode(), 
@@ -89,7 +89,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
             if (n instanceof StartOrEndDataFlowNode) {
                 continue;
             }
-            varDecls = n.getSimpleNode().getScope().getVariableDeclarations();
+            varDecls = n.getNode().getScope().getVariableDeclarations();
             if (!decls.contains(varDecls)) {
                 decls.add(varDecls);
             }
@@ -111,16 +111,16 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
      * @param va variable access to add
      * @param flow dataflownodes that can contain the node. 
      */
-    private void addVariableAccess(SimpleNode node, VariableAccess va, List flow) {
+    private void addVariableAccess(Node node, VariableAccess va, List flow) {
         // backwards to find the right inode (not a method declaration) 
         for (int i = flow.size()-1; i > 0; i--) { 
             DataFlowNode inode = (DataFlowNode) flow.get(i);
-            if (inode.getSimpleNode() == null) {
+            if (inode.getNode() == null) {
                 continue;
             }
 
-            List<? extends SimpleNode> children = inode.getSimpleNode().findChildrenOfType(node.getClass());
-            for (SimpleNode n: children) {
+            List<? extends Node> children = inode.getNode().findChildrenOfType(node.getClass());
+            for (Node n: children) {
                 if (node.equals(n)) { 
                     List<VariableAccess> v = new ArrayList<VariableAccess>();
                     v.add(va);

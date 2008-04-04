@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.rules.strings;
 
+import java.util.Iterator;
+import java.util.List;
+
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
@@ -12,13 +15,9 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
-
-import java.util.Iterator;
-import java.util.List;
 
 /*
  * How this rule works:
@@ -85,7 +84,7 @@ public class InefficientStringBuffering extends AbstractRule {
         return data;
     }
 
-    protected static boolean isInStringBufferOperation(SimpleNode node, int length, String methodName) {
+    protected static boolean isInStringBufferOperation(Node node, int length, String methodName) {
         if (!xParentIsStatementExpression(node, length)) {
             return false;
         }
@@ -110,7 +109,7 @@ public class InefficientStringBuffering extends AbstractRule {
     }
 
     // TODO move this method to SimpleNode
-    private static boolean xParentIsStatementExpression(SimpleNode node, int length) {
+    private static boolean xParentIsStatementExpression(Node node, int length) {
         Node curr = node;
         for (int i=0; i<length; i++) {
             if (node.jjtGetParent() == null) {

@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTLiteral extends SimpleJavaTypeNode {
+public class ASTLiteral extends AbstractJavaTypeNode {
 	
 	private boolean isInt;
 	private boolean isFloat;

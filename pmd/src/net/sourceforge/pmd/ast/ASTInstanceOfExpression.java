@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTInstanceOfExpression extends SimpleJavaTypeNode {
+public class ASTInstanceOfExpression extends AbstractJavaTypeNode {
     public ASTInstanceOfExpression(int id) {
         super(id);
     }

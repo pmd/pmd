@@ -7,6 +7,7 @@ import net.sourceforge.pmd.jsp.ast.ASTCompilationUnit;
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
+// FUTURE Move to JSP package
 public class JspScopeAndDeclarationFinder {
 
     /**

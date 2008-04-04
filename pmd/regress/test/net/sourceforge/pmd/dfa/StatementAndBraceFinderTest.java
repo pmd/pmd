@@ -22,17 +22,17 @@ public class StatementAndBraceFinderTest extends ParserTst {
     @Test
     public void testStatementExpressionParentChildLinks() throws Throwable {
         ASTStatementExpression se = getOrderedNodes(ASTStatementExpression.class, TEST1).get(0);
-        ASTMethodDeclaration seParent = (ASTMethodDeclaration) ((DataFlowNode) se.getDataFlowNode().getParents().get(0)).getSimpleNode();
-        assertEquals(se, ((DataFlowNode) seParent.getDataFlowNode().getChildren().get(0)).getSimpleNode());
-        assertEquals(seParent, ((DataFlowNode) se.getDataFlowNode().getParents().get(0)).getSimpleNode());
+        ASTMethodDeclaration seParent = (ASTMethodDeclaration) ((DataFlowNode) se.getDataFlowNode().getParents().get(0)).getNode();
+        assertEquals(se, ((DataFlowNode) seParent.getDataFlowNode().getChildren().get(0)).getNode());
+        assertEquals(seParent, ((DataFlowNode) se.getDataFlowNode().getParents().get(0)).getNode());
     }
 
     @Test
     public void testVariableDeclaratorParentChildLinks() throws Throwable {
         ASTVariableDeclarator vd = getOrderedNodes(ASTVariableDeclarator.class, TEST2).get(0);
-        ASTMethodDeclaration vdParent = (ASTMethodDeclaration) ((DataFlowNode) vd.getDataFlowNode().getParents().get(0)).getSimpleNode();
-        assertEquals(vd, ((DataFlowNode) vdParent.getDataFlowNode().getChildren().get(0)).getSimpleNode());
-        assertEquals(vdParent, ((DataFlowNode) vd.getDataFlowNode().getParents().get(0)).getSimpleNode());
+        ASTMethodDeclaration vdParent = (ASTMethodDeclaration) ((DataFlowNode) vd.getDataFlowNode().getParents().get(0)).getNode();
+        assertEquals(vd, ((DataFlowNode) vdParent.getDataFlowNode().getChildren().get(0)).getNode());
+        assertEquals(vdParent, ((DataFlowNode) vd.getDataFlowNode().getParents().get(0)).getNode());
     }
 
     @Test

@@ -87,12 +87,11 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.AccessNode;
-import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.ParseException;
-import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
 import net.sourceforge.pmd.jaxen.TypeOfFunction;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.parsers.Parser;
 import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
 import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
@@ -115,13 +114,13 @@ public class Designer implements ClipboardOwner {
 
     private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Language.JAVA.getDefaultVersion().ordinal();
 
-    private SimpleNode getCompilationUnit() {
+    private Node getCompilationUnit() {
 	SourceTypeHandler languageVersionHandler = getLanguageVersionHandler();
 	Parser parser = languageVersionHandler.getParser();
-	SimpleNode simpleNode = (SimpleNode) parser.parse(new StringReader(codeEditorPane.getText()));
-	languageVersionHandler.getSymbolFacade().start(simpleNode);
-	languageVersionHandler.getTypeResolutionFacade(null).start(simpleNode);
-	return simpleNode;
+	Node node = (Node) parser.parse(new StringReader(codeEditorPane.getText()));
+	languageVersionHandler.getSymbolFacade().start(node);
+	languageVersionHandler.getTypeResolutionFacade(null).start(node);
+	return node;
     }
 
     private LanguageVersion getLanguageVersion() {
@@ -246,8 +245,9 @@ public class Designer implements ClipboardOwner {
 	}
 
 	public Scope getScope() {
-	    if (node instanceof SimpleNode)
-		return ((SimpleNode) node).getScope();
+	    if (node != null) {
+		return node.getScope();
+	    }
 	    return null;
 	}
 
@@ -291,7 +291,7 @@ public class Designer implements ClipboardOwner {
 	}
 
 	public String label() {
-	    if (node instanceof SimpleNode) {
+	    if (node instanceof Node) {
 		SourceTypeHandler languageVersionHandler = getLanguageVersionHandler();
 		StringWriter writer = new StringWriter();
 		languageVersionHandler.getDumpFacade(writer, "", false).start(node);
@@ -302,9 +302,9 @@ public class Designer implements ClipboardOwner {
 
 	public String getToolTipText() {
 	    String tooltip = "";
-	    if (node instanceof SimpleNode) {
-		SimpleNode sn = (SimpleNode) node;
-		tooltip = "Line: " + sn.getBeginLine() + " Column: " + sn.getBeginColumn();
+	    if (node instanceof Node) {
+		Node n = (Node) node;
+		tooltip = "Line: " + n.getBeginLine() + " Column: " + n.getBeginColumn();
 	    }
 
 	    if (node instanceof AccessNode) {
@@ -412,7 +412,7 @@ public class Designer implements ClipboardOwner {
 	    System.setOut(ps);
 	    TreeNode tn;
 	    try {
-		SimpleNode lastCompilationUnit = getCompilationUnit();
+		Node lastCompilationUnit = getCompilationUnit();
 		tn = new ASTTreeNode(lastCompilationUnit);
 	    } catch (ParseException pe) {
 		tn = new ExceptionNode(pe);
@@ -464,7 +464,7 @@ public class Designer implements ClipboardOwner {
 		codeEditorPane.requestFocus();
 		return;
 	    }
-	    SimpleNode c = getCompilationUnit();
+	    Node c = getCompilationUnit();
 	    try {
 		XPath xpath = new BaseXPath(xpathQueryArea.getText(), new DocumentNavigator());
 		for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
@@ -569,10 +569,8 @@ public class Designer implements ClipboardOwner {
 	public void valueChanged(TreeSelectionEvent e) {
 	    if (e.getNewLeadSelectionPath() != null) {
 		ASTTreeNode selected = (ASTTreeNode) e.getNewLeadSelectionPath().getLastPathComponent();
-		if (selected != null && selected.node instanceof SimpleNode) {
-		    SimpleNode node = (SimpleNode) selected.node;
-
-		    codeEditorPane.select(node);
+		if (selected != null) {
+		    codeEditorPane.select(selected.node);
 		}
 	    }
 	}
@@ -593,8 +591,8 @@ public class Designer implements ClipboardOwner {
 	    }
 
 	    String text;
-	    if (value instanceof SimpleNode) {
-		SimpleNode node = (SimpleNode) value;
+	    if (value instanceof Node) {
+		Node node = (Node) value;
 		StringBuffer sb = new StringBuffer();
 		String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
 		sb.append(name).append(" at line ").append(node.getBeginLine()).append(" column ").append(
@@ -613,8 +611,8 @@ public class Designer implements ClipboardOwner {
 	    ListSelectionModel lsm = (ListSelectionModel) e.getSource();
 	    if (!lsm.isSelectionEmpty()) {
 		Object o = xpathResults.get(lsm.getMinSelectionIndex());
-		if (o instanceof SimpleNode) {
-		    codeEditorPane.select((SimpleNode) o);
+		if (o instanceof Node) {
+		    codeEditorPane.select((Node) o);
 		}
 	    }
 	}
@@ -860,7 +858,7 @@ public class Designer implements ClipboardOwner {
     private final void copyXmlToClipboard() {
 	if (codeEditorPane.getText() != null && codeEditorPane.getText().trim().length() > 0) {
 	    String xml = "";
-	    SimpleNode cu = getCompilationUnit();
+	    Node cu = getCompilationUnit();
 	    if (cu != null) {
 		try {
 		    xml = getXmlString(cu);
@@ -878,10 +876,10 @@ public class Designer implements ClipboardOwner {
      *
      * @throws TransformerException if the XML cannot be converted to a string
      */
-    private String getXmlString(SimpleNode node) throws TransformerException {
+    private String getXmlString(Node node) throws TransformerException {
 	StringWriter writer = new StringWriter();
 
-	Source source = new DOMSource(node.asXml());
+	Source source = new DOMSource(node.getAsXml());
 	Result result = new StreamResult(writer);
 	TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	try {

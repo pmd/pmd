@@ -75,16 +75,16 @@ public class UselessAssignment extends AbstractRule implements Executable {
                     // FIXME need to check for assignment as well!
                     if (va.isDefinition() && va.accessTypeMatches(u.accessType)) {
                         //System.out.println(va.getVariableName() + ":" + u);
-                        addViolation(rc, u.node.getSimpleNode(), va.getVariableName());
+                        addViolation(rc, u.node.getNode(), va.getVariableName());
                     }
 /*                        // UR - ??
                   else if (last == VariableAccess.UNDEFINITION && va.isReference()) {
-                        //this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getSimpleNode(), va.getVariableName(), "UR"));
+                        //this.rc.getReport().addRuleViolation(createRuleViolation(rc, inode.getNode(), va.getVariableName(), "UR"));
                     }
                     // DU - variable is defined and then goes out of scope
                     // i.e., unused parameter
                     else if (last == VariableAccess.DEFINITION && va.isUndefinition()) {
-                        if (inode.getSimpleNode() != null) {
+                        if (inode.getNode() != null) {
                             this.rc.getReport().addRuleViolation(createRuleViolation(rc, tmp, va.getVariableName(), "DU"));
                         }
                     }

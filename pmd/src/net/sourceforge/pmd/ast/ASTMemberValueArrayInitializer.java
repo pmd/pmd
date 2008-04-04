@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
-public class ASTMemberValueArrayInitializer extends SimpleJavaNode {
+public class ASTMemberValueArrayInitializer extends AbstractJavaNode {
     public ASTMemberValueArrayInitializer(int id) {
         super(id);
     }

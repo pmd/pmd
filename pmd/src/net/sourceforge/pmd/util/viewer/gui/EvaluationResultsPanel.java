@@ -1,15 +1,19 @@
 package net.sourceforge.pmd.util.viewer.gui;
 
-import net.sourceforge.pmd.ast.SimpleNode;
+import java.awt.BorderLayout;
+import java.util.Vector;
+
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelEvent;
 import net.sourceforge.pmd.util.viewer.model.ViewerModelListener;
-
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import java.awt.BorderLayout;
-import java.util.Vector;
 
 /**
  * A panel showing XPath expression evaluation results
@@ -43,7 +47,7 @@ public class EvaluationResultsPanel extends JPanel implements ViewerModelListene
         list.addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent e) {
                 if (list.getSelectedValue() != null) {
-                    model.selectNode((SimpleNode) list.getSelectedValue(), EvaluationResultsPanel.this);
+                    model.selectNode((Node) list.getSelectedValue(), EvaluationResultsPanel.this);
                 }
             }
         });

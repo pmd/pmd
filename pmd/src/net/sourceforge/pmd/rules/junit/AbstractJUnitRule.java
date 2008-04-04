@@ -12,8 +12,7 @@ import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.ast.ASTTypeParameters;
-import net.sourceforge.pmd.ast.Node;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 @SuppressWarnings("PMD.AvoidCatchingThrowable") // Don't think we can otherwise here...
@@ -71,7 +70,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     }
 
     private boolean isJUnit4Method(ASTMethodDeclaration method){
-    	return doesNodeContainJUnitAnnotation((SimpleNode)method.jjtGetParent());
+    	return doesNodeContainJUnitAnnotation(method.jjtGetParent());
     }
 
     private boolean isJUnit3Method(ASTMethodDeclaration method) {
@@ -108,7 +107,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
         return doesNodeContainJUnitAnnotation(node);
     }
 
-    private boolean doesNodeContainJUnitAnnotation(SimpleNode node) {
+    private boolean doesNodeContainJUnitAnnotation(Node node) {
     	List<ASTMarkerAnnotation> lstAnnotations = node.findChildrenOfType(ASTMarkerAnnotation.class);
         for(ASTMarkerAnnotation annotation : lstAnnotations){
         	if(annotation.getType() == null){

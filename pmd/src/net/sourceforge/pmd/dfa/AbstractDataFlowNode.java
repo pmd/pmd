@@ -3,9 +3,6 @@
  */
 package net.sourceforge.pmd.dfa;
 
-import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
-
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -14,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.lang.ast.Node;
+
 /**
  * @author raik
  *         <p/>
@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
  */
 public abstract class AbstractDataFlowNode implements DataFlowNode {
 
-    protected SimpleNode node;
+    protected Node node;
     protected Map<Integer, String> typeMap = new HashMap<Integer, String>();
 
     protected List<DataFlowNode> parents = new ArrayList<DataFlowNode>();
@@ -40,7 +40,7 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
         this.dataFlow.addLast(this);
     }
 
-    public AbstractDataFlowNode(LinkedList<DataFlowNode> dataFlow, SimpleNode node) {
+    public AbstractDataFlowNode(LinkedList<DataFlowNode> dataFlow, Node node) {
 	this(dataFlow);
 
 	this.node = node;
@@ -88,7 +88,7 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
         return false;
     }
 
-    public SimpleNode getSimpleNode() {
+    public Node getNode() {
         return this.node;
     }
 

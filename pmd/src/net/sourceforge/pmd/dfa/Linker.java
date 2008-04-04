@@ -6,7 +6,7 @@ package net.sourceforge.pmd.dfa;
 import java.util.List;
 
 import net.sourceforge.pmd.ast.ASTLabeledStatement;
-import net.sourceforge.pmd.ast.SimpleNode;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * @author raik
@@ -125,7 +125,7 @@ public class Linker {
                      * The result is, that the data flow isn't build right
                      * and the pathfinder runs in invinity loop.
                      * */
-/*                                     if(n.getSimpleNode().getScope().equals(node.getSimpleNode().getScope())) {
+/*                                     if(n.getNode().getScope().equals(node.getNode().getScope())) {
                                                System.err.println("equals");
                                                continue;
                                        }
@@ -192,11 +192,11 @@ public class Linker {
             }
 
             if (n.isType(NodeType.LABEL_LAST_STATEMENT)) {
-                SimpleNode parentNode = n.getSimpleNode().getFirstParentOfType(ASTLabeledStatement.class);
+                Node parentNode = n.getNode().getFirstParentOfType(ASTLabeledStatement.class);
                 if (parentNode == null) {
                     break;
                 } else {
-                    String label = node.getSimpleNode().getImage();
+                    String label = node.getNode().getImage();
                     if (label == null || label.equals(parentNode.getImage())) {
                         node.removePathToChild(node.getChildren().get(0));
                         DataFlowNode last = (DataFlowNode) bList.get(index + 1);
