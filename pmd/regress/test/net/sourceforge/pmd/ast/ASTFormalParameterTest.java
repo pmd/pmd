@@ -7,10 +7,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.Iterator;
 import java.util.Set;
 
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTFormalParameter;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 
 import org.junit.Test;
 

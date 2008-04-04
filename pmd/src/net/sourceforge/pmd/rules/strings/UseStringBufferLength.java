@@ -4,10 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTLiteral;
-import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
@@ -30,7 +30,7 @@ import net.sourceforge.pmd.typeresolution.TypeHelper;
  *
  * @author acaplan
  */
-public class UseStringBufferLength extends AbstractRule {
+public class UseStringBufferLength extends AbstractJavaRule {
 
     // FIXME  Need to remove this somehow.
     /*

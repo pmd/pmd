@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.ast.ASTCatchStatement;
-import net.sourceforge.pmd.ast.ASTEqualityExpression;
-import net.sourceforge.pmd.ast.ASTInitializer;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.symboltable.Scope;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 

@@ -3,16 +3,16 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.ast.ASTExpression;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 
-public class IdempotentOperations extends AbstractRule {
+public class IdempotentOperations extends AbstractJavaRule {
 
     public Object visit(ASTStatementExpression node, Object data) {
         if (node.jjtGetNumChildren() != 3

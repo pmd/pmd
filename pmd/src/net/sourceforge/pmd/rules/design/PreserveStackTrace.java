@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTArgumentList;
-import net.sourceforge.pmd.ast.ASTCastExpression;
-import net.sourceforge.pmd.ast.ASTCatchStatement;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-public class PreserveStackTrace extends AbstractRule {
+public class PreserveStackTrace extends AbstractJavaRule {
 
     private List<ASTName> nameNodes = new ArrayList<ASTName>();
 

@@ -10,9 +10,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.JavaRuleViolation;
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.MockRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
@@ -20,9 +17,12 @@ import net.sourceforge.pmd.ReportListener;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.DummyJavaNode;
-import net.sourceforge.pmd.ast.JavaNode;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.JavaRuleViolation;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
@@ -34,7 +34,7 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class ReportTest extends RuleTst implements ReportListener {
 
-    private static class FooRule extends AbstractRule {
+    private static class FooRule extends AbstractJavaRule {
         public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
             if ("Foo".equals(c.getImage())) addViolation(ctx, c);
             return ctx;

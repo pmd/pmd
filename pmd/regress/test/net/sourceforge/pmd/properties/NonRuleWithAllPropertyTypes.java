@@ -2,8 +2,8 @@ package test.net.sourceforge.pmd.properties;
 
 import java.util.Map;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.properties.CharacterProperty;
 import net.sourceforge.pmd.properties.EnumeratedProperty;
@@ -12,7 +12,7 @@ import net.sourceforge.pmd.properties.IntegerProperty;
 import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.properties.TypeProperty;
 
-class NonRuleWithAllPropertyTypes extends AbstractRule {
+class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
 
 	// descriptors are public to enable us to write external tests
 	public static final PropertyDescriptor singleStr	= new StringProperty("singleStr", "Property with a single string value", "hello world" , 3.0f);

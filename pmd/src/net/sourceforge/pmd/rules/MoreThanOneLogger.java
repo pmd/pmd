@@ -2,18 +2,18 @@ package net.sourceforge.pmd.rules;
 
 import java.util.Stack;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.ast.ASTEnumDeclaration;
-import net.sourceforge.pmd.ast.ASTReferenceType;
-import net.sourceforge.pmd.ast.ASTType;
-import net.sourceforge.pmd.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.ast.JavaNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.util.NumericConstants;
 
-public class MoreThanOneLogger extends AbstractRule {
+public class MoreThanOneLogger extends AbstractJavaRule {
     
     private static Class log4jLogger = null;
 

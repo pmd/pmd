@@ -2,12 +2,12 @@ package net.sourceforge.pmd.rules.strictexception;
 
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @since 1.2
  */
 // FUTURE Rename to SignatureDeclareThrowsExceptionRule
-public class ExceptionSignatureDeclaration extends AbstractRule {
+public class ExceptionSignatureDeclaration extends AbstractJavaRule {
 
     private boolean junitImported;
 

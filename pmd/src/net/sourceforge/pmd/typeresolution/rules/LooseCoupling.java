@@ -3,12 +3,12 @@
  */
 package net.sourceforge.pmd.typeresolution.rules;
 
-import net.sourceforge.pmd.AbstractJavaRule;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTFormalParameter;
-import net.sourceforge.pmd.ast.ASTResultType;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**

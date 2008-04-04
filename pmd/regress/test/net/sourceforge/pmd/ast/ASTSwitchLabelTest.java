@@ -3,7 +3,7 @@ package test.net.sourceforge.pmd.ast;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 
 import org.junit.Test;
 

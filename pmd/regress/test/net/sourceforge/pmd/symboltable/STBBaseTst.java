@@ -2,9 +2,9 @@ package test.net.sourceforge.pmd.symboltable;
 
 import java.io.StringReader;
 
-import net.sourceforge.pmd.Language;
-import net.sourceforge.pmd.LanguageVersion;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 public abstract class STBBaseTst {

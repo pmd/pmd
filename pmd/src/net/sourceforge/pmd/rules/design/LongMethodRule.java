@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
 /**
  * This rule detects when a method exceeds a certain

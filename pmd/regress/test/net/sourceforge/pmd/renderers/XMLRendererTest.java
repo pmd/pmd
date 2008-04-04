@@ -12,13 +12,13 @@ import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 
 import org.junit.Test;
@@ -30,7 +30,7 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class XMLRendererTest extends RuleTst {
 
-    private static class FooRule extends AbstractRule {
+    private static class FooRule extends AbstractJavaRule {
         public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
             if (c.getImage().equals("Foo")) addViolation(ctx, c);
             return ctx;

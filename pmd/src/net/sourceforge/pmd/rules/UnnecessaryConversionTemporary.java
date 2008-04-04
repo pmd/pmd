@@ -5,14 +5,14 @@ package net.sourceforge.pmd.rules;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-public class UnnecessaryConversionTemporary extends AbstractRule {
+public class UnnecessaryConversionTemporary extends AbstractJavaRule {
 
     private boolean inPrimaryExpressionContext;
     private ASTPrimaryExpression primary;

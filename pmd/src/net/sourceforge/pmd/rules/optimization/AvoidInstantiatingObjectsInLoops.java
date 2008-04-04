@@ -3,12 +3,12 @@
  */
 package net.sourceforge.pmd.rules.optimization;
 
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.ast.ASTDoStatement;
-import net.sourceforge.pmd.ast.ASTForStatement;
-import net.sourceforge.pmd.ast.ASTReturnStatement;
-import net.sourceforge.pmd.ast.ASTThrowStatement;
-import net.sourceforge.pmd.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 
 public class AvoidInstantiatingObjectsInLoops extends AbstractOptimizationRule {
 

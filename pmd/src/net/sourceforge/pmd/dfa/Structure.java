@@ -7,8 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-import net.sourceforge.pmd.ast.JavaDataFlowNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.JavaDataFlowNode;
 
 
 /**

@@ -3,28 +3,28 @@
  */
 package net.sourceforge.pmd.dfa;
 
-import net.sourceforge.pmd.ast.ASTBreakStatement;
-import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.ast.ASTContinueStatement;
-import net.sourceforge.pmd.ast.ASTDoStatement;
-import net.sourceforge.pmd.ast.ASTExpression;
-import net.sourceforge.pmd.ast.ASTForInit;
-import net.sourceforge.pmd.ast.ASTForStatement;
-import net.sourceforge.pmd.ast.ASTForUpdate;
-import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.ast.ASTLabeledStatement;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTReturnStatement;
-import net.sourceforge.pmd.ast.ASTStatement;
-import net.sourceforge.pmd.ast.ASTStatementExpression;
-import net.sourceforge.pmd.ast.ASTSwitchLabel;
-import net.sourceforge.pmd.ast.ASTSwitchStatement;
-import net.sourceforge.pmd.ast.ASTThrowStatement;
-import net.sourceforge.pmd.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.ast.ASTWhileStatement;
-import net.sourceforge.pmd.ast.JavaNode;
-import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTContinueStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTForInit;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForUpdate;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
 /**
  * @author raik

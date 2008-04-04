@@ -1,9 +1,9 @@
 package net.sourceforge.pmd.rules.strictexception;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTCatchStatement;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.ast.ASTType;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 
 /**
  * Finds <code>catch</code> statements
@@ -12,7 +12,7 @@ import net.sourceforge.pmd.ast.ASTType;
  *
  * @author <a mailto:trondandersen@c2i.net>Trond Andersen</a>
  */
-public class AvoidCatchingThrowable extends AbstractRule {
+public class AvoidCatchingThrowable extends AbstractJavaRule {
 
     public Object visit(ASTCatchStatement node, Object data) {
         ASTType type = node.findChildrenOfType(ASTType.class).get(0);

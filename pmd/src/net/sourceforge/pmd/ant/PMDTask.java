@@ -19,8 +19,6 @@ import java.util.logging.Level;
 
 import net.sourceforge.pmd.DataSource;
 import net.sourceforge.pmd.FileDataSource;
-import net.sourceforge.pmd.Language;
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -31,6 +29,8 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.ScopedLogHandlersManager;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.AntLogHandler;

@@ -6,12 +6,12 @@ package net.sourceforge.pmd.rules.design;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
@@ -27,7 +27,7 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
  * see RFE1020790 - Check for SimpleDateFormat as singleton http://sourceforge.net/tracker/index.php?func=detail&aid=1020790&group_id=56262&atid=479924
  * @author Allan Caplan
  */
-public class UnsynchronizedStaticDateFormatter extends AbstractRule {
+public class UnsynchronizedStaticDateFormatter extends AbstractJavaRule {
 
     private static Set<String> targets = new HashSet<String>();
     static {

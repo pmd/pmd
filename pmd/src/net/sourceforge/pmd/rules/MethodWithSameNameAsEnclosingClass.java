@@ -1,12 +1,12 @@
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-
 import java.util.List;
 
-public class MethodWithSameNameAsEnclosingClass extends AbstractRule {
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+
+public class MethodWithSameNameAsEnclosingClass extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         List<ASTMethodDeclarator> methods = node.findChildrenOfType(ASTMethodDeclarator.class);

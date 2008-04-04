@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.InputStreamReader;
 
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 
 import org.junit.Ignore;
 import org.junit.Test;

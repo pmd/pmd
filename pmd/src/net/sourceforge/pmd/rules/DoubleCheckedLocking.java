@@ -6,21 +6,22 @@ package net.sourceforge.pmd.rules;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.ast.ASTLiteral;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTNullLiteral;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTReferenceType;
-import net.sourceforge.pmd.ast.ASTReturnStatement;
-import net.sourceforge.pmd.ast.ASTStatementExpression;
-import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
-import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 
 /**
  * void method() {
@@ -41,7 +42,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  */
-public class DoubleCheckedLocking extends net.sourceforge.pmd.AbstractRule {
+public class DoubleCheckedLocking extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {

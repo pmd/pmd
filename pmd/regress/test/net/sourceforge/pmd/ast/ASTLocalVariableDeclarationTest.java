@@ -2,8 +2,8 @@ package test.net.sourceforge.pmd.ast;
 
 import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 
 import org.junit.Test;
 

@@ -4,16 +4,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.dfa.DataFlowNode;
 import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
-public class UselessAssignment extends AbstractRule implements Executable {
+public class UselessAssignment extends AbstractJavaRule implements Executable {
 
     private RuleContext rc;
 

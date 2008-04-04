@@ -1,5 +1,9 @@
 package net.sourceforge.pmd;
 
+import java.util.List;
+
+import net.sourceforge.pmd.lang.AbstractRule;
+
 /**
  * This is a Rule implementation which can be used in scenarios where an actual
  * functional Rule is not needed.  For example, during unit testing, or as
@@ -22,5 +26,8 @@ public class MockRule extends AbstractRule {
 		setDescription(description);
 		setMessage(message);
 		setRuleSetName(ruleSetName);
+	}
+
+	public void apply(List<?> astCompilationUnits, RuleContext ctx) {
 	}
 }

@@ -8,19 +8,19 @@ package net.sourceforge.pmd.rules.design;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.ast.ASTInitializer;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTStatementExpression;
-import net.sourceforge.pmd.ast.ASTSynchronizedStatement;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.BooleanProperty;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
@@ -29,7 +29,7 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
  * @author Eric Olander
  * @author Wouter Zelle
  */
-public class SingularField extends AbstractRule {
+public class SingularField extends AbstractJavaRule {
 	
 	/**
 	 * Restore old behaviour by setting both properties to true, which will result in many false positives

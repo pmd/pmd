@@ -3,13 +3,13 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
-public class SymbolTableTestRule extends AbstractRule {
+public class SymbolTableTestRule extends AbstractJavaRule {
 
     public Object visit(ASTFieldDeclaration node,Object data) {
         ASTVariableDeclaratorId declaration = node.findChildrenOfType(ASTVariableDeclaratorId.class).get(0);

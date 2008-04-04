@@ -3,10 +3,10 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 
-public class MethodNamingConventions extends AbstractRule {
+public class MethodNamingConventions extends AbstractJavaRule {
 
     public Object visit(ASTMethodDeclarator node, Object data) {
     	

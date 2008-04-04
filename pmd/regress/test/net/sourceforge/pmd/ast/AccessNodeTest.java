@@ -5,10 +5,10 @@ package test.net.sourceforge.pmd.ast;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.AbstractJavaAccessNode;
-import net.sourceforge.pmd.ast.AccessNode;
-import net.sourceforge.pmd.ast.JavaParser;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AbstractJavaAccessNode;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.JavaParser;
 
 import org.junit.Test;
 

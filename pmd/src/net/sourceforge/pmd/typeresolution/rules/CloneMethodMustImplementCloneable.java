@@ -6,16 +6,16 @@ package net.sourceforge.pmd.typeresolution.rules;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractJavaRule;
-import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.ast.ASTBlockStatement;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.ast.ASTExtendsList;
-import net.sourceforge.pmd.ast.ASTFormalParameters;
-import net.sourceforge.pmd.ast.ASTImplementsList;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 
 /**
  * The method clone() should only be implemented if the class implements the

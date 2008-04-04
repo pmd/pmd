@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 
 public class ClassNameDeclaration extends AbstractNameDeclaration {
 

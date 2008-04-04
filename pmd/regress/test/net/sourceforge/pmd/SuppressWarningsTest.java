@@ -3,12 +3,12 @@
  
  import static org.junit.Assert.assertEquals;
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
 
  public class SuppressWarningsTest extends RuleTst {
  
-     private static class FooRule extends AbstractRule {
+     private static class FooRule extends AbstractJavaRule {
          public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
              if (c.getImage().equalsIgnoreCase("Foo")) addViolation(ctx, c);
              return super.visit(c, ctx);

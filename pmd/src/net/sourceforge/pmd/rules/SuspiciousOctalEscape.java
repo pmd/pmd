@@ -1,9 +1,9 @@
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 
-public class SuspiciousOctalEscape extends AbstractRule {
+public class SuspiciousOctalEscape extends AbstractJavaRule {
 
     public Object visit(ASTLiteral node, Object data) {
         String image = node.getImage();

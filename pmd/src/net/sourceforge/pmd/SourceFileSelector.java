@@ -7,6 +7,7 @@ import java.io.File;
  *
  * @author Pieter_Van_Raemdonck - Application Engineers NV/SA - www.ae.be
  */
+// FUTURE This needs to be worked into a LanguageFileSelector
 public class SourceFileSelector {
 
     private boolean selectJavaFiles = true;

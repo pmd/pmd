@@ -1,12 +1,12 @@
 package net.sourceforge.pmd.util.designer;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-
 import java.util.List;
 
-public class DFAGraphRule extends AbstractRule {
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+
+public class DFAGraphRule extends AbstractJavaRule {
 
     private List<ASTMethodDeclaration> methods;
     private List<ASTMethodDeclaration> constructors;

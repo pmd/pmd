@@ -2,8 +2,9 @@ package net.sourceforge.pmd.jsp.rules;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.jsp.ast.ASTAttribute;
-import net.sourceforge.pmd.jsp.ast.ASTElement;
+import net.sourceforge.pmd.lang.jsp.AbstractJspRule;
+import net.sourceforge.pmd.lang.jsp.ast.ASTAttribute;
+import net.sourceforge.pmd.lang.jsp.ast.ASTElement;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**

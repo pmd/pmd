@@ -10,13 +10,13 @@ import java.util.List;
 import java.util.Random;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.JavaRuleViolation;
 import net.sourceforge.pmd.MockRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleViolationComparator;
-import net.sourceforge.pmd.ast.DummyJavaNode;
+import net.sourceforge.pmd.lang.java.JavaRuleViolation;
+import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import org.junit.Test;

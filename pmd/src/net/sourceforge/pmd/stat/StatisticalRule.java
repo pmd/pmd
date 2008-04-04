@@ -9,9 +9,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.properties.DoubleProperty;
 import net.sourceforge.pmd.properties.IntegerProperty;
 

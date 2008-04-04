@@ -6,33 +6,33 @@ package net.sourceforge.pmd.rules;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTArgumentList;
-import net.sourceforge.pmd.ast.ASTArguments;
-import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceBodyDeclaration;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTFormalParameter;
-import net.sourceforge.pmd.ast.ASTFormalParameters;
-import net.sourceforge.pmd.ast.ASTImplementsList;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTNameList;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTPrimarySuffix;
-import net.sourceforge.pmd.ast.ASTResultType;
-import net.sourceforge.pmd.ast.ASTStatement;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNameList;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.ASTResultType;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 
 import org.jaxen.JaxenException;
 
 /**
  * @author Romain Pelisse, bugfix for [ 1522517 ] False +: UselessOverridingMethod
  */
-public class UselessOverridingMethod extends AbstractRule {
+public class UselessOverridingMethod extends AbstractJavaRule {
 	private List<String> exceptions;
 	private static final String CLONE = "clone";
 	private static final String OBJECT = "Object";

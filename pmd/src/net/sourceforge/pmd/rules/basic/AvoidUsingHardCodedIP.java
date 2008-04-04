@@ -3,8 +3,8 @@ package net.sourceforge.pmd.rules.basic;
 import java.net.InetAddress;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.AbstractJavaRule;
-import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 
 public class AvoidUsingHardCodedIP extends AbstractJavaRule {
 

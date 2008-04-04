@@ -2,12 +2,12 @@ package net.sourceforge.pmd.rules;
 
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTAdditiveExpression;
-import net.sourceforge.pmd.ast.ASTLiteral;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 /**
@@ -22,7 +22,7 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
  * @author Brian Remedios 
  * @version $Revision$
  */
-public abstract class AbstractPoorMethodCall extends AbstractRule {
+public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
     
     
     /**
@@ -85,7 +85,7 @@ public abstract class AbstractPoorMethodCall extends AbstractRule {
      * @param node ASTVariableDeclaratorId
      * @param data Object
      * @return Object
-     * @see net.sourceforge.pmd.ast.JavaParserVisitor#visit(ASTVariableDeclaratorId, Object)
+     * @see net.sourceforge.pmd.lang.java.ast.JavaParserVisitor#visit(ASTVariableDeclaratorId, Object)
      */
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         

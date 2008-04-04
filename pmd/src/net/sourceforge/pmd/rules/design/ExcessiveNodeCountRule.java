@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.StatisticalRule;
 

@@ -35,12 +35,15 @@ import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import net.sourceforge.pmd.ast.CompilationUnit;
-import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
-import net.sourceforge.pmd.parsers.Parser;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.Parser;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.renderers.Renderer;
-import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
 import net.sourceforge.pmd.util.Benchmark;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.ConsoleLogHandler;
@@ -90,11 +93,11 @@ public class PMD {
 	try {
 	    if (ruleSets.applies(ctx.getSourceCodeFile())) {
 		ctx.setLanguageVersion(languageVersion);
-		SourceTypeHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 		Parser parser = languageVersionHandler.getParser();
 		parser.setExcludeMarker(excludeMarker);
 		long start = System.nanoTime();
-		CompilationUnit rootNode = (CompilationUnit) parser.parse(reader);
+		Node rootNode = parser.parse(reader);
 		ctx.excludeLines(parser.getExcludeMap());
 		long end = System.nanoTime();
 		Benchmark.mark(Benchmark.TYPE_PARSER, end - start, 0);
@@ -119,7 +122,7 @@ public class PMD {
 		    Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, end - start, 0);
 		}
 
-		List<CompilationUnit> acus = new ArrayList<CompilationUnit>();
+		List<Node> acus = new ArrayList<Node>();
 		acus.add(rootNode);
 
 		ruleSets.apply(acus, ctx, language);

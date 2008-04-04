@@ -3,8 +3,8 @@
  */
 package net.sourceforge.pmd.typeresolution;
 
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
 /**
  * @author Allan Caplan

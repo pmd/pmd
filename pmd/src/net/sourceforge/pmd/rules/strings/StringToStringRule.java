@@ -3,13 +3,13 @@
  */
 package net.sourceforge.pmd.rules.strings;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
 
-public class StringToStringRule extends AbstractRule {
+public class StringToStringRule extends AbstractJavaRule {
 
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isA(node.getNameDeclaration(), String.class)) {

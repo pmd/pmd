@@ -3,15 +3,15 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.ast.ASTVariableDeclarator;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-
 import java.util.List;
 
-public class UnusedLocalVariableRule extends AbstractRule {
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.symboltable.NameOccurrence;
+
+public class UnusedLocalVariableRule extends AbstractJavaRule {
 
     public Object visit(ASTLocalVariableDeclaration decl, Object data) {
         for (int i = 0; i < decl.jjtGetNumChildren(); i++) {

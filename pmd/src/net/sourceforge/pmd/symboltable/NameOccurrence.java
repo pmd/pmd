@@ -3,16 +3,16 @@
  */
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.ast.ASTExpression;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTPostfixExpression;
-import net.sourceforge.pmd.ast.ASTPreDecrementExpression;
-import net.sourceforge.pmd.ast.ASTPreIncrementExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPostfixExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPreDecrementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 
 public class NameOccurrence {
 

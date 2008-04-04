@@ -1,19 +1,19 @@
 package net.sourceforge.pmd.rules.strings;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTAdditiveExpression;
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.ast.ASTExpression;
-import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
 
 import java.util.List;
 
-public class StringInstantiation extends AbstractRule {
+public class StringInstantiation extends AbstractJavaRule {
 
     public Object visit(ASTAllocationExpression node, Object data) {
         if (!(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {

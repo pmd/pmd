@@ -8,7 +8,7 @@ package test.net.sourceforge.pmd.ast;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTThrowStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 
 import org.junit.Test;
 

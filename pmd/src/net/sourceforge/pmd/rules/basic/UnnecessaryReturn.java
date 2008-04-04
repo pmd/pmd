@@ -1,13 +1,13 @@
 package net.sourceforge.pmd.rules.basic;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTBlock;
-import net.sourceforge.pmd.ast.ASTBlockStatement;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTReturnStatement;
-import net.sourceforge.pmd.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTBlock;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 
-public class UnnecessaryReturn extends AbstractRule {
+public class UnnecessaryReturn extends AbstractJavaRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
 

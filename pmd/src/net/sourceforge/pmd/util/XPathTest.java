@@ -4,13 +4,13 @@ import java.io.FileReader;
 import java.util.Iterator;
 
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.Language;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.rules.XPathRule;
 
 /**

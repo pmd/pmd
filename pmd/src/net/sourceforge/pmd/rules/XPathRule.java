@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.Map.Entry;
 
-import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
 import net.sourceforge.pmd.jaxen.TypeOfFunction;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;

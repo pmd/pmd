@@ -6,8 +6,8 @@ package net.sourceforge.pmd.rules.junit;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
 public class TestClassWithoutTestCases extends AbstractJUnitRule {
 

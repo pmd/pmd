@@ -35,7 +35,7 @@ import junit.framework.AssertionFailedError;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.DummyJavaNode;
+import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.stat.StatisticalRule;

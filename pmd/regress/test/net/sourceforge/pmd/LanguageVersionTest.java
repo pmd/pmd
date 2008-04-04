@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

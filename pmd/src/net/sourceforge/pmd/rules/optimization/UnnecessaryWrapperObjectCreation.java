@@ -2,17 +2,17 @@ package net.sourceforge.pmd.rules.optimization;
 
 import java.util.Set;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-public class UnnecessaryWrapperObjectCreation extends AbstractRule {
+public class UnnecessaryWrapperObjectCreation extends AbstractJavaRule {
 
     private static final Set<String> prefixSet = CollectionUtil.asSet(new String[] {
         "Byte.valueOf",

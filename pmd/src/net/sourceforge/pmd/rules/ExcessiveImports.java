@@ -3,8 +3,8 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.rules.design.ExcessiveNodeCountRule;
 import net.sourceforge.pmd.util.NumericConstants;
 

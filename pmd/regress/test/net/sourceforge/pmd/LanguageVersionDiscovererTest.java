@@ -5,8 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.LanguageVersion;
-import net.sourceforge.pmd.LanguageVersionDiscoverer;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 
 import org.junit.Test;
 

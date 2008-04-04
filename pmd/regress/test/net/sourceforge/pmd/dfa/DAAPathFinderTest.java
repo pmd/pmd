@@ -3,10 +3,10 @@ package test.net.sourceforge.pmd.dfa;
 import org.junit.Test;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import test.net.sourceforge.pmd.testframework.ParserTst;
 
 public class DAAPathFinderTest extends ParserTst implements Executable {

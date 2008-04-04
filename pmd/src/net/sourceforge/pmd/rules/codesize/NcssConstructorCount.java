@@ -3,8 +3,8 @@ package net.sourceforge.pmd.rules.codesize;
 import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTConstructorDeclaration;
-import net.sourceforge.pmd.ast.ASTExplicitConstructorInvocation;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.util.NumericConstants;
 

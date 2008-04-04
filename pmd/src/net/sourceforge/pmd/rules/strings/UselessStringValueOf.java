@@ -1,14 +1,14 @@
 package net.sourceforge.pmd.rules.strings;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTAdditiveExpression;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
-public class UselessStringValueOf extends AbstractRule {
+public class UselessStringValueOf extends AbstractJavaRule {
 
     public Object visit(ASTPrimaryPrefix node, Object data) {
         if (node.jjtGetNumChildren() == 0 ||

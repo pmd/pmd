@@ -10,16 +10,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
 import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
 import net.sourceforge.pmd.dfa.pathfinder.Executable;
 import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.properties.IntegerProperty;
 
 /**
@@ -28,7 +28,7 @@ import net.sourceforge.pmd.properties.IntegerProperty;
  * @author raik
  * @author Sven Jacob
  */
-public class DaaRule extends AbstractRule implements Executable {
+public class DaaRule extends AbstractJavaRule implements Executable {
     private RuleContext rc;
     private List<DaaRuleViolation> daaRuleViolations;
     private int maxRuleViolations;

@@ -1,7 +1,8 @@
 package net.sourceforge.pmd.jsp.rules;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.jsp.ast.ASTJspDirectiveAttribute;
+import net.sourceforge.pmd.lang.jsp.AbstractJspRule;
+import net.sourceforge.pmd.lang.jsp.ast.ASTJspDirectiveAttribute;
 import net.sourceforge.pmd.rules.ImportWrapper;
 
 import java.util.HashSet;

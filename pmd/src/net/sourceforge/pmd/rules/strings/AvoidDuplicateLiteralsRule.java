@@ -3,9 +3,9 @@
  */
 package net.sourceforge.pmd.rules.strings;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AvoidDuplicateLiteralsRule extends AbstractRule {
+public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
     public static class ExceptionParser {
 

@@ -3,9 +3,9 @@
  */
 package net.sourceforge.pmd.rules.strings;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTBlockStatement;
-import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -21,7 +21,7 @@ import java.util.regex.Matcher;
  * It is preferable to use StringBuffer.append('c'); // appends a single
  * character Implementation of PMD RFE 1373863
  */
-public class AppendCharacterWithChar extends AbstractRule {
+public class AppendCharacterWithChar extends AbstractJavaRule {
 
     private static final Pattern REGEX = Pattern.compile("\"[\\\\]?[\\s\\S]\"");
 

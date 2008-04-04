@@ -1,14 +1,14 @@
 package test.net.sourceforge.pmd.jsp.ast;
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.jsp.ast.ASTElExpression;
-import net.sourceforge.pmd.jsp.ast.ASTJspComment;
-import net.sourceforge.pmd.jsp.ast.ASTJspDeclaration;
-import net.sourceforge.pmd.jsp.ast.ASTJspDirective;
-import net.sourceforge.pmd.jsp.ast.ASTJspDirectiveAttribute;
-import net.sourceforge.pmd.jsp.ast.ASTJspExpression;
-import net.sourceforge.pmd.jsp.ast.ASTJspExpressionInAttribute;
-import net.sourceforge.pmd.jsp.ast.ASTJspScriptlet;
-import net.sourceforge.pmd.jsp.ast.ASTValueBinding;
+import net.sourceforge.pmd.lang.jsp.ast.ASTElExpression;
+import net.sourceforge.pmd.lang.jsp.ast.ASTJspComment;
+import net.sourceforge.pmd.lang.jsp.ast.ASTJspDeclaration;
+import net.sourceforge.pmd.lang.jsp.ast.ASTJspDirective;
+import net.sourceforge.pmd.lang.jsp.ast.ASTJspDirectiveAttribute;
+import net.sourceforge.pmd.lang.jsp.ast.ASTJspExpression;
+import net.sourceforge.pmd.lang.jsp.ast.ASTJspExpressionInAttribute;
+import net.sourceforge.pmd.lang.jsp.ast.ASTJspScriptlet;
+import net.sourceforge.pmd.lang.jsp.ast.ASTValueBinding;
 
 import org.junit.Test;
 

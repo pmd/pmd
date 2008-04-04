@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 
 /**
  * This rule detects when a class exceeds a certain

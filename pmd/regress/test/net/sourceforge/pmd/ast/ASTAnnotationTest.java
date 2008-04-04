@@ -1,9 +1,9 @@
 package test.net.sourceforge.pmd.ast;
 
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTAnnotation;
-import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
 
 import org.junit.Test;
 

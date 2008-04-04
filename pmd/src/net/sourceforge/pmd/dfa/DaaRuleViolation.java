@@ -3,11 +3,11 @@
  */
 package net.sourceforge.pmd.dfa;
 
-import net.sourceforge.pmd.JavaRuleViolation;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.JavaNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.JavaRuleViolation;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
  * The RuleViolation is extended by the VariableName. The VariableName 

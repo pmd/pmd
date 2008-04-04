@@ -5,7 +5,7 @@ package test.net.sourceforge.pmd.ast;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 
 import org.junit.Test;
 

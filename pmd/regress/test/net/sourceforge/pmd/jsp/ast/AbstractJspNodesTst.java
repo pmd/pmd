@@ -6,9 +6,9 @@ import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.jsp.ast.JspCharStream;
-import net.sourceforge.pmd.jsp.ast.JspParser;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.jsp.ast.JspCharStream;
+import net.sourceforge.pmd.lang.jsp.ast.JspParser;
 
 public abstract class AbstractJspNodesTst {
 

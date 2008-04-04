@@ -5,8 +5,8 @@ package net.sourceforge.pmd.dfa;
 
 import java.util.List;
 
-import net.sourceforge.pmd.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 
 /**
  * @author raik

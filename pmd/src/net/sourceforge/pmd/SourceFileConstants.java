@@ -5,6 +5,7 @@ package net.sourceforge.pmd;
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
+// FUTURE This needs to be deleted once SourceFileSelector is reworked
 public class SourceFileConstants {
 
     public static final String JAVA_EXTENSION_UPPERCASE = "JAVA";

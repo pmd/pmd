@@ -11,16 +11,16 @@ import static org.junit.Assert.fail;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTStatement;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -35,7 +35,7 @@ public class DocumentNavigatorTest extends RuleTst {
 
     private TestRule rule;
 
-    private class TestRule extends AbstractRule {
+    private class TestRule extends AbstractJavaRule {
 
         private Node compilationUnit;
         private Node importDeclaration;
@@ -44,7 +44,7 @@ public class DocumentNavigatorTest extends RuleTst {
         private Node primaryExpression;
 
         /**
-         * @see net.sourceforge.pmd.ast.JavaParserVisitor#visit(ASTCompilationUnit, Object)
+         * @see net.sourceforge.pmd.lang.java.ast.JavaParserVisitor#visit(ASTCompilationUnit, Object)
          */
         public Object visit(ASTCompilationUnit node, Object data) {
             this.compilationUnit = node;

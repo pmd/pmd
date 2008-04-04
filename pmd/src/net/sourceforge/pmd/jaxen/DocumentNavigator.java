@@ -6,8 +6,8 @@ package net.sourceforge.pmd.jaxen;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import net.sourceforge.pmd.ast.CompilationUnit;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
 import org.jaxen.DefaultNavigator;
 import org.jaxen.XPath;
@@ -77,7 +77,7 @@ public class DocumentNavigator extends DefaultNavigator {
     }
 
     public boolean isDocument(Object arg0) {
-        return arg0 instanceof CompilationUnit;
+        return arg0 instanceof RootNode;
     }
 
     public boolean isElement(Object arg0) {

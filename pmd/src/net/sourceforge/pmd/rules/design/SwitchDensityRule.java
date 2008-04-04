@@ -3,9 +3,9 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.ast.ASTStatement;
-import net.sourceforge.pmd.ast.ASTSwitchLabel;
-import net.sourceforge.pmd.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.StatisticalRule;
 

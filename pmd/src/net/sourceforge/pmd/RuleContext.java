@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
+
 public class RuleContext {
 
     private Report report = new Report();

@@ -40,6 +40,12 @@ TODO - Release blockers - Must implement before this release can be finished
    o Do we have a rule to style check for multiple declarations and chained
      assignments? (e.g. int a, b;  int a = b = x;)
    o Need to refactor the regression test packages to reflect new packaging.
+   o Rework these packages to exist with the net.sourceforge.pmd.lang.* hierarchy:
+        net.sourceforge.pmd.dfa
+        net.sourceforge.pmd.jaxen
+        net.sourceforge.pmd.symboltables
+        net.sourceforge.pmd.typeresolution
+        net.sourceforge.pmd.properties
    o XPathRule needs changes to support many Languages.  Need to move adding
      RuleViolation onto the Language used by a Rule, and not on Rule class
      hierarchy.
@@ -55,9 +61,26 @@ any code which has thumbed its nose at the developers over the years. ;)
 The following is relatively complete list of the major changes:
 
 	API Change - Unification of treatment of languages within PMD core:
-	   Added - net.sourceforge.pmd.Language (now an 'enum')
-	   Added - net.sourceforge.pmd.LanguageVersion
-	   Added - net.sourceforge.pmd.LanguageVersionDiscoverer
+	   Added - net.sourceforge.pmd.lang.Language (now an 'enum')
+	   Added - net.sourceforge.pmd.lang.LanguageVersion
+	   Added - net.sourceforge.pmd.lang.LanguageVersionDiscoverer
+	   Renamed - net.sourceforge.pmd.AbstractRule to net.sourceforge.pmd.lang.AbstractRule
+	   Renamed - net.sourceforge.pmd.AbstractJavaRule to net.sourceforge.pmd.lang.java.AbstractJavaRule
+	   Renamed - net.sourceforge.pmd.AbstractRuleChainVisitor to net.sourceforge.pmd.lang.AbstractRuleChainVisitor
+	   Renamed - net.sourceforge.pmd.RuleChainVisitor to net.sourceforge.pmd.lang.RuleChainVisitor
+	   Renamed - net.sourceforge.pmd.jsp.rule.AbstractJspRule to net.sourceforge.pmd.lang.jsp.AbstractJspRule
+	   Renamed - net.sourceforge.pmd.ast.CompilationUnit to net.sourceforge.pmd.lang.ast.RootNode
+	   Renamed - net.sourceforge.pmd.ast.JavaRuleChainVisitor to net.sourceforge.pmd.lang.java.JavaRuleChainVisitor
+	   Renamed - net.sourceforge.pmd.jsp.ast.JspRuleChainVisitor to net.sourceforge.pmd.lang.jsp.JspRuleChainVisitor
+	   Renamed - net.sourceforge.pmd.parser.Parser to net.sourceforge.pmd.lang.Parser
+	   Renamed - net.sourceforge.pmd.parser.TokenManager to net.sourceforge.pmd.lang.TokenManager
+	   Renamed - net.sourceforge.pmd.parser.* into net.sourceforge.pmd.lang.{Language}
+	   Renamed - net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler to net.sourceforge.pmd.lang.LanguageVersionHandler
+	   Renamed - net.sourceforge.pmd.sourcetypehandlers.VisitorStarter to net.sourceforge.pmd.lang.VisitorStarter
+	   Renamed - net.sourceforge.pmd.sourcetypehandlers.* into net.sourceforge.pmd.lang.{Language}
+	   Renamed - net.sourceforge.pmd.ast.* into net.sourceforge.pmd.lang.java.ast.*
+	   Renamed - net.sourceforge.pmd.jsp.ast.* into net.sourceforge.pmd.lang.jsp.ast.*
+	   Deleted - net.sourceforge.pmd.CommonAbstractRule
 	   Deleted - net.sourceforge.pmd.SourceType
 	   Deleted - net.sourceforge.pmd.SourceTypeDiscoverer
 	   Deleted - net.sourceforge.pmd.SourceTypeToRuleLanguageMapper
@@ -71,11 +94,10 @@ The following is relatively complete list of the major changes:
 
 	API Change - Generalize RuleViolation treatment
 	   Renamed - net.sourceforge.pmd.IRuleViolation to net.sourceforge.pmd.RuleViolation
-	   Renamed - net.sourceforge.pmd.RuleViolation to net.sourceforge.pmd.AbstractRuleViolation
-	   Added - net.sourceforge.pmd.AbstractRuleViolation
+	   Renamed - net.sourceforge.pmd.RuleViolation to net.sourceforge.pmd.lang.AbstractRuleViolation
 	   Added - net.sourceforge.pmd.RuleViolationComparator
-	   Added - net.sourceforge.pmd.JavaRuleViolation
-	   Added - net.sourceforge.pmd.jsp.JspRuleViolation
+	   Added - net.sourceforge.pmd.lang.java.JavaRuleViolation
+	   Added - net.sourceforge.pmd.lang.jsp.JspRuleViolation
 
 	API Change - Generalize DFA treatment
 	   Renamed - net.sourceforge.pmd.dfa.IDataFlowNode to net.sourceforge.pmd.dfa.DataFlowNode   

@@ -5,9 +5,9 @@ package net.sourceforge.pmd.cpd;
 
 import java.io.StringReader;
 
-import net.sourceforge.pmd.Language;
-import net.sourceforge.pmd.jsp.ast.Token;
-import net.sourceforge.pmd.parsers.TokenManager;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.jsp.ast.Token;
 
 public class JSPTokenizer implements Tokenizer {
 

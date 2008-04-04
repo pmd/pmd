@@ -7,8 +7,8 @@ package net.sourceforge.pmd.rules.optimization;
 
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 /**
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.symboltable.NameOccurrence;
  *
  * @author mgriffa
  */
-public class AbstractOptimizationRule extends AbstractRule {
+public class AbstractOptimizationRule extends AbstractJavaRule {
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isInterface()) {

@@ -3,7 +3,7 @@ package net.sourceforge.pmd.rules.codesize;
 import java.util.Set;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.stat.DataPoint;
 
 /**

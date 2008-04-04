@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import net.sourceforge.pmd.Language;
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Rule;
@@ -27,7 +25,9 @@ import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.SourceFileSelector;
 import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
-import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
 
 public class Benchmark {
 
@@ -120,7 +120,7 @@ public class Benchmark {
     private static void parseStress(LanguageVersion languageVersion, List<File> files) throws FileNotFoundException {
         long start = System.currentTimeMillis();
         for (File file: files) {
-            SourceTypeHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+            LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
             languageVersionHandler.getParser().parse(new FileReader(file));
         }
         long end = System.currentTimeMillis();

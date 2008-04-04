@@ -3,16 +3,16 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTConditionalAndExpression;
-import net.sourceforge.pmd.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.ast.ASTConditionalOrExpression;
-import net.sourceforge.pmd.ast.ASTEqualityExpression;
-import net.sourceforge.pmd.ast.ASTExpression;
-import net.sourceforge.pmd.ast.ASTIfStatement;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.ast.ASTUnaryExpressionNotPlusMinus;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalOrExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpressionNotPlusMinus;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -36,7 +36,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  *   if (((x != !y)) || !(x)) { diff(); } else { same(); }
  * </pre>
  */
-public class ConfusingTernary extends AbstractRule {
+public class ConfusingTernary extends AbstractJavaRule {
 
     public Object visit(ASTIfStatement node, Object data) {
         // look for "if (match) ..; else .."

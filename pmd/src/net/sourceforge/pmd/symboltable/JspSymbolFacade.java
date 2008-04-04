@@ -1,7 +1,8 @@
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.jsp.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.sourcetypehandlers.VisitorStarter;
+import net.sourceforge.pmd.lang.VisitorStarter;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.jsp.ast.ASTCompilationUnit;
 
 /**
  * Symbol Facade for JSP.
@@ -13,7 +14,7 @@ public class JspSymbolFacade implements VisitorStarter {
     /**
      * Set Scope for JSP AST.
      */
-    public void start(Object rootNode) {
+    public void start(Node rootNode) {
         ASTCompilationUnit compilationUnit = (ASTCompilationUnit) rootNode;
         new JspScopeAndDeclarationFinder().setJspScope(compilationUnit);
     }

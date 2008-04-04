@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.ast;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ParseException;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
 
 import org.junit.Test;
 

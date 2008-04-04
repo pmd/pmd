@@ -1,13 +1,13 @@
 package net.sourceforge.pmd.rules.naming;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
-import net.sourceforge.pmd.ast.ASTPrimitiveType;
-import net.sourceforge.pmd.ast.ASTResultType;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.ast.Node;
 
-public class SuspiciousHashcodeMethodName extends AbstractRule {
+public class SuspiciousHashcodeMethodName extends AbstractJavaRule {
 
     public Object visit(ASTMethodDeclaration node, Object data) {
         /* original XPath rule was

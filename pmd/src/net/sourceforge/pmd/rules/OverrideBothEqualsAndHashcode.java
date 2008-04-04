@@ -2,16 +2,16 @@ package net.sourceforge.pmd.rules;
 
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.ast.ASTFormalParameter;
-import net.sourceforge.pmd.ast.ASTFormalParameters;
-import net.sourceforge.pmd.ast.ASTImplementsList;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
+import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 
-public class OverrideBothEqualsAndHashcode extends AbstractRule {
+public class OverrideBothEqualsAndHashcode extends AbstractJavaRule {
 
     private boolean implementsComparable = false;
 

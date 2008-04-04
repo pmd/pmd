@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.JavaParserVisitorAdapter;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
 
 import java.util.List;
 

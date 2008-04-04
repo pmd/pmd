@@ -5,9 +5,9 @@ package net.sourceforge.pmd.rules;
 
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.rules.regex.RegexHelper;
 

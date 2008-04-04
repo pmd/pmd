@@ -1,9 +1,9 @@
 package net.sourceforge.pmd.rules.imports;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 
-public class DontImportSun extends AbstractRule {
+public class DontImportSun extends AbstractJavaRule {
 
     public Object visit(ASTImportDeclaration node, Object data) {
         String img = node.jjtGetChild(0).getImage();

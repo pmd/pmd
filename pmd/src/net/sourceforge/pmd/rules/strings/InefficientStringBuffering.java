@@ -6,16 +6,16 @@ package net.sourceforge.pmd.rules.strings;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTAdditiveExpression;
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.ast.ASTArgumentList;
-import net.sourceforge.pmd.ast.ASTBlockStatement;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.ast.ASTLiteral;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
 
@@ -28,7 +28,7 @@ import net.sourceforge.pmd.typeresolution.TypeHelper;
  * 
  * @author mgriffa
  */
-public class InefficientStringBuffering extends AbstractRule {
+public class InefficientStringBuffering extends AbstractJavaRule {
 
     public Object visit(ASTAdditiveExpression node, Object data) {
         ASTBlockStatement bs = node.getFirstParentOfType(ASTBlockStatement.class);

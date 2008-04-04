@@ -80,20 +80,20 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import net.sourceforge.pmd.Language;
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.ast.AccessNode;
-import net.sourceforge.pmd.ast.ParseException;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
 import net.sourceforge.pmd.jaxen.TypeOfFunction;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.LanguageVersionHandler;
+import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.parsers.Parser;
-import net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.LocalScope;
@@ -115,7 +115,7 @@ public class Designer implements ClipboardOwner {
     private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Language.JAVA.getDefaultVersion().ordinal();
 
     private Node getCompilationUnit() {
-	SourceTypeHandler languageVersionHandler = getLanguageVersionHandler();
+	LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
 	Parser parser = languageVersionHandler.getParser();
 	Node node = (Node) parser.parse(new StringReader(codeEditorPane.getText()));
 	languageVersionHandler.getSymbolFacade().start(node);
@@ -135,7 +135,7 @@ public class Designer implements ClipboardOwner {
 	throw new RuntimeException("Initial default language version not specified");
     }
     
-    private SourceTypeHandler getLanguageVersionHandler() {
+    private LanguageVersionHandler getLanguageVersionHandler() {
 	LanguageVersion languageVersion = getLanguageVersion();
 	return languageVersion.getLanguageVersionHandler();
     }
@@ -292,7 +292,7 @@ public class Designer implements ClipboardOwner {
 
 	public String label() {
 	    if (node instanceof Node) {
-		SourceTypeHandler languageVersionHandler = getLanguageVersionHandler();
+		LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
 		StringWriter writer = new StringWriter();
 		languageVersionHandler.getDumpFacade(writer, "", false).start(node);
 		return writer.toString();

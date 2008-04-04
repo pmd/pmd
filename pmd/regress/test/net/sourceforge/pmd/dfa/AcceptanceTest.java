@@ -8,8 +8,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 
 import org.junit.Test;
 

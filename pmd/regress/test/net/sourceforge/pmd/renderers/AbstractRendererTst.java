@@ -4,11 +4,11 @@
 package test.net.sourceforge.pmd.renderers;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Report.ProcessingError;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.renderers.AbstractRenderer;
 
 import org.junit.Test;
@@ -17,7 +17,7 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public abstract class AbstractRendererTst extends RuleTst {
 
-    private static class FooRule extends AbstractRule {
+    private static class FooRule extends AbstractJavaRule {
         public Object visit(ASTClassOrInterfaceDeclaration c, Object ctx) {
             if (c.getImage().equals("Foo"))
                 addViolation(ctx, c);

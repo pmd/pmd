@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 
-public class DontImportJavaLang extends AbstractRule {
+public class DontImportJavaLang extends AbstractJavaRule {
     
     private Set<Package> skipPackages = new HashSet<Package>(Arrays.asList(new Package[] { Package.getPackage("java.lang.ref"), Package.getPackage("java.lang.reflect"), Package.getPackage("java.lang.annotation"),
             Package.getPackage("java.lang.instrument"), Package.getPackage("java.lang.management"), Package.getPackage("java.lang.Thread") }));

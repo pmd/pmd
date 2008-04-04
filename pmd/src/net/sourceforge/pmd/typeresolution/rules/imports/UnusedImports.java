@@ -3,11 +3,11 @@
  */
 package net.sourceforge.pmd.typeresolution.rules.imports;
 
-import net.sourceforge.pmd.ast.ASTImportDeclaration;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.DummyJavaNode;
-import net.sourceforge.pmd.ast.TypeNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.rules.ImportWrapper;
 import net.sourceforge.pmd.rules.imports.UnusedImportsRule;
 

@@ -3,7 +3,7 @@ package test.net.sourceforge.pmd.symboltable;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
 
 import org.junit.Test;

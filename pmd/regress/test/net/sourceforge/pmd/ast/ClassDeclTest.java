@@ -4,7 +4,7 @@
 package test.net.sourceforge.pmd.ast;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 
 import org.junit.Test;
 

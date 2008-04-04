@@ -5,8 +5,8 @@ package test.net.sourceforge.pmd.testframework;
 
 import java.util.Properties;
 
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 /**
  * Stores the information required to run a complete test.

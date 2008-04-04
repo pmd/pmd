@@ -6,10 +6,10 @@ package net.sourceforge.pmd.cpd;
 import java.io.StringReader;
 import java.util.Properties;
 
-import net.sourceforge.pmd.LanguageVersion;
-import net.sourceforge.pmd.ast.JavaParserConstants;
-import net.sourceforge.pmd.ast.Token;
-import net.sourceforge.pmd.parsers.TokenManager;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.java.ast.JavaParserConstants;
+import net.sourceforge.pmd.lang.java.ast.Token;
 
 public class JavaTokenizer implements Tokenizer {
 

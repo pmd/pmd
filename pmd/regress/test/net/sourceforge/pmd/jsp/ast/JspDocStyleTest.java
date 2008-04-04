@@ -1,13 +1,13 @@
 package test.net.sourceforge.pmd.jsp.ast;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.jsp.ast.ASTAttribute;
-import net.sourceforge.pmd.jsp.ast.ASTAttributeValue;
-import net.sourceforge.pmd.jsp.ast.ASTCData;
-import net.sourceforge.pmd.jsp.ast.ASTCommentTag;
-import net.sourceforge.pmd.jsp.ast.ASTDoctypeDeclaration;
-import net.sourceforge.pmd.jsp.ast.ASTDoctypeExternalId;
-import net.sourceforge.pmd.jsp.ast.ASTElement;
+import net.sourceforge.pmd.lang.jsp.ast.ASTAttribute;
+import net.sourceforge.pmd.lang.jsp.ast.ASTAttributeValue;
+import net.sourceforge.pmd.lang.jsp.ast.ASTCData;
+import net.sourceforge.pmd.lang.jsp.ast.ASTCommentTag;
+import net.sourceforge.pmd.lang.jsp.ast.ASTDoctypeDeclaration;
+import net.sourceforge.pmd.lang.jsp.ast.ASTDoctypeExternalId;
+import net.sourceforge.pmd.lang.jsp.ast.ASTElement;
 
 import org.junit.Test;
 

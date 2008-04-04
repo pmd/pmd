@@ -3,12 +3,12 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTBlockStatement;
-import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 
-public class StringConcatenationRule extends AbstractRule {
+public class StringConcatenationRule extends AbstractJavaRule {
 
     public Object visit(ASTForStatement node, Object data) {
         Node forLoopStmt = null;

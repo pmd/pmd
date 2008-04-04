@@ -3,8 +3,8 @@ package net.sourceforge.pmd.typeresolution;
 import java.util.Arrays;
 import java.util.List;
 
-import net.sourceforge.pmd.ast.TypeNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 public class TypeHelper {

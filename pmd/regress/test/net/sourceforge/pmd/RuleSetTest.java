@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.Language;
 import net.sourceforge.pmd.MockRule;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
@@ -26,7 +25,8 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleReference;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 
 import org.junit.Test;
 

@@ -3,19 +3,19 @@
  */
 package net.sourceforge.pmd.rules.design;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTAssignmentOperator;
-import net.sourceforge.pmd.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.ast.ASTEqualityExpression;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTNullLiteral;
-import net.sourceforge.pmd.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 // TODO - should check that this is not the first assignment.  e.g., this is OK:
 // Object x;
 // x = null;
-public class NullAssignmentRule extends AbstractRule {
+public class NullAssignmentRule extends AbstractJavaRule {
 
     public Object visit(ASTNullLiteral node, Object data) {
         

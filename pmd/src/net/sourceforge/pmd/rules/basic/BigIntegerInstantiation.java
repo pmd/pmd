@@ -3,18 +3,18 @@ package net.sourceforge.pmd.rules.basic;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.LanguageVersion;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.ast.ASTArguments;
-import net.sourceforge.pmd.ast.ASTArrayDimsAndInits;
-import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
-import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTArguments;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayDimsAndInits;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.typeresolution.TypeHelper;
 
-public class BigIntegerInstantiation extends AbstractRule {
+public class BigIntegerInstantiation extends AbstractJavaRule {
 
     public Object visit(ASTAllocationExpression node, Object data) {
         Node type = node.jjtGetChild(0);

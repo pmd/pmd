@@ -2,9 +2,9 @@ package test.net.sourceforge.pmd.ast;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import net.sourceforge.pmd.ast.ASTAllocationExpression;
-import net.sourceforge.pmd.ast.ASTAssertStatement;
-import net.sourceforge.pmd.ast.ASTBlockStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 
 import org.junit.Test;
 

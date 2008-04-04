@@ -4,7 +4,7 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.symboltable.NameDeclaration;
 import net.sourceforge.pmd.symboltable.VariableNameDeclaration;

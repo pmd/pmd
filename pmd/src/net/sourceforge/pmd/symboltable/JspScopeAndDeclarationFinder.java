@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.symboltable;
 
-import net.sourceforge.pmd.jsp.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.jsp.ast.ASTCompilationUnit;
 
 /**
  * Setting the scope in the root of a JSP AST.

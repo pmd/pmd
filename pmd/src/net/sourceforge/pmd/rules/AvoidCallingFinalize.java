@@ -1,15 +1,15 @@
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.ast.ASTName;
-import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
-import net.sourceforge.pmd.symboltable.MethodScope;
-
 import java.util.HashSet;
 import java.util.Set;
 
-public class AvoidCallingFinalize extends AbstractRule {
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.symboltable.MethodScope;
+
+public class AvoidCallingFinalize extends AbstractJavaRule {
 
     private Set<MethodScope> checked = new HashSet<MethodScope>();
 

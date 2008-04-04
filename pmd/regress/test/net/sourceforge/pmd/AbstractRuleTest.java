@@ -10,20 +10,20 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.JavaRuleViolation;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.ast.DummyJavaNode;
+import net.sourceforge.pmd.lang.java.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.JavaRuleViolation;
+import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.properties.StringProperty;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import org.junit.Test;
 public class AbstractRuleTest {
 	
-    private static class MyRule extends AbstractRule {
+    private static class MyRule extends AbstractJavaRule {
     	private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
 
     	private static final PropertyDescriptor xpath = new StringProperty("xpath", "xpath property", "", 2.0f);
@@ -42,7 +42,7 @@ public class AbstractRuleTest {
         }
     }
 
-    private static class MyOtherRule extends AbstractRule {
+    private static class MyOtherRule extends AbstractJavaRule {
     	private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
 
 		private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { pd });
