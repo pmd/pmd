@@ -22,7 +22,7 @@ PARSER_BEGIN(JspParser)
  * @author Pieter – Application Engineers NV/SA – http://www.ae.be
  */
 
-package net.sourceforge.pmd.jsp.ast;
+package net.sourceforge.pmd.lang.jsp.ast;
 
 public class JspParser {
 

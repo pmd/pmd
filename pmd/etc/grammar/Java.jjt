@@ -61,11 +61,11 @@ options {
   MULTI = true;
   VISITOR = true;
   NODE_USES_PARSER = true;
-  NODE_PACKAGE="net.sourceforge.pmd.ast";
+  NODE_PACKAGE="net.sourceforge.pmd.lang.java.ast";
 }
 
 PARSER_BEGIN(JavaParser)
-package net.sourceforge.pmd.ast;
+package net.sourceforge.pmd.lang.java.ast;
 import java.util.*;
 import net.sourceforge.pmd.PMD;
 public class JavaParser {
