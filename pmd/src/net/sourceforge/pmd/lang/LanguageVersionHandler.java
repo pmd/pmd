@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang;
 
 import java.io.Writer;
 
+import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
  * Interface for obtaining the classes necessary for checking source files
@@ -13,6 +14,11 @@ import java.io.Writer;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public interface LanguageVersionHandler {
+
+    /**
+     * Get the RuleViolationFactory.
+     */
+    RuleViolationFactory getRuleViolationFactory();
 
     /**
      * Get the Parser.
@@ -34,7 +40,7 @@ public interface LanguageVersionHandler {
      * @return VisitorStarter 
      */
     VisitorStarter getSymbolFacade();
-    
+
     /**
      * Get the TypeResolutionFacade.
      *
@@ -49,5 +55,5 @@ public interface LanguageVersionHandler {
      * @param writer The writer to dump to.
      * @return VisitorStarter 
      */
-    VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse); 
+    VisitorStarter getDumpFacade(Writer writer, String prefix, boolean recurse);
 }

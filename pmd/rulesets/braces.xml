@@ -12,7 +12,7 @@ The Braces Ruleset contains a collection of braces rules.
    <rule name="IfStmtsMustUseBraces"
    		since="1.0"
          message="Avoid using if statements without curly braces"
-         class="net.sourceforge.pmd.rules.XPathRule"
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#IfStmtsMustUseBraces">
      <description>
 Avoid using if statements without using curly braces.
@@ -42,7 +42,7 @@ Avoid using if statements without using curly braces.
     <rule name="WhileLoopsMustUseBraces"
     		 since="0.7"
           message="Avoid using 'while' statements without curly braces"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#WhileLoopsMustUseBraces">
       <description>
 Avoid using 'while' statements without using curly braces.
@@ -70,7 +70,7 @@ public void doSomething() {
       <rule name="IfElseStmtsMustUseBraces"
       	  since="0.2"
            message="Avoid using 'if...else' statements without curly braces"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#IfElseStmtsMustUseBraces">
        <description>
 Avoid using if..else statements without using curly braces.
@@ -106,7 +106,7 @@ Avoid using if..else statements without using curly braces.
      <rule name="ForLoopsMustUseBraces"
      		  since="0.7"
            message="Avoid using 'for' statements without curly braces"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/braces.html#ForLoopsMustUseBraces">
        <description>
 Avoid using 'for' statements without using curly braces.

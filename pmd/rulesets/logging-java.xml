@@ -34,7 +34,7 @@ class Foo{
      <rule name="LoggerIsNotStaticFinal"
      		since="2.0"
          message="The Logger variable declaration does not contain the static and final modifiers"
-         class="net.sourceforge.pmd.rules.XPathRule"
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#LoggerIsNotStaticFinal">
      <description>
 In most cases, the Logger can be declared static and final.
@@ -70,7 +70,7 @@ first -->
 <!--
      <rule name="LogBlockWithoutIf"
          message="There is log block not surrounded by if"
-         class="net.sourceforge.pmd.rules.XPathRule">
+         class="net.sourceforge.pmd.lang.rule.XPathRule">
      <description>
      When many log statements are used, it is conveninent to surround them with an if statement.
      </description>
@@ -104,7 +104,7 @@ first -->
     <rule name="SystemPrintln"
     		since="2.1"
          message="System.out.print is used"
-         class="net.sourceforge.pmd.rules.XPathRule"
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln">
      <description>
 System.(out|err).print is used, consider using a logger.
@@ -140,7 +140,7 @@ class Foo{
     <rule  name="AvoidPrintStackTrace"
     		  since="3.2"
            message="Avoid printStackTrace(); use a logger call instead."
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
 		   externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace">
            <description>
 Avoid printStackTrace(); use a logger call instead.

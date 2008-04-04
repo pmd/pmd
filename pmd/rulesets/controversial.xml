@@ -16,7 +16,7 @@ most people really dislike :-)
     <rule name="UnnecessaryConstructor"
     		 since="1.0"
           message="Avoid unnecessary constructors - the compiler will generate these for you"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UnnecessaryConstructor">
       <description>
 This rule detects when a constructor is not necessary; i.e., when there's only one constructor,
@@ -159,7 +159,7 @@ public class Foo {
     <rule name="AtLeastOneConstructor"
     	since="1.04"
       message="Each class should declare at least one constructor"
-      class="net.sourceforge.pmd.rules.XPathRule"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AtLeastOneConstructor">
   <description>
 Each class should declare at least one constructor.
@@ -240,7 +240,7 @@ public class Foo {
     <rule name="CallSuperInConstructor"
     		 since="3.0"
           message="It is a good practice to call super() in a constructor"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#CallSuperInConstructor">
       <description>
 It is a good practice to call super() in a constructor. If super() is not called but
@@ -279,7 +279,7 @@ public class Foo extends Bar{
     <rule name="UnnecessaryParentheses"
     		 since="3.1"
           message="This statement may have some unnecessary parentheses"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#UnnecessaryParentheses">
       <description>
 Sometimes expressions are wrapped in unnecessary parentheses,
@@ -312,7 +312,7 @@ making them look like a function call.
     <rule name="DefaultPackage"
         since="3.4"
         message="Use explicit scoping instead of the default package private level"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DefaultPackage">
         <description>
 Use explicit scoping instead of the default package private level.
@@ -336,7 +336,7 @@ or MethodDeclaration[@PackagePrivate='true']
     <rule name="BooleanInversion"
           since="3.5"
           message="Use bitwise inversion to invert boolean values"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#BooleanInversion">
       <description>
 Use bitwise inversion to invert boolean values - it's the fastest way to do this.
@@ -399,7 +399,7 @@ public class Foo {
 
 	<rule 	name="AvoidFinalLocalVariable"
 	      since="4.1"
-        	class="net.sourceforge.pmd.rules.XPathRule"
+        	class="net.sourceforge.pmd.lang.rule.XPathRule"
         	message="Avoid using final local variables, turn them into fields"
         	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidFinalLocalVariable">
 	        <description><![CDATA[
@@ -426,7 +426,7 @@ public class MyClass {
         name="AvoidUsingShortType"
         since="4.1"
         message="Do not use the short type"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
     	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUsingShortType">
         <description>
             <![CDATA[
@@ -463,7 +463,7 @@ public class MyClass {
 	<rule
         name="AvoidUsingVolatile"
         since="4.1"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Use of modifier volatile is not recommended."
     	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUsingVolatile">
 
@@ -501,7 +501,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 		name="AvoidUsingNativeCode"
 		  since="4.1"
         message="The use of native code is not recommended."
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidUsingNativeCode">
         <description>
             <![CDATA[
@@ -544,7 +544,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 		name="AvoidAccessibilityAlteration"
 		  since="4.1"
         message="You should modify visibility of class or methods using getDeclaredConstructors(), getDeclaredConstructor(Class[]), setAccessible() or PrivilegedAction."
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#AvoidAccessibilityAlteration">
         <description>
             <![CDATA[
@@ -623,7 +623,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 		<rule	name="DoNotCallGarbageCollectionExplicitly"
 			    since="4.2"
 	        	message="Do not explicitly trigger a garbage collection."
-	        	class="net.sourceforge.pmd.rules.XPathRule"
+	        	class="net.sourceforge.pmd.lang.rule.XPathRule"
 	        	externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DoNotCallGarbageCollectionExplicitly">
         <description>
 	        <![CDATA[

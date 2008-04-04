@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.cpd.ReportException;
-import net.sourceforge.pmd.lang.AbstractRule;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 import org.junit.Before;

@@ -426,11 +426,14 @@ public class RuleSetFactoryTest {
 
 			assertEquals(message + ", Rule name", rule1.getName(), rule2.getName());
 			assertEquals(message + ", Rule class", rule1.getRuleClass(), rule2.getRuleClass());
-			assertEquals(message + ", Rule description", rule1.getDescription(), rule2.getDescription());
+			assertEquals(message + ", Rule description " + rule1.getName(), rule1.getDescription(), rule2.getDescription());
 			assertEquals(message + ", Rule message", rule1.getMessage(), rule2.getMessage());
 			assertEquals(message + ", Rule external info url", rule1.getExternalInfoUrl(), rule2.getExternalInfoUrl());
 			assertEquals(message + ", Rule priority", rule1.getPriority(), rule2.getPriority());
 			assertEquals(message + ", Rule examples", rule1.getExamples(), rule2.getExamples());
+			for (Object key : rule1.getProperties().keySet()) {
+			    assertEquals(message + ", Rule property " + key, rule1.getProperties().get(key), rule2.getProperties().get(key));
+			}
 			assertEquals(message + ", Rule properties", rule1.getProperties(), rule2.getProperties());
 		}
 	}

@@ -3,9 +3,9 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class AvoidFieldNameMatchingTypeName extends AbstractJavaRule {
 

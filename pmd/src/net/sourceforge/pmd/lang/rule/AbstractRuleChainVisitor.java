@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.lang;
+package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,14 +40,14 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * @see RuleChainVisitor#visitAll(List, RuleContext)
      */
-    public void visitAll(List<Node> astCompilationUnits, RuleContext ctx) {
+    public void visitAll(List<Node> nodes, RuleContext ctx) {
         initialize();
         clear();
 
         // Perform a visitation of the AST to index nodes which need visiting by
         // type
         long start = System.nanoTime();
-        indexNodes(astCompilationUnits, ctx);
+        indexNodes(nodes, ctx);
         long end = System.nanoTime();
         Benchmark.mark(Benchmark.TYPE_RULE_CHAIN_VISIT, end - start, 1);
 
@@ -57,15 +57,15 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
         for (Rule rule: rules) {
             final List<String> nodeNames = rule.getRuleChainVisits();
             for (int j = 0; j < nodeNames.size(); j++) {
-                List<Node> nodes = nodeNameToNodes.get(nodeNames.get(j));
-                for (Node node: nodes) {
+                List<Node> ns = nodeNameToNodes.get(nodeNames.get(j));
+                for (Node node: ns) {
                     // Visit with underlying Rule, not the RuleReference
                     while (rule instanceof RuleReference) {
                         rule = ((RuleReference)rule).getRule();
                     }
                     visit(rule, node, ctx);
                 }
-                visits += nodes.size();
+                visits += ns.size();
             }
             end = System.nanoTime();
             Benchmark.mark(Benchmark.TYPE_RULE_CHAIN_RULE, rule.getName(), end - start, visits);

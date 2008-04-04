@@ -13,7 +13,7 @@ These rules deal with different problems that can occur with finalizers.
     <rule name="EmptyFinalizer"
     		 since="1.5"
           message="Avoid empty finalize methods"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#EmptyFinalizer">
        <description>
 If the finalize() method is empty, then it does not need to exist.
@@ -41,7 +41,7 @@ public class Foo {
     <rule name="FinalizeOnlyCallsSuperFinalize"
     		 since="1.5"
           message="Finalize should do something besides just calling super.finalize()"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#FinalizeOnlyCallsSuperFinalize">
        <description>
 If the finalize() is implemented, it should do something besides just calling
@@ -76,7 +76,7 @@ public class Foo {
 <rule name="FinalizeOverloaded"
 		since="1.5"
       message="Finalize methods should not be overloaded"
-      class="net.sourceforge.pmd.rules.XPathRule"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#FinalizeOverloaded">
    <description>
 Methods named finalize() should not have parameters.  It is
@@ -108,7 +108,7 @@ public class Foo {
     <rule name="FinalizeDoesNotCallSuperFinalize"
     		 since="1.5"
           message="Last statement in finalize method should be a call to super.finalize()"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#FinalizeDoesNotCallSuperFinalize">
        <description>
 If the finalize() is implemented, its last action should be to call super.finalize.
@@ -146,7 +146,7 @@ public class Foo {
     <rule name="FinalizeShouldBeProtected"
     		 since="1.1"
           message="If you override finalize(), make it protected"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/finalizers.html#FinalizeShouldBeProtected">
       <description>
 If you override finalize(), make it protected.  If you make

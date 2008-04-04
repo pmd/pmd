@@ -46,7 +46,7 @@ public interface Node {
      * This method returns a child node.  The children are numbered
      * from zero, left to right.
      *
-     * @param i the child index. Must be nonnegative and less than
+     * @param index the child index. Must be nonnegative and less than
      *          {@link #jjtGetNumChildren}.
      */
     public Node jjtGetChild(int index);

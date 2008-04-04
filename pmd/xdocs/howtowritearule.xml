@@ -263,11 +263,11 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
         </source>
         <p>Concise, eh?  Here's an <a href="http://www.onjava.com/pub/a/onjava/2003/04/09/pmd_rules.html">article</a> with a lot more detail.</p>
         <p>Note that for XPath rules you'll need to set the
-            <code>class</code> attribute in the rule definition to <code>net.sourceforge.pmd.rules.XPathRule.</code>  Like this:
+            <code>class</code> attribute in the rule definition to <code>net.sourceforge.pmd.lang.rule.XPathRule.</code>  Like this:
             <source>
                 <![CDATA[<rule name="EmptyCatchBlock"
                       message="Avoid empty catch blocks"
-                      class="net.sourceforge.pmd.rules.XPathRule">
+                      class="net.sourceforge.pmd.lang.rule.XPathRule">
                   <description>
                   etc., etc.]]>
             </source>

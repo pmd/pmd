@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang;
+package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +13,7 @@ import java.util.Properties;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Basic abstract implementation of all parser-independent methods of the Rule
@@ -368,6 +369,43 @@ public abstract class AbstractRule implements Rule {
 
 	public void end(RuleContext ctx) {
 		// Override as needed
+	}
+
+	/**
+	 * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node)
+	 */
+	protected final void addViolation(Object data, Node node) {
+		RuleContext ruleContext = (RuleContext) data;
+		ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
+				ruleContext, this, node);
+	}
+
+	/**
+	 * @see RuleViolationFactory#addViolationWithMessage(RuleContext, Rule, Node, String)
+	 */
+	protected final void addViolationWithMessage(Object data, Node node,
+			String message) {
+		RuleContext ruleContext = (RuleContext) data;
+		ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolationWithMessage(
+				ruleContext, this, node, message);
+	}
+
+	/**
+	 * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String)
+	 */
+	protected final void addViolation(Object data, Node node, String arg) {
+		RuleContext ruleContext = (RuleContext) data;
+		ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
+				ruleContext, this, node, arg);
+	}
+
+	/**
+	 * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, Object[])
+	 */
+	protected final void addViolation(Object data, Node node, Object[] args) {
+		RuleContext ruleContext = (RuleContext) data;
+		ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
+				ruleContext, this, node, args);
 	}
 
 	/**

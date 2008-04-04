@@ -12,7 +12,7 @@
 	<rule name="NoLongScripts"
 	   since="3.6"
 		message="Avoid having long scripts (e.g. Javascript) inside a JSP file."
-		class="net.sourceforge.pmd.rules.XPathRule"
+		class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoLongScripts">
 		<description> Scripts should be part of Tag Libraries, rather than part of JSP pages.
 			</description>
@@ -56,7 +56,7 @@ onload=calcDays;
 	<rule name="NoScriptlets"
 	     since="3.6"
         message="Avoid having scriptlets inside a JSP file."
-		class="net.sourceforge.pmd.rules.XPathRule"
+		class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoScriptlets">
 		<description> Scriptlets should be factored into Tag Libraries or JSP declarations,
 			rather than being part of JSP pages. </description>
@@ -107,7 +107,7 @@ response.setHeader("Pragma", "No-cache");
 	<rule name="NoClassAttribute"
 	   since="3.6"
 		message="Do not use an attribute called 'class'."
-		class="net.sourceforge.pmd.rules.XPathRule"
+		class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoClassAttribute">
 		<description>Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
 			</description>
@@ -131,7 +131,7 @@ response.setHeader("Pragma", "No-cache");
 	<rule name="NoJspForward"
 	   since="3.6"
 		message="Do not do a forward from within a JSP file."
-		class="net.sourceforge.pmd.rules.XPathRule"
+		class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoJspForward">
 		<description>Do not do a forward from within a JSP file.
 			</description>
@@ -153,7 +153,7 @@ response.setHeader("Pragma", "No-cache");
 	<rule name="IframeMissingSrcAttribute"
 	   since="3.6"
 		message="IFrames must have a src attribute."
-		class="net.sourceforge.pmd.rules.XPathRule"
+		class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#IframeMissingSrcAttribute">
 		<description>
 		  IFrames which are missing a src element can cause security information popups 
@@ -185,7 +185,7 @@ response.setHeader("Pragma", "No-cache");
 	<rule name="NoHtmlComments"
 	   since="3.6"
 		message="Use JSP comments instead of HTML comments"
-		class="net.sourceforge.pmd.rules.XPathRule"
+		class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoHtmlComments">
 		<description>
 		  In a production system, HTML comments increase the payload between the application 
@@ -231,7 +231,7 @@ response.setHeader("Pragma", "No-cache");
     
     <rule
         name="JspEncoding"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="JSP file should use UTF-8 encoding"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#JspEncoding">
         <description>

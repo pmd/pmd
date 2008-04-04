@@ -7,7 +7,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleViolation;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 
 import org.junit.Before;
 import org.junit.Test;

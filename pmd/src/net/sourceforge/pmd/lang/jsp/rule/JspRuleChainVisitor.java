@@ -1,20 +1,20 @@
-package net.sourceforge.pmd.lang.jsp;
+package net.sourceforge.pmd.lang.jsp.rule;
 
 import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.AbstractRuleChainVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.jsp.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor;
 import net.sourceforge.pmd.lang.jsp.ast.JspParserVisitorAdapter;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.lang.rule.AbstractRuleChainVisitor;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 
 public class JspRuleChainVisitor extends AbstractRuleChainVisitor {
 
-    protected void indexNodes(List<Node> astCompilationUnits, RuleContext ctx) {
+    protected void indexNodes(List<Node> nodes, RuleContext ctx) {
         JspParserVisitor jspParserVisitor = new JspParserVisitorAdapter() {
             // Perform a visitation of the AST to index nodes which need
             // visiting by type
@@ -24,8 +24,8 @@ public class JspRuleChainVisitor extends AbstractRuleChainVisitor {
             }
         };
 
-        for (int i = 0; i < astCompilationUnits.size(); i++) {
-            jspParserVisitor.visit((ASTCompilationUnit)astCompilationUnits.get(i), ctx);
+        for (int i = 0; i < nodes.size(); i++) {
+            jspParserVisitor.visit((ASTCompilationUnit)nodes.get(i), ctx);
         }
     }
 

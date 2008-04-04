@@ -3,9 +3,9 @@
  */
 package net.sourceforge.pmd.rules.strings;
 
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 import java.io.BufferedReader;
 import java.io.File;

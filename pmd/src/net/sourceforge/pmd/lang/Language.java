@@ -8,8 +8,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.JavaRuleChainVisitor;
-import net.sourceforge.pmd.lang.jsp.JspRuleChainVisitor;
+import net.sourceforge.pmd.lang.java.rule.JavaRuleChainVisitor;
+import net.sourceforge.pmd.lang.jsp.rule.JspRuleChainVisitor;
+import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
 
 /**
  * This is an enumeration of the Languages of which PMD is aware.  The primary

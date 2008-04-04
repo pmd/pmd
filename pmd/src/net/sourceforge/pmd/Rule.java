@@ -6,6 +6,8 @@ package net.sourceforge.pmd;
 import java.util.List;
 import java.util.Properties;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 /**
  * This is the basic Rule interface for PMD rules.
  */
@@ -234,10 +236,10 @@ public interface Rule {
 	void start(RuleContext ctx);
 
 	/**
-	 * Apply this rule to the given collection of compilation units, using the
+	 * Apply this rule to the given collection of nodes, using the
 	 * given context.
 	 */
-	void apply(List<?> astCompilationUnits, RuleContext ctx);
+	void apply(List<Node> astCompilationUnits, RuleContext ctx);
 	
 	/**
 	 * End processing. Called once, after apply() is last called. 

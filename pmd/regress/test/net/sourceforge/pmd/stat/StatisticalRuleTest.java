@@ -35,6 +35,7 @@ import junit.framework.AssertionFailedError;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
@@ -849,6 +850,7 @@ public class StatisticalRuleTest  {
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         ctx.setSourceCodeFilename(testName);
+        ctx.setLanguageVersion(Language.JAVA.getDefaultVersion());
 
         IUT.apply(list, ctx);
 

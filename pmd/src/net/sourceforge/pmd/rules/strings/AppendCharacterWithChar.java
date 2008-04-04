@@ -3,9 +3,9 @@
  */
 package net.sourceforge.pmd.rules.strings;
 
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;

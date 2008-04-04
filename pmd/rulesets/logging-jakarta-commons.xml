@@ -12,7 +12,7 @@ The Jakarta Commons Logging ruleset contains a collection of rules that find que
 	<rule name="UseCorrectExceptionLogging"
 		  since="3.2"
         message="Use the correct logging statement for logging exceptions"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-jakarta-commons.html#UseCorrectExceptionLogging">
 		<description>
 To make sure the full stacktrace is printed out, use the logging statement with 2 arguments: a String and a Throwable.
@@ -49,7 +49,7 @@ public class Main {
     <rule name="ProperLogger"
          since="3.3"
          message="Logger should be defined private static final and have the correct class"
-         class="net.sourceforge.pmd.rules.XPathRule"
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/logging-jakarta-commons.html#ProperLogger">
              <description>
 A logger should normally be defined private static final and have the correct class.

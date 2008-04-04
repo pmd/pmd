@@ -2,7 +2,8 @@ package net.sourceforge.pmd;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.AbstractRule;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 /**
  * This is a Rule implementation which can be used in scenarios where an actual
@@ -28,6 +29,6 @@ public class MockRule extends AbstractRule {
 		setRuleSetName(ruleSetName);
 	}
 
-	public void apply(List<?> astCompilationUnits, RuleContext ctx) {
+	public void apply(List<Node> astCompilationUnits, RuleContext ctx) {
 	}
 }

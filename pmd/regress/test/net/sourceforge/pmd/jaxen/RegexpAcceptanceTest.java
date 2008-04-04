@@ -2,7 +2,7 @@
 package test.net.sourceforge.pmd.jaxen;
  
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 
 import org.junit.Test;
 

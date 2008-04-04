@@ -9,6 +9,8 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.DumpFacade;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 import net.sourceforge.pmd.typeresolution.TypeResolutionFacade;
 
@@ -20,35 +22,39 @@ import net.sourceforge.pmd.typeresolution.TypeResolutionFacade;
  */
 public abstract class AbstractJavaHandler implements LanguageVersionHandler {
 
+    public RuleViolationFactory getRuleViolationFactory() {
+	return JavaRuleViolationFactory.INSTANCE;
+    }
+
     public VisitorStarter getDataFlowFacade() {
-        return new VisitorStarter() {
-            public void start(Node rootNode) {
-                new DataFlowFacade().initializeWith((ASTCompilationUnit) rootNode);
-            }
-        };
+	return new VisitorStarter() {
+	    public void start(Node rootNode) {
+		new DataFlowFacade().initializeWith((ASTCompilationUnit) rootNode);
+	    }
+	};
     }
 
     public VisitorStarter getSymbolFacade() {
-        return new VisitorStarter() {
-            public void start(Node rootNode) {
-                new SymbolFacade().initializeWith((ASTCompilationUnit) rootNode);
-            }
-        };
+	return new VisitorStarter() {
+	    public void start(Node rootNode) {
+		new SymbolFacade().initializeWith((ASTCompilationUnit) rootNode);
+	    }
+	};
     }
-    
+
     public VisitorStarter getTypeResolutionFacade(final ClassLoader classLoader) {
-        return new VisitorStarter() {
-            public void start(Node rootNode) {
-                new TypeResolutionFacade().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
-            }
-        };
+	return new VisitorStarter() {
+	    public void start(Node rootNode) {
+		new TypeResolutionFacade().initializeWith(classLoader, (ASTCompilationUnit) rootNode);
+	    }
+	};
     }
 
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-        return new VisitorStarter() {
-            public void start(Node rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (JavaNode)rootNode);
-            }
-        };
+	return new VisitorStarter() {
+	    public void start(Node rootNode) {
+		new DumpFacade().initializeWith(writer, prefix, recurse, (JavaNode) rootNode);
+	    }
+	};
     }
 }

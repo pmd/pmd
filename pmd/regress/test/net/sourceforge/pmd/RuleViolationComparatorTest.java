@@ -15,8 +15,8 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleViolationComparator;
-import net.sourceforge.pmd.lang.java.JavaRuleViolation;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
+import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
 import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import org.junit.Test;

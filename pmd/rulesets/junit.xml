@@ -12,7 +12,7 @@ These rules deal with different problems that can occur with JUnit tests.
     <rule name="JUnitStaticSuite"
     		 since="1.0"
           message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#JUnitStaticSuite">
       <description>
 The suite() method in a JUnit test needs to be both public and static.
@@ -44,7 +44,7 @@ public class Foo extends TestCase {
   <rule name="JUnitSpelling"
   		  since="1.0"
         message="You may have misspelled a JUnit framework method (setUp or tearDown)"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#JUnitSpelling">
     <description>
 Some JUnit framework methods are easy to misspell.
@@ -151,7 +151,7 @@ public class CarTest {
     <rule name="UnnecessaryBooleanAssertion"
     		 since="3.0"
           message="assertTrue(true) or similar statements are unnecessary"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UnnecessaryBooleanAssertion">
       <description>
 A JUnit test assertion with a boolean literal is unnecessary since it always will eval to the same thing.
@@ -198,7 +198,7 @@ public class SimpleTest extends TestCase {
     <rule name="UseAssertEqualsInsteadOfAssertTrue"
     		 since="3.1"
           message="Use assertEquals(x, y) instead of assertTrue(x.equals(y))"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UseAssertEqualsInsteadOfAssertTrue">
       <description>
 This rule detects JUnit assertions in object equality. These assertions
@@ -236,7 +236,7 @@ public class FooTest extends TestCase {
    <rule name="UseAssertSameInsteadOfAssertTrue"
    		 since="3.1"
           message="Use assertSame(x, y) instead of assertTrue(x==y), or assertNotSame(x,y) vs assertFalse(x==y)"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UseAssertSameInsteadOfAssertTrue">
       <description>
 This rule detects JUnit assertions in object references equality. These assertions
@@ -275,7 +275,7 @@ public class FooTest extends TestCase {
     <rule name="UseAssertNullInsteadOfAssertTrue"
            since="3.5"
            message="Use assertNull(x) instead of assertTrue(x==null), or assertNotNull(x) vs assertFalse(x==null)"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#UseAssertNullInsteadOfAssertTrue">
        <description>
  This rule detects JUnit assertions in object references equality. These assertions
@@ -316,7 +316,7 @@ public class FooTest extends TestCase {
     <rule name="SimplifyBooleanAssertion"
        since="3.6"
 	    message="assertTrue(!expr) can be replaced by assertFalse(expr)"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/junit.html#SimplifyBooleanAssertion">
       <description>
 Avoid negation in an assertTrue or assertFalse test.

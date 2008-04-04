@@ -6,9 +6,9 @@ package net.sourceforge.pmd.rules.design;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.ast.Node;
 
 public class PositionalIteratorRule extends AbstractJavaRule {

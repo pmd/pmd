@@ -8,6 +8,8 @@ import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.jsp.ast.DumpFacade;
 import net.sourceforge.pmd.lang.jsp.ast.JspNode;
+import net.sourceforge.pmd.lang.jsp.rule.JspRuleViolationFactory;
+import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.symboltable.JspSymbolFacade;
 
 /**
@@ -16,6 +18,10 @@ import net.sourceforge.pmd.symboltable.JspSymbolFacade;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public class JspHandler implements LanguageVersionHandler {
+
+    public RuleViolationFactory getRuleViolationFactory() {
+	return JspRuleViolationFactory.INSTANCE;
+    }
 
     public Parser getParser() {
 	return new JspParser();
@@ -34,10 +40,10 @@ public class JspHandler implements LanguageVersionHandler {
     }
 
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-        return new VisitorStarter() {
-            public void start(Node rootNode) {
-                new DumpFacade().initializeWith(writer, prefix, recurse, (JspNode)rootNode);
-            }
-        };
+	return new VisitorStarter() {
+	    public void start(Node rootNode) {
+		new DumpFacade().initializeWith(writer, prefix, recurse, (JspNode) rootNode);
+	    }
+	};
     }
 }

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 
 import org.junit.Test;
 

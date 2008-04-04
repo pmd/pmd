@@ -112,7 +112,7 @@ public class CreateXMLRulePanel extends JPanel implements ActionListener{
 	    StringBuffer buffer = new StringBuffer(200);
 	    appendLn(buffer, "<rule  name=\"" + rulenameField.getText() + '\"');
 	    appendLn(buffer, "  message=\"" + rulemsgField.getText() + '\"');
-	    appendLn(buffer, "  class=\"" + (xpathQueryArea.getText().length() == 0 ? "" : "net.sourceforge.pmd.rules.XPathRule") + "\">");
+	    appendLn(buffer, "  class=\"" + (xpathQueryArea.getText().length() == 0 ? "" : "net.sourceforge.pmd.lang.rule.XPathRule") + "\">");
 	    appendLn(buffer, "  <description>");
 	    appendLn(buffer, "  " + ruledescField.getText());
 	    appendLn(buffer, "  </description>");

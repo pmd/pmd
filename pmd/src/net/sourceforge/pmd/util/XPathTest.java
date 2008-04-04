@@ -11,7 +11,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.rules.XPathRule;
+import net.sourceforge.pmd.lang.rule.XPathRule;
 
 /**
  * To use this, do this:

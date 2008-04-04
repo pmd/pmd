@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.lang;
+package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
 

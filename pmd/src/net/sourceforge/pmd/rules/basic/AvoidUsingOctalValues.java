@@ -3,8 +3,8 @@ package net.sourceforge.pmd.rules.basic;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.BooleanProperty;
 
 public class AvoidUsingOctalValues extends AbstractJavaRule {

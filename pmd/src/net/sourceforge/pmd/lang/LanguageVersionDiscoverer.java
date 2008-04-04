@@ -32,7 +32,7 @@ public class LanguageVersionDiscoverer {
 
     /**
      * Get the current default LanguageVersion for the given Language. 
-     * @param languageVersion The Language.
+     * @param language The Language.
      * @return The current default version for the language.
      */
     public LanguageVersion getDefaultLanguageVersion(Language language) {

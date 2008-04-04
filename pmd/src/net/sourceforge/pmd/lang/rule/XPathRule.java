@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.rules;
+package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +16,6 @@ import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.jaxen.MatchesFunction;
 import net.sourceforge.pmd.jaxen.TypeOfFunction;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -40,7 +38,7 @@ import org.jaxen.saxpath.Axis;
  * <p/>
  * This rule needs a property "xpath".
  */
-public class XPathRule extends AbstractJavaRule {
+public class XPathRule extends AbstractRule {
 
     // Mapping from Node name to applicable XPath queries
     private Map<String, List<XPath>> nodeNameToXPaths;
@@ -68,12 +66,7 @@ public class XPathRule extends AbstractJavaRule {
                 List results = xpath.selectNodes(compilationUnit);
                 for (Iterator j = results.iterator(); j.hasNext();) {
                     Node n = (Node) j.next();
-                    // FUTURE Figure out a way to make adding a violation be AST independent, so XPathRule can be used on AST for any language.
-                    if (n instanceof ASTVariableDeclaratorId && getBooleanProperty("pluginname")) {
-                        addViolation(data, n, n.getImage());
-                    } else {
-                        addViolation(data, n, getMessage());
-                    }
+                    addViolation(data, n, n.getImage());
                 }
             }
         } catch (JaxenException ex) {
@@ -221,9 +214,9 @@ public class XPathRule extends AbstractJavaRule {
     /**
      * Apply the rule to all compilation units.
      */
-    public void apply(List astCompilationUnits, RuleContext ctx) {
-        for (Iterator i = astCompilationUnits.iterator(); i.hasNext();) {
-            evaluate((Node) i.next(), ctx);
+    public void apply(List<Node> nodes, RuleContext ctx) {
+	for (Node node : nodes) {
+            evaluate(node, ctx);
         }
     }
 }

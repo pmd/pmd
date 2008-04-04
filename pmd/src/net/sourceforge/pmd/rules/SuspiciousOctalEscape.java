@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class SuspiciousOctalEscape extends AbstractJavaRule {
 

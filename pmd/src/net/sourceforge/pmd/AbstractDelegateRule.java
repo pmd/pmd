@@ -3,6 +3,8 @@ package net.sourceforge.pmd;
 import java.util.List;
 import java.util.Properties;
 
+import net.sourceforge.pmd.lang.ast.Node;
+
 /**
  * Base class for Rule implementations which delegate to another Rule instance.
  */
@@ -176,8 +178,8 @@ public class AbstractDelegateRule implements Rule {
 		rule.start(ctx);
 	}
 
-	public void apply(List astCompilationUnits, RuleContext ctx) {
-		rule.apply(astCompilationUnits, ctx);
+	public void apply(List<Node> nodes, RuleContext ctx) {
+		rule.apply(nodes, ctx);
 	}
 
 	public void end(RuleContext ctx) {

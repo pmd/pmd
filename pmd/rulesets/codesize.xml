@@ -333,7 +333,7 @@ public class Foo extends Bar {
     <rule
         name="TooManyMethods"
         since="4.2"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="This class has too many methods, consider refactoring it."
         externalInfoUrl="http://pmd.sourceforge.net/rules/codesize.html#TooManyMethods">
         <description>

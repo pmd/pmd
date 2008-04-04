@@ -74,7 +74,7 @@ public class Something {
     <rule name="UseArrayListInsteadOfVector"
     		 since="3.0"
           message="Use ArrayList instead of Vector"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseArrayListInsteadOfVector">
       <description>
 ArrayList is a much better Collection implementation than Vector.
@@ -106,7 +106,7 @@ public class SimpleTest extends TestCase {
     <rule name="SimplifyStartsWith"
     		 since="3.1"
           message="This call to String.startsWith can be rewritten using String.charAt(0)"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#SimplifyStartsWith">
       <description>
 Since it passes in a literal of length 1, this call to String.startsWith can be rewritten using String.charAt(0) to save some time.
@@ -169,7 +169,7 @@ public class Foo {
   <rule name="UseArraysAsList"
      since="3.5"
      message="Use asList instead of tight loops"
-      class="net.sourceforge.pmd.rules.XPathRule"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseArraysAsList">
      <description>
    The class java.util.Arrays has a "asList" method that
@@ -234,7 +234,7 @@ public class Foo {
     <rule name="AvoidArrayLoops"
       since="3.5"
       message="System.arraycopy is more efficient"
-      class="net.sourceforge.pmd.rules.XPathRule"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#AvoidArrayLoops">
       <description>
     Instead of copying data between two arrays, use
@@ -316,7 +316,7 @@ public int convert(String s) {
     <rule name="AddEmptyString"
         since="4.0"
         message="Do not add empty strings"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#AddEmptyString">
         <description>
 Finds empty string literals which are being added. This is an inefficient way 

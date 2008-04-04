@@ -5,10 +5,10 @@ package net.sourceforge.pmd.rules;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class AvoidFieldNameMatchingMethodName extends AbstractJavaRule {
 

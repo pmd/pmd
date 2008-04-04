@@ -2,9 +2,9 @@ package net.sourceforge.pmd.util.designer;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class DFAGraphRule extends AbstractJavaRule {
 

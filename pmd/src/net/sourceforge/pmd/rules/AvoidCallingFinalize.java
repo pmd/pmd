@@ -3,10 +3,10 @@ package net.sourceforge.pmd.rules;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.symboltable.MethodScope;
 
 public class AvoidCallingFinalize extends AbstractJavaRule {

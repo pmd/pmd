@@ -51,7 +51,7 @@ provide getFoo and setFoo methods.
     <rule name="MissingSerialVersionUID"
     		 since="3.0"
           message="Classes implementing Serializable should set a serialVersionUID"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/javabeans.html#MissingSerialVersionUID">
       <description>
 Classes that are serializable should provide a serialVersionUID field.

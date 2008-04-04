@@ -7,7 +7,6 @@ import java.io.Reader;
 import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
-import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.JavaCharStream;
@@ -19,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
  * creates a JavaParser instance, and sets the exclude marker. It also exposes
  * the exclude map from the JavaParser instance.
  * 
- * @see Parser
  * @see AbstractParser
  * @see JavaParser
  */

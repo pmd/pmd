@@ -83,7 +83,7 @@ public class Foo {
 <rule name="AvoidCatchingNPE"
 	 since="1.8"
     message="Avoid catching NullPointerException; consider removing the cause of the NPE."
-    class="net.sourceforge.pmd.rules.XPathRule"
+    class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidCatchingNPE">
     <description>
       Code should never throw NPE under normal circumstances.  A catch block may hide the original error, causing other more subtle errors in its wake.
@@ -115,7 +115,7 @@ public class Foo {
   <rule name="AvoidThrowingRawExceptionTypes"
       since="1.8"
       message="Avoid throwing raw exception types."
-      class="net.sourceforge.pmd.rules.XPathRule"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidThrowingRawExceptionTypes">
     <description>
 Avoid throwing certain exception types. Rather than throw a raw RuntimeException, Throwable,
@@ -154,7 +154,7 @@ public void bar() throws Exception {
     <rule name="AvoidThrowingNullPointerException"
     	  since="1.8"
         message="Avoid throwing null pointer exceptions."
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidThrowingNullPointerException">
       <description>
 Avoid throwing a NullPointerException - it's confusing because most people will assume that the
@@ -185,7 +185,7 @@ public class Foo {
   <rule name="AvoidRethrowingException"
     since="3.8"
     message="A catch statement that catches an exception only to rethrow it should be avoided."
-    class="net.sourceforge.pmd.rules.XPathRule"
+    class="net.sourceforge.pmd.lang.rule.XPathRule"
     externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#AvoidRethrowingException">
     <description>
      Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
@@ -221,7 +221,7 @@ public class Foo {
     name="DoNotExtendJavaLangError"
     since="4.0"
     message="Exceptions should not extend java.lang.Error"
-    class="net.sourceforge.pmd.rules.XPathRule"
+    class="net.sourceforge.pmd.lang.rule.XPathRule"
     externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#DoNotExtendJavaLangError">
     <description>
       <![CDATA[[
@@ -247,7 +247,7 @@ public class Foo {
 	<rule	name="DoNotThrowExceptionInFinally"
 	       since="4.2"
 		    message="A throw statement in a finally block makes the control flow hard to understand."
-		    class="net.sourceforge.pmd.rules.XPathRule"
+		    class="net.sourceforge.pmd.lang.rule.XPathRule"
 		    externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#DoNotThrowExceptionInFinally">
     	<description>
 			<![CDATA[[

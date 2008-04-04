@@ -1,9 +1,9 @@
 package net.sourceforge.pmd.rules.strictexception;
 
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 /**
  * Finds <code>catch</code> statements

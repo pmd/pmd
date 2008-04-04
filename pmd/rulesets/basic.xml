@@ -13,7 +13,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
     <rule name="EmptyCatchBlock"
     		 since="0.1"
           message="Avoid empty catch blocks"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
       <description>
 Empty Catch Block finds instances where an exception is caught,
@@ -53,7 +53,7 @@ public void doSomething() {
     <rule name="EmptyIfStmt"
     		 since="0.1"
           message="Avoid empty 'if' statements"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt">
       <description>
 Empty If Statement finds instances where a condition is checked but nothing is done about it.
@@ -86,7 +86,7 @@ public class Foo {
     <rule name="EmptyWhileStmt"
     		 since="0.2"
           message="Avoid empty 'while' statements"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyWhileStmt">
        <description>
 Empty While Statement finds all instances where a while statement
@@ -120,7 +120,7 @@ public class Foo {
     <rule name="EmptyTryBlock"
     		 since="0.4"
           message="Avoid empty try blocks"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyTryBlock">
       <description>
 Avoid empty try blocks - what's the point?
@@ -152,7 +152,7 @@ public class Foo {
     <rule name="EmptyFinallyBlock"
     		 since="0.4"
           message="Avoid empty finally blocks"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyFinallyBlock">
       <description>
 Avoid empty finally blocks - these can be deleted.
@@ -186,7 +186,7 @@ public class Foo {
     <rule name="EmptySwitchStatements"
     		 since="1.0"
           message="Avoid empty switch statements"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptySwitchStatements">
       <description>
 Avoid empty switch statements.
@@ -219,7 +219,7 @@ public class Foo {
     <rule name="JumbledIncrementer"
     		since="1.0"
          message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
-         class="net.sourceforge.pmd.rules.XPathRule"
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
          externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#JumbledIncrementer">
      <description>
 Avoid jumbled loop incrementers - it's usually a mistake, and it's confusing even if it's what's intended.
@@ -257,7 +257,7 @@ public class JumbledIncrementerRule1 {
     <rule name="ForLoopShouldBeWhileLoop"
     		 since="1.02"
           message="This for loop could be simplified to a while loop"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ForLoopShouldBeWhileLoop">
       <description>
 Some for loops can be simplified to while loops - this makes them more concise.
@@ -380,7 +380,7 @@ public class Foo {
     <rule name="ReturnFromFinallyBlock"
     		 since="1.05"
           message="Avoid returning from a finally block"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ReturnFromFinallyBlock">
       <description>
 Avoid returning from a finally block - this can discard exceptions.
@@ -415,7 +415,7 @@ public class Bar {
     <rule name="EmptySynchronizedBlock"
     		 since="1.3"
           message="Avoid empty synchronized blocks"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptySynchronizedBlock">
       <description>
   Avoid empty synchronized blocks - they're useless.
@@ -468,7 +468,7 @@ public class Foo {
     <rule name="EmptyStaticInitializer"
     		  since="1.5"
            message="Empty static initializer was found"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStaticInitializer">
        <description>
 An empty static initializer was found.
@@ -497,7 +497,7 @@ public class Foo {
     <rule name="UnconditionalIfStatement"
     		  since="1.5"
        message="Do not use 'if' statements that are always true or always false"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnconditionalIfStatement">
       <description>
 Do not use "if" statements that are always true or always false.
@@ -530,7 +530,7 @@ public class Foo {
     <rule name="EmptyStatementNotInLoop"
     		 since="1.5"
           message="An empty statement (semicolon) not part of a loop"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementNotInLoop">
        <description>
 An empty statement (aka a semicolon by itself) that is not used
@@ -593,7 +593,7 @@ public class Foo {
     <rule name="UnnecessaryFinalModifier"
     		 since="3.0"
           message="Unnecessary final modifier in final class"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnnecessaryFinalModifier">
       <description>
 When a class has the final modifier, all the methods are automatically final.
@@ -625,7 +625,7 @@ public final class Foo {
     <rule name="CollapsibleIfStatements"
     		 since="3.1"
           message="These nested if statements could be combined"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CollapsibleIfStatements">
       <description>
 Sometimes two 'if' statements can be consolidated by separating their conditions with a boolean short-circuit operator.
@@ -683,7 +683,7 @@ public String foo() {
  <rule name="ClassCastExceptionWithToArray"
        since="3.4"
        message="This usage of the Collection.toArray() method will throw a ClassCastException."
-       class="net.sourceforge.pmd.rules.XPathRule"
+       class="net.sourceforge.pmd.lang.rule.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ClassCastExceptionWithToArray">
   <description>
 if you need to get an array of a class from your Collection,
@@ -737,7 +737,7 @@ if executed)
 <rule  name="AvoidDecimalLiteralsInBigDecimalConstructor"
        since="3.4"
        message="Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal"
-       class="net.sourceforge.pmd.rules.XPathRule"
+       class="net.sourceforge.pmd.lang.rule.XPathRule"
        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidDecimalLiteralsInBigDecimalConstructor">
   <description>
      One might assume that "new BigDecimal(.1)" is exactly equal
@@ -817,7 +817,7 @@ class Test {
     <rule  name="MisplacedNullCheck"
            since="3.5"
            message="The null check here is misplaced; if the variable is null there'll be a NullPointerException"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#MisplacedNullCheck">
       <description>
     The null check here is misplaced. if the variable is null you'll get a NullPointerException.
@@ -862,7 +862,7 @@ public class Foo {
     <rule name="UnusedNullCheckInEquals"
         since="3.5"
         message="Invoke equals() on the object you''ve already ensured is not null"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UnusedNullCheckInEquals">
     <description>
     After checking an object reference for null, you should invoke equals() on that object rather than passing it to another object's equals() method.
@@ -934,7 +934,7 @@ if (method1().equals(a)) {
     <rule  name="AvoidThreadGroup"
       since="3.6"
       message="Avoid using ThreadGroup; it is not thread safe"
-      class="net.sourceforge.pmd.rules.XPathRule"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#AvoidThreadGroup">
       <description>
 Avoid using ThreadGroup; although it is intended to be used in a threaded environment
@@ -1070,7 +1070,7 @@ public class Test {
   <rule
         name="CheckResultSet"
         since="4.1"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet."
         externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CheckResultSet">
         <description>

@@ -3,8 +3,8 @@
  */
 package net.sourceforge.pmd.rules.imports;
 
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class ImportFromSamePackageRule extends AbstractJavaRule {
 

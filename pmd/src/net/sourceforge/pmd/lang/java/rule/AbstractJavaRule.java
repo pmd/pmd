@@ -1,16 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.java;
+package net.sourceforge.pmd.lang.java.rule;
 
-import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.AbstractRule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.*;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 // FUTURE Move all Java centric code into 'java' package instead of core PMD class.  Makes sense when we add non-Java languages.
 public abstract class AbstractJavaRule extends AbstractRule implements
@@ -19,71 +18,6 @@ public abstract class AbstractJavaRule extends AbstractRule implements
 	public AbstractJavaRule() {
 		// Enable Type Resolution on Java Rules by default
 		super.setUsesTypeResolution();
-	}
-
-	/**
-	 * Adds a violation to the report.
-	 *
-	 * @param data
-	 *            the RuleContext
-	 * @param node
-	 *            the node that produces the violation
-	 */
-	protected final void addViolation(Object data, Node node) {
-		RuleContext ctx = (RuleContext)data;
-		ctx.getReport().addRuleViolation(new JavaRuleViolation(this, ctx, (JavaNode)node));
-	}
-
-	/**
-	 * Adds a violation to the report.
-	 *
-	 * @param data
-	 *            the RuleContext
-	 * @param node
-	 *            the node that produces the violation
-	 * @param msg
-	 *            specific message to put in the report
-	 */
-	protected final void addViolationWithMessage(Object data, Node node,
-			String msg) {
-		RuleContext ctx = (RuleContext)data;
-		ctx.getReport().addRuleViolation(
-				new JavaRuleViolation(this, ctx, (JavaNode)node, msg));
-	}
-
-	/**
-	 * Adds a violation to the report.
-	 *
-	 * @param data
-	 *            the RuleContext
-	 * @param node
-	 *            the node that produces the violation
-	 * @param embed
-	 *            a variable to embed in the rule violation message
-	 */
-	protected final void addViolation(Object data, Node node, String embed) {
-		RuleContext ctx = (RuleContext)data;
-		ctx.getReport().addRuleViolation(
-				new JavaRuleViolation(this, ctx, (JavaNode)node, MessageFormat.format(
-						getMessage(), embed)));
-	}
-
-	/**
-	 * Adds a violation to the report.
-	 *
-	 * @param data
-	 *            the RuleContext
-	 * @param node
-	 *            the node that produces the violation, may be null, in which
-	 *            case all line and column info will be set to zero
-	 * @param args
-	 *            objects to embed in the rule violation message
-	 */
-	protected final void addViolation(Object data, Node node, Object[] args) {
-		RuleContext ctx = (RuleContext)data;
-		ctx.getReport().addRuleViolation(
-				new JavaRuleViolation(this, ctx, (JavaNode)node, MessageFormat
-						.format(getMessage(), args)));
 	}
 
 	public void apply(List acus, RuleContext ctx) {

@@ -66,7 +66,7 @@ public class Foo {
     <rule name="SimplifyBooleanExpressions"
     		 since="1.05"
           message="Avoid unnecessary comparisons in boolean expressions"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyBooleanExpressions">
       <description>
 Avoid unnecessary comparisons in boolean expressions - this complicates simple code.
@@ -98,7 +98,7 @@ public class Bar {
   <rule name="SwitchStmtsShouldHaveDefault"
   		  since="1.0"
         message="Switch statements should have a default label"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SwitchStmtsShouldHaveDefault">
     <description>
 Switch statements should have a default label.
@@ -280,7 +280,7 @@ public class Outer {
     <rule name="FinalFieldCouldBeStatic"
     		 since="1.1"
           message="This final field could be made static"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#FinalFieldCouldBeStatic">
       <description>
 If a final field is assigned to a compile-time constant, it could be
@@ -344,7 +344,7 @@ public class Bar {
     <rule name="NonStaticInitializer"
     		  since="1.5"
            message="Non-static initializers are confusing"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#NonStaticInitializer">
        <description>
 A nonstatic initializer block will be called any time a constructor
@@ -376,7 +376,7 @@ public class MyClass {
     <rule name="DefaultLabelNotLastInSwitchStmt"
     		  since="1.5"
            message="The default label should be the last label in a switch statement"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#DefaultLabelNotLastInSwitchStmt">
        <description>
 By convention, the default label should be the last label in a switch statement.
@@ -413,7 +413,7 @@ public class Foo {
     <rule name="NonCaseLabelInSwitchStatement"
     		  since="1.5"
            message="A non-case label was present in a switch statement"
-           class="net.sourceforge.pmd.rules.XPathRule"
+           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#NonCaseLabelInSwitchStatement">
        <description>
 A non-case label (e.g. a named break/continue label) was present in a switch statement.
@@ -451,7 +451,7 @@ public class Foo {
     <rule name="OptimizableToArrayCall"
     		 since="1.8"
           message="This call to Collection.toArray() may be optimizable"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#OptimizableToArrayCall">
       <description>
 A call to Collection.toArray can use the Collection's size vs an empty Array of the desired type.
@@ -492,7 +492,7 @@ class Foo {
     <rule name="BadComparison"
     		 since="1.8"
           message="Avoid equality comparisons with Double.NaN"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#BadComparison">
       <description>
 Avoid equality comparisons with Double.NaN - these are likely to be logic errors.
@@ -521,7 +521,7 @@ public class Bar {
     <rule name="EqualsNull"
     			since="1.9"
             message="Avoid using equals() to compare against null"
-            class="net.sourceforge.pmd.rules.XPathRule"
+            class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#EqualsNull">
         <description>
 Inexperienced programmers sometimes confuse comparison concepts
@@ -590,7 +590,7 @@ public class Foo {
     <rule name="InstantiationToGetClass"
     		 since="2.0"
           message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#InstantiationToGetClass">
       <description>
 Avoid instantiating an object just to call getClass() on it; use the .class public member instead.
@@ -648,7 +648,7 @@ public class Foo {
         name="SimpleDateFormatNeedsLocale"
         since="2.0"
         message="When instantiating a SimpleDateFormat object, specify a Locale"
-        class="net.sourceforge.pmd.rules.XPathRule"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimpleDateFormatNeedsLocale">
         <description>
 Be sure to specify a Locale when creating a new instance of SimpleDateFormat.
@@ -704,7 +704,7 @@ public class Foo {
     <rule name="UseLocaleWithCaseConversions"
     		 since="2.0"
           message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseLocaleWithCaseConversions">
       <description>
 When doing a String.toLowerCase()/toUpperCase() call, use a Locale.  This avoids
@@ -747,7 +747,7 @@ class Foo {
     <rule name="AvoidProtectedFieldInFinalClass"
     			 since="2.1"
              message="Avoid protected fields in a final class.  Change to private or package access."
-             class="net.sourceforge.pmd.rules.XPathRule"
+             class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidProtectedFieldInFinalClass">
          <description>
 Do not use protected fields in final classes since they cannot be subclassed.
@@ -800,7 +800,7 @@ public class StaticField {
     <rule name="MissingStaticMethodInNonInstantiatableClass"
     		 since="3.0"
           message="Class cannot be instantiated and does not provide any static methods or fields"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#MissingStaticMethodInNonInstantiatableClass">
       <description>
 A class that has private constructors and does not have any static methods or fields cannot be used.
@@ -841,7 +841,7 @@ public class Foo {
     <rule name="AvoidSynchronizedAtMethodLevel"
     		 since="3.0"
           message="Use block level rather than method level synchronization"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidSynchronizedAtMethodLevel">
       <description>
   Method level synchronization can backfire when new code is added to the method.  Block-level
@@ -876,7 +876,7 @@ public class Foo {
     <rule name="MissingBreakInSwitch"
     		 since="3.0"
           message="A switch statement does not contain a break"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#MissingBreakInSwitch">
       <description>
 A switch statement without an enclosed break statement may be a bug.
@@ -919,7 +919,7 @@ public class Foo {
     <rule name="UseNotifyAllInsteadOfNotify"
     		 since="3.0"
           message="Call Thread.notifyAll() rather than Thread.notify()"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseNotifyAllInsteadOfNotify">
       <description>
 Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, then only
@@ -959,7 +959,7 @@ public class Foo {
     <rule name="AvoidInstanceofChecksInCatchClause"
     		 since="3.0"
           message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidInstanceofChecksInCatchClause">
       <description>
 Each caught exception type should be handled in its own catch clause.
@@ -1000,7 +1000,7 @@ try {  // Prefer this:
     <rule name="AbstractClassWithoutAbstractMethod"
     		 since="3.0"
           message="This abstract class does not have any abstract methods"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AbstractClassWithoutAbstractMethod">
       <description>
 The abstract class does not contain any abstract methods. An abstract class suggests
@@ -1036,7 +1036,7 @@ public abstract class Foo {
     <rule name="SimplifyConditional"
     		 since="3.1"
               message="No need to check for null before an instanceof"
-              class="net.sourceforge.pmd.rules.XPathRule"
+              class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyConditional">
           <description>
 No need to check for null before an instanceof; the instanceof keyword returns false when given a null argument.
@@ -1104,7 +1104,7 @@ class Foo {
 <rule name="PositionLiteralsFirstInComparisons"
   since="3.3"
   message="Position literals first in String comparisons"
-  class="net.sourceforge.pmd.rules.XPathRule"
+  class="net.sourceforge.pmd.lang.rule.XPathRule"
   externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PositionLiteralsFirstInComparisons">
   <description>
  Position literals first in String comparisons - that way if the String is null you won't get a NullPointerException, it'll just return false.
@@ -1208,7 +1208,7 @@ public static Foo getFoo() {
     <rule name="UncommentedEmptyMethod"
           since="3.4"
           message="Document empty method"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UncommentedEmptyMethod">
       <description>
 Uncommented Empty Method finds instances where a method does not contain
@@ -1237,7 +1237,7 @@ public void doSomething() {
     <rule name="UncommentedEmptyConstructor"
           since="3.4"
           message="Document empty constructor"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UncommentedEmptyConstructor">
       <description>
 Uncommented Empty Constructor finds instances where a constructor does not
@@ -1270,7 +1270,7 @@ public Foo() {
 <rule name="AvoidConstantsInterface"
       since="3.5"
       message="An Interface should be used only to model a behaviour; consider converting this to a class."
-      class="net.sourceforge.pmd.rules.XPathRule"
+      class="net.sourceforge.pmd.lang.rule.XPathRule"
       externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AvoidConstantsInterface">
       <description>
      An interface should be used only to model a behaviour of a
@@ -1393,7 +1393,7 @@ Comparing the value of size() to 0 merely duplicates existing behavior.
 
     <rule name="ClassWithOnlyPrivateConstructorsShouldBeFinal"
           since="4.1"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="A class which only has private constructors should be final"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ClassWithOnlyPrivateConstructorsShouldBeFinal">
         <description>
@@ -1422,7 +1422,7 @@ public class Foo {  //Should be final
 
     <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
           since="4.1"
-          class="net.sourceforge.pmd.rules.XPathRule"
+          class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="An empty method in an abstract class should be abstract instead"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#EmptyMethodInAbstractClassShouldBeAbstract">
         <description>
@@ -1511,7 +1511,7 @@ public class Foo {
 
     <rule	name="ReturnEmptyArrayRatherThanNull"
          since="4.2"
-        	class="net.sourceforge.pmd.rules.XPathRule"
+        	class="net.sourceforge.pmd.lang.rule.XPathRule"
         	message="Return an empty array rather than 'null'."
         	externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ReturnEmptyArrayRatherThanNull">
         <description>
@@ -1558,15 +1558,12 @@ public class Foo {
 
     <rule	name="AbstractClassWithoutAnyMethod"
          since="4.2"
-        	class="net.sourceforge.pmd.rules.XPathRule"
+        	class="net.sourceforge.pmd.lang.rule.XPathRule"
         	message="No abstract method which means that the  keyword is most likely used to prevent instantiation. use a private or protected constructor instead."
         	externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#AbstractClassWithoutAnyMethod">
-        <description>
-            <![CDATA[
-			If the abstract class does not provides any methods, it may be just a data container that is not to be instantiated. In this case, it's probably
+        <description><![CDATA[If the abstract class does not provides any methods, it may be just a data container that is not to be instantiated. In this case, it's probably
 			better to use a private or a protected constructor in order to prevent instantiation than make the class misleadingly abstract.
-            ]]>
-        </description>
+            ]]></description>
         <priority>1</priority>
         <properties>
             <property name="xpath">
@@ -1593,7 +1590,7 @@ public class abstract Example {
 
         <rule	name="TooFewBranchesForASwitchStatement"
             since="4.2"
-	        	class="net.sourceforge.pmd.rules.XPathRule"
+	        	class="net.sourceforge.pmd.lang.rule.XPathRule"
 	        	message="A switch with less than 3 branches is inefficient, use a if statement instead."
 	        	externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#TooFewBranchesForASwitchStatement">
         <description>

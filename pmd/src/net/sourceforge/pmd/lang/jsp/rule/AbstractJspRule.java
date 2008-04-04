@@ -1,15 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.lang.jsp;
+package net.sourceforge.pmd.lang.jsp.rule;
 
-import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.lang.AbstractRule;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.jsp.ast.ASTAttributeValue;
 import net.sourceforge.pmd.lang.jsp.ast.ASTCData;
@@ -33,6 +30,7 @@ import net.sourceforge.pmd.lang.jsp.ast.ASTUnparsedText;
 import net.sourceforge.pmd.lang.jsp.ast.ASTValueBinding;
 import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor;
+import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 public abstract class AbstractJspRule extends AbstractRule implements
 		JspParserVisitor {
@@ -40,71 +38,6 @@ public abstract class AbstractJspRule extends AbstractRule implements
 	@Override
 	public void setUsesTypeResolution() {
 		// No Type resolution for JSP rules?
-	}
-
-	/**
-	 * Adds a violation to the report.
-	 * 
-	 * @param data
-	 *            the RuleContext
-	 * @param node
-	 *            the node that produces the violation
-	 */
-	protected final void addViolation(Object data, JspNode node) {
-		RuleContext ctx = (RuleContext)data;
-		ctx.getReport().addRuleViolation(new JspRuleViolation(this, ctx, node));
-	}
-
-	/**
-	 * Adds a violation to the report.
-	 * 
-	 * @param data
-	 *            the RuleContext
-	 * @param node
-	 *            the node that produces the violation
-	 * @param msg
-	 *            specific message to put in the report
-	 */
-	protected final void addViolationWithMessage(Object data, JspNode node,
-			String msg) {
-		RuleContext ctx = (RuleContext)data;
-		ctx.getReport().addRuleViolation(
-				new JspRuleViolation(this, ctx, node, msg));
-	}
-
-	/**
-	 * Adds a violation to the report.
-	 * 
-	 * @param data
-	 *            the RuleContext
-	 * @param node
-	 *            the node that produces the violation
-	 * @param embed
-	 *            a variable to embed in the rule violation message
-	 */
-	protected final void addViolation(Object data, JspNode node, String embed) {
-		RuleContext ctx = (RuleContext)data;
-		ctx.getReport().addRuleViolation(
-				new JspRuleViolation(this, ctx, node, MessageFormat.format(
-						getMessage(), embed)));
-	}
-
-	/**
-	 * Adds a violation to the report.
-	 * 
-	 * @param data
-	 *            the RuleContext
-	 * @param node
-	 *            the node that produces the violation, may be null, in which
-	 *            case all line and column info will be set to zero
-	 * @param args
-	 *            objects to embed in the rule violation message
-	 */
-	protected final void addViolation(Object data, Node node, Object[] args) {
-		RuleContext ctx = (RuleContext)data;
-		ctx.getReport().addRuleViolation(
-				new JspRuleViolation(this, ctx, (JspNode)node, MessageFormat
-						.format(getMessage(), args)));
 	}
 
 	public void apply(List acus, RuleContext ctx) {

@@ -3,8 +3,8 @@
  */
 package net.sourceforge.pmd.rules;
 
-import net.sourceforge.pmd.lang.java.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class MethodNamingConventions extends AbstractJavaRule {
 

@@ -1,7 +1,6 @@
 package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
-import net.sourceforge.pmd.lang.java.ast.JavaParser;
 
 public class AbstractJspNode extends AbstractNode implements JspNode {
 
