@@ -112,4 +112,4 @@ public interface JavaParserVisitor
   public Object visit(ASTAnnotationTypeMemberDeclaration node, Object data);
   public Object visit(ASTDefaultValue node, Object data);
 }
-/* JavaCC - OriginalChecksum=dd19a0552a0e76054c7f1911a2cb0361 (do not edit this line) */
+/* JavaCC - OriginalChecksum=e27bdd917d03795804db5bee4fe03738 (do not edit this line) */
