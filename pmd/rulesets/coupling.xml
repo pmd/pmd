@@ -93,6 +93,27 @@ public class Bar {
       </example>
     </rule>
 
+    <rule name="LoosePackageCoupling"
+    		 since="5.0"
+          message="Use of ''{0}'' outside of package hierarchy ''{1}'' is not recommended; use recommended classes instead"
+          class="net.sourceforge.pmd.lang.java.rule.coupling.LoosePackageCouplingRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LoosePackageCoupling">
+      <description>
+Avoid using classes from the configured package hierarchy outside of the package
+hierarchy, except when using one of the configured allowed classes.
+      </description>
+        <priority>3</priority>
+      <example>
+<![CDATA[
+package some.package;
+import some.other.package.subpackage.subsubpackage.DontUseThisClass;
+public class Bar {
+   DontUseThisClass boo = new DontUseThisClass();
+}
+  ]]>
+      </example>
+    </rule>
+
  </ruleset>
 
 

@@ -454,6 +454,7 @@ public class PMD {
 	    ctx.setReport(report);
 
 	    ctx.setSourceCodeFilename(fileName);
+	    ctx.setSourceCodeFile(new File(fileName));
 	    if (LOG.isLoggable(Level.FINE)) {
 		LOG.fine("Processing " + ctx.getSourceCodeFilename());
 	    }
@@ -694,6 +695,7 @@ public class PMD {
 		ctx.setReport(report);
 
 		ctx.setSourceCodeFilename(niceFileName);
+		ctx.setSourceCodeFile(new File(niceFileName));
 		if (LOG.isLoggable(Level.FINE)) {
 		    LOG.fine("Processing " + ctx.getSourceCodeFilename());
 		}
@@ -755,6 +757,7 @@ public class PMD {
 	for (DataSource dataSource : files) {
 	    String niceFileName = dataSource.getNiceFileName(shortNamesEnabled, inputPath);
 	    ctx.setSourceCodeFilename(niceFileName);
+	    ctx.setSourceCodeFile(new File(niceFileName));
 	    LOG.fine("Processing " + ctx.getSourceCodeFilename());
 
 	    try {

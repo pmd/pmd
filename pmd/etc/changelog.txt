@@ -27,16 +27,6 @@ TODO - Release blockers - Must implement before this release can be finished
      some logic.
    o DFA needs a bunch of work yet to be abstracted further to support alternate
      ASTs, very Java specific at this time.
-   o We need a new Rule, specifically for application in PMD (initially):
-     Essentially cannot use  Package A, or it's sub packages outside of Package A.
-     This would be applied to each of the pmd.lang.<Language> packages, ensuring
-     that we do not get code leaking out into the rest of PMD, breaking the
-     Language abstraction layer.  Only the LanguageVersion would be allowed to
-     have a direct reference to the LanguageVersionHandler for each of the
-     Languages (e.g. // NOPMD usage).  Essentially, controlled leakage but only
-     through the authorized abstraction interface.  Hmm, perhaps the Rule should
-     allow a list of classes which are authorized "leakers", that would make it
-     a bit more practical.
    o Do we have a rule to style check for multiple declarations and chained
      assignments? (e.g. int a, b;  int a = b = x;)
    o Need to refactor the regression test packages to reflect new packaging.
@@ -52,6 +42,8 @@ TODO - Release blockers - Must implement before this release can be finished
      conventions just like the Rules need to.
    o Need to organize the ruleset XML files based upon Language.  Need to come
      up with a solution for the "rulesets.properties" files.
+   o Need to clean up CharStream and ParseException in the ASTs.  Missed the JSP
+     AST code extending from some of the Java AST code.
 
 ---
 
@@ -138,6 +130,11 @@ RuleViolations in Reports now uses List internally, and RuleViolationComparator 
 
 Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +
 Fixed bug 1928009 - Error using migration ruleset in PMD 4.2
+
+New rules:
+
+	Coupling ruleset: LoosePackageCoupling
+
 
 March 25, 2008 - 4.2:
 

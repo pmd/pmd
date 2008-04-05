@@ -11,6 +11,7 @@ public class CouplingRulesTest extends SimpleAggregatorTst {
         addRule("coupling", "CouplingBetweenObjects");
         addRule("coupling", "ExcessiveImports");
         addRule("coupling", "LooseCoupling");
+        addRule("coupling", "LoosePackageCoupling");
     }
 
     public static junit.framework.Test suite() {

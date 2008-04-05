@@ -6,5 +6,7 @@
 This ruleset contains links to rules that are new in PMD v5.0
   </description>
 
+  	<rule ref="rulesets/coupling.xml/LoosePackageCoupling"/>
+
 </ruleset>
 
