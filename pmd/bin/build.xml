@@ -15,6 +15,7 @@
 	<property name="jaxen.version" value="1.1.1" />
 	<property name="junit.version" value="4.4" />
 	<property name="retroweaver.version" value="2.0.5" />
+	<property name="javacc-home.path" value="${dir.lib}" />
 
 	<!--Settings-->
 	<property name="outputTestResultsToFile" value="true" />
