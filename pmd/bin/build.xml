@@ -337,13 +337,21 @@
 		<jjtree target="etc/grammar/Java.jjt" outputdirectory="src/net/sourceforge/pmd/lang/java/ast" javacchome="${javacc-home.path}" />
 		<javacc target="src/net/sourceforge/pmd/lang/java/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/lang/java/ast" javacchome="${javacc-home.path}" />
 		<delete file="src/net/sourceforge/pmd/lang/java/ast/Java.jj" />
+		<delete file="src/net/sourceforge/pmd/lang/java/ast/Node.java" />
+		<delete file="src/net/sourceforge/pmd/lang/java/ast/SimpleNode.java" />
 		<replace file="src/net/sourceforge/pmd/lang/java/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/lang/java/ast/JavaParser.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/lang/java/ast/JavaCharStream.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/lang/java/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/lang/java/ast/ParseException.java" token="extends Exception" value="extends RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/lang/java/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
-		<replace file="src/net/sourceforge/pmd/lang/java/ast/JavaParserVisitor.java" token="SimpleNode" value="SimpleJavaNode" />
+		<replace file="src/net/sourceforge/pmd/lang/java/ast/JavaParserVisitor.java" token="SimpleNode" value="JavaNode" />
+		<replace file="src/net/sourceforge/pmd/lang/java/ast/JJTJavaParserState.java">
+			<replacetoken>public class</replacetoken>
+			<replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.Node;
+
+public class]]></replacevalue>
+		</replace>
 	</target>
 
 	<target name="jspjjtree" description="Generates the JSP parser and AST source filesr">
@@ -355,11 +363,20 @@
 		<jjtree target="etc/grammar/JspParser.jjt" outputdirectory="src/net/sourceforge/pmd/lang/jsp/ast/" javacchome="${javacc-home.path}" />
 		<javacc target="src/net/sourceforge/pmd/lang/jsp/ast/JspParser.jj" outputdirectory="src/net/sourceforge/pmd/lang/jsp/ast" javacchome="${javacc-home.path}" />
 		<delete file="src/net/sourceforge/pmd/lang/jsp/ast/JspParser.jj" />
+		<delete file="src/net/sourceforge/pmd/lang/jsp/ast/Node.java" />
+		<delete file="src/net/sourceforge/pmd/lang/jsp/ast/SimpleNode.java" />
 		<replace file="src/net/sourceforge/pmd/lang/jsp/ast/JspParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/lang/jsp/ast/JspParser.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/lang/jsp/ast/JspCharStream.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/lang/jsp/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/lang/jsp/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/lang/jsp/ast/JspParserVisitor.java" token="SimpleNode" value="JspNode" />
+		<replace file="src/net/sourceforge/pmd/lang/jsp/ast/JJTJspParserState.java">
+			<replacetoken>public class</replacetoken>
+			<replacevalue><![CDATA[import net.sourceforge.pmd.lang.ast.Node;
+
+public class]]></replacevalue>
+		</replace>
 	</target>
 
 	<target name="cppjavacc" description="Generates the C++ grammar">
