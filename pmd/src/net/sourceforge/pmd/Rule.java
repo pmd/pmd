@@ -226,7 +226,12 @@ public interface Rule {
 	List<String> getRuleChainVisits();
 
 	/**
-	 * Adds an AST node name to be visited by the Rule on the RuleChain.
+	 * Adds an AST node by class to be visited by the Rule on the RuleChain.
+	 */
+	void addRuleChainVisit(Class<? extends Node> nodeClass);
+
+	/**
+	 * Adds an AST node by name to be visited by the Rule on the RuleChain.
 	 */
 	void addRuleChainVisit(String astNodeName);
 	

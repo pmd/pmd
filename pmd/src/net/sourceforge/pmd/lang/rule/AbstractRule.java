@@ -357,6 +357,13 @@ public abstract class AbstractRule implements Rule {
 		return ruleChainVisits;
 	}
 
+	public void addRuleChainVisit(Class<? extends Node> nodeClass) {
+		if (!nodeClass.getSimpleName().startsWith("AST")) {
+			throw new IllegalArgumentException("Node class does not start with 'AST' prefix: " + nodeClass);
+		}
+		addRuleChainVisit(nodeClass.getSimpleName().substring("AST".length()));
+	}
+
 	public void addRuleChainVisit(String astNodeName) {
 		if (!ruleChainVisits.contains(astNodeName)) {
 			ruleChainVisits.add(astNodeName);

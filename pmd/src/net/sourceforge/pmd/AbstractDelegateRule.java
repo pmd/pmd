@@ -170,6 +170,10 @@ public class AbstractDelegateRule implements Rule {
 		return rule.getRuleChainVisits();
 	}
 
+	public void addRuleChainVisit(Class<? extends Node> nodeClass) {
+		rule.addRuleChainVisit(nodeClass);
+	}
+
 	public void addRuleChainVisit(String astNodeName) {
 		rule.addRuleChainVisit(astNodeName);
 	}
