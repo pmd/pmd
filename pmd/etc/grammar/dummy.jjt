@@ -1,0 +1,22 @@
+/* This is a dummy JJTree used to generate the reusable aspects of JavaCC parsers. */
+options {
+	USER_CHAR_STREAM = true;
+}
+
+PARSER_BEGIN(DummyParser)
+package net.sourceforge.pmd.lang.ast.dummy;
+public class DummyParser
+{
+}
+PARSER_END(DummyParser)
+
+TOKEN :
+{
+	<DUMMY : "dummy">
+}
+
+ASTDummy Dummy() :
+{}
+{
+	<EOF> 
+}

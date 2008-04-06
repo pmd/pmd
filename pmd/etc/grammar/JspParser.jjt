@@ -24,6 +24,8 @@ PARSER_BEGIN(JspParser)
 
 package net.sourceforge.pmd.lang.jsp.ast;
 
+import net.sourceforge.pmd.lang.ast.CharStream;
+
 public class JspParser {
 
 	/**

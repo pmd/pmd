@@ -2,6 +2,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 import java.util.*;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.lang.ast.CharStream;
 
 /** Token Manager. */
 public class JavaParserTokenManager implements JavaParserConstants

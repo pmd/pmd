@@ -9,9 +9,9 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
-import net.sourceforge.pmd.lang.jsp.ast.JspCharStream;
 
 /**
  * Adapter for the JspParser.
@@ -23,7 +23,7 @@ public class JspParser extends AbstractParser {
     }
 
     public Node parse(Reader source) throws ParseException {
-	return new net.sourceforge.pmd.lang.jsp.ast.JspParser(new JspCharStream(source)).CompilationUnit();
+	return new net.sourceforge.pmd.lang.jsp.ast.JspParser(new JavaCharStream(source)).CompilationUnit();
     }
 
     public Map<Integer, String> getExcludeMap() {

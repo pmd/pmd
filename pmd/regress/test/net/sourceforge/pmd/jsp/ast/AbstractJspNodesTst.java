@@ -6,8 +6,8 @@ import java.io.StringReader;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.ast.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.jsp.ast.JspCharStream;
 import net.sourceforge.pmd.lang.jsp.ast.JspParser;
 
 public abstract class AbstractJspNodesTst {
@@ -25,7 +25,7 @@ public abstract class AbstractJspNodesTst {
      * @return Set 
      */
     public <T> Set<T> getNodes(Class<T> clazz, String source) {
-        JspParser parser = new JspParser(new JspCharStream(new StringReader(source)));
+        JspParser parser = new JspParser(new JavaCharStream(new StringReader(source)));
         Node rootNode = parser.CompilationUnit();
         Set<T> nodes = new HashSet<T>();
         addNodeAndSubnodes(rootNode, nodes, clazz);

@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.jsp;
 import java.io.Reader;
 
 import net.sourceforge.pmd.lang.TokenManager;
-import net.sourceforge.pmd.lang.jsp.ast.JspCharStream;
+import net.sourceforge.pmd.lang.ast.JavaCharStream;
 import net.sourceforge.pmd.lang.jsp.ast.JspParserTokenManager;
 
 /**
@@ -16,7 +16,7 @@ public class JspTokenManager implements TokenManager {
     private final JspParserTokenManager tokenManager;
 
     public JspTokenManager(Reader source) {
-	tokenManager = new JspParserTokenManager(new JspCharStream(source));
+	tokenManager = new JspParserTokenManager(new JavaCharStream(source));
     }
 
     public Object getNextToken() {

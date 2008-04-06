@@ -59,6 +59,10 @@ The following is relatively complete list of the major changes:
 	   Added - net.sourceforge.pmd.lang.Language (now an 'enum')
 	   Added - net.sourceforge.pmd.lang.LanguageVersion
 	   Added - net.sourceforge.pmd.lang.LanguageVersionDiscoverer
+	   Added - net.sourceforge.pmd.lang.LanguageVersionHandler
+	   Added - net.sourceforge.pmd.lang.ast.CharStream
+	   Added - net.sourceforge.pmd.lang.ast.JavaCharStream
+	   Added - net.sourceforge.pmd.lang.ast.SimpleCharStream
 	   Added - net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory
 	   Added - net.sourceforge.pmd.lang.rule.RuleViolationFactory
 	   Added - net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory
@@ -93,6 +97,9 @@ The following is relatively complete list of the major changes:
 	   Deleted - net.sourceforge.pmd.TargetJDK1_7
 	   Deleted - net.sourceforge.pmd.TargetJDKVersion
 	   Deleted - net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker
+	   Deleted - net.sourceforge.pmd.ast.JavaCharStream
+	   Deleted - net.sourceforge.pmd.ast.CharStream
+	   Deleted - net.sourceforge.pmd.jsp.ast.JspCharStream
 
 	API Change - Generalize RuleViolation treatment
 	   Renamed - net.sourceforge.pmd.IRuleViolation to net.sourceforge.pmd.RuleViolation
