@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.JavaCharStream;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.ParseException;
 
 /**
  * Adapter for the JspParser.
