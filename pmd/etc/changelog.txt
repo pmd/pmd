@@ -63,6 +63,9 @@ The following is relatively complete list of the major changes:
 	   Added - net.sourceforge.pmd.lang.ast.CharStream
 	   Added - net.sourceforge.pmd.lang.ast.JavaCharStream
 	   Added - net.sourceforge.pmd.lang.ast.SimpleCharStream
+	   Added - net.sourceforge.pmd.lang.rule.stat.StatisticalRule
+	   Added - net.sourceforge.pmd.lang.rule.stat.StatisticalRuleHelper
+	   Added - net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule
 	   Added - net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory
 	   Added - net.sourceforge.pmd.lang.rule.RuleViolationFactory
 	   Added - net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory
@@ -82,6 +85,7 @@ The following is relatively complete list of the major changes:
 	   Renamed - net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler to net.sourceforge.pmd.lang.LanguageVersionHandler
 	   Renamed - net.sourceforge.pmd.sourcetypehandlers.VisitorStarter to net.sourceforge.pmd.lang.VisitorStarter
 	   Renamed - net.sourceforge.pmd.sourcetypehandlers.* into net.sourceforge.pmd.lang.{Language}
+	   Renamed - net.sourceforge.pmd.stat.StatisticalRule into net.sourceforge.pmd.lang.rule.StatisticalRuleHelper
 	   Renamed - net.sourceforge.pmd.ast.* into net.sourceforge.pmd.lang.java.ast.*
 	   Renamed - net.sourceforge.pmd.rules.* into net.sourceforge.pmd.lang.java.rule.* and updated to follow conventions
 	   Renamed - net.sourceforge.pmd.jsp.ast.* into net.sourceforge.pmd.lang.jsp.ast.*

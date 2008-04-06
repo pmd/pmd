@@ -4,8 +4,8 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
 import net.sourceforge.pmd.stat.DataPoint;
-import net.sourceforge.pmd.stat.StatisticalRule;
 
 /**
  * This is a common super class for things which
@@ -17,7 +17,7 @@ import net.sourceforge.pmd.stat.StatisticalRule;
  * in the Class of node you want to check, and this
  * does the rest for you.
  */
-public class ExcessiveLengthRule extends StatisticalRule {
+public class ExcessiveLengthRule extends AbstractStatisticalJavaRule {
     private Class nodeClass;
 
     public ExcessiveLengthRule(Class nodeClass) {

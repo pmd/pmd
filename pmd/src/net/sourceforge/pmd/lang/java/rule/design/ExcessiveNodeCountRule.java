@@ -4,8 +4,8 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
 import net.sourceforge.pmd.stat.DataPoint;
-import net.sourceforge.pmd.stat.StatisticalRule;
 
 /**
  * This is a common super class for things which
@@ -22,7 +22,7 @@ import net.sourceforge.pmd.stat.StatisticalRule;
  * underneath.)
  */
 
-public class ExcessiveNodeCountRule extends StatisticalRule {
+public class ExcessiveNodeCountRule extends AbstractStatisticalJavaRule {
     private Class nodeClass;
 
     public ExcessiveNodeCountRule(Class nodeClass) {

@@ -22,7 +22,7 @@
  */
 package test.net.sourceforge.pmd.stat;
 
-import net.sourceforge.pmd.stat.StatisticalRule;
+import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
 
-public class MockStatisticalRule extends StatisticalRule {
+public class MockStatisticalRule extends AbstractStatisticalJavaRule {
 }

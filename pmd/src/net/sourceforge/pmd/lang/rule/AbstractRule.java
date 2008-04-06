@@ -381,7 +381,7 @@ public abstract class AbstractRule implements Rule {
 	/**
 	 * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node)
 	 */
-	protected final void addViolation(Object data, Node node) {
+	public final void addViolation(Object data, Node node) {
 		RuleContext ruleContext = (RuleContext) data;
 		ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
 				ruleContext, this, node);
@@ -390,7 +390,7 @@ public abstract class AbstractRule implements Rule {
 	/**
 	 * @see RuleViolationFactory#addViolationWithMessage(RuleContext, Rule, Node, String)
 	 */
-	protected final void addViolationWithMessage(Object data, Node node,
+	public final void addViolationWithMessage(Object data, Node node,
 			String message) {
 		RuleContext ruleContext = (RuleContext) data;
 		ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolationWithMessage(
@@ -400,7 +400,7 @@ public abstract class AbstractRule implements Rule {
 	/**
 	 * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, String)
 	 */
-	protected final void addViolation(Object data, Node node, String arg) {
+	public final void addViolation(Object data, Node node, String arg) {
 		RuleContext ruleContext = (RuleContext) data;
 		ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
 				ruleContext, this, node, arg);
@@ -409,7 +409,7 @@ public abstract class AbstractRule implements Rule {
 	/**
 	 * @see RuleViolationFactory#addViolation(RuleContext, Rule, Node, Object[])
 	 */
-	protected final void addViolation(Object data, Node node, Object[] args) {
+	public final void addViolation(Object data, Node node, Object[] args) {
 		RuleContext ruleContext = (RuleContext) data;
 		ruleContext.getLanguageVersion().getLanguageVersionHandler().getRuleViolationFactory().addViolation(
 				ruleContext, this, node, args);
@@ -459,7 +459,7 @@ public abstract class AbstractRule implements Rule {
 						.hashCode() : 0);
 	}
 
-	protected static Map<String, PropertyDescriptor> asFixedMap(
+	public static Map<String, PropertyDescriptor> asFixedMap(
 			PropertyDescriptor[] descriptors) {
 		Map<String, PropertyDescriptor> descriptorsByName = new HashMap<String, PropertyDescriptor>(
 				descriptors.length);
@@ -469,7 +469,7 @@ public abstract class AbstractRule implements Rule {
 		return Collections.unmodifiableMap(descriptorsByName);
 	}
 
-	protected static Map<String, PropertyDescriptor> asFixedMap(
+	public static Map<String, PropertyDescriptor> asFixedMap(
 			PropertyDescriptor descriptor) {
 		return asFixedMap(new PropertyDescriptor[] { descriptor });
 	}

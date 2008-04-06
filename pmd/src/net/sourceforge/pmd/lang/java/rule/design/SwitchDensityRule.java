@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
 import net.sourceforge.pmd.stat.DataPoint;
-import net.sourceforge.pmd.stat.StatisticalRule;
 
 /**
  * @author David Dixon-Peugh
@@ -21,7 +21,7 @@ import net.sourceforge.pmd.stat.StatisticalRule;
  *         start looking at Subclasses or State Pattern to alleviate the
  *         problem.
  */
-public class SwitchDensityRule extends StatisticalRule {
+public class SwitchDensityRule extends AbstractStatisticalJavaRule {
 
     private static class SwitchDensity {
         private int labels = 0;

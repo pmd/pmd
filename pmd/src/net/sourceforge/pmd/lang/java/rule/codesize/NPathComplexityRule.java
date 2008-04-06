@@ -20,8 +20,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
 import net.sourceforge.pmd.stat.DataPoint;
-import net.sourceforge.pmd.stat.StatisticalRule;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
@@ -30,7 +30,7 @@ import net.sourceforge.pmd.util.NumericConstants;
  * 
  * @author Jason Bennett
  */
-public class NPathComplexityRule extends StatisticalRule {
+public class NPathComplexityRule extends AbstractStatisticalJavaRule {
 
 	
 	private int complexityMultipleOf(JavaNode node, int npathStart, Object data) {

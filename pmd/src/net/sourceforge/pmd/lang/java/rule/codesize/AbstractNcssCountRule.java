@@ -20,8 +20,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
 import net.sourceforge.pmd.stat.DataPoint;
-import net.sourceforge.pmd.stat.StatisticalRule;
 import net.sourceforge.pmd.util.NumericConstants;
 
 /**
@@ -30,7 +30,7 @@ import net.sourceforge.pmd.util.NumericConstants;
  * 
  * @author Jason Bennett
  */
-public abstract class AbstractNcssCountRule extends StatisticalRule {
+public abstract class AbstractNcssCountRule extends AbstractStatisticalJavaRule {
 
   private Class nodeClass;
 
