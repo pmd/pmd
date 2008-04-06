@@ -14,14 +14,14 @@ public class DuplicateJspImportsRule extends AbstractJspRule {
 
     private Set<ImportWrapper> imports = new HashSet<ImportWrapper>();
 
-    public void apply(List acus, RuleContext ctx) {
+    public void apply(List nodes, RuleContext ctx) {
         /*
          * TODO: This method is a hack! It's overriding the parent's method
          * because the JSP parsing doesn't seem to hit ASTCompilationUnit
          * properly
          */
         imports.clear();
-        super.apply(acus, ctx);
+        super.apply(nodes, ctx);
     }
 
     public Object visit(ASTJspDirectiveAttribute node, Object data) {

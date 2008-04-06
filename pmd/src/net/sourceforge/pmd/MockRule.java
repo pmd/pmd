@@ -29,6 +29,6 @@ public class MockRule extends AbstractRule {
 		setRuleSetName(ruleSetName);
 	}
 
-	public void apply(List<Node> astCompilationUnits, RuleContext ctx) {
+	public void apply(List<Node> nodes, RuleContext ctx) {
 	}
 }

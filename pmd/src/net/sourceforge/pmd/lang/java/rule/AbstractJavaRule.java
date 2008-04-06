@@ -20,12 +20,12 @@ public abstract class AbstractJavaRule extends AbstractRule implements
 		super.setUsesTypeResolution();
 	}
 
-	public void apply(List acus, RuleContext ctx) {
-		visitAll(acus, ctx);
+	public void apply(List<Node> nodes, RuleContext ctx) {
+		visitAll(nodes, ctx);
 	}
 
-	protected void visitAll(List acus, RuleContext ctx) {
-		for (Iterator i = acus.iterator(); i.hasNext();) {
+	protected void visitAll(List<Node> nodes, RuleContext ctx) {
+		for (Iterator i = nodes.iterator(); i.hasNext();) {
 			ASTCompilationUnit node = (ASTCompilationUnit)i.next();
 			visit(node, ctx);
 		}

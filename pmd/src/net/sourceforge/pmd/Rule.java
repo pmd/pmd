@@ -244,7 +244,7 @@ public interface Rule {
 	 * Apply this rule to the given collection of nodes, using the
 	 * given context.
 	 */
-	void apply(List<Node> astCompilationUnits, RuleContext ctx);
+	void apply(List<Node> nodes, RuleContext ctx);
 	
 	/**
 	 * End processing. Called once, after apply() is last called. 

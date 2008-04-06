@@ -81,7 +81,7 @@ public abstract class AbstractRuleChainVisitor implements RuleChainVisitor {
     /**
      * Index all nodes for visitation by rules.
      */
-    protected abstract void indexNodes(List<Node> astCompilationUnits, RuleContext ctx);
+    protected abstract void indexNodes(List<Node> nodes, RuleContext ctx);
 
     /**
      * Index a single node for visitation by rules.

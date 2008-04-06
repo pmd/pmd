@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.jsp.ast.ASTAttributeValue;
 import net.sourceforge.pmd.lang.jsp.ast.ASTCData;
@@ -40,12 +41,12 @@ public abstract class AbstractJspRule extends AbstractRule implements
 		// No Type resolution for JSP rules?
 	}
 
-	public void apply(List acus, RuleContext ctx) {
-		visitAll(acus, ctx);
+	public void apply(List<Node> nodes, RuleContext ctx) {
+		visitAll(nodes, ctx);
 	}
 
-	protected void visitAll(List acus, RuleContext ctx) {
-		for (Iterator i = acus.iterator(); i.hasNext();) {
+	protected void visitAll(List<Node> nodes, RuleContext ctx) {
+		for (Iterator i = nodes.iterator(); i.hasNext();) {
 			JspNode node = (JspNode)i.next();
 			visit(node, ctx);
 		}
