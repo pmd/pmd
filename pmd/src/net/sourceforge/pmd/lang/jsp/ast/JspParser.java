@@ -7,6 +7,7 @@
 package net.sourceforge.pmd.lang.jsp.ast;
 
 import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 public class JspParser/*@bgen(jjtree)*/implements JspParserTreeConstants, JspParserConstants {/*@bgen(jjtree)*/
   protected JJTJspParserState jjtree = new JJTJspParserState();

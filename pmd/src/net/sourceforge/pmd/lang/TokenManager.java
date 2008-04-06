@@ -9,4 +9,5 @@ package net.sourceforge.pmd.lang;
 //FUTURE TokenManager implementations need to be moved into Language specific packages
 public interface TokenManager {
     Object getNextToken();
+    void setFileName(String fileName);
 }

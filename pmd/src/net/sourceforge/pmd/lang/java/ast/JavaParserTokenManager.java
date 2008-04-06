@@ -3,19 +3,11 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.*;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 /** Token Manager. */
-public class JavaParserTokenManager implements JavaParserConstants
+public class JavaParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager implements JavaParserConstants
 {
-    private Map<Integer, String> excludeMap = new HashMap<Integer, String>();
-    private String excludeMarker = PMD.EXCLUDE_MARKER;
-
-    public void setExcludeMarker(String marker) {
-        this.excludeMarker = marker;
-    }
-    public Map<Integer, String> getExcludeMap() {
-        return excludeMap;
-    }
 
   /** Debug output. */
   public  java.io.PrintStream debugStream = System.out;

@@ -6,9 +6,10 @@
 
 package net.sourceforge.pmd.lang.jsp.ast;
 import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 
 /** Token Manager. */
-public class JspParserTokenManager implements JspParserConstants
+public class JspParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager implements JspParserConstants
 {
 
   /** Debug output. */

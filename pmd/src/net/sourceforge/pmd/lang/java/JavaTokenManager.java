@@ -22,4 +22,8 @@ public class JavaTokenManager implements TokenManager {
     public Object getNextToken() {
 	return tokenManager.getNextToken();
     }
+
+    public void setFileName(String fileName) {
+	tokenManager.setFileName(fileName);
+    }
 }

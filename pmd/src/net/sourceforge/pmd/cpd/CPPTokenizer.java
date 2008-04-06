@@ -3,37 +3,32 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import net.sourceforge.pmd.cpd.cppast.CPPParserTokenManager;
-import net.sourceforge.pmd.cpd.cppast.SimpleCharStream;
-import net.sourceforge.pmd.cpd.cppast.Token;
-import net.sourceforge.pmd.cpd.cppast.TokenMgrError;
-
 import java.io.StringReader;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
+import net.sourceforge.pmd.lang.cpp.ast.Token;
+
 public class CPPTokenizer implements Tokenizer {
-    private static SimpleCharStream charStream;
 
     public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
-        StringBuffer sb = sourceCode.getCodeBuffer();
-        try {
-            if (charStream == null) {
-                charStream = new SimpleCharStream(new StringReader(sb.toString()));
-            } else {
-                charStream.ReInit(new StringReader(sb.toString()));
-            }
-            CPPParserTokenManager.ReInit(charStream);
-            CPPParserTokenManager.setFileName(sourceCode.getFileName());
-            Token currToken = CPPParserTokenManager.getNextToken();
-            while (currToken.image.length() > 0) {
-                tokenEntries.add(new TokenEntry(currToken.image, sourceCode.getFileName(), currToken.beginLine));
-                currToken = CPPParserTokenManager.getNextToken();
-            }
-            tokenEntries.add(TokenEntry.getEOF());
-            System.err.println("Added " + sourceCode.getFileName());
-        } catch (TokenMgrError err) {
-            err.printStackTrace();
-            System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
-            tokenEntries.add(TokenEntry.getEOF());
-        }
+	StringBuffer buffer = sourceCode.getCodeBuffer();
+	try {
+	    TokenManager tokenManager = LanguageVersion.CPP.getLanguageVersionHandler().getParser().getTokenManager(
+		    new StringReader(buffer.toString()));
+	    tokenManager.setFileName(sourceCode.getFileName());
+	    Token currentToken = (Token) tokenManager.getNextToken();
+	    while (currentToken.image.length() > 0) {
+		tokenEntries.add(new TokenEntry(currentToken.image, sourceCode.getFileName(), currentToken.beginLine));
+		currentToken = (Token) tokenManager.getNextToken();
+	    }
+	    tokenEntries.add(TokenEntry.getEOF());
+	    System.err.println("Added " + sourceCode.getFileName());
+	} catch (TokenMgrError err) {
+	    err.printStackTrace();
+	    System.err.println("Skipping " + sourceCode.getFileName() + " due to parse error");
+	    tokenEntries.add(TokenEntry.getEOF());
+	}
     }
 }

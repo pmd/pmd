@@ -69,6 +69,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.*;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
 public class JavaParser {
 
   private boolean isJDK13;
@@ -163,17 +164,6 @@ public class JavaParser {
 
 }
 PARSER_END(JavaParser)
-TOKEN_MGR_DECLS : {
-    private Map<Integer, String> excludeMap = new HashMap<Integer, String>();
-    private String excludeMarker = PMD.EXCLUDE_MARKER;
-
-    public void setExcludeMarker(String marker) {
-        this.excludeMarker = marker;
-    }
-    public Map<Integer, String> getExcludeMap() {
-        return excludeMap;
-    }
-}
 
 /* WHITE SPACE */
 

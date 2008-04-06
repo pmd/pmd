@@ -42,8 +42,6 @@ TODO - Release blockers - Must implement before this release can be finished
      conventions just like the Rules need to.
    o Need to organize the ruleset XML files based upon Language.  Need to come
      up with a solution for the "rulesets.properties" files.
-   o Need to clean up CharStream and ParseException in the ASTs.  Missed the JSP
-     AST code extending from some of the Java AST code.
 
 ---
 
@@ -60,9 +58,11 @@ The following is relatively complete list of the major changes:
 	   Added - net.sourceforge.pmd.lang.LanguageVersion
 	   Added - net.sourceforge.pmd.lang.LanguageVersionDiscoverer
 	   Added - net.sourceforge.pmd.lang.LanguageVersionHandler
+	   Added - net.sourceforge.pmd.lang.ast.AbstractTokenManager
 	   Added - net.sourceforge.pmd.lang.ast.CharStream
 	   Added - net.sourceforge.pmd.lang.ast.JavaCharStream
 	   Added - net.sourceforge.pmd.lang.ast.SimpleCharStream
+	   Added - net.sourceforge.pmd.lang.ast.TokenMgrError
 	   Added - net.sourceforge.pmd.lang.rule.stat.StatisticalRule
 	   Added - net.sourceforge.pmd.lang.rule.stat.StatisticalRuleHelper
 	   Added - net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule
@@ -90,6 +90,7 @@ The following is relatively complete list of the major changes:
 	   Renamed - net.sourceforge.pmd.rules.* into net.sourceforge.pmd.lang.java.rule.* and updated to follow conventions
 	   Renamed - net.sourceforge.pmd.jsp.ast.* into net.sourceforge.pmd.lang.jsp.ast.*
 	   Renamed - net.sourceforge.pmd.jsp.rules.* into net.sourceforge.pmd.lang.jsp.ast.rule.* and updated to follow conventions
+	   Deleted - net.sourceforge.pmd.cpd.cppast.* into net.sourceforge.pmd.lang.cpp.ast.*
 	   Deleted - net.sourceforge.pmd.CommonAbstractRule
 	   Deleted - net.sourceforge.pmd.SourceType
 	   Deleted - net.sourceforge.pmd.SourceTypeDiscoverer
@@ -103,7 +104,9 @@ The following is relatively complete list of the major changes:
 	   Deleted - net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandlerBroker
 	   Deleted - net.sourceforge.pmd.ast.JavaCharStream
 	   Deleted - net.sourceforge.pmd.ast.CharStream
+	   Deleted - net.sourceforge.pmd.ast.TokenMgrError
 	   Deleted - net.sourceforge.pmd.jsp.ast.JspCharStream
+	   Deleted - net.sourceforge.pmd.jsp.ast.TokenMgrError
 
 	API Change - Generalize RuleViolation treatment
 	   Renamed - net.sourceforge.pmd.IRuleViolation to net.sourceforge.pmd.RuleViolation

@@ -28,10 +28,13 @@ options {
   CACHE_TOKENS=true;
 }
 
-PARSER_BEGIN(CPPParser)
-package net.sourceforge.pmd.cpd.cppast;
+PARSER_BEGIN(CppParser)
+package net.sourceforge.pmd.lang.cpp.ast;
 
-public final class CPPParser {
+import net.sourceforge.pmd.lang.ast.CharStream;
+import net.sourceforge.pmd.lang.ast.TokenMgrError;
+
+public final class CppParser {
 
   private static String vers = "0.1";
   private static String id = "C++ Parser";
@@ -41,7 +44,7 @@ public final class CPPParser {
   }
 
   public static void main(String args[]) {
-    CPPParser parser;
+    CppParser parser;
     java.io.InputStream input;
 
     int ai = 0;
@@ -63,7 +66,7 @@ public final class CPPParser {
     }
 
     try {
-      parser = new CPPParser(input);
+      parser = new CppParser(input);
       parser.translation_unit();
       msg("Program parsed successfully.");
     } catch (ParseException e) {
@@ -126,17 +129,7 @@ public final class CPPParser {
   }
 }
 
-PARSER_END(CPPParser)
-
-TOKEN_MGR_DECLS : {
- private static String filename;
- public static void setFileName(String name) {
-  filename = name;
- }
- public static String getFileName() {
-  return filename;
- }
-}
+PARSER_END(CppParser)
 
 SKIP :
 {
