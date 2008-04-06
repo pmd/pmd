@@ -1,6 +1,6 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <extension xmlns="http://jcp.org/jsr/198/extension-manifest"
-              id="net.sourceforge.pmd.jdeveloper" version="4.1.2.0.0"
+              id="net.sourceforge.pmd.jdeveloper" version="4.2.2.0.0"
               esdk-version="1.0">
   <name>PMD JDeveloper Extension</name>
   <owner>Torsten Kleiber</owner>
@@ -8,9 +8,9 @@
     <import>oracle.jdeveloper</import>
   </dependencies>
   <classpaths>
-    <classpath>net.sourceforge.pmd.jdeveloper.4.1.2.0.0/lib/pmd-4.1.jar</classpath>
-    <classpath>net.sourceforge.pmd.jdeveloper.4.1.2.0.0/lib/jaxen-1.1.1.jar</classpath>
-    <classpath>net.sourceforge.pmd.jdeveloper.4.1.2.0.0/lib/asm-3.1.jar</classpath>
+    <classpath>net.sourceforge.pmd.jdeveloper.4.2.2.0.0/lib/pmd-4.2.jar</classpath>
+    <classpath>net.sourceforge.pmd.jdeveloper.4.2.2.0.0/lib/jaxen-1.1.1.jar</classpath>
+    <classpath>net.sourceforge.pmd.jdeveloper.4.2.2.0.0/lib/asm-3.1.jar</classpath>
   </classpaths>
   <hooks>
     <jdeveloper-hook xmlns="http://xmlns.oracle.com/jdeveloper/1013/extension">

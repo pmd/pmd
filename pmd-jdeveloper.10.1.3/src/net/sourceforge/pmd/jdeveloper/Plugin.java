@@ -55,6 +55,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import oracle.ide.view.View;
+
 public class Plugin implements Addin, Controller, ContextMenuListener {
 
     public class CPDViolationPage extends AbstractLogPage implements TreeSelectionListener {
@@ -241,7 +243,8 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                 } else if (context.getElement() instanceof Project) {
                     Project project = (Project)context.getElement();
                     checkTree(project.getChildren(), pmd, rules, ctx);
-                } else if (context.getElement() instanceof JavaSourceNode) {
+                } else if (context.getElement() instanceof JavaSourceNode || 
+                           context.getView() instanceof CodeEditor) {
                     pmdFileToNodeMap.put(context.getNode().getLongLabel(), 
                                          context.getNode());
                     ctx.setSourceCodeFilename(context.getNode().getLongLabel());
@@ -253,11 +256,11 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
             } catch (PMDException e) {
                 // TODO reroute the whole printStackTrace to the IDE log window
                 e.printStackTrace();
-                e.getReason().printStackTrace();
+                e.getCause().printStackTrace();
                 JOptionPane.showMessageDialog(null, 
                                               "Error while running PMD: " + 
                                               "\n" + e.getMessage() + "\n" + 
-                                              e.getReason().getMessage(), 
+                                              e.getCause().getMessage(), 
                                               PMD_TITLE, 
                                               JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
@@ -336,9 +339,11 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
 
     public void menuWillShow(ContextMenu contextMenu) {
         Element doc = contextMenu.getContext().getElement();
+        View view = contextMenu.getContext().getView();
         // RelativeDirectoryContextFolder -> a package
         if (doc instanceof Project || doc instanceof JavaSourceNode || 
-            doc instanceof RelativeDirectoryContextFolder) {
+            doc instanceof RelativeDirectoryContextFolder || 
+            view instanceof CodeEditor) {
             contextMenu.add(pmdMenuItem);
             contextMenu.add(cpdMenuItem);
         }
