@@ -13,22 +13,23 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 
+
 public class SelectedRules {
 
     // Rule -> JCheckBox
-    private Map<Rule, JCheckBox> rules = 
+    private final transient Map<Rule, JCheckBox> rules = 
         new TreeMap<Rule, JCheckBox>(new Comparator<Rule>() {
-                public int compare(Rule o1, Rule o2) {
-                    return o1.getName().compareTo(o2.getName());
+                public int compare(final Rule obj1, final Rule obj2) {
+                    return obj1.getName().compareTo(obj2.getName());
                 }
             });
 
-    public SelectedRules(SettingsStorage settings) throws RuleSetNotFoundException {
-        RuleSetFactory rsf = new RuleSetFactory();
-        for (Iterator<RuleSet> itt = rsf.getRegisteredRuleSets(); 
-             itt.hasNext(); ) {
-            RuleSet rs = itt.next();
-            for (Rule rule: rs.getRules()) {
+    public SelectedRules(final SettingsStorage settings) throws RuleSetNotFoundException {
+        final RuleSetFactory rsf = new RuleSetFactory();
+        for (final Iterator<RuleSet> iter = rsf.getRegisteredRuleSets(); 
+             iter.hasNext(); ) {
+            final RuleSet rset = iter.next();
+            for (Rule rule: rset.getRules()) {
                 rules.put(rule, createCheckBox(rule.getName(), settings));
             }
         }
@@ -38,9 +39,9 @@ public class SelectedRules {
         return rules.size();
     }
 
-    public Rule getRule(JCheckBox candidate) {
+    public Rule getRule(final JCheckBox candidate) {
         for (Rule rule: rules.keySet()) {
-            JCheckBox box = rules.get(rule);
+            final JCheckBox box = rules.get(rule);
             if (box.equals(candidate)) {
                 return rule;
             }
@@ -49,7 +50,7 @@ public class SelectedRules {
                                    candidate);
     }
 
-    public JCheckBox get(Object key) {
+    public JCheckBox get(final Object key) {
         return rules.get(key);
     }
 
@@ -57,8 +58,8 @@ public class SelectedRules {
         return rules.values().toArray(new JCheckBox[rules.size()]);
     }
 
-    public void save(SettingsStorage settings) throws SettingsException {
-        Properties properties = new Properties();
+    public void save(final SettingsStorage settings) throws SettingsException {
+        final Properties properties = new Properties();
         for (Rule rule: rules.keySet()) {
             properties.setProperty("pmd.rule." + rule.getName(), 
                                    String.valueOf(get(rule).isSelected()));
@@ -67,7 +68,7 @@ public class SelectedRules {
     }
 
     public RuleSet getSelectedRules() {
-        RuleSet newRuleSet = new RuleSet();
+        final RuleSet newRuleSet = new RuleSet();
         for (Rule rule: rules.keySet()) {
             if (get(rule).isSelected()) {
                 newRuleSet.addRule(rule);
@@ -76,8 +77,8 @@ public class SelectedRules {
         return newRuleSet;
     }
 
-    private JCheckBox createCheckBox(String name, SettingsStorage settings) {
-        JCheckBox box = new JCheckBox(name);
+    private JCheckBox createCheckBox(final String name, final SettingsStorage settings) {
+        final JCheckBox box = new JCheckBox(name);
         try {
             box.setSelected(load(settings, name));
         } catch (SettingsException se) {
@@ -86,8 +87,8 @@ public class SelectedRules {
         return box;
     }
 
-    private boolean load(SettingsStorage settings, 
-                         String name) throws SettingsException {
+    private boolean load(final SettingsStorage settings, 
+                         final String name) throws SettingsException {
         return Boolean.valueOf(settings.load("pmd.rule." + name));
     }
 }

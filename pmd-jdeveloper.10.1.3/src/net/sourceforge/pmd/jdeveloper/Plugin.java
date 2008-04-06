@@ -1,5 +1,26 @@
 package net.sourceforge.pmd.jdeveloper;
 
+import java.awt.Component;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
@@ -32,38 +53,20 @@ import oracle.ide.model.Project;
 import oracle.ide.model.RelativeDirectoryContextFolder;
 import oracle.ide.navigator.NavigatorManager;
 import oracle.ide.panels.Navigable;
+import oracle.ide.view.View;
 
 import oracle.jdeveloper.compiler.IdeLog;
 import oracle.jdeveloper.compiler.IdeStorage;
 import oracle.jdeveloper.model.JavaSourceNode;
 
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeSelectionModel;
-
-import java.awt.Component;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import oracle.ide.view.View;
 
 public class Plugin implements Addin, Controller, ContextMenuListener {
 
     public class CPDViolationPage extends AbstractLogPage implements TreeSelectionListener {
 
-        private JScrollPane scrollPane;
-        private JTree tree;
-        private DefaultMutableTreeNode top;
+        private final transient JScrollPane scrollPane;
+        private final transient JTree tree;
+        private final transient DefaultMutableTreeNode top;
 
         public CPDViolationPage() {
             super(new ViewId("PMDPage", Plugin.CPD_TITLE), null, false);
@@ -74,11 +77,11 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
             scrollPane = new JScrollPane(tree);
         }
 
-        public void valueChanged(TreeSelectionEvent e) {
-            DefaultMutableTreeNode node = 
+        public void valueChanged(final TreeSelectionEvent event) {
+            final DefaultMutableTreeNode node = 
                 (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
             if (node != null && node.isLeaf()) {
-                CPDViolationWrapper nodeInfo = 
+                final CPDViolationWrapper nodeInfo = 
                     (CPDViolationWrapper)node.getUserObject();
                 EditorManager.getEditorManager().openDefaultEditorInFrame(nodeInfo.file.getURL());
                 ((CodeEditor)EditorManager.getEditorManager().getCurrentEditor()).gotoLine(nodeInfo.mark.getBeginLine(), 
@@ -87,20 +90,20 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
             }
         }
 
-        public void add(Match match) {
-            Node file1 = 
+        public void add(final Match match) {
+            final Node file1 = 
                 (Node)cpdFileToNodeMap.get(match.getFirstMark().getTokenSrcID());
-            DefaultMutableTreeNode matchNode = 
+            final DefaultMutableTreeNode matchNode = 
                 new DefaultMutableTreeNode(file1.getShortLabel() + 
                                            " contains a " + 
                                            match.getLineCount() + 
                                            " line block of duplicated code", 
                                            true);
             top.add(matchNode);
-            for (Iterator i = match.iterator(); i.hasNext(); ) {
-                TokenEntry mark = (TokenEntry)i.next();
-                Node file = (Node)cpdFileToNodeMap.get(mark.getTokenSrcID());
-                DefaultMutableTreeNode markTreeNode = 
+            for (final Iterator i = match.iterator(); i.hasNext(); ) {
+                final TokenEntry mark = (TokenEntry)i.next();
+                final Node file = (Node)cpdFileToNodeMap.get(mark.getTokenSrcID());
+                final DefaultMutableTreeNode markTreeNode = 
                     new DefaultMutableTreeNode(new CPDViolationWrapper(mark, 
                                                                        file, 
                                                                        file.getShortLabel() + 
@@ -116,10 +119,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         }
 
         public void clearAll() {
-            System.out.println("clearing nodes");
-            System.out.println("before: top now has " + top.getChildCount());
             top.removeAllChildren();
-            System.out.println("after: top now has " + top.getChildCount());
             tree.repaint();
             scrollPane.repaint();
             //tree.removeSelectionPath(new TreePath(new Object[] {top}));
@@ -127,11 +127,11 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     }
 
     private static class CPDViolationWrapper {
-        private String label;
-        public Node file;
-        public TokenEntry mark;
+        private final transient String label;
+        public transient Node file;
+        public transient TokenEntry mark;
 
-        public CPDViolationWrapper(TokenEntry mark, Node file, String label) {
+        public CPDViolationWrapper(final TokenEntry mark, final Node file, final String label) {
             this.label = label;
             this.mark = mark;
             this.file = file;
@@ -155,20 +155,20 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     public static final String PMD_TITLE = "PMD";
     public static final String CPD_TITLE = "CPD";
 
-    private JMenuItem pmdMenuItem;
-    private JMenuItem cpdMenuItem;
+    private transient JMenuItem pmdMenuItem;
+    private transient JMenuItem cpdMenuItem;
 
-    private RuleViolationPage ruleViolationPage;
-    private CPDViolationPage cpdViolationPage;
+    private transient RuleViolationPage ruleViolationPage;
+    private transient CPDViolationPage cpdViolationPage;
 
-    private boolean added;
-    private Map pmdFileToNodeMap = new HashMap(); // whew, this is kludgey
-    private Map cpdFileToNodeMap = new HashMap(); // whew, this is kludgey
+    private transient boolean added;
+    private final transient Map pmdFileToNodeMap = new HashMap(); // whew, this is kludgey
+    private final transient Map cpdFileToNodeMap = new HashMap(); // whew, this is kludgey
 
     // Addin
 
     public void initialize() {
-        IdeAction pmdAction = 
+        final IdeAction pmdAction = 
             IdeAction.get(RUN_PMD_CMD_ID, AddinManager.getAddinManager().getCommand(RUN_PMD_CMD_ID, 
                                                                                     RUN_PMD_CMD), 
                           PMD_TITLE, PMD_TITLE, null, null, null, true);
@@ -219,7 +219,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     }
 
 
-    public boolean handleEvent(IdeAction ideAction, Context context) {
+    public boolean handleEvent(final IdeAction ideAction, final Context context) {
         if (!added) {
             LogManager.getLogManager().addPage(ruleViolationPage);
             LogManager.getLogManager().showLog();
@@ -228,20 +228,20 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         if (ideAction.getCommandId() == RUN_PMD_CMD_ID) {
             try {
                 pmdFileToNodeMap.clear();
-                PMD pmd = new PMD();
+                final PMD pmd = new PMD();
                 Version.setJavaVersion(context, pmd);
 
-                SelectedRules rules = 
+                final SelectedRules rules = 
                     new SelectedRules(SettingsPanel.createSettingsStorage());
-                RuleContext ctx = new RuleContext();
+                final RuleContext ctx = new RuleContext();
                 ctx.setReport(new Report());
                 if (context.getElement() instanceof 
                     RelativeDirectoryContextFolder) {
-                    RelativeDirectoryContextFolder folder = 
+                    final RelativeDirectoryContextFolder folder = 
                         (RelativeDirectoryContextFolder)context.getElement();
                     checkTree(folder.getChildren(), pmd, rules, ctx);
                 } else if (context.getElement() instanceof Project) {
-                    Project project = (Project)context.getElement();
+                    final Project project = (Project)context.getElement();
                     checkTree(project.getChildren(), pmd, rules, ctx);
                 } else if (context.getElement() instanceof JavaSourceNode || 
                            context.getView() instanceof CodeEditor) {
@@ -276,17 +276,17 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                 cpdFileToNodeMap.clear();
 
                 // TODO get minimum tokens from prefs panel
-                CPD cpd = 
+                final CPD cpd = 
                     new CPD(100, new LanguageFactory().createLanguage("java"));
 
                 // add all files to CPD
                 if (context.getElement() instanceof 
                     RelativeDirectoryContextFolder) {
-                    RelativeDirectoryContextFolder folder = 
+                    final RelativeDirectoryContextFolder folder = 
                         (RelativeDirectoryContextFolder)context.getElement();
                     glomToCPD(folder.getChildren(), cpd);
                 } else if (context.getElement() instanceof Project) {
-                    Project project = (Project)context.getElement();
+                    final Project project = (Project)context.getElement();
                     glomToCPD(project.getChildren(), cpd);
                 } else if (context.getElement() instanceof JavaSourceNode) {
                     cpd.add(new File(context.getNode().getLongLabel()));
@@ -302,12 +302,12 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
                     JOptionPane.showMessageDialog(null, "No problems found", 
                                                   CPD_TITLE, 
                                                   JOptionPane.INFORMATION_MESSAGE);
-                    LogPage page = LogManager.getLogManager().getMsgPage();
+                    final LogPage page = LogManager.getLogManager().getMsgPage();
                     if (page instanceof LogWindow) {
                         ((LogWindow)page).show();
                     }
                 } else {
-                    for (Iterator i = cpd.getMatches(); i.hasNext(); ) {
+                    for (final Iterator i = cpd.getMatches(); i.hasNext(); ) {
                         cpdViolationPage.add((Match)i.next());
                     }
                 }
@@ -324,7 +324,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         return true;
     }
 
-    public boolean update(IdeAction ideAction, Context context) {
+    public boolean update(final IdeAction ideAction, final Context context) {
         return false;
     }
 
@@ -334,11 +334,12 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
 
     // ContextMenuListener
 
-    public void menuWillHide(ContextMenu contextMenu) {
+    public void menuWillHide(final ContextMenu contextMenu) {
+      // Nothing to do
     }
 
-    public void menuWillShow(ContextMenu contextMenu) {
-        Element doc = contextMenu.getContext().getElement();
+    public void menuWillShow(final ContextMenu contextMenu) {
+        final Element doc = contextMenu.getContext().getElement();
         View view = contextMenu.getContext().getView();
         // RelativeDirectoryContextFolder -> a package
         if (doc instanceof Project || doc instanceof JavaSourceNode || 
@@ -349,7 +350,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         }
     }
 
-    public boolean handleDefaultAction(Context context) {
+    public boolean handleDefaultAction(final Context context) {
         return false;
     }
     // ContextMenuListener
@@ -359,39 +360,39 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
     }
 
 
-    private void render(RuleContext ctx) {
+    private void render(final RuleContext ctx) {
         ruleViolationPage.show();
         ruleViolationPage.clearAll();
         if (ctx.getReport().isEmpty()) {
             JOptionPane.showMessageDialog(null, "No problems found", PMD_TITLE, 
                                           JOptionPane.INFORMATION_MESSAGE);
-            LogPage page = LogManager.getLogManager().getMsgPage();
+            final LogPage page = LogManager.getLogManager().getMsgPage();
             if (page instanceof LogWindow) {
                 ((LogWindow)page).show();
             }
         } else {
-            List list = new ArrayList();
-            for (Iterator i = ctx.getReport().iterator(); i.hasNext(); ) {
-                RuleViolation rv = (RuleViolation)i.next();
-                Node node = (Node)pmdFileToNodeMap.get(rv.getFilename());
+            final List list = new ArrayList();
+            for (final Iterator i = ctx.getReport().iterator(); i.hasNext(); ) {
+                final RuleViolation viol = (RuleViolation)i.next();
+                final Node node = (Node)pmdFileToNodeMap.get(viol.getFilename());
                 list.add(new IdeLog.Message(Ide.getActiveWorkspace(), 
                                             Ide.getActiveProject(), 
                                             new IdeStorage(node), 
-                                            rv.getDescription(), 2, 
-                                            rv.getBeginLine(), 
-                                            rv.getBeginColumn()));
+                                            viol.getDescription(), 2, 
+                                            viol.getBeginLine(), 
+                                            viol.getBeginColumn()));
             }
             ruleViolationPage.add(list);
         }
     }
 
-    private void glomToCPD(Iterator i, CPD cpd) throws IOException {
-        while (i.hasNext()) {
-            Object obj = i.next();
+    private void glomToCPD(final Iterator iter, final CPD cpd) throws IOException {
+        while (iter.hasNext()) {
+            final Object obj = iter.next();
             if (!(obj instanceof JavaSourceNode)) {
                 continue;
             }
-            JavaSourceNode candidate = (JavaSourceNode)obj;
+            final JavaSourceNode candidate = (JavaSourceNode)obj;
             if (candidate.getLongLabel().endsWith(".java") && 
                 new File(candidate.getLongLabel()).exists()) {
                 cpdFileToNodeMap.put(candidate.getLongLabel(), candidate);
@@ -400,19 +401,19 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         }
     }
 
-    private void checkTree(Iterator i, PMD pmd, SelectedRules rules, 
-                           RuleContext ctx) throws IOException, PMDException {
-        while (i.hasNext()) {
-            Object obj = i.next();
+    private void checkTree(final Iterator iter, final PMD pmd, final SelectedRules rules, 
+                           final RuleContext ctx) throws IOException, PMDException {
+        while (iter.hasNext()) {
+            final Object obj = iter.next();
             if (!(obj instanceof JavaSourceNode)) {
                 continue;
             }
-            JavaSourceNode candidate = (JavaSourceNode)obj;
+            final JavaSourceNode candidate = (JavaSourceNode)obj;
             if (candidate.getLongLabel().endsWith(".java") && 
                 new File(candidate.getLongLabel()).exists()) {
                 pmdFileToNodeMap.put(candidate.getLongLabel(), candidate);
                 ctx.setSourceCodeFilename(candidate.getLongLabel());
-                FileInputStream fis = 
+                final FileInputStream fis = 
                     new FileInputStream(new File(candidate.getLongLabel()));
                 pmd.processFile(fis, rules.getSelectedRules(), ctx);
                 fis.close();
@@ -421,7 +422,7 @@ public class Plugin implements Addin, Controller, ContextMenuListener {
         render(ctx);
     }
 
-    private static final void logMessage(String msg) {
+    private static final void logMessage(final String msg) {
         LogManager.getLogManager().showLog();
         LogManager.getLogManager().getMsgPage().log(msg + "\n");
     }

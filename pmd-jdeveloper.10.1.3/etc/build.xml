@@ -126,10 +126,6 @@
     <scp file="${release.dir}/update-center-bundle/center.xml"
          todir="${uploadbundle.scp.user}@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"
          password="${uploadbundle.scp.pwd}" trust="true"></scp>
-    <echo message="Uploading ${bundle.filename}"></echo>
-    <scp file="${release.dir}/update-center-bundle/${bundle.filename}"
-         todir="${uploadbundle.scp.user}@pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/"
-         password="${uploadbundle.scp.pwd}" trust="true"></scp>
   </target>
 </project>
 

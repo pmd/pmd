@@ -5,7 +5,7 @@
     <version>4.2.2.0.0</version>
     <author>Torsten Kleiber</author>
     <author-url>http://pmd.sourceforge.net/</author-url>
-    <description>Provides integrated support for PMD 4.1 in JDeveloper 10.1.3 - 11g Technology Preview 1.</description>
+    <description>Provides integrated support for PMD 4.2 in JDeveloper 10.1.3 - 11g Technology Preview 1.</description>
     <requirements>
       <requires-extension id="oracle.jdeveloper" minVersion="10.1.3.00"
                             maxVersion="11.1.1.0.20.45"/>

@@ -11,6 +11,7 @@
     <classpath>net.sourceforge.pmd.jdeveloper.4.2.2.0.0/lib/pmd-4.2.jar</classpath>
     <classpath>net.sourceforge.pmd.jdeveloper.4.2.2.0.0/lib/jaxen-1.1.1.jar</classpath>
     <classpath>net.sourceforge.pmd.jdeveloper.4.2.2.0.0/lib/asm-3.1.jar</classpath>
+    <classpath>C:/Oracle/10gJD10133/jdk/jre/lib/rt.jar</classpath>
   </classpaths>
   <hooks>
     <jdeveloper-hook xmlns="http://xmlns.oracle.com/jdeveloper/1013/extension">

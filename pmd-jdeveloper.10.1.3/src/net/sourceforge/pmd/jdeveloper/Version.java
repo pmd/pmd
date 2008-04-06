@@ -8,10 +8,10 @@ import oracle.ide.Context;
 import oracle.jdeveloper.compiler.OjcConfiguration;
 
 class Version {
-    public static void setJavaVersion(Context context, PMD pmd) {
-        OjcConfiguration config = 
+    public static void setJavaVersion(final Context context, final PMD pmd) {
+        final OjcConfiguration config = 
             OjcConfiguration.getInstance(context.getProject());
-        String source = config.getSource();
+        final String source = config.getSource();
         if (source.equals("1.6")) {
             pmd.setJavaVersion(SourceType.JAVA_16);
         } else if (source.equals("1.5")) {
