@@ -8,32 +8,33 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Properties;
 
+
 public class FileStorage implements SettingsStorage {
 
-    private File file;
+    private final transient File file;
 
-    public FileStorage(File file) {
+    public FileStorage(final File file) {
         this.file = file;
     }
 
-    public void save(Properties newProperties) throws SettingsException {
+    public void save(final Properties newProperties) throws SettingsException {
         try {
-            Properties savedProperties = new Properties();
+            final Properties savedProperties = new Properties();
 
             if (file.exists()) {
-                FileInputStream fis = new FileInputStream(file);
+                final FileInputStream fis = new FileInputStream(file);
                 savedProperties.load(fis);
                 fis.close();
             }
 
-            for (Iterator i = newProperties.keySet().iterator(); i.hasNext(); 
+            for (final Iterator i = newProperties.keySet().iterator(); i.hasNext(); 
             ) {
-                String key = (String)i.next();
-                String value = newProperties.getProperty(key);
+                final String key = (String)i.next();
+                final String value = newProperties.getProperty(key);
                 savedProperties.setProperty(key, value);
             }
 
-            FileOutputStream fos = new FileOutputStream(file);
+            final FileOutputStream fos = new FileOutputStream(file);
             savedProperties.store(fos, 
                                   "PMD-JDeveloper rule selections " + new Date());
             fos.close();
@@ -43,11 +44,11 @@ public class FileStorage implements SettingsStorage {
         }
     }
 
-    public String load(String key) throws SettingsException {
+    public String load(final String key) throws SettingsException {
         try {
             if (file.exists()) {
-                Properties properties = new Properties();
-                FileInputStream fis = new FileInputStream(file);
+                final Properties properties = new Properties();
+                final FileInputStream fis = new FileInputStream(file);
                 properties.load(fis);
                 fis.close();
                 return properties.getProperty(key);

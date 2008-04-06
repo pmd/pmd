@@ -9,9 +9,9 @@ import oracle.jdeveloper.model.JProject;
 
 class Version {
 
-    public static void setJavaVersion(Context context, PMD pmd) {
-        JProject project = (JProject) context.getProject();
-        String source = project.getActiveConfiguration().getJdkVersionNumber().toString();
+    public static void setJavaVersion(final Context context, final PMD pmd) {
+        final JProject project = (JProject) context.getProject();
+        final String source = project.getActiveConfiguration().getJdkVersionNumber().toString();
         if (source.startsWith("1.6")) {
             pmd.setJavaVersion(SourceType.JAVA_16);
         } else if (source.startsWith("1.5")) {

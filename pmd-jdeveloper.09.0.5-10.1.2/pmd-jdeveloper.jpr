@@ -11,6 +11,10 @@
    <j2eeWebContextRoot>PMD 10-pmd-jdeveloper-context-root</j2eeWebContextRoot>
    <listOfChildren class="oracle.ide.model.DataList">
       <Item class="oracle.ide.model.Reference">
+         <URL path="src/net/sourceforge/pmd/jdeveloper/Version.java"/>
+         <nodeClass>oracle.jdeveloper.model.JavaSourceNode</nodeClass>
+      </Item>
+      <Item class="oracle.ide.model.Reference">
          <URL path="lib/asm-3.1.jar"/>
          <nodeClass>oracle.jdevimpl.jar.JarFolder</nodeClass>
       </Item>
@@ -88,10 +92,6 @@
       </Item>
       <Item class="oracle.ide.model.Reference">
          <URL path="src/net/sourceforge/pmd/jdeveloper/SettingsStorage.java"/>
-         <nodeClass>oracle.jdeveloper.model.JavaSourceNode</nodeClass>
-      </Item>
-      <Item class="oracle.ide.model.Reference">
-         <URL path="src/net/sourceforge/pmd/jdeveloper/Version.java"/>
          <nodeClass>oracle.jdeveloper.model.JavaSourceNode</nodeClass>
       </Item>
    </listOfChildren>
