@@ -142,9 +142,6 @@
 	<target name="pmd" description="Runs PMD" depends="copy, compile">
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
 		<pmd rulesetfiles="unusedcode" shortFilenames="true">
-			<classpath>
-				<path refid="dependencies.path" />
-			</classpath>
 			<formatter type="csv" toFile="rpt.csv" toConsole="true" linkPrefix="http://pmd.sf.net/xref/" />
 			<fileset dir="/usr/local/java/src/java/net/">
 				<include name="**/*.java" />
