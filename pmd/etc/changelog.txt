@@ -36,7 +36,6 @@ TODO - Release blockers - Must implement before this release can be finished
         net.sourceforge.pmd.symboltables
         net.sourceforge.pmd.typeresolution
         net.sourceforge.pmd.properties
-   o Move AST from CPD for CPP into pmd.lang.cpp package.
    o Need a JUnit test to check for "dead" Rules, that is those not used by any RuleSet.
    o Rule JUnit tests should verify the Test class follows expected naming
      conventions just like the Rules need to.
