@@ -84,8 +84,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.jaxen.DocumentNavigator;
-import net.sourceforge.pmd.jaxen.MatchesFunction;
-import net.sourceforge.pmd.jaxen.TypeOfFunction;
+import net.sourceforge.pmd.jaxen.Functions;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -634,8 +633,7 @@ public class Designer implements ClipboardOwner {
 	    exitOnClose = !args[0].equals("-noexitonclose");
 	}
 
-	MatchesFunction.registerSelfInSimpleContext();
-	TypeOfFunction.registerSelfInSimpleContext();
+	Functions.registerAll();
 
 	xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
 	JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createCodeEditorPanel(),

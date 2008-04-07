@@ -1,8 +1,9 @@
-package net.sourceforge.pmd.jaxen;
+package net.sourceforge.pmd.lang.java.jaxen;
 
 import java.util.Arrays;
 import java.util.List;
 
+import net.sourceforge.pmd.jaxen.Attribute;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 

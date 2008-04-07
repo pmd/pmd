@@ -5,6 +5,7 @@ import java.io.Writer;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.VisitorStarter;
+import net.sourceforge.pmd.lang.XPathFunctionRegister;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.jsp.ast.DumpFacade;
 import net.sourceforge.pmd.lang.jsp.ast.JspNode;
@@ -18,6 +19,10 @@ import net.sourceforge.pmd.symboltable.JspSymbolFacade;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public class JspHandler implements LanguageVersionHandler {
+
+    public XPathFunctionRegister getXPathFunctionRegister() {
+	return XPathFunctionRegister.DUMMY;
+    }
 
     public RuleViolationFactory getRuleViolationFactory() {
 	return JspRuleViolationFactory.INSTANCE;

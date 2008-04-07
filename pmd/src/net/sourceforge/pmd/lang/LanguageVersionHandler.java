@@ -14,6 +14,11 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public interface LanguageVersionHandler {
+    
+    /**
+     * Get the XPathFunctionRegister.
+     */
+    XPathFunctionRegister getXPathFunctionRegister();
 
     /**
      * Get the RuleViolationFactory.

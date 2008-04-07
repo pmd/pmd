@@ -32,7 +32,6 @@ TODO - Release blockers - Must implement before this release can be finished
    o Need to refactor the regression test packages to reflect new packaging.
    o Rework these packages to exist with the net.sourceforge.pmd.lang.* hierarchy:
         net.sourceforge.pmd.dfa
-        net.sourceforge.pmd.jaxen
         net.sourceforge.pmd.symboltables
         net.sourceforge.pmd.typeresolution
         net.sourceforge.pmd.properties
@@ -57,6 +56,7 @@ The following is relatively complete list of the major changes:
 	   Added - net.sourceforge.pmd.lang.LanguageVersion
 	   Added - net.sourceforge.pmd.lang.LanguageVersionDiscoverer
 	   Added - net.sourceforge.pmd.lang.LanguageVersionHandler
+	   Added - net.sourceforge.pmd.lang.XPathFunctionRegister
 	   Added - net.sourceforge.pmd.lang.ast.AbstractTokenManager
 	   Added - net.sourceforge.pmd.lang.ast.CharStream
 	   Added - net.sourceforge.pmd.lang.ast.JavaCharStream
@@ -84,7 +84,8 @@ The following is relatively complete list of the major changes:
 	   Renamed - net.sourceforge.pmd.sourcetypehandlers.SourceTypeHandler to net.sourceforge.pmd.lang.LanguageVersionHandler
 	   Renamed - net.sourceforge.pmd.sourcetypehandlers.VisitorStarter to net.sourceforge.pmd.lang.VisitorStarter
 	   Renamed - net.sourceforge.pmd.sourcetypehandlers.* into net.sourceforge.pmd.lang.{Language}
-	   Renamed - net.sourceforge.pmd.stat.StatisticalRule into net.sourceforge.pmd.lang.rule.StatisticalRuleHelper
+	   Renamed - net.sourceforge.pmd.stat.StatisticalRule to net.sourceforge.pmd.lang.rule.StatisticalRuleHelper
+	   Renamed - net.sourceforge.pmd.jaxen.TypeOfFunction to net.sourceforge.pmd.lang.java.jaxen.TypeOfFunction
 	   Renamed - net.sourceforge.pmd.ast.* into net.sourceforge.pmd.lang.java.ast.*
 	   Renamed - net.sourceforge.pmd.rules.* into net.sourceforge.pmd.lang.java.rule.* and updated to follow conventions
 	   Renamed - net.sourceforge.pmd.jsp.ast.* into net.sourceforge.pmd.lang.jsp.ast.*
