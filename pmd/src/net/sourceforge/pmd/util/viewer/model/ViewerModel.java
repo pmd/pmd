@@ -33,7 +33,7 @@ public class ViewerModel {
      * all existing source will be replaced
      */
     public void commitSource(String source, LanguageVersion languageVersion) {
-        ASTCompilationUnit compilationUnit = (ASTCompilationUnit)languageVersion.getLanguageVersionHandler().getParser().parse(new StringReader(source));
+        ASTCompilationUnit compilationUnit = (ASTCompilationUnit)languageVersion.getLanguageVersionHandler().getParser().parse(null, new StringReader(source));
         rootNode = compilationUnit;
         fireViewerModelEvent(new ViewerModelEvent(this, ViewerModelEvent.CODE_RECOMPILED));
     }

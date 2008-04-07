@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.TokenManager;
+import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 
@@ -13,11 +14,12 @@ import net.sourceforge.pmd.lang.ast.ParseException;
  */
 public class CppParser extends AbstractParser {
 
-    public TokenManager getTokenManager(Reader source) {
+    public TokenManager createTokenManager(Reader source) {
 	return new CppTokenManager(source);
     }
 
-    public Node parse(Reader source) throws ParseException {
+    public Node parse(String fileName, Reader source) throws ParseException {
+	AbstractTokenManager.setFileName(fileName);
 	throw new UnsupportedOperationException("parse(Reader) is not supported for C++");
     }
 

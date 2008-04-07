@@ -23,7 +23,7 @@ public class EncodingTest {
 
         String code = new String(TEST_UTF8.getBytes(), encoding);
         InputStreamReader isr = new InputStreamReader(new ByteArrayInputStream(code.getBytes()));
-        ASTCompilationUnit acu = (ASTCompilationUnit)LanguageVersion.JAVA_14.getLanguageVersionHandler().getParser().parse(isr);
+        ASTCompilationUnit acu = (ASTCompilationUnit)LanguageVersion.JAVA_14.getLanguageVersionHandler().getParser().parse(null, isr);
         String methodName = acu.findChildrenOfType(ASTMethodDeclarator.class).get(0).getImage();
         assertEquals(new String("é".getBytes(), encoding), methodName);
     }

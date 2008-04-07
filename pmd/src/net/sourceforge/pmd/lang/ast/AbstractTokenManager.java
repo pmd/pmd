@@ -5,8 +5,8 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PMD;
 
-public class AbstractTokenManager {
-    
+public abstract class AbstractTokenManager {
+
     // Because the TokenMgrError class does not have access to the TokenManager instance, we
     // cannot store the file name as an instance field, but must use a static.
     private static ThreadLocal<String> fileName = new ThreadLocal<String>();
@@ -19,15 +19,16 @@ public class AbstractTokenManager {
     }
 
     public static String getFileName() {
-	return fileName.get();
+	String fileName = AbstractTokenManager.fileName.get();
+	return fileName == null ? "(no file name provided)" : fileName;
     }
 
     public void setExcludeMarker(String marker) {
-        this.excludeMarker = marker;
+	this.excludeMarker = marker;
     }
 
     public Map<Integer, String> getExcludeMap() {
-        return excludeMap;
+	return excludeMap;
     }
 
 }

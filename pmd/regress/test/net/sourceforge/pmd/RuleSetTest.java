@@ -354,7 +354,7 @@ public class RuleSetTest {
 
     protected List makeCompilationUnits() throws Throwable {
         List<ASTCompilationUnit> RC = new ArrayList<ASTCompilationUnit>();
-        ASTCompilationUnit cu = (ASTCompilationUnit)Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getParser().parse(new StringReader(javaCode));
+        ASTCompilationUnit cu = (ASTCompilationUnit)Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getParser().parse(null, new StringReader(javaCode));
         RC.add(cu);
         return RC;
     }

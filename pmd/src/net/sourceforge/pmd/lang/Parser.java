@@ -18,20 +18,22 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
 public interface Parser {
     /**
      * Get a TokenManager for the given source.
+     * @param fileName The file name being parsed (may be <code>null</code>).
      * @param source Reader that provides the source code to tokenize.
      * @return A TokenManager for reading token.
      */
-    TokenManager getTokenManager(Reader source);
+    TokenManager getTokenManager(String fileName, Reader source);
 
     /**
      * Parse source code and return the root node of the AST.
      *
+     * @param fileName The file name being parsed (may be <code>null</code>).
      * @param source Reader that provides the source code of a compilation unit
      * @return the root node of the AST that is built from the source code
      * @throws ParseException In case the source code could not be parsed, probably
      *                        due to syntactical errors.
      */
-    Node parse(Reader source) throws ParseException;
+    Node parse(String fileName, Reader source) throws ParseException;
 
     // TODO Document
     Map<Integer, String> getExcludeMap();

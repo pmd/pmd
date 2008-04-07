@@ -517,7 +517,7 @@ public class ClassTypeResolverTest {
 			throw new IllegalArgumentException("Unable to find source file " + sourceFile + " for " + clazz);
 		}
 		LanguageVersionHandler languageVersionHandler = LanguageVersion.JAVA_15.getLanguageVersionHandler();
-		ASTCompilationUnit acu = (ASTCompilationUnit)languageVersionHandler.getParser().parse(new InputStreamReader(is));
+		ASTCompilationUnit acu = (ASTCompilationUnit)languageVersionHandler.getParser().parse(null, new InputStreamReader(is));
 		languageVersionHandler.getSymbolFacade().start(acu);
 		languageVersionHandler.getTypeResolutionFacade(ClassTypeResolverTest.class.getClassLoader()).start(acu);
 		return acu;

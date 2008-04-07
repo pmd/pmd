@@ -117,7 +117,7 @@ public class Designer implements ClipboardOwner {
     private Node getCompilationUnit() {
 	LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
 	Parser parser = languageVersionHandler.getParser();
-	Node node = (Node) parser.parse(new StringReader(codeEditorPane.getText()));
+	Node node = (Node) parser.parse(null, new StringReader(codeEditorPane.getText()));
 	languageVersionHandler.getSymbolFacade().start(node);
 	languageVersionHandler.getTypeResolutionFacade(null).start(node);
 	return node;

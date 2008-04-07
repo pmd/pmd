@@ -21,7 +21,7 @@ public abstract class STBBaseTst {
     }
 
     protected void parseCode(String code, LanguageVersion languageVersion) {
-   	  acu = (ASTCompilationUnit)Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getParser().parse(new StringReader(code));
+   	  acu = (ASTCompilationUnit)Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getParser().parse(null, new StringReader(code));
         stb = new SymbolFacade();
         stb.initializeWith(acu);
     }

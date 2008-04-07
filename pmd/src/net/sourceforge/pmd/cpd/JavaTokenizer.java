@@ -24,8 +24,8 @@ public class JavaTokenizer implements Tokenizer {
 	ignoreIdentifiers = Boolean.parseBoolean(properties.getProperty(IGNORE_IDENTIFIERS, "false"));
     }
 
-    public void tokenize(SourceCode tokens, Tokens tokenEntries) {
-	StringBuffer buffer = tokens.getCodeBuffer();
+    public void tokenize(SourceCode sourceCode, Tokens tokenEntries) {
+	StringBuffer buffer = sourceCode.getCodeBuffer();
 
 	/*
 	I'm doing a sort of State pattern thing here where
@@ -35,7 +35,7 @@ public class JavaTokenizer implements Tokenizer {
 	*/
 	// Note that Java version is irrelevant for tokenizing
 	TokenManager tokenMgr = LanguageVersion.JAVA_14.getLanguageVersionHandler().getParser().getTokenManager(
-		new StringReader(buffer.toString()));
+		sourceCode.getFileName(), new StringReader(buffer.toString()));
 	Token currentToken = (Token) tokenMgr.getNextToken();
 	boolean inDiscardingState = false;
 	while (currentToken.image.length() > 0) {
@@ -65,7 +65,7 @@ public class JavaTokenizer implements Tokenizer {
 		if (ignoreIdentifiers && currentToken.kind == JavaParserConstants.IDENTIFIER) {
 		    image = String.valueOf(currentToken.kind);
 		}
-		tokenEntries.add(new TokenEntry(image, tokens.getFileName(), currentToken.beginLine));
+		tokenEntries.add(new TokenEntry(image, sourceCode.getFileName(), currentToken.beginLine));
 	    }
 
 	    currentToken = (Token) tokenMgr.getNextToken();

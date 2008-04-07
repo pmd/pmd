@@ -121,7 +121,7 @@ public class Benchmark {
         long start = System.currentTimeMillis();
         for (File file: files) {
             LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-            languageVersionHandler.getParser().parse(new FileReader(file));
+            languageVersionHandler.getParser().parse(file.getPath(), new FileReader(file));
         }
         long end = System.currentTimeMillis();
         long elapsed = end - start;

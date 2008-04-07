@@ -97,7 +97,7 @@ public class PMD {
 		Parser parser = languageVersionHandler.getParser();
 		parser.setExcludeMarker(excludeMarker);
 		long start = System.nanoTime();
-		Node rootNode = parser.parse(reader);
+		Node rootNode = parser.parse(ctx.getSourceCodeFilename(), reader);
 		ctx.excludeLines(parser.getExcludeMap());
 		long end = System.nanoTime();
 		Benchmark.mark(Benchmark.TYPE_PARSER, end - start, 0);

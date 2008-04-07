@@ -16,8 +16,7 @@ public class CPPTokenizer implements Tokenizer {
 	StringBuffer buffer = sourceCode.getCodeBuffer();
 	try {
 	    TokenManager tokenManager = LanguageVersion.CPP.getLanguageVersionHandler().getParser().getTokenManager(
-		    new StringReader(buffer.toString()));
-	    tokenManager.setFileName(sourceCode.getFileName());
+		    sourceCode.getFileName(), new StringReader(buffer.toString()));
 	    Token currentToken = (Token) tokenManager.getNextToken();
 	    while (currentToken.image.length() > 0) {
 		tokenEntries.add(new TokenEntry(currentToken.image, sourceCode.getFileName(), currentToken.beginLine));
