@@ -55,8 +55,8 @@ case "$HEAPSIZE" in
 esac
 
 case "$LANGUAGE" in
-cpp|c) ;;
-*) echo "Language '$LANGUAGE' unknown (try: cpp, c)"
+c|cpp|fortran|java|jsp|php|ruby) ;;
+*) echo "Language '$LANGUAGE' unknown (try: c, cpp, fortran, java, jsp, php, ruby)"
    exit 1
 esac
 
