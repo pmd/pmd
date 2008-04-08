@@ -145,6 +145,7 @@ TokenManager errors now include a file name whenever possible for every AST in P
 
 Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +
 Fixed bug 1928009 - Error using migration ruleset in PMD 4.2
+ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
 
 New rules:
 
