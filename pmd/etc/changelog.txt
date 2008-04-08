@@ -8,6 +8,7 @@ Update RuleSetWriter to handle non-Apache TRAX implementations, add an option to
 bin and java14/bin scripts:
 	retroweaver version was not correct in java14/bin scripts
 	support for extra languages in cpd.sh
+	standard unix scripts can be used with cygwin
 
 March 25, 2008 - 4.2:
 

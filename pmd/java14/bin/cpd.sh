@@ -24,12 +24,26 @@ fi
 SCRIPT_DIR=`dirname $0`
 CWD="$PWD"
 
+# OS specific support.  $var _must_ be set to either true or false.
+cygwin=false;
+case "`uname`" in
+  CYGWIN*) cygwin=true ;;
+esac
+
 cd "$SCRIPT_DIR/../../lib"
 LIB_DIR=`pwd -P`
 
 cd "$CWD"
 cd "$SCRIPT_DIR/../lib"
 RW_LIB_DIR=`pwd -P`
+
+# If cygwin, convert to Unix form before manipulating
+if $cygwin ; then
+  [ -n "$JAVA_HOME" ] &&
+    JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
+ [ -n "$CLASSPATH" ] &&
+    CLASSPATH=`cygpath --path --unix "$CLASSPATH"`
+fi
 
 classpath=$CLASSPATH
 
@@ -69,5 +83,12 @@ c|cpp|fortran|java|jsp|php|ruby) ;;
 esac
 
 # echo "CLASSPATH: $classpath"
+
+# For Cygwin, switch paths to Windows format before running java
+if $cygwin; then
+  JAVA_HOME=`cygpath --windows "$JAVA_HOME"`
+  classpath=`cygpath --path --windows "$classpath"`
+  DIRECTORY=`cygpath --windows "$DIRECTORY"`
+fi
 
 java $HEAPSIZE -cp $classpath net.sourceforge.pmd.cpd.CPD --minimum-tokens $MINIMUM_TOKENS --files $DIRECTORY --language $LANGUAGE
