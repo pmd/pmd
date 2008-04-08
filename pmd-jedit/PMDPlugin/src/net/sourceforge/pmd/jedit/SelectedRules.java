@@ -7,6 +7,7 @@ package net.sourceforge.pmd.jedit;
 
 import java.util.*;
 
+import javax.swing.JOptionPane;
 import javax.swing.tree.*;
 
 import net.sourceforge.pmd.Rule;
@@ -30,6 +31,24 @@ public class SelectedRules {
 
     private Comparator<Rule> ruleSorter = new Comparator<Rule>() {
                 public int compare( Rule r1, Rule r2 ) {
+                    if (r1 == null) {
+                        return 1;
+                    }
+                    if (r2 == null) {
+                        return -1;
+                    }
+                    return r1.getName().compareTo( r2.getName() );
+                }
+            };
+
+    private Comparator<RuleSet> rulesetSorter = new Comparator<RuleSet>() {
+                public int compare( RuleSet r1, RuleSet r2 ) {
+                    if (r1 == null) {
+                        return 1;
+                    }
+                    if (r2 == null) {
+                        return -1;
+                    }
                     return r1.getName().compareTo( r2.getName() );
                 }
             };
@@ -44,28 +63,44 @@ public class SelectedRules {
     private RuleSets selectedRules = null;
 
     /**
-     *  Constructor for the SelectedRules object
+     * Loads PMD standard rulesets and any user defined custom rulesets, creates
+     * a checkbox tree model and root tree node for the rules.
      *
-     * @exception  RuleSetNotFoundException  Description of the Exception
+     * @exception  RuleSetNotFoundException  Only thrown when loading PMD standard
+     * rulesets.  Any exception found while attempting to load a custom ruleset is
+     * caught and a message is displayed to the user.
      */
     public SelectedRules() throws RuleSetNotFoundException {
+        List<RuleSet> rulesets = new ArrayList<RuleSet>();
+
         RuleSetFactory rsf = new RuleSetFactory();
         for ( Iterator<RuleSet> i = rsf.getRegisteredRuleSets(); i.hasNext(); ) {
             RuleSet rs = i.next();
             //System.out.println("Added RuleSet " + rs.getName() + " descriprion "+ rs.getDescription() +" language "+ rs.getLanguage());
-            addRuleSet2Rules( rs );
+            rulesets.add(rs);
         }
 
-        //Load custom RuleSets if any.
-        String customRuleSetPath = jEdit.getProperty( "pmd.customRulesPath" );
-        if ( !( customRuleSetPath == null ) ) {
-            RuleSets ruleSets = rsf.createRuleSets( customRuleSetPath );
-            if ( ruleSets.getAllRuleSets() != null ) {
-                for ( int i = 0;i < ruleSets.getAllRuleSets().length;i++ ) {
-                    RuleSet rs = ruleSets.getAllRuleSets() [ i ];
-                    addRuleSet2Rules( rs );
+        // Load custom RuleSets if any, but do not die if there is any problem
+        // a custom ruleset.
+        try {
+            String customRuleSetPath = jEdit.getProperty( "pmd.customRulesPath" );
+            if ( !( customRuleSetPath == null ) ) {
+                RuleSets ruleSets = rsf.createRuleSets( customRuleSetPath );    // rsnfe
+                if ( ruleSets.getAllRuleSets() != null ) {
+                    for (RuleSet rs : ruleSets.getAllRuleSets()) {
+                        rulesets.add( rs );
+                    }
                 }
             }
+        }
+        catch(RuleSetNotFoundException e) {
+            JOptionPane.showMessageDialog(null, "There was an error loading one or more custom rulesets, so no custom rulesets were loaded", "Error Loading Custom Ruleset", JOptionPane.ERROR_MESSAGE);
+        }
+
+        // sort all rulesets by name and load the tree model and root node
+        Collections.sort( rulesets, rulesetSorter );
+        for (RuleSet rs : rulesets) {
+            addRuleSet2Rules( rs );
         }
 
         TreeModel treeModel = new DefaultTreeModel( root );
@@ -152,7 +187,7 @@ public class SelectedRules {
         List<Rule> rules = new ArrayList<Rule>( rs.getRules() );
         Collections.sort( rules, ruleSorter );
 
-        for ( Rule rule: rules ) {
+        for ( Rule rule : rules ) {
             DefaultMutableTreeNode ruleNode = new DefaultMutableTreeNode( new RuleNode( rule ) );
             node.add( ruleNode );
         }
