@@ -4,6 +4,7 @@
 Fixed bug 1928009 - Error using migration ruleset in PMD 4.2
 Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +
 ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
+Update RuleSetWriter to handle non-Apache TRAX implementations, add an option to not use XML Namespaces
 
 March 25, 2008 - 4.2:
 

@@ -30,11 +30,17 @@ import org.w3c.dom.Text;
  */
 public class RuleSetWriter {
 	private final OutputStream outputStream;
+	private final boolean outputNamespace;
 	private Document document;
 	private Set<String> ruleSetFileNames;
 
 	public RuleSetWriter(OutputStream outputStream) {
+		this(outputStream, true);
+	}
+
+	public RuleSetWriter(OutputStream outputStream, boolean outputNamespace) {
 		this.outputStream = outputStream;
+		this.outputNamespace = outputNamespace;
 	}
 
 	public void close() throws IOException {
@@ -57,7 +63,11 @@ public class RuleSetWriter {
 			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 			// This is as close to pretty printing as we'll get using standard Java APIs.
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+			try {
+			    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+			} catch (IllegalArgumentException e) {
+			    // Not Apache
+			}
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			transformer.transform(new DOMSource(document), new StreamResult(outputStream));
 		} catch (DOMException e) {
@@ -73,11 +83,15 @@ public class RuleSetWriter {
 
 	private Element createRuleSetElement(RuleSet ruleSet) {
 		Element ruleSetElement = document.createElement("ruleset");
-		ruleSetElement.setAttribute("xmlns", "http://pmd.sf.net/ruleset/1.0.0");
-		ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation",
-				"http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd");
-		ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation",
-				"http://pmd.sf.net/ruleset_xml_schema.xsd");
+		if (outputNamespace) {
+			ruleSetElement.setAttribute("language", ruleSet.getLanguage().getName());
+			// TODO Should we keep track of schema versions?
+			ruleSetElement.setAttribute("xmlns", "http://pmd.sf.net/ruleset/1.0.0");
+			ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation",
+					"http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd");
+			ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:noNamespaceSchemaLocation",
+					"http://pmd.sf.net/ruleset_xml_schema.xsd");
+		}
 		ruleSetElement.setAttribute("name", ruleSet.getName());
 
 		if (ruleSet.getLanguage() != null) {
