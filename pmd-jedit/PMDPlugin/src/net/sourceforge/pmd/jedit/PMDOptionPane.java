@@ -17,6 +17,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -73,12 +74,17 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
         // individual rules.  Using the PROPAGATE_PRESERVING_UNCHECK checking mode
         // means the ruleset will be checked if one or more of the rules it contains
         // is checked.
-        tree = new CheckboxTree( rules.getRoot() );
-        tree.getCheckingModel().setCheckingMode( TreeCheckingModel.CheckingMode.PROPAGATE_PRESERVING_UNCHECK );
-        tree.setCheckingPaths( rules.getCheckingModel().getCheckingPaths() );
-        tree.setRootVisible( false );
-        tree.addMouseMotionListener( new MyMouseMotionAdapter() );
-        rulesPanel.add( new JScrollPane( tree ), BorderLayout.CENTER );
+        if (rules != null) {
+            tree = new CheckboxTree( rules.getRoot() );
+            tree.getCheckingModel().setCheckingMode( TreeCheckingModel.CheckingMode.PROPAGATE_PRESERVING_UNCHECK );
+            tree.setCheckingPaths( rules.getCheckingModel().getCheckingPaths() );
+            tree.setRootVisible( false );
+            tree.addMouseMotionListener( new MyMouseMotionAdapter() );
+            rulesPanel.add( new JScrollPane( tree ), BorderLayout.CENTER );
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "Error loading rules. Check any custom rulesets for errors.", "Error Loading Rules", JOptionPane.ERROR_MESSAGE);
+        }
 
         // Custom Rule Panel Definition.
         JPanel pnlCustomRules = new JPanel( new FlowLayout( FlowLayout.LEFT ) );
@@ -134,7 +140,9 @@ public class PMDOptionPane extends AbstractOptionPane implements OptionPane {
     }
 
     public void _save() {
-        rules.save( tree.getCheckingModel() );
+        if (rules != null) {
+            rules.save( tree.getCheckingModel() );
+        }
 
         jEdit.setIntegerProperty( PMDJEditPlugin.JAVA_VERSION_PROPERTY,
                 javaVersionBox.getSelectedIndex() );
