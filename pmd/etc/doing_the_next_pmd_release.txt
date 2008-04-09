@@ -10,7 +10,7 @@ run version update script at the top level:
 ./etc/update_version.sh <version>
 
     tasks implemented by script:
-    update pmd.bat, designer.bat, bgastviewer.*, cygwin-run.sh, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-<version>.jar
+    update pmd.bat, designer.bat, bgastviewer.*, cpd.jnlp, cpdgui.bat, build.xml to point to pmd-<version>.jar
     update PMD.java, xdocs/running.xml, compiling.xml, integrations.xml, installing.xml to reflect pmd-<version>
     update the release date in the changelog
     update release number and tag name in project.xml

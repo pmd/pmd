@@ -35,10 +35,10 @@ mkdir -p $pmd_bin_dir/java14/lib
 mkdir $pmd_bin_dir/java14/bin
 cp ../LICENSE.txt changelog.txt $pmd_bin_dir/etc
 cd ../bin/
-cp pmd.* cygwin-run.sh build.xml cpd.sh cpdgui.bat designer.* $pmd_bin_dir/bin
+cp pmd.* build.xml cpd.sh cpdgui.bat designer.* $pmd_bin_dir/bin
 cd ../etc/
 cp ../java14/lib/*.jar $pmd_bin_dir/java14/lib/
-cp ../java14/bin/*.bat ../java14/bin/*.sh $pmd_bin_dir/java14/bin/
+cp ../java14/bin/cpd* ../java14/bin/pmd.* ../java14/bin/designer.* $pmd_bin_dir/java14/bin/
 chmod 755 $pmd_bin_dir/java14/bin/*
 cp ../lib/pmd-$version.jar ../lib/asm-3.1.jar ../lib/jaxen-1.1.1.jar ../lib/junit-4.4.jar $pmd_bin_dir/lib/
 mkdir $pmd_bin_dir/etc/xslt

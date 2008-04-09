@@ -1,10 +1,24 @@
 #!/bin/bash
 
+# OS specific support.  $var _must_ be set to either true or false.
+cygwin=false;
+case "`uname`" in
+  CYGWIN*) cygwin=true ;;
+esac
+
 SCRIPT_DIR=`dirname $0`
 CWD="$PWD"
 
 cd "$SCRIPT_DIR/../lib"
 LIB_DIR=`pwd -P`
+
+# If cygwin, convert to Unix form before manipulating
+if $cygwin ; then
+  [ -n "$JAVA_HOME" ] &&
+    JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
+ [ -n "$CLASSPATH" ] &&
+    CLASSPATH=`cygpath --path --unix "$CLASSPATH"`
+fi
 
 classpath=$CLASSPATH
 
@@ -30,5 +44,10 @@ shift
 RULESETFILES="$@"
 
 # echo "CLASSPATH: $classpath"
+
+# For Cygwin, switch paths to Windows format before running java
+if $cygwin; then
+  classpath=`cygpath --path --windows "$classpath"`
+fi
 
 java -cp $classpath net.sourceforge.pmd.util.designer.Designer
