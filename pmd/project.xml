@@ -4,7 +4,7 @@
 	<pomVersion>3</pomVersion>
 	<id>pmd</id>
 	<name>PMD</name>
-	<currentVersion>4.2</currentVersion>
+	<currentVersion>4.2.1</currentVersion>
 	<organization>
 		<name>InfoEther</name>
 		<url>http://pmd.sourceforge.net/</url>
@@ -43,9 +43,9 @@
 
 	<versions>
 		<version>
-			<id>4.2</id>
-			<name>4.2</name>
-			<tag>pmd_release_4_2</tag>
+			<id>4.2.1</id>
+			<name>4.2.1</name>
+			<tag>pmd_release_4_2_1</tag>
 		</version>
 		<version>
 			<id>dev</id>
