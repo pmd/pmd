@@ -5,6 +5,7 @@ Fixed bug 1928009 - Error using migration ruleset in PMD 4.2
 Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +
 ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
 Update RuleSetWriter to handle non-Apache TRAX implementations, add an option to not use XML Namespaces
+Added file encoding option to CPD GUI, which already existed for the command line and Ant
 bin and java14/bin scripts:
 	retroweaver version was not correct in java14/bin scripts
 	support for extra languages in cpd.sh
