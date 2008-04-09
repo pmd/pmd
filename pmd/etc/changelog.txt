@@ -142,6 +142,7 @@ Other changes:
 The default Java version processed by PMD is now uniformly Java 1.5.
 RuleViolations in Reports now uses List internally, and RuleViolationComparator is no longer broken
 TokenManager errors now include a file name whenever possible for every AST in PMD
+Added file encoding option to CPD GUI, which already existed for the command line and Ant
 
 Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +
 Fixed bug 1928009 - Error using migration ruleset in PMD 4.2

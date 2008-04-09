@@ -221,6 +221,7 @@ public class GUI implements CPDListener {
     
     private JTextField rootDirectoryField	= new JTextField(System.getProperty("user.home"));
     private JTextField minimumLengthField	= new JTextField(Integer.toString(defaultCPDMinimumLength));
+    private JTextField encodingField		= new JTextField(System.getProperty("file.encoding"));
     private JTextField timeField			= new JTextField(6);
     private JLabel phaseLabel				= new JLabel();
     private JProgressBar tokenizingFilesBar = new JProgressBar();
@@ -350,6 +351,13 @@ public class GUI implements CPDListener {
         helper.add(ignoreLiteralsCheckbox);
         helper.add(goButton);
         helper.add(cxButton);
+        helper.nextRow();
+
+        helper.addLabel("File encoding (defaults based upon locale):");
+        encodingField.setColumns(1);
+        helper.add(encodingField);
+        helper.addLabel("");
+        helper.addLabel("");
         helper.nextRow();
 //        settingsPanel.setBorder(BorderFactory.createTitledBorder("Settings"));
         return settingsPanel;
@@ -510,6 +518,7 @@ public class GUI implements CPDListener {
             LanguageConfig conf = languageConfigFor((String)languageBox.getSelectedItem());
             Language language = conf.languageFor(new LanguageFactory(), p);
             CPD cpd = new CPD(Integer.parseInt(minimumLengthField.getText()), language);
+            cpd.setEncoding(encodingField.getText());
             cpd.setCpdListener(this);
             tokenizingFilesBar.setMinimum(0);
             phaseLabel.setText("");

@@ -50,7 +50,9 @@
  will be seen as equivalent.  You may want to run PMD with this option off to start with and
            then switch it on to see what it turns up.   There's also a <code>ignoreIdentifiers="true"</code> option
            that does the same thing with identifiers; i.e., variable names, methods names, and so forth.
-           The same guidelines apply.  Finally, there's an optional <code>language="cpp|java|php|ruby"</code> flag
+           The same guidelines apply.  There's also an <code>encoding</code> option which allows the encoding used
+           when parsing files to  be specified; the default is based upon the locale.
+           Finally, there's an optional <code>language="cpp|java|php|ruby"</code> flag
            to select the appropriate language; the default language is "java".
  </p>
        <p>Also, you can get verbose output from this task by running ant with the <code>-v</code> flag; i.e.:</p>
@@ -84,6 +86,10 @@ $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/other/s
            you can skip those using --skip-duplicate-files:</p>
            <source>
 $ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /path/to/c/source --language cpp --skip-duplicate-files
+           </source>
+           <p>You can also the encoding to use when parsing files:</p>
+           <source>
+$ java net.sourceforge.pmd.cpd.CPD --minimum-tokens 100 --files /usr/local/java/src/java --encoding utf-16le
            </source>
            <p>You can also specify a report format - here we're using the XML report:</p>
            <source>
