@@ -84,7 +84,6 @@ public class RuleSetWriter {
 	private Element createRuleSetElement(RuleSet ruleSet) {
 		Element ruleSetElement = document.createElement("ruleset");
 		if (outputNamespace) {
-			ruleSetElement.setAttribute("language", ruleSet.getLanguage().getName());
 			// TODO Should we keep track of schema versions?
 			ruleSetElement.setAttribute("xmlns", "http://pmd.sf.net/ruleset/1.0.0");
 			ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation",
