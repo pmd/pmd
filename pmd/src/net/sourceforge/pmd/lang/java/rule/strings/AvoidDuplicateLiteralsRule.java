@@ -3,10 +3,6 @@
  */
 package net.sourceforge.pmd.lang.java.rule.strings;
 
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
-import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -19,7 +15,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
+import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.properties.BooleanProperty;
+
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
+    
+    private static final PropertyDescriptor SKIP_ANNOTATIONS = new BooleanProperty("skipAnnotations",
+	    "Skip literals within Annotations.", false, 1.0f);
+
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] { SKIP_ANNOTATIONS });
 
     public static class ExceptionParser {
 
@@ -122,6 +130,11 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
             return data;
         }
 
+        // Skip literals in annotations
+        if (getBooleanProperty(SKIP_ANNOTATIONS) && node.getFirstParentOfType(ASTAnnotation.class) != null) {
+            return data;
+        }
+
         if (literals.containsKey(node.getImage())) {
             List<ASTLiteral> occurrences = literals.get(node.getImage());
             occurrences.add(node);
@@ -132,6 +145,11 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
         }
 
         return data;
+    }
+
+    @Override
+    protected Map<String, PropertyDescriptor> propertiesByName() {
+	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }
 
