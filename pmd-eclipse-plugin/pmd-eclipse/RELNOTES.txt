@@ -1,6 +1,6 @@
 Release notes for the PMD Eclipse Plugin
 ----------------------------------------
-v3.2.4 Mar ?? 2008
+v3.2.4 April 11 2008
 ------------------
 
 NEW
@@ -16,7 +16,7 @@ Eclipse JVM must be able to read the version of .class files produced by the Pro
 UPDATE
 ------
 
-PMD to 4.2
+PMD to 4.2.1
 
 FIXED
 -----
