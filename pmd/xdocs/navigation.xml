@@ -30,6 +30,7 @@
       <item name="Ant task usage" href="/ant-task.html" />
       <item name="Maven plugin usage" href="/maven-plugin.html" />
       <item name="Mvn plugin usage" href="/mvn-plugin.html" />
+      <item name="Continuous Integration Plugins" href="/ci-plugins.html" />
       <item name="IDE plugin usage" href="/integrations.html" />
       <item name="Suppressing warnings" href="/suppressing.html" />
       <item name="Finding duplicated code" href="/cpd.html" />
