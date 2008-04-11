@@ -40,4 +40,41 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+duplicate literals in annotations
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+public class Foo {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+duplicate literals in annotations, skipped
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="skipAnnotations">true</rule-property>
+        <code><![CDATA[
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+public class Foo {
+}
+     ]]></code>
+    </test-code>
 </test-data>
