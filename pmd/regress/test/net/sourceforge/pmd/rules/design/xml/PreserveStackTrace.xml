@@ -162,8 +162,8 @@ public class Foo {
     public void foo(String a) {
         try {
             int i = Integer.parseInt(a);
-        } catch(Exception e){
-            Exception e1 = new Exception(e);
+        } catch(Exception e10){
+            Exception e1 = new Exception(e10);
             throw e1;
         }
     }
@@ -243,4 +243,63 @@ public class B {
 }
      ]]></code>
     </test-code>
+
+	<test-code>
+        <description><![CDATA[
+15, IllegalStateException does not have any constructor which takes original exception.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+			;
+        } catch (Exception excep) {
+			throw new IllegalStateException();
+	}
+
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+16, False -, No violations reported by PreserveStackTrace Rule
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+			;
+        } catch (Exception notUsed) {
+			RuntimeException ex = new RuntimeException();
+			throw ex;
+		}
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+17, PreserveStackTrace Rule should exclude this as initCause is used.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+			;
+        } catch (Exception e) {
+			IllegalStateException ex = new IllegalStateException();
+			ex.initCause(e);
+			throw ex;
+		}
+    }
+}
+     ]]></code>
+    </test-code>
+
 </test-data>
