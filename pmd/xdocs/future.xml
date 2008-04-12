@@ -12,6 +12,7 @@
         <p>This roadmap contains all the different 'workshops' PMD's developers are working right now.
         	<ul>
         		<li><b>TypeResolution Framework</b>: A framework to ease type resolution of a variable in both XPath and Java Rules.</li>
+        		<li><b>Refactoring to support multiple languages</b>: PMD is under refactoring and PMD 5.0 will provide support to analyse other source code such as ECMAScript(Javascript)</li>
         		<li><b>pmd-jerry</b>: An XPath2 engine for PMD.</li>
         		<li><b>Migration to Maven 2</b>: Hardly a user-feature but worth mentioning here.</li>
         		<li><b>French version of this website</b></li>

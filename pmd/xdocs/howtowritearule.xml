@@ -343,12 +343,54 @@ public class WhileLoopsMustUseBracesRule extends AbstractRule {
 		</p>
 	</subsection>
 <!--
-TODO: TR documentation
+TR documentation, clearly not finished ! -->
 	<subsection name="I need somekind of Type Resolution for my rule !">
-		<p>
-		</p>
+		<ol>
+		 <li>Inside an XPath query
+			<p>
+			PMD XPath syntax includes now a new function called <i>typeof</i> which determines if a node (ClassOrInterfaceType only right now)
+			is of the provided type.
+			it also scans the type's hierarchy, so if you extend a class it will also find this out.
+			</p>
+			<p>
+			Here a an example of use, inside an XPath Query:
+				<source>
+					<![CDATA[
+//ClassOrInterfaceDeclaration[
+	//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')]
+]
+					]]>
+				</source>
+			This query will match on such source code:
+				<source>
+					<![CDATA[
+import junit.framework.TestCase;
+
+public class Foo extends TestCase { }
+					]]>
+				</source>
+			</p></li>
+			<!-- I'm not the following documentation is correct.
+			<li>With Java code:
+			<p>Below an other sample of use of type resolution inside a java code:
+				<source>
+					<![CDATA[
+/**
+ * A simple to detect the use of the class 'com.forbidden.class'.
+ */
+@SuppressWarnings("unchecked")
+public Object visit(ASTClassOrInterfaceType type, Object ruleCtx) {
+   			Class clazz = type.getType();
+   			if ( "com.forbidden.class".equals(clazz.getName()) )
+   					addViolation(ruleCtx,type);
+   			return super.visit(type, ruleCtx);
+   }
+    				]]>
+				</source>
+			</p>
+			</li> -->
+		</ol>
 	</subsection>
--->
 
     <subsection name="Bundle it up">
         <p>To use your rules as part of a nightly build or whatever, it's helpful to bundle up both

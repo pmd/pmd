@@ -13,6 +13,11 @@
     <section name="Hudson Plugin">
     	<p>Hafner Ullrich has developed a <a href="http://hudson.gotdns.com/wiki/display/HUDSON/PMD+Plugin">PMD plugin</a> for Hudson. Please check the plugin homepage for more info.</p>
    	</section>
+    <section name="Continuum">
+    	<p>Continous does not have a plugin for PMD per see, but can failed the build according to the result of the PMD maven plugin.</p>
+   	</section>
+
    	<!-- TODO: Find out about other plugins ? -->
+
  </body>
 </document>
