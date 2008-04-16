@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java;
 import java.io.Reader;
 import java.util.Map;
 
-import test.net.sourceforge.pmd.testframework.AbstractTokenizerTest;
-
 import net.sourceforge.pmd.lang.AbstractParser;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.AbstractTokenManager;
