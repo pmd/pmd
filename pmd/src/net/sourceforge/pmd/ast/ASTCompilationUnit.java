@@ -2,6 +2,7 @@
 
 package net.sourceforge.pmd.ast;
 
+import java.util.List;
 import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
 
 // FUTURE Change this class to extend from SimpleJavaNode, as TypeNode is not appropriate (unless I'm wrong)
@@ -17,6 +18,15 @@ public class ASTCompilationUnit extends SimpleJavaTypeNode implements Compilatio
         super(p, id);
     }
 
+    private List<Token> formalComments;
+
+    public List<Token> getFormalComments() {
+        return formalComments;
+    }
+
+    public void setFormalComments(List<Token> formalComments) {
+        this.formalComments = formalComments;
+    }
 
     /**
      * Accept the visitor. *
