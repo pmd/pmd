@@ -190,11 +190,13 @@ imports used in javadoc comment
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.LinkedList;
 import java.util.File;
 public class Foo {
 	/**
 	 * {@linkplain  List list} 
 	 * {@link  ArrayList  arraylist} 
+	 * {@link  LinkedList} 
 	 * {@value  Calendar#DATE} 
 	 * @see File
 	 */
