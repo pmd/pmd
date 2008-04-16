@@ -171,6 +171,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       jj_consume_token(0);
   jjtree.closeNodeScope(jjtn000, true);
   jjtc000 = false;
+ jjtn000.setFormalComments(token_source.formalComments);
  {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -6227,22 +6228,6 @@ jjtn000.setModifiers(modifiers);
     finally { jj_save(50, xla); }
   }
 
-  private boolean jj_3R_259() {
-    if (jj_3R_262()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_276()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_240() {
-    if (jj_scan_token(SC_OR)) return true;
-    if (jj_3R_205()) return true;
-    return false;
-  }
-
   private boolean jj_3R_253() {
     if (jj_3R_259()) return true;
     Token xsp;
@@ -8037,6 +8022,15 @@ jjtn000.setModifiers(modifiers);
     return false;
   }
 
+  private boolean jj_3R_188() {
+    if (jj_scan_token(WHILE)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    if (jj_3R_88()) return true;
+    if (jj_scan_token(RPAREN)) return true;
+    if (jj_3R_91()) return true;
+    return false;
+  }
+
   private boolean jj_3_1() {
     Token xsp;
     while (true) {
@@ -8044,15 +8038,6 @@ jjtn000.setModifiers(modifiers);
       if (jj_3R_52()) { jj_scanpos = xsp; break; }
     }
     if (jj_scan_token(PACKAGE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_188() {
-    if (jj_scan_token(WHILE)) return true;
-    if (jj_scan_token(LPAREN)) return true;
-    if (jj_3R_88()) return true;
-    if (jj_scan_token(RPAREN)) return true;
-    if (jj_3R_91()) return true;
     return false;
   }
 
@@ -9315,6 +9300,22 @@ jjtn000.setModifiers(modifiers);
   private boolean jj_3R_258() {
     if (jj_scan_token(SC_AND)) return true;
     if (jj_3R_222()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_259() {
+    if (jj_3R_262()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_276()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_240() {
+    if (jj_scan_token(SC_OR)) return true;
+    if (jj_3R_205()) return true;
     return false;
   }
 

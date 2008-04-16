@@ -165,6 +165,11 @@ public class JavaParser {
 }
 PARSER_END(JavaParser)
 
+TOKEN_MGR_DECLS :
+{
+    protected List<Token> formalComments = new ArrayList<Token>();
+}
+
 /* WHITE SPACE */
 
 SPECIAL_TOKEN :
@@ -195,7 +200,7 @@ MORE :
 <IN_FORMAL_COMMENT>
 SPECIAL_TOKEN :
 {
-  <FORMAL_COMMENT: "*/" > : DEFAULT
+  <FORMAL_COMMENT: "*/" > { formalComments.add(matchedToken); } : DEFAULT
 }
 
 <IN_MULTI_LINE_COMMENT>
@@ -1068,6 +1073,7 @@ ASTCompilationUnit CompilationUnit() :
   ( < "~[]" > )?
   <EOF>
 {
+ jjtThis.setFormalComments(token_source.formalComments);
  return jjtThis;
 }
 }

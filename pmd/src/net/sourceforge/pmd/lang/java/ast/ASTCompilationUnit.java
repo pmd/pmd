@@ -2,6 +2,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.List;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
 
@@ -18,6 +19,15 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
         super(p, id);
     }
 
+    private List<Token> formalComments;
+ 
+    public List<Token> getFormalComments() {
+        return formalComments;
+    }
+
+    public void setFormalComments(List<Token> formalComments) {
+        this.formalComments = formalComments;
+    }
 
     /**
      * Accept the visitor. *

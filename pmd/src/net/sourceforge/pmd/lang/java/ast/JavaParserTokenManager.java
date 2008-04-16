@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.ast.TokenMgrError;
 /** Token Manager. */
 public class JavaParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager implements JavaParserConstants
 {
+    protected List<Token> formalComments = new ArrayList<Token>();
 
   /** Debug output. */
   public  java.io.PrintStream debugStream = System.out;
@@ -2043,6 +2044,10 @@ void SkipLexicalActions(Token matchedToken)
         if (startOfNOPMD != -1) {
             excludeMap.put(matchedToken.beginLine, matchedToken.image.substring(startOfNOPMD + excludeMarker.length()));
         }
+         break;
+      case 9 :
+         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                            formalComments.add(matchedToken);
          break;
       default :
          break;
