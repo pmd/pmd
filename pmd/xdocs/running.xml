@@ -13,7 +13,7 @@
     		<li>Type pmd [filename|jar or zip file containing source code|directory] [report format] [ruleset file], i.e:</li>
     		<br/>
     			<source>
-C:\tmp\pmd-4.2\pmd\bin&gt;pmd c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
+C:\tmp\pmd-5.0\pmd\bin&gt;pmd c:\data\pmd\pmd\test-data\Unused1.java xml rulesets/unusedcode.xml
 &lt;?xml version="1.0"?&gt;&lt;pmd&gt;
 &lt;file name="c:\data\pmd\pmd\test-data\Unused1.java"&gt;
 &lt;violation line="5" rule="UnusedLocalVariable"&gt;
@@ -21,7 +21,7 @@ Avoid unused local variables such as 'fr'
 &lt;/violation&gt;
 &lt;/file&gt;&lt;/pmd&gt;
 
-C:\tmp\pmd-4.2\pmd\bin&gt;
+C:\tmp\pmd-5.0\pmd\bin&gt;
 				</source>
        <p>You can pass a file name, a directory name, or a jar or zip file name containing Java source code to PMD.</p>
        <p>Also, the PMD binary distribution includes the ruleset files
@@ -31,7 +31,7 @@ C:\tmp\pmd-4.2\pmd\bin&gt;
 
        <li>If you are want to run PMD without the batch file, you can do a:</li>
        <source>
-C:\data\pmd\pmd>java -cp lib\pmd-4.2.jar;lib\jaxen-1.1.1.jar;lib\asm-3.1.jar
+C:\data\pmd\pmd>java -cp lib\pmd-5.0.jar;lib\jaxen-1.1.1.jar;lib\asm-3.1.jar
                      net.sourceforge.pmd.PMD
                      c:\j2sdk1.4.1_01\src\java\lang xml
                      rulesets/imports.xml
