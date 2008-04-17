@@ -1,0 +1,330 @@
+<?xml version="1.0"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://maven.apache.org/xsd/maven-project-3.0.0.xsd">
+	<pomVersion>3</pomVersion>
+	<id>pmd</id>
+	<name>PMD</name>
+	<currentVersion>4.2</currentVersion>
+	<organization>
+		<name>InfoEther</name>
+		<url>http://pmd.sourceforge.net/</url>
+		<logo>http://sourceforge.net/sflogo.php?group_id=56262&amp;type=5</logo>
+	</organization>
+	<inceptionYear>2002</inceptionYear>
+	<package>net.sourceforge.pmd</package>
+	<logo>/images/pmd_logo_small.jpg</logo>
+	<description>
+		<![CDATA[
+<p>PMD scans Java source code and looks for potential problems like:</p>
+<ul>
+  <li>Possible bugs - empty try/catch/finally/switch statements</li>
+  <li>Dead code - unused local variables, parameters and private methods</li>
+  <li>Suboptimal code - wasteful String/StringBuffer usage</li>
+  <li>Overcomplicated expressions - unnecessary if statements, for loops that could be while loops</li>
+  <li>Duplicate code - copied/pasted code means copied/pasted bugs</li>
+</ul>
+<p>You can <b><a href="http://sourceforge.net/project/showfiles.php?group_id=56262">download everything from here</a></b>, and you can get an overview of all the rules at the <a href="rules/index.html">rulesets index</a> page.</p>
+<p>PMD is <a href="integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
+<p>Welcome <a href="http://bluej.org/">BlueJ</a> users!  Notes on installing the PMD extension for BlueJ are <a href="integrations.html#bluej">here</a>.</p>
+	]]>
+	</description>
+	<shortDescription>Java Static Analysis Tool</shortDescription>
+	<url>http://pmd.sourceforge.net/</url>
+	<issueTrackingUrl>http://www.sourceforge.net/tracker/?group_id=56262</issueTrackingUrl>
+	<siteAddress>pmd.sourceforge.net</siteAddress>
+	<siteDirectory>/home/groups/p/pm/pmd/htdocs</siteDirectory>
+	<distributionDirectory>/home/groups/p/pm/pmd/</distributionDirectory>
+
+	<repository>
+		<connection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd</connection>
+		<developerConnection>scm:svn:https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd</developerConnection>
+		<url>http://pmd.svn.sourceforge.net/viewvc/pmd/</url>
+	</repository>
+
+	<versions>
+		<version>
+			<id>4.2</id>
+			<name>4.2</name>
+			<tag>pmd_release_4_2</tag>
+		</version>
+		<version>
+			<id>dev</id>
+			<name>dev</name>
+			<tag>HEAD</tag>
+		</version>
+	</versions>
+
+	<branches>
+	</branches>
+
+	<mailingLists>
+		<mailingList>
+			<name>PMD development</name>
+			<subscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</subscribe>
+			<unsubscribe>http://lists.sourceforge.net/lists/listinfo/pmd-devel</unsubscribe>
+			<archive>http://sourceforge.net/mailarchive/forum.php?forum=pmd-devel</archive>
+		</mailingList>
+	</mailingLists>
+
+	<developers>
+		<developer>
+			<name>Tom Copeland</name>
+			<id>tomcopeland</id>
+			<email>tom@infoether.com</email>
+			<organization>InfoEther</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+
+		<developer>
+			<name>David Dixon-Peugh</name>
+			<id>dpeugh</id>
+			<email>ddp@apache.org</email>
+			<organization>Lockheed Martin Corporation</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+
+		<developer>
+			<name>Ole-Martin Mork</name>
+			<id>olemartin</id>
+			<email>olemartin@users.sourceforge.net</email>
+			<organization>Bekk Consulting</organization>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+
+		<developer>
+			<name>Miguel Griffa</name>
+			<id>mikkey</id>
+			<email>mikkey@users.sourceforge.net</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+
+		<developer>
+			<name>Philippe Herlin</name>
+			<id>phherlin</id>
+			<email>phherlin@users.sourceforge.net</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+
+		<developer>
+			<name>Jiger Patel</name>
+			<id>jigerjava</id>
+			<email>jigerjava@users.sourceforge.net</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+
+		<developer>
+			<name>Radim Kubacki</name>
+			<id>kubacki</id>
+			<email>kubacki@users.sourceforge.net</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+
+		<developer>
+			<name>Tomasz Slota</name>
+			<id>tomslot</id>
+			<email>tomslot@users.sourceforge.net</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+
+		<developer>
+			<name>Alan Ezust</name>
+			<id>tomslot</id>
+			<email>ezust@users.sourceforge.net</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+
+		<developer>
+			<name>Nascif Abousalh Neto</name>
+			<id>nascif</id>
+			<email>nascif@users.sourceforge.net</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+		</developer>
+
+        <developer>
+            <name>Allan Caplan</name>
+            <id>allancaplan</id>
+            <email>allancaplan@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Sven Jacob</name>
+            <id>holobender</id>
+            <email>holobender@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Wouter Zelle</name>
+            <id>wfzelle</id>
+            <email>wfzelle@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Brian Remedios</name>
+            <id>hooperbloob</id>
+            <email>hooperbloob@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Xavier Le Vourch</name>
+            <id>xlv</id>
+            <email>xlv@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Ryan Gustafson</name>
+            <id>rgustav</id>
+            <email>rgustav@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+            <name>Johan Nagels</name>
+            <id>bluejohn</id>
+            <email>bluejohn@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+          <name>Torsten Kleiber</name>
+            <id>tkleiber</id>
+            <email>tkleiber@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+
+        <developer>
+          <name>Romain Pelisse</name>
+            <id>rpelisse</id>
+            <email>rpelisse@users.sourceforge.net</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+	</developers>
+
+
+	<contributors></contributors>
+
+	<!-- Need to mark these as compile-time/run-time -->
+
+	<dependencies>
+		<dependency>
+			<id>ant</id>
+			<version>1.6</version>
+		</dependency>
+		<dependency>
+			<id>jaxen</id>
+			<version>1.1.1</version>
+		</dependency>
+    <dependency>
+      <id>asm</id>
+      <version>3.1</version>
+    </dependency>
+    <dependency>
+      <id>junit</id>
+      <version>4.4</version>
+    </dependency>
+	</dependencies>
+
+	<build>
+		<nagEmailAddress>tom@infoether.com</nagEmailAddress>
+		<sourceDirectory>src</sourceDirectory>
+		<unitTestSourceDirectory>regress</unitTestSourceDirectory>
+		<integrationUnitTestSourceDirectory/>
+
+		<unitTest>
+			<includes>
+				<include>**/*Test.java</include>
+			</includes>
+			<resources>
+				<resource>
+					<directory>${basedir}/regress/</directory>
+					<includes>
+						<include>**/*.xml</include>
+					</includes>
+				</resource>
+			</resources>
+		</unitTest>
+
+		<resources>
+			<resource>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>rulesets/*.xml</include>
+					<include>rulesets/*.properties</include>
+					<include>etc/pmd-nicerhtml.xsl</include>
+				</includes>
+			</resource>
+			<!-- is this for including sources in jar?
+			<resource>
+				<includes>
+					<include>*.java</include>
+					<include>*.xml</include>
+				</includes>
+			</resource>
+			-->
+		</resources>
+
+	</build>
+	<reports>
+		<report>maven-javadoc-plugin</report>
+		<report>maven-jxr-plugin</report>
+		<report>maven-junit-report-plugin</report>
+		<report>maven-clover-plugin</report>
+		<report>maven-file-activity-plugin</report>
+		<report>maven-developer-activity-plugin</report>
+		<report>maven-faq-plugin</report>
+		<report>maven-pmd-plugin</report>
+
+		<!-- interesting to add later
+		<report>maven-changes-plugin</report>
+		<report>maven-jdepend-plugin</report>
+		<report>maven-findbugs-plugin</report>
+		<report>maven-linkcheck-plugin</report>
+		<report>maven-changelog-plugin</report>
+
+		stats - need more deps to add some of these
+		<report>maven-javancss-plugin</report>
+		-->
+	</reports>
+</project>
