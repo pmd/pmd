@@ -1,59 +1,37 @@
 #!/bin/bash
-
+DOCS_FILE="docs.tar.gz"
+currentVersion=4.2
 option="${1}"
 
+function tarball-docs() {
+	cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/site/
+	cd target
+	rm -f ${DOCS_FILE}
+	tar zcf ${DOCS_FILE} site
+    	echo "Starting secure copy to ${1}"
+	scp ${DOCS_FILE} ${1}
+	cd ../
+}
+
 if [ -z $option ]; then
-  echo "Generating from pom, regenerating ruleset docs, and transforming"
-  ruby munge_rulesets.rb
-  maven -qb pmd:rulesets-index xdoc:generate-from-pom 
-  maven -qb pmd:ruleset-docs 
-  rm -f rulesets/*.xml
-  svn up rulesets
-  maven -qb xdoc:transform 
-elif [ $option = "all" ]; then
-  echo "Running maven site"
-  rm -rf target
-  ruby munge_rulesets.rb
-  maven -qb site
-  rm -f rulesets/*.xml
-  svn up rulesets
+	echo "Generating from pom, regenerating ruleset docs, and transforming"
+	mvn clean site 
 elif [ $option = "uploadcurrent" ]; then
-  echo "Generating and uploading maven artifacts"
-  mvn -q source:jar javadoc:jar deploy
-  mvn -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2.beta -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-5.0.jar -DpomFile=pmd-jdk14-pom.xml
-  echo "Generating xdocs and uploading"
-  ruby munge_rulesets.rb
-  maven -qb pmd:rulesets-index xdoc:generate-from-pom 
-  maven -qb pmd:ruleset-docs 
-  rm -f rulesets/*.xml
-  svn up rulesets
-  maven -qb xdoc:transform 
-  DOCS_FILE=docs.tar.gz
-  cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
-  cd target
-  rm -f $DOCS_FILE
-  tar zcf $DOCS_FILE docs/
-  scp $DOCS_FILE pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/current/
-  cd ../
-  ssh pmd.sourceforge.net "cd /home/groups/p/pm/pmd/htdocs/current/ && tar -zxf docs.tar.gz && cp -R docs/* . && rm -rf docs && rm docs.tar.gz"
+	echo "Generating and uploading maven artifacts"
+	mvn -q source:jar javadoc:jar deploy
+	ant -f tools/ant/generate-jdk4-pom.xml
+	mvn -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-${currentVersion}.jar -DpomFile=target/pmd-jdk14-pom.xml
+  	echo "Generating xdocs and uploading"
+	mvn site 
+	tarball-docs 'pmd.sourceforge.net:/home/groups/p/pm/pmd/htdocs/current/'
+	ssh pmd.sourceforge.net "cd /home/groups/p/pm/pmd/htdocs/current/ && tar -zxf ${DOCS_FILE} && cp -R site/* . && rm -rf site/ && rm ${DOCS_FILE}"
 elif [ $option = "upload" ]; then
-  echo "Generating and uploading maven artifacts"
-  mvn -q source:jar javadoc:jar deploy
-  mvn -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2.beta -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-5.0.jar -DpomFile=pmd-jdk14-pom.xml
-  echo "Uploading xdocs"
-  DOCS_FILE=docs.tar.gz
-  cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
-  cd target
-  rm -f $DOCS_FILE
-  tar zcf $DOCS_FILE docs/
-    echo "Starting secure copy"
-  scp $DOCS_FILE pmd.sourceforge.net:/home/groups/p/pm/pmd/
-  cd ../
-  ssh pmd.sourceforge.net "cd /home/groups/p/pm/pmd/ &&  rm -rf xref && rm -rf apidocs && ./update_docs.sh"
-fi
-if [ -e velocity.log ]; then
-  rm velocity.log
-fi
-if [ -e maven.log ]; then
-  rm maven.log
+	echo "Generating and uploading maven artifacts"
+	mvn -q source:jar javadoc:jar deploy
+	mkdir -p target
+	ant -f tools/ant/generate-jdk4-pom.xml
+	mvn -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-${currentVersion}.jar -DpomFile=target/pmd-jdk14-pom.xml
+  	echo "Uploading xdocs"
+	tarball-docs 'pmd.sourceforge.net:/home/groups/p/pm/pmd/'
+	ssh pmd.sourceforge.net "cd /home/groups/p/pm/pmd/ &&  rm -rf xref && rm -rf apidocs && ./update_docs.sh"
 fi
