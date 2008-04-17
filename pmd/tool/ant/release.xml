@@ -1,0 +1,40 @@
+<project name="generate-jdk4-pom"
+		 default="release">
+
+	<target name="release">
+	 	<mkdir dir="${dist.bin.dir}"/>
+        <copy todir="${dist.bin.dir}">
+			<fileset>
+				<include name="${lib}/*.jar"/>
+				<include name="${docs.dir}/docs/**"/>
+				<exclude name=".svn"/>
+			</fileset>
+        </copy>
+
+        <copy todir="${dist.bin.dir}">
+        	<fileset dir="src_dir">
+        		<exclude name=".svn"/>
+        		<include name="${lib}/*.jar"/>
+				<include name="${docs.dir}/docs/**"/>
+        	</fileset>
+        </copy>
+
+        <copy todir="${dist.bin.dir}/lib">
+            <fileset dir="${maven.build.dir}">
+            	<include name="pmd-*.jar"/>
+            </fileset>
+        </copy>
+		<!--
+        <ant:chmod perm="uga+x">
+            <ant:fileset dir="${dist.bin.dir}/etc" includes="*.sh"/>
+        </ant:chmod>
+        -->
+		<ant:zip basedir="${dist.bin.dir}" destfile="${dist.bin.dir}.zip"/>
+        <echo>******************************************************************</echo>
+        <echo>* </echo>
+        <echo>* Binary distribution built in ${dist.bin.dir}</echo>
+        <echo>* </echo>
+        <echo>* packaged into ${dist.bin.dir}.zip </echo>
+        <echo>* </echo>
+	</target>
+</project>

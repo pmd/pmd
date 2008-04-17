@@ -1,0 +1,23 @@
+<project name="generate-jdk4-pom"
+		 default="generate-pom-java4">
+	<!--
+		This scripts required two property:
+		pom : orignal pom to transform
+		output : filename for generated pom file
+	 -->
+	 <target name="transform">
+	 	<delete file="${output}"/>
+	 	<xslt 	in="${pom}"
+	 			out="${output}"
+	 			style="../../tool/xslt/generate-pom-jdk4.xsl"/>
+	 </target>
+
+	 <target name="generate-pom-java4">
+	 	<antcall target="transform">
+	 		<param name="pom"	value="../../pom.xml"/>
+	 		<param name="output" value="../../target/pom-jdk4.xml"/>
+	 	</antcall>
+	 </target>
+
+
+</project>
