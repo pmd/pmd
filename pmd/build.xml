@@ -1,4 +1,4 @@
-<project name="pmd" default="test" basedir="../">
+<project name="pmd" default="test" basedir=".">
 
 	<property file="bin/local.properties" />
 
@@ -6,16 +6,20 @@
 	<property name="dir.lib14" value="${basedir}/java14/lib/" />
 	<property name="dir.src" value="src/" />
 	<property name="dir.build" value="build/" />
-	<property name="dir.target" value="target/" />
 	<property name="dir.rulesets" value="rulesets/" />
 	<property name="dir.regress" value="regress/" />
-	<property name="version" value="5.0" />
+	<property name="version" value="4.2" />
 
 	<property name="asm.version" value="3.1" />
 	<property name="jaxen.version" value="1.1.1" />
 	<property name="junit.version" value="4.4" />
 	<property name="retroweaver.version" value="2.0.5" />
 	<property name="javacc-home.path" value="${dir.lib}" />
+	<!--
+		running PMD on pmd sources is a bit pointless, you should modify this value to pmd on something else
+		FUTURE: Test if the property is set, if not set it to src.
+	-->
+	<property name="test.src.for.pmd"	value="src"/>
 
 	<!--Settings-->
 	<property name="outputTestResultsToFile" value="true" />
@@ -31,7 +35,6 @@
 
 	<target name="delete" description="Deletes the build directory and the pmd-x.x jar file.">
 		<delete dir="${dir.build}" />
-		<delete dir="${dir.target}" />
 		<delete file="${dir.lib}/pmd-${version}.jar" />
 		<delete file="${dir.lib}/pmd-src-${version}.jar" />
 		<delete file="${dir.lib}/pmd-test-${version}.jar" />
@@ -145,7 +148,7 @@
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
 		<pmd rulesetfiles="unusedcode" shortFilenames="true">
 			<formatter type="csv" toFile="rpt.csv" toConsole="true" linkPrefix="http://pmd.sf.net/xref/" />
-			<fileset dir="/usr/local/java/src/java/net/">
+			<fileset dir="${test.src.for.pmd}">
 				<include name="**/*.java" />
 			</fileset>
 		</pmd>
@@ -179,6 +182,7 @@
 		</cpd>
 	</target>
 
+	<!-- FUTURE: Not really working for me... -->
 	<target name="requires-junit" description="Ensures JUnit is available">
 		<available classname="org.junit.Assert" property="junit.available" classpathref="dependencies.path" />
 		<fail unless="junit.available" message="Could not find JUnit 4... please place a junit.jar file in the CLASSPATH." />
@@ -212,8 +216,7 @@
 		<delete dir="${test.outputdir}" />
 		<mkdir dir="${test.outputdir}/xml"/>
 		<junit printsummary="${test.printsummary}" showoutput="no" filtertrace="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch"
-			failureProperty="test.failure" 
-		>
+			failureProperty="test.failure">
 			<sysproperty key="pmd.regress" value="${test.regression}"/>
 			<classpath>
 				<path refid="${test.dependencies}" />
@@ -241,8 +244,8 @@
 			</fileset>
 			<report format="frames" todir="${test.outputdir}/html" />
 		</junitreport>
-		<xslt in="${test.outputdir}/xml/TESTS-TestSuites.xml" style="etc/xslt/junit-txt-output.xsl" out="${test.outputdir}/summary.txt" /> 
-		<concat> 
+		<xslt in="${test.outputdir}/xml/TESTS-TestSuites.xml" style="etc/xslt/junit-txt-output.xsl" out="${test.outputdir}/summary.txt" />
+		<concat>
 			<filelist dir="${test.outputdir}" files="summary.txt"/>
 		</concat>
 	</target>
@@ -338,7 +341,7 @@
 		<javacc usercharstream="true" target="src/net/sourceforge/pmd/lang/ast/dummy/dummy.jj" outputdirectory="src/net/sourceforge/pmd/lang/ast/dummy" javacchome="${javacc-home.path}" />
 		<replace file="src/net/sourceforge/pmd/lang/ast/dummy/CharStream.java" token="net.sourceforge.pmd.lang.ast.dummy" value="net.sourceforge.pmd.lang.ast" />
 		<move overwrite="true" file="src/net/sourceforge/pmd/lang/ast/dummy/CharStream.java" tofile="src/net/sourceforge/pmd/lang/ast/CharStream.java" />
-		
+
 		<!-- Generate ASCII w/ Unicode Escapes CharStream implementation -->
 		<javacc usercharstream="false" unicodeinput="false" javaunicodeescape="true" static="false" target="src/net/sourceforge/pmd/lang/ast/dummy/dummy.jj" outputdirectory="src/net/sourceforge/pmd/lang/ast/dummy" javacchome="${javacc-home.path}" />
 		<replace file="src/net/sourceforge/pmd/lang/ast/dummy/JavaCharStream.java" token="net.sourceforge.pmd.lang.ast.dummy" value="net.sourceforge.pmd.lang.ast" />
@@ -424,7 +427,11 @@ public class]]></replacevalue>
 		<delete file="src/net/sourceforge/pmd/lang/cpp/ast/Token.java" />
 		<delete file="src/net/sourceforge/pmd/lang/cpp/ast/TokenMgrError.java" />
 		<!-- Ensure generated using CharStream interface -->
-		<javacc static="false" usercharstream="true" target="etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/lang/cpp/ast" javacchome="${javacc-home.path}" />
+		<javacc static="false"
+				usercharstream="true"
+				target="etc/grammar/cpp.jj"
+				outputdirectory="src/net/sourceforge/pmd/lang/cpp/ast"
+				javacchome="${javacc-home.path}" />
 		<replace file="src/net/sourceforge/pmd/lang/cpp/ast/CppParserTokenManager.java" token="class CppParserTokenManager" value="class CppParserTokenManager extends net.sourceforge.pmd.lang.ast.AbstractTokenManager" />
 		<delete file="src/net/sourceforge/pmd/lang/cpp/ast/CharStream.java" />
 		<delete file="src/net/sourceforge/pmd/lang/cpp/ast/ParseException.java" />
@@ -446,6 +453,7 @@ public class]]></replacevalue>
 		</exec>
 	</target>
 
+	<!-- FUTURE: Externalize this stuff in tools/ant ? -->
 	<target name="tomserver" depends="clean,jar" description="Uploads the current PMD jar file to Tom's web site">
 		<echo message="Uploading jar file" />
 		<exec executable="scp" os="Linux">
@@ -460,11 +468,12 @@ public class]]></replacevalue>
 		</exec>
 	</target>
 
+	<!-- FUTURE: This should be removed, shouldn't it ? -->
 	<target name="cpd" description="Runs CPD">
-		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" />
+		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" classpathref="dependencies.path" />
 		<!-- ignoreIdentifiers="true" -->
 		<cpd language="cpp" minimumTokenCount="100" outputFile="cpd.xml" format="xml">
-			<fileset dir="/usr/local/src/apache_1.3.33/">
+			<fileset dir="${src}">
 			<!--<fileset dir="${java-source.path}/java/lang/ref">-->
 				<include name="**/*.c" />
 			</fileset>
