@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+
+    <property name="severity"           value="warning"/>
+
+    <!-- JDocPackage
+    TODO: I don't know if this one is really relevant
+    <module name="PackageHtml">
+        <property name="severity"   value="error"/>
+    </module>
+    -->
+
+    <module name="TreeWalker">
+
+		<!-- RegexpHeader -->
+		<!--
+			Assert if header is :
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+		   -->
+        <module name="RegexpHeader">
+            <property
+                name="header"
+                value="^\/\*\*[ ]*$\n^[ ]+\*[ ]+BSD-style license; for more info see http:\/\/pmd.sourceforge.net/license.html[ ]*\n[ ]+\*\/[ ]*$"/>
+        </module>
+
+         <!-- JDocHtmlValid, JDocHeader -->
+        <module name="JavadocStyle">
+            <property name="checkFirstSentence" value="false"/>
+            <property name="checkEmptyJavadoc"  value="true"/>
+            <property name="severity"           value="error"/>
+        </module>
+
+        <!-- JDocHeader -->
+        <module name="JavadocType">
+            <property name="versionFormat"      value="\S"/>
+            <property name="authorFormat"       value="\S"/>
+            <property name="severity"           value="error"/>
+        </module>
+
+        <!-- JDocMethod-1, JDocMethod-3, JDocException-1 -->
+        <module name="JavadocMethod">
+            <property name="severity"   value="error"/>
+            <property name="scope"      value="package"/>
+        </module>
+
+        <!-- JDocMethod-1 -->
+        <module name="JavadocVariable">
+            <property name="severity"   value="error"/>
+            <property name="scope"      value="package"/>
+        </module>
+
+        <!-- AvoidStarImport -->
+        <module name="AvoidStarImport">
+            <property name="severity"   value="error"/>
+        </module>
+	</module>
+</module>

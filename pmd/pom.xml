@@ -250,6 +250,72 @@
           <target>1.5</target>
         </configuration>
       </plugin>
+
+	<plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <inherited>true</inherited>
+        <executions>
+        	<execution>
+        		<id>generate-ruleset-as-xdocs</id>
+            	<phase>pre-site</phase>
+                <configuration>
+                <tasks>
+                	<echo>PMD specific tasks: generating xdocs</echo>
+                    <ant antfile="tool/ant/generate-pmd-xdoc.xml">
+                    	<property name="target" value="xdocs/rules"/>
+                    	<property name="lib" value="${basedir}/tool/lib"/>
+                 	</ant>
+                </tasks>
+              	</configuration>
+                <goals>
+                	<goal>run</goal>
+                </goals>
+			</execution>
+
+			<execution>
+        		<id>move-index-and-delete-generated-xdocs</id>
+            	<phase>post-site</phase>
+                <configuration>
+                <tasks>
+                	<echo>PMD specific tasks: cleaning generated xdocs</echo>
+	 				<move 	file="${project.build.directory}/site/rules/index.html"
+	 						tofile="${project.build.directory}/site/index.html"/>
+					<delete>
+						<fileset 	dir="xdocs/rules"
+									includes="**/*.xml"/>
+						<fileset 	dir="xdocs"
+									includes="mergedrules.xml"/>
+					</delete>
+                </tasks>
+              	</configuration>
+                <goals>
+                	<goal>run</goal>
+                </goals>
+			</execution>
+
+			<execution>
+        		<id>pmd-clean</id>
+            	<phase>clean</phase>
+                <configuration>
+                <tasks>
+                	<echo>PMD specific tasks: cleaning generated xdocs</echo>
+					<delete>
+						<fileset 	dir="xdocs/rules"
+									includes="**/*.xml"/>
+					</delete>
+                </tasks>
+              	</configuration>
+                <goals>
+                	<goal>run</goal>
+                </goals>
+			</execution>
+
+
+    	</executions>
+	</plugin>
+
+
     </plugins>
   </build>
   <dependencies>
@@ -299,8 +365,8 @@
         	<groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
         </plugin>  -->
+
 		<plugin>
-		
 	        <groupId>org.apache.maven.plugins</groupId>
     	    <artifactId>maven-pmd-plugin</artifactId>
         	<configuration>
@@ -318,7 +384,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <configLocation>etc/checkstyle-config.xml</configLocation>
+          <configLocation>tool/config/checkstyle-config.xml</configLocation>
         </configuration>
       </plugin>
     </plugins>
