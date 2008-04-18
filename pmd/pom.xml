@@ -360,12 +360,16 @@
 			<groupId>org.apache.maven.plugins</groupId>
 	        <artifactId>maven-jxr-plugin</artifactId>
         </plugin>
-	<!--
-		<plugin>
-        	<groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-        </plugin>  -->
 
+	<plugin>
+        	<groupId>org.apache.maven.plugins</groupId>
+        	<artifactId>maven-javadoc-plugin</artifactId>
+        	<configuration>
+        		<!--  Removing test classes, some make fail the build and site goals is already taking a long time -->
+	        	<excludePackageNames>test.*</excludePackageNames>
+        	</configuration>
+        </plugin>
+	
 		<plugin>
 	        <groupId>org.apache.maven.plugins</groupId>
     	    <artifactId>maven-pmd-plugin</artifactId>
