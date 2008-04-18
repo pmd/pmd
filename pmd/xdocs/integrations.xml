@@ -25,7 +25,7 @@
     </tr>
 
   <tr><td><a href="#eclipse">Eclipse</a></td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-eclipse/">pmd-eclipse</a></td>
+      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-eclipse-plugin/">pmd-eclipse</a></td>
       <td>Philippe Herlin</td>
   </tr>
 
