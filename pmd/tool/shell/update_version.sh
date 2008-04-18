@@ -52,7 +52,6 @@ update_regexp "^  <version>[0-9].*<" "  <version>$1<" pom.xml
 update_jar $1 etc/cpd.jnlp
 update_jar $1 xdocs/running.xml
 update_jar $1 xdocs/integrations.xml
-update_jar $1 etc/bug_closer.txt
 
 update_dir $1 xdocs/compiling.xml
 update_dir $1 xdocs/integrations.xml
