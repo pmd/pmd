@@ -31,7 +31,7 @@ update_VERSION_var $1 java14/bin/bgastviewer.bat
 update_VERSION_var $1 java14/bin/cpdgui.bat
 update_VERSION_var $1 java14/bin/pmd.bat
 
-update_regexp "property name=\\\"version\\\" value=\".*\"" "property name=\\\"version\\\" value=\\\"$1\\\"" bin/build.xml
+update_regexp "property name=\\\"version\\\" value=\".*\"" "property name=\\\"version\\\" value=\\\"$1\\\"" build.xml
 update_regexp "VERSION = \".*\"" "VERSION = \\\"$1\\\"" src/net/sourceforge/pmd/PMD.java
 update_regexp "pmd-src-.*.zip" "pmd-src-$1.zip" xdocs/compiling.xml
 update_regexp "pmd-bin-[^x]*.zip" "pmd-bin-$1.zip" xdocs/installing.xml
@@ -40,14 +40,16 @@ update_regexp "PMD [0-9][^\"]*\"" "PMD $1\"" src/site/site.xml
 update_regexp "PMD [0-9][^\"]*\"" "PMD $1\"" xdocs/navigation.xml
 update_regexp "PMD version .* exists" "PMD version $1 exists" xdocs/integrations.xml
 
-update_regexp "currentVersion.*" "currentVersion>$1<\/currentVersion>" project.xml
-update_regexp "id>[0-9].*<" "id>$1<" project.xml
-update_regexp "name>[0-9].*<" "name>$1<" project.xml
-update_regexp "id>[0-9].*<" "id>$1<" project.xml
+update_regexp "currentVersion.*" "currentVersion>$1<\/currentVersion>" tool/maven/project.xml
+update_regexp "id>[0-9].*<" "id>$1<" tool/maven/project.xml
+update_regexp "name>[0-9].*<" "name>$1<" tool/maven/project.xml
+update_regexp "id>[0-9].*<" "id>$1<" tool/maven/project.xml
 release_tag=`echo $1|sed -e "s/\./_/g"`
-update_regexp "tag>pmd_release_[0-9].*<" "tag>pmd_release_$release_tag<" project.xml
+update_regexp "tag>pmd_release_[0-9].*<" "tag>pmd_release_$release_tag<" tool/maven/project.xml
 
 update_regexp "^  <version>[0-9].*<" "  <version>$1<" pom.xml
+
+update_regexp "^currentVersion=.*" "currentVersion=$1<" docs.sh
 
 update_jar $1 etc/cpd.jnlp
 update_jar $1 xdocs/running.xml
