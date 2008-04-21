@@ -49,7 +49,7 @@ update_regexp "tag>pmd_release_[0-9].*<" "tag>pmd_release_$release_tag<" tool/ma
 
 update_regexp "^  <version>[0-9].*<" "  <version>$1<" pom.xml
 
-update_regexp "^currentVersion=.*" "currentVersion=$1<" docs.sh
+update_regexp "^currentVersion=.*" "currentVersion=$1" docs.sh
 
 update_jar $1 etc/cpd.jnlp
 update_jar $1 xdocs/running.xml

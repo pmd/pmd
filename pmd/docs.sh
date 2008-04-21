@@ -1,6 +1,6 @@
 #!/bin/bash
 DOCS_FILE="docs.tar.gz"
-currentVersion=5.0<
+currentVersion=5.0
 option="${1}"
 
 function tarball-docs() {
