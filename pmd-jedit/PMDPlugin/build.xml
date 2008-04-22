@@ -1,65 +1,67 @@
 <project name="PMDPlugin" default="jar" basedir=".">
 
-	<property file="build.properties"/>
+    <property file="build.properties"/>
     <property file="../build.properties"/>
-	<property name="config" value="."/>
-	<property name="src" value="src/"/>
-	<property name="lib" value="${basedir}/lib"/>
-	<property name="build" value="build"/>
-	<property name="pmdjar" value="pmd-4.1.jar"/>
-	<property name="pluginversion" value="2.7"/>
-	<property name="jedit.install.dir" value="../.."/>
-	<property name="jedit.jars.dir" value="${jedit.install.dir}/jars" />
-	<property name="install.dir"  value="${jedit.jars.dir}"/>
+    <property name="config" location="."/>
+    <property name="src" location="src/"/>
+    <property name="lib" location="${basedir}/lib"/>
+    <property name="build" location="build"/>
+    <property name="docs" location="doc"/>
+    <property name="pmdjar" value="pmd-4.1.jar"/>
+    <property name="pluginversion" value="2.7"/>
+    <property name="jedit.install.dir" location="../.."/>
+    <property name="jedit.jars.dir" location="${jedit.install.dir}/jars" />
+    <property name="install.dir"  location="${jedit.jars.dir}"/>
 
-	<path id="project.class.path">
-		<pathelement location="${jedit.install.dir}/jedit.jar"/>
-		<pathelement location="${jedit.jars.dir}/ErrorList.jar"/>
-		<pathelement location="${build}"/>
-		<fileset casesensitive="false" id="pmd.libs" dir="${lib}">
-			<include name="${pmdjar}"/>
-			<include name="asm-3.1.jar"/>
-			<include name="jaxen-1.1.1.jar"/>
-			<include name="junit-4.4.jar"/>
-			<include name="pmd-swingui-0.1.jar"/>
-			<include name="jakarta-oro-2.0.8.jar"/>
-		</fileset>
-	</path>
+    <path id="project.class.path">
+        <pathelement location="${jedit.install.dir}/jedit.jar"/>
+        <pathelement location="${jedit.jars.dir}/ErrorList.jar"/>
+        <pathelement location="${build}"/>
+        <fileset casesensitive="false" id="pmd.libs" dir="${lib}">
+            <include name="${pmdjar}"/>
+            <include name="asm-3.1.jar"/>
+            <include name="jaxen-1.1.1.jar"/>
+            <include name="junit-4.4.jar"/>
+            <include name="pmd-swingui-0.1.jar"/>
+            <include name="jakarta-oro-2.0.8.jar"/>
+        </fileset>
+    </path>
 
     <target name="delete">
-		<delete dir="${build}"/>
+        <delete dir="${build}"/>
         <mkdir dir="${build}"/>
     </target>
 
-	<target name="compile">
-		<mkdir dir="${build}"/>
-		<javac
-			srcdir="${src}"
-			destdir="${build}"
-			debug="on"
-			deprecation="on">
-			<classpath refid="project.class.path"/>
-		</javac>
-	</target>
+    <target name="compile">
+        <mkdir dir="${build}"/>
+        <javac
+            srcdir="${src}"
+            destdir="${build}"
+            debug="on"
+            deprecation="on">
+            <classpath refid="project.class.path"/>
+        </javac>
+    </target>
 
     <target name="jar" depends="compile">
-		<jar jarfile="${jedit.jars.dir}/${ant.project.name}.jar">
-			<fileset dir="${build}"/>
-			<fileset dir="${config}">
-				<include name="*.props"/>
-				<include name="*.xml"/>
-				<include name="*.html"/>
-			</fileset>
-		</jar>
+        <jar jarfile="${jedit.jars.dir}/${ant.project.name}.jar">
+            <fileset dir="${build}"/>
+            <fileset dir="${config}">
+                <include name="*.props"/>
+                <include name="*.xml"/>
+                <include name="*.html"/>
+            </fileset>
+            <fileset dir="." includes="doc/*.*"/>
+        </jar>
     </target>
 
 
-	<target name="dist">
+    <target name="dist">
         <antcall target="jar"/>
-		<copy todir="${jedit.jars.dir}" verbose="true">
-			<fileset  refid="pmd.libs" />
-		</copy>
-	</target>
+        <copy todir="${jedit.jars.dir}" verbose="true">
+            <fileset  refid="pmd.libs" />
+        </copy>
+    </target>
 
     <target name="release">
         <antcall target="clean"/>
@@ -76,6 +78,6 @@
         <delete dir="tmp"/>
     </target>
 
-	<target name="clean" depends="delete" />
+    <target name="clean" depends="delete" />
 
 </project>

@@ -299,9 +299,9 @@ public class PMDJEditPlugin extends EBPlugin
 
         catch (PMDException pmde)
         {
-            String msg="Error while processing " + buffer.getPath();
+            String msg="Error while processing " + buffer.getPath() + ":\n" + pmde.getMessage();
             Log.log(Log.ERROR, this, msg, pmde);
-            JOptionPane.showMessageDialog(jEdit.getFirstView(), msg);
+            JOptionPane.showMessageDialog(view, msg, "PMD", JOptionPane.ERROR_MESSAGE);
         }
 
         catch(Exception e)
@@ -393,9 +393,9 @@ public class PMDJEditPlugin extends EBPlugin
             }
             catch (PMDException pmde)
             {
-                String msg = "Error while processing " + file.getAbsolutePath();
+                String msg = "Error while processing " + file.getAbsolutePath() + ":\n" + pmde.getMessage();
                 Log.log(Log.ERROR, this, msg, pmde);
-                JOptionPane.showMessageDialog(jEdit.getFirstView(), msg);
+                JOptionPane.showMessageDialog(view, msg, "PMD", JOptionPane.ERROR_MESSAGE);
             }
 
             if(jEdit.getBooleanProperty(SHOW_PROGRESS))
