@@ -33,44 +33,42 @@ import net.sourceforge.pmd.PMDException;
  */
 public class Fault implements Comparable<Fault> {
 
-	private int line;
-	private String clazz;
-	private String message;
+    private final int line;
+    private final String clazz;
+    private final String message;
 
+    /**
+     * Creates a new instance of Fault
+     *
+     * @param line the line of the fault
+     * @param clazz the class of the fault
+     * @param message the pmd message
+     */
+    public Fault(int line, String clazz, String message) {
+        this.line = line;
+        this.message = message;
+        this.clazz = clazz;
+    }
 
-	/**
-	 * Creates a new instance of Fault
-	 *
-	 * @param line the line of the fault
-	 * @param clazz the class of the fault
-	 * @param message the pmd message
-	 */
-	public Fault( int line, String clazz, String message ) {
-		this.line = line;
-		this.message = message;
-		this.clazz = clazz;
-	}
-
-
-	/**
-	 * Creates a new instance of Fault
-	 *
-	 * @param line the line of the fault
-	 * @param clazz the class of the fault
-	 * @param exception the PMD exception on which the fault is based, not null
-	 */
-	public Fault( int line, String clazz, PMDException exception ) {
-		this.line = line;
-		Exception reason = exception.getReason();
-		if(reason == null) {
-			this.message = exception.getMessage();
-		} else if(reason.getMessage() == null) {
-			this.message = exception.getMessage() + "; " + reason.toString();
-		} else {
-			this.message = exception.getMessage() + "; " + reason.getMessage();
-		}
-		this.clazz = clazz;
-	}
+    /**
+     * Creates a new instance of Fault
+     *
+     * @param line the line of the fault
+     * @param clazz the class of the fault
+     * @param exception the PMD exception on which the fault is based, not null
+     */
+    public Fault(int line, String clazz, PMDException exception) {
+        this.line = line;
+        Throwable reason = exception.getCause();
+        if (reason == null) {
+            this.message = exception.getMessage();
+        } else if (reason.getMessage() == null) {
+            this.message = exception.getMessage() + "; " + reason.toString();
+        } else {
+            this.message = exception.getMessage() + "; " + reason.getMessage();
+        }
+        this.clazz = clazz;
+    }
 
 
 	/**

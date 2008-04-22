@@ -45,6 +45,17 @@ import pmd.config.ConfigUtils;
  */
 public class RuleEnabler extends JPanel implements TableModelListener {
 
+    private static String join(String delim, Iterable<String> it) {
+        StringBuilder sb = new StringBuilder();
+        for (String item: it) {
+            if (sb.length() > 0) {
+                sb.append(delim);
+            }
+            sb.append(item);
+        }
+        return sb.toString();
+    }
+    
 	private final PropertyEditorSupport editor;
 	private String currentRuleName = null;
         
@@ -432,8 +443,8 @@ public class RuleEnabler extends JPanel implements TableModelListener {
          */
         private void updateTexts(Rule rule) {
             if( rule != null ) {
-                String exampleText = rule.getExample() != null?
-                        rule.getExample().trim():
+                String exampleText = rule.getExamples() != null?
+                        join("\n", rule.getExamples()):
                         "";
                 example.setText( exampleText );
                 example.setCaretPosition( 0 );
@@ -525,9 +536,9 @@ public class RuleEnabler extends JPanel implements TableModelListener {
             Object rules[] = availableList.getSelectedValues();
             if( rules != null ) {
                 RulesConfig data = (RulesConfig)editor.getValue();
-                List/*<Rule>*/ l = ConfigUtils.createRuleList( data.getRules(), data.getProperties() ); 
-                for( int i = 0; i < rules.length; i++ ) {
-                    l.add (rules[i]);
+                List<Rule> l = ConfigUtils.createRuleList( data.getRules(), data.getProperties() ); 
+                for(Object r: rules) {
+                    l.add ((Rule)r);
                 }
                 Collections.sort(l, new RuleComparator());
                 editor.setValue( new RulesConfig(ConfigUtils.getValueAsText(l), data.getProperties()));

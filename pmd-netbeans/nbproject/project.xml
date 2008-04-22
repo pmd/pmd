@@ -17,8 +17,8 @@
                 <binary-origin>lib/jaxen-1.1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/pmd-4.1.jar</runtime-relative-path>
-                <binary-origin>lib/pmd-4.1.jar</binary-origin>
+                <runtime-relative-path>ext/pmd-4.2.1.jar</runtime-relative-path>
+                <binary-origin>lib/pmd-4.2.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <!-- Deployed path, relative to dir containing module: -->
@@ -189,7 +189,7 @@
             <public-packages/>
             <extra-compilation-unit>
                 <package-root>libsrc</package-root>
-                <classpath>lib/pmd-4.1.jar</classpath>
+                <classpath>lib/pmd-4.2.1.jar</classpath>
                 <built-to>build/libclasses</built-to>
                 <built-to>${cluster}/modules/ext/nbpmdrules.jar</built-to>
             </extra-compilation-unit>

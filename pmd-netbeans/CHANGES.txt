@@ -1,3 +1,6 @@
+Version 2.2.1
+- Updated pmd to version 4.2.1
+
 Version 2.1
 - Updated pmd to version 4.1
 - [ 1726614 ] javahelp added
