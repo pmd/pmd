@@ -1,7 +1,7 @@
 
 make sure code is up to date and everything is in svn:
 
-ant delete
+ant clean
 svn update
 svn status
 
@@ -24,7 +24,7 @@ ensure all the new rules are listed in a rulesets/releases/<version>.xml file
 
 ant pmdOnPmd
 
-ant clean regress test
+ant recompile regress test
 Check in everything
 
 ant dist regress regress14

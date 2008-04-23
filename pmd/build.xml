@@ -33,7 +33,7 @@
 		</fileset>
 	</path>
 
-	<target name="delete" description="Deletes the build directory and the pmd-x.x jar file.">
+	<target name="clean" description="Deletes the build directory and the pmd-x.x jar file.">
 		<delete dir="${dir.build}" />
 		<delete file="${dir.lib}/pmd-${version}.jar" />
 		<delete file="${dir.lib}/pmd-src-${version}.jar" />
@@ -438,9 +438,9 @@ public class]]></replacevalue>
 		<delete file="src/net/sourceforge/pmd/lang/cpp/ast/TokenMgrError.java" />
 	</target>
 
-	<target name="clean" depends="delete,compile,copy" description="Does a complete recompile" />
+	<target name="recompile" depends="clean,compile,copy" description="Does a complete recompile" />
 
-	<target name="dist" depends="clean,jar,weave" description="Preps things for a release" />
+	<target name="dist" depends="recompile,jar,weave" description="Preps things for a release" />
 
 	<target name="cpdjnlp" depends="dist" description="Uploads a new CPD JNLP thingy to the PMD web site">
 		<signjar jar="${dir.lib}/pmd-${version}.jar" storetype="${keystore.type}" alias="${keystore.alias}" keystore="${keystore.path}" storepass="${keystore.password}" />
@@ -454,7 +454,7 @@ public class]]></replacevalue>
 	</target>
 
 	<!-- FUTURE: Externalize this stuff in tools/ant ? -->
-	<target name="tomserver" depends="clean,jar" description="Uploads the current PMD jar file to Tom's web site">
+	<target name="tomserver" depends="recompile,jar" description="Uploads the current PMD jar file to Tom's web site">
 		<echo message="Uploading jar file" />
 		<exec executable="scp" os="Linux">
 			<arg line=" ${dir.lib}/pmd-${version}.jar tom@infoether.com:public_html/" />
