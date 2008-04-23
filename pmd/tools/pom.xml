@@ -4,7 +4,7 @@
   <groupId>pmd</groupId>
   <artifactId>pmd-build</artifactId>
   <name>PMD</name>
-  <version>0.1</version>
+  <version>0.2</version>
   <description>
     <![CDATA[
 This small subproject regroup most of the stuff needed to build pmd.
