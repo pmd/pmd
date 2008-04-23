@@ -262,9 +262,9 @@
                 <configuration>
                 <tasks>
                 	<echo>PMD specific tasks: generating xdocs</echo>
-                    <ant antfile="tool/ant/generate-pmd-xdoc.xml">
+                    <ant antfile="tools/ant/generate-pmd-xdoc.xml">
                     	<property name="target" value="xdocs/rules"/>
-                    	<property name="lib" value="${basedir}/tool/lib"/>
+                    	<property name="lib" value="${basedir}/tools/lib"/>
                  	</ant>
                 </tasks>
               	</configuration>
@@ -388,7 +388,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <configLocation>tool/config/checkstyle-config.xml</configLocation>
+          <configLocation>tools/config/checkstyle-config.xml</configLocation>
         </configuration>
       </plugin>
     </plugins>

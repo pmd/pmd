@@ -40,12 +40,12 @@ update_regexp "PMD [0-9][^\"]*\"" "PMD $1\"" src/site/site.xml
 update_regexp "PMD [0-9][^\"]*\"" "PMD $1\"" xdocs/navigation.xml
 update_regexp "PMD version .* exists" "PMD version $1 exists" xdocs/integrations.xml
 
-update_regexp "currentVersion.*" "currentVersion>$1<\/currentVersion>" tool/maven/project.xml
-update_regexp "id>[0-9].*<" "id>$1<" tool/maven/project.xml
-update_regexp "name>[0-9].*<" "name>$1<" tool/maven/project.xml
-update_regexp "id>[0-9].*<" "id>$1<" tool/maven/project.xml
+update_regexp "currentVersion.*" "currentVersion>$1<\/currentVersion>" tools/maven/project.xml
+update_regexp "id>[0-9].*<" "id>$1<" tools/maven/project.xml
+update_regexp "name>[0-9].*<" "name>$1<" tools/maven/project.xml
+update_regexp "id>[0-9].*<" "id>$1<" tools/maven/project.xml
 release_tag=`echo $1|sed -e "s/\./_/g"`
-update_regexp "tag>pmd_release_[0-9].*<" "tag>pmd_release_$release_tag<" tool/maven/project.xml
+update_regexp "tag>pmd_release_[0-9].*<" "tag>pmd_release_$release_tag<" tools/maven/project.xml
 
 update_regexp "^  <version>[0-9].*<" "  <version>$1<" pom.xml
 

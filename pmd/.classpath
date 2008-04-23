@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="regress"/>
-	<classpathentry kind="src" path="tool/src"/>
-	<classpathentry kind="src" path="tool/regress"/>
-	<classpathentry kind="src" path="tool/xslt"/>
+	<classpathentry kind="src" path="tools/src"/>
+	<classpathentry kind="src" path="tools/regress"/>
+	<classpathentry kind="src" path="tools/xslt"/>
 	<classpathentry kind="src" path="rulesets"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="var" path="JRE_LIB"/>

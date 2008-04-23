@@ -37,10 +37,10 @@ import org.xml.sax.SAXException;
  */
 public class RuleSetToDocs implements PmdBuildTools {
 
-    private static final String RULESET_TO_DOC = "tool/xslt/rule-format.xsl";
-    private static final String MERGE_RULESET = "tool/xslt/merge-rulesets.xsl";
-    private static final String GENERATE_INDEX = "tool/xslt/rules-index.xsl";
-    private static final String POM4JAVA4 = "tool/xslt/generate-pom-jdk4.xsl";
+    private static final String RULESET_TO_DOC = "tools/xslt/rule-format.xsl";
+    private static final String MERGE_RULESET = "tools/xslt/merge-rulesets.xsl";
+    private static final String GENERATE_INDEX = "tools/xslt/rules-index.xsl";
+    private static final String POM4JAVA4 = "tools/xslt/generate-pom-jdk4.xsl";
 
     private static final String INDEX_RULESET_FILE = "index.xml";
     private static final String MERGED_RULESET_FILE = "mergedruleset.xml";

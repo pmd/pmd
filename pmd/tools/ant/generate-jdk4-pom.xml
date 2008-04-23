@@ -9,7 +9,7 @@
 	 	<delete file="${output}"/>
 	 	<xslt 	in="${pom}"
 	 			out="${output}"
-	 			style="../../tool/xslt/generate-pom-jdk4.xsl"/>
+	 			style="../../tools/xslt/generate-pom-jdk4.xsl"/>
 	 </target>
 
 	 <target name="generate-pom-java4">
