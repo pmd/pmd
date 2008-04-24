@@ -44,6 +44,8 @@
         <item name="Writing XPath rules" href="/xpathruletutorial.html" />
         <item name="How to make a rule set" href="/howtomakearuleset.html" />
         <item name="How it works" href="/howitworks.html" />
+        <item name="Rule guidelines" href="/rule-guidelines.html" />
+        <item name="PMD developers information" href="/pmd-developer.html" />
     </menu>
     <menu name="For example">
       <item name="Run PMD on a Sourceforge project" href="/scoreboard.html" />
