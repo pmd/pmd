@@ -113,7 +113,7 @@ Writing PMD rules is cool because you don't have to wait for us to get around to
         <p>
            By the way, all this structural information - i.e., the fact that a Statement may be
             followed a Block - is concisely defined in the
-            <a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd/etc/grammar/Java1.4-c.jjt?rev=1.3&amp;content-type=text/vnd.viewcvs-markup">EBNF grammar</a>.
+            <a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd/etc/grammar/Java.jjt?view=markup">EBNF grammar</a>.
             So, for example, the Statement definition looks like this:
 <source>
 <![CDATA[void Statement() :
