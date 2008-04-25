@@ -86,7 +86,7 @@ cp lib/pmd-src-$version.jar $pmd_src_dir/lib/
 cp lib/pmd-$version.jar $pmd_src_dir/lib
 mkdir $pmd_src_dir/docs
 cp -R target/site/* $pmd_src_dir/docs
-rm -f $pmd_src_dir/etc/clover.license
+rm -f $pmd_src_dir/tools/config/clover2.license
 cd $pmd_top_dir
 zip -q -r pmd-src-$version.zip pmd-$version/
 cd -
