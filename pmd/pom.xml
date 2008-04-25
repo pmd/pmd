@@ -281,11 +281,16 @@
                 	<echo>PMD specific tasks: cleaning generated xdocs</echo>
 	 				<move 	file="${project.build.directory}/site/rules/index.html"
 	 						tofile="${project.build.directory}/site/index.html"/>
+	 			  	<copy todir="${project.build.directory}/site/">
+						<fileset dir="xdocs/images/"/>
+					</copy>
 					<delete>
 						<fileset 	dir="xdocs/rules"
 									includes="**/*.xml"/>
 						<fileset 	dir="xdocs"
 									includes="mergedrules.xml"/>
+						<fileset 	dir="${project.build.directory}"
+									includes="site/mergedruleset.html"/>
 					</delete>
                 </tasks>
               	</configuration>
@@ -303,6 +308,8 @@
 					<delete>
 						<fileset 	dir="xdocs/rules"
 									includes="**/*.xml"/>
+						<fileset	dir="xdocs/"
+									includes="mergedruleset.xml"/>
 					</delete>
                 </tasks>
               	</configuration>
@@ -356,6 +363,7 @@
 
   <reporting>
     <plugins>
+    <!--  
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 	        <artifactId>maven-jxr-plugin</artifactId>
@@ -364,12 +372,22 @@
 	<plugin>
         	<groupId>org.apache.maven.plugins</groupId>
         	<artifactId>maven-javadoc-plugin</artifactId>
-        	<configuration>
-        		<!--  Removing test classes, some make fail the build and site goals is already taking a long time -->
+        	<configuration>-->
+        		<!--  Removing test classes, some make fail the build and site goals is already taking a long time --> <!--  
 	        	<excludePackageNames>test.*</excludePackageNames>
         	</configuration>
         </plugin>
-	
+-->
+
+	<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<xdocDirectory>${basedir}/xdocs</xdocDirectory>
+	           </configuration>
+			</plugin>
+
+      <!-- 	
 		<plugin>
 	        <groupId>org.apache.maven.plugins</groupId>
     	    <artifactId>maven-pmd-plugin</artifactId>
@@ -383,14 +401,30 @@
 				</rulesets>
         	</configuration>
       </plugin>
+
+      		Emma is a test coverage tools to be used instead of clover.
+      		As the mvn2 plugin is not released yet, the plugin is commented out, 
+      		so you build won't fail:
+			You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762
+			
+			Download the tarball, extract, cd into dir, run
+			
+			$ mvn install.
       
-      <plugin>
+	<plugin>
+		<groupId>org.codehaus.mojo</groupId>
+		<artifactId>emma-maven-plugin</artifactId>
+	</plugin>
+	 -->
+	 
+	 <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <configLocation>tools/config/checkstyle-config.xml</configLocation>
         </configuration>
       </plugin>
+      
     </plugins>
   </reporting>
 
