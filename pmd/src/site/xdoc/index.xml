@@ -21,8 +21,6 @@
       <h3>Integrations</h3>
       <p>PMD is <a href="integrations.html">integrated</a> with JDeveloper, Eclipse, JEdit, JBuilder, BlueJ, CodeGuide, NetBeans/Sun Java Studio Enterprise/Creator, IntelliJ IDEA, TextPad, Maven, Ant, Gel, JCreator, and Emacs.</p>
 
-      <h3>BlueJ</h3>
-      <p>Welcome <a href="http://bluej.org/">BlueJ</a> users!  Notes on installing the PMD extension for BlueJ are <a href="integrations.html#bluej">here</a>.</p>
     </section>
   </body>
 </document>
