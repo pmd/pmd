@@ -10,12 +10,12 @@
       <subsection name="Summary">
 <table>
   <tr><td><b>IDE</b></td>
-      <td><b>CVS Module</b></td>
+      <td><b>SVN Module</b></td>
       <td><b>Maintainers</b></td>
       </tr>
 
     <tr><td><a href="#bluej">BlueJ</a></td>
-        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-bluej/">pmd-bluej</a></td>
+        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-bluej/">pmd-bluej</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
@@ -30,12 +30,12 @@
   </tr>
 
   <tr><td><a href="#emacs">Emacs</a></td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-emacs/">pmd-emacs</a></td>
+      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-emacs/">pmd-emacs</a></td>
       <td>Nascif Abousalh Neto</td>
   </tr>
 
     <tr><td><a href="#gel">Gel</a></td>
-        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-gel/">pmd-gel</a></td>
+        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-gel/">pmd-gel</a></td>
         <td>Andrei Lumianski</td>
     </tr>
 
@@ -45,7 +45,7 @@
     </tr>
 
   <tr><td><a href="#jbuilder">JBuilder</a></td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jbuilder/">pmd-jbuilder</a></td>
+      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-jbuilder/">pmd-jbuilder</a></td>
       <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
   </tr>
 
@@ -55,12 +55,12 @@
     </tr>
 
     <tr><td><a href="#jdeveloper">JDeveloper</a></td>
-        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jdeveloper/">pmd-jdeveloper</a></td>
+        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-jdeveloper/">pmd-jdeveloper</a></td>
         <td><a href="http://tomcopeland.blogs.com/">Tom Copeland</a></td>
     </tr>
 
     <tr><td><a href="#jedit">JEdit</a></td>
-        <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-jedit/">pmd-jedit</a></td>
+        <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-jedit/">pmd-jedit</a></td>
         <td>Jiger Patel</td>
     </tr>
 
@@ -75,7 +75,7 @@
     </tr>
 
   <tr><td><a href="#netbeans">NetBeans/Sun Java Studio Enterprise/Creator</a></td>
-      <td><a href="http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/pmd/pmd-netbeans/">pmd-netbeans</a></td>
+      <td><a href="http://pmd.svn.sourceforge.net/viewvc/pmd/trunk/pmd-netbeans/">pmd-netbeans</a></td>
       <td>Radim Kubacki</td>
   </tr>
 
