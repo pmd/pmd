@@ -239,7 +239,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkMode>once</forkMode>
-          <skip>true</skip>
         </configuration>
       </plugin>
       <plugin>
@@ -249,6 +248,34 @@
           <source>1.5</source>
           <target>1.5</target>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clover-plugin</artifactId>
+        <groupId>com.atlassian.maven.plugins</groupId>
+
+        <!-- clover plugin is in a different repository at atlassian.
+          For configuration help, see the "Basic Usage" section at
+            http://confluence.atlassian.com/display/CLOVER/Clover-for-Maven+2+User%27s+Guide
+        -->
+        <configuration>
+          <jdk>1.5</jdk>
+          <licenseLocation>tools/config/clover2.license</licenseLocation>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>com.cenqua.clover</groupId>
+            <artifactId>clover</artifactId>
+            <version>2.2.1</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>instrument</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
 
 	<plugin>
@@ -417,11 +444,18 @@
 	</plugin>
 	 -->
 	 
-	 <plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <configLocation>tools/config/checkstyle-config.xml</configLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clover-plugin</artifactId>
+        <groupId>com.atlassian.maven.plugins</groupId>
+        <configuration>
+          <licenseLocation>tools/config/clover2.license</licenseLocation>
         </configuration>
       </plugin>
       
