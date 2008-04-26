@@ -81,10 +81,7 @@ rm -rf $pmd_src_dir
 rm -f $pmd_top_dir/pmd-src-$version.zip
 cd ..
 ant jarsrc
-#
-#svn -q export https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag $pmd_src_dir
-#
-svn -q export https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  $pmd_src_dir
+svn -q export https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag $pmd_src_dir
 cp lib/pmd-src-$version.jar $pmd_src_dir/lib/
 cp lib/pmd-$version.jar $pmd_src_dir/lib
 mkdir $pmd_src_dir/docs
