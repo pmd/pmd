@@ -18,6 +18,7 @@ echo
 echo "Press [enter] to generate docs"
 
 read RESP
+export MAVEN_OPTS="-Xmx512m -Xms192m"
 mvn site
 
 cd etc
