@@ -2076,7 +2076,7 @@ void AnnotationTypeMemberDeclaration():
   |
    ClassOrInterfaceDeclaration(modifiers)
   |
-   LOOKAHEAD (<IDENTIFIER> <IDENTIFIER>) EnumDeclaration(modifiers)
+   LOOKAHEAD(3) EnumDeclaration(modifiers)
   |
    AnnotationTypeDeclaration(modifiers)
   |

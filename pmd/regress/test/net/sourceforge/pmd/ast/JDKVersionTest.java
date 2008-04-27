@@ -117,6 +117,8 @@ public class JDKVersionTest {
         p.CompilationUnit();
         p = new TargetJDK1_5().createParser(new StringReader(ANNOTATIONS_BUG));
         p.CompilationUnit();
+        p = new TargetJDK1_5().createParser(new StringReader(CONSTANT_FIELD_IN_ANNOTATION_BUG));
+        p.CompilationUnit();
         p = new TargetJDK1_5().createParser(new StringReader(GENERIC_IN_FIELD));
         p.CompilationUnit();
     }
@@ -284,6 +286,11 @@ public class JDKVersionTest {
     private static final String ANNOTATIONS_BUG =
             "@Target(ElementType.METHOD)" + PMD.EOL +
             "public @interface Foo {" + PMD.EOL +
+            "}";
+
+    private static final String CONSTANT_FIELD_IN_ANNOTATION_BUG =
+            "public @interface Foo {" + PMD.EOL +
+            "  String CONST = \"foo\";" + PMD.EOL +
             "}";
 
     private static final String GENERIC_IN_FIELD =
