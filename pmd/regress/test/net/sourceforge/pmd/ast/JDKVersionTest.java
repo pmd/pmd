@@ -96,6 +96,7 @@ public class JDKVersionTest extends ParserTst {
         parseJava15(FIELDS_BUG);
         parseJava15(GT_BUG);
         parseJava15(ANNOTATIONS_BUG);
+        parseJava15(CONSTANT_FIELD_IN_ANNOTATION_BUG);
         parseJava15(GENERIC_IN_FIELD);
     }
 
@@ -251,6 +252,11 @@ public class JDKVersionTest extends ParserTst {
     private static final String ANNOTATIONS_BUG =
             "@Target(ElementType.METHOD)" + PMD.EOL +
             "public @interface Foo {" + PMD.EOL +
+            "}";
+
+    private static final String CONSTANT_FIELD_IN_ANNOTATION_BUG =
+            "public @interface Foo {" + PMD.EOL +
+            "  String CONST = \"foo\";" + PMD.EOL +
             "}";
 
     private static final String GENERIC_IN_FIELD =

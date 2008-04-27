@@ -168,6 +168,7 @@ bin and java14/bin scripts:
 	standard unix scripts can be used with cygwin
 AvoidDuplicateLiteralRule now has 'skipAnnotations' boolean property
 Fixed false positive in UnusedImports: javadoc comments are parsed to check @see and other tags
+Fixed parsing bug: constant fields in annotation classes
 
 New rules:
 
