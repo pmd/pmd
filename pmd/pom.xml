@@ -239,6 +239,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <forkMode>once</forkMode>
+          <argLine>-Xmx512m</argLine>
         </configuration>
       </plugin>
       <plugin>
