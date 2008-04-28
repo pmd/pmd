@@ -29,7 +29,7 @@ public class MoreThanOneLogger extends AbstractRule {
         try {
             javaLogger = Class.forName("java.util.logging.Logger");
         } catch (Throwable t) {
-            log4jLogger = null;
+            javaLogger = null;
         }
     }
 
