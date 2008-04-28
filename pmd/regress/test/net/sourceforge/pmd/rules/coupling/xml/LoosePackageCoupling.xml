@@ -143,4 +143,15 @@ public class Foo {
 		</rule-property>
 		<code-ref id="some package" />
 	</test-code>
+	<test-code>
+		<description><![CDATA[
+bug fix: annotation before package
+		]]></description>
+		<expected-problems>0</expected-problems>
+		<code><![CDATA[
+@javax.xml.bind.annotation.XmlSchema(namespace=W3CEndpointReference.NS, location="http://www.w3.org/2006/03/addressing/ws-addr.xsd")
+@Deprecated
+package javax.xml.ws.wsaddressing;
+		]]></code>
+	</test-code>
 </test-data>

@@ -4,22 +4,22 @@ package net.sourceforge.pmd.lang.java.ast;
 
 public class ASTPackageDeclaration extends AbstractJavaNode {
     public ASTPackageDeclaration(int id) {
-        super(id);
+	super(id);
     }
 
     public ASTPackageDeclaration(JavaParser p, int id) {
-        super(p, id);
+	super(p, id);
     }
-
 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
+	return visitor.visit(this, data);
     }
 
     public String getPackageNameImage() {
-        return ((ASTName)jjtGetChild(0)).getImage();
+	return ((ASTName) jjtGetChild(this.jjtGetNumChildren() - 1)).getImage();
     }
 }
