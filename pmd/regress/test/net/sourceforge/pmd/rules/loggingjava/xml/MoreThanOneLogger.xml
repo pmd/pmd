@@ -40,4 +40,15 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, fixing NPE bug
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public @interface Foo {
+ String FOO = "foo";
+}
+     ]]></code>
+    </test-code>
 </test-data>

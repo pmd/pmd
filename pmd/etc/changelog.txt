@@ -169,6 +169,7 @@ bin and java14/bin scripts:
 AvoidDuplicateLiteralRule now has 'skipAnnotations' boolean property
 Fixed false positive in UnusedImports: javadoc comments are parsed to check @see and other tags
 Fixed parsing bug: constant fields in annotation classes
+Bug fix: NPE in MoreThanOneLogger
 
 New rules:
 
