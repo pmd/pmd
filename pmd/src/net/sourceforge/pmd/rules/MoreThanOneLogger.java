@@ -3,6 +3,7 @@ package net.sourceforge.pmd.rules;
 import java.util.Stack;
 
 import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTEnumDeclaration;
@@ -41,6 +42,10 @@ public class MoreThanOneLogger extends AbstractRule {
 	}	
 
 	public Object visit(ASTEnumDeclaration node, Object data) {
+		return init (node, data);
+	}	
+
+	public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
 		return init (node, data);
 	}	
 
