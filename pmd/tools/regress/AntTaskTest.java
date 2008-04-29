@@ -1,18 +1,10 @@
-
 import net.sourceforge.pmd.ant.PmdBuildTask;
-import net.sourceforge.pmd.build.PmdBuildTools;
-import net.sourceforge.pmd.build.RuleSetToDocs;
 
 import org.apache.tools.ant.BuildException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.notification.Failure;
-
-/**
- *
- */
 
 /**
  * @author rpelisse
@@ -46,8 +38,7 @@ public class AntTaskTest {
 	PmdBuildTask task = new PmdBuildTask();
 	task.setRulesDirectory("rulesets");
 	task.setTarget("target-test");
-	try
-	{
+	try {
 	    task.execute();
 	} catch (BuildException e) {
 	    e.printStackTrace();
