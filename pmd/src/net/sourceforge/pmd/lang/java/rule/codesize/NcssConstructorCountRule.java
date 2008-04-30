@@ -1,8 +1,5 @@
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
-import java.util.Set;
-
-import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.stat.DataPoint;
@@ -25,16 +22,12 @@ public class NcssConstructorCountRule extends AbstractNcssCountRule {
   public Object visit(ASTExplicitConstructorInvocation node, Object data) {
     return NumericConstants.ONE;
   }
-
-  protected void makeViolations(RuleContext ctx, Set<DataPoint> p) {
-    for ( DataPoint point: p ) {
-      // TODO need to put class name or constructor ID in string
-      addViolation(
-          ctx,
-          point.getNode(),
-          new String[] {
+  
+  @Override
+  public Object[] getViolationParameters(DataPoint point) {
+    // TODO need to put class name or constructor ID in string
+    return new String[] {
               String.valueOf( ( (ASTConstructorDeclaration) point.getNode() ).getParameterCount() ),
-              String.valueOf( (int) point.getScore() ) } );
-    }
+              String.valueOf( (int) point.getScore() ) };
   }
 }

@@ -18,6 +18,10 @@ public abstract class AbstractStatisticalJavaRule extends AbstractJavaRule imple
 	helper.addDataPoint(point);
     }
 
+    public Object[] getViolationParameters(DataPoint point) {
+	return null;
+    }
+
     @Override
     public void apply(List<Node> nodes, RuleContext ctx) {
 	super.apply(nodes, ctx);

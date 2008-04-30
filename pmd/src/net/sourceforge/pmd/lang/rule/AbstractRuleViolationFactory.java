@@ -13,10 +13,6 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
 	ruleContext.getReport().addRuleViolation(createRuleViolation(rule, ruleContext, node));
     }
 
-    public void addViolationWithMessage(RuleContext ruleContext, Rule rule, Node node, String message) {
-	ruleContext.getReport().addRuleViolation(createRuleViolation(rule, ruleContext, node, message));
-    }
-
     public void addViolation(RuleContext ruleContext, Rule rule, Node node, String arg) {
 	ruleContext.getReport().addRuleViolation(
 		createRuleViolation(rule, ruleContext, node, MessageFormat.format(rule.getMessage(), arg)));
@@ -25,6 +21,14 @@ public abstract class AbstractRuleViolationFactory implements RuleViolationFacto
     public void addViolation(RuleContext ruleContext, Rule rule, Node node, Object[] args) {
 	ruleContext.getReport().addRuleViolation(
 		createRuleViolation(rule, ruleContext, node, MessageFormat.format(rule.getMessage(), args)));
+    }
+
+    public void addViolationWithMessage(RuleContext ruleContext, Rule rule, Node node, String message) {
+	ruleContext.getReport().addRuleViolation(createRuleViolation(rule, ruleContext, node, message));
+    }
+
+    public void addViolationWithMessage(RuleContext ruleContext, Rule rule, Node node, String message, Object[] args) {
+	ruleContext.getReport().addRuleViolation(createRuleViolation(rule, ruleContext, node, MessageFormat.format(message, args)));
     }
 
     protected abstract RuleViolation createRuleViolation(Rule rule, RuleContext ruleContext, Node node);

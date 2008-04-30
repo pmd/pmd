@@ -14,4 +14,5 @@ import net.sourceforge.pmd.stat.Metric;
  */
 public interface StatisticalRule extends Rule {
     void addDataPoint(DataPoint point);
+    Object[] getViolationParameters(DataPoint point);
 }

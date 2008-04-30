@@ -241,13 +241,11 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
 
     return children;
   }
-
-  protected void makeViolations(RuleContext ctx, Set<DataPoint> p) {
-    for ( DataPoint point: p ) {
-      addViolation( ctx, point.getNode(), new String[] {
-          ( (ASTMethodDeclaration) point.getNode() ).getMethodName(),
-          String.valueOf( (int) point.getScore() ) } );
-    }
+  
+  @Override
+  public Object[] getViolationParameters(DataPoint point) {
+    return new String[] {
+              ( (ASTMethodDeclaration) point.getNode() ).getMethodName(),
+              String.valueOf( (int) point.getScore() ) };
   }
-
 }

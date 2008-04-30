@@ -30,20 +30,6 @@ public interface RuleViolationFactory {
      *            the rule
      * @param node
      *            the node that produces the violation
-     * @param message
-     *            specific message to put in the report
-     */
-    void addViolationWithMessage(RuleContext ruleContext, Rule rule, Node node, String message);
-
-    /**
-     * Adds a violation to the report.
-     *
-     * @param ruleContext
-     *            the RuleContext
-     * @param rule
-     *            the rule
-     * @param node
-     *            the node that produces the violation
      * @param arg
      *            an argument to embed in the rule violation message
      */
@@ -63,4 +49,34 @@ public interface RuleViolationFactory {
      *            arguments to embed in the rule violation message
      */
     void addViolation(RuleContext ruleContext, Rule rule, Node node, Object[] args);
+
+    /**
+     * Adds a violation to the report.
+     *
+     * @param ruleContext
+     *            the RuleContext
+     * @param rule
+     *            the rule
+     * @param node
+     *            the node that produces the violation
+     * @param message
+     *            specific message to put in the report
+     */
+    void addViolationWithMessage(RuleContext ruleContext, Rule rule, Node node, String message);
+
+    /**
+     * Adds a violation to the report.
+     *
+     * @param ruleContext
+     *            the RuleContext
+     * @param rule
+     *            the rule
+     * @param node
+     *            the node that produces the violation
+     * @param message
+     *            specific message to put in the report
+     * @param args
+     *            arguments to embed in the rule violation message
+     */
+    void addViolationWithMessage(RuleContext ruleContext, Rule rule, Node node, String message, Object[] args);
 }

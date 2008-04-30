@@ -70,12 +70,10 @@ public class NcssTypeCountRule extends AbstractNcssCountRule {
   public Object visit(ASTFieldDeclaration node, Object data) {
     return NumericConstants.ONE;
   }
-
-  protected void makeViolations(RuleContext ctx, Set<DataPoint> p) {
-    for ( DataPoint point: p ) {
-      addViolation( ctx, point.getNode(),
-          String.valueOf( (int) point.getScore() ) );
-    }
+  
+  @Override
+  public Object[] getViolationParameters(DataPoint point) {
+    return new String[] {
+              String.valueOf( (int) point.getScore() ) };
   }
-
 }
