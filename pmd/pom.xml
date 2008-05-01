@@ -241,6 +241,9 @@
         <configuration>
           <forkMode>once</forkMode>
           <argLine>-Xmx512m</argLine>
+          <excludes>
+            <exclude>test/net/sourceforge/pmd/rules/typeresolution/xml/MyTestCase.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
       <plugin>
