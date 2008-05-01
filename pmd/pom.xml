@@ -231,6 +231,7 @@
         <directory>${basedir}/regress/</directory>
         <includes>
           <include>**/*.xml</include>
+          <include>**/testdata/*.java</include>
         </includes>
       </testResource>
     </testResources>
