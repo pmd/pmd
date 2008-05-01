@@ -71,6 +71,11 @@
 				<include name="**/xml/*.xml" />
 			</fileset>
 		</copy>
+		<copy todir="${dir.build}/test/net/sourceforge/pmd/coverage">
+			<fileset dir="${dir.regress}/test/net/sourceforge/pmd/coverage">
+				<include name="**/*.conf" />
+			</fileset>
+		</copy>
 	</target>
 
 	<target name="jar" depends="copy,compile" description="Jars up the classes and rulesets">
