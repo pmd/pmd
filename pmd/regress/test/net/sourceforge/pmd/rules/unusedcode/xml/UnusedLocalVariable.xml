@@ -306,4 +306,28 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    
+    <test-code>
+        <description><![CDATA[
+Reproducing bug #1955852: false positives for UnusedPrivateMethod & UnusedLocalField
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+
+public class PMDFalsePositiveTest {
+	private <T> T doSomething(Object param){
+		return (T) param;
+	}
+
+	public static void main(String[] args) {
+		PMDFalsePositiveTest test = new PMDFalsePositiveTest();
+		Object o = "Awesome!";
+		String result = test.<String>doSomething(o);
+		System.out.println(result);
+	}
+}
+
+     ]]></code>
+    </test-code>
+    
 </test-data>
