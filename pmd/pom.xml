@@ -242,11 +242,11 @@
         <configuration>
           <forkMode>once</forkMode>
           <argLine>-Xmx512m</argLine>
-          	<excludes>
-				<exclude>test/net/sourceforge/pmd/rules/typeresolution/xml/MyTestCase.java</exclude>
-				<!--  Come on surefire ! be smart, the following class is not a test to run ! -->
-				<exclude>test/net/sourceforge/pmd/testframework/TestDescriptor.java</exclude>
-			</excludes>
+          <excludes>
+            <exclude>test/net/sourceforge/pmd/rules/typeresolution/xml/MyTestCase.java</exclude>
+            <!--  Come on surefire ! be smart, the following class is not a test to run ! -->
+            <exclude>test/net/sourceforge/pmd/testframework/TestDescriptor.java</exclude>
+          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -257,17 +257,16 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-     
-     <!--
+
+      <!-- clover plugin is in a different repository at atlassian.
+        For configuration help, see the "Basic Usage" section at
+          http://confluence.atlassian.com/display/CLOVER/Clover-for-Maven+2+User%27s+Guide
+      -->
+      <!--
       <plugin>
         <artifactId>maven-clover-plugin</artifactId>
-        <groupId>com.atlassian.maven.plugins</groupId> -->
-        <!-- clover plugin is in a different repository at atlassian.
-          For configuration help, see the "Basic Usage" section at
-            http://confluence.atlassian.com/display/CLOVER/Clover-for-Maven+2+User%27s+Guide
-        --> 
-	<!--
-	<configuration>
+        <groupId>com.atlassian.maven.plugins</groupId>
+        <configuration>
           <jdk>1.5</jdk>
           <licenseLocation>tools/config/clover2.license</licenseLocation>
         </configuration>
@@ -287,83 +286,84 @@
           </execution>
         </executions>
       </plugin>
--->
-	<plugin>
-      	<groupId>org.apache.maven.plugins</groupId>
+      -->
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
         <inherited>true</inherited>
         <executions>
-        	<execution>
-        		<id>generate-ruleset-as-xdocs</id>
-            	<phase>pre-site</phase>
-                <configuration>
+          <execution>
+            <id>generate-ruleset-as-xdocs</id>
+            <phase>pre-site</phase>
+              <configuration>
                 <tasks>
-                	<echo>PMD specific tasks: generating xdocs</echo>
+                  <echo>PMD specific tasks: generating xdocs</echo>
                     <ant antfile="tools/ant/generate-pmd-xdoc.xml">
-                    	<property name="target" value="xdocs/rules"/>
-                    	<property name="lib" value="${basedir}/tools/lib"/>
-                 	</ant>
+                      <property name="target" value="xdocs/rules"/>
+                      <property name="lib" value="${basedir}/tools/lib"/>
+                   </ant>
                 </tasks>
-              	</configuration>
-                <goals>
-                	<goal>run</goal>
-                </goals>
-			</execution>
+              </configuration>
+              <goals>
+                <goal>run</goal>
+              </goals>
+            </execution>
 
-			<execution>
-        		<id>move-index-and-delete-generated-xdocs</id>
-            	<phase>site</phase>
-                <configuration>
+            <execution>
+              <id>move-index-and-delete-generated-xdocs</id>
+              <phase>site</phase>
+              <configuration>
                 <tasks>
-                	<echo>PMD site specific tasks</echo>
-                	<echo>1. Copying missing images to site directory.</echo>
-	 			  	<copy todir="${project.build.directory}/site/images/">
-						<fileset dir="xdocs/images/"
-							 includes="**/*.*"/>
-					</copy>
-                	<echo>2. Adding missing text files to site.</echo>
-	 			  	<copy todir="${project.build.directory}/site/">
-						<fileset dir="xdocs/"
-							 includes="**/*.txt"/>
-					</copy>
-                	<echo>3. Deleting useless generated files.</echo>					
-					<delete>
-						<fileset 	dir="xdocs/rules"
-									includes="**/*.xml"/>
-						<fileset 	dir="xdocs"
-									includes="mergedruleset.xml"/>
-						<fileset 	dir="${project.build.directory}"
-									includes="site/mergedruleset.html"/>
-					</delete>
+                  <echo>PMD site specific tasks</echo>
+                  <echo>1. Copying missing images to site directory.</echo>
+                  <copy todir="${project.build.directory}/site/images/">
+                    <fileset dir="xdocs/images/"
+                      includes="**/*.*"/>
+                  </copy>
+                  <echo>2. Adding missing text files to site.</echo>
+                  <copy todir="${project.build.directory}/site/">
+                    <fileset dir="xdocs/"
+                      includes="**/*.txt"/>
+                  </copy>
+                  <echo>3. Deleting useless generated files.</echo>
+                  <delete>
+                    <fileset dir="xdocs/rules"
+                      includes="**/*.xml"/>
+                    <fileset dir="xdocs"
+                      includes="mergedruleset.xml"/>
+                    <fileset dir="${project.build.directory}"
+                      includes="site/mergedruleset.html"/>
+                  </delete>
                 </tasks>
-              	</configuration>
-                <goals>
-                	<goal>run</goal>
-                </goals>
-			</execution>
+              </configuration>
+              <goals>
+                <goal>run</goal>
+              </goals>
+            </execution>
 
-			<execution>
-        		<id>pmd-clean</id>
-            	<phase>clean</phase>
-                <configuration>
-                <tasks>
-                	<echo>PMD specific tasks: cleaning generated xdocs</echo>
-					<delete>
-						<fileset 	dir="xdocs/rules"
-									includes="**/*.xml"/>
-						<fileset	dir="xdocs/"
-									includes="mergedruleset.xml"/>
-					</delete>
-                </tasks>
-              	</configuration>
-                <goals>
-                	<goal>run</goal>
-                </goals>
-			</execution>
+            <execution>
+              <id>pmd-clean</id>
+              <phase>clean</phase>
+              <configuration>
+              <tasks>
+                <echo>PMD specific tasks: cleaning generated xdocs</echo>
+                <delete>
+                  <fileset dir="xdocs/rules"
+                    includes="**/*.xml"/>
+                  <fileset dir="xdocs/"
+                    includes="mergedruleset.xml"/>
+                </delete>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
 
 
-    	</executions>
-	</plugin>
+        </executions>
+      </plugin>
 
 
     </plugins>
@@ -404,110 +404,111 @@
     </site>
   </distributionManagement>
 
-	<reporting>
-		<plugins>
-	 		<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-jxr-plugin</artifactId>
-	        </plugin>
-	
-			<plugin> 
-	        	<groupId>org.apache.maven.plugins</groupId>
-	        	<artifactId>maven-javadoc-plugin</artifactId>
-	        	<reportSets>
-					<reportSet>
-						<reports>
-							<report>javadoc</report>
-							<!--  
-							FIXME: The following report fails
-							<report>test-javadoc</report>
-							-->
-						</reports>
-					</reportSet>
-				</reportSets>
-	        </plugin>
-	
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<configuration>
-					<xdocDirectory>${basedir}/xdocs</xdocDirectory>
-		          </configuration>
-			</plugin>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+      </plugin>
 
-	      <!-- 	
-			<plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-	    	    <artifactId>maven-pmd-plugin</artifactId>
-	        	<configuration>
-					<linkXref>true</linkXref>
-					<sourceEncoding>utf-8</sourceEncoding>
-					<minimumTokens>100</minimumTokens>
-					<targetJdk>1.5</targetJdk>
-					<rulesets>
-	            		<ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset>
-					</rulesets>
-	        	</configuration>
-	      </plugin>
-		-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>javadoc</report>
+              <!--
+                FIXME: The following report fails
+              <report>test-javadoc</report>
+              -->
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
 
-		<!--
-	      		Emma is a test coverage tools to be used instead of clover.
-	      		As the mvn2 plugin is not released yet, the plugin is commented out, 
-	      		so you build won't fail:
-				You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762
-				
-				Download the tarball, extract, cd into dir, run
-				
-				$ mvn install.
-	      
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>emma-maven-plugin</artifactId>
-		</plugin>
-		 -->
-	 
-	      <plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-checkstyle-plugin</artifactId>
-	        <configuration>
-	          <configLocation>tools/config/checkstyle-config.xml</configLocation>
-	        </configuration>
-	      </plugin>
-	      
-	      <plugin>
-	          <groupId>org.apache.maven.plugins</groupId>
-	          <artifactId>maven-project-info-reports-plugin</artifactId>
-	          <reportSets>
-	             <reportSet>
-	                <reports>
-						<report>summary</report>
-						<report>dependencies</report>
-						<report>project-team</report>
-						<report>mailing-list</report>
-						<report>cim</report>
-						<report>issue-tracking</report>
-						<report>license</report>
-						<report>scm</report>
-	                </reports>
-	             </reportSet>
-	          </reportSets>
-	      </plugin>
-      
-		<plugin>
-			<artifactId>maven-surefire-plugin</artifactId>
-		</plugin>
-		<!--
-		<plugin>
-	        <artifactId>maven-clover-plugin</artifactId>
-	        <groupId>com.atlassian.maven.plugins</groupId>
-	        <configuration>
-	          <licenseLocation>tools/config/clover2.license</licenseLocation>
-	        </configuration>
-	      </plugin>
-	   -->  
-		</plugins>
-	</reporting>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <xdocDirectory>${basedir}/xdocs</xdocDirectory>
+        </configuration>
+      </plugin>
+
+      <!--
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <configuration>
+          <linkXref>true</linkXref>
+          <sourceEncoding>utf-8</sourceEncoding>
+          <minimumTokens>100</minimumTokens>
+          <targetJdk>1.5</targetJdk>
+          <rulesets>
+            <ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset>
+          </rulesets>
+        </configuration>
+      </plugin>
+      -->
+
+      <!--
+        Emma is a test coverage tools to be used instead of clover.
+        As the mvn2 plugin is not released yet, the plugin is commented out,
+        so you build won't fail:
+        You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762
+
+        Download the tarball, extract, cd into dir, run
+
+        $ mvn install.
+      -->
+      <!--
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>emma-maven-plugin</artifactId>
+      </plugin>
+      -->
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>tools/config/checkstyle-config.xml</configLocation>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>summary</report>
+              <report>dependencies</report>
+              <report>project-team</report>
+              <report>mailing-list</report>
+              <report>cim</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+              <report>scm</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+      <!--
+      <plugin>
+        <artifactId>maven-clover-plugin</artifactId>
+        <groupId>com.atlassian.maven.plugins</groupId>
+        <configuration>
+          <licenseLocation>tools/config/clover2.license</licenseLocation>
+        </configuration>
+      </plugin>
+      -->
+    </plugins>
+  </reporting>
 
 </project>
 
