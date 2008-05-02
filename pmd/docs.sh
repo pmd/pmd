@@ -4,7 +4,6 @@ currentVersion=5.0
 option="${1}"
 
 function tarball-docs() {
-	cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/site/
 	cd target
 	rm -f ${DOCS_FILE}
 	tar zcf ${DOCS_FILE} site
