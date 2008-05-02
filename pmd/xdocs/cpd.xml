@@ -26,8 +26,8 @@
      <p>CPD is included with PMD, which you can download <a href="http://sourceforge.net/project/showfiles.php?group_id=56262">here</a>.
  Or, if you have <a href="http://java.sun.com/products/javawebstart/">Java Web Start</a>, you can <a href="cpd.jnlp">run CPD by clicking here</a>.
      </p>
-     <p><a href="cpdresults.txt">Here</a> are the duplicates CPD found in the JDK 1.4 source code.</p>
-     <p><a href="cpp_cpdresults.txt">Here</a> are the duplicates CPD found in the APACHE_2_0_BRANCH branch of Apache
+     <p><a href="./cpdresults.txt">Here</a> are the duplicates CPD found in the JDK 1.4 source code.</p>
+     <p><a href="./cpp_cpdresults.txt">Here</a> are the duplicates CPD found in the APACHE_2_0_BRANCH branch of Apache
          (just the <code>httpd-2.0/server/</code> directory).</p>
        </subsection>
 
