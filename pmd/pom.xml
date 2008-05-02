@@ -255,15 +255,17 @@
           <target>1.5</target>
         </configuration>
       </plugin>
+     
+     <!--
       <plugin>
         <artifactId>maven-clover-plugin</artifactId>
-        <groupId>com.atlassian.maven.plugins</groupId>
-
+        <groupId>com.atlassian.maven.plugins</groupId> -->
         <!-- clover plugin is in a different repository at atlassian.
           For configuration help, see the "Basic Usage" section at
             http://confluence.atlassian.com/display/CLOVER/Clover-for-Maven+2+User%27s+Guide
-        -->
-        <configuration>
+        --> 
+	<!--
+	<configuration>
           <jdk>1.5</jdk>
           <licenseLocation>tools/config/clover2.license</licenseLocation>
         </configuration>
@@ -283,7 +285,7 @@
           </execution>
         </executions>
       </plugin>
-
+-->
 	<plugin>
       	<groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
@@ -308,15 +310,21 @@
 
 			<execution>
         		<id>move-index-and-delete-generated-xdocs</id>
-            	<phase>post-site</phase>
+            	<phase>site</phase>
                 <configuration>
                 <tasks>
-                	<echo>PMD specific tasks: cleaning generated xdocs</echo>
-	 				<move 	file="${project.build.directory}/site/rules/index.html"
-	 						tofile="${project.build.directory}/site/index.html"/>
-	 			  	<copy todir="${project.build.directory}/site/">
-						<fileset dir="xdocs/images/"/>
+                	<echo>PMD site specific tasks</echo>
+                	<echo>1. Copying missing images to site directory.</echo>
+	 			  	<copy todir="${project.build.directory}/site/images/">
+						<fileset dir="xdocs/images/"
+							 includes="**/*.*"/>
 					</copy>
+                	<echo>2. Adding missing text files to site.</echo>
+	 			  	<copy todir="${project.build.directory}/site/">
+						<fileset dir="xdocs/"
+							 includes="**/*.txt"/>
+					</copy>
+                	<echo>3. Deleting useless generated files.</echo>					
 					<delete>
 						<fileset 	dir="xdocs/rules"
 									includes="**/*.xml"/>
@@ -394,79 +402,110 @@
     </site>
   </distributionManagement>
 
-  <reporting>
-    <plugins>
-    <!--  
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-jxr-plugin</artifactId>
-        </plugin>
-
-	<plugin>
-        	<groupId>org.apache.maven.plugins</groupId>
-        	<artifactId>maven-javadoc-plugin</artifactId>
-        	<configuration>-->
-        		<!--  Removing test classes, some make fail the build and site goals is already taking a long time --> <!--  
-	        	<excludePackageNames>test.*</excludePackageNames>
-        	</configuration>
-        </plugin>
--->
-
-	<plugin>
+	<reporting>
+		<plugins>
+	 		<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-jxr-plugin</artifactId>
+	        </plugin>
+	
+			<plugin> 
+	        	<groupId>org.apache.maven.plugins</groupId>
+	        	<artifactId>maven-javadoc-plugin</artifactId>
+	        	<reportSets>
+					<reportSet>
+						<reports>
+							<report>javadoc</report>
+							<!--  
+							FIXME: The following report fails
+							<report>test-javadoc</report>
+							-->
+						</reports>
+					</reportSet>
+				</reportSets>
+	        </plugin>
+	
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
 				<configuration>
 					<xdocDirectory>${basedir}/xdocs</xdocDirectory>
-	           </configuration>
+		          </configuration>
 			</plugin>
 
-      <!-- 	
-		<plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-    	    <artifactId>maven-pmd-plugin</artifactId>
-        	<configuration>
-				<linkXref>true</linkXref>
-				<sourceEncoding>utf-8</sourceEncoding>
-				<minimumTokens>100</minimumTokens>
-				<targetJdk>1.5</targetJdk>
-				<rulesets>
-            		<ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset>
-				</rulesets>
-        	</configuration>
-      </plugin>
+	      <!-- 	
+			<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+	    	    <artifactId>maven-pmd-plugin</artifactId>
+	        	<configuration>
+					<linkXref>true</linkXref>
+					<sourceEncoding>utf-8</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.5</targetJdk>
+					<rulesets>
+	            		<ruleset>http://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd/rulesets/internal/dogfood.xml</ruleset>
+					</rulesets>
+	        	</configuration>
+	      </plugin>
+		-->
 
-      		Emma is a test coverage tools to be used instead of clover.
-      		As the mvn2 plugin is not released yet, the plugin is commented out, 
-      		so you build won't fail:
-			You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762
-			
-			Download the tarball, extract, cd into dir, run
-			
-			$ mvn install.
-      
-	<plugin>
-		<groupId>org.codehaus.mojo</groupId>
-		<artifactId>emma-maven-plugin</artifactId>
-	</plugin>
-	 -->
+		<!--
+	      		Emma is a test coverage tools to be used instead of clover.
+	      		As the mvn2 plugin is not released yet, the plugin is commented out, 
+	      		so you build won't fail:
+				You can get an Emma plugin for Maven2 at http://jira.codehaus.org/browse/MOJO-762
+				
+				Download the tarball, extract, cd into dir, run
+				
+				$ mvn install.
+	      
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>emma-maven-plugin</artifactId>
+		</plugin>
+		 -->
 	 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <configLocation>tools/config/checkstyle-config.xml</configLocation>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-clover-plugin</artifactId>
-        <groupId>com.atlassian.maven.plugins</groupId>
-        <configuration>
-          <licenseLocation>tools/config/clover2.license</licenseLocation>
-        </configuration>
-      </plugin>
+	      <plugin>
+	        <groupId>org.apache.maven.plugins</groupId>
+	        <artifactId>maven-checkstyle-plugin</artifactId>
+	        <configuration>
+	          <configLocation>tools/config/checkstyle-config.xml</configLocation>
+	        </configuration>
+	      </plugin>
+	      
+	      <plugin>
+	          <groupId>org.apache.maven.plugins</groupId>
+	          <artifactId>maven-project-info-reports-plugin</artifactId>
+	          <reportSets>
+	             <reportSet>
+	                <reports>
+						<report>summary</report>
+						<report>dependencies</report>
+						<report>project-team</report>
+						<report>mailing-list</report>
+						<report>cim</report>
+						<report>issue-tracking</report>
+						<report>license</report>
+						<report>scm</report>
+	                </reports>
+	             </reportSet>
+	          </reportSets>
+	      </plugin>
       
-    </plugins>
-  </reporting>
+		<plugin>
+			<artifactId>maven-surefire-plugin</artifactId>
+		</plugin>
+		<!--
+		<plugin>
+	        <artifactId>maven-clover-plugin</artifactId>
+	        <groupId>com.atlassian.maven.plugins</groupId>
+	        <configuration>
+	          <licenseLocation>tools/config/clover2.license</licenseLocation>
+	        </configuration>
+	      </plugin>
+	   -->  
+		</plugins>
+	</reporting>
 
 </project>
 
