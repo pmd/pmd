@@ -331,7 +331,7 @@
 						<fileset 	dir="xdocs/rules"
 									includes="**/*.xml"/>
 						<fileset 	dir="xdocs"
-									includes="mergedrules.xml"/>
+									includes="mergedruleset.xml"/>
 						<fileset 	dir="${project.build.directory}"
 									includes="site/mergedruleset.html"/>
 					</delete>
