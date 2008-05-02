@@ -21,6 +21,11 @@ public class TestDescriptor {
     private boolean reinitializeRule = false;   //default
     private boolean isRegressionTest = true;
 
+    // Empty descriptor added to please mvn surefire plugin
+    public TestDescriptor() {
+    	
+    }
+    
     public TestDescriptor(String code, String description, int numberOfProblemsExpected, Rule rule) {
         this(code, description, numberOfProblemsExpected, rule, RuleTst.DEFAULT_LANGUAGE_VERSION);
     }
