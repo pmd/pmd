@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="PMD">
-  <!-- TODO: get logos in place -->
+	<bannerLeft>
+		<name>SourceForge</name>
+		<src>images/sflogo.png</src>
+		<href>http://sourceforge.net/</href>
+	</bannerLeft>
+	<bannerRight>
+		<name>pmd-logo</name>
+		<src>images/pmd_logo_small.jpg</src>
+		<href>http://pmd.sourceforge.net/</href>
+        </bannerRight>
   <body>
     <breadcrumbs>
       <item name="SourceForge" href="http://www.sourceforge.net/"/>
@@ -76,5 +85,7 @@
         <item name="Java Server Pages" href="/rules/basic-jsp.html" />
         <item name="Java Server Faces" href="/rules/basic-jsf.html" />
     </menu>
+    
+    <menu ref="reports" />
   </body>
 </project>
