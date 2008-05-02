@@ -38,9 +38,15 @@ only if you modify the java code.
       <resource>
         <directory>${basedir}</directory>
         <includes>
-          <include>xslt/**.*.xsl</include>
+          <include>xslt/**/*.xsl</include>
         </includes>
       </resource>
+      <resource>
+            <directory>${basedir}/src</directory>
+	    	<includes>
+	            <include>**/*.properties</include>
+	    </includes>
+       </resource>
     </resources>
   </build>
   <dependencies>

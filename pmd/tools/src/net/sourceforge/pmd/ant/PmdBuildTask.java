@@ -21,7 +21,31 @@ public class PmdBuildTask extends Task {
     private String rulesDirectory;
     private String target;
 
+    private String rulesetToDocs;
+    private String mergeRuleset;
+    private String rulesIndex;
+    private String indexFilename;
+    private String mergedRulesetFilename;
+    private boolean shouldGenerateJavaFourPom = true;
+    
     /**
+     * 
+     * @return
+     */
+
+	/**
+	 * @return the shouldGenerateJavaFourPom
+	 */
+	public boolean isShouldGenerateJavaFourPom() {
+		return shouldGenerateJavaFourPom;
+	}
+	/**
+	 * @param shouldGenerateJavaFourPom the shouldGenerateJavaFourPom to set
+	 */
+	public void setShouldGenerateJavaFourPom(boolean shouldGenerateJavaFourPom) {
+		this.shouldGenerateJavaFourPom = shouldGenerateJavaFourPom;
+	}
+	/**
      * @return the rulesDirectory
      */
     public String getRulesDirectory() {
@@ -47,27 +71,102 @@ public class PmdBuildTask extends Task {
     }
 
     public void execute() throws BuildException {
-	PmdBuildTools tool = new RuleSetToDocs();
-	validate();
-	tool.setTargetDirectory(this.target);
-	tool.setRulesDirectory(this.rulesDirectory);
-
-	try {
-        	tool.convertRulesets();
-        	tool.generateRulesIndex();
-        	tool.createPomForJava4("pom.xml","pmd-jdk14-pom.xml");
-	}
-	catch ( PmdBuildException e) {
-	    throw new BuildException(e);
-	} catch (TransformerException e) {
-	    throw new BuildException(e);
-	}
+		PmdBuildTools tool = validate(new RuleSetToDocs());
+		tool.setTargetDirectory(this.target);
+		tool.setRulesDirectory(this.rulesDirectory);
+	
+		try {
+	        	tool.convertRulesets();
+	        	tool.generateRulesIndex();
+	        	if ( this.shouldGenerateJavaFourPom ) {
+	        		tool.createPomForJava4("pom.xml","pmd-jdk14-pom.xml");
+	        	}
+		}
+		catch ( PmdBuildException e) {
+		    throw new BuildException(e);
+		} catch (TransformerException e) {
+		    throw new BuildException(e);
+		}
     }
 
-    private void validate() throws BuildException {
-	if ( this.target == null || "".equals(target) )
-	    throw new BuildException("Attribute targetDirectory is not optionnal");
-	if ( this.rulesDirectory == null || "".equals(this.rulesDirectory) )
-	    throw new BuildException("Attribute rulesDirectory is not optionnal");
+    private PmdBuildTools validate(RuleSetToDocs tool) throws BuildException {
+		// Mandatory attributes
+    	if ( this.target == null || "".equals(target) )
+		    throw new BuildException("Attribute targetDirectory is not optionnal");
+		if ( this.rulesDirectory == null || "".equals(this.rulesDirectory) )
+		    throw new BuildException("Attribute rulesDirectory is not optionnal");
+		// Optionnal Attributes
+		if ( this.mergedRulesetFilename != null && ! "".equals(this.mergedRulesetFilename) )
+			tool.setMergedRulesetFilename(this.mergedRulesetFilename);
+		if ( this.rulesIndex != null && ! "".equals(this.rulesIndex) )
+			tool.setGenerateIndexXsl(this.rulesIndex);
+		if ( this.rulesetToDocs != null && ! "".equals(this.rulesetToDocs) )
+			tool.setRulesetToDocsXsl(this.rulesetToDocs);
+		if ( this.mergeRuleset != null && ! "".equals(this.mergeRuleset) )
+			tool.setMergeRulesetXsl(this.mergeRuleset);
+		return tool;
     }
+    
+    
+	/**
+	 * @return the rulesetToDocs
+	 */
+	public String getRulesetToDocs() {
+		return rulesetToDocs;
+	}
+	/**
+	 * @param rulesetToDocs the rulesetToDocs to set
+	 */
+	public void setRulesetToDocs(String rulesetToDocs) {
+		this.rulesetToDocs = rulesetToDocs;
+	}
+	/**
+	 * @return the mergeRuleset
+	 */
+	public String getMergeRuleset() {
+		return mergeRuleset;
+	}
+	/**
+	 * @param mergeRuleset the mergeRuleset to set
+	 */
+	public void setMergeRuleset(String mergeRuleset) {
+		this.mergeRuleset = mergeRuleset;
+	}
+	/**
+	 * @return the rulesIndex
+	 */
+	public String getRulesIndex() {
+		return rulesIndex;
+	}
+	/**
+	 * @param rulesIndex the rulesIndex to set
+	 */
+	public void setRulesIndex(String rulesIndex) {
+		this.rulesIndex = rulesIndex;
+	}
+
+	/**
+	 * @return the indexFilename
+	 */
+	public String getIndexFilename() {
+		return indexFilename;
+	}
+	/**
+	 * @param indexFilename the indexFilename to set
+	 */
+	public void setIndexFilename(String indexFilename) {
+		this.indexFilename = indexFilename;
+	}
+	/**
+	 * @return the mergedRulesetFilename
+	 */
+	public String getMergedRulesetFilename() {
+		return mergedRulesetFilename;
+	}
+	/**
+	 * @param mergedRulesetFilename the mergedRulesetFilename to set
+	 */
+	public void setMergedRulesetFilename(String mergedRulesetFilename) {
+		this.mergedRulesetFilename = mergedRulesetFilename;
+	}
 }
