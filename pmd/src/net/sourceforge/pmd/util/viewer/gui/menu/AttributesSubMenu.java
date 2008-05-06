@@ -4,9 +4,9 @@ import java.text.MessageFormat;
 
 import javax.swing.JMenu;
 
-import net.sourceforge.pmd.jaxen.Attribute;
-import net.sourceforge.pmd.jaxen.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.util.viewer.model.AttributeToolkit;
 import net.sourceforge.pmd.util.viewer.model.ViewerModel;
 import net.sourceforge.pmd.util.viewer.util.NLS;

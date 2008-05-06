@@ -1,4 +1,9 @@
-package net.sourceforge.pmd.jaxen;
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+package net.sourceforge.pmd.lang.xpath;
+
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 import org.jaxen.Context;
 import org.jaxen.Function;
@@ -10,6 +15,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
+// FIXME Can this function be extended to work on non-AST attributes?
 public class MatchesFunction implements Function {
 
     public static void registerSelfInSimpleContext() {

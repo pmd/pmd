@@ -16,9 +16,9 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 public interface LanguageVersionHandler {
     
     /**
-     * Get the XPathFunctionRegister.
+     * Get the XPathHandler.
      */
-    XPathFunctionRegister getXPathFunctionRegister();
+    XPathHandler getXPathHandler();
 
     /**
      * Get the RuleViolationFactory.

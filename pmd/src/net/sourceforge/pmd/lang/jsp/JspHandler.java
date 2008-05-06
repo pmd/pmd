@@ -5,8 +5,9 @@ import java.io.Writer;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.XPathFunctionRegister;
+import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
 import net.sourceforge.pmd.lang.jsp.ast.DumpFacade;
 import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.jsp.rule.JspRuleViolationFactory;
@@ -20,8 +21,11 @@ import net.sourceforge.pmd.symboltable.JspSymbolFacade;
  */
 public class JspHandler implements LanguageVersionHandler {
 
-    public XPathFunctionRegister getXPathFunctionRegister() {
-	return XPathFunctionRegister.DUMMY;
+    public XPathHandler getXPathHandler() {
+	return new AbstractASTXPathHandler() {
+	    public void initialize() {
+	    }
+	};
     }
 
     public RuleViolationFactory getRuleViolationFactory() {

@@ -4,9 +4,9 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.jaxen.DocumentNavigator;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
 

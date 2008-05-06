@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.jaxen;
+package net.sourceforge.pmd.lang.ast.xpath;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

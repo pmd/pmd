@@ -5,7 +5,7 @@ import java.io.Writer;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.XPathFunctionRegister;
+import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
 /**
@@ -13,8 +13,8 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  */
 public class CppHandler implements LanguageVersionHandler {
 
-    public XPathFunctionRegister getXPathFunctionRegister() {
-	return XPathFunctionRegister.DUMMY;
+    public XPathHandler getXPathHandler() {
+	return XPathHandler.DUMMY;
     }
 
     public RuleViolationFactory getRuleViolationFactory() {

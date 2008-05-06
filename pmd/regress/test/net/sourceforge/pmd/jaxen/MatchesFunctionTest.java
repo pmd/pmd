@@ -5,9 +5,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sourceforge.pmd.jaxen.Attribute;
-import net.sourceforge.pmd.jaxen.MatchesFunction;
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.xpath.MatchesFunction;
 
 import org.jaxen.Context;
 import org.jaxen.FunctionCallException;

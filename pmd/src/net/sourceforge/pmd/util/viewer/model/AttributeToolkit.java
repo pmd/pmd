@@ -1,7 +1,7 @@
 package net.sourceforge.pmd.util.viewer.model;
 
 
-import net.sourceforge.pmd.jaxen.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 
 /**

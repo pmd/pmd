@@ -12,12 +12,12 @@ import java.util.Stack;
 import java.util.Map.Entry;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.jaxen.DocumentNavigator;
-import net.sourceforge.pmd.jaxen.Functions;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.xpath.Initializer;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
+import org.jaxen.Navigator;
 import org.jaxen.SimpleVariableContext;
 import org.jaxen.XPath;
 import org.jaxen.expr.AllNodeStep;
@@ -32,8 +32,7 @@ import org.jaxen.expr.XPathFactory;
 import org.jaxen.saxpath.Axis;
 
 /**
- * Rule that tries to match an XPath expression against a DOM
- * view of the AST of a "compilation unit".
+ * Rule that tries to match an XPath expression against a DOM view of an AST.
  * <p/>
  * This rule needs a property "xpath".
  */
@@ -41,27 +40,27 @@ public class XPathRule extends AbstractRule {
 
     // Mapping from Node name to applicable XPath queries
     private Map<String, List<XPath>> nodeNameToXPaths;
-    private boolean functionsRegistered;
+    private boolean xpathInitialized;
 
     private static final String AST_ROOT = "_AST_ROOT_";
 
     /**
-     * Evaluate the AST with compilationUnit as root-node, against
-     * the XPath expression found as property with name "xpath".
-     * All matches are reported as violations.
+     * Evaluate the AST with a root node, against the XPath expression found as
+     * property with name "xpath".  All matches are reported as violations.
      *
-     * @param compilationUnit the Node that is the root of the AST to be checked
+     * @param node the Node that is the root of the AST to be checked
      * @param data
      */
-    public void evaluate(Node compilationUnit, RuleContext data) {
+    public void evaluate(Node node, RuleContext data) {
         try {
-            initializeXPathExpression();
-            List<XPath> xpaths = nodeNameToXPaths.get(compilationUnit.toString());
+            initializeXPathExpression(data.getLanguageVersion().getLanguageVersionHandler().getXPathHandler()
+		    .getNavigator());
+            List<XPath> xpaths = nodeNameToXPaths.get(node.toString());
             if (xpaths == null) {
                 xpaths = nodeNameToXPaths.get(AST_ROOT);
             }
             for (XPath xpath: xpaths) {
-                List results = xpath.selectNodes(compilationUnit);
+                List results = xpath.selectNodes(node);
                 for (Iterator j = results.iterator(); j.hasNext();) {
                     Node n = (Node) j.next();
                     addViolation(data, n, n.getImage());
@@ -74,21 +73,24 @@ public class XPathRule extends AbstractRule {
 
     public List<String> getRuleChainVisits() {
         try {
-            initializeXPathExpression();
+            // No Navigator available in this context
+            initializeXPathExpression(null);
+	    // Clear the initialization, because we did not have a Navigator
+	    nodeNameToXPaths = null;
             return super.getRuleChainVisits();
         } catch (JaxenException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    private void initializeXPathExpression() throws JaxenException {
+    private void initializeXPathExpression(Navigator navigator) throws JaxenException {
         if (nodeNameToXPaths != null) {
             return;
         }
 
-        if (!functionsRegistered) {
-            Functions.registerAll();
-            functionsRegistered = true;
+        if (!xpathInitialized) {
+            Initializer.initialize();
+            xpathInitialized = true;
         }
 
         //
@@ -99,7 +101,7 @@ public class XPathRule extends AbstractRule {
         //
         nodeNameToXPaths = new HashMap<String, List<XPath>>();
 
-        BaseXPath originalXPath = createXPath(getStringProperty("xpath"));
+        BaseXPath originalXPath = createXPath(getStringProperty("xpath"), navigator);
         indexXPath(originalXPath, AST_ROOT);
 
         boolean useRuleChain = true;
@@ -142,7 +144,7 @@ public class XPathRule extends AbstractRule {
                                     relativeLocationPath.addStep((Step)steps.get(i));
                                 }
 
-                                BaseXPath xpath = createXPath(relativeLocationPath.getText());
+                                BaseXPath xpath = createXPath(relativeLocationPath.getText(), navigator);
                                 indexXPath(xpath, ((NameStep)step2).getLocalName());
                                 valid = true;
                             }
@@ -182,7 +184,7 @@ public class XPathRule extends AbstractRule {
         xpaths.add(xpath);
     }
 
-    private BaseXPath createXPath(String xpathQueryString) throws JaxenException {
+    private BaseXPath createXPath(String xpathQueryString, Navigator navigator) throws JaxenException {
         // TODO As of Jaxen 1.1, LiteralExpr which contain " or ' characters
         // are not escaped properly.  The following is fix for the known
         // XPath queries built into PMD.  It will not necessarily work for
@@ -191,7 +193,7 @@ public class XPathRule extends AbstractRule {
         // PMD should upgrade to the next Jaxen release containing this fix.
         xpathQueryString = xpathQueryString.replaceAll("\"\"\"", "'\"'");
 
-        BaseXPath xpath = new BaseXPath(xpathQueryString, new DocumentNavigator());
+        BaseXPath xpath = new BaseXPath(xpathQueryString, navigator);
         if (getProperties().size() > 1) {
             SimpleVariableContext vc = new SimpleVariableContext();
             for (Entry e: getProperties().entrySet()) {
@@ -205,7 +207,7 @@ public class XPathRule extends AbstractRule {
     }
 
     /**
-     * Apply the rule to all compilation units.
+     * Apply the rule to all nodes.
      */
     public void apply(List<Node> nodes, RuleContext ctx) {
 	for (Node node : nodes) {

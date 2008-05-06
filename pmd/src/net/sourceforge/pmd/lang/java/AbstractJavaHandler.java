@@ -5,13 +5,14 @@ import java.io.Writer;
 import net.sourceforge.pmd.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.VisitorStarter;
-import net.sourceforge.pmd.lang.XPathFunctionRegister;
+import net.sourceforge.pmd.lang.XPathHandler;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.DumpFacade;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.jaxen.TypeOfFunction;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
+import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.symboltable.SymbolFacade;
 import net.sourceforge.pmd.typeresolution.TypeResolutionFacade;
@@ -24,9 +25,9 @@ import net.sourceforge.pmd.typeresolution.TypeResolutionFacade;
  */
 public abstract class AbstractJavaHandler implements LanguageVersionHandler {
 
-    public XPathFunctionRegister getXPathFunctionRegister() {
-	return new XPathFunctionRegister() {
-	    public void register() {
+    public XPathHandler getXPathHandler() {
+	return new AbstractASTXPathHandler() {
+	    public void initialize() {
 		TypeOfFunction.registerSelfInSimpleContext();
 	    }
 	};

@@ -1,10 +1,13 @@
-package net.sourceforge.pmd.lang.java.jaxen;
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+package net.sourceforge.pmd.lang.java.xpath;
 
 import java.util.Arrays;
 import java.util.List;
 
-import net.sourceforge.pmd.jaxen.Attribute;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 
 import org.jaxen.Context;

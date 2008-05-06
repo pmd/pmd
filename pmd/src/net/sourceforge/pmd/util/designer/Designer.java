@@ -83,16 +83,16 @@ import javax.xml.transform.stream.StreamResult;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
-import net.sourceforge.pmd.jaxen.DocumentNavigator;
-import net.sourceforge.pmd.jaxen.Functions;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
 import net.sourceforge.pmd.symboltable.ClassScope;
 import net.sourceforge.pmd.symboltable.LocalScope;
@@ -633,7 +633,7 @@ public class Designer implements ClipboardOwner {
 	    exitOnClose = !args[0].equals("-noexitonclose");
 	}
 
-	Functions.registerAll();
+	Initializer.initialize();
 
 	xpathQueryArea.setFont(new Font("Verdana", Font.PLAIN, 16));
 	JSplitPane controlSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createCodeEditorPanel(),

@@ -66,6 +66,8 @@ TODO - Release blockers - Must implement before this release can be finished
      leverage the full PMD feature set.  Documentation on this class needs to
      vastly improved, this should be one of the best documented classes in the
      code base.
+   o Reconcile the util.designer and util.viewer packages.  Two versions of the
+     same thing.  Designer is more up to date, but Viewer has a nice MVC design.
 
 ---
 
@@ -75,14 +77,17 @@ internals and code organization to be improved to better handle additional
 languages.  This opportunity was used to remove depreciated APIs, and beat up
 any code which has thumbed its nose at the developers over the years. ;)
 
-The following is relatively complete list of the major changes:
+The following is relatively complete list of the major changes (this may not be
+100% accurate, see actual source code when in doubt):
 
 	API Change - Unification of treatment of languages within PMD core:
 	   Added - net.sourceforge.pmd.lang.Language (now an 'enum')
 	   Added - net.sourceforge.pmd.lang.LanguageVersion
 	   Added - net.sourceforge.pmd.lang.LanguageVersionDiscoverer
 	   Added - net.sourceforge.pmd.lang.LanguageVersionHandler
-	   Added - net.sourceforge.pmd.lang.XPathFunctionRegister
+	   Added - net.sourceforge.pmd.lang.XPathHandler
+	   Added - net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler
+	   Added - net.sourceforge.pmd.lang.xpath.Initializer
 	   Added - net.sourceforge.pmd.lang.ast.AbstractTokenManager
 	   Added - net.sourceforge.pmd.lang.ast.CharStream
 	   Added - net.sourceforge.pmd.lang.ast.JavaCharStream
@@ -111,7 +116,12 @@ The following is relatively complete list of the major changes:
 	   Renamed - net.sourceforge.pmd.sourcetypehandlers.VisitorStarter to net.sourceforge.pmd.lang.VisitorStarter
 	   Renamed - net.sourceforge.pmd.sourcetypehandlers.* into net.sourceforge.pmd.lang.{Language}
 	   Renamed - net.sourceforge.pmd.stat.StatisticalRule to net.sourceforge.pmd.lang.rule.StatisticalRuleHelper
-	   Renamed - net.sourceforge.pmd.jaxen.TypeOfFunction to net.sourceforge.pmd.lang.java.jaxen.TypeOfFunction
+	   Renamed - net.sourceforge.pmd.jaxen.TypeOfFunction to net.sourceforge.pmd.lang.java.xpath.TypeOfFunction
+	   Renamed - net.sourceforge.pmd.jaxen.MatchesFunction to net.sourceforge.pmd.lang.xpath.MatchesFunction
+	   Renamed - net.sourceforge.pmd.jaxen.Attribute to net.sourceforge.pmd.lang.ast.xpath.Attribute
+	   Renamed - net.sourceforge.pmd.jaxen.AttributeAxisIterator to net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator
+	   Renamed - net.sourceforge.pmd.jaxen.DocumentNavigator to net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator
+	   Renamed - net.sourceforge.pmd.jaxen.NodeIterator to net.sourceforge.pmd.lang.ast.xpath.NodeIterator
 	   Renamed - net.sourceforge.pmd.ast.* into net.sourceforge.pmd.lang.java.ast.*
 	   Renamed - net.sourceforge.pmd.rules.* into net.sourceforge.pmd.lang.java.rule.* and updated to follow conventions
 	   Renamed - net.sourceforge.pmd.jsp.ast.* into net.sourceforge.pmd.lang.jsp.ast.*

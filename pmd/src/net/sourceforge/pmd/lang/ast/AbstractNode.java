@@ -9,8 +9,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.sourceforge.pmd.dfa.DataFlowNode;
-import net.sourceforge.pmd.jaxen.Attribute;
-import net.sourceforge.pmd.jaxen.DocumentNavigator;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.symboltable.Scope;
 
 import org.jaxen.BaseXPath;

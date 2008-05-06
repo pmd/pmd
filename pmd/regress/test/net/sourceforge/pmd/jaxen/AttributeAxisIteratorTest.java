@@ -3,7 +3,7 @@
  */
 package test.net.sourceforge.pmd.jaxen;
 
-import net.sourceforge.pmd.jaxen.AttributeAxisIterator;
+import net.sourceforge.pmd.lang.ast.xpath.AttributeAxisIterator;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 
 import org.junit.Test;

@@ -4,7 +4,7 @@
 package test.net.sourceforge.pmd.jaxen;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.jaxen.Attribute;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 
 import org.junit.Test;
