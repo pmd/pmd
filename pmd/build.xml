@@ -1,6 +1,6 @@
 <project name="pmd" default="test" basedir=".">
 
-	<property file="bin/local.properties" />
+	<property file="local.properties" />
 
 	<property name="dir.lib" value="${basedir}/lib/" />
 	<property name="dir.lib14" value="${basedir}/java14/lib/" />
