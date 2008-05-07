@@ -40,12 +40,6 @@ TODO - Release blockers - Must implement before this release can be finished
      conventions just like the Rules need to.
    o Need to organize the ruleset XML files based upon Language.  Need to come
      up with a solution for the "rulesets.properties" files.
-   o Add a basic "XML" language support to PMD.  Essentially parses any XML
-     document, allowing XPath rules to be written.  Great way to expand PMD
-     usage to various generic XML documents people might use for different
-     purposes (e.g. JEE, EJB, JPA, Hibernate, Seam, Spring, etc, all use XML
-     configuration, for which there may be various Project standards folks wish
-     to enforce).
    o Need a more flexible and powerful scheme for classifying files to various
      Languages.  At a minimum, should have the ability to specify which
      file extensions you want to be used for a language (e.g. not everyone uses
