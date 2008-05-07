@@ -185,14 +185,6 @@ public class XPathRule extends AbstractRule {
     }
 
     private BaseXPath createXPath(String xpathQueryString, Navigator navigator) throws JaxenException {
-        // TODO As of Jaxen 1.1, LiteralExpr which contain " or ' characters
-        // are not escaped properly.  The following is fix for the known
-        // XPath queries built into PMD.  It will not necessarily work for
-        // arbitrary XPath queries users of PMD will create.  JAXEN-177 is
-        // about this problem: http://jira.codehaus.org/browse/JAXEN-177
-        // PMD should upgrade to the next Jaxen release containing this fix.
-        xpathQueryString = xpathQueryString.replaceAll("\"\"\"", "'\"'");
-
         BaseXPath xpath = new BaseXPath(xpathQueryString, navigator);
         if (getProperties().size() > 1) {
             SimpleVariableContext vc = new SimpleVariableContext();
