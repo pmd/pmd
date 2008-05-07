@@ -68,6 +68,14 @@ TODO - Release blockers - Must implement before this release can be finished
      code base.
    o Reconcile the util.designer and util.viewer packages.  Two versions of the
      same thing.  Designer is more up to date, but Viewer has a nice MVC design.
+   o Should multiple Languages be able to claim a single source file?  Imagine
+     XML format JSP file, for which you've defined a ruleset which uses JSP and
+     XML rules.  Stating that certain XML rules also can map to the JSP language
+     extensions could be useful.  This means Source file to LanguageVersion
+     mapping is not 1-1, but 1-many, we'd need to deal with this accordingly.
+   o Need to refactor the test framework to more readily support for multiple
+     Languages (too Java centric at the moment).  Then, need start adding tests
+     for the new XML language.
 
 ---
 
@@ -171,6 +179,10 @@ The following is relatively complete list of the major changes (this may not be
 	   Deleted - net.sourceforge.pmd.ast.AccessNodeInterface
 	   Deleted - net.sourceforge.pmd.jsp.ast.Node
 	   Deleted - net.sourceforge.pmd.jsp.ast.SimpleNode
+
+New features:
+
+New Language 'xml' added, for writting XPathRules against XML documents
 
 Other changes:
 

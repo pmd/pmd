@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.Java15Handler;
 import net.sourceforge.pmd.lang.java.Java16Handler;
 import net.sourceforge.pmd.lang.java.Java17Handler;
 import net.sourceforge.pmd.lang.jsp.JspHandler;
+import net.sourceforge.pmd.lang.xml.XmlHandler;
 
 /**
  * This is an enumeration of the Language versions of which PMD is aware.  The
@@ -37,12 +38,19 @@ public enum LanguageVersion {
 
     //ANY(Language.ANY, "", null, true),
     //UNKNOWN(Language.UNKNOWN, "", null, true),
-    CPP(Language.CPP, "", new CppHandler(), true), FORTRAN(Language.FORTRAN, "", null, true), EMCASCRIPT(Language.EMCASCRIPT, "",
-	    null, true), JAVA_13(Language.JAVA, "1.3", new Java13Handler(), false), JAVA_14(Language.JAVA, "1.4",
-	    new Java14Handler(), false), JAVA_15(Language.JAVA, "1.5", new Java15Handler(), true), JAVA_16(
-	    Language.JAVA, "1.6", new Java16Handler(), false), JAVA_17(Language.JAVA, "1.7", new Java17Handler(), false), JSP(
-	    Language.JSP, "", new JspHandler(), true), PHP(Language.PHP, "", null, true), RUBY(Language.RUBY, "",
-	    null, true);
+    CPP(Language.CPP, "", new CppHandler(), true),
+    FORTRAN(Language.FORTRAN, "", null, true),
+    EMCASCRIPT(Language.EMCASCRIPT, "", null, true),
+    JAVA_13(Language.JAVA, "1.3", new Java13Handler(), false),
+    JAVA_14(Language.JAVA, "1.4", new Java14Handler(), false),
+    JAVA_15(Language.JAVA, "1.5", new Java15Handler(), true),
+    JAVA_16(Language.JAVA, "1.6", new Java16Handler(), false),
+    JAVA_17(Language.JAVA, "1.7", new Java17Handler(), false),
+    JSP(Language.JSP, "", new JspHandler(), true),
+    PHP(Language.PHP, "", null, true),
+    RUBY(Language.RUBY, "", null, true),
+    XML(Language.XML, "", new XmlHandler(), true)
+    ;
 
     private final Language language;
     private final String version;

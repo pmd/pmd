@@ -11,6 +11,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleChainVisitor;
 import net.sourceforge.pmd.lang.jsp.rule.JspRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
+import net.sourceforge.pmd.lang.xml.rule.XmlRuleChainVisitor;
 
 /**
  * This is an enumeration of the Languages of which PMD is aware.  The primary
@@ -36,11 +37,15 @@ public enum Language {
 
 	//ANY("Any", null, null, null, (String)null),
 	//UNKNOWN("Unknown", null, "unknown", null, (String)null),
-	CPP("C++", null, "cpp", null, "h", "c", "cpp", "cxx", "cc", "C"), FORTRAN("Fortran", null, "fortran", null, "for"), EMCASCRIPT(
-			"Ecmascript", null, "ecmascript", null, "js"), JAVA("Java", null, "java", JavaRuleChainVisitor.class,
-			"java"), JSP("Java Server Pages", "JSP", "jsp", JspRuleChainVisitor.class, "jsp"), PHP(
-			"PHP: Hypertext Preprocessor", "PHP", "php", null, "php", "class"), RUBY("Ruby", null, "ruby", null, "rb",
-			"cgi", "class");
+	CPP("C++", null, "cpp", null, "h", "c", "cpp", "cxx", "cc", "C"),
+	FORTRAN("Fortran", null, "fortran", null, "for"),
+	EMCASCRIPT("Ecmascript", null, "ecmascript", null, "js"),
+	JAVA("Java", null, "java", JavaRuleChainVisitor.class, "java"),
+	JSP("Java Server Pages", "JSP", "jsp", JspRuleChainVisitor.class, "jsp"),
+	PHP("PHP: Hypertext Preprocessor", "PHP", "php", null, "php", "class"),
+	RUBY("Ruby", null, "ruby", null, "rb", "cgi", "class"),
+	XML("XML", null, "xml", XmlRuleChainVisitor.class, "xml")
+	;
 
 	private final String name;
 	private final String shortName;
