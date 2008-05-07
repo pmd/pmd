@@ -6,8 +6,6 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.rule.JavaRuleChainVisitor;
-import net.sourceforge.pmd.lang.jsp.rule.JspRuleChainVisitor;
 import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
 
 /**
@@ -16,7 +14,6 @@ import net.sourceforge.pmd.lang.rule.RuleChainVisitor;
  * The RuleChain exists as a means to improve the speed of PMD when there are
  * many Rules.
  */
-// FUTURE Can this class be eliminated or reworked based upon LanguageVersionHandler?
 public class RuleChain {
     // Mapping from Language to RuleChainVisitor
     private final Map<Language, RuleChainVisitor> languageToRuleChainVisitor = new HashMap<Language, RuleChainVisitor>();
@@ -75,14 +72,20 @@ public class RuleChain {
 	}
 	RuleChainVisitor visitor = languageToRuleChainVisitor.get(language);
 	if (visitor == null) {
-	    if (Language.JAVA.equals(language)) {
-		visitor = new JavaRuleChainVisitor();
-	    } else if (Language.JSP.equals(language)) {
-		visitor = new JspRuleChainVisitor();
+	    if (language.getRuleChainVisitorClass() != null) {
+		try {
+		    visitor = (RuleChainVisitor) language.getRuleChainVisitorClass().newInstance();
+		} catch (InstantiationException e) {
+		    throw new IllegalStateException("Failure to created RuleChainVisitor: "
+			    + language.getRuleChainVisitorClass(), e);
+		} catch (IllegalAccessException e) {
+		    throw new IllegalStateException("Failure to created RuleChainVisitor: "
+			    + language.getRuleChainVisitorClass(), e);
+		}
+		languageToRuleChainVisitor.put(language, visitor);
 	    } else {
-		throw new IllegalArgumentException("Unknown language: " + language);
+		throw new IllegalArgumentException("Language does not have a RuleChainVisitor: " + language);
 	    }
-	    languageToRuleChainVisitor.put(language, visitor);
 	}
 	return visitor;
     }
