@@ -37,6 +37,8 @@
         <javac
             srcdir="${src}"
             destdir="${build}"
+            source="1.5"
+            target="1.5"
             debug="on"
             deprecation="on">
             <classpath refid="project.class.path"/>
