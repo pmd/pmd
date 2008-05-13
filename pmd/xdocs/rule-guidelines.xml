@@ -47,7 +47,47 @@ to Jaxen overhead for AST navigation.  Make sure your XPath rules using the Rule
 </p>
 </section>
 <section name="Adding test cases">
+<p>In the regress directory, you'll find all the unit test for pmd. In the
+proper package (for instance, test.net.sourceforge.pmd.rules.basic, for
+rules from the basic rulesets), you'll find a test suite such as this :</p>
+<source>
+public class BasicRulesTest extends SimpleAggregatorTst {
 
+   @Before
+   public void setUp() {
+       addRule("basic", "AvoidDecimalLiteralsInBigDecimalConstructor");
+       addRule("basic", "AvoidMultipleUnaryOperators");
+       addRule("basic", "AvoidThreadGroup");
+...
+</source>
+<p>Suppose you want to add tests for a new rule of yours, called MyNewRule".
+Just add the proper line in this suite:</p>
+<source>
+       addRule("basic", "MisplacedNullCheck");
+       addRule("basic", "MyNewRule");
+       addRule("basic", "OverrideBothEqualsAndHashcode");
+</source>
+<p>And add in the appropriate xml subpackage (for instance,
+test.net.sourceforge.pmd.rules.basic.xml). There you should find a xml file
+for each rule, the syntax is pretty obvious:</p>
+<source>
+<![CDATA[
+<test-data>
+	<test-code>
+		<description>
+call super
+		</description>
+		<expected-problems>1</expected-problems>
+		<code>
+public class Foo extends Bar {
+	public void foo() {
+		super.foo();
+	}
+}
+	</code>
+   </test-code>
+]]>
+</source>
 </section>
 <section name="Code quality">
 <p>
