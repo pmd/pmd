@@ -511,7 +511,7 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
             since="5.0"
             message="A Classname should have, at least, 5 characters"
             class="net.sourceforge.pmd.lang.rule.XPathRule"
-          	externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ShortClassName">
+          	externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ShortClassname">
         <description>
         	<![CDATA[
 Detects if a classname if lower than 5 characters.

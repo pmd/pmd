@@ -688,7 +688,7 @@ String lastname,name;
         since="5.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Do not prefix parameters by in, out or inOut. Uses Javadoc to document this behavior."
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#DotNoPrefixMethodParameters">
+        externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#DotNoPrefixMethodParameters">
         <description>
             <![CDATA[
 Prefixing parameters by 'in' or 'out' pollutes the name of the parameters and reduces code readability. 
