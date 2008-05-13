@@ -21,7 +21,7 @@ public class NamingRulesTest extends SimpleAggregatorTst {
         addRule("naming", "NoPackage");
         addRule("naming", "PackageCase");
         addRule("naming", "ShortMethodName");
-        addRule("naming", "ShortClassname");
+        addRule("naming", "ShortClassName");
         addRule("naming", "ShortVariable");
         addRule("naming", "SuspiciousConstantFieldName");
         addRule("naming", "SuspiciousEqualsMethodName");

@@ -2,7 +2,7 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-ShortClassname basic test case
+ShortClassName basic test case
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -14,7 +14,7 @@ public class Foo {
 
     <test-code>
         <description><![CDATA[
-ShortClassname basic test case 2 : More code and other declarations
+ShortClassName basic test case 2 : More code and other declarations
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -34,7 +34,7 @@ public class NotFoo {
 
     <test-code>
         <description><![CDATA[
-ShortClassname works with private classes.
+ShortClassName works with private classes.
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
