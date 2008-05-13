@@ -24,7 +24,7 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
         addRule("controversial", "DoNotCallGarbageCollectionExplicitly");
         addRule("controversial", "NullAssignment");
         addRule("controversial", "OnlyOneReturn");
-        addRule("controversial", "OneDeclarationByLine");
+        addRule("controversial", "OneDeclarationPerLine");
         addRule("controversial", "SuspiciousOctalEscape");
         addRule("controversial", "UnnecessaryConstructor");
         addRule("controversial", "UnnecessaryParentheses");

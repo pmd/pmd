@@ -2,7 +2,7 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-OneDeclarationByLine's basic test case
+OneDeclarationPerLine's basic test case
      ]]></description>
         <expected-problems>1</expected-problems>
         <code>
@@ -19,7 +19,7 @@ public class Foo
     </test-code>
         <test-code>
         <description><![CDATA[
-OneDeclarationByLine's potential false+
+OneDeclarationPerLine's potential false+
      ]]></description>
         <expected-problems>0</expected-problems>
         <code>

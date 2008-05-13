@@ -647,16 +647,16 @@ public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); } }
 	</rule>
 
 	<rule
-        name="OneDeclarationByLine"
+        name="OneDeclarationPerLine"
         since="5.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Use one line for each declaration, it enhances code readability."
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OneDeclarationByLine">
+        externalInfoUrl="http://pmd.sourceforge.net/rules/controversial.html#OneDeclarationPerLine">
         <description>
             <![CDATA[
 Java allows the use of several variables declaration of the same type on one line. However, it
 can lead to quite messy code. This rule looks for several declaration on the same line
-and report them any of them.
+and report any of them.
             ]]>
         </description>
        <priority>4</priority>
