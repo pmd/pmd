@@ -379,7 +379,7 @@ public class RuleSetToDocs implements PmdBuildTools {
 	}
 
 	public void setMergedRulesetFilename(String mergedRulesetFilename) {
-		//this.mergedRulesetFilename = mergedRulesetFilename;
+		this.mergedRuleSetFilename = mergedRulesetFilename;
 
 	}
 }
