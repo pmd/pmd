@@ -19,10 +19,12 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
         addRule("controversial", "CallSuperInConstructor");
         addRule("controversial", "DataflowAnomalyAnalysis");
         addRule("controversial", "DefaultPackage");
+        addRule("controversial", "DotNoPrefixMethodParameters");
         addRule("controversial", "DontImportSun");
         addRule("controversial", "DoNotCallGarbageCollectionExplicitly");
         addRule("controversial", "NullAssignment");
         addRule("controversial", "OnlyOneReturn");
+        addRule("controversial", "OneDeclarationByLine");
         addRule("controversial", "SuspiciousOctalEscape");
         addRule("controversial", "UnnecessaryConstructor");
         addRule("controversial", "UnnecessaryParentheses");

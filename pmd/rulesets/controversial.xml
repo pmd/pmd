@@ -646,6 +646,104 @@ public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); } }
 		</example>
 	</rule>
 
+	<rule
+        name="OneDeclarationByLine"
+        since="5.0"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="Use one line for each declaration, it enhances code readability."
+        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#OneDeclarationByLine">
+        <description>
+            <![CDATA[
+Java allows the use of several variables declaration of the same type on one line. However, it
+can lead to quite messy code. This rule looks for several declaration on the same line
+and report them any of them.
+            ]]>
+        </description>
+       <priority>4</priority>
+       <properties>
+            <property name="xpath">            
+                <value>
+                    <![CDATA[
+//LocalVariableDeclaration[count(VariableDeclarator) > 1]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+        	<![CDATA[
+String name ; 	
+String lastname ; 
+        	]]>
+        </example>
+                <example>
+        	<![CDATA[
+// This should trigger a violation
+String lastname,name; 
+        	]]>
+        </example>
+	</rule>
+
+	<rule
+        name="DotNoPrefixMethodParameters"
+        since="5.0"
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        message="Do not prefix parameters by in, out or inOut. Uses Javadoc to document this behavior."
+        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#DotNoPrefixMethodParameters">
+        <description>
+            <![CDATA[
+Prefixing parameters by 'in' or 'out' pollutes the name of the parameters and reduces code readability. 
+To indicate whether or not a parameter will be modify in a method, it's better to document method
+behavior with Javadoc.
+            ]]>
+        </description>
+       <priority>4</priority>
+       <properties>
+            <property name="xpath">            
+                <value>
+                    <![CDATA[
+//MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId[
+        starts-with(@Image,'in')
+        or
+        starts-with(@Image,'out')
+        or
+        starts-with(@Image,'inOut')
+        or
+        starts-with(@Image,'outIn')
+]
+                    ]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+        	<![CDATA[
+// Not really clear
+public class Foo
+  public void bar(
+      int inLeftOperand,
+      int outRightOperand) {
+      outRightOperand = inLeftOperand * outRightOperand;
+  }
+}
+ 
+        	]]>
+        </example>
+                <example>
+        	<![CDATA[
+// Far more usefull
+/**
+ * 
+ * @param inLeftOperand, (purpose), not modified by method.
+ * @param outRightOperand (purpose), will be modified by the method: contains the result.
+ */
+public void bar(
+      int leftOperand,
+      int rightOperand) {
+      outRightOperand = inLeftOperand * outRightOperand;
+}
+        	]]>
+        </example>
+	</rule>
+
 </ruleset>
 
 

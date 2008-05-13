@@ -202,6 +202,9 @@ Bug fix: NPE in MoreThanOneLogger
 New rules:
 
 	Coupling ruleset: LoosePackageCoupling
+	DotNoPrefixMethodParameters 
+	OneDeclarationByLine
+	ShortClassname
 
 
 March 25, 2008 - 4.2:

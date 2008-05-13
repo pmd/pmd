@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+OneDeclarationByLine's basic test case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code>
+        	<![CDATA[
+public class Foo
+{
+	public void bar()
+	{ 
+		String name, lastname, adress;
+	}
+}
+		     ]]>
+		</code>
+    </test-code>
+        <test-code>
+        <description><![CDATA[
+OneDeclarationByLine's potential false+
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code>
+        	<![CDATA[
+public class Foo
+{
+	public void bar(String otherName, int age) 
+	{ 
+		String name;
+		String lastname;
+	}
+
+}
+		     ]]>
+		</code>
+    </test-code>
+    
+</test-data>
