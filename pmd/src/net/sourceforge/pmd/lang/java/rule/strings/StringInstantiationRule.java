@@ -48,8 +48,7 @@ public class StringInstantiationRule extends AbstractJavaRule {
 	}
 
 	VariableNameDeclaration vnd = (VariableNameDeclaration) nd;
-	// nd == null in cases like: return new String(str);
-	if (vnd == null || TypeHelper.isA(vnd, String.class)) {
+	if (TypeHelper.isA(vnd, String.class)) {
 	    addViolation(data, node);
 	}
 	return data;
