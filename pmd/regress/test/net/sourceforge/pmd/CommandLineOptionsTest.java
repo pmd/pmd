@@ -64,7 +64,7 @@ public class CommandLineOptionsTest {
     @Test
     public void testEncoding() {
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
-        assertTrue(opt.getEncoding().equals((new InputStreamReader(System.in)).getEncoding()));
+        assertTrue(opt.getEncoding().equals(new InputStreamReader(System.in).getEncoding()));
         opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-encoding", "UTF-8"});
         assertTrue(opt.getEncoding().equals("UTF-8"));
         opt = new CommandLineOptions(new String[]{"-encoding", "UTF-8", "file", "format", "ruleset"});

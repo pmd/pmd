@@ -55,7 +55,7 @@ public class ReportTree {
             while (true) {
                 if (this.iterNode.isLeaf()) {
 
-                    while ((node = (this.iterNode).getNextSibling()) == null) {
+                    while ((node = this.iterNode.getNextSibling()) == null) {
 
                         node = this.iterNode.getParent();
                         if (node == null) {
@@ -157,7 +157,7 @@ public class ReportTree {
      */
     private boolean equalsNodeInLevel(AbstractReportNode level, AbstractReportNode node) {
         for (int i = 0; i < level.getChildCount(); i++) {
-            if ((level.getChildAt(i)).equalsNode(node)) {
+            if (level.getChildAt(i).equalsNode(node)) {
                 return true;
             }
         }

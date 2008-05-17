@@ -44,6 +44,8 @@ Rules to check PMD itself
 
     <rule ref="rulesets/strings.xml/AppendCharacterWithChar"/>
 
+    <rule ref="rulesets/controversial.xml/UnnecessaryParentheses"/>
+
     <!-- Null checks -->
     <rule ref="rulesets/basic.xml/BrokenNullCheck"/>
     

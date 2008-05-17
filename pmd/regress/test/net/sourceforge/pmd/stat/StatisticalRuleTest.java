@@ -261,7 +261,7 @@ public class StatisticalRuleTest  {
         if (target < 0)
             return 0;
 
-        return random.nextInt((new Double(target)).intValue());
+        return random.nextInt(new Double(target).intValue());
     }
 
     /**

@@ -34,7 +34,7 @@ public class FileDataSource implements DataSource {
 
     private String glomName(boolean shortNames, String inputFileName, File file) {
         if (shortNames && inputFileName.indexOf(',') == -1) {
-            if ((new File(inputFileName)).isDirectory()) {
+            if (new File(inputFileName).isDirectory()) {
                 return trimAnyPathSep(file.getAbsolutePath().substring(inputFileName.length()));
             } else {
                 if (inputFileName.indexOf(fileSeparator.charAt(0)) == -1) {
