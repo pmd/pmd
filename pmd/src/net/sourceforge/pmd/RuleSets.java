@@ -89,7 +89,7 @@ public class RuleSets {
      */
     public boolean applies(File file) {
 	for (RuleSet ruleSet : ruleSets) {
-	    if ((ruleSet).applies(file)) {
+	    if (ruleSet.applies(file)) {
 		return true;
 	    }
 	}
