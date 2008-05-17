@@ -15,17 +15,17 @@ import org.jaxen.JaxenException;
 import org.jaxen.XPath;
 
 public class ViewerModel {
-	
+
     private List<ViewerModelListener> listeners;
-    private Node	rootNode;
-    private List		evaluationResults;
+    private Node rootNode;
+    private List<Node> evaluationResults;
 
     public ViewerModel() {
-        listeners = new ArrayList<ViewerModelListener>(5);
+	listeners = new ArrayList<ViewerModelListener>(5);
     }
 
     public Node getRootNode() {
-        return rootNode;
+	return rootNode;
     }
 
     /**
@@ -33,9 +33,10 @@ public class ViewerModel {
      * all existing source will be replaced
      */
     public void commitSource(String source, LanguageVersion languageVersion) {
-        ASTCompilationUnit compilationUnit = (ASTCompilationUnit)languageVersion.getLanguageVersionHandler().getParser().parse(null, new StringReader(source));
-        rootNode = compilationUnit;
-        fireViewerModelEvent(new ViewerModelEvent(this, ViewerModelEvent.CODE_RECOMPILED));
+	ASTCompilationUnit compilationUnit = (ASTCompilationUnit) languageVersion.getLanguageVersionHandler()
+		.getParser().parse(null, new StringReader(source));
+	rootNode = compilationUnit;
+	fireViewerModelEvent(new ViewerModelEvent(this, ViewerModelEvent.CODE_RECOMPILED));
     }
 
     /**
@@ -44,7 +45,7 @@ public class ViewerModel {
      * @return true if there is an AST, false otherwise
      */
     public boolean hasCompiledTree() {
-        return rootNode != null;
+	return rootNode != null;
     }
 
     /**
@@ -53,11 +54,10 @@ public class ViewerModel {
      * @param xPath     XPath expression to be evaluated
      * @param evaluator object which requests the evaluation
      */
-    public void evaluateXPathExpression(String xPath, Object evaluator)
-            throws ParseException, JaxenException {
-        XPath xpath = new BaseXPath(xPath, new DocumentNavigator());
-        evaluationResults = xpath.selectNodes(rootNode);
-        fireViewerModelEvent(new ViewerModelEvent(evaluator, ViewerModelEvent.PATH_EXPRESSION_EVALUATED));
+    public void evaluateXPathExpression(String xPath, Object evaluator) throws ParseException, JaxenException {
+	XPath xpath = new BaseXPath(xPath, new DocumentNavigator());
+	evaluationResults = xpath.selectNodes(rootNode);
+	fireViewerModelEvent(new ViewerModelEvent(evaluator, ViewerModelEvent.PATH_EXPRESSION_EVALUATED));
     }
 
     /**
@@ -67,8 +67,8 @@ public class ViewerModel {
      *         <p/>
      *         evaluation
      */
-    public List getLastEvaluationResults() {
-        return evaluationResults;
+    public List<Node> getLastEvaluationResults() {
+	return evaluationResults;
     }
 
     /**
@@ -78,7 +78,7 @@ public class ViewerModel {
      * @param selector object which requests the selection
      */
     public void selectNode(Node node, Object selector) {
-        fireViewerModelEvent(new ViewerModelEvent(selector, ViewerModelEvent.NODE_SELECTED, node));
+	fireViewerModelEvent(new ViewerModelEvent(selector, ViewerModelEvent.NODE_SELECTED, node));
     }
 
     /**
@@ -88,20 +88,20 @@ public class ViewerModel {
      * @param appender     object that is trying to append the fragment
      */
     public void appendToXPathExpression(String pathFragment, Object appender) {
-        fireViewerModelEvent(new ViewerModelEvent(appender, ViewerModelEvent.PATH_EXPRESSION_APPENDED, pathFragment));
+	fireViewerModelEvent(new ViewerModelEvent(appender, ViewerModelEvent.PATH_EXPRESSION_APPENDED, pathFragment));
     }
 
     public void addViewerModelListener(ViewerModelListener l) {
-        listeners.add(l);
+	listeners.add(l);
     }
 
     public void removeViewerModelListener(ViewerModelListener l) {
-        listeners.remove(l);
+	listeners.remove(l);
     }
 
     protected void fireViewerModelEvent(ViewerModelEvent e) {
-        for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).viewerModelChanged(e);
-        }
+	for (int i = 0; i < listeners.size(); i++) {
+	    listeners.get(i).viewerModelChanged(e);
+	}
     }
 }

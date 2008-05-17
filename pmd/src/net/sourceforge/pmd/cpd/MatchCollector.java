@@ -85,7 +85,7 @@ public class MatchCollector {
                 continue;
             }
             //prune the mark set
-            Set pruned = match1.getMarkSet();
+            Set<TokenEntry> pruned = match1.getMarkSet();
             boolean done = false;
             ArrayList<TokenEntry> a1 = new ArrayList<TokenEntry>(match1.getMarkSet());
             Collections.sort(a1);

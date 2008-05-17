@@ -31,88 +31,92 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
     private boolean checkNonStaticFields = true;
 
     private static final PropertyDescriptor checkNonStaticMethodsDescriptor = new BooleanProperty(
-    	"checkNonStaticMethods", "Check for non-static methods.", true, 1.0f
-    	);
+	    "checkNonStaticMethods", "Check for non-static methods.", true, 1.0f);
     private static final PropertyDescriptor checkNonStaticFieldsDescriptor = new BooleanProperty(
-    	"checkNonStaticFields", "Check for non-static fields.",	true, 2.0f
-    	);
-    
+	    "checkNonStaticFields", "Check for non-static fields.", true, 2.0f);
+
     private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] {
-    	checkNonStaticMethodsDescriptor, checkNonStaticFieldsDescriptor
-    	});
-    
-//    public NonThreadSafeSingleton() {
-//        checkNonStaticMethods = super.getBooleanProperty("checkNonStaticMethods");
-//        checkNonStaticFields = super.getBooleanProperty("checkNonStaticFields");
-//    }
+	    checkNonStaticMethodsDescriptor, checkNonStaticFieldsDescriptor });
 
+    //    public NonThreadSafeSingleton() {
+    //        checkNonStaticMethods = super.getBooleanProperty("checkNonStaticMethods");
+    //        checkNonStaticFields = super.getBooleanProperty("checkNonStaticFields");
+    //    }
+
+    @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        fieldDecls.clear();
-        checkNonStaticMethods = getBooleanProperty(checkNonStaticMethodsDescriptor);
-        checkNonStaticFields = getBooleanProperty(checkNonStaticFieldsDescriptor);        
-        return super.visit(node, data);
+	fieldDecls.clear();
+	checkNonStaticMethods = getBooleanProperty(checkNonStaticMethodsDescriptor);
+	checkNonStaticFields = getBooleanProperty(checkNonStaticFieldsDescriptor);
+	return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        if (checkNonStaticFields || node.isStatic()) {
-            fieldDecls.put(node.getVariableName(), node);
-        }
-        return super.visit(node, data);
+	if (checkNonStaticFields || node.isStatic()) {
+	    fieldDecls.put(node.getVariableName(), node);
+	}
+	return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
 
-        if ((checkNonStaticMethods && !node.isStatic()) || node.isSynchronized()) {
-            return super.visit(node, data);
-        }
+	if (checkNonStaticMethods && !node.isStatic() || node.isSynchronized()) {
+	    return super.visit(node, data);
+	}
 
-        List<ASTIfStatement> ifStatements = node.findChildrenOfType(ASTIfStatement.class);
-        for (ASTIfStatement ifStatement: ifStatements) {
-            if (ifStatement.getFirstParentOfType(ASTSynchronizedStatement.class) == null) {
-                ASTNullLiteral NullLiteral = ifStatement.getFirstChildOfType(ASTNullLiteral.class);
+	List<ASTIfStatement> ifStatements = node.findChildrenOfType(ASTIfStatement.class);
+	for (ASTIfStatement ifStatement : ifStatements) {
+	    if (ifStatement.getFirstParentOfType(ASTSynchronizedStatement.class) == null) {
+		ASTNullLiteral NullLiteral = ifStatement.getFirstChildOfType(ASTNullLiteral.class);
 
-                if (NullLiteral == null) {
-                    continue;
-                }
-                ASTName Name = ifStatement.getFirstChildOfType(ASTName.class);
-                if (Name == null || !fieldDecls.containsKey(Name.getImage())) {
-                    continue;
-                }
-                List assigmnents = ifStatement.findChildrenOfType(ASTAssignmentOperator.class);
-                boolean violation = false;
-                for (int ix = 0; ix < assigmnents.size(); ix++) {
-                    ASTAssignmentOperator oper = (ASTAssignmentOperator) assigmnents.get(ix);
-                    if (!oper.jjtGetParent().getClass().equals(ASTStatementExpression.class)) {
-                        continue;
-                    }
-                    ASTStatementExpression expr = (ASTStatementExpression) oper.jjtGetParent();
-                    if (expr.jjtGetChild(0).getClass().equals(ASTPrimaryExpression.class) && ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetChild(0).getClass().equals(ASTPrimaryPrefix.class)) {
-                        ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetChild(0);
-                        String name = null;
-                        if (pp.usesThisModifier()) {
-                        	ASTPrimarySuffix priSuf = expr.getFirstChildOfType(ASTPrimarySuffix.class); 
-                        	name = priSuf.getImage();
-						} else {
-							ASTName astName = (ASTName) pp.jjtGetChild(0);
-							name = astName.getImage();
-                        }
-						if (fieldDecls.containsKey(name)) {
-							violation = true;
-						}
-                    }
-                }
-                if (violation) {
-                    addViolation(data, ifStatement);
-                }
-            }
-        }
-        return super.visit(node, data);
+		if (NullLiteral == null) {
+		    continue;
+		}
+		ASTName Name = ifStatement.getFirstChildOfType(ASTName.class);
+		if (Name == null || !fieldDecls.containsKey(Name.getImage())) {
+		    continue;
+		}
+		List<ASTAssignmentOperator> assigmnents = ifStatement.findChildrenOfType(ASTAssignmentOperator.class);
+		boolean violation = false;
+		for (int ix = 0; ix < assigmnents.size(); ix++) {
+		    ASTAssignmentOperator oper = assigmnents.get(ix);
+		    if (!oper.jjtGetParent().getClass().equals(ASTStatementExpression.class)) {
+			continue;
+		    }
+		    ASTStatementExpression expr = (ASTStatementExpression) oper.jjtGetParent();
+		    if (expr.jjtGetChild(0).getClass().equals(ASTPrimaryExpression.class)
+			    && ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetChild(0).getClass().equals(
+				    ASTPrimaryPrefix.class)) {
+			ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.jjtGetChild(0))
+				.jjtGetChild(0);
+			String name = null;
+			if (pp.usesThisModifier()) {
+			    ASTPrimarySuffix priSuf = expr.getFirstChildOfType(ASTPrimarySuffix.class);
+			    name = priSuf.getImage();
+			} else {
+			    ASTName astName = (ASTName) pp.jjtGetChild(0);
+			    name = astName.getImage();
+			}
+			if (fieldDecls.containsKey(name)) {
+			    violation = true;
+			}
+		    }
+		}
+		if (violation) {
+		    addViolation(data, ifStatement);
+		}
+	    }
+	}
+	return super.visit(node, data);
     }
-    
+
     /**
      * @return Map
      */
+    @Override
     protected Map<String, PropertyDescriptor> propertiesByName() {
-    	return propertyDescriptorsByName;
+	return propertyDescriptorsByName;
     }
 }

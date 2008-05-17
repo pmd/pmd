@@ -23,7 +23,7 @@ public abstract class AbstractStatisticalJavaRule extends AbstractJavaRule imple
     }
 
     @Override
-    public void apply(List<Node> nodes, RuleContext ctx) {
+    public void apply(List<? extends Node> nodes, RuleContext ctx) {
 	super.apply(nodes, ctx);
 	helper.apply(ctx);
     }

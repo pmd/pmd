@@ -539,6 +539,7 @@ public class PMD {
 	    return rulesets;
 	}
 
+	@Override
 	public String toString() {
 	    return "PmdThread " + id;
 	}
@@ -595,7 +596,7 @@ public class PMD {
 	 * ExecutorService can also be disabled if threadCount is not positive, e.g. using the
 	 * "-cpus 0" command line option.
 	 */
-	boolean useMT = mtSupported && (threadCount > 0);
+	boolean useMT = mtSupported && threadCount > 0;
 
 	if (stressTestEnabled) {
 	    // randomize processing order
@@ -830,9 +831,9 @@ public class PMD {
 		ZipFile zipFile;
 		try {
 		    zipFile = new ZipFile(inputFile);
-		    Enumeration e = zipFile.entries();
+		    Enumeration<? extends ZipEntry> e = zipFile.entries();
 		    while (e.hasMoreElements()) {
-			ZipEntry zipEntry = (ZipEntry) e.nextElement();
+			ZipEntry zipEntry = e.nextElement();
 			if (fileSelector.isWantedFile(zipEntry.getName())) {
 			    dataSources.add(new ZipDataSource(zipFile, zipEntry));
 			}

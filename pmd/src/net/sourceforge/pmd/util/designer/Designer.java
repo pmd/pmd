@@ -116,7 +116,7 @@ public class Designer implements ClipboardOwner {
     private Node getCompilationUnit() {
 	LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
 	Parser parser = languageVersionHandler.getParser();
-	Node node = (Node) parser.parse(null, new StringReader(codeEditorPane.getText()));
+	Node node = parser.parse(null, new StringReader(codeEditorPane.getText()));
 	languageVersionHandler.getSymbolFacade().start(node);
 	languageVersionHandler.getTypeResolutionFacade(null).start(node);
 	return node;
@@ -128,12 +128,13 @@ public class Designer implements ClipboardOwner {
 
     private int selectedLanguageVersionIndex() {
 	for (int i = 0; i < languageVersionMenuItems.length; i++) {
-	    if (languageVersionMenuItems[i].isSelected())
+	    if (languageVersionMenuItems[i].isSelected()) {
 		return i;
+	    }
 	}
 	throw new RuntimeException("Initial default language version not specified");
     }
-    
+
     private LanguageVersionHandler getLanguageVersionHandler() {
 	LanguageVersion languageVersion = getLanguageVersion();
 	return languageVersion.getLanguageVersionHandler();
@@ -147,8 +148,9 @@ public class Designer implements ClipboardOwner {
 	public ExceptionNode(Object theItem) {
 	    item = theItem;
 
-	    if (item instanceof ParseException)
+	    if (item instanceof ParseException) {
 		createKids();
+	    }
 	}
 
 	// each line in the error message becomes a separate tree node
@@ -187,15 +189,15 @@ public class Designer implements ClipboardOwner {
 	    return item.toString();
 	}
 
-	public Enumeration children() {
-	    Enumeration e = new Enumeration() {
+	public Enumeration<ExceptionNode> children() {
+	    Enumeration<ExceptionNode> e = new Enumeration<ExceptionNode>() {
 		int i = 0;
 
 		public boolean hasMoreElements() {
 		    return kids != null && i < kids.length;
 		}
 
-		public Object nextElement() {
+		public ExceptionNode nextElement() {
 		    return kids[i++];
 		}
 	    };
@@ -204,8 +206,9 @@ public class Designer implements ClipboardOwner {
 
 	public int getIndex(TreeNode node) {
 	    for (int i = 0; i < kids.length; i++) {
-		if (kids[i] == node)
+		if (kids[i] == node) {
 		    return i;
+		}
 	    }
 	    return -1;
 	}
@@ -223,8 +226,9 @@ public class Designer implements ClipboardOwner {
 	    node = theNode;
 
 	    Node prnt = node.jjtGetParent();
-	    if (prnt != null)
+	    if (prnt != null) {
 		parent = new ASTTreeNode(prnt);
+	    }
 	}
 
 	public int getChildCount() {
@@ -250,19 +254,20 @@ public class Designer implements ClipboardOwner {
 	    return null;
 	}
 
-	public Enumeration children() {
+	public Enumeration<ASTTreeNode> children() {
 
-	    if (getChildCount() > 0)
+	    if (getChildCount() > 0) {
 		getChildAt(0); // force it to build kids
+	    }
 
-	    Enumeration e = new Enumeration() {
+	    Enumeration<ASTTreeNode> e = new Enumeration<ASTTreeNode>() {
 		int i = 0;
 
 		public boolean hasMoreElements() {
 		    return kids != null && i < kids.length;
 		}
 
-		public Object nextElement() {
+		public ASTTreeNode nextElement() {
 		    return kids[i++];
 		}
 	    };
@@ -283,33 +288,28 @@ public class Designer implements ClipboardOwner {
 	public int getIndex(TreeNode node) {
 
 	    for (int i = 0; i < kids.length; i++) {
-		if (kids[i] == node)
+		if (kids[i] == node) {
 		    return i;
+		}
 	    }
 	    return -1;
 	}
 
 	public String label() {
-	    if (node instanceof Node) {
-		LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
-		StringWriter writer = new StringWriter();
-		languageVersionHandler.getDumpFacade(writer, "", false).start(node);
-		return writer.toString();
-	    }
-	    return node.toString();
+	    LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
+	    StringWriter writer = new StringWriter();
+	    languageVersionHandler.getDumpFacade(writer, "", false).start(node);
+	    return writer.toString();
 	}
 
 	public String getToolTipText() {
-	    String tooltip = "";
-	    if (node instanceof Node) {
-		Node n = (Node) node;
-		tooltip = "Line: " + n.getBeginLine() + " Column: " + n.getBeginColumn();
-	    }
+	    String tooltip = "Line: " + node.getBeginLine() + " Column: " + node.getBeginColumn();
 
 	    if (node instanceof AccessNode) {
 		AccessNode accessNode = (AccessNode) node;
-		if (!"".equals(tooltip))
+		if (!"".equals(tooltip)) {
 		    tooltip += ",";
+		}
 		tooltip += accessNode.isAbstract() ? " Abstract" : "";
 		tooltip += accessNode.isStatic() ? " Static" : "";
 		tooltip += accessNode.isFinal() ? " Final" : "";
@@ -343,10 +343,12 @@ public class Designer implements ClipboardOwner {
 	    setToolTipText("");
 	}
 
+	@Override
 	public String convertValueToText(Object value, boolean selected, boolean expanded, boolean leaf, int row,
 		boolean hasFocus) {
-	    if (value == null)
+	    if (value == null) {
 		return "";
+	    }
 	    if (value instanceof ASTTreeNode) {
 		return ((ASTTreeNode) value).label();
 	    }
@@ -356,9 +358,11 @@ public class Designer implements ClipboardOwner {
 	    return value.toString();
 	}
 
+	@Override
 	public String getToolTipText(MouseEvent e) {
-	    if (getRowForLocation(e.getX(), e.getY()) == -1)
+	    if (getRowForLocation(e.getX(), e.getY()) == -1) {
 		return null;
+	    }
 	    TreePath curPath = getPathForLocation(e.getX(), e.getY());
 	    if (curPath.getLastPathComponent() instanceof ASTTreeNode) {
 		return ((ASTTreeNode) curPath.getLastPathComponent()).getToolTipText();
@@ -376,8 +380,8 @@ public class Designer implements ClipboardOwner {
 	    // Traverse children
 	    TreeNode node = (TreeNode) parent.getLastPathComponent();
 	    if (node.getChildCount() >= 0) {
-		for (Enumeration e = node.children(); e.hasMoreElements();) {
-		    TreeNode n = (TreeNode) e.nextElement();
+		for (Enumeration<TreeNode> e = node.children(); e.hasMoreElements();) {
+		    TreeNode n = e.nextElement();
 		    TreePath path = parent.pathByAddingChild(n);
 		    expandAll(path, expand);
 		}
@@ -469,7 +473,7 @@ public class Designer implements ClipboardOwner {
 		for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
 		    Object obj = iter.next();
 		    if (obj instanceof String) {
-			System.out.println("Result was a string: " + ((String) obj));
+			System.out.println("Result was a string: " + (String) obj);
 		    } else if (!(obj instanceof Boolean)) {
 			// if it's a Boolean and it's 'false', what does that mean?
 			xpathResults.addElement(obj);
@@ -736,6 +740,7 @@ public class Designer implements ClipboardOwner {
 	xmlframe.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 	xmlframe.setSize(new Dimension(600, 700));
 	xmlframe.addComponentListener(new java.awt.event.ComponentAdapter() {
+	    @Override
 	    public void componentResized(ComponentEvent e) {
 		JFrame tmp = (JFrame) e.getSource();
 		if (tmp.getWidth() < 600 || tmp.getHeight() < 700) {

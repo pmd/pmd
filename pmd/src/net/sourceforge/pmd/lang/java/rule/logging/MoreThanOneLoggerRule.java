@@ -16,12 +16,12 @@ import net.sourceforge.pmd.util.NumericConstants;
 
 public class MoreThanOneLoggerRule extends AbstractJavaRule {
 
-    private static final Class LOG4J_LOGGER;
+    private static final Class<?> LOG4J_LOGGER;
 
-    private static final Class JAVA_LOGGER;
+    private static final Class<?> JAVA_LOGGER;
 
     static {
-	Class c;
+	Class<?> c;
 	try {
 	    c = Class.forName("org.apache.log4j.Logger");
 	} catch (Throwable t) {
@@ -80,7 +80,7 @@ public class MoreThanOneLoggerRule extends AbstractJavaRule {
 	    if (reftypeNode instanceof ASTReferenceType) {
 		Node classOrIntType = reftypeNode.jjtGetChild(0);
 		if (classOrIntType instanceof ASTClassOrInterfaceType) {
-		    Class clazzType = ((ASTClassOrInterfaceType) classOrIntType).getType();
+		    Class<?> clazzType = ((ASTClassOrInterfaceType) classOrIntType).getType();
 		    if (clazzType != null && (clazzType.equals(LOG4J_LOGGER) || clazzType.equals(JAVA_LOGGER))
 			    || clazzType == null && "Logger".equals(classOrIntType.getImage())) {
 			++count;

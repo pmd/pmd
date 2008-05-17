@@ -13,241 +13,243 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 //FUTURE Implement Cloneable and clone()
 public interface Rule {
-	// FUTURE Use enum
-	public static final int LOWEST_PRIORITY = 5;
+    // FUTURE Use enum
+    public static final int LOWEST_PRIORITY = 5;
 
-	// FUTURE Use enum
-	public static final String[] PRIORITIES = { "High", "Medium High",
-			"Medium", "Medium Low", "Low" };
+    // FUTURE Use enum
+    public static final String[] PRIORITIES = { "High", "Medium High", "Medium", "Medium Low", "Low" };
 
-	/**
-	 * Get the name of this Rule.
-	 */
-	String getName();
+    /**
+     * Get the name of this Rule.
+     */
+    String getName();
 
-	/**
-	 * Set the name of this Rule.
-	 */
-	void setName(String name);
-	
-	/**
-	 * Get the version of PMD in which this Rule was added.
-	 * Return <code>null</code> if not applicable.
-	 */
-	String getSince();
-	
-	/**
-	 * Set the version of PMD in which this Rule was added.
-	 */
-	void setSince(String since);
-	
-	/**
-	 * Get the class of this Rule.
-	 */
-	String getRuleClass();
+    /**
+     * Set the name of this Rule.
+     */
+    void setName(String name);
 
-	/**
-	 * Set the class of this Rule.
-	 */
-	void setRuleClass(String ruleClass);
+    /**
+     * Get the version of PMD in which this Rule was added.
+     * Return <code>null</code> if not applicable.
+     */
+    String getSince();
 
-	/**
-	 * Get the name of the RuleSet containing this Rule.
-	 * 
-	 * @see RuleSet
-	 */
-	String getRuleSetName();
+    /**
+     * Set the version of PMD in which this Rule was added.
+     */
+    void setSince(String since);
 
-	/**
-	 * Set the name of the RuleSet containing this Rule.
-	 * 
-	 * @see RuleSet
-	 */
-	void setRuleSetName(String name);
+    /**
+     * Get the class of this Rule.
+     */
+    String getRuleClass();
 
-	/**
-	 * Get the message to show when this Rule identifies a violation.
-	 */
-	String getMessage();
+    /**
+     * Set the class of this Rule.
+     */
+    void setRuleClass(String ruleClass);
 
-	/**
-	 * Set the message to show when this Rule identifies a violation.
-	 */
-	void setMessage(String message);
+    /**
+     * Get the name of the RuleSet containing this Rule.
+     * 
+     * @see RuleSet
+     */
+    String getRuleSetName();
 
-	/**
-	 * Get the description of this Rule.
-	 */
-	String getDescription();
+    /**
+     * Set the name of the RuleSet containing this Rule.
+     * 
+     * @see RuleSet
+     */
+    void setRuleSetName(String name);
 
-	/**
-	 * Set the description of this Rule.
-	 */
-	void setDescription(String description);
+    /**
+     * Get the message to show when this Rule identifies a violation.
+     */
+    String getMessage();
 
-	/**
-	 * Get the list of examples for this Rule.
-	 */
-	List<String> getExamples();
+    /**
+     * Set the message to show when this Rule identifies a violation.
+     */
+    void setMessage(String message);
 
-	/**
-	 * Still used by the JDeveloper plugin
-	 * 
-	 * @deprecated use getExamples(), since we now support multiple examples
-	 */
-	String getExample();
+    /**
+     * Get the description of this Rule.
+     */
+    String getDescription();
 
-	/**
-	 * Add a single example for this Rule.
-	 */
-	void addExample(String example);
+    /**
+     * Set the description of this Rule.
+     */
+    void setDescription(String description);
 
-	/**
-	 * Get a URL for external information about this Rule.
-	 */
-	String getExternalInfoUrl();
+    /**
+     * Get the list of examples for this Rule.
+     */
+    List<String> getExamples();
 
-	/**
-	 * Set a URL for external information about this Rule.
-	 */
-	void setExternalInfoUrl(String externalInfoUrl);
+    /**
+     * Still used by the JDeveloper plugin
+     * 
+     * @deprecated use getExamples(), since we now support multiple examples
+     */
+    @Deprecated
+    String getExample();
 
-	/**
-	 * Get the priority of this Rule.
-	 */
-	int getPriority();
+    /**
+     * Add a single example for this Rule.
+     */
+    void addExample(String example);
 
-	/**
-	 * Set the priority of this Rule.
-	 */
-	void setPriority(int priority);
+    /**
+     * Get a URL for external information about this Rule.
+     */
+    String getExternalInfoUrl();
 
-	/**
-	 * Get a name for the priority of this Rule.
-	 */
-	String getPriorityName();
+    /**
+     * Set a URL for external information about this Rule.
+     */
+    void setExternalInfoUrl(String externalInfoUrl);
 
-	/**
-	 * TODO What is this?
-	 * 
-	 * @deprecated Don't know what this is for, so deprecating it.
-	 */
-	boolean include();
+    /**
+     * Get the priority of this Rule.
+     */
+    int getPriority();
 
-	/**
-	 * TODO What is this?
-	 * 
-	 * @deprecated Don't know what this is for, so deprecating it.
-	 */
-	void setInclude(boolean include);
+    /**
+     * Set the priority of this Rule.
+     */
+    void setPriority(int priority);
 
-	/**
-	 * Get all properties for this Rule.
-	 * 
-	 * @return the properties for the rule
-	 */
-	Properties getProperties();
+    /**
+     * Get a name for the priority of this Rule.
+     */
+    String getPriorityName();
 
-	/**
-	 * Add a specific property to this Rule.
-	 */
-	void addProperty(String name, String property);
+    /**
+     * TODO What is this?
+     * 
+     * @deprecated Don't know what this is for, so deprecating it.
+     */
+    @Deprecated
+    boolean include();
 
-	/**
-	 * Add a set of properties to this Rule.
-	 */
-	void addProperties(Properties properties);
+    /**
+     * TODO What is this?
+     * 
+     * @deprecated Don't know what this is for, so deprecating it.
+     */
+    @Deprecated
+    void setInclude(boolean include);
 
-	/**
-	 * Get whether this Rule has a property of the given name.
-	 */
-	boolean hasProperty(String name);
+    /**
+     * Get all properties for this Rule.
+     * 
+     * @return the properties for the rule
+     */
+    Properties getProperties();
 
-	/**
-	 * Get the <code>boolean</code> value for the given property.
-	 */
-	boolean getBooleanProperty(String name);
+    /**
+     * Add a specific property to this Rule.
+     */
+    void addProperty(String name, String property);
 
-	/**
-	 * Get the <code>int</code> value for the given property.
-	 */
-	int getIntProperty(String name);
+    /**
+     * Add a set of properties to this Rule.
+     */
+    void addProperties(Properties properties);
 
-	/**
-	 * Get the <code>double</code> value for the given property.
-	 */
-	double getDoubleProperty(String name);
+    /**
+     * Get whether this Rule has a property of the given name.
+     */
+    boolean hasProperty(String name);
 
-	/**
-	 * Get the <code>java.util.String</code> value for the given property.
-	 */
-	String getStringProperty(String name);
+    /**
+     * Get the <code>boolean</code> value for the given property.
+     */
+    boolean getBooleanProperty(String name);
 
-	/**
-	 * Get the PropertyDescriptor for the given property.
-	 */
-	// FUTURE Rename to getPropertyDescriptor(String)
-	PropertyDescriptor propertyDescriptorFor(String name);
+    /**
+     * Get the <code>int</code> value for the given property.
+     */
+    int getIntProperty(String name);
 
-	/**
-	 * Sets whether this Rule uses Data Flow Analysis.
-	 */
-	// FUTURE Use JavaBean conventions for boolean attributes
-	void setUsesDFA();
+    /**
+     * Get the <code>double</code> value for the given property.
+     */
+    double getDoubleProperty(String name);
 
-	/**
-	 * Gets whether this Rule uses Data Flow Analysis.
-	 */
-	// FUTURE Use JavaBean conventions for boolean attributes
-	boolean usesDFA();
+    /**
+     * Get the <code>java.util.String</code> value for the given property.
+     */
+    String getStringProperty(String name);
 
-	/**
-	 * Sets whether this Rule uses Type Resolution.
-	 */
-	// FUTURE Use JavaBean conventions for boolean attributes
-	void setUsesTypeResolution();
+    /**
+     * Get the PropertyDescriptor for the given property.
+     */
+    // FUTURE Rename to getPropertyDescriptor(String)
+    PropertyDescriptor propertyDescriptorFor(String name);
 
-	/**
-	 * Gets whether this Rule uses Type Resolution.
-	 */
-	// FUTURE Use JavaBean conventions for boolean attributes
-	boolean usesTypeResolution();
+    /**
+     * Sets whether this Rule uses Data Flow Analysis.
+     */
+    // FUTURE Use JavaBean conventions for boolean attributes
+    void setUsesDFA();
 
-	/**
-	 * Gets whether this Rule uses the RuleChain.
-	 */
-	// FUTURE Use JavaBean conventions for boolean attributes
-	boolean usesRuleChain();
+    /**
+     * Gets whether this Rule uses Data Flow Analysis.
+     */
+    // FUTURE Use JavaBean conventions for boolean attributes
+    boolean usesDFA();
 
-	/**
-	 * Gets the collection of AST node names visited by the Rule on the
-	 * RuleChain.
-	 */
-	List<String> getRuleChainVisits();
+    /**
+     * Sets whether this Rule uses Type Resolution.
+     */
+    // FUTURE Use JavaBean conventions for boolean attributes
+    void setUsesTypeResolution();
 
-	/**
-	 * Adds an AST node by class to be visited by the Rule on the RuleChain.
-	 */
-	void addRuleChainVisit(Class<? extends Node> nodeClass);
+    /**
+     * Gets whether this Rule uses Type Resolution.
+     */
+    // FUTURE Use JavaBean conventions for boolean attributes
+    boolean usesTypeResolution();
 
-	/**
-	 * Adds an AST node by name to be visited by the Rule on the RuleChain.
-	 */
-	void addRuleChainVisit(String astNodeName);
-	
-	/**
-	 * Start processing. Called once, before apply() is first called. 
-	 */
-	void start(RuleContext ctx);
+    /**
+     * Gets whether this Rule uses the RuleChain.
+     */
+    // FUTURE Use JavaBean conventions for boolean attributes
+    boolean usesRuleChain();
 
-	/**
-	 * Apply this rule to the given collection of nodes, using the
-	 * given context.
-	 */
-	void apply(List<Node> nodes, RuleContext ctx);
-	
-	/**
-	 * End processing. Called once, after apply() is last called. 
-	 */
-	void end(RuleContext ctx);
+    /**
+     * Gets the collection of AST node names visited by the Rule on the
+     * RuleChain.
+     */
+    List<String> getRuleChainVisits();
+
+    /**
+     * Adds an AST node by class to be visited by the Rule on the RuleChain.
+     */
+    void addRuleChainVisit(Class<? extends Node> nodeClass);
+
+    /**
+     * Adds an AST node by name to be visited by the Rule on the RuleChain.
+     */
+    void addRuleChainVisit(String astNodeName);
+
+    /**
+     * Start processing. Called once, before apply() is first called. 
+     */
+    void start(RuleContext ctx);
+
+    /**
+     * Apply this rule to the given collection of nodes, using the
+     * given context.
+     */
+    void apply(List<? extends Node> nodes, RuleContext ctx);
+
+    /**
+     * End processing. Called once, after apply() is last called. 
+     */
+    void end(RuleContext ctx);
 }

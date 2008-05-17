@@ -66,7 +66,7 @@ public abstract class AbstractNode implements Node {
     }
 
     public int jjtGetNumChildren() {
-	return (children == null) ? 0 : children.length;
+	return children == null ? 0 : children.length;
     }
 
     public int jjtGetId() {
@@ -77,6 +77,7 @@ public abstract class AbstractNode implements Node {
      * Subclasses should implement this method to return a name usable with
      * XPathRule for evaluating Element Names.
      */
+    @Override
     public abstract String toString();
 
     public String getImage() {
@@ -103,7 +104,7 @@ public abstract class AbstractNode implements Node {
 	if (beginColumn != -1) {
 	    return beginColumn;
 	} else {
-	    if ((children != null) && (children.length > 0)) {
+	    if (children != null && children.length > 0) {
 		return children[0].getBeginColumn();
 	    } else {
 		throw new RuntimeException("Unable to determine begining line of Node.");
@@ -265,7 +266,7 @@ public abstract class AbstractNode implements Node {
 	    Attribute attr = iter.next();
 	    element.setAttribute(attr.getName(), attr.getValue());
 	}
-	for (Iterator iter = docNav.getChildAxisIterator(this); iter.hasNext();) {
+	for (Iterator<Node> iter = docNav.getChildAxisIterator(this); iter.hasNext();) {
 	    AbstractNode child = (AbstractNode) iter.next();
 	    child.appendElement(element);
 	}
@@ -285,11 +286,13 @@ public abstract class AbstractNode implements Node {
 	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
 	    Node n = node.jjtGetChild(i);
 	    if (n != null) {
-		if (n.getClass().equals(childType))
+		if (n.getClass().equals(childType)) {
 		    return (T) n;
+		}
 		T n2 = getFirstChildOfType(childType, n);
-		if (n2 != null)
+		if (n2 != null) {
 		    return n2;
+		}
 	    }
 	}
 	return null;

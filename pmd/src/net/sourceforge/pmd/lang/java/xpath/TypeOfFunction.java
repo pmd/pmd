@@ -44,7 +44,7 @@ public class TypeOfFunction implements Function {
             if (implementors.contains(type)) {
                 return Boolean.TRUE;
             }
-            Class superC = type.getSuperclass();
+            Class<?> superC = type.getSuperclass();
             while (superC != null && !superC.equals(Object.class)) {
                 if (superC.getName().equals(typeName)) {
                     return Boolean.TRUE;

@@ -12,23 +12,23 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
  */
 public class MockRule extends AbstractRule {
 
-	public MockRule() {
-		super();
-	}
+    public MockRule() {
+	super();
+    }
 
-	public MockRule(String name, String description, String message, String ruleSetName, int priority) {
-		this(name, description, message, ruleSetName);
-		setPriority(priority);
-	}
+    public MockRule(String name, String description, String message, String ruleSetName, int priority) {
+	this(name, description, message, ruleSetName);
+	setPriority(priority);
+    }
 
-	public MockRule(String name, String description, String message, String ruleSetName) {
-		super();
-		setName(name);
-		setDescription(description);
-		setMessage(message);
-		setRuleSetName(ruleSetName);
-	}
+    public MockRule(String name, String description, String message, String ruleSetName) {
+	super();
+	setName(name);
+	setDescription(description);
+	setMessage(message);
+	setRuleSetName(ruleSetName);
+    }
 
-	public void apply(List<Node> nodes, RuleContext ctx) {
-	}
+    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+    }
 }

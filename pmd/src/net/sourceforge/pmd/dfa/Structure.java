@@ -10,7 +10,6 @@ import java.util.Stack;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.JavaDataFlowNode;
 
-
 /**
  * @author raik
  *         <p/>
@@ -31,27 +30,27 @@ public class Structure {
      */
     public DataFlowNode createNewNode(Node node) {
 	// FUTURE Keep working on generalizing beyond just Java support
-        return new JavaDataFlowNode(this.dataFlow, node);
+	return new JavaDataFlowNode(this.dataFlow, node);
     }
 
     public DataFlowNode createStartNode(int line) {
-        return new StartOrEndDataFlowNode(this.dataFlow, line, true);
+	return new StartOrEndDataFlowNode(this.dataFlow, line, true);
     }
 
     public DataFlowNode createEndNode(int line) {
-        return new StartOrEndDataFlowNode(this.dataFlow, line, false);
+	return new StartOrEndDataFlowNode(this.dataFlow, line, false);
     }
 
     public DataFlowNode getLast() {
-        return this.dataFlow.getLast();
+	return this.dataFlow.getLast();
     }
 
     public DataFlowNode getFirst() {
-        return this.dataFlow.getFirst();
+	return this.dataFlow.getFirst();
     }
 
-//  ----------------------------------------------------------------------------
-//	STACK FUNCTIONS
+    //  ----------------------------------------------------------------------------
+    //	STACK FUNCTIONS
 
     /**
      * The braceStack contains all nodes which are important to link the data
@@ -59,25 +58,23 @@ public class Structure {
      * There are 2 Stacks because the have to process differently.
      */
     protected void pushOnStack(int type, DataFlowNode node) {
-        StackObject obj = new StackObject(type, node);
-        if (type == NodeType.RETURN_STATEMENT
-        		|| type == NodeType.BREAK_STATEMENT
-        		|| type == NodeType.CONTINUE_STATEMENT
-        		|| type == NodeType.THROW_STATEMENT) {
-            // ugly solution - stores the type information in two ways
-            continueBreakReturnStack.push(obj);
-        } else {
-            braceStack.push(obj);
-        }
-        ((DataFlowNode) node).setType(type);
+	StackObject obj = new StackObject(type, node);
+	if (type == NodeType.RETURN_STATEMENT || type == NodeType.BREAK_STATEMENT
+		|| type == NodeType.CONTINUE_STATEMENT || type == NodeType.THROW_STATEMENT) {
+	    // ugly solution - stores the type information in two ways
+	    continueBreakReturnStack.push(obj);
+	} else {
+	    braceStack.push(obj);
+	}
+	node.setType(type);
     }
 
-    public List getBraceStack() {
-        return braceStack;
+    public List<StackObject> getBraceStack() {
+	return braceStack;
     }
 
-    public List getContinueBreakReturnStack() {
-        return continueBreakReturnStack;
+    public List<StackObject> getContinueBreakReturnStack() {
+	return continueBreakReturnStack;
     }
 
 }

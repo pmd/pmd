@@ -265,12 +265,12 @@ public abstract class AbstractRule implements Rule {
 	return ((Character) getProperty(descriptor)).charValue();
     }
 
-    public Class[] getTypeProperties(PropertyDescriptor descriptor) {
+    public Class<?>[] getTypeProperties(PropertyDescriptor descriptor) {
 	return (Class[]) getProperties(descriptor);
     }
 
-    public Class getTypeProperty(PropertyDescriptor descriptor) {
-	return (Class) getProperty(descriptor);
+    public Class<?> getTypeProperty(PropertyDescriptor descriptor) {
+	return (Class<?>) getProperty(descriptor);
     }
 
     private Object getProperty(PropertyDescriptor descriptor) {

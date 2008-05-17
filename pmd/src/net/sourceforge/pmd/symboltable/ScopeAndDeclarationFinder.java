@@ -61,9 +61,9 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void addScope(Scope newScope, Node node) {
-        newScope.setParent(scopes.peek());
-        scopes.push(newScope);
-        node.setScope(newScope);
+	newScope.setParent(scopes.peek());
+	scopes.push(newScope);
+	node.setScope(newScope);
     }
 
     /**
@@ -75,7 +75,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void createLocalScope(Node node) {
-        addScope(new LocalScope(), node);
+	addScope(new LocalScope(), node);
     }
 
     /**
@@ -87,7 +87,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void createMethodScope(Node node) {
-        addScope(new MethodScope(node), node);
+	addScope(new MethodScope(node), node);
     }
 
     /**
@@ -99,11 +99,11 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
     private void createClassScope(Node node) {
-        if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
-            addScope(new ClassScope(), node);
-        } else {
-            addScope(new ClassScope(node.getImage()), node);
-        }
+	if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
+	    addScope(new ClassScope(), node);
+	} else {
+	    addScope(new ClassScope(node.getImage()), node);
+	}
     }
 
     /**
@@ -113,161 +113,176 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      */
     private void createSourceFileScope(Node node) {
-        // When we do full symbol resolution, we'll need to add a truly top-level GlobalScope.
-        Scope scope;
-        List packages = node.findChildrenOfType(ASTPackageDeclaration.class);
-        if (!packages.isEmpty()) {
-            Node n = (Node) packages.get(0);
-            scope = new SourceFileScope(n.jjtGetChild(0).getImage());
-        } else {
-            scope = new SourceFileScope();
-        }
-        scopes.push(scope);
-        node.setScope(scope);
+	// When we do full symbol resolution, we'll need to add a truly top-level GlobalScope.
+	Scope scope;
+	List<ASTPackageDeclaration> packages = node.findChildrenOfType(ASTPackageDeclaration.class);
+	if (!packages.isEmpty()) {
+	    ASTPackageDeclaration n = packages.get(0);
+	    scope = new SourceFileScope(n.jjtGetChild(0).getImage());
+	} else {
+	    scope = new SourceFileScope();
+	}
+	scopes.push(scope);
+	node.setScope(scope);
     }
 
+    @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        createSourceFileScope(node);
-        cont(node);
-        return data;
+	createSourceFileScope(node);
+	cont(node);
+	return data;
     }
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        createClassScope(node);
-        Scope s = node.jjtGetParent().getScope();
-        s.addDeclaration(new ClassNameDeclaration(node));
-        cont(node);
-        return data;
+	createClassScope(node);
+	Scope s = node.jjtGetParent().getScope();
+	s.addDeclaration(new ClassNameDeclaration(node));
+	cont(node);
+	return data;
     }
 
+    @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
-        createClassScope(node);
-        cont(node);
-        return data;
+	createClassScope(node);
+	cont(node);
+	return data;
     }
 
+    @Override
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
-        createClassScope(node);
-        cont(node);
-        return data;
+	createClassScope(node);
+	cont(node);
+	return data;
     }
 
+    @Override
     public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
-        if (node.isAnonymousInnerClass() || node.isEnumChild()) {
-            createClassScope(node);
-            cont(node);
-        } else {
-            super.visit(node, data);
-        }
-        return data;
+	if (node.isAnonymousInnerClass() || node.isEnumChild()) {
+	    createClassScope(node);
+	    cont(node);
+	} else {
+	    super.visit(node, data);
+	}
+	return data;
     }
 
+    @Override
     public Object visit(ASTBlock node, Object data) {
-        createLocalScope(node);
-        cont(node);
-        return data;
+	createLocalScope(node);
+	cont(node);
+	return data;
     }
 
+    @Override
     public Object visit(ASTCatchStatement node, Object data) {
-        createLocalScope(node);
-        cont(node);
-        return data;
+	createLocalScope(node);
+	cont(node);
+	return data;
     }
 
+    @Override
     public Object visit(ASTFinallyStatement node, Object data) {
-        createLocalScope(node);
-        cont(node);
-        return data;
+	createLocalScope(node);
+	cont(node);
+	return data;
     }
 
+    @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        /*
-         * Local variables declared inside the constructor need to 
-         * be in a different scope so special handling is needed
-         */
-        createMethodScope(node);
+	/*
+	 * Local variables declared inside the constructor need to 
+	 * be in a different scope so special handling is needed
+	 */
+	createMethodScope(node);
 
-        Scope methodScope = node.getScope();
+	Scope methodScope = node.getScope();
 
-        Node formalParameters = node.jjtGetChild(0);
-        int i = 1;
-        int n = node.jjtGetNumChildren();
-        if (!(formalParameters instanceof ASTFormalParameters)) {
-            visit((ASTTypeParameters) formalParameters, data);
-            formalParameters = node.jjtGetChild(1);
-            i++;
-        }
-        visit((ASTFormalParameters)formalParameters, data);
+	Node formalParameters = node.jjtGetChild(0);
+	int i = 1;
+	int n = node.jjtGetNumChildren();
+	if (!(formalParameters instanceof ASTFormalParameters)) {
+	    visit((ASTTypeParameters) formalParameters, data);
+	    formalParameters = node.jjtGetChild(1);
+	    i++;
+	}
+	visit((ASTFormalParameters) formalParameters, data);
 
-        Scope localScope = null;
-        for (;i<n;i++) {
-            JavaNode b = (JavaNode)node.jjtGetChild(i);
-            if (b instanceof ASTBlockStatement) {
-                if (localScope == null) {
-                    createLocalScope(node);
-                    localScope = node.getScope();
-                }
-                b.setScope(localScope);
-                visit(b, data);
-            } else {
-                visit(b, data);
-            }
-        }
-        if (localScope != null) {
-            // pop the local scope
-            scopes.pop();
+	Scope localScope = null;
+	for (; i < n; i++) {
+	    JavaNode b = (JavaNode) node.jjtGetChild(i);
+	    if (b instanceof ASTBlockStatement) {
+		if (localScope == null) {
+		    createLocalScope(node);
+		    localScope = node.getScope();
+		}
+		b.setScope(localScope);
+		visit(b, data);
+	    } else {
+		visit(b, data);
+	    }
+	}
+	if (localScope != null) {
+	    // pop the local scope
+	    scopes.pop();
 
-            // reset the correct scope for the constructor
-            node.setScope(methodScope);            
-        }
-        // pop the method scope
-        scopes.pop();
+	    // reset the correct scope for the constructor
+	    node.setScope(methodScope);
+	}
+	// pop the method scope
+	scopes.pop();
 
-        return data;
+	return data;
     }
 
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        createMethodScope(node);
-        ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
-        node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
-        cont(node);
-        return data;
+	createMethodScope(node);
+	ASTMethodDeclarator md = node.getFirstChildOfType(ASTMethodDeclarator.class);
+	node.getScope().getEnclosingClassScope().addDeclaration(new MethodNameDeclaration(md));
+	cont(node);
+	return data;
     }
 
+    @Override
     public Object visit(ASTTryStatement node, Object data) {
-        createLocalScope(node);
-        cont(node);
-        return data;
+	createLocalScope(node);
+	cont(node);
+	return data;
     }
 
     // TODO - what about while loops and do loops?
+    @Override
     public Object visit(ASTForStatement node, Object data) {
-        createLocalScope(node);
-        cont(node);
-        return data;
+	createLocalScope(node);
+	cont(node);
+	return data;
     }
 
+    @Override
     public Object visit(ASTIfStatement node, Object data) {
-        createLocalScope(node);
-        cont(node);
-        return data;
+	createLocalScope(node);
+	cont(node);
+	return data;
     }
 
+    @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        VariableNameDeclaration decl = new VariableNameDeclaration(node);
-        node.getScope().addDeclaration(decl);
-        node.setNameDeclaration(decl);
-        return super.visit(node, data);
+	VariableNameDeclaration decl = new VariableNameDeclaration(node);
+	node.getScope().addDeclaration(decl);
+	node.setNameDeclaration(decl);
+	return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTSwitchStatement node, Object data) {
-        createLocalScope(node);
-        cont(node);
-        return data;
+	createLocalScope(node);
+	cont(node);
+	return data;
     }
 
     private void cont(AbstractJavaNode node) {
-        super.visit(node, null);
-        scopes.pop();
+	super.visit(node, null);
+	scopes.pop();
     }
 }

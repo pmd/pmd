@@ -16,18 +16,19 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class LooseCoupling extends AbstractJavaRule {
 
-	public LooseCoupling() {
-		super();
-	}
+    public LooseCoupling() {
+	super();
+    }
 
-	public Object visit(ASTClassOrInterfaceType node, Object data) {
-		Node parent = node.getNthParent(3);
-		Class clazzType = node.getType();
-		boolean isType = CollectionUtil.isCollectionType(clazzType, false);
-		if (isType
-				&& (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter || parent instanceof ASTResultType)) {
-			addViolation(data, node, node.getImage());
-		}
-		return data;
+    @Override
+    public Object visit(ASTClassOrInterfaceType node, Object data) {
+	Node parent = node.getNthParent(3);
+	Class<?> clazzType = node.getType();
+	boolean isType = CollectionUtil.isCollectionType(clazzType, false);
+	if (isType
+		&& (parent instanceof ASTFieldDeclaration || parent instanceof ASTFormalParameter || parent instanceof ASTResultType)) {
+	    addViolation(data, node, node.getImage());
 	}
+	return data;
+    }
 }

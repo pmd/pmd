@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.jsp.rule;
 
-import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
@@ -33,117 +32,116 @@ import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 
-public abstract class AbstractJspRule extends AbstractRule implements
-		JspParserVisitor {
+public abstract class AbstractJspRule extends AbstractRule implements JspParserVisitor {
 
-	@Override
-	public void setUsesTypeResolution() {
-		// No Type resolution for JSP rules?
+    @Override
+    public void setUsesTypeResolution() {
+	// No Type resolution for JSP rules?
+    }
+
+    public void apply(List<? extends Node> nodes, RuleContext ctx) {
+	visitAll(nodes, ctx);
+    }
+
+    protected void visitAll(List<? extends Node> nodes, RuleContext ctx) {
+	for (Object element : nodes) {
+	    JspNode node = (JspNode) element;
+	    visit(node, ctx);
 	}
+    }
 
-	public void apply(List<Node> nodes, RuleContext ctx) {
-		visitAll(nodes, ctx);
-	}
+    //
+    // The following APIs are identical to those in JspParserVisitorAdapter.
+    // Due to Java single inheritance, it preferred to extend from the more
+    // complex Rule base class instead of from relatively simple Visitor.
+    //
 
-	protected void visitAll(List<Node> nodes, RuleContext ctx) {
-		for (Iterator i = nodes.iterator(); i.hasNext();) {
-			JspNode node = (JspNode)i.next();
-			visit(node, ctx);
-		}
-	}
+    public Object visit(JspNode node, Object data) {
+	node.childrenAccept(this, data);
+	return null;
+    }
 
-	//
-	// The following APIs are identical to those in JspParserVisitorAdapter.
-	// Due to Java single inheritance, it preferred to extend from the more
-	// complex Rule base class instead of from relatively simple Visitor.
-	//
+    public Object visit(ASTCompilationUnit node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(JspNode node, Object data) {
-		node.childrenAccept(this, data);
-		return null;
-	}
+    public Object visit(ASTContent node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTCompilationUnit node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTJspDirective node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTContent node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTJspDirectiveAttribute node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTJspDirective node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTJspScriptlet node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTJspDirectiveAttribute node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTJspExpression node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTJspScriptlet node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTJspDeclaration node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTJspExpression node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTJspComment node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTJspDeclaration node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTText node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTJspComment node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTUnparsedText node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTText node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTElExpression node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTUnparsedText node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTValueBinding node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTElExpression node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTCData node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTValueBinding node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTElement node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTCData node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTAttribute node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTElement node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTAttributeValue node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTAttribute node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTJspExpressionInAttribute node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTAttributeValue node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTCommentTag node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTJspExpressionInAttribute node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTDeclaration node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTCommentTag node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTDoctypeDeclaration node, Object data) {
+	return visit((JspNode) node, data);
+    }
 
-	public Object visit(ASTDeclaration node, Object data) {
-		return visit((JspNode)node, data);
-	}
-
-	public Object visit(ASTDoctypeDeclaration node, Object data) {
-		return visit((JspNode)node, data);
-	}
-
-	public Object visit(ASTDoctypeExternalId node, Object data) {
-		return visit((JspNode)node, data);
-	}
+    public Object visit(ASTDoctypeExternalId node, Object data) {
+	return visit((JspNode) node, data);
+    }
 }

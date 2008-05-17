@@ -2,53 +2,54 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.Rule;
-
 import java.util.Arrays;
 import java.util.List;
 
+import net.sourceforge.pmd.Rule;
+
 public class ASTAnnotation extends AbstractJavaNode {
 
-    private static List unusedRules = Arrays.asList(new String[]{"UnusedPrivateField","UnusedLocalVariable","UnusedPrivateMethod","UnusedFormalParameter"});
+    private static List<String> unusedRules = Arrays.asList(new String[] { "UnusedPrivateField", "UnusedLocalVariable",
+	    "UnusedPrivateMethod", "UnusedFormalParameter" });
 
     public ASTAnnotation(int id) {
-        super(id);
+	super(id);
     }
 
     public ASTAnnotation(JavaParser p, int id) {
-        super(p, id);
+	super(p, id);
     }
 
     public boolean suppresses(Rule rule) {
-        final String ruleAnno = "\"PMD." + rule.getName() + "\"";
+	final String ruleAnno = "\"PMD." + rule.getName() + "\"";
 
-        if (jjtGetChild(0) instanceof ASTSingleMemberAnnotation) {
-            ASTSingleMemberAnnotation n = (ASTSingleMemberAnnotation) jjtGetChild(0);
+	if (jjtGetChild(0) instanceof ASTSingleMemberAnnotation) {
+	    ASTSingleMemberAnnotation n = (ASTSingleMemberAnnotation) jjtGetChild(0);
 
-            if (n.jjtGetChild(0) instanceof ASTName) {
-                ASTName annName = ((ASTName) n.jjtGetChild(0));
+	    if (n.jjtGetChild(0) instanceof ASTName) {
+		ASTName annName = (ASTName) n.jjtGetChild(0);
 
-                if (annName.getImage().equals("SuppressWarnings")) {
-                    List<ASTLiteral> nodes = n.findChildrenOfType(ASTLiteral.class);
-                    for (ASTLiteral element: nodes) {
-                        if (element.hasImageEqualTo("\"PMD\"")
-                                || element.hasImageEqualTo(ruleAnno)
-                                // the SuppressWarnings("unused") annotation allows unused code 
-                                // to be igored and is a Java standard annotation
-                                || (element.hasImageEqualTo("\"unused\"") && unusedRules.contains(rule.getName()))) {
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
+		if (annName.getImage().equals("SuppressWarnings")) {
+		    List<ASTLiteral> nodes = n.findChildrenOfType(ASTLiteral.class);
+		    for (ASTLiteral element : nodes) {
+			if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo(ruleAnno)
+			// the SuppressWarnings("unused") annotation allows unused code 
+				// to be ignored and is a Java standard annotation
+				|| element.hasImageEqualTo("\"unused\"") && unusedRules.contains(rule.getName())) {
+			    return true;
+			}
+		    }
+		}
+	    }
+	}
+	return false;
     }
 
     /**
      * Accept the visitor.
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
-        return visitor.visit(this, data);
+	return visitor.visit(this, data);
     }
 }
