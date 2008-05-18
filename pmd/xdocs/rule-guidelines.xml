@@ -26,7 +26,15 @@ priority of your rule:
 So we skip priority one. However, as explicit call to gc may really hinder application performances, we set for the priority 2.
 </p>
 </section>
-
+<section name="Code formatting">
+<p>
+We try to keep a consistent code formatting through out PMD code base to ensure an easier maintenance and also make the diff send to the mailing list as readable as possible
+</p>
+<p>
+In order to ensure this, we use a PMD specific Eclipse formatter configuration :  <strong>tools/config/eclipse-code-formatter-settings.xml</strong>. Please do not forget to uses it 
+before committing or any source code ! 
+</p>
+</section>
 <section name="Correctness">
 <p>
 You should try to run the rule on a large code base, like the jdk source code for instance. This will help ensure that the rule does not raise exceptions when dealing with unusual constructs.
