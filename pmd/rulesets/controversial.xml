@@ -290,8 +290,7 @@ making them look like a function call.
           <property name="xpath">
               <value>
                   <![CDATA[
-//ReturnStatement
-          /Expression
+          //Expression
            /PrimaryExpression
             /PrimaryPrefix
              /Expression[count(*)=1]
