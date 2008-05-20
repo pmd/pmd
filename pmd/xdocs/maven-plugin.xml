@@ -7,6 +7,12 @@
   </properties>
 
   <body>
+    <section name="Maven 1 PMD plugin">
+      <p>
+        This page is about the maven 1 PMD plugin. The maven 2 PMD plugin page is available
+        <a href="mvn-plugin.html">here</a>.
+      </p>
+    </section>
     <section name="Running the pmd plugin">
     	<subsection name="report">
     		<p>
