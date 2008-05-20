@@ -1,4 +1,4 @@
-???? - 4.2.2:
+May 20, 2008 - 4.2.2:
 
 Fixed false positive in UnusedImports: javadoc comments are parsed to check @see and other tags
 Fixed parsing bug: constant fields in annotation classes

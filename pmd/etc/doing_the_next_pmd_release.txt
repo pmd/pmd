@@ -71,6 +71,7 @@ for 'pmd-repo' must be defined in ~/.m2/settings.xml
 
 cd ~/pmd/pmd/
 update the "download" and "what's new" link in navigation.xml
+update date and changelog links in project.xml (recent releases section)
 ./docs.sh all
 ./docs.sh upload
 
