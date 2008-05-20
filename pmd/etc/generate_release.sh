@@ -96,5 +96,5 @@ echo
 
 echo "Use the command below to upload to sourceforge"
 echo
-echo "lftp -e \"mput -O incoming/ $pmd_top_dir/pmd-src-$version.zip $pmd_top_dir/pmd-bin-$version.zip\" upload.sourceforge.net"
+echo "rsync -avP -e ssh $pmd_top_dir/pmd-src-$version.zip $pmd_top_dir/pmd-bin-$version.zip\" xlv@frs.sourceforge.net:uploads/"
 
