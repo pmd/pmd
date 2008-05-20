@@ -49,8 +49,7 @@ public enum LanguageVersion {
     JSP(Language.JSP, "", new JspHandler(), true),
     PHP(Language.PHP, "", null, true),
     RUBY(Language.RUBY, "", null, true),
-    XML(Language.XML, "", new XmlHandler(), true)
-    ;
+    XML(Language.XML, "", new XmlHandler(), true);
 
     private final Language language;
     private final String version;

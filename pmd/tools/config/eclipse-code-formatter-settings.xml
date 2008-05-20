@@ -3,6 +3,7 @@
 	These are default Java conventions from Eclipse 3.3.2 with the following changes:
 	1) Line lengths to 120
 	2) Disable all Comment formatting options
+	3) Enum constants always wrap to new line
 -->
 <profiles version="11">
 <profile kind="CodeFormatterProfile" name="PMD" version="11">
@@ -233,7 +234,7 @@
 <setting id="org.eclipse.jdt.core.formatter.indent_switchstatements_compare_to_cases" value="true"/>
 <setting id="org.eclipse.jdt.core.formatter.continuation_indentation_for_array_initializer" value="2"/>
 <setting id="org.eclipse.jdt.core.formatter.comment.indent_root_tags" value="true"/>
-<setting id="org.eclipse.jdt.core.formatter.alignment_for_enum_constants" value="0"/>
+<setting id="org.eclipse.jdt.core.formatter.alignment_for_enum_constants" value="48"/>
 <setting id="org.eclipse.jdt.core.formatter.insert_space_before_comma_in_parameterized_type_reference" value="do not insert"/>
 <setting id="org.eclipse.jdt.core.formatter.insert_space_before_closing_paren_in_parenthesized_expression" value="do not insert"/>
 <setting id="org.eclipse.jdt.core.formatter.insert_space_after_comma_in_constructor_declaration_throws" value="insert"/>
