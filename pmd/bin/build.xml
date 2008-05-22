@@ -78,6 +78,10 @@
 				<attribute name="Class-Path" value="jaxen-${jaxen.version}.jar asm-${asm.version}.jar" />
 			</manifest>
 		</jar>
+
+		<jar 	jarfile="${dir.lib}/pmd-test-${version}.jar"
+			includes="test/net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
+			basedir="${dir.build}" />
 	</target>
 
 	<taskdef name="retroweaver" classname="net.sourceforge.retroweaver.ant.RetroWeaverTask">
