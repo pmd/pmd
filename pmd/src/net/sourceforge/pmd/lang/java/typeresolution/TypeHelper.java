@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 public class TypeHelper {
 

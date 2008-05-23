@@ -6,7 +6,7 @@ package test.net.sourceforge.pmd.symboltable;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.symboltable.LocalScope;
+import net.sourceforge.pmd.lang.java.symboltable.LocalScope;
 
 import org.junit.Test;
 

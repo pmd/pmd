@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.symboltable;
+package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;

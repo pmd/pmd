@@ -17,9 +17,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableInitializer;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitorAdapter;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 /**
  * @author raik, Sven Jacob
@@ -87,7 +88,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 	    if (n instanceof StartOrEndDataFlowNode) {
 		continue;
 	    }
-	    varDecls = n.getNode().getScope().getVariableDeclarations();
+	    varDecls = ((JavaNode)n.getNode()).getScope().getVariableDeclarations();
 	    if (!decls.contains(varDecls)) {
 		decls.add(varDecls);
 	    }

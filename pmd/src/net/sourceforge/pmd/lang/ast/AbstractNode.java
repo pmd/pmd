@@ -11,7 +11,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.sourceforge.pmd.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
-import net.sourceforge.pmd.symboltable.Scope;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -29,7 +28,6 @@ public abstract class AbstractNode implements Node {
     protected int endLine;
     protected int beginColumn = -1;
     protected int endColumn;
-    private Scope scope;
     private DataFlowNode dataFlowNode;
 
     public AbstractNode(int id) {
@@ -130,17 +128,6 @@ public abstract class AbstractNode implements Node {
 
     public void testingOnly__setEndColumn(int i) {
 	this.endColumn = i;
-    }
-
-    public Scope getScope() {
-	if (scope == null) {
-	    return parent.getScope();
-	}
-	return scope;
-    }
-
-    public void setScope(Scope scope) {
-	this.scope = scope;
     }
 
     public DataFlowNode getDataFlowNode() {

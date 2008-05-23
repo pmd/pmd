@@ -10,8 +10,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
 

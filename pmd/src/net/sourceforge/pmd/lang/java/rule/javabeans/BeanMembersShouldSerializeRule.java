@@ -16,10 +16,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.properties.StringProperty;
-import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 

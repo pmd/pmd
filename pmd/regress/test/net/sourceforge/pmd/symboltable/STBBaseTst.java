@@ -5,7 +5,7 @@ import java.io.StringReader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
-import net.sourceforge.pmd.symboltable.SymbolFacade;
+import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 
 public abstract class STBBaseTst {
 

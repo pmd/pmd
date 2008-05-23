@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.symboltable;
+package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.List;
 import java.util.Stack;
@@ -52,7 +52,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     private Stack<Scope> scopes = new Stack<Scope>();
 
     /**
-     * Sets the scope of a node and adjustes the scope stack accordingly.
+     * Sets the scope of a node and adjusts the scope stack accordingly.
      * The scope on top of the stack is set as the parent of the given scope,
      * which is then also stored on the scope stack.
      *
@@ -60,7 +60,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @param node     the AST node for which the scope is to be set.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void addScope(Scope newScope, Node node) {
+    private void addScope(Scope newScope, JavaNode node) {
 	newScope.setParent(scopes.peek());
 	scopes.push(newScope);
 	node.setScope(newScope);
@@ -74,7 +74,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void createLocalScope(Node node) {
+    private void createLocalScope(JavaNode node) {
 	addScope(new LocalScope(), node);
     }
 
@@ -86,7 +86,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void createMethodScope(Node node) {
+    private void createMethodScope(JavaNode node) {
 	addScope(new MethodScope(node), node);
     }
 
@@ -98,7 +98,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      * @param node the AST node for which the scope has to be created.
      * @throws java.util.EmptyStackException if the scope stack is empty.
      */
-    private void createClassScope(Node node) {
+    private void createClassScope(JavaNode node) {
 	if (node instanceof ASTClassOrInterfaceBodyDeclaration) {
 	    addScope(new ClassScope(), node);
 	} else {
@@ -112,7 +112,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      *
      * @param node the AST node for which the scope has to be created.
      */
-    private void createSourceFileScope(Node node) {
+    private void createSourceFileScope(JavaNode node) {
 	// When we do full symbol resolution, we'll need to add a truly top-level GlobalScope.
 	Scope scope;
 	List<ASTPackageDeclaration> packages = node.findChildrenOfType(ASTPackageDeclaration.class);
@@ -136,7 +136,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 	createClassScope(node);
-	Scope s = node.jjtGetParent().getScope();
+	Scope s = ((JavaNode)node.jjtGetParent()).getScope();
 	s.addDeclaration(new ClassNameDeclaration(node));
 	cont(node);
 	return data;

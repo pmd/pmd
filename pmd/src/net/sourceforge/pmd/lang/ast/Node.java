@@ -5,7 +5,7 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.List;
 
 import net.sourceforge.pmd.dfa.DataFlowNode;
-import net.sourceforge.pmd.symboltable.Scope;
+import net.sourceforge.pmd.lang.java.symboltable.Scope;
 
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
@@ -71,10 +71,6 @@ public interface Node {
     int getEndLine();
 
     int getEndColumn();
-
-    Scope getScope();
-
-    void setScope(Scope scope);
 
     DataFlowNode getDataFlowNode();
 

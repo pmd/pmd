@@ -5,7 +5,7 @@ package test.net.sourceforge.pmd.symboltable;
 
 import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.symboltable.TypeSet;
+import net.sourceforge.pmd.lang.java.symboltable.TypeSet;
 
 import org.junit.Test;
 

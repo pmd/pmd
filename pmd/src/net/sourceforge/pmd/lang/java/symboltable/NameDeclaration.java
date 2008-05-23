@@ -1,12 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.symboltable;
+package net.sourceforge.pmd.lang.java.symboltable;
 
-import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 public interface NameDeclaration {
-    Node getNode();
+    JavaNode getNode();
 
     String getImage();
 

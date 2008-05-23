@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**

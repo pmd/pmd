@@ -18,9 +18,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
 import net.sourceforge.pmd.properties.IntegerProperty;
-import net.sourceforge.pmd.symboltable.ClassScope;
 
 
 /**
@@ -131,7 +132,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         }
         //if the field is of any type other than the class type
         //increment the count
-        ClassScope clzScope = nameNode.getScope().getEnclosingClassScope();
+        ClassScope clzScope = ((JavaNode)nameNode).getScope().getEnclosingClassScope();
         if (!clzScope.getClassName().equals(variableType) && (!this.filterTypes(variableType)) && !this.typesFoundSoFar.contains(variableType)) {
             couplingCount++;
             typesFoundSoFar.add(variableType);

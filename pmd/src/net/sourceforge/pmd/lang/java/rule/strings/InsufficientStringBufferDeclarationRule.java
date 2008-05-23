@@ -24,9 +24,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 /**
  * This rule finds StringBuffers which may have been pre-sized incorrectly

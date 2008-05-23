@@ -8,8 +8,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.symboltable.NameFinder;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.NameFinder;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 
 import org.junit.Test;
 

@@ -10,9 +10,10 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 public class UnusedFormalParameterRule extends AbstractJavaRule {
 
@@ -34,7 +35,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     private void check(Node node, Object data) {
         Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
         if (parent instanceof ASTClassOrInterfaceDeclaration && !((ASTClassOrInterfaceDeclaration) parent).isInterface()) {
-            Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getVariableDeclarations();
+            Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((JavaNode)node).getScope().getVariableDeclarations();
             for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
                 VariableNameDeclaration nameDecl = entry.getKey();
                 if (actuallyUsed(nameDecl, entry.getValue())) {

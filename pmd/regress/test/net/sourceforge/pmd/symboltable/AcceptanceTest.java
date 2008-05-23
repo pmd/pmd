@@ -18,8 +18,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.symboltable.Scope;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.Scope;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 import org.junit.Ignore;
 import org.junit.Test;

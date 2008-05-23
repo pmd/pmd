@@ -8,9 +8,9 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.Scope;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.Scope;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 public class LocalVariableCouldBeFinalRule extends AbstractOptimizationRule {
 

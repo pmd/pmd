@@ -91,17 +91,18 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+import net.sourceforge.pmd.lang.java.symboltable.LocalScope;
+import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.Scope;
+import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.xpath.Initializer;
-import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
-import net.sourceforge.pmd.symboltable.ClassScope;
-import net.sourceforge.pmd.symboltable.LocalScope;
-import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.symboltable.MethodScope;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.Scope;
-import net.sourceforge.pmd.symboltable.SourceFileScope;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.util.NumericConstants;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -248,8 +249,8 @@ public class Designer implements ClipboardOwner {
 	}
 
 	public Scope getScope() {
-	    if (node != null) {
-		return node.getScope();
+	    if (node != null && node instanceof JavaNode) {
+		return ((JavaNode)node).getScope();
 	    }
 	    return null;
 	}

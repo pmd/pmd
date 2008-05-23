@@ -11,11 +11,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.symboltable.LocalScope;
-import net.sourceforge.pmd.symboltable.MethodScope;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.LocalScope;
+import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
+import net.sourceforge.pmd.lang.java.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 import org.junit.Test;
 

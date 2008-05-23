@@ -37,10 +37,10 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
+import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
-import net.sourceforge.pmd.symboltable.SourceFileScope;
 
 import org.junit.Before;
 import org.junit.Test;

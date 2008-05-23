@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.java.rule;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 
 //FUTURE This is not referenced by any RuleSet?
 public class SymbolTableTestRule extends AbstractJavaRule {

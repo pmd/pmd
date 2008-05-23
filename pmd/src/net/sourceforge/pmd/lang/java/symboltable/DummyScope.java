@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.symboltable;
+package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.Collections;
 import java.util.List;

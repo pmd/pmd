@@ -16,9 +16,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.AccessNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.symboltable.ClassScope;
-import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 
 public class UnusedPrivateMethodRule extends AbstractJavaRule {
 

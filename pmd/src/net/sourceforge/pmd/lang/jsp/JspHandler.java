@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.jsp.ast.DumpFacade;
 import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.jsp.rule.JspRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.symboltable.JspSymbolFacade;
 
 /**
  * Implementation of LanguageVersionHandler for the JSP parser.
@@ -41,7 +40,7 @@ public class JspHandler implements LanguageVersionHandler {
     }
 
     public VisitorStarter getSymbolFacade() {
-	return new JspSymbolFacade();
+	return VisitorStarter.DUMMY;
     }
 
     public VisitorStarter getTypeResolutionFacade(ClassLoader classLoader) {

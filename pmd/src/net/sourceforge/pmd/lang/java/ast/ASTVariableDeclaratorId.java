@@ -5,8 +5,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
 

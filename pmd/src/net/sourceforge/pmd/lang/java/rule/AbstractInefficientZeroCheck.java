@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTRelationalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 
 /**
  * This is an abstract rule for patterns which compare a method invocation to 0.

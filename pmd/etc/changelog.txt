@@ -32,7 +32,6 @@ TODO - Release blockers - Must implement before this release can be finished
    o Need to refactor the regression test packages to reflect new packaging.
    o Rework these packages to exist with the net.sourceforge.pmd.lang.* hierarchy:
         net.sourceforge.pmd.dfa
-        net.sourceforge.pmd.symboltables
         net.sourceforge.pmd.properties
    o Remove the type resolution specific rules.  Merge these back into the
      standard rules.  In general, a Rule should use TR when it can, and fall
@@ -159,6 +158,11 @@ The following is relatively complete list of the major changes (this may not be
 	   Renamed - net.sourceforge.pmd.dfa.IDataFlowNode to net.sourceforge.pmd.dfa.DataFlowNode   
 	   Renamed - net.sourceforge.pmd.dfa.DataFlowNode to net.sourceforge.pmd.dfa.AbstractDataFlowNode
 	   Added - net.sourceforge.pmd.ast.JavaDataFlowNode
+
+   API Change - Generalize Symbol Table treatement
+	   Deleted - net.sourceforge.pmd.symboltable.JspSymbolFacade
+	   Deleted - net.sourceforge.pmd.symboltable.JspScopeAndDeclarationFinder
+	   Renamed - net.sourceforge.pmd.symboltable.* to net.sourceforge.pmd.lang.java.symboltable.*
 
    API Change - Generalize Type Resolution treatment
 	   Renamed - net.sourceforge.pmd.typeresolution.* to net.sourceforge.pmd.lang.java.typeresolution.*

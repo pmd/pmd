@@ -2,7 +2,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.NameDeclaration;
 
 public class ASTName extends AbstractJavaTypeNode {
     public ASTName(int id) {

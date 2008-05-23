@@ -1,10 +1,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.AbstractNode;
+import net.sourceforge.pmd.lang.java.symboltable.Scope;
 
 public abstract class AbstractJavaNode extends AbstractNode implements JavaNode {
 
     protected JavaParser parser;
+    private Scope scope;
 
     public AbstractJavaNode(int id) {
         super(id);
@@ -51,7 +53,18 @@ public abstract class AbstractJavaNode extends AbstractNode implements JavaNode 
         }
         return data;
     }
-    
+
+    public Scope getScope() {
+	if (scope == null) {
+	    return ((JavaNode)parent).getScope();
+	}
+	return scope;
+    }
+
+    public void setScope(Scope scope) {
+	this.scope = scope;
+    }
+
     public String toString() {
         return JavaParserTreeConstants.jjtNodeName[id];
     }

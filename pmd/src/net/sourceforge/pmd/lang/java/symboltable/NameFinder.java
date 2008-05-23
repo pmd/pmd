@@ -1,18 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.symboltable;
+package net.sourceforge.pmd.lang.java.symboltable;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 public class NameFinder {
 
@@ -26,7 +26,7 @@ public class NameFinder {
             add(new NameOccurrence(prefix, "this"));
         }
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-            checkForNameChild(node.jjtGetChild(i));
+            checkForNameChild((JavaNode)node.jjtGetChild(i));
         }
     }
 
@@ -34,7 +34,7 @@ public class NameFinder {
         return names;
     }
 
-    private void checkForNameChild(Node node) {
+    private void checkForNameChild(JavaNode node) {
         if (node.getImage() != null) {
             add(new NameOccurrence(node, node.getImage()));
         }

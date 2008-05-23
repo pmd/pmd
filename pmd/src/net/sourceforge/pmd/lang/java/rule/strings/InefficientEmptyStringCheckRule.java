@@ -2,7 +2,7 @@ package net.sourceforge.pmd.lang.java.rule.strings;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.rule.AbstractInefficientZeroCheck;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 
 /**
  * This rule finds code which inefficiently determines empty strings. This code

@@ -7,7 +7,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.symboltable.MethodScope;
+import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
 
 public class AvoidCallingFinalizeRule extends AbstractJavaRule {
 

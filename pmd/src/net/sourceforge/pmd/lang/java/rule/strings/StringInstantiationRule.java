@@ -9,9 +9,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.symboltable.NameDeclaration;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
 
 public class StringInstantiationRule extends AbstractJavaRule {
 

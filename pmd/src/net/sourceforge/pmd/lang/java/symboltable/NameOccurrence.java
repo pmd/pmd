@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.symboltable;
+package net.sourceforge.pmd.lang.java.symboltable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
@@ -13,10 +13,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTPreIncrementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 public class NameOccurrence {
 
-    private Node location;
+    private JavaNode location;
     private String image;
     private NameOccurrence qualifiedName;
 
@@ -29,7 +30,7 @@ public class NameOccurrence {
     private final static String THIS_DOT = "this.";
     private final static String SUPER_DOT = "super.";
 
-    public NameOccurrence(Node location, String image) {
+    public NameOccurrence(JavaNode location, String image) {
         this.location = location;
         this.image = image;
     }
@@ -62,7 +63,7 @@ public class NameOccurrence {
         return qualifiedName != null;
     }
 
-    public Node getLocation() {
+    public JavaNode getLocation() {
         return location;
     }
 

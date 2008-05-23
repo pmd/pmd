@@ -12,10 +12,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.DumpFacade;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
+import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
 import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
-import net.sourceforge.pmd.symboltable.SymbolFacade;
 
 /**
  * Implementation of LanguageVersionHandler for the Java AST. It uses anonymous classes

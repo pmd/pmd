@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.rule.strings;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
 
 public class StringToStringRule extends AbstractJavaRule {
 

@@ -12,16 +12,16 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
-import net.sourceforge.pmd.symboltable.ClassNameDeclaration;
-import net.sourceforge.pmd.symboltable.ClassScope;
-import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
-import net.sourceforge.pmd.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.symboltable.ClassNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 import org.junit.Test;
 public class ClassScopeTest extends STBBaseTst {
@@ -53,7 +53,7 @@ public class ClassScopeTest extends STBBaseTst {
     @Test
     public void testCantContainsSuperToString() {
         ClassScope s = new ClassScope("Foo");
-        Node node = new DummyJavaNode(1);
+        JavaNode node = new DummyJavaNode(1);
         node.setImage("super.toString");
         assertFalse(s.contains(new NameOccurrence(node, node.getImage())));
     }
@@ -65,7 +65,7 @@ public class ClassScopeTest extends STBBaseTst {
         node.setImage("X");
         s.addDeclaration(new VariableNameDeclaration(node));
 
-        Node node2 = new DummyJavaNode(2);
+        JavaNode node2 = new DummyJavaNode(2);
         node2.setImage("Foo.X");
         assertTrue(s.contains(new NameOccurrence(node2, node2.getImage())));
     }

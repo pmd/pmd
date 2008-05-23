@@ -9,9 +9,9 @@ import java.util.Set;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
-import net.sourceforge.pmd.symboltable.ClassScope;
-import net.sourceforge.pmd.symboltable.MethodNameDeclaration;
-import net.sourceforge.pmd.symboltable.NameOccurrence;
+import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
+import net.sourceforge.pmd.lang.java.symboltable.MethodNameDeclaration;
+import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 
 import org.junit.Test;
 
