@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
-import net.sourceforge.pmd.properties.StringProperty;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 import org.junit.Test;
 public class AbstractRuleTest {

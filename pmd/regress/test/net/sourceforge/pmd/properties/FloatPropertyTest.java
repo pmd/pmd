@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.properties.FloatProperty;
+import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
 
 /**
  */

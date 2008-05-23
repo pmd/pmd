@@ -4,13 +4,13 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.properties.BooleanProperty;
-import net.sourceforge.pmd.properties.CharacterProperty;
-import net.sourceforge.pmd.properties.EnumeratedProperty;
-import net.sourceforge.pmd.properties.FloatProperty;
-import net.sourceforge.pmd.properties.IntegerProperty;
-import net.sourceforge.pmd.properties.StringProperty;
-import net.sourceforge.pmd.properties.TypeProperty;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
+import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
+import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
+import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
+import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
 
 class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
 

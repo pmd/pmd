@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.properties.BooleanProperty;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 /**
  * @author Brian Remedios

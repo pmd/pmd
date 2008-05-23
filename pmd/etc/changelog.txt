@@ -22,8 +22,6 @@ TODO - Release blockers - Must implement before this release can be finished
    o Do we have a rule to style check for multiple declarations and chained
      assignments? (e.g. int a, b;  int a = b = x;)
    o Need to refactor the regression test packages to reflect new packaging.
-   o Rework these packages to exist with the net.sourceforge.pmd.lang.* hierarchy:
-        net.sourceforge.pmd.properties
    o Remove the type resolution specific rules.  Merge these back into the
      standard rules.  In general, a Rule should use TR when it can, and fall
      back on non-TR approach otherwise.  No need for separate Rules for TR/non-TR.
@@ -174,6 +172,9 @@ The following is relatively complete list of the major changes (this may not be
 
    API Change - Generalize Type Resolution treatment
 	   Renamed - net.sourceforge.pmd.typeresolution.* to net.sourceforge.pmd.lang.java.typeresolution.*
+	   
+	API Change - Generalize Property Descriptor treatment
+	   Renamed - net.sourceforge.pmd.properties.* to net.sourceforge.pmd.lang.rule.properties.*
 	   
 	API Change - Generalize AST treatment
 	   Added - net.sourceforge.pmd.lang.ast.Node (interface extracted from old Node/SimpleNode)

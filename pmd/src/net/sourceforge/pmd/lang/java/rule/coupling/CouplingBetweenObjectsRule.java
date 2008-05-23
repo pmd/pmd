@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.ClassScope;
-import net.sourceforge.pmd.properties.IntegerProperty;
+import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 
 /**

@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.properties.CharacterProperty;
+import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
 
 /**
  */

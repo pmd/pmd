@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.properties.EnumeratedProperty;
+import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 
 /**
  */

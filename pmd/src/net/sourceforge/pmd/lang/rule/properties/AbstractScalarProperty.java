@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.properties;
+package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.util.StringUtil;
 

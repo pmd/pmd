@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
-import net.sourceforge.pmd.properties.TypeProperty;
+import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
 
 /**
  */

@@ -5,7 +5,6 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.List;
 
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
-import net.sourceforge.pmd.lang.java.symboltable.Scope;
 
 import org.jaxen.JaxenException;
 import org.w3c.dom.Document;
