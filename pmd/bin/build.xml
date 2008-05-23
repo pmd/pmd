@@ -80,7 +80,7 @@
 		</jar>
 
 		<jar 	jarfile="${dir.lib}/pmd-test-${version}.jar"
-			includes="test/net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
+			includes="test/net/sourceforge/pmd/**/**"
 			excludes="test/net/sourceforge/pmd/testframework/**/**"
 			basedir="${dir.build}" />
 	</target>
@@ -131,10 +131,6 @@
 		<retroweaver inputjar="${dir.lib}/pmd-${version}.jar" outputjar="${dir.lib14}/pmd14-${version}.jar" target="1.4" failonerror="true" verify="true">
 			<classpath refid="retroweaverclasspath" />
 		</retroweaver>
-
-		<jar jarfile="${dir.lib}/pmd-test-${version}.jar"
-			includes="test/net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
-			excludes="test/net/sourceforge/pmd/testframework/**/**" basedir="${dir.build}" />
 
 		<retroweaver inputjar="${dir.lib}/pmd-test-${version}.jar" outputjar="${dir.lib14}/pmd14-test-${version}.jar" target="1.4" failonerror="true" verify="true">
 			<classpath refid="retroweaverclasspath" />
