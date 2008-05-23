@@ -215,15 +215,29 @@
         <directory>${basedir}</directory>
         <includes>
           <include>rulesets/**/*.xml</include>
-          <include>rulesets/*.properties</include>
+          <include>rulesets/*.properties</include>        
           <include>etc/pmd-nicerhtml.xsl</include>
         </includes>
+      </resource>
+      <resource>
+      	<directory>${basedir}/etc</directory>
+      	<includes>
+            <include>ruleset.dtd</include>          
+        	<include>ruleset_xml_schema.xsd</include>        	
+      	</includes>
       </resource>
       <resource>
         <directory>${basedir}/src</directory>
         <includes>
           <include>**/*.properties</include>
         </includes>
+      </resource>
+      <resource>
+      		<!--  FIXME: find the appropriate mvn property :${project.build.target}/test-classes ... -->
+         	<directory>target/test-classes</directory>
+         	<includes>
+         		<include>test/net/sourceforge/pmd/testframework/**/**</include>
+         	</includes>
       </resource>
     </resources>
     <testResources>
