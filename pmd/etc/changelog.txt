@@ -33,8 +33,10 @@ TODO - Release blockers - Must implement before this release can be finished
    o Rework these packages to exist with the net.sourceforge.pmd.lang.* hierarchy:
         net.sourceforge.pmd.dfa
         net.sourceforge.pmd.symboltables
-        net.sourceforge.pmd.typeresolution
         net.sourceforge.pmd.properties
+   o Remove the type resolution specific rules.  Merge these back into the
+     standard rules.  In general, a Rule should use TR when it can, and fall
+     back on non-TR approach otherwise.  No need for separate Rules for TR/non-TR.
    o Need a JUnit test to check for "dead" Rules, that is those not used by any RuleSet.
    o Rule JUnit tests should verify the Test class follows expected naming
      conventions just like the Rules need to.
@@ -157,6 +159,9 @@ The following is relatively complete list of the major changes (this may not be
 	   Renamed - net.sourceforge.pmd.dfa.IDataFlowNode to net.sourceforge.pmd.dfa.DataFlowNode   
 	   Renamed - net.sourceforge.pmd.dfa.DataFlowNode to net.sourceforge.pmd.dfa.AbstractDataFlowNode
 	   Added - net.sourceforge.pmd.ast.JavaDataFlowNode
+
+   API Change - Generalize Type Resolution treatment
+	   Renamed - net.sourceforge.pmd.typeresolution.* to net.sourceforge.pmd.lang.java.typeresolution.*
 	   
 	API Change - Generalize AST treatment
 	   Added - net.sourceforge.pmd.lang.ast.Node (interface extracted from old Node/SimpleNode)
@@ -176,7 +181,7 @@ The following is relatively complete list of the major changes (this may not be
 
 New features:
 
-New Language 'xml' added, for writting XPathRules against XML documents
+New Language 'xml' added, for writing XPathRules against XML documents
 
 Other changes:
 

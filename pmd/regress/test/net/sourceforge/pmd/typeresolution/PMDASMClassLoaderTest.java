@@ -2,7 +2,7 @@ package test.net.sourceforge.pmd.typeresolution;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import net.sourceforge.pmd.typeresolution.PMDASMClassLoader;
+import net.sourceforge.pmd.lang.java.typeresolution.PMDASMClassLoader;
 
 import org.junit.Before;
 import org.junit.Test;

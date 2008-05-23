@@ -27,7 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
-import net.sourceforge.pmd.typeresolution.ClassTypeResolver;
+import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
 import org.jaxen.JaxenException;
 import org.junit.Before;

@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 @SuppressWarnings("PMD.AvoidCatchingThrowable")
 // Don't think we can otherwise here...

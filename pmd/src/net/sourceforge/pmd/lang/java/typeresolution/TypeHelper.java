@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.typeresolution;
+package net.sourceforge.pmd.lang.java.typeresolution;
 
 import java.util.Arrays;
 import java.util.List;

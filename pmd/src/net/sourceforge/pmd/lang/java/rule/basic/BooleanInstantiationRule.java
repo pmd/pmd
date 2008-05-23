@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.typeresolution.TypeHelper;
+import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
 /**
  * Avoid instantiating Boolean objects; you can reference Boolean.TRUE,

@@ -7,14 +7,14 @@
     xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
 
   <description>
-    These are rules which resolve java Class files for comparisson, as opposed to a String
+    These are rules which resolve java Class files for comparison, as opposed to a String
   </description>
 
 
     <rule name="LooseCoupling"
    	  since="3.9"
           message="Avoid using implementation types like ''{0}''; use the interface instead"
-          class="net.sourceforge.pmd.typeresolution.rules.LooseCoupling"
+          class="net.sourceforge.pmd.lang.java.typeresolution.rules.LooseCoupling"
           typeResolution="true"
           externalInfoUrl="http://pmd.sourceforge.net/rules/typeresolution.html#LooseCoupling">
       <description>
@@ -40,7 +40,7 @@ public class Bar {
     <rule name="CloneMethodMustImplementCloneable"
    	  since="3.9"
         message="clone() method should be implemented only if implementing Cloneable interface"
-        class="net.sourceforge.pmd.typeresolution.rules.CloneMethodMustImplementCloneable"
+        class="net.sourceforge.pmd.lang.java.typeresolution.rules.CloneMethodMustImplementCloneable"
         typeResolution="true"
           externalInfoUrl="http://pmd.sourceforge.net/rules/typeresolution.html#CloneMethodMustImplementCloneable">
         <description>
@@ -64,7 +64,7 @@ public class MyClass {
   <rule name="UnusedImports"
    	  since="4.0"
         message="Avoid unused imports such as ''{0}''"
-        class="net.sourceforge.pmd.typeresolution.rules.imports.UnusedImports"
+        class="net.sourceforge.pmd.lang.java.typeresolution.rules.imports.UnusedImports"
         typeResolution="true"
           externalInfoUrl="http://pmd.sourceforge.net/rules/typeresolution.html#UnusedImports">
     <description>
@@ -83,7 +83,7 @@ public class Foo {}
     <rule name="SignatureDeclareThrowsException"
    	  since="4.0"
          message="A method/constructor shouldn't explicitly throw java.lang.Exception"
-          class="net.sourceforge.pmd.typeresolution.rules.SignatureDeclareThrowsException"
+          class="net.sourceforge.pmd.lang.java.typeresolution.rules.SignatureDeclareThrowsException"
           externalInfoUrl="http://pmd.sourceforge.net/rules/typeresolution.html#SignatureDeclareThrowsException"
           typeResolution="true">
       <description>
@@ -91,7 +91,7 @@ It is unclear which exceptions that can be thrown from the methods.
 It might be difficult to document and understand the vague interfaces.
 Use either a class derived from RuntimeException or a checked exception.
 
-Junit classes are excluded.
+JUnit classes are excluded.
       </description>
       <priority>3</priority>
       <properties>

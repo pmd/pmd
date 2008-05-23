@@ -1,9 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.typeresolution;
+package net.sourceforge.pmd.lang.java.typeresolution;
 
-import net.sourceforge.pmd.typeresolution.visitors.PMDASMVisitor;
+import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
 
 import org.objectweb.asm.ClassReader;
 
