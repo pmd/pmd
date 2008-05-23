@@ -46,8 +46,11 @@ import net.sourceforge.pmd.lang.java.ast.ParseException;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.Benchmark;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
-import net.sourceforge.pmd.util.ConsoleLogHandler;
 import net.sourceforge.pmd.util.FileFinder;
+import net.sourceforge.pmd.util.datasource.DataSource;
+import net.sourceforge.pmd.util.datasource.FileDataSource;
+import net.sourceforge.pmd.util.datasource.ZipDataSource;
+import net.sourceforge.pmd.util.log.ConsoleLogHandler;
 
 public class PMD {
     public static final String EOL = System.getProperty("line.separator", "\n");

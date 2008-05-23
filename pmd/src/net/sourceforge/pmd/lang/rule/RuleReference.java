@@ -1,4 +1,4 @@
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**

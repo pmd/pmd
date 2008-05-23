@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd.util;
+package net.sourceforge.pmd.util.log;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -9,6 +9,7 @@ import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;

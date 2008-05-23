@@ -6,8 +6,8 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.Writer;
 
-import net.sourceforge.pmd.DataSource;
 import net.sourceforge.pmd.Report;
+import net.sourceforge.pmd.util.datasource.DataSource;
 
 public interface Renderer {
 

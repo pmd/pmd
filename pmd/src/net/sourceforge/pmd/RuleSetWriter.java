@@ -19,6 +19,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import net.sourceforge.pmd.lang.rule.RuleReference;
+
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;

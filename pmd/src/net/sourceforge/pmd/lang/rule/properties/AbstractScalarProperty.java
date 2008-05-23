@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.util.StringUtil;
@@ -7,9 +10,8 @@ import net.sourceforge.pmd.util.StringUtil;
  * If you can come up with a better name...
  * 
  * @author Brian Remedios
- * @version $Revision$
  */
-public abstract class AbstractScalarProperty extends AbstractPMDProperty {
+public abstract class AbstractScalarProperty extends AbstractProperty {
 
 	/**
 	 * Constructor for AbstractScalarProperty.

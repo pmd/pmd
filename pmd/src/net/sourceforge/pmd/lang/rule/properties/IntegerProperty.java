@@ -1,11 +1,12 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.rule.properties;
-
 
 /**
  * Defines a datatype that supports the Integer property values.
  * 
  * @author Brian Remedios
- * @version $Revision$
  */
 public class IntegerProperty extends AbstractScalarProperty {
 

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.util.StringUtil;
@@ -6,9 +9,8 @@ import net.sourceforge.pmd.util.StringUtil;
  * Defines a property type that supports Character values.
  * 
  * @author Brian Remedios
- * @version $Revision$
  */
-public class CharacterProperty extends AbstractPMDProperty {
+public class CharacterProperty extends AbstractProperty {
 
 	/**
 	 * Constructor for CharacterProperty.

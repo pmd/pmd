@@ -1,9 +1,9 @@
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
 
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.rule.AbstractRule;
 
 /**
  * This is a Rule implementation which can be used in scenarios where an actual

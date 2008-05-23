@@ -1,4 +1,4 @@
-package net.sourceforge.pmd.util;
+package net.sourceforge.pmd.util.log;
 
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;

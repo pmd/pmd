@@ -1,11 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
 import java.util.Properties;
 
+import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**

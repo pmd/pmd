@@ -6,13 +6,13 @@ package test.net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.MockRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.RuleViolationComparator;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
+import net.sourceforge.pmd.lang.rule.MockRule;
 
 import org.junit.Ignore;
 import org.junit.Test;

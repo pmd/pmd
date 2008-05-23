@@ -31,13 +31,13 @@ import javax.xml.parsers.SAXParserFactory;
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.RuleReference;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSetWriter;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 import net.sourceforge.pmd.util.ResourceLoader;
 

@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.Map;
@@ -11,9 +14,8 @@ import net.sourceforge.pmd.util.StringUtil;
  * obtain the values.
  * 
  * @author Brian Remedios
- * @version $Revision$
  */
-public class EnumeratedProperty<E> extends AbstractPMDProperty {
+public class EnumeratedProperty<E> extends AbstractProperty {
 
 	private Map<String, E>	choicesByLabel;
 	private Map<E, String>	labelsByChoice;

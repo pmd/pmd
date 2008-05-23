@@ -11,6 +11,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.Benchmark;
 import net.sourceforge.pmd.util.filter.Filter;
 import net.sourceforge.pmd.util.filter.Filters;

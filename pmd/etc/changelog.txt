@@ -60,6 +60,8 @@ TODO - Release blockers - Must implement before this release can be finished
    o Need to refactor the test framework to more readily support for multiple
      Languages (too Java centric at the moment).  Then, need start adding tests
      for the new XML language.
+   o Rework RuleReference to be done via Rule.isReference() instead of instanceof RuleReference?
+   o Do something with ExternalRuleID, this should be inner class of RuleSetFactory?
 
 ---
 
@@ -175,6 +177,7 @@ The following is relatively complete list of the major changes (this may not be
 	   
 	API Change - Generalize Property Descriptor treatment
 	   Renamed - net.sourceforge.pmd.properties.* to net.sourceforge.pmd.lang.rule.properties.*
+	   Renamed - net.sourceforge.pmd.properties.AbstractPMDProperty to net.sourceforge.pmd.lang.rule.properties.AbstractProperty
 	   
 	API Change - Generalize AST treatment
 	   Added - net.sourceforge.pmd.lang.ast.Node (interface extracted from old Node/SimpleNode)
@@ -191,6 +194,14 @@ The following is relatively complete list of the major changes (this may not be
 	   Deleted - net.sourceforge.pmd.ast.AccessNodeInterface
 	   Deleted - net.sourceforge.pmd.jsp.ast.Node
 	   Deleted - net.sourceforge.pmd.jsp.ast.SimpleNode
+
+	API Change - General code reorganization/cleanup
+	   Renamed - net.sourceforge.pmd.AbstractDelegateRule to net.sourceforge.pmd.lang.rule.AbstractDelegateRule
+	   Renamed - net.sourceforge.pmd.MockRule to net.sourceforge.pmd.lang.rule.MockRule
+	   Renamed - net.sourceforge.pmd.RuleReference to net.sourceforge.pmd.lang.rule.RuleReference
+	   Renamed - net.sourceforge.pmd.util.AntLogHandler to net.sourceforge.pmd.util.log.AntLogHandler
+	   Renamed - net.sourceforge.pmd.util.ConsoleLogHandler to net.sourceforge.pmd.util.log.ConsoleLogHandler
+	   Renamed - net.sourceforge.pmd.util.PmdLogFormatter to net.sourceforge.pmd.util.log.PmdLogFormatter
 
 New features:
 

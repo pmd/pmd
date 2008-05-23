@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.ResourceLoader;
 
 import org.w3c.dom.Document;

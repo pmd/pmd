@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.lang.reflect.Method;
@@ -5,7 +8,7 @@ import java.lang.reflect.Method;
 /**
  * @author Brian Remedios
  */
-public class MethodProperty extends AbstractPMDProperty {
+public class MethodProperty extends AbstractProperty {
 
     /**
      * Constructor for MethodProperty.

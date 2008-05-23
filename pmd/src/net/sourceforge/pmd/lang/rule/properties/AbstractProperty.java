@@ -1,15 +1,16 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 
-
 /**
  * 
  * @author Brian Remedios
- * @version $Revision$
  */
-public abstract class AbstractPMDProperty implements PropertyDescriptor {
+public abstract class AbstractProperty implements PropertyDescriptor {
 
 	private String	name;
 	private String	description;
@@ -27,7 +28,7 @@ public abstract class AbstractPMDProperty implements PropertyDescriptor {
 	 * @param theDefault Object
 	 * @param theUIOrder float
 	 */
-	protected AbstractPMDProperty(String theName, String theDescription, Object theDefault, float theUIOrder) {
+	protected AbstractProperty(String theName, String theDescription, Object theDefault, float theUIOrder) {
 		name = theName;
 		description = theDescription;
 		defaultValue = theDefault;

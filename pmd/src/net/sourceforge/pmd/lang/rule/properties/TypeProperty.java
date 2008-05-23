@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.util.ClassUtil;
@@ -6,7 +9,6 @@ import net.sourceforge.pmd.util.ClassUtil;
  * Defines a property that supports class types, even for primitive values!
  * 
  * @author Brian Remedios
- * @version $Revision$
  */
 public class TypeProperty extends StringProperty {
 

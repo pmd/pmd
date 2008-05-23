@@ -1,3 +1,6 @@
+/**
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
 package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.util.StringUtil;
@@ -7,9 +10,8 @@ import net.sourceforge.pmd.util.StringUtil;
  * When capturing multiple values, all strings must be filtered by the delimiter character.
  * 
  * @author Brian Remedios
- * @version $Revision$
  */
-public class StringProperty extends AbstractPMDProperty {
+public class StringProperty extends AbstractProperty {
 		
 	private int preferredRowCount;
 	

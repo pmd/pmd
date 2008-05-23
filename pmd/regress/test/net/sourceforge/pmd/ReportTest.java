@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.MockRule;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.ReportListener;
@@ -24,6 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
+import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;

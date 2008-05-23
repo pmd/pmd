@@ -3,9 +3,9 @@ package test.net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import junit.framework.JUnit4TestAdapter;
-import net.sourceforge.pmd.MockRule;
-import net.sourceforge.pmd.RuleReference;
 import net.sourceforge.pmd.RuleSetReference;
+import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 
 import org.junit.Test;
 
