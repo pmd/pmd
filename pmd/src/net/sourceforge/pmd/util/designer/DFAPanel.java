@@ -19,9 +19,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import net.sourceforge.pmd.dfa.DataFlowNode;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.dfa.VariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.util.LineGetter;
 import net.sourceforge.pmd.util.StringUtil;

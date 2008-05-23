@@ -5,11 +5,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.dfa.DataFlowNode;
-import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
-import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
-import net.sourceforge.pmd.dfa.pathfinder.Executable;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.dfa.VariableAccess;
+import net.sourceforge.pmd.lang.dfa.pathfinder.CurrentPath;
+import net.sourceforge.pmd.lang.dfa.pathfinder.DAAPathFinder;
+import net.sourceforge.pmd.lang.dfa.pathfinder.Executable;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
 //FUTURE This is not referenced by any RuleSet?

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.dfa.report.ReportTree;
+import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 import net.sourceforge.pmd.stat.Metric;
 import net.sourceforge.pmd.util.NumericConstants;
 

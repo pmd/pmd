@@ -2,7 +2,7 @@ package net.sourceforge.pmd.lang.java;
 
 import java.io.Writer;
 
-import net.sourceforge.pmd.dfa.DataFlowFacade;
+import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.ast.xpath.AbstractASTXPathHandler;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.DumpFacade;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
@@ -24,6 +25,10 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public abstract class AbstractJavaHandler implements LanguageVersionHandler {
+
+    public DataFlowHandler getDataFlowHandler() {
+	return new JavaDataFlowHandler();
+    }
 
     public XPathHandler getXPathHandler() {
 	return new AbstractASTXPathHandler() {
@@ -40,7 +45,7 @@ public abstract class AbstractJavaHandler implements LanguageVersionHandler {
     public VisitorStarter getDataFlowFacade() {
 	return new VisitorStarter() {
 	    public void start(Node rootNode) {
-		new DataFlowFacade().initializeWith((ASTCompilationUnit) rootNode);
+		new DataFlowFacade().initializeWith(getDataFlowHandler(), (ASTCompilationUnit) rootNode);
 	    }
 	};
     }

@@ -2,6 +2,7 @@ package net.sourceforge.pmd.lang.jsp;
 
 import java.io.Writer;
 
+import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.VisitorStarter;
@@ -19,6 +20,10 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public class JspHandler implements LanguageVersionHandler {
+
+    public DataFlowHandler getDataFlowHandler() {
+	return DataFlowHandler.DUMMY;
+    }
 
     public XPathHandler getXPathHandler() {
 	return new AbstractASTXPathHandler() {

@@ -12,13 +12,12 @@ import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.dfa.DaaRuleViolation;
-import net.sourceforge.pmd.dfa.DataFlowNode;
-import net.sourceforge.pmd.dfa.pathfinder.CurrentPath;
-import net.sourceforge.pmd.dfa.pathfinder.DAAPathFinder;
-import net.sourceforge.pmd.dfa.pathfinder.Executable;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.dfa.VariableAccess;
+import net.sourceforge.pmd.lang.dfa.pathfinder.CurrentPath;
+import net.sourceforge.pmd.lang.dfa.pathfinder.DAAPathFinder;
+import net.sourceforge.pmd.lang.dfa.pathfinder.Executable;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.Writer;
 
 import net.sourceforge.pmd.Report;
-import net.sourceforge.pmd.dfa.report.ReportHTMLPrintVisitor;
-import net.sourceforge.pmd.dfa.report.ReportTree;
+import net.sourceforge.pmd.lang.dfa.report.ReportHTMLPrintVisitor;
+import net.sourceforge.pmd.lang.dfa.report.ReportTree;
 
 public class YAHTMLRenderer extends AbstractRenderer {
 

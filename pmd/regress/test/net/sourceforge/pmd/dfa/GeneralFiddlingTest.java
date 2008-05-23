@@ -4,8 +4,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.dfa.DataFlowNode;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.dfa.VariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 

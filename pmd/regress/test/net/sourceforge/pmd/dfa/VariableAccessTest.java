@@ -1,7 +1,7 @@
 package test.net.sourceforge.pmd.dfa;
 
 import static org.junit.Assert.assertEquals;
-import net.sourceforge.pmd.dfa.variableaccess.VariableAccess;
+import net.sourceforge.pmd.lang.dfa.VariableAccess;
 
 import org.junit.Test;
 public class VariableAccessTest {

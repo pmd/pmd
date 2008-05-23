@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedList;
 
-import net.sourceforge.pmd.dfa.DataFlowNode;
-import net.sourceforge.pmd.dfa.NodeType;
-import net.sourceforge.pmd.dfa.StartOrEndDataFlowNode;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.dfa.NodeType;
+import net.sourceforge.pmd.lang.dfa.StartOrEndDataFlowNode;
 
 import org.junit.Test;
 

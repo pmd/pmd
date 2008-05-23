@@ -3,15 +3,16 @@ package test.net.sourceforge.pmd.dfa;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.PMD;
-import net.sourceforge.pmd.dfa.DataFlowNode;
-import net.sourceforge.pmd.dfa.NodeType;
-import net.sourceforge.pmd.dfa.StatementAndBraceFinder;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.dfa.NodeType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.dfa.StatementAndBraceFinder;
 
 import org.junit.Test;
 
@@ -66,7 +67,7 @@ public class StatementAndBraceFinderTest extends ParserTst {
 
     @Test(expected = RuntimeException.class)
     public void testOnlyWorksForMethodsAndConstructors() {
-        StatementAndBraceFinder sbf = new StatementAndBraceFinder();
+        StatementAndBraceFinder sbf = new StatementAndBraceFinder(Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler());
         sbf.buildDataFlowFor(new ASTMethodDeclaration(1));
         sbf.buildDataFlowFor(new ASTConstructorDeclaration(1));
         sbf.buildDataFlowFor(new ASTCompilationUnit(1));

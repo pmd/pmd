@@ -14,6 +14,11 @@ import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 public interface LanguageVersionHandler {
+
+    /**
+     * Get the DataFlowHandler.
+     */
+    DataFlowHandler getDataFlowHandler();
     
     /**
      * Get the XPathHandler.

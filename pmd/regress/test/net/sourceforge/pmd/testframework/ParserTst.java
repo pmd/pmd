@@ -13,11 +13,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParserVisitor;
+import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 
 public abstract class ParserTst {
@@ -72,7 +72,7 @@ public abstract class ParserTst {
         SymbolFacade sf = new SymbolFacade();
         sf.initializeWith(cu);
         DataFlowFacade dff = new DataFlowFacade();
-        dff.initializeWith(cu);
+        dff.initializeWith(Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler(), cu);
         return (List<E>) coll.getCollection();
     }
 
@@ -81,7 +81,7 @@ public abstract class ParserTst {
         JavaParserVisitor jpv = (JavaParserVisitor) Proxy.newProxyInstance(JavaParserVisitor.class.getClassLoader(), new Class[]{JavaParserVisitor.class}, new Collector<ASTCompilationUnit>(ASTCompilationUnit.class));
         jpv.visit(cu, null);
         new SymbolFacade().initializeWith(cu);
-        new DataFlowFacade().initializeWith(cu);
+        new DataFlowFacade().initializeWith(Language.JAVA.getDefaultVersion().getLanguageVersionHandler().getDataFlowHandler(), cu);
         return cu;
     }
     

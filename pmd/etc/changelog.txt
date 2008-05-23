@@ -4,12 +4,6 @@
 	o SimpleNode.dump() needs to be implemented as a Visitor
 
 TODO - Release blockers - Must implement before this release can be finished
-   o We need to figure out how to allow PMD to introspect the capabilities of
-     each LanguageVersion.  Can we parse the language? Can we use DFA?  Can we
-     use Type Resolution, etc.  Essentially introspection on the stuff on the
-     LanguageVersionHandler and related support classes.  This would be useful
-     to allow the PMD Rule Designer to drive its behavior without hard-coding
-     knowledge it rightly should not give a shit about.
    o Change RuleSets to not specify Language.  Move Language onto Rules.  This
      will allow mixed Language RuleSets.  Will also allow users to run multiple
      source files in a single PMD run using a single RuleSet (ie. PMD can sort
@@ -25,13 +19,10 @@ TODO - Release blockers - Must implement before this release can be finished
      handled Java 1.4.  Integrate CPD needs into core PMD where appropriate.
      Otherwise, drive CPD behavior based off of core PMD, instead of duplicating
      some logic.
-   o DFA needs a bunch of work yet to be abstracted further to support alternate
-     ASTs, very Java specific at this time.
    o Do we have a rule to style check for multiple declarations and chained
      assignments? (e.g. int a, b;  int a = b = x;)
    o Need to refactor the regression test packages to reflect new packaging.
    o Rework these packages to exist with the net.sourceforge.pmd.lang.* hierarchy:
-        net.sourceforge.pmd.dfa
         net.sourceforge.pmd.properties
    o Remove the type resolution specific rules.  Merge these back into the
      standard rules.  In general, a Rule should use TR when it can, and fall
@@ -155,9 +146,26 @@ The following is relatively complete list of the major changes (this may not be
 	   Added - net.sourceforge.pmd.lang.jsp.rule.JspRuleViolation
 
 	API Change - Generalize DFA treatment
-	   Renamed - net.sourceforge.pmd.dfa.IDataFlowNode to net.sourceforge.pmd.dfa.DataFlowNode   
-	   Renamed - net.sourceforge.pmd.dfa.DataFlowNode to net.sourceforge.pmd.dfa.AbstractDataFlowNode
-	   Added - net.sourceforge.pmd.ast.JavaDataFlowNode
+	   Renamed - net.sourceforge.pmd.dfa.IDataFlowNode to net.sourceforge.pmd.lang.dfa.DataFlowNode   
+	   Renamed - net.sourceforge.pmd.dfa.DataFlowNode to net.sourceforge.pmd.lang.dfa.AbstractDataFlowNode
+	   Renamed - net.sourceforge.pmd.dfa.Linker to net.sourceforge.pmd.lang.dfa.Linker
+	   Renamed - net.sourceforge.pmd.dfa.LinkerException to net.sourceforge.pmd.lang.dfa.LinkerException
+	   Renamed - net.sourceforge.pmd.dfa.NodeType to net.sourceforge.pmd.lang.dfa.NodeType
+	   Renamed - net.sourceforge.pmd.dfa.StackObject to net.sourceforge.pmd.lang.dfa.StackObject
+	   Renamed - net.sourceforge.pmd.dfa.SequenceChecker to net.sourceforge.pmd.lang.dfa.SequenceChecker
+	   Renamed - net.sourceforge.pmd.dfa.SequenceException to net.sourceforge.pmd.lang.dfa.SequenceException
+	   Renamed - net.sourceforge.pmd.dfa.StartOrEndDataFlowNode to net.sourceforge.pmd.lang.dfa.StartOrEndDataFlowNode
+	   Renamed - net.sourceforge.pmd.dfa.Structure to net.sourceforge.pmd.lang.dfa.Structure
+	   Renamed - net.sourceforge.pmd.dfa.variableaccess.VariableAccess to net.sourceforge.pmd.lang.dfa.VariableAccess
+	   Renamed - net.sourceforge.pmd.dfa.variableaccess.VariableAccessException to net.sourceforge.pmd.lang.dfa.VariableAccessException
+	   Renamed - net.sourceforge.pmd.dfa.pathfinder.* to net.sourceforge.pmd.lang.dfa.pathfinder.*
+	   Renamed - net.sourceforge.pmd.dfa.report.* to net.sourceforge.pmd.lang.dfa.report.*
+	   Renamed - net.sourceforge.pmd.dfa.DaaRuleViolation to net.sourceforge.pmd.lang.java.dfa.DaaRuleViolation
+	   Renamed - net.sourceforge.pmd.dfa.DataFlowFacade to net.sourceforge.pmd.lang.java.dfa.DataFlowFacade
+	   Renamed - net.sourceforge.pmd.dfa.StatementAndBraceFinder to net.sourceforge.pmd.lang.java.dfa.StatementAndBraceFinder
+	   Renamed - net.sourceforge.pmd.dfa.variableaccess.VariableAccessVisitor to net.sourceforge.pmd.lang.java.dfa.VariableAccessVisitor
+	   Added - net.sourceforge.pmd.lang.java.dfa.JavaDataFlowNode
+	   Added - net.sourceforge.pmd.lang.DataFlowHandler
 
    API Change - Generalize Symbol Table treatement
 	   Deleted - net.sourceforge.pmd.symboltable.JspSymbolFacade
