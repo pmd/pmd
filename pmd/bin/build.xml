@@ -81,6 +81,7 @@
 
 		<jar 	jarfile="${dir.lib}/pmd-test-${version}.jar"
 			includes="test/net/sourceforge/pmd/**/**,test/net/sourceforge/pmd/testframework/**/**"
+			excludes="test/net/sourceforge/pmd/testframework/**/**"
 			basedir="${dir.build}" />
 	</target>
 
