@@ -713,8 +713,7 @@ behavior with Javadoc.
                 </value>
             </property>
         </properties>
-        <example>
-        	<![CDATA[
+        <example><![CDATA[
 // Not really clear
 public class Foo
   public void bar(
@@ -723,12 +722,9 @@ public class Foo
       outRightOperand = inLeftOperand * outRightOperand;
   }
 }
- 
-        	]]>
-        </example>
-                <example>
-        	<![CDATA[
-// Far more usefull
+        ]]></example>
+        <example><![CDATA[
+// Far more useful
 /**
  * 
  * @param inLeftOperand, (purpose), not modified by method.
@@ -739,8 +735,7 @@ public void bar(
       int rightOperand) {
       outRightOperand = inLeftOperand * outRightOperand;
 }
-        	]]>
-        </example>
+        ]]></example>
 	</rule>
 
 </ruleset>
