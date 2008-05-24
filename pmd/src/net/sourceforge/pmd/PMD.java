@@ -51,6 +51,7 @@ import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.datasource.ZipDataSource;
 import net.sourceforge.pmd.util.log.ConsoleLogHandler;
+import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 public class PMD {
     public static final String EOL = System.getProperty("line.separator", "\n");

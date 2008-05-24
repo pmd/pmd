@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package net.sourceforge.pmd;
+package net.sourceforge.pmd.util.log;
 
 import java.util.logging.Handler;
 import java.util.logging.Level;

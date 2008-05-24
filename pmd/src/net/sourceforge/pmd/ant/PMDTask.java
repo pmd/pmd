@@ -25,7 +25,6 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSets;
-import net.sourceforge.pmd.ScopedLogHandlersManager;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -35,6 +34,7 @@ import net.sourceforge.pmd.util.ClasspathClassLoader;
 import net.sourceforge.pmd.util.datasource.DataSource;
 import net.sourceforge.pmd.util.datasource.FileDataSource;
 import net.sourceforge.pmd.util.log.AntLogHandler;
+import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;

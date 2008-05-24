@@ -199,6 +199,7 @@ The following is relatively complete list of the major changes (this may not be
 	   Renamed - net.sourceforge.pmd.AbstractDelegateRule to net.sourceforge.pmd.lang.rule.AbstractDelegateRule
 	   Renamed - net.sourceforge.pmd.MockRule to net.sourceforge.pmd.lang.rule.MockRule
 	   Renamed - net.sourceforge.pmd.RuleReference to net.sourceforge.pmd.lang.rule.RuleReference
+	   Renamed - net.sourceforge.pmd.ScopedLogHandlersManager to net.sourceforge.pmd.util.log.ScopedLogHandlersManager
 	   Renamed - net.sourceforge.pmd.util.AntLogHandler to net.sourceforge.pmd.util.log.AntLogHandler
 	   Renamed - net.sourceforge.pmd.util.ConsoleLogHandler to net.sourceforge.pmd.util.log.ConsoleLogHandler
 	   Renamed - net.sourceforge.pmd.util.PmdLogFormatter to net.sourceforge.pmd.util.log.PmdLogFormatter
