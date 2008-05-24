@@ -10,6 +10,7 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
     public void setUp() {
         addRule("controversial", "AssignmentInOperand");
         addRule("controversial", "AvoidFinalLocalVariable");
+        addRule("controversial", "AvoidPrefixingMethodParameters");
         addRule("controversial", "AvoidUsingNativeCode");
         addRule("controversial", "AvoidUsingShortType");
         addRule("controversial", "AvoidUsingVolatile");
@@ -19,7 +20,6 @@ public class ControversialRulesTest extends SimpleAggregatorTst {
         addRule("controversial", "CallSuperInConstructor");
         addRule("controversial", "DataflowAnomalyAnalysis");
         addRule("controversial", "DefaultPackage");
-        addRule("controversial", "DotNoPrefixMethodParameters");
         addRule("controversial", "DontImportSun");
         addRule("controversial", "DoNotCallGarbageCollectionExplicitly");
         addRule("controversial", "NullAssignment");

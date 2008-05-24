@@ -233,7 +233,7 @@ UnnecessaryParentheses now checks all expressions, not just return statements
 New rules:
 
 	Coupling ruleset: LoosePackageCoupling
-	Controversial ruleset: DotNoPrefixMethodParameters 
+	Controversial ruleset: AvoidPrefixingMethodParameters 
 	Controversial ruleset: OneDeclarationByLine
 	Naming ruleset: ShortClassName
 

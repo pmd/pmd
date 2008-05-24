@@ -9,7 +9,7 @@ This ruleset contains links to rules that are new in PMD v5.0
   	<rule ref="rulesets/coupling.xml/LoosePackageCoupling"/>
 	<rule ref="rulesets/naming.xml/ShortClassName"/>
 	<rule ref="rulesets/controversial.xml/OneDeclarationByLine"/>
-	<rule ref="rulesets/controversial.xml/DotNoPrefixMethodParameters"/>
+	<rule ref="rulesets/controversial.xml/AvoidPrefixingMethodParameters"/>
 
 </ruleset>
 

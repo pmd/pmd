@@ -2,7 +2,7 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-DotNoPrefixMethodParameters basic test case
+AvoidPrefixingMethodParameters basic test case
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -15,7 +15,7 @@ public class Foo {
 
     <test-code>
         <description><![CDATA[
-DotNoPrefixMethodParameters basic test case, no violation
+AvoidPrefixingMethodParameters basic test case, no violation
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -28,7 +28,7 @@ public class Foo {
 
     <test-code>
         <description><![CDATA[
-DotNoPrefixMethodParameters basic test case, only one parameter is prefixed
+AvoidPrefixingMethodParameters basic test case, only one parameter is prefixed
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -41,7 +41,7 @@ public class Foo {
 
     <test-code>
         <description><![CDATA[
-DotNoPrefixMethodParameters limit: if parameters is named in or out, report a violation.
+AvoidPrefixingMethodParameters limit: if parameters is named in or out, report a violation.
      ]]></description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
