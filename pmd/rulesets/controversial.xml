@@ -719,7 +719,7 @@ public class Foo {
   public void bar(
       int inLeftOperand,
       Result outRightOperand) {
-      outRightOperand.setValue(inLeftOperand * outRightOperand);
+      outRightOperand.setValue(inLeftOperand * outRightOperand.getValue());
   }
 }
         ]]></example>
@@ -733,8 +733,8 @@ public class Foo {
 	 */
 	public void bar(
 	      int leftOperand,
-	      int rightOperand) {
-	      rightOperand.setValue(leftOperand * rightOperand);
+	      Result rightOperand) {
+	      rightOperand.setValue(leftOperand * rightOperand.getValue());
 	}
 }
         ]]></example>
