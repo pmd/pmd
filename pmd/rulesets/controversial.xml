@@ -715,25 +715,27 @@ behavior with Javadoc.
         </properties>
         <example><![CDATA[
 // Not really clear
-public class Foo
+public class Foo {
   public void bar(
       int inLeftOperand,
-      int outRightOperand) {
-      outRightOperand = inLeftOperand * outRightOperand;
+      Result outRightOperand) {
+      outRightOperand.setValue(inLeftOperand * outRightOperand);
   }
 }
         ]]></example>
         <example><![CDATA[
 // Far more useful
-/**
- * 
- * @param inLeftOperand, (purpose), not modified by method.
- * @param outRightOperand (purpose), will be modified by the method: contains the result.
- */
-public void bar(
-      int leftOperand,
-      int rightOperand) {
-      outRightOperand = inLeftOperand * outRightOperand;
+public class Foo {
+	/**
+	 * 
+	 * @param leftOperand, (purpose), not modified by method.
+	 * @param rightOperand (purpose), will be modified by the method: contains the result.
+	 */
+	public void bar(
+	      int leftOperand,
+	      int rightOperand) {
+	      rightOperand.setValue(leftOperand * rightOperand);
+	}
 }
         ]]></example>
 	</rule>
