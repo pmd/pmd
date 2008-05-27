@@ -340,9 +340,9 @@
                 <td><a href="http://www.vanwardtechnologies.com/products.php">Vanward Technologies</a> for
                 using PMD inside their Convergence product
                     </td></tr>
-            <tr><td></td>
+            <tr><td><center><img src="images/atlassian-cenqua-logo.png"/></center></td>
                 <td><a href="http://www.cenqua.com/">Cenqua</a> for
-                giving us a free Clover license and doing a nice <a href="http://fisheye.cenqua.com/viewrep/pmd">FishEye</a> run.
+                giving us a free Clover license and doing a nice <a href="http://fisheye3.atlassian.com/browse/pmd">FishEye</a> run.
                     </td></tr>
         </table>
         </subsection>
