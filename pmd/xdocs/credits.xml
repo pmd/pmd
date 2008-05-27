@@ -60,7 +60,7 @@
             <li>Chris Heister - Reported and noted proper fix for bug in IDEAJ renderer operations</li>
             <li>Ralf Wagner - Reported bug in UselessOperationOnImmutable, reported and noted proper fix for broken XSLT</li>
             <li>Caroline Rioux - Reported bug in ImmutableField</li>
-            <li>Miroslav Šulc - Reported bug in CloneMethodMustImplementCloneable</li>
+            <li>Miroslav Å ulc - Reported bug in CloneMethodMustImplementCloneable</li>
             <li>Thomas Steininger - Noticed redundant rule</li>
             <li>Thomas Leplus - Rewrote UselessStringValueOf, nice patch for ClassCastExceptionWithToArray</li>
             <li>Paul Sundling - A nice documentation patch for ruleset links</li>
@@ -226,15 +226,15 @@
             <li>Curt Cox -   some additions to the 'Similar Projects' page</li>
             <li>Michael Griffel - bug fix for XMLRenderer</li>
             <li>Doug Tillman - correction to finalizers.xml examples</li>
-            <li>Luis Alberto Domínguez Ruiz - bug report for IfElseStmtsMustUseBracesRule</li>
+            <li>Luis Alberto DomÃ­nguez Ruiz - bug report for IfElseStmtsMustUseBracesRule</li>
             <li>Chad Loder - SuspiciousOctalEscapeRule, EmptyStatementNotInLoop, SuspiciousHashcodeMethodName, NonCaseLabelInSwitchStatement, DefaultLabelNotLastInSwitchStmt, NonStaticInitializer, ExplicitCallToFinalize, MethodWithSameNameAsEnclosingClassRuleTest, FinalizeDoesNotCallSuperFinalize, FinalizeOverloaded, FinalizeOnlyCallsSuperFinalize, UnconditionalIfStatement, AvoidDollarSigns, EmptyStaticInitializer, EmptyFinalizerMethod rule, DontImportSun rule, improvements to ASTBooleanLiteral</li>
             <li><a href="http://www.blizzy.de/blog/page/blizzy/blizzog">Maik Schreiber</a> - AccessNode bug report, other bug reports</li>
             <li>Lokesh Gupta - improvements to the AST viewer</li>
             <li><a href="http://www.oreillynet.com/cs/catalog/view/au/960?x-t=book.view">Jesse Glick</a> - improvements to VariableNamingConventionsRule, patch for UnusedModifierRule, bug fix for VariableNameDeclarations rule, an excellent discussion on the UnnecessaryConstructorRule</li>
             <li>Nicolas Liochon - CloneShouldCallSuperCloneRule implementation</li>
             <li><a href="http://factor-language.blogspot.com/">Slava Pestov</a> -  Suggestions for jEdit plugin enhancements.</li>
-            <li>Olivier Mengué - Diagnosed and patched XML report character encoding problems</li>
-            <li>Hariolf Häfele - PMD-JDeveloper plugin bug reports</li>
+            <li>Olivier MenguÃ© - Diagnosed and patched XML report character encoding problems</li>
+            <li>Hariolf HÃ¤fele - PMD-JDeveloper plugin bug reports</li>
             <li><a href="http://www.bossicard.com/">Vladimir Bossicard</a> - suggested AbstractNamingRule, test package organization suggestions, VBHTMLRenderer, numerous feature requests and bug reports, several rule suggestions derived from <a href="http://junit-addons.sf.net/">JUnit-Addons</a>, evangelism :-)</li>
             <li>Ken Foskey - noticed bad link</li>
             <li><a href="http://www.bejug.org/confluenceBeJUG/display/BeJUG/Stephan+Janssen">Stephan Janssen</a> - promoted PMD for <a href="https://jjguidelines.dev.java.net/">JJGuidelines</a></li>
@@ -340,9 +340,9 @@
                 <td><a href="http://www.vanwardtechnologies.com/products.php">Vanward Technologies</a> for
                 using PMD inside their Convergence product
                     </td></tr>
-            <tr><td></td>
+            <tr><td><center><img src="images/atlassian-cenqua-logo.png"/></center></td>
                 <td><a href="http://www.cenqua.com/">Cenqua</a> for
-                giving us a free Clover license and doing a nice <a href="http://fisheye.cenqua.com/viewrep/pmd">FishEye</a> run.
+                giving us a free Clover license and doing a nice <a href="http://fisheye3.atlassian.com/browse/pmd">FishEye</a> run.
                     </td></tr>
         </table>
         </subsection>
