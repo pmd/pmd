@@ -86,6 +86,28 @@ Say you want to pick specific rules from various rule sets and customize them.  
   </rule>
 </ruleset>]]></source>
             </subsection>
+            <subsection name="Excluding files from a ruleset">
+                <p>You can also exclude certain files from being processed by a ruleset using exclude patterns,
+                with an optional overriding include pattern.  A file will be excluded from processing when there
+                is a matching exclude pattern, but no matching include pattern.  Path separators in the source
+                file path are normalized to be the '/' character, so the same ruleset can be used on multiple
+                platforms transparently.  Additionally, this exclude/include technique works regardless of how
+                PMD is used (e.g. command line, IDE, Ant), making it easier to keep application of your PMD
+                rules consistent throughout your environment.  Here is an example:</p>
+                <source><![CDATA[
+<?xml version="1.0"?>
+<ruleset name="myruleset"
+    xmlns="http://pmd.sf.net/ruleset/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+  <description>My ruleset</description>
+  <exclude-pattern>.*/some/package/.*</exclude-pattern>
+  <exclude-pattern>.*/some/other/package/FunkyClassNamePrefix.*</exclude-pattern>
+  <include-pattern>.*/some/package/ButNotThisClass.*</include-pattern>
+  <rule>...
+</ruleset>]]></source>
+            </subsection>
             <subsection name="Reference it in your Ant task">
                 <p>You can specify the full path to your custom ruleset name alongside
         of the built-in PMD rulesets - like this:</p>
