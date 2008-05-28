@@ -77,6 +77,9 @@ public abstract class SimpleAggregatorTst extends RuleTst {
                     }
                 } catch (Throwable t) {
                     Failure f = CustomXmlTestClassMethodsRunner.createFailure(r, t);
+                    System.out.println("-----");
+                    System.out.println(f.getTestHeader());
+                    System.out.println(f.getMessage());
                     l.add(f);
                 }
             }

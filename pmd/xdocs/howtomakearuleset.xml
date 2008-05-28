@@ -62,9 +62,14 @@ Say you want to pick specific rules from various rule sets and customize them.  
     </properties>
   </rule>
 
-  <!-- Note we want everything from braces.xml except WhileLoopsMustUseBraces -->
+  <!-- We want everything from braces.xml except WhileLoopsMustUseBraces -->
   <rule ref="rulesets/braces.xml">
     <exclude name="WhileLoopsMustUseBraces"/>
+  </rule>
+
+  <!-- We want to tweak UnusedFormalParameter to skip violations for a common quirk we have in our code base -->
+  <rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
+    <property name="violationSuppressXPath" value=".[@Image = 'mySpecialParameter']"/>
   </rule>
 </ruleset>]]></source>
                 <p>Notice that you can customize individual referenced rules.  Everything but the

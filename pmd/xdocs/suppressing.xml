@@ -95,6 +95,22 @@ public class Foo {
 </source>
        </subsection>
 
+   <subsection name="Violation Suppress XPath">
+       <p>If a particular Rule does not provide a property to customize behavior
+       sufficiently, you can fall back to using the global 'violationSuppressXPath'
+       property.  This property defines an XPath query to be executed using the
+       violation node as the starting point.  If the XPath query matches anything,
+       then the violation will be suppressed.</p>
+       <p>When using a Rule reference in a RuleSet XML, you can customize the
+       Rule by adding the 'violationSuppressXPath' property.  For example, to
+       suppress reporting specifically named parameters which are unused:</p>
+<source><![CDATA[
+<rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
+  <property name="violationSuppressXPath" value=".[@Image = 'mySpecialParameter']"/>
+</rule>
+]]></source>
+   </subsection>
+
      <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</p>
    </section>
   </body>

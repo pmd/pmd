@@ -41,7 +41,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
                 if (actuallyUsed(nameDecl, entry.getValue())) {
                     continue;
                 }
-                addViolation(data, node, new Object[]{node instanceof ASTMethodDeclaration ? "method" : "constructor", nameDecl.getImage()});
+                addViolation(data, nameDecl.getNode(), new Object[]{node instanceof ASTMethodDeclaration ? "method" : "constructor", nameDecl.getImage()});
             }
         }
     }

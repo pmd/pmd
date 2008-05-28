@@ -177,5 +177,23 @@ class Foo {
 	]]>
 	</code>
 	</test-code>
-
+    <test-code reinitializeRule="true">
+	<description>
+		<![CDATA[
+			violation suppression xpath works
+		]]>
+	</description>
+	<rule-property name="violationSuppressXPath">.[@Image = 'paramB']</rule-property>
+	<expected-problems>0</expected-problems>
+	<code>
+	<![CDATA[
+	public class Foo {
+		private void bar2(Object paramA, Object paramB)
+		{
+			paramA.hashCode();
+		}
+	}
+	]]>
+	</code>
+	</test-code>
 </test-data>
