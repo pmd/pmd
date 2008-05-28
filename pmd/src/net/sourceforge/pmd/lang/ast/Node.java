@@ -106,7 +106,7 @@ public interface Node {
      */
     <T> boolean containsChildOfType(Class<T> type);
 
-    List findChildNodesWithXPath(String xpathString) throws JaxenException;
+    List<Node> findChildNodesWithXPath(String xpathString) throws JaxenException;
 
     // TODO Does this need to be here?
     Document getAsXml();

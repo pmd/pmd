@@ -104,6 +104,16 @@ public class ReportTest extends RuleTst implements ReportListener {
     }
 
     @Test
+    public void testExclusionsInReportWithRuleViolationSuppressXPath() throws Throwable {
+        Report rpt = new Report();
+        Rule rule =  new FooRule();
+        rule.getProperties().setProperty(Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY, ".[@Image = 'Foo']");
+        runTestFromString(TEST1, rule, rpt);
+        assertTrue(rpt.isEmpty());
+        assertEquals(1, rpt.getSuppressedRuleViolations().size());
+    }
+
+    @Test
     public void testExclusionsInReportWithAnnotations() throws Throwable {
         Report rpt = new Report();
         runTestFromString(TEST2, new FooRule(), rpt, LanguageVersion.JAVA_15);

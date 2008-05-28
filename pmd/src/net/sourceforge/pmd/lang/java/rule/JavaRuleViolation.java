@@ -84,7 +84,7 @@ public class JavaRuleViolation extends AbstractRuleViolation {
 	    for (Node parentType : parentTypes) {
 		CanSuppressWarnings t = (CanSuppressWarnings) parentType;
 		if (t.hasSuppressWarningsAnnotationFor(getRule())) {
-		    isSuppressed = true;
+		    suppressed = true;
 		    break;
 		}
 	    }

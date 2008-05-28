@@ -3,16 +3,20 @@
  */
 package net.sourceforge.pmd.lang.rule;
 
+import java.util.List;
+
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
 
+import org.jaxen.JaxenException;
+
 public abstract class AbstractRuleViolation implements RuleViolation {
 
     protected Rule rule;
     protected String description;
-    protected boolean isSuppressed;
+    protected boolean suppressed;
     protected String filename;
 
     protected int beginLine;
@@ -47,6 +51,19 @@ public abstract class AbstractRuleViolation implements RuleViolation {
 	this.className = "";
 	this.methodName = "";
 	this.variableName = "";
+
+	// Apply Rule specific XPath suppression
+	if (node != null && rule != null) {
+	    String xpath = rule.getStringProperty(Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY);
+	    if (xpath != null) {
+		try {
+		    List<Node> children = node.findChildNodesWithXPath(xpath);
+		    suppressed = children != null && !children.isEmpty();
+		} catch (JaxenException e) {
+		    throw new RuntimeException("Violation suppression XPath failed: " + e.getLocalizedMessage(), e);
+		}
+	    }
+	}
     }
 
     public Rule getRule() {
@@ -58,7 +75,7 @@ public abstract class AbstractRuleViolation implements RuleViolation {
     }
 
     public boolean isSuppressed() {
-	return this.isSuppressed;
+	return this.suppressed;
     }
 
     public String getFilename() {
