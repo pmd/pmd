@@ -72,10 +72,15 @@ TODO - Release blockers - Must implement before this release can be finished
      from the descriptors, be they defined in code or XML, I think the code based
      descriptors are not geting seen.
    o Enhance Rule Designer to allow testing of the violation suppress XPath.
-   o Rules should declare nodes types for which they can produce violations, which
-     makes using the suppress XPath easier.  This should be optionally enforced
-     at runtime to ensure proper rule implementation/documentation.  Generated
-     Rule documentation should  provide a listing of violation node types. 
+   o Should we change Node interface to something like 'Node<T extends Node<T>>',
+     and then declare the language specific node interfaces to be something like
+     'JavaNode extends Node<JavaNode>'?  This could allow anything on the Node
+     interface to return the language specific node type instead of generic
+     node.  For example, ASTStatement.jjtGetParent() to return a JavaNode,
+     instead of a Node.  This is a rather huge change, as the Node interface is
+     one of the pervasive things in the PMD code base.  Is the extra work of using
+     the Node interface with properly with generics, worth the omission of
+     occasional some casting?
 ---
 
 This version of PMD breaks API compatibility with prior versions of PMD, as well
@@ -220,6 +225,7 @@ The following is relatively complete list of the major changes (this may not be
 New features:
 
 New Language 'xml' added, for writing XPathRules against XML documents
+Rules can now define a 'violationSuppressRegex' property to universally suppress violations with messages matching the given regular expression
 Rules can now define a 'violationSuppressXPath' property to universally suppress violations on nodes which match the given relative XPath expression
 
 Other changes:

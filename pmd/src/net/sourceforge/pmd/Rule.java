@@ -20,6 +20,11 @@ public interface Rule {
     public static final String[] PRIORITIES = { "High", "Medium High", "Medium", "Medium Low", "Low" };
 
     /**
+     * Name of the property to universally suppress violations with messages matching a regular expression.
+     */
+    public static final String VIOLATION_SUPPRESS_REGEX_PROPERTY = "violationSuppressRegex";
+
+    /**
      * Name of the property to universally suppress violations on nodes which match a given relative XPath expression.
      */
     public static final String VIOLATION_SUPPRESS_XPATH_PROPERTY = "violationSuppressXPath";

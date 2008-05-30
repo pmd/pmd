@@ -235,7 +235,8 @@ public class RuleSetFactoryTest {
 		int invalidSinceAttributes = 0;
 		int invalidExternalInfoURL = 0;
 		int invalidClassName = 0;
-		int invalidSuppress = 0;
+		int invalidRegexSuppress = 0;
+		int invalidXPathSuppress = 0;
 		String messages = "";
 		// TODO Need to handle each Language
 		List<String> ruleSetFileNames = getRuleSetFileNames();
@@ -275,16 +276,21 @@ public class RuleSetFactoryTest {
 					invalidClassName++;
 					messages += "Rule " + fileName + "/" + rule.getName() + " seems to have an invalid 'class' value (" + rule.getRuleClass() + "), it should be:" + expectedClassName + PMD.EOL;
 				}
+				// Should not have violation suppress regex property
+				if (rule.hasProperty(Rule.VIOLATION_SUPPRESS_REGEX_PROPERTY)) {
+					invalidRegexSuppress++;
+					messages += "Rule " + fileName + "/" + rule.getName() + " should not have '" + Rule.VIOLATION_SUPPRESS_REGEX_PROPERTY + "', this is intended for end user customization only." + PMD.EOL;
+				}
 				// Should not have violation suppress xpath property
 				if (rule.hasProperty(Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY)) {
-					invalidSuppress++;
+					invalidXPathSuppress++;
 					messages += "Rule " + fileName + "/" + rule.getName() + " should not have '" + Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY + "', this is intended for end user customization only." + PMD.EOL;
 				}
 			}
 		}
 		// We do this at the end to ensure we test ALL the rules before failing the test
-		if ( invalidSinceAttributes > 0 || invalidExternalInfoURL > 0 || invalidClassName > 0 || invalidSuppress> 0) {
-			fail("All built-in PMD rules need 'since' attribute ("+ invalidSinceAttributes + " are missing), a proper ExternalURLInfo (" + invalidExternalInfoURL + " are invalid), a class name meeting conventions ("+ invalidClassName + " are invalid), and no '" + Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY + "' violation suppression xpath property (" + invalidSuppress + " are invalid)" + PMD.EOL + messages);
+		if ( invalidSinceAttributes > 0 || invalidExternalInfoURL > 0 || invalidClassName > 0 || invalidRegexSuppress > 0 || invalidXPathSuppress > 0) {
+			fail("All built-in PMD rules need 'since' attribute ("+ invalidSinceAttributes + " are missing), a proper ExternalURLInfo (" + invalidExternalInfoURL + " are invalid), a class name meeting conventions ("+ invalidClassName + " are invalid), no '" + Rule.VIOLATION_SUPPRESS_REGEX_PROPERTY + "' property (" + invalidRegexSuppress + " are invalid), and no '" + Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY + "' property (" + invalidXPathSuppress + " are invalid)" + PMD.EOL + messages);
 		}
 	}
 

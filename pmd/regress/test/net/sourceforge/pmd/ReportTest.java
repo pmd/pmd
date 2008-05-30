@@ -104,6 +104,16 @@ public class ReportTest extends RuleTst implements ReportListener {
     }
 
     @Test
+    public void testExclusionsInReportWithRuleViolationSuppressRegex() throws Throwable {
+        Report rpt = new Report();
+        Rule rule =  new FooRule();
+        rule.getProperties().setProperty(Rule.VIOLATION_SUPPRESS_REGEX_PROPERTY, ".*blah.*");
+        runTestFromString(TEST1, rule, rpt);
+        assertTrue(rpt.isEmpty());
+        assertEquals(1, rpt.getSuppressedRuleViolations().size());
+    }
+
+    @Test
     public void testExclusionsInReportWithRuleViolationSuppressXPath() throws Throwable {
         Report rpt = new Report();
         Rule rule =  new FooRule();
