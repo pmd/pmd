@@ -29,15 +29,35 @@ public class TypeOfFunction implements Function {
         }
         Node n = (Node) context.getNodeSet().get(0);
         if (n instanceof TypeNode) {
-            List attributes = (List) args.get(0);
-            Attribute attr = (Attribute) attributes.get(0);
-            Class type = ((TypeNode) n).getType();
-            String typeName = (String) args.get(1);
-            String shortName = (args.size() > 2) ? (String) args.get(2) : "";
-            if (type == null) {
-                return typeName.equals(attr.getValue()) || shortName.equals(attr.getValue());
+            Attribute attr = null;
+            String typeName = null;
+            String shortName = null;
+            for (int i = 0; i < args.size(); i++) {
+        	if (args.get(i) instanceof List) {
+        	    if (attr == null) {
+        		attr = (Attribute)((List)args.get(i)).get(0);
+        	    } else {
+        		throw new IllegalArgumentException("typeof function can take only a single argument which is an Attribute.");
+        	    }
+        	}
+        	else {
+        	    if (typeName == null) {
+        		typeName = (String)args.get(i);
+        	    } else if (shortName == null) {
+        		shortName = (String)args.get(i);
+        	    } else {
+        		break;
+        	    }
+        	}
             }
-            if (type.getName().equals(typeName) || type.getName().equals(attr.getValue())) {
+            if (typeName == null) {
+        	throw new IllegalArgumentException("typeof function must be given at least one String argument for the type name.");
+            }
+            Class type = ((TypeNode) n).getType();
+            if (type == null) {
+                return attr != null && (typeName.equals(attr.getValue()) || (shortName != null && shortName.equals(attr.getValue())));
+            }
+            if (type.getName().equals(typeName) || (attr != null && type.getName().equals(attr.getValue()))) {
                 return Boolean.TRUE;
             }
             List<Class> implementors = Arrays.asList(type.getInterfaces());
