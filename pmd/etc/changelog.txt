@@ -1,5 +1,6 @@
 ???? - 4.2.3:
 
+Fixes for exclude-pattern
 
 May 20, 2008 - 4.2.2:
 
