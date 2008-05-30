@@ -1,5 +1,4 @@
 <?xml version="1.0"?>
-
 <document>
   <properties>
     <author email="tom@infoether.com">Tom Copeland</author>
@@ -8,6 +7,29 @@
 
   <body>
    <section name="Suppressing warnings">
+   	<p>PMD provides several methods by which Rule violations can be suppressed.
+   	Follow these steps to help you determine which expression method works best
+   	for you:
+		<ol>
+		    <li>Is the thing you need to suppress universally appealing to other
+		    users of PMD, or is it a false positive? Can you modify the Rule to
+		    support this specific suppression via a configuration property, or to
+		    fix the false positive?  If you can do this, then please do so, and
+		    submit a patch back to the PMD project.  Since PMD is built by users
+		    for users, your help would be greatly appreciated by everyone.  If you
+		    cannot...</li>
+		    <li>Can you use Annotations or the NOPMD marker to work around your
+		    particular issue on a case by case basis?  If not...</li>
+		    <li>Can a regular expression matching the violation message work
+		    around your particular issue?  If not...</li>
+		    <li>Can a XPath query on the violation node work around your particular
+		    issue? If not...</li>
+		    <li>Your last and final option is to see the first point about
+		    changing the Rule, but you do not need to submit a patch back to the
+		    PMD project.</li>
+		</ol>
+   	<p>If you need to modify the Rule, see <a href="howtowritearule.html">How to write a rule</a>.
+   	Otherwise, the other suppression methods are explain in the following sections.</p>
    <subsection name="Annotations">
        <p>You can use a JDK 1.5 annotation to suppress PMD warnings, like this:</p>
 <source>
@@ -95,6 +117,26 @@ public class Foo {
 </source>
        </subsection>
 
+   <subsection name="Violation Suppress Regex">
+       <p>If a particular Rule does not provide a property to customize behavior
+       sufficiently, you can fall back to using the global 'violationSuppressRegex'
+       property.  This property defines a regular expression to match against the
+       message of the violation.  If the regular expression matches,
+       then the violation will be suppressed.</p>
+       <p>When using a Rule reference in a RuleSet XML, you can customize the
+       Rule by adding the 'violationSuppressRegex' property.  For example, to
+       suppress reporting specifically named parameters which are unused:</p>
+<source><![CDATA[
+<rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
+  <property name="violationSuppressRegex" value=".*'mySpecialParameterName'.*"/>
+</rule>
+]]></source>
+		<p>Note for message based suppression to work, you must know who to write
+		a regular expression that matches the message of violations you wish to
+		suppress. Regular expressions are explained in the JavaDoc for standard
+		Java class java.util.regex.Pattern.</p>
+   </subsection>
+
    <subsection name="Violation Suppress XPath">
        <p>If a particular Rule does not provide a property to customize behavior
        sufficiently, you can fall back to using the global 'violationSuppressXPath'
@@ -103,12 +145,16 @@ public class Foo {
        then the violation will be suppressed.</p>
        <p>When using a Rule reference in a RuleSet XML, you can customize the
        Rule by adding the 'violationSuppressXPath' property.  For example, to
-       suppress reporting specifically named parameters which are unused:</p>
+       suppress reporting specifically typed parameters which are unused:</p>
 <source><![CDATA[
 <rule ref="rulesets/unusedcode.xml/UnusedFormalParameter">
-  <property name="violationSuppressXPath" value=".[@Image = 'mySpecialParameter']"/>
+  <property name="violationSuppressXPath" value=".[typeof('java.lang.String')]"/>
 </rule>
 ]]></source>
+		<p>Note for XPath based suppression to work, you must know how to write
+		an XPath query that matches the AST structure of the nodes of the
+		violations you wish to suppress.  XPath queries are explained in
+		<a href="xpathruletutorial.html">XPath Rule tutorial</a>.</p>
    </subsection>
 
      <p>Suggestions?  Comments?  Post them <a href="http://sourceforge.net/forum/forum.php?forum_id=188192">here</a>.  Thanks!</p>

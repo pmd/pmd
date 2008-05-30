@@ -11,6 +11,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 import net.sourceforge.pmd.lang.ast.xpath.DocumentNavigator;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
+import net.sourceforge.pmd.lang.xpath.Initializer;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -297,6 +298,7 @@ public abstract class AbstractNode implements Node {
     }
 
     public List findChildNodesWithXPath(String xpathString) throws JaxenException {
+	Initializer.initialize();
 	return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
     }
 }

@@ -180,7 +180,26 @@ class Foo {
     <test-code reinitializeRule="true">
 	<description>
 		<![CDATA[
-			violation suppression xpath works
+			violation suppression regex works
+		]]>
+	</description>
+	<rule-property name="violationSuppressRegex">.*'paramB'.*</rule-property>
+	<expected-problems>0</expected-problems>
+	<code>
+	<![CDATA[
+	public class Foo {
+		private void bar2(Object paramA, Object paramB)
+		{
+			paramA.hashCode();
+		}
+	}
+	]]>
+	</code>
+	</test-code>
+    <test-code reinitializeRule="true">
+	<description>
+		<![CDATA[
+			violation suppression xpath works, by name
 		]]>
 	</description>
 	<rule-property name="violationSuppressXPath">.[@Image = 'paramB']</rule-property>
@@ -189,6 +208,25 @@ class Foo {
 	<![CDATA[
 	public class Foo {
 		private void bar2(Object paramA, Object paramB)
+		{
+			paramA.hashCode();
+		}
+	}
+	]]>
+	</code>
+	</test-code>
+    <test-code reinitializeRule="true">
+	<description>
+		<![CDATA[
+			violation suppression xpath works, by type
+		]]>
+	</description>
+	<rule-property name="violationSuppressXPath">.[typeof('java.lang.String')]</rule-property>
+	<expected-problems>0</expected-problems>
+	<code>
+	<![CDATA[
+	public class Foo {
+		private void bar2(Object paramA, String paramB)
 		{
 			paramA.hashCode();
 		}

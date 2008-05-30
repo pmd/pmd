@@ -15,12 +15,17 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
  */
 public class Initializer {
 
+    private static boolean initialized;
+
     /**
      * Perform all initialization.
      */
-    public static void initialize() {
-	initializeGlobal();
-	initializeLanguages();
+    public synchronized static void initialize() {
+	if (!initialized) {
+	    initializeGlobal();
+	    initializeLanguages();
+	    initialized = true;
+	}
     }
 
     private static void initializeGlobal() {
