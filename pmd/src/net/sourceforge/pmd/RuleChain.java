@@ -28,22 +28,24 @@ public class RuleChain {
     public void add(RuleSet ruleSet) {
         Language language = ruleSet.getLanguage();
         for (Rule r: ruleSet.getRules()) {
-            add(language, r);
+            add(ruleSet, r, language);
         }
     }
 
     /**
      * Add the given Rule if it wants to participate in the RuleChain.
      * 
-     * @param language
-     *            The Language used by the Rule.
+     * @param ruleSet
+     *            The RuleSet to which the rule belongs.
      * @param rule
      *            The Rule to add.
+     * @param language
+     *            The Language used by the Rule.
      */
-    public void add(Language language, Rule rule) {
+    private void add(RuleSet ruleSet, Rule rule, Language language) {
         RuleChainVisitor visitor = getRuleChainVisitor(language);
         if (visitor != null) {
-            visitor.add(rule);
+            visitor.add(ruleSet, rule);
         }
     }
 

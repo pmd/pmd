@@ -19,11 +19,14 @@ import java.util.List;
 import java.util.Set;
 
 import net.sourceforge.pmd.MockRule;
+import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PMDException;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleReference;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.TargetJDKVersion;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
@@ -31,7 +34,9 @@ import net.sourceforge.pmd.ast.JavaParser;
 
 import org.junit.Test;
 
-public class RuleSetTest {
+import test.net.sourceforge.pmd.testframework.RuleTst;
+
+public class RuleSetTest extends RuleTst {
 
     private String javaCode = "public class Test { }";
 
@@ -328,6 +333,50 @@ public class RuleSetTest {
         assertTrue("Matching include", ruleSet.applies(file));
     }
 
+    @Test
+    public void testIncludeExcludeMultipleRuleSetWithRuleChainApplies() throws PMDException {
+	File file = new File("C:\\myworkspace\\project\\some\\random\\package\\RandomClass.java");
+
+	RuleSet ruleSet1 = new RuleSet();
+	ruleSet1.setName("RuleSet1");
+	Rule rule = findRule("basic", "EmptyIfStmt");
+	assertTrue("RuleChain rule", rule.usesRuleChain());
+	ruleSet1.addRule(rule);
+
+	RuleSet ruleSet2 = new RuleSet();
+	ruleSet2.setName("RuleSet2");
+	ruleSet2.addRule(rule);
+
+	RuleSets ruleSets = new RuleSets();
+	ruleSets.addRuleSet(ruleSet1);
+	ruleSets.addRuleSet(ruleSet2);
+
+	// Two violations
+        PMD p = new PMD();
+        RuleContext ctx = new RuleContext();
+        Report r = new Report();
+        ctx.setReport(r);
+        ctx.setSourceCodeFilename(file.getName());
+        ctx.setSourceCodeFile(file);
+        p.processFile(new StringReader(TEST1), ruleSets, ctx);
+        assertEquals("Violations", 2, r.size());
+
+        // One violation
+	ruleSet1 = new RuleSet();
+	ruleSet1.setName("RuleSet1");
+        ruleSet1.addExcludePattern(".*/package/.*");
+	ruleSet1.addRule(rule);
+
+	ruleSets = new RuleSets();
+	ruleSets.addRuleSet(ruleSet1);
+	ruleSets.addRuleSet(ruleSet2);
+
+        r = new Report();
+        ctx.setReport(r);
+        p.processFile(new StringReader(TEST1), ruleSets, ctx);
+        assertEquals("Violations", 1, r.size());
+    }
+
     protected void verifyRuleSet(RuleSet IUT, int size, Set values) throws Throwable {
 
         RuleContext context = new RuleContext();
@@ -359,6 +408,12 @@ public class RuleSetTest {
         RC.add(parser.CompilationUnit());
         return RC;
     }
+    
+    private static final String TEST1 = "public class Foo {" + PMD.EOL +
+    	"   public void foo() {" + PMD.EOL +
+    	"      if (true) { }" + PMD.EOL +
+    	"   }" + PMD.EOL +
+	"}" + PMD.EOL;
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(RuleSetTest.class);
