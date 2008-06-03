@@ -18,6 +18,10 @@ public class CppParser extends AbstractParser {
 	return new CppTokenManager(source);
     }
 
+    public boolean canParse() {
+	return false;
+    }
+
     public Node parse(String fileName, Reader source) throws ParseException {
 	AbstractTokenManager.setFileName(fileName);
 	throw new UnsupportedOperationException("parse(Reader) is not supported for C++");

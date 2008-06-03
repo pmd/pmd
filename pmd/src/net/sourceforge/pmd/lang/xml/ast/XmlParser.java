@@ -9,7 +9,9 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -17,6 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -26,7 +29,10 @@ import org.xml.sax.SAXException;
 
 public class XmlParser {
 
+    protected Map<Node, XmlNode> nodeCache = new HashMap<Node, XmlNode>();
+
     protected Document parseDocument(Reader reader) throws ParseException {
+	nodeCache.clear();
 	try {
 	    DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -47,13 +53,22 @@ public class XmlParser {
     }
 
     public XmlNode createProxy(Node node) {
+	XmlNode proxy = nodeCache.get(node);
+	if (proxy != null) {
+	    return proxy;
+	}
+
 	// TODO Change Parser interface to take ClassLoader?
 	LinkedHashSet<Class<?>> interfaces = new LinkedHashSet<Class<?>>();
 	interfaces.add(XmlNode.class);
+	if (node.getParentNode() instanceof Document) {
+	    interfaces.add(RootNode.class);
+	}
 	addAllInterfaces(interfaces, node.getClass());
 
-	XmlNode proxy = (XmlNode) Proxy.newProxyInstance(XmlParser.class.getClassLoader(), interfaces
+	proxy = (XmlNode) Proxy.newProxyInstance(XmlParser.class.getClassLoader(), interfaces
 		.toArray(new Class[interfaces.size()]), new XmlNodeInvocationHandler(node));
+	nodeCache.put(node, proxy);
 	return proxy;
     }
 
@@ -88,6 +103,13 @@ public class XmlParser {
 		    return new Integer(-1);
 		} else if ("getEndColumn".equals(method.getName())) {
 		    return new Integer(-1);
+		} else if ("jjtGetParent".equals(method.getName())) {
+		    Node parent = node.getParentNode();
+		    if (parent != null && !(parent instanceof Document)) {
+			return createProxy(parent);
+		    } else {
+			return null;
+		    }
 		}
 		throw new UnsupportedOperationException("Method not supported for XmlNode: " + method);
 	    }

@@ -21,6 +21,10 @@ public class XmlParser extends AbstractParser {
 	return null;
     }
 
+    public boolean canParse() {
+	return true;
+    }
+
     public Node parse(String fileName, Reader source) throws ParseException {
 	return new net.sourceforge.pmd.lang.xml.ast.XmlParser().parse(source);
     }

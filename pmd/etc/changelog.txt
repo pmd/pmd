@@ -70,11 +70,8 @@ TODO - Release blockers - Must implement before this release can be finished
      versus <property> element which should _only_ assign a non-default value to
      a property?  Further, Rule documentation should be automatically generated
      from the descriptors, be they defined in code or XML, I think the code based
-     descriptors are not geting seen.
-   o Enhance Rule Designer to allow testing of the violation suppress Regex and XPath, and
-   	 also to really support XML. Maybe we should remove the not yet supported languages
-   	 from designer "Language" menu.
-   
+     descriptors are not getting seen.
+   o Enhance Rule Designer to allow testing of the violation suppress Regex and XPath.
    o Should we change Node interface to something like 'Node<T extends Node<T>>',
      and then declare the language specific node interfaces to be something like
      'JavaNode extends Node<JavaNode>'?  This could allow anything on the Node

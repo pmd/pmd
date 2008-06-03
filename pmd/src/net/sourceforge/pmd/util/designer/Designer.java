@@ -22,6 +22,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -122,9 +123,22 @@ public class Designer implements ClipboardOwner {
 	languageVersionHandler.getTypeResolutionFacade(null).start(node);
 	return node;
     }
+    
+    private static LanguageVersion[] getSupportedLanguageVersions() {
+	List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
+	for (LanguageVersion languageVersion : LanguageVersion.values()) {
+	    if (languageVersion.getLanguageVersionHandler() != null) {
+		Parser parser = languageVersion.getLanguageVersionHandler().getParser();
+		if (parser != null && parser.canParse()) {
+		    languageVersions.add(languageVersion);
+		}
+	    }
+	}
+	return languageVersions.toArray(new LanguageVersion[languageVersions.size()]);
+    }
 
     private LanguageVersion getLanguageVersion() {
-	return LanguageVersion.values()[selectedLanguageVersionIndex()];
+	return getSupportedLanguageVersions()[selectedLanguageVersionIndex()];
     }
 
     private int selectedLanguageVersionIndex() {
@@ -398,6 +412,7 @@ public class Designer implements ClipboardOwner {
 
     private void loadASTTreeData(TreeNode rootNode) {
 	astTreeWidget.setModel(new DefaultTreeModel(rootNode));
+	astTreeWidget.setRootVisible(true);
 	astTreeWidget.expandAll(true);
     }
 
@@ -599,6 +614,9 @@ public class Designer implements ClipboardOwner {
 		Node node = (Node) value;
 		StringBuffer sb = new StringBuffer();
 		String name = node.getClass().getName().substring(node.getClass().getName().lastIndexOf('.') + 1);
+		if (Proxy.isProxyClass(value.getClass())) {
+		    name = value.toString();
+		}
 		sb.append(name).append(" at line ").append(node.getBeginLine()).append(" column ").append(
 			node.getBeginColumn()).append(PMD.EOL);
 		text = sb.toString();
@@ -631,7 +649,7 @@ public class Designer implements ClipboardOwner {
     private final TreeWidget symbolTableTreeWidget = new TreeWidget(new Object[0]);
     private final JFrame frame = new JFrame("PMD Rule Designer (v " + PMD.VERSION + ')');
     private final DFAPanel dfaPanel = new DFAPanel();
-    private final JRadioButtonMenuItem[] languageVersionMenuItems = new JRadioButtonMenuItem[LanguageVersion.values().length];
+    private final JRadioButtonMenuItem[] languageVersionMenuItems = new JRadioButtonMenuItem[getSupportedLanguageVersions().length];
 
     public Designer(String[] args) {
 	if (args.length > 0) {
@@ -704,8 +722,9 @@ public class Designer implements ClipboardOwner {
 	JMenu menu = new JMenu("Language");
 	ButtonGroup group = new ButtonGroup();
 
-	for (int i = 0; i < LanguageVersion.values().length; i++) {
-	    LanguageVersion languageVersion = LanguageVersion.values()[i];
+	LanguageVersion[] languageVersions = getSupportedLanguageVersions();
+	for (int i = 0; i < languageVersions.length; i++) {
+	    LanguageVersion languageVersion = languageVersions[i];
 	    JRadioButtonMenuItem button = new JRadioButtonMenuItem(languageVersion.getShortName());
 	    languageVersionMenuItems[i] = button;
 	    group.add(button);

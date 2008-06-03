@@ -59,8 +59,10 @@ public class CodeEditorTextPane extends JTextPane implements LineGetter, ActionL
 
     public void select(Node node) {
         String[] lines = getText().split(LINE_SEPARATOR);
-        setSelectionStart(getPosition(lines, node.getBeginLine(), node.getBeginColumn()));
-        setSelectionEnd(getPosition(lines, node.getEndLine(), node.getEndColumn())+1);
+        if (node.getBeginLine() >= 0) {
+	    setSelectionStart(getPosition(lines, node.getBeginLine(), node.getBeginColumn()));
+	    setSelectionEnd(getPosition(lines, node.getEndLine(), node.getEndColumn()) + 1);
+	}
         requestFocus();
     }
 

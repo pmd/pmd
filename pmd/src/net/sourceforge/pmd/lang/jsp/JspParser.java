@@ -23,6 +23,10 @@ public class JspParser extends AbstractParser {
 	return new JspTokenManager(source);
     }
 
+    public boolean canParse() {
+	return true;
+    }
+
     public Node parse(String fileName, Reader source) throws ParseException {
 	AbstractTokenManager.setFileName(fileName);
 	return new net.sourceforge.pmd.lang.jsp.ast.JspParser(new JavaCharStream(source)).CompilationUnit();

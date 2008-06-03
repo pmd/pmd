@@ -10,7 +10,10 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
+import net.sourceforge.pmd.lang.xml.ast.DumpFacade;
+import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.lang.xml.rule.XmlRuleViolationFactory;
 
 import org.jaxen.Navigator;
@@ -57,7 +60,10 @@ public class XmlHandler implements LanguageVersionHandler {
     }
 
     public VisitorStarter getDumpFacade(final Writer writer, final String prefix, final boolean recurse) {
-	// TODO Implement this
-	return VisitorStarter.DUMMY;
+	return new VisitorStarter() {
+	    public void start(Node rootNode) {
+		new DumpFacade().initializeWith(writer, prefix, recurse, (XmlNode) rootNode);
+	    }
+	};
     }
 }
