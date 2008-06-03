@@ -3,6 +3,9 @@
  */
 package test.net.sourceforge.pmd.ant;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import net.sourceforge.pmd.ant.Formatter;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.RuleSetWrapper;
@@ -13,23 +16,44 @@ import org.junit.Test;
 
 public class PMDTaskTest {
 
-    @Test(expected = BuildException.class)
+    @Ignore("This test has a FIXME in it")
+    @Test
     public void testNoFormattersValidation() {
-        PMDTask task = new PMDTask();
-        task.execute();
+	try {
+            PMDTask task = new PMDTask();
+            task.setRuleSetFiles("rulesets/design.xml");
+            task.execute();
+            // FIXME: no formatter is needed for ant to run
+            // see TODO in PMDTask.validate()
+
+            fail("Expecting BuildException exception");
+	} catch (BuildException e) {
+	    assertEquals("Valid Error Message", e.getMessage(), "<??>");
+	}
     }
 
-    @Test(expected = BuildException.class)
+    @Test
     public void testFormatterWithNoToFileAttribute() {
-        PMDTask task = new PMDTask();
-        task.addFormatter(new Formatter());
-        task.execute();
+	try {
+            PMDTask task = new PMDTask();
+            task.setRuleSetFiles("rulesets/design.xml");
+            task.addFormatter(new Formatter());
+            task.execute();
+            fail("Expecting BuildException exception");
+	} catch (BuildException e) {
+	    assertEquals("Valid Error Message", e.getMessage(), "toFile or toConsole needs to be specified in Formatter");
+	}
     }
 
-    @Test(expected = BuildException.class)
+    @Test
     public void testNoRuleSets() {
-        PMDTask task = new PMDTask();
-        task.execute();
+	try {
+            PMDTask task = new PMDTask();
+            task.execute();
+            fail("Expecting BuildException exception");
+	} catch (BuildException e) {
+	    assertEquals("Valid Error Message", e.getMessage(), "No rulesets specified");
+	}
     }
 
     @Ignore("This test has a TODO in it")
@@ -43,7 +67,7 @@ public class PMDTaskTest {
         task.addRuleset(r);
         Formatter f = new Formatter();
         task.addFormatter(f);
-        
+
         //TODO
         try {
             task.execute();
@@ -52,11 +76,17 @@ public class PMDTaskTest {
         }
     }
 
-    @Test(expected = BuildException.class)
+    @Test
     public void testInvalidJDK() {
-        PMDTask task = new PMDTask();
-        task.setTargetJDK("1.7");
-        task.execute();
+	try {
+            PMDTask task = new PMDTask();
+            task.setTargetJDK("42");
+            task.setRuleSetFiles("rulesets/design.xml");
+            task.execute();
+            fail("Expecting BuildException exception");
+	} catch (BuildException e) {
+	    assertTrue("Valid Error Message", e.getMessage().startsWith("The targetjdk attribute, if used, must be set to either "));
+	}
     }
 
     public static junit.framework.Test suite() {
