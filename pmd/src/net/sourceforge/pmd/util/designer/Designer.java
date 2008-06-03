@@ -701,7 +701,7 @@ public class Designer implements ClipboardOwner {
 
     private JMenuBar createMenuBar() {
 	JMenuBar menuBar = new JMenuBar();
-	JMenu menu = new JMenu("JDK");
+	JMenu menu = new JMenu("Language");
 	ButtonGroup group = new ButtonGroup();
 
 	for (int i = 0; i < LanguageVersion.values().length; i++) {
