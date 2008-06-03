@@ -9,7 +9,7 @@
    <section name="Suppressing warnings">
    	<p>PMD provides several methods by which Rule violations can be suppressed.
    	Follow these steps to help you determine which expression method works best
-   	for you:
+   	for you:</p>
 		<ol>
 		    <li>Is the thing you need to suppress universally appealing to other
 		    users of PMD, or is it a false positive? Can you modify the Rule to

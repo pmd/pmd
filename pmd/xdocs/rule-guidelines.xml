@@ -54,32 +54,32 @@ for an individual Java rule, but when running 100s of rules, it is measurable.  
 to Jaxen overhead for AST navigation.  Make sure your XPath rules using the RuleChain. (TODO How does one know except by running in a debugger or horrendous performance?).
 </p>
 </section>
-<section name="Adding test cases">
-<p>In the regress directory, you'll find all the unit test for pmd. In the
-proper package (for instance, test.net.sourceforge.pmd.rules.basic, for
-rules from the basic rulesets), you'll find a test suite such as this :</p>
-<source>
-public class BasicRulesTest extends SimpleAggregatorTst {
-
-   @Before
-   public void setUp() {
-       addRule("basic", "AvoidDecimalLiteralsInBigDecimalConstructor");
-       addRule("basic", "AvoidMultipleUnaryOperators");
-       addRule("basic", "AvoidThreadGroup");
-...
-</source>
-<p>Suppose you want to add tests for a new rule of yours, called MyNewRule".
-Just add the proper line in this suite:</p>
-<source>
-       addRule("basic", "MisplacedNullCheck");
-       addRule("basic", "MyNewRule");
-       addRule("basic", "OverrideBothEqualsAndHashcode");
-</source>
-<p>And add in the appropriate xml subpackage (for instance,
-test.net.sourceforge.pmd.rules.basic.xml). There you should find a xml file
-for each rule, the syntax is pretty obvious:</p>
-<source>
-<![CDATA[
+<section name="Adding test cases ...">
+	<subsection name="... for a rule i want to submit (in a patch)">
+	<p>In the regress directory, you'll find all the unit test for pmd. In the
+	proper package (for instance, test.net.sourceforge.pmd.rules.basic, for
+	rules from the basic rulesets), you'll find a test suite such as this :</p>
+	<source>
+	public class BasicRulesTest extends SimpleAggregatorTst {
+	
+	   @Before
+	   public void setUp() {
+	       addRule("basic", "AvoidDecimalLiteralsInBigDecimalConstructor");
+	       addRule("basic", "AvoidMultipleUnaryOperators");
+	       addRule("basic", "AvoidThreadGroup");
+	...
+	</source>
+	<p>Suppose you want to add tests for a new rule of yours, called MyNewRule".
+	Just add the proper line in this suite:</p>
+	<source><![CDATA[
+addRule("basic", "MisplacedNullCheck");
+addRule("basic", "MyNewRule");
+addRule("basic", "OverrideBothEqualsAndHashcode");
+	]]></source>
+	<p>And add in the appropriate xml subpackage (for instance,
+	test.net.sourceforge.pmd.rules.basic.xml). There you should find a xml file
+	for each rule, the syntax is pretty obvious:</p>
+	<source><![CDATA[
 <test-data>
 	<test-code>
 		<description>
@@ -92,10 +92,42 @@ public class Foo extends Bar {
 		super.foo();
 	}
 }
-	</code>
-   </test-code>
-]]>
-</source>
+		</code>
+	</test-code>
+</test-data>
+	]]></source>
+	</subsection>
+	<subsection name="... for something too specific, that i won't be able to submit">
+		<p>In this case, you can still use the PMD test framework, as it is shipped in PMD. Follow
+		the previous instructions to right your test case, and simply create our own RulesTest using
+		the SimpleAggregatorTst:
+		</p>
+		<source><![CDATA[
+package too.specific.to.submit;
+
+import org.junit.Before;
+
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+
+public class SpecificRulesTest extends SimpleAggregatorTst {
+
+    @Before
+    public void setUp() {
+        addRule("specific-rules.xml", "MySpecificRule");
+    }
+
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(SpecificRulesTest.class);
+    }
+
+}		
+		]]></source>
+		<p><em>Note the following PMD dependancies are required to run the test:</em></p>
+		<ol>
+			<li>asm</li>
+			<li>jaxen</li>
+		</ol> 
+	</subsection>
 </section>
 <section name="Code quality">
 <p>
