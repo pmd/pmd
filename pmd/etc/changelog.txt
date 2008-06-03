@@ -250,6 +250,7 @@ Fixed parsing bug: constant fields in annotation classes
 Bug fix: NPE in MoreThanOneLogger
 UnnecessaryParentheses now checks all expressions, not just return statements
 UnusedFormalParameter now reports violations on the parameter node, not the method/constructor node
+Updates to RuleChain to honor RuleSet exclude-pattern
 
 New rules:
 

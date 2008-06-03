@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -14,10 +15,12 @@ public interface RuleChainVisitor {
     /**
      * Add the given rule to the visitor.
      * 
+     * @param ruleSet
+     *            The RuleSet to which the rule belongs.
      * @param rule
      *            The rule to add.
      */
-    void add(Rule rule);
+    void add(RuleSet ruleSet, Rule rule);
 
     /**
      * Visit all the given Nodes provided using the given
