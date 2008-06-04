@@ -24,6 +24,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -113,7 +114,8 @@ import org.jaxen.XPath;
 
 public class Designer implements ClipboardOwner {
 
-    private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Language.JAVA.getDefaultVersion().ordinal();
+    private static final int DEFAULT_LANGUAGE_VERSION_SELECTION_INDEX = Arrays.asList(getSupportedLanguageVersions())
+	    .indexOf(Language.JAVA.getDefaultVersion());
 
     private Node getCompilationUnit() {
 	LanguageVersionHandler languageVersionHandler = getLanguageVersionHandler();
@@ -485,7 +487,7 @@ public class Designer implements ClipboardOwner {
 	    }
 	    Node c = getCompilationUnit();
 	    try {
-		XPath xpath = new BaseXPath(xpathQueryArea.getText(), new DocumentNavigator());
+		XPath xpath = new BaseXPath(xpathQueryArea.getText(), getLanguageVersionHandler().getXPathHandler().getNavigator());
 		for (Iterator iter = xpath.selectNodes(c).iterator(); iter.hasNext();) {
 		    Object obj = iter.next();
 		    if (obj instanceof String) {
