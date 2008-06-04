@@ -100,7 +100,7 @@ public class XmlParser {
 		    return createProxy(node.getChildNodes().item(((Integer) args[0]).intValue()));
 		} else if ("getImage".equals(method.getName())) {
 		    if (node instanceof Text) {
-			return ((Text) node).getTextContent();
+			return ((Text) node).getData();
 		    } else {
 			return null;
 		    }
