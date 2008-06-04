@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 public class DumpFacade {
 
@@ -57,8 +60,20 @@ public class DumpFacade {
 
 	// Special image handling (e.g. Nodes with normally null images)
 
+	// Replace some whitespace characters so they are visually apparent.
+	if (image != null) {
+	    image = image.replace("\n", "\\n");
+	    image = image.replace("\r", "\\r");
+	    image = image.replace("\t", "\\t");
+	}
+
 	// Extras
 	List<String> extras = new ArrayList<String>();
+	Iterator<Attribute> iterator = node.getAttributeIterator();
+	while (iterator.hasNext()) {
+	    Attribute attribute = iterator.next();
+	    extras.add(attribute.getName() + "=" + attribute.getValue());
+	}
 
 	// Output image and extras
 	if (image != null || !extras.isEmpty()) {

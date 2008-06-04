@@ -17,6 +17,7 @@ public class Attribute {
     private Node parent;
     private String name;
     private Method method;
+    private String value;
 
     public Attribute(Node parent, String name, Method m) {
         this.parent = parent;
@@ -24,7 +25,16 @@ public class Attribute {
         this.method = m;
     }
 
+    public Attribute(Node parent, String name, String value) {
+        this.parent = parent;
+        this.name = name;
+        this.value = value;
+    }
+
     public String getValue() {
+	if (value != null) {
+	    return value;
+	}
         // this lazy loading reduces calls to Method.invoke() by about 90%
         try {
             Object res = method.invoke(parent, EMPTY_OBJ_ARRAY);

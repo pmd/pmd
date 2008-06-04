@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -20,10 +21,13 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.xpath.Attribute;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -88,13 +92,44 @@ public class XmlParser {
 
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 	    // XmlNode method?
-	    if (method.getDeclaringClass().isAssignableFrom(XmlNode.class) && !"java.lang.Object".equals(method.getDeclaringClass().getName())) {
+	    if (method.getDeclaringClass().isAssignableFrom(XmlNode.class)
+		    && !"java.lang.Object".equals(method.getDeclaringClass().getName())) {
 		if ("jjtGetNumChildren".equals(method.getName())) {
 		    return node.hasChildNodes() ? node.getChildNodes().getLength() : 0;
 		} else if ("jjtGetChild".equals(method.getName())) {
-		    return createProxy(node.getChildNodes().item(((Integer)args[0]).intValue()));
+		    return createProxy(node.getChildNodes().item(((Integer) args[0]).intValue()));
 		} else if ("getImage".equals(method.getName())) {
-		    return node.getNodeName();
+		    if (node instanceof Text) {
+			return ((Text) node).getTextContent();
+		    } else {
+			return null;
+		    }
+		} else if ("jjtGetParent".equals(method.getName())) {
+		    Node parent = node.getParentNode();
+		    if (parent != null && !(parent instanceof Document)) {
+			return createProxy(parent);
+		    } else {
+			return null;
+		    }
+		} else if ("getAttributeIterator".equals(method.getName())) {
+		    final NamedNodeMap attributes = node.getAttributes();
+		    return new Iterator<Attribute>() {
+			private int index;
+
+			public boolean hasNext() {
+			    return attributes != null && index < attributes.getLength();
+			}
+
+			public Attribute next() {
+			    Node attributeNode = attributes.item(index++);
+			    return new Attribute(createProxy(node), attributeNode.getNodeName(), attributeNode
+				    .getNodeValue());
+			}
+
+			public void remove() {
+			    throw new UnsupportedOperationException();
+			}
+		    };
 		} else if ("getBeginLine".equals(method.getName())) {
 		    return new Integer(-1);
 		} else if ("getBeginColumn".equals(method.getName())) {
@@ -103,13 +138,6 @@ public class XmlParser {
 		    return new Integer(-1);
 		} else if ("getEndColumn".equals(method.getName())) {
 		    return new Integer(-1);
-		} else if ("jjtGetParent".equals(method.getName())) {
-		    Node parent = node.getParentNode();
-		    if (parent != null && !(parent instanceof Document)) {
-			return createProxy(parent);
-		    } else {
-			return null;
-		    }
 		}
 		throw new UnsupportedOperationException("Method not supported for XmlNode: " + method);
 	    }
@@ -117,7 +145,7 @@ public class XmlParser {
 	    else {
 		if ("toString".equals(method.getName())) {
 		    if (node instanceof Element) {
-			return ((Element)node).getNodeName();
+			return ((Element) node).getNodeName();
 		    }
 		}
 		Object result = method.invoke(node, args);
