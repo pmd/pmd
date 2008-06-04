@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.Rule;
