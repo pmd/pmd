@@ -88,6 +88,7 @@ public class PMD {
     public void processFile(Reader reader, RuleSets ruleSets, RuleContext ctx,
                             SourceType sourceType) throws PMDException {
         try {
+        	// Coarse check to see if any RuleSet applies to files, will need to do a finer RuleSet specific check later
         	if (ruleSets.applies(ctx.getSourceCodeFile())) {
 	            SourceTypeHandler sourceTypeHandler = SourceTypeHandlerBroker.getVisitorsFactoryForSourceType(sourceType);
 	            ctx.setSourceType(sourceType);

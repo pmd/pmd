@@ -133,7 +133,10 @@ public class RuleSets {
         ruleChain.apply(acuList, ctx, language);
         for (RuleSet ruleSet: ruleSets) {
             if (applies(language, ruleSet.getLanguage())) {
-                ruleSet.apply(acuList, ctx);
+		// This is the finer RuleSet specific check
+		if (ruleSet.applies(ctx.getSourceCodeFile())) {
+		    ruleSet.apply(acuList, ctx);
+		}
             }
         }
     }
