@@ -138,6 +138,8 @@ public class XmlParser {
 		    return new Integer(-1);
 		} else if ("getEndColumn".equals(method.getName())) {
 		    return new Integer(-1);
+		} else if ("getNode".equals(method.getName())) {
+		    return node;
 		}
 		throw new UnsupportedOperationException("Method not supported for XmlNode: " + method);
 	    }
