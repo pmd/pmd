@@ -88,7 +88,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 	Map<VariableNameDeclaration, List<NameOccurrence>> decls = node.getScope().getVariableDeclarations();
 	Node rootNode = null;
 	// only want the constructor flagged if it's really containing strings
-	if (concurrentCount == 1) {
+	if (concurrentCount >= 1) {
 	    rootNode = node;
 	}
 	for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry : decls.entrySet()) {

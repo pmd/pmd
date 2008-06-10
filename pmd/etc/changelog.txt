@@ -81,6 +81,10 @@ TODO - Release blockers - Must implement before this release can be finished
      one of the pervasive things in the PMD code base.  Is the extra work of using
      the Node interface with properly with generics, worth the omission of
      occasional some casting?
+   o Need the modify RuleViolation, RuleViolationFactory, and Rule base classes
+     to recognize the difference between violations which require a Node, and
+     those without.  This is to make certain that Rules which require and do not
+     pass, will die with an error because they are buggy and need to be fixed.
 ---
 
 This version of PMD breaks API compatibility with prior versions of PMD, as well
@@ -239,6 +243,7 @@ Added file encoding option to CPD GUI, which already existed for the command lin
 Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +
 Fixed bug 1928009 - Error using migration ruleset in PMD 4.2
 Fixed bug 1808110 - PreserveStackTrace
+Fixed bug 1988829 - Violation reported without source file name (actually a fix to ConsecutiveLiteralAppends)
 ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
 bin and java14/bin scripts:
 	retroweaver version was not correct in java14/bin scripts

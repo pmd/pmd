@@ -31,6 +31,7 @@ public abstract class AbstractRuleViolation implements RuleViolation {
     protected String methodName;
     protected String variableName;
 
+    // FUTURE Fix to understand when a violation _must_ have a Node, and when it must not (to prevent erroneous Rules silently logging w/o a Node).  Modify RuleViolationFactory to support identifying without a Node, and update Rule base classes too.
     public AbstractRuleViolation(Rule rule, RuleContext ctx, Node node) {
 	this(rule, ctx, node, rule.getMessage());
     }
