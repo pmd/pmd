@@ -2,6 +2,7 @@
 
 Fixes for exclude-pattern
 Updates to RuleChain to honor RuleSet exclude-pattern
+Fixed bug 1988829 - Violation reported without source file name (actually a fix to ConsecutiveLiteralAppends)
 
 May 20, 2008 - 4.2.2:
 
