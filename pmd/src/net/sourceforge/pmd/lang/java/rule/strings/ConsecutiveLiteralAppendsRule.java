@@ -167,7 +167,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
     private int processAdditive(Object data, int concurrentCount, Node sn, Node rootNode) {
 	ASTAdditiveExpression additive = sn.getFirstChildOfType(ASTAdditiveExpression.class);
-	if (additive == null) {
+        // The additive expression must of be type String to count
+        if (additive == null || (additive.getType() != null && !TypeHelper.isA(additive, String.class))) {
 	    return 0;
 	}
 	int count = concurrentCount;

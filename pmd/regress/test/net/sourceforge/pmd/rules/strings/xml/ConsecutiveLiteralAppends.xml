@@ -799,4 +799,21 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+44, Appending of not String additive expressions
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(int i) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Hello");
+        sb.append(i + 1);
+        sb.append(1 + i);
+        sb.append("World");
+    }
+}
+     ]]></code>
+    </test-code>
 </test-data>
