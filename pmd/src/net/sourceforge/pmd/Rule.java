@@ -138,22 +138,6 @@ public interface Rule {
     String getPriorityName();
 
     /**
-     * TODO What is this?
-     * 
-     * @deprecated Don't know what this is for, so deprecating it.
-     */
-    @Deprecated
-    boolean include();
-
-    /**
-     * TODO What is this?
-     * 
-     * @deprecated Don't know what this is for, so deprecating it.
-     */
-    @Deprecated
-    void setInclude(boolean include);
-
-    /**
      * Get all properties for this Rule.
      * 
      * @return the properties for the rule

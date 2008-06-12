@@ -226,6 +226,10 @@ The following is relatively complete list of the major changes (this may not be
 	   Renamed - net.sourceforge.pmd.util.ConsoleLogHandler to net.sourceforge.pmd.util.log.ConsoleLogHandler
 	   Renamed - net.sourceforge.pmd.util.PmdLogFormatter to net.sourceforge.pmd.util.log.PmdLogFormatter
 
+   API Change - Changes to Rule interface
+      Removed - boolean Rule.include()
+      Removed - void Rule.setInclude(boolean)
+
 New features:
 
 New Language 'xml' added, for writing XPathRules against XML documents

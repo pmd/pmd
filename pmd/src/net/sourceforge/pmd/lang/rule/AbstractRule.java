@@ -37,8 +37,6 @@ public abstract class AbstractRule implements Rule {
     private List<String> examples = new ArrayList<String>();
     private String externalInfoUrl;
     private int priority = LOWEST_PRIORITY;
-    // FUTURE Remove when cleaning up @deprecated
-    private boolean include;
     private Properties properties = new Properties();
     private boolean usesDFA;
     private boolean usesTypeResolution;
@@ -129,16 +127,6 @@ public abstract class AbstractRule implements Rule {
 
     public String getPriorityName() {
 	return PRIORITIES[getPriority() - 1];
-    }
-
-    // FUTURE Remove when cleaning up @deprecated
-    public boolean include() {
-	return include;
-    }
-
-    // FUTURE Remove when cleaning up @deprecated
-    public void setInclude(boolean include) {
-	this.include = include;
     }
 
     /**

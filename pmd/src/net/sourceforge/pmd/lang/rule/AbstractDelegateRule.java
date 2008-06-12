@@ -108,14 +108,6 @@ public class AbstractDelegateRule implements Rule {
 	return rule.getPriorityName();
     }
 
-    public boolean include() {
-	return rule.include();
-    }
-
-    public void setInclude(boolean include) {
-	rule.setInclude(include);
-    }
-
     public Properties getProperties() {
 	return rule.getProperties();
     }
