@@ -13,6 +13,7 @@ import java.util.Properties;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RulePriorityEnum;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -36,7 +37,7 @@ public abstract class AbstractRule implements Rule {
     private String description;
     private List<String> examples = new ArrayList<String>();
     private String externalInfoUrl;
-    private int priority = LOWEST_PRIORITY;
+    private RulePriorityEnum priority = RulePriorityEnum.LOW;
     private Properties properties = new Properties();
     private boolean usesDFA;
     private boolean usesTypeResolution;
@@ -117,16 +118,12 @@ public abstract class AbstractRule implements Rule {
 	this.externalInfoUrl = externalInfoUrl;
     }
 
-    public int getPriority() {
+    public RulePriorityEnum getPriority() {
 	return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(RulePriorityEnum priority) {
 	this.priority = priority;
-    }
-
-    public String getPriorityName() {
-	return PRIORITIES[getPriority() - 1];
     }
 
     /**
@@ -439,7 +436,7 @@ public abstract class AbstractRule implements Rule {
 
 	if (equality) {
 	    Rule that = (Rule) o;
-	    equality = this.getName().equals(that.getName()) && this.getPriority() == that.getPriority()
+	    equality = this.getName().equals(that.getName()) && this.getPriority().equals(that.getPriority())
 		    && this.getProperties().equals(that.getProperties());
 	}
 
@@ -452,7 +449,7 @@ public abstract class AbstractRule implements Rule {
     @Override
     public int hashCode() {
 	return this.getClass().getName().hashCode() + (this.getName() != null ? this.getName().hashCode() : 0)
-		+ this.getPriority() + (this.getProperties() != null ? this.getProperties().hashCode() : 0);
+		+ this.getPriority().hashCode() + (this.getProperties() != null ? this.getProperties().hashCode() : 0);
     }
 
     public static Map<String, PropertyDescriptor> asFixedMap(PropertyDescriptor[] descriptors) {

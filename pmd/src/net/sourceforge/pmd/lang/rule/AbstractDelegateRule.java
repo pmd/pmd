@@ -9,6 +9,7 @@ import java.util.Properties;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RulePriorityEnum;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -96,16 +97,12 @@ public class AbstractDelegateRule implements Rule {
 	rule.setExternalInfoUrl(url);
     }
 
-    public int getPriority() {
+    public RulePriorityEnum getPriority() {
 	return rule.getPriority();
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(RulePriorityEnum priority) {
 	rule.setPriority(priority);
-    }
-
-    public String getPriorityName() {
-	return rule.getPriorityName();
     }
 
     public Properties getProperties() {

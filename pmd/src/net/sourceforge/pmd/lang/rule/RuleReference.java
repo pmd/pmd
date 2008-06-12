@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import net.sourceforge.pmd.RulePriorityEnum;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -23,7 +24,7 @@ public class RuleReference extends AbstractDelegateRule {
 	private String description;
 	private List<String> examples;
 	private String externalInfoUrl;
-	private Integer priority;
+	private RulePriorityEnum priority;
 	private RuleSetReference ruleSetReference;
 
 	public String getOverriddenName() {
@@ -129,12 +130,12 @@ public class RuleReference extends AbstractDelegateRule {
 		}
 	}
 
-	public Integer getOverriddenPriority() {
+	public RulePriorityEnum getOverriddenPriority() {
 		return priority;
 	}
 
 	@Override
-	public void setPriority(int priority) {
+	public void setPriority(RulePriorityEnum priority) {
 		// Only override if different than current value, or if already overridden.
 		if (priority != super.getPriority() || this.priority != null) {
 			this.priority = priority;

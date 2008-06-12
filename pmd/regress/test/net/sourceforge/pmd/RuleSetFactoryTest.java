@@ -31,6 +31,7 @@ import javax.xml.parsers.SAXParserFactory;
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.RulePriorityEnum;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -129,7 +130,7 @@ public class RuleSetFactoryTest {
 
 	@Test
 	public void testSingleRuleWithPriority() {
-		assertEquals(3, loadFirstRule(PRIORITY).getPriority());
+		assertEquals(RulePriorityEnum.MEDIUM, loadFirstRule(PRIORITY).getPriority());
 	}
 
 	@Test
@@ -178,7 +179,7 @@ public class RuleSetFactoryTest {
 		assertEquals("Test description override", r.getDescription());
 		assertEquals("Test example override", r.getExample());
 		assertEquals("Test that both example are stored", 2, r.getExamples().size());
-		assertEquals(3, r.getPriority());
+		assertEquals(RulePriorityEnum.MEDIUM, r.getPriority());
 		assertTrue(r.hasProperty("test2"));
 		assertEquals("override2", r.getStringProperty("test2"));
 		assertTrue(r.hasProperty("test3"));
@@ -207,9 +208,9 @@ public class RuleSetFactoryTest {
 	@Test
 	public void testSetPriority() {
 		RuleSetFactory rsf = new RuleSetFactory();
-		rsf.setMinimumPriority(2);
+		rsf.setMinimumPriority(RulePriorityEnum.MEDIUM_HIGH);
 		assertEquals(0, rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes())).size());
-		rsf.setMinimumPriority(4);
+		rsf.setMinimumPriority(RulePriorityEnum.MEDIUM_LOW);
 		assertEquals(1, rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes())).size());
 	}
 

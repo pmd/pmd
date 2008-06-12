@@ -137,7 +137,7 @@ public class RuleSetWriter {
 				String message = ruleReference.getOverriddenMessage();
 				String externalInfoUrl = ruleReference.getOverriddenExternalInfoUrl();
 				String description = ruleReference.getOverriddenDescription();
-				Integer priority = ruleReference.getOverriddenPriority();
+				RulePriorityEnum priority = ruleReference.getOverriddenPriority();
 				Properties properties = ruleReference.getOverriddenProperties();
 				List<String> examples = ruleReference.getOverriddenExamples();
 				return createSingleRuleElement(name, null, ref, message, externalInfoUrl, null, null, null,
@@ -152,7 +152,7 @@ public class RuleSetWriter {
 
 	private Element createSingleRuleElement(String name, String since, String ref, String message,
 			String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution, String description,
-			Integer priority, Properties properties, List<String> examples) {
+			RulePriorityEnum priority, Properties properties, List<String> examples) {
 		Element ruleElement = document.createElement("rule");
 		if (name != null) {
 			ruleElement.setAttribute("name", name);
@@ -220,8 +220,8 @@ public class RuleSetWriter {
 		return createCDATASectionElement("example", example);
 	}
 
-	private Element createPriorityElement(Integer priority) {
-		return createTextElement("priority", priority.toString());
+	private Element createPriorityElement(RulePriorityEnum priority) {
+		return createTextElement("priority", String.valueOf(priority.getPriority()));
 	}
 
 	private Element createPropertiesElement(Properties properties) {

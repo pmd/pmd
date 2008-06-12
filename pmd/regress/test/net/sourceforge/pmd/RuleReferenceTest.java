@@ -3,6 +3,7 @@ package test.net.sourceforge.pmd;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import junit.framework.JUnit4TestAdapter;
+import net.sourceforge.pmd.RulePriorityEnum;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
@@ -28,7 +29,7 @@ public class RuleReferenceTest {
 		rule.setDescription("description1");
 		rule.addExample("example1");
 		rule.setExternalInfoUrl("externalInfoUrl1");
-		rule.setPriority(1);
+		rule.setPriority(RulePriorityEnum.HIGH);
 
 		RuleReference ruleReference = new RuleReference();
 		ruleReference.setRule(rule);
@@ -38,7 +39,7 @@ public class RuleReferenceTest {
 		ruleReference.setDescription("description2");
 		ruleReference.addExample("example2");
 		ruleReference.setExternalInfoUrl("externalInfoUrl2");
-		ruleReference.setPriority(2);
+		ruleReference.setPriority(RulePriorityEnum.MEDIUM_HIGH);
 
 		assertEquals("Override failed", "name2", ruleReference.getName());
 		assertEquals("Override failed", "name2", ruleReference.getOverriddenName());
@@ -62,8 +63,8 @@ public class RuleReferenceTest {
 		assertEquals("Override failed", "externalInfoUrl2", ruleReference.getExternalInfoUrl());
 		assertEquals("Override failed", "externalInfoUrl2", ruleReference.getOverriddenExternalInfoUrl());
 
-		assertEquals("Override failed", 2, ruleReference.getPriority());
-		assertEquals("Override failed", (Integer)2, ruleReference.getOverriddenPriority());
+		assertEquals("Override failed", RulePriorityEnum.MEDIUM_HIGH, ruleReference.getPriority());
+		assertEquals("Override failed", RulePriorityEnum.MEDIUM_HIGH, ruleReference.getOverriddenPriority());
 	}
 
 	@Test
@@ -75,7 +76,7 @@ public class RuleReferenceTest {
 		rule.setDescription("description1");
 		rule.addExample("example1");
 		rule.setExternalInfoUrl("externalInfoUrl1");
-		rule.setPriority(1);
+		rule.setPriority(RulePriorityEnum.HIGH);
 
 		RuleReference ruleReference = new RuleReference();
 		ruleReference.setRule(rule);
@@ -85,7 +86,7 @@ public class RuleReferenceTest {
 		ruleReference.setDescription("description1");
 		ruleReference.addExample("example1");
 		ruleReference.setExternalInfoUrl("externalInfoUrl1");
-		ruleReference.setPriority(1);
+		ruleReference.setPriority(RulePriorityEnum.HIGH);
 
 		assertEquals("Override failed", "name1", ruleReference.getName());
 		assertNull("Override failed", ruleReference.getOverriddenName());
@@ -107,7 +108,7 @@ public class RuleReferenceTest {
 		assertEquals("Override failed", "externalInfoUrl1", ruleReference.getExternalInfoUrl());
 		assertNull("Override failed", ruleReference.getOverriddenExternalInfoUrl());
 
-		assertEquals("Override failed", 1, ruleReference.getPriority());
+		assertEquals("Override failed", RulePriorityEnum.HIGH, ruleReference.getPriority());
 		assertNull("Override failed", ruleReference.getOverriddenPriority());
 	}
 

@@ -21,6 +21,7 @@ import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RulePriorityEnum;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
@@ -51,7 +52,7 @@ public class PMDTask extends Task {
     private Path auxClasspath;
     private List<Formatter> formatters = new ArrayList<Formatter>();
     private List<FileSet> filesets = new ArrayList<FileSet>();
-    private int minPriority = Rule.LOWEST_PRIORITY;
+    private RulePriorityEnum minPriority = RulePriorityEnum.LOW;
     private boolean shortFilenames;
     private String ruleSetFiles;
     private String encoding = System.getProperty("file.encoding");
@@ -109,7 +110,7 @@ public class PMDTask extends Task {
     }
 
     public void setMinimumPriority(int minPriority) {
-        this.minPriority = minPriority;
+        this.minPriority = RulePriorityEnum.valueOf(minPriority);
     }
 
     public void addFileset(FileSet set) {

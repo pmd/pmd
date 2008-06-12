@@ -35,7 +35,7 @@ public class CommandLineOptions {
     private String encoding = new InputStreamReader(System.in).getEncoding();
     private String linePrefix;
     private String linkPrefix;
-    private int minPriority = Rule.LOWEST_PRIORITY;
+    private RulePriorityEnum minPriority = RulePriorityEnum.LOW;
     private boolean benchmark;
 	private String xsltFilename;
 	private String auxClasspath;
@@ -91,10 +91,10 @@ public class CommandLineOptions {
                 linkPrefix = args[++i];
             } else if (args[i].equals("-minimumpriority")) {
                 try {
-                    minPriority = Integer.parseInt(args[++i]);
+                    minPriority = RulePriorityEnum.valueOf(Integer.parseInt(args[++i]));
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException(MessageFormat.format(
-                            "minimumpriority parameter must be a whole number, {0} received", args[i]));
+                            "minimumpriority parameter must be a whole number between " + RulePriorityEnum.HIGH + " and " + RulePriorityEnum.LOW + ", {0} received", args[i]));
                 }
             } else if (args[i].equals("-reportfile")) {
                 reportFile = args[++i];
@@ -199,7 +199,7 @@ public class CommandLineOptions {
         return shortNamesEnabled;
     }
 
-    public int getMinPriority() {
+    public RulePriorityEnum getMinPriority() {
         return minPriority;
     }
 

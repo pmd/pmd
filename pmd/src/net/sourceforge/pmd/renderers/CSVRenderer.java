@@ -40,7 +40,7 @@ public class CSVRenderer extends OnTheFlyRenderer {
             quoteAndCommify(buf, Integer.toString(violationCount));
             quoteAndCommify(buf, rv.getPackageName());
             quoteAndCommify(buf, rv.getFilename());
-            quoteAndCommify(buf, Integer.toString(rv.getRule().getPriority()));
+            quoteAndCommify(buf, Integer.toString(rv.getRule().getPriority().getPriority()));
             quoteAndCommify(buf, Integer.toString(rv.getBeginLine()));
             quoteAndCommify(buf, StringUtil.replaceString(rv.getDescription(), '\"', "'"));
             quoteAndCommify(buf, rv.getRule().getRuleSetName());

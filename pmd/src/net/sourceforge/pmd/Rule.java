@@ -13,11 +13,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 //FUTURE Implement Cloneable and clone()
 public interface Rule {
-    // FUTURE Use enum
-    public static final int LOWEST_PRIORITY = 5;
-
-    // FUTURE Use enum
-    public static final String[] PRIORITIES = { "High", "Medium High", "Medium", "Medium Low", "Low" };
 
     /**
      * Name of the property to universally suppress violations with messages matching a regular expression.
@@ -125,17 +120,12 @@ public interface Rule {
     /**
      * Get the priority of this Rule.
      */
-    int getPriority();
+    RulePriorityEnum getPriority();
 
     /**
      * Set the priority of this Rule.
      */
-    void setPriority(int priority);
-
-    /**
-     * Get a name for the priority of this Rule.
-     */
-    String getPriorityName();
+    void setPriority(RulePriorityEnum priority);
 
     /**
      * Get all properties for this Rule.

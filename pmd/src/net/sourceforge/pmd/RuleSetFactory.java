@@ -29,7 +29,7 @@ import org.xml.sax.SAXException;
  */
 public class RuleSetFactory {
 
-	private int minPriority = Rule.LOWEST_PRIORITY;
+	private RulePriorityEnum minPriority = RulePriorityEnum.LOW;
 
 	/**
 	 * Set the minimum rule priority threshold for all Rules which are loaded
@@ -37,7 +37,7 @@ public class RuleSetFactory {
 	 * 
 	 * @param minPriority The minimum priority.
 	 */
-	public void setMinimumPriority(int minPriority) {
+	public void setMinimumPriority(RulePriorityEnum minPriority) {
 		this.minPriority = minPriority;
 	}
 
@@ -285,7 +285,7 @@ public class RuleSetFactory {
 		RuleSetFactory ruleSetFactory = new RuleSetFactory();
 		RuleSet otherRuleSet = ruleSetFactory.createRuleSet(ResourceLoader.loadResourceAsStream(ref));
 		for (Rule rule : otherRuleSet.getRules()) {
-			if (!ruleSetReference.getExcludes().contains(rule.getName()) && rule.getPriority() <= minPriority) {
+			if (!ruleSetReference.getExcludes().contains(rule.getName()) && rule.getPriority().compareTo(minPriority) <= 0) {
 				RuleReference ruleReference = new RuleReference();
 				ruleReference.setRuleSetReference(ruleSetReference);
 				ruleReference.setRule(rule);
@@ -335,7 +335,7 @@ public class RuleSetFactory {
 				} else if (node.getNodeName().equals("example")) {
 					rule.addExample(parseTextNode(node));
 				} else if (node.getNodeName().equals("priority")) {
-					rule.setPriority(Integer.parseInt(parseTextNode(node).trim()));
+					rule.setPriority(RulePriorityEnum.valueOf(Integer.parseInt(parseTextNode(node).trim())));
 				} else if (node.getNodeName().equals("properties")) {
 					Properties p = new Properties();
 					parsePropertiesNode(p, node);
@@ -345,7 +345,7 @@ public class RuleSetFactory {
 				}
 			}
 		}
-		if (rule.getPriority() <= minPriority) {
+		if (rule.getPriority().compareTo(minPriority) <= 0) {
 			ruleSet.addRule(rule);
 		}
 	}
@@ -398,7 +398,7 @@ public class RuleSetFactory {
 				} else if (node.getNodeName().equals("example")) {
 					ruleReference.addExample(parseTextNode(node));
 				} else if (node.getNodeName().equals("priority")) {
-					ruleReference.setPriority(Integer.parseInt(parseTextNode(node)));
+					ruleReference.setPriority(RulePriorityEnum.valueOf(Integer.parseInt(parseTextNode(node))));
 				} else if (node.getNodeName().equals("properties")) {
 					Properties p = new Properties();
 					parsePropertiesNode(p, node);
@@ -407,7 +407,7 @@ public class RuleSetFactory {
 			}
 		}
 
-		if (externalRule.getPriority() <= minPriority) {
+		if (externalRule.getPriority().compareTo(minPriority) <= 0) {
 			ruleSet.addRule(ruleReference);
 		}
 	}

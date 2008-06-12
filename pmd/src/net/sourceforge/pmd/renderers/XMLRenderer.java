@@ -65,7 +65,7 @@ public class XMLRenderer extends OnTheFlyRenderer {
             maybeAdd("variable", rv.getVariableName(), buf);
             maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl(), buf);
             buf.append(" priority=\"");
-            buf.append(rv.getRule().getPriority());
+            buf.append(rv.getRule().getPriority().getPriority());
             buf.append("\">").append(PMD.EOL);
             StringUtil.appendXmlEscaped(buf, rv.getDescription());
 

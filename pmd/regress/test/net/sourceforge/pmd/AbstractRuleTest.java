@@ -13,6 +13,7 @@ import java.util.Map;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.RulePriorityEnum;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -37,7 +38,7 @@ public class AbstractRuleTest {
         public MyRule() {
             setName("MyRule");
             setMessage("my rule msg");
-            setPriority(3);
+            setPriority(RulePriorityEnum.MEDIUM);
             setProperty(pd, "value");
         }
     }
@@ -54,7 +55,7 @@ public class AbstractRuleTest {
 		public MyOtherRule() {
             setName("MyOtherRule");
             setMessage("my other rule");
-            setPriority(3);
+            setPriority(RulePriorityEnum.MEDIUM);
             setProperty(pd, "value");
         }
     }
@@ -156,7 +157,7 @@ public class AbstractRuleTest {
     public void testEquals7() {
         MyRule r1 = new MyRule();
         MyRule r2 = new MyRule();
-        r2.setPriority(1);
+        r2.setPriority(RulePriorityEnum.HIGH);
         assertFalse("Rules with different priority levels cannot be equal", r1.equals(r2));
     }
 
