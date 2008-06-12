@@ -9,6 +9,12 @@
   <description>
 Rules to check PMD itself
   </description>
+  
+    <exclude-pattern>.*net/sourceforge/pmd/lang/ast/JavaCharStream.java</exclude-pattern>
+    <exclude-pattern>.*net/sourceforge/pmd/lang/ast/SimpleCharStream.java</exclude-pattern>
+    <exclude-pattern>.*net/sourceforge/pmd/lang/ast/TokenMgrError.java</exclude-pattern>
+    <exclude-pattern>.*lang/.*/ast/.*.java</exclude-pattern>
+    <exclude-pattern>.*cppast/.*.java</exclude-pattern>
 
     <rule ref="rulesets/basic.xml/AvoidMultipleUnaryOperators"/>
   
