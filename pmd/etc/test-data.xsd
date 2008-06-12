@@ -67,7 +67,7 @@
     <xs:element name="source-type">
       <xs:simpleType>
         <xs:annotation>
-          <xs:documentation>Primary definition in SourceType.java</xs:documentation>
+          <xs:documentation>Primary definition in LanguageVersion.java</xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
           <xs:enumeration value="java 1.3"/>

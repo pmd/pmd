@@ -145,14 +145,14 @@ public class PMD {
     }
 
     /**
-     * Get the SourceType of the source file with given name. This depends on the fileName
+     * Get the LanguageVersion of the source file with given name. This depends on the fileName
      * extension, and the java version.
      * <p/>
      * For compatibility with older code that does not always pass in a correct filename,
      * unrecognized files are assumed to be java files.
      *
      * @param fileName Name of the file, can be absolute, or simple.
-     * @return the SourceType
+     * @return the LanguageVersion
      */
     private LanguageVersion getLanguageVersionOfFile(String fileName) {
 	LanguageVersion languageVersion = languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
