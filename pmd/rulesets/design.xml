@@ -1649,6 +1649,49 @@ public class abstract Example {
             ]]>
         </example>
     </rule>
+    
+
+	<rule 	name="LogicInversion"
+			since="5.0"
+        	language="java"
+        	message="Use opposite operator instead of the logic compliment operator."
+        	class="net.sourceforge.pmd.lang.rule.XPathRule"
+		externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#LogicInversion">
+    <description>Use opposite operator instead of negating the whole expression with a logic compliment operator.</description>
+    <properties>
+       <property name="xpath">
+          <value>
+          <![CDATA[
+//UnaryExpressionNotPlusMinus[@Image='!']/PrimaryExpression/PrimaryPrefix/Expression[EqualityExpression or RelationalExpression]
+          ]]>
+          </value>
+       </property>
+    </properties>
+    <priority>3</priority>
+    <example>
+    <![CDATA[
+public class Foo {
+
+   public boolean bar(int a, int b) {
+
+      if (!(a == b)) // use !=
+         return false;
+
+      if (!(a < b)) // use >=
+         return false;
+
+      return true;
+
+   }
+
+}
+    ]]>
+    </example>
+  </rule>
+
+    
+    
+    
 <!--
 	<rule 	name="TooManyHttpFilter"
 	         since="4.2"

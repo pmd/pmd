@@ -29,6 +29,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule("design", "IdempotentOperations");
         addRule("design", "ImmutableField");
         addRule("design", "InstantiationToGetClass");
+        addRule("design", "LogicInversion");
         addRule("design", "MissingBreakInSwitch");
         addRule("design", "MissingStaticMethodInNonInstantiatableClass");
         addRule("design", "NonCaseLabelInSwitchStatement");
