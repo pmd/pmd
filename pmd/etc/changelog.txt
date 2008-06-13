@@ -6,6 +6,8 @@ Upgrading UselessOperationOnImmutable to detect more use cases, especially on St
 Fixed bug 1988829 - Violation reported without source file name (actually a fix to ConsecutiveLiteralAppends)
 Fixed bug 1989814 - false +: ConsecutiveLiteralAppends
 
+New rule:
+	Basic ruleset:	EmptyInitializer
 
 May 20, 2008 - 4.2.2:
 

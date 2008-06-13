@@ -27,6 +27,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule("basic", "EmptyCatchBlock");
         addRule("basic", "EmptyFinallyBlock");
         addRule("basic", "EmptyIfStmt");
+        addRule("basic", "EmptyInitializer");
         addRule("basic", "EmptyStatementNotInLoop");
         addRule("basic", "EmptyStaticInitializer");
         addRule("basic", "EmptySwitchStatements");

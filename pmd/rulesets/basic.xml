@@ -1200,5 +1200,36 @@ public class Test {
         </example>
     </rule>
 
+    <rule name="EmptyInitializer"
+	  since="5.0"
+          message="Empty initializer was found"
+          class="net.sourceforge.pmd.rules.XPathRule"
+          externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyInitializer">
+       <description>
+An empty initializer was found.
+       </description>
+       <priority>3</priority>
+         <properties>
+             <property name="xpath">
+                 <value>
+<![CDATA[
+//Initializer/Block[count(*)=0]
+]]>
+                 </value>
+             </property>
+         </properties>
+       <example>
+   <![CDATA[
+public class Foo {
+
+   static {} // Why ?
+
+   {} // Again, why ?
+
+}
+    ]]>
+    </example>
+  </rule>
+
 </ruleset>
 
