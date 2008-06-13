@@ -6,6 +6,8 @@ package net.sourceforge.pmd;
 import java.util.List;
 import java.util.Properties;
 
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -23,6 +25,38 @@ public interface Rule {
      * Name of the property to universally suppress violations on nodes which match a given relative XPath expression.
      */
     public static final String VIOLATION_SUPPRESS_XPATH_PROPERTY = "violationSuppressXPath";
+
+    /**
+     * Get the Language of this Rule.
+     */
+    Language getLanguage();
+
+    /**
+     * Set the Language of this Rule.
+     */
+    void setLanguage(Language language);
+
+    /**
+     * Get the minimum LanguageVersion to which this Rule applies.  If this
+     * value is <code>null</code> it indicates there is no minimum bound.
+     */
+    LanguageVersion getMinimumLanguageVersion();
+
+    /**
+     * Set the minimum LanguageVersion to which this Rule applies.
+     */
+    void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion);
+
+    /**
+     * Get the maximum LanguageVersion to which this Rule applies.  If this
+     * value is <code>null</code> it indicates there is no maximum bound.
+     */
+    LanguageVersion getMaximumLanguageVersion();
+
+    /**
+     * Set the maximum LanguageVersion to which this Rule applies.
+     */
+    void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion);
 
     /**
      * Get the name of this Rule.

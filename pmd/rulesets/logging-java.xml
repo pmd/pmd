@@ -32,6 +32,7 @@ class Foo{
      </rule>
 
      <rule name="LoggerIsNotStaticFinal"
+   		language="java"
      		since="2.0"
          message="The Logger variable declaration does not contain the static and final modifiers"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -102,6 +103,7 @@ first -->
 
 
     <rule name="SystemPrintln"
+   		language="java"
     		since="2.1"
          message="System.out.print is used"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -138,6 +140,7 @@ class Foo{
      </rule>
 
     <rule  name="AvoidPrintStackTrace"
+   		language="java"
     		  since="3.2"
            message="Avoid printStackTrace(); use a logger call instead."
            class="net.sourceforge.pmd.lang.rule.XPathRule"

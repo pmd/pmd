@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang;
 
 import java.util.Collections;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.cpp.CppHandler;
 import net.sourceforge.pmd.lang.java.Java13Handler;
@@ -168,7 +169,7 @@ public enum LanguageVersion {
      * terse name.
      * @param terseName The LanguageVersion terse name.
      * @return The LanguageVersion with this terse name, <code>null</code> if there is
-     * no Language with this terse name.
+     * no LanguageVersion with this terse name.
      */
     public static LanguageVersion findByTerseName(String terseName) {
 	for (LanguageVersion languageVersion : LanguageVersion.values()) {
@@ -177,5 +178,21 @@ public enum LanguageVersion {
 	    }
 	}
 	return null;
+    }
+
+    /**
+     * Return a comma separated list of LanguageVersion terse names.
+     * @param languageVersions The language versions.
+     * @return Comma separated terse names.
+     */
+    public static String commaSeparatedTerseNames(List<LanguageVersion> languageVersions) {
+	StringBuilder builder = new StringBuilder();
+	for (LanguageVersion languageVersion : languageVersions) {
+	    if (builder.length() > 0) {
+		builder.append(", ");
+	    }
+	    builder.append(languageVersion.getTerseName());
+	}
+	return builder.toString();
     }
 }

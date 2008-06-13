@@ -64,6 +64,7 @@ public class Foo {
   </rule>
 
     <rule name="SimplifyBooleanExpressions"
+   		language="java"
     		 since="1.05"
           message="Avoid unnecessary comparisons in boolean expressions"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -96,6 +97,7 @@ public class Bar {
     </rule>
 
   <rule name="SwitchStmtsShouldHaveDefault"
+   		language="java"
   		  since="1.0"
         message="Switch statements should have a default label"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -278,6 +280,7 @@ public class Outer {
     </rule>
 
     <rule name="FinalFieldCouldBeStatic"
+   		language="java"
     		 since="1.1"
           message="This final field could be made static"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -342,6 +345,7 @@ public class Bar {
   </rule>
 
     <rule name="NonStaticInitializer"
+   		language="java"
     		  since="1.5"
            message="Non-static initializers are confusing"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -374,6 +378,7 @@ public class MyClass {
      </rule>
 
     <rule name="DefaultLabelNotLastInSwitchStmt"
+   		language="java"
     		  since="1.5"
            message="The default label should be the last label in a switch statement"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -411,6 +416,7 @@ public class Foo {
      </rule>
 
     <rule name="NonCaseLabelInSwitchStatement"
+   		language="java"
     		  since="1.5"
            message="A non-case label was present in a switch statement"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -449,6 +455,7 @@ public class Foo {
      </rule>
 
     <rule name="OptimizableToArrayCall"
+   		language="java"
     		 since="1.8"
           message="This call to Collection.toArray() may be optimizable"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -490,6 +497,7 @@ class Foo {
 
 
     <rule name="BadComparison"
+   		language="java"
     		 since="1.8"
           message="Avoid equality comparisons with Double.NaN"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -519,6 +527,7 @@ public class Bar {
     </rule>
 
     <rule name="EqualsNull"
+   		language="java"
     			since="1.9"
             message="Avoid using equals() to compare against null"
             class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -588,6 +597,7 @@ public class Foo {
       </rule>
 
     <rule name="InstantiationToGetClass"
+   		language="java"
     		 since="2.0"
           message="Avoid instantiating an object just to call getClass() on it; use the .class public member instead"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -646,6 +656,7 @@ public class Foo {
 
     <rule
         name="SimpleDateFormatNeedsLocale"
+   		language="java"
         since="2.0"
         message="When instantiating a SimpleDateFormat object, specify a Locale"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -702,6 +713,7 @@ public class Foo {
     </rule>
 
     <rule name="UseLocaleWithCaseConversions"
+   		language="java"
     		 since="2.0"
           message="When doing a String.toLowerCase()/toUpperCase() call, use a Locale"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -745,6 +757,7 @@ class Foo {
     </rule>
 
     <rule name="AvoidProtectedFieldInFinalClass"
+   		language="java"
     			 since="2.1"
              message="Avoid protected fields in a final class.  Change to private or package access."
              class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -798,6 +811,7 @@ public class StaticField {
      </rule>
 
     <rule name="MissingStaticMethodInNonInstantiatableClass"
+   		language="java"
     		 since="3.0"
           message="Class cannot be instantiated and does not provide any static methods or fields"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -839,6 +853,7 @@ public class Foo {
 
 
     <rule name="AvoidSynchronizedAtMethodLevel"
+   		language="java"
     		 since="3.0"
           message="Use block level rather than method level synchronization"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -874,6 +889,7 @@ public class Foo {
     </rule>
 
     <rule name="MissingBreakInSwitch"
+   		language="java"
     		 since="3.0"
           message="A switch statement does not contain a break"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -917,6 +933,7 @@ public class Foo {
 
 
     <rule name="UseNotifyAllInsteadOfNotify"
+   		language="java"
     		 since="3.0"
           message="Call Thread.notifyAll() rather than Thread.notify()"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -957,6 +974,7 @@ public class Foo {
     </rule>
 
     <rule name="AvoidInstanceofChecksInCatchClause"
+   		language="java"
     		 since="3.0"
           message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -998,6 +1016,7 @@ try {  // Prefer this:
     </rule>
 
     <rule name="AbstractClassWithoutAbstractMethod"
+   		language="java"
     		 since="3.0"
           message="This abstract class does not have any abstract methods"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -1034,6 +1053,7 @@ public abstract class Foo {
     </rule>
 
     <rule name="SimplifyConditional"
+   		language="java"
     		 since="3.1"
               message="No need to check for null before an instanceof"
               class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -1102,6 +1122,7 @@ class Foo {
 
 
 <rule name="PositionLiteralsFirstInComparisons"
+   		language="java"
   since="3.3"
   message="Position literals first in String comparisons"
   class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -1206,6 +1227,7 @@ public static Foo getFoo() {
 
 
     <rule name="UncommentedEmptyMethod"
+   		language="java"
           since="3.4"
           message="Document empty method"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -1235,6 +1257,7 @@ public void doSomething() {
     </rule>
 
     <rule name="UncommentedEmptyConstructor"
+   		language="java"
           since="3.4"
           message="Document empty constructor"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -1268,6 +1291,7 @@ public Foo() {
     </rule>
 
 <rule name="AvoidConstantsInterface"
+   		language="java"
       since="3.5"
       message="An Interface should be used only to model a behaviour; consider converting this to a class."
       class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -1392,6 +1416,7 @@ Comparing the value of size() to 0 merely duplicates existing behavior.
     </rule>
 
     <rule name="ClassWithOnlyPrivateConstructorsShouldBeFinal"
+   		language="java"
           since="4.1"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="A class which only has private constructors should be final"
@@ -1421,6 +1446,7 @@ public class Foo {  //Should be final
 
 
     <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
+   		language="java"
           since="4.1"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           message="An empty method in an abstract class should be abstract instead"
@@ -1510,6 +1536,7 @@ public class Foo {
     </rule>
 
     <rule	name="ReturnEmptyArrayRatherThanNull"
+   		language="java"
          since="4.2"
         	class="net.sourceforge.pmd.lang.rule.XPathRule"
         	message="Return an empty array rather than 'null'."
@@ -1534,8 +1561,7 @@ public class Foo {
                 </value>
             </property>
         </properties>
-        <example>
-            <![CDATA[
+        <example><![CDATA[
             public class Example
             {
                 // Not a good idea...
@@ -1552,11 +1578,11 @@ public class Foo {
                     return new String[0];
                 }
             }
-            ]]>
-        </example>
+            ]]></example>
     </rule>
 
     <rule	name="AbstractClassWithoutAnyMethod"
+   		language="java"
          since="4.2"
         	class="net.sourceforge.pmd.lang.rule.XPathRule"
         	message="No abstract method which means that the  keyword is most likely used to prevent instantiation. use a private or protected constructor instead."
@@ -1589,6 +1615,7 @@ public class abstract Example {
     </rule>
 
         <rule	name="TooFewBranchesForASwitchStatement"
+   		language="java"
             since="4.2"
 	        	class="net.sourceforge.pmd.lang.rule.XPathRule"
 	        	message="A switch with less than 3 branches is inefficient, use a if statement instead."

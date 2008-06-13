@@ -4,10 +4,8 @@
 	o SimpleNode.dump() needs to be implemented as a Visitor
 
 TODO - Release blockers - Must implement before this release can be finished
-   o Change RuleSets to not specify Language.  Move Language onto Rules.  This
-     will allow mixed Language RuleSets.  Will also allow users to run multiple
-     source files in a single PMD run using a single RuleSet (ie. PMD can sort
-     it all out based on file extension!).
+   o Change RuleSets to not specify Language.  Rule's have already been modified
+     to specify language.
    o Additional changes to Rule organization withing RuleSets as discussed on
      this forum thread:
      http://sourceforge.net/forum/forum.php?thread_id=1323593&forum_id=188194
@@ -85,6 +83,10 @@ TODO - Release blockers - Must implement before this release can be finished
      to recognize the difference between violations which require a Node, and
      those without.  This is to make certain that Rules which require and do not
      pass, will die with an error because they are buggy and need to be fixed.
+   o Rename XML Schema and DTD to ruleset_5_0.dtd and ruleset_5_0.xsd.  This
+     is because of the incompatible changes (e.g. dropping language on RuleSet).
+     Additions to the Schema/DTD shouldn't be a problem going forward as long
+     as they maintain backward compatibility.
 ---
 
 This version of PMD breaks API compatibility with prior versions of PMD, as well
@@ -234,12 +236,19 @@ The following is relatively complete list of the major changes (this may not be
       Removed - Rule.PRIORITIES
       Changed - void Rule.setPriority(int) to void Rule.setPriority(RulePriorityEnum)
       Changed - int Rule.getPriority() to void RulePriorityEnum Rule.getPriority()
+      Added - Rule.setLanguage(Language)
+      Added - Language Rule.getLanguage()
+      Added - Rule.setMinimumLanguageVersion(LanguageVersion)
+      Added - LanguageVersion Rule.getMinimumLanguageVersion()
+      Added - Rule.setMaximumLanguageVersion(LanguageVersion)
+      Added - LanguageVersion Rule.getMaximumLanguageVersion()
 
 New features:
 
 New Language 'xml' added, for writing XPathRules against XML documents
 Rules can now define a 'violationSuppressRegex' property to universally suppress violations with messages matching the given regular expression
 Rules can now define a 'violationSuppressXPath' property to universally suppress violations on nodes which match the given relative XPath expression
+Rules are now directly associated with a corresponding Language, and a can also be associated with a specific Language Version range if desired.
 
 Other changes:
 

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.jsp.rule;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.jsp.ast.ASTAttributeValue;
@@ -31,8 +32,13 @@ import net.sourceforge.pmd.lang.jsp.ast.ASTValueBinding;
 import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.jsp.ast.JspParserVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
-public abstract class AbstractJspRule extends AbstractRule implements JspParserVisitor {
+public abstract class AbstractJspRule extends AbstractRule implements JspParserVisitor, ImmutableLanguage {
+    
+    public AbstractJspRule() {
+	super.setLanguage(Language.JSP);
+    }
 
     @Override
     public void setUsesTypeResolution() {

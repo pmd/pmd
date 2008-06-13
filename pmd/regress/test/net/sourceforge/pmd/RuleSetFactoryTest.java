@@ -37,6 +37,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleSetWriter;
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.rule.unusedcode.UnusedLocalVariableRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.XPathRule;
@@ -202,7 +203,7 @@ public class RuleSetFactoryTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testExternalRef() throws IllegalArgumentException {
+    public void testIncorrectExternalRef() throws IllegalArgumentException {
 	loadFirstRule(REF_MISPELLED_XREF);
     }
 
@@ -213,6 +214,44 @@ public class RuleSetFactoryTest {
 	assertEquals(0, rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes())).size());
 	rsf.setMinimumPriority(RulePriorityEnum.MEDIUM_LOW);
 	assertEquals(1, rsf.createRuleSet(new ByteArrayInputStream(SINGLE_RULE.getBytes())).size());
+    }
+
+    @Test
+    public void testLanguage() {
+	Rule r = loadFirstRule(LANGUAGE);
+	assertEquals(Language.JAVA, r.getLanguage());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIncorrectLanguage() {
+	loadFirstRule(INCORRECT_LANGUAGE);
+    }
+
+    @Test
+    public void testMinimumLanugageVersion() {
+	Rule r = loadFirstRule(MINIMUM_LANGUAGE_VERSION);
+	assertEquals(LanguageVersion.JAVA_14, r.getMinimumLanguageVersion());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIncorrectMinimumLanugageVersion() {
+	loadFirstRule(INCORRECT_MINIMUM_LANGUAGE_VERSION);
+    }
+
+    @Test
+    public void testMaximumLanugageVersion() {
+	Rule r = loadFirstRule(MAXIMUM_LANGUAGE_VERSION);
+	assertEquals(LanguageVersion.JAVA_17, r.getMaximumLanguageVersion());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testIncorrectMaximumLanugageVersion() {
+	loadFirstRule(INCORRECT_MAXIMUM_LANGUAGE_VERSION);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInvertedMinimumMaximumLanugageVersions() {
+	loadFirstRule(INVERTED_MINIMUM_MAXIMUM_LANGUAGE_VERSIONS);
     }
 
     @Test
@@ -692,6 +731,48 @@ public class RuleSetFactoryTest {
 	    + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
 	    + "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">"
 	    + "<priority>3</priority>" + PMD.EOL + "</rule></ruleset>";
+
+    private static final String LANGUAGE = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
+	    + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
+	    + "message=\"avoid the mock rule\" " + PMD.EOL
+	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" language=\"java\">" + PMD.EOL + "</rule></ruleset>";
+
+    private static final String INCORRECT_LANGUAGE = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
+	    + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" "
+	    + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
+	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL + " language=\"bogus\">" + PMD.EOL
+	    + "</rule></ruleset>";
+
+    private static final String MINIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>" + PMD.EOL
+	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule "
+	    + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
+	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL + " language=\"java\"" + PMD.EOL
+	    + " minimumLanguageVersion=\"1.4\">" + PMD.EOL + "</rule></ruleset>";
+
+    private static final String INCORRECT_MINIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>" + PMD.EOL
+	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule "
+	    + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
+	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL + " language=\"java\"" + PMD.EOL
+	    + " minimumLanguageVersion=\"bogus\">" + PMD.EOL + "</rule></ruleset>";
+
+    private static final String MAXIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>" + PMD.EOL
+	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule "
+	    + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
+	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL + " language=\"java\"" + PMD.EOL
+	    + " maximumLanguageVersion=\"1.7\">" + PMD.EOL + "</rule></ruleset>";
+
+    private static final String INCORRECT_MAXIMUM_LANGUAGE_VERSION = "<?xml version=\"1.0\"?>" + PMD.EOL
+	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule "
+	    + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
+	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\"" + PMD.EOL + " language=\"java\"" + PMD.EOL
+	    + " maximumLanguageVersion=\"bogus\">" + PMD.EOL + "</rule></ruleset>";
+
+    private static final String INVERTED_MINIMUM_MAXIMUM_LANGUAGE_VERSIONS = "<?xml version=\"1.0\"?>" + PMD.EOL
+	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule "
+	    + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
+	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" " + PMD.EOL + "language=\"java\"" + PMD.EOL
+	    + " minimumLanguageVersion=\"1.7\"" + PMD.EOL + "maximumLanguageVersion=\"1.4\">" + PMD.EOL
+	    + "</rule></ruleset>";
 
     private static final String DFA = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 	    + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL

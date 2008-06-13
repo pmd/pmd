@@ -6,14 +6,17 @@ package net.sourceforge.pmd.lang.java.rule;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.*;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
 // FUTURE Move all Java centric code into 'java' package instead of core PMD class.  Makes sense when we add non-Java languages.
-public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor {
+public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor, ImmutableLanguage {
 
     public AbstractJavaRule() {
+	super.setLanguage(Language.JAVA);
 	// Enable Type Resolution on Java Rules by default
 	super.setUsesTypeResolution();
     }

@@ -209,6 +209,20 @@ public enum Language {
     }
 
     /**
+     * A utility method to find the Languages which have Rule support.
+     * @return A List of Languages with Rule support.
+     */
+    public static List<Language> findWithRuleSupport() {
+	List<Language> languages = new ArrayList<Language>();
+	for (Language language : Language.values()) {
+	    if (language.getRuleChainVisitorClass() != null) {
+		languages.add(language);
+	    }
+	}
+	return languages;
+    }
+
+    /**
      * A utility method to find the Languages which are associated with
      * the given file extension.
      * @param extension The file extension.
@@ -238,6 +252,22 @@ public enum Language {
 	    }
 	}
 	return null;
+    }
+
+    /**
+     * Return a comma separated list of Language terse names.
+     * @param languages The languages.
+     * @return Comma separated terse names.
+     */
+    public static String commaSeparatedTerseNames(List<Language> languages) {
+	StringBuilder builder = new StringBuilder();
+	for (Language language : languages) {
+	    if (builder.length() > 0) {
+		builder.append(", ");
+	    }
+	    builder.append(language.getTerseName());
+	}
+	return builder.toString();
     }
 
     private static void init() {

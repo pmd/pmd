@@ -305,6 +305,7 @@ public String convert(int i) {
 
 
 <rule   name="StringBufferInstantiationWithChar"
+   		language="java"
         since="3.9"
         message="Do not instantiate a StringBuffer with a char"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -341,6 +342,7 @@ class Foo {
     </rule>
 
 <rule   name="UseEqualsToCompareStrings"
+   		language="java"
         since="4.1"
         message="Use equals() to compare strings instead of ''=='' or ''!=''"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -376,6 +378,7 @@ class Foo {
     </rule>
 
 	<rule   name="AvoidStringBufferField"
+   		language="java"
 	      since="4.2"
         	message="StringBuffers can grow quite a lot, and so may become a source of memory leak (if the owning class has a long life time)."
         	class="net.sourceforge.pmd.lang.rule.XPathRule"

@@ -15,6 +15,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.ResourceLoader;
 
@@ -312,6 +313,56 @@ public class RuleSetFactory {
 	Rule rule = (Rule) c.newInstance();
 
 	rule.setName(ruleElement.getAttribute("name"));
+
+	if (ruleElement.hasAttribute("language")) {
+	    String languageName = ruleElement.getAttribute("language");
+	    Language language = Language.findByTerseName(languageName);
+	    if (language == null) {
+		throw new IllegalArgumentException("Unknown Language '" + languageName + "' for Rule " + rule.getName()
+			+ ", supported Languages are "
+			+ Language.commaSeparatedTerseNames(Language.findWithRuleSupport()));
+	    }
+	    rule.setLanguage(language);
+	}
+
+	Language language = rule.getLanguage();
+	if (language == null) {
+	    throw new IllegalArgumentException("Rule " + rule.getName()
+		    + " does not have a Language; missing 'language' attribute?");
+	}
+
+	if (ruleElement.hasAttribute("minimumLanguageVersion")) {
+	    String minimumLanguageVersionName = ruleElement.getAttribute("minimumLanguageVersion");
+	    LanguageVersion minimumLanguageVersion = language.getVersion(minimumLanguageVersionName);
+	    if (minimumLanguageVersion == null) {
+		throw new IllegalArgumentException("Unknown minimum Language Version '" + minimumLanguageVersionName
+			+ "' for Language '" + language.getTerseName() + "' for Rule " + rule.getName()
+			+ "; supported Language Versions are: "
+			+ LanguageVersion.commaSeparatedTerseNames(language.getVersions()));
+	    }
+	    rule.setMinimumLanguageVersion(minimumLanguageVersion);
+	}
+
+	if (ruleElement.hasAttribute("maximumLanguageVersion")) {
+	    String maximumLanguageVersionName = ruleElement.getAttribute("maximumLanguageVersion");
+	    LanguageVersion maximumLanguageVersion = language.getVersion(maximumLanguageVersionName);
+	    if (maximumLanguageVersion == null) {
+		throw new IllegalArgumentException("Unknown maximum Language Version '" + maximumLanguageVersionName
+			+ "' for Language '" + language.getTerseName() + "' for Rule " + rule.getName()
+			+ "; supported Language Versions are: "
+			+ LanguageVersion.commaSeparatedTerseNames(language.getVersions()));
+	    }
+	    rule.setMaximumLanguageVersion(maximumLanguageVersion);
+	}
+
+	if (rule.getMinimumLanguageVersion() != null && rule.getMaximumLanguageVersion() != null) {
+	    throw new IllegalArgumentException("The minimum Language Version '"
+		    + rule.getMinimumLanguageVersion().getTerseName()
+		    + "' must be prior to the maximum Language Version '"
+		    + rule.getMaximumLanguageVersion().getTerseName() + "' for Rule " + rule.getName()
+		    + "; perhaps swap them around?");
+	}
+
 	String since = ruleElement.getAttribute("since");
 	if (since.length() > 0) {
 	    rule.setSince(since);
@@ -369,8 +420,7 @@ public class RuleSetFactory {
 		.getFilename()));
 	Rule externalRule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
 	if (externalRule == null) {
-	    throw new IllegalArgumentException("Unable to find rule "
-		    + externalRuleID.getRuleName()
+	    throw new IllegalArgumentException("Unable to find rule " + externalRuleID.getRuleName()
 		    + "; perhaps the rule name is mispelled?");
 	}
 

@@ -14,6 +14,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RulePriorityEnum;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -29,6 +31,9 @@ public abstract class AbstractRule implements Rule {
     // TODO Remove - Temporary flag during conversion.
     private static final boolean IN_OLD_PROPERTY_MODE = true;
 
+    private Language language;
+    private LanguageVersion minimumLanguageVersion;
+    private LanguageVersion maximumLanguageVersion;
     private String name = getClass().getName();
     private String since;
     private String ruleClass = getClass().getName();
@@ -42,6 +47,34 @@ public abstract class AbstractRule implements Rule {
     private boolean usesDFA;
     private boolean usesTypeResolution;
     private List<String> ruleChainVisits = new ArrayList<String>();
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+	if (this.language != null && this instanceof ImmutableLanguage && !this.language.equals(language)) {
+	    throw new UnsupportedOperationException("The Language for Rule class " + this.getClass().getName()
+		    + " is immutable and cannot be changed.");
+	}
+        this.language = language;
+    }
+
+    public LanguageVersion getMinimumLanguageVersion() {
+        return minimumLanguageVersion;
+    }
+
+    public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
+        this.minimumLanguageVersion = minimumLanguageVersion;
+    }
+
+    public LanguageVersion getMaximumLanguageVersion() {
+        return maximumLanguageVersion;
+    }
+
+    public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
+        this.maximumLanguageVersion = maximumLanguageVersion;
+    }
 
     public String getName() {
 	return name;

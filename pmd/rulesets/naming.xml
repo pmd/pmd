@@ -11,6 +11,7 @@ The Naming Ruleset contains a collection of rules about names - too long, too sh
 
 
   <rule name="ShortVariable"
+   		language="java"
   		  since="0.3"
         message="Avoid variables with short names like {0}"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -46,6 +47,7 @@ public class Something {
   </rule>
 
   <rule name="LongVariable"
+   		language="java"
   		  since="0.3"
         message="Avoid excessively long variable names like {0}"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -80,6 +82,7 @@ public class Something {
   </rule>
 
   <rule name="ShortMethodName"
+   		language="java"
   		  since="0.3"
         message="Avoid using short method names"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -172,6 +175,7 @@ public class Foo {}
     </rule>
 
     <rule name="AbstractNaming"
+   		language="java"
     		 since="1.4"
           message="Abstract classes should be named 'AbstractXXX'"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -259,6 +263,7 @@ public class Foo {
      </rule>
 
     <rule name="SuspiciousConstantFieldName"
+   		language="java"
     		 since="2.0"
           message="The field name indicates a constant but its modifiers do not"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -294,6 +299,7 @@ public class Foo {
 
     <rule
         name="SuspiciousEqualsMethodName"
+   		language="java"
         since="2.0"
         message="The method name and parameter number are suspiciously close to equals(Object)"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -386,6 +392,7 @@ public class Foo {
 
 
     <rule name="NoPackage"
+   		language="java"
         since="3.3"
         message="All classes and interfaces must belong to a named package"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -413,6 +420,7 @@ public class ClassInDefaultPackage {
   </rule>
 
     <rule name="PackageCase"
+   		language="java"
             since="3.3"
             message="Package name contains upper case characters"
             class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -440,6 +448,7 @@ public class SomeClass {
       </rule>
 
     <rule name="MisleadingVariableName"
+   		language="java"
           since="3.4"
           message="Avoid naming non-fields with the prefix 'm_'"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -473,6 +482,7 @@ indicates a field and thus is confusing.
     </rule>
 
     <rule name="BooleanGetMethodName"
+   		language="java"
         since="4.0"
         message="A 'getX()' method which returns a boolean should be named 'isX()'"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -508,6 +518,7 @@ public boolean getFoo(boolean bar); // ok, unless checkParameterizedMethods=true
     </rule>
 
     <rule 	name="ShortClassName"
+   		language="java"
             since="5.0"
             message="A Classname should have, at least, 5 characters"
             class="net.sourceforge.pmd.lang.rule.XPathRule"

@@ -8,6 +8,8 @@ import java.util.Properties;
 
 import net.sourceforge.pmd.RulePriorityEnum;
 import net.sourceforge.pmd.RuleSetReference;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -18,6 +20,9 @@ import net.sourceforge.pmd.util.StringUtil;
  * current underlying value do not override.
  */
 public class RuleReference extends AbstractDelegateRule {
+    private Language language;
+    private LanguageVersion minimumLanguageVersion;
+    private LanguageVersion maximumLanguageVersion;
     private String name;
     private Properties properties;
     private String message;
@@ -26,6 +31,45 @@ public class RuleReference extends AbstractDelegateRule {
     private String externalInfoUrl;
     private RulePriorityEnum priority;
     private RuleSetReference ruleSetReference;
+
+    public Language getOverriddenLanguage() {
+	return language;
+    }
+
+    @Override
+    public void setLanguage(Language language) {
+	// Only override if different than current value, or if already overridden.
+	if (!isSame(language, super.getLanguage()) || this.language != null) {
+	    this.language = language;
+	    super.setLanguage(language);
+	}
+    }
+
+    public LanguageVersion getOverriddenMinimumLanguageVersion() {
+	return minimumLanguageVersion;
+    }
+
+    @Override
+    public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
+	// Only override if different than current value, or if already overridden.
+	if (!isSame(minimumLanguageVersion, super.getMinimumLanguageVersion()) || this.minimumLanguageVersion != null) {
+	    this.minimumLanguageVersion = minimumLanguageVersion;
+	    super.setMinimumLanguageVersion(minimumLanguageVersion);
+	}
+    }
+
+    public LanguageVersion getOverriddenMaximumLanguageVersion() {
+	return maximumLanguageVersion;
+    }
+
+    @Override
+    public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
+	// Only override if different than current value, or if already overridden.
+	if (!isSame(maximumLanguageVersion, super.getMaximumLanguageVersion()) || this.maximumLanguageVersion != null) {
+	    this.maximumLanguageVersion = maximumLanguageVersion;
+	    super.setMaximumLanguageVersion(maximumLanguageVersion);
+	}
+    }
 
     public String getOverriddenName() {
 	return name;
@@ -153,6 +197,10 @@ public class RuleReference extends AbstractDelegateRule {
 
     private static boolean isSame(String s1, String s2) {
 	return StringUtil.isSame(s1, s2, true, false, true);
+    }
+
+    private static boolean isSame(Enum<?> e1, Enum<?> e2) {
+	return e1 == e2 || (e1 != null && e2 != null && e1.equals(e2));
     }
 
     private static boolean contains(Collection<String> collection, String s1) {

@@ -44,6 +44,9 @@
         <xs:element ref="exclude" minOccurs="0" maxOccurs="unbounded" />
         <xs:element ref="example" minOccurs="0" maxOccurs="unbounded" />
       </xs:sequence>
+      <xs:attribute name="language" type="xs:string" use="optional" />
+      <xs:attribute name="minimumLanguageVersion" type="xs:string" use="optional" />
+      <xs:attribute name="maximumLanguageVersion" type="xs:string" use="optional" />
       <xs:attribute name="name" type="xs:ID" use="optional" />
       <xs:attribute name="since" type="xs:string" use="optional" />
       <xs:attribute name="ref" type="xs:string" use="optional" />

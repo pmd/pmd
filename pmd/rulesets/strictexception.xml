@@ -81,6 +81,7 @@ public class Foo {
     </rule>
 
 <rule name="AvoidCatchingNPE"
+   		language="java"
 	 since="1.8"
     message="Avoid catching NullPointerException; consider removing the cause of the NPE."
     class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -113,6 +114,7 @@ public class Foo {
   </rule>
 
   <rule name="AvoidThrowingRawExceptionTypes"
+   		language="java"
       since="1.8"
       message="Avoid throwing raw exception types."
       class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -152,6 +154,7 @@ public void bar() throws Exception {
   </rule>
 
     <rule name="AvoidThrowingNullPointerException"
+   		language="java"
     	  since="1.8"
         message="Avoid throwing null pointer exceptions."
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -183,6 +186,7 @@ public class Foo {
     </rule>
 
   <rule name="AvoidRethrowingException"
+   		language="java"
     since="3.8"
     message="A catch statement that catches an exception only to rethrow it should be avoided."
     class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -219,6 +223,7 @@ public class Foo {
 
   <rule
     name="DoNotExtendJavaLangError"
+   		language="java"
     since="4.0"
     message="Exceptions should not extend java.lang.Error"
     class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -245,6 +250,7 @@ public class Foo {
   </rule>
 
 	<rule	name="DoNotThrowExceptionInFinally"
+   		language="java"
 	       since="4.2"
 		    message="A throw statement in a finally block makes the control flow hard to understand."
 		    class="net.sourceforge.pmd.lang.rule.XPathRule"

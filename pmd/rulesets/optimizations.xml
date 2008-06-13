@@ -72,6 +72,7 @@ public class Something {
   </rule>
   
     <rule name="UseArrayListInsteadOfVector"
+   		language="java"
     		 since="3.0"
           message="Use ArrayList instead of Vector"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -104,6 +105,7 @@ public class SimpleTest extends TestCase {
     </rule>
 
     <rule name="SimplifyStartsWith"
+   		language="java"
     		 since="3.1"
           message="This call to String.startsWith can be rewritten using String.charAt(0)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -167,6 +169,7 @@ public class Foo {
         </rule>
 
   <rule name="UseArraysAsList"
+   		language="java"
      since="3.5"
      message="Use asList instead of tight loops"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -232,6 +235,7 @@ public class Foo {
 
 
     <rule name="AvoidArrayLoops"
+   		language="java"
       since="3.5"
       message="System.arraycopy is more efficient"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -314,6 +318,7 @@ public int convert(String s) {
     </rule>
 
     <rule name="AddEmptyString"
+   		language="java"
         since="4.0"
         message="Do not add empty strings"
         class="net.sourceforge.pmd.lang.rule.XPathRule"

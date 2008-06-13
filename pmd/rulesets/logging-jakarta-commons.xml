@@ -10,6 +10,7 @@ The Jakarta Commons Logging ruleset contains a collection of rules that find que
   </description>
 
 	<rule name="UseCorrectExceptionLogging"
+   		language="java"
 		  since="3.2"
         message="Use the correct logging statement for logging exceptions"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -47,6 +48,7 @@ public class Main {
 	</rule>
 
     <rule name="ProperLogger"
+   		language="java"
          since="3.3"
          message="Logger should be defined private static final and have the correct class"
          class="net.sourceforge.pmd.lang.rule.XPathRule"

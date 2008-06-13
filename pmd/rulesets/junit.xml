@@ -10,6 +10,7 @@ These rules deal with different problems that can occur with JUnit tests.
   </description>
 
     <rule name="JUnitStaticSuite"
+   		language="java"
     		 since="1.0"
           message="You have a suite() method that is not both public and static, so JUnit won't call it to get your TestSuite.  Is that what you wanted to do?"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -42,6 +43,7 @@ public class Foo extends TestCase {
       </rule>
 
   <rule name="JUnitSpelling"
+   		language="java"
   		  since="1.0"
         message="You may have misspelled a JUnit framework method (setUp or tearDown)"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -149,6 +151,7 @@ public class CarTest {
     </rule>
 
     <rule name="UnnecessaryBooleanAssertion"
+   		language="java"
     		 since="3.0"
           message="assertTrue(true) or similar statements are unnecessary"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -196,6 +199,7 @@ public class SimpleTest extends TestCase {
     </rule>
 
     <rule name="UseAssertEqualsInsteadOfAssertTrue"
+   		language="java"
     		 since="3.1"
           message="Use assertEquals(x, y) instead of assertTrue(x.equals(y))"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -234,6 +238,7 @@ public class FooTest extends TestCase {
     </rule>
 
    <rule name="UseAssertSameInsteadOfAssertTrue"
+   		language="java"
    		 since="3.1"
           message="Use assertSame(x, y) instead of assertTrue(x==y), or assertNotSame(x,y) vs assertFalse(x==y)"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -273,6 +278,7 @@ public class FooTest extends TestCase {
     </rule>
 
     <rule name="UseAssertNullInsteadOfAssertTrue"
+   		language="java"
            since="3.5"
            message="Use assertNull(x) instead of assertTrue(x==null), or assertNotNull(x) vs assertFalse(x==null)"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -314,6 +320,7 @@ public class FooTest extends TestCase {
      </rule>
 
     <rule name="SimplifyBooleanAssertion"
+   		language="java"
        since="3.6"
 	    message="assertTrue(!expr) can be replaced by assertFalse(expr)"
         class="net.sourceforge.pmd.lang.rule.XPathRule"

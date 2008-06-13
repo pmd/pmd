@@ -5,6 +5,9 @@
 <!ELEMENT exclude-pattern ( #PCDATA ) >
 <!ELEMENT include-pattern ( #PCDATA ) >
 <!ELEMENT rule ( description? , priority? , properties? , exclude* , example* ) >
+<!ATTLIST rule language CDATA #IMPLIED >
+<!ATTLIST rule minimumLanguageVersion CDATA #IMPLIED >
+<!ATTLIST rule maximumLanguageVersion CDATA #IMPLIED >
 <!ATTLIST rule name ID #IMPLIED >
 <!ATTLIST rule since CDATA #IMPLIED >
 <!ATTLIST rule ref CDATA #IMPLIED >

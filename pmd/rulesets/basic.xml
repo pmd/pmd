@@ -11,6 +11,7 @@ The Basic Ruleset contains a collection of good practices which everyone should 
 
 
     <rule name="EmptyCatchBlock"
+    		 language="java"
     		 since="0.1"
           message="Avoid empty catch blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -51,6 +52,7 @@ public void doSomething() {
     </rule>
 
     <rule name="EmptyIfStmt"
+    		 language="java"
     		 since="0.1"
           message="Avoid empty 'if' statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -84,6 +86,7 @@ public class Foo {
 
 
     <rule name="EmptyWhileStmt"
+    		 language="java"
     		 since="0.2"
           message="Avoid empty 'while' statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -118,6 +121,7 @@ public class Foo {
 
 
     <rule name="EmptyTryBlock"
+    		 language="java"
     		 since="0.4"
           message="Avoid empty try blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -150,6 +154,7 @@ public class Foo {
     </rule>
 
     <rule name="EmptyFinallyBlock"
+    		 language="java"
     		 since="0.4"
           message="Avoid empty finally blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -184,6 +189,7 @@ public class Foo {
 
 
     <rule name="EmptySwitchStatements"
+    		 language="java"
     		 since="1.0"
           message="Avoid empty switch statements"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -217,6 +223,7 @@ public class Foo {
 
 
     <rule name="JumbledIncrementer"
+    		language="java"
     		since="1.0"
          message="Avoid modifying an outer loop incrementer in an inner loop for update expression"
          class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -255,6 +262,7 @@ public class JumbledIncrementerRule1 {
      </rule>
 
     <rule name="ForLoopShouldBeWhileLoop"
+    		 language="java"
     		 since="1.02"
           message="This for loop could be simplified to a while loop"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -378,6 +386,7 @@ public class Foo {
     </rule>
 
     <rule name="ReturnFromFinallyBlock"
+    		 language="java"
     		 since="1.05"
           message="Avoid returning from a finally block"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -413,6 +422,7 @@ public class Bar {
     </rule>
 
     <rule name="EmptySynchronizedBlock"
+    		 language="java"
     		 since="1.3"
           message="Avoid empty synchronized blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -466,6 +476,7 @@ public class Foo {
 
 
     <rule name="EmptyStaticInitializer"
+    		 language="java"
     		  since="1.5"
            message="Empty static initializer was found"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -495,6 +506,7 @@ public class Foo {
      </rule>
 
     <rule name="UnconditionalIfStatement"
+    		 language="java"
     		  since="1.5"
        message="Do not use 'if' statements that are always true or always false"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -528,6 +540,7 @@ public class Foo {
     </rule>
 
     <rule name="EmptyStatementNotInLoop"
+    		 language="java"
     		 since="1.5"
           message="An empty statement (semicolon) not part of a loop"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -591,6 +604,7 @@ public class Foo {
    </rule>
 
     <rule name="UnnecessaryFinalModifier"
+    		 language="java"
     		 since="3.0"
           message="Unnecessary final modifier in final class"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -623,6 +637,7 @@ public final class Foo {
     </rule>
 
     <rule name="CollapsibleIfStatements"
+    		 language="java"
     		 since="3.1"
           message="These nested if statements could be combined"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -681,6 +696,7 @@ public String foo() {
     </rule>
 
  <rule name="ClassCastExceptionWithToArray"
+    	 language="java"
        since="3.4"
        message="This usage of the Collection.toArray() method will throw a ClassCastException."
        class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -735,6 +751,7 @@ if executed)
 
 
 <rule  name="AvoidDecimalLiteralsInBigDecimalConstructor"
+    	 language="java"
        since="3.4"
        message="Avoid creating BigDecimal with a decimal (float/double) literal. Use a String literal"
        class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -815,6 +832,7 @@ class Test {
     </rule>
 
     <rule  name="MisplacedNullCheck"
+    		 language="java"
            since="3.5"
            message="The null check here is misplaced; if the variable is null there'll be a NullPointerException"
            class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -860,6 +878,7 @@ public class Foo {
     </rule>
 
     <rule name="UnusedNullCheckInEquals"
+    		 language="java"
         since="3.5"
         message="Invoke equals() on the object you''ve already ensured is not null"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -932,6 +951,7 @@ if (method1().equals(a)) {
 
 
     <rule  name="AvoidThreadGroup"
+    		 language="java"
       since="3.6"
       message="Avoid using ThreadGroup; it is not thread safe"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -1069,6 +1089,7 @@ public class Test {
 
   <rule
         name="CheckResultSet"
+    		 language="java"
         since="4.1"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet."

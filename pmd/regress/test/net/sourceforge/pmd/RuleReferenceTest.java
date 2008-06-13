@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNull;
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.RulePriorityEnum;
 import net.sourceforge.pmd.RuleSetReference;
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 
@@ -23,6 +25,7 @@ public class RuleReferenceTest {
 	@Test
 	public void testOverride() {
 		MockRule rule = new MockRule();
+		rule.setLanguage(Language.XML);
 		rule.setName("name1");
 		rule.addProperty("property1", "value1");
 		rule.setMessage("message1");
@@ -33,6 +36,9 @@ public class RuleReferenceTest {
 
 		RuleReference ruleReference = new RuleReference();
 		ruleReference.setRule(rule);
+		ruleReference.setLanguage(Language.JAVA);
+		ruleReference.setMinimumLanguageVersion(LanguageVersion.JAVA_13);
+		ruleReference.setMaximumLanguageVersion(LanguageVersion.JAVA_17);
 		ruleReference.setName("name2");
 		ruleReference.addProperty("property1", "value2");
 		ruleReference.setMessage("message2");
@@ -40,6 +46,15 @@ public class RuleReferenceTest {
 		ruleReference.addExample("example2");
 		ruleReference.setExternalInfoUrl("externalInfoUrl2");
 		ruleReference.setPriority(RulePriorityEnum.MEDIUM_HIGH);
+
+		assertEquals("Override failed", Language.JAVA, ruleReference.getLanguage());
+		assertEquals("Override failed", Language.JAVA, ruleReference.getOverriddenLanguage());
+
+		assertEquals("Override failed", LanguageVersion.JAVA_13, ruleReference.getMinimumLanguageVersion());
+		assertEquals("Override failed", LanguageVersion.JAVA_13, ruleReference.getOverriddenMinimumLanguageVersion());
+
+		assertEquals("Override failed", LanguageVersion.JAVA_17, ruleReference.getMaximumLanguageVersion());
+		assertEquals("Override failed", LanguageVersion.JAVA_17, ruleReference.getOverriddenMaximumLanguageVersion());
 
 		assertEquals("Override failed", "name2", ruleReference.getName());
 		assertEquals("Override failed", "name2", ruleReference.getOverriddenName());
@@ -70,6 +85,9 @@ public class RuleReferenceTest {
 	@Test
 	public void testNotOverride() {
 		MockRule rule = new MockRule();
+		rule.setLanguage(Language.JAVA);
+		rule.setMinimumLanguageVersion(LanguageVersion.JAVA_13);
+		rule.setMaximumLanguageVersion(LanguageVersion.JAVA_17);
 		rule.setName("name1");
 		rule.addProperty("property1", "value1");
 		rule.setMessage("message1");
@@ -80,6 +98,9 @@ public class RuleReferenceTest {
 
 		RuleReference ruleReference = new RuleReference();
 		ruleReference.setRule(rule);
+		ruleReference.setLanguage(Language.JAVA);
+		ruleReference.setMinimumLanguageVersion(LanguageVersion.JAVA_13);
+		ruleReference.setMaximumLanguageVersion(LanguageVersion.JAVA_17);
 		ruleReference.setName("name1");
 		ruleReference.addProperty("property1", "value1");
 		ruleReference.setMessage("message1");
@@ -87,6 +108,15 @@ public class RuleReferenceTest {
 		ruleReference.addExample("example1");
 		ruleReference.setExternalInfoUrl("externalInfoUrl1");
 		ruleReference.setPriority(RulePriorityEnum.HIGH);
+
+		assertEquals("Override failed", Language.JAVA, ruleReference.getLanguage());
+		assertNull("Override failed", ruleReference.getOverriddenLanguage());
+
+		assertEquals("Override failed", LanguageVersion.JAVA_13, ruleReference.getMinimumLanguageVersion());
+		assertNull("Override failed", ruleReference.getOverriddenMinimumLanguageVersion());
+
+		assertEquals("Override failed", LanguageVersion.JAVA_17, ruleReference.getMaximumLanguageVersion());
+		assertNull("Override failed", ruleReference.getOverriddenMaximumLanguageVersion());
 
 		assertEquals("Override failed", "name1", ruleReference.getName());
 		assertNull("Override failed", ruleReference.getOverriddenName());

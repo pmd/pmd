@@ -19,6 +19,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 
 import org.w3c.dom.CDATASection;
@@ -132,6 +135,9 @@ public class RuleSetWriter {
 		    return null;
 		}
 	    } else {
+		Language language = ruleReference.getOverriddenLanguage();
+		LanguageVersion minimumLanguageVersion = ruleReference.getOverriddenMinimumLanguageVersion();
+		LanguageVersion maximumLanguageVersion = ruleReference.getOverriddenMaximumLanguageVersion();
 		String name = ruleReference.getOverriddenName();
 		String ref = ruleReference.getRuleSetReference().getRuleSetFileName() + "/" + ruleReference.getName();
 		String message = ruleReference.getOverriddenMessage();
@@ -140,20 +146,32 @@ public class RuleSetWriter {
 		RulePriorityEnum priority = ruleReference.getOverriddenPriority();
 		Properties properties = ruleReference.getOverriddenProperties();
 		List<String> examples = ruleReference.getOverriddenExamples();
-		return createSingleRuleElement(name, null, ref, message, externalInfoUrl, null, null, null,
-			description, priority, properties, examples);
+		return createSingleRuleElement(language, minimumLanguageVersion, maximumLanguageVersion, name, null,
+			ref, message, externalInfoUrl, null, null, null, description, priority, properties, examples);
 	    }
 	} else {
-	    return createSingleRuleElement(rule.getName(), rule.getSince(), null, rule.getMessage(), rule
-		    .getExternalInfoUrl(), rule.getRuleClass(), rule.usesDFA(), rule.usesTypeResolution(), rule
-		    .getDescription(), rule.getPriority(), rule.getProperties(), rule.getExamples());
+	    return createSingleRuleElement(rule instanceof ImmutableLanguage ? null : rule.getLanguage(), rule
+		    .getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.getName(), rule.getSince(),
+		    null, rule.getMessage(), rule.getExternalInfoUrl(), rule.getRuleClass(), rule.usesDFA(), rule
+			    .usesTypeResolution(), rule.getDescription(), rule.getPriority(), rule.getProperties(),
+		    rule.getExamples());
 	}
     }
 
-    private Element createSingleRuleElement(String name, String since, String ref, String message,
+    private Element createSingleRuleElement(Language language, LanguageVersion minimumLanguageVersion,
+	    LanguageVersion maximumLanguageVersion, String name, String since, String ref, String message,
 	    String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution, String description,
 	    RulePriorityEnum priority, Properties properties, List<String> examples) {
 	Element ruleElement = document.createElement("rule");
+	if (language != null) {
+	    ruleElement.setAttribute("language", language.getTerseName());
+	}
+	if (minimumLanguageVersion != null) {
+	    ruleElement.setAttribute("minimumLanguageVersion", minimumLanguageVersion.getVersion());
+	}
+	if (maximumLanguageVersion != null) {
+	    ruleElement.setAttribute("maximumLanguageVersion", maximumLanguageVersion.getVersion());
+	}
 	if (name != null) {
 	    ruleElement.setAttribute("name", name);
 	}

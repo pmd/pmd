@@ -11,6 +11,7 @@ These rules deal with different problems that can occur with finalizers.
   </description>
 
     <rule name="EmptyFinalizer"
+   		language="java"
     		 since="1.5"
           message="Avoid empty finalize methods"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -39,6 +40,7 @@ public class Foo {
      </rule>
 
     <rule name="FinalizeOnlyCallsSuperFinalize"
+   		language="java"
     		 since="1.5"
           message="Finalize should do something besides just calling super.finalize()"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -74,6 +76,7 @@ public class Foo {
      </rule>
 
 <rule name="FinalizeOverloaded"
+   		language="java"
 		since="1.5"
       message="Finalize methods should not be overloaded"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -106,6 +109,7 @@ public class Foo {
  </rule>
 
     <rule name="FinalizeDoesNotCallSuperFinalize"
+   		language="java"
     		 since="1.5"
           message="Last statement in finalize method should be a call to super.finalize()"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -144,6 +148,7 @@ public class Foo {
      </rule>
 
     <rule name="FinalizeShouldBeProtected"
+   		language="java"
     		 since="1.1"
           message="If you override finalize(), make it protected"
           class="net.sourceforge.pmd.lang.rule.XPathRule"

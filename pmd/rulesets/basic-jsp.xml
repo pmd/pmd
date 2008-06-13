@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
 
-<ruleset name="Basic JSP rules"
-    language="jsp"
-    xmlns="http://pmd.sf.net/ruleset/1.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
-	
+<ruleset name="Basic JSP rules" language="jsp"
+	xmlns="http://pmd.sf.net/ruleset/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+	xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+
 	<description>Rules concerning basic JSP guidelines.</description>
-	
-	<rule name="NoLongScripts"
-	   since="3.6"
+
+	<rule name="NoLongScripts" language="jsp" since="3.6"
 		message="Avoid having long scripts (e.g. Javascript) inside a JSP file."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoLongScripts">
-		<description> Scripts should be part of Tag Libraries, rather than part of JSP pages.
-			</description>
+		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoLongScripts">
+		<description>
+			Scripts should be part of Tag Libraries, rather than part of
+			JSP pages.
+		</description>
 		<priority>2</priority>
 		<properties>
 			<property name="xpath">
@@ -52,14 +52,15 @@ onload=calcDays;
 			]]>
 		</example>
 	</rule>
-	
-	<rule name="NoScriptlets"
-	     since="3.6"
-        message="Avoid having scriptlets inside a JSP file."
+
+	<rule name="NoScriptlets" language="jsp" since="3.6"
+		message="Avoid having scriptlets inside a JSP file."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoScriptlets">
-		<description> Scriptlets should be factored into Tag Libraries or JSP declarations,
-			rather than being part of JSP pages. </description>
+		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoScriptlets">
+		<description>
+			Scriptlets should be factored into Tag Libraries or JSP
+			declarations, rather than being part of JSP pages.
+		</description>
 		<priority>3</priority>
 		<properties>
 			<property name="xpath">
@@ -87,14 +88,14 @@ response.setHeader("Pragma", "No-cache");
 					 ]]>
 		</example>
 	</rule>
-	
-	<rule name="NoInlineStyleInformation"
-	     since="3.6"
-        message="Avoid having style information in JSP files."
+
+	<rule name="NoInlineStyleInformation" since="3.6"
+		message="Avoid having style information in JSP files."
 		class="net.sourceforge.pmd.lang.jsp.rule.basic.NoInlineStyleInformationRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoInlineStyleInformation">
+		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoInlineStyleInformation">
 		<description><![CDATA[ Style information should be put in CSS files, not in JSPs.
-			Therefore, don't use <B> or <FONT> tags, or attributes like "align='center'". ]]> </description>
+			Therefore, don't use <B> or <FONT> tags, or attributes like "align='center'". ]]>
+		</description>
 		<priority>3</priority>
 		<example>
 			<![CDATA[
@@ -102,15 +103,16 @@ response.setHeader("Pragma", "No-cache");
 			]]>
 		</example>
 	</rule>
-	
-	
-	<rule name="NoClassAttribute"
-	   since="3.6"
+
+
+	<rule name="NoClassAttribute" language="jsp" since="3.6"
 		message="Do not use an attribute called 'class'."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoClassAttribute">
-		<description>Do not use an attribute called 'class'. Use "styleclass" for CSS styles.
-			</description>
+		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoClassAttribute">
+		<description>
+			Do not use an attribute called 'class'. Use "styleclass" for
+			CSS styles.
+		</description>
 		<priority>2</priority>
 		<properties>
 			<property name="xpath">
@@ -127,14 +129,14 @@ response.setHeader("Pragma", "No-cache");
 			]]>
 		</example>
 	</rule>
-	
-	<rule name="NoJspForward"
-	   since="3.6"
+
+	<rule name="NoJspForward" language="jsp" since="3.6"
 		message="Do not do a forward from within a JSP file."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoJspForward">
-		<description>Do not do a forward from within a JSP file.
-			</description>
+		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoJspForward">
+		<description>
+			Do not do a forward from within a JSP file.
+		</description>
 		<priority>3</priority>
 		<properties>
 			<property name="xpath">
@@ -150,15 +152,16 @@ response.setHeader("Pragma", "No-cache");
 		</example>
 	</rule>
 
-	<rule name="IframeMissingSrcAttribute"
-	   since="3.6"
+	<rule name="IframeMissingSrcAttribute" language="jsp" since="3.6"
 		message="IFrames must have a src attribute."
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#IframeMissingSrcAttribute">
+		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#IframeMissingSrcAttribute">
 		<description>
-		  IFrames which are missing a src element can cause security information popups 
-		  in IE if you are accessing the page through SSL. See http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
-			</description>
+			IFrames which are missing a src element can cause security
+			information popups in IE if you are accessing the page
+			through SSL. See
+			http://support.microsoft.com/default.aspx?scid=kb;EN-US;Q261188
+		</description>
 		<priority>2</priority>
 		<properties>
 			<property name="xpath">
@@ -182,16 +185,15 @@ response.setHeader("Pragma", "No-cache");
 		</example>
 	</rule>
 
-	<rule name="NoHtmlComments"
-	   since="3.6"
+	<rule name="NoHtmlComments" language="jsp" since="3.6"
 		message="Use JSP comments instead of HTML comments"
 		class="net.sourceforge.pmd.lang.rule.XPathRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoHtmlComments">
+		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#NoHtmlComments">
 		<description>
-		  In a production system, HTML comments increase the payload between the application 
-		  server to the client, and serve little other purpose. Consider switching to 
-		  JSP comments.
-			</description>
+			In a production system, HTML comments increase the payload
+			between the application server to the client, and serve
+			little other purpose. Consider switching to JSP comments.
+		</description>
 		<priority>2</priority>
 		<properties>
 			<property name="xpath">
@@ -214,13 +216,13 @@ response.setHeader("Pragma", "No-cache");
 			]]>
 		</example>
 	</rule>
-	
-	<rule name="DuplicateJspImports"
-	     since="3.7"
-        message="Avoid duplicate imports such as ''{0}''"
+
+	<rule name="DuplicateJspImports" since="3.7"
+		message="Avoid duplicate imports such as ''{0}''"
 		class="net.sourceforge.pmd.lang.jsp.rule.basic.DuplicateJspImportsRule"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#DuplicateJspImports">
-		<description><![CDATA[Avoid duplicate import statements inside JSP's. ]]> </description>
+		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#DuplicateJspImports">
+		<description><![CDATA[Avoid duplicate import statements inside JSP's. ]]>
+		</description>
 		<priority>3</priority>
 		<example>
 			<![CDATA[ 
@@ -228,22 +230,21 @@ response.setHeader("Pragma", "No-cache");
 			 ]]>
 		</example>
 	</rule>
-    
-    <rule
-        name="JspEncoding"
-        class="net.sourceforge.pmd.lang.rule.XPathRule"
-        message="JSP file should use UTF-8 encoding"
-        externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#JspEncoding">
-        <description>
-            <![CDATA[
+
+	<rule name="JspEncoding" language="jsp"
+		class="net.sourceforge.pmd.lang.rule.XPathRule"
+		message="JSP file should use UTF-8 encoding"
+		externalInfoUrl="http://pmd.sourceforge.net/rules/basic-jsp.html#JspEncoding">
+		<description>
+			<![CDATA[
 A missing 'meta' tag or page directive will trigger this rule, as well as a non-UTF-8 charset.
             ]]>
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
+		</description>
+		<priority>3</priority>
+		<properties>
+			<property name="xpath">
+				<value>
+					<![CDATA[
 //Content[
 not(Element[@Name="meta"][
    Attribute[@Name="content"]/AttributeValue[contains(string:lower-case(@Image),"charset=utf-8")]
@@ -252,18 +253,18 @@ and
     not(JspDirective[@Name='page']/JspDirectiveAttribute[@Name='contentType'][contains(string:lower-case(@Value),"charset=utf-8")])
 ]
                     ]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-            <![CDATA[
+				</value>
+			</property>
+		</properties>
+		<example>
+			<![CDATA[
                 Most browsers should be able to interpret the following headers:
                 
                 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
                     
                 <meta http-equiv="Content-Type"  content="text/html; charset=UTF-8" />
             ]]>
-        </example>
-    </rule>
+		</example>
+	</rule>
 
 </ruleset>

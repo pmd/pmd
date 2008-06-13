@@ -14,6 +14,7 @@ most people really dislike :-)
   </description>
 
     <rule name="UnnecessaryConstructor"
+   		language="java"
     		 since="1.0"
           message="Avoid unnecessary constructors - the compiler will generate these for you"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -128,6 +129,7 @@ public class Foo {
 </rule>
 
     <rule name="AtLeastOneConstructor"
+   		language="java"
     	since="1.04"
       message="Each class should declare at least one constructor"
       class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -209,6 +211,7 @@ public class Foo {
     </rule>
 
     <rule name="CallSuperInConstructor"
+   		language="java"
     		 since="3.0"
           message="It is a good practice to call super() in a constructor"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -248,6 +251,7 @@ public class Foo extends Bar{
     </rule>
 
     <rule name="UnnecessaryParentheses"
+   		language="java"
     		 since="3.1"
           message="This statement may have some unnecessary parentheses"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -280,6 +284,7 @@ making them look like a function call.
     </rule>
 
     <rule name="DefaultPackage"
+   		language="java"
         since="3.4"
         message="Use explicit scoping instead of the default package private level"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -304,6 +309,7 @@ or MethodDeclaration[@PackagePrivate='true']
     </rule>
 
     <rule name="BooleanInversion"
+   		language="java"
           since="3.5"
           message="Use bitwise inversion to invert boolean values"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -368,6 +374,7 @@ public class Foo {
         </rule>
 
 	<rule 	name="AvoidFinalLocalVariable"
+   		language="java"
 	      since="4.1"
         	class="net.sourceforge.pmd.lang.rule.XPathRule"
         	message="Avoid using final local variables, turn them into fields"
@@ -394,6 +401,7 @@ public class MyClass {
 
 	<rule
         name="AvoidUsingShortType"
+   		language="java"
         since="4.1"
         message="Do not use the short type"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -432,6 +440,7 @@ public class MyClass {
 
 	<rule
         name="AvoidUsingVolatile"
+   		language="java"
         since="4.1"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Use of modifier volatile is not recommended."
@@ -469,6 +478,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 
 	<rule
 		name="AvoidUsingNativeCode"
+   		language="java"
 		  since="4.1"
         message="The use of native code is not recommended."
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -512,6 +522,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 
 	<rule
 		name="AvoidAccessibilityAlteration"
+   		language="java"
 		  since="4.1"
         message="You should modify visibility of class or methods using getDeclaredConstructors(), getDeclaredConstructor(Class[]), setAccessible() or PrivilegedAction."
         class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -591,6 +602,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 		</rule>
 
 		<rule	name="DoNotCallGarbageCollectionExplicitly"
+   		language="java"
 			    since="4.2"
 	        	message="Do not explicitly trigger a garbage collection."
 	        	class="net.sourceforge.pmd.lang.rule.XPathRule"
@@ -647,6 +659,7 @@ public void doSomething() { // Explicit gc call ! Runtime.getRuntime().gc(); } }
 
 	<rule
         name="OneDeclarationPerLine"
+   		language="java"
         since="5.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Use one line for each declaration, it enhances code readability."
@@ -684,6 +697,7 @@ String lastname,name;
 
 	<rule
         name="AvoidPrefixingMethodParameters"
+   		language="java"
         since="5.0"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Avoid prefixing parameters by in, out or inOut. Uses Javadoc to document this behavior."

@@ -91,6 +91,7 @@ public class Foo {}
      </rule>
 
 	<rule	name="TooManyStaticImports"
+   		language="java"
 	      since="4.1"
         	class="net.sourceforge.pmd.lang.rule.XPathRule"
         	message="Too many static imports may lead to messy code"
