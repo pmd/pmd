@@ -63,12 +63,12 @@ public class Foo {
     </example>
   </rule>
 
-    <rule name="SimplifyBooleanExpressions"
-   		language="java"
-    		 since="1.05"
-          message="Avoid unnecessary comparisons in boolean expressions"
-          class="net.sourceforge.pmd.lang.rule.XPathRule"
-          externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyBooleanExpressions">
+    <rule 	name="SimplifyBooleanExpressions"
+   			language="java"
+    		since="1.05"
+          	message="Avoid unnecessary comparisons in boolean expressions"
+          	class="net.sourceforge.pmd.lang.rule.XPathRule"
+          	externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SimplifyBooleanExpressions">
       <description>
 Avoid unnecessary comparisons in boolean expressions - this complicates simple code.
       </description>
@@ -1652,12 +1652,13 @@ public class abstract Example {
     
 
 	<rule 	name="LogicInversion"
+	        language="java"
 			since="5.0"
-        	language="java"
+			class="net.sourceforge.pmd.lang.rule.XPathRule"
         	message="Use opposite operator instead of the logic compliment operator."
-        	class="net.sourceforge.pmd.lang.rule.XPathRule"
-		externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#LogicInversion">
+			externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#LogicInversion">
     <description>Use opposite operator instead of negating the whole expression with a logic compliment operator.</description>
+    <priority>3</priority>
     <properties>
        <property name="xpath">
           <value>
@@ -1667,7 +1668,6 @@ public class abstract Example {
           </value>
        </property>
     </properties>
-    <priority>3</priority>
     <example>
     <![CDATA[
 public class Foo {
@@ -1689,8 +1689,6 @@ public class Foo {
     </example>
   </rule>
 
-    
-    
     
 <!--
 	<rule 	name="TooManyHttpFilter"
