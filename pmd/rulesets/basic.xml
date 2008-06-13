@@ -806,11 +806,11 @@ public class Test {
 
     <rule  name="UselessOperationOnImmutable"
            since="3.5"
-           message="An operation on an Immutable object (BigDecimal or BigInteger) won't change the object itself"
+           message="An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself"
            class="net.sourceforge.pmd.lang.java.rule.basic.UselessOperationOnImmutableRule"
            externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessOperationOnImmutable">
       <description>
-    An operation on an Immutable object (BigDecimal or BigInteger) won't change the object itself. The
+	An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself
     result of the operation is a new object. Therefore, ignoring the operation result is an error.
       </description>
       <priority>3</priority>
@@ -1089,7 +1089,7 @@ public class Test {
 
   <rule
         name="CheckResultSet"
-    		 language="java"
+    	language="java"
         since="4.1"
         class="net.sourceforge.pmd.lang.rule.XPathRule"
         message="Always check the return of one of the navigation method (next,previous,first,last) of a ResultSet."

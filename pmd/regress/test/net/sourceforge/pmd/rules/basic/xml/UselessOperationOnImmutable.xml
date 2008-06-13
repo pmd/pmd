@@ -10,7 +10,7 @@ useless operation on BigDecimal
 public class Foo {
  public void foo() {
   BigDecimal bd = new BigDecimal(5);
-  bd.add(new BigDecimal(5));
+  bd.divideToIntegralValue(new BigDecimal(5));
  }
 }
      ]]></code>
@@ -24,7 +24,7 @@ useless operation on BigInteger
 public class Foo {
  public void foo() {
   BigInteger bi = new BigInteger(5);
-  bi.add(new BigInteger(5));
+  bi.modPow(new BigInteger(1), new BigInteger(5));
  }
 }
      ]]></code>

@@ -268,6 +268,7 @@ bin and java14/bin scripts:
 	retroweaver version was not correct in java14/bin scripts
 	support for extra languages in cpd.sh
 	standard unix scripts can be used with cygwin
+Upgrading UselessOperationOnImmutable to detect more use cases, especially on String
 AvoidDuplicateLiteralRule now has 'skipAnnotations' boolean property
 Fixed false positive in UnusedImports: javadoc comments are parsed to check @see and other tags
 Fixed parsing bug: constant fields in annotation classes

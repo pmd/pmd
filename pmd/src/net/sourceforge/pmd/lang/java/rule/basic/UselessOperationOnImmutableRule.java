@@ -1,7 +1,9 @@
 package net.sourceforge.pmd.lang.java.rule.basic;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -17,11 +19,41 @@ import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * An operation on an Immutable object (BigDecimal or BigInteger) won't change
+ * An operation on an Immutable object (String, BigDecimal or BigInteger) won't change
  * the object itself. The result of the operation is a new object. Therefore,
  * ignoring the operation result is an error.
  */
 public class UselessOperationOnImmutableRule extends AbstractJavaRule {
+	
+    /**
+     * These are the BigDecimal methods which are immutable
+     */
+    private static final Set<String> decMethods = CollectionUtil.asSet(new String[] { ".abs", ".add", ".divide", ".divideToIntegralValue", ".max", ".min", ".movePointLeft", ".movePointRight", ".multiply", ".negate", ".plus", ".pow", ".remainder", ".round", ".scaleByPowerOfTen", ".setScale", ".stripTrailingZeros", ".subtract", ".ulp" });
+	
+    /**
+     * These are the BigInteger methods which are immutable
+     */
+    private static final Set<String> intMethods = CollectionUtil.asSet(new String[] { ".abs", ".add", ".and", ".andNot", ".clearBit", ".divide", ".flipBit", ".gcd", ".max", ".min", ".mod", ".modInverse", ".modPow", ".multiply", ".negate", ".nextProbablePrine", ".not", ".or", ".pow", ".remainder", ".setBit", ".shiftLeft", ".shiftRight", ".subtract", ".xor" });
+
+    /**
+     * These are the String methods which are immutable
+     */
+    private static final Set<String> strMethods = CollectionUtil.asSet(new String[] { ".concat", ".intern", ".replace", ".replaceAll", ".replaceFirst", ".substring", ".toLowerCase", ".toString", ".toUpperCase", ".trim" });
+
+    /**
+     * These are the classes that the rule can apply to
+     */
+    private static final Map<String, Set<String>> mapClasses = new HashMap<String, Set<String>>();
+    static {
+        mapClasses.put("java.math.BigDecimal", decMethods);
+        mapClasses.put("BigDecimal", decMethods);
+        mapClasses.put("java.math.BigInteger", intMethods);
+        mapClasses.put("BigInteger", intMethods);
+        mapClasses.put("java.lang.String", strMethods);
+        mapClasses.put("String", strMethods);
+    }
+
+    
     /**
      * These are the methods which are immutable
      */
@@ -48,8 +80,11 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
             if (!(parentClass.equals(ASTExpression.class) || parentClass.equals(ASTConditionalExpression.class) || 
             		hasComparisons(primaryExpression))) {
                 String methodCall = sn.getImage().substring(variableName.length());
-                if (targetMethods.contains(methodCall)) {
-                    addViolation(data, sn);
+                ASTType nodeType = node.getTypeNode();
+                if ( nodeType != null ) {
+                    if ( mapClasses.get(nodeType.getTypeImage()).contains(methodCall)) {
+                        addViolation(data, sn);
+                    }
                 }
             }
         }
@@ -83,7 +118,7 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
      */
     private ASTVariableDeclaratorId getDeclaration(ASTLocalVariableDeclaration node) {
         ASTType type = node.getTypeNode();
-        if (targetClasses.contains(type.getTypeImage())) {
+        if (mapClasses.keySet().contains(type.getTypeImage())) {
             return (ASTVariableDeclaratorId) node.jjtGetChild(1).jjtGetChild(0);
         }
         return null;
