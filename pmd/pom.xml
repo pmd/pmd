@@ -193,9 +193,16 @@
       <id>rpelisse</id>
       <name>Romain Pelisse</name>
       <email>rpelisse@users.sourceforge.net</email>
+      <url>http://belaran.eu/</url>
+      <organization>Atos Origin</organization>
+      <organizationUrl>https://osc-service.si.fr.atosorigin.com/</organizationUrl>
       <roles>
         <role>Developer</role>
       </roles>
+            <timezone>+1</timezone>
+      <properties>
+        <picUrl>http://belaran.eu/wordpress/wp-content/uploads/2008/05/RomainPELISSE.jpg</picUrl>
+      </properties>
     </developer>
   </developers>
   <scm>
