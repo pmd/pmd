@@ -156,8 +156,13 @@ public class UselessOverridingMethod extends AbstractRule {
         if (!primaryPrefix.hasImageEqualTo(methodDeclarator.getImage()))
             return super.visit(node, data);
 
+        List<ASTPrimarySuffix> primarySuffixList = findFirstDegreeChildrenOfType(primaryExpression, ASTPrimarySuffix.class);
+        if (primarySuffixList.size() != 1) {
+            // extra method call on result of super method
+            return super.visit(node, data);
+        }
         //Process arguments
-        ASTPrimarySuffix primarySuffix = findFirstDegreeChildrenOfType(primaryExpression, ASTPrimarySuffix.class).get(0);
+        ASTPrimarySuffix primarySuffix = primarySuffixList.get(0);
         ASTArguments arguments = (ASTArguments) primarySuffix.jjtGetChild(0);
         ASTFormalParameters formalParameters = (ASTFormalParameters) methodDeclarator.jjtGetChild(0);
         if (formalParameters.jjtGetNumChildren() != arguments.jjtGetNumChildren())
