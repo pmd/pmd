@@ -266,4 +266,26 @@ private static class ExposingSerializer extends Serializer {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description>
+        	<![CDATA[
+[ 1977230 ] false positive: UselessOverridingMethod
+     		]]>
+     	</description>
+        <expected-problems>0</expected-problems>
+        <code>
+        	<![CDATA[
+public class Foo extends Bar {
+
+	public BigDecimal getBalance(Date date) {
+		return super.getBalance(date).negate();
+	}
+}
+
+class Bar {
+	public BigDecimal getBalance(Date date) {
+	}
+}
+     ]]></code>
+    </test-code>
 </test-data>
