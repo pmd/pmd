@@ -10,6 +10,20 @@ import java.util.Map;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 
+/**
+ * The RuleContext provides access to Rule processing state.  This information
+ * includes the following global information:
+ * <ul>
+ * 	<li>The Report to which Rule Violations are sent.</li>
+ * 	<li>Named attributes.</li>
+ * </ul>
+ * As well as the following source file specific information:
+ * <ul>
+ * 	<li>A File for the source file.</li>
+ * 	<li>A String for the name of the source file.</li>
+ * 	<li>The Language Version of the source file.</li>
+ * </ul>
+ */
 public class RuleContext {
 
     private Report report = new Report();
@@ -32,38 +46,66 @@ public class RuleContext {
 	this.attributes = ruleContext.attributes;
     }
 
+    /**
+     * Get the Report to which Rule Violations are sent.
+     * @return The Report.
+     */
     public Report getReport() {
 	return report;
     }
 
+    /**
+     * Set the Report to which Rule Violations are sent.
+     * @param report The Report.
+     */
     public void setReport(Report report) {
 	this.report = report;
     }
 
+    /**
+     * Get the File associated with the current source file.
+     * @return The File.
+     */
     public File getSourceCodeFile() {
 	return sourceCodeFile;
     }
 
+    /**
+     * Set the File associated with the current source file.
+     * @return The File.
+     */
     public void setSourceCodeFile(File sourceCodeFile) {
 	this.sourceCodeFile = sourceCodeFile;
     }
 
+    /**
+     * Get the file name associated with the current source file.
+     * @return The file name.
+     */
     public String getSourceCodeFilename() {
 	return sourceCodeFilename;
     }
 
+    /**
+     * Set the file name associated with the current source file.
+     * @param filename The file name.
+     */
     public void setSourceCodeFilename(String filename) {
 	this.sourceCodeFilename = filename;
     }
 
-    public void excludeLines(Map<Integer, String> lines) {
-	report.exclude(lines);
-    }
-
+    /**
+     * Get the LanguageVersion associated with the current source file.
+     * @return The LanguageVersion.
+     */
     public LanguageVersion getLanguageVersion() {
 	return this.languageVersion;
     }
 
+    /**
+     * Set the LanguageVersion associated with the current source file.
+     * @param languageVersion The LanguageVersion.
+     */
     public void setLanguageVersion(LanguageVersion languageVersion) {
 	this.languageVersion = languageVersion;
     }
