@@ -109,14 +109,15 @@ public abstract class RuleTst {
      */
     public void runTestFromString(String code, Rule rule, Report report, LanguageVersion languageVersion) throws PMDException {
         PMD p = new PMD();
-        p.setDefaultLanguageVersion(languageVersion);
+        p.getConfiguration().setDefaultLanguageVersion(languageVersion);
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         ctx.setSourceCodeFilename("n/a");
+        ctx.setLanguageVersion(languageVersion);
         RuleSet rules = new RuleSet();
         rules.addRule(rule);
         rules.setLanguage(languageVersion.getLanguage());
-        p.processFile(new StringReader(code), new RuleSets(rules), ctx, languageVersion);
+        p.processFile(new StringReader(code), new RuleSets(rules), ctx);
     }
     
     /**

@@ -39,10 +39,11 @@ public class XPathJspRuleTest extends RuleTst {
         Report report = new Report();
         ctx.setReport(report);
         ctx.setSourceCodeFilename("n/a");
+        ctx.setLanguageVersion(LanguageVersion.JSP);
 
         PMD p = new PMD();
 
-        p.processFile(new StringReader(MATCH), new RuleSets(rules), ctx, LanguageVersion.JSP);
+        p.processFile(new StringReader(MATCH), new RuleSets(rules), ctx);
 
         assertEquals("One violation expected!", 1, report.size());
 

@@ -29,7 +29,7 @@ public class XmlParser extends AbstractParser {
 	return new net.sourceforge.pmd.lang.xml.ast.XmlParser().parse(source);
     }
 
-    public Map<Integer, String> getExcludeMap() {
+    public Map<Integer, String> getSuppressMap() {
 	return new HashMap<Integer, String>(); // FIXME
     }
 }

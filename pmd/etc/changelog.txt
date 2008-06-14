@@ -87,6 +87,22 @@ TODO - Release blockers - Must implement before this release can be finished
      is because of the incompatible changes (e.g. dropping language on RuleSet).
      Additions to the Schema/DTD shouldn't be a problem going forward as long
      as they maintain backward compatibility.
+   o Fully document the changed/new command line and Ant configuration options.
+     Should we provide backwards compatibility mode?  I'm not include to, we
+     can keep the 4.2.x branch going for a long while, and just keep the 5.x.y
+     line marching forward.  People will just have to switch at some point.
+   o Add a Configuration class, to capture the data gathered by both PMD command
+     line and Ant usages.  Figure out a way to unify the treatment/processing of
+     the commmand line and Ant usages, there's fair bit of duplication at the
+     moment.  It's expected there will be command line/Ant specific behaviors,
+     but these should be minimal.  Also move some of the settings currently done
+     on the PMD class (suppress marker, ClassLoader, LanguageVersionDiscoverer)
+     onto the configuration class.  This Configuration class should be the
+     be all and end all means for telling PMD how to process files (singly or
+     in groups).  Further, the Configuration as well as the RuleContext can be
+     passed down into the RuleSets/RuleSet code to allow easier means of making
+     decisions at that level based upon global configuration settings (e.g.
+     changes to default LanguageVersions can be checked at the Rule level now).
 ---
 
 This version of PMD breaks API compatibility with prior versions of PMD, as well
@@ -228,12 +244,13 @@ The following is relatively complete list of the major changes (this may not be
 	   Renamed - net.sourceforge.pmd.util.ConsoleLogHandler to net.sourceforge.pmd.util.log.ConsoleLogHandler
 	   Renamed - net.sourceforge.pmd.util.PmdLogFormatter to net.sourceforge.pmd.util.log.PmdLogFormatter
 
-   API Change - Changes to Rule interface
+   API Change - Changes to Rule/RuleSet/RuleSets
       Removed - boolean Rule.include()
       Removed - void Rule.setInclude(boolean)
-      Removed - String Rule.getRulePriorityName();
+      Removed - String Rule.getRulePriorityName()
       Removed - Rule.LOWEST_PRIORITY
       Removed - Rule.PRIORITIES
+ 	   Removed - RuleSet.applies(Language,Language)
       Changed - void Rule.setPriority(int) to void Rule.setPriority(RulePriorityEnum)
       Changed - int Rule.getPriority() to void RulePriorityEnum Rule.getPriority()
       Added - Rule.setLanguage(Language)
@@ -242,6 +259,19 @@ The following is relatively complete list of the major changes (this may not be
       Added - LanguageVersion Rule.getMinimumLanguageVersion()
       Added - Rule.setMaximumLanguageVersion(LanguageVersion)
       Added - LanguageVersion Rule.getMaximumLanguageVersion()
+
+   API Change - Changes to PMD class
+      Renamed - PMD.EXCLUDE_MARKER to PMD.SUPPRESS_MARKER
+      Removed - PMD.processFile(InputStream, RuleSet, RuleContext)
+      Removed - PMD.processFile(InputStream, String, RuleSet, RuleContext)
+      Removed - PMD.processFile(Reader, RuleSet, RuleContext)
+      Removed - PMD.processFile(Reader, RuleSets, RuleContext, LanguageVersion)
+      Moved - PMD.getExcludeMarker() to Configuration.getSuppressMarker()
+      Moved - PMD.setExcludeMarker(String) to Configuration.getSuppressMarker(String)
+      Moved - PMD.getClassLoader() to Configuration.getClassLoader()
+      Moved - PMD.setClassLoader(ClassLoader) to Configuration.getClassLoader(ClassLoader)
+      Moved - PMD.setDefaultLanguageVersion(LanguageVersion) to Configuration.setDefaultLanguageVersion(LanguageVersion)
+      Moved - PMD.setDefaultLanguageVersions(List<LanguageVersion>) to Configuration.setDefaultLanguageVersions(List<LanguageVersion>)
 
 New features:
 

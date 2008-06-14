@@ -85,6 +85,7 @@ import javax.xml.transform.stream.StreamResult;
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -457,10 +458,10 @@ public class Designer implements ClipboardOwner {
 	    ctx.setSourceCodeFilename("[no filename]." + languageVersion.getLanguage().getExtensions().get(0));
 	    StringReader reader = new StringReader(codeEditorPane.getText());
 	    PMD pmd = new PMD();
-	    pmd.setDefaultLanguageVersion(languageVersion);
+	    pmd.getConfiguration().setDefaultLanguageVersion(languageVersion);
 
 	    try {
-		pmd.processFile(reader, rs, ctx);
+		pmd.processFile(reader, new RuleSets(rs), ctx);
 		//	    } catch (PMDException pmde) {
 		//		loadTreeData(new ExceptionNode(pmde));
 	    } catch (Exception e) {

@@ -22,6 +22,7 @@ import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.SimpleRuleSetNameMapper;
 import net.sourceforge.pmd.SourceFileSelector;
 import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
@@ -135,15 +136,17 @@ public class Benchmark {
 
             RuleSet working = new RuleSet();
             working.addRule(rule);
+            RuleSets ruleSets = new RuleSets();
+            ruleSets.addRuleSet(working);
 
             PMD p = new PMD();
-            p.setDefaultLanguageVersion(languageVersion);
+            p.getConfiguration().setDefaultLanguageVersion(languageVersion);
             RuleContext ctx = new RuleContext();
             long start = System.currentTimeMillis();
             for (File file: files) {
                 FileReader reader = new FileReader(file);
                 ctx.setSourceCodeFilename(file.getName());
-                p.processFile(reader, working, ctx);
+                p.processFile(reader, ruleSets, ctx);
                 reader.close();
             }
             long end = System.currentTimeMillis();

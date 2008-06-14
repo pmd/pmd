@@ -15,7 +15,6 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -38,7 +37,6 @@ import java.util.zip.ZipFile;
 import net.sourceforge.pmd.cpd.SourceFileOrDirectoryFilter;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -56,54 +54,86 @@ import net.sourceforge.pmd.util.log.ScopedLogHandlersManager;
 public class PMD {
     public static final String EOL = System.getProperty("line.separator", "\n");
     public static final String VERSION = "5.0-SNAPSHOT";
-    public static final String EXCLUDE_MARKER = "NOPMD";
+    public static final String SUPPRESS_MARKER = "NOPMD";
 
     private static final Logger LOG = Logger.getLogger(PMD.class.getName());
 
-    private String excludeMarker = EXCLUDE_MARKER;
-    private LanguageVersionDiscoverer languageVersionDiscoverer = new LanguageVersionDiscoverer();
-    private ClassLoader classLoader = getClass().getClassLoader();
+    private Configuration configuration = new Configuration();
 
     public PMD() {
     }
 
     /**
-     * Processes the file read by the reader against the rule set.
-     *
-     * @param reader   input stream reader
-     * @param ruleSets set of rules to process against the file
-     * @param ctx      context in which PMD is operating. This contains the Renderer and
-     *                 whatnot
-     * @throws PMDException if the input could not be parsed or processed
+     * Get the runtime configuration.  The configuration can be modified
+     * to affect how PMD behaves.
+     * @return The configuration.
+     * @see Configuration
      */
-    public void processFile(Reader reader, RuleSets ruleSets, RuleContext ctx) throws PMDException {
-	LanguageVersion languageVersion = getLanguageVersionOfFile(ctx.getSourceCodeFilename());
-
-	processFile(reader, ruleSets, ctx, languageVersion);
+    public Configuration getConfiguration() {
+	return configuration;
     }
 
     /**
-     * Processes the file read by the reader against the rule set.
-     *
-     * @param reader     input stream reader
-     * @param ruleSets   set of rules to process against the file
-     * @param ctx        context in which PMD is operating. This contains the Renderer and
-     *                   whatnot
-     * @param languageVersion the LanguageVersion of the source
-     * @throws PMDException if the input could not be parsed or processed
+     * Set the runtime configuration.
+     * @return The configuration.
+     * @see Configuration
      */
-    public void processFile(Reader reader, RuleSets ruleSets, RuleContext ctx, LanguageVersion languageVersion)
+    public void setConfiguration(Configuration configuration) {
+	this.configuration = configuration;
+    }
+
+    /**
+     * Processes the input stream against a rule set using the given input encoding.
+     *
+     * @param inputStream The InputStream to analyze.
+     * @param encoding The InputStream encoded.  If <code>null</code>, then the System default encoding will be used.
+     * @param ruleSets The collection of rules to process against the file.
+     * @param ctx The context in which PMD is operating.
+     * @throws PMDException if the input encoding is unsupported, the input stream could
+     *                      not be parsed, or other error is encountered.
+     * @see #processFile(Reader, RuleSets, RuleContext)
+     */
+    public void processFile(InputStream inputStream, String encoding, RuleSets ruleSets, RuleContext ctx)
 	    throws PMDException {
+	try {
+	    if (encoding == null) {
+		encoding = System.getProperty("file.encoding");
+	    }
+	    processFile(new InputStreamReader(inputStream, encoding), ruleSets, ctx);
+	} catch (UnsupportedEncodingException uee) {
+	    throw new PMDException("Unsupported encoding exception: " + uee.getMessage());
+	}
+    }
+
+    /**
+     * Processes the input stream against a rule set using the given input encoding.
+     * If the LanguageVersion is <code>null</code>  on the RuleContext, it will
+     * be automatically determined.
+     *
+     * @param inputStream The Reader to analyze.
+     * @param ruleSets The collection of rules to process against the file.
+     * @param ctx The context in which PMD is operating.
+     * @throws PMDException if the input encoding is unsupported, the input stream could
+     *                      not be parsed, or other error is encountered.
+     * @see #processFile(Reader, RuleSets, RuleContext)
+     */
+    public void processFile(Reader reader, RuleSets ruleSets, RuleContext ctx) throws PMDException {
+	// If LanguageVersion of the source file is not known, make a determination
+	if (ctx.getLanguageVersion() == null) {
+	    LanguageVersion languageVersion = configuration.getLanguageVersionOfFile(ctx.getSourceCodeFilename());
+	    ctx.setLanguageVersion(languageVersion);
+	}
+
 	try {
 	    // Coarse check to see if any RuleSet applies to files, will need to do a finer RuleSet specific check later
 	    if (ruleSets.applies(ctx.getSourceCodeFile())) {
-		ctx.setLanguageVersion(languageVersion);
+		LanguageVersion languageVersion = ctx.getLanguageVersion();
 		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
 		Parser parser = languageVersionHandler.getParser();
-		parser.setExcludeMarker(excludeMarker);
+		parser.setSuppressMarker(configuration.getSuppressMarker());
 		long start = System.nanoTime();
 		Node rootNode = parser.parse(ctx.getSourceCodeFilename(), reader);
-		ctx.excludeLines(parser.getExcludeMap());
+		ctx.getReport().suppress(parser.getSuppressMap());
 		long end = System.nanoTime();
 		Benchmark.mark(Benchmark.TYPE_PARSER, end - start, 0);
 		start = System.nanoTime();
@@ -122,7 +152,7 @@ public class PMD {
 
 		if (ruleSets.usesTypeResolution(language)) {
 		    start = System.nanoTime();
-		    languageVersionHandler.getTypeResolutionFacade(classLoader).start(rootNode);
+		    languageVersionHandler.getTypeResolutionFacade(configuration.getClassLoader()).start(rootNode);
 		    end = System.nanoTime();
 		    Benchmark.mark(Benchmark.TYPE_TYPE_RESOLUTION, end - start, 0);
 		}
@@ -142,139 +172,6 @@ public class PMD {
 	    } catch (IOException e) {
 	    }
 	}
-    }
-
-    /**
-     * Get the LanguageVersion of the source file with given name. This depends on the fileName
-     * extension, and the java version.
-     * <p/>
-     * For compatibility with older code that does not always pass in a correct filename,
-     * unrecognized files are assumed to be java files.
-     *
-     * @param fileName Name of the file, can be absolute, or simple.
-     * @return the LanguageVersion
-     */
-    private LanguageVersion getLanguageVersionOfFile(String fileName) {
-	LanguageVersion languageVersion = languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
-	if (languageVersion == null) {
-	    // For compatibility with older code that does not always pass in
-	    // a correct filename.
-	    languageVersion = languageVersionDiscoverer.getDefaultLanguageVersion(Language.JAVA);
-	}
-	return languageVersion;
-    }
-
-    /**
-     * Processes the file read by the reader against the rule set.
-     *
-     * @param reader  input stream reader
-     * @param ruleSet set of rules to process against the file
-     * @param ctx     context in which PMD is operating. This contains the Renderer and
-     *                whatnot
-     * @throws PMDException if the input could not be parsed or processed
-     */
-    public void processFile(Reader reader, RuleSet ruleSet, RuleContext ctx) throws PMDException {
-	processFile(reader, new RuleSets(ruleSet), ctx);
-    }
-
-    /**
-     * Processes the input stream against a rule set using the given input encoding.
-     *
-     * @param fileContents an input stream to analyze
-     * @param encoding     input stream's encoding
-     * @param ruleSet      set of rules to process against the file
-     * @param ctx          context in which PMD is operating. This contains the Report and whatnot
-     * @throws PMDException if the input encoding is unsupported or the input stream could
-     *                      not be parsed
-     * @see #processFile(Reader, RuleSet, RuleContext)
-     */
-    public void processFile(InputStream fileContents, String encoding, RuleSet ruleSet, RuleContext ctx)
-	    throws PMDException {
-	try {
-	    processFile(new InputStreamReader(fileContents, encoding), ruleSet, ctx);
-	} catch (UnsupportedEncodingException uee) {
-	    throw new PMDException("Unsupported encoding exception: " + uee.getMessage());
-	}
-    }
-
-    /**
-     * Processes the input stream against a rule set using the given input encoding.
-     *
-     * @param fileContents an input stream to analyze
-     * @param encoding     input stream's encoding
-     * @param ruleSets     set of rules to process against the file
-     * @param ctx          context in which PMD is operating. This contains the Report and whatnot
-     * @throws PMDException if the input encoding is unsupported or the input stream could
-     *                      not be parsed
-     * @see #processFile(Reader, RuleSet, RuleContext)
-     */
-    public void processFile(InputStream fileContents, String encoding, RuleSets ruleSets, RuleContext ctx)
-	    throws PMDException {
-	try {
-	    processFile(new InputStreamReader(fileContents, encoding), ruleSets, ctx);
-	} catch (UnsupportedEncodingException uee) {
-	    throw new PMDException("Unsupported encoding exception: " + uee.getMessage());
-	}
-    }
-
-    /**
-     * Processes the input stream against a rule set assuming the platform character set.
-     *
-     * @param fileContents input stream to check
-     * @param ruleSet      the set of rules to process against the source code
-     * @param ctx          the context in which PMD is operating. This contains the Report and
-     *                     whatnot
-     * @throws PMDException if the input encoding is unsupported or the input input stream
-     *                      could not be parsed
-     * @see #processFile(InputStream, String, RuleSet, RuleContext)
-     */
-    public void processFile(InputStream fileContents, RuleSet ruleSet, RuleContext ctx) throws PMDException {
-	processFile(fileContents, System.getProperty("file.encoding"), ruleSet, ctx);
-    }
-
-    public void setExcludeMarker(String marker) {
-	this.excludeMarker = marker;
-    }
-
-    /**
-     * Set the given LanguageVersion as the current default for it's Language.
-     *
-     * @param languageVersion the LanguageVersion
-     */
-    public void setDefaultLanguageVersion(LanguageVersion languageVersion) {
-	setDefaultLanguageVersions(Arrays.asList(languageVersion));
-    }
-
-    /**
-     * Set the given LanguageVersions as the current default for their Languages.
-     *
-     * @param languageVersions The LanguageVersions.
-     */
-    public void setDefaultLanguageVersions(List<LanguageVersion> languageVersions) {
-	for (LanguageVersion languageVersion : languageVersions) {
-	    languageVersionDiscoverer.setDefaultLanguageVersion(languageVersion);
-	}
-    }
-
-    /**
-     * Get the ClassLoader being used by PMD when processing Rules.
-     * @return The ClassLoader being used
-     */
-    public ClassLoader getClassLoader() {
-	return classLoader;
-    }
-
-    /**
-     * Set the ClassLoader being used by PMD when processing Rules.
-     * Setting a value of <code>null</code> will cause the default
-     * ClassLoader to be used.
-     * @param classLoader The ClassLoader to use
-     */
-    public void setClassLoader(ClassLoader classLoader) {
-	if (classLoader == null) {
-	    classLoader = getClass().getClassLoader();
-	}
-	this.classLoader = classLoader;
     }
 
     /**
@@ -366,7 +263,7 @@ public class PMD {
 
 		processFiles(opts.getCpus(), ruleSetFactory, languageVersions, files, ctx, renderers, opts
 			.stressTestEnabled(), opts.getRulesets(), opts.shortNamesEnabled(), opts.getInputPath(), opts
-			.getEncoding(), opts.getExcludeMarker(), classLoader);
+			.getEncoding(), opts.getSuppressMarker(), classLoader);
 	    } catch (RuleSetNotFoundException rsnfe) {
 		LOG.log(Level.SEVERE, "Ruleset not found", rsnfe);
 		System.out.println(opts.usage());
@@ -436,7 +333,7 @@ public class PMD {
 
 	public PmdRunnable(ExecutorService executor, DataSource dataSource, String fileName,
 		List<LanguageVersion> languageVersions, List<Renderer> renderers, String encoding, String rulesets,
-		String excludeMarker, ClassLoader classLoader) {
+		String suppressMarker, ClassLoader classLoader) {
 	    this.executor = executor;
 	    this.dataSource = dataSource;
 	    this.fileName = fileName;
@@ -444,9 +341,9 @@ public class PMD {
 	    this.rulesets = rulesets;
 	    this.renderers = renderers;
 
-	    setDefaultLanguageVersions(languageVersions);
-	    setExcludeMarker(excludeMarker);
-	    setClassLoader(classLoader);
+	    getConfiguration().setDefaultLanguageVersions(languageVersions);
+	    getConfiguration().setSuppressMarker(suppressMarker);
+	    getConfiguration().setClassLoader(classLoader);
 	}
 
 	public Report call() {
@@ -581,9 +478,9 @@ public class PMD {
     public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory,
 	    List<LanguageVersion> languageVersions, List<DataSource> files, RuleContext ctx, List<Renderer> renderers,
 	    String rulesets, final boolean shortNamesEnabled, final String inputPath, String encoding,
-	    String excludeMarker, ClassLoader classLoader) {
+	    String suppressMarker, ClassLoader classLoader) {
 	processFiles(threadCount, ruleSetFactory, languageVersions, files, ctx, renderers, false, rulesets,
-		shortNamesEnabled, inputPath, encoding, excludeMarker, classLoader);
+		shortNamesEnabled, inputPath, encoding, suppressMarker, classLoader);
     }
 
     /**
@@ -594,7 +491,7 @@ public class PMD {
     public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory,
 	    List<LanguageVersion> languageVersions, List<DataSource> files, RuleContext ctx, List<Renderer> renderers,
 	    boolean stressTestEnabled, String rulesets, final boolean shortNamesEnabled, final String inputPath,
-	    String encoding, String excludeMarker, ClassLoader classLoader) {
+	    String encoding, String suppressMarker, ClassLoader classLoader) {
 
 	/*
 	 * Check if multithreaded is supported. 
@@ -633,7 +530,7 @@ public class PMD {
 		String niceFileName = dataSource.getNiceFileName(shortNamesEnabled, inputPath);
 
 		PmdRunnable r = new PmdRunnable(executor, dataSource, niceFileName, languageVersions, renderers,
-			encoding, rulesets, excludeMarker, classLoader);
+			encoding, rulesets, suppressMarker, classLoader);
 
 		Future<Report> future = executor.submit(r);
 		tasks.add(future);
@@ -685,8 +582,8 @@ public class PMD {
 	    // single threaded execution
 
 	    PMD pmd = new PMD();
-	    pmd.setDefaultLanguageVersions(languageVersions);
-	    pmd.setExcludeMarker(excludeMarker);
+	    pmd.getConfiguration().setDefaultLanguageVersions(languageVersions);
+	    pmd.getConfiguration().setSuppressMarker(suppressMarker);
 
 	    RuleSets rs = null;
 	    try {

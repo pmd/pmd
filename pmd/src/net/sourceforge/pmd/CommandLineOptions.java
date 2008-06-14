@@ -27,7 +27,7 @@ public class CommandLineOptions {
     private boolean shortNamesEnabled;
     private int cpus = Runtime.getRuntime().availableProcessors();
 
-    private String excludeMarker = PMD.EXCLUDE_MARKER;
+    private String suppressMarker = PMD.SUPPRESS_MARKER;
     private String inputPath;
     private String reportFormat;
     private String reportFile;
@@ -79,8 +79,8 @@ public class CommandLineOptions {
                 }
             } else if (args[i].equals("-targetjdk")) {
                 targetJDK = args[++i];
-            } else if (args[i].equals("-excludemarker")) {
-                excludeMarker = args[++i];
+            } else if (args[i].equals("-suppressmarker")) {
+                suppressMarker = args[++i];
             } else if (args[i].equals("-jsp")) {
                 checkJspFiles = true;
             } else if (args[i].equals("-nojava")) {
@@ -175,8 +175,8 @@ public class CommandLineOptions {
         return this.ruleSets;
     }
 
-    public String getExcludeMarker() {
-        return this.excludeMarker;
+    public String getSuppressMarker() {
+        return this.suppressMarker;
     }
 
     public boolean debugEnabled() {

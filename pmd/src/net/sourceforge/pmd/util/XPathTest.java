@@ -49,8 +49,9 @@ public class XPathTest {
         RuleContext ctx = new RuleContext();
         ctx.setReport(report);
         ctx.setSourceCodeFilename(filename);
+        ctx.setLanguageVersion(Language.JAVA.getDefaultVersion());
 
-        pmd.processFile(new FileReader(filename), new RuleSets(ruleSet), ctx, Language.JAVA.getDefaultVersion());
+        pmd.processFile(new FileReader(filename), new RuleSets(ruleSet), ctx);
 
         for (Iterator<RuleViolation> i = report.iterator(); i.hasNext();) {
             RuleViolation rv = i.next();

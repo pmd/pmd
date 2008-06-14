@@ -32,7 +32,7 @@ public class JspParser extends AbstractParser {
 	return new net.sourceforge.pmd.lang.jsp.ast.JspParser(new JavaCharStream(source)).CompilationUnit();
     }
 
-    public Map<Integer, String> getExcludeMap() {
+    public Map<Integer, String> getSuppressMap() {
 	return new HashMap<Integer, String>(); // FIXME
     }
 }

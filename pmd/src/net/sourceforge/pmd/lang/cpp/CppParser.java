@@ -27,7 +27,7 @@ public class CppParser extends AbstractParser {
 	throw new UnsupportedOperationException("parse(Reader) is not supported for C++");
     }
 
-    public Map<Integer, String> getExcludeMap() {
-	throw new UnsupportedOperationException("getExcludeMap() is not supported for C++");
+    public Map<Integer, String> getSuppressMap() {
+	throw new UnsupportedOperationException("getSuppressMap() is not supported for C++");
     }
 }

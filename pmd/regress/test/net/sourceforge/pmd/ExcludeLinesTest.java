@@ -37,15 +37,16 @@ import test.net.sourceforge.pmd.testframework.TestDescriptor;
      @Test
      public void testAlternateMarker() throws Throwable {
          PMD p = new PMD();
-         p.setExcludeMarker("FOOBAR");
+         p.getConfiguration().setSuppressMarker("FOOBAR");
          RuleContext ctx = new RuleContext();
          Report r = new Report();
          ctx.setReport(r);
          ctx.setSourceCodeFilename("n/a");
+         ctx.setLanguageVersion(DEFAULT_LANGUAGE_VERSION);
          RuleSet rules = new RuleSet();
          rules.addRule(rule);
          rules.setLanguage(DEFAULT_LANGUAGE);
-         p.processFile(new StringReader(TEST3), new RuleSets(rules), ctx, DEFAULT_LANGUAGE_VERSION);
+         p.processFile(new StringReader(TEST3), new RuleSets(rules), ctx);
          assertTrue(r.isEmpty());
          assertEquals(r.getSuppressedRuleViolations().size(), 1);
      }

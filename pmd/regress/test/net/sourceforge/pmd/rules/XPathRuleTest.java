@@ -1,11 +1,15 @@
 package test.net.sourceforge.pmd.rules;
  
 import static org.junit.Assert.assertEquals;
+
+import java.io.StringReader;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleSet;
+import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.rule.XPathRule;
 
@@ -13,8 +17,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.RuleTst;
-
-import java.io.StringReader;
  /**
   * @author daniels
   */
@@ -41,7 +43,7 @@ import java.io.StringReader;
          ctx.setSourceCodeFilename("n/a");
          RuleSet rules = new RuleSet();
          rules.addRule(rule);
-         p.processFile(new StringReader(TEST1), rules, ctx);
+         p.processFile(new StringReader(TEST1), new RuleSets(rules), ctx);
          RuleViolation rv = (RuleViolation) report.iterator().next();
          assertEquals("a", rv.getDescription());
      }
@@ -59,7 +61,7 @@ import java.io.StringReader;
          ctx.setSourceCodeFilename("n/a");
          RuleSet rules = new RuleSet();
          rules.addRule(rule);
-         p.processFile(new StringReader(TEST2), rules, ctx);
+         p.processFile(new StringReader(TEST2), new RuleSets(rules), ctx);
          RuleViolation rv = (RuleViolation) report.iterator().next();
          assertEquals(3, rv.getBeginLine());
      }

@@ -95,13 +95,13 @@ public class AbstractRuleTest {
     }
 
     @Test
-    public void testRuleExclusion() {
+    public void testRuleSuppress() {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
         Map<Integer, String> m = new HashMap<Integer, String>();
         m.put(new Integer(5), "");
         ctx.setReport(new Report());
-        ctx.excludeLines(m);
+        ctx.getReport().suppress(m);
         ctx.setSourceCodeFilename("filename");
         DummyJavaNode n = new DummyJavaNode(1);
         n.testingOnly__setBeginColumn(5);

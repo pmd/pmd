@@ -41,11 +41,11 @@ public interface Parser {
     Node parse(String fileName, Reader source) throws ParseException;
 
     // TODO Document
-    Map<Integer, String> getExcludeMap();
+    Map<Integer, String> getSuppressMap();
 
     // TODO Document
-    String getExcludeMarker();
+    String getSuppressMarker();
 
     // TODO Document
-    void setExcludeMarker(String marker);
+    void setSuppressMarker(String marker);
 }

@@ -34,9 +34,9 @@ public abstract class AbstractJavaParser extends AbstractParser {
      */
     protected JavaParser createJavaParser(Reader source) throws ParseException {
 	parser = new JavaParser(new JavaCharStream(source));
-	String excludeMarker = getExcludeMarker();
-	if (excludeMarker != null) {
-	    parser.setExcludeMarker(excludeMarker);
+	String suppressMarker = getSuppressMarker();
+	if (suppressMarker != null) {
+	    parser.setSuppressMarker(suppressMarker);
 	}
 	return parser;
     }
@@ -50,7 +50,7 @@ public abstract class AbstractJavaParser extends AbstractParser {
 	return createJavaParser(source).CompilationUnit();
     }
 
-    public Map<Integer, String> getExcludeMap() {
-	return parser.getExcludeMap();
+    public Map<Integer, String> getSuppressMap() {
+	return parser.getSuppressMap();
     }
 }

@@ -46,11 +46,11 @@ public class CommandLineOptionsTest {
     }
 
     @Test
-    public void testExcludeMarker() {
-        CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic", "-excludemarker", "FOOBAR"});
-        assertEquals("FOOBAR", opt.getExcludeMarker());
-        opt = new CommandLineOptions(new String[]{"-excludemarker", "FOOBAR", "file", "format", "basic"});
-        assertEquals("FOOBAR", opt.getExcludeMarker());
+    public void testSuppressMarker() {
+        CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic", "-suppressmarker", "FOOBAR"});
+        assertEquals("FOOBAR", opt.getSuppressMarker());
+        opt = new CommandLineOptions(new String[]{"-suppressmarker", "FOOBAR", "file", "format", "basic"});
+        assertEquals("FOOBAR", opt.getSuppressMarker());
     }
 
     @Test

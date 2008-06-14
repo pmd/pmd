@@ -2040,9 +2040,9 @@ void SkipLexicalActions(Token matchedToken)
    {
       case 6 :
          image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
-        int startOfNOPMD = matchedToken.image.indexOf(excludeMarker);
+        int startOfNOPMD = matchedToken.image.indexOf(suppressMarker);
         if (startOfNOPMD != -1) {
-            excludeMap.put(matchedToken.beginLine, matchedToken.image.substring(startOfNOPMD + excludeMarker.length()));
+            suppressMap.put(matchedToken.beginLine, matchedToken.image.substring(startOfNOPMD + suppressMarker.length()));
         }
          break;
       case 9 :

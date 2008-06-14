@@ -114,14 +114,14 @@ public class Report {
     private final Set<Metric> metrics = new HashSet<Metric>();
     private final List<ReportListener> listeners = new ArrayList<ReportListener>();
     private final List<ProcessingError> errors = new ArrayList<ProcessingError>();
-    private Map<Integer, String> linesToExclude = new HashMap<Integer, String>();
+    private Map<Integer, String> linesToSuppress = new HashMap<Integer, String>();
     private long start;
     private long end;
 
     private List<SuppressedViolation> suppressedRuleViolations = new ArrayList<SuppressedViolation>();
 
-    public void exclude(Map<Integer, String> lines) {
-        linesToExclude = lines;
+    public void suppress(Map<Integer, String> lines) {
+        linesToSuppress = lines;
     }
 
     public Map<String, Integer> getCountSummary() {
@@ -173,10 +173,10 @@ public class Report {
 
     public void addRuleViolation(RuleViolation violation) {
 
-        // NOPMD excluder
+        // NOPMD suppress
         int line = violation.getBeginLine();
-        if (linesToExclude.containsKey(line)) {
-            suppressedRuleViolations.add(new SuppressedViolation(violation, true, linesToExclude.get(line)));
+        if (linesToSuppress.containsKey(line)) {
+            suppressedRuleViolations.add(new SuppressedViolation(violation, true, linesToSuppress.get(line)));
             return;
         }
 

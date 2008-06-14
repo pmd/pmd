@@ -61,7 +61,7 @@ public class PMDTask extends Task {
 	private int maxRuleViolations = 0;
     private String targetJDK = "1.5";
     private String failuresPropertyName;
-    private String excludeMarker = PMD.EXCLUDE_MARKER;
+    private String suppressMarker = PMD.SUPPRESS_MARKER;
     private int cpus = Runtime.getRuntime().availableProcessors();
     private final Collection<RuleSetWrapper> nestedRules = new ArrayList<RuleSetWrapper>();
 
@@ -73,8 +73,8 @@ public class PMDTask extends Task {
         this.targetJDK = value;
     }
 
-    public void setExcludeMarker(String value) {
-        this.excludeMarker = value;
+    public void setSuppressMarker(String value) {
+        this.suppressMarker = value;
     }
 
     public void setFailOnError(boolean fail) {
@@ -209,8 +209,8 @@ public class PMDTask extends Task {
         languageVersions.add(languageVersion);
         log("Targeting " + languageVersion.getShortName(), Project.MSG_VERBOSE);
 
-        if (excludeMarker != null) {
-            log("Setting exclude marker to be " + excludeMarker, Project.MSG_VERBOSE);
+        if (suppressMarker != null) {
+            log("Setting suppress marker to be " + suppressMarker, Project.MSG_VERBOSE);
         }
 
         RuleContext ctx = new RuleContext();
@@ -254,7 +254,7 @@ public class PMDTask extends Task {
                 PMD.processFiles(cpus, ruleSetFactory, languageVersions, files, ctx,
                     renderers, ruleSetFiles,
                     shortFilenames, inputPath,
-                    encoding, excludeMarker, classLoader);
+                    encoding, suppressMarker, classLoader);
             } catch (RuntimeException pmde) {
                 pmde.printStackTrace();
                 log(pmde.toString(), Project.MSG_VERBOSE);

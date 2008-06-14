@@ -11,7 +11,7 @@ import java.io.Reader;
  * @see Parser
  */
 public abstract class AbstractParser implements Parser {
-    private String excludeMarker;
+    private String suppressMarker;
 
     public TokenManager getTokenManager(String fileName, Reader source) {
 	TokenManager tokenManager = createTokenManager(source);
@@ -21,11 +21,11 @@ public abstract class AbstractParser implements Parser {
 
     protected abstract TokenManager createTokenManager(Reader source);
 
-    public String getExcludeMarker() {
-	return excludeMarker;
+    public String getSuppressMarker() {
+	return suppressMarker;
     }
 
-    public void setExcludeMarker(String excludeMarker) {
-	this.excludeMarker = excludeMarker;
+    public void setSuppressMarker(String suppressMarker) {
+	this.suppressMarker = suppressMarker;
     }
 }
