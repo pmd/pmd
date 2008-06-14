@@ -23,6 +23,9 @@ import net.sourceforge.pmd.lang.LanguageVersion;
  * 	<li>A String for the name of the source file.</li>
  * 	<li>The Language Version of the source file.</li>
  * </ul>
+ * It is <strong>required</strong> that all source file specific options
+ * be set between calls to difference source files.  Failure to do so, may
+ * result in undefined behavior.
  */
 public class RuleContext {
 
@@ -72,6 +75,8 @@ public class RuleContext {
 
     /**
      * Set the File associated with the current source file.
+     * While this may be set to <code>null</code>, the exclude/include
+     * facilities will not work properly without a File.
      * @return The File.
      */
     public void setSourceCodeFile(File sourceCodeFile) {
@@ -96,7 +101,7 @@ public class RuleContext {
 
     /**
      * Get the LanguageVersion associated with the current source file.
-     * @return The LanguageVersion.
+     * @return The LanguageVersion, <code>null</code> if unknown.
      */
     public LanguageVersion getLanguageVersion() {
 	return this.languageVersion;
@@ -104,6 +109,9 @@ public class RuleContext {
 
     /**
      * Set the LanguageVersion associated with the current source file.
+     * This may be set to <code>null</code> to indicate the version is
+     * unknown and should be automatically determined.
+     * 
      * @param languageVersion The LanguageVersion.
      */
     public void setLanguageVersion(LanguageVersion languageVersion) {
