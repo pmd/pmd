@@ -1221,8 +1221,8 @@ public class Test {
         </example>
     </rule>
     <rule 	name="EmptyInitializer"
-	  		since="5.0"
-          	language="java"
+		    language="java"
+	  		since="5.0"   	
           	message="Empty initializer was found"
           	class="net.sourceforge.pmd.lang.rule.XPathRule"
           	externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyInitializer">
@@ -1246,6 +1246,40 @@ public class Foo {
    static {} // Why ?
 
    {} // Again, why ?
+
+}
+    ]]>
+    </example>
+  </rule>
+
+
+  <rule name="EmptyStatementBlock"
+        language="java"
+        since="5.0"
+        message="Avoid empty block statements."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+	externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyStatementBlock">
+    <description>Empty block statements are useless so they should be removed.</description>
+    <priority>3</priority>
+    <properties>
+       <property name="xpath">
+          <value>
+          <![CDATA[
+//BlockStatement/Statement/Block[count(*) = 0]
+          ]]>
+          </value>
+       </property>
+    </properties>
+    <example>
+    <![CDATA[
+public class Foo {
+
+   private int _bar;
+
+   public void setBar(int bar) {
+      { _bar = bar; } // Why not?
+      {} // But remove this.
+   }
 
 }
     ]]>
