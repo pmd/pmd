@@ -1310,5 +1310,40 @@ public class Foo extends Object { // This is useless
     ]]>
     </example>
   </rule>
+  
+  <rule name="UselessParentheses"
+  		language="java"
+        since="5.0"
+        message="Useless parentheses."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#UselessParentheses">
+    <description>Useless parentheses should be removed.</description>
+    <priority>4</priority>
+    <properties>
+       <property name="xpath">
+          <value>
+          <![CDATA[
+//Expression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1]
+          ]]>
+          </value>
+       </property>
+    </properties>
+    <example>
+    <![CDATA[
+public class Foo {
+
+   private int _bar1;
+   private Integer _bar2;
+
+   public void setBar(int n) {
+      _bar1 = Integer.valueOf((n)); // here
+      _bar2 = (n); // and here
+   }
+
+}
+    ]]>
+    </example>
+  </rule>
+    
 </ruleset>
 

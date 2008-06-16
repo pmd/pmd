@@ -47,6 +47,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule("basic", "UnnecessaryConversionTemporary");
         addRule("basic", "UselessOperationOnImmutable");
         addRule("basic", "UselessOverridingMethod");
+        addRule("basic", "UselessParentheses");
     }
 
     public static junit.framework.Test suite() {
