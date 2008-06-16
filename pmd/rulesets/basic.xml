@@ -11,8 +11,8 @@ The Basic Ruleset contains a collection of good practices which everyone should 
 
 
     <rule name="EmptyCatchBlock"
-    		 language="java"
-    		 since="0.1"
+  		  language="java"
+  	  	  since="0.1"
           message="Avoid empty catch blocks"
           class="net.sourceforge.pmd.lang.rule.XPathRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock">
@@ -1286,5 +1286,29 @@ public class Foo {
     </example>
   </rule>
 
+  <rule name="ExtendsObject"
+  		language="java"
+        since="5.0"
+        message="No need to explicitly extend Object."
+        class="net.sourceforge.pmd.lang.rule.XPathRule"
+        externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#ExtendsObject">
+    <description>No need to explicitly extend Object.</description>
+    <priority>4</priority>
+    <properties>
+       <property name="xpath">
+          <value>
+          <![CDATA[
+//ExtendsList/ClassOrInterfaceType[@Image='Object' or @Image='java.lang.Object']
+          ]]>
+          </value>
+       </property>
+    </properties>
+    <example>
+    <![CDATA[
+public class Foo extends Object { // This is useless
+}
+    ]]>
+    </example>
+  </rule>
 </ruleset>
 

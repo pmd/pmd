@@ -35,6 +35,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule("basic", "EmptySynchronizedBlock");
         addRule("basic", "EmptyTryBlock");
         addRule("basic", "EmptyWhileStmt");
+	addRule("basic", "ExtendsObject");
         addRule("basic", "ForLoopShouldBeWhileLoop");
         addRule("basic", "JumbledIncrementer");
         addRule("basic", "MisplacedNullCheck");
