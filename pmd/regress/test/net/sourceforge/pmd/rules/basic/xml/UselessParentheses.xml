@@ -61,7 +61,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-usefull parentheses, arithmetic
+useful parentheses, arithmetic
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -74,7 +74,7 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-usefull parentheses, logic
+useful parentheses, logic
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[

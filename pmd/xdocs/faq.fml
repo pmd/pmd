@@ -50,9 +50,9 @@ int total;
   <part id="rules">
     <title>Rules</title>
    
-    <faq id="how-usefull">
+    <faq id="how-useful">
       <question>
-        How usefull are the rules?
+        How useful are the rules?
       </question>
       <answer>
         <p>Have this clear: having a projects with no pmd violations does not mean at all, I repeat,

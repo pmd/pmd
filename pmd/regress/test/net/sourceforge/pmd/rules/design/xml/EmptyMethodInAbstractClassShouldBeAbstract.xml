@@ -33,23 +33,23 @@ public abstract class ShouldBeAbstract
     </test-code>
     <test-code>
         <description><![CDATA[
-A method with just a return statement, but a meaningfull one.
+A method with just a return statement, but a meaningful one.
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public abstract class ShouldBeAbstract
 {
-    public int isUseFull(int i)
+    public int isUseFul(int i)
     {
 	return (i +4 ) * 12;
    }
 
-    public int anotherUseFull(int i)
+    public int anotherUseful(int i)
     {
 	return i++;
    }
 
-    public int anotherUseFull(int i)
+    public int anotherUseful(int i)
     {
 	return i;
    }
@@ -64,16 +64,16 @@ Other valid methods.
         <code><![CDATA[
 public abstract class ShouldBeAbstract
 {
-    public native int isUseFull();
+    public native int isUseful();
 
     int i;
 
-    public int anotherUseFull() {
+    public int anotherUseful() {
       i = i + 1;
       return i;
     }
 
-    public String anotherUseFull(int j) {
+    public String anotherUseful(int j) {
       i = j;
       return null;
    }
