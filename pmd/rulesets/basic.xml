@@ -1349,7 +1349,7 @@ public class Foo {
 	  		language="java"
 	  		since="5.0"
           	message="Check the value returned by the skip() method of an InputStream to see if the requested number of bytes has been skipped."
-          	class="net.sourceforge.pmd.lang.java.rule.basic.CheckSkipResult"
+          	class="net.sourceforge.pmd.lang.java.rule.basic.CheckSkipResultRule"
 	  		externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#CheckSkipResult">
         <description>The skip() method may skip a smaller number of bytes than requested. You need to check the returned value to find out if it was the case or not.</description>
         <priority>3</priority>

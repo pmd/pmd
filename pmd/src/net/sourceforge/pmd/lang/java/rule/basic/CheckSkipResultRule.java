@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 
-public class CheckSkipResult extends AbstractJavaRule {
+public class CheckSkipResultRule extends AbstractJavaRule {
     
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isA(node.getTypeNode(), InputStream.class)) {
