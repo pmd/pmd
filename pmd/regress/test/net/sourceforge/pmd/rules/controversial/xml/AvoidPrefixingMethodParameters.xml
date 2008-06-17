@@ -52,4 +52,16 @@ public class Foo {
      ]]></code>
     </test-code>
 
+    <test-code>
+        <description><![CDATA[
+AvoidPrefixingMethodParameters basic test case: in is not a prefix, not using camel case in parameter name.
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public void m(int index) {}
+}
+     ]]></code>
+    </test-code>
+
 </test-data>

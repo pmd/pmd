@@ -715,13 +715,7 @@ behavior with Javadoc.
                 <value>
                     <![CDATA[
 //MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId[
-        starts-with(@Image,'in')
-        or
-        starts-with(@Image,'out')
-        or
-        starts-with(@Image,'inOut')
-        or
-        starts-with(@Image,'outIn')
+        matches(@Image,'in[A-Z].*','out[A-Z].*','in$','out$')
 ]
                     ]]>
                 </value>
