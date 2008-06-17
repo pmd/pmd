@@ -314,7 +314,8 @@ New rules:
 	Controversial ruleset: AvoidPrefixingMethodParameters 
 	Controversial ruleset: OneDeclarationByLine
 	Naming ruleset: ShortClassName
-	Basic ruleset:	EmptyInitializer,LogicInversion,EmptyStatementBlock,ExtendsObject,UselessParentheses,CheckSkipResult
+	Basic ruleset:	EmptyInitializer,EmptyStatementBlock,ExtendsObject,UselessParentheses,CheckSkipResult
+	Design ruleset: LogicInversion
 
 March 25, 2008 - 4.2:
 
