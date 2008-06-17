@@ -39,7 +39,7 @@ A method with just a return statement, but a meaningful one.
         <code><![CDATA[
 public abstract class ShouldBeAbstract
 {
-    public int isUseFul(int i)
+    public int isUseful(int i)
     {
 	return (i +4 ) * 12;
    }
