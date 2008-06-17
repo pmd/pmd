@@ -53,17 +53,6 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
         mapClasses.put("String", strMethods);
     }
 
-    
-    /**
-     * These are the methods which are immutable
-     */
-    private static final Set<String> targetMethods = CollectionUtil.asSet(new String[] { ".add", ".multiply", ".divide", ".subtract", ".setScale", ".negate", ".movePointLeft", ".movePointRight", ".pow", ".shiftLeft", ".shiftRight" });
-
-    /**
-     * These are the classes that the rule can apply to
-     */
-    private static final Set<String> targetClasses = CollectionUtil.asSet(new String[] { "java.math.BigDecimal", "BigDecimal", "java.math.BigInteger", "BigInteger" });
-
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
 
         ASTVariableDeclaratorId var = getDeclaration(node);
