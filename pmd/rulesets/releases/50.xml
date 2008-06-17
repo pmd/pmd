@@ -10,6 +10,12 @@ This ruleset contains links to rules that are new in PMD v5.0
 	<rule ref="rulesets/naming.xml/ShortClassName"/>
 	<rule ref="rulesets/controversial.xml/OneDeclarationPerLine"/>
 	<rule ref="rulesets/controversial.xml/AvoidPrefixingMethodParameters"/>
+	<rule ref="rulesets/basic.xml/CheckSkipResult"/>
+	<rule ref="rulesets/basic.xml/EmptyInitializer"/>
+	<rule ref="rulesets/basic.xml/EmptyStatementBlock"/>
+	<rule ref="rulesets/basic.xml/ExtendsObject"/>
+	<rule ref="rulesets/basic.xml/UselessParentheses"/>
+	<rule ref="rulesets/design.xml/LogicInversion"/>
 
 </ruleset>
 
