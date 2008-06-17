@@ -21,6 +21,7 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule("basic", "BooleanInstantiation");
         addRule("basic", "BrokenNullCheck");
         addRule("basic", "CheckResultSet");
+        addRule("basic", "CheckSkipResult");
         addRule("basic", "ClassCastExceptionWithToArray");
         addRule("basic", "CollapsibleIfStatements");
         addRule("basic", "DoubleCheckedLocking");
