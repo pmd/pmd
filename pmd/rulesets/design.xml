@@ -1655,9 +1655,9 @@ public class abstract Example {
 	        language="java"
 			since="5.0"
 			class="net.sourceforge.pmd.lang.rule.XPathRule"
-        	message="Use opposite operator instead of the logic compliment operator."
+        	message="Use opposite operator instead of the logic complement operator."
 			externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#LogicInversion">
-    <description>Use opposite operator instead of negating the whole expression with a logic compliment operator.</description>
+    <description>Use opposite operator instead of negating the whole expression with a logic complement operator.</description>
     <priority>3</priority>
     <properties>
        <property name="xpath">
