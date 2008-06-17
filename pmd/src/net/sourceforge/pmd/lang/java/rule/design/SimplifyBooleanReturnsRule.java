@@ -248,7 +248,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
     }
 
     private boolean isSimpleReturn(Node node) {
-      return ( ( node instanceof ASTReturnStatement ) && ( node.jjtGetNumChildren() == 0 ) );
+      return node instanceof ASTReturnStatement && node.jjtGetNumChildren() == 0;
     }
 
 }

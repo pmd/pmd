@@ -195,7 +195,7 @@ public class NameOccurrence {
 			ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression)node;
 			ASTPrimaryPrefix prefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
 			if ( prefix != null )
-				return (prefix.usesSuperModifier() || prefix.usesThisModifier());
+				return prefix.usesSuperModifier() || prefix.usesThisModifier();
 		}
     	return image.startsWith(THIS_DOT) || image.startsWith(SUPER_DOT);
     }

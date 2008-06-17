@@ -80,7 +80,7 @@ public class UseStringBufferLengthRule extends AbstractJavaRule {
     private boolean isViolation(Node parent, Node achild) {
         if ("equals".equals(achild.getImage())) {
             List<ASTLiteral> literals = parent.findChildrenOfType(ASTLiteral.class);
-            return (!literals.isEmpty() && "\"\"".equals(literals.get(0).getImage()));
+            return !literals.isEmpty() && "\"\"".equals(literals.get(0).getImage());
         } else if ("length".equals(achild.getImage())) {
             return true;
         }

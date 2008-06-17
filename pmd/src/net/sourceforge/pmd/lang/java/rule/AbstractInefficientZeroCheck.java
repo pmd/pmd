@@ -54,7 +54,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
      * @return true if this is comparing to 0 else false
      */
     private boolean isCompareZero(Node equality) {
-        return (checkComparison(equality, 0) || checkComparison(equality, 1));
+        return checkComparison(equality, 0) || checkComparison(equality, 1);
 
     }
 
@@ -73,7 +73,7 @@ public abstract class AbstractInefficientZeroCheck extends AbstractJavaRule {
             return false;
         }
         target = target.jjtGetChild(0);
-        return (target instanceof ASTLiteral && "0".equals(target.getImage()));
+        return target instanceof ASTLiteral && "0".equals(target.getImage());
     }
 
 }

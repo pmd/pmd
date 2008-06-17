@@ -69,11 +69,11 @@ public class SourceCodePanel extends JPanel implements ViewerModelListener {
                             return;
                         }
                         int startOffset =
-                                (sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1) +
-                                node.getBeginColumn()) - 1;
+                                sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1) +
+                                node.getBeginColumn() - 1;
                         int end =
-                                (sourceCodeArea.getLineStartOffset(node.getEndLine() - 1) +
-                                node.getEndColumn());
+                                sourceCodeArea.getLineStartOffset(node.getEndLine() - 1) +
+                                node.getEndColumn();
                         sourceCodeArea.getHighlighter().addHighlight(startOffset, end,
                                 new DefaultHighlighter.DefaultHighlightPainter(highlightColor));
                         sourceCodeArea.moveCaretPosition(startOffset);

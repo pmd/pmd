@@ -117,7 +117,7 @@ public class StatisticalRuleHelper {
 
         for (DataPoint point: dataPoints) {
             scoreMinusMean = point.getScore() - mean;
-            deltaSq += (scoreMinusMean * scoreMinusMean);
+            deltaSq += scoreMinusMean * scoreMinusMean;
         }
 
         return Math.sqrt(deltaSq / (dataPoints.size() - 1));

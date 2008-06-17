@@ -109,8 +109,8 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
         if (getBooleanProperty(ignoreJUnitCompletelyDescriptor))
             return true;
         else
-            return (methodDeclaration.getMethodName().equals("setUp") || methodDeclaration
-                .getMethodName().equals("tearDown"));
+            return methodDeclaration.getMethodName().equals("setUp") || methodDeclaration
+                .getMethodName().equals("tearDown");
     }
     
     public Object visit(ASTConstructorDeclaration constructorDeclaration, Object o) {

@@ -114,7 +114,7 @@ public class DCD {
 		List<FilenameFilter> filters = new ArrayList<FilenameFilter>();
 		filters.add(javaFilter);
 
-		assert (directories.size() == filters.size());
+		assert directories.size() == filters.size();
 
 		// Find all files, convert to class names
 		List<String> classes = new ArrayList<String>();

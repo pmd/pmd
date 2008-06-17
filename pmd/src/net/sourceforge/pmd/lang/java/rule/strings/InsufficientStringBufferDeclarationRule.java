@@ -173,7 +173,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             return false;
         }
         char c = str.charAt(0);
-        return (c == '"' || c == '\'');
+        return c == '"' || c == '\'';
     }
 
     private int processNode(Node sn) {

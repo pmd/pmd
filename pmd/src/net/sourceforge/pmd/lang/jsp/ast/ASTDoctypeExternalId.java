@@ -17,7 +17,7 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
     private String publicId;
 
     public boolean isHasPublicId() {
-        return (null != publicId);
+        return null != publicId;
     }
 
     /**
@@ -39,7 +39,7 @@ public class ASTDoctypeExternalId extends AbstractJspNode {
      *         for this external entity id).
      */
     public String getPublicId() {
-        return (null == publicId ? "" : publicId);
+        return null == publicId ? "" : publicId;
     }
 
     /**

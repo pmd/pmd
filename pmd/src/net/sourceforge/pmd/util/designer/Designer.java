@@ -709,7 +709,7 @@ public class Designer implements ClipboardOwner {
 	int screenWidth = screenSize.width;
 
 	frame.pack();
-	frame.setSize((screenWidth * 3 / 4), (screenHeight * 3 / 4));
+	frame.setSize(screenWidth * 3 / 4, screenHeight * 3 / 4);
 	frame.setLocation((screenWidth - frame.getWidth()) / 2, (screenHeight - frame.getHeight()) / 2);
 	frame.setVisible(true);
 	int horozontalMiddleLocation = controlSplitPane.getMaximumDividerLocation() * 3 / 5;

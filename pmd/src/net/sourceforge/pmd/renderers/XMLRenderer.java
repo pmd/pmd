@@ -105,7 +105,7 @@ public class XMLRenderer extends OnTheFlyRenderer {
                 buf.append("\" msg=\"");
                 StringUtil.appendXmlEscaped(buf, s.getRuleViolation().getDescription());
                 buf.append("\" usermsg=\"");
-                StringUtil.appendXmlEscaped(buf, (s.getUserMessage() == null ? "" : s.getUserMessage()));
+                StringUtil.appendXmlEscaped(buf, s.getUserMessage() == null ? "" : s.getUserMessage());
                 buf.append("\"/>").append(PMD.EOL);
                 writer.write(buf.toString());
             }

@@ -46,7 +46,7 @@ public class CodeEditorTextPane extends JTextPane implements LineGetter, ActionL
                     linePos++;
                     if (tok.charAt(i) == '\t') {
                         linePos--;
-                        linePos += (8 - (linePos & 07));
+                        linePos += 8 - (linePos & 07);
                     }
                 }
 

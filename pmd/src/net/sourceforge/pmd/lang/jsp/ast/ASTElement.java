@@ -21,7 +21,7 @@ public class ASTElement extends AbstractJspNode {
      * @return boolean - true if the element has a namespace-prefix, false otherwise
      */
     public boolean isHasNamespacePrefix() {
-        return (name.indexOf(':') >= 0);
+        return name.indexOf(':') >= 0;
     }
 
     /**
@@ -29,9 +29,9 @@ public class ASTElement extends AbstractJspNode {
      */
     public String getNamespacePrefix() {
         int colonIndex = name.indexOf(':');
-        return ((colonIndex >= 0)
+        return colonIndex >= 0
                 ? name.substring(0, colonIndex)
-                : "");
+                : "";
     }
 
     /**
@@ -40,9 +40,9 @@ public class ASTElement extends AbstractJspNode {
      */
     public String getLocalName() {
         int colonIndex = name.indexOf(':');
-        return ((colonIndex >= 0)
+        return colonIndex >= 0
                 ? name.substring(colonIndex + 1)
-                : name);
+                : name;
     }
 
     /**
