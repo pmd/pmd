@@ -88,4 +88,42 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+typecast, false positive
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public String bar(Object o) {
+	    return ((Exception) o).getMessage();
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+false negatives
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   private boolean isSimpleReturn(Node node) {
+      return ( node instanceof ASTReturnStatement ) && ( node.jjtGetNumChildren() == 0 );
+    }
+    public String getLocalName() {
+        int colonIndex = name.indexOf(':');
+        return (colonIndex >= 0)
+                ? name.substring(colonIndex + 1)
+                : name;
+    }
+    public void viewerModelChanged(ViewerModelEvent e) {
+                        int startOffset =
+                                (sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1) +
+                                node.getBeginColumn()) - 1;
+	}
+
+}
+     ]]></code>
+    </test-code>
 </test-data>

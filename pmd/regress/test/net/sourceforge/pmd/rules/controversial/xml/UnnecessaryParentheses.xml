@@ -52,4 +52,17 @@ ok, returning comparison
  }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+typecast
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public void bar(Object o) {
+           return ((Exception) o).getMessage();
+   }
+}
+     ]]></code>
+    </test-code>
 </test-data>
