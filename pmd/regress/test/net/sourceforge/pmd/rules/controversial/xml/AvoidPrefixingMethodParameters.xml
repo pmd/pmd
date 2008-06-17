@@ -60,6 +60,7 @@ AvoidPrefixingMethodParameters basic test case: in is not a prefix, not using ca
         <code><![CDATA[
 public class Foo {
 	public void m(int index) {}
+	public void n(int timeout) {}
 }
      ]]></code>
     </test-code>
