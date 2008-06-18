@@ -368,7 +368,7 @@ public class Foo extends Bar {
 
     <rule name="AvoidFieldNameMatchingMethodName"
     		 since="3.0"
-          message="It is somewhat confusing to have a field name with the same name as a method"
+          message="Field {0} has the same name as a method"
           class="net.sourceforge.pmd.lang.java.rule.naming.AvoidFieldNameMatchingMethodNameRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#AvoidFieldNameMatchingMethodName">
       <description>
