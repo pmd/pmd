@@ -168,18 +168,13 @@ statements like assertTrue(true) and assertFalse(false).  If you just want a tes
     <![CDATA[
 //StatementExpression
 [
-.//Name[@Image='assertTrue' or  @Image='assertFalse']
+PrimaryExpression/PrimaryPrefix/Name[@Image='assertTrue' or  @Image='assertFalse']
 and
-PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
- /Expression/PrimaryExpression/PrimaryPrefix
-  /Literal/BooleanLiteral
+PrimaryExpression/PrimarySuffix/Arguments/ArgumentList/Expression
+[PrimaryExpression/PrimaryPrefix/Literal/BooleanLiteral
 or
-(
-.//Name[@Image='assertTrue' or  @Image='assertFalse']
-and
-PrimaryExpression/PrimarySuffix/Arguments/ArgumentList
- /Expression/UnaryExpressionNotPlusMinus[@Image='!']
-/PrimaryExpression/PrimaryPrefix[Literal/BooleanLiteral or Name[count(../../*)=1]])
+UnaryExpressionNotPlusMinus[@Image='!']
+/PrimaryExpression/PrimaryPrefix[Literal/BooleanLiteral or Name[count(../../*)=1]]]
 ]
 [ancestor::ClassOrInterfaceDeclaration[//ClassOrInterfaceType[typeof(@Image, 'junit.framework.TestCase','TestCase')] or //MarkerAnnotation/Name[typeof(@Image, 'org.junit.Test', 'Test')]]]
 ]]>
