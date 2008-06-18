@@ -129,4 +129,37 @@ public class RuleViolator {
 }
              ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+String calls in expressions
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+	String s;
+	String s2 = "foo" + s.substring( 0, delimiterIndex ) + "/";
+	s2 = "foo" + s.substring( 0, delimiterIndex );
+	if (s.trim().length() > 0) {
+	}
+
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+BigInteger calls in expression
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+	BigInteger temp = BigInteger.valueOf((long) startMonth).add(dMonths);
+        setMonth(temp.subtract(BigInteger.ONE).mod(TWELVE).intValue() + 1);
+ }
+}
+     ]]></code>
+    </test-code>
+
 </test-data>
