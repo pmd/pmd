@@ -302,4 +302,87 @@ public class Foo {
      ]]></code>
     </test-code>
 
+    <test-code>
+        <description><![CDATA[
+18, side effects on rules
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar1() {
+        try {
+			;
+        } catch (Exception notUsed) {
+			RuntimeException ex = new RuntimeException();
+			throw ex;
+		}
+    }
+
+    public void bar2() {
+        try {
+			;
+        } catch (Exception e) {
+			IllegalStateException ex = new IllegalStateException();
+			ex.initCause(e);
+			throw ex;
+		}
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+19, False positive
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+    private static boolean isInstanceOf(final MBeanServer mbs,
+                                        final ObjectName name,
+                                        final String className) {
+        PrivilegedExceptionAction<Boolean> act =
+            new PrivilegedExceptionAction<Boolean>() {
+                public Boolean run() throws InstanceNotFoundException {
+                    return mbs.isInstanceOf(name, className);
+                }
+            };
+        try {
+            return AccessController.doPrivileged(act);
+        } catch (Exception e) {
+            logger.fine("isInstanceOf", "failed: " + e);
+            logger.debug("isInstanceOf", e);
+            return false;
+        }
+    }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+20, False positive
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+
+ private CodeException[] getCodeExceptions() {
+    int             size  = exception_vec.size();
+    CodeException[] c_exc = new CodeException[size];
+
+    try {
+      for(int i=0; i < size; i++) {
+        CodeExceptionGen c = (CodeExceptionGen)exception_vec.get(i);
+        c_exc[i] = c.getCodeException(cp);
+      }
+    } catch(ArrayIndexOutOfBoundsException e) {}
+
+    return c_exc;
+  }
+}
+     ]]></code>
+    </test-code>
+
 </test-data>
