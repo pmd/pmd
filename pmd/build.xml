@@ -8,6 +8,7 @@
 	<property name="dir.build" value="build/" />
 	<property name="dir.rulesets" value="rulesets/" />
 	<property name="dir.regress" value="regress/" />
+	<property name="dir.api" value="docs/api" />
 	<property name="version" value="5.0" />
 
 	<property name="asm.version" value="3.1" />
@@ -41,6 +42,7 @@
 		<delete file="${dir.lib14}/pmd14-${version}.jar" />
 		<delete file="${dir.lib14}/pmd14-test-${version}.jar" />
 		<delete file="${dir.lib14}/junit.jar" />
+		<delete dir="${dir.api}" />
 		<mkdir dir="${dir.build}" />
 	</target>
 
@@ -486,9 +488,9 @@ public class]]></replacevalue>
 	</target>
 
 	<target name="javadoc" description="Generates Javadocs">
-		<mkdir dir="docs/api" />
+		<mkdir dir="${dir.api}" />
 
-		<javadoc packagenames="com.*, net.*, org.*" sourcepath="${dir.src}" destdir="docs/api" doctitle="PMD ${version} API" failonerror="yes">
+		<javadoc packagenames="com.*, net.*, org.*" sourcepath="${dir.src}" destdir="${dir.api}" doctitle="PMD ${version} API" failonerror="yes">
 			<tag name="todo" enabled="false"/>
 			<classpath>
 				<fileset dir="${dir.lib}">
