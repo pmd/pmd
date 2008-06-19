@@ -75,7 +75,6 @@ public class PMD {
 
     /**
      * Set the runtime configuration.
-     * @return The configuration.
      * @see Configuration
      */
     public void setConfiguration(Configuration configuration) {
@@ -110,7 +109,7 @@ public class PMD {
      * If the LanguageVersion is <code>null</code>  on the RuleContext, it will
      * be automatically determined.
      *
-     * @param inputStream The Reader to analyze.
+     * @param reader The Reader to analyze.
      * @param ruleSets The collection of rules to process against the file.
      * @param ctx The context in which PMD is operating.
      * @throws PMDException if the input encoding is unsupported, the input stream could

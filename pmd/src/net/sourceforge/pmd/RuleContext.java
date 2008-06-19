@@ -77,7 +77,7 @@ public class RuleContext {
      * Set the File associated with the current source file.
      * While this may be set to <code>null</code>, the exclude/include
      * facilities will not work properly without a File.
-     * @return The File.
+     * @param sourceCodeFile The File.
      */
     public void setSourceCodeFile(File sourceCodeFile) {
 	this.sourceCodeFile = sourceCodeFile;
