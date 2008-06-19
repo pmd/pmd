@@ -1353,12 +1353,12 @@ public class Foo {
 
   <rule name="PreserveStackTrace"
       since="3.7"
-      message="Caught exception is rethrown, original stack trace may be lost"
+      message="New exception is thrown in catch block, original stack trace may be lost"
       class="net.sourceforge.pmd.lang.java.rule.design.PreserveStackTraceRule"
           externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#PreserveStackTrace">
       <description>
 Throwing a new exception from a catch block without passing the original exception into the
-new Exception will cause the true stack trace to be lost, and can make it difficult to
+new exception will cause the true stack trace to be lost, and can make it difficult to
 debug effectively.
       </description>
       <priority>3</priority>
