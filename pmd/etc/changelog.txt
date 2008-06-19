@@ -294,6 +294,7 @@ Fixed bug 1808110 - PreserveStackTrace
 Fixed bug 1988829 - Violation reported without source file name (actually a fix to ConsecutiveLiteralAppends)
 Fixed bug 1989814 - false +: ConsecutiveLiteralAppends
 Fixed bug 1977230 - false positive: UselessOverridingMethod
+Fixed bug 1998185 - BeanMembersShouldSerialize vs @SuppressWarnings("serial")
 ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
 bin and java14/bin scripts:
 	retroweaver version was not correct in java14/bin scripts
@@ -308,6 +309,7 @@ UnnecessaryParentheses now checks all expressions, not just return statements
 UnusedFormalParameter now reports violations on the parameter node, not the method/constructor node
 Updates to RuleChain to honor RuleSet exclude-pattern
 Optimizations and false positive fixes in PreserveStackTrace
+@SuppressWarnings("all") disables all warnings
 
 New rules:
 

@@ -104,6 +104,13 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
          assertEquals(2, rpt.size());
      }
 
+     @Test
+     public void testSuppressAll() throws Throwable {
+         Report rpt = new Report();
+         runTestFromString(TEST12, new FooRule(), rpt, LanguageVersion.JAVA_15);
+         assertEquals(0, rpt.size());
+     }
+     
      private static final String TEST1 =
              "@SuppressWarnings(\"PMD\")" + PMD.EOL +
              "public class Foo {}";
@@ -187,6 +194,11 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
              " void bar() {" + PMD.EOL +
              "  @SuppressWarnings(\"SomethingElse\") int foo;" + PMD.EOL +
              " }" + PMD.EOL +
+             "}";
+
+     private static final String TEST12 =
+             "public class Bar {" + PMD.EOL +
+             " @SuppressWarnings(\"all\") int foo;" + PMD.EOL +
              "}";
 
     public static junit.framework.Test suite() {

@@ -12,6 +12,8 @@ public class ASTAnnotation extends AbstractJavaNode {
     private static List<String> unusedRules = Arrays.asList(new String[] { "UnusedPrivateField", "UnusedLocalVariable",
 	    "UnusedPrivateMethod", "UnusedFormalParameter" });
 
+    private static List<String> serialRules = Arrays.asList(new String[] { "BeanMembersShouldSerialize", "MissingSerialVersionUID"});
+
     public ASTAnnotation(int id) {
 	super(id);
     }
@@ -33,8 +35,9 @@ public class ASTAnnotation extends AbstractJavaNode {
 		    List<ASTLiteral> nodes = n.findChildrenOfType(ASTLiteral.class);
 		    for (ASTLiteral element : nodes) {
 			if (element.hasImageEqualTo("\"PMD\"") || element.hasImageEqualTo(ruleAnno)
-			// the SuppressWarnings("unused") annotation allows unused code 
-				// to be ignored and is a Java standard annotation
+				// Check for standard annotations values
+				|| element.hasImageEqualTo("\"all\"")
+				|| element.hasImageEqualTo("\"serial\"") && serialRules.contains(rule.getName())
 				|| element.hasImageEqualTo("\"unused\"") && unusedRules.contains(rule.getName())) {
 			    return true;
 			}
