@@ -144,4 +144,18 @@ public interface Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+@SuppressWarnings("serial")
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings("serial")
+public class Foo {
+ private String foo;
+ private String bar = Foo.foo;
+ public void setFoo(Foo foo) {this.foo = foo;}
+}
+     ]]></code>
+    </test-code>
 </test-data>
