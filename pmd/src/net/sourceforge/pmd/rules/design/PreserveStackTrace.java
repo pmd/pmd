@@ -17,6 +17,7 @@ import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
+import net.sourceforge.pmd.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
@@ -34,23 +35,18 @@ public class PreserveStackTrace extends AbstractJavaRule {
 
     private List<ASTName> nameNodes = new ArrayList<ASTName>();
 
-    // FUTURE: This is dectection is name based, it should probably used Type Resolution, to become type "based"
-    private static final String FIND_THROWABLE_INSTANCE = "//VariableDeclaratorId[" +
-						    "(../descendant::VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ClassOrInterfaceType" +
-						    "[" +
-						    			"contains(@Image,'Exception')" + // Assuming the Exception class does contains 'Exception' in its name
-						    			"and" +
-						    			"(not (../Arguments/ArgumentList))" +
-						    "]" +
-						    ")]";
+    // FUTURE: This detection is name based, it should probably use Type Resolution, to become type "based"
+    // it assumes the exception class contains 'Exception' in its name
+    private static final String FIND_THROWABLE_INSTANCE =
+	"./VariableInitializer/Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression" +
+	"[ClassOrInterfaceType[contains(@Image,'Exception')] and Arguments[count(*)=0]]";
 
     private static final String ILLEGAL_STATE_EXCEPTION = "IllegalStateException";
     private static final String FILL_IN_STACKTRACE = ".fillInStackTrace";
 
+    @Override
     public Object visit(ASTCatchStatement catchStmt, Object data) {
         String target = ((SimpleNode)catchStmt.jjtGetChild(0).jjtGetChild(1)).getImage();
-        // Gather every variable used to store exception instance created without any argument, inside the catch
-        gatherVariableWithExceptionRef(catchStmt,data);
         // Inspect all the throw stmt inside the catch stmt
         List<ASTThrowStatement> lstThrowStatements = catchStmt.findChildrenOfType(ASTThrowStatement.class);
         for (ASTThrowStatement throwStatement : lstThrowStatements) {
@@ -72,13 +68,13 @@ public class PreserveStackTrace extends AbstractJavaRule {
 	                ck(data, target, throwStatement, args);
 	            }
 	            else {
-	        	Node child = throwStatement.jjtGetChild(0);
+	        	SimpleNode child = (SimpleNode)throwStatement.jjtGetChild(0);
 	                while (child != null && child.jjtGetNumChildren() > 0
 	                        && !child.getClass().equals(ASTName.class)) {
-	                    child = child.jjtGetChild(0);
+	                    child = (SimpleNode)child.jjtGetChild(0);
 	                }
 	                if (child != null){
-	                    if( child.getClass().equals(ASTName.class) && (!target.equals(((SimpleNode)child).getImage()) && !((SimpleNode)child).hasImageEqualTo(target + FILL_IN_STACKTRACE))) {
+	                    if( child.getClass().equals(ASTName.class) && !target.equals(child.getImage()) && !child.hasImageEqualTo(target + FILL_IN_STACKTRACE)) {
 	                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((ASTName) child).getScope().getVariableDeclarations();
 		                    for (VariableNameDeclaration decl: vars.keySet()) {
 		                        args = ((SimpleNode)decl.getNode().jjtGetParent())
@@ -98,33 +94,41 @@ public class PreserveStackTrace extends AbstractJavaRule {
         return super.visit(catchStmt, data);
     }
 
-    /*
-     * Search Catch stmt nodes for variable used to store unproperly created throwable or exception
-     */
-    private void gatherVariableWithExceptionRef(ASTCatchStatement catchStmt, Object data) {
-    	try {
-			List<Node> nodes = catchStmt.findChildNodesWithXPath(FIND_THROWABLE_INSTANCE);
-			for ( Node node : nodes ) {
-				List <Node> violations = catchStmt.findChildNodesWithXPath("//Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + ((SimpleNode)node).getImage() + "']");
-				if ( violations != null && violations.size() > 0 ) {
-					// If, after this allocation, the 'initCause' method is called, and the ex passed
-					// this is not a violation
-					if ( ! useInitCause((Node)violations.get(0),catchStmt) ) //FIXME: iterate, better than get(0) ?
-						super.addViolation(data,(SimpleNode) node);
-				}
+    @Override
+    public Object visit(ASTVariableDeclarator node, Object data) {
+	// Search Catch stmt nodes for variable used to store improperly created throwable or exception
+	try {
+	    List<Node> nodes = node.findChildNodesWithXPath(FIND_THROWABLE_INSTANCE);
+	    if (nodes.size() > 0) {
+		String variableName = ((SimpleNode)node.jjtGetChild(0)).getImage(); // VariableDeclatorId
+		ASTCatchStatement catchStmt = node.getFirstParentOfType(ASTCatchStatement.class);
+
+		while (catchStmt != null) {
+		    List<SimpleNode> violations = catchStmt.findChildNodesWithXPath("//Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + variableName + "']");
+		    if (violations != null && violations.size() > 0) {
+			// If, after this allocation, the 'initCause' method is called, and the ex passed
+			// this is not a violation
+			if (!useInitCause(violations.get(0), catchStmt)) {
+			    addViolation(data, node);
 			}
-		} catch (JaxenException e) {
-			// XPath is valid, this should never happens...
-			e.printStackTrace();
+		    }
+
+		    // check ASTCatchStatement higher up
+		    catchStmt = catchStmt.getFirstParentOfType(ASTCatchStatement.class);
 		}
-
+	    }
+	    return super.visit(node, data);
+	} catch (JaxenException e) {
+	    // XPath is valid, this should never happens...
+	    throw new IllegalStateException(e);
 	}
+    }
 
-	private boolean useInitCause(Node node, ASTCatchStatement catchStmt) throws JaxenException {
+	private boolean useInitCause(SimpleNode node, ASTCatchStatement catchStmt) throws JaxenException {
 		// In case of NPE...
-		if ( node != null && ((SimpleNode)node).getImage() != null )
+		if ( node != null && node.getImage() != null )
 		{
-			List <Node> nodes = catchStmt.findChildNodesWithXPath("descendant::StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + ((SimpleNode)node).getImage() + ".initCause']");
+			List <Node> nodes = catchStmt.findChildNodesWithXPath("descendant::StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + node.getImage() + ".initCause']");
 			if ( nodes != null && nodes.size() > 0 )
 			{
 				return true;

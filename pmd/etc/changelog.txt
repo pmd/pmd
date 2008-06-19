@@ -6,6 +6,7 @@ Upgrading UselessOperationOnImmutable to detect more use cases, especially on St
 Fixed bug 1988829 - Violation reported without source file name (actually a fix to ConsecutiveLiteralAppends)
 Fixed bug 1989814 - false +: ConsecutiveLiteralAppends
 Fixed bug 1977230 - false positive: UselessOverridingMethod
+Optimizations and false positive fixes in PreserveStackTrace
 
 New rule:
 	Basic ruleset:	EmptyInitializer
