@@ -145,16 +145,25 @@ public abstract class AbstractNode implements Node {
 	this.dataFlowNode = dataFlowNode;
     }
 
+    /**
+     * Returns the n-th parent or null if there are not <code>n</code> ancestors
+     * 
+     * @param n how many ancestors to iterate over.
+     * @return the n-th parent or null.
+     * @throws IllegalArgumentException if <code>n</code> is not positive.
+     */
     public Node getNthParent(int n) {
-	Node result = null;
-	for (int i = 0; i < n; i++) {
-	    if (result == null) {
-		result = this.jjtGetParent();
-	    } else {
-		result = result.jjtGetParent();
-	    }
-	}
-	return result;
+        if (n <= 0) {
+            throw new IllegalArgumentException();
+        }
+        Node result = this.jjtGetParent();
+        for (int i = 1; i < n; i++) {
+            if (result == null) {
+                return null;
+            }
+            result = result.jjtGetParent();
+        }
+        return result;
     }
 
     /**

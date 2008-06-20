@@ -6,6 +6,8 @@ package test.net.sourceforge.pmd.ast;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExtendsList;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImplementsList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -113,22 +116,13 @@ public class SimpleNodeTest extends ParserTst {
 
     @Test
     public void testLineNumbersAreSetOnAllSiblings() throws Throwable {
-        Set blocks = getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS);
-        Iterator i = blocks.iterator();
-        while (i.hasNext()) {
-            ASTBlock b = (ASTBlock) i.next();
+        for (ASTBlock b: getNodes(ASTBlock.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
-        blocks = getNodes(ASTVariableInitializer.class, LINE_NUMBERS_ON_SIBLINGS);
-        i = blocks.iterator();
-        while (i.hasNext()) {
-            ASTVariableInitializer b = (ASTVariableInitializer) i.next();
+        for (ASTVariableInitializer b: getNodes(ASTVariableInitializer.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
-        blocks = getNodes(ASTExpression.class, LINE_NUMBERS_ON_SIBLINGS);
-        i = blocks.iterator();
-        while (i.hasNext()) {
-            ASTExpression b = (ASTExpression) i.next();
+        for (ASTExpression b: getNodes(ASTExpression.class, LINE_NUMBERS_ON_SIBLINGS)) {
             assertTrue(b.getBeginLine() > 0);
         }
     }
@@ -206,6 +200,28 @@ public class SimpleNodeTest extends ParserTst {
         assertTrue(n instanceof ASTName);
         assertEquals(x2, n);
     }
+
+    @Test
+    public void testParentMethods() throws Throwable {
+    	ASTCompilationUnit u = parseJava14(TEST1);
+    	
+    	ASTMethodDeclarator d = u.getFirstChildOfType(ASTMethodDeclarator.class);
+    	assertSame("getFirstParentOfType ASTMethodDeclaration", d.jjtGetParent(), d.getFirstParentOfType(ASTMethodDeclaration.class));
+    	assertNull("getFirstParentOfType ASTName", d.getFirstParentOfType(ASTName.class));
+
+    	assertSame("getNthParent 1", d.jjtGetParent(), d.getNthParent(1));
+    	assertSame("getNthParent 2", d.jjtGetParent().jjtGetParent(), d.getNthParent(2));
+    	assertSame("getNthParent 6", u, d.getNthParent(6));
+    	assertNull("getNthParent 7", d.getNthParent(7));
+    	assertNull("getNthParent 8", d.getNthParent(8));
+    }
+
+    private static final String TEST1 =
+            "public class Test {" + PMD.EOL +
+            "  void bar(String s) {" + PMD.EOL +
+            "   s = s.toLowerCase();" + PMD.EOL +
+            "  }" + PMD.EOL +
+            "}";
 
     @Ignore
     @Test
