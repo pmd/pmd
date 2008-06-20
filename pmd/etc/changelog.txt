@@ -2,7 +2,7 @@
 
 Fixes for exclude-pattern
 Updates to RuleChain to honor RuleSet exclude-pattern
-Upgrading UselessOperationOnImmutable to detect more use cases, especially on String
+Upgrading UselessOperationOnImmutable to detect more use cases, especially on String and fix false positives
 Fixed bug 1988829 - Violation reported without source file name (actually a fix to ConsecutiveLiteralAppends)
 Fixed bug 1989814 - false +: ConsecutiveLiteralAppends
 Fixed bug 1977230 - false positive: UselessOverridingMethod

@@ -13,6 +13,7 @@ import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimarySuffix;
+import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.ast.Node;
@@ -26,22 +27,22 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * ignoring the operation result is an error.
  */
 public class UselessOperationOnImmutable extends AbstractJavaRule {
-	
+
     /**
      * These are the BigDecimal methods which are immutable
      */
     private static final Set<String> decMethods = CollectionUtil.asSet(new String[] { ".abs", ".add", ".divide", ".divideToIntegralValue", ".max", ".min", ".movePointLeft", ".movePointRight", ".multiply", ".negate", ".plus", ".pow", ".remainder", ".round", ".scaleByPowerOfTen", ".setScale", ".stripTrailingZeros", ".subtract", ".ulp" });
-	
+
     /**
      * These are the BigInteger methods which are immutable
      */
     private static final Set<String> intMethods = CollectionUtil.asSet(new String[] { ".abs", ".add", ".and", ".andNot", ".clearBit", ".divide", ".flipBit", ".gcd", ".max", ".min", ".mod", ".modInverse", ".modPow", ".multiply", ".negate", ".nextProbablePrine", ".not", ".or", ".pow", ".remainder", ".setBit", ".shiftLeft", ".shiftRight", ".subtract", ".xor" });
-	
+
     /**
      * These are the String methods which are immutable
      */
     private static final Set<String> strMethods = CollectionUtil.asSet(new String[] { ".concat", ".intern", ".replace", ".replaceAll", ".replaceFirst", ".substring", ".toLowerCase", ".toString", ".toUpperCase", ".trim" });
-	
+
     /**
      * These are the classes that the rule can apply to
      */
@@ -54,7 +55,7 @@ public class UselessOperationOnImmutable extends AbstractJavaRule {
         mapClasses.put("java.lang.String", strMethods);
         mapClasses.put("String", strMethods);
     }
-	
+
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
 
         ASTVariableDeclaratorId var = getDeclaration(node);
@@ -67,34 +68,19 @@ public class UselessOperationOnImmutable extends AbstractJavaRule {
             // see JUnit test, case 6. Changing to SimpleNode below, revisit when getUsages is fixed
             SimpleNode sn = no.getLocation();
             Node primaryExpression = sn.jjtGetParent().jjtGetParent();
-			Class<? extends Node> parentClass = primaryExpression.jjtGetParent().getClass();
-            if (!(parentClass.equals(ASTExpression.class) || parentClass.equals(ASTConditionalExpression.class) || 
-            		hasComparisons(primaryExpression))) {
+            Class<? extends Node> parentClass = primaryExpression.jjtGetParent().getClass();
+            if (parentClass.equals(ASTStatementExpression.class)) {
                 String methodCall = sn.getImage().substring(variableName.length());
-                if (mapClasses.get(getType(node)).contains(methodCall)) {
-                    addViolation(data, sn);
+                ASTType nodeType = node.getTypeNode();
+                if ( nodeType != null ) {
+                    if ( mapClasses.get(nodeType.getTypeImage()).contains(methodCall)) {
+                        addViolation(data, sn);
+                    }
                 }
             }
         }
         return super.visit(node, data);
     }
-
-    /**
-     * Check whether the Immutable is compareTo'd something
-     */
-	private boolean hasComparisons(Node primaryExpression) {
-		if (primaryExpression.getClass().equals(ASTPrimaryExpression.class)) {
-			List<ASTPrimarySuffix> suffixes = ((ASTPrimaryExpression)primaryExpression).findChildrenOfType(ASTPrimarySuffix.class);
-			for (Iterator<ASTPrimarySuffix> iterator = suffixes.iterator(); iterator.hasNext();) {
-				ASTPrimarySuffix suffix = iterator.next();
-				if ("compareTo".equals(suffix.getImage()))
-					return true;
-			}
-		} else {
-			//Some weird usage of the Immutable
-		}
-		return false;	//No comparison
-	}
 
     /**
      * This method checks the variable declaration if it is on a class we care
@@ -105,26 +91,10 @@ public class UselessOperationOnImmutable extends AbstractJavaRule {
      * @return ASTVariableDeclaratorId
      */
     private ASTVariableDeclaratorId getDeclaration(ASTLocalVariableDeclaration node) {
-        String type = getType(node);
-        if (mapClasses.keySet().contains(type)) {
+        ASTType type = node.getTypeNode();
+        if (mapClasses.keySet().contains(type.getTypeImage())) {
             return (ASTVariableDeclaratorId) node.jjtGetChild(1).jjtGetChild(0);
         }
         return null;
     }
-
-    /**
-     * This method returns the name of the node's class.
-     * 
-     * @param node
-     *            The ASTLocalVariableDeclaration which is a problem
-     * @return the class name
-     */
-    private static String getType(ASTLocalVariableDeclaration node) {
-        ASTType type = node.getTypeNode();
-        if (type != null) {
-            return type.getTypeImage();
-        }
-        return null;
-    }
-	
 }
