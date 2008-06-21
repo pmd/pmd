@@ -447,4 +447,25 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+multiple fields on same line
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private int x, foo;
+ int bar(int y) {
+  foo = y + 5; 
+  return foo;
+ }
+ void setX(int x) {
+  this.x = x;
+ }
+ int getX() {
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

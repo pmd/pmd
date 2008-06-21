@@ -334,6 +334,7 @@ UnusedFormalParameter now reports violations on the parameter node, not the meth
 Updates to RuleChain to honor RuleSet exclude-pattern
 Optimizations and false positive fixes in PreserveStackTrace
 @SuppressWarnings("all") disables all warnings
+SingularField now checks for multiple fields in the same declaration
 
 New rules:
 
