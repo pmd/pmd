@@ -50,6 +50,7 @@ public class SimpleRuleSetNameMapper {
         nameMap.put("controversial", "rulesets/controversial.xml");
         nameMap.put("coupling", "rulesets/coupling.xml");
         nameMap.put("design", "rulesets/design.xml");
+        nameMap.put("empty", "rulesets/empty.xml");
         nameMap.put("finalizers", "rulesets/finalizers.xml");
         nameMap.put("imports", "rulesets/imports.xml");
         nameMap.put("j2ee", "rulesets/j2ee.xml");

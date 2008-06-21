@@ -339,7 +339,7 @@ public class RuleSetTest extends RuleTst {
 
 	RuleSet ruleSet1 = new RuleSet();
 	ruleSet1.setName("RuleSet1");
-	Rule rule = findRule("basic", "EmptyIfStmt");
+	Rule rule = findRule("empty", "EmptyIfStmt");
 	assertTrue("RuleChain rule", rule.usesRuleChain());
 	ruleSet1.addRule(rule);
 
