@@ -31,13 +31,6 @@ public class BasicRulesTest extends SimpleAggregatorTst {
         addRule("basic", "MisplacedNullCheck");
         addRule("basic", "OverrideBothEqualsAndHashcode");
         addRule("basic", "ReturnFromFinallyBlock");
-        addRule("basic", "UnconditionalIfStatement");
-        addRule("basic", "UnnecessaryFinalModifier");
-        addRule("basic", "UnnecessaryReturn");
-        addRule("basic", "UnnecessaryConversionTemporary");
-        addRule("basic", "UselessOperationOnImmutable");
-        addRule("basic", "UselessOverridingMethod");
-        addRule("basic", "UselessParentheses");
     }
 
     public static junit.framework.Test suite() {

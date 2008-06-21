@@ -1,7 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-package test.net.sourceforge.pmd.rules.basic;
+package test.net.sourceforge.pmd.rules.useless;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.Rule;
@@ -18,7 +18,7 @@ public class UnusedNullCheckInEqualsTest extends SimpleAggregatorTst {
 
      @Before
      public void setUp() {
-         rule = findRule("basic", "UnusedNullCheckInEquals");
+         rule = findRule("useless", "UnusedNullCheckInEquals");
      }
 
      @Test

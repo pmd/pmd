@@ -301,6 +301,15 @@ Creating an Empty Code Ruleset and moved the following rules from Basic ruleset:
         * EmptyStatementBlock
         * EmptyStaticInitializer
 	Basic rulesets still includes a reference to those rules.
+Creating a useless Code Ruleset and moved the following rules from Basic ruleset:
+        * UnnecessaryConversionTemporary
+        * UnnecessaryReturn
+        * UnnecessaryFinalModifier
+        * UselessOverridingMethod
+        * UselessOperationOnImmutable
+        * UnusedNullCheckInEquals
+        * UselessParentheses
+	Basic rulesets still includes a reference to those rules.	
 
 
 Fixed bug 1932242 - EmptyMethodInAbstractClassShouldBeAbstract false +
