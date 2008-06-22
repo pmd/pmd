@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
@@ -45,7 +46,8 @@ public class SingularFieldRule extends AbstractJavaRule {
     	boolean disallowNotAssignment = getBooleanProperty(DISALLOW_NOT_ASSIGNMENT);
 
         if (node.isPrivate() && !node.isStatic()) {
-            for (ASTVariableDeclaratorId declaration: node.findDescendantsOfType(ASTVariableDeclaratorId.class)) {
+            for (ASTVariableDeclarator declarator: node.findChildrenOfType(ASTVariableDeclarator.class)) {
+        	ASTVariableDeclaratorId declaration = (ASTVariableDeclaratorId) declarator.jjtGetChild(0);
                 List<NameOccurrence> usages = declaration.getUsages();
                 Node decl = null;
                 boolean violation = true;
