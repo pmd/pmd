@@ -13,7 +13,7 @@ import java.util.Properties;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriorityEnum;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -42,7 +42,7 @@ public abstract class AbstractRule implements Rule {
     private String description;
     private List<String> examples = new ArrayList<String>();
     private String externalInfoUrl;
-    private RulePriorityEnum priority = RulePriorityEnum.LOW;
+    private RulePriority priority = RulePriority.LOW;
     private Properties properties = new Properties();
     private boolean usesDFA;
     private boolean usesTypeResolution;
@@ -151,11 +151,11 @@ public abstract class AbstractRule implements Rule {
 	this.externalInfoUrl = externalInfoUrl;
     }
 
-    public RulePriorityEnum getPriority() {
+    public RulePriority getPriority() {
 	return priority;
     }
 
-    public void setPriority(RulePriorityEnum priority) {
+    public void setPriority(RulePriority priority) {
 	this.priority = priority;
     }
 

@@ -251,8 +251,8 @@ The following is relatively complete list of the major changes (this may not be
       Removed - Rule.LOWEST_PRIORITY
       Removed - Rule.PRIORITIES
  	   Removed - RuleSet.applies(Language,Language)
-      Changed - void Rule.setPriority(int) to void Rule.setPriority(RulePriorityEnum)
-      Changed - int Rule.getPriority() to void RulePriorityEnum Rule.getPriority()
+      Changed - void Rule.setPriority(int) to void Rule.setPriority(RulePriority)
+      Changed - int Rule.getPriority() to void RulePriority Rule.getPriority()
       Added - Rule.setLanguage(Language)
       Added - Language Rule.getLanguage()
       Added - Rule.setMinimumLanguageVersion(LanguageVersion)

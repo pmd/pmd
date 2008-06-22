@@ -5,10 +5,10 @@ package net.sourceforge.pmd;
  * 
  * For backward compatibility, priorities range in value from 1 to 5, with 5
  * being the lowest priority.  This means the ordinal value of the Enum should
- * be avoided in favor of {@link RulePriorityEnum#getPriority()} and
- * {@link RulePriorityEnum#valueOf(int)}
+ * be avoided in favor of {@link RulePriority#getPriority()} and
+ * {@link RulePriority#valueOf(int)}
  */
-public enum RulePriorityEnum {
+public enum RulePriority {
     HIGH(1, "High"),
     MEDIUM_HIGH(2, "Medium High"),
     MEDIUM(3, "Medium"),
@@ -18,7 +18,7 @@ public enum RulePriorityEnum {
     private final int priority;
     private final String name;
 
-    private RulePriorityEnum(int priority, String name) {
+    private RulePriority(int priority, String name) {
 	this.priority = priority;
 	this.name = name;
     }
@@ -50,14 +50,14 @@ public enum RulePriorityEnum {
 
     /**
      * Get the priority which corresponds to the given number as returned
-     * by {@link RulePriorityEnum#getPriority()}.  If the number is an invalid
-     * value, then {@link RulePriorityEnum#LOW} will be returned.
+     * by {@link RulePriority#getPriority()}.  If the number is an invalid
+     * value, then {@link RulePriority#LOW} will be returned.
      * @param priority The numeric priority value.
      * @return The priority.
      */
-    public static RulePriorityEnum valueOf(int priority) {
+    public static RulePriority valueOf(int priority) {
 	try {
-	    return RulePriorityEnum.values()[priority - 1];
+	    return RulePriority.values()[priority - 1];
 	} catch (ArrayIndexOutOfBoundsException e) {
 	    return LOW;
 	}

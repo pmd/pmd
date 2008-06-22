@@ -3,7 +3,7 @@ package net.sourceforge.pmd.lang.rule;
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
-import net.sourceforge.pmd.RulePriorityEnum;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
 
@@ -20,7 +20,7 @@ public class MockRule extends AbstractRule {
 	setLanguage(Language.JAVA);
     }
 
-    public MockRule(String name, String description, String message, String ruleSetName, RulePriorityEnum priority) {
+    public MockRule(String name, String description, String message, String ruleSetName, RulePriority priority) {
 	this(name, description, message, ruleSetName);
 	setPriority(priority);
     }

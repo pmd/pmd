@@ -154,12 +154,12 @@ public interface Rule {
     /**
      * Get the priority of this Rule.
      */
-    RulePriorityEnum getPriority();
+    RulePriority getPriority();
 
     /**
      * Set the priority of this Rule.
      */
-    void setPriority(RulePriorityEnum priority);
+    void setPriority(RulePriority priority);
 
     /**
      * Get all properties for this Rule.

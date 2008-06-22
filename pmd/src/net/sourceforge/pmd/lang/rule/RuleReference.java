@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import net.sourceforge.pmd.RulePriorityEnum;
+import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -29,7 +29,7 @@ public class RuleReference extends AbstractDelegateRule {
     private String description;
     private List<String> examples;
     private String externalInfoUrl;
-    private RulePriorityEnum priority;
+    private RulePriority priority;
     private RuleSetReference ruleSetReference;
 
     public Language getOverriddenLanguage() {
@@ -174,12 +174,12 @@ public class RuleReference extends AbstractDelegateRule {
 	}
     }
 
-    public RulePriorityEnum getOverriddenPriority() {
+    public RulePriority getOverriddenPriority() {
 	return priority;
     }
 
     @Override
-    public void setPriority(RulePriorityEnum priority) {
+    public void setPriority(RulePriority priority) {
 	// Only override if different than current value, or if already overridden.
 	if (priority != super.getPriority() || this.priority != null) {
 	    this.priority = priority;

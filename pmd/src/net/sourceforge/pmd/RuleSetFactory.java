@@ -30,7 +30,7 @@ import org.xml.sax.SAXException;
  */
 public class RuleSetFactory {
 
-    private RulePriorityEnum minPriority = RulePriorityEnum.LOW;
+    private RulePriority minPriority = RulePriority.LOW;
 
     /**
      * Set the minimum rule priority threshold for all Rules which are loaded
@@ -38,7 +38,7 @@ public class RuleSetFactory {
      * 
      * @param minPriority The minimum priority.
      */
-    public void setMinimumPriority(RulePriorityEnum minPriority) {
+    public void setMinimumPriority(RulePriority minPriority) {
 	this.minPriority = minPriority;
     }
 
@@ -387,7 +387,7 @@ public class RuleSetFactory {
 		} else if (node.getNodeName().equals("example")) {
 		    rule.addExample(parseTextNode(node));
 		} else if (node.getNodeName().equals("priority")) {
-		    rule.setPriority(RulePriorityEnum.valueOf(Integer.parseInt(parseTextNode(node).trim())));
+		    rule.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node).trim())));
 		} else if (node.getNodeName().equals("properties")) {
 		    Properties p = new Properties();
 		    parsePropertiesNode(p, node);
@@ -450,7 +450,7 @@ public class RuleSetFactory {
 		} else if (node.getNodeName().equals("example")) {
 		    ruleReference.addExample(parseTextNode(node));
 		} else if (node.getNodeName().equals("priority")) {
-		    ruleReference.setPriority(RulePriorityEnum.valueOf(Integer.parseInt(parseTextNode(node))));
+		    ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
 		} else if (node.getNodeName().equals("properties")) {
 		    Properties p = new Properties();
 		    parsePropertiesNode(p, node);

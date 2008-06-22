@@ -143,7 +143,7 @@ public class RuleSetWriter {
 		String message = ruleReference.getOverriddenMessage();
 		String externalInfoUrl = ruleReference.getOverriddenExternalInfoUrl();
 		String description = ruleReference.getOverriddenDescription();
-		RulePriorityEnum priority = ruleReference.getOverriddenPriority();
+		RulePriority priority = ruleReference.getOverriddenPriority();
 		Properties properties = ruleReference.getOverriddenProperties();
 		List<String> examples = ruleReference.getOverriddenExamples();
 		return createSingleRuleElement(language, minimumLanguageVersion, maximumLanguageVersion, name, null,
@@ -161,7 +161,7 @@ public class RuleSetWriter {
     private Element createSingleRuleElement(Language language, LanguageVersion minimumLanguageVersion,
 	    LanguageVersion maximumLanguageVersion, String name, String since, String ref, String message,
 	    String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution, String description,
-	    RulePriorityEnum priority, Properties properties, List<String> examples) {
+	    RulePriority priority, Properties properties, List<String> examples) {
 	Element ruleElement = document.createElement("rule");
 	if (language != null) {
 	    ruleElement.setAttribute("language", language.getTerseName());
@@ -238,7 +238,7 @@ public class RuleSetWriter {
 	return createCDATASectionElement("example", example);
     }
 
-    private Element createPriorityElement(RulePriorityEnum priority) {
+    private Element createPriorityElement(RulePriority priority) {
 	return createTextElement("priority", String.valueOf(priority.getPriority()));
     }
 
