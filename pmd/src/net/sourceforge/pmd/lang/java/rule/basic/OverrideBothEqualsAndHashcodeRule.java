@@ -68,7 +68,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRule {
 			.findChildrenOfType(ASTFormalParameter.class);
 		for (ASTFormalParameter formalParam : allParams) {
 		    iFormalParams++;
-		    ASTClassOrInterfaceType param = formalParam.getFirstChildOfType(ASTClassOrInterfaceType.class);
+		    ASTClassOrInterfaceType param = formalParam.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
 		    if (param != null) {
 			paramName = param.getImage();
 		    }

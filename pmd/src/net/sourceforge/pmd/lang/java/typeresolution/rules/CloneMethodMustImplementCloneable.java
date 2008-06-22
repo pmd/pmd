@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * CloneNotSupportedException. This version uses PMD's type resolution
  * facilities, and can detect if the class implements or extends a Cloneable
  * class
- * 
+ *
  * @author acaplan
  */
 public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
@@ -70,13 +70,13 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
     public Object visit(ASTMethodDeclaration node, Object data) {
 	ASTClassOrInterfaceDeclaration classOrInterface = node
 		.getFirstParentOfType(ASTClassOrInterfaceDeclaration.class);
-	if (classOrInterface != null && //Don't analyse enums, which cannot subclass clone()
+	if (classOrInterface != null && //Don't analyze enums, which cannot subclass clone()
 		(node.isFinal() || classOrInterface.isFinal())) {
-	    if (node.findChildrenOfType(ASTBlock.class).size() == 1) {
-		List<ASTBlockStatement> blocks = node.findChildrenOfType(ASTBlockStatement.class);
+	    if (node.findDescendantsOfType(ASTBlock.class).size() == 1) {
+		List<ASTBlockStatement> blocks = node.findDescendantsOfType(ASTBlockStatement.class);
 		if (blocks.size() == 1) {
 		    ASTBlockStatement block = blocks.get(0);
-		    ASTClassOrInterfaceType type = block.getFirstChildOfType(ASTClassOrInterfaceType.class);
+		    ASTClassOrInterfaceType type = block.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
 		    if (type != null && type.getType() != null && type.getNthParent(9).equals(node)
 			    && type.getType().equals(CloneNotSupportedException.class)) {
 			return data;

@@ -66,17 +66,17 @@ public class ClassTypeResolverTest {
 	@Test
 	public void acceptanceTest() {
 		ASTCompilationUnit acu = parseAndTypeResolveForClass(ArrayListFound.class);
-		assertEquals(ArrayListFound.class, acu.getFirstChildOfType(ASTTypeDeclaration.class).getType());
-		assertEquals(ArrayListFound.class, acu.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class).getType());
-		ASTImportDeclaration id = acu.getFirstChildOfType(ASTImportDeclaration.class);
+		assertEquals(ArrayListFound.class, acu.getFirstDescendantOfType(ASTTypeDeclaration.class).getType());
+		assertEquals(ArrayListFound.class, acu.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
+		ASTImportDeclaration id = acu.getFirstDescendantOfType(ASTImportDeclaration.class);
 		assertEquals("java.util", id.getPackage().getName());
 		assertEquals(java.util.ArrayList.class, id.getType());
-		assertEquals(ArrayList.class, acu.getFirstChildOfType(ASTClassOrInterfaceType.class).getType());
-		assertEquals(ArrayList.class, acu.getFirstChildOfType(ASTReferenceType.class).getType());
-		assertEquals(ArrayList.class, acu.getFirstChildOfType(ASTType.class).getType());
-		assertEquals(ArrayList.class, acu.getFirstChildOfType(ASTVariableDeclaratorId.class).getType());
-		assertEquals(ArrayList.class, acu.getFirstChildOfType(ASTVariableDeclarator.class).getType());
-		assertEquals(ArrayList.class, acu.getFirstChildOfType(ASTFieldDeclaration.class).getType());
+		assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTClassOrInterfaceType.class).getType());
+		assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTReferenceType.class).getType());
+		assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTType.class).getType());
+		assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTVariableDeclaratorId.class).getType());
+		assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTVariableDeclarator.class).getType());
+		assertEquals(ArrayList.class, acu.getFirstDescendantOfType(ASTFieldDeclaration.class).getType());
 	}
 
 	@Test
@@ -87,12 +87,12 @@ public class ClassTypeResolverTest {
 		ASTTypeDeclaration typeDeclaration = (ASTTypeDeclaration)acu.jjtGetChild(1);
 		assertEquals(ExtraTopLevelClass.class, typeDeclaration.getType());
 		assertEquals(ExtraTopLevelClass.class,
-				typeDeclaration.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class).getType());
+				typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
 		// Second class
 		typeDeclaration = (ASTTypeDeclaration)acu.jjtGetChild(2);
 		assertEquals(theExtraTopLevelClass, typeDeclaration.getType());
 		assertEquals(theExtraTopLevelClass,
-				typeDeclaration.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class).getType());
+				typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
 	}
 
 	@Test
@@ -105,13 +105,13 @@ public class ClassTypeResolverTest {
 		ASTCompilationUnit acu = parseAndTypeResolveForClass(InnerClass.class);
 		Class<?> theInnerClass = Class.forName("test.net.sourceforge.pmd.typeresolution.testdata.InnerClass$TheInnerClass");
 		// Outer class
-		ASTTypeDeclaration typeDeclaration = acu.getFirstChildOfType(ASTTypeDeclaration.class);
+		ASTTypeDeclaration typeDeclaration = acu.getFirstDescendantOfType(ASTTypeDeclaration.class);
 		assertEquals(InnerClass.class, typeDeclaration.getType());
-		ASTClassOrInterfaceDeclaration outerClassDeclaration = typeDeclaration.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
+		ASTClassOrInterfaceDeclaration outerClassDeclaration = typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
 		assertEquals(InnerClass.class, outerClassDeclaration.getType());
 		// Inner class
 		assertEquals(theInnerClass,
-				outerClassDeclaration.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class).getType());
+				outerClassDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class).getType());
 	}
 
 	@Test
@@ -124,13 +124,13 @@ public class ClassTypeResolverTest {
 		ASTCompilationUnit acu = parseAndTypeResolveForClass(AnonymousInnerClass.class);
 		Class<?> theAnonymousInnerClass = Class.forName("test.net.sourceforge.pmd.typeresolution.testdata.AnonymousInnerClass$1");
 		// Outer class
-		ASTTypeDeclaration typeDeclaration = acu.getFirstChildOfType(ASTTypeDeclaration.class);
+		ASTTypeDeclaration typeDeclaration = acu.getFirstDescendantOfType(ASTTypeDeclaration.class);
 		assertEquals(AnonymousInnerClass.class, typeDeclaration.getType());
-		ASTClassOrInterfaceDeclaration outerClassDeclaration = typeDeclaration.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
+		ASTClassOrInterfaceDeclaration outerClassDeclaration = typeDeclaration.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
 		assertEquals(AnonymousInnerClass.class, outerClassDeclaration.getType());
 		// Anonymous Inner class
 		assertEquals(theAnonymousInnerClass,
-				outerClassDeclaration.getFirstChildOfType(ASTAllocationExpression.class).getType());
+				outerClassDeclaration.getFirstDescendantOfType(ASTAllocationExpression.class).getType());
 	}
 
 	@Test
@@ -145,15 +145,15 @@ public class ClassTypeResolverTest {
 		assertEquals(String.class, literals.get(index++).getType());
 
 		// boolean boolean1 = false;
-		assertEquals(Boolean.TYPE, literals.get(index).getFirstChildOfType(ASTBooleanLiteral.class).getType());
+		assertEquals(Boolean.TYPE, literals.get(index).getFirstDescendantOfType(ASTBooleanLiteral.class).getType());
 		assertEquals(Boolean.TYPE, literals.get(index++).getType());
 
 		// boolean boolean2 = true;
-		assertEquals(Boolean.TYPE, literals.get(index).getFirstChildOfType(ASTBooleanLiteral.class).getType());
+		assertEquals(Boolean.TYPE, literals.get(index).getFirstDescendantOfType(ASTBooleanLiteral.class).getType());
 		assertEquals(Boolean.TYPE, literals.get(index++).getType());
 
 		// Object obj = null;
-		assertNull(literals.get(index).getFirstChildOfType(ASTNullLiteral.class).getType());
+		assertNull(literals.get(index).getFirstDescendantOfType(ASTNullLiteral.class).getType());
 		assertNull(literals.get(index++).getType());
 
 		// byte byte1 = 0;

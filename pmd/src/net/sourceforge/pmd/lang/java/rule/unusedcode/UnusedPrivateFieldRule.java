@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.java.rule.unusedcode;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,6 +18,7 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 public class UnusedPrivateFieldRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getVariableDeclarations();
         for (Map.Entry<VariableNameDeclaration, List<NameOccurrence>> entry: vars.entrySet()) {
@@ -43,36 +43,35 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
 		List<ASTClassOrInterfaceDeclaration> outerClasses = node.getParentsOfType(ASTClassOrInterfaceDeclaration.class);
 		for (ASTClassOrInterfaceDeclaration outerClass : outerClasses) {
 			ASTClassOrInterfaceBody classOrInterfaceBody = outerClass.getFirstChildOfType(ASTClassOrInterfaceBody.class);
-			
-			List<ASTClassOrInterfaceBodyDeclaration> classOrInterfaceBodyDeclarations = new ArrayList<ASTClassOrInterfaceBodyDeclaration>();
-			classOrInterfaceBody.findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class, classOrInterfaceBodyDeclarations, false);
-			
+
+			List<ASTClassOrInterfaceBodyDeclaration> classOrInterfaceBodyDeclarations = classOrInterfaceBody.findChildrenOfType(ASTClassOrInterfaceBodyDeclaration.class);
+
 			for (ASTClassOrInterfaceBodyDeclaration classOrInterfaceBodyDeclaration : classOrInterfaceBodyDeclarations) {
 				for (int i = 0; i < classOrInterfaceBodyDeclaration.jjtGetNumChildren(); i++) {
 					if (classOrInterfaceBodyDeclaration.jjtGetChild(i) instanceof ASTClassOrInterfaceDeclaration) {
 						continue;	//Skip other inner classes
 					}
-					
-					List<ASTPrimarySuffix> primarySuffixes = classOrInterfaceBodyDeclaration.findChildrenOfType(ASTPrimarySuffix.class);
+
+					List<ASTPrimarySuffix> primarySuffixes = classOrInterfaceBodyDeclaration.findDescendantsOfType(ASTPrimarySuffix.class);
 					for (ASTPrimarySuffix primarySuffix : primarySuffixes) {
 						if (decl.getImage().equals(primarySuffix.getImage())) {
 							return true; //No violation
 						}
 					}
-					
-					List<ASTPrimaryPrefix> primaryPrefixes = classOrInterfaceBodyDeclaration.findChildrenOfType(ASTPrimaryPrefix.class);
+
+					List<ASTPrimaryPrefix> primaryPrefixes = classOrInterfaceBodyDeclaration.findDescendantsOfType(ASTPrimaryPrefix.class);
 					for (ASTPrimaryPrefix primaryPrefix : primaryPrefixes) {
-						ASTName name = primaryPrefix.getFirstChildOfType(ASTName.class);
-						
+						ASTName name = primaryPrefix.getFirstDescendantOfType(ASTName.class);
+
 						if (name != null && name.getImage().endsWith(decl.getImage())) {
 							return true; //No violation
 						}
 					}
 				}
 			}
-			
+
 		}
-		
+
 		return false;
 	}
 
@@ -82,7 +81,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRule {
                 return true;
             }
         }
-        
+
         return false;
     }
 

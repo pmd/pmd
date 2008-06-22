@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +31,6 @@ import org.jaxen.JaxenException;
  */
 public class PreserveStackTraceRule extends AbstractJavaRule {
 
-    private List<ASTName> nameNodes = new ArrayList<ASTName>();
-
     // FUTURE: This detection is name based, it should probably use Type Resolution, to become type "based"
     // it assumes the exception class contains 'Exception' in its name
     private static final String FIND_THROWABLE_INSTANCE =
@@ -47,7 +44,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
     public Object visit(ASTCatchStatement catchStmt, Object data) {
         String target = catchStmt.jjtGetChild(0).jjtGetChild(1).getImage();
         // Inspect all the throw stmt inside the catch stmt
-        List<ASTThrowStatement> lstThrowStatements = catchStmt.findChildrenOfType(ASTThrowStatement.class);
+        List<ASTThrowStatement> lstThrowStatements = catchStmt.findDescendantsOfType(ASTThrowStatement.class);
         for (ASTThrowStatement throwStatement : lstThrowStatements) {
             Node n = throwStatement.jjtGetChild(0).jjtGetChild(0);
             if (n.getClass().equals(ASTCastExpression.class)) {
@@ -61,7 +58,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
             // If the thrown exception is IllegalStateException, no way to preserve the exception (the constructor has no args)
             if ( ! isThrownExceptionOfType(throwStatement,ILLEGAL_STATE_EXCEPTION) ) {
 	            // Retrieve all argument for the throw exception (to see if the original exception is preserved)
-	            ASTArgumentList args = throwStatement.getFirstChildOfType(ASTArgumentList.class);
+	            ASTArgumentList args = throwStatement.getFirstDescendantOfType(ASTArgumentList.class);
 
 	            if (args != null) {
 	                ck(data, target, throwStatement, args);
@@ -77,7 +74,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 	                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((ASTName) child).getScope().getVariableDeclarations();
 		                    for (VariableNameDeclaration decl: vars.keySet()) {
 		                        args = decl.getNode().jjtGetParent()
-		                                .getFirstChildOfType(ASTArgumentList.class);
+		                                .getFirstDescendantOfType(ASTArgumentList.class);
 		                        if (args != null) {
 		                            ck(data, target, throwStatement, args);
 		                        }
@@ -154,8 +151,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 	private void ck(Object data, String target, ASTThrowStatement throwStatement,
                     ASTArgumentList args) {
         boolean match = false;
-        nameNodes.clear();
-        args.findChildrenOfType(ASTName.class, nameNodes);
+        List<ASTName> nameNodes = args.findDescendantsOfType(ASTName.class);
         for (ASTName nameNode : nameNodes) {
             if (target.equals(nameNode.getImage())) {
                 match = true;

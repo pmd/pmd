@@ -15,6 +15,7 @@ public class ASTThrowStatement extends AbstractJavaNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -31,7 +32,7 @@ public class ASTThrowStatement extends AbstractJavaNode {
      * @return the image of the first ASTClassOrInterfaceType node found or <code>null</code>
      */
     public final String getFirstClassOrInterfaceTypeImage() {
-        final ASTClassOrInterfaceType t = getFirstChildOfType(ASTClassOrInterfaceType.class);
+        final ASTClassOrInterfaceType t = getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         return t == null ? null : t.getImage();
     }
 }

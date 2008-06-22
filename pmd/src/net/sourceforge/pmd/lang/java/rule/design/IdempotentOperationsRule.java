@@ -14,11 +14,12 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class IdempotentOperationsRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTStatementExpression node, Object data) {
         if (node.jjtGetNumChildren() != 3
                 || !(node.jjtGetChild(0) instanceof ASTPrimaryExpression)
                 || !(node.jjtGetChild(1) instanceof ASTAssignmentOperator)
-                || (((ASTAssignmentOperator) (node.jjtGetChild(1))).isCompound())
+                || ((ASTAssignmentOperator) node.jjtGetChild(1)).isCompound()
                 || !(node.jjtGetChild(2) instanceof ASTExpression)
                 || node.jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() == 0
                 || node.jjtGetChild(2).jjtGetChild(0).jjtGetChild(0).jjtGetNumChildren() == 0
@@ -54,7 +55,7 @@ public class IdempotentOperationsRule extends AbstractJavaRule {
             }
         }
 
-        if (lhs.findChildrenOfType(ASTPrimarySuffix.class).size() != rhs.findChildrenOfType(ASTPrimarySuffix.class).size()) {
+        if (lhs.findDescendantsOfType(ASTPrimarySuffix.class).size() != rhs.findDescendantsOfType(ASTPrimarySuffix.class).size()) {
             return super.visit(node, data);
         }
 

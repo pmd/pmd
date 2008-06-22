@@ -46,7 +46,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 
 	List<VariableAccess> undefinitions = markUsages(inode);
 
-	// all variables are first in state undefinition 
+	// all variables are first in state undefinition
 	DataFlowNode firstINode = inode.getFlow().get(0);
 	firstINode.setVariableAccess(undefinitions);
 
@@ -66,7 +66,7 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
 		if (vnd.getAccessNodeParent() instanceof ASTFormalParameter) {
 		    // no definition/undefinition/references for parameters
 		    continue;
-		} else if (((Node) vnd.getAccessNodeParent()).getFirstChildOfType(ASTVariableInitializer.class) != null) {
+		} else if (((Node) vnd.getAccessNodeParent()).getFirstDescendantOfType(ASTVariableInitializer.class) != null) {
 		    // add definition for initialized variables
 		    addVariableAccess(vnd.getNode(), new VariableAccess(VariableAccess.DEFINITION, vnd.getImage()),
 			    inode.getFlow());
@@ -111,17 +111,17 @@ public class VariableAccessVisitor extends JavaParserVisitorAdapter {
      * Adds a VariableAccess to a dataflow node.
      * @param node location of the access of a variable
      * @param va variable access to add
-     * @param flow dataflownodes that can contain the node. 
+     * @param flow dataflownodes that can contain the node.
      */
     private void addVariableAccess(Node node, VariableAccess va, List<DataFlowNode> flow) {
-	// backwards to find the right inode (not a method declaration) 
+	// backwards to find the right inode (not a method declaration)
 	for (int i = flow.size() - 1; i > 0; i--) {
 	    DataFlowNode inode = flow.get(i);
 	    if (inode.getNode() == null) {
 		continue;
 	    }
 
-	    List<? extends Node> children = inode.getNode().findChildrenOfType(node.getClass());
+	    List<? extends Node> children = inode.getNode().findDescendantsOfType(node.getClass());
 	    for (Node n : children) {
 		if (node.equals(n)) {
 		    List<VariableAccess> v = new ArrayList<VariableAccess>();

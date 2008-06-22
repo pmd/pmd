@@ -3,6 +3,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
+
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.typeresolution.ClassTypeResolver;
 
@@ -20,7 +22,7 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     }
 
     private List<Token> formalComments;
- 
+
     public List<Token> getFormalComments() {
         return formalComments;
     }
@@ -32,6 +34,7 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -41,7 +44,8 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     }
 
     public ASTPackageDeclaration getPackageDeclaration() {
-        return getFirstChildOfType(ASTPackageDeclaration.class);
+	Node n = jjtGetChild(0);
+	return n instanceof ASTPackageDeclaration?(ASTPackageDeclaration)n:null;
     }
 
     public ClassTypeResolver getClassTypeResolver() {

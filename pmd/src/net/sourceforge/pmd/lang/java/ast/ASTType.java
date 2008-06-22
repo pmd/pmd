@@ -14,16 +14,17 @@ public class ASTType extends AbstractJavaTypeNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
 
     public String getTypeImage() {
-        ASTPrimitiveType prim = getFirstChildOfType(ASTPrimitiveType.class);
+        ASTPrimitiveType prim = getFirstDescendantOfType(ASTPrimitiveType.class);
         if (prim != null) {
             return prim.getImage();
         }
-        return getFirstChildOfType(ASTClassOrInterfaceType.class).getImage();
+        return getFirstDescendantOfType(ASTClassOrInterfaceType.class).getImage();
     }
 
     public int getArrayDepth() {

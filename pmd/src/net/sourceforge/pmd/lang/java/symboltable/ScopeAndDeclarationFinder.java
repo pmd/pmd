@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import java.util.List;
 import java.util.Stack;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -112,12 +111,11 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
      *
      * @param node the AST node for which the scope has to be created.
      */
-    private void createSourceFileScope(JavaNode node) {
+    private void createSourceFileScope(ASTCompilationUnit node) {
 	// When we do full symbol resolution, we'll need to add a truly top-level GlobalScope.
 	Scope scope;
-	List<ASTPackageDeclaration> packages = node.findChildrenOfType(ASTPackageDeclaration.class);
-	if (!packages.isEmpty()) {
-	    ASTPackageDeclaration n = packages.get(0);
+	ASTPackageDeclaration n = node.getPackageDeclaration();
+	if (n != null) {
 	    scope = new SourceFileScope(n.jjtGetChild(0).getImage());
 	} else {
 	    scope = new SourceFileScope();
@@ -191,7 +189,7 @@ public class ScopeAndDeclarationFinder extends JavaParserVisitorAdapter {
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
 	/*
-	 * Local variables declared inside the constructor need to 
+	 * Local variables declared inside the constructor need to
 	 * be in a different scope so special handling is needed
 	 */
 	createMethodScope(node);

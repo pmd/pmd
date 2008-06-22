@@ -25,7 +25,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 /**
  * NPath complexity is a measurement of the acyclic execution paths through a
  * function. See Nejmeh, Communications of the ACM Feb 1988 pp 188-200.
- * 
+ *
  * @author Jason Bennett
  */
 public class NPathComplexityRule extends AbstractStatisticalJavaRule {
@@ -133,7 +133,7 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
     public Object visit(ASTForStatement node, Object data) {
 	// (npath of for + bool_comp of for + 1) * npath of next
 
-	int boolCompFor = sumExpressionComplexity(node.getFirstChildOfType(ASTExpression.class));
+	int boolCompFor = sumExpressionComplexity(node.getFirstDescendantOfType(ASTExpression.class));
 
 	Integer nPathFor = (Integer) ((JavaNode) node.getFirstChildOfType(ASTStatement.class)).jjtAccept(this, data);
 
@@ -150,8 +150,8 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
 	    return NumericConstants.ONE;
 	}
 
-	List<ASTConditionalAndExpression> andNodes = expr.findChildrenOfType(ASTConditionalAndExpression.class);
-	List<ASTConditionalOrExpression> orNodes = expr.findChildrenOfType(ASTConditionalOrExpression.class);
+	List<ASTConditionalAndExpression> andNodes = expr.findDescendantsOfType(ASTConditionalAndExpression.class);
+	List<ASTConditionalOrExpression> orNodes = expr.findDescendantsOfType(ASTConditionalOrExpression.class);
 	int boolCompReturn = andNodes.size() + orNodes.size();
 
 	if (boolCompReturn > 0) {
@@ -217,7 +217,7 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
      * (minus one).
      * <p>
      * Note that this calculation applies to Cyclomatic Complexity as well.
-     * 
+     *
      * @param expr
      *          control structure expression
      * @return complexity of the boolean expression
@@ -227,8 +227,8 @@ public class NPathComplexityRule extends AbstractStatisticalJavaRule {
 	    return 0;
 	}
 
-	List<ASTConditionalAndExpression> andNodes = expr.findChildrenOfType(ASTConditionalAndExpression.class);
-	List<ASTConditionalOrExpression> orNodes = expr.findChildrenOfType(ASTConditionalOrExpression.class);
+	List<ASTConditionalAndExpression> andNodes = expr.findDescendantsOfType(ASTConditionalAndExpression.class);
+	List<ASTConditionalOrExpression> orNodes = expr.findDescendantsOfType(ASTConditionalOrExpression.class);
 
 	int children = 0;
 

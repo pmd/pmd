@@ -52,7 +52,7 @@ public class LocalScopeTest extends STBBaseTst {
     @Test
     public void testLocalVariableDeclarationFound() {
         parseCode(TEST1);
-        List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        List nodes = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
         ASTVariableDeclaratorId node = (ASTVariableDeclaratorId) nodes.get(0);
         Map vars = node.getScope().getVariableDeclarations();
         assertEquals(1, vars.size());
@@ -63,7 +63,7 @@ public class LocalScopeTest extends STBBaseTst {
     @Test
     public void testQualifiedNameOccurrence() {
         parseCode(TEST2);
-        List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        List nodes = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
         ASTVariableDeclaratorId node = (ASTVariableDeclaratorId) nodes.get(0);
         Map vars = node.getScope().getVariableDeclarations();
         NameDeclaration decl = (NameDeclaration) vars.keySet().iterator().next();
@@ -74,7 +74,7 @@ public class LocalScopeTest extends STBBaseTst {
     @Test
     public void testPostfixUsageIsRecorded() {
         parseCode(TEST3);
-        List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        List nodes = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
         ASTVariableDeclaratorId node = (ASTVariableDeclaratorId) nodes.get(0);
         Map vars = node.getScope().getVariableDeclarations();
         NameDeclaration decl = (NameDeclaration) vars.keySet().iterator().next();
@@ -86,7 +86,7 @@ public class LocalScopeTest extends STBBaseTst {
     @Test
     public void testLocalVariableTypesAreRecorded() {
         parseCode(TEST1);
-        List nodes = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        List nodes = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
         Map vars = ((ASTVariableDeclaratorId) nodes.get(0)).getScope().getVariableDeclarations();
         VariableNameDeclaration decl = (VariableNameDeclaration) vars.keySet().iterator().next();
         assertEquals("Bar", decl.getTypeImage());
@@ -95,7 +95,7 @@ public class LocalScopeTest extends STBBaseTst {
     @Test
     public void testMethodArgumentTypesAreRecorded() {
         parseCode(TEST5);
-        List nodes = acu.findChildrenOfType(ASTFormalParameter.class);
+        List nodes = acu.findDescendantsOfType(ASTFormalParameter.class);
         Map vars = ((ASTFormalParameter) nodes.get(0)).getScope().getVariableDeclarations();
         VariableNameDeclaration decl = (VariableNameDeclaration) vars.keySet().iterator().next();
         assertEquals("String", decl.getTypeImage());
@@ -104,7 +104,7 @@ public class LocalScopeTest extends STBBaseTst {
     @Test
     public void testgetEnclosingMethodScope() {
         parseCode(TEST4);
-        ASTLocalVariableDeclaration node = acu.findChildrenOfType(ASTLocalVariableDeclaration.class).get(0);
+        ASTLocalVariableDeclaration node = acu.findDescendantsOfType(ASTLocalVariableDeclaration.class).get(0);
         LocalScope scope = (LocalScope) node.getScope();
         MethodScope ms = scope.getEnclosingMethodScope();
         assertEquals(2, ms.getVariableDeclarations().size());

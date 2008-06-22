@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -13,7 +14,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Using a DateFormatter (SimpleDateFormatter) which is static can cause
@@ -37,15 +37,16 @@ public class UnsynchronizedStaticDateFormatterRule extends AbstractJavaRule {
         targets.add("java.text.SimpleDateFormat");
     }
 
+    @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         if (!node.isStatic()) {
             return data;
         }
-        ASTClassOrInterfaceType cit = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
+        ASTClassOrInterfaceType cit = node.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         if (cit == null || !targets.contains(cit.getImage())) {
             return data;
         }
-        ASTVariableDeclaratorId var = node.getFirstChildOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId var = node.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         for (NameOccurrence occ: var.getUsages()) {
             Node n = occ.getLocation();
             if (n.getFirstParentOfType(ASTSynchronizedStatement.class) != null) {

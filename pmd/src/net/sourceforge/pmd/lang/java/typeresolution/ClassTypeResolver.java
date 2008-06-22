@@ -136,6 +136,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	}
 
 	// FUTURE ASTCompilationUnit should not be a TypeNode.  Clean this up accordingly.
+	@Override
 	public Object visit(ASTCompilationUnit node, Object data) {
 		String className = null;
 		try {
@@ -156,6 +157,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTImportDeclaration node, Object data) {
 		ASTName importedType = (ASTName)node.jjtGetChild(0);
 		if (importedType.getType() != null) {
@@ -170,32 +172,38 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTTypeDeclaration node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnary(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTClassOrInterfaceType node, Object data) {
 		populateType(node, node.getImage());
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 		populateType(node, node.getImage());
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTEnumDeclaration node, Object data) {
 		populateType(node, node.getImage());
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
 		populateType(node, node.getImage());
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTName node, Object data) {
 		/*
 		 * Only doing this for nodes where getNameDeclaration is null this means
@@ -223,18 +231,21 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTFieldDeclaration node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnary(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTVariableDeclarator node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnary(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTVariableDeclaratorId node, Object data) {
 		if (node == null || node.getNameDeclaration() == null) {
 			return super.visit(node, data);
@@ -247,29 +258,34 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTType node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnary(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTReferenceType node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnary(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTPrimitiveType node, Object data) {
 		populateType(node, node.getImage());
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnary(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTConditionalExpression node, Object data) {
 		super.visit(node, data);
 		if (node.isTernary()) {
@@ -280,49 +296,58 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTConditionalOrExpression node, Object data) {
 		populateType(node, "boolean");
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTConditionalAndExpression node, Object data) {
 		populateType(node, "boolean");
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTInclusiveOrExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeBinaryNumericPromotion(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTExclusiveOrExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeBinaryNumericPromotion(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTAndExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeBinaryNumericPromotion(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTEqualityExpression node, Object data) {
 		populateType(node, "boolean");
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTInstanceOfExpression node, Object data) {
 		populateType(node, "boolean");
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTRelationalExpression node, Object data) {
 		populateType(node, "boolean");
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTShiftExpression node, Object data) {
 		super.visit(node, data);
 		// Unary promotion on LHS is type of a shift operation
@@ -330,36 +355,42 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTAdditiveExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeBinaryNumericPromotion(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTMultiplicativeExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeBinaryNumericPromotion(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTUnaryExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnaryNumericPromotion(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTPreIncrementExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnary(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTPreDecrementExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnary(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTUnaryExpressionNotPlusMinus node, Object data) {
 		super.visit(node, data);
 		if ("!".equals(node.getImage())) {
@@ -370,18 +401,21 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTPostfixExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnary(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTCastExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnary(node);
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTPrimaryExpression node, Object data) {
 		super.visit(node, data);
 		if (node.jjtGetNumChildren() == 1) {
@@ -392,6 +426,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTPrimaryPrefix node, Object data) {
 		super.visit(node, data);
 		if (node.getImage() == null) {
@@ -402,22 +437,26 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTPrimarySuffix node, Object data) {
 		super.visit(node, data);
 		// TODO OMG, this is complicated.  PrimaryExpression, PrimaryPrefix and PrimarySuffix are all related.
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTNullLiteral node, Object data) {
 		// No explicit type
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTBooleanLiteral node, Object data) {
 		populateType(node, "boolean");
 		return super.visit(node, data);
 	}
 
+	@Override
 	public Object visit(ASTLiteral node, Object data) {
 		super.visit(node, data);
 		if (node.jjtGetNumChildren() != 0) {
@@ -460,11 +499,12 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTAllocationExpression node, Object data) {
 		super.visit(node, data);
 
-		if ((node.jjtGetNumChildren() >= 2 && node.jjtGetChild(1) instanceof ASTArrayDimsAndInits)
-				|| (node.jjtGetNumChildren() >= 3 && node.jjtGetChild(2) instanceof ASTArrayDimsAndInits)) {
+		if (node.jjtGetNumChildren() >= 2 && node.jjtGetChild(1) instanceof ASTArrayDimsAndInits
+				|| node.jjtGetNumChildren() >= 3 && node.jjtGetChild(2) instanceof ASTArrayDimsAndInits) {
 			//
 			// Classes for Array types cannot be found directly using reflection.
 			// As far as I can tell you have to create an array instance of the necessary
@@ -489,6 +529,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		return data;
 	}
 
+	@Override
 	public Object visit(ASTStatementExpression node, Object data) {
 		super.visit(node, data);
 		rollupTypeUnary(node);
@@ -557,8 +598,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 					} else if (type1 != null || type2 != null) {
 						// If one side is known to be a String, then the result is a String
 						// Yeah, String is not numeric, but easiest place to handle it, only affects ASTAdditiveExpression
-						if ((type1 != null && "java.lang.String".equals(type1.getName()))
-								|| (type2 != null && "java.lang.String".equals(type2.getName()))) {
+						if (type1 != null && "java.lang.String".equals(type1.getName())
+								|| type2 != null && "java.lang.String".equals(type2.getName())) {
 							populateType(typeNode, "java.lang.String");
 						}
 					}
@@ -622,7 +663,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	}
 
 	private String getClassName(ASTCompilationUnit node) {
-		ASTClassOrInterfaceDeclaration classDecl = node.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
+		ASTClassOrInterfaceDeclaration classDecl = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
 		if (classDecl == null) {
 			return null; // Happens if this compilation unit only contains an enum
 		}

@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTMethodDeclaration meth, Object data) {
         // skip void/abstract/native method
         if (meth.isVoid() || meth.isAbstract() || meth.isNative()) {
@@ -23,15 +24,16 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
         return super.visit(meth, data);
     }
 
+    @Override
     public Object visit(ASTReturnStatement rtn, Object data) {
         // skip returns of literals
-        ASTName name = rtn.getFirstChildOfType(ASTName.class);
+        ASTName name = rtn.getFirstDescendantOfType(ASTName.class);
         if (name == null) {
             return data;
         }
 
         // skip 'complicated' expressions
-        if (rtn.findChildrenOfType(ASTExpression.class).size() > 1 || rtn.findChildrenOfType(ASTPrimaryExpression.class).size() > 1 || isMethodCall(rtn)) {
+        if (rtn.findDescendantsOfType(ASTExpression.class).size() > 1 || rtn.findDescendantsOfType(ASTPrimaryExpression.class).size() > 1 || isMethodCall(rtn)) {
             return data;
         }
 
@@ -54,16 +56,16 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRule {
         }
         return data;
     }
-    
+
     /**
      * Determine if the given return statement has any embedded method calls.
-     * 
+     *
      * @param rtn
      *          return statement to analyze
      * @return true if any method calls are made within the given return
      */
     private boolean isMethodCall(ASTReturnStatement rtn) {
-     List<ASTPrimarySuffix> suffix = rtn.findChildrenOfType( ASTPrimarySuffix.class );
+     List<ASTPrimarySuffix> suffix = rtn.findDescendantsOfType( ASTPrimarySuffix.class );
      for ( ASTPrimarySuffix element: suffix ) {
         if ( element.isArguments() ) {
           return true;

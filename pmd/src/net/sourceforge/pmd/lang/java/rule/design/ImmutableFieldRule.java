@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -22,7 +23,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * @author Olander
@@ -33,6 +33,7 @@ public class ImmutableFieldRule extends AbstractJavaRule {
     private static final int IMMUTABLE = 1;
     private static final int CHECKDECL = 2;
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         Map<VariableNameDeclaration, List<NameOccurrence>> vars = node.getScope().getVariableDeclarations();
         List<ASTConstructorDeclaration> constructors = findAllConstructors(node);
@@ -46,7 +47,7 @@ public class ImmutableFieldRule extends AbstractJavaRule {
             if (result == MUTABLE) {
                 continue;
             }
-            if (result == IMMUTABLE || (result == CHECKDECL && initializedWhenDeclared(field))) {
+            if (result == IMMUTABLE || result == CHECKDECL && initializedWhenDeclared(field)) {
                 addViolation(data, field.getNode(), field.getImage());
             }
         }
@@ -54,7 +55,7 @@ public class ImmutableFieldRule extends AbstractJavaRule {
     }
 
     private boolean initializedWhenDeclared(VariableNameDeclaration field) {
-        return !((Node)field.getAccessNodeParent()).findChildrenOfType(ASTVariableInitializer.class).isEmpty();
+        return ((Node)field.getAccessNodeParent()).hasDescendantOfType(ASTVariableInitializer.class);
     }
 
     private int initializedInConstructor(List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
@@ -68,7 +69,7 @@ public class ImmutableFieldRule extends AbstractJavaRule {
                     if (inLoopOrTry(node)) {
                         continue;
                     }
-                    //Check for assigns in if-statements, which can depend on constructor 
+                    //Check for assigns in if-statements, which can depend on constructor
                     //args or other runtime knowledge and can be a valid reason to instantiate
                     //in one constructor only
                     if (node.getFirstParentOfType(ASTIfStatement.class) != null) {
@@ -86,11 +87,11 @@ public class ImmutableFieldRule extends AbstractJavaRule {
                 }
             }
         }
-        if (usages.isEmpty() || ((methodInitCount == 0) && consSet.isEmpty())) {
+        if (usages.isEmpty() || methodInitCount == 0 && consSet.isEmpty()) {
             result = CHECKDECL;
         } else {
             allConstructors.removeAll(consSet);
-            if (allConstructors.isEmpty() && (methodInitCount == 0)) {
+            if (allConstructors.isEmpty() && methodInitCount == 0) {
                 result = IMMUTABLE;
             }
         }
@@ -111,7 +112,7 @@ public class ImmutableFieldRule extends AbstractJavaRule {
 
     private List<ASTConstructorDeclaration> findAllConstructors(ASTClassOrInterfaceDeclaration node) {
         List<ASTConstructorDeclaration> cons = new ArrayList<ASTConstructorDeclaration>();
-        node.findChildrenOfType(ASTConstructorDeclaration.class, cons, false);
+        node.findDescendantsOfType(ASTConstructorDeclaration.class, cons, false);
         return cons;
     }
 }

@@ -34,12 +34,13 @@ public class ASTPrimarySuffix extends AbstractJavaNode {
         if (!this.isArguments()) {
             throw new RuntimeException("ASTPrimarySuffix.getArgumentCount called, but this is not a method call");
         }
-        return this.getFirstChildOfType(ASTArguments.class).getArgumentCount();
+        return ((ASTArguments)jjtGetChild(jjtGetNumChildren()-1)).getArgumentCount();
     }
 
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }

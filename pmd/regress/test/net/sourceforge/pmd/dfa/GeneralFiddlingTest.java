@@ -18,7 +18,7 @@ public class GeneralFiddlingTest extends ParserTst {
     @Test
     public void test1() throws Throwable {
         ASTCompilationUnit acu = buildDFA(TEST1);
-        ASTMethodDeclarator meth = acu.findChildrenOfType(ASTMethodDeclarator.class).get(0);
+        ASTMethodDeclarator meth = acu.findDescendantsOfType(ASTMethodDeclarator.class).get(0);
         DataFlowNode n = meth.getDataFlowNode();
         List f = n.getFlow();
         for (Iterator i = f.iterator(); i.hasNext();) {

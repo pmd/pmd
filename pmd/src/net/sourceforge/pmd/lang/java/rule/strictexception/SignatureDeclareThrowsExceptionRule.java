@@ -2,13 +2,13 @@ package net.sourceforge.pmd.lang.java.rule.strictexception;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * <p/>
@@ -22,11 +22,13 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
 
     private boolean junitImported;
 
+    @Override
     public Object visit(ASTCompilationUnit node, Object o) {
         junitImported = false;
         return super.visit(node, o);
     }
 
+    @Override
     public Object visit(ASTImportDeclaration node, Object o) {
         if (node.getImportedName().indexOf("junit") != -1) {
             junitImported = true;
@@ -34,6 +36,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
         return super.visit(node, o);
     }
 
+    @Override
     public Object visit(ASTMethodDeclaration methodDeclaration, Object o) {
         if ((methodDeclaration.getMethodName().equals("setUp") || methodDeclaration.getMethodName().equals("tearDown")) && junitImported) {
             return super.visit(methodDeclaration, o);
@@ -43,7 +46,7 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
             return super.visit(methodDeclaration, o);
         }
 
-        List<ASTName> exceptionList = methodDeclaration.findChildrenOfType(ASTName.class);
+        List<ASTName> exceptionList = methodDeclaration.findDescendantsOfType(ASTName.class);
         if (!exceptionList.isEmpty()) {
             evaluateExceptions(exceptionList, o);
         }
@@ -51,8 +54,9 @@ public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
     }
 
 
+    @Override
     public Object visit(ASTConstructorDeclaration constructorDeclaration, Object o) {
-        List<ASTName> exceptionList = constructorDeclaration.findChildrenOfType(ASTName.class);
+        List<ASTName> exceptionList = constructorDeclaration.findDescendantsOfType(ASTName.class);
         if (!exceptionList.isEmpty()) {
             evaluateExceptions(exceptionList, o);
         }

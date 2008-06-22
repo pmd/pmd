@@ -12,7 +12,7 @@ public class AssignmentInOperandRule extends AbstractJavaRule {
     public Object visit(ASTExpression node, Object data) {
         Node parent = node.jjtGetParent();
         if ((parent instanceof ASTWhileStatement || parent instanceof ASTIfStatement) &&
-                node.containsChildOfType(ASTAssignmentOperator.class))
+                node.hasDescendantOfType(ASTAssignmentOperator.class))
         {
             addViolation(data, node);
             return data;

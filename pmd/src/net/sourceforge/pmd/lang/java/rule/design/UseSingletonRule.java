@@ -17,6 +17,7 @@ public class UseSingletonRule extends AbstractJavaRule {
     private boolean isOK;
     private int methodCount;
 
+    @Override
     public Object visit(ASTCompilationUnit cu, Object data) {
         methodCount = 0;
         isOK = false;
@@ -28,6 +29,7 @@ public class UseSingletonRule extends AbstractJavaRule {
         return result;
     }
 
+    @Override
     public Object visit(ASTFieldDeclaration decl, Object data) {
         if (!decl.isStatic()) {
             isOK = true;
@@ -35,6 +37,7 @@ public class UseSingletonRule extends AbstractJavaRule {
         return data;
     }
 
+    @Override
     public Object visit(ASTConstructorDeclaration decl, Object data) {
         if (decl.isPrivate()) {
             isOK = true;
@@ -42,6 +45,7 @@ public class UseSingletonRule extends AbstractJavaRule {
         return data;
     }
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration decl, Object data) {
         if (decl.isAbstract()) {
             isOK = true;
@@ -49,6 +53,7 @@ public class UseSingletonRule extends AbstractJavaRule {
         return super.visit(decl, data);
     }
 
+    @Override
     public Object visit(ASTMethodDeclaration decl, Object data) {
         methodCount++;
 
@@ -58,8 +63,8 @@ public class UseSingletonRule extends AbstractJavaRule {
 
         // TODO use symbol table
         if (decl.getMethodName().equals("suite")) {
-            ASTResultType res = decl.getFirstChildOfType(ASTResultType.class);
-            ASTClassOrInterfaceType c = res.getFirstChildOfType(ASTClassOrInterfaceType.class);
+            ASTResultType res = decl.getResultType();
+            ASTClassOrInterfaceType c = res.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
             if (c != null && c.hasImageEqualTo("Test")) {
                 isOK = true;
             }

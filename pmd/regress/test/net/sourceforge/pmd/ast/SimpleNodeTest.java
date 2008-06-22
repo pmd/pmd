@@ -128,30 +128,28 @@ public class SimpleNodeTest extends ParserTst {
     }
 
     @Test
-    public void testFindChildrenOfType() {
+    public void testFindDescendantsOfType() {
         ASTBlock block = new ASTBlock(2);
         block.jjtAddChild(new ASTReturnStatement(1), 0);
-        assertEquals(1, block.findChildrenOfType(ASTReturnStatement.class).size());
+        assertEquals(1, block.findDescendantsOfType(ASTReturnStatement.class).size());
     }
 
     @Test
-    public void testFindChildrenOfTypeMultiple() {
+    public void testFindDescendantsOfTypeMultiple() {
         ASTBlock block = new ASTBlock(1);
         block.jjtAddChild(new ASTBlockStatement(2), 0);
         block.jjtAddChild(new ASTBlockStatement(3), 1);
-        List<ASTBlockStatement> nodes = new ArrayList<ASTBlockStatement>();
-        block.findChildrenOfType(ASTBlockStatement.class, nodes);
+        List<ASTBlockStatement> nodes = block.findDescendantsOfType(ASTBlockStatement.class);
         assertEquals(2, nodes.size());
     }
 
     @Test
-    public void testFindChildrenOfTypeRecurse() {
+    public void testFindDescendantsOfTypeRecurse() {
         ASTBlock block = new ASTBlock(1);
         ASTBlock childBlock = new ASTBlock(2);
         block.jjtAddChild(childBlock, 0);
         childBlock.jjtAddChild(new ASTMethodDeclaration(3), 0);
-        List<ASTMethodDeclaration> nodes = new ArrayList<ASTMethodDeclaration>();
-        block.findChildrenOfType(ASTMethodDeclaration.class, nodes);
+        List<ASTMethodDeclaration> nodes = block.findDescendantsOfType(ASTMethodDeclaration.class);
         assertEquals(1, nodes.size());
     }
 
@@ -162,7 +160,7 @@ public class SimpleNodeTest extends ParserTst {
         block.jjtAddChild(x, 0);
         block.jjtAddChild(new ASTStatement(3), 1);
 
-        Node n = block.getFirstChildOfType(ASTStatement.class);
+        Node n = block.getFirstDescendantOfType(ASTStatement.class);
         assertNotNull(n);
         assertTrue(n instanceof ASTStatement);
         assertEquals(x, n);
@@ -173,11 +171,11 @@ public class SimpleNodeTest extends ParserTst {
         ASTBlock block = new ASTBlock(1);
         ASTStatement x = new ASTStatement(2);
         ASTAssignmentOperator x1 = new ASTAssignmentOperator(4);
-        x.jjtAddChild(x1, 1);
+        x.jjtAddChild(x1, 0);
         block.jjtAddChild(x, 0);
         block.jjtAddChild(new ASTStatement(3), 1);
 
-        Node n = block.getFirstChildOfType(ASTAssignmentOperator.class);
+        Node n = block.getFirstDescendantOfType(ASTAssignmentOperator.class);
         assertNotNull(n);
         assertTrue(n instanceof ASTAssignmentOperator);
         assertEquals(x1, n);
@@ -190,12 +188,12 @@ public class SimpleNodeTest extends ParserTst {
         ASTAssignmentOperator x1 = new ASTAssignmentOperator(4);
         ASTName x2 = new ASTName(5);
 
-        x.jjtAddChild(x1, 1);
+        x.jjtAddChild(x1, 0);
         x1.jjtAddChild(x2, 0);
         block.jjtAddChild(x, 0);
         block.jjtAddChild(new ASTStatement(3), 1);
 
-        Node n = block.getFirstChildOfType(ASTName.class);
+        Node n = block.getFirstDescendantOfType(ASTName.class);
         assertNotNull(n);
         assertTrue(n instanceof ASTName);
         assertEquals(x2, n);
@@ -205,7 +203,7 @@ public class SimpleNodeTest extends ParserTst {
     public void testParentMethods() throws Throwable {
     	ASTCompilationUnit u = parseJava14(TEST1);
     	
-    	ASTMethodDeclarator d = u.getFirstChildOfType(ASTMethodDeclarator.class);
+    	ASTMethodDeclarator d = u.getFirstDescendantOfType(ASTMethodDeclarator.class);
     	assertSame("getFirstParentOfType ASTMethodDeclaration", d.jjtGetParent(), d.getFirstParentOfType(ASTMethodDeclaration.class));
     	assertNull("getFirstParentOfType ASTName", d.getFirstParentOfType(ASTName.class));
 
@@ -228,7 +226,7 @@ public class SimpleNodeTest extends ParserTst {
     public void testContainsNoInner() throws Throwable {
         ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER).iterator().next();
         List<ASTFieldDeclaration> res = new ArrayList<ASTFieldDeclaration>();
-        c.findChildrenOfType(ASTFieldDeclaration.class, res, false);
+        c.findDescendantsOfType(ASTFieldDeclaration.class, res, false);
         assertTrue(res.isEmpty());
 /*        String expectedXml = "<CompilationUnit BeginColumn=\"1\" BeginLine=\"5\" EndColumn=\"1\" EndLine=\"5\">" +
                 "<TypeDeclaration BeginColumn=\"1\" BeginLine=\"1\" EndColumn=\"1\" EndLine=\"5\">" +
@@ -256,14 +254,14 @@ public class SimpleNodeTest extends ParserTst {
     public void testContainsNoInnerWithAnonInner() throws Throwable {
         ASTCompilationUnit c = getNodes(ASTCompilationUnit.class, CONTAINS_NO_INNER_WITH_ANON_INNER).iterator().next();
         List<ASTFieldDeclaration> res = new ArrayList<ASTFieldDeclaration>();
-        c.findChildrenOfType(ASTFieldDeclaration.class, res, false);
+        c.findDescendantsOfType(ASTFieldDeclaration.class, res, false);
         assertTrue(res.isEmpty());
     }
 
     @Test
     public void testContainsChildOfType() throws Throwable {
         ASTClassOrInterfaceDeclaration c = getNodes(ASTClassOrInterfaceDeclaration.class, CONTAINS_CHILDREN_OF_TYPE).iterator().next();
-        assertTrue(c.containsChildOfType(ASTFieldDeclaration.class));
+        assertTrue(c.hasDescendantOfType(ASTFieldDeclaration.class));
     }
 
     @Test

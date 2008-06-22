@@ -125,7 +125,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 	    return super.visit(node, data);
 	}
 	//Only process functions with one BlockStatement
-	if (block.jjtGetNumChildren() != 1 || block.findChildrenOfType(ASTStatement.class).size() != 1) {
+	if (block.jjtGetNumChildren() != 1 || block.findDescendantsOfType(ASTStatement.class).size() != 1) {
 	    return super.visit(node, data);
 	}
 

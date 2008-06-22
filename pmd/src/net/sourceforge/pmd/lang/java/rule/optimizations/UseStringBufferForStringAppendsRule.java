@@ -1,5 +1,6 @@
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -9,10 +10,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.lang.ast.Node;
 
 public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isA(node, String.class)) {
             return data;
@@ -28,15 +29,15 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                 continue;
             }
             if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0).getClass().equals(ASTPrimaryExpression.class)) {
-                ASTName astName = statement.jjtGetChild(0).getFirstChildOfType(ASTName.class);
+                ASTName astName = statement.jjtGetChild(0).getFirstDescendantOfType(ASTName.class);
                 if(astName != null){
                     if (astName.equals(name)) {
-                        ASTAssignmentOperator assignmentOperator = statement.getFirstChildOfType(ASTAssignmentOperator.class);
+                        ASTAssignmentOperator assignmentOperator = statement.getFirstDescendantOfType(ASTAssignmentOperator.class);
                         if (assignmentOperator != null && assignmentOperator.isCompound()) {
                             addViolation(data, assignmentOperator);
                         }
                     } else if(astName.getImage().equals(name.getImage())){
-                        ASTAssignmentOperator assignmentOperator = statement.getFirstChildOfType(ASTAssignmentOperator.class);
+                        ASTAssignmentOperator assignmentOperator = statement.getFirstDescendantOfType(ASTAssignmentOperator.class);
                         if (assignmentOperator != null && !assignmentOperator.isCompound()) {
                             addViolation(data, astName);
                         }

@@ -20,7 +20,7 @@ public class ASTFieldDeclarationTest extends ParserTst {
     @Test
     public void testIsArray() {
         ASTCompilationUnit cu = parseJava14(TEST1);
-        Dimensionable node = cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        Dimensionable node = cu.findDescendantsOfType(ASTFieldDeclaration.class).get(0);
         assertTrue(node.isArray());
         assertEquals(1, node.getArrayDepth());
     }
@@ -28,14 +28,14 @@ public class ASTFieldDeclarationTest extends ParserTst {
     @Test
     public void testMultiDimensionalArray() {
         ASTCompilationUnit cu = parseJava14(TEST2);
-        Dimensionable node = cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        Dimensionable node = cu.findDescendantsOfType(ASTFieldDeclaration.class).get(0);
         assertEquals(3, node.getArrayDepth());
     }
 
     @Test
     public void testIsSyntacticallyPublic() {
         ASTCompilationUnit cu = parseJava14(TEST3);
-        ASTFieldDeclaration node = cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        ASTFieldDeclaration node = cu.findDescendantsOfType(ASTFieldDeclaration.class).get(0);
         assertFalse(node.isSyntacticallyPublic());
         assertFalse(node.isPackagePrivate());
         assertFalse(node.isPrivate());
@@ -48,7 +48,7 @@ public class ASTFieldDeclarationTest extends ParserTst {
     @Test
     public void testWithEnum() {
         ASTCompilationUnit cu = parseJava15(TEST4);
-        ASTFieldDeclaration node = cu.findChildrenOfType(ASTFieldDeclaration.class).get(0);
+        ASTFieldDeclaration node = cu.findDescendantsOfType(ASTFieldDeclaration.class).get(0);
         assertFalse(node.isInterfaceMember());
     }
 

@@ -35,6 +35,7 @@ public class BooleanInstantiationRule extends AbstractJavaRule {
 	 */
 	private boolean customBoolean;
 
+    @Override
     public Object visit(ASTCompilationUnit decl,Object data) {
         // customBoolean needs to be reset for each new file
         customBoolean = false;
@@ -42,6 +43,7 @@ public class BooleanInstantiationRule extends AbstractJavaRule {
         return super.visit(decl, data);
     }
 
+	@Override
 	public Object visit(ASTImportDeclaration decl,Object data) {
 		// If the import actually import a Boolean class that overrides java.lang.Boolean
 		if ( decl.getImportedName().endsWith("Boolean") && ! decl.getImportedName().equals("java.lang"))
@@ -51,10 +53,11 @@ public class BooleanInstantiationRule extends AbstractJavaRule {
 		return super.visit(decl, data);
 	}
 
+    @Override
     public Object visit(ASTAllocationExpression node, Object data) {
 
     	if ( ! customBoolean ) {
-	        if (node.findChildrenOfType(ASTArrayDimsAndInits.class).size() > 0) {
+	        if (node.hasDescendantOfType(ASTArrayDimsAndInits.class)) {
 	            return super.visit(node, data);
 	        }
 	        if (TypeHelper.isA((ASTClassOrInterfaceType) node.jjtGetChild(0), Boolean.class)) {
@@ -65,6 +68,7 @@ public class BooleanInstantiationRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
 
     	if ( ! customBoolean )
@@ -76,20 +80,20 @@ public class BooleanInstantiationRule extends AbstractJavaRule {
 	        if ("Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())
 	                || "java.lang.Boolean.valueOf".equals(((ASTName) node.jjtGetChild(0)).getImage())) {
 	            ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();
-	            ASTPrimarySuffix suffix = parent.getFirstChildOfType(ASTPrimarySuffix.class);
+	            ASTPrimarySuffix suffix = parent.getFirstDescendantOfType(ASTPrimarySuffix.class);
 	            if (suffix == null) {
 	                return super.visit(node, data);
 	            }
-	            ASTPrimaryPrefix prefix = suffix.getFirstChildOfType(ASTPrimaryPrefix.class);
+	            ASTPrimaryPrefix prefix = suffix.getFirstDescendantOfType(ASTPrimaryPrefix.class);
 	            if (prefix == null) {
 	                return super.visit(node, data);
 	            }
 
-	            if (prefix.getFirstChildOfType(ASTBooleanLiteral.class) != null) {
+	            if (prefix.hasDescendantOfType(ASTBooleanLiteral.class)) {
 	                super.addViolation(data, node);
 	                return data;
 	            }
-	            ASTLiteral literal = prefix.getFirstChildOfType(ASTLiteral.class);
+	            ASTLiteral literal = prefix.getFirstDescendantOfType(ASTLiteral.class);
 	            if (literal != null && ("\"true\"".equals(literal.getImage()) || "\"false\"".equals(literal.getImage()))) {
 	                super.addViolation(data, node);
 	                return data;

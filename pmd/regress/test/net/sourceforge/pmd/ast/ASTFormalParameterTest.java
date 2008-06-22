@@ -23,10 +23,10 @@ public class ASTFormalParameterTest extends ParserTst {
         int nrOfVarArgs   = 0;
         int nrOfNoVarArgs = 0;
         
-        Set ops = getNodes(LanguageVersion.JAVA_15, ASTFormalParameter.class, TEST1);
-        for (Iterator iter = ops.iterator(); iter.hasNext();) {
-            ASTFormalParameter b = (ASTFormalParameter) iter.next();
-            ASTVariableDeclaratorId variableDeclId = b.getFirstChildOfType(ASTVariableDeclaratorId.class);
+        Set<ASTFormalParameter> ops = getNodes(LanguageVersion.JAVA_15, ASTFormalParameter.class, TEST1);
+        for (Iterator<ASTFormalParameter> iter = ops.iterator(); iter.hasNext();) {
+            ASTFormalParameter b = iter.next();
+            ASTVariableDeclaratorId variableDeclId = b.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
             if (!"x".equals(variableDeclId.getImage())) {
                 assertTrue(b.isVarargs());
                 nrOfVarArgs++;

@@ -25,17 +25,17 @@ public class StringInstantiationRule extends AbstractJavaRule {
 	    return data;
 	}
 
-	List<ASTExpression> exp = node.findChildrenOfType(ASTExpression.class);
+	List<ASTExpression> exp = node.findDescendantsOfType(ASTExpression.class);
 	if (exp.size() >= 2) {
 	    return data;
 	}
 
-	if (node.getFirstChildOfType(ASTArrayDimsAndInits.class) != null
-		|| node.getFirstChildOfType(ASTAdditiveExpression.class) != null) {
+	if (node.hasDescendantOfType(ASTArrayDimsAndInits.class)
+		|| node.hasDescendantOfType(ASTAdditiveExpression.class)) {
 	    return data;
 	}
 
-	ASTName name = node.getFirstChildOfType(ASTName.class);
+	ASTName name = node.getFirstDescendantOfType(ASTName.class);
 	// Literal, i.e., new String("foo")
 	if (name == null) {
 	    addViolation(data, node);

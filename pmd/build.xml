@@ -221,7 +221,7 @@
 	<target name="test-execute" description="Runs the unit tests">
 		<delete dir="${test.outputdir}" />
 		<mkdir dir="${test.outputdir}/xml"/>
-		<junit printsummary="${test.printsummary}" showoutput="no" filtertrace="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch"
+		<junit printsummary="${test.printsummary}" showoutput="no" filtertrace="no" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch"
 			failureProperty="test.failure">
 			<sysproperty key="pmd.regress" value="${test.regression}"/>
 			<classpath>

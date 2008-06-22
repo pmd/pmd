@@ -13,12 +13,12 @@ import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
  * Detects and flags the occurrences of specific method calls against an instance of
  * a designated class. I.e. String.indexOf. The goal is to be able to suggest more
  * efficient/modern ways of implementing the same function.
- * 
- * Concrete subclasses are expected to provide the name of the target class and an 
+ *
+ * Concrete subclasses are expected to provide the name of the target class and an
  * array of method names that we are looking for. We then pass judgement on any literal
  * arguments we find in the subclass as well.
- * 
- * @author Brian Remedios 
+ *
+ * @author Brian Remedios
  * @version $Revision$
  */
 public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
@@ -32,16 +32,16 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
     /**
      * Return the names of all the methods we are scanning for, no brackets or
      * argument types.
-     * 
+     *
      * @return String[]
      */
     protected abstract String[] methodNames();
 
     /**
-     * Returns whether the string argument at the stated position being sent to 
-     * the method is ok or not. Return true if you want to record the method call 
+     * Returns whether the string argument at the stated position being sent to
+     * the method is ok or not. Return true if you want to record the method call
      * as a violation, false otherwise.
-     * 
+     *
      * @param argIndex int
      * @param arg String
      * @return boolean
@@ -51,7 +51,7 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
     /**
      * Returns whether the name occurrence is one of the method calls
      * we are interested in.
-     * 
+     *
      * @param occurrence NameOccurrence
      * @return boolean
      */
@@ -74,7 +74,7 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
 
     /**
      * Returns whether the value argument is a single character string.
-     * 
+     *
      * @param value String
      * @return boolean
      */
@@ -91,7 +91,6 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
      */
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-
 	if (!node.getNameDeclaration().getTypeImage().equals(targetTypename())) {
 	    return data;
 	}
@@ -101,11 +100,10 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
 		Node parent = occ.getLocation().jjtGetParent().jjtGetParent();
 		if (parent instanceof ASTPrimaryExpression) {
 		    // bail out if it's something like indexOf("a" + "b")
-		    List<ASTAdditiveExpression> additives = parent.findChildrenOfType(ASTAdditiveExpression.class);
-		    if (!additives.isEmpty()) {
+		    if (parent.hasDescendantOfType(ASTAdditiveExpression.class)) {
 			return data;
 		    }
-		    List<ASTLiteral> literals = parent.findChildrenOfType(ASTLiteral.class);
+		    List<ASTLiteral> literals = parent.findDescendantsOfType(ASTLiteral.class);
 		    for (int l = 0; l < literals.size(); l++) {
 			ASTLiteral literal = literals.get(l);
 			if (isViolationArgument(l, literal.getImage())) {

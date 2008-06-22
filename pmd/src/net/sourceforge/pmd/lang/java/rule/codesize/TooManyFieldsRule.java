@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.NumericConstants;
 
 
@@ -25,22 +25,23 @@ public class TooManyFieldsRule extends AbstractJavaRule {
     private Map<String, ASTClassOrInterfaceDeclaration> nodes;
 
     private static final PropertyDescriptor maxFieldsDescriptor = new IntegerProperty(
-    		"maxfields", 
+    		"maxfields",
     		"Maximum allowable fields per class",
     		DEFAULT_MAXFIELDS,
     		1.0f
     		);
-    
+
     private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(maxFieldsDescriptor);
-    
+
+    @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-    	
+
         int maxFields = getIntProperty(maxFieldsDescriptor);
 
         stats = new HashMap<String, Integer>(5);
         nodes = new HashMap<String, ASTClassOrInterfaceDeclaration>(5);
 
-        List<ASTFieldDeclaration> l = node.findChildrenOfType(ASTFieldDeclaration.class);
+        List<ASTFieldDeclaration> l = node.findDescendantsOfType(ASTFieldDeclaration.class);
 
         for (ASTFieldDeclaration fd: l) {
             if (fd.isFinal() && fd.isStatic()) {
@@ -74,6 +75,7 @@ public class TooManyFieldsRule extends AbstractJavaRule {
     /**
      * @return Map
      */
+    @Override
     protected Map<String, PropertyDescriptor> propertiesByName() {
     	return propertyDescriptorsByName;
     }

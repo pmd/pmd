@@ -35,9 +35,9 @@ public class AcceptanceTest extends STBBaseTst {
     @Test
     public void testInitializer() {
         parseCode(TEST_INITIALIZERS);
-        ASTInitializer a = acu.findChildrenOfType(ASTInitializer.class).get(0);
+        ASTInitializer a = acu.findDescendantsOfType(ASTInitializer.class).get(0);
         assertFalse(a.isStatic());
-        a = acu.findChildrenOfType(ASTInitializer.class).get(1);
+        a = acu.findDescendantsOfType(ASTInitializer.class).get(1);
         assertTrue(a.isStatic());
     }
 
@@ -45,8 +45,8 @@ public class AcceptanceTest extends STBBaseTst {
     @Test
     public void testCatchBlocks() {
         parseCode(TEST_CATCH_BLOCKS);
-        ASTCatchStatement c = acu.findChildrenOfType(ASTCatchStatement.class).get(0);
-        ASTBlock a = c.findChildrenOfType(ASTBlock.class).get(0);
+        ASTCatchStatement c = acu.findDescendantsOfType(ASTCatchStatement.class).get(0);
+        ASTBlock a = c.findDescendantsOfType(ASTBlock.class).get(0);
         Scope s = a.getScope();
         Map vars = s.getParent().getVariableDeclarations();
         assertEquals(1, vars.size());
@@ -59,7 +59,7 @@ public class AcceptanceTest extends STBBaseTst {
     @Test
     public void testEq() {
         parseCode(TEST_EQ);
-        ASTEqualityExpression e = acu.findChildrenOfType(ASTEqualityExpression.class).get(0);
+        ASTEqualityExpression e = acu.findDescendantsOfType(ASTEqualityExpression.class).get(0);
         ASTMethodDeclaration method = e.getFirstParentOfType(ASTMethodDeclaration.class);
         Scope s = method.getScope();
         Map m = s.getVariableDeclarations();
@@ -80,7 +80,7 @@ public class AcceptanceTest extends STBBaseTst {
         System.out.println(TEST_FIELD);
         parseCode(TEST_FIELD);
 
-        List<ASTVariableDeclaratorId> variableDeclaratorIds = acu.findChildrenOfType(ASTVariableDeclaratorId.class);
+        List<ASTVariableDeclaratorId> variableDeclaratorIds = acu.findDescendantsOfType(ASTVariableDeclaratorId.class);
         ASTVariableDeclaratorId declaration = null;
         for (Iterator iter = variableDeclaratorIds.iterator(); iter.hasNext();) {
             declaration = (ASTVariableDeclaratorId) iter.next();
@@ -98,7 +98,7 @@ public class AcceptanceTest extends STBBaseTst {
     public void testDemo() {
         parseCode(TEST_DEMO);
         System.out.println(TEST_DEMO);
-        ASTMethodDeclaration node = acu.findChildrenOfType(ASTMethodDeclaration.class).get(0);
+        ASTMethodDeclaration node = acu.findDescendantsOfType(ASTMethodDeclaration.class).get(0);
         Scope s = node.getScope();
         Map m = s.getVariableDeclarations();
         for (Iterator i = m.keySet().iterator(); i.hasNext();) {

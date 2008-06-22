@@ -273,6 +273,13 @@ The following is relatively complete list of the major changes (this may not be
       Moved - PMD.setDefaultLanguageVersion(LanguageVersion) to Configuration.setDefaultLanguageVersion(LanguageVersion)
       Moved - PMD.setDefaultLanguageVersions(List<LanguageVersion>) to Configuration.setDefaultLanguageVersions(List<LanguageVersion>)
 
+   API Change - Changes to Node interface
+      Renamed - findChildrenOfType() as findDescendantsOfType()
+      Renamed - getFirstChildOfType() as getFirstDescendantOfType()
+      Renamed - containsChildOfType() as hasDescendantOfType()
+      Added - findChildrenOfType(), non recursive version
+      Added - getFirstChildOfType(), non recursive version
+
 New features:
 
 New Language 'xml' added, for writing XPathRules against XML documents

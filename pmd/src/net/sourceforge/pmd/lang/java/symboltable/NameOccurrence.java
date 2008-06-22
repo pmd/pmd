@@ -108,7 +108,7 @@ public class NameOccurrence {
     }
 
     private boolean isCompoundAssignment(Node primaryExpression) {
-        return ((ASTAssignmentOperator) (primaryExpression.jjtGetChild(1))).isCompound();
+        return ((ASTAssignmentOperator) primaryExpression.jjtGetChild(1)).isCompound();
     }
 
     private boolean isStandAlonePostfix(Node primaryExpression) {
@@ -193,9 +193,10 @@ public class NameOccurrence {
 		Node node = location.jjtGetParent();
 		if ( node instanceof ASTPrimaryExpression ) {
 			ASTPrimaryExpression primaryExpression = (ASTPrimaryExpression)node;
-			ASTPrimaryPrefix prefix = primaryExpression.getFirstChildOfType(ASTPrimaryPrefix.class);
-			if ( prefix != null )
-				return prefix.usesSuperModifier() || prefix.usesThisModifier();
+			ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) primaryExpression.jjtGetChild(0);
+			if ( prefix != null ) {
+			    return prefix.usesSuperModifier() || prefix.usesThisModifier();
+			}
 		}
     	return image.startsWith(THIS_DOT) || image.startsWith(SUPER_DOT);
     }

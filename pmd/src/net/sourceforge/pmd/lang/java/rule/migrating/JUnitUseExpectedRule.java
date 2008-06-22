@@ -20,7 +20,7 @@ import net.sourceforge.pmd.lang.java.rule.junit.AbstractJUnitRule;
 
 /**
  * This rule finds code like this:
- * 
+ *
  * <pre>
  * public void testFoo() {
  *     try {
@@ -30,24 +30,25 @@ import net.sourceforge.pmd.lang.java.rule.junit.AbstractJUnitRule;
  *     }
  * }
  * </pre>
- * 
+ *
  * In JUnit 4, use
- * 
+ *
  * <pre>
  *  &#064;Test(expected = Exception.class)
  * </pre>
- * 
+ *
  * @author acaplan
- * 
+ *
  */
 public class JUnitUseExpectedRule extends AbstractJUnitRule {
 
+    @Override
     public Object visit(ASTClassOrInterfaceBodyDeclaration node, Object data) {
         boolean inAnnotation = false;
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
             if (ASTAnnotation.class.equals(child.getClass())) {
-                ASTName annotationName = child.getFirstChildOfType(ASTName.class);
+                ASTName annotationName = child.getFirstDescendantOfType(ASTName.class);
                 if ("Test".equals(annotationName.getImage())) {
                     inAnnotation = true;
                     continue;
@@ -69,8 +70,9 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        List<ASTTryStatement> catches = node.findChildrenOfType(ASTTryStatement.class);
+        List<ASTTryStatement> catches = node.findDescendantsOfType(ASTTryStatement.class);
         List<Node> found = new ArrayList<Node>();
         if (catches.isEmpty()) {
             return found;
@@ -82,17 +84,17 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
                 if (block.jjtGetNumChildren() != 0) {
                     continue;
                 }
-                List<ASTBlockStatement> blocks = trySt.jjtGetChild(0).findChildrenOfType(ASTBlockStatement.class);
+                List<ASTBlockStatement> blocks = trySt.jjtGetChild(0).findDescendantsOfType(ASTBlockStatement.class);
                 if (blocks.isEmpty()) {
                     continue;
                 }
                 ASTBlockStatement st = blocks.get(blocks.size() - 1);
-                ASTName name = st.getFirstChildOfType(ASTName.class);
+                ASTName name = st.getFirstDescendantOfType(ASTName.class);
                 if (name != null && st.equals(name.getNthParent(5)) && "fail".equals(name.getImage())) {
                     found.add(name);
                     continue;
                 }
-                ASTThrowStatement th = st.getFirstChildOfType(ASTThrowStatement.class);
+                ASTThrowStatement th = st.getFirstDescendantOfType(ASTThrowStatement.class);
                 if (th != null && st.equals(th.getNthParent(2))) {
                     found.add(th);
                     continue;

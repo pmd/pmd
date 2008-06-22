@@ -83,28 +83,58 @@ public interface Node {
 
     <T> List<T> getParentsOfType(Class<T> parentType);
 
-    <T> List<T> findChildrenOfType(Class<T> targetType);
-
-    <T> void findChildrenOfType(Class<T> targetType, List<T> results);
-
-    <T> void findChildrenOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries);
-
     /**
-     * Traverses down the tree to find the first child instance of type childType
+     * Traverses the children to find all the instances of type childType.
+     *
+     * @see #findDescendantsOfType(Class) if traversal of the entire tree is needed.
      *
      * @param childType class which you want to find.
-     * @return Node of type childType.  Returns <code>null</code> if none found.
+     * @return List of all children of type childType. Returns an empty list if none found.
+     */
+    <T> List<T> findChildrenOfType(Class<T> childType);
+
+    /**
+     * Traverses down the tree to find all the descendant instances of type descendantType.
+     *
+     * @param targetType class which you want to find.
+     * @return List of all children of type targetType. Returns an empty list if none found.
+     */
+    <T> List<T> findDescendantsOfType(Class<T> targetType);
+
+    /**
+     * Traverses down the tree to find all the descendant instances of type descendantType.
+     *
+     * @param targetType class which you want to find.
+     * @param results list to store the matching descendants
+     * @param crossFindBoundaries if <code>false</code>, recursion stops for nodes for which {@link #isFindBoundary()} is <code>true</code>
+     */
+    <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossFindBoundaries);
+
+    /**
+     * Traverses the children to find the first instance of type childType.
+     *
+     * @see #getFirstDescendantOfType(Class) if traversal of the entire tree is needed.
+     *
+     * @param childType class which you want to find.
+     * @return Node of type childType. Returns <code>null</code> if none found.
      */
     <T> T getFirstChildOfType(Class<T> childType);
 
     /**
-     * Finds if this node contains a child of the given type.
-     * This is an utility method that uses {@link #findChildrenOfType(Class)}
+     * Traverses down the tree to find the first descendant instance of type descendantType.
+     *
+     * @param descendantType class which you want to find.
+     * @return Node of type descendantType. Returns <code>null</code> if none found.
+     */
+    <T> T getFirstDescendantOfType(Class<T> descendantType);
+
+    /**
+     * Finds if this node contains a descendant of the given type.
      *
      * @param type the node type to search
-     * @return <code>true</code> if there is at lease on child of the given type and <code>false</code> in any other case
+     * @return <code>true</code> if there is at least one descendant of the given type
      */
-    <T> boolean containsChildOfType(Class<T> type);
+    <T> boolean hasDescendantOfType(Class<T> type);
 
     List<Node> findChildNodesWithXPath(String xpathString) throws JaxenException;
 

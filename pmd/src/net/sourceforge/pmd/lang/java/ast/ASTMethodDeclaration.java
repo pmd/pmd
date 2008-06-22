@@ -14,6 +14,7 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -25,8 +26,9 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode {
      */
     public String getMethodName() {
         ASTMethodDeclarator md = getFirstChildOfType(ASTMethodDeclarator.class);
-        if (md != null)
-            return md.getImage();
+        if (md != null) {
+	    return md.getImage();
+	}
         return null;
     }
 
@@ -38,6 +40,7 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode {
         return super.isAbstract();
     }
 
+    @Override
     public boolean isPublic() {
         if (isInterfaceMember()) {
             return true;
@@ -45,6 +48,7 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode {
         return super.isPublic();
     }
 
+    @Override
     public boolean isAbstract() {
         if (isInterfaceMember()) {
             return true;
@@ -58,7 +62,7 @@ public class ASTMethodDeclaration extends AbstractJavaAccessNode {
     }
 
     public boolean isVoid() {
-        return getFirstChildOfType(ASTResultType.class).isVoid();
+        return getResultType().isVoid();
     }
 
     public ASTResultType getResultType() {

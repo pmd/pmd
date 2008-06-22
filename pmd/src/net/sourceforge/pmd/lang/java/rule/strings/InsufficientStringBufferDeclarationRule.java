@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -26,11 +27,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * This rule finds StringBuffers which may have been pre-sized incorrectly
- * 
+ *
  * See http://sourceforge.net/forum/forum.php?thread_id=1438119&forum_id=188194
  * @author Allan Caplan
  */
@@ -44,6 +44,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         blockParents.add(ASTSwitchStatement.class);
     }
 
+    @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
         if (!TypeHelper.isA(node.getNameDeclaration(), StringBuffer.class)) {
             return data;
@@ -106,7 +107,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
      * This rule is concerned with IF and Switch blocks. Process the block into
      * a local Map, from which we can later determine which is the longest block
      * inside
-     * 
+     *
      * @param blocks
      *            The map of blocks in the method being investigated
      * @param thisSize
@@ -152,14 +153,14 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     }
 
     private int processAdditive(Node sn) {
-        ASTAdditiveExpression additive = sn.getFirstChildOfType(ASTAdditiveExpression.class);
+        ASTAdditiveExpression additive = sn.getFirstDescendantOfType(ASTAdditiveExpression.class);
         if (additive == null) {
             return 0;
         }
         int anticipatedLength = 0;
         for (int ix = 0; ix < additive.jjtGetNumChildren(); ix++) {
             Node childNode = additive.jjtGetChild(ix);
-            ASTLiteral literal = childNode.getFirstChildOfType(ASTLiteral.class);
+            ASTLiteral literal = childNode.getFirstDescendantOfType(ASTLiteral.class);
             if (literal != null && literal.getImage() != null) {
                 anticipatedLength += literal.getImage().length() - 2;
             }
@@ -178,7 +179,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
     private int processNode(Node sn) {
         int anticipatedLength = 0;
-        ASTPrimaryPrefix xn = sn.getFirstChildOfType(ASTPrimaryPrefix.class);
+        ASTPrimaryPrefix xn = sn.getFirstDescendantOfType(ASTPrimaryPrefix.class);
         if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0).getClass().equals(ASTLiteral.class)) {
             String str = xn.jjtGetChild(0).getImage();
             if (str != null) {
@@ -208,20 +209,20 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 iConstructorLength = -1;
             }
         }
-        
+
         //if there is any addition/subtraction going on then just use the default.
-        ASTAdditiveExpression exp = block.getFirstChildOfType(ASTAdditiveExpression.class);
+        ASTAdditiveExpression exp = block.getFirstDescendantOfType(ASTAdditiveExpression.class);
         if(exp != null){
             return 16;
         }
-        ASTMultiplicativeExpression mult = block.getFirstChildOfType(ASTMultiplicativeExpression.class);
+        ASTMultiplicativeExpression mult = block.getFirstDescendantOfType(ASTMultiplicativeExpression.class);
         if(mult != null){
             return 16;
         }
-        
-        literal = block.findChildrenOfType(ASTLiteral.class);
+
+        literal = block.findDescendantsOfType(ASTLiteral.class);
         if (literal.isEmpty()) {
-            List<ASTName> name = block.findChildrenOfType(ASTName.class);
+            List<ASTName> name = block.findDescendantsOfType(ASTName.class);
             if (!name.isEmpty()) {
                 iConstructorLength = -1;
             }
@@ -240,7 +241,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         } else {
             iConstructorLength = -1;
         }
-        
+
         if(iConstructorLength == 0){
             iConstructorLength = 16;
         }
@@ -258,24 +259,24 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
                 block = node.getFirstParentOfType(ASTFormalParameter.class);
             }
         }
-        List<ASTLiteral> literal = block.findChildrenOfType(ASTLiteral.class);
+        List<ASTLiteral> literal = block.findDescendantsOfType(ASTLiteral.class);
         if (literal.size() == 1) {
             String str = literal.get(0).getImage();
             if (str != null && isLiteral(str)) {
                 return str.length() - 2; // take off the quotes
             }
         }
-        
+
         return 0;
     }
 
     private boolean isAdditive(Node n) {
-        return n.findChildrenOfType(ASTAdditiveExpression.class).size() >= 1;
+        return n.hasDescendantOfType(ASTAdditiveExpression.class);
     }
 
     /**
      * Locate the block that the given node is in, if any
-     * 
+     *
      * @param node
      *            The node we're looking for a parent of
      * @return Node - The node that corresponds to any block that may be a
@@ -299,7 +300,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
     /**
      * Determine which SwitchLabel we belong to inside a switch
-     * 
+     *
      * @param parentNode
      *            The parent node we're looking at
      * @param lastNode

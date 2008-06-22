@@ -11,20 +11,22 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 
 public class TestClassWithoutTestCasesRule extends AbstractJUnitRule {
 
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (node.isAbstract() || node.isInterface() || node.isNested()) {
             return data;
         }
 
-        List<ASTMethodDeclaration> m = node.findChildrenOfType(ASTMethodDeclaration.class);
+        List<ASTMethodDeclaration> m = node.findDescendantsOfType(ASTMethodDeclaration.class);
         boolean testsFound = false;
 
         if (m != null) {
         	for (Iterator<ASTMethodDeclaration> it = m.iterator(); it.hasNext() && !testsFound;) {
         		ASTMethodDeclaration md = it.next();
         		if (!isInInnerClassOrInterface(md)
-        				&& isJUnitMethod(md, data))
-                        	testsFound = true;
+        				&& isJUnitMethod(md, data)) {
+			    testsFound = true;
+			}
             }
         }
 

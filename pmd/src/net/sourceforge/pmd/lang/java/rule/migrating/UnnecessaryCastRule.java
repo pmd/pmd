@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -12,7 +13,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
-import net.sourceforge.pmd.lang.ast.Node;
 
 //FUTURE This is not referenced by any RuleSet?
 public class UnnecessaryCastRule extends AbstractJavaRule {
@@ -44,24 +44,26 @@ public class UnnecessaryCastRule extends AbstractJavaRule {
         implClassNames.add("java.util.Vector");
     }
 
+    @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         return process(node, data);
     }
 
+    @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
         return process(node, data);
     }
 
     private Object process(Node node, Object data) {
-        ASTClassOrInterfaceType cit = node.getFirstChildOfType(ASTClassOrInterfaceType.class);
+        ASTClassOrInterfaceType cit = node.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         if (cit == null || !implClassNames.contains(cit.getImage())) {
             return data;
         }
-        cit = cit.getFirstChildOfType(ASTClassOrInterfaceType.class);
+        cit = cit.getFirstDescendantOfType(ASTClassOrInterfaceType.class);
         if (cit == null) {
             return data;
         }
-        ASTVariableDeclaratorId decl = node.getFirstChildOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId decl = node.getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         List<NameOccurrence> usages = decl.getUsages();
         for (NameOccurrence no: usages) {
             ASTName name = (ASTName) no.getLocation();

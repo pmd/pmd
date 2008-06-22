@@ -66,19 +66,17 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
 	    return super.visit(node, data);
 	}
 
-	List<ASTIfStatement> ifStatements = node.findChildrenOfType(ASTIfStatement.class);
+	List<ASTIfStatement> ifStatements = node.findDescendantsOfType(ASTIfStatement.class);
 	for (ASTIfStatement ifStatement : ifStatements) {
 	    if (ifStatement.getFirstParentOfType(ASTSynchronizedStatement.class) == null) {
-		ASTNullLiteral NullLiteral = ifStatement.getFirstChildOfType(ASTNullLiteral.class);
-
-		if (NullLiteral == null) {
+		if (!ifStatement.hasDescendantOfType(ASTNullLiteral.class)) {
 		    continue;
 		}
-		ASTName Name = ifStatement.getFirstChildOfType(ASTName.class);
-		if (Name == null || !fieldDecls.containsKey(Name.getImage())) {
+		ASTName n = ifStatement.getFirstDescendantOfType(ASTName.class);
+		if (n == null || !fieldDecls.containsKey(n.getImage())) {
 		    continue;
 		}
-		List<ASTAssignmentOperator> assigmnents = ifStatement.findChildrenOfType(ASTAssignmentOperator.class);
+		List<ASTAssignmentOperator> assigmnents = ifStatement.findDescendantsOfType(ASTAssignmentOperator.class);
 		boolean violation = false;
 		for (int ix = 0; ix < assigmnents.size(); ix++) {
 		    ASTAssignmentOperator oper = assigmnents.get(ix);
@@ -93,7 +91,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
 				.jjtGetChild(0);
 			String name = null;
 			if (pp.usesThisModifier()) {
-			    ASTPrimarySuffix priSuf = expr.getFirstChildOfType(ASTPrimarySuffix.class);
+			    ASTPrimarySuffix priSuf = expr.getFirstDescendantOfType(ASTPrimarySuffix.class);
 			    name = priSuf.getImage();
 			} else {
 			    ASTName astName = (ASTName) pp.jjtGetChild(0);

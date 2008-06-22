@@ -1,6 +1,13 @@
 package test.net.sourceforge.pmd.jsp.ast;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+
 import net.sourceforge.pmd.lang.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.jsp.ast.ASTAttributeValue;
 import net.sourceforge.pmd.lang.jsp.ast.ASTCData;
@@ -10,23 +17,17 @@ import net.sourceforge.pmd.lang.jsp.ast.ASTDoctypeExternalId;
 import net.sourceforge.pmd.lang.jsp.ast.ASTElement;
 
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
 /**
  * Test parsing of a JSP in document style, by checking the generated AST.
- * 
+ *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
- * 
+ *
  */
 public class JspDocStyleTest extends AbstractJspNodesTst {
 
 	/**
 	 * Smoke test for JSP parser.
-	 * 
+	 *
 	 * @throws Throwable
 	 */
     @Test
@@ -36,7 +37,7 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 
 	/**
 	 * Test the information on a Element and Attribute.
-	 * 
+	 *
 	 * @throws Throwable
 	 */
     @Test
@@ -66,44 +67,44 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 				.getLocalName());
 
 	}
-	
+
 	/**
 	 * Test exposing a bug of parsing error when having a hash as last character
 	 * in an attribute value.
 	 *
 	 */
     @Test
-    public void testAttributeValueContainingHash() 
+    public void testAttributeValueContainingHash()
 	{
 		Set nodes = getNodes(null, TEST_ATTRIBUTE_VALUE_CONTAINING_HASH);
-		
+
 		Set<ASTAttribute> attributes = getNodesOfType(ASTAttribute.class, nodes);
 		assertEquals("Three attributes expected!", 3, attributes.size());
-		
+
 		List<ASTAttribute> attrsList = new ArrayList<ASTAttribute>(attributes);
 		Collections.sort(attrsList, new Comparator<ASTAttribute>() {
 			public int compare(ASTAttribute arg0, ASTAttribute arg1) {
 				return arg0.getName().compareTo(arg1.getName());
 			}
 		});
-		
+
 		ASTAttribute attr = attrsList.get(0);
-		assertEquals("Correct attribute name expected!", 
+		assertEquals("Correct attribute name expected!",
 				"foo", attr.getName());
-		assertEquals("Correct attribute value expected!", 
-				"CREATE", attr.getFirstChildOfType(ASTAttributeValue.class).getImage());
-		
+		assertEquals("Correct attribute value expected!",
+				"CREATE", attr.getFirstDescendantOfType(ASTAttributeValue.class).getImage());
+
 		attr = attrsList.get(1);
-		assertEquals("Correct attribute name expected!", 
+		assertEquals("Correct attribute name expected!",
 				"href", attr.getName());
-		assertEquals("Correct attribute value expected!", 
-				"#", attr.getFirstChildOfType(ASTAttributeValue.class).getImage());
-		
+		assertEquals("Correct attribute value expected!",
+				"#", attr.getFirstDescendantOfType(ASTAttributeValue.class).getImage());
+
 		attr = attrsList.get(2);
-		assertEquals("Correct attribute name expected!", 
+		assertEquals("Correct attribute name expected!",
 				"something", attr.getName());
-		assertEquals("Correct attribute value expected!", 
-				"#yes#", attr.getFirstChildOfType(ASTAttributeValue.class).getImage());
+		assertEquals("Correct attribute value expected!",
+				"#yes#", attr.getFirstDescendantOfType(ASTAttributeValue.class).getImage());
 	}
 
 	/**
@@ -132,19 +133,19 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 		ASTDoctypeDeclaration docTypeDecl = docTypeDeclarations
 				.iterator().next();
 		assertEquals("Correct doctype-name expected!", "html", docTypeDecl.getName());
-		
+
 		Set externalIds = getNodesOfType(ASTDoctypeExternalId.class, nodes);
 		assertEquals("One doctype external id expected!", 1, externalIds
 				.size());
 		ASTDoctypeExternalId externalId = (ASTDoctypeExternalId) externalIds
 				.iterator().next();
-		assertEquals("Correct external public id expected!", "-//W3C//DTD XHTML 1.1//EN", 
+		assertEquals("Correct external public id expected!", "-//W3C//DTD XHTML 1.1//EN",
 				externalId.getPublicId());
 		assertEquals("Correct external uri expected!", "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd",
 				externalId.getUri());
-		
+
 	}
-	
+
 	/**
 	 * Test parsing of a XML comment.
 	 *
@@ -167,10 +168,10 @@ public class JspDocStyleTest extends AbstractJspNodesTst {
 			+ "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" "
 			+ "\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n"
 			+ "<greeting>Hello, world!</greeting>";
-	
+
 	private static final String TEST_COMMENT = "<html><!-- comment --></html>";
-	
-	private static final String TEST_ATTRIBUTE_VALUE_CONTAINING_HASH = 
+
+	private static final String TEST_ATTRIBUTE_VALUE_CONTAINING_HASH =
 		"<tag:if something=\"#yes#\" foo=\"CREATE\">  <a href=\"#\">foo</a> </tag:if>";
 
     public static junit.framework.Test suite() {

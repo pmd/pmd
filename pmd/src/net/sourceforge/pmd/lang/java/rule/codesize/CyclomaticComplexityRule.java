@@ -55,14 +55,15 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     }
 
     public int getComplexityAverage() {
-      return ( (double) methodCount == 0 ) ? 1
-          : (int) ( Math.rint( (double) decisionPoints / (double) methodCount ) );
+      return (double) methodCount == 0 ? 1
+          : (int) Math.rint( (double) decisionPoints / (double) methodCount );
     }
   }
 
   private Stack<Entry> entryStack = new Stack<Entry>();
 
-  public Object visit(ASTCompilationUnit node, Object data) {
+  @Override
+public Object visit(ASTCompilationUnit node, Object data) {
     reportLevel = getIntProperty("reportLevel" );
     showClassesComplexity = getBooleanProperty("showClassesComplexity");
     showMethodsComplexity = getBooleanProperty("showMethodsComplexity");
@@ -70,7 +71,8 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     return data;
   }
 
-  public Object visit(ASTIfStatement node, Object data) {
+  @Override
+public Object visit(ASTIfStatement node, Object data) {
     int boolCompIf = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
     // If statement always has a complexity of at least 1
     boolCompIf++;
@@ -80,14 +82,16 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     return data;
   }
 
-  public Object visit(ASTCatchStatement node, Object data) {
+  @Override
+public Object visit(ASTCatchStatement node, Object data) {
     entryStack.peek().bumpDecisionPoints();
     super.visit( node, data );
     return data;
   }
 
-  public Object visit(ASTForStatement node, Object data) {
-    int boolCompFor = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
+  @Override
+public Object visit(ASTForStatement node, Object data) {
+    int boolCompFor = NPathComplexityRule.sumExpressionComplexity( node.getFirstDescendantOfType( ASTExpression.class ) );
     // For statement always has a complexity of at least 1
     boolCompFor++;
 
@@ -96,7 +100,8 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     return data;
   }
 
-  public Object visit(ASTDoStatement node, Object data) {
+  @Override
+public Object visit(ASTDoStatement node, Object data) {
     int boolCompDo = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
     // Do statement always has a complexity of at least 1
     boolCompDo++;
@@ -106,7 +111,8 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     return data;
   }
 
-  public Object visit(ASTSwitchStatement node, Object data) {
+  @Override
+public Object visit(ASTSwitchStatement node, Object data) {
     Entry entry = entryStack.peek();
 
     int boolCompSwitch = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
@@ -131,7 +137,8 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     return data;
   }
 
-  public Object visit(ASTWhileStatement node, Object data) {
+  @Override
+public Object visit(ASTWhileStatement node, Object data) {
     int boolCompWhile = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
     // While statement always has a complexity of at least 1
     boolCompWhile++;
@@ -141,7 +148,8 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     return data;
   }
 
-  public Object visit(ASTConditionalExpression node, Object data) {
+  @Override
+public Object visit(ASTConditionalExpression node, Object data) {
     if ( node.isTernary() ) {
       int boolCompTern = NPathComplexityRule.sumExpressionComplexity( node.getFirstChildOfType( ASTExpression.class ) );
       // Ternary statement always has a complexity of at least 1
@@ -153,7 +161,8 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     return data;
   }
 
-  public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+  @Override
+public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
     if ( node.isInterface() ) {
       return data;
     }
@@ -162,8 +171,8 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     super.visit( node, data );
     if ( showClassesComplexity ) {
     	Entry classEntry = entryStack.pop();
-	    if ( ( classEntry.getComplexityAverage() >= reportLevel )
-	        || ( classEntry.highestDecisionPoints >= reportLevel ) ) {
+	    if ( classEntry.getComplexityAverage() >= reportLevel
+	        || classEntry.highestDecisionPoints >= reportLevel ) {
 	      addViolation( data, node, new String[] {
 	          "class",
 	          node.getImage(),
@@ -174,7 +183,8 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     return data;
   }
 
-  public Object visit(ASTMethodDeclaration node, Object data) {
+  @Override
+public Object visit(ASTMethodDeclaration node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
     if ( showMethodsComplexity ) {
@@ -199,19 +209,20 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
 
 	    if ( methodEntry.decisionPoints >= reportLevel ) {
 	        addViolation( data, node, new String[] { "method",
-	            ( methodDeclarator == null ) ? "" : methodDeclarator.getImage(),
+	            methodDeclarator == null ? "" : methodDeclarator.getImage(),
 	            String.valueOf( methodEntry.decisionPoints ) } );
 	      }
     }
     return data;
   }
 
-  public Object visit(ASTEnumDeclaration node, Object data) {
+  @Override
+public Object visit(ASTEnumDeclaration node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
     Entry classEntry = entryStack.pop();
-    if ( ( classEntry.getComplexityAverage() >= reportLevel )
-        || ( classEntry.highestDecisionPoints >= reportLevel ) ) {
+    if ( classEntry.getComplexityAverage() >= reportLevel
+        || classEntry.highestDecisionPoints >= reportLevel ) {
       addViolation( data, node, new String[] {
           "class",
           node.getImage(),
@@ -221,7 +232,8 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
     return data;
   }
 
-  public Object visit(ASTConstructorDeclaration node, Object data) {
+  @Override
+public Object visit(ASTConstructorDeclaration node, Object data) {
     entryStack.push( new Entry( node ) );
     super.visit( node, data );
     Entry constructorEntry = entryStack.pop();

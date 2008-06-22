@@ -21,7 +21,7 @@ public class MethodNameDeclarationTest extends STBBaseTst {
     public void testEquality() {
     	// Verify proper number of nodes are not equal
         parseCode15(SIMILAR);
-        ASTClassOrInterfaceDeclaration n = acu.findChildrenOfType(ASTClassOrInterfaceDeclaration.class).get(0);
+        ASTClassOrInterfaceDeclaration n = acu.findDescendantsOfType(ASTClassOrInterfaceDeclaration.class).get(0);
         Map<MethodNameDeclaration, List<NameOccurrence>> m = ((ClassScope) n.getScope()).getMethodDeclarations();
         Set<MethodNameDeclaration> methodNameDeclarations = m.keySet();
         assertEquals("Wrong number of method name declarations", methodNameDeclarations.size(), 3);

@@ -199,7 +199,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             if (i > 1) {//should always be at least 2, probably can eliminate this check
                 //start at end which is guaranteed, work backwards
                 Node lastNode = node.jjtGetChild(i - 1);
-                if ((lastNode.jjtGetNumChildren() == 1) && (lastNode.jjtGetChild(0) instanceof ASTArguments)) { //could be ASTExpression for instance 'a[4] = 5';
+                if (lastNode.jjtGetNumChildren() == 1 && lastNode.jjtGetChild(0) instanceof ASTArguments) { //could be ASTExpression for instance 'a[4] = 5';
                     //start putting method together
                     //					System.out.println("Putting method together now");
                     List<String> varNames = new ArrayList<String>();
@@ -372,8 +372,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
         public ConstructorInvocation(ASTExplicitConstructorInvocation eci) {
             m_Eci = eci;
-            List<ASTArguments> l = new ArrayList<ASTArguments>();
-            eci.findChildrenOfType(ASTArguments.class, l);
+            List<ASTArguments> l = eci.findChildrenOfType(ASTArguments.class);
             if (!l.isEmpty()) {
                 ASTArguments aa = l.get(0);
                 count = aa.getArgumentCount();
@@ -457,8 +456,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         }
 
         private void initCI() {
-            List<ASTExplicitConstructorInvocation> expressions = new ArrayList<ASTExplicitConstructorInvocation>();
-            m_Cd.findChildrenOfType(ASTExplicitConstructorInvocation.class, expressions); //only 1...
+            List<ASTExplicitConstructorInvocation> expressions = m_Cd.findChildrenOfType(ASTExplicitConstructorInvocation.class); //only 1...
             if (!expressions.isEmpty()) {
                 ASTExplicitConstructorInvocation eci = expressions.get(0);
                 m_Ci = new ConstructorInvocation(eci);
@@ -676,7 +674,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                         if (h.isDangerous()) {
                             String matchName = h.getASTMethodDeclarator().getImage();
                             int matchParamCount = h.getASTMethodDeclarator().getParameterCount();
-                            if (methName.equals(matchName) && (methArgCount == matchParamCount)) {
+                            if (methName.equals(matchName) && methArgCount == matchParamCount) {
                                 ch.setDangerous(true);
                                 //System.out.println("evaluateDangerOfConstructors1 setting dangerous constructor with " + ch.getASTConstructorDeclaration().getParameterCount() + " params");
                                 break;
@@ -724,11 +722,13 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         return found;
     }
 
+    @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         clearEvalPackages();
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
         // just skip Enums
         return data;
@@ -738,6 +738,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * This check must be evaluated independelty for each class.  Inner classses
      * get their own EvalPackage in order to perform independent evaluation.
      */
+    @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (!node.isInterface()) {
             return visitClassDec(node, data);
@@ -764,6 +765,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      *
      * @todo eliminate the redundency
      */
+    @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {//only evaluate if we have an eval package for this class
             List<MethodInvocation> calledMethodsOfConstructor = new ArrayList<MethodInvocation>();
@@ -793,6 +795,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * Store the MethodHolder in the Map as the key
      * Store each method called by the current method as a List in the Map as the Object
      */
+    @Override
     public Object visit(ASTMethodDeclarator node, Object data) {
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {//only evaluate if we have an eval package for this class
             AccessNode parent = (AccessNode) node.jjtGetParent();
@@ -815,7 +818,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      */
     private static void addCalledMethodsOfNode(Node node, List<MethodInvocation> calledMethods, String className) {
         List<ASTPrimaryExpression> expressions = new ArrayList<ASTPrimaryExpression>();
-        node.findChildrenOfType(ASTPrimaryExpression.class, expressions, !(node instanceof AccessNode));
+        node.findDescendantsOfType(ASTPrimaryExpression.class, expressions, !(node instanceof AccessNode));
         addCalledMethodsOfNodeImpl(expressions, calledMethods, className);
     }
 
@@ -848,7 +851,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         //		}
         if (meth != null) {
             //if it's a call on a variable, or on its superclass ignore it.
-            if ((meth.getReferenceNames().size() == 0) && !meth.isSuper()) {
+            if (meth.getReferenceNames().size() == 0 && !meth.isSuper()) {
                 //if this list does not contain our class name, then its not referencing our class
                 //this is a cheezy test... but it errs on the side of less false hits.
                 List<String> packClass = meth.getQualifierNames();

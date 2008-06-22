@@ -15,6 +15,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -23,6 +24,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         return super.isPublic();
     }
 
+    @Override
     public boolean isPublic() {
         if (isInterfaceMember()) {
             return true;
@@ -34,6 +36,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         return super.isStatic();
     }
 
+    @Override
     public boolean isStatic() {
         if (isInterfaceMember()) {
             return true;
@@ -45,6 +48,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         return super.isFinal();
     }
 
+    @Override
     public boolean isFinal() {
         if (isInterfaceMember()) {
             return true;
@@ -52,6 +56,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         return super.isFinal();
     }
 
+    @Override
     public boolean isPrivate() {
         if (isInterfaceMember()) {
             return false;
@@ -59,6 +64,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         return super.isPrivate();
     }
 
+    @Override
     public boolean isPackagePrivate() {
         if (isInterfaceMember()) {
             return false;
@@ -66,6 +72,7 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         return super.isPackagePrivate();
     }
 
+    @Override
     public boolean isProtected() {
         if (isInterfaceMember()) {
             return false;
@@ -103,17 +110,17 @@ public class ASTFieldDeclaration extends AbstractJavaAccessTypeNode implements D
         if (jjtGetNumChildren() < 2 || !(jjtGetChild(1) instanceof ASTVariableDeclarator)) {
             return 0;
         }
-        return ((ASTVariableDeclaratorId) (jjtGetChild(1).jjtGetChild(0))).getArrayDepth();
+        return ((ASTVariableDeclaratorId) jjtGetChild(1).jjtGetChild(0)).getArrayDepth();
     }
 
     /**
      * Gets the variable name of this field.
-     * This method searches the first VariableDeclartorId node and returns it's image or <code>null</code> if the child node is not found.
+     * This method searches the first VariableDeclartorId node and returns its image or <code>null</code> if the child node is not found.
      *
      * @return a String representing the name of the variable
      */
     public String getVariableName() {
-        ASTVariableDeclaratorId decl = getFirstChildOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId decl = getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         if (decl != null) {
             return decl.getImage();
         }

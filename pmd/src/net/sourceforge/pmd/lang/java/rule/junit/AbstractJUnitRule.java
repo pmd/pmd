@@ -89,7 +89,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 	    return true;
 
 	} else if (node.getType() == null) {
-	    ASTClassOrInterfaceDeclaration cid = node.getFirstChildOfType(ASTClassOrInterfaceDeclaration.class);
+	    ASTClassOrInterfaceDeclaration cid = node.getFirstDescendantOfType(ASTClassOrInterfaceDeclaration.class);
 	    if (cid == null) {
 		return false;
 	    }
@@ -111,7 +111,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     }
 
     private boolean doesNodeContainJUnitAnnotation(Node node) {
-	List<ASTMarkerAnnotation> lstAnnotations = node.findChildrenOfType(ASTMarkerAnnotation.class);
+	List<ASTMarkerAnnotation> lstAnnotations = node.findDescendantsOfType(ASTMarkerAnnotation.class);
 	for (ASTMarkerAnnotation annotation : lstAnnotations) {
 	    if (annotation.getType() == null) {
 		ASTName name = (ASTName) annotation.jjtGetChild(0);

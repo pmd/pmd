@@ -32,7 +32,7 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 public class SingularFieldRule extends AbstractJavaRule {
 
 	/**
-	 * Restore old behaviour by setting both properties to true, which will result in many false positives
+	 * Restore old behavior by setting both properties to true, which will result in many false positives
 	 */
     private static final PropertyDescriptor CHECK_INNER_CLASSES = new BooleanProperty(
 			"CheckInnerClasses", "Check inner classes", false, 1.0f);
@@ -45,7 +45,7 @@ public class SingularFieldRule extends AbstractJavaRule {
     	boolean disallowNotAssignment = getBooleanProperty(DISALLOW_NOT_ASSIGNMENT);
 
         if (node.isPrivate() && !node.isStatic()) {
-            for (ASTVariableDeclaratorId declaration: node.findChildrenOfType(ASTVariableDeclaratorId.class)) {
+            for (ASTVariableDeclaratorId declaration: node.findDescendantsOfType(ASTVariableDeclaratorId.class)) {
                 List<NameOccurrence> usages = declaration.getUsages();
                 Node decl = null;
                 boolean violation = true;
@@ -135,7 +135,7 @@ public class SingularFieldRule extends AbstractJavaRule {
 		if (potentialStatement instanceof ASTStatementExpression) {
 			ASTStatementExpression statement = (ASTStatementExpression)potentialStatement;
 			List<ASTAssignmentOperator> assignments = new ArrayList<ASTAssignmentOperator>();
-			statement.findChildrenOfType(ASTAssignmentOperator.class, assignments, false);
+			statement.findDescendantsOfType(ASTAssignmentOperator.class, assignments, false);
 			if (assignments.isEmpty() || !"=".equals(assignments.get(0).getImage())) {
 				return false;
 			} else {

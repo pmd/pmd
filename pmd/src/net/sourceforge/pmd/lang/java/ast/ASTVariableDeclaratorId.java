@@ -21,6 +21,7 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -68,9 +69,11 @@ public class ASTVariableDeclaratorId extends AbstractJavaTypeNode {
     public ASTType getTypeNode() {
         if (jjtGetParent() instanceof ASTFormalParameter) {
             return ((ASTFormalParameter) jjtGetParent()).getTypeNode();
-        } else if (jjtGetParent().jjtGetParent() instanceof ASTLocalVariableDeclaration || jjtGetParent().jjtGetParent() instanceof ASTFieldDeclaration) {
+        } else {
             Node n = jjtGetParent().jjtGetParent();
-            return n.getFirstChildOfType(ASTType.class);
+            if (n instanceof ASTLocalVariableDeclaration || n instanceof ASTFieldDeclaration) {
+                return n.getFirstChildOfType(ASTType.class);
+            }
         }
         throw new RuntimeException("Don't know how to get the type for anything other than ASTLocalVariableDeclaration/ASTFormalParameter/ASTFieldDeclaration");
     }

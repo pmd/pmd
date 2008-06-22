@@ -25,11 +25,12 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
  * check that the addition is between anything other than two literals
  * if true and also the parent is StringBuffer constructor or append,
  * report a violation.
- * 
+ *
  * @author mgriffa
  */
 public class InefficientStringBufferingRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTAdditiveExpression node, Object data) {
         ASTBlockStatement bs = node.getFirstParentOfType(ASTBlockStatement.class);
         if (bs == null) {
@@ -37,7 +38,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         }
 
         int immediateLiterals = 0;
-        List<ASTLiteral> nodes = node.findChildrenOfType(ASTLiteral.class);
+        List<ASTLiteral> nodes = node.findDescendantsOfType(ASTLiteral.class);
         for (ASTLiteral literal: nodes) {
             if (literal.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTAdditiveExpression) {
                 immediateLiterals++;
@@ -55,7 +56,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         }
 
         // if literal + public static final, return
-        List<ASTName> nameNodes = node.findChildrenOfType(ASTName.class);
+        List<ASTName> nameNodes = node.findDescendantsOfType(ASTName.class);
         for (ASTName name: nameNodes) {
             if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
                 VariableNameDeclaration vnd = (VariableNameDeclaration)name.getNameDeclaration();
@@ -74,7 +75,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
     				return data;	//All names end with length
     			}
     		}
-        	
+
             if (isAllocatedStringBuffer(node)) {
                 addViolation(data, node);
             }
@@ -92,7 +93,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         if (s == null) {
             return false;
         }
-        ASTName n = s.getFirstChildOfType(ASTName.class);
+        ASTName n = s.getFirstDescendantOfType(ASTName.class);
         if (n == null || n.getImage().indexOf(methodName) == -1 || !(n.getNameDeclaration() instanceof VariableNameDeclaration)) {
             return false;
         }
@@ -101,7 +102,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         // we need something to support this in the framework
         // but, "for now" (tm):
         // if more than one arg to append(), skip it
-        ASTArgumentList argList = s.getFirstChildOfType(ASTArgumentList.class);
+        ASTArgumentList argList = s.getFirstDescendantOfType(ASTArgumentList.class);
         if (argList == null || argList.jjtGetNumChildren() > 1) {
             return false;
         }

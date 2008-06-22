@@ -20,7 +20,7 @@ public class SuspiciousHashcodeMethodNameRule extends AbstractJavaRule {
         [not(FormalParameters/*)]]]
          */
 
-        ASTResultType type = node.getFirstChildOfType(ASTResultType.class);
+        ASTResultType type = node.getResultType();
         ASTMethodDeclarator decl = node.getFirstChildOfType(ASTMethodDeclarator.class);
         String name = decl.getImage();
         if (name.equalsIgnoreCase("hashcode") && !name.equals("hashCode")

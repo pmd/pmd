@@ -101,7 +101,7 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 	}
 	if (methodName.startsWith("is")) {
 	    ASTResultType ret = (ASTResultType) meth.jjtGetParent().jjtGetChild(0);
-	    List<ASTPrimitiveType> primitives = ret.findChildrenOfType(ASTPrimitiveType.class);
+	    List<ASTPrimitiveType> primitives = ret.findDescendantsOfType(ASTPrimitiveType.class);
 	    if (!primitives.isEmpty() && primitives.get(0).isBoolean()) {
 		return true;
 	    }

@@ -17,8 +17,9 @@ import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 // x = null;
 public class NullAssignmentRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTNullLiteral node, Object data) {
-        
+
         if (node.getNthParent(5) instanceof ASTStatementExpression) {
             ASTStatementExpression n = (ASTStatementExpression) node.getNthParent(5);
 
@@ -43,7 +44,7 @@ public class NullAssignmentRule extends AbstractJavaRule {
     }
 
     private boolean isAssignmentToFinalField(ASTStatementExpression n) {
-        ASTName name = n.getFirstChildOfType(ASTName.class);
+        ASTName name = n.getFirstDescendantOfType(ASTName.class);
         return name != null
                 && name.getNameDeclaration() instanceof VariableNameDeclaration
                 && ((VariableNameDeclaration) name.getNameDeclaration()).getAccessNodeParent().isFinal();

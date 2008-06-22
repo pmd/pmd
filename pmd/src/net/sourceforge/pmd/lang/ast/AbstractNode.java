@@ -147,7 +147,7 @@ public abstract class AbstractNode implements Node {
 
     /**
      * Returns the n-th parent or null if there are not <code>n</code> ancestors
-     * 
+     *
      * @param n how many ancestors to iterate over.
      * @return the n-th parent or null.
      * @throws IllegalArgumentException if <code>n</code> is not positive.
@@ -198,39 +198,53 @@ public abstract class AbstractNode implements Node {
 	return parents;
     }
 
-    public <T> List<T> findChildrenOfType(Class<T> targetType) {
+    /**
+     * {@inheritDoc}
+     */
+    public <T> List<T> findDescendantsOfType(Class<T> targetType) {
 	List<T> list = new ArrayList<T>();
-	findChildrenOfType(targetType, list);
+	findDescendantsOfType(this, targetType, list, true);
 	return list;
     }
 
-    public <T> void findChildrenOfType(Class<T> targetType, List<T> results) {
-	findChildrenOfType(this, targetType, results, true);
+    /**
+     * {@inheritDoc}
+     */
+    public <T> void findDescendantsOfType(Class<T> targetType, List<T> results, boolean crossBoundaries) {
+	findDescendantsOfType(this, targetType, results, crossBoundaries);
     }
 
-    public <T> void findChildrenOfType(Class<T> targetType, List<T> results, boolean crossBoundaries) {
-	this.findChildrenOfType(this, targetType, results, crossBoundaries);
-    }
-
-    private <T> void findChildrenOfType(Node node, Class<T> targetType, List<T> results, boolean crossFindBoundaries) {
-	if (node.getClass().equals(targetType)) {
-	    results.add((T) node);
-	}
+    private static <T> void findDescendantsOfType(Node node, Class<T> targetType, List<T> results,
+	    boolean crossFindBoundaries) {
 
 	if (!crossFindBoundaries && node.isFindBoundary()) {
 	    return;
 	}
 
-	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+	int n = node.jjtGetNumChildren();
+	for (int i = 0; i < n; i++) {
 	    Node child = node.jjtGetChild(i);
-	    if (child.jjtGetNumChildren() > 0) {
-		findChildrenOfType(child, targetType, results, crossFindBoundaries);
-	    } else {
-		if (child.getClass().equals(targetType)) {
-		    results.add((T) child);
-		}
+	    if (child.getClass() == targetType) {
+		results.add((T) child);
+	    }
+
+	    findDescendantsOfType(child, targetType, results, crossFindBoundaries);
+	}
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public <T> List<T> findChildrenOfType(Class<T> targetType) {
+	List<T> list = new ArrayList<T>();
+	int n = jjtGetNumChildren();
+	for (int i = 0; i < n; i++) {
+	    Node child = jjtGetChild(i);
+	    if (child.getClass() == targetType) {
+		list.add((T) child);
 	    }
 	}
+	return list;
     }
 
     public boolean isFindBoundary() {
@@ -270,40 +284,46 @@ public abstract class AbstractNode implements Node {
     }
 
     /**
-     * Traverses down the tree to find the first child instance of type childType
-     *
-     * @param childType class which you want to find.
-     * @return Node of type childType.  Returns <code>null</code> if none found.
+     * {@inheritDoc}
      */
-    public <T> T getFirstChildOfType(Class<T> childType) {
-	return getFirstChildOfType(childType, this);
+    public <T> T getFirstDescendantOfType(Class<T> descendantType) {
+	return getFirstDescendantOfType(descendantType, this);
     }
 
-    private <T> T getFirstChildOfType(Class<T> childType, Node node) {
-	for (int i = 0; i < node.jjtGetNumChildren(); i++) {
-	    Node n = node.jjtGetChild(i);
-	    if (n != null) {
-		if (n.getClass().equals(childType)) {
-		    return (T) n;
-		}
-		T n2 = getFirstChildOfType(childType, n);
-		if (n2 != null) {
-		    return n2;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public <T> T getFirstChildOfType(Class<T> childType) {
+	int n = jjtGetNumChildren();
+	for (int i = 0; i < n; i++) {
+	    Node child = jjtGetChild(i);
+	    if (child.getClass() == childType) {
+		return (T) child;
+	    }
+	}
+	return null;
+    }
+
+    private static <T> T getFirstDescendantOfType(Class<T> descendantType, Node node) {
+	int n = node.jjtGetNumChildren();
+	for (int i = 0; i < n; i++) {
+	    Node n1 = node.jjtGetChild(i);
+	    if (n1.getClass() == descendantType) {
+		return (T) n1;
+	    }
+	    T n2 = getFirstDescendantOfType(descendantType, n1);
+	    if (n2 != null) {
+		return n2;
 	    }
 	}
 	return null;
     }
 
     /**
-     * Finds if this node contains a child of the given type.
-     * This is an utility method that uses {@link #findChildrenOfType(Class)}
-     *
-     * @param type the node type to search
-     * @return <code>true</code> if there is at lease on child of the given type and <code>false</code> in any other case
+     * {@inheritDoc}
      */
-    public final <T> boolean containsChildOfType(Class<T> type) {
-	return !findChildrenOfType(type).isEmpty();
+    public final <T> boolean hasDescendantOfType(Class<T> type) {
+	return getFirstDescendantOfType(type) != null;
     }
 
     public List findChildNodesWithXPath(String xpathString) throws JaxenException {

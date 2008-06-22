@@ -145,7 +145,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
     }
 
     /**
-     * Determie if the constructor contains (or ends with) a String Literal
+     * Determine if the constructor contains (or ends with) a String Literal
      *
      * @param node
      * @return 1 if the constructor contains string argument, else 0
@@ -153,9 +153,9 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
     private int checkConstructor(ASTVariableDeclaratorId node, Object data) {
 	Node parent = node.jjtGetParent();
 	if (parent.jjtGetNumChildren() >= 2) {
-	    ASTArgumentList list = parent.jjtGetChild(1).getFirstChildOfType(ASTArgumentList.class);
+	    ASTArgumentList list = parent.jjtGetChild(1).getFirstDescendantOfType(ASTArgumentList.class);
 	    if (list != null) {
-		ASTLiteral literal = list.getFirstChildOfType(ASTLiteral.class);
+		ASTLiteral literal = list.getFirstDescendantOfType(ASTLiteral.class);
 		if (!isAdditive(list) && literal != null && literal.isStringLiteral()) {
 		    return 1;
 		}
@@ -166,16 +166,16 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
     }
 
     private int processAdditive(Object data, int concurrentCount, Node sn, Node rootNode) {
-	ASTAdditiveExpression additive = sn.getFirstChildOfType(ASTAdditiveExpression.class);
+	ASTAdditiveExpression additive = sn.getFirstDescendantOfType(ASTAdditiveExpression.class);
         // The additive expression must of be type String to count
-        if (additive == null || (additive.getType() != null && !TypeHelper.isA(additive, String.class))) {
+        if (additive == null || additive.getType() != null && !TypeHelper.isA(additive, String.class)) {
 	    return 0;
 	}
 	int count = concurrentCount;
 	boolean found = false;
 	for (int ix = 0; ix < additive.jjtGetNumChildren(); ix++) {
 	    Node childNode = additive.jjtGetChild(ix);
-	    if (childNode.jjtGetNumChildren() != 1 || childNode.findChildrenOfType(ASTName.class).size() != 0) {
+	    if (childNode.jjtGetNumChildren() != 1 || childNode.hasDescendantOfType(ASTName.class)) {
 		if (!found) {
 		    checkForViolation(rootNode, data, count);
 		    found = true;
@@ -197,17 +197,17 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
     /**
      * Checks to see if there is string concatenation in the node.
-     * 
+     *
      * This method checks if it's additive with respect to the append method
      * only.
-     * 
+     *
      * @param n
      *            Node to check
      * @return true if the node has an additive expression (i.e. "Hello " +
      *         Const.WORLD)
      */
     private boolean isAdditive(Node n) {
-	List<ASTAdditiveExpression> lstAdditive = n.findChildrenOfType(ASTAdditiveExpression.class);
+	List<ASTAdditiveExpression> lstAdditive = n.findDescendantsOfType(ASTAdditiveExpression.class);
 	if (lstAdditive.isEmpty()) {
 	    return false;
 	}

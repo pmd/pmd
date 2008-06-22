@@ -17,6 +17,7 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
@@ -61,7 +62,7 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
     private int checkDecl() {
         return getDecl().getArrayDepth();
     }
-    
+
     /**
      * Gets the variable name of this field.
      * This method searches the first VariableDeclartorId node and returns it's image or <code>null</code> if the child node is not found.
@@ -69,7 +70,7 @@ public class ASTLocalVariableDeclaration extends AbstractJavaAccessNode implemen
      * @return a String representing the name of the variable
      */
     public String getVariableName() {
-        ASTVariableDeclaratorId decl = getFirstChildOfType(ASTVariableDeclaratorId.class);
+        ASTVariableDeclaratorId decl = getFirstDescendantOfType(ASTVariableDeclaratorId.class);
         if (decl != null) {
             return decl.getImage();
         }

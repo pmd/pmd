@@ -53,10 +53,12 @@ public class CloseResourceRule extends AbstractJavaRule {
 
     private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { typesDescriptor, closeTargetsDescriptor });
 
+    @Override
     protected Map<String, PropertyDescriptor> propertiesByName() {
         return propertyDescriptorsByName;
     }
 
+    @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         if (closeTargets.isEmpty() && getStringProperty(closeTargetsDescriptor) != null) {
             for (StringTokenizer st = new StringTokenizer(getStringProperty(closeTargetsDescriptor), ","); st.hasMoreTokens();) {
@@ -71,8 +73,9 @@ public class CloseResourceRule extends AbstractJavaRule {
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTMethodDeclaration node, Object data) {
-        List<ASTLocalVariableDeclaration> vars = node.findChildrenOfType(ASTLocalVariableDeclaration.class);
+        List<ASTLocalVariableDeclaration> vars = node.findDescendantsOfType(ASTLocalVariableDeclaration.class);
         List<ASTVariableDeclaratorId> ids = new ArrayList<ASTVariableDeclaratorId>();
 
         // find all variable references to Connection objects
@@ -111,8 +114,7 @@ public class CloseResourceRule extends AbstractJavaRule {
 
         ASTBlock top = (ASTBlock) n;
 
-        List<ASTTryStatement> tryblocks = new ArrayList<ASTTryStatement>();
-        top.findChildrenOfType(ASTTryStatement.class, tryblocks, true);
+        List<ASTTryStatement> tryblocks = top.findDescendantsOfType(ASTTryStatement.class);
 
         boolean closed = false;
 
@@ -120,10 +122,9 @@ public class CloseResourceRule extends AbstractJavaRule {
         // introduced and make sure there is a .close call in a finally
         // block.
         for (ASTTryStatement t : tryblocks) {
-            if ((t.getBeginLine() > id.getBeginLine()) && (t.hasFinally())) {
+            if (t.getBeginLine() > id.getBeginLine() && t.hasFinally()) {
                 ASTBlock f = (ASTBlock) t.getFinally().jjtGetChild(0);
-                List<ASTName> names = new ArrayList<ASTName>();
-                f.findChildrenOfType(ASTName.class, names, true);
+                List<ASTName> names = f.findDescendantsOfType(ASTName.class);
                 for (ASTName oName : names) {
                     String name = oName.getImage();
                     if (name.equals(target) || closeTargets.contains(name)) {
