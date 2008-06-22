@@ -41,6 +41,7 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ParseException;
+import net.sourceforge.pmd.lang.xpath.Initializer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.util.Benchmark;
 import net.sourceforge.pmd.util.ClasspathClassLoader;
@@ -123,6 +124,9 @@ public class PMD {
 	    ctx.setLanguageVersion(languageVersion);
 	}
 
+        // make sure custom XPath functions are initialized
+        Initializer.initialize();
+
 	try {
 	    // Coarse check to see if any RuleSet applies to files, will need to do a finer RuleSet specific check later
 	    if (ruleSets.applies(ctx.getSourceCodeFile())) {
@@ -180,7 +184,7 @@ public class PMD {
      * <p>
      * The ClassLoader used to load the <code>net.sourceforge.pmd.PMD</code> class
      * will be used as the parent ClassLoader of the created ClassLoader.
-     * 
+     *
      * @param classpath The classpath String.
      * @return A ClassLoader
      * @throws IOException
@@ -458,7 +462,7 @@ public class PMD {
 	    /*
 	     * ant task ran from Eclipse with jdk 1.5.0 raises an AccessControlException
 	     * when shutdown is called. Standalone pmd or ant from command line are fine.
-	     * 
+	     *
 	     * With jdk 1.6.0, ant task from Eclipse also works.
 	     */
 	    ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -493,7 +497,7 @@ public class PMD {
 	    String encoding, String suppressMarker, ClassLoader classLoader) {
 
 	/*
-	 * Check if multithreaded is supported. 
+	 * Check if multithreaded is supported.
 	 * ExecutorService can also be disabled if threadCount is not positive, e.g. using the
 	 * "-cpus 0" command line option.
 	 */

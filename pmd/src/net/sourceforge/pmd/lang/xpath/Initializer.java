@@ -15,31 +15,30 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
  */
 public class Initializer {
 
-    private static boolean initialized;
-
     /**
      * Perform all initialization.
      */
-    public synchronized static void initialize() {
-	if (!initialized) {
-	    initializeGlobal();
-	    initializeLanguages();
-	    initialized = true;
-	}
+    public static void initialize() {
+        // noop as initialization is done in static block below
+    }
+
+    static {
+        initializeGlobal();
+        initializeLanguages();
     }
 
     private static void initializeGlobal() {
-	MatchesFunction.registerSelfInSimpleContext();
+        MatchesFunction.registerSelfInSimpleContext();
     }
 
     private static void initializeLanguages() {
-	for (Language language : Language.values()) {
-	    for (LanguageVersion languageVersion : language.getVersions()) {
-		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-		if (languageVersionHandler != null) {
-		    languageVersionHandler.getXPathHandler().initialize();
-		}
-	    }
-	}
+        for (Language language : Language.values()) {
+            for (LanguageVersion languageVersion : language.getVersions()) {
+                LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+                if (languageVersionHandler != null) {
+                    languageVersionHandler.getXPathHandler().initialize();
+                }
+            }
+        }
     }
 }

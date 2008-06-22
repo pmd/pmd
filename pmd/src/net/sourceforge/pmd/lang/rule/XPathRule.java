@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.xpath.Initializer;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -40,7 +39,6 @@ public class XPathRule extends AbstractRule {
 
     // Mapping from Node name to applicable XPath queries
     private Map<String, List<XPath>> nodeNameToXPaths;
-    private boolean xpathInitialized;
 
     private static final String AST_ROOT = "_AST_ROOT_";
 
@@ -87,11 +85,6 @@ public class XPathRule extends AbstractRule {
     private void initializeXPathExpression(Navigator navigator) throws JaxenException {
 	if (nodeNameToXPaths != null) {
 	    return;
-	}
-
-	if (!xpathInitialized) {
-	    Initializer.initialize();
-	    xpathInitialized = true;
 	}
 
 	//
