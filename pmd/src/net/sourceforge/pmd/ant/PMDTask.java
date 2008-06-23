@@ -194,7 +194,9 @@ public class PMDTask extends Task {
             // This is just used to validate and display rules. Each thread will create its own ruleset
             RuleSets rules;
             ruleSetFactory.setMinimumPriority(minPriority);
+            ruleSetFactory.setWarnDeprecated(true);
             rules = ruleSetFactory.createRuleSets(ruleSetFiles, classLoader);
+            ruleSetFactory.setWarnDeprecated(false);
             logRulesUsed(rules);
         } catch (RuleSetNotFoundException e) {
             throw new BuildException(e.getMessage());

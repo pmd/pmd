@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 /**
  * Base class for Rule implementations which delegate to another Rule instance.
  */
-public class AbstractDelegateRule implements Rule {
+public abstract class AbstractDelegateRule implements Rule {
     private Rule rule;
 
     public AbstractDelegateRule() {
@@ -53,6 +53,14 @@ public class AbstractDelegateRule implements Rule {
 
     public LanguageVersion getMaximumLanguageVersion() {
 	return rule.getMaximumLanguageVersion();
+    }
+
+    public boolean isDeprecated() {
+	return rule.isDeprecated();
+    }
+
+    public void setDeprecated(boolean deprecated) {
+	rule.setDeprecated(deprecated);
     }
 
     public String getName() {

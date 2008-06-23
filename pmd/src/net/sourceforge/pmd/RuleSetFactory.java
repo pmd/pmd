@@ -5,10 +5,12 @@ package net.sourceforge.pmd;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
+import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.util.ResourceLoader;
 
@@ -30,7 +33,29 @@ import org.xml.sax.SAXException;
  */
 public class RuleSetFactory {
 
+    private static final Logger LOG = Logger.getLogger(RuleSetFactory.class.getName());
+
     private RulePriority minPriority = RulePriority.LOW;
+    private boolean warnDeprecated = false;
+
+    // This is a cache of RuleSets loaded while loading RuleSets in bulk.  It is not used during individual RuleSet loading.
+    private Map<String, RuleSet> ruleSetCache = new HashMap<String, RuleSet>();
+
+    /**
+     * Default constructor.
+     */
+    public RuleSetFactory() {
+    }
+
+    /**
+     * This constructor is to be used internally when there is a need to load
+     * a RuleSet using default settings.  Certain global state will be
+     * propagated between the original RuleSetFactory and the new RuleSetFactory.
+     * @param ruleSetFactory The RuleSetFactory creating the new RuleSetFactory.
+     */
+    private RuleSetFactory(RuleSetFactory ruleSetFactory) {
+	this.ruleSetCache = ruleSetFactory.ruleSetCache;
+    }
 
     /**
      * Set the minimum rule priority threshold for all Rules which are loaded
@@ -40,6 +65,14 @@ public class RuleSetFactory {
      */
     public void setMinimumPriority(RulePriority minPriority) {
 	this.minPriority = minPriority;
+    }
+
+    /**
+     * Set whether warning messages should be logged for usage of deprecated Rules.
+     * @param warnDeprecated <code>true</code> to log warning messages.
+     */
+    public void setWarnDeprecated(boolean warnDeprecated) {
+	this.warnDeprecated = warnDeprecated;
     }
 
     /**
@@ -70,6 +103,7 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException if unable to find a resource.
      */
     public RuleSets createRuleSets(String ruleSetFileNames) throws RuleSetNotFoundException {
+	// Warning: This method should not be used to implement the internals of RuleSetFactory, because it does not take an explicit ClassLoader.
 	return createRuleSets(ruleSetFileNames, getClass().getClassLoader());
     }
 
@@ -82,14 +116,21 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException if unable to find a resource.
      */
     public RuleSets createRuleSets(String ruleSetFileNames, ClassLoader classLoader) throws RuleSetNotFoundException {
-	RuleSets ruleSets = new RuleSets();
+	try {
+	    // Create the cache for bulk RuleSet processing.
+	    ruleSetCache = new HashMap<String, RuleSet>();
+	    RuleSets ruleSets = new RuleSets();
 
-	for (StringTokenizer st = new StringTokenizer(ruleSetFileNames, ","); st.hasMoreTokens();) {
-	    RuleSet ruleSet = createSingleRuleSet(st.nextToken().trim(), classLoader);
-	    ruleSets.addRuleSet(ruleSet);
+	    for (StringTokenizer st = new StringTokenizer(ruleSetFileNames, ","); st.hasMoreTokens();) {
+		RuleSet ruleSet = createSingleRuleSet(st.nextToken().trim(), classLoader);
+		ruleSets.addRuleSet(ruleSet);
+	    }
+
+	    return ruleSets;
+	} finally {
+	    // Remove the cache, so we don't affect behavior of subsequent or single RuleSet processing.
+	    ruleSetCache = null;
 	}
-
-	return ruleSets;
     }
 
     /**
@@ -122,6 +163,7 @@ public class RuleSetFactory {
      * @throws RuleSetNotFoundException if unable to find a resource.
      */
     public RuleSet createSingleRuleSet(String ruleSetFileName) throws RuleSetNotFoundException {
+	// Warning: This method should not be used to implement the internals of RuleSetFactory, because it does not take an explicit ClassLoader.
 	return createSingleRuleSet(ruleSetFileName, getClass().getClassLoader());
     }
 
@@ -135,7 +177,18 @@ public class RuleSetFactory {
      */
     private RuleSet createSingleRuleSet(String ruleSetFileName, ClassLoader classLoader)
 	    throws RuleSetNotFoundException {
-	return parseRuleSetNode(ruleSetFileName, tryToGetStreamTo(ruleSetFileName, classLoader), classLoader);
+	// If we have a RuleSet cache, check in there first.
+	RuleSet ruleSet = null;
+	if (ruleSetCache != null) {
+	    ruleSet = ruleSetCache.get(ruleSetFileName);
+	}
+	if (ruleSet == null) {
+	    ruleSet = parseRuleSetNode(ruleSetFileName, tryToGetStreamTo(ruleSetFileName, classLoader), classLoader);
+	    if (ruleSetCache != null) {
+		ruleSetCache.put(ruleSet.getFileName(), ruleSet);
+	    }
+	}
+	return ruleSet;
     }
 
     /**
@@ -146,6 +199,7 @@ public class RuleSetFactory {
      * @return A new RuleSet.
      */
     public RuleSet createRuleSet(InputStream inputStream) {
+	// Warning: This method should not be used to implement the internals of RuleSetFactory, because it does not take an explicit ClassLoader.
 	return createRuleSet(inputStream, getClass().getClassLoader());
     }
 
@@ -251,24 +305,26 @@ public class RuleSetFactory {
 	Element ruleElement = (Element) ruleNode;
 	String ref = ruleElement.getAttribute("ref");
 	if (ref.endsWith("xml")) {
-	    parseRuleSetReferenceNode(ruleSet, ruleElement, ref);
+	    parseRuleSetReferenceNode(ruleSet, ruleElement, ref, classLoader);
 	} else if (ref.trim().length() == 0) {
 	    parseSingleRuleNode(ruleSet, ruleNode, classLoader);
 	} else {
-	    parseRuleReferenceNode(ruleSet, ruleNode, ref);
+	    parseRuleReferenceNode(ruleSet, ruleNode, ref, classLoader);
 	}
     }
 
     /**
      * Parse a rule node as an RuleSetReference for all Rules.  Every Rule from
      * the referred to RuleSet will be added as a RuleReference except for those
-     * explicitly excluded.
+     * explicitly excluded, below the minimum priority threshold for this
+     * RuleSetFactory, or which are deprecated.
      *
      * @param ruleSet The RuleSet being constructed.
      * @param ruleElement Must be a rule element node.
      * @param ref The RuleSet reference.
+     * @param classLoader The ClassLoader to load Classes and resources.
      */
-    private void parseRuleSetReferenceNode(RuleSet ruleSet, Element ruleElement, String ref)
+    private void parseRuleSetReferenceNode(RuleSet ruleSet, Element ruleElement, String ref, ClassLoader classLoader)
 	    throws RuleSetNotFoundException {
 
 	RuleSetReference ruleSetReference = new RuleSetReference();
@@ -283,11 +339,12 @@ public class RuleSetFactory {
 	    }
 	}
 
-	RuleSetFactory ruleSetFactory = new RuleSetFactory();
-	RuleSet otherRuleSet = ruleSetFactory.createRuleSet(ResourceLoader.loadResourceAsStream(ref));
+	RuleSetFactory ruleSetFactory = new RuleSetFactory(this);
+	RuleSet otherRuleSet = ruleSetFactory.createSingleRuleSet(ref, classLoader);
 	for (Rule rule : otherRuleSet.getRules()) {
 	    if (!ruleSetReference.getExcludes().contains(rule.getName())
-		    && rule.getPriority().compareTo(minPriority) <= 0) {
+		    && rule.getPriority().compareTo(minPriority) <= 0
+		    && !rule.isDeprecated()) {
 		RuleReference ruleReference = new RuleReference();
 		ruleReference.setRuleSetReference(ruleSetReference);
 		ruleReference.setRule(rule);
@@ -409,19 +466,36 @@ public class RuleSetFactory {
      *
      * @param ruleSet The RuleSet being constructed.
      * @param ruleNode Must be a rule element node.
-     * @param classLoader The ClassLoader to load Classes and resources.
      * @param ref A reference to a Rule.
+     * @param classLoader The ClassLoader to load Classes and resources.
      */
-    private void parseRuleReferenceNode(RuleSet ruleSet, Node ruleNode, String ref) throws RuleSetNotFoundException {
-	RuleSetFactory ruleSetFactory = new RuleSetFactory();
+    private void parseRuleReferenceNode(RuleSet ruleSet, Node ruleNode, String ref, ClassLoader classLoader)
+	    throws RuleSetNotFoundException {
+	RuleSetFactory ruleSetFactory = new RuleSetFactory(this);
 
 	ExternalRuleID externalRuleID = new ExternalRuleID(ref);
-	RuleSet externalRuleSet = ruleSetFactory.createRuleSet(ResourceLoader.loadResourceAsStream(externalRuleID
-		.getFilename()));
+	RuleSet externalRuleSet = ruleSetFactory.createSingleRuleSet(externalRuleID.getFilename(), classLoader);
 	Rule externalRule = externalRuleSet.getRuleByName(externalRuleID.getRuleName());
 	if (externalRule == null) {
 	    throw new IllegalArgumentException("Unable to find rule " + externalRuleID.getRuleName()
 		    + "; perhaps the rule name is mispelled?");
+	}
+
+	if (warnDeprecated && externalRule.isDeprecated()) {
+	    if (externalRule instanceof RuleReference) {
+		RuleReference ruleReference = (RuleReference) externalRule;
+		LOG.warning("Use Rule name " + ruleReference.getRuleSetReference().getRuleSetFileName() + "/"
+			+ ruleReference.getName() + " instead of the deprecated Rule name " + externalRuleID
+			+ ". Future versions of PMD will remove support for this deprecated Rule name usage.");
+	    } else if (externalRule instanceof MockRule) {
+		LOG.warning("Discontinue using Rule name " + externalRuleID
+			+ " as it has been removed from PMD and no longer functions."
+			+ " Future versions of PMD will remove support for this Rule.");
+	    } else {
+		LOG.warning("Discontinue using Rule name " + externalRuleID
+			+ " as it is scheduled for removal from PMD."
+			+ " Future versions of PMD will remove support for this Rule.");
+	    }
 	}
 
 	RuleSetReference ruleSetReference = new RuleSetReference();
@@ -433,6 +507,9 @@ public class RuleSetFactory {
 	ruleReference.setRule(externalRule);
 
 	Element ruleElement = (Element) ruleNode;
+	if (ruleElement.hasAttribute("deprecated")) {
+	    ruleReference.setDeprecated(Boolean.parseBoolean(ruleElement.getAttribute("deprecated")));
+	}
 	if (ruleElement.hasAttribute("name")) {
 	    ruleReference.setName(ruleElement.getAttribute("name"));
 	}

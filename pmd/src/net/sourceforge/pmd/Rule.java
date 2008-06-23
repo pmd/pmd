@@ -59,6 +59,23 @@ public interface Rule {
     void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion);
 
     /**
+     * Gets whether this Rule is deprecated.  A deprecated Rule is one which:
+     * <ul>
+     * <li>is scheduled for removal in a future version of PMD</li>
+     * <li>or, has been removed and replaced with a non-functioning place-holder
+     * and will be completely removed in a future version of PMD</li>
+     * <li>or, has been renamed/moved and the old name will be completely
+     * removed in a future version of PMD</li>
+     * <ul>
+     */
+    boolean isDeprecated();
+
+    /**
+     * Sets whether this Rule is deprecated.
+     */
+    void setDeprecated(boolean deprecated);
+
+    /**
      * Get the name of this Rule.
      */
     String getName();

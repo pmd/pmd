@@ -39,6 +39,7 @@ public class RuleReferenceTest {
 		ruleReference.setLanguage(Language.JAVA);
 		ruleReference.setMinimumLanguageVersion(LanguageVersion.JAVA_13);
 		ruleReference.setMaximumLanguageVersion(LanguageVersion.JAVA_17);
+		ruleReference.setDeprecated(true);
 		ruleReference.setName("name2");
 		ruleReference.addProperty("property1", "value2");
 		ruleReference.setMessage("message2");
@@ -55,6 +56,10 @@ public class RuleReferenceTest {
 
 		assertEquals("Override failed", LanguageVersion.JAVA_17, ruleReference.getMaximumLanguageVersion());
 		assertEquals("Override failed", LanguageVersion.JAVA_17, ruleReference.getOverriddenMaximumLanguageVersion());
+
+		assertEquals("Override failed", false, ruleReference.getRule().isDeprecated());
+		assertEquals("Override failed", true, ruleReference.isDeprecated());
+		assertEquals("Override failed", true, ruleReference.isOverriddenDeprecated());
 
 		assertEquals("Override failed", "name2", ruleReference.getName());
 		assertEquals("Override failed", "name2", ruleReference.getOverriddenName());
@@ -101,6 +106,7 @@ public class RuleReferenceTest {
 		ruleReference.setLanguage(Language.JAVA);
 		ruleReference.setMinimumLanguageVersion(LanguageVersion.JAVA_13);
 		ruleReference.setMaximumLanguageVersion(LanguageVersion.JAVA_17);
+		ruleReference.setDeprecated(false);
 		ruleReference.setName("name1");
 		ruleReference.addProperty("property1", "value1");
 		ruleReference.setMessage("message1");
@@ -117,6 +123,9 @@ public class RuleReferenceTest {
 
 		assertEquals("Override failed", LanguageVersion.JAVA_17, ruleReference.getMaximumLanguageVersion());
 		assertNull("Override failed", ruleReference.getOverriddenMaximumLanguageVersion());
+
+		assertEquals("Override failed", false, ruleReference.isDeprecated());
+		assertNull("Override failed", ruleReference.isOverriddenDeprecated());
 
 		assertEquals("Override failed", "name1", ruleReference.getName());
 		assertNull("Override failed", ruleReference.getOverriddenName());

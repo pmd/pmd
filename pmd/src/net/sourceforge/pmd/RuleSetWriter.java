@@ -138,6 +138,7 @@ public class RuleSetWriter {
 		Language language = ruleReference.getOverriddenLanguage();
 		LanguageVersion minimumLanguageVersion = ruleReference.getOverriddenMinimumLanguageVersion();
 		LanguageVersion maximumLanguageVersion = ruleReference.getOverriddenMaximumLanguageVersion();
+		Boolean deprecated = ruleReference.isOverriddenDeprecated();
 		String name = ruleReference.getOverriddenName();
 		String ref = ruleReference.getRuleSetReference().getRuleSetFileName() + "/" + ruleReference.getName();
 		String message = ruleReference.getOverriddenMessage();
@@ -146,22 +147,22 @@ public class RuleSetWriter {
 		RulePriority priority = ruleReference.getOverriddenPriority();
 		Properties properties = ruleReference.getOverriddenProperties();
 		List<String> examples = ruleReference.getOverriddenExamples();
-		return createSingleRuleElement(language, minimumLanguageVersion, maximumLanguageVersion, name, null,
+		return createSingleRuleElement(language, minimumLanguageVersion, maximumLanguageVersion, deprecated, name, null,
 			ref, message, externalInfoUrl, null, null, null, description, priority, properties, examples);
 	    }
 	} else {
 	    return createSingleRuleElement(rule instanceof ImmutableLanguage ? null : rule.getLanguage(), rule
-		    .getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.getName(), rule.getSince(),
-		    null, rule.getMessage(), rule.getExternalInfoUrl(), rule.getRuleClass(), rule.usesDFA(), rule
-			    .usesTypeResolution(), rule.getDescription(), rule.getPriority(), rule.getProperties(),
-		    rule.getExamples());
+		    .getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.isDeprecated(),
+		    rule.getName(), rule.getSince(), null, rule.getMessage(), rule.getExternalInfoUrl(), rule
+			    .getRuleClass(), rule.usesDFA(), rule.usesTypeResolution(), rule.getDescription(), rule
+			    .getPriority(), rule.getProperties(), rule.getExamples());
 	}
     }
 
     private Element createSingleRuleElement(Language language, LanguageVersion minimumLanguageVersion,
-	    LanguageVersion maximumLanguageVersion, String name, String since, String ref, String message,
-	    String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution, String description,
-	    RulePriority priority, Properties properties, List<String> examples) {
+	    LanguageVersion maximumLanguageVersion, Boolean deprecated, String name, String since, String ref,
+	    String message, String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution,
+	    String description, RulePriority priority, Properties properties, List<String> examples) {
 	Element ruleElement = document.createElement("rule");
 	if (language != null) {
 	    ruleElement.setAttribute("language", language.getTerseName());
@@ -171,6 +172,9 @@ public class RuleSetWriter {
 	}
 	if (maximumLanguageVersion != null) {
 	    ruleElement.setAttribute("maximumLanguageVersion", maximumLanguageVersion.getVersion());
+	}
+	if (deprecated != null) {
+	    ruleElement.setAttribute("deprecated", deprecated.toString());
 	}
 	if (name != null) {
 	    ruleElement.setAttribute("name", name);

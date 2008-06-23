@@ -55,6 +55,7 @@
       <xs:attribute name="class" type="xs:NMTOKEN" use="optional" />
       <xs:attribute name="dfa" type="xs:boolean" use="optional" />  <!-- rule uses dataflow analysis -->
       <xs:attribute name="typeResolution" type="xs:boolean" default="false" use="optional" />
+      <xs:attribute name="deprecated" type="xs:boolean" default="false" use="optional" />
     </xs:complexType>
   </xs:element>
 

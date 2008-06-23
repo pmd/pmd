@@ -16,6 +16,7 @@
 <!ATTLIST rule class NMTOKEN #IMPLIED >
 <!ATTLIST rule dfa CDATA #IMPLIED >
 <!ATTLIST rule typeResolution CDATA #IMPLIED >
+<!ATTLIST rule deprecated CDATA #IMPLIED >
 <!ELEMENT example ( #PCDATA ) >
 <!ELEMENT priority ( #PCDATA ) >
 <!ELEMENT properties ( property+ ) >

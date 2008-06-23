@@ -34,6 +34,7 @@ public abstract class AbstractRule implements Rule {
     private Language language;
     private LanguageVersion minimumLanguageVersion;
     private LanguageVersion maximumLanguageVersion;
+    private boolean deprecated;
     private String name = getClass().getName();
     private String since;
     private String ruleClass = getClass().getName();
@@ -74,6 +75,14 @@ public abstract class AbstractRule implements Rule {
 
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
         this.maximumLanguageVersion = maximumLanguageVersion;
+    }
+
+    public boolean isDeprecated() {
+        return deprecated;
+    }
+
+    public void setDeprecated(boolean deprecated) {
+        this.deprecated = deprecated;
     }
 
     public String getName() {

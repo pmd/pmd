@@ -23,6 +23,7 @@ public class RuleReference extends AbstractDelegateRule {
     private Language language;
     private LanguageVersion minimumLanguageVersion;
     private LanguageVersion maximumLanguageVersion;
+    private Boolean deprecated;
     private String name;
     private Properties properties;
     private String message;
@@ -69,6 +70,22 @@ public class RuleReference extends AbstractDelegateRule {
 	    this.maximumLanguageVersion = maximumLanguageVersion;
 	    super.setMaximumLanguageVersion(maximumLanguageVersion);
 	}
+    }
+
+    public Boolean isOverriddenDeprecated() {
+	return deprecated;
+    }
+
+    @Override
+    public boolean isDeprecated() {
+	return deprecated != null && deprecated.booleanValue();
+    }
+
+    @Override
+    public void setDeprecated(boolean deprecated) {
+	// Deprecation does not propagate to the underlying Rule.  It is the
+	// Rule reference itself which is being deprecated.
+	this.deprecated = deprecated ? deprecated : null;
     }
 
     public String getOverriddenName() {
@@ -199,8 +216,8 @@ public class RuleReference extends AbstractDelegateRule {
 	return StringUtil.isSame(s1, s2, true, false, true);
     }
 
-    private static boolean isSame(Enum<?> e1, Enum<?> e2) {
-	return e1 == e2 || (e1 != null && e2 != null && e1.equals(e2));
+    private static boolean isSame(Object o1, Object o2) {
+	return o1 == o2 || (o1 != null && o2 != null && o1.equals(o2));
     }
 
     private static boolean contains(Collection<String> collection, String s1) {

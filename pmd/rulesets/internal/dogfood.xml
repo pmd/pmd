@@ -17,68 +17,53 @@ Rules to check PMD itself
     <exclude-pattern>.*cppast/.*.java</exclude-pattern>
 
     <rule ref="rulesets/basic.xml/AvoidMultipleUnaryOperators"/>
-  
-    <rule ref="rulesets/basic.xml/UselessOverridingMethod"/>
-   
     <rule ref="rulesets/basic.xml/BooleanInstantiation"/>
-    
-    <rule ref="rulesets/basic.xml/EmptyStatementNotInLoop"/>
-    
     <rule ref="rulesets/basic.xml/OverrideBothEqualsAndHashcode"/>
-    
+
     <rule ref="rulesets/design.xml/OptimizableToArrayCall"/>
-        
     <rule ref="rulesets/design.xml/IdempotentOperations"/>
-    
     <rule ref="rulesets/design.xml/SingularField"/>
     
     <rule ref="rulesets/imports.xml"/>
     
     <rule ref="rulesets/strictexception.xml/AvoidRethrowingException"/>
-    
     <rule ref="rulesets/strictexception.xml/AvoidCatchingThrowable"/>
     
     <rule ref="rulesets/optimizations.xml/UnnecessaryWrapperObjectCreation"/>
-    
     <rule ref="rulesets/optimizations.xml/AvoidArrayLoops"/>
     
     <rule ref="rulesets/strings.xml/UnnecessaryCaseChange"/>
-
     <rule ref="rulesets/strings.xml/UseEqualsToCompareStrings"/>
-
     <rule ref="rulesets/strings.xml/UselessStringValueOf"/>
-
     <rule ref="rulesets/strings.xml/AppendCharacterWithChar"/>
 
     <rule ref="rulesets/controversial.xml/UnnecessaryParentheses"/>
 
     <!-- Null checks -->
     <rule ref="rulesets/basic.xml/BrokenNullCheck"/>
-    
-    <rule ref="rulesets/basic.xml/MisplacedNullCheck"/>
-    
+    <rule ref="rulesets/basic.xml/MisplacedNullCheck"/>    
     <rule ref="rulesets/design.xml/EqualsNull"/>
     <!-- Null checks End -->
 
     <!-- Empty thingies -->
-    <rule ref="rulesets/basic.xml/EmptyWhileStmt"/>
-    
-    <rule ref="rulesets/basic.xml/EmptyTryBlock"/>
-    
-    <rule ref="rulesets/basic.xml/EmptyFinallyBlock"/>
-    
-    <rule ref="rulesets/basic.xml/EmptySwitchStatements"/>
-    
-    <rule ref="rulesets/basic.xml/EmptySynchronizedBlock"/>
-    
-    <rule ref="rulesets/basic.xml/EmptyStaticInitializer"/>
+    <rule ref="rulesets/empty.xml">
+    	<exclude name="EmptyCatchBlock" />
+    </rule>
+    <rule ref="rulesets/empty.xml/EmptyCatchBlock">
+    	<properties>
+	    	<property name="allowCommentedBlocks" value="true" />
+    	</properties>
+    </rule>
     <!-- Empty thingies End -->
 
     <!-- Unused code-->
     <rule ref="rulesets/unusedcode.xml/UnusedPrivateField"/>
-    
     <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable"/>
     <!-- Unused code End-->
+
+    <!-- Unnecessary code -->
+    <rule ref="rulesets/useless.xml/UselessOverridingMethod"/>
+    <!-- Unnecessary code End -->
 
     <!-- Specifically reference via other referencing RuleSets to test Reference to Reference -->
     <rule ref="rulesets/migrating_to_13.xml"/>

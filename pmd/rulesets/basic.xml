@@ -762,7 +762,25 @@ public class Foo {
         ]]>
         </example>
     </rule>
-    
-    <rule ref="rulesets/empty.xml"/>
-    <rule ref="rulesets/useless.xml"/>
+
+    <rule deprecated="true" ref="rulesets/empty.xml/EmptyCatchBlock" />
+    <rule deprecated="true" ref="rulesets/empty.xml/EmptyIfStmt" />
+    <rule deprecated="true" ref="rulesets/empty.xml/EmptyWhileStmt" />
+    <rule deprecated="true" ref="rulesets/empty.xml/EmptyTryBlock" />
+    <rule deprecated="true" ref="rulesets/empty.xml/EmptyFinallyBlock" />
+    <rule deprecated="true" ref="rulesets/empty.xml/EmptySwitchStatements" />
+    <rule deprecated="true" ref="rulesets/empty.xml/EmptySynchronizedBlock" />
+    <rule deprecated="true" ref="rulesets/empty.xml/EmptyStatementNotInLoop" />
+    <rule deprecated="true" ref="rulesets/empty.xml/EmptyInitializer" />
+    <rule deprecated="true" ref="rulesets/empty.xml/EmptyStatementBlock" />
+    <rule deprecated="true" ref="rulesets/empty.xml/EmptyStaticInitializer" />
+
+    <rule deprecated="true" ref="rulesets/useless.xml/UnnecessaryConversionTemporary" />
+    <rule deprecated="true" ref="rulesets/useless.xml/UnnecessaryReturn" />
+    <rule deprecated="true" ref="rulesets/useless.xml/UnnecessaryFinalModifier" />
+    <rule deprecated="true" ref="rulesets/useless.xml/UselessOverridingMethod" />
+    <rule deprecated="true" ref="rulesets/useless.xml/UselessOperationOnImmutable" />
+    <rule deprecated="true" ref="rulesets/useless.xml/UnusedNullCheckInEquals" />
+    <rule deprecated="true" ref="rulesets/useless.xml/UselessParentheses" />
+
 </ruleset>

@@ -259,7 +259,9 @@ public class PMD {
 		RuleSetFactory ruleSetFactory = new RuleSetFactory();
 		ruleSetFactory.setMinimumPriority(opts.getMinPriority());
 
+		ruleSetFactory.setWarnDeprecated(true);
 		RuleSets rulesets = ruleSetFactory.createRuleSets(opts.getRulesets());
+		ruleSetFactory.setWarnDeprecated(false);
 		printRuleNamesInDebug(rulesets);
 		long endLoadRules = System.nanoTime();
 		Benchmark.mark(Benchmark.TYPE_LOAD_RULES, endLoadRules - startLoadRules, 0);

@@ -255,6 +255,35 @@ public class RuleSetFactoryTest {
     }
 
     @Test
+    public void testDirectDeprecatedRule() {
+	Rule r = loadFirstRule(DIRECT_DEPRECATED_RULE);
+	assertNotNull("Direct Deprecated Rule", r);
+    }
+
+    @Test
+    public void testReferenceToDeprecatedRule() {
+	Rule r = loadFirstRule(REFERENCE_TO_DEPRECATED_RULE);
+	assertNotNull("Reference to Deprecated Rule", r);
+	assertTrue("Rule Reference", r instanceof RuleReference);
+	assertFalse("Not deprecated", r.isDeprecated());
+	assertTrue("Original Rule Deprecated", ((RuleReference)r).getRule().isDeprecated());
+	assertEquals("Rule name", r.getName(), DEPRECATED_RULE_NAME);
+    }
+
+    @Test
+    public void testRuleSetReferenceWithDeprecatedRule() {
+	RuleSet ruleSet = loadRuleSet(REFERENCE_TO_RULESET_WITH_DEPRECATED_RULE);
+	assertNotNull("RuleSet", ruleSet);
+	assertFalse("RuleSet empty", ruleSet.getRules().isEmpty());
+	// No deprecated Rules should be loaded when loading an entire RuleSet by reference.
+	Rule r = ruleSet.getRuleByName(DEPRECATED_RULE_NAME);
+	assertNull("Deprecated Rule Reference", r);
+	for (Rule rule: ruleSet.getRules()) {
+	    assertFalse("Rule not deprecated", rule.isDeprecated());
+	}
+    }
+
+    @Test
     public void testIncludeExcludePatterns() {
 	RuleSet ruleSet = loadRuleSet(INCLUDE_EXCLUDE_RULESET);
 
@@ -478,6 +507,14 @@ public class RuleSetFactoryTest {
 	    if (rule1 instanceof RuleReference) {
 		RuleReference ruleReference1 = (RuleReference) rule1;
 		RuleReference ruleReference2 = (RuleReference) rule2;
+		assertEquals(message + ", RuleReference overridden language", ruleReference1.getOverriddenLanguage(),
+			ruleReference2.getOverriddenLanguage());
+		assertEquals(message + ", RuleReference overridden minimum language version", ruleReference1.getOverriddenMinimumLanguageVersion(),
+			ruleReference2.getOverriddenMinimumLanguageVersion());
+		assertEquals(message + ", RuleReference overridden maximum language version", ruleReference1.getOverriddenMaximumLanguageVersion(),
+			ruleReference2.getOverriddenMaximumLanguageVersion());
+		assertEquals(message + ", RuleReference overridden deprecated", ruleReference1.isOverriddenDeprecated(),
+			ruleReference2.isOverriddenDeprecated());
 		assertEquals(message + ", RuleReference overridden name", ruleReference1.getOverriddenName(),
 			ruleReference2.getOverriddenName());
 		assertEquals(message + ", RuleReference overridden description", ruleReference1
@@ -774,6 +811,28 @@ public class RuleSetFactoryTest {
 	    + " minimumLanguageVersion=\"1.7\"" + PMD.EOL + "maximumLanguageVersion=\"1.4\">" + PMD.EOL
 	    + "</rule></ruleset>";
 
+    private static final String DIRECT_DEPRECATED_RULE = "<?xml version=\"1.0\"?>" + PMD.EOL
+	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL
+	    + "<rule "
+	    + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
+	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" deprecated=\"true\">" + PMD.EOL
+	    + "</rule></ruleset>";
+
+    // Note: Update this RuleSet name to a different RuleSet with deprecated Rules when the Rules are finally removed.
+    private static final String DEPRECATED_RULE_RULESET_NAME = "rulesets/basic.xml";
+
+    // Note: Update this Rule name to a different deprecated Rule when the one listed here is finally removed.
+    private static final String DEPRECATED_RULE_NAME = "EmptyCatchBlock";
+
+    private static final String REFERENCE_TO_DEPRECATED_RULE = "<?xml version=\"1.0\"?>" + PMD.EOL
+	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule "
+	    + PMD.EOL + "ref=\"" + DEPRECATED_RULE_RULESET_NAME + "/" + DEPRECATED_RULE_NAME + "\">" + PMD.EOL
+	    + "</rule></ruleset>";
+
+    private static final String REFERENCE_TO_RULESET_WITH_DEPRECATED_RULE = "<?xml version=\"1.0\"?>" + PMD.EOL
+	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule "
+	    + PMD.EOL + "ref=\"" + DEPRECATED_RULE_RULESET_NAME + "\">" + PMD.EOL + "</rule></ruleset>";
+
     private static final String DFA = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 	    + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
 	    + "message=\"avoid the mock rule\" " + PMD.EOL + "dfa=\"true\" " + PMD.EOL
@@ -786,6 +845,10 @@ public class RuleSetFactoryTest {
 	    + PMD.EOL + "<exclude-pattern>exclude1</exclude-pattern>" + PMD.EOL
 	    + "<exclude-pattern>exclude2</exclude-pattern>" + PMD.EOL + "<exclude-pattern>exclude3</exclude-pattern>"
 	    + PMD.EOL + "</ruleset>";
+
+    private static final String EXTERNAL_REFERENCE_RULE_SET = "<?xml version=\"1.0\"?>" + PMD.EOL
+	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL
+	    + "<rule ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\"/>" + PMD.EOL + "</ruleset>";
 
     private Rule loadFirstRule(String ruleSetXml) {
 	RuleSet rs = loadRuleSet(ruleSetXml);
@@ -808,10 +871,6 @@ public class RuleSetFactoryTest {
 	assertEquals(1, rs.size());
 	assertEquals(UnusedLocalVariableRule.class.getName(), rs.getRuleByName("UnusedLocalVariable").getRuleClass());
     }
-
-    private static final String EXTERNAL_REFERENCE_RULE_SET = "<?xml version=\"1.0\"?>" + PMD.EOL
-	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL
-	    + "<rule ref=\"rulesets/unusedcode.xml/UnusedLocalVariable\"/>" + PMD.EOL + "</ruleset>";
 
     public static junit.framework.Test suite() {
 	return new JUnit4TestAdapter(RuleSetFactoryTest.class);
