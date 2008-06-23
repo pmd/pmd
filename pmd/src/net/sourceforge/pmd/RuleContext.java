@@ -4,9 +4,8 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
 
@@ -39,7 +38,7 @@ public class RuleContext {
      * Default constructor.
      */
     public RuleContext() {
-	attributes = Collections.synchronizedMap(new HashMap<String, Object>());
+	attributes = new ConcurrentHashMap<String, Object>();
     }
 
     /**
@@ -111,7 +110,7 @@ public class RuleContext {
      * Set the LanguageVersion associated with the current source file.
      * This may be set to <code>null</code> to indicate the version is
      * unknown and should be automatically determined.
-     * 
+     *
      * @param languageVersion The LanguageVersion.
      */
     public void setLanguageVersion(LanguageVersion languageVersion) {
@@ -129,7 +128,7 @@ public class RuleContext {
      * update an attribute value.  Modifications made to the attribute value
      * will automatically be seen by other threads.  Because of this, you must
      * ensure the attribute values are themselves thread safe.
-     * 
+     *
      * @param name The attribute name.
      * @param value The attribute value.
      * @exception IllegalArgumentException if <code>name</code> or <code> value</code> are <code>null</code>
@@ -163,7 +162,7 @@ public class RuleContext {
      * update an attribute value.  Modifications made to the attribute value
      * will automatically be seen by other threads.  Because of this, you must
      * ensure the attribute values are themselves thread safe.
-     * 
+     *
      * @param name The attribute name.
      * @return The current attribute value, or <code>null</code> if the attribute does not exist.
      */
@@ -182,7 +181,7 @@ public class RuleContext {
      * update an attribute value.  Modifications made to the attribute value
      * will automatically be seen by other threads.  Because of this, you must
      * ensure the attribute values are themselves thread safe.
-     * 
+     *
      * @param name The attribute name.
      * @return The current attribute value, or <code>null</code> if the attribute does not exist.
      */
