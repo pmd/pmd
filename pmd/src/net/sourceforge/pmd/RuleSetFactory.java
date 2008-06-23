@@ -5,7 +5,6 @@ package net.sourceforge.pmd;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -38,23 +37,10 @@ public class RuleSetFactory {
     private RulePriority minPriority = RulePriority.LOW;
     private boolean warnDeprecated = false;
 
-    // This is a cache of RuleSets loaded while loading RuleSets in bulk.  It is not used during individual RuleSet loading.
-    private Map<String, RuleSet> ruleSetCache = new HashMap<String, RuleSet>();
-
     /**
      * Default constructor.
      */
     public RuleSetFactory() {
-    }
-
-    /**
-     * This constructor is to be used internally when there is a need to load
-     * a RuleSet using default settings.  Certain global state will be
-     * propagated between the original RuleSetFactory and the new RuleSetFactory.
-     * @param ruleSetFactory The RuleSetFactory creating the new RuleSetFactory.
-     */
-    private RuleSetFactory(RuleSetFactory ruleSetFactory) {
-	this.ruleSetCache = ruleSetFactory.ruleSetCache;
     }
 
     /**
@@ -115,22 +101,14 @@ public class RuleSetFactory {
      * @return The new RuleSets.
      * @throws RuleSetNotFoundException if unable to find a resource.
      */
-    public RuleSets createRuleSets(String ruleSetFileNames, ClassLoader classLoader) throws RuleSetNotFoundException {
-	try {
-	    // Create the cache for bulk RuleSet processing.
-	    ruleSetCache = new HashMap<String, RuleSet>();
-	    RuleSets ruleSets = new RuleSets();
-
-	    for (StringTokenizer st = new StringTokenizer(ruleSetFileNames, ","); st.hasMoreTokens();) {
-		RuleSet ruleSet = createSingleRuleSet(st.nextToken().trim(), classLoader);
-		ruleSets.addRuleSet(ruleSet);
-	    }
-
-	    return ruleSets;
-	} finally {
-	    // Remove the cache, so we don't affect behavior of subsequent or single RuleSet processing.
-	    ruleSetCache = null;
+    public synchronized RuleSets createRuleSets(String ruleSetFileNames, ClassLoader classLoader)
+	    throws RuleSetNotFoundException {
+	RuleSets ruleSets = new RuleSets();
+	for (StringTokenizer st = new StringTokenizer(ruleSetFileNames, ","); st.hasMoreTokens();) {
+	    RuleSet ruleSet = createSingleRuleSet(st.nextToken().trim(), classLoader);
+	    ruleSets.addRuleSet(ruleSet);
 	}
+	return ruleSets;
     }
 
     /**
@@ -177,18 +155,7 @@ public class RuleSetFactory {
      */
     private RuleSet createSingleRuleSet(String ruleSetFileName, ClassLoader classLoader)
 	    throws RuleSetNotFoundException {
-	// If we have a RuleSet cache, check in there first.
-	RuleSet ruleSet = null;
-	if (ruleSetCache != null) {
-	    ruleSet = ruleSetCache.get(ruleSetFileName);
-	}
-	if (ruleSet == null) {
-	    ruleSet = parseRuleSetNode(ruleSetFileName, tryToGetStreamTo(ruleSetFileName, classLoader), classLoader);
-	    if (ruleSetCache != null) {
-		ruleSetCache.put(ruleSet.getFileName(), ruleSet);
-	    }
-	}
-	return ruleSet;
+	return parseRuleSetNode(ruleSetFileName, tryToGetStreamTo(ruleSetFileName, classLoader), classLoader);
     }
 
     /**
@@ -339,12 +306,11 @@ public class RuleSetFactory {
 	    }
 	}
 
-	RuleSetFactory ruleSetFactory = new RuleSetFactory(this);
+	RuleSetFactory ruleSetFactory = new RuleSetFactory();
 	RuleSet otherRuleSet = ruleSetFactory.createSingleRuleSet(ref, classLoader);
 	for (Rule rule : otherRuleSet.getRules()) {
 	    if (!ruleSetReference.getExcludes().contains(rule.getName())
-		    && rule.getPriority().compareTo(minPriority) <= 0
-		    && !rule.isDeprecated()) {
+		    && rule.getPriority().compareTo(minPriority) <= 0 && !rule.isDeprecated()) {
 		RuleReference ruleReference = new RuleReference();
 		ruleReference.setRuleSetReference(ruleSetReference);
 		ruleReference.setRule(rule);
@@ -471,7 +437,7 @@ public class RuleSetFactory {
      */
     private void parseRuleReferenceNode(RuleSet ruleSet, Node ruleNode, String ref, ClassLoader classLoader)
 	    throws RuleSetNotFoundException {
-	RuleSetFactory ruleSetFactory = new RuleSetFactory(this);
+	RuleSetFactory ruleSetFactory = new RuleSetFactory();
 
 	ExternalRuleID externalRuleID = new ExternalRuleID(ref);
 	RuleSet externalRuleSet = ruleSetFactory.createSingleRuleSet(externalRuleID.getFilename(), classLoader);
