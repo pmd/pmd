@@ -18,7 +18,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
+import net.sourceforge.pmd.lang.java.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
@@ -105,7 +110,8 @@ public class CloseResourceRule extends AbstractJavaRule {
                               ASTVariableDeclaratorId id, Object data) {
         // What are the chances of a Connection being instantiated in a
         // for-loop init block? Anyway, I'm lazy!
-        String target = id.getImage() + ".close";
+        String variableToClose = id.getImage();
+        String target = variableToClose + ".close";
         Node n = var;
 
         while (!(n instanceof ASTBlock)) {
@@ -127,9 +133,68 @@ public class CloseResourceRule extends AbstractJavaRule {
                 List<ASTName> names = f.findDescendantsOfType(ASTName.class);
                 for (ASTName oName : names) {
                     String name = oName.getImage();
-                    if (name.equals(target) || closeTargets.contains(name)) {
+                    if (name.equals(target)) {
                         closed = true;
+                        break;
                     }
+                }
+                if (closed) {
+                    break;
+                }
+
+                List<ASTStatementExpression> exprs = new ArrayList<ASTStatementExpression>();
+                f.findDescendantsOfType(ASTStatementExpression.class, exprs, true);
+                for (ASTStatementExpression stmt : exprs) {
+                    ASTPrimaryExpression expr =
+                        stmt.getFirstChildOfType(ASTPrimaryExpression.class);
+                    if (expr != null) {
+                        ASTPrimaryPrefix prefix = expr.getFirstChildOfType(ASTPrimaryPrefix.class);
+                        ASTPrimarySuffix suffix = expr.getFirstChildOfType(ASTPrimarySuffix.class);
+                        if ((prefix != null) && (suffix != null)) {
+                            if (prefix.getImage() == null) {
+                                ASTName prefixName = prefix.getFirstChildOfType(ASTName.class);
+                                if ((prefixName != null)
+                                        && closeTargets.contains(prefixName.getImage()))
+                                {
+                                    // Found a call to a "close target" that is a direct
+                                    // method call without a "ClassName." prefix.
+                                    closed = variableIsPassedToMethod(expr, variableToClose);
+                                    if (closed) {
+                                        break;
+                                    }
+                                }
+                            } else if (suffix.getImage() != null) {
+                                String prefixPlusSuffix =
+                                        prefix.getImage()+ "." + suffix.getImage();
+                                if (closeTargets.contains(prefixPlusSuffix)) {
+                                    // Found a call to a "close target" that is a method call
+                                    // in the form "ClassName.methodName".
+                                    closed = variableIsPassedToMethod(expr, variableToClose);
+                                    if (closed) {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (closed) {
+                    break;
+                }
+            }
+        }
+
+        if (!closed) {
+            // See if the variable is returned by the method, which means the
+            // method is a utility for creating the db resource, which means of
+            // course it can't be closed by the method, so it isn't an error.
+            List<ASTReturnStatement> returns = new ArrayList<ASTReturnStatement>();
+            top.findDescendantsOfType(ASTReturnStatement.class, returns, true);
+            for (ASTReturnStatement returnStatement : returns) {
+                ASTName name = returnStatement.getFirstChildOfType(ASTName.class);
+                if ((name != null) && name.getImage().equals(variableToClose)) {
+                    closed = true;
+                    break;
                 }
             }
         }
@@ -141,5 +206,17 @@ public class CloseResourceRule extends AbstractJavaRule {
             ASTClassOrInterfaceType clazz = (ASTClassOrInterfaceType) ref.jjtGetChild(0);
             addViolation(data, id, clazz.getImage());
         }
+    }
+
+    private boolean variableIsPassedToMethod(ASTPrimaryExpression expr, String variable) {
+        List<ASTName> methodParams = new ArrayList<ASTName>();
+        expr.findDescendantsOfType(ASTName.class, methodParams, true);
+        for (ASTName pName : methodParams) {
+            String paramName = pName.getImage();
+            if (paramName.equals(variable)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

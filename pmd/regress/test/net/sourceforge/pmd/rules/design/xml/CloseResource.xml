@@ -101,12 +101,12 @@ Bad, no closeTargets properties for statements
         <description><![CDATA[
 Ok, closeTargets properties for statements
      ]]></description>
-        <rule-property name="closeTargets">MyHelper.close, cleanup</rule-property>
+        <rule-property name="closeTargets">MyHelper.close,cleanup</rule-property>
         <rule-property name="types">Connection,Statement,ResultSet</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="executeQuery"/>
-
     </test-code>
+    
     <test-code reinitializeRule="true">
         <description><![CDATA[
 Add type param
@@ -147,7 +147,8 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code reinitializeRule="true">
+    <test-code 	reinitializeRule="true"
+    			regressionTest="false">
         <description><![CDATA[
 New use case
      ]]></description>
@@ -180,4 +181,90 @@ public class Foo {
      ]]></code>
     </test-code>
 
+
+    <test-code 	reinitializeRule="true"
+    			regressionTest="false">
+        <description><![CDATA[
+[1964798] 3 bugs in CloseResourceRule : Case failing with complete name
+     ]]></description>
+        <rule-property name="closeTargets">MyHelper.MyClose</rule-property>
+        <rule-property name="types">Connection,Statement,ResultSet</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+public class Foo {
+ void bar() {
+  Statement c = pool.getStmt();
+  try {
+  } finally {
+     MyHelper.MyClose(c);
+}
+ }
+}
+     ]]></code>
+    </test-code>
+    
+ 
+    <test-code reinitializeRule="true">
+        <description><![CDATA[
+[1964798] 3 bugs in CloseResourceRule : null object is passed to close conection method (1)
+     ]]></description>
+        <rule-property	name="closeTargets">this.closeConnection</rule-property>
+        <rule-property	name="types">Connection,Statement,ResultSet</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+public class Foo {
+ void bar() {
+  Connection c;
+  try {
+    c = pool.getConnection();
+  } finally {
+     this.closeConnection(null);
+  }
+ }
+}
+     ]]></code>
+    </test-code>  
+    
+   <test-code reinitializeRule="true">
+        <description><![CDATA[
+[1964798] 3 bugs in CloseResourceRule : null object is passed to close conection method (2)
+     ]]></description>
+        <rule-property	name="closeTargets">this.closeConnection</rule-property>
+        <rule-property	name="types">Connection,Statement,ResultSet</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+public class Foo {
+ void bar() {
+  Connection c = null;
+  try {
+    c = pool.getConnection();
+  } finally {
+     this.closeConnection(c);
+  }
+ }
+}
+     ]]></code>
+    </test-code>        
+
+	<test-code 	reinitializeRule="true"
+				regressionTest="false">
+        <description><![CDATA[
+[1964798] 3 bugs in CloseResourceRule : If connection is returned, we should not log a violation.
+     ]]></description>
+        <rule-property name="types">Connection,Statement,ResultSet</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+	public Connection getConnection() {
+		Connection c = pool.getConnection();
+		return c;
+	}
+}
+     ]]></code>
+    </test-code>
+    
+    
 </test-data>
