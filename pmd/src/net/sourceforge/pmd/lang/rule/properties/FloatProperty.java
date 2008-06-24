@@ -63,7 +63,9 @@ public class FloatProperty extends AbstractScalarProperty {
 	 */
 	private static final Float[] asFloats(float[] floats) {
 		Float[] Floats = new Float[floats.length];
-		for (int i=0; i<floats.length; i++) Floats[i] = new Float(floats[i]);
+		for (int i=0; i<floats.length; i++) {
+		    Floats[i] = new Float(floats[i]);
+		}
 		return Floats;
 	}
 

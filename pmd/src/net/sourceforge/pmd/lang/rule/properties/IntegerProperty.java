@@ -54,7 +54,9 @@ public class IntegerProperty extends AbstractScalarProperty {
 	 */
 	private static final Integer[] asIntegers(int[] ints) {
 		Integer[] integers = new Integer[ints.length];
-		for (int i=0; i<ints.length; i++) integers[i] = Integer.valueOf(ints[i]);
+		for (int i=0; i<ints.length; i++) {
+		    integers[i] = Integer.valueOf(ints[i]);
+		}
 		return integers;
 	}
 	

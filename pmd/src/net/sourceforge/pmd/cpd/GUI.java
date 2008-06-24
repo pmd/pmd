@@ -458,7 +458,9 @@ public class GUI implements CPDListener {
     		},"Del", delete, JComponent.WHEN_FOCUSED);
     	
     	int[] alignments = new int[matchColumns.length];
-    	for (int i=0; i<alignments.length; i++) alignments[i] = matchColumns[i].alignment();
+    	for (int i=0; i<alignments.length; i++) {
+    	    alignments[i] = matchColumns[i].alignment();
+    	}
 
     	resultsTable.setDefaultRenderer(Object.class, new AlignmentRenderer(alignments));
     	

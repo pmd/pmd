@@ -143,10 +143,11 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		}
 		// TODO: implements the "operand" functionnality
 		// Is there any names that actually match ?
-		for (Pattern pattern : this.namesMatch)
+		for (Pattern pattern : this.namesMatch) {
 			if ( RegexHelper.isMatch(pattern, classType.getImage())) {
 				addAMatch(classType, data);
 			}
+		}
 		return super.visit(classType, data);
 	}
 
@@ -187,8 +188,9 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		AtomicLong total = (AtomicLong)ctx.getAttribute(COUNTER_LABEL);
         // Do we have a violation ?
         if ( total.get() > this.threshold ) {
-        	for (Node node : this.matches)
+        	for (Node node : this.matches) {
         		addViolation(ctx,node , new Object[] { total });
+        	}
 		// Cleaning the context for the others rules
 		ctx.removeAttribute(COUNTER_LABEL);
 		super.start(ctx);

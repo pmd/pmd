@@ -52,10 +52,11 @@ public class ASTModel implements TreeModel {
      */
     public int getIndexOfChild(Object parent, Object child) {
 	Node node = (Node) parent;
-        for (int i = 0; i < node.jjtGetNumChildren(); i++)
+        for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             if (node.jjtGetChild(i).equals(child)) {
                 return i;
             }
+        }
         return -1;
     }
 

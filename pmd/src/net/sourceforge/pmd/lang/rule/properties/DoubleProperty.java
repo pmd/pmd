@@ -63,7 +63,9 @@ public class DoubleProperty extends AbstractScalarProperty {
 	 */
 	private static final Double[] asDoubles(double[] doubles) {
 		Double[] Doubles = new Double[doubles.length];
-		for (int i=0; i<doubles.length; i++) Doubles[i] = new Double(doubles[i]);
+		for (int i=0; i<doubles.length; i++) {
+		    Doubles[i] = new Double(doubles[i]);
+		}
 		return Doubles;
 	}
 

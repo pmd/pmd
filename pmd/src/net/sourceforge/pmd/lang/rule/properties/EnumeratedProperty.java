@@ -115,7 +115,9 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 		String[] strValues = StringUtil.substringsOf(value, multiValueDelimiter);
 		
 		Object[] values = new Object[strValues.length];
-		for (int i=0;i<values.length; i++) values[i] = choiceFrom(strValues[i]);
+		for (int i=0;i<values.length; i++) {
+		    values[i] = choiceFrom(strValues[i]);
+		}
 		return values;
 	}
 	

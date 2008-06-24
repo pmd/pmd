@@ -54,7 +54,9 @@ public abstract class AbstractScalarProperty extends AbstractProperty {
 		String[] strValues = StringUtil.substringsOf(valueString, multiValueDelimiter);
 		
 		Object[] values = arrayFor(strValues.length);
-		for (int i=0; i<strValues.length; i++) values[i] = createFrom(strValues[i]);
+		for (int i=0; i<strValues.length; i++) {
+		    values[i] = createFrom(strValues[i]);
+		}
 		return values;
 	}
 }

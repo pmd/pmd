@@ -55,7 +55,9 @@ public class BooleanProperty extends AbstractScalarProperty {
 	 */
 	private static final Boolean[] asBooleans(boolean[] bools) {
 		Boolean[] booleans = new Boolean[bools.length];
-		for (int i=0; i<bools.length; i++) booleans[i] = Boolean.valueOf(bools[i]);
+		for (int i=0; i<bools.length; i++) {
+		    booleans[i] = Boolean.valueOf(bools[i]);
+		}
 		return booleans;
 	}
 	

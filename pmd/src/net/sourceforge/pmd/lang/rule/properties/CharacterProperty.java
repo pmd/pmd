@@ -69,7 +69,9 @@ public class CharacterProperty extends AbstractProperty {
 	 */
 	private static final Character[] asCharacters(char[] chars) {
 		Character[] characters = new Character[chars.length];
-		for (int i=0; i<chars.length; i++) characters[i] = Character.valueOf(chars[i]);
+		for (int i=0; i<chars.length; i++) {
+		    characters[i] = Character.valueOf(chars[i]);
+		}
 		return characters;
 	}
 	
@@ -101,7 +103,9 @@ public class CharacterProperty extends AbstractProperty {
 		String[] values = StringUtil.substringsOf(valueString, multiValueDelimiter);
 		
 		Character[] chars = new Character[values.length];
-		for (int i=0; i<values.length; i++) chars[i] = Character.valueOf(values[i].charAt(0));
+		for (int i=0; i<values.length; i++) {
+		    chars[i] = Character.valueOf(values[i].charAt(0));
+		}
 		return chars;
 	}
 }
