@@ -12,9 +12,6 @@ import java.util.List;
  */
 public class NodeVisitorAdapter implements NodeVisitor {
 
-	public NodeVisitorAdapter() {
-	}
-
 	public Object visit(UsageGraph usageGraph, Object data) {
 		return usageGraph.accept(this, data);
 	}

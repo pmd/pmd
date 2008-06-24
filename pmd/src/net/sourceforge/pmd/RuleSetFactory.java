@@ -38,12 +38,6 @@ public class RuleSetFactory {
     private boolean warnDeprecated = false;
 
     /**
-     * Default constructor.
-     */
-    public RuleSetFactory() {
-    }
-
-    /**
      * Set the minimum rule priority threshold for all Rules which are loaded
      * from RuleSets via reference.
      * 

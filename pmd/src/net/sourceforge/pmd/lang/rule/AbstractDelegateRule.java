@@ -20,9 +20,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 public abstract class AbstractDelegateRule implements Rule {
     private Rule rule;
 
-    public AbstractDelegateRule() {
-    }
-
     public void setRule(Rule rule) {
 	this.rule = rule;
     }

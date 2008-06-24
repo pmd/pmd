@@ -21,9 +21,6 @@ public class UnnecessaryConversionTemporaryRule extends AbstractJavaRule {
     private static final Set<String> primitiveWrappers = CollectionUtil.asSet(
     	new String[] {"Integer", "Boolean", "Double", "Long", "Short", "Byte", "Float"}
     	);
- 
-    public UnnecessaryConversionTemporaryRule() {
-    }
 
     public Object visit(ASTPrimaryExpression node, Object data) {
         if (node.jjtGetNumChildren() == 0 || (node.jjtGetChild(0)).jjtGetNumChildren() == 0 || !(node.jjtGetChild(0).jjtGetChild(0) instanceof ASTAllocationExpression)) {

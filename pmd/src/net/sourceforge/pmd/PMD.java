@@ -61,9 +61,6 @@ public class PMD {
 
     private Configuration configuration = new Configuration();
 
-    public PMD() {
-    }
-
     /**
      * Get the runtime configuration.  The configuration can be modified
      * to affect how PMD behaves.

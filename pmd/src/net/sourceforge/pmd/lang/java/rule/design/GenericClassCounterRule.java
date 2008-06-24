@@ -75,13 +75,6 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 
 	private static String COUNTER_LABEL;
 
-	/**
-	 *	Default empty constructor
-	 */
-	public GenericClassCounterRule() {
-		super();
-	}
-
 	private List<String> arrayAsList(String[] array) {
 		List<String> list = new ArrayList<String>(array.length);
 		int nbItem = 0;

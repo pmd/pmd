@@ -8,10 +8,6 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
 
     private static final String targetTypeName = "String";
     private static final String[] methodNames = new String[] { "indexOf", "lastIndexOf" };
-    
-    public UseIndexOfCharRule() {
-        super();
-    }
 
     /**
      * Method targetTypeName.

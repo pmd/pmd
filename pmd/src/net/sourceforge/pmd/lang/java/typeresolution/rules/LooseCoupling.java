@@ -16,10 +16,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 public class LooseCoupling extends AbstractJavaRule {
 
-    public LooseCoupling() {
-	super();
-    }
-
     @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
 	Node parent = node.getNthParent(3);

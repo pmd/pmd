@@ -21,10 +21,6 @@ public class LooseCouplingRule extends AbstractJavaRule {
 //    	"java.util.TreeMap", "java.util.Vector" 
 //    	});
 
-    public LooseCouplingRule() {
-        super();
-    }
-
     public Object visit(ASTClassOrInterfaceType node, Object data) {
         Node parent = node.jjtGetParent().jjtGetParent().jjtGetParent();
         String typeName = node.getImage();
