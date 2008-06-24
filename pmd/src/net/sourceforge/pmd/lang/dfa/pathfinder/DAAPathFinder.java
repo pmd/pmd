@@ -186,8 +186,8 @@ public class DAAPathFinder {
             } else {
                 while (true) {
                     if (level.getChildCount() != 0) {
-                        PathElement ref;
-                        if ((ref = this.isNodeInLevel(level)) != null) {
+                        PathElement ref = this.isNodeInLevel(level);
+                        if (ref != null) {
                             addNode(level, ref);
                             break;
                         } else {

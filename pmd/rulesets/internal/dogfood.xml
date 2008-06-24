@@ -43,11 +43,16 @@
 		<exclude name="DataflowAnomalyAnalysis"/>
 		<exclude name="AvoidFinalLocalVariable"/>
 		<exclude name="DataflowAnomalyAnalysis"/>
+		<exclude name="AssignmentInOperand"/>
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="NullAssignment"/>
 		<exclude name="AvoidUsingShortType"/>
 		<exclude name="OneDeclarationPerLine"/>
-		<exclude name="AssignmentInOperand"/>
+	</rule>
+	<rule ref="rulesets/controversial.xml/AssignmentInOperand">
+		<properties>
+			<property name="allowWhile" value="true"/>
+		</properties>
 	</rule>
 
 	<rule ref="rulesets/coupling.xml">

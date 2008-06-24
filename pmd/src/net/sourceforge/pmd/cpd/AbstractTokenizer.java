@@ -103,10 +103,10 @@ public abstract class AbstractTokenizer implements Tokenizer
         if ( 	! done &&	// ... we didn't find the end of the string
         		loc >= currentLine.length() && // ... we have reach the end of the line ( the String is incomplete, for the moment at least)
         		this.spanMultipleLinesString && // ... the language allow multiple line span Strings
-        		++this.lineNumber < this.code.size() // ... there is still more lines to parse
+        		this.lineNumber < this.code.size() - 1 // ... there is still more lines to parse
         	) {
         	// parsing new line
-        	this.currentLine = this.code.get(this.lineNumber);
+        	this.currentLine = this.code.get(++this.lineNumber);
         	// Warning : recursive call !
         	loc = this.parseString(token, loc, stringDelimiter);
         }
