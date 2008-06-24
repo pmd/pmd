@@ -11,6 +11,7 @@ import net.sourceforge.pmd.dcd.ClassLoaderUtil;
 /**
  * Represents a Class Field in a UsageGraph.
  */
+@SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public class FieldNode extends MemberNode<FieldNode, Field> {
 
 	private WeakReference<Field> fieldReference;

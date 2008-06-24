@@ -16,7 +16,6 @@
 
 	<!-- TODO First step is to re-enable these Rules from the original dogfood, as these are subjectively most important:
 	   UnusedPrivateField
-	   OverrideBothEqualsAndHashcode
 	   AvoidCatchingThrowable
 	   EmptyCatchBlock
 	-->
@@ -24,7 +23,6 @@
 	<rule ref="rulesets/basic.xml">
     	<exclude name="CollapsibleIfStatements"/>
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
-    	<exclude name="OverrideBothEqualsAndHashcode"/>
     	<exclude name="JumbledIncrementer"/>
 	</rule>
 

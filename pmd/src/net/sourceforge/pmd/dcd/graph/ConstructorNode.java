@@ -14,6 +14,7 @@ import org.objectweb.asm.signature.SignatureReader;
 /**
  * Represents a Class Constructor in a UsageGraph.
  */
+@SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public class ConstructorNode extends MemberNode<ConstructorNode, Constructor<?>> {
 
 	private WeakReference<Constructor<?>> constructorReference;

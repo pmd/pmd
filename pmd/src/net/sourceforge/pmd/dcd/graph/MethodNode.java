@@ -14,6 +14,7 @@ import org.objectweb.asm.signature.SignatureReader;
 /**
  * Represents a Class Method in a UsageGraph.
  */
+@SuppressWarnings("PMD.OverrideBothEqualsAndHashcode")
 public class MethodNode extends MemberNode<MethodNode, Method> {
 
 	private WeakReference<Method> methodReference;
