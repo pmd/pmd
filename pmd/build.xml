@@ -164,7 +164,7 @@
 
 	<target name="pmdOnPmd" description="Runs PMD on PMD" depends="copy, compile">
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
-		<pmd rulesetfiles="${dir.rulesets}internal/dogfood.xml" shortFilenames="true" targetjdk="1.5" minimumpriority="5">
+		<pmd rulesetfiles="${dir.rulesets}internal/dogfood.xml" shortFilenames="true" targetjdk="1.5" minimumpriority="5" failonruleviolation="true" failonerror="true">
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${dir.src}">
 				<include name="**/*.java" />

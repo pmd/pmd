@@ -1,74 +1,225 @@
 <?xml version="1.0"?>
-
 <ruleset name="dogfood" 
-    xmlns="http://pmd.sf.net/ruleset/1.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
-    xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+	xmlns="http://pmd.sf.net/ruleset/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+	xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+	<description>Rules to check PMD itself.  This RuleSet is written to include all Rules,
+	and exclude those which we know are explicitly decided as not applicable to PMD itself.
+	This is the most encompassing form of RuleSet.</description>
 
-  <description>
-Rules to check PMD itself
-  </description>
-  
-    <exclude-pattern>.*net/sourceforge/pmd/lang/ast/JavaCharStream.java</exclude-pattern>
-    <exclude-pattern>.*net/sourceforge/pmd/lang/ast/SimpleCharStream.java</exclude-pattern>
-    <exclude-pattern>.*net/sourceforge/pmd/lang/ast/TokenMgrError.java</exclude-pattern>
-    <exclude-pattern>.*lang/.*/ast/.*.java</exclude-pattern>
-    <exclude-pattern>.*cppast/.*.java</exclude-pattern>
+	<exclude-pattern>.*net/sourceforge/pmd/lang/ast/JavaCharStream.java</exclude-pattern>
+	<exclude-pattern>.*net/sourceforge/pmd/lang/ast/SimpleCharStream.java</exclude-pattern>
+	<exclude-pattern>.*net/sourceforge/pmd/lang/ast/TokenMgrError.java</exclude-pattern>
+	<exclude-pattern>.*lang/.*/ast/.*.java</exclude-pattern>
+	<exclude-pattern>.*cppast/.*.java</exclude-pattern>
 
-    <rule ref="rulesets/basic.xml/AvoidMultipleUnaryOperators"/>
-    <rule ref="rulesets/basic.xml/BooleanInstantiation"/>
-    <rule ref="rulesets/basic.xml/OverrideBothEqualsAndHashcode"/>
+	<!-- TODO First step is to re-enable these Rules from the original dogfood, as these are subjectively most important:
+	   UnusedPrivateField
+	   UnusedLocalVariable
+	   OverrideBothEqualsAndHashcode
+	   AvoidCatchingThrowable
+	   EqualsNull
+	   EmptyCatchBlock
+	-->
 
-    <rule ref="rulesets/design.xml/OptimizableToArrayCall"/>
-    <rule ref="rulesets/design.xml/IdempotentOperations"/>
-    <rule ref="rulesets/design.xml/SingularField"/>
+	<rule ref="rulesets/basic.xml">
+    	<exclude name="CollapsibleIfStatements"/>
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+    	<exclude name="OverrideBothEqualsAndHashcode"/>
+    	<exclude name="JumbledIncrementer"/>
+	</rule>
+
+	<rule ref="rulesets/braces.xml">
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="ForLoopsMustUseBraces"/>
+		<exclude name="IfStmtsMustUseBraces"/>
+		<exclude name="IfElseStmtsMustUseBraces"/>
+		<exclude name="WhileLoopsMustUseBraces"/>
+	</rule>
+
+	<rule ref="rulesets/clone.xml"/>
+
+	<!-- Nothing here applies to PMD
+	<rule ref="rulesets/codesize.xml"/>
+	</rule>
+	-->
+	
+	<rule ref="rulesets/controversial.xml">
+		<exclude name="OnlyOneReturn"/>
+		<exclude name="AtLeastOneConstructor"/>
+		<exclude name="DontImportSun"/>
+		<exclude name="CallSuperInConstructor"/>
+		<exclude name="DefaultPackage"/>
+		<exclude name="BooleanInversion"/>
+		<exclude name="DataflowAnomalyAnalysis"/>
+		<exclude name="AvoidFinalLocalVariable"/>
+		<exclude name="DataflowAnomalyAnalysis"/>
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="NullAssignment"/>
+		<exclude name="AvoidUsingShortType"/>
+		<exclude name="UnnecessaryConstructor"/>
+		<exclude name="OneDeclarationPerLine"/>
+		<exclude name="AvoidPrefixingMethodParameters"/>
+		<exclude name="AssignmentInOperand"/>
+	</rule>
+
+	<rule ref="rulesets/coupling.xml">
+		<exclude name="CouplingBetweenObjects"/>
+		<exclude name="ExcessiveImports"/>
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="LooseCoupling"/>
+	</rule>
+
+	<rule ref="rulesets/design.xml">
+		<exclude name="UseSingleton"/>
+		<exclude name="AvoidDeeplyNestedIfStmts"/>
+		<exclude name="AvoidReassigningParameters"/>
+		<exclude name="SwitchDensity"/>
+		<exclude name="ConstructorCallsOverridableMethod"/>
+		<exclude name="SimpleDateFormatNeedsLocale"/>
+		<exclude name="ImmutableField"/>
+		<exclude name="UseLocaleWithCaseConversions"/>
+		<!--  TODO Is AvoidSynchronizedAtMethodLevel something we should shoot for? -->
+		<exclude name="AvoidSynchronizedAtMethodLevel"/>
+		<exclude name="EmptyMethodInAbstractClassShouldBeAbstract"/>
+		<exclude name="ReturnEmptyArrayRatherThanNull"/>
+		<exclude name="TooFewBranchesForASwitchStatement"/>
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="PositionLiteralsFirstInComparisons"/>
+		<exclude name="PreserveStackTrace"/>
+		<exclude name="SimplifyConditional"/>
+		<exclude name="ConfusingTernary"/>
+		<exclude name="UncommentedEmptyConstructor"/>
+		<exclude name="UncommentedEmptyMethod"/>
+		<exclude name="UnnecessaryLocalBeforeReturn"/>
+		<exclude name="ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
+		<exclude name="SwitchStmtsShouldHaveDefault"/>
+		<exclude name="EqualsNull"/>
+		<exclude name="AbstractClassWithoutAbstractMethod"/>
+		<exclude name="AvoidConstantsInterface"/>
+		<exclude name="UseCollectionIsEmpty"/>
+		<exclude name="AccessorClassGeneration"/>
+		<exclude name="SimplifyBooleanExpressions"/>
+		<exclude name="MissingBreakInSwitch"/>
+		<exclude name="CompareObjectsWithEquals"/>
+		<exclude name="SimplifyBooleanReturns"/>
+	</rule>
+
+	<rule ref="rulesets/empty.xml">
+		<exclude name="EmptyCatchBlock" />
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="EmptyIfStmt" />
+	</rule>
+	<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+	<!--
+	<rule ref="rulesets/empty.xml/EmptyCatchBlock">
+		<properties>
+			<property name="allowCommentedBlocks" value="true" />
+		</properties>
+	</rule>
+	-->
+
+	<rule ref="rulesets/finalizers.xml"/>
+
+	<rule ref="rulesets/imports.xml"/>
+
+	<!-- Nothing here applies to PMD
+	<rule ref="rulesets/j2ee.xml"/>
+	</rule>
+	-->
+
+	<!-- Nothing here applies to PMD
+	<rule ref="rulesets/javabeans.xml"/>
+	</rule>
+	-->
+
+	<!-- Nothing here applies to PMD
+	<rule ref="rulesets/logging-jakarta-commons.xml"/>
+	</rule>
+	-->
+
+	<rule ref="rulesets/logging-java.xml">
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="SystemPrintln"/>
+		<exclude name="AvoidPrintStackTrace"/>
+		<exclude name="LoggerIsNotStaticFinal"/>
+	</rule>
+
+	<!-- Specifically reference via other referencing RuleSets to test Reference to Reference -->
+	<rule ref="rulesets/migrating_to_13.xml"/>
+	<rule ref="rulesets/migrating_to_14.xml"/>
+	<rule ref="rulesets/migrating_to_15.xml"/>
+	<rule ref="rulesets/migrating_to_junit4.xml">
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="JUnit4TestShouldUseTestAnnotation"/>
+	</rule>
+
+	<rule ref="rulesets/naming.xml">
+		<exclude name="ShortVariable"/>
+		<exclude name="LongVariable"/>
+		<exclude name="ShortMethodName"/>
+		<exclude name="ShortClassName"/>
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="AvoidFieldNameMatchingMethodName"/>
+		<exclude name="AbstractNaming"/>
+		<exclude name="VariableNamingConventions"/>
+		<exclude name="MethodNamingConventions"/>
+		<exclude name="AvoidFieldNameMatchingTypeName"/>
+		<exclude name="SuspiciousConstantFieldName"/>
+		<exclude name="BooleanGetMethodName"/>
+		<exclude name="SuspiciousEqualsMethodName"/>
+	</rule>
+
+	<rule ref="rulesets/optimizations.xml">
+		<exclude name="MethodArgumentCouldBeFinal"/>
+		<exclude name="LocalVariableCouldBeFinal"/>
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="AvoidInstantiatingObjectsInLoops"/>
+		<exclude name="AddEmptyString"/>
+		<exclude name="UseStringBufferForStringAppends"/>
+		<exclude name="SimplifyStartsWith"/>
+		<exclude name="UseArrayListInsteadOfVector"/>
+	</rule>
+
+	<rule ref="rulesets/strictexception.xml">
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="AvoidThrowingRawExceptionTypes"/>
+		<exclude name="SignatureDeclareThrowsException"/>
+		<exclude name="DoNotThrowExceptionInFinally"/>
+		<exclude name="AvoidCatchingThrowable"/>
+	</rule>
+
+	<rule ref="rulesets/strings.xml">
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="AvoidDuplicateLiterals"/>
+		<exclude name="InefficientEmptyStringCheck"/>
+		<exclude name="AvoidStringBufferField"/>
+		<exclude name="ConsecutiveLiteralAppends"/>
+		<exclude name="UseIndexOfChar"/>
+		<exclude name="InsufficientStringBufferDeclaration"/>
+		<exclude name="InefficientStringBuffering"/>
+	</rule>
+
+	<!-- TODO should we apply these? -->
+	<!--
+	<rule ref="rulesets/sunsecure.xml"/>
+	-->
     
-    <rule ref="rulesets/imports.xml"/>
-    
-    <rule ref="rulesets/strictexception.xml/AvoidRethrowingException"/>
-    <rule ref="rulesets/strictexception.xml/AvoidCatchingThrowable"/>
-    
-    <rule ref="rulesets/optimizations.xml/UnnecessaryWrapperObjectCreation"/>
-    <rule ref="rulesets/optimizations.xml/AvoidArrayLoops"/>
-    
-    <rule ref="rulesets/strings.xml/UnnecessaryCaseChange"/>
-    <rule ref="rulesets/strings.xml/UseEqualsToCompareStrings"/>
-    <rule ref="rulesets/strings.xml/UselessStringValueOf"/>
-    <rule ref="rulesets/strings.xml/AppendCharacterWithChar"/>
+	<rule ref="rulesets/unusedcode.xml">
+		<exclude name="UnusedFormalParameter"/>
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="UnusedPrivateMethod"/>
+		<exclude name="UnusedPrivateField"/>
+		<exclude name="UnusedModifier"/>
+		<exclude name="UnusedLocalVariable"/>
+	</rule>
 
-    <rule ref="rulesets/controversial.xml/UnnecessaryParentheses"/>
-
-    <!-- Null checks -->
-    <rule ref="rulesets/basic.xml/BrokenNullCheck"/>
-    <rule ref="rulesets/basic.xml/MisplacedNullCheck"/>    
-    <rule ref="rulesets/design.xml/EqualsNull"/>
-    <!-- Null checks End -->
-
-    <!-- Empty thingies -->
-    <rule ref="rulesets/empty.xml">
-    	<exclude name="EmptyCatchBlock" />
-    </rule>
-    <rule ref="rulesets/empty.xml/EmptyCatchBlock">
-    	<properties>
-	    	<property name="allowCommentedBlocks" value="true" />
-    	</properties>
-    </rule>
-    <!-- Empty thingies End -->
-
-    <!-- Unused code-->
-    <rule ref="rulesets/unusedcode.xml/UnusedPrivateField"/>
-    <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable"/>
-    <!-- Unused code End-->
-
-    <!-- Unnecessary code -->
-    <rule ref="rulesets/useless.xml/UselessOverridingMethod"/>
-    <!-- Unnecessary code End -->
-
-    <!-- Specifically reference via other referencing RuleSets to test Reference to Reference -->
-    <rule ref="rulesets/migrating_to_13.xml"/>
-    <rule ref="rulesets/migrating_to_14.xml"/>
-    <rule ref="rulesets/migrating_to_15.xml"/>
-    <rule ref="rulesets/migrating_to_junit4.xml"/>
+	<rule ref="rulesets/useless.xml">
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
+		<exclude name="UselessParentheses"/>
+		<exclude name="UnnecessaryFinalModifier"/>
+		<exclude name="UnnecessaryReturn"/>
+	</rule>
 
 </ruleset>
