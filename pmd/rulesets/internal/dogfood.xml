@@ -18,7 +18,6 @@
 	   UnusedPrivateField
 	   OverrideBothEqualsAndHashcode
 	   AvoidCatchingThrowable
-	   EqualsNull
 	   EmptyCatchBlock
 	-->
 
@@ -94,7 +93,6 @@
 		<exclude name="UnnecessaryLocalBeforeReturn"/>
 		<exclude name="ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
 		<exclude name="SwitchStmtsShouldHaveDefault"/>
-		<exclude name="EqualsNull"/>
 		<exclude name="AbstractClassWithoutAbstractMethod"/>
 		<exclude name="AvoidConstantsInterface"/>
 		<exclude name="UseCollectionIsEmpty"/>
