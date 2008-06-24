@@ -48,7 +48,7 @@ public class UsageGraphBuilder {
 			String classResourceName = getResourceName(name);
 			if (classFilter.filter(className)) {
 				if (!usageGraph.isClass(className)) {
-					ClassNode classNode = usageGraph.defineClass(className);
+					usageGraph.defineClass(className);
 					InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream(
 							classResourceName + ".class");
 					ClassReader classReader = new ClassReader(inputStream);

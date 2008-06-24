@@ -16,7 +16,6 @@
 
 	<!-- TODO First step is to re-enable these Rules from the original dogfood, as these are subjectively most important:
 	   UnusedPrivateField
-	   UnusedLocalVariable
 	   OverrideBothEqualsAndHashcode
 	   AvoidCatchingThrowable
 	   EqualsNull
@@ -212,7 +211,6 @@
 		<exclude name="UnusedPrivateMethod"/>
 		<exclude name="UnusedPrivateField"/>
 		<exclude name="UnusedModifier"/>
-		<exclude name="UnusedLocalVariable"/>
 	</rule>
 
 	<rule ref="rulesets/useless.xml">
