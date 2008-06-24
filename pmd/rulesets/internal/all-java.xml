@@ -14,6 +14,7 @@
     <rule ref="rulesets/controversial.xml"/>
     <rule ref="rulesets/coupling.xml"/>
     <rule ref="rulesets/design.xml"/>
+    <rule ref="rulesets/empty.xml"/>
     <rule ref="rulesets/finalizers.xml"/>
     <rule ref="rulesets/imports.xml"/>
     <rule ref="rulesets/j2ee.xml"/>
@@ -29,4 +30,5 @@
     <rule ref="rulesets/sunsecure.xml"/>
     <rule ref="rulesets/typeresolution.xml"/>
     <rule ref="rulesets/unusedcode.xml"/>
+    <rule ref="rulesets/useless.xml"/>
 </ruleset>
