@@ -1591,40 +1591,50 @@ public class abstract Example {
         </example>
     </rule>
 
-        <rule	name="TooFewBranchesForASwitchStatement"
-            since="4.2"
-	        	class="net.sourceforge.pmd.rules.XPathRule"
-	        	message="A switch with less than 3 branches is inefficient, use a if statement instead."
-	        	externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#TooFewBranchesForASwitchStatement">
-        <description>
-            <![CDATA[
-				Swith are designed complex branches, and allow branches to share treatement. Using a switch for only 2
-				branches is ill advised, as switches are not as easy to understand as if. In this case, it's most likely
-				is a good idea to use a if statement instead, at least to increase code readability.
-            ]]>
-        </description>
-        <priority>1</priority>
-        <properties>
-        	<property name="minimumNumberCaseForASwitch" description="Minimum number of branches for a switch" value="3"/>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//SwitchStatement[
-	(count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
-]
-                    ]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-            <![CDATA[
-public class abstract Example {
-	String field;
-	int otherField;
+	<rule	name="TooFewBranchesForASwitchStatement"
+		language="java"
+		since="4.2"
+		class="net.sourceforge.pmd.lang.rule.XPathRule"
+		message="A switch with less than 3 branches is inefficient, use a if statement instead."
+		externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#TooFewBranchesForASwitchStatement">
+	    <description>
+		    <![CDATA[
+			     Swith are designed complex branches, and allow branches to share treatement. Using a switch for only a few 
+			     branches is ill advised, as switches are not as easy to understand as if. In this case, it's most likely
+			     is a good idea to use a if statement instead, at least to increase code readability.
+			     ]]>
+	    </description>
+	    <priority>1</priority>
+	    <properties>
+		    <property name="minimumNumberCaseForASwitch" description="Minimum number of branches for a switch" value="3"/>
+		    <property name="xpath">
+			    <value>
+				    <![CDATA[
+					     //SwitchStatement[
+					     (count(.//SwitchLabel) < $minimumNumberCaseForASwitch)
+								      ]
+								      ]]>
+					     </value>
+				     </property>
+			     </properties>
+			     <example>
+				     <![CDATA[
+// With a minimumNumberCaseForASwitch of 3	    
+public class Foo {
+	public void bar() {
+		switch (condition) {
+			case ONE:
+				instruction;
+				break;
+			default:
+				break; // not enough for a 'switch' stmt, a simple 'if' stmt would have been more appropriate
+		}
+	}
 }
-            ]]>
-        </example>
-    </rule>
+					      ]]>
+			     </example>
+	</rule>
+
 <!--
 	<rule 	name="TooManyHttpFilter"
 	         since="4.2"
