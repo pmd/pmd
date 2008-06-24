@@ -48,7 +48,6 @@
 		<exclude name="AvoidUsingShortType"/>
 		<exclude name="UnnecessaryConstructor"/>
 		<exclude name="OneDeclarationPerLine"/>
-		<exclude name="AvoidPrefixingMethodParameters"/>
 		<exclude name="AssignmentInOperand"/>
 	</rule>
 

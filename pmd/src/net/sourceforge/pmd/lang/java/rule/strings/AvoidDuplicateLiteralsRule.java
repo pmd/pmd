@@ -54,25 +54,25 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 	    this.delimiter = delimiter;
 	}
 
-	public Set<String> parse(String in) {
+	public Set<String> parse(String s) {
 	    Set<String> result = new HashSet<String>();
 	    StringBuffer currentToken = new StringBuffer();
 	    boolean inEscapeMode = false;
-	    for (int i = 0; i < in.length(); i++) {
+	    for (int i = 0; i < s.length(); i++) {
 		if (inEscapeMode) {
 		    inEscapeMode = false;
-		    currentToken.append(in.charAt(i));
+		    currentToken.append(s.charAt(i));
 		    continue;
 		}
-		if (in.charAt(i) == ESCAPE_CHAR) {
+		if (s.charAt(i) == ESCAPE_CHAR) {
 		    inEscapeMode = true;
 		    continue;
 		}
-		if (in.charAt(i) == delimiter) {
+		if (s.charAt(i) == delimiter) {
 		    result.add(currentToken.toString());
 		    currentToken = new StringBuffer();
 		} else {
-		    currentToken.append(in.charAt(i));
+		    currentToken.append(s.charAt(i));
 		}
 	    }
 	    if (currentToken.length() > 0) {

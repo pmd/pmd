@@ -86,13 +86,13 @@ public class IDEAJRenderer extends OnTheFlyRenderer {
         }
     }
 
-    private String getFullyQualifiedClassName(String in, SourcePath sourcePath) {
-        String classNameWithSlashes = sourcePath.clipPath(in);
+    private String getFullyQualifiedClassName(String fileName, SourcePath sourcePath) {
+        String classNameWithSlashes = sourcePath.clipPath(fileName);
         String className = classNameWithSlashes.replace(FILE_SEPARATOR.charAt(0), '.');
         return className.substring(0, className.length() - 5);
     }
 
-    private String getSimpleFileName(String in) {
-        return in.substring(in.lastIndexOf(FILE_SEPARATOR) + 1);
+    private String getSimpleFileName(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(FILE_SEPARATOR) + 1);
     }
 }

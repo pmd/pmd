@@ -552,11 +552,11 @@ public class GUI implements CPDListener {
                     timeField.setText(munge(String.valueOf(minutes)) + ':' + munge(String.valueOf(seconds)));
                 }
 
-                private String munge(String in) {
-                    if (in.length() < 2) {
-                        in = "0" + in;
+                private String munge(String s) {
+                    if (s.length() < 2) {
+                        s = "0" + s;
                     }
-                    return in;
+                    return s;
                 }
             });
             t.start();

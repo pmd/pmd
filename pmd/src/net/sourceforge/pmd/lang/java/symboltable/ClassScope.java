@@ -178,7 +178,7 @@ public class ClassScope extends AbstractScope {
         return res;
     }
 
-    private String clipClassName(String in) {
-        return in.substring(in.indexOf('.') + 1);
+    private String clipClassName(String s) {
+        return s.substring(s.indexOf('.') + 1);
     }
 }
