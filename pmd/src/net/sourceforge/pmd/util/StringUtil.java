@@ -87,16 +87,17 @@ public class StringUtil {
                 } else {
                     buf.append(c);
                 }
-            } else if (c == '&')
+            } else if (c == '&') {
                 buf.append("&amp;");
-            else if (c == '"')
+            } else if (c == '"') {
                 buf.append("&quot;");
-            else if (c == '<')
+            } else if (c == '<') {
                 buf.append("&lt;");
-            else if (c == '>')
+            } else if (c == '>') {
                 buf.append("&gt;");
-            else
+            } else {
                 buf.append(c);
+            }
         }
     }
 

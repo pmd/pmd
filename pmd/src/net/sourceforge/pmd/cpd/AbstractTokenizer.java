@@ -86,14 +86,15 @@ public abstract class AbstractTokenizer implements Tokenizer
         char tok = ' '; // this will be replaced.
         while ((loc < currentLine.length()) && ! done) {
             tok = currentLine.charAt(loc);
-            if (escaped && tok == stringDelimiter) // Found an escaped string
+            if (escaped && tok == stringDelimiter) { // Found an escaped string
                 escaped = false;
-            else if (tok == stringDelimiter && (token.length() > 0)) // We are done, we found the end of the string...
+            } else if (tok == stringDelimiter && (token.length() > 0)) { // We are done, we found the end of the string...
                 done = true;
-            else if (tok == '\\') // Found an escaped char
+            } else if (tok == '\\') { // Found an escaped char
                 escaped = true;
-            else	// Adding char...
+            } else {	// Adding char...
                 escaped = false;
+            }
             //Adding char to String:" + token.toString());
             token.append(tok);
             loc++;

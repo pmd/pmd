@@ -33,9 +33,9 @@ public class RegexHelper {
 					patterns.add(Pattern.compile(stringPattern));
 				}
 			}
-		}
-		else
+		} else {
 			patterns = new ArrayList<Pattern>(0);
+		}
 		return patterns;
 	}
 
