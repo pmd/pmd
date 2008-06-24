@@ -1592,9 +1592,8 @@ public class abstract Example {
     </rule>
 
 	<rule	name="TooFewBranchesForASwitchStatement"
-		language="java"
 		since="4.2"
-		class="net.sourceforge.pmd.lang.rule.XPathRule"
+		class="net.sourceforge.pmd.rules.XPathRule"
 		message="A switch with less than 3 branches is inefficient, use a if statement instead."
 		externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#TooFewBranchesForASwitchStatement">
 	    <description>
