@@ -234,15 +234,19 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRule {
     private boolean isNodesEquals(Node n1, Node n2) {
         int numberChild1 = n1.jjtGetNumChildren();
         int numberChild2 = n2.jjtGetNumChildren();
-        if(numberChild1 != numberChild2)
+        if(numberChild1 != numberChild2) {
           return false;
-        if(!n1.getClass().equals(n2.getClass()))
+        }
+        if(!n1.getClass().equals(n2.getClass())) {
           return false;
-        if(!n1.toString().equals(n2.toString()))
+        }
+        if(!n1.toString().equals(n2.toString())) {
           return false;
+        }
         for(int i = 0 ; i < numberChild1 ; i++) {
-          if( !isNodesEquals(n1.jjtGetChild(i), n2.jjtGetChild(i) ) )
+          if( !isNodesEquals(n1.jjtGetChild(i), n2.jjtGetChild(i) ) ) {
             return false;
+          }
         }
         return true;
     }

@@ -78,7 +78,9 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 		
 		Object[] values = (Object[])value;
 		for (int i=0; i<values.length; i++) {
-			if (labelsByChoice.containsKey(values[i])) continue;
+			if (labelsByChoice.containsKey(values[i])) {
+			    continue;
+			}
 			return nonLegalValueMsgFor(values[i]);
 		}
 		return null;
@@ -91,7 +93,9 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 	 */
 	private E choiceFrom(String label) {
 		E result = choicesByLabel.get(label);
-		if (result != null) return result;
+		if (result != null) {
+		    return result;
+		}
 		throw new IllegalArgumentException(label);
 	}
 	
@@ -104,7 +108,9 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 	 */
 	public Object valueFrom(String value) throws IllegalArgumentException {
 		
-		if (maxValueCount() == 1) return choiceFrom(value);
+		if (maxValueCount() == 1) {
+		    return choiceFrom(value);
+		}
 		
 		String[] strValues = StringUtil.substringsOf(value, multiValueDelimiter);
 		
@@ -121,7 +127,9 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 	 */
 	public String asDelimitedString(Object value) {
 		
-		if (maxValueCount() == 1) return labelsByChoice.get(value);
+		if (maxValueCount() == 1) {
+		    return labelsByChoice.get(value);
+		}
 		
 		Object[] choices = (Object[])value;
 		

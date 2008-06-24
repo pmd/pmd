@@ -135,12 +135,18 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 */
 	public String asDelimitedString(Object values) {
 		
-		if (values == null) return "";
+		if (values == null) {
+		    return "";
+		}
 		
 		if (values instanceof Object[]) {
 			Object[] valueSet = (Object[])values;
-			if (valueSet.length == 0) return "";
-			if (valueSet.length == 1) return asString(valueSet[0]);
+			if (valueSet.length == 0) {
+			    return "";
+			}
+			if (valueSet.length == 1) {
+			    return asString(valueSet[0]);
+			}
 			
 			StringBuffer sb = new StringBuffer();
 			sb.append(asString(valueSet[0]));
@@ -174,7 +180,9 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	public String errorFor(Object value) {
 		
 		String typeError = typeErrorFor(value);
-		if (typeError != null) return typeError;
+		if (typeError != null) {
+		    return typeError;
+		}
 		return valueErrorFor(value);
 	}
 	
@@ -204,7 +212,9 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 */
 	protected String typeErrorFor(Object value) {
 		
-		if (value == null && !isRequired) return null;
+		if (value == null && !isRequired) {
+		    return null;
+		}
 		
 		if (maxValueCount > 1) {
 			if (!isArray(value)) {
@@ -233,7 +243,9 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 */
 	public String propertyErrorFor(Rule rule) {
 		String strValue = rule.getStringProperty(name());
-		if (strValue == null && !isRequired()) return null;
+		if (strValue == null && !isRequired()) {
+		    return null;
+		}
 		Object realValue = valueFrom(strValue);
 		return errorFor(realValue);
 	}
@@ -263,9 +275,15 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 * @return boolean
 	 */
 	public static final boolean areEqual(Object value, Object otherValue) {
-		if (value == otherValue) return true;
-		if (value == null) return false;
-		if (otherValue == null) return false;
+		if (value == otherValue) {
+		    return true;
+		}
+		if (value == null) {
+		    return false;
+		}
+		if (otherValue == null) {
+		    return false;
+		}
 
 		return value.equals(otherValue);
 	}

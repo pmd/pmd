@@ -49,7 +49,9 @@ public class CurrentPath {
 
     public DataFlowNode getDoBranchNodeFromFirstDoStatement() {
 	DataFlowNode inode = list.getLast();
-        if (!isFirstDoStatement()) return null;
+        if (!isFirstDoStatement()) {
+            return null;
+        }
         for (DataFlowNode parent: inode.getParents()) {
             if (parent.isType(NodeType.DO_EXPR)) {
                 return parent;
@@ -69,7 +71,9 @@ public class CurrentPath {
 
     private boolean isFirstDoStatement(DataFlowNode inode) {
         int index = inode.getIndex() - 1;
-        if (index < 0) return false;
+        if (index < 0) {
+            return false;
+        }
         return ((DataFlowNode) inode.getFlow().get(index)).isType(NodeType.DO_BEFORE_FIRST_STATEMENT);
     }
 }

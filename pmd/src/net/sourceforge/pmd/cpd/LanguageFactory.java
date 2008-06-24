@@ -49,8 +49,9 @@ public class LanguageFactory {
      private String languageAliases(String language)
      {
        // CPD and C language share the same parser
-       if ( "c".equals(language) )
+       if ( "c".equals(language) ) {
          return "cpp";
+       }
        return language;
      }
 

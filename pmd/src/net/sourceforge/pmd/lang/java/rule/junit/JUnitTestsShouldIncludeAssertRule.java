@@ -39,8 +39,9 @@ public class JUnitTestsShouldIncludeAssertRule extends AbstractJUnitRule {
             if (!assertFound) {
                 for (int i=0;i<n.jjtGetNumChildren() && ! assertFound;i++) {
                     Node c = n.jjtGetChild(i);
-                    if (containsAssert(c, assertFound)) 
+                    if (containsAssert(c, assertFound)) {
                         return true;
+                    }
                 }
             }
         }

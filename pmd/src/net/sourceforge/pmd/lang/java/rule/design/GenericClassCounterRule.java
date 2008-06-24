@@ -122,8 +122,9 @@ public class GenericClassCounterRule extends AbstractJavaRule {
     	 // Is there any imported types that match ?
     	 for (Pattern pattern : this.typesMatch) {
     		 if ( RegexHelper.isMatch(pattern,node.getImportedName())) {
-    			 if ( simpleClassname == null )
+    			 if ( simpleClassname == null ) {
     				 simpleClassname = new ArrayList<String>(1);
+    			 }
     			 simpleClassname.add(node.getImportedName());
     		 }
     		 // FIXME: use type resolution framework to deal with star import ?
@@ -143,8 +144,9 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		// TODO: implements the "operand" functionnality
 		// Is there any names that actually match ?
 		for (Pattern pattern : this.namesMatch)
-			if ( RegexHelper.isMatch(pattern, classType.getImage()))
+			if ( RegexHelper.isMatch(pattern, classType.getImage())) {
 				addAMatch(classType, data);
+			}
 		return super.visit(classType, data);
 	}
 
@@ -184,11 +186,12 @@ public class GenericClassCounterRule extends AbstractJavaRule {
     public void end(RuleContext ctx) {
 		AtomicLong total = (AtomicLong)ctx.getAttribute(COUNTER_LABEL);
         // Do we have a violation ?
-        if ( total.get() > this.threshold )
+        if ( total.get() > this.threshold ) {
         	for (Node node : this.matches)
         		addViolation(ctx,node , new Object[] { total });
 		// Cleaning the context for the others rules
 		ctx.removeAttribute(COUNTER_LABEL);
 		super.start(ctx);
+        }
      }
 }

@@ -85,12 +85,16 @@ public class Benchmark {
         boolean debug = findBooleanSwitch(args, "--debug");
         boolean parseOnly = findBooleanSwitch(args, "--parse-only");
 
-        if (debug)  System.out.println("Using " +language.getName() + " " + languageVersion.getVersion());
+        if (debug) {
+            System.out.println("Using " +language.getName() + " " + languageVersion.getVersion());
+        }
         if (parseOnly) {
             parseStress(languageVersion, files);
         } else {
             String ruleset = findOptionalStringValue(args, "--ruleset", "");
-            if (debug) System.out.println("Checking directory " + srcDir);
+            if (debug) {
+        	System.out.println("Checking directory " + srcDir);
+            }
             Set<Result> results = new TreeSet<Result>();
             RuleSetFactory factory = new RuleSetFactory();
             if (ruleset.length() > 0) {
@@ -132,7 +136,9 @@ public class Benchmark {
     private static void stress(LanguageVersion languageVersion, RuleSet ruleSet, List<File> files, Set<Result> results, boolean debug) throws PMDException, IOException {
         Collection<Rule> rules = ruleSet.getRules();
         for (Rule rule: rules) {
-            if (debug) System.out.println("Starting " + rule.getName());
+            if (debug) {
+        	System.out.println("Starting " + rule.getName());
+            }
 
             RuleSet working = new RuleSet();
             working.addRule(rule);
@@ -152,7 +158,9 @@ public class Benchmark {
             long end = System.currentTimeMillis();
             long elapsed = end - start;
             results.add(new Result(elapsed, rule));
-            if (debug) System.out.println("Done timing " + rule.getName() + "; elapsed time was " + elapsed);
+            if (debug) {
+        	System.out.println("Done timing " + rule.getName() + "; elapsed time was " + elapsed);
+            }
         }
     }
 

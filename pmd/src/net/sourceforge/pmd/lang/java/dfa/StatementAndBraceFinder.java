@@ -258,12 +258,13 @@ public class StatementAndBraceFinder extends JavaParserVisitorAdapter {
         boolean hasForUpdateNode = false;
 
         for (int i = 0; i < parent.jjtGetNumChildren(); i++) {
-            if (parent.jjtGetChild(i) instanceof ASTExpression)
+            if (parent.jjtGetChild(i) instanceof ASTExpression) {
                 hasExpressionChild = true;
-            else if (parent.jjtGetChild(i) instanceof ASTForUpdate)
+            } else if (parent.jjtGetChild(i) instanceof ASTForUpdate) {
                 hasForUpdateNode = true;
-            else if (parent.jjtGetChild(i) instanceof ASTForInit)
+            } else if (parent.jjtGetChild(i) instanceof ASTForInit) {
                 hasForInitNode = true;
+            }
         }
         if (!hasExpressionChild) {
             if (node instanceof ASTForInit) {

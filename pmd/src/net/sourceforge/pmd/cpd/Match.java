@@ -34,8 +34,12 @@ public class Match implements Comparable<Match> {
     
     public static final Comparator<Match> LabelComparator = new Comparator<Match>() {
     	public int compare(Match ma, Match mb) {
-    		if (ma.getLabel() == null) return 1;
-    		if (mb.getLabel() == null) return -1;
+    		if (ma.getLabel() == null) {
+    		    return 1;
+    		}
+    		if (mb.getLabel() == null) {
+    		    return -1;
+    		}
     		return mb.getLabel().compareTo(ma.getLabel());
     	}
     };

@@ -215,7 +215,9 @@ public class DAAPathFinder {
             parent.remove(last);
         }
         last = stack.getLastLeaf();
-        if (last == null || last.getUserObject() == null) return;
+        if (last == null || last.getUserObject() == null) {
+            return;
+        }
 
         PathElement e = (PathElement) last.getUserObject();
         if (e != null && e.isPseudoPathElement()) {
@@ -244,7 +246,9 @@ public class DAAPathFinder {
     private boolean equalsPseudoPathElementWithDoBranchNodeInLevel(DefaultMutableTreeNode level) {
 	DataFlowNode inode = currentPath.getLast();
 
-        if (!inode.isType(NodeType.DO_EXPR)) return false;
+        if (!inode.isType(NodeType.DO_EXPR)) {
+            return false;
+        }
 
         int childCount = level.getChildCount();
         DefaultMutableTreeNode child;
@@ -261,7 +265,9 @@ public class DAAPathFinder {
 
     private PathElement getDoBranchNodeInLevel(DefaultMutableTreeNode level) {
 	DataFlowNode inode = currentPath.getLast();
-        if (!inode.isType(NodeType.DO_EXPR)) return null;
+        if (!inode.isType(NodeType.DO_EXPR)) {
+            return null;
+        }
 
         int childCount = level.getChildCount();
         DefaultMutableTreeNode child;

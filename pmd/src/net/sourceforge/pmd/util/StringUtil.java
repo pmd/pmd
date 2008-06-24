@@ -122,10 +122,14 @@ public class StringUtil {
 		char[] chars = source.toCharArray();
 
 		for (int i=0; i<length; i++) {
-			if (chars[i] == delimiter) delimiterCount++;
+			if (chars[i] == delimiter) {
+			    delimiterCount++;
+			}
 			}
 
-		if (delimiterCount == 0) return new String[] { source };
+		if (delimiterCount == 0) {
+		    return new String[] { source };
+		}
 
 		String results[] = new String[delimiterCount+1];
 
@@ -134,7 +138,9 @@ public class StringUtil {
 
 		while (offset <= length) {
 			int pos = source.indexOf(delimiter, offset);
-			if (pos < 0) pos = length;
+			if (pos < 0) {
+			    pos = length;
+			}
 			results[i++] = pos == offset ? "" : source.substring(offset, pos);
 			offset = pos + 1;
 			}
@@ -183,7 +189,9 @@ public class StringUtil {
 	 */
 	public static void asStringOn(StringBuffer sb, Iterator iter, String separator) {
 		
-	    if (!iter.hasNext()) return;
+	    if (!iter.hasNext()) {
+		return;
+	    }
 	    
 	    sb.append(iter.next());
 	    
@@ -204,7 +212,9 @@ public class StringUtil {
 		int minLength = Integer.MAX_VALUE;
 		
 		for (int i=0; i<strings.length; i++) {
-			if (strings[i] == null) return 0;
+			if (strings[i] == null) {
+			    return 0;
+			}
 			minLength = Math.min(minLength, strings[i].length());
 		}
 		
@@ -223,17 +233,23 @@ public class StringUtil {
 	public static int maxCommonLeadingWhitespaceForAll(String[] strings) {
 		
 		int shortest = lengthOfShortestIn(strings);
-		if (shortest == 0) return 0;
+		if (shortest == 0) {
+		    return 0;
+		}
 		
 		char[] matches = new char[shortest];
 		
 		String str;
 		for (int m=0; m<matches.length; m++) {
 			matches[m] = strings[0].charAt(m);
-			if (!Character.isWhitespace(matches[m])) return m;
+			if (!Character.isWhitespace(matches[m])) {
+			    return m;
+			}
 			for (int i=0; i<strings.length; i++) {
 				str = strings[i];
-				if (str.charAt(m) != matches[m])  return m; 
+				if (str.charAt(m) != matches[m]) {
+				    return m; 
+				}
 				}
 		}
 		
@@ -250,7 +266,9 @@ public class StringUtil {
 	 */
 	public static String[] trimStartOn(String[] strings, int trimDepth) {
 		
-		if (trimDepth == 0) return strings;
+		if (trimDepth == 0) {
+		    return strings;
+		}
 		
 		String[] results = new String[strings.length];
 		for (int i=0; i<strings.length; i++) {

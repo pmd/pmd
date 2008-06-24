@@ -49,9 +49,15 @@ public class VariableAccess {
     }
 
     public String toString() {
-        if (isDefinition()) return "Definition(" + variableName + ")";
-        if (isReference()) return "Reference(" + variableName + ")";
-        if (isUndefinition()) return "Undefinition(" + variableName + ")";
+        if (isDefinition()) {
+            return "Definition(" + variableName + ")";
+        }
+        if (isReference()) {
+            return "Reference(" + variableName + ")";
+        }
+        if (isUndefinition()) {
+            return "Undefinition(" + variableName + ")";
+        }
         throw new RuntimeException("Access type was never set");
     }
 }

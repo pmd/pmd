@@ -92,7 +92,9 @@ public class CharacterProperty extends AbstractProperty {
 	public Object valueFrom(String valueString) throws IllegalArgumentException {
 		
 		if (maxValueCount() == 1) {
-			if (valueString.length() > 1) throw new IllegalArgumentException(valueString);
+			if (valueString.length() > 1) {
+			    throw new IllegalArgumentException(valueString);
+			}
 			return Character.valueOf(valueString.charAt(0));
 		}
 		

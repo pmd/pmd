@@ -24,8 +24,9 @@ public abstract class NodeIterator implements Iterator<Node> {
     }
 
     public Node next() {
-        if (node == null)
+        if (node == null) {
             throw new NoSuchElementException();
+        }
         Node ret = node;
         node = getNextNode(node);
         return ret;

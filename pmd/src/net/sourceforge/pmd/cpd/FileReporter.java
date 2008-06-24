@@ -38,7 +38,9 @@ public class FileReporter {
                 writer = new BufferedWriter(new OutputStreamWriter(outputStream, encoding));
                 writer.write(content);
             } finally {
-                if (writer != null) writer.close();
+                if (writer != null) {
+                    writer.close();
+                }
             }
         } catch (IOException ioe) {
             throw new ReportException(ioe);

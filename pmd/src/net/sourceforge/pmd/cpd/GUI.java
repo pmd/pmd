@@ -163,7 +163,9 @@ public class GUI implements CPDListener {
             JFileChooser fcSave	= new JFileChooser();
             int ret = fcSave.showSaveDialog(GUI.this.frame);
             File f = fcSave.getSelectedFile();
-            if (f == null || ret != JFileChooser.APPROVE_OPTION) return;
+            if (f == null || ret != JFileChooser.APPROVE_OPTION) {
+        	return;
+            }
                         
             if (!f.canWrite()) {
                 PrintWriter pw = null;
@@ -175,7 +177,9 @@ public class GUI implements CPDListener {
                 } catch (IOException e) {
                     error("Couldn't save file" + f.getAbsolutePath(), e);
                 } finally {
-                    if (pw != null) pw.close();
+                    if (pw != null) {
+                	pw.close();
+                    }
                 }
             } else {
                 error("Could not write to file " + f.getAbsolutePath(), null);
@@ -412,7 +416,9 @@ public class GUI implements CPDListener {
     	StringBuffer sb = new StringBuffer();
     	    	
     	for (int r=0; r<selectionIndices.length; r++) {
-			if (r > 0) sb.append('\n');
+			if (r > 0) {
+			    sb.append('\n');
+			}
 			sb.append(resultsTable.getValueAt(selectionIndices[r], 0));
     		for (int c=1; c<colCount; c++) {
     			sb.append('\t');
@@ -469,7 +475,9 @@ public class GUI implements CPDListener {
     private boolean isLegalPath(String path, LanguageConfig config) {
     	String[] extensions = config.extensions();
     	for (int i=0; i<extensions.length; i++) {
-    		if (path.endsWith(extensions[i]) && extensions[i].length() > 0) return true;
+    		if (path.endsWith(extensions[i]) && extensions[i].length() > 0) {
+    		    return true;
+    		}
     	}
     	return false;
     }
@@ -619,7 +627,9 @@ public class GUI implements CPDListener {
 			public void sortDescending(boolean flag) { sortDescending = flag; };
 			public void sort(Comparator<Match> comparator) { 
 				Collections.sort(items, comparator);
-				if (sortDescending) Collections.reverse(items);
+				if (sortDescending) {
+				    Collections.reverse(items);
+				}
 				}
     		};
     	

@@ -77,7 +77,9 @@ public class StringProperty extends AbstractProperty {
 	 */
 	public Object valueFrom(String valueString) {
 		
-		if (maxValueCount() == 1) return valueString;
+		if (maxValueCount() == 1) {
+		    return valueString;
+		}
 		
 		return StringUtil.substringsOf(valueString, multiValueDelimiter);
 	}
@@ -104,13 +106,17 @@ public class StringProperty extends AbstractProperty {
 
 		if (maxValueCount() == 1) {
 			String testValue = (String)value;
-			if (!containsDelimiter(testValue)) return null;			
+			if (!containsDelimiter(testValue)) {
+			    return null;			
+			}
 			return illegalCharMsg();
 		}
 		
 		String[] values = (String[])value;
 		for (int i=0; i<values.length; i++) {
-			if (!containsDelimiter(values[i])) continue;	
+			if (!containsDelimiter(values[i])) {
+			    continue;	
+			}
 			return illegalCharMsg();
 			}
 		

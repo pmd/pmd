@@ -74,8 +74,9 @@ public class CodeEditorTextPane extends JTextPane implements LineGetter, ActionL
         } catch (IOException ioe) {
         } finally {
             try {
-                if (fw != null)
+                if (fw != null) {
                     fw.close();
+                }
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }
@@ -97,7 +98,9 @@ public class CodeEditorTextPane extends JTextPane implements LineGetter, ActionL
             return "";
         } finally {
             try {
-                if (br != null) br.close();
+                if (br != null) {
+                    br.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

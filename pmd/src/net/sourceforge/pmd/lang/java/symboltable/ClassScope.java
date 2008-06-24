@@ -161,7 +161,9 @@ public class ClassScope extends AbstractScope {
 
     public String toString() {
         String res = "ClassScope (" + className + "): ";
-        if (!classNames.isEmpty()) res += "(" + glomNames(classNames.keySet()) + ")";
+        if (!classNames.isEmpty()) {
+            res += "(" + glomNames(classNames.keySet()) + ")";
+        }
         if (!methodNames.isEmpty()) {
             for (MethodNameDeclaration mnd: methodNames.keySet()) {
                 res += mnd.toString();
@@ -170,7 +172,9 @@ public class ClassScope extends AbstractScope {
                 res += ",";
             }
         }
-        if (!variableNames.isEmpty()) res += "(" + glomNames(variableNames.keySet()) + ")";
+        if (!variableNames.isEmpty()) {
+            res += "(" + glomNames(variableNames.keySet()) + ")";
+        }
         return res;
     }
 
