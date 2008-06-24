@@ -22,8 +22,6 @@
 
 	<rule ref="rulesets/basic.xml">
     	<exclude name="CollapsibleIfStatements"/>
-		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
-    	<exclude name="JumbledIncrementer"/>
 	</rule>
 
 	<rule ref="rulesets/braces.xml"/>

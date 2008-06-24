@@ -88,6 +88,7 @@ public class MatchAlgorithm {
         cpdListener.phaseUpdate(CPDListener.DONE);
     }
 
+    @SuppressWarnings("PMD.JumbledIncrementer")
     private Map<TokenEntry, Object> hash() {
         Map<TokenEntry, Object> markGroups = new HashMap<TokenEntry, Object>(tokens.size());
         for (int i = code.size() - 1; i >= 0; i--) {
