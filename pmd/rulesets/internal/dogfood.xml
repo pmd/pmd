@@ -26,10 +26,7 @@
     	<exclude name="JumbledIncrementer"/>
 	</rule>
 
-	<rule ref="rulesets/braces.xml">
-		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
-		<exclude name="WhileLoopsMustUseBraces"/>
-	</rule>
+	<rule ref="rulesets/braces.xml"/>
 
 	<rule ref="rulesets/clone.xml"/>
 

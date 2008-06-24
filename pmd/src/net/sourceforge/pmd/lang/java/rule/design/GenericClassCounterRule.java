@@ -85,8 +85,9 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 	private List<String> arrayAsList(String[] array) {
 		List<String> list = new ArrayList<String>(array.length);
 		int nbItem = 0;
-		while (nbItem < array.length )
+		while (nbItem < array.length ) {
 			list.add(array[nbItem++]);
+		}
 		return list;
 	}
 
