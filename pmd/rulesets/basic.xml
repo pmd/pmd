@@ -497,8 +497,7 @@ class Foo {
 
 <rule name="BigIntegerInstantiation"
   since="3.9"
-  message="Don't create instances of already existing
-BigInteger and BigDecimal (ZERO, ONE, TEN)"
+  message="Don't create instances of already existing BigInteger and BigDecimal (ZERO, ONE, TEN)"
   class="net.sourceforge.pmd.lang.java.rule.basic.BigIntegerInstantiationRule"
   externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#BigIntegerInstantiation">
   <description>
@@ -683,7 +682,7 @@ public class Test {
             </property>
         </properties>
         <example>
-            <![CDATA[[
+            <![CDATA[
             // These are typo bugs, or at best needlessly complex and confusing:
             int i = - -1;
             int j = + - +1;
