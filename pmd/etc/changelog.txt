@@ -298,6 +298,7 @@ The default Java version processed by PMD is now uniformly Java 1.5.
 RuleViolations in Reports now uses List internally, and RuleViolationComparator is no longer broken
 TokenManager errors now include a file name whenever possible for every AST in PMD
 Added file encoding option to CPD GUI, which already existed for the command line and Ant
+AssignmentInOperand enhanced to catch assignment in 'for' condition, as well as use of increment/decrement operators.  Customization properties added to allow assignment in if/while/for, or use of increment/decrement.
 Creating an Empty Code Ruleset and moved the following rules from Basic ruleset:
         * Empty Code Rules
         * EmptyCatchBlock
