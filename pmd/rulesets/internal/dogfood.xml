@@ -196,9 +196,6 @@
 		<exclude name="UnusedModifier"/>
 	</rule>
 
-	<rule ref="rulesets/useless.xml">
-		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
-		<exclude name="UselessParentheses"/>
-	</rule>
+	<rule ref="rulesets/useless.xml"/>
 
 </ruleset>
