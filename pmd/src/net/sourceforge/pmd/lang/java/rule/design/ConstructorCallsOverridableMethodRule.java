@@ -474,7 +474,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         }
     }
 
-    private static final int compareNodes(Node n1, Node n2) {
+    private static int compareNodes(Node n1, Node n2) {
         int l1 = n1.getBeginLine();
         int l2 = n2.getBeginLine();
         if (l1 == l2) {
