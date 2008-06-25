@@ -1,7 +1,9 @@
 package net.sourceforge.pmd.util.designer;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -12,15 +14,15 @@ public class DFAGraphRule extends AbstractJavaRule {
     private List<ASTConstructorDeclaration> constructors;
 
     public DFAGraphRule() {
-        super.setUsesDFA();
+	super.setUsesDFA();
     }
 
     public List<ASTMethodDeclaration> getMethods() {
-        return this.methods;
+	return this.methods;
     }
 
     public List<ASTConstructorDeclaration> getConstructors() {
-        return this.constructors;
+	return this.constructors;
     }
 
     @Override
@@ -35,6 +37,10 @@ public class DFAGraphRule extends AbstractJavaRule {
 	return super.visit(node, data);
     }
 
+    @Override
+    public Object visit(ASTCompilationUnit acu, Object data) {
+	methods = new ArrayList<ASTMethodDeclaration>();
+	constructors = new ArrayList<ASTConstructorDeclaration>();
+	return super.visit(acu, data);
+    }
 }
-
-
