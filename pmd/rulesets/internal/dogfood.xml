@@ -191,7 +191,6 @@
 	<rule ref="rulesets/unusedcode.xml">
 		<exclude name="UnusedFormalParameter"/>
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
-		<exclude name="UnusedPrivateMethod"/>
 		<exclude name="UnusedPrivateField"/>
 	</rule>
 

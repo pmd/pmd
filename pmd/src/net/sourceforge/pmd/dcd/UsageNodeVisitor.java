@@ -220,10 +220,4 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
 	private void ignore(String description, MemberNode memberNode) {
 		System.out.println("Ignoring " + description + ": " + memberNode.toStringLong());
 	}
-
-	private void printMember(MemberNode memberNode) {
-		if (memberNode.getUsers().size() == 0) {
-			System.out.println("\t" + memberNode.toStringLong());
-		}
-	}
 }

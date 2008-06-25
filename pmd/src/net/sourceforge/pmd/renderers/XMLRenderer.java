@@ -130,9 +130,11 @@ public class XMLRenderer extends OnTheFlyRenderer {
         buffer.append(" timestamp=\"").append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date())).append('"');
     }
 
+    // FIXME: elapsed time not available until the end of the processing
+    /*
     private String createTimeElapsedAttr(Report rpt) {
         Report.ReadableDuration d = new Report.ReadableDuration(rpt.getElapsedTimeInMillis());
         return " elapsedTime=\"" + d.getTime() + "\"";
     }
-
+    */
 }
