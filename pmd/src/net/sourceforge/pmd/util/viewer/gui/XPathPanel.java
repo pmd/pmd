@@ -59,6 +59,9 @@ public class XPathPanel extends JTabbedPane implements ViewerModelListener {
             case ViewerModelEvent.CODE_RECOMPILED:
                 setSelectedIndex(0);
                 break;
+            default:
+        	// Do nothing
+                break;
         }
     }
 }

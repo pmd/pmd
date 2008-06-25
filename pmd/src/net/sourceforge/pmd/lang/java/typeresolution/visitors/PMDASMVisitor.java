@@ -151,6 +151,9 @@ public class PMDASMVisitor implements ClassVisitor {
 		case Type.OBJECT:
 			parseClassName(t.getClassName().replace('.', '/'));
 			break;
+		default:
+		    // Do nothing
+		    break;
 		}
 	}
 

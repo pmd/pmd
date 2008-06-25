@@ -81,7 +81,6 @@
 		<exclude name="UncommentedEmptyMethod"/>
 		<exclude name="UnnecessaryLocalBeforeReturn"/>
 		<exclude name="ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
-		<exclude name="SwitchStmtsShouldHaveDefault"/>
 		<exclude name="AbstractClassWithoutAbstractMethod"/>
 		<exclude name="AvoidConstantsInterface"/>
 		<exclude name="UseCollectionIsEmpty"/>

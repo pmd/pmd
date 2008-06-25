@@ -612,8 +612,8 @@ public class GUI implements CPDListener {
     				case 2: return Integer.toString(match.getLineCount());
     				case 1: return match.getMarkCount() > 2 ? Integer.toString(match.getMarkCount()) : "";
     				case 99: return match;
+    				default: return "";
     				}
-    			return "";
     		 	}
 			public int getColumnCount() { return matchColumns.length;	}
 			public int getRowCount() {	return items.size(); }

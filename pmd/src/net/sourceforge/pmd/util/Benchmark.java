@@ -329,6 +329,9 @@ public class Benchmark {
                     buf.append("Total                                           Time (secs)" + PMD.EOL);
                     buf.append(PMD.EOL);
                     break;
+                default:
+                    // Do nothing
+                    break;
             }
             buf.append(buf2.toString());
             buf.append(PMD.EOL);

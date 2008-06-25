@@ -72,6 +72,9 @@ public class EvaluationResultsPanel extends JPanel implements ViewerModelListene
                 list.setListData(new Vector(0));
 
                 break;
+            default:
+        	// Do nothing
+                break;
         }
     }
 }

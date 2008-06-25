@@ -83,6 +83,9 @@ public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelecti
                     tree.scrollPathToVisible(path);
                 }
                 break;
+            default:
+        	// Do nothing
+        	break;
         }
     }
 

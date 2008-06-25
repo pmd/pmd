@@ -162,6 +162,10 @@ public class Linker {
 		                               }
 		*/
 		continueBreakReturnStack.remove(0); // delete this statement if you uncomment the stuff above
+		break;
+		default:
+		    // Do nothing
+		    break;
 	    }
 	}
     }

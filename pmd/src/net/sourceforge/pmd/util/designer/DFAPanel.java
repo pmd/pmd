@@ -191,6 +191,10 @@ public class DFAPanel extends JComponent implements ListSelectionListener {
 	    case SwingConstants.WEST:
 		g.drawLine(x, y, x + height, y - width / 2);
 		g.drawLine(x, y, x + height, y + width / 2);
+		break;
+	    default:
+		// Do nothing
+		break;
 	    }
 	}
 
