@@ -127,7 +127,6 @@
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="SystemPrintln"/>
 		<exclude name="AvoidPrintStackTrace"/>
-		<exclude name="LoggerIsNotStaticFinal"/>
 	</rule>
 
 	<!-- Specifically reference via other referencing RuleSets to test Reference to Reference -->

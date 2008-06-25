@@ -17,6 +17,7 @@ public class ScopedLogHandlersManager {
 
 	private static String PACKAGE_NAME = "net.sourceforge.pmd";
 
+    @SuppressWarnings("PMD.LoggerIsNotStaticFinal")
     private Logger logger;
     private Level oldLogLevel;
     private Handler[] oldHandlers;
