@@ -36,7 +36,6 @@
 	<rule ref="rulesets/controversial.xml">
 		<exclude name="OnlyOneReturn"/>
 		<exclude name="AtLeastOneConstructor"/>
-		<exclude name="DontImportSun"/>
 		<exclude name="CallSuperInConstructor"/>
 		<exclude name="DefaultPackage"/>
 		<exclude name="BooleanInversion"/>
