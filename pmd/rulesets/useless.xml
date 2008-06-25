@@ -222,7 +222,7 @@ if (method1().equals(a)) {
        <property name="xpath">
           <value>
           <![CDATA[
-//Expression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1]
+//Expression/PrimaryExpression/PrimaryPrefix/Expression[count(*)=1 and count(./CastExpression)=0]
           ]]>
           </value>
        </property>

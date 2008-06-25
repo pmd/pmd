@@ -88,15 +88,28 @@ public class Foo {
 }
      ]]></code>
     </test-code>
-    <test-code regressionTest="false">
+    <test-code>
         <description><![CDATA[
-typecast, false positive
+typecast, ok
      ]]></description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
    public String bar(Object o) {
 	    return ((Exception) o).getMessage();
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+typecast with extra, bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public String bar(Object o) {
+	    return (((Exception) o)).getMessage();
    }
 }
      ]]></code>
