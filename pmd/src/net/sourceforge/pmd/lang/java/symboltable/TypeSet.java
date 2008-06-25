@@ -84,6 +84,7 @@ public class TypeSet {
     public static class PrimitiveTypeResolver implements Resolver {
 	private Map<String, Class<?>> primitiveTypes = new HashMap<String, Class<?>>();
 
+	@SuppressWarnings("PMD.AvoidUsingShortType")
 	public PrimitiveTypeResolver() {
 	    primitiveTypes.put("int", int.class);
 	    primitiveTypes.put("float", float.class);

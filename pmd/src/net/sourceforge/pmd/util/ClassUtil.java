@@ -12,6 +12,7 @@ public class ClassUtil {
     private ClassUtil() {
     };
 
+    @SuppressWarnings("PMD.AvoidUsingShortType")
     private static final TypeMap primitiveTypesByName = new TypeMap(new Class[] { int.class, byte.class, long.class,
 	    short.class, float.class, double.class, char.class, boolean.class, });
 
