@@ -19,7 +19,9 @@ import java.io.IOException;
  */
 public class ReportHTMLPrintVisitor extends ReportVisitor {
 
+    @SuppressWarnings("PMD.AvoidStringBufferField")
     private StringBuffer packageBuf = new StringBuffer();
+    @SuppressWarnings("PMD.AvoidStringBufferField")
     private StringBuffer classBuf = new StringBuffer();
     private int length;
     private String baseDir;

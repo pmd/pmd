@@ -176,7 +176,6 @@
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="AvoidDuplicateLiterals"/>
 		<exclude name="InefficientEmptyStringCheck"/>
-		<exclude name="AvoidStringBufferField"/>
 		<exclude name="ConsecutiveLiteralAppends"/>
 		<exclude name="UseIndexOfChar"/>
 		<exclude name="InsufficientStringBufferDeclaration"/>

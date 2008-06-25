@@ -6,6 +6,7 @@ import java.util.StringTokenizer;
 
 public class SimpleRuleSetNameMapper {
 
+    @SuppressWarnings("PMD.AvoidStringBufferField")
     private StringBuffer rulesets = new StringBuffer();
     private Map<String, String> nameMap = new HashMap<String, String>();
 
