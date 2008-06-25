@@ -4,7 +4,7 @@
   <groupId>pmd</groupId>
   <artifactId>pmd</artifactId>
   <name>PMD</name>
-  <version>5.0</version>
+  <version>5.0-SNAPSHOT</version>
   <description>
     <![CDATA[
 <p>PMD scans Java source code and looks for potential problems like:</p>
@@ -383,14 +383,14 @@
 
   <distributionManagement>
     <repository>
-      <id>pmd-repo</id>
+      <id>pmd-snapshot-repo</id>
       <name>Default Repository</name>
-      <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2</url>
+      <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/snapshot/maven2</url>
     </repository>
     <site>
-      <id>pmd-site</id>
+      <id>pmd-snapshot-site</id>
       <name>Default Site</name>
-      <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs</url>
+      <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/snapshot</url>
     </site>
   </distributionManagement>
 
@@ -492,6 +492,21 @@
   </reporting>
 
   <profiles>
+    <profile>
+      <id>release</id>
+      <distributionManagement>
+        <repository>
+          <id>pmd-repo</id>
+          <name>Default Repository</name>
+          <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2</url>
+        </repository>
+        <site>
+          <id>pmd-site</id>
+          <name>Default Site</name>
+          <url>scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs</url>
+        </site>
+      </distributionManagement>
+    </profile>
     <profile>
       <id>clover</id>
       <activation>

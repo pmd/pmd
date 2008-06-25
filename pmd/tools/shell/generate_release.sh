@@ -1,11 +1,29 @@
 #!/bin/bash
 
+if [ $# != 2 ]; then
+  echo "Two arguments are required: <version> release|snapshot"
+  exit 1
+fi
+
+if [ $2 = "release" ]; then
+    buildtype="release"
+else
+  if [ $2 = "snapshot" ]; then
+    buildtype="snapshot"
+  else
+    echo "unknown build type: $2"
+    exit 1
+  fi
+fi
+
 version=$1
 
-pmd_top_dir=~/tmp
+pmd_top_dir=`pwd`/../../target/release
 pmd_bin_dir=$pmd_top_dir/pmd-$version
 pmd_src_dir=$pmd_top_dir/pmd-$version
 pmd_tmp_dir=$pmd_top_dir/pmd-tmp
+
+mkdir -p $pmd_top_dir
 
 echo
 echo "Rebuilding everything"
@@ -14,10 +32,13 @@ echo
 cd ../..
 ant dist
 
-echo
-echo "Press [enter] to generate docs"
+if [ buildtype = "release" ]; then
+  echo
+  echo "Press [enter] to generate docs"
 
-read RESP
+  read RESP
+fi
+
 export MAVEN_OPTS="-Xmx512m -Xms192m"
 mvn site
 
@@ -54,24 +75,26 @@ echo
 echo "binary package generated"
 echo
 
-release_tag=`echo $version|sed -e "s/\./_/g"`
+if [ buildtype = "release" ]; then
+  release_tag=`echo $version|sed -e "s/\./_/g"`
 
-echo
-echo
-echo "Type \"yes\" to tag svn repository using 'pmd_release_$release_tag'"
+  echo
+  echo
+  echo "Type \"yes\" to tag svn repository using 'pmd_release_$release_tag'"
 
-read TAG_RESP;
+  read TAG_RESP;
 
-if [ "$TAG_RESP" = "yes" ]; then
+  if [ "$TAG_RESP" = "yes" ]; then
 	echo
 	echo "Tagging release using"
 	echo "svn copy -m \"$version release tag\" https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag"
 	echo
 	svn copy -m "$version release tag" https://pmd.svn.sourceforge.net/svnroot/pmd/trunk/pmd  https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_$release_tag
-else
+  else
 	echo
 	echo "Skipping svn tag!!!"
 	echo
+  fi
 fi
 
 
@@ -100,7 +123,9 @@ echo
 echo "source package generated"
 echo
 
-echo "Use the command below to upload to sourceforge"
-echo
-echo "lftp -e \"mput -O incoming/ $pmd_top_dir/pmd-src-$version.zip $pmd_top_dir/pmd-bin-$version.zip\" upload.sourceforge.net"
+if [ buildtype = "release" ]; then
+  echo "Use the command below to upload to sourceforge"
+  echo
+  echo "rsync -avP -e ssh $pmd_top_dir/pmd-src-$version.zip $pmd_top_dir/pmd-bin-$version.zip xlv@frs.sourceforge.net:uploads/"
+fi
 

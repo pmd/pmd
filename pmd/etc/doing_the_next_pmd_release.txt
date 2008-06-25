@@ -37,7 +37,7 @@ TESTS: Can you
 2) run the Ant 'pmd' task and get a report
 ant pmd
 
-run "./generate_release.sh <version>" in tools/shell
+run "./generate_release.sh <version> release" in tools/shell
 
 It will run:
 
@@ -54,10 +54,6 @@ if you see a bug and fix it, you can delete the release using:
 svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_<version>
 and then retag it
 
-ncftpput upload.sourceforge.net incoming/ pmd-src-<version>.zip pmd-bin-<version>.zip
-
-lftp -e "mput -O incoming/ pmd-src-<version>.zip pmd-bin-<version>.zip" upload.sourceforge.net
-
 
 Go to Admin, File Releases, Add release
 Paste stuff into the changelog/readme boxes
@@ -69,9 +65,7 @@ Click File Releases, Edit Release, set previous version to 'hidden'.
 upload command below will create and upload the maven artifacts to sourceforge. Login info
 for 'pmd-repo' must be defined in ~/.m2/settings.xml
 
-cd ~/pmd/pmd/
 update the "download" and "what's new" link in navigation.xml
-./docs.sh all
 ./docs.sh upload
 
 update cpd.jnlp by running:
