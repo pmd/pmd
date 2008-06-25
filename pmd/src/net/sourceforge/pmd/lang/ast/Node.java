@@ -19,27 +19,27 @@ public interface Node {
      * This method is called after the node has been made the current
      * node.  It indicates that child nodes can now be added to it.
      */
-    public void jjtOpen();
+    void jjtOpen();
 
     /**
      * This method is called after all the child nodes have been
      * added.
      */
-    public void jjtClose();
+    void jjtClose();
 
     /**
      * This pair of methods are used to inform the node of its
      * parent.
      */
-    public void jjtSetParent(Node parent);
+    void jjtSetParent(Node parent);
 
-    public Node jjtGetParent();
+    Node jjtGetParent();
 
     /**
      * This method tells the node to add its argument to the node's
      * list of children.
      */
-    public void jjtAddChild(Node child, int index);
+    void jjtAddChild(Node child, int index);
 
     /**
      * This method returns a child node.  The children are numbered
@@ -48,14 +48,14 @@ public interface Node {
      * @param index the child index. Must be nonnegative and less than
      *          {@link #jjtGetNumChildren}.
      */
-    public Node jjtGetChild(int index);
+    Node jjtGetChild(int index);
 
     /**
      * Return the number of children the node has.
      */
-    public int jjtGetNumChildren();
+    int jjtGetNumChildren();
 
-    public int jjtGetId();
+    int jjtGetId();
 
     String getImage();
 

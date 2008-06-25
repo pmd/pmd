@@ -18,7 +18,7 @@ public interface DataSource {
      * @return the InputStream reading the source file
      * @throws IOException if the file can't be opened
      */
-    public InputStream getInputStream() throws IOException;
+    InputStream getInputStream() throws IOException;
 
     /**
      * Return a nice version of the filename.
@@ -27,5 +27,5 @@ public interface DataSource {
      * @param inputFileName name of a "master" file this file is relative to
      * @return String
      */
-    public String getNiceFileName(boolean shortNames, String inputFileName);
+    String getNiceFileName(boolean shortNames, String inputFileName);
 }

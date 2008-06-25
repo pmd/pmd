@@ -591,11 +591,11 @@ public class GUI implements CPDListener {
     }
 	
     private interface SortingTableModel<E> extends TableModel {
-    	public int sortColumn();
-    	public void sortColumn(int column);
-    	public boolean sortDescending();
-    	public void sortDescending(boolean flag);
-    	public void sort(Comparator<E> comparator);
+    	int sortColumn();
+    	void sortColumn(int column);
+    	boolean sortDescending();
+    	void sortDescending(boolean flag);
+    	void sort(Comparator<E> comparator);
     }
     
     private TableModel tableModelFrom(final List<Match> items) {

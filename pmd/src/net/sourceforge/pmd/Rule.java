@@ -19,12 +19,12 @@ public interface Rule {
     /**
      * Name of the property to universally suppress violations with messages matching a regular expression.
      */
-    public static final String VIOLATION_SUPPRESS_REGEX_PROPERTY = "violationSuppressRegex";
+    String VIOLATION_SUPPRESS_REGEX_PROPERTY = "violationSuppressRegex";
 
     /**
      * Name of the property to universally suppress violations on nodes which match a given relative XPath expression.
      */
-    public static final String VIOLATION_SUPPRESS_XPATH_PROPERTY = "violationSuppressXPath";
+    String VIOLATION_SUPPRESS_XPATH_PROPERTY = "violationSuppressXPath";
 
     /**
      * Get the Language of this Rule.

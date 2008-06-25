@@ -193,7 +193,6 @@
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="UnusedPrivateMethod"/>
 		<exclude name="UnusedPrivateField"/>
-		<exclude name="UnusedModifier"/>
 	</rule>
 
 	<rule ref="rulesets/useless.xml"/>

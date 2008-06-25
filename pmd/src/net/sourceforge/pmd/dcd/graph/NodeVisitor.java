@@ -8,27 +8,27 @@ package net.sourceforge.pmd.dcd.graph;
  */
 public interface NodeVisitor {
 
-	public Object visit(UsageGraph usageGraph, Object data);
+	Object visit(UsageGraph usageGraph, Object data);
 
-	public Object visit(ClassNode classNode, Object data);
+	Object visit(ClassNode classNode, Object data);
 
-	public Object visitFields(ClassNode classNode, Object data);
+	Object visitFields(ClassNode classNode, Object data);
 
-	public Object visit(FieldNode fieldNode, Object data);
+	Object visit(FieldNode fieldNode, Object data);
 
-	public Object visitConstructors(ClassNode classNode, Object data);
+	Object visitConstructors(ClassNode classNode, Object data);
 
-	public Object visit(ConstructorNode constructorNode, Object data);
+	Object visit(ConstructorNode constructorNode, Object data);
 
-	public Object visitMethods(ClassNode classNode, Object data);
+	Object visitMethods(ClassNode classNode, Object data);
 
-	public Object visit(MethodNode methodNode, Object data);
+	Object visit(MethodNode methodNode, Object data);
 
-	public Object visitUses(MemberNode memberNode, Object data);
+	Object visitUses(MemberNode memberNode, Object data);
 
-	public Object visitUse(MemberNode use, Object data);
+	Object visitUse(MemberNode use, Object data);
 
-	public Object visitUsers(MemberNode memberNode, Object data);
+	Object visitUsers(MemberNode memberNode, Object data);
 
-	public Object visitUser(MemberNode user, Object data);
+	Object visitUser(MemberNode user, Object data);
 }
