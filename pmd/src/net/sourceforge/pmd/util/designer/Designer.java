@@ -429,8 +429,6 @@ public class Designer implements ClipboardOwner {
 
     private class ShowListener implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
-	    MyPrintStream ps = new MyPrintStream();
-	    System.setOut(ps);
 	    TreeNode tn;
 	    try {
 		Node lastCompilationUnit = getCompilationUnit();
