@@ -43,7 +43,6 @@
 		<exclude name="AvoidFinalLocalVariable"/>
 		<exclude name="DataflowAnomalyAnalysis"/>
 		<exclude name="AssignmentInOperand"/>
-		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="NullAssignment"/>
 	</rule>
 	<rule ref="rulesets/controversial.xml/AssignmentInOperand">
@@ -88,7 +87,6 @@
 		<exclude name="UseCollectionIsEmpty"/>
 		<exclude name="AccessorClassGeneration"/>
 		<exclude name="SimplifyBooleanExpressions"/>
-		<exclude name="MissingBreakInSwitch"/>
 		<exclude name="CompareObjectsWithEquals"/>
 		<exclude name="SimplifyBooleanReturns"/>
 	</rule>
