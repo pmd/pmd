@@ -33,10 +33,8 @@ public class ConsoleLogHandler extends Handler {
     }
     
     public void close() throws SecurityException {
-        return;
     }
 
     public void flush() {
-        return;
     }
 }
