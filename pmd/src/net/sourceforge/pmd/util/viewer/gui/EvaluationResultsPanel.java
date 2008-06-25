@@ -58,6 +58,7 @@ public class EvaluationResultsPanel extends JPanel implements ViewerModelListene
     /**
      * @see ViewerModelListener#viewerModelChanged(ViewerModelEvent)
      */
+    @SuppressWarnings("PMD.UseArrayListInsteadOfVector")
     public void viewerModelChanged(ViewerModelEvent e) {
         switch (e.getReason()) {
             case ViewerModelEvent.PATH_EXPRESSION_EVALUATED:

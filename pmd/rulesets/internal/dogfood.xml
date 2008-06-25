@@ -162,7 +162,6 @@
 		<exclude name="AddEmptyString"/>
 		<exclude name="UseStringBufferForStringAppends"/>
 		<exclude name="SimplifyStartsWith"/>
-		<exclude name="UseArrayListInsteadOfVector"/>
 	</rule>
 
 	<rule ref="rulesets/strictexception.xml">
