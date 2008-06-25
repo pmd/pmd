@@ -229,7 +229,8 @@ public class PMD {
 	    return;
 	}
 
-	long reportStart, reportEnd;
+	long reportStart;
+	long reportEnd;
 	Renderer renderer;
 	Writer w = null;
 

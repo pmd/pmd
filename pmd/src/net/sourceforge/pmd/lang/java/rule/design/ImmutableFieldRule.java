@@ -59,7 +59,8 @@ public class ImmutableFieldRule extends AbstractJavaRule {
     }
 
     private int initializedInConstructor(List<NameOccurrence> usages, Set<ASTConstructorDeclaration> allConstructors) {
-        int result = MUTABLE, methodInitCount = 0;
+        int result = MUTABLE;
+        int methodInitCount = 0;
         Set<Node> consSet = new HashSet<Node>();
         for (NameOccurrence occ: usages) {
             if (occ.isOnLeftHandSide() || occ.isSelfAssignment()) {

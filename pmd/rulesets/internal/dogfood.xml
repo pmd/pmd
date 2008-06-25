@@ -47,7 +47,6 @@
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="NullAssignment"/>
 		<exclude name="AvoidUsingShortType"/>
-		<exclude name="OneDeclarationPerLine"/>
 	</rule>
 	<rule ref="rulesets/controversial.xml/AssignmentInOperand">
 		<properties>

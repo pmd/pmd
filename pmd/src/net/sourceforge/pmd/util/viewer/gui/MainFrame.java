@@ -132,7 +132,8 @@ public class MainFrame
      */
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
-        long t0, t1;
+        long t0;
+        long t1;
         if (command.equals(COMPILE_ACTION)) {
             try {
                 t0 = System.currentTimeMillis();
