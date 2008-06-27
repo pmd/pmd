@@ -21,7 +21,7 @@ public class XMLRenderer extends OnTheFlyRenderer {
 
     public void start() throws IOException {
         Writer writer = getWriter();
-        StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer(500);
         buf.append("<?xml version=\"1.0\" encoding=\"" + this.encoding + "\"?>").append(PMD.EOL);
         createVersionAttr(buf);
         createTimestampAttr(buf);
@@ -33,7 +33,7 @@ public class XMLRenderer extends OnTheFlyRenderer {
 
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
-        StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer(500);
         String filename = null;
 
         // rule violations
@@ -82,7 +82,7 @@ public class XMLRenderer extends OnTheFlyRenderer {
 
     public void end() throws IOException {
         Writer writer = getWriter();
-        StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer(500);
         // errors
         for (Report.ProcessingError pe: errors) {
             buf.setLength(0);

@@ -82,7 +82,8 @@ public class PapariTextRenderer extends AbstractRenderer {
     }
 
     public void render(Writer writer, Report report) throws IOException {
-        StringBuffer buf = new StringBuffer(PMD.EOL);
+        StringBuffer buf = new StringBuffer(500);
+        buf.append(PMD.EOL);
         initializeColorsIfSupported();
         String lastFile = null;
         int numberOfErrors = 0;

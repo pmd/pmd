@@ -178,7 +178,6 @@
 		<exclude name="InefficientEmptyStringCheck"/>
 		<exclude name="ConsecutiveLiteralAppends"/>
 		<exclude name="UseIndexOfChar"/>
-		<exclude name="InsufficientStringBufferDeclaration"/>
 		<exclude name="InefficientStringBuffering"/>
 	</rule>
 

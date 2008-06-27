@@ -36,7 +36,7 @@ public class TextRenderer extends OnTheFlyRenderer {
 
     public void end() throws IOException {
         Writer writer = getWriter();
-        StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer(500);
         if (!errors.isEmpty()) {
             empty = false;
 

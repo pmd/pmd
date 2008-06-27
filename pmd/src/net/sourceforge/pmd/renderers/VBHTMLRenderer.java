@@ -27,7 +27,7 @@ public class VBHTMLRenderer extends OnTheFlyRenderer {
         }
 
         Writer writer = getWriter();
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer(500);
         String filename = null;
         String lineSep = PMD.EOL;
 
@@ -93,7 +93,7 @@ public class VBHTMLRenderer extends OnTheFlyRenderer {
     }
 
     private String header() {
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer(600);
         sb.append("<html><head><title>PMD</title></head>");
         sb.append("<style type=\"text/css\">");
         sb.append("<!--" + PMD.EOL);

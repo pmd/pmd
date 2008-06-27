@@ -28,7 +28,7 @@ public class SummaryHTMLRenderer extends AbstractRenderer {
     }
 
     public void renderSummary(Writer writer, Report report) throws IOException {
-        StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer(500);
         buf.append("<h2><center>Summary</h2></center>");
         buf.append("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">");
         buf.append("<th>Rule name</th>");
