@@ -635,4 +635,23 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+38, Uses setLength 0 with subsequently more than 16, but less than initial
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {
+  StringBuffer sb = new StringBuffer(100);
+  sb.append("Hello");
+  sb.append("World");
+  sb.setLength(0);
+  sb.append("Hello world");
+  sb.append("Hello world");
+  sb.append("Hello world");
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

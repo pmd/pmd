@@ -300,6 +300,7 @@ TokenManager errors now include a file name whenever possible for every AST in P
 Added file encoding option to CPD GUI, which already existed for the command line and Ant
 AssignmentInOperand enhanced to catch assignment in 'for' condition, as well as use of increment/decrement operators.  Customization properties added to allow assignment in if/while/for, or use of increment/decrement.
 Fix false positive on CastExpressions for UselessParentheses
+Fix false positive where StringBuffer.setLength(0) was using default constructor size of 16, instead of actual constructor size. 
 Creating an Empty Code Ruleset and moved the following rules from Basic ruleset:
         * Empty Code Rules
         * EmptyCatchBlock

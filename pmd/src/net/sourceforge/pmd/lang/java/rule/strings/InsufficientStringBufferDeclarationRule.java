@@ -242,8 +242,12 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             iConstructorLength = -1;
         }
 
-        if(iConstructorLength == 0){
-            iConstructorLength = 16;
+        if (iConstructorLength == 0) {
+            if (constructorLength == -1) {
+        	iConstructorLength = 16;
+            } else {
+        	iConstructorLength = constructorLength;
+            }
         }
 
         return iConstructorLength;
