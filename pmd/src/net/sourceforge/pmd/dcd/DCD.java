@@ -100,11 +100,6 @@ public class DCD {
 				if (new File(dir, name).isDirectory()) {
 					return true;
 				} else {
-					// Ignore IBM EJB crap
-					if (name.startsWith("EJS") || name.startsWith("_") || dir.getPath().indexOf("com\\ibm\\") >= 0
-							|| dir.getPath().indexOf("org\\omg\\") >= 0) {
-						return false;
-					}
 					return name.endsWith(".java");
 				}
 			}

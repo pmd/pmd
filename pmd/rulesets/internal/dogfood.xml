@@ -160,7 +160,6 @@
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="AvoidInstantiatingObjectsInLoops"/>
 		<exclude name="UseStringBufferForStringAppends"/>
-		<exclude name="SimplifyStartsWith"/>
 	</rule>
 
 	<rule ref="rulesets/strictexception.xml">
