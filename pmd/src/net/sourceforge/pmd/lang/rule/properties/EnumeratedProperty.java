@@ -60,7 +60,7 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 	}
 
 	private String nonLegalValueMsgFor(Object value) {
-		return "" + value + " is not a legal value";
+		return value + " is not a legal value";
 	}
 	
 	/**

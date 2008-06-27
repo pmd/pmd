@@ -115,12 +115,12 @@ public abstract class AbstractTokenizer implements Tokenizer
 
     private boolean ignoreCharacter(char tok)
     {
-    	return this.ignorableCharacter.contains("" + tok);
+    	return this.ignorableCharacter.contains(String.valueOf(tok));
     }
 
     private boolean isString(char tok)
     {
-    	return this.stringToken.contains("" + tok);
+    	return this.stringToken.contains(String.valueOf(tok));
     }
 
     private boolean isComment(char tok)

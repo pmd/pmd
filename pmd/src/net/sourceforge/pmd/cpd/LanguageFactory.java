@@ -80,6 +80,6 @@ public class LanguageFactory {
     * ...
     */
    private String languageConventionSyntax(String language) {
-       return (language.charAt(0) + "").toUpperCase() + language.substring(1, language.length()).toLowerCase();
+       return Character.toUpperCase(language.charAt(0)) + language.substring(1, language.length()).toLowerCase();
     }
 }

@@ -159,7 +159,6 @@
 		<exclude name="LocalVariableCouldBeFinal"/>
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="AvoidInstantiatingObjectsInLoops"/>
-		<exclude name="AddEmptyString"/>
 		<exclude name="UseStringBufferForStringAppends"/>
 		<exclude name="SimplifyStartsWith"/>
 	</rule>
