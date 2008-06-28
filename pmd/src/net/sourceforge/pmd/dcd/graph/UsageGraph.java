@@ -126,7 +126,7 @@ public class UsageGraph implements NodeVisitorAcceptor {
 
 	private final void checkClassName(String className) {
 		// Make sure it's not in byte code internal format, or file system path.
-		if (className.indexOf("/") >= 0 || className.indexOf("\\") >= 0) {
+		if (className.indexOf('/') >= 0 || className.indexOf('\\') >= 0) {
 			throw new IllegalArgumentException("Invalid class name: " + className);
 		}
 	}

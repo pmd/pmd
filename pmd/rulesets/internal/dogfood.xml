@@ -171,11 +171,10 @@
 	</rule>
 
 	<rule ref="rulesets/strings.xml">
-		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="AvoidDuplicateLiterals"/>
 		<exclude name="InefficientEmptyStringCheck"/>
+		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="ConsecutiveLiteralAppends"/>
-		<exclude name="UseIndexOfChar"/>
 		<exclude name="InefficientStringBuffering"/>
 	</rule>
 
