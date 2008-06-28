@@ -87,6 +87,7 @@ public abstract class MemberNode<S extends MemberNode<S, T>, T extends Member> i
 
 	public abstract boolean equals(Object that);
 
+	@SuppressWarnings("PMD.SuspiciousEqualsMethodName")
 	public boolean equals(S that) {
 		return equals(that.name, that.desc);
 	}

@@ -151,7 +151,6 @@
 		<exclude name="AvoidFieldNameMatchingTypeName"/>
 		<exclude name="SuspiciousConstantFieldName"/>
 		<exclude name="BooleanGetMethodName"/>
-		<exclude name="SuspiciousEqualsMethodName"/>
 	</rule>
 
 	<rule ref="rulesets/optimizations.xml">
