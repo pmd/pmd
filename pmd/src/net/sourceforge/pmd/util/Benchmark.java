@@ -287,6 +287,8 @@ public class Benchmark {
         StringBuffer buf = new StringBuffer();
         boolean writeRuleHeader = true;
         boolean writeRuleChainRuleHeader = true;
+        long ruleCount = 0;
+        long ruleChainCount = 0;
         for (BenchmarkResult benchmarkResult: results) {
             StringBuffer buf2 = new StringBuffer();
             buf2.append(benchmarkResult.getName());
@@ -307,6 +309,7 @@ public class Benchmark {
                         buf.append("Rule name                                       Time (secs)    # of Evaluations" + PMD.EOL);
                         buf.append(PMD.EOL);
                     }
+                    ruleCount++;
                     break;
                 case TYPE_RULE_CHAIN_RULE:
                     if (writeRuleChainRuleHeader) {
@@ -316,6 +319,7 @@ public class Benchmark {
                         buf.append("Rule name                                       Time (secs)         # of Visits" + PMD.EOL);
                         buf.append(PMD.EOL);
                     }
+                    ruleChainCount++;
                     break;
                 case TYPE_COLLECT_FILES:
                     buf.append(PMD.EOL);
@@ -324,6 +328,11 @@ public class Benchmark {
                     buf.append(PMD.EOL);
                     break;
                 case TYPE_MEASURED_TOTAL:
+                    String s = MessageFormat.format("{0,number,###,###,###,###,###}", ruleCount);
+                    buf.append("Rule Average (" + s + " rules):" + StringUtil.lpad(MessageFormat.format("{0,number,0.000}", ruleCount==0?0:totalTime[TYPE_RULE]/1000000000.0d/ruleCount), 37-s.length()) + PMD.EOL);
+                    s = MessageFormat.format("{0,number,###,###,###,###,###}", ruleChainCount);
+                    buf.append("RuleChain Average (" + s + " rules):" + StringUtil.lpad(MessageFormat.format("{0,number,0.000}", ruleChainCount==0?0:totalTime[TYPE_RULE_CHAIN_RULE]/1000000000.0d/ruleChainCount), 32-s.length()) + PMD.EOL);
+
                     buf.append(PMD.EOL);
                     buf.append("-----------------------------<<< Final Summary >>>-----------------------------" + PMD.EOL);
                     buf.append("Total                                           Time (secs)" + PMD.EOL);
