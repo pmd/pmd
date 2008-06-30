@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<ruleset name="dogfood" 
+	xmlns="http://pmd.sf.net/ruleset/1.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+	xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+	<description>Dogfood goal, delete this when we reach it.</description>
+
+	<exclude-pattern>.*net/sourceforge/pmd/lang/ast/JavaCharStream.java</exclude-pattern>
+	<exclude-pattern>.*net/sourceforge/pmd/lang/ast/SimpleCharStream.java</exclude-pattern>
+	<exclude-pattern>.*net/sourceforge/pmd/lang/ast/TokenMgrError.java</exclude-pattern>
+	<exclude-pattern>.*lang/.*/ast/.*.java</exclude-pattern>
+	<exclude-pattern>.*cppast/.*.java</exclude-pattern>
+
+	<rule ref="rulesets/basic.xml">
+    	<exclude name="CollapsibleIfStatements"/>
+	</rule>
+
+	<rule ref="rulesets/braces.xml"/>
+
+	<rule ref="rulesets/clone.xml"/>
+	
+	<rule ref="rulesets/controversial.xml">
+		<exclude name="OnlyOneReturn"/>
+		<exclude name="AtLeastOneConstructor"/>
+		<exclude name="CallSuperInConstructor"/>
+		<exclude name="DefaultPackage"/>
+		<exclude name="BooleanInversion"/>
+		<exclude name="DataflowAnomalyAnalysis"/>
+		<exclude name="AvoidFinalLocalVariable"/>
+		<exclude name="DataflowAnomalyAnalysis"/>
+		<exclude name="AssignmentInOperand"/>
+		<exclude name="NullAssignment"/>
+	</rule>
+	<rule ref="rulesets/controversial.xml/AssignmentInOperand">
+		<properties>
+			<property name="allowWhile" value="true"/>
+		</properties>
+	</rule>
+
+	<rule ref="rulesets/coupling.xml">
+		<exclude name="CouplingBetweenObjects"/>
+		<exclude name="ExcessiveImports"/>
+	</rule>
+
+	<rule ref="rulesets/design.xml">
+		<exclude name="UseSingleton"/>
+		<exclude name="AvoidDeeplyNestedIfStmts"/>
+		<exclude name="AvoidReassigningParameters"/>
+		<exclude name="SwitchDensity"/>
+		<exclude name="ConstructorCallsOverridableMethod"/>
+		<exclude name="SimpleDateFormatNeedsLocale"/>
+		<exclude name="ImmutableField"/>
+		<exclude name="UseLocaleWithCaseConversions"/>
+		<!--  TODO Is AvoidSynchronizedAtMethodLevel something we should shoot for? -->
+		<exclude name="AvoidSynchronizedAtMethodLevel"/>
+		<exclude name="EmptyMethodInAbstractClassShouldBeAbstract"/>
+		<exclude name="ReturnEmptyArrayRatherThanNull"/>
+		<exclude name="TooFewBranchesForASwitchStatement"/>
+	</rule>
+
+	<rule ref="rulesets/empty.xml">
+		<exclude name="EmptyCatchBlock" />
+	</rule>
+	<rule ref="rulesets/empty.xml/EmptyCatchBlock">
+		<properties>
+			<property name="allowCommentedBlocks" value="true" />
+		</properties>
+	</rule>
+
+	<rule ref="rulesets/finalizers.xml"/>
+
+	<rule ref="rulesets/imports.xml"/>
+
+	<rule ref="rulesets/logging-java.xml">
+	</rule>
+
+	<!-- Specifically reference via other referencing RuleSets to test Reference to Reference -->
+	<rule ref="rulesets/migrating_to_13.xml"/>
+	<rule ref="rulesets/migrating_to_14.xml"/>
+	<rule ref="rulesets/migrating_to_15.xml"/>
+	<rule ref="rulesets/migrating_to_junit4.xml">
+	</rule>
+
+	<rule ref="rulesets/naming.xml">
+		<exclude name="ShortVariable"/>
+		<exclude name="LongVariable"/>
+		<exclude name="ShortMethodName"/>
+		<exclude name="ShortClassName"/>
+	</rule>
+
+	<rule ref="rulesets/optimizations.xml">
+		<exclude name="MethodArgumentCouldBeFinal"/>
+		<exclude name="LocalVariableCouldBeFinal"/>
+	</rule>
+
+	<rule ref="rulesets/strictexception.xml">
+	</rule>
+
+	<rule ref="rulesets/strings.xml">
+		<exclude name="AvoidDuplicateLiterals"/>
+		<exclude name="InefficientEmptyStringCheck"/>
+	</rule>
+
+	<rule ref="rulesets/unusedcode.xml">
+		<exclude name="UnusedFormalParameter"/>
+	</rule>
+
+	<rule ref="rulesets/useless.xml"/>
+
+</ruleset>
