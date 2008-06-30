@@ -2,18 +2,18 @@
 <test-data>
     <test-code>
         <description><![CDATA[
-final statics should be all caps
+member level, final statics should be all caps
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
- private static final int foo = 2;
+ private static final String foo = "2";
 }
      ]]></code>
     </test-code>
     <test-code>
         <description><![CDATA[
-non-finals shouldn't have underscores
+member level, non-finals shouldn't have underscores
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
@@ -24,12 +24,86 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-variables names should start with lowercase character
+local level, non-finals shouldn't have underscores
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+    String foo_bar = "2";
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method level, non-finals shouldn't have underscores
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void foo(boolean foo, String bar, String foo_bar, int bar_foo) {
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+constructor level, non-finals shouldn't have underscores
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Foo(boolean foo, String bar, String foo_bar, int bar_foo) {
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+member level, variables names should start with lowercase character
      ]]></description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
  private int Ubar = 2;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+local level, variables names should start with lowercase character
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo() {
+  int Ubar = 2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+method level, variables names should start with lowercase character
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void foo(int Ubar) {
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+constructor level, variables names should start with lowercase character
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public Foo(int Ubar) {
+ }
 }
      ]]></code>
     </test-code>
@@ -93,25 +167,114 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
-staticPrefix
+Rule property control 
      ]]></description>
-        <rule-property name="staticPrefix">s_</rule-property>
-        <expected-problems>0</expected-problems>
+        <expected-problems>5</expected-problems>
         <code><![CDATA[
 public class Foo {
   static int s_foo = 42;
+  int m_foo = 42;
+  private Foo(int p_foo) {
+   int l_foo = 42;
+  }
+  private void foo(int p_foo) {
+  }
 }
      ]]></code>
     </test-code>
     <test-code>
         <description><![CDATA[
-staticSuffix
+Check prefixes
+     ]]></description>
+        <rule-property name="staticPrefix">s_</rule-property>
+        <rule-property name="memberPrefix">m_</rule-property>
+        <rule-property name="localPrefix">l_</rule-property>
+        <rule-property name="parameterPrefix">p_</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  static int s_foo = 42;
+  int m_foo = 42;
+  private Foo(int p_foo) {
+   int l_foo = 42;
+  }
+  private void foo(int p_foo) {
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Check suffixes
      ]]></description>
         <rule-property name="staticSuffix">_s</rule-property>
+        <rule-property name="memberSuffix">_m</rule-property>
+        <rule-property name="localSuffix">_l</rule-property>
+        <rule-property name="parameterSuffix">_p</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
   static int foo_s = 42;
+  int foo_m = 42;
+  private Foo(int foo_p) {
+   int foo_l = 42;
+  }
+  private void foo(int foo_p) {
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Check members disabled
+     ]]></description>
+        <rule-property name="checkMembers">false</rule-property>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  static int foo_s = 42;
+  int foo_m = 42;
+  private Foo(int foo_p) {
+   int foo_l = 42;
+  }
+  private void foo(int foo_p) {
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Check locals disabled
+     ]]></description>
+        <rule-property name="checkLocals">false</rule-property>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  static int foo_s = 42;
+  int foo_m = 42;
+  private Foo(int foo_p) {
+   int foo_l = 42;
+  }
+  private void foo(int foo_p) {
+  }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Check parameters disabled
+     ]]></description>
+        <rule-property name="checkParameters">false</rule-property>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+  static int foo_s = 42;
+  int foo_m = 42;
+  private Foo(int foo_p) {
+   int foo_l = 42;
+  }
+  private void foo(int foo_p) {
+  }
 }
      ]]></code>
     </test-code>
