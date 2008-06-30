@@ -156,18 +156,24 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 	if (isStatic && isFinal) {
 	    if (!varName.equals(varName.toUpperCase())) {
 		addViolationWithMessage(data, variableDeclaratorId,
-			"Variables that are final and static should be in all caps.");
+			"Variables that are final and static should be all capitals, ''{0}'' is not all capitals.",
+			new Object[] { varName });
 	    }
 	    return data;
 	} else if (!isFinal) {
 	    String normalizedVarName = normalizeVariableName(varName, prefixes, suffixes);
 
 	    if (normalizedVarName.indexOf('_') >= 0) {
-		addViolationWithMessage(data, variableDeclaratorId,
-			"Variables that are not final should not contain underscores (except for underscores in standard prefix/suffix).");
+		addViolationWithMessage(
+			data,
+			variableDeclaratorId,
+			"Only variables that are final should contain underscores (except for underscores in standard prefix/suffix), ''{0}'' is not final.",
+			new Object[] { varName });
 	    }
 	    if (Character.isUpperCase(varName.charAt(0))) {
-		addViolationWithMessage(data, variableDeclaratorId, "Variables should start with a lowercase character");
+		addViolationWithMessage(data, variableDeclaratorId,
+			"Variables should start with a lowercase character, ''{0}'' starts with uppercase character.",
+			new Object[] { varName });
 	    }
 	}
 	return data;
