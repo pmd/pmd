@@ -136,7 +136,7 @@ public interface Node {
      */
     <T> boolean hasDescendantOfType(Class<T> type);
 
-    List<Node> findChildNodesWithXPath(String xpathString) throws JaxenException;
+    List<? extends Node> findChildNodesWithXPath(String xpathString) throws JaxenException;
 
     // TODO Does this need to be here?
     Document getAsXml();
