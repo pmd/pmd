@@ -184,7 +184,7 @@
 		</checkstyle>
 
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
-		<pmd rulesetfiles="${dir.rulesets}/internal/dogfood-goal.xml" shortFilenames="true" targetjdk="1.5" minimumpriority="5" failonruleviolation="false" failonerror="true">
+		<pmd rulesetfiles="${dir.rulesets}/internal/dogfood-goal.xml" shortFilenames="false" targetjdk="1.5" minimumpriority="5" failonruleviolation="false" failonerror="true">
 			<formatter type="xml" toFile="${dir.build}/reports/pmd-dogfood-goal.xml"/>
 			<fileset dir="${dir.src}">
 				<include name="**/*.java" />
