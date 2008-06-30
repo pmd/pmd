@@ -123,10 +123,17 @@ A variable naming conventions rule - customize this to your liking.  Currently, 
         </description>
         <priority>1</priority>
         <properties>
+            <property name="checkMembers" description="Check member variables" value="true"/>
+            <property name="checkLocals" description="Check local variables" value="true"/>
+            <property name="checkParameters" description="Check constructor and method parameter variables" value="true"/>
             <property name="staticPrefix" description="A prefix for static variables" value=""/>
             <property name="staticSuffix" description="A suffix for static variables" value=""/>
             <property name="memberPrefix" description="A prefix for member variables" value=""/>
             <property name="memberSuffix" description="A suffix for member variables" value=""/>
+            <property name="localPrefix" description="A prefix for local variables" value=""/>
+            <property name="localSuffix" description="A suffix for local variables" value=""/>
+            <property name="parameterPrefix" description="A prefix for method parameter variables" value=""/>
+            <property name="parameterSuffix" description="A suffix for method parameter variables" value=""/>
         </properties>
         <example>
 <![CDATA[
