@@ -33,49 +33,50 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
     private String[] parameterPrefixes;
     private String[] parameterSuffixes;
 
-    private static final PropertyDescriptor checkMembersDescriptor = new BooleanProperty("checkMembers",
+    private static final PropertyDescriptor CHECK_MEMBERS_DESCRIPTOR = new BooleanProperty("checkMembers",
 	    "Check member variables", true, 1.0f);
 
-    private static final PropertyDescriptor checkLocalsDescriptor = new BooleanProperty("checkLocals",
+    private static final PropertyDescriptor CHECK_LOCALS_DESCRIPTOR = new BooleanProperty("checkLocals",
 	    "Check local variables", true, 2.0f);
 
-    private static final PropertyDescriptor checkParametersDescriptor = new BooleanProperty("checkParameters",
+    private static final PropertyDescriptor CHECK_PARAMETERS_DESCRIPTOR = new BooleanProperty("checkParameters",
 	    "Check constructor and method parameter variables", true, 3.0f);
 
-    private static final PropertyDescriptor staticPrefixesDescriptor = new StringProperty("staticPrefix",
+    private static final PropertyDescriptor STATIC_PREFIXES_DESCRIPTOR = new StringProperty("staticPrefix",
 	    "Static member prefixes", new String[] { "" }, 4.0f, ',');
 
-    private static final PropertyDescriptor staticSuffixesDescriptor = new StringProperty("staticSuffix",
+    private static final PropertyDescriptor STATIC_SUFFIXES_DESCRIPTOR = new StringProperty("staticSuffix",
 	    "Static member suffixes", new String[] { "" }, 5.0f, ',');
 
-    private static final PropertyDescriptor memberPrefixesDescriptor = new StringProperty("memberPrefix",
+    private static final PropertyDescriptor MEMBER_PREFIXES_DESCRIPTOR = new StringProperty("memberPrefix",
 	    "Instance member prefixes", new String[] { "" }, 6.0f, ',');
 
-    private static final PropertyDescriptor memberSuffixesDescriptor = new StringProperty("memberSuffix",
+    private static final PropertyDescriptor MEMBER_SUFFIXES_DESCRIPTOR = new StringProperty("memberSuffix",
 	    "Instance member suffixes", new String[] { "" }, 7.0f, ',');
 
-    private static final PropertyDescriptor localPrefixesDescriptor = new StringProperty("localPrefix",
+    private static final PropertyDescriptor LOCAL_PREFIXES_DESCRIPTOR = new StringProperty("localPrefix",
 	    "Local variable prefixes", new String[] { "" }, 8.0f, ',');
 
-    private static final PropertyDescriptor localSuffixesDescriptor = new StringProperty("localSuffix",
+    private static final PropertyDescriptor LOCAL_SUFFIXES_DESCRIPTOR = new StringProperty("localSuffix",
 	    "Local variable suffixes", new String[] { "" }, 9.0f, ',');
 
-    private static final PropertyDescriptor parameterPrefixesDescriptor = new StringProperty("parameterPrefix",
+    private static final PropertyDescriptor PARAMETER_PREFIXES_DESCRIPTOR = new StringProperty("parameterPrefix",
 	    "Formal parameter prefixes", new String[] { "" }, 10.0f, ',');
 
-    private static final PropertyDescriptor parameterSuffixesDescriptor = new StringProperty("parameterSuffix",
+    private static final PropertyDescriptor PARAMETER_SUFFIXES_DESCRIPTOR = new StringProperty("parameterSuffix",
 	    "Formal parameter suffixes", new String[] { "" }, 11.0f, ',');
 
-    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] {
-	    checkMembersDescriptor, checkLocalsDescriptor, checkParametersDescriptor, staticPrefixesDescriptor,
-	    staticSuffixesDescriptor, memberPrefixesDescriptor, memberSuffixesDescriptor, localPrefixesDescriptor,
-	    localSuffixesDescriptor, parameterPrefixesDescriptor, parameterSuffixesDescriptor, });
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] {
+	    CHECK_MEMBERS_DESCRIPTOR, CHECK_LOCALS_DESCRIPTOR, CHECK_PARAMETERS_DESCRIPTOR, STATIC_PREFIXES_DESCRIPTOR,
+	    STATIC_SUFFIXES_DESCRIPTOR, MEMBER_PREFIXES_DESCRIPTOR, MEMBER_SUFFIXES_DESCRIPTOR,
+	    LOCAL_PREFIXES_DESCRIPTOR, LOCAL_SUFFIXES_DESCRIPTOR, PARAMETER_PREFIXES_DESCRIPTOR,
+	    PARAMETER_SUFFIXES_DESCRIPTOR, });
 
     /**
      * @return Map
      */
     protected Map<String, PropertyDescriptor> propertiesByName() {
-	return propertyDescriptorsByName;
+	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -84,17 +85,17 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
     }
 
     protected void init() {
-	checkMembers = getBooleanProperty(checkMembersDescriptor);
-	checkLocals = getBooleanProperty(checkLocalsDescriptor);
-	checkParameters = getBooleanProperty(checkParametersDescriptor);
-	staticPrefixes = getStringProperties(staticPrefixesDescriptor);
-	staticSuffixes = getStringProperties(staticSuffixesDescriptor);
-	memberPrefixes = getStringProperties(memberPrefixesDescriptor);
-	memberSuffixes = getStringProperties(memberSuffixesDescriptor);
-	localPrefixes = getStringProperties(localPrefixesDescriptor);
-	localSuffixes = getStringProperties(localSuffixesDescriptor);
-	parameterPrefixes = getStringProperties(parameterPrefixesDescriptor);
-	parameterSuffixes = getStringProperties(parameterSuffixesDescriptor);
+	checkMembers = getBooleanProperty(CHECK_MEMBERS_DESCRIPTOR);
+	checkLocals = getBooleanProperty(CHECK_LOCALS_DESCRIPTOR);
+	checkParameters = getBooleanProperty(CHECK_PARAMETERS_DESCRIPTOR);
+	staticPrefixes = getStringProperties(STATIC_PREFIXES_DESCRIPTOR);
+	staticSuffixes = getStringProperties(STATIC_SUFFIXES_DESCRIPTOR);
+	memberPrefixes = getStringProperties(MEMBER_PREFIXES_DESCRIPTOR);
+	memberSuffixes = getStringProperties(MEMBER_SUFFIXES_DESCRIPTOR);
+	localPrefixes = getStringProperties(LOCAL_PREFIXES_DESCRIPTOR);
+	localSuffixes = getStringProperties(LOCAL_SUFFIXES_DESCRIPTOR);
+	parameterPrefixes = getStringProperties(PARAMETER_PREFIXES_DESCRIPTOR);
+	parameterSuffixes = getStringProperties(PARAMETER_SUFFIXES_DESCRIPTOR);
     }
 
     public Object visit(ASTFieldDeclaration node, Object data) {

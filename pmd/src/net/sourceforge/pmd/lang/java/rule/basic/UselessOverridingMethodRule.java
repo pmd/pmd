@@ -176,12 +176,12 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 	} else {
 	    ASTArgumentList argumentList = (ASTArgumentList) arguments.jjtGetChild(0);
 	    for (int i = 0; i < argumentList.jjtGetNumChildren(); i++) {
-		Node ExpressionChild = argumentList.jjtGetChild(i).jjtGetChild(0);
-		if (!(ExpressionChild instanceof ASTPrimaryExpression) || ExpressionChild.jjtGetNumChildren() != 1) {
+		Node expressionChild = argumentList.jjtGetChild(i).jjtGetChild(0);
+		if (!(expressionChild instanceof ASTPrimaryExpression) || expressionChild.jjtGetNumChildren() != 1) {
 		    return super.visit(node, data); //The arguments are not simply passed through
 		}
 
-		ASTPrimaryExpression argumentPrimaryExpression = (ASTPrimaryExpression) ExpressionChild;
+		ASTPrimaryExpression argumentPrimaryExpression = (ASTPrimaryExpression) expressionChild;
 		ASTPrimaryPrefix argumentPrimaryPrefix = (ASTPrimaryPrefix) argumentPrimaryExpression.jjtGetChild(0);
 		if (argumentPrimaryPrefix.jjtGetNumChildren() == 0) {
 		    return super.visit(node, data); //The arguments are not simply passed through (using "this" for instance)

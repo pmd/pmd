@@ -20,19 +20,19 @@ public class Match implements Comparable<Match> {
     private MatchCode mc;
     private String label;
     
-    public static final Comparator<Match> MatchesComparator = new Comparator<Match>() {
+    public static final Comparator<Match> MATCHES_COMPARATOR = new Comparator<Match>() {
     	public int compare(Match ma, Match mb) {
     		return mb.getMarkCount() - ma.getMarkCount();
     	}
     };
     
-    public static final Comparator<Match> LinesComparator = new Comparator<Match>() {
+    public static final Comparator<Match> LINES_COMPARATOR = new Comparator<Match>() {
     	public int compare(Match ma, Match mb) {
     		return mb.getLineCount() - ma.getLineCount();
     	}
     };
     
-    public static final Comparator<Match> LabelComparator = new Comparator<Match>() {
+    public static final Comparator<Match> LABEL_COMPARATOR = new Comparator<Match>() {
     	public int compare(Match ma, Match mb) {
     		if (ma.getLabel() == null) {
     		    return 1;
@@ -44,7 +44,7 @@ public class Match implements Comparable<Match> {
     	}
     };
     
-    public static final Comparator<Match> LengthComparator = new Comparator<Match>() {
+    public static final Comparator<Match> LENGTH_COMPARATOR = new Comparator<Match>() {
         public int compare(Match ma, Match mb) {
             return mb.getLineCount() - ma.getLineCount();
         }

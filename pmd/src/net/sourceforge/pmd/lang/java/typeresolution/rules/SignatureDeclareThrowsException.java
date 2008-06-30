@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
  * @author Wouter Zelle
  */
 public class SignatureDeclareThrowsException extends AbstractJavaRule {
-    private static final PropertyDescriptor ignoreJUnitCompletelyDescriptor = new BooleanProperty("IgnoreJUnitCompletely",
+    private static final PropertyDescriptor IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty("IgnoreJUnitCompletely",
         "If true, all methods in a JUnit testcase may throw Exception", false, 1.0f);
 
     //Set to true when the class is determined to be a JUnit testcase
@@ -110,7 +110,7 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     }
 
     private boolean isAllowedMethod(ASTMethodDeclaration methodDeclaration) {
-        if (getBooleanProperty(ignoreJUnitCompletelyDescriptor)) {
+        if (getBooleanProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)) {
 	    return true;
 	} else {
 	    return methodDeclaration.getMethodName().equals("setUp") || methodDeclaration

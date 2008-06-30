@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+
 /**
  * Defines a property type that support double property values.
  * 
@@ -58,15 +59,15 @@ public class DoubleProperty extends AbstractScalarProperty {
 
 	/**
 	 * Method asDoubles.
-	 * @param doubles double[]
+	 * @param d double[]
 	 * @return Double[]
 	 */
-	private static final Double[] asDoubles(double[] doubles) {
-		Double[] Doubles = new Double[doubles.length];
-		for (int i=0; i<doubles.length; i++) {
-		    Doubles[i] = new Double(doubles[i]);
+	private static final Double[] asDoubles(double[] d) {
+		Double[] doubles = new Double[d.length];
+		for (int i=0; i<d.length; i++) {
+		    doubles[i] = new Double(d[i]);
 		}
-		return Doubles;
+		return doubles;
 	}
 
 	/**

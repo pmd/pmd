@@ -30,13 +30,13 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
     private boolean checkNonStaticMethods = true;
     private boolean checkNonStaticFields = true;
 
-    private static final PropertyDescriptor checkNonStaticMethodsDescriptor = new BooleanProperty(
+    private static final PropertyDescriptor CHECK_NON_STATIC_METHODS_DESCRIPTOR = new BooleanProperty(
 	    "checkNonStaticMethods", "Check for non-static methods.", true, 1.0f);
-    private static final PropertyDescriptor checkNonStaticFieldsDescriptor = new BooleanProperty(
+    private static final PropertyDescriptor CHECK_NON_STATIC_FIELDS_DESCRIPTOR = new BooleanProperty(
 	    "checkNonStaticFields", "Check for non-static fields.", true, 2.0f);
 
-    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] {
-	    checkNonStaticMethodsDescriptor, checkNonStaticFieldsDescriptor });
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] {
+	    CHECK_NON_STATIC_METHODS_DESCRIPTOR, CHECK_NON_STATIC_FIELDS_DESCRIPTOR });
 
     //    public NonThreadSafeSingleton() {
     //        checkNonStaticMethods = super.getBooleanProperty("checkNonStaticMethods");
@@ -46,8 +46,8 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
 	fieldDecls.clear();
-	checkNonStaticMethods = getBooleanProperty(checkNonStaticMethodsDescriptor);
-	checkNonStaticFields = getBooleanProperty(checkNonStaticFieldsDescriptor);
+	checkNonStaticMethods = getBooleanProperty(CHECK_NON_STATIC_METHODS_DESCRIPTOR);
+	checkNonStaticFields = getBooleanProperty(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
 	return super.visit(node, data);
     }
 
@@ -115,6 +115,6 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
      */
     @Override
     protected Map<String, PropertyDescriptor> propertiesByName() {
-	return propertyDescriptorsByName;
+	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

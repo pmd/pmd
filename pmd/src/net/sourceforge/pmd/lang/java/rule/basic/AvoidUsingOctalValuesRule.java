@@ -13,12 +13,12 @@ public class AvoidUsingOctalValuesRule extends AbstractJavaRule {
 
     public static final Pattern STRICT_OCTAL_PATTERN = Pattern.compile("0[0-7]+[lL]?");
 
-    private static final PropertyDescriptor strictMethodsDescriptor = new BooleanProperty(
+    private static final PropertyDescriptor STRICT_METHODS_DESCRIPTOR = new BooleanProperty(
             "strict", "Detect violations for 00 to 07.", false, 1.0f
             );
 
     public Object visit(ASTLiteral node, Object data) {
-        boolean strict = getBooleanProperty(strictMethodsDescriptor);
+        boolean strict = getBooleanProperty(STRICT_METHODS_DESCRIPTOR);
         Pattern p = strict?STRICT_OCTAL_PATTERN:OCTAL_PATTERN;
 
         String img = node.getImage();

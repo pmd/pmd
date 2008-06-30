@@ -13,10 +13,10 @@ import java.util.Set;
  */
 public class CollectionUtil {
 
-    public static final TypeMap collectionInterfacesByNames = new TypeMap(new Class[] { java.util.List.class,
+    public static final TypeMap COLLECTION_INTERFACES_BY_NAMES = new TypeMap(new Class[] { java.util.List.class,
 	    java.util.Collection.class, java.util.Map.class, java.util.Set.class, });
 
-    public static final TypeMap collectionClassesByNames = new TypeMap(new Class[] { java.util.ArrayList.class,
+    public static final TypeMap COLLECTION_CLASSES_BY_NAMES = new TypeMap(new Class[] { java.util.ArrayList.class,
 	    java.util.LinkedList.class, java.util.Vector.class, java.util.HashMap.class, java.util.LinkedHashMap.class,
 	    java.util.TreeMap.class, java.util.TreeSet.class, java.util.HashSet.class, java.util.LinkedHashSet.class });
 
@@ -30,12 +30,12 @@ public class CollectionUtil {
      * @return Class
      */
     public static Class<?> getCollectionTypeFor(String shortName) {
-	Class<?> cls = collectionClassesByNames.typeFor(shortName);
+	Class<?> cls = COLLECTION_CLASSES_BY_NAMES.typeFor(shortName);
 	if (cls != null) {
 	    return cls;
 	}
 
-	return collectionInterfacesByNames.typeFor(shortName);
+	return COLLECTION_INTERFACES_BY_NAMES.typeFor(shortName);
     }
 
     /**
@@ -48,11 +48,11 @@ public class CollectionUtil {
      */
     public static boolean isCollectionType(String typeName, boolean includeInterfaces) {
 
-	if (collectionClassesByNames.contains(typeName)) {
+	if (COLLECTION_CLASSES_BY_NAMES.contains(typeName)) {
 	    return true;
 	}
 
-	return includeInterfaces && collectionInterfacesByNames.contains(typeName);
+	return includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(typeName);
     }
 
     /**
@@ -65,11 +65,11 @@ public class CollectionUtil {
      */
     public static boolean isCollectionType(Class<?> clazzType, boolean includeInterfaces) {
 
-	if (collectionClassesByNames.contains(clazzType)) {
+	if (COLLECTION_CLASSES_BY_NAMES.contains(clazzType)) {
 	    return true;
 	}
 
-	return includeInterfaces && collectionInterfacesByNames.contains(clazzType);
+	return includeInterfaces && COLLECTION_INTERFACES_BY_NAMES.contains(clazzType);
     }
 
     /**

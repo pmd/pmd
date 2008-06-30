@@ -10,7 +10,7 @@ package net.sourceforge.pmd;
  */
 public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
 
-	PropertyDescriptor[] emptyPropertySet = new PropertyDescriptor[0];
+	PropertyDescriptor[] EMPTY_PROPERTY_SET = new PropertyDescriptor[0];
 	
 	/**
 	 * The name of the property without spaces as it serves 

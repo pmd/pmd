@@ -47,7 +47,7 @@ public class GUI implements CPDListener {
 		String render(Iterator<Match> items);
 	}
 	
-	private static final Object[][] rendererSets = new Object[][] {
+	private static final Object[][] RENDERER_SETS = new Object[][] {
 		{ "Text", 		new Renderer() { public String render(Iterator<Match> items) { return new SimpleRenderer().render(items); } } },
 		{ "XML", 		new Renderer() { public String render(Iterator<Match> items) { return new XMLRenderer().render(items); } } },
 		{ "CSV (comma)",new Renderer() { public String render(Iterator<Match> items) { return new CSVRenderer(',').render(items); } } },
@@ -60,7 +60,7 @@ public class GUI implements CPDListener {
 		String[] extensions();
 	};
 	
-	private static final Object[][] languageSets = new Object[][] {
+	private static final Object[][] LANGUAGE_SETS = new Object[][] {
 		{"Java", 			new LanguageConfig() { 
 									public Language languageFor(LanguageFactory lf, Properties p) { return lf.createLanguage("java"); }
 									public boolean ignoreLiteralsByDefault() { return true; }
@@ -91,10 +91,10 @@ public class GUI implements CPDListener {
 									public String[] extensions() { return new String[] {".php" }; };	} },
 		};
 	
-	private static final int		defaultCPDMinimumLength = 75;
-	private static final Map		langConfigsByLabel = new HashMap(languageSets.length);
-	private static final KeyStroke	copy = KeyStroke.getKeyStroke(KeyEvent.VK_C,ActionEvent.CTRL_MASK,false);
-	private static final KeyStroke	delete = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
+	private static final int		DEFAULT_CPD_MINIMUM_LENGTH = 75;
+	private static final Map		LANGUAGE_CONFIGS_BY_LABEL = new HashMap(LANGUAGE_SETS.length);
+	private static final KeyStroke	COPY_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_C,ActionEvent.CTRL_MASK,false);
+	private static final KeyStroke	DELETE_KEY_STROKE = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0);
 	
 	private class ColumnSpec {
 		private String label;
@@ -115,19 +115,19 @@ public class GUI implements CPDListener {
 	}
 
 	private final ColumnSpec[] matchColumns = new ColumnSpec[] {
-		new ColumnSpec("Source", 	SwingConstants.LEFT, -1, Match.LabelComparator),
-		new ColumnSpec("Matches", 	SwingConstants.RIGHT, 60, Match.MatchesComparator),
-		new ColumnSpec("Lines", 	SwingConstants.RIGHT, 45, Match.LinesComparator),
+		new ColumnSpec("Source", 	SwingConstants.LEFT, -1, Match.LABEL_COMPARATOR),
+		new ColumnSpec("Matches", 	SwingConstants.RIGHT, 60, Match.MATCHES_COMPARATOR),
+		new ColumnSpec("Lines", 	SwingConstants.RIGHT, 45, Match.LINES_COMPARATOR),
 		};
     
 	static {		
-		for (int i=0; i<languageSets.length; i++) {
-			langConfigsByLabel.put(languageSets[i][0], languageSets[i][1]);
+		for (int i=0; i<LANGUAGE_SETS.length; i++) {
+			LANGUAGE_CONFIGS_BY_LABEL.put(LANGUAGE_SETS[i][0], LANGUAGE_SETS[i][1]);
 		}
 	}
 	
 	private static LanguageConfig languageConfigFor(String label) {
-		return (LanguageConfig)langConfigsByLabel.get(label);
+		return (LanguageConfig)LANGUAGE_CONFIGS_BY_LABEL.get(label);
 	}
 	
     private static class CancelListener implements ActionListener {
@@ -224,7 +224,7 @@ public class GUI implements CPDListener {
 	}
     
     private JTextField rootDirectoryField	= new JTextField(System.getProperty("user.home"));
-    private JTextField minimumLengthField	= new JTextField(Integer.toString(defaultCPDMinimumLength));
+    private JTextField minimumLengthField	= new JTextField(Integer.toString(DEFAULT_CPD_MINIMUM_LENGTH));
     private JTextField encodingField		= new JTextField(System.getProperty("file.encoding"));
     private JTextField timeField			= new JTextField(6);
     private JLabel phaseLabel				= new JLabel();
@@ -248,9 +248,9 @@ public class GUI implements CPDListener {
     	
         JMenuItem saveItem;
         
-        for (int i=0; i<rendererSets.length; i++) {
-        	saveItem = new JMenuItem("Save as " + rendererSets[i][0]);
-        	saveItem.addActionListener(new SaveListener((Renderer)rendererSets[i][1]));
+        for (int i=0; i<RENDERER_SETS.length; i++) {
+        	saveItem = new JMenuItem("Save as " + RENDERER_SETS[i][0]);
+        	saveItem.addActionListener(new SaveListener((Renderer)RENDERER_SETS[i][1]));
         	menu.add(saveItem);
         }
     }
@@ -298,7 +298,7 @@ public class GUI implements CPDListener {
         progressPanel = makeProgressPanel();
         JPanel resultsPanel = makeResultsPanel();
 
-        adjustLanguageControlsFor((LanguageConfig)languageSets[0][1]);
+        adjustLanguageControlsFor((LanguageConfig)LANGUAGE_SETS[0][1]);
         
         frame.getContentPane().setLayout(new BorderLayout());
         JPanel topPanel = new JPanel();
@@ -332,8 +332,8 @@ public class GUI implements CPDListener {
         minimumLengthField.setColumns(4);
         helper.add(minimumLengthField);
         helper.addLabel("Language:");
-        for (int i=0; i<languageSets.length; i++) {
-        	languageBox.addItem(languageSets[i][0]);
+        for (int i=0; i<LANGUAGE_SETS.length; i++) {
+        	languageBox.addItem(LANGUAGE_SETS[i][0]);
         }
         languageBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -451,11 +451,11 @@ public class GUI implements CPDListener {
     	
     	resultsTable.registerKeyboardAction(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { copyMatchListSelectionsToClipboard(); } 
-    		},"Copy", copy, JComponent.WHEN_FOCUSED);
+    		},"Copy", COPY_KEY_STROKE, JComponent.WHEN_FOCUSED);
     	
     	resultsTable.registerKeyboardAction(new ActionListener() {
 			public void actionPerformed(ActionEvent e) { deleteMatchlistSelections(); } 
-    		},"Del", delete, JComponent.WHEN_FOCUSED);
+    		},"Del", DELETE_KEY_STROKE, JComponent.WHEN_FOCUSED);
     	
     	int[] alignments = new int[matchColumns.length];
     	for (int i=0; i<alignments.length; i++) {

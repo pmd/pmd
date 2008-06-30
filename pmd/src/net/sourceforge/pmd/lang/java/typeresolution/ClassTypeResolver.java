@@ -68,8 +68,8 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 
 	private static final Logger LOG = Logger.getLogger(ClassTypeResolver.class.getName());
 
-	private static final Map<String, Class<?>> myPrimitiveTypes;
-	private static final Map<String, String> myJavaLang;
+	private static final Map<String, Class<?>> PRIMITIVE_TYPES;
+	private static final Map<String, String> JAVA_LANG;
 
 	static {
 		// Note: Assumption here that primitives come from same parent ClassLoader regardless of what ClassLoader we are passed
@@ -83,7 +83,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		thePrimitiveTypes.put("long", Long.TYPE);
 		thePrimitiveTypes.put("float", Float.TYPE);
 		thePrimitiveTypes.put("double", Double.TYPE);
-		myPrimitiveTypes = Collections.unmodifiableMap(thePrimitiveTypes);
+		PRIMITIVE_TYPES = Collections.unmodifiableMap(thePrimitiveTypes);
 
 		Map<String, String> theJavaLang = new HashMap<String, String>();
 		theJavaLang.put("Boolean", "java.lang.Boolean");
@@ -120,7 +120,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 		theJavaLang.put("ThreadLocal", "java.lang.ThreadLocal");
 		theJavaLang.put("Throwable", "java.lang.Throwable");
 		theJavaLang.put("Void", "java.lang.Void");
-		myJavaLang = Collections.unmodifiableMap(theJavaLang);
+		JAVA_LANG = Collections.unmodifiableMap(theJavaLang);
 	}
 
 	private final PMDASMClassLoader pmdClassLoader;
@@ -611,7 +611,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 	private void populateType(TypeNode node, String className) {
 
 		String qualifiedName = className;
-		Class<?> myType = myPrimitiveTypes.get(className);
+		Class<?> myType = PRIMITIVE_TYPES.get(className);
 		if (myType == null && importedClasses != null) {
 			if (importedClasses.containsKey(className)) {
 				qualifiedName = importedClasses.get(className);
@@ -696,7 +696,7 @@ public class ClassTypeResolver extends JavaParserVisitorAdapter {
 			}
 		}
 
-		importedClasses.putAll(myJavaLang);
+		importedClasses.putAll(JAVA_LANG);
 	}
 
 	private void populateClassName(ASTCompilationUnit node, String className) throws ClassNotFoundException {

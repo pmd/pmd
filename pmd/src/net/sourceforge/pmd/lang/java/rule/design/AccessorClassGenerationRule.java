@@ -50,67 +50,67 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
     }
 
     private static class ClassData {
-        private String m_ClassName;
-        private List<ASTConstructorDeclaration> m_PrivateConstructors;
-        private List<AllocData> m_Instantiations;
+        private String className;
+        private List<ASTConstructorDeclaration> privateConstructors;
+        private List<AllocData> instantiations;
         /**
          * List of outer class names that exist above this class
          */
-        private List<String> m_ClassQualifyingNames;
+        private List<String> classQualifyingNames;
 
         public ClassData(String className) {
-            m_ClassName = className;
-            m_PrivateConstructors = new ArrayList<ASTConstructorDeclaration>();
-            m_Instantiations = new ArrayList<AllocData>();
-            m_ClassQualifyingNames = new ArrayList<String>();
+            this.className = className;
+            this.privateConstructors = new ArrayList<ASTConstructorDeclaration>();
+            this.instantiations = new ArrayList<AllocData>();
+            this.classQualifyingNames = new ArrayList<String>();
         }
 
         public void addInstantiation(AllocData ad) {
-            m_Instantiations.add(ad);
+            instantiations.add(ad);
         }
 
         public Iterator<AllocData> getInstantiationIterator() {
-            return m_Instantiations.iterator();
+            return instantiations.iterator();
         }
 
         public void addConstructor(ASTConstructorDeclaration cd) {
-            m_PrivateConstructors.add(cd);
+            privateConstructors.add(cd);
         }
 
         public Iterator<ASTConstructorDeclaration> getPrivateConstructorIterator() {
-            return m_PrivateConstructors.iterator();
+            return privateConstructors.iterator();
         }
 
         public String getClassName() {
-            return m_ClassName;
+            return className;
         }
 
         public void addClassQualifyingName(String name) {
-            m_ClassQualifyingNames.add(name);
+            classQualifyingNames.add(name);
         }
 
         public List<String> getClassQualifyingNamesList() {
-            return m_ClassQualifyingNames;
+            return classQualifyingNames;
         }
     }
 
     private static class AllocData {
-        private String m_Name;
-        private int m_ArgumentCount;
-        private ASTAllocationExpression m_ASTAllocationExpression;
+        private String name;
+        private int argumentCount;
+        private ASTAllocationExpression allocationExpression;
         private boolean isArray;
 
         public AllocData(ASTAllocationExpression node, String aPackageName, List<String> classQualifyingNames) {
             if (node.jjtGetChild(1) instanceof ASTArguments) {
                 ASTArguments aa = (ASTArguments) node.jjtGetChild(1);
-                m_ArgumentCount = aa.getArgumentCount();
+                argumentCount = aa.getArgumentCount();
                 //Get name and strip off all superfluous data
                 //strip off package name if it is current package
                 if (!(node.jjtGetChild(0) instanceof ASTClassOrInterfaceType)) {
                     throw new RuntimeException("BUG: Expected a ASTClassOrInterfaceType, got a " + node.jjtGetChild(0).getClass());
                 }
                 ASTClassOrInterfaceType an = (ASTClassOrInterfaceType) node.jjtGetChild(0);
-                m_Name = stripString(aPackageName + ".", an.getImage());
+                name = stripString(aPackageName + ".", an.getImage());
 
                 //strip off outer class names
                 //try OuterClass, then try OuterClass.InnerClass, then try OuterClass.InnerClass.InnerClass2, etc...
@@ -118,9 +118,9 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
                 for (ListIterator<String> li = classQualifyingNames.listIterator(classQualifyingNames.size()); li.hasPrevious();) {
                     String aName = li.previous();
                     findName = aName + "." + findName;
-                    if (m_Name.startsWith(findName)) {
+                    if (name.startsWith(findName)) {
                         //strip off name and exit
-                        m_Name = m_Name.substring(findName.length());
+                        name = name.substring(findName.length());
                         break;
                     }
                 }
@@ -129,19 +129,19 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
                 //				child 0 could be primitive or object (ASTName or ASTPrimitiveType)
                 isArray = true;
             }
-            m_ASTAllocationExpression = node;
+            allocationExpression = node;
         }
 
         public String getName() {
-            return m_Name;
+            return name;
         }
 
         public int getArgumentCount() {
-            return m_ArgumentCount;
+            return argumentCount;
         }
 
         public ASTAllocationExpression getASTAllocationExpression() {
-            return m_ASTAllocationExpression;
+            return allocationExpression;
         }
 
         public boolean isArray() {
@@ -278,8 +278,8 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
         return classDataList.get(classID);
     }
 
-    private void setClassID(int ID) {
-        classID = ID;
+    private void setClassID(int id) {
+        classID = id;
     }
 
     private int getClassID() {

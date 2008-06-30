@@ -9,10 +9,10 @@ import java.util.ResourceBundle;
  * @version $Id$
  */
 public class NLS {
-    private final static ResourceBundle bundle;
+    private final static ResourceBundle BUNDLE;
 
     static {
-        bundle = ResourceBundle.getBundle("net.sourceforge.pmd.util.viewer.resources.viewer_strings");
+        BUNDLE = ResourceBundle.getBundle("net.sourceforge.pmd.util.viewer.resources.viewer_strings");
     }
 
     /**
@@ -22,7 +22,7 @@ public class NLS {
      * @return translated string
      */
     public static String nls(String key) {
-        return bundle.getString(key);
+        return BUNDLE.getString(key);
     }
 }
 

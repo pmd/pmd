@@ -23,29 +23,29 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
     /**
      * These are the BigDecimal methods which are immutable
      */
-    private static final Set<String> decMethods = CollectionUtil.asSet(new String[] { ".abs", ".add", ".divide", ".divideToIntegralValue", ".max", ".min", ".movePointLeft", ".movePointRight", ".multiply", ".negate", ".plus", ".pow", ".remainder", ".round", ".scaleByPowerOfTen", ".setScale", ".stripTrailingZeros", ".subtract", ".ulp" });
+    private static final Set<String> BIG_DECIMAL_METHODS = CollectionUtil.asSet(new String[] { ".abs", ".add", ".divide", ".divideToIntegralValue", ".max", ".min", ".movePointLeft", ".movePointRight", ".multiply", ".negate", ".plus", ".pow", ".remainder", ".round", ".scaleByPowerOfTen", ".setScale", ".stripTrailingZeros", ".subtract", ".ulp" });
 
     /**
      * These are the BigInteger methods which are immutable
      */
-    private static final Set<String> intMethods = CollectionUtil.asSet(new String[] { ".abs", ".add", ".and", ".andNot", ".clearBit", ".divide", ".flipBit", ".gcd", ".max", ".min", ".mod", ".modInverse", ".modPow", ".multiply", ".negate", ".nextProbablePrine", ".not", ".or", ".pow", ".remainder", ".setBit", ".shiftLeft", ".shiftRight", ".subtract", ".xor" });
+    private static final Set<String> BIG_INTEGER_METHODS = CollectionUtil.asSet(new String[] { ".abs", ".add", ".and", ".andNot", ".clearBit", ".divide", ".flipBit", ".gcd", ".max", ".min", ".mod", ".modInverse", ".modPow", ".multiply", ".negate", ".nextProbablePrine", ".not", ".or", ".pow", ".remainder", ".setBit", ".shiftLeft", ".shiftRight", ".subtract", ".xor" });
 
     /**
      * These are the String methods which are immutable
      */
-    private static final Set<String> strMethods = CollectionUtil.asSet(new String[] { ".concat", ".intern", ".replace", ".replaceAll", ".replaceFirst", ".substring", ".toLowerCase", ".toString", ".toUpperCase", ".trim" });
+    private static final Set<String> STRING_METHODS = CollectionUtil.asSet(new String[] { ".concat", ".intern", ".replace", ".replaceAll", ".replaceFirst", ".substring", ".toLowerCase", ".toString", ".toUpperCase", ".trim" });
 
     /**
      * These are the classes that the rule can apply to
      */
-    private static final Map<String, Set<String>> mapClasses = new HashMap<String, Set<String>>();
+    private static final Map<String, Set<String>> MAP_CLASSES = new HashMap<String, Set<String>>();
     static {
-        mapClasses.put("java.math.BigDecimal", decMethods);
-        mapClasses.put("BigDecimal", decMethods);
-        mapClasses.put("java.math.BigInteger", intMethods);
-        mapClasses.put("BigInteger", intMethods);
-        mapClasses.put("java.lang.String", strMethods);
-        mapClasses.put("String", strMethods);
+        MAP_CLASSES.put("java.math.BigDecimal", BIG_DECIMAL_METHODS);
+        MAP_CLASSES.put("BigDecimal", BIG_DECIMAL_METHODS);
+        MAP_CLASSES.put("java.math.BigInteger", BIG_INTEGER_METHODS);
+        MAP_CLASSES.put("BigInteger", BIG_INTEGER_METHODS);
+        MAP_CLASSES.put("java.lang.String", STRING_METHODS);
+        MAP_CLASSES.put("String", STRING_METHODS);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
                 String methodCall = sn.getImage().substring(variableName.length());
                 ASTType nodeType = node.getTypeNode();
                 if ( nodeType != null ) {
-                    if ( mapClasses.get(nodeType.getTypeImage()).contains(methodCall)) {
+                    if ( MAP_CLASSES.get(nodeType.getTypeImage()).contains(methodCall)) {
                         addViolation(data, sn);
                     }
                 }
@@ -85,7 +85,7 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRule {
      */
     private ASTVariableDeclaratorId getDeclaration(ASTLocalVariableDeclaration node) {
         ASTType type = node.getTypeNode();
-        if (mapClasses.keySet().contains(type.getTypeImage())) {
+        if (MAP_CLASSES.keySet().contains(type.getTypeImage())) {
             return (ASTVariableDeclaratorId) node.jjtGetChild(1).jjtGetChild(0);
         }
         return null;

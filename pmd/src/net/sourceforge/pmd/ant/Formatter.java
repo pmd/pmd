@@ -40,37 +40,37 @@ public class Formatter {
     private boolean toConsole;
     private boolean showSuppressed;
 
-    private static final Map<String, RendererBuilder> renderersByCode = new HashMap<String, RendererBuilder>(8);
+    private static final Map<String, RendererBuilder> RENDERERS_BY_CODE = new HashMap<String, RendererBuilder>(8);
 
     static {
-        renderersByCode.put("xml", new RendererBuilder() {
+        RENDERERS_BY_CODE.put("xml", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new XMLRenderer(); }
         });
-        renderersByCode.put("betterhtml", new RendererBuilder() {
+        RENDERERS_BY_CODE.put("betterhtml", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new XSLTRenderer(); }
         });
-        renderersByCode.put("html", new RendererBuilder() {
+        RENDERERS_BY_CODE.put("html", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new HTMLRenderer((String) arg[0], (String) arg[1]); }
         });
-        renderersByCode.put("summaryhtml", new RendererBuilder() {
+        RENDERERS_BY_CODE.put("summaryhtml", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new SummaryHTMLRenderer((String) arg[0], (String) arg[1]); }
         });
-        renderersByCode.put("papari", new RendererBuilder() {
+        RENDERERS_BY_CODE.put("papari", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new PapariTextRenderer(); }
         });
-        renderersByCode.put("csv", new RendererBuilder() {
+        RENDERERS_BY_CODE.put("csv", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new CSVRenderer(); }
         });
-        renderersByCode.put("emacs", new RendererBuilder() {
+        RENDERERS_BY_CODE.put("emacs", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new EmacsRenderer(); }
         });
-        renderersByCode.put("vbhtml", new RendererBuilder() {
+        RENDERERS_BY_CODE.put("vbhtml", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new VBHTMLRenderer(); }
         });
-        renderersByCode.put("yahtml", new RendererBuilder() {
+        RENDERERS_BY_CODE.put("yahtml", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new YAHTMLRenderer(); }
         });
-        renderersByCode.put("text", new RendererBuilder() {
+        RENDERERS_BY_CODE.put("text", new RendererBuilder() {
             public Renderer build(Object[] arg) { return new TextRenderer(); }
         });
         // add additional codes & factories here
@@ -148,7 +148,7 @@ public class Formatter {
     }
 
     private static String[] validRendererCodes() {
-        return renderersByCode.keySet().toArray(new String[renderersByCode.size()]);
+        return RENDERERS_BY_CODE.keySet().toArray(new String[RENDERERS_BY_CODE.size()]);
     }
 
     private static String unknownRendererMessage(String userSpecifiedType) {
@@ -177,7 +177,7 @@ public class Formatter {
         if ("".equals(type)) {
             throw new BuildException(unknownRendererMessage("<unspecified>"));
         }
-        RendererBuilder builder = renderersByCode.get(type);
+        RendererBuilder builder = RENDERERS_BY_CODE.get(type);
         Renderer renderer = builder == null ? fromClassname(type) : builder.build(new String[]{linkPrefix, linePrefix});
         renderer.showSuppressedViolations(showSuppressed);
         return renderer;

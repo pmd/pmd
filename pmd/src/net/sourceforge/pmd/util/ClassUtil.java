@@ -13,10 +13,10 @@ public class ClassUtil {
     };
 
     @SuppressWarnings("PMD.AvoidUsingShortType")
-    private static final TypeMap primitiveTypesByName = new TypeMap(new Class[] { int.class, byte.class, long.class,
+    private static final TypeMap PRIMITIVE_TYPE_NAMES = new TypeMap(new Class[] { int.class, byte.class, long.class,
 	    short.class, float.class, double.class, char.class, boolean.class, });
 
-    private static final TypeMap typesByNames = new TypeMap(new Class[] { Integer.class, Byte.class, Long.class,
+    private static final TypeMap TYPES_BY_NAME = new TypeMap(new Class[] { Integer.class, Byte.class, Long.class,
 	    Short.class, Float.class, Double.class, Character.class, Boolean.class, BigDecimal.class, String.class,
 	    Object.class, });
 
@@ -28,7 +28,7 @@ public class ClassUtil {
      * @return Class
      */
     public static Class<?> getPrimitiveTypeFor(String name) {
-	return primitiveTypesByName.typeFor(name);
+	return PRIMITIVE_TYPE_NAMES.typeFor(name);
     }
 
     /**
@@ -39,12 +39,12 @@ public class ClassUtil {
      */
     public static Class<?> getTypeFor(String shortName) {
 
-	Class<?> type = typesByNames.typeFor(shortName);
+	Class<?> type = TYPES_BY_NAME.typeFor(shortName);
 	if (type != null) {
 	    return type;
 	}
 
-	type = primitiveTypesByName.typeFor(shortName);
+	type = PRIMITIVE_TYPE_NAMES.typeFor(shortName);
 	if (type != null) {
 	    return type;
 	}

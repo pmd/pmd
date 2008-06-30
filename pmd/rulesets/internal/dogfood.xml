@@ -147,7 +147,6 @@
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="AvoidFieldNameMatchingMethodName"/>
 		<exclude name="AbstractNaming"/>
-		<exclude name="VariableNamingConventions"/>
 		<exclude name="MethodNamingConventions"/>
 		<exclude name="AvoidFieldNameMatchingTypeName"/>
 		<exclude name="SuspiciousConstantFieldName"/>

@@ -19,9 +19,9 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
 // Don't think we can otherwise here...
 public abstract class AbstractJUnitRule extends AbstractJavaRule {
 
-    public static final Class<?> junit4Class;
+    public static final Class<?> JUNIT4_CLASS;
 
-    public static final Class<?> junit3Class;
+    public static final Class<?> JUNIT3_CLASS;
 
     private boolean isJUnit3Class;
     private boolean isJUnit4Class;
@@ -33,14 +33,14 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 	} catch (Throwable t) {
 	    c = null;
 	}
-	junit4Class = c;
+	JUNIT4_CLASS = c;
 
 	try {
 	    c = Class.forName("junit.framework.TestCase");
 	} catch (Throwable t) {
 	    c = null;
 	}
-	junit3Class = c;
+	JUNIT3_CLASS = c;
     }
 
     @Override
@@ -85,7 +85,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
     }
 
     private boolean isJUnit3Class(ASTCompilationUnit node) {
-	if (node.getType() != null && TypeHelper.isA(node, junit3Class)) {
+	if (node.getType() != null && TypeHelper.isA(node, JUNIT3_CLASS)) {
 	    return true;
 
 	} else if (node.getType() == null) {
@@ -118,7 +118,7 @@ public abstract class AbstractJUnitRule extends AbstractJavaRule {
 		if ("Test".equals(name.getImage())) {
 		    return true;
 		}
-	    } else if (annotation.getType().equals(junit4Class)) {
+	    } else if (annotation.getType().equals(JUNIT4_CLASS)) {
 		return true;
 	    }
 	}

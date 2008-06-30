@@ -15,7 +15,7 @@ public class StringProperty extends AbstractProperty {
 		
 	private int preferredRowCount;
 	
-	public static final char defaultDelimiter = '|';
+	public static final char DEFAULT_DELIMITER = '|';
 	
 	/**
 	 * Constructor for StringProperty.
@@ -25,7 +25,7 @@ public class StringProperty extends AbstractProperty {
 	 * @param theUIOrder float
 	 */
 	public StringProperty(String theName, String theDescription, String theDefaultValue, float theUIOrder) {
-		this(theName, theDescription, theDefaultValue, theUIOrder, defaultDelimiter);
+		this(theName, theDescription, theDefaultValue, theUIOrder, DEFAULT_DELIMITER);
 		
 		maxValueCount(1);
 	}

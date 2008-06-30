@@ -10,7 +10,7 @@ import java.util.List;
 public class StringUtil {
 
 	public static final String[] EMPTY_STRINGS = new String[0];
-    private static final boolean supportsUTF8 = System.getProperty("net.sourceforge.pmd.supportUTF8", "no").equals("yes");
+    private static final boolean SUPPORTS_UTF8 = System.getProperty("net.sourceforge.pmd.supportUTF8", "no").equals("yes");
     private static final String[] ENTITIES;
 
     static {
@@ -62,7 +62,7 @@ public class StringUtil {
      * @param src The String to append to the stream
      */
     public static void appendXmlEscaped(StringBuffer buf, String src) {
-        appendXmlEscaped(buf, src, supportsUTF8);
+        appendXmlEscaped(buf, src, SUPPORTS_UTF8);
     }
 
     public static String htmlEncode(String string) {

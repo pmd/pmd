@@ -50,16 +50,16 @@ import org.jaxen.JaxenException;
 public class GenericClassCounterRule extends AbstractJavaRule {
 
 
-	private static final PropertyDescriptor nameMatchDescriptor = new StringProperty("nameMatch",
+	private static final PropertyDescriptor NAME_MATCH_DESCRIPTOR = new StringProperty("nameMatch",
 			"A series of regex, separeted by ',' to match on the classname", new String[] {""},1.0f,',');
 
-	private static final PropertyDescriptor operandDescriptor = new StringProperty("operand",
+	private static final PropertyDescriptor OPERAND_DESCRIPTOR = new StringProperty("operand",
 			"or/and value to refined match criteria",new String(),2.0f);
 
-	private static final PropertyDescriptor typeMatchDescriptor = new StringProperty("typeMatch",
+	private static final PropertyDescriptor TYPE_MATCH_DESCRIPTOR = new StringProperty("typeMatch",
 			"A series of regex, separeted by ',' to match on implements/extends classname",new String[]{""},3.0f,',');
 
-	private static final PropertyDescriptor thresholdDescriptor = new StringProperty("threshold",
+	private static final PropertyDescriptor THRESHOLD_DESCRIPTOR = new StringProperty("threshold",
 			"Defines how many occurences are legal",new String(),4.0f);
 
 
@@ -73,7 +73,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 	private String operand;
 	private int threshold;
 
-	private static String COUNTER_LABEL;
+	private static String counterLabel;
 
 	private List<String> arrayAsList(String[] array) {
 		List<String> list = new ArrayList<String>(array.length);
@@ -86,12 +86,12 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 
 	protected void init(){
 		// Creating the attribute name for the rule context
-		COUNTER_LABEL = this.getClass().getSimpleName() + ".number of match";
+		counterLabel = this.getClass().getSimpleName() + ".number of match";
 		// Constructing the request from the input parameters
-		this.namesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getStringProperties(nameMatchDescriptor)));
-		this.operand = getStringProperty(operandDescriptor);
-		this.typesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getStringProperties(typeMatchDescriptor)));
-		String thresholdAsString = getStringProperty(thresholdDescriptor);
+		this.namesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getStringProperties(NAME_MATCH_DESCRIPTOR)));
+		this.operand = getStringProperty(OPERAND_DESCRIPTOR);
+		this.typesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getStringProperties(TYPE_MATCH_DESCRIPTOR)));
+		String thresholdAsString = getStringProperty(THRESHOLD_DESCRIPTOR);
 		this.threshold = Integer.valueOf(thresholdAsString);
 		// Initializing list of match
 		this.matches = new ArrayList<Node>();
@@ -101,7 +101,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 	 @Override
      public void start(RuleContext ctx) {
 		 // Adding the proper attribute to the context
-         ctx.setAttribute(COUNTER_LABEL, new AtomicLong());
+         ctx.setAttribute(counterLabel, new AtomicLong());
          super.start(ctx);
      }
 
@@ -148,7 +148,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 	private void addAMatch(Node node,Object data) {
 		// We have a match, we increment
 		RuleContext ctx = (RuleContext)data;
-		AtomicLong total = (AtomicLong)ctx.getAttribute(COUNTER_LABEL);
+		AtomicLong total = (AtomicLong)ctx.getAttribute(counterLabel);
 		total.incrementAndGet();
 		// And we keep a ref on the node for the report generation
 		this.matches.add(node);
@@ -179,14 +179,14 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 
 	@Override
     public void end(RuleContext ctx) {
-		AtomicLong total = (AtomicLong)ctx.getAttribute(COUNTER_LABEL);
+		AtomicLong total = (AtomicLong)ctx.getAttribute(counterLabel);
         // Do we have a violation ?
         if ( total.get() > this.threshold ) {
         	for (Node node : this.matches) {
         		addViolation(ctx,node , new Object[] { total });
         	}
 		// Cleaning the context for the others rules
-		ctx.removeAttribute(COUNTER_LABEL);
+		ctx.removeAttribute(counterLabel);
 		super.start(ctx);
         }
      }

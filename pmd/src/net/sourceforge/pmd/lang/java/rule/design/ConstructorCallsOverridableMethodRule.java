@@ -153,44 +153,44 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
      * Evaluate right to left
      */
     private static class MethodInvocation {
-        private String m_Name;
-        private ASTPrimaryExpression m_Ape;
-        private List<String> m_ReferenceNames;
-        private List<String> m_QualifierNames;
-        private int m_ArgumentSize;
-        private boolean m_Super;
+        private String name;
+        private ASTPrimaryExpression ape;
+        private List<String> referenceNames;
+        private List<String> qualifierNames;
+        private int argumentSize;
+        private boolean superCall;
 
         private MethodInvocation(ASTPrimaryExpression ape, List<String> qualifierNames, List<String> referenceNames, String name, int argumentSize, boolean superCall) {
-            m_Ape = ape;
-            m_QualifierNames = qualifierNames;
-            m_ReferenceNames = referenceNames;
-            m_Name = name;
-            m_ArgumentSize = argumentSize;
-            m_Super = superCall;
+            this.ape = ape;
+            this.qualifierNames = qualifierNames;
+            this.referenceNames = referenceNames;
+            this.name = name;
+            this.argumentSize = argumentSize;
+            this.superCall = superCall;
         }
 
         public boolean isSuper() {
-            return m_Super;
+            return superCall;
         }
 
         public String getName() {
-            return m_Name;
+            return name;
         }
 
         public int getArgumentCount() {
-            return m_ArgumentSize;
+            return argumentSize;
         }
 
         public List<String> getReferenceNames() {
-            return m_ReferenceNames;//new ArrayList(variableNames);
+            return referenceNames;//new ArrayList(variableNames);
         }
 
         public List<String> getQualifierNames() {
-            return m_QualifierNames;
+            return qualifierNames;
         }
 
         public ASTPrimaryExpression getASTPrimaryExpression() {
-            return m_Ape;
+            return ape;
         }
 
         public static MethodInvocation getMethod(ASTPrimaryExpression node) {
@@ -366,12 +366,12 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private static final class ConstructorInvocation {
-        private ASTExplicitConstructorInvocation m_Eci;
+        private ASTExplicitConstructorInvocation eci;
         private String name;
         private int count = 0;
 
         public ConstructorInvocation(ASTExplicitConstructorInvocation eci) {
-            m_Eci = eci;
+            this.eci = eci;
             List<ASTArguments> l = eci.findChildrenOfType(ASTArguments.class);
             if (!l.isEmpty()) {
                 ASTArguments aa = l.get(0);
@@ -381,7 +381,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         }
 
         public ASTExplicitConstructorInvocation getASTExplicitConstructorInvocation() {
-            return m_Eci;
+            return eci;
         }
 
         public int getArgumentCount() {
@@ -424,53 +424,53 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     }
 
     private final class ConstructorHolder {
-        private ASTConstructorDeclaration m_Cd;
-        private boolean m_Dangerous;
-        private ConstructorInvocation m_Ci;
-        private boolean m_CiInitialized;
+        private ASTConstructorDeclaration cd;
+        private boolean dangerous;
+        private ConstructorInvocation ci;
+        private boolean ciInitialized;
 
         public ConstructorHolder(ASTConstructorDeclaration cd) {
-            m_Cd = cd;
+            this.cd = cd;
         }
 
         public ASTConstructorDeclaration getASTConstructorDeclaration() {
-            return m_Cd;
+            return cd;
         }
 
         public ConstructorInvocation getCalledConstructor() {
-            if (!m_CiInitialized) {
+            if (!ciInitialized) {
                 initCI();
             }
-            return m_Ci;
+            return ci;
         }
 
         public ASTExplicitConstructorInvocation getASTExplicitConstructorInvocation() {
             ASTExplicitConstructorInvocation eci = null;
-            if (!m_CiInitialized) {
+            if (!ciInitialized) {
                 initCI();
             }
-            if (m_Ci != null) {
-                eci = m_Ci.getASTExplicitConstructorInvocation();
+            if (ci != null) {
+                eci = ci.getASTExplicitConstructorInvocation();
             }
             return eci;
         }
 
         private void initCI() {
-            List<ASTExplicitConstructorInvocation> expressions = m_Cd.findChildrenOfType(ASTExplicitConstructorInvocation.class); //only 1...
+            List<ASTExplicitConstructorInvocation> expressions = cd.findChildrenOfType(ASTExplicitConstructorInvocation.class); //only 1...
             if (!expressions.isEmpty()) {
                 ASTExplicitConstructorInvocation eci = expressions.get(0);
-                m_Ci = new ConstructorInvocation(eci);
+                ci = new ConstructorInvocation(eci);
                 //System.out.println("Const call " + eci.getImage()); //super or this???
             }
-            m_CiInitialized = true;
+            ciInitialized = true;
         }
 
         public boolean isDangerous() {
-            return m_Dangerous;
+            return dangerous;
         }
 
         public void setDangerous(boolean dangerous) {
-            m_Dangerous = dangerous;
+            this.dangerous = dangerous;
         }
     }
 
@@ -503,14 +503,14 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         }
 
         public EvalPackage(String className) {
-            m_ClassName = className;
-            calledMethods = new ArrayList<MethodInvocation>();//meths called from constructor
-            allMethodsOfClass = new TreeMap<MethodHolder, List<MethodInvocation>>(new MethodHolderComparator());
-            calledConstructors = new ArrayList<ConstructorInvocation>();//all constructors called from constructor
-            allPrivateConstructorsOfClass = new TreeMap<ConstructorHolder, List<MethodInvocation>>(new ConstructorHolderComparator());
+            this.className = className;
+            this.calledMethods = new ArrayList<MethodInvocation>();//meths called from constructor
+            this.allMethodsOfClass = new TreeMap<MethodHolder, List<MethodInvocation>>(new MethodHolderComparator());
+            this.calledConstructors = new ArrayList<ConstructorInvocation>();//all constructors called from constructor
+            this.allPrivateConstructorsOfClass = new TreeMap<ConstructorHolder, List<MethodInvocation>>(new ConstructorHolderComparator());
         }
 
-        public String m_ClassName;
+        public String className;
         public List<MethodInvocation> calledMethods;
         public Map<MethodHolder, List<MethodInvocation>> allMethodsOfClass;
 
@@ -520,7 +520,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     private static final class NullEvalPackage extends EvalPackage {
         public NullEvalPackage() {
-            m_ClassName = "";
+            className = "";
             calledMethods = Collections.emptyList();
             allMethodsOfClass = Collections.emptyMap();
             calledConstructors = Collections.emptyList();
@@ -528,7 +528,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         }
     }
 
-    private static final NullEvalPackage nullEvalPackage = new NullEvalPackage();
+    private static final NullEvalPackage NULL_EVAL_PACKAGE = new NullEvalPackage();
 
 
     /**
@@ -564,7 +564,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         if (!node.isFinal()) {
             putEvalPackage(new EvalPackage(className));
         } else {
-            putEvalPackage(nullEvalPackage);
+            putEvalPackage(NULL_EVAL_PACKAGE);
         }
         //store any errors caught from other passes.
         super.visit(node, data);
@@ -743,7 +743,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         if (!node.isInterface()) {
             return visitClassDec(node, data);
         } else {
-            putEvalPackage(nullEvalPackage);
+            putEvalPackage(NULL_EVAL_PACKAGE);
             Object o = super.visit(node, data);//interface may have inner classes, possible? if not just skip whole interface
             removeCurrentEvalPackage();
             return o;
@@ -770,7 +770,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         if (!(getCurrentEvalPackage() instanceof NullEvalPackage)) {//only evaluate if we have an eval package for this class
             List<MethodInvocation> calledMethodsOfConstructor = new ArrayList<MethodInvocation>();
             ConstructorHolder ch = new ConstructorHolder(node);
-            addCalledMethodsOfNode(node, calledMethodsOfConstructor, getCurrentEvalPackage().m_ClassName);
+            addCalledMethodsOfNode(node, calledMethodsOfConstructor, getCurrentEvalPackage().className);
             if (!node.isPrivate()) {
                 //these calledMethods are what we will evaluate for being called badly
                 getCurrentEvalPackage().calledMethods.addAll(calledMethodsOfConstructor);
@@ -806,7 +806,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 h.setCalledMethod(decl.getMethodName());
             }
             List<MethodInvocation> l = new ArrayList<MethodInvocation>();
-            addCalledMethodsOfNode((Node)parent, l, getCurrentEvalPackage().m_ClassName);
+            addCalledMethodsOfNode((Node)parent, l, getCurrentEvalPackage().className);
             getCurrentEvalPackage().allMethodsOfClass.put(h, l);
         }
         return super.visit(node, data);

@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class ScopedLogHandlersManager {
 
-	private static String PACKAGE_NAME = "net.sourceforge.pmd";
+	private static final String PACKAGE_NAME = "net.sourceforge.pmd";
 
     @SuppressWarnings("PMD.LoggerIsNotStaticFinal")
     private Logger logger;

@@ -13,14 +13,14 @@ public class SimpleRenderer implements Renderer {
 	private String separator;
 	private boolean trimLeadingWhitespace;
 
-	public static final String defaultSeparator = "=====================================================================";
+	public static final String DEFAULT_SEPARATOR = "=====================================================================";
 	
 	public SimpleRenderer() {
 		this(false);
 	}
 	
 	public SimpleRenderer(boolean trimLeadingWhitespace) {
-		this(defaultSeparator);
+		this(DEFAULT_SEPARATOR);
         this.trimLeadingWhitespace = trimLeadingWhitespace;
 	}
 	

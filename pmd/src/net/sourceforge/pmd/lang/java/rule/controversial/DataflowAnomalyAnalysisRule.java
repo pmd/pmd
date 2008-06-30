@@ -35,19 +35,19 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     private int maxRuleViolations;
     private int currentRuleViolationCount;
 
-    private static final PropertyDescriptor maxPathDescriptor = new IntegerProperty(
+    private static final PropertyDescriptor MAX_PATH_DESCRIPTOR = new IntegerProperty(
             "maxpaths", "Maximum number of paths per method", 5000, 1.0f
             );
 
-    private static final PropertyDescriptor maxViolationsDescriptor = new IntegerProperty(
+    private static final PropertyDescriptor MAX_VIOLATIONS_DESCRIPTOR = new IntegerProperty(
             "maxviolations", "Maximum number of anomalys per class", 1000, 2.0f
             );
 
-    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(
-            new PropertyDescriptor[] { maxPathDescriptor, maxViolationsDescriptor});
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(
+            new PropertyDescriptor[] { MAX_PATH_DESCRIPTOR, MAX_VIOLATIONS_DESCRIPTOR});
 
     protected Map<String, PropertyDescriptor> propertiesByName() {
-        return propertyDescriptorsByName;
+        return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 
     private static class Usage {
@@ -65,7 +65,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     }
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        this.maxRuleViolations = getIntProperty(maxViolationsDescriptor);
+        this.maxRuleViolations = getIntProperty(MAX_VIOLATIONS_DESCRIPTOR);
         this.currentRuleViolationCount = 0;
         return super.visit(node, data);
     }
@@ -76,7 +76,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
 
         final DataFlowNode node = methodDeclaration.getDataFlowNode().getFlow().get(0);
 
-        final DAAPathFinder pathFinder = new DAAPathFinder(node, this, getIntProperty(maxPathDescriptor));
+        final DAAPathFinder pathFinder = new DAAPathFinder(node, this, getIntProperty(MAX_PATH_DESCRIPTOR));
         pathFinder.run();
 
         super.visit(methodDeclaration, data);

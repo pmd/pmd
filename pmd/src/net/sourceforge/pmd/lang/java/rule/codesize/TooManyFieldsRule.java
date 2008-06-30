@@ -24,19 +24,19 @@ public class TooManyFieldsRule extends AbstractJavaRule {
     private Map<String, Integer> stats;
     private Map<String, ASTClassOrInterfaceDeclaration> nodes;
 
-    private static final PropertyDescriptor maxFieldsDescriptor = new IntegerProperty(
+    private static final PropertyDescriptor MAX_FIELDS_DESCRIPTOR = new IntegerProperty(
     		"maxfields",
     		"Maximum allowable fields per class",
     		DEFAULT_MAXFIELDS,
     		1.0f
     		);
 
-    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(maxFieldsDescriptor);
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(MAX_FIELDS_DESCRIPTOR);
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
 
-        int maxFields = getIntProperty(maxFieldsDescriptor);
+        int maxFields = getIntProperty(MAX_FIELDS_DESCRIPTOR);
 
         stats = new HashMap<String, Integer>(5);
         nodes = new HashMap<String, ASTClassOrInterfaceDeclaration>(5);
@@ -77,6 +77,6 @@ public class TooManyFieldsRule extends AbstractJavaRule {
      */
     @Override
     protected Map<String, PropertyDescriptor> propertiesByName() {
-    	return propertyDescriptorsByName;
+    	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

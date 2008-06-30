@@ -14,7 +14,7 @@ public abstract class AbstractTokenizer implements Tokenizer
 	protected List<String> ignorableCharacter; 	// List<String>, should be setted by children classes
 												// FIXME:Maybe an array of 'char' would be better for perfomance ?
 	protected List<String> ignorableStmt; 		// List<String>, should be setted by children classes
-	protected char ONE_LINE_COMMENT_CHAR = '#'; // Most script language ( shell, ruby, python,...) use this symbol for comment line
+	protected char oneLineCommentChar = '#'; // Most script language ( shell, ruby, python,...) use this symbol for comment line
 
 	private List<String> code;
 	private int lineNumber = 0;
@@ -125,7 +125,7 @@ public abstract class AbstractTokenizer implements Tokenizer
 
     private boolean isComment(char tok)
     {
-        return tok == ONE_LINE_COMMENT_CHAR;
+        return tok == oneLineCommentChar;
     }
 
     private int getCommentToken(StringBuffer token, int loc)

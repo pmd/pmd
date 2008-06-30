@@ -6,15 +6,15 @@ import net.sourceforge.pmd.lang.java.rule.AbstractPoorMethodCall;
  */
 public class UseIndexOfCharRule extends AbstractPoorMethodCall {
 
-    private static final String targetTypeName = "String";
-    private static final String[] methodNames = new String[] { "indexOf", "lastIndexOf" };
+    private static final String TARGET_TYPE_NAME = "String";
+    private static final String[] METHOD_NAMES = new String[] { "indexOf", "lastIndexOf" };
 
     /**
      * Method targetTypeName.
      * @return String
      */
     protected String targetTypename() { 
-        return targetTypeName;
+        return TARGET_TYPE_NAME;
     }
 
     /**
@@ -22,7 +22,7 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
      * @return String[]
      */
     protected String[] methodNames() {
-        return methodNames;
+        return METHOD_NAMES;
     }
 
     /**

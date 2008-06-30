@@ -38,11 +38,11 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     private int couplingCount;
     private Set<String> typesFoundSoFar;
 
-    private static final PropertyDescriptor thresholdDescriptor = new IntegerProperty(
+    private static final PropertyDescriptor THRESHOLD_DESCRIPTOR = new IntegerProperty(
     	"threshold", "Coupling threshold value", 2, 1.0f
     	);
     
-    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(thresholdDescriptor);
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(THRESHOLD_DESCRIPTOR);
         
     
     public Object visit(ASTCompilationUnit cu, Object data) {
@@ -51,7 +51,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
         Object returnObj = cu.childrenAccept(this, data);
 
-        if (couplingCount > getIntProperty(thresholdDescriptor)) {
+        if (couplingCount > getIntProperty(THRESHOLD_DESCRIPTOR)) {
             addViolation(data, cu, "A value of " + couplingCount + " may denote a high amount of coupling within the class");
         }
 
@@ -162,6 +162,6 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * @return Map
      */
     protected Map<String, PropertyDescriptor> propertiesByName() {
-    	return propertyDescriptorsByName;
+    	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

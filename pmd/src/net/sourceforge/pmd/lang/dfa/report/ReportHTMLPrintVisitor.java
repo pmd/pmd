@@ -26,7 +26,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
     private int length;
     private String baseDir;
 
-    private static final String fs = System.getProperty("file.separator");
+    private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 
     public ReportHTMLPrintVisitor(String baseDir) {
         this.baseDir = baseDir;
@@ -36,7 +36,7 @@ public class ReportHTMLPrintVisitor extends ReportVisitor {
      * Writes the buffer to file.
      */
     private void write(String filename, StringBuffer buf) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(baseDir + fs + filename)));
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(baseDir + FILE_SEPARATOR + filename)));
         bw.write(buf.toString(), 0, buf.length());
         bw.close();
     }

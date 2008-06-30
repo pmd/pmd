@@ -164,7 +164,7 @@ public class Benchmark {
         }
     }
 
-    private static final Map<String, BenchmarkResult> nameToBenchmarkResult = new HashMap<String, BenchmarkResult>();
+    private static final Map<String, BenchmarkResult> NAME_TO_BENCHMARK_RESULT = new HashMap<String, BenchmarkResult>();
 
     public static final int TYPE_RULE = 0;
     public static final int TYPE_RULE_CHAIN_RULE = 1;
@@ -254,20 +254,20 @@ public class Benchmark {
         } else if (typeName == null) {
             typeName = name;
         }
-        BenchmarkResult benchmarkResult = nameToBenchmarkResult.get(typeName);
+        BenchmarkResult benchmarkResult = NAME_TO_BENCHMARK_RESULT.get(typeName);
         if (benchmarkResult == null) {
             benchmarkResult = new BenchmarkResult(type, typeName);
-            nameToBenchmarkResult.put(typeName, benchmarkResult);
+            NAME_TO_BENCHMARK_RESULT.put(typeName, benchmarkResult);
         }
         benchmarkResult.update(time, count);
     }
 
     public static void reset() {
-        nameToBenchmarkResult.clear();
+        NAME_TO_BENCHMARK_RESULT.clear();
     }
 
     public static String report() {
-        List<BenchmarkResult> results = new ArrayList<BenchmarkResult>(nameToBenchmarkResult.values());
+        List<BenchmarkResult> results = new ArrayList<BenchmarkResult>(NAME_TO_BENCHMARK_RESULT.values());
 
         long totalTime[] = new long[TYPE_TOTAL_PMD + 1];
         long totalCount[] = new long[TYPE_TOTAL_PMD + 1];

@@ -34,20 +34,20 @@ public class StatisticalRuleHelper {
     private int count = 0;
     private double total = 0.0;
 
-    private static final PropertyDescriptor sigmaDescriptor = new DoubleProperty(
+    private static final PropertyDescriptor SIGMA_DESCRIPTOR = new DoubleProperty(
     	"sigma", "Sigma value",	0,	1.0f
     	);
 
-    private static final PropertyDescriptor minimumDescriptor = new DoubleProperty(
+    private static final PropertyDescriptor MINIMUM_DESCRIPTOR = new DoubleProperty(
         "minimum", "Minimum value",	0,	1.0f
         );
 
-    private static final PropertyDescriptor topScoreDescriptor = new IntegerProperty(
+    private static final PropertyDescriptor TOP_SCORE_DESCRIPTOR = new IntegerProperty(
         "topscore", "Top score value",	0,	1.0f
         );
 
-    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = AbstractRule.asFixedMap( new PropertyDescriptor[] {
-    	sigmaDescriptor, minimumDescriptor, topScoreDescriptor
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = AbstractRule.asFixedMap( new PropertyDescriptor[] {
+    	SIGMA_DESCRIPTOR, MINIMUM_DESCRIPTOR, TOP_SCORE_DESCRIPTOR
     	});
 
     public StatisticalRuleHelper(AbstractRule rule)
@@ -68,12 +68,12 @@ public class StatisticalRuleHelper {
 
         if (rule.hasProperty("sigma")) {	// TODO - need to come up with a good default value
             deviation = getStdDev();
-            double sigma = rule.getDoubleProperty(sigmaDescriptor);
+            double sigma = rule.getDoubleProperty(SIGMA_DESCRIPTOR);
             minimum = getMean() + (sigma * deviation);
         }
 
         if (rule.hasProperty("minimum")) {	// TODO - need to come up with a good default value
-            double mMin = rule.getDoubleProperty(minimumDescriptor);
+            double mMin = rule.getDoubleProperty(MINIMUM_DESCRIPTOR);
             if (mMin > minimum) {
                 minimum = mMin;
             }
@@ -82,7 +82,7 @@ public class StatisticalRuleHelper {
         SortedSet<DataPoint> newPoints = applyMinimumValue(dataPoints, minimum);
 
         if (rule.hasProperty("topscore")) { // TODO - need to come up with a good default value
-            int topScore = rule.getIntProperty(topScoreDescriptor);
+            int topScore = rule.getIntProperty(TOP_SCORE_DESCRIPTOR);
             if (newPoints.size() >= topScore) {
                 newPoints = applyTopScore(newPoints, topScore);
             }
@@ -124,15 +124,15 @@ public class StatisticalRuleHelper {
     }
 
     private SortedSet<DataPoint> applyMinimumValue(SortedSet<DataPoint> pointSet, double minValue) {
-        SortedSet<DataPoint> RC = new TreeSet<DataPoint>();
+        SortedSet<DataPoint> rc = new TreeSet<DataPoint>();
         double threshold = minValue - DELTA;
 
         for (DataPoint point: pointSet) {
             if (point.getScore() > threshold) {
-                RC.add(point);
+                rc.add(point);
             }
         }
-        return RC;
+        return rc;
     }
 
     private SortedSet<DataPoint> applyTopScore(SortedSet<DataPoint> points, int topScore) {
@@ -154,6 +154,6 @@ public class StatisticalRuleHelper {
      * Users of the helper should use this Map to describe their properties.
      */
     public Map<String, PropertyDescriptor> propertiesByName() {
-    	return propertyDescriptorsByName;
+    	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
 
-    private static final Set<String> prefixSet = CollectionUtil.asSet(new String[] {
+    private static final Set<String> PREFIX_SET = CollectionUtil.asSet(new String[] {
         "Byte.valueOf",
         "Short.valueOf",
         "Integer.valueOf",
@@ -24,7 +24,7 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
         "Character.valueOf"
     });
 
-    private static final Set<String> suffixSet = CollectionUtil.asSet(new String[] {
+    private static final Set<String> SUFFIX_SET = CollectionUtil.asSet(new String[] {
         "byteValue",
         "shortValue",
         "intValue",
@@ -46,7 +46,7 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
 
         boolean checkBoolean = ((RuleContext) data).getLanguageVersion().compareTo(LanguageVersion.JAVA_15) >= 0;
 
-        if (prefixSet.contains(image)||(checkBoolean && "Boolean.valueOf".equals(image))) {
+        if (PREFIX_SET.contains(image)||(checkBoolean && "Boolean.valueOf".equals(image))) {
             ASTPrimaryExpression parent = (ASTPrimaryExpression) node.jjtGetParent();
             if (parent.jjtGetNumChildren() >= 3) {
                 Node n = parent.jjtGetChild(2);
@@ -54,7 +54,7 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
                     ASTPrimarySuffix suffix = (ASTPrimarySuffix) n;
                     image = suffix.getImage();
 
-                    if (suffixSet.contains(image)||(checkBoolean && "booleanValue".equals(image))) {
+                    if (SUFFIX_SET.contains(image)||(checkBoolean && "booleanValue".equals(image))) {
                         super.addViolation(data, node);
                         return data;
                     }

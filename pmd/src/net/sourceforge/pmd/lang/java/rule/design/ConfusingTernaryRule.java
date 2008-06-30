@@ -93,11 +93,11 @@ public class ConfusingTernaryRule extends AbstractJavaRule {
                 !(node instanceof ASTConditionalOrExpression)) {
             return false;
         }
-        int i_max = node.jjtGetNumChildren();
-        if (i_max <= 0) {
+        int n = node.jjtGetNumChildren();
+        if (n <= 0) {
             return false;
         }
-        for (int i = 0; i < i_max; i++) {
+        for (int i = 0; i < n; i++) {
             Node inode = node.jjtGetChild(i);
             // recurse!
             if (!isMatch(inode)) {

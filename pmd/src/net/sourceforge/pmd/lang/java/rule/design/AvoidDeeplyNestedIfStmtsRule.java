@@ -16,18 +16,18 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
     private int depth;
     private int depthLimit;
     
-    private static final PropertyDescriptor problemDepthDescriptor = new IntegerProperty(
+    private static final PropertyDescriptor PROBLEM_DEPTH_DESCRIPTOR = new IntegerProperty(
     		"problemDepth", 
     		"Maximum allowable statement depth",
     		0,
     		1.0f
     		);
     
-    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(problemDepthDescriptor);
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(PROBLEM_DEPTH_DESCRIPTOR);
         
     public Object visit(ASTCompilationUnit node, Object data) {
         depth = 0;
-        depthLimit = getIntProperty(problemDepthDescriptor);
+        depthLimit = getIntProperty(PROBLEM_DEPTH_DESCRIPTOR);
         return super.visit(node, data);
     }
 
@@ -47,6 +47,6 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
      * @return Map
      */
     protected Map<String, PropertyDescriptor> propertiesByName() {
-    	return propertyDescriptorsByName;
+    	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

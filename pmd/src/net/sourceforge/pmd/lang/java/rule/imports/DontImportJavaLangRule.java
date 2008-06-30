@@ -5,7 +5,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class DontImportJavaLangRule extends AbstractJavaRule {
 
-    private static final Package javaLangPackage = Package.getPackage("java.lang");
+    private static final Package JAVA_LANG_PACKAGE = Package.getPackage("java.lang");
 
     @Override
     public Object visit(ASTImportDeclaration node, Object data) {
@@ -15,7 +15,7 @@ public class DontImportJavaLangRule extends AbstractJavaRule {
 	}
 
 	if (node.getPackage() != null) {
-	    if (node.getPackage().equals(javaLangPackage)) {
+	    if (node.getPackage().equals(JAVA_LANG_PACKAGE)) {
 		addViolation(data, node);
 	    }
 	} else {

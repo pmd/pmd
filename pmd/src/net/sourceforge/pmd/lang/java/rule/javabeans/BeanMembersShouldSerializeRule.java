@@ -25,14 +25,14 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 
     private String prefixProperty;
 
-    private static final PropertyDescriptor prefixDescriptor = new StringProperty("prefix", "Prefix somethingorother?",
+    private static final PropertyDescriptor PREFIX_DESCRIPTOR = new StringProperty("prefix", "Prefix somethingorother?",
 	    "", 1.0f);
 
-    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(prefixDescriptor);
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(PREFIX_DESCRIPTOR);
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-	prefixProperty = getStringProperty(prefixDescriptor);
+	prefixProperty = getStringProperty(PREFIX_DESCRIPTOR);
 	super.visit(node, data);
 	return data;
     }
@@ -114,6 +114,6 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
      */
     @Override
     protected Map<String, PropertyDescriptor> propertiesByName() {
-	return propertyDescriptorsByName;
+	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

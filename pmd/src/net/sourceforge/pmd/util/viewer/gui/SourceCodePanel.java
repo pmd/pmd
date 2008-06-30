@@ -31,7 +31,7 @@ public class SourceCodePanel extends JPanel implements ViewerModelListener {
     private ViewerModel model;
     private JTextArea sourceCodeArea;
 
-    private static final Color highlightColor = new Color(79, 237, 111);
+    private static final Color HIGHLIGHT_COLOR = new Color(79, 237, 111);
     
     public SourceCodePanel(ViewerModel model) {
         this.model = model;
@@ -75,7 +75,7 @@ public class SourceCodePanel extends JPanel implements ViewerModelListener {
                                 sourceCodeArea.getLineStartOffset(node.getEndLine() - 1) +
                                 node.getEndColumn();
                         sourceCodeArea.getHighlighter().addHighlight(startOffset, end,
-                                new DefaultHighlighter.DefaultHighlightPainter(highlightColor));
+                                new DefaultHighlighter.DefaultHighlightPainter(HIGHLIGHT_COLOR));
                         sourceCodeArea.moveCaretPosition(startOffset);
                     } catch (BadLocationException exc) {
                         throw new IllegalStateException(exc.getMessage());

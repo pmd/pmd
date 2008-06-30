@@ -36,12 +36,12 @@ import net.sourceforge.pmd.lang.java.typeresolution.TypeHelper;
  */
 public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
 
-    private final static Set<Class<? extends Node>> blockParents;
+    private final static Set<Class<? extends Node>> BLOCK_PARENTS;
 
     static {
-        blockParents = new HashSet<Class<? extends Node>>();
-        blockParents.add(ASTIfStatement.class);
-        blockParents.add(ASTSwitchStatement.class);
+        BLOCK_PARENTS = new HashSet<Class<? extends Node>>();
+        BLOCK_PARENTS.add(ASTIfStatement.class);
+        BLOCK_PARENTS.add(ASTSwitchStatement.class);
     }
 
     @Override
@@ -290,7 +290,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         Node parentNode = node.jjtGetParent();
 
         Node lastNode = node;
-        while (parentNode != null && !blockParents.contains(parentNode.getClass())) {
+        while (parentNode != null && !BLOCK_PARENTS.contains(parentNode.getClass())) {
             lastNode = parentNode;
             parentNode = parentNode.jjtGetParent();
         }

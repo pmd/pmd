@@ -12,10 +12,10 @@ public class CSVRenderer implements Renderer {
 
 	private char separator;
 	
-	public static final char defaultSeparator = ',';
+	public static final char DEFAULT_SEPARATOR = ',';
 	
 	public CSVRenderer() {
-		this(defaultSeparator);
+		this(DEFAULT_SEPARATOR);
 	}
 	
 	public CSVRenderer(char separatorChar) {

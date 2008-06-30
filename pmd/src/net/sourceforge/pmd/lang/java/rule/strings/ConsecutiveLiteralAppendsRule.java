@@ -56,21 +56,21 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  */
 public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
-    private final static Set<Class<?>> blockParents;
+    private final static Set<Class<?>> BLOCK_PARENTS;
 
     static {
-	blockParents = new HashSet<Class<?>>();
-	blockParents.add(ASTForStatement.class);
-	blockParents.add(ASTWhileStatement.class);
-	blockParents.add(ASTDoStatement.class);
-	blockParents.add(ASTIfStatement.class);
-	blockParents.add(ASTSwitchStatement.class);
-	blockParents.add(ASTMethodDeclaration.class);
+	BLOCK_PARENTS = new HashSet<Class<?>>();
+	BLOCK_PARENTS.add(ASTForStatement.class);
+	BLOCK_PARENTS.add(ASTWhileStatement.class);
+	BLOCK_PARENTS.add(ASTDoStatement.class);
+	BLOCK_PARENTS.add(ASTIfStatement.class);
+	BLOCK_PARENTS.add(ASTSwitchStatement.class);
+	BLOCK_PARENTS.add(ASTMethodDeclaration.class);
     }
 
-    private static final PropertyDescriptor thresholdDescriptor = new IntegerProperty("threshold", "?", 1, 1.0f);
+    private static final PropertyDescriptor THRESHOLD_DESCRIPTOR = new IntegerProperty("threshold", "?", 1, 1.0f);
 
-    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(thresholdDescriptor);
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(THRESHOLD_DESCRIPTOR);
 
     private int threshold = 1;
 
@@ -80,7 +80,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 	if (!isStringBuffer(node)) {
 	    return data;
 	}
-	threshold = getIntProperty(thresholdDescriptor);
+	threshold = getIntProperty(THRESHOLD_DESCRIPTOR);
 
 	int concurrentCount = checkConstructor(node, data);
 	Node lastBlock = getFirstParentBlock(node);
@@ -235,7 +235,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 	Node parentNode = node.jjtGetParent();
 
 	Node lastNode = node;
-	while (parentNode != null && !blockParents.contains(parentNode.getClass())) {
+	while (parentNode != null && !BLOCK_PARENTS.contains(parentNode.getClass())) {
 	    lastNode = parentNode;
 	    parentNode = parentNode.jjtGetParent();
 	}
@@ -302,6 +302,6 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
     @Override
     protected Map<String, PropertyDescriptor> propertiesByName() {
-	return propertyDescriptorsByName;
+	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

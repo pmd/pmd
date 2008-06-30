@@ -50,28 +50,28 @@ public class CloseResourceRule extends AbstractJavaRule {
     private Set<String> types = new HashSet<String>();
 
     private Set<String> closeTargets = new HashSet<String>();
-    private static final PropertyDescriptor closeTargetsDescriptor = new StringProperty("closeTargets",
+    private static final PropertyDescriptor CLOSE_TARGETS_DESCRIPTOR = new StringProperty("closeTargets",
             "Methods which may close this resource", "", 1.0f);
 
-    private static final PropertyDescriptor typesDescriptor = new StringProperty("types",
+    private static final PropertyDescriptor TYPES_DESCRIPTOR = new StringProperty("types",
             "Types that are affected by this rule", "", 2.0f);
 
-    private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { typesDescriptor, closeTargetsDescriptor });
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] { TYPES_DESCRIPTOR, CLOSE_TARGETS_DESCRIPTOR });
 
     @Override
     protected Map<String, PropertyDescriptor> propertiesByName() {
-        return propertyDescriptorsByName;
+        return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        if (closeTargets.isEmpty() && getStringProperty(closeTargetsDescriptor) != null) {
-            for (StringTokenizer st = new StringTokenizer(getStringProperty(closeTargetsDescriptor), ","); st.hasMoreTokens();) {
+        if (closeTargets.isEmpty() && getStringProperty(CLOSE_TARGETS_DESCRIPTOR) != null) {
+            for (StringTokenizer st = new StringTokenizer(getStringProperty(CLOSE_TARGETS_DESCRIPTOR), ","); st.hasMoreTokens();) {
                 closeTargets.add(st.nextToken());
             }
         }
-        if (types.isEmpty() && getStringProperty(typesDescriptor) != null) {
-            for (StringTokenizer st = new StringTokenizer(getStringProperty(typesDescriptor), ","); st.hasMoreTokens();) {
+        if (types.isEmpty() && getStringProperty(TYPES_DESCRIPTOR) != null) {
+            for (StringTokenizer st = new StringTokenizer(getStringProperty(TYPES_DESCRIPTOR), ","); st.hasMoreTokens();) {
                 types.add(st.nextToken());
             }
         }

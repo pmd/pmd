@@ -30,6 +30,6 @@ public class FortranTokenizer extends AbstractTokenizer implements Tokenizer
 		this.ignorableStmt.add("end");
 		this.ignorableStmt.add("if");
 		// Fortran comment start with an !
-		this.ONE_LINE_COMMENT_CHAR = '!';
+		this.oneLineCommentChar = '!';
 	}
 }

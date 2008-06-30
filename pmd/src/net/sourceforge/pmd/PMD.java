@@ -454,7 +454,7 @@ public class PMD {
     /**
      * Do we have proper permissions to use multithreading?
      */
-    private static final boolean mtSupported;
+    private static final boolean MT_SUPPORTED;
 
     static {
 	boolean error = false;
@@ -470,7 +470,7 @@ public class PMD {
 	} catch (RuntimeException e) {
 	    error = true;
 	}
-	mtSupported = !error;
+	MT_SUPPORTED = !error;
     }
 
     /**
@@ -501,7 +501,7 @@ public class PMD {
 	 * ExecutorService can also be disabled if threadCount is not positive, e.g. using the
 	 * "-cpus 0" command line option.
 	 */
-	boolean useMT = mtSupported && threadCount > 0;
+	boolean useMT = MT_SUPPORTED && threadCount > 0;
 
 	if (stressTestEnabled) {
 	    // randomize processing order

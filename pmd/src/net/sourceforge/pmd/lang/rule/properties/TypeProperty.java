@@ -12,7 +12,7 @@ import net.sourceforge.pmd.util.ClassUtil;
  */
 public class TypeProperty extends StringProperty {
 
-    private static final char delimiter = '|';
+    private static final char DELIMITER = '|';
 
     /**
      * Constructor for TypeProperty.
@@ -22,7 +22,7 @@ public class TypeProperty extends StringProperty {
      * @param theUIOrder float
      */
     public TypeProperty(String theName, String theDescription, Class<?> theDefault, float theUIOrder) {
-	super(theName, theDescription, theDefault, theUIOrder, delimiter);
+	super(theName, theDescription, theDefault, theUIOrder, DELIMITER);
 
 	maxValueCount(1);
     }
@@ -35,7 +35,7 @@ public class TypeProperty extends StringProperty {
      * @param theUIOrder float
      */
     public TypeProperty(String theName, String theDescription, Class<?>[] theDefaults, float theUIOrder) {
-	super(theName, theDescription, theDefaults, theUIOrder, delimiter);
+	super(theName, theDescription, theDefaults, theUIOrder, DELIMITER);
 
 	maxValueCount(Integer.MAX_VALUE);
     }
