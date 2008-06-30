@@ -2,12 +2,12 @@
 
 	<property file="local.properties" />
 
-	<property name="dir.lib" value="${basedir}/lib/" />
-	<property name="dir.lib14" value="${basedir}/java14/lib/" />
-	<property name="dir.src" value="src/" />
-	<property name="dir.build" value="build/" />
-	<property name="dir.rulesets" value="rulesets/" />
-	<property name="dir.regress" value="regress/" />
+	<property name="dir.lib" value="${basedir}/lib" />
+	<property name="dir.lib14" value="${basedir}/java14/lib" />
+	<property name="dir.src" value="src" />
+	<property name="dir.build" value="build" />
+	<property name="dir.rulesets" value="rulesets" />
+	<property name="dir.regress" value="regress" />
 	<property name="dir.api" value="docs/api" />
 	<property name="version" value="5.0" />
 
@@ -53,8 +53,8 @@
 				<path refid="dependencies.path" />
 			</classpath>
 		</javac>
-		<copy todir="${dir.build}net/sourceforge/pmd/util/viewer/resources">
-			<fileset dir="${dir.src}net/sourceforge/pmd/util/viewer/resources">
+		<copy todir="${dir.build}/net/sourceforge/pmd/util/viewer/resources">
+			<fileset dir="${dir.src}/net/sourceforge/pmd/util/viewer/resources">
 				<include name="*.properties" />
 			</fileset>
 		</copy>
@@ -62,7 +62,7 @@
 
 	<target name="copy" description="Copies the rulesets directory contents into the build directory">
 		<mkdir dir="${dir.lib}" />
-		<copy todir="${dir.build}rulesets">
+		<copy todir="${dir.build}/rulesets">
 			<fileset dir="${dir.rulesets}">
 				<include name="**/*.xml" />
 				<include name="**/*.properties" />
@@ -164,8 +164,28 @@
 
 	<target name="pmdOnPmd" description="Runs PMD on PMD" depends="copy, compile">
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
-		<pmd rulesetfiles="${dir.rulesets}internal/dogfood.xml" shortFilenames="true" targetjdk="1.5" minimumpriority="5" failonruleviolation="true" failonerror="true">
+		<pmd rulesetfiles="${dir.rulesets}/internal/dogfood.xml" shortFilenames="true" targetjdk="1.5" minimumpriority="5" failonruleviolation="true" failonerror="true">
 			<formatter type="text" toConsole="true"/>
+			<fileset dir="${dir.src}">
+				<include name="**/*.java" />
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="reports" description="Runs various reports on PMD" depends="copy, compile">
+		<mkdir dir="${dir.build}/reports" />
+
+		<taskdef resource="checkstyletask.properties" classpath="${checkstyle.jar}"/>
+		<checkstyle config="tools/config/checkstyle-config.xml" failOnViolation="false">
+			<formatter type="xml" toFile="${dir.build}/reports/checkstyle_errors.xml"/>
+			<fileset dir="${dir.src}">
+				<include name="**/*.java" />
+			</fileset>
+		</checkstyle>
+
+		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
+		<pmd rulesetfiles="${dir.rulesets}/internal/dogfood-goal.xml" shortFilenames="true" targetjdk="1.5" minimumpriority="5" failonruleviolation="false" failonerror="true">
+			<formatter type="xml" toFile="${dir.build}/reports/pmd-dogfood-goal.xml"/>
 			<fileset dir="${dir.src}">
 				<include name="**/*.java" />
 			</fileset>
@@ -200,7 +220,7 @@
 
 	<target name="test" depends="requires-junit,compile,copy" description="Runs the unit tests">
 		<antcall target="test-execute">
-			<param name="test.outputdir" value="${dir.build}/reports"/>
+			<param name="test.outputdir" value="${dir.build}/reports/test"/>
 			<param name="test.jvm" value="java"/>
 			<param name="test.dependencies" value="dependencies.path"/>
 			<param name="test.regression" value="false"/>
@@ -210,7 +230,7 @@
 
 	<target name="regress" depends="requires-junit,compile,copy" description="Runs the regression unit tests">
 		<antcall target="test-execute">
-			<param name="test.outputdir" value="${dir.build}/reports"/>
+			<param name="test.outputdir" value="${dir.build}/reports/regress"/>
 			<param name="test.jvm" value="java"/>
 			<param name="test.dependencies" value="dependencies.path"/>
 			<param name="test.regression" value="true"/>
@@ -274,7 +294,7 @@
 		<fail unless="jvm14.exe" message="jvm14.exe location is not defined properly" />
 
 		<antcall target="test-execute">
-			<param name="test.outputdir" value="${dir.build}/reports14"/>
+			<param name="test.outputdir" value="${dir.build}/reports/test14"/>
 			<param name="test.jvm" value="${jvm14.exe}"/>
 			<param name="test.dependencies" value="dependencies14.path"/>
 			<param name="test.regression" value="false"/>
@@ -286,7 +306,7 @@
 		<fail unless="jvm14.exe" message="jvm14.exe location is not defined properly" />
 
 		<antcall target="test-execute">
-			<param name="test.outputdir" value="${dir.build}/reports14"/>
+			<param name="test.outputdir" value="${dir.build}/reports/regress14"/>
 			<param name="test.jvm" value="${jvm14.exe}"/>
 			<param name="test.dependencies" value="dependencies14.path"/>
 			<param name="test.regression" value="true"/>
