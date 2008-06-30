@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
@@ -135,8 +136,11 @@ public class VariableNamingConventionsRule extends AbstractJavaRule {
 
     private Object checkVariableDeclarators(String[] prefixes, String[] suffixes, Node root, boolean isStatic,
 	    boolean isFinal, Object data) {
-	for (ASTVariableDeclaratorId variableDeclaratorId : root.findDescendantsOfType(ASTVariableDeclaratorId.class)) {
-	    checkVariableDeclaratorId(prefixes, suffixes, root, isStatic, isFinal, variableDeclaratorId, data);
+	for (ASTVariableDeclarator variableDeclarator : root.findChildrenOfType(ASTVariableDeclarator.class)) {
+	    for (ASTVariableDeclaratorId variableDeclaratorId : variableDeclarator
+		    .findChildrenOfType(ASTVariableDeclaratorId.class)) {
+		checkVariableDeclaratorId(prefixes, suffixes, root, isStatic, isFinal, variableDeclaratorId, data);
+	    }
 	}
 	return data;
     }

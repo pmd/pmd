@@ -167,6 +167,17 @@ public class Foo {
     </test-code>
     <test-code>
         <description><![CDATA[
+variables in inner classes should not trigger problems in parent declaration
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private static final Bar BAR = new FooBar() { public foo(String arg) { } };
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
 Rule property control 
      ]]></description>
         <expected-problems>5</expected-problems>
