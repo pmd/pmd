@@ -69,7 +69,7 @@ public abstract class AbstractRuleViolation implements RuleViolation {
 		String xpath = rule.getStringProperty(Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY);
 		if (xpath != null) {
 		    try {
-			List<Node> children = node.findChildNodesWithXPath(xpath);
+			List<? extends Node> children = node.findChildNodesWithXPath(xpath);
 			if (children != null && !children.isEmpty()) {
 			    suppressed = true;
 			}
