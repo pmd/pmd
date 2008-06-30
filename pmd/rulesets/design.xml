@@ -1697,6 +1697,34 @@ public class Foo {
     </example>
   </rule>
 
+    <rule name="UseVarargs"
+	  		language="java"
+	  		minimumLanguageVersion="1.5"
+	  		since="5.0"
+         message="Consider using varargs for methods or constructors which take an array the last parameter."
+         class="net.sourceforge.pmd.lang.rule.XPathRule"
+	  		externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UseVarargs">
+        <description>Java 5 introduced the varargs parameter declaration for methods and constructors.  This syntactic sugar provides flexibility for users of these methods and constructors, allowing them to avoid having to deal with the creation of an array.</description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+            	<value><![CDATA[
+//FormalParameters/FormalParameter[position()=last() and @Array='true' and @Varargs='false']
+					]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+public class Foo {
+   public void foo(String s, Object[] args) {
+      // Do something here...
+   }
+
+   public void bar(String s, Object... args) {
+      // Ahh, varargs tastes much better...
+   }
+}
+        ]]></example>
+    </rule>
     
 <!--
 	<rule 	name="TooManyHttpFilter"

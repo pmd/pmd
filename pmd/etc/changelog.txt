@@ -358,7 +358,7 @@ New rules:
 	Controversial ruleset: OneDeclarationByLine
 	Naming ruleset: ShortClassName
 	Basic ruleset:	EmptyInitializer,EmptyStatementBlock,ExtendsObject,UselessParentheses,CheckSkipResult
-	Design ruleset: LogicInversion
+	Design ruleset: LogicInversion,UseVarargs
 
 March 25, 2008 - 4.2:
 

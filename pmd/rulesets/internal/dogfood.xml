@@ -88,6 +88,7 @@
 		<exclude name="SimplifyBooleanExpressions"/>
 		<exclude name="CompareObjectsWithEquals"/>
 		<exclude name="SimplifyBooleanReturns"/>
+		<exclude name="UseVarargs"/>
 	</rule>
 
 	<rule ref="rulesets/empty.xml">

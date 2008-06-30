@@ -46,6 +46,8 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule("design", "SingularField");
         addRule("design", "SwitchDensity");
         addRule("design", "SwitchStmtsShouldHaveDefault");
+        addRule("design", "TooFewBranchesForASwitchStatement");
+//      addRule("design", "TooManyHttpFilter.xml");
         addRule("design", "UncommentedEmptyMethod");
         addRule("design", "UnnecessaryLocalBeforeReturn");
         addRule("design", "UnsynchronizedStaticDateFormatter");
@@ -53,9 +55,7 @@ public class DesignRulesTest extends SimpleAggregatorTst {
         addRule("design", "UseLocaleWithCaseConversions");
         addRule("design", "UseNotifyAllInsteadOfNotify");
         addRule("design", "UseSingleton");
-        addRule("design", "TooFewBranchesForASwitchStatement");
-//        addRule("design", "TooManyHttpFilter.xml");
-
+        addRule("design", "UseVarargs");
     }
 
     public static junit.framework.Test suite() {
