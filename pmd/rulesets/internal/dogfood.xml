@@ -149,7 +149,6 @@
 		<exclude name="AbstractNaming"/>
 		<exclude name="MethodNamingConventions"/>
 		<exclude name="AvoidFieldNameMatchingTypeName"/>
-		<exclude name="SuspiciousConstantFieldName"/>
 		<exclude name="BooleanGetMethodName"/>
 	</rule>
 
