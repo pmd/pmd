@@ -70,11 +70,6 @@
       <td valign="top">Whether or not to fail the build if PMD finds more than the value of this attribute. Note that setting this attribute does not require to set the failOnRuleViolation to true.</td>
       <td valign="top" align="center">No</td>
     </tr>
-    <tr>
-      <td valign="top">debug</td>
-      <td valign="top">Whether or not to show debug messages in the console</td>
-      <td valign="top" align="center">No</td>
-    </tr>
 </table>
 
           <p><code>formatter</code> nested element - specifies the format of and the files to which the report is written.</p>
