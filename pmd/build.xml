@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<project name="pmd" default="jar" basedir=".">
+
+        <target name="delete"> <ant antfile="bin/build.xml" inheritAll="false" target="delete" /> </target>
+        <target name="jar"> <ant antfile="bin/build.xml" inheritAll="false" target="jar" /> </target>
+        <target name="weave"> <ant antfile="bin/build.xml" inheritAll="false" target="weave" /> </target>
+        <target name="pmdOnPmd"> <ant antfile="bin/build.xml" inheritAll="false" target="pmdOnPmd" /> </target>
+        <target name="test"> <ant antfile="bin/build.xml" inheritAll="false" target="test" /> </target>
+        <target name="regress"> <ant antfile="bin/build.xml" inheritAll="false" target="regress" /> </target>
+        <target name="test14"> <ant antfile="bin/build.xml" inheritAll="false" target="test14" /> </target>
+        <target name="regress14"> <ant antfile="bin/build.xml" inheritAll="false" target="regress14" /> </target>
+        <target name="clean"> <ant antfile="bin/build.xml" inheritAll="false" target="clean" /> </target>
+        <target name="dist"> <ant antfile="bin/build.xml" inheritAll="false" target="dist" /> </target>
+        <target name="qa"> <ant antfile="bin/build.xml" inheritAll="false" target="qa" /> </target>
+
+</project>
