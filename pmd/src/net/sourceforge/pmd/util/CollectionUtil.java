@@ -128,7 +128,7 @@ public final class CollectionUtil {
      * @param otherValue Object
      * @return boolean
      */
-    public static final boolean arraysAreEqual(Object value, Object otherValue) {
+    public static boolean arraysAreEqual(Object value, Object otherValue) {
 	if (value instanceof Object[]) {
 	    if (otherValue instanceof Object[]) {
 		return valuesAreTransitivelyEqual((Object[]) value, (Object[]) otherValue);
@@ -146,7 +146,7 @@ public final class CollectionUtil {
      * @param thatArray Object[]
      * @return boolean
      */
-    public static final boolean valuesAreTransitivelyEqual(Object[] thisArray, Object[] thatArray) {
+    public static boolean valuesAreTransitivelyEqual(Object[] thisArray, Object[] thatArray) {
 	if (thisArray == thatArray) {
 	    return true;
 	}
@@ -171,7 +171,7 @@ public final class CollectionUtil {
      * @param otherValue Object
      * @return boolean
      */
-    public static final boolean areEqual(Object value, Object otherValue) {
+    public static boolean areEqual(Object value, Object otherValue) {
 	if (value == otherValue) {
 	    return true;
 	}
