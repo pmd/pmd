@@ -165,7 +165,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		try
 		{
 			List list = node.findChildNodesWithXPath(xpathQuery);
-			if ( list != null && list.size() > 0 ) {
+			if ( list != null && !list.isEmpty() ) {
 				// We got a match !
 				status = true;
 			}

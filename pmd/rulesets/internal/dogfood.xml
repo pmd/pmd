@@ -81,7 +81,6 @@
 		<exclude name="UnnecessaryLocalBeforeReturn"/>
 		<exclude name="AbstractClassWithoutAbstractMethod"/>
 		<exclude name="AvoidConstantsInterface"/>
-		<exclude name="UseCollectionIsEmpty"/>
 		<exclude name="AccessorClassGeneration"/>
 		<exclude name="SimplifyBooleanExpressions"/>
 		<exclude name="CompareObjectsWithEquals"/>

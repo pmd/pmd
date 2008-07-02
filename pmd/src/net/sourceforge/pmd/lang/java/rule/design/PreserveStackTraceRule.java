@@ -95,13 +95,13 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 	// Search Catch stmt nodes for variable used to store improperly created throwable or exception
 	try {
 	    List<Node> nodes = node.findChildNodesWithXPath(FIND_THROWABLE_INSTANCE);
-	    if (nodes.size() > 0) {
+	    if (!nodes.isEmpty()) {
 		String variableName = node.jjtGetChild(0).getImage(); // VariableDeclatorId
 		ASTCatchStatement catchStmt = node.getFirstParentOfType(ASTCatchStatement.class);
 
 		while (catchStmt != null) {
 		    List<Node> violations = catchStmt.findChildNodesWithXPath("//Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + variableName + "']");
-		    if (violations != null && violations.size() > 0) {
+		    if (violations != null && !violations.isEmpty()) {
 			// If, after this allocation, the 'initCause' method is called, and the ex passed
 			// this is not a violation
 			if (!useInitCause(violations.get(0), catchStmt)) {
@@ -125,7 +125,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 		if ( node != null && node.getImage() != null )
 		{
 			List <Node> nodes = catchStmt.findChildNodesWithXPath("descendant::StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + node.getImage() + ".initCause']");
-			if ( nodes != null && nodes.size() > 0 )
+			if ( nodes != null && !nodes.isEmpty() )
 			{
 				return true;
 			}

@@ -26,7 +26,7 @@ public final class RegexHelper {
 	 */
 	public static List<Pattern> compilePatternsFromList(List<String> list) {
 		List<Pattern> patterns;
-		if (list != null && list.size() > 0) {
+		if (list != null && !list.isEmpty()) {
 			patterns = new ArrayList<Pattern>(list.size());
 			for (String stringPattern : list) {
 				if ( stringPattern != null && ! "".equals(stringPattern) ) {

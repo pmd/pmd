@@ -67,7 +67,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
 	    } catch (JaxenException e) {
 		e.printStackTrace();
 	    }
-	    if (results != null && results.size() > 0) {
+	    if (results != null && !results.isEmpty()) {
 		result = true;
 	    }
 	}

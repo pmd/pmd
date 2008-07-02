@@ -148,7 +148,7 @@ public class Filters {
 	public static Filter<String> buildRegexFilterExcludeOverInclude(List<String> includeRegexes,
 			List<String> excludeRegexes) {
 		OrFilter<String> includeFilter = new OrFilter<String>();
-		if (includeRegexes == null || includeRegexes.size() == 0) {
+		if (includeRegexes == null || includeRegexes.isEmpty()) {
 			includeFilter.addFilter(new RegexStringFilter(".*"));
 		} else {
 			for (String includeRegex : includeRegexes) {
