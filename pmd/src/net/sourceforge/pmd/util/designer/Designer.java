@@ -265,7 +265,7 @@ public class Designer implements ClipboardOwner {
 	}
 
 	public Scope getScope() {
-	    if (node != null && node instanceof JavaNode) {
+	    if (node instanceof JavaNode) {
 		return ((JavaNode)node).getScope();
 	    }
 	    return null;

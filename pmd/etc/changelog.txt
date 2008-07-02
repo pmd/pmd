@@ -103,6 +103,14 @@ TODO - Release blockers - Must implement before this release can be finished
      passed down into the RuleSets/RuleSet code to allow easier means of making
      decisions at that level based upon global configuration settings (e.g.
      changes to default LanguageVersions can be checked at the Rule level now).
+   o Figure out a way to allow Rules to deal with parentheses and blocks, which
+     introduce certain repetitive (and generally ignorable for most Rules)
+     structures into the AST tree.  Some rules are making special effort
+     (e.g. ConfusingTernaryRule) to detect these AST patterns.  Perhaps a
+     "normalized" AST structure can be created which will make the AST appear
+     consistent regardless of how many parens are presented, or how many blocks
+     have been created (e.g. default block inserted, duplicates collapsed).
+     This should be configurable on per Rule basis similar to TR and SymbolTable.
 ---
 
 This version of PMD breaks API compatibility with prior versions of PMD, as well

@@ -197,7 +197,7 @@ public class RuleSet {
      */
     @Override
     public boolean equals(Object o) {
-	if (o == null || !(o instanceof RuleSet)) {
+	if (!(o instanceof RuleSet)) {
 	    return false; // Trivial
 	}
 

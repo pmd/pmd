@@ -72,11 +72,10 @@
 		<exclude name="EmptyMethodInAbstractClassShouldBeAbstract"/>
 		<exclude name="ReturnEmptyArrayRatherThanNull"/>
 		<exclude name="TooFewBranchesForASwitchStatement"/>
+		<exclude name="ConfusingTernary"/>
 		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
 		<exclude name="PositionLiteralsFirstInComparisons"/>
 		<exclude name="PreserveStackTrace"/>
-		<exclude name="SimplifyConditional"/>
-		<exclude name="ConfusingTernary"/>
 		<exclude name="UncommentedEmptyConstructor"/>
 		<exclude name="UncommentedEmptyMethod"/>
 		<exclude name="UnnecessaryLocalBeforeReturn"/>
