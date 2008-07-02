@@ -8,6 +8,7 @@
 	<property name="dir.build" value="build" />
 	<property name="dir.rulesets" value="rulesets" />
 	<property name="dir.regress" value="regress" />
+	<property name="dir.reports" value="${basedir}/reports" />
 	<property name="dir.api" value="docs/api" />
 	<property name="version" value="5.0" />
 
@@ -172,24 +173,67 @@
 		</pmd>
 	</target>
 
-	<target name="reports" description="Runs various reports on PMD" depends="copy, compile">
-		<mkdir dir="${dir.build}/reports" />
+	<target name="reports" description="Runs various reports on PMD" depends="checkstyle, pmd-dogfood-goal, clover"/>
 
+	<target name="checkstyle" description="Runs checkstyle on PMD">
+		<mkdir dir="${dir.reports}" />
 		<taskdef resource="checkstyletask.properties" classpath="${checkstyle.jar}"/>
 		<checkstyle config="tools/config/checkstyle-config.xml" failOnViolation="false">
-			<formatter type="xml" toFile="${dir.build}/reports/checkstyle_errors.xml"/>
+			<formatter type="xml" toFile="${dir.reports}/checkstyle_errors.xml"/>
 			<fileset dir="${dir.src}">
 				<include name="**/*.java" />
 			</fileset>
 		</checkstyle>
+	</target>
 
+	<target name="pmd-dogfood-goal" description="Runs pmd-dogfood-goal.xml on PMD" depends="copy, compile">
+		<mkdir dir="${dir.reports}" />
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
 		<pmd rulesetfiles="${dir.rulesets}/internal/dogfood-goal.xml" shortFilenames="false" targetjdk="1.5" minimumpriority="5" failonruleviolation="false" failonerror="true">
-			<formatter type="xml" toFile="${dir.build}/reports/pmd-dogfood-goal.xml"/>
+			<formatter type="xml" toFile="${dir.reports}/pmd-dogfood-goal.xml"/>
 			<fileset dir="${dir.src}">
 				<include name="**/*.java" />
 			</fileset>
 		</pmd>
+	</target>
+
+	<target name="clover" description="Generates clover report">
+		<antcall>
+			<!-- all targets need to be called in sequence for clover to work -->
+			<target name="clean"/>
+			<target name="with.clover"/>
+			<target name="regress"/>
+			<target name="clean"/>
+			<target name="clover.reports"/>
+		</antcall>
+	</target>
+
+	<target name="clover.setup">
+		<fail unless="clover.home" message="clover.home location is not defined properly" />
+		<property name ="clover.jar" location="${clover.home}/lib/clover.jar" />
+		<property name="clover.license.path" value="tools/config/clover2.license" />
+		<taskdef resource="cloverlib.xml" classpath="${clover.jar}" />
+	</target>
+
+	<target name="with.clover" depends="clover.setup">
+		<mkdir dir="${dir.reports}/clover"/>
+		<clover-setup initString="${dir.reports}/clover/db/coverage.db">
+			<fileset dir="${dir.src}"/>
+			<fileset dir="${dir.regress}">
+				<include name="test/net/sourceforge/pmd/testframework/**/*.java"/> 
+			</fileset>
+		</clover-setup>
+	</target>
+
+	<target name="clover.reports" depends="with.clover">
+		<clover-report>
+			<current outfile="${dir.reports}/clover/html">
+				<format type="html"/>
+			</current>
+			<current outfile="${dir.reports}/clover/coverage.xml">
+				<format type="xml"/>
+			</current>
+		</clover-report>
 	</target>
 
 	<target name="cpdOnPmd" description="Runs CPD on PMD" depends="copy, compile">
@@ -220,7 +264,7 @@
 
 	<target name="test" depends="requires-junit,compile,copy" description="Runs the unit tests">
 		<antcall target="test-execute">
-			<param name="test.outputdir" value="${dir.build}/reports/test"/>
+			<param name="test.outputdir" value="${dir.reports}/test"/>
 			<param name="test.jvm" value="java"/>
 			<param name="test.dependencies" value="dependencies.path"/>
 			<param name="test.regression" value="false"/>
@@ -230,7 +274,7 @@
 
 	<target name="regress" depends="requires-junit,compile,copy" description="Runs the regression unit tests">
 		<antcall target="test-execute">
-			<param name="test.outputdir" value="${dir.build}/reports/regress"/>
+			<param name="test.outputdir" value="${dir.reports}/regress"/>
 			<param name="test.jvm" value="java"/>
 			<param name="test.dependencies" value="dependencies.path"/>
 			<param name="test.regression" value="true"/>
@@ -241,12 +285,13 @@
 	<target name="test-execute" description="Runs the unit tests">
 		<delete dir="${test.outputdir}" />
 		<mkdir dir="${test.outputdir}/xml"/>
-		<junit printsummary="${test.printsummary}" showoutput="no" filtertrace="no" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch"
+		<junit printsummary="${test.printsummary}" showoutput="no" filtertrace="yes" haltonfailure="no" jvm="${test.jvm}" forkmode="perBatch"
 			failureProperty="test.failure">
 			<sysproperty key="pmd.regress" value="${test.regression}"/>
 			<classpath>
 				<path refid="${test.dependencies}" />
 				<path path="${dir.regress}"/>
+				<path path="${clover.jar}"/>
 			</classpath>
 			<batchtest fork="yes" todir="${test.outputdir}/xml">
 				<fileset dir="${dir.regress}">
@@ -294,7 +339,7 @@
 		<fail unless="jvm14.exe" message="jvm14.exe location is not defined properly" />
 
 		<antcall target="test-execute">
-			<param name="test.outputdir" value="${dir.build}/reports/test14"/>
+			<param name="test.outputdir" value="${dir.reports}/test14"/>
 			<param name="test.jvm" value="${jvm14.exe}"/>
 			<param name="test.dependencies" value="dependencies14.path"/>
 			<param name="test.regression" value="false"/>
@@ -306,7 +351,7 @@
 		<fail unless="jvm14.exe" message="jvm14.exe location is not defined properly" />
 
 		<antcall target="test-execute">
-			<param name="test.outputdir" value="${dir.build}/reports/regress14"/>
+			<param name="test.outputdir" value="${dir.reports}/regress14"/>
 			<param name="test.jvm" value="${jvm14.exe}"/>
 			<param name="test.dependencies" value="dependencies14.path"/>
 			<param name="test.regression" value="true"/>
@@ -524,4 +569,3 @@ public class]]></replacevalue>
 	<target name="qa" depends="dist, regress, regress14, pmdOnPmd, cpdOnPmd, symtabtest, dfatest, cpdtest, javadoc" description="Runs all tests (used for continuous integration tests with cruise control)"/>
 
 </project>
-
