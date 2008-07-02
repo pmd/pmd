@@ -9,7 +9,7 @@ import java.util.Comparator;
  * Compares ClassNodes by the name of the class.  Can also compare String class
  * names to ClassNodes.
  */
-public class ClassNodeComparator implements Comparator {
+public final class ClassNodeComparator implements Comparator {
 
 	public static final ClassNodeComparator INSTANCE = new ClassNodeComparator();
 

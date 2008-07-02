@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
-public class JavaRuleViolationFactory extends AbstractRuleViolationFactory {
+public final class JavaRuleViolationFactory extends AbstractRuleViolationFactory {
 
     public static final RuleViolationFactory INSTANCE = new JavaRuleViolationFactory();
 

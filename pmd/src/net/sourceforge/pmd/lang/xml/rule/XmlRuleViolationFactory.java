@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
-public class XmlRuleViolationFactory extends AbstractRuleViolationFactory {
+public final class XmlRuleViolationFactory extends AbstractRuleViolationFactory {
 
     public static final RuleViolationFactory INSTANCE = new XmlRuleViolationFactory();
 

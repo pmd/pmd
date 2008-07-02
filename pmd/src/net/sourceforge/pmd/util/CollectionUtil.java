@@ -11,7 +11,7 @@ import java.util.Set;
  * @author Brian Remedios
  * @version $Revision$
  */
-public class CollectionUtil {
+public final class CollectionUtil {
 
     public static final TypeMap COLLECTION_INTERFACES_BY_NAMES = new TypeMap(new Class[] { java.util.List.class,
 	    java.util.Collection.class, java.util.Map.class, java.util.Set.class, });

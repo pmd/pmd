@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URL;
 
-public class ResourceLoader {
+public final class ResourceLoader {
 
     // Only static methods, so we shouldn't allow an instance to be created
     private ResourceLoader() {

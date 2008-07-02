@@ -9,7 +9,7 @@ import java.util.Comparator;
  * Compares MemberNodes.  FieldNodes are smaller than ConstructorNodes
  * which are smaller than MethodNodes.
  */
-public class MemberNodeComparator implements Comparator<MemberNode> {
+public final class MemberNodeComparator implements Comparator<MemberNode> {
 
 	public static final MemberNodeComparator INSTANCE = new MemberNodeComparator();
 

@@ -5,7 +5,7 @@ import java.io.File;
 /**
  * Directory filter.
  */
-public class DirectoryFilter implements Filter<File> {
+public final class DirectoryFilter implements Filter<File> {
 	public static final DirectoryFilter INSTANCE = new DirectoryFilter();
 
 	private DirectoryFilter() {

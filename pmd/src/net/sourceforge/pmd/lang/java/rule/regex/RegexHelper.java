@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
  * @author Romain PELISSE, belaran@gmail.com
  *
  */
-public class RegexHelper {
+public final class RegexHelper {
 
 	/**
 	 * Default private empty constructors

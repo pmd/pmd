@@ -17,7 +17,7 @@ import java.util.Comparator;
  *    <li>Rule name</li>
  * </ol>
  */
-public class RuleViolationComparator implements Comparator<RuleViolation> {
+public final class RuleViolationComparator implements Comparator<RuleViolation> {
 
     public static final RuleViolationComparator INSTANCE = new RuleViolationComparator();
 

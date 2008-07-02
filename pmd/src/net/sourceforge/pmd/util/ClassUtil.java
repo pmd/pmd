@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  * 
  * @author Brian Remedios
  */
-public class ClassUtil {
+public final class ClassUtil {
 
     private ClassUtil() {
     };

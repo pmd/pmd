@@ -79,7 +79,6 @@
 		<exclude name="UncommentedEmptyConstructor"/>
 		<exclude name="UncommentedEmptyMethod"/>
 		<exclude name="UnnecessaryLocalBeforeReturn"/>
-		<exclude name="ClassWithOnlyPrivateConstructorsShouldBeFinal"/>
 		<exclude name="AbstractClassWithoutAbstractMethod"/>
 		<exclude name="AvoidConstantsInterface"/>
 		<exclude name="UseCollectionIsEmpty"/>

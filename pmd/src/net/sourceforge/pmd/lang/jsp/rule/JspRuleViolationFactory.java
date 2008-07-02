@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.jsp.ast.JspNode;
 import net.sourceforge.pmd.lang.rule.AbstractRuleViolationFactory;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
-public class JspRuleViolationFactory extends AbstractRuleViolationFactory {
+public final class JspRuleViolationFactory extends AbstractRuleViolationFactory {
 
     public static final RuleViolationFactory INSTANCE = new JspRuleViolationFactory();
 
