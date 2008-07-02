@@ -216,6 +216,7 @@ public class RuleReference extends AbstractDelegateRule {
 	return StringUtil.isSame(s1, s2, true, false, true);
     }
 
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     private static boolean isSame(Object o1, Object o2) {
 	return o1 == o2 || (o1 != null && o2 != null && o1.equals(o2));
     }

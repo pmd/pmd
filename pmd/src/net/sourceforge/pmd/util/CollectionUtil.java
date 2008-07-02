@@ -171,6 +171,7 @@ public final class CollectionUtil {
      * @param otherValue Object
      * @return boolean
      */
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public static boolean areEqual(Object value, Object otherValue) {
 	if (value == otherValue) {
 	    return true;

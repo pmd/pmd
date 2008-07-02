@@ -308,6 +308,7 @@ public class StringUtil {
      * @param standardizeWhitespace Indicates if the embedded whitespace should be standardized before comparison.
      * @return <code>true</code> if the Strings are the same, <code>false</code> otherwise.
      */
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public static boolean isSame(String s1, String s2, boolean trim, boolean ignoreCase, boolean standardizeWhitespace) {
 		if (s1 == s2) {
 			return true;

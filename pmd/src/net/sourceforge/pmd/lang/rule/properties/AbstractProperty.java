@@ -274,6 +274,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 * @param otherValue Object
 	 * @return boolean
 	 */
+	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	public static final boolean areEqual(Object value, Object otherValue) {
 		if (value == otherValue) {
 		    return true;

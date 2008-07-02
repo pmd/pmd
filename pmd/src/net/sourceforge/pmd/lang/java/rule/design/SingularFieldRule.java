@@ -40,6 +40,7 @@ public class SingularFieldRule extends AbstractJavaRule {
     private static final PropertyDescriptor DISALLOW_NOT_ASSIGNMENT = new BooleanProperty(
 			"DisallowNotAssignment", "Disallow violations where the first usage is not an assignment", false, 1.0f);
 
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
     	boolean checkInnerClasses = getBooleanProperty(CHECK_INNER_CLASSES);

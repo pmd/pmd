@@ -83,7 +83,6 @@
 		<exclude name="AvoidConstantsInterface"/>
 		<exclude name="AccessorClassGeneration"/>
 		<exclude name="SimplifyBooleanExpressions"/>
-		<exclude name="CompareObjectsWithEquals"/>
 		<exclude name="UseVarargs"/>
 	</rule>
 

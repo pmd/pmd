@@ -50,6 +50,7 @@ public class MatchCollector {
         }
     }
 
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     public List<Match> getMatches() {
         List<Match> matchList = new ArrayList<Match>(startMap.values());
         Collections.sort(matchList);
