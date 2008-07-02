@@ -227,10 +227,10 @@
 
 	<target name="clover.reports" depends="with.clover">
 		<clover-report>
-			<current outfile="${dir.reports}/clover/html">
+			<current outfile="${dir.reports}/clover">
 				<format type="html"/>
 			</current>
-			<current outfile="${dir.reports}/clover/coverage.xml">
+			<current outfile="${dir.reports}/clover/clover.xml">
 				<format type="xml"/>
 			</current>
 		</clover-report>
