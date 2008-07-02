@@ -3,14 +3,14 @@
  */
 package net.sourceforge.pmd.lang.dfa;
 
-import java.util.LinkedList;
+import java.util.List;
 
 
 public class StartOrEndDataFlowNode extends AbstractDataFlowNode {
 
     private boolean isStartNode;
 
-    public StartOrEndDataFlowNode(LinkedList<DataFlowNode> dataFlow, int line, boolean isStartNode) {
+    public StartOrEndDataFlowNode(List<DataFlowNode> dataFlow, int line, boolean isStartNode) {
 	super(dataFlow);
 	this.line = line;
 	this.isStartNode = isStartNode;

@@ -3,7 +3,9 @@ package net.sourceforge.pmd.util.viewer.gui;
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -74,10 +76,11 @@ public class ASTPanel extends JPanel implements ViewerModelListener, TreeSelecti
                 break;
             case ViewerModelEvent.NODE_SELECTED:
                 if (e.getSource() != this) {
-                    LinkedList<Node> list = new LinkedList<Node>();
+                    List<Node> list = new ArrayList<Node>();
                     for (Node n = (Node) e.getParameter(); n != null; n = n.jjtGetParent()) {
-                        list.addFirst(n);
+                        list.add(n);
                     }
+                    Collections.reverse(list);
                     TreePath path = new TreePath(list.toArray());
                     tree.setSelectionPath(path);
                     tree.scrollPathToVisible(path);

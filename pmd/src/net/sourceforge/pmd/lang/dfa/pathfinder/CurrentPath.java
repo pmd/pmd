@@ -1,17 +1,18 @@
 package net.sourceforge.pmd.lang.dfa.pathfinder;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 import net.sourceforge.pmd.lang.dfa.NodeType;
 
 public class CurrentPath {
 
-    private LinkedList<DataFlowNode> list;
+    private List<DataFlowNode> list;
 
     public CurrentPath() {
-        list = new LinkedList<DataFlowNode>();
+        list = new ArrayList<DataFlowNode>();
     }
 
     public int getLength() {
@@ -23,11 +24,11 @@ public class CurrentPath {
     }
 
     public DataFlowNode getLast() {
-        return list.getLast();
+        return list.get(list.size() - 1);
     }
 
     public void removeLast() {
-        list.removeLast();
+	list.remove(list.size() - 1);
     }
 
     public boolean isEmpty() {
@@ -35,20 +36,20 @@ public class CurrentPath {
     }
 
     public void addLast(DataFlowNode n) {
-        list.addLast(n);
+        list.add(n);
         //System.out.println("adding: " + n);
     }
 
     public boolean isDoBranchNode() {
-        return list.getLast().isType(NodeType.DO_EXPR);
+        return this.getLast().isType(NodeType.DO_EXPR);
     }
 
     public boolean isFirstDoStatement() {
-        return isFirstDoStatement(list.getLast());
+        return isFirstDoStatement(this.getLast());
     }
 
     public DataFlowNode getDoBranchNodeFromFirstDoStatement() {
-	DataFlowNode inode = list.getLast();
+	DataFlowNode inode = this.getLast();
         if (!isFirstDoStatement()) {
             return null;
         }
@@ -61,12 +62,12 @@ public class CurrentPath {
     }
 
     public boolean isEndNode() {
-        return list.getLast().getChildren().size() == 0;
+        return this.getLast().getChildren().size() == 0;
         //return inode instanceof StartOrEndDataFlowNode;
     }
 
     public boolean isBranch() {
-        return list.getLast().getChildren().size() > 1;
+        return this.getLast().getChildren().size() > 1;
     }
 
     private boolean isFirstDoStatement(DataFlowNode inode) {
@@ -74,7 +75,7 @@ public class CurrentPath {
         if (index < 0) {
             return false;
         }
-        return ((DataFlowNode) inode.getFlow().get(index)).isType(NodeType.DO_BEFORE_FIRST_STATEMENT);
+        return inode.getFlow().get(index).isType(NodeType.DO_BEFORE_FIRST_STATEMENT);
     }
 }
 

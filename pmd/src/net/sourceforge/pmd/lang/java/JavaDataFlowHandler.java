@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.lang.java;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
 import net.sourceforge.pmd.lang.java.dfa.JavaDataFlowNode;
 
 public class JavaDataFlowHandler implements DataFlowHandler {
-    public DataFlowNode createDataFlowNode(LinkedList<DataFlowNode> dataFlow, Node node) {
+    public DataFlowNode createDataFlowNode(List<DataFlowNode> dataFlow, Node node) {
 	return new JavaDataFlowNode(dataFlow, node);
     }
 

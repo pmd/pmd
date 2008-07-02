@@ -16,6 +16,7 @@ public final class CollectionUtil {
     public static final TypeMap COLLECTION_INTERFACES_BY_NAMES = new TypeMap(new Class[] { java.util.List.class,
 	    java.util.Collection.class, java.util.Map.class, java.util.Set.class, });
 
+    @SuppressWarnings("PMD.LooseCoupling")
     public static final TypeMap COLLECTION_CLASSES_BY_NAMES = new TypeMap(new Class[] { java.util.ArrayList.class,
 	    java.util.LinkedList.class, java.util.Vector.class, java.util.HashMap.class, java.util.LinkedHashMap.class,
 	    java.util.TreeMap.class, java.util.TreeSet.class, java.util.HashSet.class, java.util.LinkedHashSet.class });

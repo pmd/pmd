@@ -54,8 +54,6 @@
 	<rule ref="rulesets/coupling.xml">
 		<exclude name="CouplingBetweenObjects"/>
 		<exclude name="ExcessiveImports"/>
-		<!-- TODO Work towards enabling the following, disabled for now because of failing code -->
-		<exclude name="LooseCoupling"/>
 	</rule>
 
 	<rule ref="rulesets/design.xml">

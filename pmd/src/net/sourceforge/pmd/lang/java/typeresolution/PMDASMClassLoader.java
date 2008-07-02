@@ -3,16 +3,16 @@
  */
 package net.sourceforge.pmd.lang.java.typeresolution;
 
-import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
-
-import org.objectweb.asm.ClassReader;
-
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.sourceforge.pmd.lang.java.typeresolution.visitors.PMDASMVisitor;
+
+import org.objectweb.asm.ClassReader;
 
 /*
  * I've refactored this class to not cache the results any more. This is a
@@ -41,7 +41,7 @@ public class PMDASMClassLoader extends ClassLoader {
 
             List<String> inner = asmVisitor.getInnerClasses();
             if (inner != null && !inner.isEmpty()) {
-                inner = new LinkedList<String>(inner); // to avoid ConcurrentModificationException
+                inner = new ArrayList<String>(inner); // to avoid ConcurrentModificationException
                 for (String str: inner) {
                     reader = new ClassReader(getResourceAsStream(str.replace('.', '/') + ".class"));
                     reader.accept(asmVisitor, 0);

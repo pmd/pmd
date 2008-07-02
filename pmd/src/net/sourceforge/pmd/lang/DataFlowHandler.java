@@ -1,6 +1,6 @@
 package net.sourceforge.pmd.lang;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
@@ -8,7 +8,7 @@ import net.sourceforge.pmd.lang.dfa.DataFlowNode;
 public interface DataFlowHandler {
 
     DataFlowHandler DUMMY = new DataFlowHandler() {
-	public DataFlowNode createDataFlowNode(LinkedList<DataFlowNode> dataFlow, Node node) {
+	public DataFlowNode createDataFlowNode(List<DataFlowNode> dataFlow, Node node) {
 	    return null;
 	}
 	public Class<? extends Node> getLabelStatementNodeClass() {
@@ -16,6 +16,6 @@ public interface DataFlowHandler {
 	}
     };
 
-    DataFlowNode createDataFlowNode(LinkedList<DataFlowNode> dataFlow, Node node);
+    DataFlowNode createDataFlowNode(List<DataFlowNode> dataFlow, Node node);
     Class<? extends Node> getLabelStatementNodeClass();
 }

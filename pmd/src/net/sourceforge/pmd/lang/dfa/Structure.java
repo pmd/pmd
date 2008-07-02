@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.lang.dfa;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 public class Structure {
 
     private final DataFlowHandler dataFlowHandler;
-    private LinkedList<DataFlowNode> dataFlow = new LinkedList<DataFlowNode>();
+    private List<DataFlowNode> dataFlow = new ArrayList<DataFlowNode>();
     private Stack<StackObject> braceStack = new Stack<StackObject>();
     private Stack<StackObject> continueBreakReturnStack = new Stack<StackObject>();
     
@@ -30,7 +30,7 @@ public class Structure {
     /**
      * This class encapsulates the access to the DataFlowNode class. Is this worthwhile?
      * TODO I think it's too confusing to have the DataFlowNode constructor
-     * add the created instance to the LinkedList.  I think it'd be clearer if we did
+     * add the created instance to the List.  I think it'd be clearer if we did
      * that more "procedurally", i.e., create the object, then add it to the list.
      */
     public DataFlowNode createNewNode(Node node) {
@@ -46,11 +46,11 @@ public class Structure {
     }
 
     public DataFlowNode getLast() {
-	return this.dataFlow.getLast();
+	return this.dataFlow.get(this.dataFlow.size() - 1);
     }
 
     public DataFlowNode getFirst() {
-	return this.dataFlow.getFirst();
+	return this.dataFlow.get(0);
     }
 
     //  ----------------------------------------------------------------------------

@@ -3,7 +3,7 @@
  */
 package net.sourceforge.pmd.lang.java.symboltable;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -16,7 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 public class NameFinder {
 
-    private LinkedList<NameOccurrence> names = new LinkedList<NameOccurrence>();
+    private List<NameOccurrence> names = new ArrayList<NameOccurrence>();
 
     public NameFinder(ASTPrimaryExpression node) {
         ASTPrimaryPrefix prefix = (ASTPrimaryPrefix) node.jjtGetChild(0);
@@ -45,7 +45,7 @@ public class NameFinder {
             }
         }
         if (node instanceof ASTPrimarySuffix && ((ASTPrimarySuffix) node).isArguments()) {
-            NameOccurrence occurrence = names.getLast();
+            NameOccurrence occurrence = names.get(names.size() - 1);
             occurrence.setIsMethodOrConstructorInvocation();
             ASTArguments args = (ASTArguments) ((ASTPrimarySuffix) node).jjtGetChild(0);
             occurrence.setArgumentCount(args.getArgumentCount());

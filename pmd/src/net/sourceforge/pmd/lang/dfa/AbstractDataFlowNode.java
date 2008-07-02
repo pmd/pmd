@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.dfa;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -27,19 +26,19 @@ public abstract class AbstractDataFlowNode implements DataFlowNode {
     protected List<DataFlowNode> children = new ArrayList<DataFlowNode>();
     protected BitSet type = new BitSet();
     protected List<VariableAccess> variableAccess = new ArrayList<VariableAccess>();
-    protected LinkedList<DataFlowNode> dataFlow;
+    protected List<DataFlowNode> dataFlow;
     protected int line;
 
-    public AbstractDataFlowNode(LinkedList<DataFlowNode> dataFlow) {
+    public AbstractDataFlowNode(List<DataFlowNode> dataFlow) {
 	this.dataFlow = dataFlow;
 	if (!this.dataFlow.isEmpty()) {
-	    DataFlowNode parent = this.dataFlow.getLast();
+	    DataFlowNode parent = this.dataFlow.get(this.dataFlow.size() - 1);
 	    parent.addPathToChild(this);
 	}
-	this.dataFlow.addLast(this);
+	this.dataFlow.add(this);
     }
 
-    public AbstractDataFlowNode(LinkedList<DataFlowNode> dataFlow, Node node) {
+    public AbstractDataFlowNode(List<DataFlowNode> dataFlow, Node node) {
 	this(dataFlow);
 
 	this.node = node;
