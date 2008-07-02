@@ -138,11 +138,7 @@ public class SingularFieldRule extends AbstractJavaRule {
 			ASTStatementExpression statement = (ASTStatementExpression)potentialStatement;
 			List<ASTAssignmentOperator> assignments = new ArrayList<ASTAssignmentOperator>();
 			statement.findDescendantsOfType(ASTAssignmentOperator.class, assignments, false);
-			if (assignments.isEmpty() || !"=".equals(assignments.get(0).getImage())) {
-				return false;
-			} else {
-				return true;
-			}
+			return !assignments.isEmpty() && "=".equals(assignments.get(0).getImage());
 		} else {
 			return false;
 		}

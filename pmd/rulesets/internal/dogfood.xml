@@ -84,7 +84,6 @@
 		<exclude name="AccessorClassGeneration"/>
 		<exclude name="SimplifyBooleanExpressions"/>
 		<exclude name="CompareObjectsWithEquals"/>
-		<exclude name="SimplifyBooleanReturns"/>
 		<exclude name="UseVarargs"/>
 	</rule>
 
