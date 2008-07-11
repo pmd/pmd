@@ -32,8 +32,10 @@ remote_dir_home=/home/groups/p/pm/pmd/htdocs/snapshot
 
 echo "Uploading src and bin archives"
 
-scp target/release/pmd-bin-${version}.zip ${remote_host}:${remote_dir_home}/files/pmd-bin-${version}-build-${buildnumber}.zip
-scp target/release/pmd-src-${version}.zip ${remote_host}:${remote_dir_home}/files/pmd-src-${version}-build-${buildnumber}.zip
+mkdir target/release/${version}-build-${buildnumber}
+mv target/release/pmd-bin-${version}.zip target/release/${version}-build-${buildnumber}/pmd-bin-${version}-build-${buildnumber}.zip
+mv target/release/pmd-src-${version}.zip target/release/${version}-build-${buildnumber}/pmd-src-${version}-build-${buildnumber}.zip
+scp -r target/release/${version}-build-${buildnumber} ${remote_host}:${remote_dir_home}/files
 
 echo "Generating and uploading maven artifacts"
 
@@ -44,4 +46,8 @@ mvn -q deploy:deploy-file -Durl=scp://${remote_host}${remote_dir_home}/maven2 -D
 echo "Uploading xdocs"
 
 rsync -a -e ssh target/site/ ${remote_host}:${remote_dir_home}
+
+echo "Cleaning up"
+
+svn revert src/net/sourceforge/pmd/PMD.java
 
