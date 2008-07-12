@@ -2,7 +2,6 @@ package test.net.sourceforge.pmd.symboltable;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

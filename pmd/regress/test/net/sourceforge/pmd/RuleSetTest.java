@@ -30,7 +30,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
-import net.sourceforge.pmd.lang.rule.XPathRule;
 
 import org.junit.Test;
 
@@ -408,7 +407,7 @@ public class RuleSetTest extends RuleTst {
 	RC.add(cu);
 	return RC;
     }
-    
+
     private static final String TEST1 = "public class Foo {" + PMD.EOL +
     	"   public void foo() {" + PMD.EOL +
     	"      if (true) { }" + PMD.EOL +

@@ -9,8 +9,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -56,7 +54,7 @@ public abstract class RuleTst {
             rule.setRuleSetName(ruleSet);
             return rule;
         } catch (RuleSetNotFoundException e) {
-            e.printStackTrace();        
+            e.printStackTrace();
             fail("Couldn't find ruleset " + ruleSet);
             return null;
         }
@@ -68,11 +66,11 @@ public abstract class RuleTst {
      */
     public void runTest(TestDescriptor test) {
         Rule rule = test.getRule();
-        
+
         if (test.getReinitializeRule()) {
             rule = findRule(rule.getRuleSetName(), rule.getName());
         }
-        
+
         Properties ruleProperties = rule.getProperties();
         Properties oldProperties = (Properties)ruleProperties.clone();
         try {
@@ -82,7 +80,7 @@ public abstract class RuleTst {
                     oldProperties = (Properties)ruleProperties.clone();
                     ruleProperties.putAll(test.getProperties());
                 }
-                
+
                 res = processUsingStringReader(test.getCode(), rule, test.getLanguageVersion()).size();
             } catch (Throwable t) {
                 t.printStackTrace();
@@ -119,7 +117,7 @@ public abstract class RuleTst {
         rules.setLanguage(languageVersion.getLanguage());
         p.processFile(new StringReader(code), new RuleSets(rules), ctx);
     }
-    
+
     /**
      * getResourceAsStream tries to find the XML file in weird locations if the
      * ruleName includes the package, so we strip it here.
@@ -160,7 +158,7 @@ public abstract class RuleTst {
         if (inputStream == null) {
             throw new RuntimeException("Couldn't find " + testXmlFileName);
         }
-        
+
         Document doc;
         try {
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -194,12 +192,12 @@ public abstract class RuleTst {
             Node reinitializeRuleAttribute = testCode.getAttributes().getNamedItem("reinitializeRule");
             if (reinitializeRuleAttribute != null) {
                 String reinitializeRuleValue = reinitializeRuleAttribute.getNodeValue();
-                if ("true".equalsIgnoreCase(reinitializeRuleValue) || 
+                if ("true".equalsIgnoreCase(reinitializeRuleValue) ||
                         "1".equalsIgnoreCase(reinitializeRuleValue)) {
                     reinitializeRule = true;
                 }
             }
-           
+
             boolean isRegressionTest = true;
             Node regressionTestAttribute = testCode.getAttributes().getNamedItem("regressionTest");
             if (regressionTestAttribute != null) {
@@ -234,12 +232,12 @@ public abstract class RuleTst {
                         code = parseTextNode(codeFragments.item(j));
                     }
                 }
-                
+
                 if (code==null) {
                     throw new RuntimeException("No matching code fragment found for coderef");
                 }
             }
-            
+
             String languageVersionString = getNodeValue(testCode, "source-type", false);
             if (languageVersionString == null) {
                 tests[i] = new TestDescriptor(code, description, expectedProblems, rule);
@@ -270,7 +268,7 @@ public abstract class RuleTst {
         Node node = nodes.item(0);
         return parseTextNode(node);
     }
-    
+
     private static String parseTextNode(Node exampleNode) {
         StringBuffer buffer = new StringBuffer();
         for (int i = 0; i < exampleNode.getChildNodes().getLength(); i++) {
@@ -282,7 +280,7 @@ public abstract class RuleTst {
         }
         return buffer.toString().trim();
     }
-    
+
     /**
      * Run the test using the DEFAULT_LANGUAGE_VERSION and put the violations in the report.
      * Convenience method.
