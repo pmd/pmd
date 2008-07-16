@@ -29,7 +29,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
 
     @Override
-    @SuppressWarnings("unchecked")
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
 	ASTImplementsList impl = node.getFirstChildOfType(ASTImplementsList.class);
 	if (impl != null && impl.jjtGetParent().equals(node)) {

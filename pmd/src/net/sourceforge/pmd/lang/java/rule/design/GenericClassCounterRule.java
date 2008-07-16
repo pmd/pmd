@@ -154,7 +154,6 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		this.matches.add(node);
 	}
 
-	@SuppressWarnings("unchecked")
     private boolean searchForAMatch(String matchType,Node node) {
 		boolean status = false;
     	 String xpathQuery = "//ClassOrInterfaceDeclaration[" +
