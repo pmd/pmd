@@ -256,6 +256,7 @@ The following is relatively complete list of the major changes (this may not be
       Removed - boolean Rule.include()
       Removed - void Rule.setInclude(boolean)
       Removed - String Rule.getRulePriorityName()
+      Removed - String Rule.getExample()
       Removed - Rule.LOWEST_PRIORITY
       Removed - Rule.PRIORITIES
  	   Removed - RuleSet.applies(Language,Language)

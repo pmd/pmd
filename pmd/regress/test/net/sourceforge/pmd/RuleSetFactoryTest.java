@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -125,8 +124,8 @@ public class RuleSetFactoryTest {
 	Set<String> expected = new HashSet<String>();
 	expected.add("MockRuleName1");
 	expected.add("MockRuleName2");
-	for (Iterator<Rule> i = rs.getRules().iterator(); i.hasNext();) {
-	    assertTrue(expected.contains(i.next().getName()));
+	for (Rule rule : rs.getRules()) {
+	    assertTrue(expected.contains(rule.getName()));
 	}
     }
 
@@ -179,8 +178,8 @@ public class RuleSetFactoryTest {
 	assertEquals("TestNameOverride", r.getName());
 	assertEquals("Test message override", r.getMessage());
 	assertEquals("Test description override", r.getDescription());
-	assertEquals("Test example override", r.getExample());
 	assertEquals("Test that both example are stored", 2, r.getExamples().size());
+	assertEquals("Test example override", r.getExamples().get(1));
 	assertEquals(RulePriority.MEDIUM, r.getPriority());
 	assertTrue(r.hasProperty("test2"));
 	assertEquals("override2", r.getStringProperty("test2"));
@@ -501,8 +500,8 @@ public class RuleSetFactoryTest {
 	    Rule rule2 = ((List<Rule>) ruleSet2.getRules()).get(i);
 
 	    assertFalse(message + ", Different RuleReference",
-		    ((rule1 instanceof RuleReference) && !(rule2 instanceof RuleReference))
-			    || (!(rule1 instanceof RuleReference) && (rule2 instanceof RuleReference)));
+		    rule1 instanceof RuleReference && !(rule2 instanceof RuleReference)
+			    || !(rule1 instanceof RuleReference) && rule2 instanceof RuleReference);
 
 	    if (rule1 instanceof RuleReference) {
 		RuleReference ruleReference1 = (RuleReference) rule1;
@@ -652,14 +651,17 @@ public class RuleSetFactoryTest {
 	    return valid;
 	}
 
+	@Override
 	public void error(SAXParseException e) throws SAXException {
 	    log("Error", e);
 	}
 
+	@Override
 	public void fatalError(SAXParseException e) throws SAXException {
 	    log("FatalError", e);
 	}
 
+	@Override
 	public void warning(SAXParseException e) throws SAXException {
 	    log("Warning", e);
 	}
@@ -670,6 +672,7 @@ public class RuleSetFactoryTest {
 	    valid = false;
 	}
 
+	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws IOException, SAXException {
 	    if ("http://pmd.sf.net/ruleset_xml_schema.xsd".equals(systemId) || systemId.endsWith("ruleset.dtd")) {
 		try {

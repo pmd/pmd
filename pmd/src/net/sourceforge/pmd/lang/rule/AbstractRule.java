@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 /**
  * Basic abstract implementation of all parser-independent methods of the Rule
  * interface.
- * 
+ *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
 // FUTURE Move PropertyDescriptor APIs up to Rule interface
@@ -136,16 +136,6 @@ public abstract class AbstractRule implements Rule {
     public List<String> getExamples() {
 	// TODO Needs to be externally immutable
 	return examples;
-    }
-
-    // FUTURE Remove when cleaning up @deprecated
-    public String getExample() {
-	if (examples.isEmpty()) {
-	    return null;
-	} else {
-	    // We return the last example, so the override still works
-	    return examples.get(examples.size() - 1);
-	}
     }
 
     public void addExample(String example) {
@@ -334,7 +324,7 @@ public abstract class AbstractRule implements Rule {
     /**
      * Return all the relevant properties for the receiver by overriding in
      * subclasses as necessary.
-     * 
+     *
      * @return Map
      */
     protected Map<String, PropertyDescriptor> propertiesByName() {

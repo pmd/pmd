@@ -73,8 +73,6 @@ public class RuleReferenceTest {
 		assertEquals("Override failed", "description2", ruleReference.getDescription());
 		assertEquals("Override failed", "description2", ruleReference.getOverriddenDescription());
 
-		// TODO Examples is being tested as currently working, but needs to be fixed at some point
-		assertEquals("Override failed", "example2", ruleReference.getExample());
 		assertEquals("Override failed", 2, ruleReference.getExamples().size());
 		assertEquals("Override failed", "example1", ruleReference.getExamples().get(0));
 		assertEquals("Override failed", "example2", ruleReference.getExamples().get(1));
@@ -139,7 +137,6 @@ public class RuleReferenceTest {
 		assertEquals("Override failed", "description1", ruleReference.getDescription());
 		assertNull("Override failed", ruleReference.getOverriddenDescription());
 
-		assertEquals("Override failed", "example1", ruleReference.getExample());
 		assertEquals("Override failed", 1, ruleReference.getExamples().size());
 		assertEquals("Override failed", "example1", ruleReference.getExamples().get(0));
 		assertNull("Override failed", ruleReference.getOverriddenExamples());

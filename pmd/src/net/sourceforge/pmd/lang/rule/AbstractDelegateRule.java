@@ -112,10 +112,6 @@ public abstract class AbstractDelegateRule implements Rule {
 	return rule.getExamples();
     }
 
-    public String getExample() {
-	return rule.getExample();
-    }
-
     public void addExample(String example) {
 	rule.addExample(example);
     }

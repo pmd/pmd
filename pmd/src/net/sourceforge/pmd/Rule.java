@@ -108,14 +108,14 @@ public interface Rule {
 
     /**
      * Get the name of the RuleSet containing this Rule.
-     * 
+     *
      * @see RuleSet
      */
     String getRuleSetName();
 
     /**
      * Set the name of the RuleSet containing this Rule.
-     * 
+     *
      * @see RuleSet
      */
     void setRuleSetName(String name);
@@ -146,14 +146,6 @@ public interface Rule {
     List<String> getExamples();
 
     /**
-     * Still used by the JDeveloper plugin
-     * 
-     * @deprecated use getExamples(), since we now support multiple examples
-     */
-    @Deprecated
-    String getExample();
-
-    /**
      * Add a single example for this Rule.
      */
     void addExample(String example);
@@ -180,7 +172,7 @@ public interface Rule {
 
     /**
      * Get all properties for this Rule.
-     * 
+     *
      * @return the properties for the rule
      */
     Properties getProperties();
@@ -273,7 +265,7 @@ public interface Rule {
     void addRuleChainVisit(String astNodeName);
 
     /**
-     * Start processing. Called once, before apply() is first called. 
+     * Start processing. Called once, before apply() is first called.
      */
     void start(RuleContext ctx);
 
@@ -284,7 +276,7 @@ public interface Rule {
     void apply(List<? extends Node> nodes, RuleContext ctx);
 
     /**
-     * End processing. Called once, after apply() is last called. 
+     * End processing. Called once, after apply() is last called.
      */
     void end(RuleContext ctx);
 }
