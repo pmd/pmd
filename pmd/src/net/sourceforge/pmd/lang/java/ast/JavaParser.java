@@ -1557,7 +1557,7 @@ jjtn000.setModifiers(modifiers);
         switch (jj_nt.kind) {
         case FINAL:
           jj_consume_token(FINAL);
-              jjtn000.setFinal();
+              jjtn000.setFinal(true);
           break;
         case AT:
           Annotation();
@@ -4215,7 +4215,7 @@ jjtree.openNodeScope(jjtn000);Token t;
         switch (jj_nt.kind) {
         case FINAL:
           jj_consume_token(FINAL);
-             jjtn000.setFinal();
+             jjtn000.setFinal(true);
           break;
         case AT:
           Annotation();
@@ -8080,6 +8080,11 @@ jjtn000.setModifiers(modifiers);
     return false;
   }
 
+  private boolean jj_3R_213() {
+    if (jj_3R_98()) return true;
+    return false;
+  }
+
   private boolean jj_3R_362() {
     if (jj_3R_373()) return true;
     Token xsp;
@@ -8087,11 +8092,6 @@ jjtn000.setModifiers(modifiers);
       xsp = jj_scanpos;
       if (jj_3_44()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  private boolean jj_3R_213() {
-    if (jj_3R_98()) return true;
     return false;
   }
 

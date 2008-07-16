@@ -1318,7 +1318,7 @@ void FormalParameter() :
 {
 }
 {
-   ( "final" {jjtThis.setFinal();} | Annotation() )*
+   ( "final" {jjtThis.setFinal(true);} | Annotation() )*
    Type()
    [ "..." {checkForBadVariableArgumentsUsage();} {jjtThis.setVarargs();} ]
    VariableDeclaratorId()
@@ -1789,7 +1789,7 @@ void BlockStatement():
 void LocalVariableDeclaration() :
 {}
 {
-  ( "final" {jjtThis.setFinal();} | Annotation() )*
+  ( "final" {jjtThis.setFinal(true);} | Annotation() )*
   Type()
   VariableDeclarator()
   ( "," VariableDeclarator() )*
