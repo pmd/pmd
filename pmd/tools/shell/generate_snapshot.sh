@@ -47,6 +47,11 @@ echo "Uploading xdocs"
 
 rsync -a -e ssh target/site/ ${remote_host}:${remote_dir_home}
 
+echo "Setting permissions on uploaded files @ sf.net"
+
+ssh ${remote_host} "chgrp -R pmd ${remote_dir_home}"
+ssh ${remote_host} "chmod -R g+wX ${remote_dir_home}"
+
 echo "Cleaning up"
 
 svn revert src/net/sourceforge/pmd/PMD.java
