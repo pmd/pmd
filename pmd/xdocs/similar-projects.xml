@@ -30,7 +30,7 @@
          <li><a href="http://www.tcs.com/0_products/assent/assent_rules.htm#java">Assent</a> - The usual stuff, seems pretty complete.</li>
          <li><a href="http://www.alajava.com/aubjex/products.htm">Aubjex</a> - Rules aren't listed online.  Appears to have some code modification stuff, which would be cool to have in PMD.  $299.</li>
          <li><a href="http://www.andiz.de/azosystems/en/index.html">AzoJavaChecker</a> - Rules aren't listed online so it's hard to tell what they have.  Not sure how much it costs since I don't know German.</li>
-         <li><a href="http://www.instantiations.com/codepro/default.htm">CodePro Studio</a> - $589, works with Eclipse, lots of rules</li>
+         <li><a href="http://www.instantiations.com/codepro/analytix/about.html">CodePro AnalytiX</a> - $1,299, Eclipse plug-in, extensive audit rules, JUnit test generation/editing, code coverage and analysis</li>
          <li><a href="http://www.enerjy.com/en/analyzer/brief.htm">Enerjy Java Code Analyser</a> - 200 rules, lots of IDE plugins</li>
          <li><a href="http://www.excelsior-usa.com/fd.html">Flaw Detector</a> - In beta, does control/data flow analysis to detect NullPointerExceptions</li>
          <li><a href="http://www.mmsindia.com/jstyle.html">JStyle</a> - $995, nice folks, lots of metrics and rules</li>
