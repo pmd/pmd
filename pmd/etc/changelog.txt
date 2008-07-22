@@ -7,6 +7,7 @@ Fixed bug 1988829 - Violation reported without source file name (actually a fix 
 Fixed bug 1989814 - false +: ConsecutiveLiteralAppends
 Fixed bug 1977230 - false positive: UselessOverridingMethod
 Fixed bug 1998185 - BeanMembersShouldSerialize vs @SuppressWarnings("serial")
+Fixed bug 2002722 - false + in UseStringBufferForStringAppends
 Optimizations and false positive fixes in PreserveStackTrace
 @SuppressWarnings("all") disables all warnings
 
