@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
@@ -15,7 +16,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-        if (!TypeHelper.isA(node, String.class)) {
+        if (!TypeHelper.isA(node, String.class) || node.isArray()) {
             return data;
         }
         Node parent = node.jjtGetParent().jjtGetParent();
@@ -26,6 +27,11 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
             Node name = no.getLocation();
             ASTStatementExpression statement = name.getFirstParentOfType(ASTStatementExpression.class);
             if (statement == null) {
+                continue;
+            }
+            ASTArgumentList argList = name.getFirstParentOfType(ASTArgumentList.class);
+            if (argList != null && argList.getFirstParentOfType(ASTStatementExpression.class) == statement) {
+                // used in method call
                 continue;
             }
             if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0).getClass().equals(ASTPrimaryExpression.class)) {
