@@ -84,7 +84,7 @@ public abstract class RuleTst {
                 res = processUsingStringReader(test.getCode(), rule, test.getLanguageVersion()).size();
             } catch (Throwable t) {
                 t.printStackTrace();
-                throw new RuntimeException('"' + test.getDescription() + "\" failed");
+                throw new RuntimeException('"' + test.getDescription() + "\" failed", t);
             }
             assertEquals('"' + test.getDescription() + "\" resulted in wrong number of failures,",
                     test.getNumberOfProblemsExpected(), res);
