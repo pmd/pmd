@@ -37,7 +37,12 @@ import org.jaxen.saxpath.Axis;
  */
 public class XPathRule extends AbstractRule {
 
+    private static enum InitializationStatus {
+	NONE, PARTIAL, FULL
+    };
+
     // Mapping from Node name to applicable XPath queries
+    private InitializationStatus initializationStatus = InitializationStatus.NONE;
     private Map<String, List<XPath>> nodeNameToXPaths;
 
     private static final String AST_ROOT = "_AST_ROOT_";
@@ -74,8 +79,6 @@ public class XPathRule extends AbstractRule {
 	try {
 	    // No Navigator available in this context
 	    initializeXPathExpression(null);
-	    // Clear the initialization, because we did not have a Navigator
-	    nodeNameToXPaths = null;
 	    return super.getRuleChainVisits();
 	} catch (JaxenException ex) {
 	    throw new RuntimeException(ex);
@@ -83,7 +86,8 @@ public class XPathRule extends AbstractRule {
     }
 
     private void initializeXPathExpression(Navigator navigator) throws JaxenException {
-	if (nodeNameToXPaths != null) {
+	if (initializationStatus == InitializationStatus.FULL
+		|| (initializationStatus == InitializationStatus.PARTIAL && navigator == null)) {
 	    return;
 	}
 
@@ -167,6 +171,15 @@ public class XPathRule extends AbstractRule {
 	    indexXPath(originalXPath, AST_ROOT);
 	    //System.err.println("Unable to use RuleChain for " + this.getName() + " for XPath: " + getStringProperty("xpath"));
 	}
+
+	if (navigator == null) {
+	    this.initializationStatus = InitializationStatus.PARTIAL;
+	    // Clear the node data, because we did not have a Navigator
+	    nodeNameToXPaths = null;
+	} else {
+	    this.initializationStatus = InitializationStatus.FULL;
+	}
+
     }
 
     private void indexXPath(XPath xpath, String nodeName) {
