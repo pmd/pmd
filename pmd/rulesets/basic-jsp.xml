@@ -21,7 +21,7 @@
 			<property name="xpath">
 				<value>
 					<![CDATA[ 
-// Element [ string:upper-case(@Name)="SCRIPT" and (@EndLine - @BeginLine > 10) ]
+// Element [ upper-case(@Name)="SCRIPT" and (@EndLine - @BeginLine > 10) ]
 				]]>
 				</value>
 			</property>
@@ -68,7 +68,7 @@ onload=calcDays;
 					<![CDATA[
 					//JspScriptlet
 					|
-					//Element[ string:upper-case(@Name)="JSP:SCRIPTLET" ]
+					//Element[ upper-case(@Name)="JSP:SCRIPTLET" ]
 					]]>
 				</value>
 			</property>
@@ -117,7 +117,7 @@ response.setHeader("Pragma", "No-cache");
 		<properties>
 			<property name="xpath">
 				<value>
-					<![CDATA[ //Attribute[ string:upper-case(@Name)="CLASS" ]  ]]>
+					<![CDATA[ //Attribute[ upper-case(@Name)="CLASS" ]  ]]>
 				</value>
 			</property>
 		</properties>
@@ -167,7 +167,7 @@ response.setHeader("Pragma", "No-cache");
 			<property name="xpath">
 				<value>
 					<![CDATA[ 
-	//Element[string:upper-case(@Name)="IFRAME"][count(Attribute[string:upper-case(@Name)="SRC" ]) = 0]
+	//Element[upper-case(@Name)="IFRAME"][count(Attribute[upper-case(@Name)="SRC" ]) = 0]
 					 ]]>
 				</value>
 			</property>
@@ -247,10 +247,10 @@ A missing 'meta' tag or page directive will trigger this rule, as well as a non-
 					<![CDATA[
 //Content[
 not(Element[@Name="meta"][
-   Attribute[@Name="content"]/AttributeValue[contains(string:lower-case(@Image),"charset=utf-8")]
+   Attribute[@Name="content"]/AttributeValue[contains(lower-case(@Image),"charset=utf-8")]
 ]) 
 and 
-    not(JspDirective[@Name='page']/JspDirectiveAttribute[@Name='contentType'][contains(string:lower-case(@Value),"charset=utf-8")])
+    not(JspDirective[@Name='page']/JspDirectiveAttribute[@Name='contentType'][contains(lower-case(@Value),"charset=utf-8")])
 ]
                     ]]>
 				</value>
