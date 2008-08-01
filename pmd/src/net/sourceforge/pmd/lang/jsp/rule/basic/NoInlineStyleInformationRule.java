@@ -69,8 +69,8 @@ public class NoInlineStyleInformationRule extends AbstractJspRule {
      * Checks whether the attributeNode argument is a style attribute of a HTML element
      * that can have style attributes.
      *
-     * @param elementNode
-     * @return boolean
+     * @param attributeNode The attribute node.
+     * @return <code>true</code> if a style attribute, <code>false</code> otherwise.
      */
     private boolean isStyleAttribute(ASTAttribute attributeNode) {
         if (STYLE_ATTRIBUTES.contains(attributeNode.getName().toUpperCase())) {

@@ -53,10 +53,6 @@ public abstract class AbstractJspNodesTst {
     /**
      * Add the given node and its subnodes to the set of nodes. If clazz is not null, only
      * nodes of the given class are put in the set of nodes.
-     *
-     * @param node
-     * @param nodex
-     * @param clazz
      */
     private <T> void addNodeAndSubnodes(Node node, Set<T> nodes, Class<T> clazz) {
         if (null != node) {

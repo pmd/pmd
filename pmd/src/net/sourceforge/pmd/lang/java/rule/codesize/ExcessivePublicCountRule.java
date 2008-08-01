@@ -51,7 +51,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
     /**
      * Method counts a node if it is public
      *
-     * @param AccessNode node
+     * @param node The access node.
      * @return Integer 1 if node is public 0 otherwise
      */
     private Integer getTallyOnAccessType(AccessNode node) {

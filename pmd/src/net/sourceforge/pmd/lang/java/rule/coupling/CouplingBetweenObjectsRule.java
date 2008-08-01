@@ -123,7 +123,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * performs a check on the variable and updates the counter. Counter is
      * instance for a class and is reset upon new class scan.
      *
-     * @param String variableType
+     * @param variableType The variable type.
      */
     private void checkVariableType(Node nameNode, String variableType) {
         // TODO - move this into the symbol table somehow?
@@ -143,7 +143,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * Filters variable type - we don't want primatives, wrappers, strings, etc.
      * This needs more work. I'd like to filter out super types and perhaps interfaces
      *
-     * @param String variableType
+     * @param variableType The variable type.
      * @return boolean true if variableType is not what we care about
      */
     private boolean filterTypes(String variableType) {
@@ -151,8 +151,8 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     }
 
     /**
-     * @param String variableType
-     * @return boolean true if variableType is a primative or wrapper
+     * @param variableType The variable type.
+     * @return boolean true if variableType is a primitive or wrapper
      */
     private boolean filterPrimitivesAndWrappers(String variableType) {
         return variableType.equals("int") || variableType.equals("Integer") || variableType.equals("char") || variableType.equals("Character") || variableType.equalsIgnoreCase("double") || variableType.equalsIgnoreCase("long") || variableType.equalsIgnoreCase("short") || variableType.equalsIgnoreCase("float") || variableType.equalsIgnoreCase("byte") || variableType.equalsIgnoreCase("boolean");

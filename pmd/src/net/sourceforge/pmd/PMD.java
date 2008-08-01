@@ -475,8 +475,6 @@ public class PMD {
 
     /**
      * Run PMD on a list of files using multiple threads.
-     *
-     * @throws IOException If one of the files could not be read
      */
     public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory,
 	    List<LanguageVersion> languageVersions, List<DataSource> files, RuleContext ctx, List<Renderer> renderers,
@@ -488,8 +486,6 @@ public class PMD {
 
     /**
      * Run PMD on a list of files using multiple threads.
-     *
-     * @throws IOException If one of the files could not be read
      */
     public static void processFiles(int threadCount, RuleSetFactory ruleSetFactory,
 	    List<LanguageVersion> languageVersions, List<DataSource> files, RuleContext ctx, List<Renderer> renderers,

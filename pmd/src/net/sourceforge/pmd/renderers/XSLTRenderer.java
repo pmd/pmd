@@ -79,7 +79,7 @@ public class XSLTRenderer extends XMLRenderer {
 	/**
 	 * Prepare the transformer, doing the proper "building"...
 	 *
-	 * @param xslt, the xslt provided as an InputStream
+	 * @param xslt The stylesheet provided as an InputStream
 	 */
 	private void prepareTransformer(InputStream xslt) {
 		if ( xslt != null ) {
