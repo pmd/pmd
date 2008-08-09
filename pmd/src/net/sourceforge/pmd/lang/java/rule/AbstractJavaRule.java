@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.ast.*;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 
-// FUTURE Move all Java centric code into 'java' package instead of core PMD class.  Makes sense when we add non-Java languages.
 public abstract class AbstractJavaRule extends AbstractRule implements JavaParserVisitor, ImmutableLanguage {
 
     public AbstractJavaRule() {
