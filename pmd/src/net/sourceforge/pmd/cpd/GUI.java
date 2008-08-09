@@ -3,15 +3,6 @@
  */
 package net.sourceforge.pmd.cpd;
 
-import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import javax.swing.table.TableModel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -29,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,6 +31,39 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+
+import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
+
 import net.sourceforge.pmd.PMD;
 
 public class GUI implements CPDListener {
@@ -541,24 +566,7 @@ public class GUI implements CPDListener {
                     cpd.addAllInDirectory(dirPath);
                 }
             }
-            final long start = System.currentTimeMillis();
-            Timer t = new Timer(1000, new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    long now = System.currentTimeMillis();
-                    long elapsedMillis = now - start;
-                    long elapsedSeconds = elapsedMillis / 1000;
-                    long minutes = (long) Math.floor(elapsedSeconds / 60);
-                    long seconds = elapsedSeconds - (minutes * 60);
-                    timeField.setText(munge(String.valueOf(minutes)) + ':' + munge(String.valueOf(seconds)));
-                }
-
-                private String munge(String s) {
-                    if (s.length() < 2) {
-                        s = "0" + s;
-                    }
-                    return s;
-                }
-            });
+            Timer t = createTimer();
             t.start();
             cpd.go();
             t.stop();
@@ -589,6 +597,33 @@ public class GUI implements CPDListener {
         }
         setProgressControls(false);
     }
+
+	private Timer createTimer() {
+		
+		final long start = System.currentTimeMillis();
+		
+		Timer t = new Timer(1000, new ActionListener() {
+		    public void actionPerformed(ActionEvent e) {
+		        long now = System.currentTimeMillis();
+		        long elapsedMillis = now - start;
+		        long elapsedSeconds = elapsedMillis / 1000;
+		        long minutes = (long) Math.floor(elapsedSeconds / 60);
+		        long seconds = elapsedSeconds - (minutes * 60);
+		        timeField.setText(formatTime(minutes, seconds));
+		    }
+		});
+		return t;
+	}
+	
+	private static String formatTime(long minutes, long seconds) {
+		
+		StringBuilder sb = new StringBuilder(5);
+		if (minutes < 10) sb.append('0');
+		sb.append(minutes).append(':');
+		if (seconds < 10) sb.append('0');
+		sb.append(seconds);
+		return sb.toString();
+	}
 	
     private interface SortingTableModel<E> extends TableModel {
     	int sortColumn();
