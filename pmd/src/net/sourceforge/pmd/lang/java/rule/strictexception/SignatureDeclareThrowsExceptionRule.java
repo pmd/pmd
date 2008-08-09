@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
  * @version 1.0
  * @since 1.2
  */
-// FUTURE Rename to SignatureDeclareThrowsExceptionRule
+
 public class SignatureDeclareThrowsExceptionRule extends AbstractJavaRule {
 
     private boolean junitImported;
