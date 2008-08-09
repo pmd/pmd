@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
@@ -51,13 +52,13 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 
 
 	private static final PropertyDescriptor NAME_MATCH_DESCRIPTOR = new StringProperty("nameMatch",
-			"A series of regex, separeted by ',' to match on the classname", new String[] {""},1.0f,',');
+			"A series of regex, separated by ',' to match on the classname", new String[] {""},1.0f,',');
 
 	private static final PropertyDescriptor OPERAND_DESCRIPTOR = new StringProperty("operand",
 			"or/and value to refined match criteria",new String(),2.0f);
 
 	private static final PropertyDescriptor TYPE_MATCH_DESCRIPTOR = new StringProperty("typeMatch",
-			"A series of regex, separeted by ',' to match on implements/extends classname",new String[]{""},3.0f,',');
+			"A series of regex, separated by ',' to match on implements/extends classname",new String[]{""},3.0f,',');
 
 	private static final PropertyDescriptor THRESHOLD_DESCRIPTOR = new StringProperty("threshold",
 			"Defines how many occurences are legal",new String(),4.0f);
@@ -75,6 +76,18 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 
 	private static String counterLabel;
 
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(
+    		new PropertyDescriptor[] { 
+    				NAME_MATCH_DESCRIPTOR, OPERAND_DESCRIPTOR,
+    				TYPE_MATCH_DESCRIPTOR, THRESHOLD_DESCRIPTOR
+    				});
+
+    @Override
+    protected Map<String, PropertyDescriptor> propertiesByName() {
+        return PROPERTY_DESCRIPTORS_BY_NAME;
+    }
+	
+	
 	private List<String> arrayAsList(String[] array) {
 		List<String> list = new ArrayList<String>(array.length);
 		int nbItem = 0;
