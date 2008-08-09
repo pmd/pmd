@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -618,9 +617,9 @@ public class GUI implements CPDListener {
 	private static String formatTime(long minutes, long seconds) {
 		
 		StringBuilder sb = new StringBuilder(5);
-		if (minutes < 10) sb.append('0');
+		if (minutes < 10) { sb.append('0'); }
 		sb.append(minutes).append(':');
-		if (seconds < 10) sb.append('0');
+		if (seconds < 10) { sb.append('0'); }
 		sb.append(seconds);
 		return sb.toString();
 	}
