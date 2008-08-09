@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.java.typeresolution.rules;
 
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -31,12 +32,20 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
  * @author Wouter Zelle
  */
 public class SignatureDeclareThrowsException extends AbstractJavaRule {
+	
     private static final PropertyDescriptor IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty("IgnoreJUnitCompletely",
         "If true, all methods in a JUnit testcase may throw Exception", false, 1.0f);
 
     //Set to true when the class is determined to be a JUnit testcase
     private boolean junitImported = false;
 
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR);
+    
+    @Override
+    protected Map<String, PropertyDescriptor> propertiesByName() {
+    	return PROPERTY_DESCRIPTORS_BY_NAME;
+    }
+    
     @Override
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         if (junitImported == true) {
