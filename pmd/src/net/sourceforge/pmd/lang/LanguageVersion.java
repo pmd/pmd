@@ -191,8 +191,8 @@ public enum LanguageVersion {
     	
     	StringBuilder builder = new StringBuilder();
     	builder.append(languageVersions.get(0).getTerseName());
-    	for (LanguageVersion languageVersion : languageVersions) {
-    		builder.append(", ").append(languageVersion.getTerseName());
+    	for (int i=1; i<languageVersions.size(); i++) {
+    		builder.append(", ").append(languageVersions.get(i).getTerseName());
     	}
     	return builder.toString();
     }
