@@ -118,7 +118,7 @@ public enum LanguageVersion {
      * @return The name of this LanguageVersion.
      */
     public String getName() {
-	return version.length() > 0 ? language.getName() + " " + version : language.getName();
+	return version.length() > 0 ? language.getName() + ' ' + version : language.getName();
     }
 
     /**
@@ -127,7 +127,7 @@ public enum LanguageVersion {
      * @return The short name of this LanguageVersion.
      */
     public String getShortName() {
-	return version.length() > 0 ? language.getShortName() + " " + version : language.getShortName();
+	return version.length() > 0 ? language.getShortName() + ' ' + version : language.getShortName();
     }
 
     /**
@@ -136,7 +136,7 @@ public enum LanguageVersion {
      * @return The terse name of this LanguageVersion.
      */
     public String getTerseName() {
-	return version.length() > 0 ? language.getTerseName() + " " + version : language.getTerseName();
+	return version.length() > 0 ? language.getTerseName() + ' ' + version : language.getTerseName();
     }
 
     /**
@@ -161,7 +161,7 @@ public enum LanguageVersion {
      */
     @Override
     public String toString() {
-	return "LanguageVersion[" + language.getName() + " " + version + "]";
+	return "LanguageVersion[" + language.getName() + " " + version + ']';
     }
 
     /**
@@ -181,18 +181,19 @@ public enum LanguageVersion {
     }
 
     /**
-     * Return a comma separated list of LanguageVersion terse names.
+     * Return a comma-separated list of LanguageVersion terse names.
      * @param languageVersions The language versions.
-     * @return Comma separated terse names.
+     * @return Comma-separated terse names.
      */
     public static String commaSeparatedTerseNames(List<LanguageVersion> languageVersions) {
-	StringBuilder builder = new StringBuilder();
-	for (LanguageVersion languageVersion : languageVersions) {
-	    if (builder.length() > 0) {
-		builder.append(", ");
-	    }
-	    builder.append(languageVersion.getTerseName());
-	}
-	return builder.toString();
+    	
+    	if (languageVersions == null || languageVersions.size() == 0) return "";
+    	
+    	StringBuilder builder = new StringBuilder();
+    	builder.append(languageVersions.get(0).getTerseName());
+    	for (LanguageVersion languageVersion : languageVersions) {
+    		builder.append(", ").append(languageVersion.getTerseName());
+    	}
+    	return builder.toString();
     }
 }
