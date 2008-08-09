@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.dcd;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import net.sourceforge.pmd.dcd.graph.ClassNode;
@@ -21,7 +22,7 @@ import net.sourceforge.pmd.dcd.graph.UsageGraph;
 public class UsageNodeVisitor extends NodeVisitorAdapter {
 
 	/**
-	 * Configuration options for usage analysus.
+	 * Configuration options for usage analysis.
 	 */
 	public static final class Options {
 		private boolean ignoreClassAnonymous = true;
@@ -178,6 +179,20 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
 		return super.visit(constructorNode, data);
 	}
 
+	private static boolean isMainMethod(MethodNode node) {
+		
+		final Method method = node.getMember();
+		
+		return method.getName().equals("main")
+			&& Modifier.isPublic(method.getModifiers())
+			&& Modifier.isStatic(method.getModifiers())
+			&& method.getReturnType() == Void.TYPE
+			&& method.getParameterTypes().length == 1
+			&& method.getParameterTypes()[0].isArray()
+			&& method.getParameterTypes()[0].getComponentType().equals(java.lang.String.class);
+	}
+	
+	
 	public Object visit(MethodNode methodNode, Object data) {
 		if (methodNode.getUsers().isEmpty()) {
 			boolean log = true;
@@ -194,14 +209,7 @@ public class UsageNodeVisitor extends NodeVisitorAdapter {
 				}
 			}
 			if (options.isIgnoreMethodMain()) {
-				if (methodNode.getMember().getName().equals("main")
-						&& Modifier.isPublic(methodNode.getMember().getModifiers())
-						&& Modifier.isStatic(methodNode.getMember().getModifiers())
-						&& methodNode.getMember().getReturnType() == Void.TYPE
-						&& methodNode.getMember().getParameterTypes().length == 1
-						&& methodNode.getMember().getParameterTypes()[0].isArray()
-						&& methodNode.getMember().getParameterTypes()[0].getComponentType().equals(
-								java.lang.String.class)) {
+				if (isMainMethod(methodNode)) {
 					ignore("method public static void main(String[])", methodNode);
 					log = false;
 				}
