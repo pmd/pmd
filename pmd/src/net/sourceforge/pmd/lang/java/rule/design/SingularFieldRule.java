@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -38,8 +39,17 @@ public class SingularFieldRule extends AbstractJavaRule {
     private static final PropertyDescriptor CHECK_INNER_CLASSES = new BooleanProperty(
 			"CheckInnerClasses", "Check inner classes", false, 1.0f);
     private static final PropertyDescriptor DISALLOW_NOT_ASSIGNMENT = new BooleanProperty(
-			"DisallowNotAssignment", "Disallow violations where the first usage is not an assignment", false, 1.0f);
+			"DisallowNotAssignment", "Disallow violations where the first usage is not an assignment", false, 2.0f);
 
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(
+    		new PropertyDescriptor[] { CHECK_INNER_CLASSES, DISALLOW_NOT_ASSIGNMENT });
+
+    @Override
+    protected Map<String, PropertyDescriptor> propertiesByName() {
+        return PROPERTY_DESCRIPTORS_BY_NAME;
+    }
+    
+    
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {

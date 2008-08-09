@@ -29,7 +29,7 @@ import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
  */
 public class UnsynchronizedStaticDateFormatterRule extends AbstractJavaRule {
 
-    private static Set<String> targets = new HashSet<String>();
+    private static Set<String> targets = new HashSet<String>(4);
     static {
         targets.add("DateFormat");
         targets.add("SimpleDateFormat");
