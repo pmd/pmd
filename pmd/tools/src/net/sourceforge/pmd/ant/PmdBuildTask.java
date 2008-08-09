@@ -28,11 +28,6 @@ public class PmdBuildTask extends Task {
     private String mergedRulesetFilename;
     private boolean shouldGenerateJavaFourPom = true;
     
-    /**
-     * 
-     * @return
-     */
-
 	/**
 	 * @return the shouldGenerateJavaFourPom
 	 */
@@ -92,10 +87,10 @@ public class PmdBuildTask extends Task {
     private PmdBuildTools validate(RuleSetToDocs tool) throws BuildException {
 		// Mandatory attributes
     	if ( this.target == null || "".equals(target) )
-		    throw new BuildException("Attribute targetDirectory is not optionnal");
+		    throw new BuildException("Attribute targetDirectory is not optional");
 		if ( this.rulesDirectory == null || "".equals(this.rulesDirectory) )
-		    throw new BuildException("Attribute rulesDirectory is not optionnal");
-		// Optionnal Attributes
+		    throw new BuildException("Attribute rulesDirectory is not optional");
+		// Optional Attributes
 		if ( this.mergedRulesetFilename != null && ! "".equals(this.mergedRulesetFilename) )
 			tool.setMergedRulesetFilename(this.mergedRulesetFilename);
 		if ( this.rulesIndex != null && ! "".equals(this.rulesIndex) )
