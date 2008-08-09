@@ -187,7 +187,9 @@ public enum LanguageVersion {
      */
     public static String commaSeparatedTerseNames(List<LanguageVersion> languageVersions) {
     	
-    	if (languageVersions == null || languageVersions.size() == 0) return "";
+    	if (languageVersions == null || languageVersions.isEmpty()) {
+    		return "";
+    	}
     	
     	StringBuilder builder = new StringBuilder();
     	builder.append(languageVersions.get(0).getTerseName());
