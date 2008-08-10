@@ -39,11 +39,11 @@ public class StatisticalRuleHelper {
     	);
 
     private static final PropertyDescriptor MINIMUM_DESCRIPTOR = new DoubleProperty(
-        "minimum", "Minimum value",	0,	1.0f
+        "minimum", "Minimum value",	0,	2.0f
         );
 
     private static final PropertyDescriptor TOP_SCORE_DESCRIPTOR = new IntegerProperty(
-        "topscore", "Top score value",	0,	1.0f
+        "topscore", "Top score value",	0,	3.0f
         );
 
     private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = AbstractRule.asFixedMap( new PropertyDescriptor[] {
