@@ -25,9 +25,9 @@ public class GenericLiteralCheckerRule extends AbstractJavaRule {
 	
 	private static final String PROPERTY_NAME = "regexPattern";
 		
-	private static final PropertyDescriptor regexProperty = new StringProperty(PROPERTY_NAME,"Regular expression","", 1.0f);
+	private static final PropertyDescriptor REGEX_PROPERTY = new StringProperty(PROPERTY_NAME,"Regular expression","", 1.0f);
 
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(regexProperty);
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(REGEX_PROPERTY);
 
     protected Map<String, PropertyDescriptor> propertiesByName() {
         return PROPERTY_DESCRIPTORS_BY_NAME;
@@ -36,7 +36,7 @@ public class GenericLiteralCheckerRule extends AbstractJavaRule {
 	private void init() {
 		if (pattern == null) {
 			// Retrieve the regex pattern set by user			
-			String stringPattern = super.getStringProperty(regexProperty);
+			String stringPattern = super.getStringProperty(REGEX_PROPERTY);
 			// Compile the pattern only once
 			if ( stringPattern != null && stringPattern.length() > 0 ) {
 				pattern = Pattern.compile(stringPattern);
