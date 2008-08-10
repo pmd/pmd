@@ -60,6 +60,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 	private static final PropertyDescriptor TYPE_MATCH_DESCRIPTOR = new StringProperty("typeMatch",
 			"A series of regex, separated by ',' to match on implements/extends classname",new String[]{""},3.0f,',');
 
+	// TODO - this should be an IntegerProperty instead?
 	private static final PropertyDescriptor THRESHOLD_DESCRIPTOR = new StringProperty("threshold",
 			"Defines how many occurences are legal",new String(),4.0f);
 
