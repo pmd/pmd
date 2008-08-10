@@ -9,7 +9,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Detect structures like "foo.size() == 0" and suggest replacing them with
- * foo.isEmpty(). Will also find != 0 (replacable with !isEmpty()).
+ * foo.isEmpty(). Will also find != 0 (replaceable with !isEmpty()).
  * 
  * @author Jason Bennett
  */
@@ -23,7 +23,7 @@ public class UseCollectionIsEmptyRule extends AbstractInefficientZeroCheck {
      * Determine if we're dealing with .size method
      * 
      * @param occ
-     *            The name occurance
+     *            The name occurrence
      * @return true if it's .length, else false
      */
     public boolean isTargetMethod(NameOccurrence occ) {
