@@ -135,7 +135,7 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 		
 		Object[] choices = (Object[])value;
 		
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 
 		sb.append(labelsByChoice.get(choices[0]));
 		

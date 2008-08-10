@@ -148,7 +148,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 			    return asString(valueSet[0]);
 			}
 			
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			sb.append(asString(valueSet[0]));
 			for (int i=1; i<valueSet.length; i++) {
 				sb.append(multiValueDelimiter);
