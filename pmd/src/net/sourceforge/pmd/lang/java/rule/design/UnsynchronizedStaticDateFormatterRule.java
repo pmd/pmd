@@ -3,7 +3,6 @@
  */
 package net.sourceforge.pmd.lang.java.rule.design;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -14,10 +13,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTSynchronizedStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * Using a DateFormatter (SimpleDateFormatter) which is static can cause
- * unexpected results when used in a multi threaded environment. This rule will
+ * unexpected results when used in a multi-threaded environment. This rule will
  * find static (Simple)DateFormatters which are used in an unsynchronized
  * manner.
  * Refer to these Bug Parade issues:
@@ -29,13 +29,9 @@ import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
  */
 public class UnsynchronizedStaticDateFormatterRule extends AbstractJavaRule {
 
-    private static Set<String> targets = new HashSet<String>(4);
-    static {
-        targets.add("DateFormat");
-        targets.add("SimpleDateFormat");
-        targets.add("java.text.DateFormat");
-        targets.add("java.text.SimpleDateFormat");
-    }
+    private static Set<String> targets = CollectionUtil.asSet(new String[] {
+    	"DateFormat", "SimpleDateFormat", "java.text.DateFormat","java.text.SimpleDateFormat"
+    	});
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
