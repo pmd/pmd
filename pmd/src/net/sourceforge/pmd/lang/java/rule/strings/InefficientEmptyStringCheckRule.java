@@ -27,7 +27,7 @@ public class InefficientEmptyStringCheckRule extends AbstractInefficientZeroChec
      * Determine if we're dealing with String.length method
      * 
      * @param occ
-     *            The name occurance
+     *            The name occurrence
      * @return true if it's String.length, else false
      */
     public boolean isTargetMethod(NameOccurrence occ) {
