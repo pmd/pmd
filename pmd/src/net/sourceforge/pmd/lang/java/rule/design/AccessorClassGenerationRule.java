@@ -110,14 +110,14 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
                     throw new RuntimeException("BUG: Expected a ASTClassOrInterfaceType, got a " + node.jjtGetChild(0).getClass());
                 }
                 ASTClassOrInterfaceType an = (ASTClassOrInterfaceType) node.jjtGetChild(0);
-                name = stripString(aPackageName + ".", an.getImage());
+                name = stripString(aPackageName + '.', an.getImage());
 
                 //strip off outer class names
                 //try OuterClass, then try OuterClass.InnerClass, then try OuterClass.InnerClass.InnerClass2, etc...
                 String findName = "";
                 for (ListIterator<String> li = classQualifyingNames.listIterator(classQualifyingNames.size()); li.hasPrevious();) {
                     String aName = li.previous();
-                    findName = aName + "." + findName;
+                    findName = aName + '.' + findName;
                     if (name.startsWith(findName)) {
                         //strip off name and exit
                         name = name.substring(findName.length());
@@ -294,6 +294,8 @@ public class AccessorClassGenerationRule extends AbstractJavaRule {
     //value.substring(0,4) = some
     //value.substring(4 + remove.size()) = Fighter
     //return "someFighter"
+    
+    // TODO move this into StringUtil    
     private static String stripString(String remove, String value) {
         String returnValue;
         int index = value.indexOf(remove);
