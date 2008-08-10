@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.java.rule;
 
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -20,15 +21,22 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 //FUTURE This is not referenced by any RuleSet?
 public class GenericLiteralCheckerRule extends AbstractJavaRule {
 
-	private static final String PROPERTY_NAME = "pattern";
-	private static final String DESCRIPTION = "Regular Expression";
 	private Pattern pattern;
+	
+	private static final String PROPERTY_NAME = "regexPattern";
+		
+	private static final PropertyDescriptor regexProperty = new StringProperty(PROPERTY_NAME,"Regular expression","", 1.0f);
 
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(regexProperty);
+
+    protected Map<String, PropertyDescriptor> propertiesByName() {
+        return PROPERTY_DESCRIPTORS_BY_NAME;
+    }
+	
 	private void init() {
 		if (pattern == null) {
-			// Retrieve the regex pattern set by user
-			PropertyDescriptor property = new StringProperty(PROPERTY_NAME,DESCRIPTION,"", 1.0f);
-			String stringPattern = super.getStringProperty(property);
+			// Retrieve the regex pattern set by user			
+			String stringPattern = super.getStringProperty(regexProperty);
 			// Compile the pattern only once
 			if ( stringPattern != null && stringPattern.length() > 0 ) {
 				pattern = Pattern.compile(stringPattern);
