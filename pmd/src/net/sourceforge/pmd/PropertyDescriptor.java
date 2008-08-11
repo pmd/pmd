@@ -1,5 +1,9 @@
 package net.sourceforge.pmd;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Property value descriptor that defines the use & requirements for setting
@@ -12,6 +16,9 @@ public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
 
 	PropertyDescriptor[] EMPTY_PROPERTY_SET = new PropertyDescriptor[0];
 	
+	Map<PropertyDescriptor, Object> EMPTY_VALUE_MAP = Collections.unmodifiableMap(
+			new HashMap<PropertyDescriptor, Object>(0)
+			);
 	/**
 	 * The name of the property without spaces as it serves 
 	 * as the key into the property map.
@@ -33,8 +40,12 @@ public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
 	Class<?> type();
 	/**
 	 * If the property is multi-valued, i.e. an array of strings, then this
-	 * returns the maximum number permitted. Unary property rule properties
-	 * normally return a value of one.
+	 * returns the maximum number permitted. 
+	 * 
+	 * As unary property rule properties will return a value of one, you must
+	 * use the get/setProperty accessors when working with the actual values.
+	 * When working with multi-value properties then the get/setProperties
+	 * accessors must be used.
 	 * 
 	 * @return int
 	 */
@@ -63,8 +74,8 @@ public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
 	String errorFor(Object value);	
 	/**
 	 * Denotes the relative order the property field should occupy if we are using 
-	 * an auto-generated UI to display and edit values. If the value returned has
-	 * a non-zero fractional part then this is can be used to place adjacent fields 
+	 * an auto-generated UI to display and edit property values. If the value returned
+	 * has a non-zero fractional part then this is can be used to place adjacent fields 
 	 * on the same row. Example:
 	 * 
 	 * name -> 0.0
@@ -99,8 +110,8 @@ public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
 	String asDelimitedString(Object value);
 	
 	/**
-	 * Returns a set of choice tuples of available, returns null if none present.
-	 * @return Object[]
+	 * Returns a set of choice tuples if available, returns null if none are defined.
+	 * @return Object[][]
 	 */
 	Object[][] choices();
 	

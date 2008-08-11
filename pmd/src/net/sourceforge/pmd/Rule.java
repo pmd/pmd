@@ -4,6 +4,7 @@
 package net.sourceforge.pmd;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import net.sourceforge.pmd.lang.Language;
@@ -279,4 +280,10 @@ public interface Rule {
      * End processing. Called once, after apply() is last called.
      */
     void end(RuleContext ctx);
+    
+    /**
+     * Returns all the current property values for the receiver or an
+     * immutable empty map if none are specified.
+     */    
+    Map<PropertyDescriptor, Object> propertyValuesByDescriptor();
 }

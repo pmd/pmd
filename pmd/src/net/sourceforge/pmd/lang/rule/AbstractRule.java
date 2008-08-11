@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.rule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -485,14 +486,34 @@ public abstract class AbstractRule implements Rule {
     }
 
     public static Map<String, PropertyDescriptor> asFixedMap(PropertyDescriptor[] descriptors) {
-	Map<String, PropertyDescriptor> descriptorsByName = new HashMap<String, PropertyDescriptor>(descriptors.length);
-	for (PropertyDescriptor descriptor : descriptors) {
-	    descriptorsByName.put(descriptor.name(), descriptor);
-	}
-	return Collections.unmodifiableMap(descriptorsByName);
+		Map<String, PropertyDescriptor> descriptorsByName = new HashMap<String, PropertyDescriptor>(descriptors.length);
+		for (PropertyDescriptor descriptor : descriptors) {
+		    descriptorsByName.put(descriptor.name(), descriptor);
+		}
+		return Collections.unmodifiableMap(descriptorsByName);
     }
 
     public static Map<String, PropertyDescriptor> asFixedMap(PropertyDescriptor descriptor) {
-	return asFixedMap(new PropertyDescriptor[] { descriptor });
+    	return asFixedMap(new PropertyDescriptor[] { descriptor });
+    }
+    
+    public Map<PropertyDescriptor, Object> propertyValuesByDescriptor() {
+    	    	
+    	Map<String, PropertyDescriptor> propsByName = propertiesByName();
+    	if (propsByName.isEmpty()) {
+    		return PropertyDescriptor.EMPTY_VALUE_MAP;
+    	}
+    	
+    	Map<PropertyDescriptor, Object> valuesByDesc = new HashMap<PropertyDescriptor, Object>(propsByName.size());
+    	
+    	Iterator<PropertyDescriptor> iter = propsByName.values().iterator();
+    	while (iter.hasNext()) {
+    		PropertyDescriptor desc = iter.next();
+    		valuesByDesc.put(
+    			desc,
+    			desc.maxValueCount() == 1 ? getProperty(desc) : getProperties(desc)
+    			);
+    		}
+    	return valuesByDesc;
     }
 }

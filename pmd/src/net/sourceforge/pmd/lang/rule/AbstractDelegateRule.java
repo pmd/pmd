@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
@@ -210,5 +211,9 @@ public abstract class AbstractDelegateRule implements Rule {
 
     public void end(RuleContext ctx) {
 	rule.end(ctx);
+    }    
+
+    public Map<PropertyDescriptor, Object> propertyValuesByDescriptor() {
+    	return rule.propertyValuesByDescriptor();
     }
 }
