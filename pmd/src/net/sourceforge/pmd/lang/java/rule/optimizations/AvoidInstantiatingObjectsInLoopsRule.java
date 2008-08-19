@@ -3,8 +3,10 @@
  */
 package net.sourceforge.pmd.lang.java.rule.optimizations;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForInit;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
@@ -12,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 
 public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRule {
 
+    @Override
     public Object visit(ASTAllocationExpression node, Object data) {
         if (insideLoop(node) && fourthParentNotThrow(node) && fourthParentNotReturn(node)) {
             addViolation(data, node);
@@ -28,14 +31,19 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractOptimizationRu
     }
 
     private boolean insideLoop(ASTAllocationExpression node) {
-        if (node.getFirstParentOfType(ASTDoStatement.class) != null) {
-            return true;
-        }
-        if (node.getFirstParentOfType(ASTWhileStatement.class) != null) {
-            return true;
-        }
-        if (node.getFirstParentOfType(ASTForStatement.class) != null) {
-            return true;
+        Node n = node.jjtGetParent();
+        while (n != null) {
+            if (n instanceof ASTDoStatement || n instanceof ASTWhileStatement || n instanceof ASTForStatement) {
+                return true;
+            } else if (n instanceof ASTForInit) {
+                /*
+                 * init part is not technically inside the loop.
+                 * Skip parent ASTForStatement but continue higher
+                 * up to detect nested loops
+                 */
+                n = n.jjtGetParent();
+            }
+            n = n.jjtGetParent();
         }
         return false;
     }
