@@ -5,10 +5,12 @@ package net.sourceforge.pmd.rules.optimization;
 
 import net.sourceforge.pmd.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.ast.ASTDoStatement;
+import net.sourceforge.pmd.ast.ASTForInit;
 import net.sourceforge.pmd.ast.ASTForStatement;
 import net.sourceforge.pmd.ast.ASTReturnStatement;
 import net.sourceforge.pmd.ast.ASTThrowStatement;
 import net.sourceforge.pmd.ast.ASTWhileStatement;
+import net.sourceforge.pmd.ast.Node;
 
 public class AvoidInstantiatingObjectsInLoops extends AbstractOptimizationRule {
 
@@ -28,14 +30,21 @@ public class AvoidInstantiatingObjectsInLoops extends AbstractOptimizationRule {
     }
 
     private boolean insideLoop(ASTAllocationExpression node) {
-        if (node.getFirstParentOfType(ASTDoStatement.class) != null) {
-            return true;
-        }
-        if (node.getFirstParentOfType(ASTWhileStatement.class) != null) {
-            return true;
-        }
-        if (node.getFirstParentOfType(ASTForStatement.class) != null) {
-            return true;
+        Node n = node.jjtGetParent();
+        while (n != null) {
+            if (n instanceof ASTDoStatement ||
+                    n instanceof ASTWhileStatement ||
+                    n instanceof ASTForStatement) {
+                return true;
+            } else if (n instanceof ASTForInit) {
+                /*
+                 * init part is not technically inside the loop.
+                 * Skip parent ASTForStatement but continue higher
+                 * up to detect nested loops
+                 */
+                n = n.jjtGetParent();
+            }
+            n = n.jjtGetParent();
         }
         return false;
     }

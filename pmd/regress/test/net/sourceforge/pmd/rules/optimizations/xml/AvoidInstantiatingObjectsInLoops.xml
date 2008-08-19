@@ -91,6 +91,22 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+[ 2056318 ] False positive for AvoidInstantiatingObjectsInLoops 
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+   Object o;
+   int i;
+   for(o = new Object(), i = 0; i < 10; i++) {
+   }
+ }
+}
+     ]]></code>
+    </test-code>
     <!-- FIXME -->
     <!--test-code>
         <description><![CDATA[
