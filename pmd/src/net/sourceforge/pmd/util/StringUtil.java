@@ -20,11 +20,32 @@ public class StringUtil {
         }
     }
 
+    /**
+     * Returns true if the value arg is either null, empty, or full of whitespace characters.
+     * More efficient that calling (string).trim().length() == 0
+     * 
+     * @param value
+     * @return
+     */
+    public static boolean isEmpty(String value) {
+    	
+    	if (value == null || "".equals(value)) {
+    		return true;
+    	}
+    	
+    	for (int i=0; i<value.length(); i++) {
+    		if (Character.isWhitespace(value.charAt(i))) { continue; }
+    		return false;
+    	}
+    	
+    	return true;
+    }
+    
     public static String replaceString(String original, char oldChar, String newString) {
         
     	String fixedNew = newString == null ? "" : newString;
 
-        StringBuffer desc = new StringBuffer();
+        StringBuilder desc = new StringBuilder();
         int index = original.indexOf(oldChar);
         int last = 0;
         while (index != -1) {
@@ -41,7 +62,7 @@ public class StringUtil {
     	
     	String fixedNew = newString == null ? "" : newString;
     	
-        StringBuffer desc = new StringBuffer();
+        StringBuilder desc = new StringBuilder();
         int index = original.indexOf(oldString);
         int last = 0;
         while (index != -1) {
@@ -66,9 +87,9 @@ public class StringUtil {
     }
 
     public static String htmlEncode(String string) {
-        String encoded = StringUtil.replaceString(string, '&', "&amp;");
-        encoded = StringUtil.replaceString(encoded, '<', "&lt;");
-        return StringUtil.replaceString(encoded, '>', "&gt;");
+        String encoded = replaceString(string, '&', "&amp;");
+        encoded = replaceString(encoded, '<', "&lt;");
+        return replaceString(encoded, '>', "&gt;");
     }
     
     // TODO - unify the method above with the one below
