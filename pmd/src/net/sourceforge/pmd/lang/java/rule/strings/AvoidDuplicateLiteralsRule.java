@@ -27,22 +27,22 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
-    private static final PropertyDescriptor THRESHOLD = new IntegerProperty("threshold",
-	    "The number of duplicate literals reporting threshold", 4, 1.0f);
+    public static final PropertyDescriptor THRESHOLD = new IntegerProperty("threshold",
+	    "Number of duplicate literals reporting threshold", 4, 1.0f);
 
-    private static final PropertyDescriptor SKIP_ANNOTATIONS = new BooleanProperty("skipAnnotations",
+    public static final PropertyDescriptor SKIP_ANNOTATIONS = new BooleanProperty("skipAnnotations",
 	    "Skip literals within Annotations.", false, 2.0f);
 
-    private static final PropertyDescriptor EXCEPTION_LIST = new StringProperty("exceptionlist",
+    public static final PropertyDescriptor EXCEPTION_LIST = new StringProperty("exceptionlist",
 	    "Strings in that list are skipped", null, 3.0f);
 
-    private static final PropertyDescriptor SEPARATOR = new CharacterProperty("separator",
+    public static final PropertyDescriptor SEPARATOR = new CharacterProperty("separator",
 	    "Separator used in the exceptionlist", ',', 4.0f);
 
-    private static final PropertyDescriptor EXCEPTION_FILE = new StringProperty("exceptionfile",
+    public static final PropertyDescriptor EXCEPTION_FILE = new StringProperty("exceptionfile",
 	    "File containing strings to skip (one string per line), only used if exceptionlist is not set", null, 5.0f);
 
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] {
+    public static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] {
 	    THRESHOLD, SKIP_ANNOTATIONS, EXCEPTION_LIST, SEPARATOR, EXCEPTION_FILE });
 
     public static class ExceptionParser {

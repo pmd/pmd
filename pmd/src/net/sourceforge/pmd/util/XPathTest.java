@@ -40,7 +40,8 @@ public class XPathTest {
         }
         PMD pmd = new PMD();
         Rule rule = new XPathRule();
-        rule.addProperty("xpath", xpath);
+     //   rule.addProperty("xpath", xpath);
+        rule.setProperty(XPathRule.XPATH_DESCRIPTOR, xpath);
         rule.setMessage("Got one!");
         RuleSet ruleSet = new RuleSet();
         ruleSet.addRule(rule);

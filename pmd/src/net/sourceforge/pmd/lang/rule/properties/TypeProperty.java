@@ -22,9 +22,9 @@ public class TypeProperty extends StringProperty {
      * @param theUIOrder float
      */
     public TypeProperty(String theName, String theDescription, Class<?> theDefault, float theUIOrder) {
-	super(theName, theDescription, theDefault, theUIOrder, DELIMITER);
+    	super(theName, theDescription, theDefault, theUIOrder, DELIMITER);
 
-	maxValueCount(1);
+		isMultiValue(false);
     }
 
     /**
@@ -35,9 +35,9 @@ public class TypeProperty extends StringProperty {
      * @param theUIOrder float
      */
     public TypeProperty(String theName, String theDescription, Class<?>[] theDefaults, float theUIOrder) {
-	super(theName, theDescription, theDefaults, theUIOrder, DELIMITER);
+    	super(theName, theDescription, theDefaults, theUIOrder, DELIMITER);
 
-	maxValueCount(Integer.MAX_VALUE);
+		isMultiValue(true);
     }
 
     /**
@@ -47,7 +47,7 @@ public class TypeProperty extends StringProperty {
      */
     @Override
     public Class<?> type() {
-	return Class.class;
+    	return Class.class;
     }
 
     /**
@@ -57,7 +57,7 @@ public class TypeProperty extends StringProperty {
      */
     @Override
     protected String asString(Object value) {
-	return value == null ? "" : ((Class<?>) value).getName();
+    	return value == null ? "" : ((Class<?>) value).getName();
     }
 
     /**
@@ -67,16 +67,16 @@ public class TypeProperty extends StringProperty {
      */
     private Class<?> classFrom(String className) {
 
-	Class<?> cls = ClassUtil.getTypeFor(className);
-	if (cls != null) {
-	    return cls;
-	}
-
-	try {
-	    return Class.forName(className);
-	} catch (Exception ex) {
-	    throw new IllegalArgumentException(className);
-	}
+		Class<?> cls = ClassUtil.getTypeFor(className);
+		if (cls != null) {
+		    return cls;
+		}
+	
+		try {
+		    return Class.forName(className);
+		} catch (Exception ex) {
+		    throw new IllegalArgumentException(className);
+		}
     }
 
     /**
@@ -88,17 +88,17 @@ public class TypeProperty extends StringProperty {
     @Override
     public Object valueFrom(String valueString) {
 
-	if (maxValueCount() == 1) {
-	    return classFrom(valueString);
-	}
-
-	String[] values = (String[]) super.valueFrom(valueString);
-
-	Class<?>[] classes = new Class[values.length];
-	for (int i = 0; i < values.length; i++) {
-	    classes[i] = classFrom(values[i]);
-	}
-	return classes;
+		if (!isMultiValue()) {
+		    return classFrom(valueString);
+		}
+	
+		String[] values = (String[]) super.valueFrom(valueString);
+	
+		Class<?>[] classes = new Class[values.length];
+		for (int i = 0; i < values.length; i++) {
+		    classes[i] = classFrom(values[i]);
+		}
+		return classes;
     }
 
     /**
@@ -110,6 +110,6 @@ public class TypeProperty extends StringProperty {
      */
     @Override
     protected String valueErrorFor(Object value) {
-	return null;
+    	return null;
     }
 }

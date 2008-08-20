@@ -21,6 +21,11 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
 
 public class XPathJspRuleTest extends RuleTst {
 
+
+    private static final String MATCH            = "<html><hr/></html>";
+
+    private static final String XPATH_EXPRESSION = "//Element [@Name='hr']";
+    
     /**
      * Test matching a XPath expression against a JSP source.
      *
@@ -29,7 +34,8 @@ public class XPathJspRuleTest extends RuleTst {
     @Test
     public void testExpressionMatching() throws Throwable {
         Rule rule = new XPathRule();
-        rule.addProperty("xpath", XPATH_EXPRESSION);
+     //   rule.addProperty("xpath", XPATH_EXPRESSION);
+        rule.setProperty(XPathRule.XPATH_DESCRIPTOR, XPATH_EXPRESSION);
         rule.setMessage("Test");
         RuleSet rules = new RuleSet();
         rules.addRule(rule);
@@ -47,15 +53,9 @@ public class XPathJspRuleTest extends RuleTst {
 
         assertEquals("One violation expected!", 1, report.size());
 
-        RuleViolation rv = (RuleViolation) report.iterator().next();
+        RuleViolation rv = report.iterator().next();
         assertEquals(1, rv.getBeginLine());
     }
-
-    private static final String MATCH
-            = "<html><hr/></html>";
-
-    private static final String XPATH_EXPRESSION
-            = "//Element [@Name='hr']";
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(XPathJspRuleTest.class);

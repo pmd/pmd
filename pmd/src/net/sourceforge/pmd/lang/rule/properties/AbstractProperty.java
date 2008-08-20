@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * 
@@ -16,7 +17,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	private String	description;
 	private Object 	defaultValue;
 	private boolean isRequired = false;
-	private int		maxValueCount = 1;
+	private boolean	isMultiValue = false;
 	private float	uiOrder;
 	
 	protected char	multiValueDelimiter = '|';
@@ -27,12 +28,22 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 * @param theDescription String
 	 * @param theDefault Object
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
 	protected AbstractProperty(String theName, String theDescription, Object theDefault, float theUIOrder) {
-		name = theName;
-		description = theDescription;
+		name = checkNotEmpty(theName, "name");
+		description = checkNotEmpty(theDescription, "description");
 		defaultValue = theDefault;
 		uiOrder = theUIOrder;
+	}
+	
+	private static String checkNotEmpty(String arg, String argId) {
+		
+		if (StringUtil.isEmpty(arg)) {
+			throw new IllegalArgumentException("Property attribute '" + argId + "' cannot be null or blank");
+		}
+		
+		return arg;
 	}
 	
 	/**
@@ -80,21 +91,21 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	}
 	
 	/**
-	 * Method maxValueCount.
-	 * @return int
-	 * @see net.sourceforge.pmd.PropertyDescriptor#maxValueCount()
+	 * Method isMultiValue.
+	 * @return boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
 	 */
-	public int maxValueCount() {
-		return maxValueCount;
+	public boolean isMultiValue() {
+		return isMultiValue;
 	}
 	
 	/**
-	 * Method maxValueCount.
-	 * @param theCount int
-	 * @see net.sourceforge.pmd.PropertyDescriptor#maxValueCount()
+	 * Method isMultiValue.
+	 * @param flag boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
 	 */
-	protected void maxValueCount(int theCount) {
-		maxValueCount = theCount;
+	protected void isMultiValue(boolean flag) {
+		isMultiValue = flag;
 	}
 	
 	/**
@@ -183,7 +194,9 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 		if (typeError != null) {
 		    return typeError;
 		}
-		return valueErrorFor(value);
+		return isMultiValue ?
+			valuesErrorFor(value) :
+			valueErrorFor(value);
 	}
 	
 	/**
@@ -197,11 +210,33 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	}
 	
 	/**
+	 * Method valuesErrorFor.
+	 * @param value Object
+	 * @return String
+	 */
+	protected String valuesErrorFor(Object value) {
+		
+		if (!isArray(value)) {
+			return "multiple values expected";
+		}
+		
+		Object[] values = (Object[])value;
+		
+		String err = null;
+		for (int i=0; i<values.length; i++) {
+			err = valueErrorFor(values[i]);
+			if (err != null) { return err; }
+		}
+		
+		return null;
+	}
+	
+	/**
 	 * Method isArray.
 	 * @param value Object
 	 * @return boolean
 	 */
-	protected boolean isArray(Object value) {
+	protected static boolean isArray(Object value) {
 		return value != null && value.getClass().getComponentType() != null;
 	}
 	
@@ -216,7 +251,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 		    return null;
 		}
 		
-		if (maxValueCount > 1) {
+		if (isMultiValue) {
 			if (!isArray(value)) {
 				return "Value is not an array of type: " + type();
 			}
@@ -242,7 +277,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 * @see net.sourceforge.pmd.PropertyDescriptor#propertyErrorFor(Rule)
 	 */
 	public String propertyErrorFor(Rule rule) {
-		String strValue = rule.getStringProperty(name());
+		String strValue = rule.getStringProperty(this);
 		if (strValue == null && !isRequired()) {
 		    return null;
 		}

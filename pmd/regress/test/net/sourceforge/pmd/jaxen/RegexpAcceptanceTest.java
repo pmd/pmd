@@ -13,7 +13,8 @@ public class RegexpAcceptanceTest extends SimpleAggregatorTst {
      @Test
      public void testSimple() throws Throwable {
          Rule r = new XPathRule();
-         r.addProperty("xpath", "//ClassOrInterfaceDeclaration[matches(@Image, 'F?o')]");
+    //     r.addProperty("xpath", "//ClassOrInterfaceDeclaration[matches(@Image, 'F?o')]");
+         r.setProperty(XPathRule.XPATH_DESCRIPTOR, "//ClassOrInterfaceDeclaration[matches(@Image, 'F?o')]");
          r.setMessage("");
          runTests(r, "RegexpAcceptance");
      }

@@ -19,201 +19,271 @@ import net.sourceforge.pmd.lang.ast.Node;
  * Base class for Rule implementations which delegate to another Rule instance.
  */
 public abstract class AbstractDelegateRule implements Rule {
-    private Rule rule;
 
-    public void setRule(Rule rule) {
-	this.rule = rule;
-    }
+	private Rule rule;
 
-    public Rule getRule() {
-	return rule;
-    }
+	public void setRule(Rule rule) {
+		this.rule = rule;
+	}
 
-    public Language getLanguage() {
-	return rule.getLanguage();
-    }
+	public Rule getRule() {
+		return rule;
+	}
 
-    public void setLanguage(Language language) {
-	rule.setLanguage(language);
-    }
+	public Language getLanguage() {
+		return rule.getLanguage();
+	}
 
-    public LanguageVersion getMinimumLanguageVersion() {
-	return rule.getMinimumLanguageVersion();
-    }
+	public void setLanguage(Language language) {
+		rule.setLanguage(language);
+	}
 
-    public void setMinimumLanguageVersion(LanguageVersion minimumlanguageVersion) {
-	rule.setMinimumLanguageVersion(minimumlanguageVersion);
-    }
+	public LanguageVersion getMinimumLanguageVersion() {
+		return rule.getMinimumLanguageVersion();
+	}
 
-    public void setMaximumLanguageVersion(LanguageVersion maximumlanguageVersion) {
-	rule.setMaximumLanguageVersion(maximumlanguageVersion);
-    }
+	public void setMinimumLanguageVersion(LanguageVersion minimumlanguageVersion) {
+		rule.setMinimumLanguageVersion(minimumlanguageVersion);
+	}
 
-    public LanguageVersion getMaximumLanguageVersion() {
-	return rule.getMaximumLanguageVersion();
-    }
+	public void setMaximumLanguageVersion(LanguageVersion maximumlanguageVersion) {
+		rule.setMaximumLanguageVersion(maximumlanguageVersion);
+	}
 
-    public boolean isDeprecated() {
-	return rule.isDeprecated();
-    }
+	public LanguageVersion getMaximumLanguageVersion() {
+		return rule.getMaximumLanguageVersion();
+	}
 
-    public void setDeprecated(boolean deprecated) {
-	rule.setDeprecated(deprecated);
-    }
+	public boolean isDeprecated() {
+		return rule.isDeprecated();
+	}
 
-    public String getName() {
-	return rule.getName();
-    }
+	public void setDeprecated(boolean deprecated) {
+		rule.setDeprecated(deprecated);
+	}
 
-    public void setName(String name) {
-	rule.setName(name);
-    }
+	public String getName() {
+		return rule.getName();
+	}
 
-    public String getSince() {
-	return rule.getSince();
-    }
+	public void setName(String name) {
+		rule.setName(name);
+	}
 
-    public void setSince(String since) {
-	rule.setSince(since);
-    }
+	public String getSince() {
+		return rule.getSince();
+	}
 
-    public String getRuleClass() {
-	return rule.getRuleClass();
-    }
+	public void setSince(String since) {
+		rule.setSince(since);
+	}
 
-    public void setRuleClass(String ruleClass) {
-	rule.setRuleClass(ruleClass);
-    }
+	public String getRuleClass() {
+		return rule.getRuleClass();
+	}
 
-    public String getRuleSetName() {
-	return rule.getRuleSetName();
-    }
+	public void setRuleClass(String ruleClass) {
+		rule.setRuleClass(ruleClass);
+	}
 
-    public void setRuleSetName(String name) {
-	rule.setRuleSetName(name);
-    }
+	public String getRuleSetName() {
+		return rule.getRuleSetName();
+	}
 
-    public String getMessage() {
-	return rule.getMessage();
-    }
+	public void setRuleSetName(String name) {
+		rule.setRuleSetName(name);
+	}
 
-    public void setMessage(String message) {
-	rule.setMessage(message);
-    }
+	public String getMessage() {
+		return rule.getMessage();
+	}
 
-    public String getDescription() {
-	return rule.getDescription();
-    }
+	public void setMessage(String message) {
+		rule.setMessage(message);
+	}
 
-    public void setDescription(String description) {
-	rule.setDescription(description);
-    }
+	public String getDescription() {
+		return rule.getDescription();
+	}
 
-    public List<String> getExamples() {
-	return rule.getExamples();
-    }
+	public void setDescription(String description) {
+		rule.setDescription(description);
+	}
 
-    public void addExample(String example) {
-	rule.addExample(example);
-    }
+	public List<String> getExamples() {
+		return rule.getExamples();
+	}
 
-    public String getExternalInfoUrl() {
-	return rule.getExternalInfoUrl();
-    }
+	public void addExample(String example) {
+		rule.addExample(example);
+	}
 
-    public void setExternalInfoUrl(String url) {
-	rule.setExternalInfoUrl(url);
-    }
+	public String getExternalInfoUrl() {
+		return rule.getExternalInfoUrl();
+	}
 
-    public RulePriority getPriority() {
-	return rule.getPriority();
-    }
+	public void setExternalInfoUrl(String url) {
+		rule.setExternalInfoUrl(url);
+	}
 
-    public void setPriority(RulePriority priority) {
-	rule.setPriority(priority);
-    }
+	public RulePriority getPriority() {
+		return rule.getPriority();
+	}
 
-    public Properties getProperties() {
-	return rule.getProperties();
-    }
+	public void setPriority(RulePriority priority) {
+		rule.setPriority(priority);
+	}
 
-    public void addProperty(String name, String property) {
-	rule.addProperty(name, property);
-    }
+	/**
+	 * @deprecated
+	 * */
+	 public Properties getProperties() {
+		return rule.getProperties();
+	}
 
-    public void addProperties(Properties properties) {
-	rule.addProperties(properties);
-    }
+	/**
+	 * @deprecated
+	 */
+	 public void addProperty(String name, String property) {
+		 rule.addProperty(name, property);
+	 }
 
-    public boolean hasProperty(String name) {
-	return rule.hasProperty(name);
-    }
+	 /**
+	  * @deprecated
+	  */
+	 public void addProperties(Properties properties) {
+		 rule.addProperties(properties);
+	 }
 
-    public boolean getBooleanProperty(String name) {
-	return rule.getBooleanProperty(name);
-    }
+	 /**
+	  * @deprecated
+	  */
+	 public boolean hasProperty(String name) {
+		 return rule.hasProperty(name);
+	 }
+	 /**
+	  * @deprecated
+	  */
+	 public boolean getBooleanProperty(String name) {
+		 return rule.getBooleanProperty(name);
+	 }
 
-    public int getIntProperty(String name) {
-	return rule.getIntProperty(name);
-    }
+	 /**
+	  * @deprecated
+	  */
+	 public int getIntProperty(String name) {
+		 return rule.getIntProperty(name);
+	 }
 
-    public double getDoubleProperty(String name) {
-	return rule.getDoubleProperty(name);
-    }
+	 /**
+	  * @deprecated
+	  */
+	 public double getDoubleProperty(String name) {
+		 return rule.getDoubleProperty(name);
+	 }
 
-    public String getStringProperty(String name) {
-	return rule.getStringProperty(name);
-    }
+	 /**
+	  * @deprecated
+	  */
+	 public String getStringProperty(String name) {
+		 return rule.getStringProperty(name);
+	 }
 
-    public PropertyDescriptor propertyDescriptorFor(String name) {
-	return rule.propertyDescriptorFor(name);
-    }
+	 /**
+	  * @deprecated
+	  */
+	 public PropertyDescriptor propertyDescriptorFor(String name) {
+		 return rule.propertyDescriptorFor(name);
+	 }
 
-    public void setUsesDFA() {
-	rule.setUsesDFA();
-    }
+	 public void setUsesDFA() {
+		 rule.setUsesDFA();
+	 }
 
-    public boolean usesDFA() {
-	return rule.usesDFA();
-    }
+	 public boolean usesDFA() {
+		 return rule.usesDFA();
+	 }
 
-    public void setUsesTypeResolution() {
-	rule.setUsesTypeResolution();
-    }
+	 public void setUsesTypeResolution() {
+		 rule.setUsesTypeResolution();
+	 }
 
-    public boolean usesTypeResolution() {
-	return rule.usesTypeResolution();
-    }
+	 public boolean usesTypeResolution() {
+		 return rule.usesTypeResolution();
+	 }
 
-    public boolean usesRuleChain() {
-	return rule.usesRuleChain();
-    }
+	 public boolean usesRuleChain() {
+		 return rule.usesRuleChain();
+	 }
 
-    public List<String> getRuleChainVisits() {
-	return rule.getRuleChainVisits();
-    }
+	 public List<String> getRuleChainVisits() {
+		 return rule.getRuleChainVisits();
+	 }
 
-    public void addRuleChainVisit(Class<? extends Node> nodeClass) {
-	rule.addRuleChainVisit(nodeClass);
-    }
+	 public void addRuleChainVisit(Class<? extends Node> nodeClass) {
+		 rule.addRuleChainVisit(nodeClass);
+	 }
 
-    public void addRuleChainVisit(String astNodeName) {
-	rule.addRuleChainVisit(astNodeName);
-    }
+	 public void addRuleChainVisit(String astNodeName) {
+		 rule.addRuleChainVisit(astNodeName);
+	 }
 
-    public void start(RuleContext ctx) {
-	rule.start(ctx);
-    }
+	 public void start(RuleContext ctx) {
+		 rule.start(ctx);
+	 }
 
-    public void apply(List<? extends Node> nodes, RuleContext ctx) {
-	rule.apply(nodes, ctx);
-    }
+	 public void apply(List<? extends Node> nodes, RuleContext ctx) {
+		 rule.apply(nodes, ctx);
+	 }
 
-    public void end(RuleContext ctx) {
-	rule.end(ctx);
-    }    
+	 public void end(RuleContext ctx) {
+		 rule.end(ctx);
+	 }
 
-    public Map<PropertyDescriptor, Object> propertyValuesByDescriptor() {
-    	return rule.propertyValuesByDescriptor();
-    }
+	 public boolean[] getBooleanProperties(PropertyDescriptor key) {
+		 return rule.getBooleanProperties(key);
+	 }
+
+	 public boolean getBooleanProperty(PropertyDescriptor key) {
+		 return rule.getBooleanProperty(key);
+	 }
+
+	 public double[] getDoubleProperties(PropertyDescriptor key) {
+		 return rule.getDoubleProperties(key);
+	 }
+
+	 public double getDoubleProperty(PropertyDescriptor key) {
+		 return rule.getDoubleProperty(key);
+	 }
+
+	 public int[] getIntProperties(PropertyDescriptor key) {
+		 return rule.getIntProperties(key);
+	 }
+
+	 public int getIntProperty(PropertyDescriptor key) {
+		 return rule.getIntProperty(key);
+	 }
+
+	 public String[] getStringProperties(PropertyDescriptor key) {
+		 return rule.getStringProperties(key);
+	 }
+
+	 public String getStringProperty(PropertyDescriptor key) {
+		 return rule.getStringProperty(key);
+	 }
+
+	 public void setProperties(PropertyDescriptor key, Object[] values) {
+		 rule.setProperties(key, values);
+	 }
+
+	 public void setProperty(PropertyDescriptor key, Object value) {
+		 rule.setProperty(key, value);
+	 }
+
+	 /**
+	  * Returns all the property values keyed by the descriptors
+	  */
+	 public Map<PropertyDescriptor, Object> propertyValuesByDescriptor() {
+		 return rule.propertyValuesByDescriptor();
+	 }
 }

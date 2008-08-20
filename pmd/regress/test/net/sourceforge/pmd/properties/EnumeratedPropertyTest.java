@@ -7,6 +7,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 
 /**
+ * 
+ * @author Brian Remedios
  */
 public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 
@@ -43,17 +45,44 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 	}
 
 	/**
+	 * Returns a (count) nubmber of values that are not in the set of legal values.
+	 * 
+	 * @param count int
+	 * @return Object
+	 */
+	protected Object createBadValue(int count) {
+		
+		if (count == 1) return Integer.toString(randomInt());		// not in the set of values
+		
+		Object[] values = new Object[count];
+		for (int i=0; i<values.length; i++) values[i] = createBadValue(1);
+		return values;
+	}
+	
+	/**
 	 * Method createProperty.
-	 * @param maxCount int
+	 * @param multiValue boolean
 	 * @return PropertyDescriptor
 	 */
-	protected PropertyDescriptor createProperty(int maxCount) {
+	protected PropertyDescriptor createProperty(boolean multiValue) {
 		
-		return maxCount == 1 ?
-			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, values, 1.0f) :
-			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, values, 1.0f, 3);	
+		return multiValue ?
+			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, values, new int[] {0,1}, 1.0f) :
+			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, values, 0, 1.0f);			
 	}
 
+	/**
+	 * Method createBadProperty.
+	 * @param multiValue boolean
+	 * @return PropertyDescriptor
+	 */
+	protected PropertyDescriptor createBadProperty(boolean multiValue) {
+		
+		return multiValue ?
+			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, new Object[0], new int[] {99}, 1.0f) :
+			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", new String[0], values, -1, 1.0f);
+	}
+	
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(EnumeratedPropertyTest.class);
     }

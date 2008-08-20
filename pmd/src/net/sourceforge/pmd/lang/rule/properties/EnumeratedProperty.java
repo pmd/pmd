@@ -26,10 +26,12 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 	 * @param theDescription String
      * @param theLabels String[]
    	 * @param theChoices E[]
+   	 * @param defaultIndex int
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
-	public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices, float theUIOrder) {
-		this(theName, theDescription, theLabels, theChoices, theUIOrder, 1);
+	public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices, int defaultIndex, float theUIOrder) {
+		this(theName, theDescription, theLabels, theChoices, new int[] {defaultIndex}, theUIOrder);
 	}
 	
 	/**
@@ -38,16 +40,30 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 	 * @param theDescription String
      * @param theLabels String[]
      * @param theChoices E[]
+     * @param choiceIndices int[]
 	 * @param theUIOrder float
-	 * @param maxValues int
+	 * @throws IllegalArgumentException
 	 */
-	public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices, float theUIOrder, int maxValues) {
-		super(theName, theDescription, theChoices[0], theUIOrder);
+	public EnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices, int[] choiceIndices, float theUIOrder) {
+		super(theName, theDescription, selectionsIn(theLabels, choiceIndices), theUIOrder);
 
 		choicesByLabel = CollectionUtil.mapFrom(theLabels, theChoices);
 		labelsByChoice = CollectionUtil.invertedMapFrom(choicesByLabel);
 		
-		maxValueCount(maxValues);
+		isMultiValue(choiceIndices.length > 1);
+	}
+	
+	private static String[] selectionsIn(String[] items, int[] selectionIndices) {
+		
+		String[] selections = new String[selectionIndices.length];
+		final int maxIdx = items.length - 1;
+		for (int i=0; i<selections.length; i++) {
+			if (i < 0 || i > maxIdx) {
+				throw new IllegalArgumentException("Invalid item index: " + i);
+			}
+			selections[i] = items[selectionIndices[i]];
+		}
+		return selections;
 	}
 	
 	/**
@@ -71,7 +87,7 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 	 */
 	public String errorFor(Object value) {
 		
-		if (maxValueCount() == 1) {
+		if (!isMultiValue()) {
 			return labelsByChoice.containsKey(value) ?
 				null : nonLegalValueMsgFor(value);
 		}
@@ -108,7 +124,7 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 	 */
 	public Object valueFrom(String value) throws IllegalArgumentException {
 		
-		if (maxValueCount() == 1) {
+		if (!isMultiValue()) {
 		    return choiceFrom(value);
 		}
 		
@@ -129,7 +145,7 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 	 */
 	public String asDelimitedString(Object value) {
 		
-		if (maxValueCount() == 1) {
+		if (!isMultiValue()) {
 		    return labelsByChoice.get(value);
 		}
 		

@@ -134,6 +134,7 @@ public class RuleSetFactoryTest {
 	assertEquals(RulePriority.MEDIUM, loadFirstRule(PRIORITY).getPriority());
     }
 
+/*		obsolete property accessors
     @Test
     public void testProps() {
 	Rule r = loadFirstRule(PROPERTIES);
@@ -147,7 +148,7 @@ public class RuleSetFactoryTest {
 	assertTrue(!r.hasProperty("BuggleFish"));
 	assertTrue(r.getDescription().indexOf("testdesc2") != -1);
     }
-
+*/
     @Test
     public void testXPathPluginnameProperty() {
 	Rule r = loadFirstRule(XPATH_PLUGINNAME);
@@ -158,7 +159,7 @@ public class RuleSetFactoryTest {
     public void testXPath() {
 	Rule r = loadFirstRule(XPATH);
 	assertTrue(r.hasProperty("xpath"));
-	assertTrue(r.getStringProperty("xpath").indexOf(" //Block ") != -1);
+	assertTrue(r.getStringProperty(XPathRule.XPATH_DESCRIPTOR).indexOf(" //Block ") != -1);
     }
 
     @Test
@@ -682,10 +683,9 @@ public class RuleSetFactoryTest {
 		    System.err.println(e.getMessage());
 		    throw new IOException(e.getMessage());
 		}
-	    } else {
+	    } 
 		throw new IllegalArgumentException("No clue how to handle: publicId=" + publicId + ", systemId="
 			+ systemId);
-	    }
 	}
     }
 

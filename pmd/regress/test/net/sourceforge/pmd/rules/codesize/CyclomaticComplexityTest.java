@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.java.rule.codesize.CyclomaticComplexityRule;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,9 +19,13 @@ import test.net.sourceforge.pmd.testframework.TestDescriptor;
 import java.util.Iterator;
 
  public class CyclomaticComplexityTest extends RuleTst {
+	 
      private Rule rule;
      private TestDescriptor[] tests;
  
+     private static final Integer ONE = Integer.valueOf(1);
+     private static final Integer TEN = Integer.valueOf(10);
+     
      @Before public void setUp() {
          rule = findRule("codesize", "CyclomaticComplexity");
          tests = extractTestsFromXml(rule);
@@ -28,7 +33,7 @@ import java.util.Iterator;
  
      @Test
      public void testOneMethod() throws Throwable {
-         rule.addProperty("reportLevel", "1");
+         rule.setProperty(CyclomaticComplexityRule.REPORT_LEVEL_DESCRIPTOR, ONE);
          Report report = new Report();
          runTestFromString(tests[0].getCode(), rule, report);
          Iterator i = report.iterator();
@@ -38,7 +43,7 @@ import java.util.Iterator;
  
      @Test
      public void testNastyComplicatedMethod() throws Throwable {
-         rule.addProperty("reportLevel", "10");
+    	 rule.setProperty(CyclomaticComplexityRule.REPORT_LEVEL_DESCRIPTOR, TEN);
          Report report = new Report();
          runTestFromString(tests[1].getCode(), rule, report);
          Iterator i = report.iterator();
@@ -48,7 +53,7 @@ import java.util.Iterator;
  
      @Test
      public void testConstructor() throws Throwable {
-         rule.addProperty("reportLevel", "1");
+    	 rule.setProperty(CyclomaticComplexityRule.REPORT_LEVEL_DESCRIPTOR, ONE);
          Report report = new Report();
          runTestFromString(tests[2].getCode(), rule, report);
          Iterator i = report.iterator();
@@ -58,7 +63,7 @@ import java.util.Iterator;
  
      @Test
      public void testLessComplicatedThanReportLevel() throws Throwable {
-         rule.addProperty("reportLevel", "10");
+    	 rule.setProperty(CyclomaticComplexityRule.REPORT_LEVEL_DESCRIPTOR, TEN);
          Report report = new Report();
          runTestFromString(tests[0].getCode(), rule, report);
          assertEquals(0, report.size());

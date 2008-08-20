@@ -3,8 +3,8 @@ package test.net.sourceforge.pmd.properties;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.ReportException;
-import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 import org.junit.Before;
@@ -15,7 +15,7 @@ import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
 public class PropertyAccessorTest extends SimpleAggregatorTst {
 
-    private AbstractRule rule;
+    private Rule rule;
 
     @Before
     public void setUp() {
@@ -64,8 +64,7 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
         assertFalse(rule.getBooleanProperty(NonRuleWithAllPropertyTypes.singleBool));
         
     	rule.setProperties(NonRuleWithAllPropertyTypes.multiBool, new Boolean[] {Boolean.TRUE, Boolean.FALSE});
-        assertTrue(areEqual(rule.getBooleanProperties(NonRuleWithAllPropertyTypes.multiBool), new boolean[]{true, false}));
-        
+        assertTrue(areEqual(rule.getBooleanProperties(NonRuleWithAllPropertyTypes.multiBool), new boolean[]{true, false}));        
     }
     
     @Test(expected = RuntimeException.class)

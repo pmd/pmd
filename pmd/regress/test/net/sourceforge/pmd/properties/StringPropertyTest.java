@@ -30,6 +30,20 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
 	}
 
 	/**
+	 * Method createBadValue.
+	 * @param count int
+	 * @return Object
+	 */
+	protected Object createBadValue(int count) {
+
+		if (count == 1) return null;
+		
+		Object[] values = new Object[count];
+		for (int i=0; i<count; i++) values[i] = createBadValue(1);
+		return values;
+	}
+	
+	/**
 	 * Method newString.
 	 * @return String
 	 */
@@ -53,15 +67,25 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
 	
 	/**
 	 * Method createProperty.
-	 * @param maxCount int
+	 * @param multiValue boolean
 	 * @return PropertyDescriptor
 	 */
-	protected PropertyDescriptor createProperty(int maxCount) {
-		return maxCount == 1 ?
-			new StringProperty("testString", "Test string property", "brian", 1.0f) :
-			new StringProperty("testString", "Test string property", new String[] {"hello", "world"}, 1.0f, delimiter);
+	protected PropertyDescriptor createProperty(boolean multiValue) {
+		return multiValue ?
+			new StringProperty("testString", "Test string property", new String[] {"hello", "world"}, 1.0f, delimiter) :
+			new StringProperty("testString", "Test string property", "brian", 1.0f);			
 		}
 
+	/**
+	 * Method createBadProperty.
+	 * @param multiValue boolean
+	 * @return PropertyDescriptor
+	 */
+	protected PropertyDescriptor createBadProperty(boolean multiValue) {
+		return multiValue ?
+			new StringProperty("testString", "Test string property", new String[] {"hello", "world", "a"+delimiter+"b"}, 1.0f, delimiter) :
+			new StringProperty("", "Test string property", "brian", 1.0f);			
+		}
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(StringPropertyTest.class);

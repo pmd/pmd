@@ -36,16 +36,16 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  */
 public class CyclomaticComplexityRule extends AbstractJavaRule {
 
-    private static final PropertyDescriptor REPORT_LEVEL_DESCRIPTOR = new IntegerProperty("reportLevel",
-	    "The Cyclomatic Complexity reporting threshold", 10, 1.0f);
+    public static final PropertyDescriptor REPORT_LEVEL_DESCRIPTOR = new IntegerProperty("reportLevel",
+	    "Complexity reporting threshold", 10, 1.0f);
 
-    private static final PropertyDescriptor SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showClassesComplexity",
-	"Indicate if class average violation should be added to the report", true, 2.0f);
+    public static final PropertyDescriptor SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showClassesComplexity",
+	"Add class average violation to the report", true, 2.0f);
 
-    private static final PropertyDescriptor SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showMethodsComplexity",
-	"Indicate if class average violation should be added to the report", true, 3.0f);
+    public static final PropertyDescriptor SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showMethodsComplexity",
+	"Add method average violation to the report", true, 3.0f);
 
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] {
+    public static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] {
 	    REPORT_LEVEL_DESCRIPTOR, SHOW_CLASSES_COMPLEXITY_DESCRIPTOR, SHOW_METHODS_COMPLEXITY_DESCRIPTOR });
 
     /**

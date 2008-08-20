@@ -39,6 +39,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
+import net.sourceforge.pmd.lang.rule.stat.StatisticalRuleHelper;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
 
@@ -288,13 +289,13 @@ public class StatisticalRuleTest  {
         point.setNode(s);
         point.setMessage("SingleDataPoint");
 
-        IUT.addProperty("minimum", Integer.toString(POINTS));
+        IUT.setProperty(StatisticalRuleHelper.MINIMUM_DESCRIPTOR, Integer.valueOf(POINTS));
 
         IUT.addDataPoint(point);
 
         Report report = makeReport(IUT);
 
-        assertEquals("Expecting only one result.", 1, report.size());
+        assertEquals("Expecting only one result", 1, report.size());
     }
 
     // Okay, we have three properties we need to
@@ -812,15 +813,18 @@ public class StatisticalRuleTest  {
         try {
             setUp();
             if (sigma >= 0) {
-                IUT.addProperty("sigma", Double.toString(sigma));
+               // IUT.addProperty("sigma", Double.toString(sigma));
+            	IUT.setProperty(StatisticalRuleHelper.SIGMA_DESCRIPTOR, new Double(sigma));
             }
 
             if (minimum >= 0) {
-                IUT.addProperty("minimum", Double.toString(minimum));
+              //  IUT.addProperty("minimum", Double.toString(minimum));
+            	IUT.setProperty(StatisticalRuleHelper.MINIMUM_DESCRIPTOR, new Double(minimum));
             }
 
             if (topScore >= 0) {
-                IUT.addProperty("topscore", Integer.toString(topScore));
+              //  IUT.addProperty("topscore", Integer.toString(topScore));
+                IUT.setProperty(StatisticalRuleHelper.TOP_SCORE_DESCRIPTOR, new Integer(topScore));
             }
 
             Report report = makeReport(IUT);

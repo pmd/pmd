@@ -26,23 +26,24 @@ public class StringProperty extends AbstractProperty {
 	 */
 	public StringProperty(String theName, String theDescription, String theDefaultValue, float theUIOrder) {
 		this(theName, theDescription, theDefaultValue, theUIOrder, DEFAULT_DELIMITER);
-		
-		maxValueCount(1);
 	}
 		
 	/**
 	 * Constructor for StringProperty.
 	 * @param theName String
 	 * @param theDescription String
-	 * @param theValues String[]
+	 * @param theDefaults String[]
 	 * @param theUIOrder float
 	 * @param aMultiValueDelimiter String
+	 * @throws IllegalArgumentException
 	 */
-	public StringProperty(String theName, String theDescription, String[] theValues, float theUIOrder, char aMultiValueDelimiter) {
-		super(theName, theDescription, theValues, theUIOrder);
-		
-		maxValueCount(Integer.MAX_VALUE);
+	public StringProperty(String theName, String theDescription, String[] theDefaults, float theUIOrder, char aMultiValueDelimiter) {
+		super(theName, theDescription, theDefaults, theUIOrder);
+			
+		isMultiValue(true);
 		multiValueDelimiter(aMultiValueDelimiter);
+
+		checkDefaults(theDefaults, aMultiValueDelimiter);
 	}
 	
 	/**
@@ -52,12 +53,29 @@ public class StringProperty extends AbstractProperty {
 	 * @param theDefaultValue Object
 	 * @param theUIOrder float
 	 * @param aMultiValueDelimiter String
+	 * @throws IllegalArgumentException
 	 */
 	protected StringProperty(String theName, String theDescription, Object theDefaultValue, float theUIOrder, char aMultiValueDelimiter) {
 		super(theName, theDescription, theDefaultValue, theUIOrder);
-		
-		maxValueCount(Integer.MAX_VALUE);
+				
+		isMultiValue(isArray(theDefaultValue));
 		multiValueDelimiter(aMultiValueDelimiter);
+		
+		checkDefaults(theDefaultValue, aMultiValueDelimiter);
+	}
+	
+	private static void checkDefaults(Object defaultValue, char delim) {
+		
+		if (defaultValue == null) { return;	}
+		
+		if (isArray(defaultValue) && defaultValue instanceof String[]) {
+			String[] defaults = (String[])defaultValue;
+			for (int i=0; i<defaults.length; i++) {
+				if (defaults[i].indexOf(delim) >= 0) {
+					throw new IllegalArgumentException("Cannot include the delimiter in the set of defaults");
+				}
+			}
+		}
 	}
 	
 	/**
@@ -77,11 +95,11 @@ public class StringProperty extends AbstractProperty {
 	 */
 	public Object valueFrom(String valueString) {
 		
-		if (maxValueCount() == 1) {
-		    return valueString;
-		}
+		if (isMultiValue()) {
+		    return StringUtil.substringsOf(valueString, multiValueDelimiter);
+			}
 		
-		return StringUtil.substringsOf(valueString, multiValueDelimiter);
+		return valueString;
 	}
 	
 	/**
@@ -94,7 +112,7 @@ public class StringProperty extends AbstractProperty {
 	}
 	
 	private final String illegalCharMsg() {
-		return "Value cannot contain the \"" + multiValueDelimiter + "\" character";
+		return "Value cannot contain the '" + multiValueDelimiter + "' character";
 	}
 	
 	/**
@@ -104,23 +122,16 @@ public class StringProperty extends AbstractProperty {
 	 */
 	protected String valueErrorFor(Object value) {
 
-		if (maxValueCount() == 1) {
-			String testValue = (String)value;
-			if (!containsDelimiter(testValue)) {
-			    return null;			
-			}
-			return illegalCharMsg();
+		if (value==null) { return "missing value"; }
+		
+		String testValue = (String)value;
+		if (isMultiValue() && containsDelimiter(testValue)) {
+		    return illegalCharMsg();			
 		}
 		
-		String[] values = (String[])value;
-		for (int i=0; i<values.length; i++) {
-			if (!containsDelimiter(values[i])) {
-			    continue;	
-			}
-			return illegalCharMsg();
-			}
+		// TODO - eval against regex checkers
 		
-		return null;
+		return null;		
 	}
 	
 	public int preferredRowCount() {

@@ -21,6 +21,8 @@ public class CharacterProperty extends AbstractProperty {
 	 */
 	public CharacterProperty(String theName, String theDescription, char theDefault, float theUIOrder) {
 		super(theName, theDescription, Character.valueOf(theDefault), theUIOrder);
+		
+		isMultiValue(false);
 	}
 
 	/**
@@ -54,12 +56,21 @@ public class CharacterProperty extends AbstractProperty {
 	 * @param theDefaults char[]
 	 * @param theUIOrder float
 	 * @param delimiter char
+	 * @throws IllegalArgumentException
 	 */
 	public CharacterProperty(String theName, String theDescription, Character[] theDefaults, float theUIOrder, char delimiter) {
 		super(theName, theDescription, theDefaults, theUIOrder);
 		
+		if (theDefaults != null) {
+			for (int i=0; i<theDefaults.length; i++) {
+				if (theDefaults[i].charValue() == delimiter) {
+					throw new IllegalArgumentException("Cannot include the delimiter in the set of defaults");
+				}
+			}
+		}
+		
 		multiValueDelimiter(delimiter);
-		maxValueCount(Integer.MAX_VALUE);
+		isMultiValue(true);
 	}
 	
 	/**
@@ -93,7 +104,7 @@ public class CharacterProperty extends AbstractProperty {
 	 */
 	public Object valueFrom(String valueString) throws IllegalArgumentException {
 		
-		if (maxValueCount() == 1) {
+		if (!isMultiValue()) {
 			if (valueString.length() > 1) {
 			    throw new IllegalArgumentException(valueString);
 			}

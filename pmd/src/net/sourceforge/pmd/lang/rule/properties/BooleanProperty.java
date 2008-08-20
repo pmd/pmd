@@ -19,6 +19,8 @@ public class BooleanProperty extends AbstractScalarProperty {
 	 */
 	public BooleanProperty(String theName, String theDescription, boolean defaultValue, float theUIOrder) {
 		super(theName, theDescription, Boolean.valueOf(defaultValue), theUIOrder);
+		
+		isMultiValue(false);
 	}
 
 	/**
@@ -27,10 +29,9 @@ public class BooleanProperty extends AbstractScalarProperty {
 	 * @param theDescription String
 	 * @param defaultValues boolean[]
 	 * @param theUIOrder float
-	 * @param theMaxValues int
 	 */
-	public BooleanProperty(String theName, String theDescription, boolean[] defaultValues, float theUIOrder, int theMaxValues) {
-		this(theName, theDescription, asBooleans(defaultValues), theUIOrder, theMaxValues);
+	public BooleanProperty(String theName, String theDescription, boolean[] defaultValues, float theUIOrder) {
+		this(theName, theDescription, asBooleans(defaultValues), theUIOrder);
 		
 	}
 	
@@ -40,12 +41,11 @@ public class BooleanProperty extends AbstractScalarProperty {
 	 * @param theDescription String
 	 * @param defaultValues Boolean[]
 	 * @param theUIOrder float
-	 * @param theMaxValues int
 	 */
-	public BooleanProperty(String theName, String theDescription, Boolean[] defaultValues, float theUIOrder, int theMaxValues) {
+	public BooleanProperty(String theName, String theDescription, Boolean[] defaultValues, float theUIOrder) {
 		super(theName, theDescription, defaultValues, theUIOrder);
 		
-		maxValueCount(theMaxValues);
+		isMultiValue(true);
 	}
 	
 	/**

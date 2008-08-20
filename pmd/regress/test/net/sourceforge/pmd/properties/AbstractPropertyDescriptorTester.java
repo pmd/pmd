@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.properties;
 
 import static org.junit.Assert.assertTrue;
+import junit.framework.Assert;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -11,7 +12,7 @@ import org.junit.Test;
  */
 public abstract class AbstractPropertyDescriptorTester {
 
-	private static final int maxCardinality = 10;
+	private static final int multiValueCount = 10;
 	
 	public static final String punctuationChars  = "!@#$%^&*()_-+=[]{}\\|;:'\",.<>/?`~";
 	public static final String whitespaceChars   = " \t\n";
@@ -22,23 +23,60 @@ public abstract class AbstractPropertyDescriptorTester {
 
 	
 	/**
-	 * Method createValue.
+	 * Return a legal value(s) per the general scope of the descriptor.
+	 * 
 	 * @param count int
 	 * @return Object
 	 */
 	protected abstract Object createValue(int count);
+	
 	/**
-	 * Method createProperty.
-	 * @param maxCount int
+	 * Return a value(s) that is known to be faulty per the general scope of the descriptor.
+	 * 
+	 * @param count int
+	 * @return Object
+	 */
+	protected abstract Object createBadValue(int count);
+	
+	/**
+	 * Creates and returns a propertly configured property descriptor.
+	 * 
+	 * @param multiValue boolean
 	 * @return PropertyDescriptor
 	 */
-	protected abstract PropertyDescriptor createProperty(int maxCount);
+	protected abstract PropertyDescriptor createProperty(boolean multiValue);
+	
+	/**
+	 * Attempt to create a property with faulty configuration values. This method
+	 * should throw an IllegalArgumentException if done correctly.
+	 * 
+	 * @param multiValue boolean
+	 * @return PropertyDescriptor
+	 * @throws IllegalArgumentException
+	 */
+	protected abstract PropertyDescriptor createBadProperty(boolean multiValue);
+	
+	@Test
+	public void testConstructors() {
+		
+		PropertyDescriptor desc = createProperty(false);
+		assertTrue(desc != null);
+		
+		try {
+			createBadProperty(false);
+			
+		} catch (Exception ex) {
+			return;	// caught ok
+		}
+		
+		Assert.fail("uncaught constructor exception");
+	}
 	
     @Test
     public void testAsDelimitedString() {
 		
-		Object testValue = createValue(maxCardinality);
-		PropertyDescriptor pmdProp = createProperty(maxCardinality);
+		Object testValue = createValue(multiValueCount);
+		PropertyDescriptor pmdProp = createProperty(true);
 		
 		String storeValue = pmdProp.asDelimitedString(testValue);
 		
@@ -51,7 +89,7 @@ public abstract class AbstractPropertyDescriptorTester {
     public void testValueFrom() {
 		
 		Object testValue = createValue(1);
-		PropertyDescriptor pmdProp = createProperty(1);
+		PropertyDescriptor pmdProp = createProperty(false);
 		
 		String storeValue = pmdProp.asDelimitedString(testValue);
 		
@@ -65,24 +103,43 @@ public abstract class AbstractPropertyDescriptorTester {
     public void testErrorFor() {
 		
 		Object testValue = createValue(1);
-		PropertyDescriptor pmdProp = createProperty(1);
+		PropertyDescriptor pmdProp = createProperty(false);		// plain vanilla property & valid test value
 		String errorMsg = pmdProp.errorFor(testValue);
-		assertTrue(errorMsg == null);
+		assertTrue(errorMsg == null);					
 		
-		testValue = createValue(maxCardinality);
-		pmdProp = createProperty(maxCardinality);
+		testValue = createValue(multiValueCount);				// multi-value property, all valid test values
+		pmdProp = createProperty(true);
 		errorMsg = pmdProp.errorFor(testValue);
 		assertTrue(errorMsg == null);
+		
+    }
+    
+    @Test
+    public void testErrorForBad() {
+    	
+    	PropertyDescriptor pmdProp = createProperty(false);    	
+		Object testValue = createBadValue(1);
+		String errorMsg = pmdProp.errorFor(testValue);			// bad value should result in an error
+		assertTrue(errorMsg != null);
+				
+		testValue = createBadValue(multiValueCount);			// multi-value prop, several bad values
+		pmdProp = createProperty(true);
+		errorMsg = pmdProp.errorFor(testValue);
+		assertTrue(errorMsg != null);
 	}
 	
     @Test
     public void testType() {
 		
-		PropertyDescriptor pmdProp = createProperty(1);
+		PropertyDescriptor pmdProp = createProperty(false);
 
 		assertTrue(pmdProp.type() != null);
 	}
 	
+    public static boolean randomBool() {
+    	return ((Math.random() * 100) % 2) == 0;
+    }
+    
 	/**
 	 * Method randomInt.
 	 * @return int
@@ -103,6 +160,30 @@ public abstract class AbstractPropertyDescriptorTester {
 		if (max < min) max = min;
 		int range = Math.abs(max - min);
 		int x = (int) ((range * Math.random()) + .5);
+		return x + min;
+	}
+	
+	/**
+	 * Method randomFloat.
+	 * @param min int
+	 * @param max int
+	 * @return int
+	 */
+	public static float randomFloat(float min, float max) {
+		
+		return (float)randomDouble(min, max);
+	}
+	
+	/**
+	 * Method randomDouble.
+	 * @param min int
+	 * @param max int
+	 * @return int
+	 */
+	public static double randomDouble(double min, double max) {
+		if (max < min) max = min;
+		double range = Math.abs(max - min);
+		double x = (int) ((range * Math.random()) + .5);
 		return x + min;
 	}
 	
@@ -142,7 +223,7 @@ public abstract class AbstractPropertyDescriptorTester {
 		return results;
 	}
 
-    public static junit.framework.Test suite() {
-        return new junit.framework.JUnit4TestAdapter(AbstractPropertyDescriptorTester.class);
-    }
+//    public static junit.framework.Test suite() {
+//        return new junit.framework.JUnit4TestAdapter(AbstractPropertyDescriptorTester.class);
+//    }
 }

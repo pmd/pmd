@@ -175,16 +175,19 @@ public interface Rule {
      * Get all properties for this Rule.
      *
      * @return the properties for the rule
+     * @deprecated Use propertyValuesByDescriptor()
      */
     Properties getProperties();
 
     /**
      * Add a specific property to this Rule.
+     * @deprecated
      */
     void addProperty(String name, String property);
 
     /**
      * Add a set of properties to this Rule.
+     * @deprecated
      */
     void addProperties(Properties properties);
 
@@ -195,24 +198,93 @@ public interface Rule {
 
     /**
      * Get the <code>boolean</code> value for the given property.
+     * @deprecated use getBooleanProperty(PropertyDescriptor) 
      */
     boolean getBooleanProperty(String name);
 
     /**
+     * Get the <code>boolean</code> value for the given property.
+     * @param key
+     * @return
+     */
+    boolean getBooleanProperty(PropertyDescriptor key);
+    
+    /**
+     * Get the <code>boolean</code> values for the given property.
+     * @param key
+     * @return
+     */
+    boolean[] getBooleanProperties(PropertyDescriptor key);
+    
+    /**
      * Get the <code>int</code> value for the given property.
+     * @deprecated use getIntProperty(PropertyDescriptor)
      */
     int getIntProperty(String name);
 
     /**
+     * Get the <code>int</code> value for the given property.
+     */
+    int getIntProperty(PropertyDescriptor key);
+    
+    /**
+     * Get the <code>int</code> values for the given property.
+     */
+    int[] getIntProperties(PropertyDescriptor key);
+    
+    /**
      * Get the <code>double</code> value for the given property.
+     * @deprecated use getDoubleProperty(PropertyDescriptor)
      */
     double getDoubleProperty(String name);
 
     /**
-     * Get the <code>java.util.String</code> value for the given property.
+     * Get the <code>double</code> value for the given property.
+     */
+    double getDoubleProperty(PropertyDescriptor key);
+    
+    /**
+     * Get the <code>double</code> values for the given property.
+     */
+    double[] getDoubleProperties(PropertyDescriptor key);
+    
+    /**
+     * Get the <code>String</code> value for the given property.
+     * @deprecated use getStringProperty(PropertyDescriptor)
      */
     String getStringProperty(String name);
 
+    /**
+     * Get the <code>String</code> value for the given property.
+     */
+    String getStringProperty(PropertyDescriptor key);
+    
+    /**
+     * Get the <code>String</code> values for the given property.
+     */
+    String[] getStringProperties(PropertyDescriptor key);
+    
+    /**
+     * Set the property value specified (will be type-checked)
+     * @param key
+     * @param value
+     */
+    void setProperty(PropertyDescriptor key, Object value);
+    
+    /**
+     * Set the property values specified (will be type-checked)
+     * 
+     * @param key
+     * @param values
+     */
+    void setProperties(PropertyDescriptor key, Object[] values);
+    
+    /**
+     * Returns all the current property values for the receiver or an
+     * immutable empty map if none are specified.
+     */
+    Map<PropertyDescriptor, Object> propertyValuesByDescriptor();
+    
     /**
      * Get the PropertyDescriptor for the given property.
      */
@@ -280,10 +352,4 @@ public interface Rule {
      * End processing. Called once, after apply() is last called.
      */
     void end(RuleContext ctx);
-    
-    /**
-     * Returns all the current property values for the receiver or an
-     * immutable empty map if none are specified.
-     */    
-    Map<PropertyDescriptor, Object> propertyValuesByDescriptor();
 }

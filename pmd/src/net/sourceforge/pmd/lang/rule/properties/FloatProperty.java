@@ -19,6 +19,8 @@ public class FloatProperty extends AbstractScalarProperty {
 	 */
 	public FloatProperty(String theName, String theDescription,	float theDefault, float theUIOrder) {
 		super(theName, theDescription, new Float(theDefault), theUIOrder);
+		
+		isMultiValue(false);
 	}
 
 	/**
@@ -27,10 +29,9 @@ public class FloatProperty extends AbstractScalarProperty {
 	 * @param theDescription String
 	 * @param defaultValues boolean[]
 	 * @param theUIOrder float
-	 * @param theMaxValues int
 	 */
-	public FloatProperty(String theName, String theDescription, float[] defaultValues, float theUIOrder, int theMaxValues) {
-		this(theName, theDescription, asFloats(defaultValues), theUIOrder, theMaxValues);		
+	public FloatProperty(String theName, String theDescription, float[] defaultValues, float theUIOrder) {
+		this(theName, theDescription, asFloats(defaultValues), theUIOrder);		
 	}
 	
 	/**
@@ -39,12 +40,11 @@ public class FloatProperty extends AbstractScalarProperty {
 	 * @param theDescription String
 	 * @param defaultValues Float[]
 	 * @param theUIOrder float
-	 * @param theMaxValues int
 	 */
-	public FloatProperty(String theName, String theDescription, Float[] defaultValues, float theUIOrder, int theMaxValues) {
+	public FloatProperty(String theName, String theDescription, Float[] defaultValues, float theUIOrder) {
 		super(theName, theDescription, defaultValues, theUIOrder);
 		
-		maxValueCount(theMaxValues);
+		isMultiValue(true);
 	}
 	
 	/**

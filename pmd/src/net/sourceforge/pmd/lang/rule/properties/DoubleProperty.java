@@ -5,11 +5,11 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 
 /**
- * Defines a property type that support double property values.
+ * Defines a property type that support double-type property values.
  * 
  * @author Brian Remedios
  */
-public class DoubleProperty extends AbstractScalarProperty {
+public class DoubleProperty extends AbstractNumericProperty {
 
 	/**
 	 * Constructor for DoubleProperty.
@@ -18,8 +18,10 @@ public class DoubleProperty extends AbstractScalarProperty {
 	 * @param theDefault double
 	 * @param theUIOrder float
 	 */
-	public DoubleProperty(String theName, String theDescription, double theDefault, float theUIOrder) {
-		super(theName, theDescription, new Double(theDefault), theUIOrder);
+	public DoubleProperty(String theName, String theDescription, double min, double max, double theDefault, float theUIOrder) {
+		super(theName, theDescription, new Double(min), new Double(max), new Double(theDefault), theUIOrder);
+		
+		isMultiValue(false);
 	}
 
 	/**
@@ -28,10 +30,9 @@ public class DoubleProperty extends AbstractScalarProperty {
 	 * @param theDescription String
 	 * @param defaultValues boolean[]
 	 * @param theUIOrder float
-	 * @param theMaxValues int
 	 */
-	public DoubleProperty(String theName, String theDescription, double[] defaultValues, float theUIOrder, int theMaxValues) {
-		this(theName, theDescription, asDoubles(defaultValues), theUIOrder, theMaxValues);		
+	public DoubleProperty(String theName, String theDescription, double min, double max, double[] defaultValues, float theUIOrder) {
+		this(theName, theDescription, new Double(min), new Double(max), asDoubles(defaultValues), theUIOrder);		
 	}
 	
 	/**
@@ -40,12 +41,11 @@ public class DoubleProperty extends AbstractScalarProperty {
 	 * @param theDescription String
 	 * @param defaultValues Double[]
 	 * @param theUIOrder float
-	 * @param theMaxValues int
 	 */
-	public DoubleProperty(String theName, String theDescription, Double[] defaultValues, float theUIOrder, int theMaxValues) {
-		super(theName, theDescription, defaultValues, theUIOrder);
+	public DoubleProperty(String theName, String theDescription, Double min, Double max, Double[] defaultValues, float theUIOrder) {
+		super(theName, theDescription, min, max, defaultValues, theUIOrder);
 		
-		maxValueCount(theMaxValues);
+		isMultiValue(true);
 	}
 	
 	/**

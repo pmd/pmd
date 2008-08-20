@@ -47,7 +47,7 @@ public abstract class AbstractScalarProperty extends AbstractProperty {
 	 */
 	public Object valueFrom(String valueString) throws IllegalArgumentException {
 		
-		if (maxValueCount() == 1) {
+		if (!isMultiValue()) {
 		    return createFrom(valueString);
 		}
 		

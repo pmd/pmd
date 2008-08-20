@@ -11,8 +11,10 @@ import java.util.Map;
 import java.util.Stack;
 import java.util.Map.Entry;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 import org.jaxen.BaseXPath;
 import org.jaxen.JaxenException;
@@ -37,9 +39,7 @@ import org.jaxen.saxpath.Axis;
  */
 public class XPathRule extends AbstractRule {
 
-    private static enum InitializationStatus {
-	NONE, PARTIAL, FULL
-    };
+    private static enum InitializationStatus { NONE, PARTIAL, FULL };
 
     // Mapping from Node name to applicable XPath queries
     private InitializationStatus initializationStatus = InitializationStatus.NONE;
@@ -47,6 +47,14 @@ public class XPathRule extends AbstractRule {
 
     private static final String AST_ROOT = "_AST_ROOT_";
 
+    public static final PropertyDescriptor XPATH_DESCRIPTOR = new StringProperty("xpath", "XPATH value", "", 1.0f);
+    
+    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap( XPATH_DESCRIPTOR );
+
+    @Override
+    protected Map<String, PropertyDescriptor> propertiesByName() {
+    	return PROPERTY_DESCRIPTORS_BY_NAME;
+    }
     /**
      * Evaluate the AST with a root node, against the XPath expression found as
      * property with name "xpath".  All matches are reported as violations.
@@ -56,8 +64,9 @@ public class XPathRule extends AbstractRule {
      */
     public void evaluate(Node node, RuleContext data) {
 	try {
-	    initializeXPathExpression(data.getLanguageVersion().getLanguageVersionHandler().getXPathHandler()
-		    .getNavigator());
+	    initializeXPathExpression(
+	    		data.getLanguageVersion().getLanguageVersionHandler().getXPathHandler().getNavigator()
+	    		);
 	    List<XPath> xpaths = nodeNameToXPaths.get(node.toString());
 	    if (xpaths == null) {
 		xpaths = nodeNameToXPaths.get(AST_ROOT);
@@ -99,7 +108,7 @@ public class XPathRule extends AbstractRule {
 	//
 	nodeNameToXPaths = new HashMap<String, List<XPath>>();
 
-	BaseXPath originalXPath = createXPath(getStringProperty("xpath"), navigator);
+	BaseXPath originalXPath = createXPath(getStringProperty(XPATH_DESCRIPTOR), navigator);
 	indexXPath(originalXPath, AST_ROOT);
 
 	boolean useRuleChain = true;
