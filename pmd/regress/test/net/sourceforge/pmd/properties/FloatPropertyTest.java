@@ -56,8 +56,8 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new FloatProperty("testFloat", "Test float property", -10f, 10f, new float[] {-1,0,1,2}, 1.0f) :
-			new FloatProperty("testFloat", "Test float property", -10f, 10f, 9.0f, 1.0f) ;					
+			new FloatProperty("testFloat", "Test float property", MIN, MAX, new float[] {-1,0,1,2}, 1.0f) :
+			new FloatProperty("testFloat", "Test float property", MIN, MAX, 9.0f, 1.0f) ;					
 		}
 
 	/**

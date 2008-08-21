@@ -105,12 +105,12 @@ public abstract class AbstractPropertyDescriptorTester {
 		Object testValue = createValue(1);
 		PropertyDescriptor pmdProp = createProperty(false);		// plain vanilla property & valid test value
 		String errorMsg = pmdProp.errorFor(testValue);
-		assertTrue(errorMsg == null);					
+		assertTrue(errorMsg, errorMsg == null);			
 		
 		testValue = createValue(multiValueCount);				// multi-value property, all valid test values
 		pmdProp = createProperty(true);
 		errorMsg = pmdProp.errorFor(testValue);
-		assertTrue(errorMsg == null);
+		assertTrue(errorMsg, errorMsg == null);
 		
     }
     
@@ -120,12 +120,16 @@ public abstract class AbstractPropertyDescriptorTester {
     	PropertyDescriptor pmdProp = createProperty(false);    	
 		Object testValue = createBadValue(1);
 		String errorMsg = pmdProp.errorFor(testValue);			// bad value should result in an error
-		assertTrue(errorMsg != null);
+		if (errorMsg == null) {
+			Assert.fail("uncaught bad value: " + testValue);
+		}
 				
 		testValue = createBadValue(multiValueCount);			// multi-value prop, several bad values
 		pmdProp = createProperty(true);
 		errorMsg = pmdProp.errorFor(testValue);
-		assertTrue(errorMsg != null);
+		if (errorMsg == null) {
+			Assert.fail("uncaught bad value in: " + testValue);
+		}
 	}
 	
     @Test
@@ -183,7 +187,7 @@ public abstract class AbstractPropertyDescriptorTester {
 	public static double randomDouble(double min, double max) {
 		if (max < min) max = min;
 		double range = Math.abs(max - min);
-		double x = (int) ((range * Math.random()) + .5);
+		double x = range * Math.random();
 		return x + min;
 	}
 	
