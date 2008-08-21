@@ -1,7 +1,5 @@
 package test.net.sourceforge.pmd.properties;
 
-import org.junit.Test;
-
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
 
@@ -24,7 +22,7 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	protected Object createValue(int count) {
 		
-		if (count == 1) return new Float((int)(System.currentTimeMillis() % 100));
+		if (count == 1) return new Float(randomFloat(MIN, MAX));
 		
 		Float[] values = new Float[count];
 		for (int i=0; i<values.length; i++) values[i] = (Float)createValue(1);
@@ -48,11 +46,7 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 		Float[] values = new Float[count];
 		for (int i=0; i<values.length; i++) values[i] = (Float)createBadValue(1);
 		return values;
-	}
-	
-	 @Test
-	public void testErrorForBad() { }	// not until float properties get ranges
-		
+	}	
 	
 	/**
 	 * Method createProperty.
@@ -62,8 +56,8 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new FloatProperty("testFloat", "Test float property", new float[] {-1,0,1,2}, 1.0f) :
-			new FloatProperty("testFloat", "Test float property", 9.0f, 1.0f) ;					
+			new FloatProperty("testFloat", "Test float property", -10f, 10f, new float[] {-1,0,1,2}, 1.0f) :
+			new FloatProperty("testFloat", "Test float property", -10f, 10f, 9.0f, 1.0f) ;					
 		}
 
 	/**
@@ -74,8 +68,8 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createBadProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new FloatProperty("", "Test float property", new float[] {-1,0,1,2}, 1.0f) :
-			new FloatProperty("testFloat", "", 9.0f, 1.0f) ;
+			new FloatProperty("testFloat", "Test float property", 0f, 5f, new float[] {-1,0,1,2}, 1.0f) :
+			new FloatProperty("testFloat", "Test float property", 5f, 4f, 9.0f, 1.0f) ;
 		}
 	
     public static junit.framework.Test suite() {

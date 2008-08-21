@@ -34,7 +34,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 		name = checkNotEmpty(theName, "name");
 		description = checkNotEmpty(theDescription, "description");
 		defaultValue = theDefault;
-		uiOrder = theUIOrder;
+		uiOrder = checkPositive(theUIOrder, "UI order");
 	}
 	
 	private static String checkNotEmpty(String arg, String argId) {
@@ -43,6 +43,13 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 			throw new IllegalArgumentException("Property attribute '" + argId + "' cannot be null or blank");
 		}
 		
+		return arg;
+	}
+	
+	private static float checkPositive(float arg, String argId) {
+		if (arg < 0) {
+			throw new IllegalArgumentException("Property attribute " + argId + "' must be zero or positive");
+		}
 		return arg;
 	}
 	

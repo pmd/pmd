@@ -4,51 +4,62 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
- * Defines a property type that support float property values.
+ * Defines a property type that support float property values within an upper and lower boundary.
  * 
  * @author Brian Remedios
  */
-public class FloatProperty extends AbstractScalarProperty {
+public class FloatProperty extends AbstractNumericProperty {
 
 	/**
-	 * Constructor for FloatProperty.
+	 * Constructor for FloatProperty that limits itself to a single value within the specified limits.
+	 * 
 	 * @param theName String
 	 * @param theDescription String
+	 * @param min float
+	 * @param max float
 	 * @param theDefault float
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
-	public FloatProperty(String theName, String theDescription,	float theDefault, float theUIOrder) {
-		super(theName, theDescription, new Float(theDefault), theUIOrder);
+	public FloatProperty(String theName, String theDescription,	float min, float max, float theDefault, float theUIOrder) {
+		super(theName, theDescription, new Float(min), new Float(max), new Float(theDefault), theUIOrder);
 		
 		isMultiValue(false);
 	}
 
 	/**
-	 * Constructor for FloatProperty.
+	 * Constructor for FloatProperty that configures it to accept multiple values and any number of defaults.
+	 * 
 	 * @param theName String
 	 * @param theDescription String
-	 * @param defaultValues boolean[]
+	 * @param min float
+	 * @param max float
+	 * @param defaultValues float[]
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
-	public FloatProperty(String theName, String theDescription, float[] defaultValues, float theUIOrder) {
-		this(theName, theDescription, asFloats(defaultValues), theUIOrder);		
+	public FloatProperty(String theName, String theDescription, float min, float max, float[] defaultValues, float theUIOrder) {
+		this(theName, theDescription, new Float(min), new Float(max), asFloats(defaultValues), theUIOrder);		
 	}
 	
 	/**
-	 * Constructor for FloatProperty.
+	 * Constructor for FloatProperty that configures it to accept multiple values and any number of defaults.
+	 * 
 	 * @param theName String
 	 * @param theDescription String
+	 * @param min Float
+	 * @param min Float
 	 * @param defaultValues Float[]
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
-	public FloatProperty(String theName, String theDescription, Float[] defaultValues, float theUIOrder) {
-		super(theName, theDescription, defaultValues, theUIOrder);
+	public FloatProperty(String theName, String theDescription, Float min, Float max, Float[] defaultValues, float theUIOrder) {
+		super(theName, theDescription, min, max, defaultValues, theUIOrder);
 		
 		isMultiValue(true);
 	}
 	
 	/**
-	 * Method type.
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -57,7 +68,8 @@ public class FloatProperty extends AbstractScalarProperty {
 	}
 
 	/**
-	 * Method asFloats.
+	 * Converts an array of primitive float values into their wrapped equivalents.
+	 * 
 	 * @param f float[]
 	 * @return Float[]
 	 */
@@ -70,7 +82,8 @@ public class FloatProperty extends AbstractScalarProperty {
 	}
 
 	/**
-	 * Method createFrom.
+	 * Creates an property value of the right type from a raw string.
+	 * 
 	 * @param value String
 	 * @return Object
 	 */
@@ -79,7 +92,8 @@ public class FloatProperty extends AbstractScalarProperty {
 	}
 
 	/**
-	 * Method arrayFor.
+	 * Returns an array of the correct type for the receiver.
+	 * 
 	 * @param size int
 	 * @return Object[]
 	 */

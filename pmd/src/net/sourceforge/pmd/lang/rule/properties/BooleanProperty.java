@@ -11,7 +11,8 @@ package net.sourceforge.pmd.lang.rule.properties;
 public class BooleanProperty extends AbstractScalarProperty {
 
 	/**
-	 * Constructor for BooleanProperty.
+	 * Constructor for BooleanProperty limited to a single value.
+	 * 
 	 * @param theName String
 	 * @param theDescription String
 	 * @param defaultValue boolean
@@ -24,7 +25,8 @@ public class BooleanProperty extends AbstractScalarProperty {
 	}
 
 	/**
-	 * Constructor for BooleanProperty.
+	 * Constructor for BooleanProperty that allows for multiple values.
+	 * 
 	 * @param theName String
 	 * @param theDescription String
 	 * @param defaultValues boolean[]
@@ -36,7 +38,8 @@ public class BooleanProperty extends AbstractScalarProperty {
 	}
 	
 	/**
-	 * Constructor for BooleanProperty.
+	 * Constructor for BooleanProperty that allows for multiple values.
+	 * 
 	 * @param theName String
 	 * @param theDescription String
 	 * @param defaultValues Boolean[]
@@ -49,7 +52,8 @@ public class BooleanProperty extends AbstractScalarProperty {
 	}
 	
 	/**
-	 * Method asBooleans.
+	 * Converts an array of primitives into their wrapped equivalents.
+	 * 
 	 * @param bools boolean[]
 	 * @return Boolean[]
 	 */
@@ -62,7 +66,6 @@ public class BooleanProperty extends AbstractScalarProperty {
 	}
 	
 	/**
-	 * Method type.
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -71,7 +74,8 @@ public class BooleanProperty extends AbstractScalarProperty {
 	}
 
 	/**
-	 * Method createFrom.
+	 * Creates and returns a Boolean instance from a raw string
+	 * 
 	 * @param value String
 	 * @return Object
 	 */
@@ -80,7 +84,6 @@ public class BooleanProperty extends AbstractScalarProperty {
 	}
 
 	/**
-	 * Method arrayFor.
 	 * @param size int
 	 * @return Object[]
 	 */

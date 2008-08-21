@@ -11,6 +11,16 @@ public abstract class AbstractNumericProperty extends AbstractScalarProperty {
 	private Number lowerLimit;
 	private Number upperLimit;
 	
+	/**
+	 * 
+	 * @param theName
+	 * @param theDescription
+	 * @param lower
+	 * @param upper
+	 * @param theDefault
+	 * @param theUIOrder
+	 * @throws IllegalArgumentException
+	 */
 	protected AbstractNumericProperty(String theName, String theDescription, Number lower, Number upper, Object theDefault, float theUIOrder) {
 		super(theName, theDescription, theDefault, theUIOrder);
 	
@@ -22,10 +32,18 @@ public abstract class AbstractNumericProperty extends AbstractScalarProperty {
 		upperLimit = upper;
 	}
 	
+	/**
+	 * Returns the minimum value that instances of the property can have
+	 * @return
+	 */
 	public Number lowerLimit() {
 		return lowerLimit;
 	}
 	
+	/**
+	 * Returns the maximum value that instances of the property can have
+	 * @return
+	 */
 	public Number upperLimit() {
 		return upperLimit;
 	}

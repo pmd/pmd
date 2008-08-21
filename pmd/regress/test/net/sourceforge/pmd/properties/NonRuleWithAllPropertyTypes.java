@@ -27,8 +27,8 @@ class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
 	public static final PropertyDescriptor singleChar	= new CharacterProperty("singleChar", "Property with a single character value", 'a', 5.0f);
 	public static final PropertyDescriptor multiChar	= new CharacterProperty("multiChar", "Property with multiple character values", new char[] {'a', 'e', 'i', 'o', 'u'}, 6.0f, '|');
 	
-	public static final PropertyDescriptor singleFloat	= new FloatProperty("singleFloat", "Property with a single float value", 9.9f, 5.0f);
-	public static final PropertyDescriptor multiFloat	= new FloatProperty("multiFloat", "Property with multiple float values", new float[] {1,2,3}, 6.0f);
+	public static final PropertyDescriptor singleFloat	= new FloatProperty("singleFloat", "Property with a single float value", 9f, 10f, .9f, 5.0f);
+	public static final PropertyDescriptor multiFloat	= new FloatProperty("multiFloat", "Property with multiple float values", 0f, 5f, new float[] {1,2,3}, 6.0f);
 	
 	public static final PropertyDescriptor singleType	= new TypeProperty("singleType", "Property with a single type value", String.class, 5.0f);
 	public static final PropertyDescriptor multiType	= new TypeProperty("multiType", "Property with multiple type values", new Class[] {Integer.class, Object.class}, 6.0f);
