@@ -40,7 +40,7 @@ if [ buildtype = "release" ]; then
 fi
 
 export MAVEN_OPTS="-Xmx512m -Xms192m"
-mvn site
+mvn clean site
 
 cd etc
 
