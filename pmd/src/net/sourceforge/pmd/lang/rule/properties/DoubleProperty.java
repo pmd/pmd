@@ -65,7 +65,7 @@ public class DoubleProperty extends AbstractNumericProperty {
 	private static final Double[] asDoubles(double[] d) {
 		Double[] doubles = new Double[d.length];
 		for (int i=0; i<d.length; i++) {
-		    doubles[i] = new Double(d[i]);
+		    doubles[i] = Double.valueOf(d[i]);
 		}
 		return doubles;
 	}

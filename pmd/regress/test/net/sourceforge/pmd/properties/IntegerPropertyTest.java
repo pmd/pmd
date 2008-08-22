@@ -6,6 +6,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 
 /**
+ * 
+ * @author Brian Remedios
  */
 public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 

@@ -4,6 +4,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
 
 /**
+ * 
+ * @author Brian Remedios
  */
 public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 
@@ -22,7 +24,7 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	protected Object createValue(int count) {
 		
-		if (count == 1) return new Float(randomFloat(MIN, MAX));
+		if (count == 1) return Float.valueOf(randomFloat(MIN, MAX));
 		
 		Float[] values = new Float[count];
 		for (int i=0; i<values.length; i++) values[i] = (Float)createValue(1);

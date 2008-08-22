@@ -9,6 +9,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
 
 /**
+ * 
+ * @author Brian Remedios
  */
 public class TypePropertyTest extends AbstractPropertyDescriptorTester {
 

@@ -39,7 +39,7 @@ public abstract class AbstractPropertyDescriptorTester {
 	protected abstract Object createBadValue(int count);
 	
 	/**
-	 * Creates and returns a propertly configured property descriptor.
+	 * Creates and returns a properly configured property descriptor.
 	 * 
 	 * @param multiValue boolean
 	 * @return PropertyDescriptor
@@ -52,7 +52,6 @@ public abstract class AbstractPropertyDescriptorTester {
 	 * 
 	 * @param multiValue boolean
 	 * @return PropertyDescriptor
-	 * @throws IllegalArgumentException
 	 */
 	protected abstract PropertyDescriptor createBadProperty(boolean multiValue);
 	
@@ -169,9 +168,9 @@ public abstract class AbstractPropertyDescriptorTester {
 	
 	/**
 	 * Method randomFloat.
-	 * @param min int
-	 * @param max int
-	 * @return int
+	 * @param min float
+	 * @param max float
+	 * @return float
 	 */
 	public static float randomFloat(float min, float max) {
 		
@@ -180,9 +179,9 @@ public abstract class AbstractPropertyDescriptorTester {
 	
 	/**
 	 * Method randomDouble.
-	 * @param min int
-	 * @param max int
-	 * @return int
+	 * @param min double
+	 * @param max double
+	 * @return double
 	 */
 	public static double randomDouble(double min, double max) {
 		if (max < min) max = min;

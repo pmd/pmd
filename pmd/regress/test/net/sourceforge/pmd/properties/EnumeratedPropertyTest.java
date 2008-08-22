@@ -45,7 +45,7 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 	}
 
 	/**
-	 * Returns a (count) nubmber of values that are not in the set of legal values.
+	 * Returns a (count) number of values that are not in the set of legal values.
 	 * 
 	 * @param count int
 	 * @return Object

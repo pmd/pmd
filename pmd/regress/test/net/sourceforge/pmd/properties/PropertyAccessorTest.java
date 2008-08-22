@@ -13,6 +13,9 @@ import org.junit.Test;
 
 import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 
+/**
+ * @author Brian Remedios
+ */
 public class PropertyAccessorTest extends SimpleAggregatorTst {
 
     private Rule rule;

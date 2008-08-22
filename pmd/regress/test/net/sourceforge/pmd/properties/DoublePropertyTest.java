@@ -4,6 +4,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
 
 /**
+ * 
+ * @author Brian Remedios
  */
 public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
 
@@ -38,7 +40,7 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	protected Object createBadValue(int count) {
 		
-		if (count == 1) return new Double(
+		if (count == 1) return Double.valueOf(
 				randomBool() ?
 						randomDouble(MIN - SHIFT, MIN - 0.01) :
 						randomDouble(MAX + 0.01, MAX + SHIFT)

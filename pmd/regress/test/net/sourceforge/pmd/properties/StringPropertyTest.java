@@ -4,6 +4,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 /**
+ * 
+ * @author Brian Remedios
  */
 public class StringPropertyTest extends AbstractPropertyDescriptorTester {
 

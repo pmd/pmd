@@ -15,13 +15,29 @@ public class MethodProperty extends AbstractProperty {
 	 * 
 	 * @param theName        String
 	 * @param theDescription String
-	 * @param theDefault     Object
+	 * @param theDefault     Method
 	 * @param theUIOrder     float
 	 */
-	public MethodProperty(String theName, String theDescription, Object theDefault, float theUIOrder) {
+	public MethodProperty(String theName, String theDescription, Method theDefault, float theUIOrder) {
 		super(theName, theDescription, theDefault, theUIOrder);
+		
+		isMultiValue(false);
 	}
 
+	/**
+	 * Constructor for MethodProperty.
+	 * 
+	 * @param theName        String
+	 * @param theDescription String
+	 * @param theDefaults    Method[]
+	 * @param theUIOrder     float
+	 */
+	public MethodProperty(String theName, String theDescription, Method[] theDefaults, float theUIOrder) {
+		super(theName, theDescription, theDefaults, theUIOrder);
+		
+		isMultiValue(true);
+	}
+	
 	/**
 	 * Method type.
 	 * 
@@ -49,8 +65,7 @@ public class MethodProperty extends AbstractProperty {
 		try {
 			return cls.getMethod(methodName, parameterTypes);
 		} catch (Exception e) {
-			throw new IllegalArgumentException("invalid method: "
-					+ propertyString);
+			throw new IllegalArgumentException("invalid method: " + propertyString);
 		}
 	}
 

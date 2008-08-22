@@ -40,7 +40,6 @@ public class IntegerProperty extends AbstractScalarProperty {
 	 * @param theDescription String
 	 * @param theDefaults Integer[]
 	 * @param theUIOrder float
-	 * @param maxCount int
 	 */
 	public IntegerProperty(String theName, String theDescription, Integer[] theDefaults, float theUIOrder) {
 		super(theName, theDescription, theDefaults, theUIOrder);

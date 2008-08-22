@@ -20,7 +20,7 @@ public abstract class AbstractScalarProperty extends AbstractProperty {
 	 * @param theDefault Object
 	 * @param theUIOrder float
 	 */
-	public AbstractScalarProperty(String theName, String theDescription, Object theDefault, float theUIOrder) {
+	protected AbstractScalarProperty(String theName, String theDescription, Object theDefault, float theUIOrder) {
 		super(theName, theDescription, theDefault, theUIOrder);
 	}
 

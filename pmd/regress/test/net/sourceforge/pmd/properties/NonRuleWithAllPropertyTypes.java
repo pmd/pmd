@@ -12,6 +12,10 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
 
+/**
+ * 
+ * @author Brian Remedios
+ */
 class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
 
 	// descriptors are public to enable us to write external tests

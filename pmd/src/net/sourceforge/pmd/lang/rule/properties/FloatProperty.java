@@ -76,7 +76,7 @@ public class FloatProperty extends AbstractNumericProperty {
 	private static final Float[] asFloats(float[] f) {
 		Float[] floats = new Float[f.length];
 		for (int i=0; i<f.length; i++) {
-		    floats[i] = new Float(f[i]);
+		    floats[i] = Float.valueOf(f[i]);
 		}
 		return floats;
 	}
