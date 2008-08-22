@@ -131,13 +131,13 @@ public class XmlParser {
 			}
 		    };
 		} else if ("getBeginLine".equals(method.getName())) {
-		    return new Integer(-1);
+		    return Integer.valueOf(-1);
 		} else if ("getBeginColumn".equals(method.getName())) {
-		    return new Integer(-1);
+		    return Integer.valueOf(-1);
 		} else if ("getEndLine".equals(method.getName())) {
-		    return new Integer(-1);
+		    return Integer.valueOf(-1);
 		} else if ("getEndColumn".equals(method.getName())) {
-		    return new Integer(-1);
+		    return Integer.valueOf(-1);
 		} else if ("getNode".equals(method.getName())) {
 		    return node;
 		}

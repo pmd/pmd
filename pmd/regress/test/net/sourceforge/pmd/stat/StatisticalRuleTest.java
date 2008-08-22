@@ -237,7 +237,7 @@ public class StatisticalRuleTest  {
      * 522, 523, ... 999 will pass.
      */
     public int expectedMinimum(double minimum) {
-        Double d = new Double(minimum);
+        Double d = Double.valueOf(minimum);
         return POINTS - 1 - d.intValue();
     }
 
@@ -264,7 +264,7 @@ public class StatisticalRuleTest  {
         if (target < 0)
             return 0;
 
-        return random.nextInt(new Double(target).intValue());
+        return random.nextInt(Double.valueOf(target).intValue());
     }
 
     /**
@@ -814,17 +814,17 @@ public class StatisticalRuleTest  {
             setUp();
             if (sigma >= 0) {
                // IUT.addProperty("sigma", Double.toString(sigma));
-            	IUT.setProperty(StatisticalRuleHelper.SIGMA_DESCRIPTOR, new Double(sigma));
+            	IUT.setProperty(StatisticalRuleHelper.SIGMA_DESCRIPTOR, Double.valueOf(sigma));
             }
 
             if (minimum >= 0) {
               //  IUT.addProperty("minimum", Double.toString(minimum));
-            	IUT.setProperty(StatisticalRuleHelper.MINIMUM_DESCRIPTOR, new Double(minimum));
+            	IUT.setProperty(StatisticalRuleHelper.MINIMUM_DESCRIPTOR, Double.valueOf(minimum));
             }
 
             if (topScore >= 0) {
               //  IUT.addProperty("topscore", Integer.toString(topScore));
-                IUT.setProperty(StatisticalRuleHelper.TOP_SCORE_DESCRIPTOR, new Integer(topScore));
+                IUT.setProperty(StatisticalRuleHelper.TOP_SCORE_DESCRIPTOR, Integer.valueOf(topScore));
             }
 
             Report report = makeReport(IUT);

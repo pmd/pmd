@@ -22,7 +22,7 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	protected Object createValue(int count) {
 		
-		if (count == 1) return new Integer((int)(System.currentTimeMillis() % 100));
+		if (count == 1) return Integer.valueOf((int)(System.currentTimeMillis() % 100));
 		
 		Integer[] values = new Integer[count];
 		for (int i=0; i<values.length; i++) values[i] = (Integer)createValue(1);
@@ -37,7 +37,7 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	protected Object createBadValue(int count) {
 		
-		if (count == 1) return new Integer(
+		if (count == 1) return Integer.valueOf(
 			randomBool() ?
 					randomInt(MIN - SHIFT, MIN) :
 					randomInt(MAX, MAX + SHIFT)

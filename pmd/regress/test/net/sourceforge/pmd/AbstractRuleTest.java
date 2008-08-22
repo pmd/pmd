@@ -99,7 +99,7 @@ public class AbstractRuleTest {
         MyRule r = new MyRule();
         RuleContext ctx = new RuleContext();
         Map<Integer, String> m = new HashMap<Integer, String>();
-        m.put(new Integer(5), "");
+        m.put(Integer.valueOf(5), "");
         ctx.setReport(new Report());
         ctx.getReport().suppress(m);
         ctx.setSourceCodeFilename("filename");

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.cpd.ReportException;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.NumericConstants;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -43,21 +44,21 @@ public class PropertyAccessorTest extends SimpleAggregatorTst {
     
     @Test
     public void testIntegers() {
-    	rule.setProperty(NonRuleWithAllPropertyTypes.singleInt, new Integer(0));
+    	rule.setProperty(NonRuleWithAllPropertyTypes.singleInt, NumericConstants.ZERO);
         assertTrue(rule.getIntProperty(NonRuleWithAllPropertyTypes.singleInt) == 0);
         
-    	rule.setProperties(NonRuleWithAllPropertyTypes.multiInt, new Object[] {new Integer(0), new Integer(1)});
+    	rule.setProperties(NonRuleWithAllPropertyTypes.multiInt, new Object[] {NumericConstants.ZERO, NumericConstants.ONE});
         assertTrue(areEqual(rule.getIntProperties(NonRuleWithAllPropertyTypes.multiInt), new int[]{0, 1}));
     }
     
     @Test(expected = RuntimeException.class)
     public void testIntegersSingle() {
-        rule.setProperties(NonRuleWithAllPropertyTypes.singleInt, new Object[] { new Integer(0), new Integer(1) });
+        rule.setProperties(NonRuleWithAllPropertyTypes.singleInt, new Object[] { NumericConstants.ZERO, NumericConstants.ONE });
     }
 
     @Test(expected=RuntimeException.class)
     public void testIntegersMultiple() {
-        rule.setProperty(NonRuleWithAllPropertyTypes.multiInt, new Integer(0));
+        rule.setProperty(NonRuleWithAllPropertyTypes.multiInt, NumericConstants.ZERO);
     }
      
     @Test

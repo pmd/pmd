@@ -19,7 +19,7 @@ public class DoubleProperty extends AbstractNumericProperty {
 	 * @param theUIOrder float
 	 */
 	public DoubleProperty(String theName, String theDescription, double min, double max, double theDefault, float theUIOrder) {
-		super(theName, theDescription, new Double(min), new Double(max), new Double(theDefault), theUIOrder);
+		super(theName, theDescription, Double.valueOf(min), Double.valueOf(max), Double.valueOf(theDefault), theUIOrder);
 		
 		isMultiValue(false);
 	}
@@ -32,7 +32,7 @@ public class DoubleProperty extends AbstractNumericProperty {
 	 * @param theUIOrder float
 	 */
 	public DoubleProperty(String theName, String theDescription, double min, double max, double[] defaultValues, float theUIOrder) {
-		this(theName, theDescription, new Double(min), new Double(max), asDoubles(defaultValues), theUIOrder);		
+		this(theName, theDescription, Double.valueOf(min), Double.valueOf(max), asDoubles(defaultValues), theUIOrder);		
 	}
 	
 	/**

@@ -39,7 +39,7 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	protected Object createBadValue(int count) {
 		
-		if (count == 1) return new Float(
+		if (count == 1) return Float.valueOf(
 				randomBool() ?
 						randomFloat(MIN - SHIFT, MIN) :
 						randomFloat(MAX, MAX + SHIFT)

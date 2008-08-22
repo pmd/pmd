@@ -76,7 +76,7 @@ public class JJTJspParserState {
 
 
   public void openNodeScope(Node n) {
-    marks.add(new Integer(mk));
+    marks.add(Integer.valueOf(mk));
     mk = sp;
     n.jjtOpen();
   }

@@ -30,8 +30,8 @@ public class DataPoint implements Comparable<DataPoint> {
     }
 
     public int compareTo(DataPoint rhs) {
-        Double lhsScore = new Double(score);
-        Double rhsScore = new Double(rhs.getScore());
+        Double lhsScore = Double.valueOf(score);
+        Double rhsScore = Double.valueOf(rhs.getScore());
         if (lhsScore.doubleValue() != rhsScore.doubleValue()) {
             return lhsScore.compareTo(rhsScore);
         }

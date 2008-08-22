@@ -25,7 +25,7 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	protected Object createValue(int count) {
 		
-		if (count == 1) return new Double(randomDouble(MIN, MAX));
+		if (count == 1) return Double.valueOf(randomDouble(MIN, MAX));
 		
 		Double[] values = new Double[count];
 		for (int i=0; i<values.length; i++) values[i] = (Double)createValue(1);

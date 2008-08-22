@@ -213,8 +213,8 @@ public class ReportTest extends RuleTst implements ReportListener {
         r.addRuleViolation(new JavaRuleViolation(mr, ctx, s2));
         Map summary = r.getSummary();
         assertEquals(summary.keySet().size(), 2);
-        assertTrue(summary.values().contains(new Integer(1)));
-        assertTrue(summary.values().contains(new Integer(2)));
+        assertTrue(summary.values().contains(Integer.valueOf(1)));
+        assertTrue(summary.values().contains(Integer.valueOf(2)));
     }
     
     private JavaNode getNode(int line, int column, String scopeName){

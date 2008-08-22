@@ -296,7 +296,7 @@ public class Benchmark {
             while (buf2.length() <= 50) {
                 buf2.append(' ');
             }
-            buf2.append(StringUtil.lpad(MessageFormat.format("{0,number,0.000}", new Double(benchmarkResult.getTime()/1000000000.0)), 8));
+            buf2.append(StringUtil.lpad(MessageFormat.format("{0,number,0.000}", Double.valueOf(benchmarkResult.getTime()/1000000000.0)), 8));
             if (benchmarkResult.getType() <= TYPE_RULE_CHAIN_RULE) {
                 buf2.append(StringUtil.lpad(MessageFormat.format("{0,number,###,###,###,###,###}", benchmarkResult.getCount()), 20));
             }

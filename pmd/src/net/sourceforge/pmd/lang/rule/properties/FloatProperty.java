@@ -22,7 +22,7 @@ public class FloatProperty extends AbstractNumericProperty {
 	 * @throws IllegalArgumentException
 	 */
 	public FloatProperty(String theName, String theDescription,	float min, float max, float theDefault, float theUIOrder) {
-		super(theName, theDescription, new Float(min), new Float(max), new Float(theDefault), theUIOrder);
+		super(theName, theDescription, Float.valueOf(min), Float.valueOf(max), Float.valueOf(theDefault), theUIOrder);
 		
 		isMultiValue(false);
 	}
@@ -39,7 +39,7 @@ public class FloatProperty extends AbstractNumericProperty {
 	 * @throws IllegalArgumentException
 	 */
 	public FloatProperty(String theName, String theDescription, float min, float max, float[] defaultValues, float theUIOrder) {
-		this(theName, theDescription, new Float(min), new Float(max), asFloats(defaultValues), theUIOrder);		
+		this(theName, theDescription, Float.valueOf(min), Float.valueOf(max), asFloats(defaultValues), theUIOrder);		
 	}
 	
 	/**
