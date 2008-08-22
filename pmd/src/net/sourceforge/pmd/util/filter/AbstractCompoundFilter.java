@@ -40,17 +40,17 @@ public abstract class AbstractCompoundFilter<T> implements Filter<T> {
 	protected abstract String getOperator();
 
 	public String toString() {
+		
+		if (filters.isEmpty()) { return "()"; }
+		
 		StringBuilder builder = new StringBuilder();
-		builder.append("(");
-		for (int i = 0; i < filters.size(); i++) {
-			if (i > 0) {
-				builder.append(" ");
-				builder.append(getOperator());
-				builder.append(" ");
-			}
+		builder.append('(').append(filters.get(0));
+		
+		for (int i = 1; i < filters.size(); i++) {
+			builder.append(' ').append(getOperator()).append(' ');
 			builder.append(filters.get(i));
 		}
-		builder.append(")");
+		builder.append(')');
 		return builder.toString();
 	}
 }
