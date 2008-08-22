@@ -204,15 +204,15 @@ public interface Rule {
 
     /**
      * Get the <code>boolean</code> value for the given property.
-     * @param key
-     * @return
+     * @param key The property descriptor.
+     * @return The property value.
      */
     boolean getBooleanProperty(PropertyDescriptor key);
     
     /**
      * Get the <code>boolean</code> values for the given property.
-     * @param key
-     * @return
+     * @param key The property descriptor.
+     * @return The property values.
      */
     boolean[] getBooleanProperties(PropertyDescriptor key);
     

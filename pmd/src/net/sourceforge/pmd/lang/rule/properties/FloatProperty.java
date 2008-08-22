@@ -48,7 +48,7 @@ public class FloatProperty extends AbstractNumericProperty {
 	 * @param theName String
 	 * @param theDescription String
 	 * @param min Float
-	 * @param min Float
+	 * @param max Float
 	 * @param defaultValues Float[]
 	 * @param theUIOrder float
 	 * @throws IllegalArgumentException

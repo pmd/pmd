@@ -34,7 +34,7 @@ public abstract class AbstractNumericProperty extends AbstractScalarProperty {
 	
 	/**
 	 * Returns the minimum value that instances of the property can have
-	 * @return
+	 * @return The minimum value.
 	 */
 	public Number lowerLimit() {
 		return lowerLimit;
@@ -42,7 +42,7 @@ public abstract class AbstractNumericProperty extends AbstractScalarProperty {
 	
 	/**
 	 * Returns the maximum value that instances of the property can have
-	 * @return
+	 * @return The maximum value.
 	 */
 	public Number upperLimit() {
 		return upperLimit;

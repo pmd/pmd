@@ -25,7 +25,7 @@ public class StringUtil {
      * More efficient that calling (string).trim().length() == 0
      * 
      * @param value
-     * @return
+     * @return <code>true</code> if the value is empty, <code>false</code> otherwise.
      */
     public static boolean isEmpty(String value) {
     	

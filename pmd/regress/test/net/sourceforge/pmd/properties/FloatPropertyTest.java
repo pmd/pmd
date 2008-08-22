@@ -64,7 +64,7 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 
 	/**
 	 * Method createBadProperty.
-	 * @param maxCount int
+	 * @param multiValue boolean
 	 * @return PropertyDescriptor
 	 */
 	protected PropertyDescriptor createBadProperty(boolean multiValue) {
