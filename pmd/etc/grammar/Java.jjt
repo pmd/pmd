@@ -2066,7 +2066,7 @@ void AnnotationTypeMemberDeclaration():
 {
  modifiers = Modifiers()
  (
-   LOOKAHEAD( Type() <IDENTIFIER> "(" )   Type() <IDENTIFIER> "(" ")"   [ DefaultValue() ] ";"
+   LOOKAHEAD(3) AnnotationMethodDeclaration(modifiers)
   |
    ClassOrInterfaceDeclaration(modifiers)
   |
@@ -2078,6 +2078,18 @@ void AnnotationTypeMemberDeclaration():
  )
  |
    ( ";" )
+}
+
+void AnnotationMethodDeclaration(int modifiers):
+{
+  Token t;
+  jjtThis.setModifiers(modifiers);
+}
+{
+  Type() t=<IDENTIFIER> "(" ")"  [ DefaultValue() ] ";"
+  {
+    jjtThis.setImage(t.image);
+  }
 }
 
 void DefaultValue():
