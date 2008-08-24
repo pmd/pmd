@@ -13,12 +13,12 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public abstract class AbstractProperty implements PropertyDescriptor {
 
-	private String	name;
-	private String	description;
-	private Object 	defaultValue;
-	private boolean isRequired = false;
-	private boolean	isMultiValue = false;
-	private float	uiOrder;
+	private final String	name;
+	private final String	description;
+	private final Object 	defaultValue;
+	private final boolean 	isRequired;
+	private boolean			isMultiValue = false;
+	private final float		uiOrder;
 	
 	protected char	multiValueDelimiter = '|';
 	
@@ -34,9 +34,13 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 		name = checkNotEmpty(theName, "name");
 		description = checkNotEmpty(theDescription, "description");
 		defaultValue = theDefault;
+		isRequired = false;	// TODO - do we need this?
 		uiOrder = checkPositive(theUIOrder, "UI order");
 	}
 	
+	/**
+	 * @throws IllegalArgumentException
+	 */
 	private static String checkNotEmpty(String arg, String argId) {
 		
 		if (StringUtil.isEmpty(arg)) {
@@ -45,7 +49,10 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 		
 		return arg;
 	}
-	
+
+	/**
+	 * @throws IllegalArgumentException
+	 */
 	private static float checkPositive(float arg, String argId) {
 		if (arg < 0) {
 			throw new IllegalArgumentException("Property attribute " + argId + "' must be zero or positive");
@@ -97,6 +104,22 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 		return defaultValue;
 	}
 	
+	protected boolean defaultHasNullValue() {
+		
+		if (defaultValue == null) {
+			return true;
+		}
+		
+		if (isMultiValue && isArray(defaultValue)) {
+			Object[] defaults = (Object[])defaultValue;
+			for (int i=0; i<defaults.length; i++) {
+				if (defaults[i] == null) { return true; }
+			}
+		} 
+		
+		return false;
+	}
+	
 	/**
 	 * Method isMultiValue.
 	 * @return boolean
@@ -108,8 +131,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	
 	/**
 	 * Method isMultiValue.
-	 * @param flag boolean
-	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+	 * @param flag
 	 */
 	protected void isMultiValue(boolean flag) {
 		isMultiValue = flag;
@@ -212,7 +234,14 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 * @return String
 	 */
 	protected String valueErrorFor(Object value) {
-		// override as required
+		
+		if (value == null) {
+			if (defaultHasNullValue()) {
+				return null;
+			} else {
+				return "missing value";
+				}
+		}
 		return null;
 	}
 	

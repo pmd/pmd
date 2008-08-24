@@ -4,6 +4,9 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
 
 /**
+ * Evaluates the functionality of the DoubleProperty descriptor by testing its ability to catch creation
+ * errors (illegal args), flag out-of-range test values, and serialize/deserialize groups of double values
+ * onto/from a string buffer.
  * 
  * @author Brian Remedios
  */

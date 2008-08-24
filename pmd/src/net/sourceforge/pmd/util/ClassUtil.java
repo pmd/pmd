@@ -1,69 +1,112 @@
 package net.sourceforge.pmd.util;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Various class-related utility methods
+ * Various class-related utility methods.
  * 
  * @author Brian Remedios
  */
 public final class ClassUtil {
 
-    private ClassUtil() {
-    };
+	public static final Class[] EMPTY_CLASS_ARRAY = new Class[0];
 
-    @SuppressWarnings("PMD.AvoidUsingShortType")
-    private static final TypeMap PRIMITIVE_TYPE_NAMES = new TypeMap(new Class[] { int.class, byte.class, long.class,
-	    short.class, float.class, double.class, char.class, boolean.class, });
+	private ClassUtil() {
+	};
 
-    private static final TypeMap TYPES_BY_NAME = new TypeMap(new Class[] { Integer.class, Byte.class, Long.class,
-	    Short.class, Float.class, Double.class, Character.class, Boolean.class, BigDecimal.class, String.class,
-	    Object.class, });
+	@SuppressWarnings("PMD.AvoidUsingShortType")
+	private static final TypeMap PRIMITIVE_TYPE_NAMES = new TypeMap(
+			new Class[] { int.class, byte.class, long.class, short.class,
+					float.class, double.class, char.class, boolean.class, });
 
-    /**
-     * Returns the type(class) for the name specified
-     * or null if not found.
-     * 
-     * @param name String
-     * @return Class
-     */
-    public static Class<?> getPrimitiveTypeFor(String name) {
-	return PRIMITIVE_TYPE_NAMES.typeFor(name);
-    }
+	private static final TypeMap TYPES_BY_NAME = new TypeMap(new Class[] {
+			Integer.class, Byte.class, Long.class, Short.class, Float.class,
+			Double.class, Character.class, Boolean.class, BigDecimal.class,
+			String.class, Object.class, });
 
-    /**
-     * Attempt to determine the actual class given the short name.
-     * 
-     * @param shortName String
-     * @return Class
-     */
-    public static Class<?> getTypeFor(String shortName) {
-
-	Class<?> type = TYPES_BY_NAME.typeFor(shortName);
-	if (type != null) {
-	    return type;
+	/**
+	 * Returns the type(class) for the name specified or null if not found.
+	 * 
+	 * @param name String
+	 * @return Class
+	 */
+	public static Class<?> getPrimitiveTypeFor(String name) {
+		return PRIMITIVE_TYPE_NAMES.typeFor(name);
 	}
 
-	type = PRIMITIVE_TYPE_NAMES.typeFor(shortName);
-	if (type != null) {
-	    return type;
+	/**
+	 * Return a map of all the short names of classes we maintain mappings for.
+	 * The names are keyed by the classes themselves.
+	 * 
+	 * @return
+	 */
+	public static Map<Class, String> getClassShortNames() {
+
+		Map<Class, String> map = new HashMap<Class, String>();
+		map.putAll(PRIMITIVE_TYPE_NAMES.asInverseWithShortName());
+		map.putAll(TYPES_BY_NAME.asInverseWithShortName());
+		return map;
 	}
 
-	return CollectionUtil.getCollectionTypeFor(shortName);
-    }
+	/**
+	 * Attempt to determine the actual class given the short name.
+	 * 
+	 * @param shortName String
+	 * @return Class
+	 */
+	public static Class<?> getTypeFor(String shortName) {
 
-    /**
-     * Returns the abbreviated name of the type,
-     * without the package name
-     * 
-     * @param fullTypeName
-     * @return String
-     */
+		Class<?> type = TYPES_BY_NAME.typeFor(shortName);
+		if (type != null) {
+			return type;
+		}
 
-    public static String withoutPackageName(String fullTypeName) {
+		type = PRIMITIVE_TYPE_NAMES.typeFor(shortName);
+		if (type != null) {
+			return type;
+		}
 
-	int dotPos = fullTypeName.lastIndexOf('.');
+		return CollectionUtil.getCollectionTypeFor(shortName);
+	}
 
-	return dotPos > 0 ? fullTypeName.substring(dotPos + 1) : fullTypeName;
-    }
+	/**
+	 * Returns the abbreviated name of the type, without the package name
+	 * 
+	 * @param fullTypeName
+	 * @return String
+	 */
+
+	public static String withoutPackageName(String fullTypeName) {
+
+		int dotPos = fullTypeName.lastIndexOf('.');
+		return dotPos > 0 ? fullTypeName.substring(dotPos + 1) : fullTypeName;
+	}
+
+	/**
+	 * Attempts to return the specified method from the class provided but will
+	 * walk up its superclasses until it finds a match. Returns null if it
+	 * doesn't.
+	 * 
+	 * @param clasz		 Class
+	 * @param methodName String
+	 * @param paramTypes Class[]
+	 * @return Method
+	 */
+	public static Method methodFor(Class clasz, String methodName, Class[] paramTypes) {
+
+		Method method = null;
+		Class current = clasz;
+		while (current != Object.class) {
+			try {
+				method = current.getDeclaredMethod(methodName, paramTypes);
+			} catch (NoSuchMethodException ex) {
+				current = current.getSuperclass();
+			}
+			if (method != null) { return method; }
+		}
+		return null;
+	}
 }

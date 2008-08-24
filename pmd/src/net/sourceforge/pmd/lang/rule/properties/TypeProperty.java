@@ -4,13 +4,14 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.util.ClassUtil;
+import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a property that supports class types, even for primitive values!
  * 
  * @author Brian Remedios
  */
-public class TypeProperty extends StringProperty {
+public class TypeProperty extends AbstractPackagedProperty {
 
     private static final char DELIMITER = '|';
 
@@ -19,10 +20,11 @@ public class TypeProperty extends StringProperty {
      * @param theName String
      * @param theDescription String
      * @param theDefault Class
+     * @param legalPackageNames String[]
      * @param theUIOrder float
      */
-    public TypeProperty(String theName, String theDescription, Class<?> theDefault, float theUIOrder) {
-    	super(theName, theDescription, theDefault, theUIOrder, DELIMITER);
+    public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames, float theUIOrder) {
+    	super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
 
 		isMultiValue(false);
     }
@@ -32,14 +34,19 @@ public class TypeProperty extends StringProperty {
      * @param theName String
      * @param theDescription String
      * @param theDefaults Class[]
+	 * @param legalPackageNames String[]
      * @param theUIOrder float
      */
-    public TypeProperty(String theName, String theDescription, Class<?>[] theDefaults, float theUIOrder) {
-    	super(theName, theDescription, theDefaults, theUIOrder, DELIMITER);
+    public TypeProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames, float theUIOrder) {
+    	super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
 
 		isMultiValue(true);
     }
 
+    protected String packageNameOf(Object item) {
+    	return ((Class)item).getName();
+    }
+    
     /**
      * Method type.
      * @return Class
@@ -48,6 +55,10 @@ public class TypeProperty extends StringProperty {
     @Override
     public Class<?> type() {
     	return Class.class;
+    }
+    
+    protected String itemTypeName() {
+    	return "type";
     }
 
     /**
@@ -64,6 +75,7 @@ public class TypeProperty extends StringProperty {
      * Method classFrom.
      * @param className String
      * @return Class
+     * @throws IllegalArgumentException
      */
     private Class<?> classFrom(String className) {
 
@@ -92,24 +104,12 @@ public class TypeProperty extends StringProperty {
 		    return classFrom(valueString);
 		}
 	
-		String[] values = (String[]) super.valueFrom(valueString);
+		String[] values = StringUtil.substringsOf(valueString, DELIMITER);
 	
-		Class<?>[] classes = new Class[values.length];
+		Class<?>[] classes = new Class<?>[values.length];
 		for (int i = 0; i < values.length; i++) {
 		    classes[i] = classFrom(values[i]);
 		}
 		return classes;
-    }
-
-    /**
-     * Neutralize unwanted superclass functionality that will result 
-     * in a class cast exception.
-     * 
-     * @param value Object
-     * @return String
-     */
-    @Override
-    protected String valueErrorFor(Object value) {
-    	return null;
     }
 }

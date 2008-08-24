@@ -4,6 +4,9 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
 
 /**
+ * Evaluates the functionality of the FloatProperty descriptor by testing its ability to catch creation
+ * errors (illegal args), flag out-of-range test values, and serialize/deserialize groups of float values
+ * onto/from a string buffer.
  * 
  * @author Brian Remedios
  */

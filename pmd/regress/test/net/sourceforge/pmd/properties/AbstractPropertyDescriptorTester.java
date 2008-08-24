@@ -6,8 +6,11 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 import org.junit.Test;
+
 /**
- * 
+ * Base functionality for all concrete subclasses that evaluate type-specific property descriptors.
+ * Checks for error conditions during construction, error value detection, serialization, etc. 
+ *  
  * @author Brian Remedios
  */
 public abstract class AbstractPropertyDescriptorTester {
@@ -225,8 +228,4 @@ public abstract class AbstractPropertyDescriptorTester {
 		}
 		return results;
 	}
-
-//    public static junit.framework.Test suite() {
-//        return new junit.framework.JUnit4TestAdapter(AbstractPropertyDescriptorTester.class);
-//    }
 }

@@ -64,6 +64,12 @@ public class StringProperty extends AbstractProperty {
 		checkDefaults(theDefaultValue, aMultiValueDelimiter);
 	}
 	
+	/**
+	 * 
+	 * @param defaultValue
+	 * @param delim
+	 * @throws IllegalArgumentException
+	 */
 	private static void checkDefaults(Object defaultValue, char delim) {
 		
 		if (defaultValue == null) { return;	}

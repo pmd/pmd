@@ -34,8 +34,8 @@ class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
 	public static final PropertyDescriptor singleFloat	= new FloatProperty("singleFloat", "Property with a single float value", 9f, 10f, .9f, 5.0f);
 	public static final PropertyDescriptor multiFloat	= new FloatProperty("multiFloat", "Property with multiple float values", 0f, 5f, new float[] {1,2,3}, 6.0f);
 	
-	public static final PropertyDescriptor singleType	= new TypeProperty("singleType", "Property with a single type value", String.class, 5.0f);
-	public static final PropertyDescriptor multiType	= new TypeProperty("multiType", "Property with multiple type values", new Class[] {Integer.class, Object.class}, 6.0f);
+	public static final PropertyDescriptor singleType	= new TypeProperty("singleType", "Property with a single type value", String.class, new String[] { "java.lang" }, 5.0f);
+	public static final PropertyDescriptor multiType	= new TypeProperty("multiType", "Property with multiple type values", new Class[] {Integer.class, Object.class}, new String[] { "java.lang" }, 6.0f);
 
 	public static final PropertyDescriptor enumType			= new EnumeratedProperty<Class>("enumType", "Property with a enumerated choices", new String[] {"String", "Object"}, new Class[] {String.class, Object.class}, 1, 5.0f);
 	public static final PropertyDescriptor multiEnumType	= new EnumeratedProperty<Class>("enumType", "Property with a enumerated choices", new String[] {"String", "Object"}, new Class[] {String.class, Object.class}, new int[] {0,1}, 5.0f);
