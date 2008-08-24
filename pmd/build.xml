@@ -442,6 +442,7 @@
 		<delete file="src/net/sourceforge/pmd/lang/java/ast/JavaParserConstants.java" />
 		<delete file="src/net/sourceforge/pmd/lang/java/ast/JavaParserTreeConstants.java" />
 		<delete file="src/net/sourceforge/pmd/lang/java/ast/JavaParserTokenManager.java" />
+		<delete file="src/net/sourceforge/pmd/lang/java/ast/Token.java" />
 		<delete file="src/net/sourceforge/pmd/lang/java/ast/TokenMgrError.java" />
 		<delete file="src/net/sourceforge/pmd/lang/java/ast/ParseException.java" />
 		<jjtree target="etc/grammar/Java.jjt" outputdirectory="src/net/sourceforge/pmd/lang/java/ast" javacchome="${javacc-home.path}" />
@@ -462,6 +463,27 @@
 
 public class]]></replacevalue>
 		</replace>
+		<replace file="src/net/sourceforge/pmd/lang/java/ast/Token.java">
+			<replacetoken><![CDATA[       default : return new Token(ofKind, image);
+     }
+  }
+]]></replacetoken>
+			<replacevalue><![CDATA[       case JavaParserConstants.RUNSIGNEDSHIFT :
+       case JavaParserConstants.RSIGNEDSHIFT :
+       case JavaParserConstants.GT:
+         return new GTToken(ofKind, image);
+       default : return new Token(ofKind, image);
+     }
+  }
+
+  public static final class GTToken extends Token {
+     public int realKind = JavaParserConstants.GT;
+     public GTToken(int ofKind, String image) {
+        super(ofKind, image);
+     }
+  }
+]]></replacevalue>
+		</replace>
 	</target>
 
 	<target name="jspjjtree" description="Generates the JSP parser and AST source filesr">
@@ -470,6 +492,7 @@ public class]]></replacevalue>
 		<delete file="src/net/sourceforge/pmd/lang/jsp/ast/JspParserConstants.java" />
 		<delete file="src/net/sourceforge/pmd/lang/jsp/ast/JspParserTreeConstants.java" />
 		<delete file="src/net/sourceforge/pmd/lang/jsp/ast/JspParserTokenManager.java" />
+		<delete file="src/net/sourceforge/pmd/lang/jsp/ast/Token.java" />
 		<delete file="src/net/sourceforge/pmd/lang/jsp/ast/TokenMgrError.java" />
 		<delete file="src/net/sourceforge/pmd/lang/jsp/ast/ParseException.java" />
 		<jjtree target="etc/grammar/JspParser.jjt" outputdirectory="src/net/sourceforge/pmd/lang/jsp/ast/" javacchome="${javacc-home.path}" />
