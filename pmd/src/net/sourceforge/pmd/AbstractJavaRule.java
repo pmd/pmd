@@ -244,6 +244,10 @@ public abstract class AbstractJavaRule extends CommonAbstractRule implements
 		return visit((SimpleJavaNode)node, data);
 	}
 
+	public Object visit(ASTAnnotationMethodDeclaration node, Object data) {
+		return visit((SimpleJavaNode)node, data);
+	}
+
 	public Object visit(ASTDefaultValue node, Object data) {
 		return visit((SimpleJavaNode)node, data);
 	}

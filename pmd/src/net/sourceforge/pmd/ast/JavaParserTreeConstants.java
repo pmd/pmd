@@ -110,7 +110,8 @@ public interface JavaParserTreeConstants
   public int JJTANNOTATIONTYPEDECLARATION = 104;
   public int JJTANNOTATIONTYPEBODY = 105;
   public int JJTANNOTATIONTYPEMEMBERDECLARATION = 106;
-  public int JJTDEFAULTVALUE = 107;
+  public int JJTANNOTATIONMETHODDECLARATION = 107;
+  public int JJTDEFAULTVALUE = 108;
 
 
   public String[] jjtNodeName = {
@@ -221,7 +222,8 @@ public interface JavaParserTreeConstants
     "AnnotationTypeDeclaration",
     "AnnotationTypeBody",
     "AnnotationTypeMemberDeclaration",
+    "AnnotationMethodDeclaration",
     "DefaultValue",
   };
 }
-/* JavaCC - OriginalChecksum=84dc535132ac2ef71223e2496178a69c (do not edit this line) */
+/* JavaCC - OriginalChecksum=820b9c854bfffdbd622ba16bbdc68ff2 (do not edit this line) */

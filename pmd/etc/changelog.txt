@@ -1,6 +1,7 @@
 ???? - 4.2.3:
 
 JavaCC generated artifacts updated to JavaCC 4.1d1.
+Java grammar enhanced to include AnnotationMethodDeclaration as parent node of method related children of AnnotationTypeMemberDeclaration
 Fixes for exclude-pattern
 Updates to RuleChain to honor RuleSet exclude-pattern
 Upgrading UselessOperationOnImmutable to detect more use cases, especially on String and fix false positives
