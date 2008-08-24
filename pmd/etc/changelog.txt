@@ -1,5 +1,6 @@
 ???? - 4.2.3:
 
+JavaCC generated artifacts updated to JavaCC 4.1d1.
 Fixes for exclude-pattern
 Updates to RuleChain to honor RuleSet exclude-pattern
 Upgrading UselessOperationOnImmutable to detect more use cases, especially on String and fix false positives

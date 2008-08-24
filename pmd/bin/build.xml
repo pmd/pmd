@@ -325,14 +325,28 @@
 		</junit>
 	</target>
 
-	<target name="jjtree" description="Generates the Java parser and AST source filesr">
+	<target name="alljavacc" description="Generates all JavaCC aspects within PMD" depends="javajjtree,jspjjtree,cppjavacc">
+	</target>
+
+	<target name="javajjtree" description="Generates the Java parser and AST source filesr">
 		<delete file="src/net/sourceforge/pmd/ast/Java.jj" />
 		<delete file="src/net/sourceforge/pmd/ast/JavaParser.java" />
 		<delete file="src/net/sourceforge/pmd/ast/JavaParserConstants.java" />
 		<delete file="src/net/sourceforge/pmd/ast/JavaParserTreeConstants.java" />
 		<delete file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" />
+		<delete file="src/net/sourceforge/pmd/ast/Token.java" />
+		<delete file="src/net/sourceforge/pmd/ast/TokenMgrError.java" />
+		<delete file="src/net/sourceforge/pmd/ast/ParseException.java" />
+		<delete file="src/net/sourceforge/pmd/ast/CharStream.java" />
+		<delete file="src/net/sourceforge/pmd/ast/JavaCharStream.java" />
 		<jjtree target="etc/grammar/Java.jjt" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="${javacc-home.path}" />
-		<javacc target="src/net/sourceforge/pmd/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="${javacc-home.path}" />
+
+		<!-- Generate ASCII w/ Unicode Escapes CharStream implementation -->
+		<javacc usercharstream="false" unicodeinput="false" javaunicodeescape="true" static="false" target="src/net/sourceforge/pmd/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="${javacc-home.path}" />
+		<replace file="src/net/sourceforge/pmd/ast/JavaCharStream.java" token="public class JavaCharStream" value="public class JavaCharStream implements CharStream" />
+
+		<!-- Ensure generated using CharStream interface -->
+		<javacc static="false" usercharstream="true" target="src/net/sourceforge/pmd/ast/Java.jj" outputdirectory="src/net/sourceforge/pmd/ast" javacchome="${javacc-home.path}" />
 		<delete file="src/net/sourceforge/pmd/ast/Java.jj" />
 		<replace file="src/net/sourceforge/pmd/ast/JavaParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/ast/JavaParser.java" token="throw new Error" value="throw new RuntimeException" />
@@ -341,21 +355,48 @@
 		<replace file="src/net/sourceforge/pmd/ast/ParseException.java" token="extends Exception" value="extends RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/ast/JavaParserVisitor.java" token="SimpleNode" value="SimpleJavaNode" />
+		<replace file="src/net/sourceforge/pmd/ast/Token.java">
+			<replacetoken><![CDATA[       default : return new Token(ofKind, image);
+     }
+  }
+]]></replacetoken>
+			<replacevalue><![CDATA[       case JavaParserConstants.RUNSIGNEDSHIFT :
+       case JavaParserConstants.RSIGNEDSHIFT :
+       case JavaParserConstants.GT:
+         return new GTToken(ofKind, image);
+       default : return new Token(ofKind, image);
+     }
+  }
+
+  public static final class GTToken extends Token {
+     public int realKind = JavaParserConstants.GT;
+     public GTToken(int ofKind, String image) {
+        super(ofKind, image);
+     }
+  }
+]]></replacevalue>
+		</replace>
 	</target>
 
 	<target name="jspjjtree" description="Generates the JSP parser and AST source filesr">
-		<delete file="src/net/sourceforge/pmd/ast/jsp/JspParser.jj" />
-		<delete file="src/net/sourceforge/pmd/ast/jsp/JspParser.java" />
-		<delete file="src/net/sourceforge/pmd/ast/jsp/JspParserConstants.java" />
-		<delete file="src/net/sourceforge/pmd/ast/jsp/JspParserTreeConstants.java" />
-		<delete file="src/net/sourceforge/pmd/ast/jsp/JspParserTokenManager.java" />
+		<delete file="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" />
+		<delete file="src/net/sourceforge/pmd/jsp/ast/JspParser.java" />
+		<delete file="src/net/sourceforge/pmd/jsp/ast/JspParserConstants.java" />
+		<delete file="src/net/sourceforge/pmd/jsp/ast/JspParserTreeConstants.java" />
+		<delete file="src/net/sourceforge/pmd/jsp/ast/JspParserTokenManager.java" />
+		<delete file="src/net/sourceforge/pmd/jsp/ast/Token.java" />
+		<delete file="src/net/sourceforge/pmd/jsp/ast/TokenMgrError.java" />
+		<delete file="src/net/sourceforge/pmd/jsp/ast/ParseException.java" />
+		<delete file="src/net/sourceforge/pmd/jsp/ast/CharStream.java" />
 		<jjtree target="etc/grammar/JspParser.jjt" outputdirectory="src/net/sourceforge/pmd/jsp/ast/" javacchome="${javacc-home.path}" />
-		<javacc target="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" outputdirectory="src/net/sourceforge/pmd/jsp/ast" javacchome="${javacc-home.path}" />
+		<!-- Ensure generated using CharStream interface -->
+		<javacc static="false" usercharstream="true" target="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" outputdirectory="src/net/sourceforge/pmd/jsp/ast" javacchome="${javacc-home.path}" />
+
 		<delete file="src/net/sourceforge/pmd/jsp/ast/JspParser.jj" />
 		<replace file="src/net/sourceforge/pmd/jsp/ast/JspParserTokenManager.java" token="throw new Error" value="throw new RuntimeException" />
 		<replace file="src/net/sourceforge/pmd/jsp/ast/JspParser.java" token="throw new Error" value="throw new RuntimeException" />
-		<replace file="src/net/sourceforge/pmd/jsp/ast/JspCharStream.java" token="throw new Error" value="throw new RuntimeException" />
-		<replace file="src/net/sourceforge/pmd/jsp/ast/ParseException.java" token="throw new Error" value="throw new RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/jsp/ast/ParseException.java" token="extends Exception" value="extends net.sourceforge.pmd.ast.ParseException" />
+		<replace file="src/net/sourceforge/pmd/jsp/ast/CharStream.java" token="public interface CharStream {" value="public interface CharStream extends net.sourceforge.pmd.ast.CharStream {" />
 		<replace file="src/net/sourceforge/pmd/jsp/ast/TokenMgrError.java" token="extends Error" value="extends RuntimeException" />
 	</target>
 
@@ -363,11 +404,19 @@
 		<delete>
 			<fileset dir="src/net/sourceforge/pmd/cpd/cppast">
 				<include name="*.java" />
-				<exclude name="TokenMgrError.java" /> <!-- TokenMgrError customized to report filename, so don't delete it -->
 			</fileset>
 		</delete>
-		<javacc target="etc/grammar/cpp.jj" outputdirectory="src/net/sourceforge/pmd/cpd/cppast" javacchome="${javacc-home.path}" />
+		<!-- In PMD pre-5.0, CPP uses a static parser without a CharStream interface -->
+		<javacc static="true"
+				usercharstream="false"
+				target="etc/grammar/cpp.jj"
+				outputdirectory="src/net/sourceforge/pmd/cpd/cppast"
+				javacchome="${javacc-home.path}" />
 		<replace file="src/net/sourceforge/pmd/cpd/cppast/ParseException.java" token="extends Exception" value="extends RuntimeException" />
+		<replace file="src/net/sourceforge/pmd/cpd/cppast/TokenMgrError.java">
+			<replacetoken><![CDATA["Lexical error at line "]]></replacetoken>
+			<replacevalue><![CDATA["Lexical error in file " + CPPParserTokenManager.getFileName() + " at line "]]></replacevalue>
+		</replace>
 	</target>
 
 	<target name="clean" depends="delete,compile,copy" description="Does a complete recompile" />
