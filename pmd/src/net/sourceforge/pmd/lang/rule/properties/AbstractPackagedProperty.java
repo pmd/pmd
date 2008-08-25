@@ -4,14 +4,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * Concrete subclasses manage items that reside within namespaces per the design of the Java language.
+ * Rule developers can limit the range of permissible items by specifying portions of their package
+ * names in the constructor. If the legalPackageNames value is set to null then no restrictions are
+ * made.
  * 
  * @author Brian Remedios
  */
 public abstract class AbstractPackagedProperty extends AbstractProperty {
 
 	private String[] legalPackageNames;
-	
-	protected static final char DELIMITER = '|';
 
 	/**
 	 * 
