@@ -8,7 +8,7 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a property that supports class types, even for primitive values!
- * 
+ *
  * @author Brian Remedios
  */
 public class TypeProperty extends AbstractPackagedProperty {
@@ -23,10 +23,11 @@ public class TypeProperty extends AbstractPackagedProperty {
      * @param legalPackageNames String[]
      * @param theUIOrder float
      */
-    public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames, float theUIOrder) {
-    	super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
+    public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
+            float theUIOrder) {
+        super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
 
-		isMultiValue(false);
+        isMultiValue(false);
     }
 
     /**
@@ -34,31 +35,33 @@ public class TypeProperty extends AbstractPackagedProperty {
      * @param theName String
      * @param theDescription String
      * @param theDefaults Class[]
-	 * @param legalPackageNames String[]
+     * @param legalPackageNames String[]
      * @param theUIOrder float
      */
-    public TypeProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames, float theUIOrder) {
-    	super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
+    public TypeProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames,
+            float theUIOrder) {
+        super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
 
-		isMultiValue(true);
+        isMultiValue(true);
     }
 
+    @Override
     protected String packageNameOf(Object item) {
-    	return ((Class)item).getName();
+        return ((Class) item).getName();
     }
-    
+
     /**
      * Method type.
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
-    @Override
     public Class<?> type() {
-    	return Class.class;
+        return Class.class;
     }
-    
+
+    @Override
     protected String itemTypeName() {
-    	return "type";
+        return "type";
     }
 
     /**
@@ -68,7 +71,7 @@ public class TypeProperty extends AbstractPackagedProperty {
      */
     @Override
     protected String asString(Object value) {
-    	return value == null ? "" : ((Class<?>) value).getName();
+        return value == null ? "" : ((Class<?>) value).getName();
     }
 
     /**
@@ -79,16 +82,16 @@ public class TypeProperty extends AbstractPackagedProperty {
      */
     private Class<?> classFrom(String className) {
 
-		Class<?> cls = ClassUtil.getTypeFor(className);
-		if (cls != null) {
-		    return cls;
-		}
-	
-		try {
-		    return Class.forName(className);
-		} catch (Exception ex) {
-		    throw new IllegalArgumentException(className);
-		}
+        Class<?> cls = ClassUtil.getTypeFor(className);
+        if (cls != null) {
+            return cls;
+        }
+
+        try {
+            return Class.forName(className);
+        } catch (Exception ex) {
+            throw new IllegalArgumentException(className);
+        }
     }
 
     /**
@@ -97,19 +100,18 @@ public class TypeProperty extends AbstractPackagedProperty {
      * @return Object
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
-    @Override
     public Object valueFrom(String valueString) {
 
-		if (!isMultiValue()) {
-		    return classFrom(valueString);
-		}
-	
-		String[] values = StringUtil.substringsOf(valueString, DELIMITER);
-	
-		Class<?>[] classes = new Class<?>[values.length];
-		for (int i = 0; i < values.length; i++) {
-		    classes[i] = classFrom(values[i]);
-		}
-		return classes;
+        if (!isMultiValue()) {
+            return classFrom(valueString);
+        }
+
+        String[] values = StringUtil.substringsOf(valueString, DELIMITER);
+
+        Class<?>[] classes = new Class<?>[values.length];
+        for (int i = 0; i < values.length; i++) {
+            classes[i] = classFrom(values[i]);
+        }
+        return classes;
     }
 }
