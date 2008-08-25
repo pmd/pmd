@@ -11,23 +11,29 @@ import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
+ * Defines a property type that can specify one or more methods to use as part of a rule.
+ * 
+ * Rule developers can limit the rules to those within designated packages per the 
+ * 'legalPackages' argument in the constructor which can be an array of partial
+ * package names, i.e., ["java.lang", "com.mycompany" ].
+ * 
  * @author Brian Remedios
  */
 public class MethodProperty extends AbstractPackagedProperty {
 
-	public static final char   CLASS_METHOD_DELIMITER = '#';
-	public static final char   METHOD_ARG_DELIMITER = ',';
-	public static final char[] METHOD_GROUP_DELIMITERS = new char[] { '(', ')' };
+	private static final char   CLASS_METHOD_DELIMITER = '#';
+	private static final char   METHOD_ARG_DELIMITER = ',';
+	private static final char[] METHOD_GROUP_DELIMITERS = new char[] { '(', ')' };
 
 	private static final Map<Class, String> TYPE_SHORTCUTS = ClassUtil.getClassShortNames();
 	
-	private static String shortestNameFor(Class cls) {		
+	private static String shortestNameFor(Class<?> cls) {		
 		String compactName = TYPE_SHORTCUTS.get(cls);
 		return compactName == null ? cls.getName() : compactName;
 	}
 	
 	/**
-	 * @param method
+	 * @param methodpublic
 	 * @return
 	 */
 	public static String asStringFor(Method method) {
@@ -47,9 +53,9 @@ public class MethodProperty extends AbstractPackagedProperty {
 		return value == null ? "" : asStringFor((Method)value);
 	}
 	
-	private static void serializedTypeIdOn(Class type, StringBuilder sb) {
+	private static void serializedTypeIdOn(Class<?> type, StringBuilder sb) {
 		
-		Class arrayType = type.getComponentType();
+		Class<?> arrayType = type.getComponentType();
 		if (arrayType == null) {
 			sb.append(shortestNameFor(type));
 			return;
@@ -65,7 +71,7 @@ public class MethodProperty extends AbstractPackagedProperty {
 	 */
 	public static void asStringOn(Method method, StringBuilder sb) {
 		
-		Class clazz = method.getDeclaringClass();
+		Class<?> clazz = method.getDeclaringClass();
 		
 		sb.append(shortestNameFor(clazz) );
 		sb.append(CLASS_METHOD_DELIMITER);
@@ -73,7 +79,7 @@ public class MethodProperty extends AbstractPackagedProperty {
 		
 		sb.append(METHOD_GROUP_DELIMITERS[0]);
 		
-		Class[] argTypes = method.getParameterTypes();
+		Class<?>[] argTypes = method.getParameterTypes();
 		if (argTypes.length == 0) {			
 			sb.append(METHOD_GROUP_DELIMITERS[1]);
 			return; 
@@ -88,9 +94,9 @@ public class MethodProperty extends AbstractPackagedProperty {
 	}
 	
 	
-	private static Class typeFor(String typeName) {
+	private static Class<?> typeFor(String typeName) {
 		
-		Class type = null;
+		Class<?> type = null;
 		
 		if (typeName.endsWith("[]")) {
 			String arrayTypeName = typeName.substring(0, typeName.length()-2);
@@ -139,7 +145,7 @@ public class MethodProperty extends AbstractPackagedProperty {
 		if (delimPos0 < 0) { return null; }
 		
 		String className = methodNameAndArgTypes.substring(0, delimPos0);
-		Class type = ClassUtil.getTypeFor(className);
+		Class<?> type = ClassUtil.getTypeFor(className);
 		if (type == null) { return null; }
 	
 		int delimPos1 = methodNameAndArgTypes.indexOf(METHOD_GROUP_DELIMITERS[0]);
@@ -160,7 +166,7 @@ public class MethodProperty extends AbstractPackagedProperty {
 		}	// no arg(s)
 		
 		String[] argTypeNames = StringUtil.substringsOf(argTypesStr, methodArgDelimiter);
-		Class[] argTypes = new Class[argTypeNames.length];
+		Class<?>[] argTypes = new Class[argTypeNames.length];
 		for (int i=0; i<argTypes.length; i++) {
 			argTypes[i] = typeFor(argTypeNames[i]);
 		}
