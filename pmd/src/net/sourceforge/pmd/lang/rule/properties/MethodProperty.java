@@ -21,9 +21,9 @@ import net.sourceforge.pmd.util.StringUtil;
  */
 public class MethodProperty extends AbstractPackagedProperty {
 
-	private static final char   CLASS_METHOD_DELIMITER = '#';
-	private static final char   METHOD_ARG_DELIMITER = ',';
-	private static final char[] METHOD_GROUP_DELIMITERS = new char[] { '(', ')' };
+	public static final char   CLASS_METHOD_DELIMITER = '#';
+	public static final char   METHOD_ARG_DELIMITER = ',';
+	public static final char[] METHOD_GROUP_DELIMITERS = new char[] { '(', ')' };
 
 	private static final Map<Class, String> TYPE_SHORTCUTS = ClassUtil.getClassShortNames();
 	
