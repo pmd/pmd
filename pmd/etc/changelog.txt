@@ -364,6 +364,7 @@ Optimizations and false positive fixes in PreserveStackTrace
 SingularField now checks for multiple fields in the same declaration
 Java grammar enhanced to include AnnotationMethodDeclaration as parent node of method related children of AnnotationTypeMemberDeclaration
 JavaCC generated artifacts updated to JavaCC 4.1d1.
+All comment types are now stored in ASTCompilationUnit, not just formal ones
 
 New rules:
 

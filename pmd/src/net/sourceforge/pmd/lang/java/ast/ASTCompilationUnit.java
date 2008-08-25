@@ -21,14 +21,14 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
         super(p, id);
     }
 
-    private List<Token> formalComments;
+    private List<Comment> comments;
 
-    public List<Token> getFormalComments() {
-        return formalComments;
+    public List<Comment> getComments() {
+        return comments;
     }
 
-    public void setFormalComments(List<Token> formalComments) {
-        this.formalComments = formalComments;
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     /**
@@ -44,15 +44,15 @@ public class ASTCompilationUnit extends AbstractJavaTypeNode implements RootNode
     }
 
     public ASTPackageDeclaration getPackageDeclaration() {
-	Node n = jjtGetChild(0);
-	return n instanceof ASTPackageDeclaration?(ASTPackageDeclaration)n:null;
+        Node n = jjtGetChild(0);
+        return n instanceof ASTPackageDeclaration ? (ASTPackageDeclaration) n : null;
     }
 
     public ClassTypeResolver getClassTypeResolver() {
-    	return classTypeResolver;
+        return classTypeResolver;
     }
 
     public void setClassTypeResolver(ClassTypeResolver classTypeResolver) {
-    	this.classTypeResolver = classTypeResolver;
+        this.classTypeResolver = classTypeResolver;
     }
 }

@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.lang.java.rule.imports;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,8 +13,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
+import net.sourceforge.pmd.lang.java.ast.Comment;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
-import net.sourceforge.pmd.lang.java.ast.Token;
+import net.sourceforge.pmd.lang.java.ast.FormalComment;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.ImportWrapper;
 
@@ -23,10 +23,11 @@ public class UnusedImportsRule extends AbstractJavaRule {
 
     protected Set<ImportWrapper> imports = new HashSet<ImportWrapper>();
 
+    @Override
     public Object visit(ASTCompilationUnit node, Object data) {
         imports.clear();
         super.visit(node, data);
-        visitFormalComments(node);
+        visitComments(node);
         for (ImportWrapper wrapper : imports) {
             addViolation(data, wrapper.getNode(), wrapper.getFullName());
         }
@@ -52,14 +53,16 @@ public class UnusedImportsRule extends AbstractJavaRule {
 
     private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN };
 
-    private void visitFormalComments(ASTCompilationUnit node) {
+    private void visitComments(ASTCompilationUnit node) {
         if (imports.isEmpty()) {
             return;
         }
-        List<Token> formals = node.getFormalComments();
-        for (Token formal: formals) {
+        for (Comment comment: node.getComments()) {
+            if (!(comment instanceof FormalComment)) {
+                continue;
+            }
             for (Pattern p: PATTERNS) {
-                Matcher m = p.matcher(formal.image);
+                Matcher m = p.matcher(comment.getImage());
                 while (m.find()) {
                     String s = m.group(1);
                     ImportWrapper candidate = new ImportWrapper(s, s, new DummyJavaNode(-1));
@@ -75,6 +78,7 @@ public class UnusedImportsRule extends AbstractJavaRule {
         }
     }
 
+    @Override
     public Object visit(ASTImportDeclaration node, Object data) {
         if (!node.isImportOnDemand()) {
             ASTName importedType = (ASTName) node.jjtGetChild(0);
@@ -91,11 +95,13 @@ public class UnusedImportsRule extends AbstractJavaRule {
         return data;
     }
 
+    @Override
     public Object visit(ASTClassOrInterfaceType node, Object data) {
         check(node);
         return super.visit(node, data);
     }
 
+    @Override
     public Object visit(ASTName node, Object data) {
         check(node);
         return data;
