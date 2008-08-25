@@ -24,8 +24,6 @@ import org.junit.Test;
 public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 
 	private static final String[] methodSignatures = new String[] {
-		"String#isEmpty()",
-		"java.lang.String#isEmpty()", 
 		"String#indexOf(int)", 
 		"String#substring(int,int)",
 		"java.lang.String#substring(int,int)",
