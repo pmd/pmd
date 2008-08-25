@@ -80,4 +80,8 @@ public class TypeMapTest {
 		Assert.assertTrue(map.size() == 6);
 	}
 
+    public static junit.framework.Test suite() {
+        return new junit.framework.JUnit4TestAdapter(TypeMapTest.class);
+    }
+
 }
