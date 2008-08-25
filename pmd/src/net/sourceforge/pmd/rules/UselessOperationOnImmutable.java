@@ -1,18 +1,11 @@
 package net.sourceforge.pmd.rules;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.AbstractJavaRule;
-import net.sourceforge.pmd.AbstractRule;
-import net.sourceforge.pmd.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTLocalVariableDeclaration;
-import net.sourceforge.pmd.ast.ASTPrimaryExpression;
-import net.sourceforge.pmd.ast.ASTPrimarySuffix;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
 import net.sourceforge.pmd.ast.ASTType;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
