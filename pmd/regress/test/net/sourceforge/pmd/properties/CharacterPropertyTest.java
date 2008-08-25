@@ -6,7 +6,9 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
 
 /**
- * 
+ * Evaluates the functionality of the CharacterProperty descriptor by testing its ability to catch creation
+ * errors (illegal args), flag invalid characters, and serialize/deserialize any default values.
+ *  
  * @author Brian Remedios
  */
 public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
@@ -63,7 +65,9 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
 	}
 
 	/**
-	 * Method createProperty.
+	 * Creates a bad property that is missing either its name or description or includes a delimiter
+	 * in the set of legal values.
+	 * 
 	 * @param multiValue boolean
 	 * @return PropertyDescriptor
 	 */
@@ -72,20 +76,6 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
 		return multiValue ?
 			new CharacterProperty("testCharacter", "Test character property", new char[] {'a', 'b', 'c'}, 1.0f, delimiter) :
 			new CharacterProperty("", "Test character property", 'a', 1.0f);
-	}
-	
-	/**
-	 * Creates a bad property that is missing either its name or description or includes a delimiter
-	 * in the set of legal values.
-	 * 
-	 * @param maxCount int
-	 * @return PropertyDescriptor
-	 */
-	protected PropertyDescriptor createBAdProperty(int maxCount) {
-		
-		return maxCount == 1 ?
-			new CharacterProperty("", "Test character property", 'a', 1.0f) :
-			new CharacterProperty("testCharacter", "", new char[] {'a', 'b', delimiter, 'c'}, 1.0f, delimiter);
 	}
 	
     public static junit.framework.Test suite() {

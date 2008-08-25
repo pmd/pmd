@@ -7,6 +7,8 @@ import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 
 /**
+ * Evaluates the functionality of the EnumeratedProperty descriptor by testing its ability to catch creation
+ * errors (illegal args), flag invalid selections, and serialize/deserialize selection options.
  * 
  * @author Brian Remedios
  */

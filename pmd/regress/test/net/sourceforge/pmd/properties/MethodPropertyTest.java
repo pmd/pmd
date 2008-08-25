@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.rule.properties.MethodProperty;
+import net.sourceforge.pmd.util.ClassUtil;
 
 import org.junit.Test;
 
@@ -70,7 +71,8 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 			translatedMethod = MethodProperty.asStringFor(methods[i]);
 			assertTrue(
 					"Translated method does not match",
-					methodSignatures[i].equals(translatedMethod)
+					ClassUtil.withoutPackageName(methodSignatures[i]).equals(
+							ClassUtil.withoutPackageName(translatedMethod))
 					);
 		}
 	}
