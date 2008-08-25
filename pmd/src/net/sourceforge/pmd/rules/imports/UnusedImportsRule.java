@@ -8,13 +8,13 @@ import net.sourceforge.pmd.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.ast.ASTName;
+import net.sourceforge.pmd.ast.Comment;
+import net.sourceforge.pmd.ast.FormalComment;
 import net.sourceforge.pmd.ast.SimpleJavaNode;
 import net.sourceforge.pmd.ast.SimpleNode;
-import net.sourceforge.pmd.ast.Token;
 import net.sourceforge.pmd.rules.ImportWrapper;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,7 +26,7 @@ public class UnusedImportsRule extends AbstractRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         imports.clear();
         super.visit(node, data);
-        visitFormalComments(node);
+        visitComments(node);
         for (ImportWrapper wrapper : imports) {
             addViolation(data, wrapper.getNode(), wrapper.getFullName());
         }
@@ -52,14 +52,16 @@ public class UnusedImportsRule extends AbstractRule {
 
     private static final Pattern[] PATTERNS = { SEE_PATTERN, LINK_PATTERNS, VALUE_PATTERN };
 
-    private void visitFormalComments(ASTCompilationUnit node) {
+    private void visitComments(ASTCompilationUnit node) {
         if (imports.isEmpty()) {
             return;
         }
-        List<Token> formals = node.getFormalComments();
-        for (Token formal: formals) {
+        for (Comment comment: node.getComments()) {
+            if (!(comment instanceof FormalComment)) {
+                continue;
+            }
             for (Pattern p: PATTERNS) {
-                Matcher m = p.matcher(formal.image);
+                Matcher m = p.matcher(comment.getImage());
                 while (m.find()) {
                     String s = m.group(1);
                     ImportWrapper candidate = new ImportWrapper(s, s, new SimpleJavaNode(-1));

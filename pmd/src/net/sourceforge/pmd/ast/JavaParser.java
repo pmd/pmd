@@ -169,7 +169,7 @@ public class JavaParser/*@bgen(jjtree)*/implements JavaParserTreeConstants, Java
       jj_consume_token(0);
   jjtree.closeNodeScope(jjtn000, true);
   jjtc000 = false;
- jjtn000.setFormalComments(token_source.formalComments);
+ jjtn000.setComments(token_source.comments);
  {if (true) return jjtn000;}
     } catch (Throwable jjte000) {
     if (jjtc000) {
@@ -6258,16 +6258,6 @@ jjtn000.setModifiers(modifiers);
     finally { jj_save(50, xla); }
   }
 
-  private boolean jj_3R_233() {
-    if (jj_3R_254()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_267()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
   private boolean jj_3R_223() {
     if (jj_3R_233()) return true;
     Token xsp;
@@ -9338,6 +9328,16 @@ jjtn000.setModifiers(modifiers);
     if (jj_3R_88()) return true;
     if (jj_scan_token(COLON)) return true;
     if (jj_3R_139()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_233() {
+    if (jj_3R_254()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_267()) { jj_scanpos = xsp; break; }
+    }
     return false;
   }
 

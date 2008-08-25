@@ -6,7 +6,7 @@ import net.sourceforge.pmd.PMD;
 /** Token Manager. */
 public class JavaParserTokenManager implements JavaParserConstants
 {
-    protected List<Token> formalComments = new ArrayList<Token>();
+    protected List<Comment> comments = new ArrayList<Comment>();
 
     private Map<Integer, String> excludeMap = new HashMap<Integer, String>();
     private String excludeMarker = PMD.EXCLUDE_MARKER;
@@ -2052,10 +2052,15 @@ void SkipLexicalActions(Token matchedToken)
         if (startOfNOPMD != -1) {
             excludeMap.put(matchedToken.beginLine, matchedToken.image.substring(startOfNOPMD + excludeMarker.length()));
         }
+        comments.add(new SingleLineComment(matchedToken));
          break;
       case 9 :
          image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
-                            formalComments.add(matchedToken);
+                            comments.add(new FormalComment(matchedToken));
+         break;
+      case 10 :
+         image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
+                                comments.add(new MultiLineComment(matchedToken));
          break;
       default :
          break;
