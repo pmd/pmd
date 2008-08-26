@@ -232,6 +232,20 @@ public Object clone() throws CloneNotSupportedException {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+clone method with arguments should not be ignored
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo extends Bar
+{
+public Object clone(Object o) throws CloneNotSupportedException {
+	return super.clone(o);
+}
+}
+     ]]></code>
+    </test-code>
     <test-code regressionTest="false">
         <description>
         	<![CDATA[
