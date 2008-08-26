@@ -97,7 +97,7 @@ public class UselessOverridingMethod extends AbstractRule {
 		try
 		{
 			List parameters = node.findChildNodesWithXPath("./MethodDeclarator/FormalParameters/*");
-			if ( parameters != null && parameters.size() < 0 ) {
+			if ( parameters != null && parameters.size() > 0 ) {
 				result = true;
 			}
 		} catch (JaxenException e) {
