@@ -51,7 +51,7 @@ public abstract class AbstractRule implements Rule {
     private List<String> ruleChainVisits = new ArrayList<String>();
 
     public Language getLanguage() {
-        return language;
+	return language;
     }
 
     public void setLanguage(Language language) {
@@ -59,31 +59,31 @@ public abstract class AbstractRule implements Rule {
 	    throw new UnsupportedOperationException("The Language for Rule class " + this.getClass().getName()
 		    + " is immutable and cannot be changed.");
 	}
-        this.language = language;
+	this.language = language;
     }
 
     public LanguageVersion getMinimumLanguageVersion() {
-        return minimumLanguageVersion;
+	return minimumLanguageVersion;
     }
 
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
-        this.minimumLanguageVersion = minimumLanguageVersion;
+	this.minimumLanguageVersion = minimumLanguageVersion;
     }
 
     public LanguageVersion getMaximumLanguageVersion() {
-        return maximumLanguageVersion;
+	return maximumLanguageVersion;
     }
 
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
-        this.maximumLanguageVersion = maximumLanguageVersion;
+	this.maximumLanguageVersion = maximumLanguageVersion;
     }
 
     public boolean isDeprecated() {
-        return deprecated;
+	return deprecated;
     }
 
     public void setDeprecated(boolean deprecated) {
-        this.deprecated = deprecated;
+	this.deprecated = deprecated;
     }
 
     public String getName() {
@@ -200,22 +200,22 @@ public abstract class AbstractRule implements Rule {
      */
     @Deprecated
     public boolean getBooleanProperty(String name) {
-    	return Boolean.parseBoolean(getProperties().getProperty(name));
+	return Boolean.parseBoolean(getProperties().getProperty(name));
     }
 
     public boolean getBooleanProperty(PropertyDescriptor descriptor) {
 
-    	return ((Boolean) getProperty(descriptor)).booleanValue();
+	return ((Boolean) getProperty(descriptor)).booleanValue();
     }
 
     // TODO
     public boolean[] getBooleanProperties(PropertyDescriptor descriptor) {
-		Boolean[] values = (Boolean[]) getProperties(descriptor);
-		boolean[] bools = new boolean[values.length];
-		for (int i = 0; i < bools.length; i++) {
-		    bools[i] = values[i].booleanValue();
-		}
-		return bools;
+	Boolean[] values = (Boolean[]) getProperties(descriptor);
+	boolean[] bools = new boolean[values.length];
+	for (int i = 0; i < bools.length; i++) {
+	    bools[i] = values[i].booleanValue();
+	}
+	return bools;
     }
 
     /**
@@ -228,17 +228,17 @@ public abstract class AbstractRule implements Rule {
 
     public int getIntProperty(PropertyDescriptor descriptor) {
 
-    	return ((Number) getProperty(descriptor)).intValue();
+	return ((Number) getProperty(descriptor)).intValue();
     }
 
     // TODO
     public int[] getIntProperties(PropertyDescriptor descriptor) {
-		Number[] values = (Number[]) getProperties(descriptor);
-		int[] ints = new int[values.length];
-		for (int i = 0; i < ints.length; i++) {
-		    ints[i] = values[i].intValue();
-		}
-		return ints;
+	Number[] values = (Number[]) getProperties(descriptor);
+	int[] ints = new int[values.length];
+	for (int i = 0; i < ints.length; i++) {
+	    ints[i] = values[i].intValue();
+	}
+	return ints;
     }
 
     /**
@@ -246,21 +246,21 @@ public abstract class AbstractRule implements Rule {
      */
     @Deprecated
     public double getDoubleProperty(String name) {
-    	return Double.parseDouble(getProperties().getProperty(name));
+	return Double.parseDouble(getProperties().getProperty(name));
     }
 
     public double getDoubleProperty(PropertyDescriptor descriptor) {
-    	return ((Number) getProperty(descriptor)).doubleValue();
+	return ((Number) getProperty(descriptor)).doubleValue();
     }
 
     // TODO
     public double[] getDoubleProperties(PropertyDescriptor descriptor) {
-		Number[] values = (Number[]) getProperties(descriptor);
-		double[] doubles = new double[values.length];
-		for (int i = 0; i < doubles.length; i++) {
-		    doubles[i] = values[i].doubleValue();
-		}
-		return doubles;
+	Number[] values = (Number[]) getProperties(descriptor);
+	double[] doubles = new double[values.length];
+	for (int i = 0; i < doubles.length; i++) {
+	    doubles[i] = values[i].doubleValue();
+	}
+	return doubles;
     }
 
     /**
@@ -268,35 +268,35 @@ public abstract class AbstractRule implements Rule {
      */
     @Deprecated
     public String getStringProperty(String name) {
-    	return getProperties().getProperty(name);
+	return getProperties().getProperty(name);
     }
 
     public String getStringProperty(PropertyDescriptor descriptor) {
-    	return (String) getProperty(descriptor);
+	return (String) getProperty(descriptor);
     }
 
     public String[] getStringProperties(PropertyDescriptor descriptor) {
-    	return (String[]) getProperties(descriptor);
+	return (String[]) getProperties(descriptor);
     }
 
     public char getCharacterProperty(PropertyDescriptor descriptor) {
-    	return ((Character) getProperty(descriptor)).charValue();
+	return ((Character) getProperty(descriptor)).charValue();
     }
 
     public Class<?>[] getTypeProperties(PropertyDescriptor descriptor) {
-    	return (Class[]) getProperties(descriptor);
+	return (Class[]) getProperties(descriptor);
     }
 
     public Class<?> getTypeProperty(PropertyDescriptor descriptor) {
-    	return (Class<?>) getProperty(descriptor);
+	return (Class<?>) getProperty(descriptor);
     }
 
     private Object getProperty(PropertyDescriptor descriptor) {
-		if (descriptor.isMultiValue()) {
-		    propertyGetError(descriptor, true);
-		}
-		String rawValue = getProperties().getProperty(descriptor.name());
-		return rawValue == null || rawValue.length() == 0 ? descriptor.defaultValue() : descriptor.valueFrom(rawValue);
+	if (descriptor.isMultiValue()) {
+	    propertyGetError(descriptor, true);
+	}
+	String rawValue = getProperties().getProperty(descriptor.name());
+	return rawValue == null || rawValue.length() == 0 ? descriptor.defaultValue() : descriptor.valueFrom(rawValue);
     }
 
     public void setProperty(PropertyDescriptor descriptor, Object value) {
@@ -307,19 +307,19 @@ public abstract class AbstractRule implements Rule {
     }
 
     private Object[] getProperties(PropertyDescriptor descriptor) {
-		if (!descriptor.isMultiValue()) {
-		    propertyGetError(descriptor, false);
-		}
-		String rawValue = getProperties().getProperty(descriptor.name());
-		return rawValue == null || rawValue.length() == 0 ? (Object[]) descriptor.defaultValue()
-			: (Object[]) descriptor.valueFrom(rawValue);
+	if (!descriptor.isMultiValue()) {
+	    propertyGetError(descriptor, false);
+	}
+	String rawValue = getProperties().getProperty(descriptor.name());
+	return rawValue == null || rawValue.length() == 0 ? (Object[]) descriptor.defaultValue()
+		: (Object[]) descriptor.valueFrom(rawValue);
     }
 
-	public void setProperties(PropertyDescriptor descriptor, Object[] values) {
-		if (!descriptor.isMultiValue()) {
-		    propertySetError(descriptor, false);
-		}
-		getProperties().setProperty(descriptor.name(), descriptor.asDelimitedString(values));
+    public void setProperties(PropertyDescriptor descriptor, Object[] values) {
+	if (!descriptor.isMultiValue()) {
+	    propertySetError(descriptor, false);
+	}
+	getProperties().setProperty(descriptor.name(), descriptor.asDelimitedString(values));
     }
 
     /**
@@ -329,15 +329,15 @@ public abstract class AbstractRule implements Rule {
      * @return Map
      */
     protected Map<String, PropertyDescriptor> propertiesByName() {
-    	return Collections.emptyMap();
+	return Collections.emptyMap();
     }
 
     public PropertyDescriptor propertyDescriptorFor(String name) {
-		PropertyDescriptor descriptor = propertiesByName().get(name);
-		if (descriptor == null) {
-		    throw new IllegalArgumentException("Unknown property: " + name);
-		}
-		return descriptor;
+	PropertyDescriptor descriptor = propertiesByName().get(name);
+	if (descriptor == null) {
+	    throw new IllegalArgumentException("Unknown property: " + name);
+	}
+	return descriptor;
     }
 
     private void propertyGetError(PropertyDescriptor descriptor, boolean requestedSingleValue) {
@@ -486,34 +486,31 @@ public abstract class AbstractRule implements Rule {
     }
 
     public static Map<String, PropertyDescriptor> asFixedMap(PropertyDescriptor[] descriptors) {
-		Map<String, PropertyDescriptor> descriptorsByName = new HashMap<String, PropertyDescriptor>(descriptors.length);
-		for (PropertyDescriptor descriptor : descriptors) {
-		    descriptorsByName.put(descriptor.name(), descriptor);
-		}
-		return Collections.unmodifiableMap(descriptorsByName);
+	Map<String, PropertyDescriptor> descriptorsByName = new HashMap<String, PropertyDescriptor>(descriptors.length);
+	for (PropertyDescriptor descriptor : descriptors) {
+	    descriptorsByName.put(descriptor.name(), descriptor);
+	}
+	return Collections.unmodifiableMap(descriptorsByName);
     }
 
     public static Map<String, PropertyDescriptor> asFixedMap(PropertyDescriptor descriptor) {
-    	return asFixedMap(new PropertyDescriptor[] { descriptor });
+	return asFixedMap(new PropertyDescriptor[] { descriptor });
     }
-    
+
     public Map<PropertyDescriptor, Object> propertyValuesByDescriptor() {
-    	    	
-    	Map<String, PropertyDescriptor> propsByName = propertiesByName();
-    	if (propsByName.isEmpty()) {
-    		return PropertyDescriptor.EMPTY_VALUE_MAP;
-    	}
-    	
-    	Map<PropertyDescriptor, Object> valuesByDesc = new HashMap<PropertyDescriptor, Object>(propsByName.size());
-    	
-    	Iterator<PropertyDescriptor> iter = propsByName.values().iterator();
-    	while (iter.hasNext()) {
-    		PropertyDescriptor desc = iter.next();
-    		valuesByDesc.put(
-    			desc,
-    			desc.isMultiValue() ? getProperties(desc) : getProperty(desc)
-    			);
-    		}
-    	return valuesByDesc;
+
+	Map<String, PropertyDescriptor> propsByName = propertiesByName();
+	if (propsByName.isEmpty()) {
+	    return PropertyDescriptor.EMPTY_VALUE_MAP;
+	}
+
+	Map<PropertyDescriptor, Object> valuesByDesc = new HashMap<PropertyDescriptor, Object>(propsByName.size());
+
+	Iterator<PropertyDescriptor> iter = propsByName.values().iterator();
+	while (iter.hasNext()) {
+	    PropertyDescriptor desc = iter.next();
+	    valuesByDesc.put(desc, desc.isMultiValue() ? getProperties(desc) : getProperty(desc));
+	}
+	return valuesByDesc;
     }
 }
