@@ -39,6 +39,9 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	}
 	
 	/**
+	 * @param arg String
+	 * @param argId String
+	 * @return String
 	 * @throws IllegalArgumentException
 	 */
 	private static String checkNotEmpty(String arg, String argId) {
@@ -51,6 +54,9 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	}
 
 	/**
+	 * @param arg float
+	 * @param argId String
+	 * @return float
 	 * @throws IllegalArgumentException
 	 */
 	private static float checkPositive(float arg, String argId) {
@@ -104,6 +110,10 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 		return defaultValue;
 	}
 	
+	/**
+	 * Method defaultHasNullValue.
+	 * @return boolean
+	 */
 	protected boolean defaultHasNullValue() {
 		
 		if (defaultValue == null) {

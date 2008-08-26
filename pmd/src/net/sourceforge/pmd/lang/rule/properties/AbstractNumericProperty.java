@@ -48,6 +48,10 @@ public abstract class AbstractNumericProperty extends AbstractScalarProperty {
 		return upperLimit;
 	}
 	
+	/**
+	 * Method rangeString.
+	 * @return String
+	 */
 	public String rangeString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append('(').append(lowerLimit);

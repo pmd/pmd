@@ -82,8 +82,9 @@ public class FloatProperty extends AbstractNumericProperty {
 	}
 
 	/**
-	 * Creates an property value of the right type from a raw string.
-	 * 
+     * Creates and returns an array of the specified size for the
+	 * the Float type this class is responsible for.
+	 *
 	 * @param value String
 	 * @return Object
 	 */

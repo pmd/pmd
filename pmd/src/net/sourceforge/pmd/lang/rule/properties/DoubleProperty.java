@@ -15,6 +15,8 @@ public class DoubleProperty extends AbstractNumericProperty {
 	 * Constructor for DoubleProperty.
 	 * @param theName String
 	 * @param theDescription String
+	 * @param min double
+	 * @param max double
 	 * @param theDefault double
 	 * @param theUIOrder float
 	 * @throws IllegalArgumentException
@@ -29,6 +31,8 @@ public class DoubleProperty extends AbstractNumericProperty {
 	 * Constructor for DoubleProperty.
 	 * @param theName String
 	 * @param theDescription String
+	 * @param min double
+	 * @param max double
 	 * @param defaultValues boolean[]
 	 * @param theUIOrder float
 	 * @throws IllegalArgumentException
@@ -41,6 +45,8 @@ public class DoubleProperty extends AbstractNumericProperty {
 	 * Constructor for DoubleProperty.
 	 * @param theName String
 	 * @param theDescription String
+	 * @param min Double
+	 * @param max Double
 	 * @param defaultValues Double[]
 	 * @param theUIOrder float
 	 * @throws IllegalArgumentException
@@ -61,7 +67,8 @@ public class DoubleProperty extends AbstractNumericProperty {
 	}
 
 	/**
-	 * Method asDoubles.
+	 * Returns the primitive doubles in their wrapped form.
+	 * 
 	 * @param d double[]
 	 * @return Double[]
 	 */
@@ -74,7 +81,8 @@ public class DoubleProperty extends AbstractNumericProperty {
 	}
 
 	/**
-	 * Method createFrom.
+	 * Deserializes a string into its Double form.
+	 * 
 	 * @param value String
 	 * @return Object
 	 */
@@ -83,7 +91,9 @@ public class DoubleProperty extends AbstractNumericProperty {
 	}
 
 	/**
-	 * Method arrayFor.
+	 * Creates and returns an array of the specified size for the
+	 * the Double type this class is responsible for.
+	 * 
 	 * @param size int
 	 * @return Object[]
 	 */

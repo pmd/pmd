@@ -58,6 +58,12 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 		isMultiValue(choiceIndices.length > 1);
 	}
 	
+	/**
+	 * Method selectionsIn.
+	 * @param items String[]
+	 * @param selectionIndices int[]
+	 * @return String[]
+	 */
 	private static String[] selectionsIn(String[] items, int[] selectionIndices) {
 		
 		String[] selections = new String[selectionIndices.length];
@@ -80,6 +86,11 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 		return Object.class;
 	}
 
+	/**
+	 * Method nonLegalValueMsgFor.
+	 * @param value Object
+	 * @return String
+	 */
 	private String nonLegalValueMsgFor(Object value) {
 		return value + " is not a legal value";
 	}

@@ -28,6 +28,11 @@ public class MethodProperty extends AbstractPackagedProperty {
     private static final String ARRAY_FLAG = "[]";
     private static final Map<Class, String> TYPE_SHORTCUTS = ClassUtil.getClassShortNames();
 
+    /**
+     * Method shortestNameFor.
+     * @param cls Class<?>
+     * @return String
+     */
     private static String shortestNameFor(Class<?> cls) {
         String compactName = TYPE_SHORTCUTS.get(cls);
         return compactName == null ? cls.getName() : compactName;
@@ -58,6 +63,11 @@ public class MethodProperty extends AbstractPackagedProperty {
         return value == null ? "" : asStringFor((Method) value);
     }
 
+    /**
+     * Method serializedTypeIdOn.
+     * @param type Class<?>
+     * @param sb StringBuilder
+     */
     private static void serializedTypeIdOn(Class<?> type, StringBuilder sb) {
 
         Class<?> arrayType = type.getComponentType();
@@ -98,6 +108,11 @@ public class MethodProperty extends AbstractPackagedProperty {
         sb.append(METHOD_GROUP_DELIMITERS[1]);
     }
 
+    /**
+     * Method typeFor.
+     * @param typeName String
+     * @return Class<?>
+     */
     private static Class<?> typeFor(String typeName) {
 
         Class<?> type = null;
@@ -222,6 +237,11 @@ public class MethodProperty extends AbstractPackagedProperty {
         multiValueDelimiter(' ');
     }
 
+    /**
+     * Method packageNameOf.
+     * @param item Object
+     * @return String
+     */
     @Override
     protected String packageNameOf(Object item) {
 
@@ -229,6 +249,10 @@ public class MethodProperty extends AbstractPackagedProperty {
         return method.getDeclaringClass().getName() + '.' + method.getName();
     }
 
+    /**
+     * Method itemTypeName.
+     * @return String
+     */
     @Override
     protected String itemTypeName() {
         return "method";

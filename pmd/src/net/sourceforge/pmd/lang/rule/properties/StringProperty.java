@@ -7,7 +7,9 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a datatype that supports String values.
- * When capturing multiple values, all strings must be filtered by the delimiter character.
+ * 
+ * When capturing multiple values, all strings must be filtered to eliminate
+ * occurrences of the delimiter character.
  * 
  * @author Brian Remedios
  */
@@ -117,6 +119,10 @@ public class StringProperty extends AbstractProperty {
 		return value.indexOf(multiValueDelimiter) >= 0;
 	}
 	
+	/**
+	 * Method illegalCharMsg.
+	 * @return String
+	 */
 	private final String illegalCharMsg() {
 		return "Value cannot contain the '" + multiValueDelimiter + "' character";
 	}
@@ -140,6 +146,11 @@ public class StringProperty extends AbstractProperty {
 		return null;		
 	}
 	
+	/**
+	 * Method preferredRowCount.
+	 * @return int
+	 * @see net.sourceforge.pmd.PropertyDescriptor#preferredRowCount()
+	 */
 	public int preferredRowCount() {
 		return preferredRowCount;
 	}

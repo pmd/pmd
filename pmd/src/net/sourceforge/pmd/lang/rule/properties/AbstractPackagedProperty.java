@@ -78,6 +78,10 @@ public abstract class AbstractPackagedProperty extends AbstractProperty {
 		throw new IllegalArgumentException("Invalid items: " + nameSet);
 	}
 	
+	/**
+	 * Method itemTypeName.
+	 * @return String
+	 */
 	abstract protected String itemTypeName();
 	
 	/**
@@ -107,8 +111,17 @@ public abstract class AbstractPackagedProperty extends AbstractProperty {
 		return "Disallowed " + itemTypeName() + ": " + name;
 	}
 	
+	/**
+	 * Method packageNameOf.
+	 * @param item Object
+	 * @return String
+	 */
 	abstract protected String packageNameOf(Object item);
 	
+	/**
+	 * Method legalPackageNames.
+	 * @return String[]
+	 */
 	public String[] legalPackageNames() {
 		return legalPackageNames;
 	}

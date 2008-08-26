@@ -8,6 +8,8 @@ import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a property that supports class types, even for primitive values!
+ * 
+ * TODO - untested for array types
  *
  * @author Brian Remedios
  */
@@ -22,6 +24,7 @@ public class TypeProperty extends AbstractPackagedProperty {
      * @param theDefault Class
      * @param legalPackageNames String[]
      * @param theUIOrder float
+     * @throws IllegalArgumentException
      */
     public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
             float theUIOrder) {
@@ -37,6 +40,7 @@ public class TypeProperty extends AbstractPackagedProperty {
      * @param theDefaults Class[]
      * @param legalPackageNames String[]
      * @param theUIOrder float
+     * @throws IllegalArgumentException
      */
     public TypeProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames,
             float theUIOrder) {
@@ -45,6 +49,11 @@ public class TypeProperty extends AbstractPackagedProperty {
         isMultiValue(true);
     }
 
+    /**
+     * Method packageNameOf.
+     * @param item Object
+     * @return String
+     */
     @Override
     protected String packageNameOf(Object item) {
         return ((Class) item).getName();
@@ -59,6 +68,10 @@ public class TypeProperty extends AbstractPackagedProperty {
         return Class.class;
     }
 
+    /**
+     * Method itemTypeName.
+     * @return String
+     */
     @Override
     protected String itemTypeName() {
         return "type";
