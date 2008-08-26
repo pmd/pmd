@@ -9,12 +9,21 @@ import java.util.List;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.Report;
 
+/**
+ */
 public abstract class OnTheFlyRenderer extends AbstractRenderer {
 
     protected List<Report.ProcessingError> errors = new LinkedList<Report.ProcessingError>();
 
     protected List<Report.SuppressedViolation> suppressed = new LinkedList<Report.SuppressedViolation>();
 
+    /**
+     * Method render.
+     * @param writer Writer
+     * @param report Report
+     * @throws IOException
+     * @see net.sourceforge.pmd.renderers.Renderer#render(Writer, Report)
+     */
     public void render(Writer writer, Report report) throws IOException {
         setWriter(writer);
         start();
@@ -22,6 +31,12 @@ public abstract class OnTheFlyRenderer extends AbstractRenderer {
         end();
     }
 
+    /**
+     * Method renderFileReport.
+     * @param report Report
+     * @throws IOException
+     * @see net.sourceforge.pmd.renderers.Renderer#renderFileReport(Report)
+     */
     public void renderFileReport(Report report) throws IOException {
         Iterator<RuleViolation> violations = report.iterator();
         if (violations.hasNext()) {
@@ -42,10 +57,25 @@ public abstract class OnTheFlyRenderer extends AbstractRenderer {
         }
     }
 
+    /**
+     * Method start.
+     * @throws IOException
+     * @see net.sourceforge.pmd.renderers.Renderer#start()
+     */
     public abstract void start() throws IOException;
 
+    /**
+     * Method renderFileViolations.
+     * @param violations Iterator<RuleViolation>
+     * @throws IOException
+     */
     public abstract void renderFileViolations(Iterator<RuleViolation> violations) throws IOException;
 
+    /**
+     * Method end.
+     * @throws IOException
+     * @see net.sourceforge.pmd.renderers.Renderer#end()
+     */
     public abstract void end() throws IOException;
 
 }

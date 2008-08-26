@@ -13,21 +13,34 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+/**
+ */
 public class IDEAJRenderer extends OnTheFlyRenderer {
 
 	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
 	private static final String PATH_SEPARATOR = System.getProperty("path.separator");
 	
+    /**
+     */
     private static class SourcePath {
 
         private Set<String> paths = new HashSet<String>();
 
+        /**
+         * Constructor for SourcePath.
+         * @param sourcePathString String
+         */
         public SourcePath(String sourcePathString) {
             for (StringTokenizer st = new StringTokenizer(sourcePathString, PATH_SEPARATOR); st.hasMoreTokens();) {
                 paths.add(st.nextToken());
             }
         }
 
+        /**
+         * Method clipPath.
+         * @param fullFilename String
+         * @return String
+         */
         public String clipPath(String fullFilename) {
             for (String path: paths) {
                 if (fullFilename.startsWith(path)) {
@@ -40,12 +53,26 @@ public class IDEAJRenderer extends OnTheFlyRenderer {
 
     private String[] args;
 
+    /**
+     * Constructor for IDEAJRenderer.
+     * @param args String[]
+     */
     public IDEAJRenderer(String[] args) {
         this.args = args;
     }
 
+    /**
+     * Method start.
+     * @throws IOException
+     * @see net.sourceforge.pmd.renderers.Renderer#start()
+     */
     public void start() throws IOException {}
 
+    /**
+     * Method renderFileViolations.
+     * @param violations Iterator<RuleViolation>
+     * @throws IOException
+     */
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
         if (args[4].equals(".method")) {
@@ -60,8 +87,20 @@ public class IDEAJRenderer extends OnTheFlyRenderer {
         render(writer, violations, classAndMethodName, singleFileName);
     }
 
+    /**
+     * Method end.
+     * @throws IOException
+     * @see net.sourceforge.pmd.renderers.Renderer#end()
+     */
     public void end() throws IOException {}
 
+    /**
+     * Method render.
+     * @param writer Writer
+     * @param violations Iterator<RuleViolation>
+     * @param sourcePathString String
+     * @throws IOException
+     */
     private void render(Writer writer, Iterator<RuleViolation> violations, String sourcePathString) throws IOException {
         SourcePath sourcePath = new SourcePath(sourcePathString);
         StringBuffer buf = new StringBuffer();
@@ -75,6 +114,14 @@ public class IDEAJRenderer extends OnTheFlyRenderer {
         }
     }
 
+    /**
+     * Method render.
+     * @param writer Writer
+     * @param violations Iterator<RuleViolation>
+     * @param classAndMethod String
+     * @param file String
+     * @throws IOException
+     */
     private void render(Writer writer, Iterator<RuleViolation> violations, String classAndMethod, String file) throws IOException {
         StringBuffer buf = new StringBuffer();
         while (violations.hasNext()) {
@@ -86,12 +133,23 @@ public class IDEAJRenderer extends OnTheFlyRenderer {
         }
     }
 
+    /**
+     * Method getFullyQualifiedClassName.
+     * @param fileName String
+     * @param sourcePath SourcePath
+     * @return String
+     */
     private String getFullyQualifiedClassName(String fileName, SourcePath sourcePath) {
         String classNameWithSlashes = sourcePath.clipPath(fileName);
         String className = classNameWithSlashes.replace(FILE_SEPARATOR.charAt(0), '.');
         return className.substring(0, className.length() - 5);
     }
 
+    /**
+     * Method getSimpleFileName.
+     * @param fileName String
+     * @return String
+     */
     private String getSimpleFileName(String fileName) {
         return fileName.substring(fileName.lastIndexOf(FILE_SEPARATOR) + 1);
     }

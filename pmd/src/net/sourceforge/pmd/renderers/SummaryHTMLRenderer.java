@@ -7,8 +7,15 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
+/**
+ */
 public class SummaryHTMLRenderer extends AbstractRenderer {
     private String linePrefix,linkPrefix;
+    /**
+     * Constructor for SummaryHTMLRenderer.
+     * @param linkPrefix String
+     * @param linePrefix String
+     */
     public SummaryHTMLRenderer(String linkPrefix, String linePrefix) {
         this.linePrefix = linePrefix;
         this.linkPrefix = linkPrefix;
@@ -18,6 +25,13 @@ public class SummaryHTMLRenderer extends AbstractRenderer {
         this(null,null);
     }
 
+    /**
+     * Method render.
+     * @param writer Writer
+     * @param report Report
+     * @throws IOException
+     * @see net.sourceforge.pmd.renderers.Renderer#render(Writer, Report)
+     */
     public void render(Writer writer, Report report) throws IOException {
         writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
         renderSummary(writer, report);
@@ -27,6 +41,12 @@ public class SummaryHTMLRenderer extends AbstractRenderer {
         writer.write("</table></body></html>");
     }
 
+    /**
+     * Method renderSummary.
+     * @param writer Writer
+     * @param report Report
+     * @throws IOException
+     */
     public void renderSummary(Writer writer, Report report) throws IOException {
         StringBuffer buf = new StringBuffer(500);
         buf.append("<h2><center>Summary</h2></center>");

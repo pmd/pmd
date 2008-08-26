@@ -13,6 +13,8 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ */
 public class HTMLRenderer extends OnTheFlyRenderer {
 
     private final String linkPrefix;
@@ -21,6 +23,11 @@ public class HTMLRenderer extends OnTheFlyRenderer {
     private int violationCount = 1;
     boolean colorize = true;
 
+    /**
+     * Constructor for HTMLRenderer.
+     * @param linkPrefix String
+     * @param linePrefix String
+     */
     public HTMLRenderer(String linkPrefix, String linePrefix) {
         this.linkPrefix = linkPrefix;
         this.linePrefix = linePrefix;
@@ -31,6 +38,12 @@ public class HTMLRenderer extends OnTheFlyRenderer {
         this(null, null);
     }
 
+    /**
+     * Method renderBody.
+     * @param writer Writer
+     * @param report Report
+     * @throws IOException
+     */
     public void renderBody(Writer writer, Report report) throws IOException {
         writer.write("<center><h3>PMD report</h3></center>");
         writer.write("<center><h3>Problems found</h3></center>");
@@ -44,6 +57,11 @@ public class HTMLRenderer extends OnTheFlyRenderer {
         }
     }
 
+    /**
+     * Method start.
+     * @throws IOException
+     * @see net.sourceforge.pmd.renderers.Renderer#start()
+     */
     public void start() throws IOException {
         Writer writer = getWriter();
         writer.write("<html><head><title>PMD</title></head><body>" + PMD.EOL);
@@ -52,11 +70,21 @@ public class HTMLRenderer extends OnTheFlyRenderer {
         writer.write("<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>" + PMD.EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + PMD.EOL);
     }
 
+    /**
+     * Method renderFileViolations.
+     * @param violations Iterator<RuleViolation>
+     * @throws IOException
+     */
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         Writer writer = getWriter();
         glomRuleViolations(writer, violations);
     }
 
+    /**
+     * Method end.
+     * @throws IOException
+     * @see net.sourceforge.pmd.renderers.Renderer#end()
+     */
     public void end() throws IOException {
         Writer writer = getWriter();
         writer.write("</table>");
@@ -67,6 +95,12 @@ public class HTMLRenderer extends OnTheFlyRenderer {
         writer.write("</body></html>");
     }
 
+    /**
+     * Method glomRuleViolations.
+     * @param writer Writer
+     * @param violations Iterator<RuleViolation>
+     * @throws IOException
+     */
     private void glomRuleViolations(Writer writer, Iterator<RuleViolation> violations) throws IOException {
         StringBuffer buf = new StringBuffer(500);
         while (violations.hasNext()) {
@@ -94,6 +128,12 @@ public class HTMLRenderer extends OnTheFlyRenderer {
         }
     }
 
+    /**
+     * Method glomProcessingErrors.
+     * @param writer Writer
+     * @param errors List<Report.ProcessingError>
+     * @throws IOException
+     */
     private void glomProcessingErrors(Writer writer, List<Report.ProcessingError> errors) throws IOException {
         if (!errors.isEmpty()) {
             writer.write("<hr/>");
@@ -120,6 +160,12 @@ public class HTMLRenderer extends OnTheFlyRenderer {
         }
     }
 
+    /**
+     * Method glomSuppressions.
+     * @param writer Writer
+     * @param suppressed List<Report.SuppressedViolation>
+     * @throws IOException
+     */
     private void glomSuppressions(Writer writer, List<Report.SuppressedViolation> suppressed) throws IOException {
         if (!suppressed.isEmpty()) {
             writer.write("<hr/>");
@@ -148,6 +194,12 @@ public class HTMLRenderer extends OnTheFlyRenderer {
         }
     }
 
+    /**
+     * Method maybeWrap.
+     * @param filename String
+     * @param line String
+     * @return String
+     */
     private String maybeWrap(String filename, String line) {
         if (linkPrefix == null) {
             return filename;

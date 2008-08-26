@@ -11,10 +11,17 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
+/**
+ */
 public class CSVRenderer extends OnTheFlyRenderer {
 
     private int violationCount = 1;
 
+    /**
+     * Method start.
+     * @throws IOException
+     * @see net.sourceforge.pmd.renderers.Renderer#start()
+     */
     public void start() throws IOException {
         StringBuffer buf = new StringBuffer(300);
         quoteAndCommify(buf, "Problem");
@@ -29,6 +36,11 @@ public class CSVRenderer extends OnTheFlyRenderer {
         getWriter().write(buf.toString());
     }
 
+    /**
+     * Method renderFileViolations.
+     * @param violations Iterator<RuleViolation>
+     * @throws IOException
+     */
     public void renderFileViolations(Iterator<RuleViolation> violations) throws IOException {
         StringBuffer buf = new StringBuffer(300);
         Writer writer = getWriter();
@@ -51,13 +63,28 @@ public class CSVRenderer extends OnTheFlyRenderer {
         }
 	}
 
+    /**
+     * Method end.
+     * @throws IOException
+     * @see net.sourceforge.pmd.renderers.Renderer#end()
+     */
     public void end() throws IOException {
     }
 
+    /**
+     * Method quote.
+     * @param sb StringBuffer
+     * @param d String
+     */
     private void quote(StringBuffer sb, String d) {
         sb.append('"').append(d).append('"');
     }
 
+    /**
+     * Method quoteAndCommify.
+     * @param sb StringBuffer
+     * @param d String
+     */
     private void quoteAndCommify(StringBuffer sb, String d) {
     	quote(sb, d);
         sb.append(',');
