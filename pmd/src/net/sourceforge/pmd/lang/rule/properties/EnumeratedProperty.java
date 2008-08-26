@@ -11,7 +11,8 @@ import net.sourceforge.pmd.util.StringUtil;
 /**
  * Defines a datatype with a set of preset values of any type as held within a pair of
  * maps. While the values are not serialized out, the labels are and serve as keys to
- * obtain the values.
+ * obtain the values.  The choices() method provides the ordered selections to be used
+ * in an editor widget.
  * 
  * @author Brian Remedios
  */
@@ -19,6 +20,9 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 
 	private Map<String, E>	choicesByLabel;
 	private Map<E, String>	labelsByChoice;
+	
+	private String[]		orderedLabels;
+	private Object[][] 		choices;
 	
 	/**
 	 * Constructor for EnumeratedProperty.
@@ -49,6 +53,7 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 
 		choicesByLabel = CollectionUtil.mapFrom(theLabels, theChoices);
 		labelsByChoice = CollectionUtil.invertedMapFrom(choicesByLabel);
+		orderedLabels = theLabels;
 		
 		isMultiValue(choiceIndices.length > 1);
 	}
@@ -113,6 +118,27 @@ public class EnumeratedProperty<E> extends AbstractProperty {
 		    return result;
 		}
 		throw new IllegalArgumentException(label);
+	}
+	
+	/**
+	 * 
+	 * @return Object[][]
+	 * @see net.sourceforge.pmd.PropertyDescriptor#choices()
+	 */
+	public Object[][] choices() {
+	
+		if (choices != null) {
+			return choices;
+		}
+		
+		choices = new Object[orderedLabels.length][2];
+		
+		for (int i=0; i<choices.length; i++) {		
+			choices[i][0] = orderedLabels[i];
+			choices[i][1] = choicesByLabel.get(orderedLabels[i]);
+		}
+		orderedLabels = null;	// no longer needed
+		return choices;
 	}
 	
 	/**

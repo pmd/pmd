@@ -17,6 +17,7 @@ public class DoubleProperty extends AbstractNumericProperty {
 	 * @param theDescription String
 	 * @param theDefault double
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
 	public DoubleProperty(String theName, String theDescription, double min, double max, double theDefault, float theUIOrder) {
 		super(theName, theDescription, Double.valueOf(min), Double.valueOf(max), Double.valueOf(theDefault), theUIOrder);
@@ -30,6 +31,7 @@ public class DoubleProperty extends AbstractNumericProperty {
 	 * @param theDescription String
 	 * @param defaultValues boolean[]
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
 	public DoubleProperty(String theName, String theDescription, double min, double max, double[] defaultValues, float theUIOrder) {
 		this(theName, theDescription, Double.valueOf(min), Double.valueOf(max), asDoubles(defaultValues), theUIOrder);		
@@ -41,6 +43,7 @@ public class DoubleProperty extends AbstractNumericProperty {
 	 * @param theDescription String
 	 * @param defaultValues Double[]
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
 	public DoubleProperty(String theName, String theDescription, Double min, Double max, Double[] defaultValues, float theUIOrder) {
 		super(theName, theDescription, min, max, defaultValues, theUIOrder);

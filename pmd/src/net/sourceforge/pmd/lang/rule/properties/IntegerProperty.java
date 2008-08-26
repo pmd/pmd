@@ -16,6 +16,7 @@ public class IntegerProperty extends AbstractScalarProperty {
 	 * @param theDescription String
 	 * @param theDefault int
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
 	public IntegerProperty(String theName, String theDescription, int theDefault, float theUIOrder) {
 		super(theName, theDescription, theDefault, theUIOrder);
@@ -29,6 +30,7 @@ public class IntegerProperty extends AbstractScalarProperty {
 	 * @param theDescription String
 	 * @param theDefaults int[]
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
 	public IntegerProperty(String theName, String theDescription, int[] theDefaults, float theUIOrder) {
 		this(theName, theDescription, asIntegers(theDefaults), theUIOrder);
@@ -40,6 +42,7 @@ public class IntegerProperty extends AbstractScalarProperty {
 	 * @param theDescription String
 	 * @param theDefaults Integer[]
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
 	public IntegerProperty(String theName, String theDescription, Integer[] theDefaults, float theUIOrder) {
 		super(theName, theDescription, theDefaults, theUIOrder);

@@ -25,6 +25,7 @@ public class MethodProperty extends AbstractPackagedProperty {
     public static final char METHOD_ARG_DELIMITER = ',';
     public static final char[] METHOD_GROUP_DELIMITERS = new char[] { '(', ')' };
 
+    private static final String ARRAY_FLAG = "[]";
     private static final Map<Class, String> TYPE_SHORTCUTS = ClassUtil.getClassShortNames();
 
     private static String shortestNameFor(Class<?> cls) {
@@ -64,7 +65,7 @@ public class MethodProperty extends AbstractPackagedProperty {
             sb.append(shortestNameFor(type));
             return;
         }
-        sb.append(shortestNameFor(arrayType)).append("[]");
+        sb.append(shortestNameFor(arrayType)).append(ARRAY_FLAG);
     }
 
     /**
@@ -101,8 +102,8 @@ public class MethodProperty extends AbstractPackagedProperty {
 
         Class<?> type = null;
 
-        if (typeName.endsWith("[]")) {
-            String arrayTypeName = typeName.substring(0, typeName.length() - 2);
+        if (typeName.endsWith(ARRAY_FLAG)) {
+            String arrayTypeName = typeName.substring(0, typeName.length() - ARRAY_FLAG.length());
             type = typeFor(arrayTypeName); // recurse
             return Array.newInstance(type, 0).getClass(); // TODO is there a better way to get an array type?
         }
@@ -225,7 +226,6 @@ public class MethodProperty extends AbstractPackagedProperty {
     protected String packageNameOf(Object item) {
 
         final Method method = (Method) item;
-
         return method.getDeclaringClass().getName() + '.' + method.getName();
     }
 
