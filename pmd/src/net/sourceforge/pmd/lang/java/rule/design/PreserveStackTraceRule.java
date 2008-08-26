@@ -94,14 +94,13 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
     public Object visit(ASTVariableDeclarator node, Object data) {
 	// Search Catch stmt nodes for variable used to store improperly created throwable or exception
 	try {
-	    List<Node> nodes = node.findChildNodesWithXPath(FIND_THROWABLE_INSTANCE);
-	    if (!nodes.isEmpty()) {
+	    if (node.hasDescendantMatchingXPath(FIND_THROWABLE_INSTANCE)) {
 		String variableName = node.jjtGetChild(0).getImage(); // VariableDeclatorId
 		ASTCatchStatement catchStmt = node.getFirstParentOfType(ASTCatchStatement.class);
 
 		while (catchStmt != null) {
 		    List<Node> violations = catchStmt.findChildNodesWithXPath("//Expression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + variableName + "']");
-		    if (violations != null && !violations.isEmpty()) {
+		    if (!violations.isEmpty()) {
 			// If, after this allocation, the 'initCause' method is called, and the ex passed
 			// this is not a violation
 			if (!useInitCause(violations.get(0), catchStmt)) {
@@ -120,33 +119,18 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 	}
     }
 
-	private boolean useInitCause(Node node, ASTCatchStatement catchStmt) throws JaxenException {
+	private boolean useInitCause(Node node, ASTCatchStatement catchStmt) {
 		// In case of NPE...
 		if ( node != null && node.getImage() != null )
 		{
-			List <Node> nodes = catchStmt.findChildNodesWithXPath("descendant::StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + node.getImage() + ".initCause']");
-			if ( nodes != null && !nodes.isEmpty() )
-			{
-				return true;
-			}
+			return catchStmt.hasDescendantMatchingXPath("descendant::StatementExpression/PrimaryExpression/PrimaryPrefix/Name[@Image = '" + node.getImage() + ".initCause']");
 		}
 		return false;
 	}
 
-	private boolean isThrownExceptionOfType(ASTThrowStatement throwStatement,String type) {
-    	boolean status = false;
-    	try {
-			List<Node> results = throwStatement.findChildNodesWithXPath("Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[@Image = '" + type + "']");
-			// If we have a match, return true
-			if ( results != null && results.size() == 1 ) {
-				status = true;
-			}
-		} catch (JaxenException e) {
-			// XPath is valid, this should never happens !
-			e.printStackTrace();
-		}
-    	return status;
-	}
+    private boolean isThrownExceptionOfType(ASTThrowStatement throwStatement,String type) {
+        return throwStatement.hasDescendantMatchingXPath("Expression/PrimaryExpression/PrimaryPrefix/AllocationExpression/ClassOrInterfaceType[@Image = '" + type + "']");
+    }
 
 	private void ck(Object data, String target, ASTThrowStatement throwStatement,
                     ASTArgumentList args) {

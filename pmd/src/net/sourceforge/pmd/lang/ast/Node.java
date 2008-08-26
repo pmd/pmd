@@ -136,7 +136,22 @@ public interface Node {
      */
     <T> boolean hasDescendantOfType(Class<T> type);
 
+    /**
+     * Returns all the nodes matching the xpath expression.
+     *
+     * @param xpathString the expression to check
+     * @return List of all matching nodes. Returns an empty list if none found.
+     * @throws JaxenException
+     */
     List<? extends Node> findChildNodesWithXPath(String xpathString) throws JaxenException;
+
+    /**
+     * Checks whether at least one descendant matches the xpath expression.
+     *
+     * @param xpathString the expression to check
+     * @return true if there is a match
+     */
+    boolean hasDescendantMatchingXPath(String xpathString);
 
     // TODO Does this need to be here?
     Document getAsXml();

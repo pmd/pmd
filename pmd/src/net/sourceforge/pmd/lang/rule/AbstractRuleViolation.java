@@ -3,15 +3,12 @@
  */
 package net.sourceforge.pmd.lang.rule;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.ast.Node;
-
-import org.jaxen.JaxenException;
 
 public abstract class AbstractRuleViolation implements RuleViolation {
 
@@ -53,7 +50,7 @@ public abstract class AbstractRuleViolation implements RuleViolation {
 	this.className = "";
 	this.methodName = "";
 	this.variableName = "";
-	
+
 	// Apply Rule specific suppressions
 	if (node != null && rule != null) {
 	    // Regex
@@ -68,14 +65,7 @@ public abstract class AbstractRuleViolation implements RuleViolation {
 	    if (!suppressed) {
 		String xpath = rule.getStringProperty(Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY);
 		if (xpath != null) {
-		    try {
-			List<? extends Node> children = node.findChildNodesWithXPath(xpath);
-			if (children != null && !children.isEmpty()) {
-			    suppressed = true;
-			}
-		    } catch (JaxenException e) {
-			throw new RuntimeException("Violation suppression XPath failed: " + e.getLocalizedMessage(), e);
-		    }
+		    suppressed = node.hasDescendantMatchingXPath(xpath);
 		}
 	    }
 	}
@@ -129,6 +119,7 @@ public abstract class AbstractRuleViolation implements RuleViolation {
 	return variableName;
     }
 
+    @Override
     public String toString() {
 	return getFilename() + ":" + getRule() + ":" + getDescription() + ":" + beginLine;
     }

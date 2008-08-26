@@ -202,7 +202,7 @@ public class SimpleNodeTest extends ParserTst {
     @Test
     public void testParentMethods() throws Throwable {
     	ASTCompilationUnit u = parseJava14(TEST1);
-    	
+
     	ASTMethodDeclarator d = u.getFirstDescendantOfType(ASTMethodDeclarator.class);
     	assertSame("getFirstParentOfType ASTMethodDeclaration", d.jjtGetParent(), d.getFirstParentOfType(ASTMethodDeclaration.class));
     	assertNull("getFirstParentOfType ASTName", d.getFirstParentOfType(ASTName.class));
@@ -270,6 +270,9 @@ public class SimpleNodeTest extends ParserTst {
         List nodes = c.findChildNodesWithXPath("//FieldDeclaration");
         assertEquals(2, nodes.size());
         assertTrue(nodes.get(0) instanceof ASTFieldDeclaration);
+
+        assertTrue(c.hasDescendantMatchingXPath("//FieldDeclaration"));
+        assertFalse(c.hasDescendantMatchingXPath("//MethodDeclaration"));
     }
 
     private void verifyNode(Node node, int beginLine, int beginCol, int endLine, int endCol) {

@@ -27,8 +27,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
-import org.jaxen.JaxenException;
-
 /**
  * @author Romain Pelisse, bugfix for [ 1522517 ] False +: UselessOverridingMethod
  */
@@ -60,16 +58,8 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
         boolean result = false;
         ASTResultType type = node.getResultType();
         if (type != null) {
-            List<Node> results = null;
-            try {
-                results = type.findChildNodesWithXPath("./Type/ReferenceType/ClassOrInterfaceType[@Image = '"
+            result = type.hasDescendantMatchingXPath("./Type/ReferenceType/ClassOrInterfaceType[@Image = '"
                         + methodType + "']");
-            } catch (JaxenException e) {
-                e.printStackTrace();
-            }
-            if (results != null && !results.isEmpty()) {
-                result = true;
-            }
         }
         return result;
     }
@@ -92,16 +82,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRule {
     }
 
     private boolean hasArguments(ASTMethodDeclaration node) {
-        boolean result = false;
-        try {
-            List<Node> parameters = node.findChildNodesWithXPath("./MethodDeclarator/FormalParameters/*");
-            if (parameters != null && !parameters.isEmpty()) {
-                result = true;
-            }
-        } catch (JaxenException e) {
-            e.printStackTrace();
-        }
-        return result;
+        return node.hasDescendantMatchingXPath("./MethodDeclarator/FormalParameters/*");
     }
 
     @Override

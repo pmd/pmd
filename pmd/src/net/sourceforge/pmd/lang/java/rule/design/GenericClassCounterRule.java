@@ -19,8 +19,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.regex.RegexHelper;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
-import org.jaxen.JaxenException;
-
 /**
  * <p>A generic rule that can be configured to "count" classes of certain
  * type based on either their name (full name, prefix, suffixes anything can
@@ -78,7 +76,7 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 	private static String counterLabel;
 
     private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(
-    		new PropertyDescriptor[] { 
+    		new PropertyDescriptor[] {
     				NAME_MATCH_DESCRIPTOR, OPERAND_DESCRIPTOR,
     				TYPE_MATCH_DESCRIPTOR, THRESHOLD_DESCRIPTOR
     				});
@@ -87,8 +85,8 @@ public class GenericClassCounterRule extends AbstractJavaRule {
     protected Map<String, PropertyDescriptor> propertiesByName() {
         return PROPERTY_DESCRIPTORS_BY_NAME;
     }
-	
-	
+
+
 	private List<String> arrayAsList(String[] array) {
 		List<String> list = new ArrayList<String>(array.length);
 		int nbItem = 0;
@@ -168,27 +166,12 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		this.matches.add(node);
 	}
 
-    private boolean searchForAMatch(String matchType,Node node) {
-		boolean status = false;
-    	 String xpathQuery = "//ClassOrInterfaceDeclaration[" +
-							"(./ExtendsList/ClassOrInterfaceType[@Image = '" + matchType + "'])" +
-							"or" +
-							"(./ImplementsList/ClassOrInterfaceType[@Image = '" + matchType + "'])" +
-							"]";
-		try
-		{
-			List list = node.findChildNodesWithXPath(xpathQuery);
-			if ( list != null && !list.isEmpty() ) {
-				// We got a match !
-				status = true;
-			}
-		}
-		catch (JaxenException e) {
-			// Most likely, a should never happen exception...
-			e.printStackTrace();
-		}
-		return status;
-	}
+    private boolean searchForAMatch(String matchType, Node node) {
+        String xpathQuery = "//ClassOrInterfaceDeclaration[(./ExtendsList/ClassOrInterfaceType[@Image = '" + matchType
+                + "']) or (./ImplementsList/ClassOrInterfaceType[@Image = '" + matchType + "'])]";
+
+        return node.hasDescendantMatchingXPath(xpathQuery);
+    }
 
 	@Override
     public void end(RuleContext ctx) {

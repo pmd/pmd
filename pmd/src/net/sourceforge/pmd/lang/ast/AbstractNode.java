@@ -325,7 +325,21 @@ public abstract class AbstractNode implements Node {
 	return getFirstDescendantOfType(type) != null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List findChildNodesWithXPath(String xpathString) throws JaxenException {
-	return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
+        return new BaseXPath(xpathString, new DocumentNavigator()).selectNodes(this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasDescendantMatchingXPath(String xpathString) {
+        try {
+            return !findChildNodesWithXPath(xpathString).isEmpty();
+        } catch (JaxenException e) {
+            throw new RuntimeException("XPath expression " + xpathString + " failed: " + e.getLocalizedMessage(), e);
+        }
     }
 }
