@@ -6,7 +6,9 @@ import java.util.Map;
 
 /**
  * Property value descriptor that defines the use & requirements for setting
- * property values for use within PMD and any associated GUIs.
+ * property values for use within PMD and any associated GUIs. While concrete
+ * descriptor instances are static and immutable they provide validation, 
+ * serialization, and default values for any specific datatypes.
  * 
  * @author Brian Remedios
  * @version $Revision$

@@ -8,18 +8,20 @@ package net.sourceforge.pmd.lang.rule.properties;
  * 
  * @author Brian Remedios
  */
-public class IntegerProperty extends AbstractScalarProperty {
+public class IntegerProperty extends AbstractNumericProperty {
 
 	/**
 	 * Constructor for IntegerProperty.
 	 * @param theName String
 	 * @param theDescription String
+	 * @param min int
+	 * @param max int
 	 * @param theDefault int
 	 * @param theUIOrder float
 	 * @throws IllegalArgumentException
 	 */
-	public IntegerProperty(String theName, String theDescription, int theDefault, float theUIOrder) {
-		super(theName, theDescription, theDefault, theUIOrder);
+	public IntegerProperty(String theName, String theDescription, int min, int max, int theDefault, float theUIOrder) {
+		super(theName, theDescription, Integer.valueOf(min), Integer.valueOf(max), theDefault, theUIOrder);
 		
 		isMultiValue(false);
 	}
@@ -28,24 +30,28 @@ public class IntegerProperty extends AbstractScalarProperty {
 	 * Constructor for IntegerProperty.
 	 * @param theName String
 	 * @param theDescription String
+	 * @param min int
+	 * @param max int
 	 * @param theDefaults int[]
 	 * @param theUIOrder float
 	 * @throws IllegalArgumentException
 	 */
-	public IntegerProperty(String theName, String theDescription, int[] theDefaults, float theUIOrder) {
-		this(theName, theDescription, asIntegers(theDefaults), theUIOrder);
+	public IntegerProperty(String theName, String theDescription, int min, int max, int[] theDefaults, float theUIOrder) {
+		this(theName, theDescription, Integer.valueOf(min), Integer.valueOf(max), asIntegers(theDefaults), theUIOrder);
 	}
 	
 	/**
 	 * Constructor for IntegerProperty.
 	 * @param theName String
 	 * @param theDescription String
+	 * @param min Integer
+	 * @param max Integer
 	 * @param theDefaults Integer[]
 	 * @param theUIOrder float
 	 * @throws IllegalArgumentException
 	 */
-	public IntegerProperty(String theName, String theDescription, Integer[] theDefaults, float theUIOrder) {
-		super(theName, theDescription, theDefaults, theUIOrder);
+	public IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer[] theDefaults, float theUIOrder) {
+		super(theName, theDescription, min, max, theDefaults, theUIOrder);
 		
 		isMultiValue(true);
 	}

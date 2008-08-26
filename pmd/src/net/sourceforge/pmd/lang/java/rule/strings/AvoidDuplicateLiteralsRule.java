@@ -28,7 +28,7 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
     public static final PropertyDescriptor THRESHOLD = new IntegerProperty("threshold",
-	    "Number of duplicate literals reporting threshold", 4, 1.0f);
+	    "Number of duplicate literals reporting threshold", 1, 20, 4, 1.0f);
 
     public static final PropertyDescriptor SKIP_ANNOTATIONS = new BooleanProperty("skipAnnotations",
 	    "Skip literals within Annotations.", false, 2.0f);

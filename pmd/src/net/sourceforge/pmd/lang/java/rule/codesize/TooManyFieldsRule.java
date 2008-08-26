@@ -27,6 +27,7 @@ public class TooManyFieldsRule extends AbstractJavaRule {
     private static final PropertyDescriptor MAX_FIELDS_DESCRIPTOR = new IntegerProperty(
     		"maxfields",
     		"Maximum allowable fields per class",
+    		1, 300,
     		DEFAULT_MAXFIELDS,
     		1.0f
     		);

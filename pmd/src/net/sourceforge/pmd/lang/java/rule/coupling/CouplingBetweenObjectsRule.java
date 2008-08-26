@@ -39,7 +39,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     private Set<String> typesFoundSoFar;
 
     private static final PropertyDescriptor THRESHOLD_DESCRIPTOR = new IntegerProperty(
-    	"threshold", "Coupling threshold value", 2, 1.0f
+    	"threshold", "Coupling threshold value", 2, 10, 2, 1.0f
     	);
     
     private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(THRESHOLD_DESCRIPTOR);

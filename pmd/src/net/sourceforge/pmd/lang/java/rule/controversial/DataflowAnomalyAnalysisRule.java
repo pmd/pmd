@@ -36,11 +36,11 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     private int currentRuleViolationCount;
 
     private static final PropertyDescriptor MAX_PATH_DESCRIPTOR = new IntegerProperty(
-            "maxpaths", "Maximum number of paths per method", 5000, 1.0f
+            "maxpaths", "Maximum number of paths per method", 100, 8000, 5000, 1.0f
             );
 
     private static final PropertyDescriptor MAX_VIOLATIONS_DESCRIPTOR = new IntegerProperty(
-            "maxviolations", "Maximum number of anomalys per class", 1000, 2.0f
+            "maxviolations", "Maximum number of anomalys per class", 1, 2000, 1000, 2.0f
             );
 
     private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(

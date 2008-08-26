@@ -25,7 +25,7 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	protected Object createValue(int count) {
 
-		if (count == 1) return Integer.valueOf((int)(System.currentTimeMillis() % 100));
+		if (count == 1) return Integer.valueOf(randomInt(MIN, MAX));
 
 		Integer[] values = new Integer[count];
 		for (int i=0; i<values.length; i++) values[i] = (Integer)createValue(1);
@@ -62,8 +62,8 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createProperty(boolean multiValue) {
 
 		return multiValue ?
-			new IntegerProperty("testInteger", "Test integer property", new int[] {-1,0,1,2}, 1.0f) :
-			new IntegerProperty("testInteger", "Test integer property", 9, 1.0f);
+			new IntegerProperty("testInteger", "Test integer property", MIN, MAX, new int[] {MIN, MIN+1, MAX-1, MAX}, 1.0f) :
+			new IntegerProperty("testInteger", "Test integer property", MIN, MAX, MAX-1, 1.0f);
 		}
 
 	/**
@@ -74,8 +74,8 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
 		return multiValue ?
-			new IntegerProperty("testInteger", "", new int[] {-1,0,1,2}, 1.0f) :
-			new IntegerProperty("", "Test integer property", 9, 1.0f);
+			new IntegerProperty("testInteger", "", MIN, MAX, new int[] {MIN-1, MAX}, 1.0f) :
+			new IntegerProperty("", "Test integer property", MIN, MAX, MAX+1, 1.0f); 
 		}
 
     public static junit.framework.Test suite() {

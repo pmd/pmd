@@ -19,6 +19,7 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
     private static final PropertyDescriptor PROBLEM_DEPTH_DESCRIPTOR = new IntegerProperty(
     		"problemDepth", 
     		"Maximum allowable statement depth",
+    		1, 25,
     		0,
     		1.0f
     		);

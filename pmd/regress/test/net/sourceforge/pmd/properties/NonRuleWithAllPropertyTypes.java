@@ -22,8 +22,8 @@ class NonRuleWithAllPropertyTypes extends AbstractJavaRule {
 	public static final PropertyDescriptor singleStr	= new StringProperty("singleStr", "Property with a single string value", "hello world" , 3.0f);
 	public static final PropertyDescriptor multiStr		= new StringProperty("multiStr", "Property with multiple string values", new String[] {"hello", "world"}, 5.0f, '|');
 	
-	public static final PropertyDescriptor singleInt	= new IntegerProperty("singleInt", "Property with a single integer value", 8 , 3.0f);
-	public static final PropertyDescriptor multiInt		= new IntegerProperty("multiInt", "Property with multiple integer values", new int[] {1,2,3,4}, 5.0f);
+	public static final PropertyDescriptor singleInt	= new IntegerProperty("singleInt", "Property with a single integer value", 1, 10, 8 , 3.0f);
+	public static final PropertyDescriptor multiInt		= new IntegerProperty("multiInt", "Property with multiple integer values", 0, 10, new int[] {1,2,3,4}, 5.0f);
 	
 	public static final PropertyDescriptor singleBool	= new BooleanProperty("singleBool", "Property with a single boolean value", true, 6.0f);
 	public static final PropertyDescriptor multiBool	= new BooleanProperty("multiBool", "Property with multiple boolean values", new boolean[] { true, false}, 5.0f);

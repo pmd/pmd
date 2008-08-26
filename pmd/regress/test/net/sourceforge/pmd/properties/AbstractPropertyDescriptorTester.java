@@ -165,7 +165,7 @@ public abstract class AbstractPropertyDescriptorTester {
 	public static int randomInt(int min, int max) {
 		if (max < min) max = min;
 		int range = Math.abs(max - min);
-		int x = (int) ((range * Math.random()) + .5);
+		int x = (int) (range * Math.random());
 		return x + min;
 	}
 	

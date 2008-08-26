@@ -36,7 +36,7 @@ public class StatisticalRuleHelper {
 
     public static final PropertyDescriptor SIGMA_DESCRIPTOR = new DoubleProperty("sigma", "Sigma value", 0, 100, 0,	1.0f );
     public static final PropertyDescriptor MINIMUM_DESCRIPTOR = new DoubleProperty("minimum", "Minimum value", 0, 100,	0,	2.0f );
-    public static final PropertyDescriptor TOP_SCORE_DESCRIPTOR = new IntegerProperty("topscore", "Top score value",	0,	3.0f );
+    public static final PropertyDescriptor TOP_SCORE_DESCRIPTOR = new IntegerProperty("topscore", "Top score value", 1, 100, 0,	3.0f );
 
     private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = AbstractRule.asFixedMap( new PropertyDescriptor[] {
     	SIGMA_DESCRIPTOR, MINIMUM_DESCRIPTOR, TOP_SCORE_DESCRIPTOR

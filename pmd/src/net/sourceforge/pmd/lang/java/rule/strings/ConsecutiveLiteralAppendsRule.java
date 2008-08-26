@@ -68,7 +68,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 	BLOCK_PARENTS.add(ASTMethodDeclaration.class);
     }
 
-    private static final PropertyDescriptor THRESHOLD_DESCRIPTOR = new IntegerProperty("threshold", "Max consecutive .append() calls", 1, 1.0f);
+    private static final PropertyDescriptor THRESHOLD_DESCRIPTOR = new IntegerProperty("threshold", "Max consecutive .append() calls", 1, 10, 1, 1.0f);
 
     private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(THRESHOLD_DESCRIPTOR);
 
