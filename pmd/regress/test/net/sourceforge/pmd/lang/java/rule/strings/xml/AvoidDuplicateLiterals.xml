@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+duplicate literals in argument list
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+    buz("Howdy");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+literal int argument, ok for now
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz(2);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+duplicate literals in field decl
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String[] FOO = {"foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo", "foo"};
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+duplicate literals in annotations
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+public class Foo {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+duplicate literals in annotations, skipped
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="skipAnnotations">true</rule-property>
+        <code><![CDATA[
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+@SuppressWarnings("foo")
+public class Foo {
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+threshold property
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <rule-property name="threshold">2</rule-property>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy");
+    buz("Howdy");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+exception list property
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="exceptionlist">Howdy,foo</rule-property>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy"); buz("Howdy"); buz("Howdy"); buz("Howdy");
+    buz("foo"); buz("foo"); buz("foo"); buz("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+exception list and separator properties
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <rule-property name="exceptionlist">Howdy:foo</rule-property>
+        <rule-property name="separator">:</rule-property>
+        <code><![CDATA[
+public class Foo {
+ private void bar() {
+    buz("Howdy"); buz("Howdy"); buz("Howdy"); buz("Howdy");
+    buz("foo"); buz("foo"); buz("foo"); buz("foo");
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

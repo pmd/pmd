@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Basic test case : using native code
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code>
+        	<![CDATA[
+        	 public class SomeJNIClass {
+                        public SomeJNIClass() {
+                                System.loadLibrary("nativelib");
+                        }
+
+                        static {
+                             System.loadLibrary("nativelib");
+                        }
+
+                        public void invalidCallsInMethod() throws SecurityException, NoSuchMethodException {
+                                System.loadLibrary("nativelib");
+                        }
+                }
+		     ]]>
+		</code>
+    </test-code>
+</test-data>

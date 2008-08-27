@@ -19,8 +19,6 @@ TODO - Release blockers - Must implement before this release can be finished
      some logic.
    o Do we have a rule to style check for multiple declarations and chained
      assignments? (e.g. int a, b;  int a = b = x;)
-   o Need to refactor the regression test packages to reflect new packaging.
-   (assigned to rpelisse).
    o Remove the type resolution specific rules.  Merge these back into the
      standard rules.  In general, a Rule should use TR when it can, and fall
      back on non-TR approach otherwise.  No need for separate Rules for TR/non-TR.

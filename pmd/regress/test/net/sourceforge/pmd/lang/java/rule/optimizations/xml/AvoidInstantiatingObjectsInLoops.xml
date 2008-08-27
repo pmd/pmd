@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+TEST1
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+   for(;;) {
+       String a = new String();
+   }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST2
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+   while(true) {
+       String a = new String();
+   }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST3
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+   do{
+       String a = new String();
+   }while(true) ;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+TEST4
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+   do{
+       String a = new String();
+       String b = new String();
+   }while(true) ;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+throw new is OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+   for(;;) {
+       throw new Exception();
+   }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+return new in loop is OK
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public String test1() {
+   for(;;) {
+       return new String();
+   }
+ }
+}
+     ]]></code>
+    </test-code>
+    <!-- FIXME -->
+    <!--test-code>
+        <description><![CDATA[
+BUG [ 1114051 ] Semi-false positive for instantiating new object in loop
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void test1() {
+   while (true) {
+        try {
+       } catch (Exception e) {
+           url = new StringBuffer(); 
+           break; 
+       }
+  }
+ }
+}
+     ]]></code>
+    </test-code-->
+</test-data>

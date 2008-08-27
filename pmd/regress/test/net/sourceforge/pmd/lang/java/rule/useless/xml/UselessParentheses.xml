@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+failure case, return statement
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar() {
+      return (0);
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case, assignement
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar(int x) {
+      int y = (x + 5);
+      return y;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case, condition 1
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar(int x) {
+      if ((x % 2 == 0)) {
+         return x;
+      }
+      return 0;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+failure case, condition 2
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar(int x) {
+      if ((x % 2) == 0) {
+         return x;
+      }
+      return 0;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+useful parentheses, arithmetic
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar(int x) {
+      return (x + 2) * 5;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+useful parentheses, logic
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public int bar(int x) {
+      if ((x % 2 == 0) || (x % 2 == 1)) {
+         return x;
+      }
+      return -x;
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+typecast, ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public String bar(Object o) {
+	    return ((Exception) o).getMessage();
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+typecast with extra, bad
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   public String bar(Object o) {
+	    return (((Exception) o)).getMessage();
+   }
+}
+     ]]></code>
+    </test-code>
+    <test-code regressionTest="false">
+        <description><![CDATA[
+false negatives
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+   private boolean isSimpleReturn(Node node) {
+      return ( node instanceof ASTReturnStatement ) && ( node.jjtGetNumChildren() == 0 );
+    }
+    public String getLocalName() {
+        int colonIndex = name.indexOf(':');
+        return (colonIndex >= 0)
+                ? name.substring(colonIndex + 1)
+                : name;
+    }
+    public void viewerModelChanged(ViewerModelEvent e) {
+                        int startOffset =
+                                (sourceCodeArea.getLineStartOffset(node.getBeginLine() - 1) +
+                                node.getBeginColumn()) - 1;
+	}
+
+}
+     ]]></code>
+    </test-code>
+</test-data>

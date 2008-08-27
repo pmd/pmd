@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+one
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void foo() { 
+ 	System.out.println("debug message");  
+ }  
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+many
+     ]]></description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void foo1() { 
+ 	System.out.println("debug message");  
+ }  
+ private void foo2() { 
+ 	System.out.println("debug message");  
+ 	System.out.println("debug message");  
+ }  
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+none
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private void foo() { 
+ 	int x = 2;  
+ }  
+}
+     ]]></code>
+    </test-code>
+</test-data>

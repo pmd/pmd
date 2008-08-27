@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+assert as identifier
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar(String assert) {
+  String assert = "hi";
+ }
+}
+     ]]></code>
+     <source-type>java 1.3</source-type>
+    </test-code>
+</test-data>

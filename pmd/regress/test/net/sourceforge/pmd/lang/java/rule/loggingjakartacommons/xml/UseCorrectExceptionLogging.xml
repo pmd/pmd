@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static final Log _LOG = LogFactory.getLog( Foo.class );
+ void foo() {
+  try {} catch (OtherException oe) {
+   _LOG.error(oe.getMessage(), oe);
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+failure case - two calls
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static final Log _LOG = LogFactory.getLog( Foo.class );
+ void foo() {
+  try {} catch (Exception e) {
+   _LOG.error(e);
+   _LOG.info(e);
+  } 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+must be in a catch block
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static final Log _LOG = LogFactory.getLog( Foo.class );
+ void foo(int e) {
+  _LOG.error(e);
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bug 1626232, the rule should not be confused by inner classes
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static class Inner {
+    Log _LOG = LogFactory.getLog( Foo.class );
+ }
+
+ void foo() {
+  try {} catch (Exception e) {
+   Log _LOG = LogFactory.getLog( Main.class );
+   _LOG.error(e);
+   _LOG.info(e);
+  }
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+bug 1626232, should work with a static block
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ static final Log _LOG = LogFactory.getLog( Foo.class );
+ 
+ static {}
+ 
+ void foo() {
+  try {} catch (Exception e) {
+   _LOG.info(e);
+  } 
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

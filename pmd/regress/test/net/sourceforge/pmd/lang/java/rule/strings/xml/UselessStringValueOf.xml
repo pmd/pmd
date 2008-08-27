@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+valueOf in concatenation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+void bar(int i) {
+    String s = "abc" + String.valueOf(i);
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+valueOf in String conversion
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+void bar(Object o) {
+    String s = String.valueOf(o);
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+valueOf as first expression in concatenation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+void bar(int i) {
+    char c = 'A';
+    char low = 'B';
+    String s = String.valueOf(c) + low;
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+valueOf as first/last expression in concatenation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+public static String bar25(int n) {
+    return String.valueOf(n) + n + String.valueOf(n); // no - yes
+}
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+valueOf as first/last expression in concatenation
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+public static String bar17(int n) {
+    return n + String.valueOf(n) + "n"; // no
+    }
+}
+     ]]></code>
+    </test-code>
+</test-data>

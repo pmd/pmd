@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo() {
+  Integer[] ints = new Integer(10); 
+  List l= new ArrayList(10); 
+  for (int i=0; i< 100; i++) { 
+   l.add(ints[i]); 
+  } 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+adding first element repeatedly
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo() {
+  Integer[] ints = new Integer(10); 
+  List l= new ArrayList(10); 
+  for (int i=0; i< 100; i++) { 
+   l.add(ints[1]); 
+  } 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+inside conditional
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo() {
+  Integer[] ints = new Integer(10); 
+  List l= new ArrayList(10); 
+  for (int i=0; i< 100; i++) { 
+   if (y > 10) { l.add(ints[1]);} 
+  } 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+adding new object
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo() {
+  Integer[] ints = new Integer(10); 
+  List l= new ArrayList(10); 
+  for (int i=0; i< 100; i++) { 
+   l.add(new Integer(i+1)); 
+  } 
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+calling method
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Bar {
+ void foo() {
+  Integer[] ints = new Integer(10); 
+  List l= new ArrayList(10); 
+  for (int i=0; i< 100; i++) { 
+   l.add(String.valueOf(i)); 
+  } 
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Basic test case for AvoidStringBufferField
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+
+import java.lang.StringBuffer;
+public class Foo {
+	private StringBuffer buffer;
+}
+     ]]></code>
+    </test-code>
+</test-data>

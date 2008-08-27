@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+skip void/native/abstract methods
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar() {}
+ public native int buz();
+ public abstract int baz();
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip literal returns
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int bar() { return 5; }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+simple failure case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int bar() {
+  int x = doSomething();
+  return x;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip complicated returns
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int bar() {
+  int x = doSomething();
+  return x == null ? foo : bar;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+skip method calls
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public int bar() {
+  return doSomething(a, b, c);
+ }
+}
+     ]]></code>
+    </test-code>
+</test-data>

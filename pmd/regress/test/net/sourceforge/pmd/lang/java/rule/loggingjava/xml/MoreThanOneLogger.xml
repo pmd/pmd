@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.log4j.Logger;
+public class Foo {
+ Logger log;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+two loggers
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import org.apache.log4j.Logger;
+public class Foo {
+ Logger log;
+ Logger log2;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+different logger for inner class
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.log4j.Logger;
+public class Foo {
+ Logger log;
+ class Bar {
+  Logger log2;
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok, fixing NPE bug
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public @interface Foo {
+ String FOO = "foo";
+}
+     ]]></code>
+    </test-code>
+</test-data>

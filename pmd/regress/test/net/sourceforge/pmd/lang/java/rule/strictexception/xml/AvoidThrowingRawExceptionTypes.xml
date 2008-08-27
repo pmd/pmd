@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+throwing various types
+     ]]></description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  throw new Throwable();
+  throw new Exception();
+  throw new Error();
+  throw new RuntimeException();
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Bug 1796928 : The code uses a classe that use the same names that the one this rule is
+				looking for...
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.toto.Throwable;
+import org.toto.Exception;
+import org.toto.Error;
+import org.toto.RuntimeException;
+
+public class PmdTest {
+
+	public void m() {
+		Throwable throwable = new Throwable();
+		Error e = new Error();
+		RuntimeException excep = new RuntimeException();
+		Exception ex = new Exception();
+	}
+
+}
+     ]]></code>
+    </test-code>
+</test-data>

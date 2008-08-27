@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data>
+    <test-code>
+        <description><![CDATA[
+Clear violation
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String [] getArr() {return arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Clear violation with this.
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String [] getArr() {return this.arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String [] getArr() {String[] foo; return foo;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+tricky field hiding
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String [] getArr() {String[] arr; return arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+really sick code
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String [] getArr() {String[] arr; return this.arr;} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+returning a local array is ok
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ int[] getArr() {
+  int[] x = new int[] {1,2,3};
+  return x;
+ } ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+returning a local array is ok part deux
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ Object[] getArr() {
+  return new Object[] {foo,bar};
+ } ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+returning a cloned field
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Object[] x;
+ Object[] getArr() {
+  return this.x.clone();
+ } ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+returning a new array
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private Object x;
+ Object[] getArr() {
+  return new Object[] {x};
+ } ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Doesn't return array
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ String [] arr;
+ String getArr() {return arr[0];} ;
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+Interface with array declaration
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo {
+ public String[] getArr();
+}
+     ]]></code>
+    </test-code>
+</test-data>
