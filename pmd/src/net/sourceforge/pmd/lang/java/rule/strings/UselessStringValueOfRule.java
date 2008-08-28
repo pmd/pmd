@@ -1,15 +1,17 @@
 package net.sourceforge.pmd.lang.java.rule.strings;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryPrefix;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
-import net.sourceforge.pmd.lang.ast.Node;
 
 public class UselessStringValueOfRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTPrimaryPrefix node, Object data) {
         if (node.jjtGetNumChildren() == 0 ||
             !(node.jjtGetChild(0) instanceof ASTName)) {
@@ -46,20 +48,24 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
 
     private static boolean isPrimitive(Node parent) {
         boolean result = false;
-        if (parent instanceof ASTPrimaryExpression &&
-            parent.jjtGetNumChildren() == 1 &&
-            parent.jjtGetChild(0) instanceof ASTPrimaryPrefix &&
-            parent.jjtGetChild(0).jjtGetNumChildren() == 1 &&
-            parent.jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
-            ASTName name = (ASTName) parent.jjtGetChild(0).jjtGetChild(0);
-            if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
-                VariableNameDeclaration nd = (VariableNameDeclaration) name.getNameDeclaration();
-                if (nd.isPrimitiveType()) {
-                    result = true;
+        if (parent instanceof ASTPrimaryExpression && parent.jjtGetNumChildren() == 1) {
+            Node child = parent.jjtGetChild(0);
+            if (child instanceof ASTPrimaryPrefix && child.jjtGetNumChildren() == 1) {
+                Node gc = child.jjtGetChild(0);
+                if (gc instanceof ASTName) {
+                    ASTName name = (ASTName) gc;
+                    if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
+                        VariableNameDeclaration nd = (VariableNameDeclaration) name.getNameDeclaration();
+                        if (nd.isPrimitiveType()) {
+                            result = true;
+                        }
+                    }
+                } else if (gc instanceof ASTLiteral) {
+                    result = !((ASTLiteral) gc).isStringLiteral();
                 }
             }
         }
         return result;
     }
-    
+
 }
