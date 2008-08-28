@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.rules.strings;
 
+import net.sourceforge.pmd.ast.ASTLiteral;
+import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.rules.AbstractPoorMethodCall;
 
 /**
@@ -30,14 +32,10 @@ public class UseIndexOfChar extends AbstractPoorMethodCall {
     }
 
     /**
-     * Method isViolationArgument.
-     * @param argIndex int
-     * @param arg String
-     * @return boolean
+     * {@inheritDoc}
      */
-    protected boolean isViolationArgument(int argIndex, String arg) {
-        
-        return isSingleCharAsString(arg);
+    protected boolean isViolationArgument(Node arg) {
+        return ((ASTLiteral) arg).isSingleCharacterStringLiteral();
     }
 
 }

@@ -5,6 +5,7 @@ import net.sourceforge.pmd.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTVariableDeclaratorId;
+import net.sourceforge.pmd.ast.Node;
 import net.sourceforge.pmd.ast.SimpleNode;
 import net.sourceforge.pmd.symboltable.NameOccurrence;
 
@@ -16,11 +17,11 @@ import java.util.List;
  * efficient/modern ways of implementing the same function.
  * 
  * Concrete subclasses are expected to provide the name of the target class and an 
- * array of method names that we are looking for. We then pass judgement on any literal
+ * array of method names that we are looking for. We then pass judgment on any literal
  * arguments we find in the subclass as well.
  * 
  * @author Brian Remedios 
- * @version $Revision$
+ * @version $Revision: 6422 $
  */
 public abstract class AbstractPoorMethodCall extends AbstractRule {
     
@@ -40,16 +41,14 @@ public abstract class AbstractPoorMethodCall extends AbstractRule {
     protected abstract String[] methodNames();
     
     /**
-     * Returns whether the string argument at the stated position being sent to 
-     * the method is ok or not. Return true if you want to record the method call 
-     * as a violation, false otherwise.
+     * Returns whether the node being sent to the method is OK or not. Return
+     * true if you want to record the method call as a violation.
      * 
-     * @param argIndex int
-     * @param arg String
+     * @param arg the node to inspect
      * @return boolean
      */
-    protected abstract boolean isViolationArgument(int argIndex, String arg);
-    
+    protected abstract boolean isViolationArgument(Node arg);
+
     /**
      * Returns whether the name occurrence is one of the method calls
      * we are interested in.
@@ -70,16 +69,6 @@ public abstract class AbstractPoorMethodCall extends AbstractRule {
         return false;
     }
         
-    /**
-     * Returns whether the value argument is a single character string.
-     * 
-     * @param value String
-     * @return boolean
-     */
-    public static boolean isSingleCharAsString(String value) {
-        return value.length() == 3 && value.charAt(0) == '\"';
-    }
-    
     /**
      * Method visit.
      * @param node ASTVariableDeclaratorId
@@ -105,7 +94,7 @@ public abstract class AbstractPoorMethodCall extends AbstractRule {
                     List literals = parent.findChildrenOfType(ASTLiteral.class);
                     for (int l=0; l<literals.size(); l++) {
                         ASTLiteral literal = (ASTLiteral)literals.get(l);
-                        if (isViolationArgument(l, literal.getImage())) {
+                        if (isViolationArgument(literal)) {
                             addViolation(data, occ.getLocation());
                         }
                     }

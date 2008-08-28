@@ -18,6 +18,7 @@ Optimizations and false positive fixes in PreserveStackTrace
 @SuppressWarnings("all") disables all warnings
 All comment types are now stored in ASTCompilationUnit, not just formal ones
 Fixed false negative in UselessOverridingMethod
+Fixed handling of escape characters in UseIndexOfChar and AppendCharacterWithChar
 
 New rule:
 	Basic ruleset:	EmptyInitializer

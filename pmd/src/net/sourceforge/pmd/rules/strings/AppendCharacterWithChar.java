@@ -7,9 +7,6 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTBlockStatement;
 import net.sourceforge.pmd.ast.ASTLiteral;
 
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
 /**
  * This rule finds the following:
  * <p/>
@@ -23,21 +20,13 @@ import java.util.regex.Matcher;
  */
 public class AppendCharacterWithChar extends AbstractRule {
 
-    private static final Pattern REGEX = Pattern.compile("\"[\\\\]?[\\s\\S]\"");
-
     public Object visit(ASTLiteral node, Object data) {
         ASTBlockStatement bs = node.getFirstParentOfType(ASTBlockStatement.class);
         if (bs == null) {
             return data;
         }
 
-        String str = node.getImage();
-        if (str == null || str.length() < 3 || str.length() > 4) {
-            return data;
-        }
-
-        Matcher matcher = REGEX.matcher(str);
-        if (matcher.find()) {
+        if (node.isSingleCharacterStringLiteral()) {
             if (!InefficientStringBuffering.isInStringBufferOperation(node, 8, "append")) {
                 return data;
             }

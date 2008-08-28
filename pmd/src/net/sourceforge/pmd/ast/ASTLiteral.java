@@ -2,6 +2,8 @@
 
 package net.sourceforge.pmd.ast;
 
+import java.util.regex.Pattern;
+
 public class ASTLiteral extends SimpleJavaTypeNode {
 	
 	private boolean isInt;
@@ -51,4 +53,30 @@ public class ASTLiteral extends SimpleJavaTypeNode {
     public boolean isStringLiteral() {
     	return isString;
     }
+
+    /**
+     * Returns true if this is a String literal with only one character.
+     * Handles octal and escape characters.
+     *
+     * @return true is this is a String literal with only one character
+     */
+    public boolean isSingleCharacterStringLiteral() {
+        if (isString) {
+            String image = getImage();
+            int length = image.length();
+            if (length == 3) {
+                return true;
+            } else if (image.charAt(1) == '\\') {
+                return SINGLE_CHAR_ESCAPE_PATTERN.matcher(image).matches();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Pattern used to detect a single escaped character or octal character in a String.
+     */
+    private static final Pattern SINGLE_CHAR_ESCAPE_PATTERN = Pattern
+            .compile("^\"\\\\(([ntbrf\\\\'\\\"])|([0-7][0-7]?)|([0-3][0-7][0-7]))\"");
+
 }
