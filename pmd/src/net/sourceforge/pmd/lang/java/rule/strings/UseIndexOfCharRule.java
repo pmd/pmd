@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.lang.java.rule.strings;
 
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractPoorMethodCall;
 
 /**
@@ -13,7 +15,8 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
      * Method targetTypeName.
      * @return String
      */
-    protected String targetTypename() { 
+    @Override
+    protected String targetTypename() {
         return TARGET_TYPE_NAME;
     }
 
@@ -21,19 +24,16 @@ public class UseIndexOfCharRule extends AbstractPoorMethodCall {
      * Method methodNames.
      * @return String[]
      */
+    @Override
     protected String[] methodNames() {
         return METHOD_NAMES;
     }
 
     /**
-     * Method isViolationArgument.
-     * @param argIndex int
-     * @param arg String
-     * @return boolean
+     * {@inheritDoc}
      */
-    protected boolean isViolationArgument(int argIndex, String arg) {
-        
-        return isSingleCharAsString(arg);
+    protected boolean isViolationArgument(Node arg) {
+        return ((ASTLiteral) arg).isSingleCharacterStringLiteral();
     }
 
 }

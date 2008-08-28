@@ -2,13 +2,15 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.regex.Pattern;
+
 public class ASTLiteral extends AbstractJavaTypeNode {
-	
-	private boolean isInt;
-	private boolean isFloat;
-	private boolean isChar;
-	private boolean isString;
-	
+
+    private boolean isInt;
+    private boolean isFloat;
+    private boolean isChar;
+    private boolean isString;
+
     public ASTLiteral(int id) {
         super(id);
     }
@@ -20,35 +22,66 @@ public class ASTLiteral extends AbstractJavaTypeNode {
     /**
      * Accept the visitor. *
      */
+    @Override
     public Object jjtAccept(JavaParserVisitor visitor, Object data) {
         return visitor.visit(this, data);
     }
-    
+
     public void setIntLiteral() {
-    	this.isInt = true;
+        this.isInt = true;
     }
+
     public boolean isIntLiteral() {
-    	return isInt;
+        return isInt;
     }
 
     public void setFloatLiteral() {
-    	this.isFloat = true;
+        this.isFloat = true;
     }
+
     public boolean isFloatLiteral() {
-    	return isFloat;
+        return isFloat;
     }
 
     public void setCharLiteral() {
-    	this.isChar = true;
+        this.isChar = true;
     }
+
     public boolean isCharLiteral() {
-    	return isChar;
+        return isChar;
     }
 
     public void setStringLiteral() {
-    	this.isString = true;
+        this.isString = true;
     }
+
     public boolean isStringLiteral() {
-    	return isString;
+        return isString;
     }
+
+    /**
+     * Returns true if this is a String literal with only one character.
+     * Handles octal and escape characters.
+     *
+     * @return true is this is a String literal with only one character
+     */
+    public boolean isSingleCharacterStringLiteral() {
+        if (isString) {
+            String image = getImage();
+            int length = image.length();
+            if (length == 3) {
+                return true;
+            } else if (image.charAt(1) == '\\') {
+                return SINGLE_CHAR_ESCAPE_PATTERN.matcher(image).matches();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Pattern used to detect a single escaped character or octal character in a String.
+     */
+    private static final Pattern SINGLE_CHAR_ESCAPE_PATTERN = Pattern
+            .compile("^\"\\\\(([ntbrf\\\\'\\\"])|([0-7][0-7]?)|([0-3][0-7][0-7]))\"");
+
 }

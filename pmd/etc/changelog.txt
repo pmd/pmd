@@ -371,6 +371,7 @@ Java grammar enhanced to include AnnotationMethodDeclaration as parent node of m
 JavaCC generated artifacts updated to JavaCC 4.1d1.
 All comment types are now stored in ASTCompilationUnit, not just formal ones
 Fixed false negative in UselessOverridingMethod
+Fixed handling of escape characters in UseIndexOfChar and AppendCharacterWithChar
 
 New rules:
 

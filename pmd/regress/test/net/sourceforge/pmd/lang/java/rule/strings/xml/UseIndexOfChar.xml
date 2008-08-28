@@ -84,4 +84,52 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+all escaped characters
+     ]]></description>
+        <expected-problems>8</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(String x) {
+  if (x.indexOf("\n") == -1) {}
+  if (x.indexOf("\t") == -1) {}
+  if (x.indexOf("\b") == -1) {}
+  if (x.indexOf("\r") == -1) {}
+  if (x.indexOf("\f") == -1) {}
+  if (x.indexOf("\\") == -1) {}
+  if (x.indexOf("\'") == -1) {}
+  if (x.indexOf("\"") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+
+    <test-code>
+        <description><![CDATA[
+a single octal character
+     ]]></description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(String x) {
+  if (x.indexOf("\12") == -1) {}
+  if (x.indexOf("\123") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+octal character in longer string
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ public void bar(String x) {
+  if (x.indexOf("\1234") == -1) {}
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

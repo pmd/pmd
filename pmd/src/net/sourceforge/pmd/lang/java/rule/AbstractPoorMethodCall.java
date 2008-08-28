@@ -15,13 +15,14 @@ import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
  * efficient/modern ways of implementing the same function.
  *
  * Concrete subclasses are expected to provide the name of the target class and an
- * array of method names that we are looking for. We then pass judgement on any literal
+ * array of method names that we are looking for. We then pass judgment on any literal
  * arguments we find in the subclass as well.
  *
  * @author Brian Remedios
  * @version $Revision$
  */
 public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
+    //FIXME not sure the abstraction is generic enough to be reused as is.
 
     /**
      * The name of the type the method will be invoked against.
@@ -38,15 +39,13 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
     protected abstract String[] methodNames();
 
     /**
-     * Returns whether the string argument at the stated position being sent to
-     * the method is ok or not. Return true if you want to record the method call
-     * as a violation, false otherwise.
+     * Returns whether the node being sent to the method is OK or not. Return
+     * true if you want to record the method call as a violation.
      *
-     * @param argIndex int
-     * @param arg String
+     * @param arg the node to inspect
      * @return boolean
      */
-    protected abstract boolean isViolationArgument(int argIndex, String arg);
+    protected abstract boolean isViolationArgument(Node arg);
 
     /**
      * Returns whether the name occurrence is one of the method calls
@@ -57,29 +56,19 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
      */
     private boolean isNotedMethod(NameOccurrence occurrence) {
 
-	if (occurrence == null) {
-	    return false;
-	}
+        if (occurrence == null) {
+            return false;
+        }
 
-	String methodCall = occurrence.getImage();
-	String[] methodNames = methodNames();
+        String methodCall = occurrence.getImage();
+        String[] methodNames = methodNames();
 
-	for (String element : methodNames) {
-	    if (methodCall.indexOf(element) != -1) {
-		return true;
-	    }
-	}
-	return false;
-    }
-
-    /**
-     * Returns whether the value argument is a single character string.
-     *
-     * @param value String
-     * @return boolean
-     */
-    public static boolean isSingleCharAsString(String value) {
-	return value.length() == 3 && value.charAt(0) == '\"';
+        for (String element : methodNames) {
+            if (methodCall.indexOf(element) != -1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -91,28 +80,28 @@ public abstract class AbstractPoorMethodCall extends AbstractJavaRule {
      */
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
-	if (!node.getNameDeclaration().getTypeImage().equals(targetTypename())) {
-	    return data;
-	}
+        if (!node.getNameDeclaration().getTypeImage().equals(targetTypename())) {
+            return data;
+        }
 
-	for (NameOccurrence occ : node.getUsages()) {
-	    if (isNotedMethod(occ.getNameForWhichThisIsAQualifier())) {
-		Node parent = occ.getLocation().jjtGetParent().jjtGetParent();
-		if (parent instanceof ASTPrimaryExpression) {
-		    // bail out if it's something like indexOf("a" + "b")
-		    if (parent.hasDescendantOfType(ASTAdditiveExpression.class)) {
-			return data;
-		    }
-		    List<ASTLiteral> literals = parent.findDescendantsOfType(ASTLiteral.class);
-		    for (int l = 0; l < literals.size(); l++) {
-			ASTLiteral literal = literals.get(l);
-			if (isViolationArgument(l, literal.getImage())) {
-			    addViolation(data, occ.getLocation());
-			}
-		    }
-		}
-	    }
-	}
-	return data;
+        for (NameOccurrence occ : node.getUsages()) {
+            if (isNotedMethod(occ.getNameForWhichThisIsAQualifier())) {
+                Node parent = occ.getLocation().jjtGetParent().jjtGetParent();
+                if (parent instanceof ASTPrimaryExpression) {
+                    // bail out if it's something like indexOf("a" + "b")
+                    if (parent.hasDescendantOfType(ASTAdditiveExpression.class)) {
+                        return data;
+                    }
+                    List<ASTLiteral> literals = parent.findDescendantsOfType(ASTLiteral.class);
+                    for (int l = 0; l < literals.size(); l++) {
+                        ASTLiteral literal = literals.get(l);
+                        if (isViolationArgument(literal)) {
+                            addViolation(data, occ.getLocation());
+                        }
+                    }
+                }
+            }
+        }
+        return data;
     }
 }
