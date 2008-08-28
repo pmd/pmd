@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.controversial;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTName;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpression;
@@ -31,10 +32,12 @@ public class NullAssignmentRule extends AbstractJavaRule {
                 addViolation(data, node);
             }
         } else if (node.getNthParent(4) instanceof ASTConditionalExpression) {
+            // "false" expression of ternary
             if (isBadTernary((ASTConditionalExpression)node.getNthParent(4))) {
                 addViolation(data, node);
             }
-        } else if (node.getNthParent(5) instanceof ASTConditionalExpression) {
+        } else if (node.getNthParent(5) instanceof ASTConditionalExpression && node.getNthParent(4) instanceof ASTExpression) {
+            // "true" expression of ternary
             if (isBadTernary((ASTConditionalExpression)node.getNthParent(5))) {
                 addViolation(data, node);
             }
