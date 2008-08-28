@@ -5,10 +5,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 
 public class SuspiciousOctalEscapeRule extends AbstractJavaRule {
 
+    @Override
     public Object visit(ASTLiteral node, Object data) {
-        String image = node.getImage();
-        if (image != null && image.startsWith("\"")) // make sure it's a string literal
-        {
+        if (node.isStringLiteral()) {
+            String image = node.getImage();
             // trim quotes
             String s = image.substring(1, image.length() - 1);
 
