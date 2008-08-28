@@ -7,6 +7,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.ast.ASTEqualityExpression;
+import net.sourceforge.pmd.ast.ASTExpression;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTNullLiteral;
 import net.sourceforge.pmd.ast.ASTStatementExpression;
@@ -30,10 +31,12 @@ public class NullAssignmentRule extends AbstractRule {
                 addViolation(data, node);
             }
         } else if (node.getNthParent(4) instanceof ASTConditionalExpression) {
+            // "false" expression of ternary
             if (isBadTernary((ASTConditionalExpression)node.getNthParent(4))) {
                 addViolation(data, node);
             }
-        } else if (node.getNthParent(5) instanceof ASTConditionalExpression) {
+        } else if (node.getNthParent(5) instanceof ASTConditionalExpression && node.getNthParent(4) instanceof ASTExpression) {
+            // "true" expression of ternary
             if (isBadTernary((ASTConditionalExpression)node.getNthParent(5))) {
                 addViolation(data, node);
             }

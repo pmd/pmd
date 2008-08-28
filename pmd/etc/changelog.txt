@@ -13,6 +13,7 @@ Fixed bug 2002722 - false + in UseStringBufferForStringAppends
 Fixed bug 2056318 - False positive for AvoidInstantiatingObjectsInLoops
 Fixed bug 1977438 - False positive for UselessStringValueOf
 Fixed bug 2050064 - False + SuspiciousOctalEscape with backslash literal
+Fixed bug 1556594 - Wonky detection of NullAssignment
 Optimizations and false positive fixes in PreserveStackTrace
 @SuppressWarnings("all") disables all warnings
 All comment types are now stored in ASTCompilationUnit, not just formal ones
