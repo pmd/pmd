@@ -57,6 +57,8 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRule {
                             addViolation(data, node);
                         }
                     }
+                } else if (first == '\\') {
+                    slash++;
                 }
 
                 offset = slash + 1;
@@ -67,10 +69,10 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRule {
     }
 
     private boolean isOctal(char c) {
-	return c >= '0' && c <= '7';
+        return c >= '0' && c <= '7';
     }
 
     private boolean isDecimal(char c) {
-	return c >= '0' && c <= '9';
+        return c >= '0' && c <= '9';
     }
 }

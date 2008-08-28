@@ -349,6 +349,7 @@ Fixed bug 1998185 - BeanMembersShouldSerialize vs @SuppressWarnings("serial")
 Fixed bug 2002722 - false + in UseStringBufferForStringAppends
 Fixed bug 2056318 - False positive for AvoidInstantiatingObjectsInLoops
 Fixed bug 1977438 - False positive for UselessStringValueOf
+Fixed bug 2050064 - False + SuspiciousOctalEscape with backslash literal
 ruleset.dtd and ruleset_xml_schema.xsd added to jar file in rulesets directory
 bin and java14/bin scripts:
 	retroweaver version was not correct in java14/bin scripts
