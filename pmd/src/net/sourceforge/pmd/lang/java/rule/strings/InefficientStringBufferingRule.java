@@ -40,14 +40,11 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         int immediateLiterals = 0;
         List<ASTLiteral> nodes = node.findDescendantsOfType(ASTLiteral.class);
         for (ASTLiteral literal: nodes) {
-            if (literal.jjtGetParent().jjtGetParent().jjtGetParent() instanceof ASTAdditiveExpression) {
+            if (literal.getNthParent(3) == node) {
                 immediateLiterals++;
             }
-            try {
-                Integer.parseInt(literal.getImage());
+            if (!literal.isStringLiteral()) {
                 return data;
-            } catch (NumberFormatException nfe) {
-                // NFE means new StringBuffer("a" + "b"), want to flag those
             }
         }
 
@@ -86,7 +83,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
     }
 
     protected static boolean isInStringBufferOperation(Node node, int length, String methodName) {
-        if (!xParentIsStatementExpression(node, length)) {
+        if (!(node.getNthParent(length) instanceof ASTStatementExpression)) {
             return false;
         }
         ASTStatementExpression s = node.getFirstParentOfType(ASTStatementExpression.class);
@@ -107,18 +104,6 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
             return false;
         }
         return TypeHelper.isA((VariableNameDeclaration)n.getNameDeclaration(), StringBuffer.class);
-    }
-
-    // TODO move this method to SimpleNode
-    private static boolean xParentIsStatementExpression(Node node, int length) {
-        Node curr = node;
-        for (int i=0; i<length; i++) {
-            if (node.jjtGetParent() == null) {
-                return false;
-            }
-            curr = curr.jjtGetParent();
-        }
-        return curr instanceof ASTStatementExpression;
     }
 
     private boolean isAllocatedStringBuffer(ASTAdditiveExpression node) {
