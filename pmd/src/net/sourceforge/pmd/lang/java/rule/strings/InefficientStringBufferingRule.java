@@ -40,11 +40,14 @@ public class InefficientStringBufferingRule extends AbstractJavaRule {
         int immediateLiterals = 0;
         List<ASTLiteral> nodes = node.findDescendantsOfType(ASTLiteral.class);
         for (ASTLiteral literal: nodes) {
-            if (literal.getNthParent(3) == node) {
+            if (literal.getNthParent(3) instanceof ASTAdditiveExpression) {
                 immediateLiterals++;
             }
-            if (!literal.isStringLiteral()) {
+            try {
+                Integer.parseInt(literal.getImage());
                 return data;
+            } catch (NumberFormatException nfe) {
+                // NFE means new StringBuffer("a" + "b"), want to flag those
             }
         }
 
