@@ -67,4 +67,17 @@ public static String bar17(int n) {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+[ 1977438 ] False positive for UselessStringValueOf
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ private String getMessage(Object pPassedValue) {
+  return "someString" + (pPassedValue == null ? "null" : '\'' + String.valueOf(pPassedValue) + '\'') + "end of my string";
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>

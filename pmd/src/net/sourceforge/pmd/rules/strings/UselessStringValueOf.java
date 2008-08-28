@@ -2,6 +2,7 @@ package net.sourceforge.pmd.rules.strings;
 
 import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.ast.ASTAdditiveExpression;
+import net.sourceforge.pmd.ast.ASTLiteral;
 import net.sourceforge.pmd.ast.ASTName;
 import net.sourceforge.pmd.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.ast.ASTPrimaryPrefix;
@@ -47,16 +48,20 @@ public class UselessStringValueOf extends AbstractRule {
 
     private static boolean isPrimitive(Node parent) {
         boolean result = false;
-        if (parent instanceof ASTPrimaryExpression &&
-            parent.jjtGetNumChildren() == 1 &&
-            parent.jjtGetChild(0) instanceof ASTPrimaryPrefix &&
-            parent.jjtGetChild(0).jjtGetNumChildren() == 1 &&
-            parent.jjtGetChild(0).jjtGetChild(0) instanceof ASTName) {
-            ASTName name = (ASTName) parent.jjtGetChild(0).jjtGetChild(0);
-            if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
-                VariableNameDeclaration nd = (VariableNameDeclaration) name.getNameDeclaration();
-                if (nd.isPrimitiveType()) {
-                    result = true;
+        if (parent instanceof ASTPrimaryExpression && parent.jjtGetNumChildren() == 1) {
+            Node child = parent.jjtGetChild(0);
+            if (child instanceof ASTPrimaryPrefix && child.jjtGetNumChildren() == 1) {
+                Node gc = child.jjtGetChild(0);
+                if (gc instanceof ASTName) {
+                    ASTName name = (ASTName) gc;
+                    if (name.getNameDeclaration() instanceof VariableNameDeclaration) {
+                        VariableNameDeclaration nd = (VariableNameDeclaration) name.getNameDeclaration();
+                        if (nd.isPrimitiveType()) {
+                            result = true;
+                        }
+                    }
+                } else if (gc instanceof ASTLiteral) {
+                    result = !((ASTLiteral) gc).isStringLiteral();
                 }
             }
         }
