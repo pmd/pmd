@@ -57,6 +57,8 @@ public class SuspiciousOctalEscape extends AbstractRule {
                             addViolation(data, node);
                         }
                     }
+                } else if (first == '\\') {
+                    slash++;
                 }
 
                 offset = slash + 1;

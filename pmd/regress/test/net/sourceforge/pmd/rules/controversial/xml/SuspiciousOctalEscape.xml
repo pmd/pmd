@@ -52,4 +52,30 @@ public class Foo {
 }
      ]]></code>
     </test-code>
+    <test-code>
+        <description><![CDATA[
+[ 2050064 ] False + SuspiciousOctalEscape with backslash literal
+     ]]></description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  System.out.println("suspicious: \\128");
+ }
+}
+     ]]></code>
+    </test-code>
+    <test-code>
+        <description><![CDATA[
+[ 2050064 ] False + SuspiciousOctalEscape with backslash literal, second test case
+     ]]></description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+ void bar() {
+  System.out.println("suspicious: \\128 \128");
+ }
+}
+     ]]></code>
+    </test-code>
 </test-data>
