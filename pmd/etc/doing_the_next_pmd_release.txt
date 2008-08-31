@@ -54,10 +54,6 @@ if you see a bug and fix it, you can delete the release using:
 svn delete https://pmd.svn.sourceforge.net/svnroot/pmd/tags/pmd/pmd_release_<version>
 and then retag it
 
-ncftpput upload.sourceforge.net incoming/ pmd-src-<version>.zip pmd-bin-<version>.zip
-
-lftp -e "mput -O incoming/ pmd-src-<version>.zip pmd-bin-<version>.zip" upload.sourceforge.net
-
 
 Go to Admin, File Releases, Add release
 Paste stuff into the changelog/readme boxes
@@ -72,6 +68,7 @@ for 'pmd-repo' must be defined in ~/.m2/settings.xml
 cd ~/pmd/pmd/
 update the "download" and "what's new" link in navigation.xml
 update date and changelog links in project.xml (recent releases section)
+
 ./docs.sh all
 ./docs.sh upload
 
