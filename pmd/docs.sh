@@ -20,7 +20,7 @@ elif [ $option = "all" ]; then
 elif [ $option = "uploadcurrent" ]; then
   echo "Generating and uploading maven artifacts"
   mvn -q source:jar javadoc:jar deploy
-  mvn -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-4.2.3.jar -DpomFile=pmd-jdk14-pom.xml
+  mvn -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-4.2.4.jar -DpomFile=pmd-jdk14-pom.xml
   echo "Generating xdocs and uploading"
   ruby munge_rulesets.rb
   maven -qb pmd:rulesets-index xdoc:generate-from-pom 
@@ -39,7 +39,7 @@ elif [ $option = "uploadcurrent" ]; then
 elif [ $option = "upload" ]; then
   echo "Generating and uploading maven artifacts"
   mvn -q source:jar javadoc:jar deploy
-  mvn -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-4.2.3.jar -DpomFile=pmd-jdk14-pom.xml
+  mvn -q deploy:deploy-file -Durl=scp://pmd.sourceforge.net/home/groups/p/pm/pmd/htdocs/maven2 -DrepositoryId=pmd-repo -Dfile=java14/lib/pmd14-4.2.4.jar -DpomFile=pmd-jdk14-pom.xml
   echo "Uploading xdocs"
   DOCS_FILE=docs.tar.gz
   cp xdocs/cpdresults.txt xdocs/cpp_cpdresults.txt target/docs/
