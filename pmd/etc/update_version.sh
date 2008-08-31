@@ -48,6 +48,8 @@ release_tag=`echo $1|sed -e "s/\./_/g"`
 update_regexp "tag>pmd_release_[0-9].*<" "tag>pmd_release_$release_tag<" project.xml
 
 update_regexp "^  <version>[0-9].*<" "  <version>$1<" pom.xml
+update_regexp "^  <version>[0-9].*<" "  <version>$1<" pmd-jdk14-pom.xml
+update_regexp "pmd14-[0-9\.]*.jar" "pmd14-$1.jar" docs.sh
 
 update_jar $1 etc/cpd.jnlp
 update_jar $1 xdocs/running.xml
