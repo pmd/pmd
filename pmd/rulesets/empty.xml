@@ -34,7 +34,7 @@ which should either be acted on or reported.
  ]]>
              </value>
           </property>
-          <property name="allowCommentedBlocks" description="Empty blocks containing comments will be skipped">
+          <property name="allowCommentedBlocks" type="Boolean" description="Empty blocks containing comments will be skipped">
               <value>false</value>
           </property>
       </properties>

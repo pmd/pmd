@@ -6,10 +6,8 @@ package net.sourceforge.pmd.lang.rule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
@@ -25,13 +23,8 @@ import net.sourceforge.pmd.lang.ast.Node;
  *
  * @author pieter_van_raemdonck - Application Engineers NV/SA - www.ae.be
  */
-// FUTURE Move PropertyDescriptor APIs up to Rule interface
-// FUTURE Implement Cloneable and clone()
+// FUTURE Implement Cloneable and clone()?
 public abstract class AbstractRule implements Rule {
-
-    // TODO Remove - Temporary flag during conversion.
-    private static final boolean IN_OLD_PROPERTY_MODE = true;
-
     private Language language;
     private LanguageVersion minimumLanguageVersion;
     private LanguageVersion maximumLanguageVersion;
@@ -45,15 +38,28 @@ public abstract class AbstractRule implements Rule {
     private List<String> examples = new ArrayList<String>();
     private String externalInfoUrl;
     private RulePriority priority = RulePriority.LOW;
-    private Properties properties = new Properties();
+    private List<PropertyDescriptor<?>> propertyDescriptors = new ArrayList<PropertyDescriptor<?>>();
+    // Map of explicitly set property values.
+    private Map<PropertyDescriptor<?>, Object> propertyValues = new HashMap<PropertyDescriptor<?>, Object>();
     private boolean usesDFA;
     private boolean usesTypeResolution;
     private List<String> ruleChainVisits = new ArrayList<String>();
+    
+    public AbstractRule() {
+	definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
+	definePropertyDescriptor(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
+    }
 
+    /**
+     * @see Rule#getLanguage()
+     */
     public Language getLanguage() {
 	return language;
     }
 
+    /**
+     * @see Rule#setLanguage(Language)
+     */
     public void setLanguage(Language language) {
 	if (this.language != null && this instanceof ImmutableLanguage && !this.language.equals(language)) {
 	    throw new UnsupportedOperationException("The Language for Rule class " + this.getClass().getName()
@@ -62,324 +68,307 @@ public abstract class AbstractRule implements Rule {
 	this.language = language;
     }
 
+    /**
+     * @see Rule#getMinimumLanguageVersion()
+     */
     public LanguageVersion getMinimumLanguageVersion() {
 	return minimumLanguageVersion;
     }
 
+    /**
+     * @see Rule#setMinimumLanguageVersion(LanguageVersion)
+     */
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
 	this.minimumLanguageVersion = minimumLanguageVersion;
     }
 
+    /**
+     * @see Rule#getMaximumLanguageVersion()
+     */
     public LanguageVersion getMaximumLanguageVersion() {
 	return maximumLanguageVersion;
     }
 
+    /**
+     * @see Rule#setMaximumLanguageVersion(LanguageVersion)
+     */
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
 	this.maximumLanguageVersion = maximumLanguageVersion;
     }
 
+    /**
+     * @see Rule#isDeprecated()
+     */
     public boolean isDeprecated() {
 	return deprecated;
     }
 
+    /**
+     * @see Rule#setDeprecated(boolean)
+     */
     public void setDeprecated(boolean deprecated) {
 	this.deprecated = deprecated;
     }
 
+    /**
+     * @see Rule#getName()
+     */
     public String getName() {
 	return name;
     }
 
+    /**
+     * @see Rule#setName(String)
+     */
     public void setName(String name) {
 	this.name = name;
     }
 
+    /**
+     * @see Rule#getSince()
+     */
     public String getSince() {
 	return since;
     }
 
+    /**
+     * @see Rule#setSince(String)
+     */
     public void setSince(String since) {
 	this.since = since;
     }
 
+    /**
+     * @see Rule#getRuleClass()
+     */
     public String getRuleClass() {
 	return ruleClass;
     }
 
+    /**
+     * @see Rule#setRuleClass(String)
+     */
     public void setRuleClass(String ruleClass) {
 	this.ruleClass = ruleClass;
     }
 
+    /**
+     * @see Rule#getRuleSetName()
+     */
     public String getRuleSetName() {
 	return ruleSetName;
     }
 
+    /**
+     * @see Rule#setRuleSetName(String)
+     */
     public void setRuleSetName(String ruleSetName) {
 	this.ruleSetName = ruleSetName;
     }
 
+    /**
+     * @see Rule#getMessage()
+     */
     public String getMessage() {
 	return message;
     }
 
+    /**
+     * @see Rule#setMessage(String)
+     */
     public void setMessage(String message) {
 	this.message = message;
     }
 
+    /**
+     * @see Rule#getDescription()
+     */
     public String getDescription() {
 	return description;
     }
 
+    /**
+     * @see Rule#setDescription(String)
+     */
     public void setDescription(String description) {
 	this.description = description;
     }
 
+    /**
+     * @see Rule#getExamples()
+     */
     public List<String> getExamples() {
 	// TODO Needs to be externally immutable
 	return examples;
     }
 
+    /**
+     * @see Rule#addExample(String)
+     */
     public void addExample(String example) {
 	examples.add(example);
     }
 
+    /**
+     * @see Rule#getExternalInfoUrl()
+     */
     public String getExternalInfoUrl() {
 	return externalInfoUrl;
     }
 
+    /**
+     * @see Rule#setExternalInfoUrl(String)
+     */
     public void setExternalInfoUrl(String externalInfoUrl) {
 	this.externalInfoUrl = externalInfoUrl;
     }
 
+    /**
+     * @see Rule#getPriority()
+     */
     public RulePriority getPriority() {
 	return priority;
     }
 
+    /**
+     * @see Rule#setPriority(RulePriority)
+     */
     public void setPriority(RulePriority priority) {
 	this.priority = priority;
     }
 
     /**
-     * @deprecated - retrieve by name using get<type>Property or get<type>Properties
+     * @see Rule#definePropertyDescriptor(PropertyDescriptor)
      */
-    @Deprecated
-    public Properties getProperties() {
-	// TODO Needs to be externally immutable
-	return properties;
+    public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
+	// Check to ensure the property does not already exist.
+	for (PropertyDescriptor<?> descriptor : propertyDescriptors) {
+	    if (descriptor.name().equals(propertyDescriptor.name())) {
+		throw new IllegalArgumentException("There is already a PropertyDescriptor with name '"
+			+ propertyDescriptor.name() + "' defined on Rule " + this.getName() + ".");
+	    }
+	}
+	propertyDescriptors.add(propertyDescriptor);
+	// Sort in UI order
+	Collections.sort(propertyDescriptors);
     }
 
     /**
-     * @deprecated
+     * @see Rule#getPropertyDescriptor(String)
      */
-    @Deprecated
-    public void addProperty(String name, String value) {
-	getProperties().setProperty(name, value);
+    public PropertyDescriptor<?> getPropertyDescriptor(String name) {
+	for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) {
+	    if (name.equals(propertyDescriptor.name())) {
+		return propertyDescriptor;
+	    }
+	}
+	return null;
     }
 
     /**
-     * @deprecated
+     * @see Rule#getPropertyDescriptors()
      */
-    @Deprecated
-    public void addProperties(Properties properties) {
-	getProperties().putAll(properties);
+    public List<PropertyDescriptor<?>> getPropertyDescriptors() {
+	return propertyDescriptors;
     }
 
     /**
-     * @deprecated - property values will be guaranteed available via default
-     *             values
+     * @see Rule#getProperty(PropertyDescriptor)
      */
-    @Deprecated
-    public boolean hasProperty(String name) {
-	return IN_OLD_PROPERTY_MODE ? // TODO -remove
-	getProperties().containsKey(name)
-		: propertiesByName().containsKey(name);
+    @SuppressWarnings("unchecked")
+    public <T> T getProperty(PropertyDescriptor<T> propertyDescriptor) {
+	checkValidPropertyDescriptor(propertyDescriptor);
+	T value;
+	if (propertyValues.containsKey(propertyDescriptor)) {
+	    value = (T) propertyValues.get(propertyDescriptor);
+	} else {
+	    value = propertyDescriptor.defaultValue();
+	}
+	return value;
     }
 
     /**
-     * @deprecated - use getBooleanProperty(PropertyDescriptor) instead
+     * @see Rule#setProperty(PropertyDescriptor, Object)
      */
-    @Deprecated
-    public boolean getBooleanProperty(String name) {
-	return Boolean.parseBoolean(getProperties().getProperty(name));
+    public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
+	checkValidPropertyDescriptor(propertyDescriptor);
+	propertyValues.put(propertyDescriptor, value);
     }
 
-    public boolean getBooleanProperty(PropertyDescriptor descriptor) {
-
-	return ((Boolean) getProperty(descriptor)).booleanValue();
-    }
-
-    // TODO
-    public boolean[] getBooleanProperties(PropertyDescriptor descriptor) {
-	Boolean[] values = (Boolean[]) getProperties(descriptor);
-	boolean[] bools = new boolean[values.length];
-	for (int i = 0; i < bools.length; i++) {
-	    bools[i] = values[i].booleanValue();
+    private void checkValidPropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
+	if (!propertyDescriptors.contains(propertyDescriptor)) {
+	    throw new IllegalArgumentException("Property descriptor not defined for Rule " + this.getName() + ": " + propertyDescriptor);
 	}
-	return bools;
     }
 
     /**
-     * @deprecated - use getIntProperty(PropertyDescriptor) instead
+     * @see Rule#getPropertiesByPropertyDescriptor()
      */
-    @Deprecated
-    public int getIntProperty(String name) {
-	return Integer.parseInt(getProperties().getProperty(name));
-    }
-
-    public int getIntProperty(PropertyDescriptor descriptor) {
-
-	return ((Number) getProperty(descriptor)).intValue();
-    }
-
-    // TODO
-    public int[] getIntProperties(PropertyDescriptor descriptor) {
-	Number[] values = (Number[]) getProperties(descriptor);
-	int[] ints = new int[values.length];
-	for (int i = 0; i < ints.length; i++) {
-	    ints[i] = values[i].intValue();
+    public Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor() {
+	if (propertyDescriptors.isEmpty()) {
+	    return Collections.emptyMap();
 	}
-	return ints;
+
+	Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor = new HashMap<PropertyDescriptor<?>, Object>(
+		propertyDescriptors.size());
+	// Fill with existing explicitly values
+	propertiesByPropertyDescriptor.putAll(this.propertyValues);
+
+	// Add default values for anything not yet set
+	for (PropertyDescriptor<?> propertyDescriptor : this.propertyDescriptors) {
+	    if (!propertiesByPropertyDescriptor.containsKey(propertyDescriptor)) {
+		propertiesByPropertyDescriptor.put(propertyDescriptor, propertyDescriptor.defaultValue());
+	    }
+	}
+
+	return propertiesByPropertyDescriptor;
     }
 
     /**
-     * @deprecated - use getDoubleProperty(PropertyDescriptor) instead
+     * @see Rule#setUsesDFA()
      */
-    @Deprecated
-    public double getDoubleProperty(String name) {
-	return Double.parseDouble(getProperties().getProperty(name));
-    }
-
-    public double getDoubleProperty(PropertyDescriptor descriptor) {
-	return ((Number) getProperty(descriptor)).doubleValue();
-    }
-
-    // TODO
-    public double[] getDoubleProperties(PropertyDescriptor descriptor) {
-	Number[] values = (Number[]) getProperties(descriptor);
-	double[] doubles = new double[values.length];
-	for (int i = 0; i < doubles.length; i++) {
-	    doubles[i] = values[i].doubleValue();
-	}
-	return doubles;
-    }
-
-    /**
-     * @deprecated - use getStringProperty(PropertyDescriptor) instead
-     */
-    @Deprecated
-    public String getStringProperty(String name) {
-	return getProperties().getProperty(name);
-    }
-
-    public String getStringProperty(PropertyDescriptor descriptor) {
-	return (String) getProperty(descriptor);
-    }
-
-    public String[] getStringProperties(PropertyDescriptor descriptor) {
-	return (String[]) getProperties(descriptor);
-    }
-
-    public char getCharacterProperty(PropertyDescriptor descriptor) {
-	return ((Character) getProperty(descriptor)).charValue();
-    }
-
-    public Class<?>[] getTypeProperties(PropertyDescriptor descriptor) {
-	return (Class[]) getProperties(descriptor);
-    }
-
-    public Class<?> getTypeProperty(PropertyDescriptor descriptor) {
-	return (Class<?>) getProperty(descriptor);
-    }
-
-    private Object getProperty(PropertyDescriptor descriptor) {
-	if (descriptor.isMultiValue()) {
-	    propertyGetError(descriptor, true);
-	}
-	String rawValue = getProperties().getProperty(descriptor.name());
-	return rawValue == null || rawValue.length() == 0 ? descriptor.defaultValue() : descriptor.valueFrom(rawValue);
-    }
-
-    public void setProperty(PropertyDescriptor descriptor, Object value) {
-	if (descriptor.isMultiValue()) {
-	    propertySetError(descriptor, true);
-	}
-	getProperties().setProperty(descriptor.name(), descriptor.asDelimitedString(value));
-    }
-
-    private Object[] getProperties(PropertyDescriptor descriptor) {
-	if (!descriptor.isMultiValue()) {
-	    propertyGetError(descriptor, false);
-	}
-	String rawValue = getProperties().getProperty(descriptor.name());
-	return rawValue == null || rawValue.length() == 0 ? (Object[]) descriptor.defaultValue()
-		: (Object[]) descriptor.valueFrom(rawValue);
-    }
-
-    public void setProperties(PropertyDescriptor descriptor, Object[] values) {
-	if (!descriptor.isMultiValue()) {
-	    propertySetError(descriptor, false);
-	}
-	getProperties().setProperty(descriptor.name(), descriptor.asDelimitedString(values));
-    }
-
-    /**
-     * Return all the relevant properties for the receiver by overriding in
-     * subclasses as necessary.
-     *
-     * @return Map
-     */
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-	return Collections.emptyMap();
-    }
-
-    public PropertyDescriptor propertyDescriptorFor(String name) {
-	PropertyDescriptor descriptor = propertiesByName().get(name);
-	if (descriptor == null) {
-	    throw new IllegalArgumentException("Unknown property: " + name);
-	}
-	return descriptor;
-    }
-
-    private void propertyGetError(PropertyDescriptor descriptor, boolean requestedSingleValue) {
-
-	if (requestedSingleValue) {
-	    throw new RuntimeException("Cannot retrieve a single value from a multi-value property field");
-	}
-	throw new RuntimeException("Cannot retrieve multiple values from a single-value property field");
-    }
-
-    private void propertySetError(PropertyDescriptor descriptor, boolean setSingleValue) {
-
-	if (setSingleValue) {
-	    throw new RuntimeException("Cannot set a single value within a multi-value property field");
-	}
-	throw new RuntimeException("Cannot set multiple values within a single-value property field");
-    }
-
     public void setUsesDFA() {
 	this.usesDFA = true;
     }
 
+    /**
+     * @see Rule#usesDFA()
+     */
     public boolean usesDFA() {
 	return this.usesDFA;
     }
 
+    /**
+     * @see Rule#setUsesTypeResolution()
+     */
     public void setUsesTypeResolution() {
 	this.usesTypeResolution = true;
     }
 
+    /**
+     * @see Rule#usesTypeResolution()
+     */
     public boolean usesTypeResolution() {
 	return this.usesTypeResolution;
     }
 
+    /**
+     * @see Rule#usesRuleChain()
+     */
     public boolean usesRuleChain() {
 	return !getRuleChainVisits().isEmpty();
     }
 
+    /**
+     * @see Rule#getRuleChainVisits()
+     */
     public List<String> getRuleChainVisits() {
 	return ruleChainVisits;
     }
 
+    /**
+     * @see Rule#addRuleChainVisit(Class)
+     */
     public void addRuleChainVisit(Class<? extends Node> nodeClass) {
 	if (!nodeClass.getSimpleName().startsWith("AST")) {
 	    throw new IllegalArgumentException("Node class does not start with 'AST' prefix: " + nodeClass);
@@ -387,16 +376,25 @@ public abstract class AbstractRule implements Rule {
 	addRuleChainVisit(nodeClass.getSimpleName().substring("AST".length()));
     }
 
+    /**
+     * @see Rule#addRuleChainVisit(String)
+     */
     public void addRuleChainVisit(String astNodeName) {
 	if (!ruleChainVisits.contains(astNodeName)) {
 	    ruleChainVisits.add(astNodeName);
 	}
     }
 
+    /**
+     * @see Rule#start(RuleContext)
+     */
     public void start(RuleContext ctx) {
 	// Override as needed
     }
 
+    /**
+     * @see Rule#end(RuleContext)
+     */
     public void end(RuleContext ctx) {
 	// Override as needed
     }
@@ -470,7 +468,7 @@ public abstract class AbstractRule implements Rule {
 	if (equality) {
 	    Rule that = (Rule) o;
 	    equality = this.getName().equals(that.getName()) && this.getPriority().equals(that.getPriority())
-		    && this.getProperties().equals(that.getProperties());
+		    && this.getPropertiesByPropertyDescriptor().equals(that.getPropertiesByPropertyDescriptor());
 	}
 
 	return equality;
@@ -481,36 +479,8 @@ public abstract class AbstractRule implements Rule {
      */
     @Override
     public int hashCode() {
+	Object propertyValues = this.getPropertiesByPropertyDescriptor();
 	return this.getClass().getName().hashCode() + (this.getName() != null ? this.getName().hashCode() : 0)
-		+ this.getPriority().hashCode() + (this.getProperties() != null ? this.getProperties().hashCode() : 0);
-    }
-
-    public static Map<String, PropertyDescriptor> asFixedMap(PropertyDescriptor[] descriptors) {
-	Map<String, PropertyDescriptor> descriptorsByName = new HashMap<String, PropertyDescriptor>(descriptors.length);
-	for (PropertyDescriptor descriptor : descriptors) {
-	    descriptorsByName.put(descriptor.name(), descriptor);
-	}
-	return Collections.unmodifiableMap(descriptorsByName);
-    }
-
-    public static Map<String, PropertyDescriptor> asFixedMap(PropertyDescriptor descriptor) {
-	return asFixedMap(new PropertyDescriptor[] { descriptor });
-    }
-
-    public Map<PropertyDescriptor, Object> propertyValuesByDescriptor() {
-
-	Map<String, PropertyDescriptor> propsByName = propertiesByName();
-	if (propsByName.isEmpty()) {
-	    return PropertyDescriptor.EMPTY_VALUE_MAP;
-	}
-
-	Map<PropertyDescriptor, Object> valuesByDesc = new HashMap<PropertyDescriptor, Object>(propsByName.size());
-
-	Iterator<PropertyDescriptor> iter = propsByName.values().iterator();
-	while (iter.hasNext()) {
-	    PropertyDescriptor desc = iter.next();
-	    valuesByDesc.put(desc, desc.isMultiValue() ? getProperties(desc) : getProperty(desc));
-	}
-	return valuesByDesc;
+		+ this.getPriority().hashCode() + (propertyValues != null ? propertyValues.hashCode() : 0);
     }
 }

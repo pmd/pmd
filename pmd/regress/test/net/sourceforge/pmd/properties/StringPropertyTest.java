@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 /**
@@ -77,7 +78,7 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	protected PropertyDescriptor createProperty(boolean multiValue) {
 		return multiValue ?
-			new StringProperty("testString", "Test string property", new String[] {"hello", "world"}, 1.0f, delimiter) :
+			new StringMultiProperty("testString", "Test string property", new String[] {"hello", "world"}, 1.0f, delimiter) :
 			new StringProperty("testString", "Test string property", "brian", 1.0f);			
 		}
 
@@ -88,7 +89,7 @@ public class StringPropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	protected PropertyDescriptor createBadProperty(boolean multiValue) {
 		return multiValue ?
-			new StringProperty("testString", "Test string property", new String[] {"hello", "world", "a"+delimiter+"b"}, 1.0f, delimiter) :
+			new StringMultiProperty("testString", "Test string property", new String[] {"hello", "world", "a"+delimiter+"b"}, 1.0f, delimiter) :
 			new StringProperty("", "Test string property", "brian", 1.0f);			
 		}
 

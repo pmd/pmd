@@ -1,7 +1,9 @@
 package test.net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
@@ -9,6 +11,7 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 import org.junit.Test;
 
@@ -24,24 +27,29 @@ public class RuleReferenceTest {
 
 	@Test
 	public void testOverride() {
+	    StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
 		MockRule rule = new MockRule();
+		rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
 		rule.setLanguage(Language.XML);
 		rule.setName("name1");
-		rule.addProperty("property1", "value1");
+		rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
 		rule.setMessage("message1");
 		rule.setDescription("description1");
 		rule.addExample("example1");
 		rule.setExternalInfoUrl("externalInfoUrl1");
 		rule.setPriority(RulePriority.HIGH);
 
+		StringProperty PROPERTY2_DESCRIPTOR = new StringProperty("property2", "Test property", null, 0f);
 		RuleReference ruleReference = new RuleReference();
 		ruleReference.setRule(rule);
+		ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
 		ruleReference.setLanguage(Language.JAVA);
 		ruleReference.setMinimumLanguageVersion(LanguageVersion.JAVA_13);
 		ruleReference.setMaximumLanguageVersion(LanguageVersion.JAVA_17);
 		ruleReference.setDeprecated(true);
 		ruleReference.setName("name2");
-		ruleReference.addProperty("property1", "value2");
+		ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value2");
+		ruleReference.setProperty(PROPERTY2_DESCRIPTOR, "value3");
 		ruleReference.setMessage("message2");
 		ruleReference.setDescription("description2");
 		ruleReference.addExample("example2");
@@ -64,8 +72,16 @@ public class RuleReferenceTest {
 		assertEquals("Override failed", "name2", ruleReference.getName());
 		assertEquals("Override failed", "name2", ruleReference.getOverriddenName());
 
-		assertEquals("Override failed", "value2", ruleReference.getProperties().getProperty("property1"));
-		assertEquals("Override failed", "value2", ruleReference.getOverriddenProperties().getProperty("property1"));
+		assertEquals("Override failed", "value2", ruleReference.getProperty(PROPERTY1_DESCRIPTOR));
+		assertEquals("Override failed", "value3", ruleReference.getProperty(PROPERTY2_DESCRIPTOR));
+		assertTrue("Override failed", ruleReference.getPropertyDescriptors().contains(PROPERTY1_DESCRIPTOR));
+		assertTrue("Override failed", ruleReference.getPropertyDescriptors().contains(PROPERTY2_DESCRIPTOR));
+		assertFalse("Override failed", ruleReference.getOverriddenPropertyDescriptors().contains(PROPERTY1_DESCRIPTOR));
+		assertTrue("Override failed", ruleReference.getOverriddenPropertyDescriptors().contains(PROPERTY2_DESCRIPTOR));
+		assertTrue("Override failed", ruleReference.getPropertiesByPropertyDescriptor().containsKey(PROPERTY1_DESCRIPTOR));
+		assertTrue("Override failed", ruleReference.getPropertiesByPropertyDescriptor().containsKey(PROPERTY2_DESCRIPTOR));
+		assertTrue("Override failed", ruleReference.getOverriddenPropertiesByPropertyDescriptor().containsKey(PROPERTY1_DESCRIPTOR));
+		assertTrue("Override failed", ruleReference.getOverriddenPropertiesByPropertyDescriptor().containsKey(PROPERTY2_DESCRIPTOR));
 
 		assertEquals("Override failed", "message2", ruleReference.getMessage());
 		assertEquals("Override failed", "message2", ruleReference.getOverriddenMessage());
@@ -87,12 +103,14 @@ public class RuleReferenceTest {
 
 	@Test
 	public void testNotOverride() {
+	    StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
 		MockRule rule = new MockRule();
+		rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
 		rule.setLanguage(Language.JAVA);
 		rule.setMinimumLanguageVersion(LanguageVersion.JAVA_13);
 		rule.setMaximumLanguageVersion(LanguageVersion.JAVA_17);
 		rule.setName("name1");
-		rule.addProperty("property1", "value1");
+		rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
 		rule.setMessage("message1");
 		rule.setDescription("description1");
 		rule.addExample("example1");
@@ -106,7 +124,7 @@ public class RuleReferenceTest {
 		ruleReference.setMaximumLanguageVersion(LanguageVersion.JAVA_17);
 		ruleReference.setDeprecated(false);
 		ruleReference.setName("name1");
-		ruleReference.addProperty("property1", "value1");
+		ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value1");
 		ruleReference.setMessage("message1");
 		ruleReference.setDescription("description1");
 		ruleReference.addExample("example1");
@@ -128,8 +146,7 @@ public class RuleReferenceTest {
 		assertEquals("Override failed", "name1", ruleReference.getName());
 		assertNull("Override failed", ruleReference.getOverriddenName());
 
-		assertEquals("Override failed", "value1", ruleReference.getProperties().getProperty("property1"));
-		assertNull("Override failed", ruleReference.getOverriddenProperties());
+		assertEquals("Override failed", "value1", ruleReference.getProperty(PROPERTY1_DESCRIPTOR));
 
 		assertEquals("Override failed", "message1", ruleReference.getMessage());
 		assertNull("Override failed", ruleReference.getOverriddenMessage());

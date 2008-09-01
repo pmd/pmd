@@ -22,6 +22,9 @@
  */
 package test.net.sourceforge.pmd.stat;
 
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.MINIMUM_DESCRIPTOR;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.SIGMA_DESCRIPTOR;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.TOP_SCORE_DESCRIPTOR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -39,7 +42,6 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.java.ast.DummyJavaNode;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
-import net.sourceforge.pmd.lang.rule.stat.StatisticalRuleHelper;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
 
@@ -289,7 +291,7 @@ public class StatisticalRuleTest  {
         point.setNode(s);
         point.setMessage("SingleDataPoint");
 
-        IUT.setProperty(StatisticalRuleHelper.MINIMUM_DESCRIPTOR, Integer.valueOf(POINTS));
+        IUT.setProperty(MINIMUM_DESCRIPTOR, (double)POINTS);
 
         IUT.addDataPoint(point);
 
@@ -813,18 +815,15 @@ public class StatisticalRuleTest  {
         try {
             setUp();
             if (sigma >= 0) {
-               // IUT.addProperty("sigma", Double.toString(sigma));
-            	IUT.setProperty(StatisticalRuleHelper.SIGMA_DESCRIPTOR, Double.valueOf(sigma));
+            	IUT.setProperty(SIGMA_DESCRIPTOR, sigma);
             }
 
             if (minimum >= 0) {
-              //  IUT.addProperty("minimum", Double.toString(minimum));
-            	IUT.setProperty(StatisticalRuleHelper.MINIMUM_DESCRIPTOR, Double.valueOf(minimum));
+            	IUT.setProperty(MINIMUM_DESCRIPTOR, minimum);
             }
 
             if (topScore >= 0) {
-              //  IUT.addProperty("topscore", Integer.toString(topScore));
-                IUT.setProperty(StatisticalRuleHelper.TOP_SCORE_DESCRIPTOR, Integer.valueOf(topScore));
+                IUT.setProperty(TOP_SCORE_DESCRIPTOR, topScore);
             }
 
             Report report = makeReport(IUT);

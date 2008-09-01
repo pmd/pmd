@@ -5,11 +5,11 @@ package net.sourceforge.pmd;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 /**
  * This is the basic Rule interface for PMD rules.
@@ -18,14 +18,16 @@ import net.sourceforge.pmd.lang.ast.Node;
 public interface Rule {
 
     /**
-     * Name of the property to universally suppress violations with messages matching a regular expression.
+     * The property descriptor to universally suppress violations with messages matching a regular expression.
      */
-    String VIOLATION_SUPPRESS_REGEX_PROPERTY = "violationSuppressRegex";
+    StringProperty VIOLATION_SUPPRESS_REGEX_DESCRIPTOR = new StringProperty("violationSuppressRegex",
+	    "Suppress violations with messages matching a regular expression", null, Integer.MAX_VALUE - 1);
 
     /**
      * Name of the property to universally suppress violations on nodes which match a given relative XPath expression.
      */
-    String VIOLATION_SUPPRESS_XPATH_PROPERTY = "violationSuppressXPath";
+    StringProperty VIOLATION_SUPPRESS_XPATH_DESCRIPTOR = new StringProperty("violationSuppressXPath",
+	    "Suppress violations on nodes which match a given relative XPath expression.", null, Integer.MAX_VALUE - 2);
 
     /**
      * Get the Language of this Rule.
@@ -172,124 +174,52 @@ public interface Rule {
     void setPriority(RulePriority priority);
 
     /**
-     * Get all properties for this Rule.
-     *
-     * @return the properties for the rule
-     * @deprecated Use propertyValuesByDescriptor()
+     * Define a new property via a PropertyDescriptor.
+     * 
+     * @param propertyDescriptor The property descriptor.
+     * @throws IllegalArgumentException If there is already a property defined the same name.
      */
-    Properties getProperties();
+    void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) throws IllegalArgumentException;
 
     /**
-     * Add a specific property to this Rule.
-     * @deprecated
+     * Get the PropertyDescriptor for the given property name.
+     * 
+     * @param name The name of the property.
+     * @return The PropertyDescriptor for the named property, <code>null</code> if there is no such property defined.
      */
-    void addProperty(String name, String property);
+    PropertyDescriptor<?> getPropertyDescriptor(String name);
 
     /**
-     * Add a set of properties to this Rule.
-     * @deprecated
+     * Get the PropertyDescriptors for all defined properties.  The properties
+     * are returned sorted by UI order.
+     * 
+     * @return The PropertyDescriptors in UI order.
      */
-    void addProperties(Properties properties);
+    List<PropertyDescriptor<?>> getPropertyDescriptors();
 
     /**
-     * Get whether this Rule has a property of the given name.
-     */
-    boolean hasProperty(String name);
-
-    /**
-     * Get the <code>boolean</code> value for the given property.
-     * @deprecated use getBooleanProperty(PropertyDescriptor) 
-     */
-    boolean getBooleanProperty(String name);
-
-    /**
-     * Get the <code>boolean</code> value for the given property.
-     * @param key The property descriptor.
+     * Get the typed value for the given property.
+     * 
+     * @param <T> The underlying type of the property descriptor.
+     * @param propertyDescriptor The property descriptor.
      * @return The property value.
      */
-    boolean getBooleanProperty(PropertyDescriptor key);
-    
-    /**
-     * Get the <code>boolean</code> values for the given property.
-     * @param key The property descriptor.
-     * @return The property values.
-     */
-    boolean[] getBooleanProperties(PropertyDescriptor key);
-    
-    /**
-     * Get the <code>int</code> value for the given property.
-     * @deprecated use getIntProperty(PropertyDescriptor)
-     */
-    int getIntProperty(String name);
+    <T> T getProperty(PropertyDescriptor<T> propertyDescriptor);
 
-    /**
-     * Get the <code>int</code> value for the given property.
-     */
-    int getIntProperty(PropertyDescriptor key);
-    
-    /**
-     * Get the <code>int</code> values for the given property.
-     */
-    int[] getIntProperties(PropertyDescriptor key);
-    
-    /**
-     * Get the <code>double</code> value for the given property.
-     * @deprecated use getDoubleProperty(PropertyDescriptor)
-     */
-    double getDoubleProperty(String name);
-
-    /**
-     * Get the <code>double</code> value for the given property.
-     */
-    double getDoubleProperty(PropertyDescriptor key);
-    
-    /**
-     * Get the <code>double</code> values for the given property.
-     */
-    double[] getDoubleProperties(PropertyDescriptor key);
-    
-    /**
-     * Get the <code>String</code> value for the given property.
-     * @deprecated use getStringProperty(PropertyDescriptor)
-     */
-    String getStringProperty(String name);
-
-    /**
-     * Get the <code>String</code> value for the given property.
-     */
-    String getStringProperty(PropertyDescriptor key);
-    
-    /**
-     * Get the <code>String</code> values for the given property.
-     */
-    String[] getStringProperties(PropertyDescriptor key);
-    
     /**
      * Set the property value specified (will be type-checked)
-     * @param key
-     * @param value
-     */
-    void setProperty(PropertyDescriptor key, Object value);
-    
-    /**
-     * Set the property values specified (will be type-checked)
      * 
-     * @param key
-     * @param values
+     * @param <T> The underlying type of the property descriptor.
+     * @param propertyDescriptor The property descriptor.
+     * @param value The value to set.
      */
-    void setProperties(PropertyDescriptor key, Object[] values);
-    
+    <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value);
+
     /**
      * Returns all the current property values for the receiver or an
      * immutable empty map if none are specified.
      */
-    Map<PropertyDescriptor, Object> propertyValuesByDescriptor();
-    
-    /**
-     * Get the PropertyDescriptor for the given property.
-     */
-    // FUTURE Rename to getPropertyDescriptor(String)
-    PropertyDescriptor propertyDescriptorFor(String name);
+    Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor();
 
     /**
      * Sets whether this Rule uses Data Flow Analysis.

@@ -4,13 +4,11 @@
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -28,7 +26,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclaratorId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
 /**
  * Makes sure you close your database connections. It does this by
@@ -50,30 +48,24 @@ public class CloseResourceRule extends AbstractJavaRule {
     private Set<String> types = new HashSet<String>();
 
     private Set<String> closeTargets = new HashSet<String>();
-    private static final PropertyDescriptor CLOSE_TARGETS_DESCRIPTOR = new StringProperty("closeTargets",
-            "Methods which may close this resource", "", 1.0f);
+    private static final StringMultiProperty CLOSE_TARGETS_DESCRIPTOR = new StringMultiProperty("closeTargets",
+            "Methods which may close this resource", new String[]{}, 1.0f, ',');
 
-    private static final PropertyDescriptor TYPES_DESCRIPTOR = new StringProperty("types",
-            "Types that are affected by this rule", "", 2.0f);
-
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] { TYPES_DESCRIPTOR, CLOSE_TARGETS_DESCRIPTOR });
-
-    @Override
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-        return PROPERTY_DESCRIPTORS_BY_NAME;
+    private static final StringMultiProperty TYPES_DESCRIPTOR = new StringMultiProperty("types",
+            "Types that are affected by this rule", new String[]{"Connection","Statement","ResultSet"}, 2.0f, ',');
+    
+    public CloseResourceRule() {
+	definePropertyDescriptor(CLOSE_TARGETS_DESCRIPTOR);
+	definePropertyDescriptor(TYPES_DESCRIPTOR);
     }
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-        if (closeTargets.isEmpty() && getStringProperty(CLOSE_TARGETS_DESCRIPTOR) != null) {
-            for (StringTokenizer st = new StringTokenizer(getStringProperty(CLOSE_TARGETS_DESCRIPTOR), ","); st.hasMoreTokens();) {
-                closeTargets.add(st.nextToken());
-            }
+        if (closeTargets.isEmpty() && getProperty(CLOSE_TARGETS_DESCRIPTOR) != null) {
+            closeTargets.addAll(Arrays.asList(getProperty(CLOSE_TARGETS_DESCRIPTOR)));
         }
-        if (types.isEmpty() && getStringProperty(TYPES_DESCRIPTOR) != null) {
-            for (StringTokenizer st = new StringTokenizer(getStringProperty(TYPES_DESCRIPTOR), ","); st.hasMoreTokens();) {
-                types.add(st.nextToken());
-            }
+        if (types.isEmpty() && getProperty(TYPES_DESCRIPTOR) != null) {
+            types.addAll(Arrays.asList(getProperty(TYPES_DESCRIPTOR)));
         }
         return super.visit(node, data);
     }

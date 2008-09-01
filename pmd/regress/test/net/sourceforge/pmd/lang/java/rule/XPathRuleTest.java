@@ -12,6 +12,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSets;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,9 +34,8 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
      @Test
      public void testPluginname() throws Throwable {
          Rule rule = new XPathRule();
-         rule.addProperty("xpath", "//VariableDeclaratorId[string-length(@Image) < 3]");
+         rule.setProperty(XPathRule.XPATH_DESCRIPTOR, "//VariableDeclaratorId[string-length(@Image) < 3]");
          rule.setMessage("{0}");
-         rule.addProperty("pluginname", "true");
          PMD p = new PMD();
          RuleContext ctx = new RuleContext();
          Report report = new Report();
@@ -51,9 +51,11 @@ import test.net.sourceforge.pmd.testframework.RuleTst;
      @Test
      public void testVariables() throws Throwable {
          Rule rule = new XPathRule();
-         rule.addProperty("xpath", "//VariableDeclaratorId[@Image=$var]");
+         rule.setProperty(XPathRule.XPATH_DESCRIPTOR, "//VariableDeclaratorId[@Image=$var]");
          rule.setMessage("Avoid vars");
-         rule.addProperty("var", "fiddle");
+         StringProperty varDescriptor = new StringProperty("var", "Test var", null, 1.0f);
+         rule.definePropertyDescriptor(varDescriptor);
+         rule.setProperty(varDescriptor, "fiddle");
          PMD p = new PMD();
          RuleContext ctx = new RuleContext();
          Report report = new Report();

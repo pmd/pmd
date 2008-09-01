@@ -4,11 +4,13 @@
   */
  package test.net.sourceforge.pmd.lang.java.rule.design;
  
- import org.junit.Before;
+ import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.Rule;
+
+import org.junit.Before;
 import org.junit.Test;
 
-import net.sourceforge.pmd.Rule;
- import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
+import test.net.sourceforge.pmd.testframework.SimpleAggregatorTst;
 import test.net.sourceforge.pmd.testframework.TestDescriptor;
  
  public class UncommentedEmptyConstructorRuleTest extends SimpleAggregatorTst {
@@ -29,7 +31,8 @@ import test.net.sourceforge.pmd.testframework.TestDescriptor;
  
      @Test
      public void testIgnoredConstructorInvocation() {
-         rule.addProperty("ignoreExplicitConstructorInvocation", "true");
+	 PropertyDescriptor<Boolean> descriptor = (PropertyDescriptor<Boolean>)rule.getPropertyDescriptor("ignoreExplicitConstructorInvocation");
+         rule.setProperty(descriptor, true);
          runTests(new TestDescriptor[]{
              new TestDescriptor(tests[0].getCode(), "simple failure", 1, rule),
              new TestDescriptor(tests[1].getCode(), "only 'this(...)' failure", 1, rule),

@@ -1,9 +1,10 @@
 package test.net.sourceforge.pmd.properties;
 
-import org.junit.Test;
-
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.rule.properties.IntegerMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
+
+import org.junit.Test;
 
 /**
  * Evaluates the functionality of the IntegerProperty descriptor by testing its ability to catch creation
@@ -62,7 +63,7 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createProperty(boolean multiValue) {
 
 		return multiValue ?
-			new IntegerProperty("testInteger", "Test integer property", MIN, MAX, new int[] {MIN, MIN+1, MAX-1, MAX}, 1.0f) :
+			new IntegerMultiProperty("testInteger", "Test integer property", MIN, MAX, new Integer[] {MIN, MIN+1, MAX-1, MAX}, 1.0f) :
 			new IntegerProperty("testInteger", "Test integer property", MIN, MAX, MAX-1, 1.0f);
 		}
 
@@ -74,7 +75,7 @@ public class IntegerPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createBadProperty(boolean multiValue) {
 
 		return multiValue ?
-			new IntegerProperty("testInteger", "", MIN, MAX, new int[] {MIN-1, MAX}, 1.0f) :
+			new IntegerMultiProperty("testInteger", "", MIN, MAX, new Integer[] {MIN-1, MAX}, 1.0f) :
 			new IntegerProperty("", "Test integer property", MIN, MAX, MAX+1, 1.0f); 
 		}
 

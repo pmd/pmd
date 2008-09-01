@@ -138,9 +138,6 @@ public class Foo {
 Deeply nested if..then statements are hard to read.
     </description>
       <priority>3</priority>
-   <properties>
-    <property name="problemDepth" description="The if statement depth reporting threshold" value="3"/>
-   </properties>
     <example>
 <![CDATA[
 public class Foo {
@@ -190,9 +187,6 @@ public class Foo {
  methods, or creating subclasses based on the switch variable.
       </description>
         <priority>3</priority>
-        <properties>
-         <property name="minimum" description="The switch statement ratio reporting threshold" value="10"/>
-        </properties>
       <example>
  <![CDATA[
 public class Foo {
@@ -322,9 +316,6 @@ public class Foo {
 Ensure that resources (like Connection, Statement, and ResultSet objects) are always closed after use.
     </description>
     <priority>3</priority>
-      <properties>
-          <property name="types" value="Connection,Statement,ResultSet"/>
-      </properties>
     <example>
 <![CDATA[
 public class Bar {
@@ -1202,16 +1193,6 @@ initialize-on-demand holder class (do not use the double-check idiom).
 See Effective Java, item 48.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="checkNonStaticMethods"
-                description="Do not set this to false and checkNonStaticFields to true">
-                <value>true</value>
-            </property>
-            <property name="checkNonStaticFields"
-                description="Do not set this to true and checkNonStaticMethods to false">
-                <value>false</value>
-            </property>
-        </properties>
         <example><![CDATA[
 private static Foo foo = null;
 
@@ -1277,7 +1258,7 @@ and unintentional empty constructors.
  ]]>
              </value>
           </property>
-          <property name="ignoreExplicitConstructorInvocation" description="Ignore explicit constructor invocation when deciding whether constructor is empty or not">
+          <property name="ignoreExplicitConstructorInvocation" type="Boolean" description="Ignore explicit constructor invocation when deciding whether constructor is empty or not">
               <value>false</value>
           </property>
       </properties>
@@ -1515,15 +1496,6 @@ to the field. This probably means that the field can be changed to a local varia
 			]]>
       </description>
       <priority>3</priority>
-      <properties>
-		<!-- Disabled by default because these options generate false positives -->
-		<property name="CheckInnerClasses" description="Check inner classes">
-            <value>false</value>
-        </property>
-        <property name="DisallowNotAssignment" description="Disallow violations where the first usage is not an assignment">
-            <value>false</value>
-        </property>
-      </properties>
       <example><![CDATA[
 public class Foo {
     private int x;  //Why bother saving this?
@@ -1629,7 +1601,7 @@ public class abstract Example {
         </description>
         <priority>1</priority>
         <properties>
-        	<property name="minimumNumberCaseForASwitch" description="Minimum number of branches for a switch" value="3"/>
+        	<property name="minimumNumberCaseForASwitch" type="Integer" description="Minimum number of branches for a switch" min="1" max="100" value="3"/>
             <property name="xpath">
                 <value>
                     <![CDATA[

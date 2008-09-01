@@ -225,6 +225,8 @@ The following is relatively complete list of the major changes (this may not be
 	API Change - Generalize Property Descriptor treatment
 	   Renamed - net.sourceforge.pmd.properties.* to net.sourceforge.pmd.lang.rule.properties.*
 	   Renamed - net.sourceforge.pmd.properties.AbstractPMDProperty to net.sourceforge.pmd.lang.rule.properties.AbstractProperty
+	   Changed - net.sourceforge.pmd.properties.PropertyDescriptor to use Generics, and other changes
+	   Added - net.sourceforge.pmd.lang.rule.properties.* new types and other API changes
 	   
 	API Change - Generalize AST treatment
 	   Added - net.sourceforge.pmd.lang.ast.Node (interface extracted from old Node/SimpleNode)
@@ -258,9 +260,19 @@ The following is relatively complete list of the major changes (this may not be
       Removed - String Rule.getExample()
       Removed - Rule.LOWEST_PRIORITY
       Removed - Rule.PRIORITIES
+	   Removed - Properties Rule.getProperties()
+	   Removed - Rule.addProperties(Properties)
+	   Removed - boolean Rule.hasProperty(String)
  	   Removed - RuleSet.applies(Language,Language)
       Changed - void Rule.setPriority(int) to void Rule.setPriority(RulePriority)
       Changed - int Rule.getPriority() to void RulePriority Rule.getPriority()
+	   Changed - XXX Rule.getXXXProperty(String) to <T> Rule.getProperty(PropertyDescriptor<T>)
+	   Changed - XXX Rule.getXXXProperty(PropertyDescriptor) to <T> Rule.getProperty(PropertyDescriptor<T>)
+	   Changed - Rule.addProperty(String, String) to Rule.setProperty(PropertyDescriptor<T>, T)
+	   Changed - Rule.setProperty(PropertyDescriptor, Object) to Rule.setProperty(PropertyDescriptor<T>, T)
+	   Changed - Rule.setProperty(PropertyDescriptor, Object[]) to Rule.setProperty(PropertyDescriptor<T>, T)
+	   Changed - Rule.propertyValuesByDescriptor() to Rule.getPropertiesByPropertyDescriptor()
+	   Changed - PropertyDescriptor Rule.propertyDescriptorFor(String) to PropertyDescriptor Rule.getPropertyDescriptor(String)
       Added - Rule.setLanguage(Language)
       Added - Language Rule.getLanguage()
       Added - Rule.setMinimumLanguageVersion(LanguageVersion)
@@ -269,6 +281,8 @@ The following is relatively complete list of the major changes (this may not be
       Added - LanguageVersion Rule.getMaximumLanguageVersion()
       Added - Rule.setDeprecated(boolean)
       Added - boolean Rule.isDeprecated()
+	   Added - Rule.definePropertyDescriptor(PropertyDescriptor)
+	   Added - List<PropertyDescriptor> Rule.getPropertyDescriptors()
 
    API Change - Changes to PMD class
       Renamed - PMD.EXCLUDE_MARKER to PMD.SUPPRESS_MARKER

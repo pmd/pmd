@@ -4,7 +4,6 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.util.ClassUtil;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Defines a property that supports class types, even for primitive values!
@@ -13,7 +12,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public class TypeProperty extends AbstractPackagedProperty {
+public class TypeProperty extends AbstractPackagedProperty<Class> {
 
     private static final char DELIMITER = '|';
 
@@ -34,29 +33,13 @@ public class TypeProperty extends AbstractPackagedProperty {
     }
 
     /**
-     * Constructor for TypeProperty.
-     * @param theName String
-     * @param theDescription String
-     * @param theDefaults Class[]
-     * @param legalPackageNames String[]
-     * @param theUIOrder float
-     * @throws IllegalArgumentException
-     */
-    public TypeProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames,
-            float theUIOrder) {
-        super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
-
-        isMultiValue(true);
-    }
-
-    /**
      * Method packageNameOf.
      * @param item Object
      * @return String
      */
     @Override
     protected String packageNameOf(Object item) {
-        return ((Class) item).getName();
+        return ((Class<?>) item).getName();
     }
 
     /**
@@ -64,7 +47,7 @@ public class TypeProperty extends AbstractPackagedProperty {
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
-    public Class<?> type() {
+    public Class<Class> type() {
         return Class.class;
     }
 
@@ -93,7 +76,7 @@ public class TypeProperty extends AbstractPackagedProperty {
      * @return Class
      * @throws IllegalArgumentException
      */
-    private Class<?> classFrom(String className) {
+    static Class<?> classFrom(String className) {
 
         Class<?> cls = ClassUtil.getTypeFor(className);
         if (cls != null) {
@@ -113,18 +96,7 @@ public class TypeProperty extends AbstractPackagedProperty {
      * @return Object
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
-    public Object valueFrom(String valueString) {
-
-        if (!isMultiValue()) {
-            return classFrom(valueString);
-        }
-
-        String[] values = StringUtil.substringsOf(valueString, DELIMITER);
-
-        Class<?>[] classes = new Class<?>[values.length];
-        for (int i = 0; i < values.length; i++) {
-            classes[i] = classFrom(values[i]);
-        }
-        return classes;
+    public Class<?> valueFrom(String valueString) {
+        return classFrom(valueString);
     }
 }

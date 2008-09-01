@@ -11,7 +11,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * 
  * @author Brian Remedios
  */
-public abstract class AbstractScalarProperty extends AbstractProperty {
+public abstract class AbstractScalarProperty<T> extends AbstractProperty<T> {
 
 	/**
 	 * Constructor for AbstractScalarProperty.
@@ -20,7 +20,7 @@ public abstract class AbstractScalarProperty extends AbstractProperty {
 	 * @param theDefault Object
 	 * @param theUIOrder float
 	 */
-	protected AbstractScalarProperty(String theName, String theDescription, Object theDefault, float theUIOrder) {
+	protected AbstractScalarProperty(String theName, String theDescription, T theDefault, float theUIOrder) {
 		super(theName, theDescription, theDefault, theUIOrder);
 	}
 
@@ -36,7 +36,13 @@ public abstract class AbstractScalarProperty extends AbstractProperty {
 	 * @param size int
 	 * @return Object[]
 	 */
-	protected abstract Object[] arrayFor(int size);
+	protected Object[] arrayFor(int size) {
+	    if (isMultiValue()) {
+		throw new IllegalStateException("Subclass '" + this.getClass().getSimpleName() + "' must implement the arrayFor(int) method.");
+	    } else {
+		throw new UnsupportedOperationException("Arrays not supported on single valued property descriptors.");
+	    }
+	}
 	
 	/**
 	 * Method valueFrom.
@@ -45,10 +51,11 @@ public abstract class AbstractScalarProperty extends AbstractProperty {
 	 * @throws IllegalArgumentException
 	 * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
 	 */
-	public Object valueFrom(String valueString) throws IllegalArgumentException {
+	@SuppressWarnings("unchecked")
+	public T valueFrom(String valueString) throws IllegalArgumentException {
 		
 		if (!isMultiValue()) {
-		    return createFrom(valueString);
+		    return (T)createFrom(valueString);
 		}
 		
 		String[] strValues = StringUtil.substringsOf(valueString, multiValueDelimiter);
@@ -57,6 +64,6 @@ public abstract class AbstractScalarProperty extends AbstractProperty {
 		for (int i=0; i<strValues.length; i++) {
 		    values[i] = createFrom(strValues[i]);
 		}
-		return values;
+		return (T)values;
 	}
 }

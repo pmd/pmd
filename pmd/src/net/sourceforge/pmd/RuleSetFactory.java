@@ -6,7 +6,6 @@ package net.sourceforge.pmd;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.logging.Logger;
@@ -19,7 +18,9 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorFactory;
 import net.sourceforge.pmd.util.ResourceLoader;
+import net.sourceforge.pmd.util.StringUtil;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -225,6 +226,9 @@ public class RuleSetFactory {
 			ruleSet.addExcludePattern(parseTextNode(node));
 		    } else if (node.getNodeName().equals("rule")) {
 			parseRuleNode(ruleSet, node, classLoader);
+		    } else {
+			throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
+				+ "> encountered as child of <ruleset> element.");
 		    }
 		}
 	    }
@@ -406,11 +410,10 @@ public class RuleSetFactory {
 		} else if (node.getNodeName().equals("priority")) {
 		    rule.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node).trim())));
 		} else if (node.getNodeName().equals("properties")) {
-		    Properties p = new Properties();
-		    parsePropertiesNode(p, node);
-		    for (Map.Entry<Object, Object> entry : p.entrySet()) {
-			rule.addProperty((String) entry.getKey(), (String) entry.getValue());
-		    }
+		    parsePropertiesNode(rule, node);
+		} else {
+		    throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
+			    + "> encountered as child of <rule> element for Rule " + rule.getName());
 		}
 	    }
 	}
@@ -489,9 +492,10 @@ public class RuleSetFactory {
 		} else if (node.getNodeName().equals("priority")) {
 		    ruleReference.setPriority(RulePriority.valueOf(Integer.parseInt(parseTextNode(node))));
 		} else if (node.getNodeName().equals("properties")) {
-		    Properties p = new Properties();
-		    parsePropertiesNode(p, node);
-		    ruleReference.addProperties(p);
+		    parsePropertiesNode(ruleReference, node);
+		} else {
+		    throw new IllegalArgumentException("Unexpected element <" + node.getNodeName()
+			    + "> encountered as child of <rule> element for Rule " + ruleReference.getName());
 		}
 	    }
 	}
@@ -504,14 +508,14 @@ public class RuleSetFactory {
     /**
      * Parse a properties node.
      *
-     * @param p The Properties to which the properties should be added.
+     * @param rule The Rule to which the properties should be added. 
      * @param propertiesNode Must be a properties element node.
      */
-    private static void parsePropertiesNode(Properties p, Node propertiesNode) {
+    private static void parsePropertiesNode(Rule rule, Node propertiesNode) {
 	for (int i = 0; i < propertiesNode.getChildNodes().getLength(); i++) {
 	    Node node = propertiesNode.getChildNodes().item(i);
 	    if (node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals("property")) {
-		parsePropertyNode(p, node);
+		parsePropertyNode(rule, node);
 	    }
 	}
     }
@@ -519,14 +523,21 @@ public class RuleSetFactory {
     /**
      * Parse a property node.
      *
-     * @param p The Properties to which the property should be added.
+     * @param rule The Rule to which the property should be added. 
      * @param propertyNode Must be a property element node.
      */
-    private static void parsePropertyNode(Properties p, Node propertyNode) {
+    @SuppressWarnings("unchecked")
+    private static void parsePropertyNode(Rule rule, Node propertyNode) {
 	Element propertyElement = (Element) propertyNode;
 	String name = propertyElement.getAttribute("name");
+	String description = propertyElement.getAttribute("description");
+	String type = propertyElement.getAttribute("type");
+	String delimiter = propertyElement.getAttribute("delimiter");
+	String min = propertyElement.getAttribute("min");
+	String max = propertyElement.getAttribute("max");
 	String value = propertyElement.getAttribute("value");
-	// TODO String description = propertyElement.getAttribute("description");
+
+	// If value not provided, get from child <value> element.
 	if (value.trim().length() == 0) {
 	    for (int i = 0; i < propertyNode.getChildNodes().getLength(); i++) {
 		Node node = propertyNode.getChildNodes().item(i);
@@ -535,10 +546,21 @@ public class RuleSetFactory {
 		}
 	    }
 	}
-	if (propertyElement.hasAttribute("pluginname")) {
-	    p.setProperty("pluginname", propertyElement.getAttributeNode("pluginname").getNodeValue());
+
+	// Setting of existing property, or defining a new property?
+	if (StringUtil.isEmpty(type)) {
+	    PropertyDescriptor propertyDescriptor = rule.getPropertyDescriptor(name);
+	    if (propertyDescriptor == null) {
+		throw new IllegalArgumentException("Cannot set non-existant property '" + name + "' on Rule "
+			+ rule.getName());
+	    } else {
+		Object realValue = propertyDescriptor.valueFrom(value);
+		rule.setProperty(propertyDescriptor, realValue);
+	    }
+	} else {
+	    PropertyDescriptor propertyDescriptor = PropertyDescriptorFactory.createPropertyDescriptor(name, description, type, delimiter, min, max, value);
+	    rule.definePropertyDescriptor(propertyDescriptor);
 	}
-	p.setProperty(name, value);
     }
 
     /**
@@ -548,20 +570,20 @@ public class RuleSetFactory {
      * @return The String.
      */
     private static String parseTextNode(Node node) {
-		
-    	final int nodeCount = node.getChildNodes().getLength();
-    	if (nodeCount == 0) {
-    		return "";
-    	}
-    	
-    	StringBuilder buffer = new StringBuilder();
-		
-		for (int i = 0; i < nodeCount; i++) {
-		    Node childNode = node.getChildNodes().item(i);
-		    if (childNode.getNodeType() == Node.CDATA_SECTION_NODE || childNode.getNodeType() == Node.TEXT_NODE) {
-			buffer.append(childNode.getNodeValue());
-		    }
-		}
-		return buffer.toString();
+
+	final int nodeCount = node.getChildNodes().getLength();
+	if (nodeCount == 0) {
+	    return "";
+	}
+
+	StringBuilder buffer = new StringBuilder();
+
+	for (int i = 0; i < nodeCount; i++) {
+	    Node childNode = node.getChildNodes().item(i);
+	    if (childNode.getNodeType() == Node.CDATA_SECTION_NODE || childNode.getNodeType() == Node.TEXT_NODE) {
+		buffer.append(childNode.getNodeValue());
+	    }
+	}
+	return buffer.toString();
     }
 }

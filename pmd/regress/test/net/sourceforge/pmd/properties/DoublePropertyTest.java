@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.rule.properties.DoubleMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
 
 /**
@@ -63,7 +64,7 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new DoubleProperty("testDouble", "Test double property", MIN, MAX, new double[] {-1,0,1,2}, 1.0f) :
+			new DoubleMultiProperty("testDouble", "Test double property", MIN, MAX, new Double[] {-1d,0d,1d,2d}, 1.0f) :
 			new DoubleProperty("testDouble", "Test double property", MIN, MAX, 9.0, 1.0f);	
 	}
 
@@ -76,7 +77,7 @@ public class DoublePropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createBadProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new DoubleProperty("testDouble", "Test double property", MIN, MAX, new double[] {MIN-SHIFT,MIN,MIN+SHIFT,MAX+SHIFT}, 1.0f) :
+			new DoubleMultiProperty("testDouble", "Test double property", MIN, MAX, new Double[] {MIN-SHIFT,MIN,MIN+SHIFT,MAX+SHIFT}, 1.0f) :
 			new DoubleProperty("testDouble", "Test double property", MAX, MIN, 9.0, 1.0f) ;				
 		}
 	

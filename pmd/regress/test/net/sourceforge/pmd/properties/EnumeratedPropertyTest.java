@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.rule.properties.EnumeratedMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 
 /**
@@ -69,7 +70,7 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, values, new int[] {0,1}, 1.0f) :
+			new EnumeratedMultiProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, values, new int[] {0,1}, 1.0f) :
 			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, values, 0, 1.0f);			
 	}
 
@@ -81,7 +82,7 @@ public class EnumeratedPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createBadProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, new Object[0], new int[] {99}, 1.0f) :
+			new EnumeratedMultiProperty<Object>("testEnumerations", "Test enumerations with complex types", keys, new Object[0], new int[] {99}, 1.0f) :
 			new EnumeratedProperty<Object>("testEnumerations", "Test enumerations with complex types", new String[0], values, -1, 1.0f);
 	}
 	

@@ -14,5 +14,6 @@ import net.sourceforge.pmd.lang.java.rule.design.ExcessiveLengthRule;
 public class ExcessiveMethodLengthRule extends ExcessiveLengthRule {
     public ExcessiveMethodLengthRule() {
         super(ASTMethodDeclaration.class);
+        setProperty(MINIMUM_DESCRIPTOR, 100d);
     }
 }

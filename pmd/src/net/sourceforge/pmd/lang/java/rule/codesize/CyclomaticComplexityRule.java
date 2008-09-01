@@ -3,10 +3,8 @@
  */
 package net.sourceforge.pmd.lang.java.rule.codesize;
 
-import java.util.Map;
 import java.util.Stack;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
@@ -36,25 +34,14 @@ import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
  */
 public class CyclomaticComplexityRule extends AbstractJavaRule {
 
-    public static final PropertyDescriptor REPORT_LEVEL_DESCRIPTOR = new IntegerProperty("reportLevel",
-	    "Complexity reporting threshold", 1, 30, 10, 1.0f);
+    public static final IntegerProperty REPORT_LEVEL_DESCRIPTOR = new IntegerProperty("reportLevel",
+	    "The Cyclomatic Complexity reporting threshold", 1, 30, 10, 1.0f);
 
-    public static final PropertyDescriptor SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showClassesComplexity",
-	"Add class average violation to the report", true, 2.0f);
+    public static final BooleanProperty SHOW_CLASSES_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showClassesComplexity",
+	"Indicate if class average violation should be added to the report", true, 2.0f);
 
-    public static final PropertyDescriptor SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showMethodsComplexity",
-	"Add method average violation to the report", true, 3.0f);
-
-    public static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] {
-	    REPORT_LEVEL_DESCRIPTOR, SHOW_CLASSES_COMPLEXITY_DESCRIPTOR, SHOW_METHODS_COMPLEXITY_DESCRIPTOR });
-
-    /**
-     * @return Map
-     */
-    @Override
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-	return PROPERTY_DESCRIPTORS_BY_NAME;
-    }
+    public static final BooleanProperty SHOW_METHODS_COMPLEXITY_DESCRIPTOR = new BooleanProperty("showMethodsComplexity",
+	"Indicate if class average violation should be added to the report", true, 3.0f);
 
   private int reportLevel;
   private boolean showClassesComplexity = true;
@@ -86,11 +73,17 @@ public class CyclomaticComplexityRule extends AbstractJavaRule {
 
   private Stack<Entry> entryStack = new Stack<Entry>();
 
+  public CyclomaticComplexityRule() {
+      definePropertyDescriptor(REPORT_LEVEL_DESCRIPTOR);
+      definePropertyDescriptor(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
+      definePropertyDescriptor(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
+  }
+
   @Override
 public Object visit(ASTCompilationUnit node, Object data) {
-    reportLevel = getIntProperty(REPORT_LEVEL_DESCRIPTOR);
-    showClassesComplexity = getBooleanProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
-    showMethodsComplexity = getBooleanProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
+    reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
+    showClassesComplexity = getProperty(SHOW_CLASSES_COMPLEXITY_DESCRIPTOR);
+    showMethodsComplexity = getProperty(SHOW_METHODS_COMPLEXITY_DESCRIPTOR);
     super.visit( node, data );
     return data;
   }

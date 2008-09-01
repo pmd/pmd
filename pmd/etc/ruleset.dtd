@@ -24,7 +24,10 @@
 <!ATTLIST property name NMTOKEN #REQUIRED >
 <!ATTLIST property value CDATA #IMPLIED >
 <!ATTLIST property description CDATA #IMPLIED >
-<!ATTLIST property pluginname NMTOKEN #IMPLIED >
+<!ATTLIST property type CDATA #IMPLIED >
+<!ATTLIST property delimiter CDATA #IMPLIED >
+<!ATTLIST property min CDATA #IMPLIED >
+<!ATTLIST property max CDATA #IMPLIED >
 <!ELEMENT value ( #PCDATA ) >
 <!ELEMENT exclude EMPTY >
 <!ATTLIST exclude name NMTOKEN #REQUIRED >

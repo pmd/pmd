@@ -383,7 +383,7 @@ public class Foo {
 Not ok, since inner classes are checked
      ]]></description>
         <expected-problems>1</expected-problems>
-        <rule-property name="CheckInnerClasses">true</rule-property>
+        <rule-property name="checkInnerClasses">true</rule-property>
         <code><![CDATA[
 public class Foo {
     private class Bar {
@@ -406,7 +406,7 @@ public class Foo {
 Not ok, violation with first usage = non-assignment
      ]]></description>
         <expected-problems>1</expected-problems>
-        <rule-property name="DisallowNotAssignment">true</rule-property>
+        <rule-property name="disallowNotAssignment">true</rule-property>
         <code><![CDATA[
 public class Foo {
  private int x;

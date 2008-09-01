@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -23,6 +22,10 @@ import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.ImmutableLanguage;
 import net.sourceforge.pmd.lang.rule.RuleReference;
+import net.sourceforge.pmd.lang.rule.XPathRule;
+import net.sourceforge.pmd.lang.rule.properties.AbstractNumericProperty;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorFactory;
+import net.sourceforge.pmd.lang.rule.properties.PropertyDescriptorWrapper;
 
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
@@ -145,24 +148,29 @@ public class RuleSetWriter {
 		String externalInfoUrl = ruleReference.getOverriddenExternalInfoUrl();
 		String description = ruleReference.getOverriddenDescription();
 		RulePriority priority = ruleReference.getOverriddenPriority();
-		Properties properties = ruleReference.getOverriddenProperties();
+		List<PropertyDescriptor<?>> propertyDescriptors = ruleReference.getOverriddenPropertyDescriptors();
+		Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor = ruleReference
+			.getOverriddenPropertiesByPropertyDescriptor();
 		List<String> examples = ruleReference.getOverriddenExamples();
-		return createSingleRuleElement(language, minimumLanguageVersion, maximumLanguageVersion, deprecated, name, null,
-			ref, message, externalInfoUrl, null, null, null, description, priority, properties, examples);
+		return createSingleRuleElement(language, minimumLanguageVersion, maximumLanguageVersion, deprecated,
+			name, null, ref, message, externalInfoUrl, null, null, null, description, priority,
+			propertyDescriptors, propertiesByPropertyDescriptor, examples);
 	    }
 	} else {
 	    return createSingleRuleElement(rule instanceof ImmutableLanguage ? null : rule.getLanguage(), rule
 		    .getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.isDeprecated(),
 		    rule.getName(), rule.getSince(), null, rule.getMessage(), rule.getExternalInfoUrl(), rule
 			    .getRuleClass(), rule.usesDFA(), rule.usesTypeResolution(), rule.getDescription(), rule
-			    .getPriority(), rule.getProperties(), rule.getExamples());
+			    .getPriority(), rule.getPropertyDescriptors(), rule.getPropertiesByPropertyDescriptor(),
+		    rule.getExamples());
 	}
     }
 
     private Element createSingleRuleElement(Language language, LanguageVersion minimumLanguageVersion,
 	    LanguageVersion maximumLanguageVersion, Boolean deprecated, String name, String since, String ref,
 	    String message, String externalInfoUrl, String clazz, Boolean dfa, Boolean typeResolution,
-	    String description, RulePriority priority, Properties properties, List<String> examples) {
+	    String description, RulePriority priority, List<PropertyDescriptor<?>> propertyDescriptors,
+	    Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor, List<String> examples) {
 	Element ruleElement = document.createElement("rule");
 	if (language != null) {
 	    ruleElement.setAttribute("language", language.getTerseName());
@@ -209,11 +217,9 @@ public class RuleSetWriter {
 	    Element priorityElement = createPriorityElement(priority);
 	    ruleElement.appendChild(priorityElement);
 	}
-	if (properties != null) {
-	    Element propertiesElement = createPropertiesElement(properties);
-	    if (propertiesElement != null) {
-		ruleElement.appendChild(propertiesElement);
-	    }
+	Element propertiesElement = createPropertiesElement(propertyDescriptors, propertiesByPropertyDescriptor);
+	if (propertiesElement != null) {
+	    ruleElement.appendChild(propertiesElement);
 	}
 	if (examples != null) {
 	    for (String example : examples) {
@@ -246,39 +252,90 @@ public class RuleSetWriter {
 	return createTextElement("priority", String.valueOf(priority.getPriority()));
     }
 
-    private Element createPropertiesElement(Properties properties) {
-	if (properties != null && !properties.isEmpty()) {
-	    Element propertiesElement = document.createElement("properties");
-	    for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-		Element propertyElement = createPropertyElement(properties, (String) entry.getKey(), (String) entry
-			.getValue());
-		if (propertyElement != null) {
+    @SuppressWarnings("PMD.CompareObjectsWithEquals")
+    private Element createPropertiesElement(List<PropertyDescriptor<?>> propertyDescriptors,
+	    Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor) {
+
+	Element propertiesElement = null;
+	if (propertyDescriptors != null) {
+	    // For each provided PropertyDescriptor
+	    for (PropertyDescriptor<?> propertyDescriptor : propertyDescriptors) {
+		// Any wrapper property needs to go out as a definition.
+		if (propertyDescriptor instanceof PropertyDescriptorWrapper) {
+		    if (propertiesElement == null) {
+			propertiesElement = document.createElement("properties");
+		    }
+		    Element propertyElement = createPropertyDefinitionElement(((PropertyDescriptorWrapper<?>) propertyDescriptor)
+			    .getPropertyDescriptor());
 		    propertiesElement.appendChild(propertyElement);
+		} else {
+		    // Otherwise, any property which has a value different than the
+		    // default needs to go out as a value.
+		    if (propertiesByPropertyDescriptor != null) {
+			Object defaultValue = propertyDescriptor.defaultValue();
+			Object value = propertiesByPropertyDescriptor.get(propertyDescriptor);
+			if (value != defaultValue && (value == null || !value.equals(defaultValue))) {
+			    if (propertiesElement == null) {
+				propertiesElement = document.createElement("properties");
+			    }
+			    Element propertyElement = createPropertyValueElement(propertyDescriptor, value);
+			    propertiesElement.appendChild(propertyElement);
+			}
+		    }
 		}
 	    }
-	    return propertiesElement;
-	} else {
-	    return null;
 	}
+
+	if (propertiesByPropertyDescriptor != null) {
+	    // Then, for each PropertyDescriptor not explicitly provided
+	    for (Map.Entry<PropertyDescriptor<?>, Object> entry : propertiesByPropertyDescriptor.entrySet()) {
+		// If not explicitly given...
+		PropertyDescriptor<?> propertyDescriptor = entry.getKey();
+		if (!propertyDescriptors.contains(propertyDescriptor)) {
+		    // Otherwise, any property which has a value different than the
+		    // default needs to go out as a value.
+		    Object defaultValue = propertyDescriptor.defaultValue();
+		    Object value = entry.getValue();
+		    if (value != defaultValue && (value == null || !value.equals(defaultValue))) {
+			if (propertiesElement == null) {
+			    propertiesElement = document.createElement("properties");
+			}
+			Element propertyElement = createPropertyValueElement(propertyDescriptor, value);
+			propertiesElement.appendChild(propertyElement);
+		    }
+		}
+	    }
+	}
+	return propertiesElement;
     }
 
-    private Element createPropertyElement(Properties properties, String key, String value) {
+    private Element createPropertyValueElement(PropertyDescriptor propertyDescriptor, Object value) {
 	Element propertyElement = document.createElement("property");
-	propertyElement.setAttribute("name", key);
-	if ("xpath".equals(key)) {
-	    if (properties.containsKey("pluginname")) {
-		propertyElement.setAttribute("pluginname", properties.getProperty("pluginname"));
-	    }
-	    Element valueElement = createCDATASectionElement("value", value);
+	propertyElement.setAttribute("name", propertyDescriptor.name());
+	String valueString = propertyDescriptor.asDelimitedString(value);
+	if (XPathRule.XPATH_DESCRIPTOR.equals(propertyDescriptor)) {
+	    Element valueElement = createCDATASectionElement("value", valueString);
 	    propertyElement.appendChild(valueElement);
-	} else if ("pluginname".equals(key)) {
-	    if (properties.containsKey("xpath")) {
-		return null;
-	    } else {
-		propertyElement.setAttribute("value", value);
-	    }
 	} else {
-	    propertyElement.setAttribute("value", value);
+	    propertyElement.setAttribute("value", valueString);
+	}
+
+	return propertyElement;
+    }
+
+    private Element createPropertyDefinitionElement(PropertyDescriptor<?> propertyDescriptor) {
+	Element propertyElement = createPropertyValueElement(propertyDescriptor, propertyDescriptor.defaultValue());
+	propertyElement.setAttribute("description", propertyDescriptor.description());
+	String type = PropertyDescriptorFactory.getPropertyDescriptorType(propertyDescriptor);
+	propertyElement.setAttribute("type", type);
+	if (propertyDescriptor.isMultiValue()) {
+	    propertyElement.setAttribute("delimiter", String.valueOf(propertyDescriptor.multiValueDelimiter()));
+	}
+	if (propertyDescriptor instanceof AbstractNumericProperty) {
+	    propertyElement.setAttribute("min", String.valueOf(((AbstractNumericProperty<?>) propertyDescriptor)
+		    .lowerLimit()));
+	    propertyElement.setAttribute("max", String.valueOf(((AbstractNumericProperty<?>) propertyDescriptor)
+		    .lowerLimit()));
 	}
 
 	return propertyElement;

@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
@@ -27,23 +26,20 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
-    public static final PropertyDescriptor THRESHOLD = new IntegerProperty("threshold",
-	    "Number of duplicate literals reporting threshold", 1, 20, 4, 1.0f);
+    public static final IntegerProperty THRESHOLD_DESCRIPTOR = new IntegerProperty("threshold",
+	    "The number of duplicate literals reporting threshold", 1, 20, 4, 1.0f);
 
-    public static final PropertyDescriptor SKIP_ANNOTATIONS = new BooleanProperty("skipAnnotations",
+    public static final BooleanProperty SKIP_ANNOTATIONS_DESCRIPTOR = new BooleanProperty("skipAnnotations",
 	    "Skip literals within Annotations.", false, 2.0f);
 
-    public static final PropertyDescriptor EXCEPTION_LIST = new StringProperty("exceptionlist",
+    public static final StringProperty EXCEPTION_LIST_DESCRIPTOR = new StringProperty("exceptionlist",
 	    "Strings in that list are skipped", null, 3.0f);
 
-    public static final PropertyDescriptor SEPARATOR = new CharacterProperty("separator",
+    public static final CharacterProperty SEPARATOR_DESCRIPTOR = new CharacterProperty("separator",
 	    "Separator used in the exceptionlist", ',', 4.0f);
 
-    public static final PropertyDescriptor EXCEPTION_FILE = new StringProperty("exceptionfile",
+    public static final StringProperty EXCEPTION_FILE_DESCRIPTOR= new StringProperty("exceptionfile",
 	    "File containing strings to skip (one string per line), only used if exceptionlist is not set", null, 5.0f);
-
-    public static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] {
-	    THRESHOLD, SKIP_ANNOTATIONS, EXCEPTION_LIST, SEPARATOR, EXCEPTION_FILE });
 
     public static class ExceptionParser {
 
@@ -84,20 +80,28 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
     private Map<String, List<ASTLiteral>> literals = new HashMap<String, List<ASTLiteral>>();
     private Set<String> exceptions = new HashSet<String>();
+    
+    public AvoidDuplicateLiteralsRule() {
+	definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
+	definePropertyDescriptor(SKIP_ANNOTATIONS_DESCRIPTOR);
+	definePropertyDescriptor(EXCEPTION_LIST_DESCRIPTOR);
+	definePropertyDescriptor(SEPARATOR_DESCRIPTOR);
+	definePropertyDescriptor(EXCEPTION_FILE_DESCRIPTOR);
+    }
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
 	literals.clear();
 
-	if (getStringProperty(EXCEPTION_LIST) != null) {
-	    ExceptionParser p = new ExceptionParser(getCharacterProperty(SEPARATOR));
-	    exceptions = p.parse(getStringProperty(EXCEPTION_LIST));
-	} else if (getStringProperty(EXCEPTION_FILE) != null) {
+	if (getProperty(EXCEPTION_LIST_DESCRIPTOR) != null) {
+	    ExceptionParser p = new ExceptionParser(getProperty(SEPARATOR_DESCRIPTOR));
+	    exceptions = p.parse(getProperty(EXCEPTION_LIST_DESCRIPTOR));
+	} else if (getProperty(EXCEPTION_FILE_DESCRIPTOR) != null) {
 	    exceptions = new HashSet<String>();
 	    LineNumberReader reader = null;
 	    try {
 		reader = new LineNumberReader(new BufferedReader(new FileReader(new File(
-			getStringProperty(EXCEPTION_FILE)))));
+			getProperty(EXCEPTION_FILE_DESCRIPTOR)))));
 		String line;
 		while ((line = reader.readLine()) != null) {
 		    exceptions.add(line);
@@ -117,7 +121,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 
 	super.visit(node, data);
 
-	int threshold = getIntProperty(THRESHOLD);
+	int threshold = getProperty(THRESHOLD_DESCRIPTOR);
 	for (String key : literals.keySet()) {
 	    List<ASTLiteral> occurrences = literals.get(key);
 	    if (occurrences.size() >= threshold) {
@@ -142,7 +146,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 	}
 
 	// Skip literals in annotations
-	if (getBooleanProperty(SKIP_ANNOTATIONS) && node.getFirstParentOfType(ASTAnnotation.class) != null) {
+	if (getProperty(SKIP_ANNOTATIONS_DESCRIPTOR) && node.getFirstParentOfType(ASTAnnotation.class) != null) {
 	    return data;
 	}
 
@@ -156,10 +160,5 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRule {
 	}
 
 	return data;
-    }
-
-    @Override
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

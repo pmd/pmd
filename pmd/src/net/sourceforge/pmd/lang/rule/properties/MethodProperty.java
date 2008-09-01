@@ -19,7 +19,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public class MethodProperty extends AbstractPackagedProperty {
+public class MethodProperty extends AbstractPackagedProperty<Method> {
 
     public static final char CLASS_METHOD_DELIMITER = '#';
     public static final char METHOD_ARG_DELIMITER = ',';
@@ -49,18 +49,6 @@ public class MethodProperty extends AbstractPackagedProperty {
         StringBuilder sb = new StringBuilder();
         asStringOn(method, sb);
         return sb.toString();
-    }
-
-    /**
-     * Return the value as a string that can be easily recognized and parsed
-     * when we see it again.
-     *
-     * @param value Object
-     * @return String
-     */
-    @Override
-    protected String asString(Object value) {
-        return value == null ? "" : asStringFor((Method) value);
     }
 
     /**
@@ -221,20 +209,15 @@ public class MethodProperty extends AbstractPackagedProperty {
     }
 
     /**
-     * Constructor for MethodProperty.
+     * Return the value as a string that can be easily recognized and parsed
+     * when we see it again.
      *
-     * @param theName        String
-     * @param theDescription String
-     * @param theDefaults    Method[]
-     * @param legalPackageNames String[]
-     * @param theUIOrder     float
+     * @param value Object
+     * @return String
      */
-    public MethodProperty(String theName, String theDescription, Method[] theDefaults, String[] legalPackageNames,
-            float theUIOrder) {
-        super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
-
-        isMultiValue(true);
-        multiValueDelimiter(' ');
+    @Override
+    protected String asString(Object value) {
+        return value == null ? "" : asStringFor((Method) value);
     }
 
     /**
@@ -276,18 +259,7 @@ public class MethodProperty extends AbstractPackagedProperty {
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
-    public Object valueFrom(String valueString) throws IllegalArgumentException {
-
-        if (!isMultiValue()) {
-            return methodFrom(valueString, CLASS_METHOD_DELIMITER, METHOD_ARG_DELIMITER);
-        }
-
-        String[] values = StringUtil.substringsOf(valueString, multiValueDelimiter());
-
-        Method[] methods = new Method[values.length];
-        for (int i = 0; i < methods.length; i++) {
-            methods[i] = methodFrom(values[i], CLASS_METHOD_DELIMITER, METHOD_ARG_DELIMITER);
-        }
-        return methods;
+    public Method valueFrom(String valueString) throws IllegalArgumentException {
+       return methodFrom(valueString, CLASS_METHOD_DELIMITER, METHOD_ARG_DELIMITER);
     }
 }

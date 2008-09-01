@@ -1,9 +1,10 @@
 package test.net.sourceforge.pmd.properties;
 
-import org.junit.Test;
-
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.rule.properties.BooleanMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
+
+import org.junit.Test;
 
 /**
  * @author Brian Remedios
@@ -46,7 +47,7 @@ public class BooleanPropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	 protected PropertyDescriptor createProperty(boolean multiValue) {
 		return multiValue ?
-			new BooleanProperty("testBoolean", "Test boolean property", new boolean[] {false, true, true}, 1.0f) :
+			new BooleanMultiProperty("testBoolean", "Test boolean property", new Boolean[] {false, true, true}, 1.0f) :
 			new BooleanProperty("testBoolean", "Test boolean property", false, 1.0f);
 	}
 
@@ -57,7 +58,7 @@ public class BooleanPropertyTest extends AbstractPropertyDescriptorTester {
 	 */
 	 protected PropertyDescriptor createBadProperty(boolean multiValue) {
 		return multiValue ?
-			new BooleanProperty("", "Test boolean property", new boolean[] {false, true, true}, 1.0f) :
+			new BooleanMultiProperty("", "Test boolean property", new Boolean[] {false, true, true}, 1.0f) :
 			new BooleanProperty("testBoolean", "", false, 1.0f);
 	}
 	

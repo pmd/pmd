@@ -5,11 +5,9 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -17,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.regex.RegexHelper;
+import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 
 /**
@@ -49,17 +48,17 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 public class GenericClassCounterRule extends AbstractJavaRule {
 
 
-	private static final PropertyDescriptor NAME_MATCH_DESCRIPTOR = new StringProperty("nameMatch",
+	private static final StringMultiProperty NAME_MATCH_DESCRIPTOR = new StringMultiProperty("nameMatch",
 			"A series of regex, separated by ',' to match on the classname", new String[] {""},1.0f,',');
 
-	private static final PropertyDescriptor OPERAND_DESCRIPTOR = new StringProperty("operand",
+	private static final StringProperty OPERAND_DESCRIPTOR = new StringProperty("operand",
 			"or/and value to refined match criteria",new String(),2.0f);
 
-	private static final PropertyDescriptor TYPE_MATCH_DESCRIPTOR = new StringProperty("typeMatch",
+	private static final StringMultiProperty TYPE_MATCH_DESCRIPTOR = new StringMultiProperty("typeMatch",
 			"A series of regex, separated by ',' to match on implements/extends classname",new String[]{""},3.0f,',');
 
 	// TODO - this should be an IntegerProperty instead?
-	private static final PropertyDescriptor THRESHOLD_DESCRIPTOR = new StringProperty("threshold",
+	private static final StringProperty THRESHOLD_DESCRIPTOR = new StringProperty("threshold",
 			"Defines how many occurences are legal",new String(),4.0f);
 
 
@@ -74,17 +73,13 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 	private int threshold;
 
 	private static String counterLabel;
-
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(
-    		new PropertyDescriptor[] {
-    				NAME_MATCH_DESCRIPTOR, OPERAND_DESCRIPTOR,
-    				TYPE_MATCH_DESCRIPTOR, THRESHOLD_DESCRIPTOR
-    				});
-
-    @Override
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-        return PROPERTY_DESCRIPTORS_BY_NAME;
-    }
+	
+	public GenericClassCounterRule() {
+	    definePropertyDescriptor(NAME_MATCH_DESCRIPTOR);
+	    definePropertyDescriptor(OPERAND_DESCRIPTOR);
+	    definePropertyDescriptor(TYPE_MATCH_DESCRIPTOR);
+	    definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
+	}
 
 
 	private List<String> arrayAsList(String[] array) {
@@ -100,10 +95,10 @@ public class GenericClassCounterRule extends AbstractJavaRule {
 		// Creating the attribute name for the rule context
 		counterLabel = this.getClass().getSimpleName() + ".number of match";
 		// Constructing the request from the input parameters
-		this.namesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getStringProperties(NAME_MATCH_DESCRIPTOR)));
-		this.operand = getStringProperty(OPERAND_DESCRIPTOR);
-		this.typesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getStringProperties(TYPE_MATCH_DESCRIPTOR)));
-		String thresholdAsString = getStringProperty(THRESHOLD_DESCRIPTOR);
+		this.namesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getProperty(NAME_MATCH_DESCRIPTOR)));
+		this.operand = getProperty(OPERAND_DESCRIPTOR);
+		this.typesMatch = RegexHelper.compilePatternsFromList(arrayAsList(getProperty(TYPE_MATCH_DESCRIPTOR)));
+		String thresholdAsString = getProperty(THRESHOLD_DESCRIPTOR);
 		this.threshold = Integer.valueOf(thresholdAsString);
 		// Initializing list of match
 		this.matches = new ArrayList<Node>();

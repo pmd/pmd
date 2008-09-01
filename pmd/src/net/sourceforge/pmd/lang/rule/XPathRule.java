@@ -47,14 +47,12 @@ public class XPathRule extends AbstractRule {
 
     private static final String AST_ROOT = "_AST_ROOT_";
 
-    public static final PropertyDescriptor XPATH_DESCRIPTOR = new StringProperty("xpath", "XPATH value", "", 1.0f);
-    
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap( XPATH_DESCRIPTOR );
+    public static final StringProperty XPATH_DESCRIPTOR = new StringProperty("xpath", "XPATH value", "", 1.0f);
 
-    @Override
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-    	return PROPERTY_DESCRIPTORS_BY_NAME;
+    public XPathRule() {
+	definePropertyDescriptor(XPATH_DESCRIPTOR);
     }
+
     /**
      * Evaluate the AST with a root node, against the XPath expression found as
      * property with name "xpath".  All matches are reported as violations.
@@ -108,7 +106,7 @@ public class XPathRule extends AbstractRule {
 	//
 	nodeNameToXPaths = new HashMap<String, List<XPath>>();
 
-	BaseXPath originalXPath = createXPath(getStringProperty(XPATH_DESCRIPTOR), navigator);
+	BaseXPath originalXPath = createXPath(getProperty(XPATH_DESCRIPTOR), navigator);
 	indexXPath(originalXPath, AST_ROOT);
 
 	boolean useRuleChain = true;
@@ -202,11 +200,13 @@ public class XPathRule extends AbstractRule {
 
     private BaseXPath createXPath(String xpathQueryString, Navigator navigator) throws JaxenException {
 	BaseXPath xpath = new BaseXPath(xpathQueryString, navigator);
-	if (getProperties().size() > 1) {
+	Map<PropertyDescriptor<?>, Object> properties = getPropertiesByPropertyDescriptor();
+	if (properties.size() > 1) {
 	    SimpleVariableContext vc = new SimpleVariableContext();
-	    for (Entry<Object, Object> e : getProperties().entrySet()) {
+	    for (Entry<PropertyDescriptor<?>, Object> e : properties.entrySet()) {
 		if (!"xpath".equals(e.getKey())) {
-		    vc.setVariableValue((String) e.getKey(), e.getValue());
+		    Object value = e.getValue();
+		    vc.setVariableValue(e.getKey().name(), value != null ? value.toString() : null);
 		}
 	    }
 	    xpath.setVariableContext(vc);

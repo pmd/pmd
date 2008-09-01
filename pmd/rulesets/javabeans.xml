@@ -25,9 +25,6 @@ follow the Java naming conventions, i.e.if you have a variable foo, you should
 provide getFoo and setFoo methods.
     </description>
       <priority>3</priority>
-      <properties>
-          <property name="prefix" description="A variable prefix to skip, i.e., m_" value=""/>
-      </properties>
     <example>
 <![CDATA[
   private transient int someFoo;//good, it's transient

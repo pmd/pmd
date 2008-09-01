@@ -18,6 +18,7 @@ import net.sourceforge.pmd.util.NumericConstants;
 public class ExcessiveParameterListRule extends ExcessiveNodeCountRule {
     public ExcessiveParameterListRule() {
         super(ASTFormalParameters.class);
+        setProperty(MINIMUM_DESCRIPTOR, 10d);
     }
 
     // Count these nodes, but no others.

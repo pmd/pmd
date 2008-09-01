@@ -3,12 +3,12 @@
  */
 package net.sourceforge.pmd.lang.java.rule.coupling;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public class LooseCouplingRule extends AbstractJavaRule {

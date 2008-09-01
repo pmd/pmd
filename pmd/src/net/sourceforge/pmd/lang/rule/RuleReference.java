@@ -1,11 +1,13 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSetReference;
 import net.sourceforge.pmd.lang.Language;
@@ -25,7 +27,8 @@ public class RuleReference extends AbstractDelegateRule {
 	private LanguageVersion maximumLanguageVersion;
 	private Boolean deprecated;
 	private String name;
-	private Properties properties;
+	private List<PropertyDescriptor<?>> propertyDescriptors;
+	private Map<PropertyDescriptor<?>, Object> propertyValues;
 	private String message;
 	private String description;
 	private List<String> examples;
@@ -98,39 +101,6 @@ public class RuleReference extends AbstractDelegateRule {
 		if (!isSame(name, super.getName()) || this.name != null) {
 			this.name = name;
 			super.setName(name);
-		}
-	}
-
-	/**
-	 * @deprecated
-	 */
-	public Properties getOverriddenProperties() {
-		return properties;
-	}
-
-	/**
-	 * @deprecated
-	 */
-	@Override
-	public void addProperty(String name, String property) {
-		// Only override if different than current value.
-		if (!super.hasProperty(name) || !isSame(property, super.getStringProperty(name))) {
-			if (this.properties == null) {
-				this.properties = new Properties();
-			}
-			this.properties.put(name, property);
-			super.addProperty(name, property);
-		}
-	}
-
-	/**
-	 * @deprecated
-	 */
-	@Override
-	public void addProperties(Properties properties) {
-		// Attempt override for each
-		for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-			addProperty((String) entry.getKey(), (String) entry.getValue());
 		}
 	}
 
@@ -212,6 +182,38 @@ public class RuleReference extends AbstractDelegateRule {
 			super.setPriority(priority);
 		}
 	}
+	
+    public List<PropertyDescriptor<?>> getOverriddenPropertyDescriptors() {
+	return propertyDescriptors;
+    }
+
+    @Override
+    public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) throws IllegalArgumentException {
+	// Define on the underlying Rule, where it is impossible to have two
+	// property descriptors with the same name.  Therefore, there is no need
+	// to check if the property is already overridden at this level.
+	super.definePropertyDescriptor(propertyDescriptor);
+	if (this.propertyDescriptors == null) {
+	    this.propertyDescriptors = new ArrayList<PropertyDescriptor<?>>();
+	}
+	this.propertyDescriptors.add(propertyDescriptor);
+    }
+
+    public Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor() {
+	return propertyValues;
+    }
+
+    @Override
+    public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
+	// Only override if different than current value.
+	if (!isSame(super.getProperty(propertyDescriptor), value)) {
+	    if (this.propertyValues == null) {
+		this.propertyValues = new HashMap<PropertyDescriptor<?>, Object>();
+	    }
+	    this.propertyValues.put(propertyDescriptor, value);
+	    super.setProperty(propertyDescriptor, value);
+	}
+    }
 
 	public RuleSetReference getRuleSetReference() {
 		return ruleSetReference;
@@ -227,7 +229,13 @@ public class RuleReference extends AbstractDelegateRule {
 
 	@SuppressWarnings("PMD.CompareObjectsWithEquals")
 	private static boolean isSame(Object o1, Object o2) {
+	    	if (o1 instanceof Object[] && o2 instanceof Object[]) {
+	    	    return isSame((Object[])o1, (Object[])o2);
+	    	}
 		return o1 == o2 || (o1 != null && o2 != null && o1.equals(o2));
+	}
+	private static boolean isSame(Object[] a1, Object[] a2) {
+		return a1 == a2 || (a1 != null && a2 != null && Arrays.equals(a1, a2));
 	}
 
 	private static boolean contains(Collection<String> collection, String s1) {

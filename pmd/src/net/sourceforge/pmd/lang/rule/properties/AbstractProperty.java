@@ -11,11 +11,11 @@ import net.sourceforge.pmd.util.StringUtil;
  * 
  * @author Brian Remedios
  */
-public abstract class AbstractProperty implements PropertyDescriptor {
+public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 
 	private final String	name;
 	private final String	description;
-	private final Object 	defaultValue;
+	private final T 	defaultValue;
 	private final boolean 	isRequired;
 	private boolean			isMultiValue = false;
 	private final float		uiOrder;
@@ -30,7 +30,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 * @param theUIOrder float
 	 * @throws IllegalArgumentException
 	 */
-	protected AbstractProperty(String theName, String theDescription, Object theDefault, float theUIOrder) {
+	protected AbstractProperty(String theName, String theDescription, T theDefault, float theUIOrder) {
 		name = checkNotEmpty(theName, "name");
 		description = checkNotEmpty(theDescription, "description");
 		defaultValue = theDefault;
@@ -106,7 +106,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 * @return Object
 	 * @see net.sourceforge.pmd.PropertyDescriptor#defaultValue()
 	 */
-	public Object defaultValue() {
+	public T defaultValue() {
 		return defaultValue;
 	}
 	
@@ -183,7 +183,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 * @return String
 	 * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(Object)
 	 */
-	public String asDelimitedString(Object values) {
+	public String asDelimitedString(T values) {
 		
 		if (values == null) {
 		    return "";
@@ -216,7 +216,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 * @return int
 	 * @see java.lang.Comparable#compareTo(Object)
 	 */
-	public int compareTo(PropertyDescriptor otherProperty) {
+	public int compareTo(PropertyDescriptor<?> otherProperty) {
 		float otherOrder = otherProperty.uiOrder();
 		return (int) (otherOrder - uiOrder);
 	}
@@ -303,7 +303,7 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 			}
 			
 			Class<?> arrayType = value.getClass().getComponentType();
-			if (arrayType == null || !arrayType.isAssignableFrom(type())) {
+			if (arrayType == null || !arrayType.isAssignableFrom(type().getComponentType())) {
 				return "Value is not an array of type: " + type();
 			}
 			return null;
@@ -323,11 +323,10 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 * @see net.sourceforge.pmd.PropertyDescriptor#propertyErrorFor(Rule)
 	 */
 	public String propertyErrorFor(Rule rule) {
-		String strValue = rule.getStringProperty(this);
-		if (strValue == null && !isRequired()) {
+	    Object realValue = rule.getProperty(this);
+		if (realValue == null && !isRequired()) {
 		    return null;
 		}
-		Object realValue = valueFrom(strValue);
 		return errorFor(realValue);
 	}
 	
@@ -347,6 +346,30 @@ public abstract class AbstractProperty implements PropertyDescriptor {
 	 */
 	public int preferredRowCount() {
 		return 1;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+	    if (this == obj) {
+		return true;
+	    }
+	    if (obj == null) {
+		return false;
+	    }
+	    if (obj instanceof PropertyDescriptor) {
+		return name.equals(((PropertyDescriptor<?>)obj).name());
+	    }
+	    return false;
+	}
+
+	@Override
+	public int hashCode() {
+	    return name.hashCode();
+	}
+
+	@Override
+	public String toString() {
+	    return "[PropertyDescriptor: name=" + name() + ", type=" + type() + ", defaultValue=" + defaultValue() + "]";
 	}
 	
 	/**

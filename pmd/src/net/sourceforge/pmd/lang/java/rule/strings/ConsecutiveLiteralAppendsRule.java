@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAdditiveExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -68,11 +67,13 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 	BLOCK_PARENTS.add(ASTMethodDeclaration.class);
     }
 
-    private static final PropertyDescriptor THRESHOLD_DESCRIPTOR = new IntegerProperty("threshold", "Max consecutive .append() calls", 1, 10, 1, 1.0f);
-
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(THRESHOLD_DESCRIPTOR);
+    private static final IntegerProperty THRESHOLD_DESCRIPTOR = new IntegerProperty("threshold", "The report threshold", 1, 10, 1, 1.0f);
 
     private int threshold = 1;
+    
+    public ConsecutiveLiteralAppendsRule() {
+	definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
+    }
 
     @Override
     public Object visit(ASTVariableDeclaratorId node, Object data) {
@@ -80,7 +81,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 	if (!isStringBuffer(node)) {
 	    return data;
 	}
-	threshold = getIntProperty(THRESHOLD_DESCRIPTOR);
+	threshold = getProperty(THRESHOLD_DESCRIPTOR);
 
 	int concurrentCount = checkConstructor(node, data);
 	Node lastBlock = getFirstParentBlock(node);
@@ -298,10 +299,5 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 	    return false;
 	}
 	return TypeHelper.isA((TypeNode) nn.jjtGetChild(0), StringBuffer.class);
-    }
-
-    @Override
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

@@ -7,6 +7,7 @@ import java.util.Observer;
 import java.util.Set;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.rule.properties.TypeMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.TypeProperty;
 
 /**
@@ -64,7 +65,7 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createProperty(boolean multiValue) {
 
 		return multiValue ?
-			new TypeProperty("testType", "Test type property", javaLangClasses, new String[] { "java.lang" }, 1.0f) :
+			new TypeMultiProperty("testType", "Test type property", javaLangClasses, new String[] { "java.lang" }, 1.0f) :
 			new TypeProperty("testType", "Test type property", javaLangClasses[0], new String[] { "java.lang" }, 1.0f);
 			}
 
@@ -76,8 +77,8 @@ public class TypePropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createBadProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new TypeProperty("testType", "Test type property", Set.class, new String[] { "java.lang" }, 1.0f) :
-			new TypeProperty("testType", "Test type property", javaLangClasses, new String[] { "java.util" }, 1.0f);
+			new TypeMultiProperty("testType", "Test type property", new Class[]{Set.class}, new String[] { "java.lang" }, 1.0f) :
+			new TypeProperty("testType", "Test type property", javaLangClasses[0], new String[] { "java.util" }, 1.0f);
 			}
 
     public static junit.framework.Test suite() {

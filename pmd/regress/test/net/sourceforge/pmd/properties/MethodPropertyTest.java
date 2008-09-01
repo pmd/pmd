@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.rule.properties.MethodMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.MethodProperty;
 import net.sourceforge.pmd.util.ClassUtil;
 
@@ -81,7 +82,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 		Method[] methods = String.class.getDeclaredMethods();
 		
 		return multiValue ?
-			new MethodProperty("methodProperty", "asdf", new Method[] { methods[2], methods[3] }, new String[] { "java.util" } , 1.0f) :
+			new MethodMultiProperty("methodProperty", "asdf", new Method[] { methods[2], methods[3] }, new String[] { "java.util" } , 1.0f) :
 			new MethodProperty("methodProperty", "asdf", methods[1], new String[] { "java.util" }, 1.0f); 
 	}
 
@@ -108,7 +109,7 @@ public class MethodPropertyTest extends AbstractPropertyDescriptorTester {
 		Method[] methods = String.class.getDeclaredMethods();
 		
 		return multiValue ?
-			new MethodProperty("methodProperty", "asdf", new Method[] { methods[2], methods[3] }, new String[] { "java.lang" } , 1.0f) :
+			new MethodMultiProperty("methodProperty", "asdf", new Method[] { methods[2], methods[3] }, new String[] { "java.lang" } , 1.0f) :
 			new MethodProperty("methodProperty", "asdf", methods[1], new String[] { "java.lang" }, 1.0f); 
 	}
 

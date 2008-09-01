@@ -1,9 +1,10 @@
 package test.net.sourceforge.pmd.properties;
 
-import org.junit.Test;
-
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.rule.properties.CharacterMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.CharacterProperty;
+
+import org.junit.Test;
 
 /**
  * Evaluates the functionality of the CharacterProperty descriptor by testing its ability to catch creation
@@ -60,7 +61,7 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new CharacterProperty("testCharacter", "Test character property", new char[] {'a', 'b', 'c'}, 1.0f, delimiter) :
+			new CharacterMultiProperty("testCharacter", "Test character property", new Character[] {'a', 'b', 'c'}, 1.0f, delimiter) :
 			new CharacterProperty("testCharacter", "Test character property", 'a', 1.0f);
 	}
 
@@ -74,7 +75,7 @@ public class CharacterPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createBadProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new CharacterProperty("testCharacter", "Test character property", new char[] {'a', 'b', 'c'}, 1.0f, delimiter) :
+			new CharacterMultiProperty("testCharacter", "Test character property", new Character[] {'a', 'b', 'c'}, 1.0f, delimiter) :
 			new CharacterProperty("", "Test character property", 'a', 1.0f);
 	}
 	

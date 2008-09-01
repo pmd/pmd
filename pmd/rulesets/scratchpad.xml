@@ -23,8 +23,8 @@ From those informations there can be found various problems.
           </description>
           <priority>5</priority>
           <properties>
-            <property name="maxviolations" value="100"/>
-            <property name="maxpaths" value="1000"/>
+            <property name="maxviolations" type="Integer" value="100"/>
+            <property name="maxpaths" type="Integer" value="1000"/>
           </properties>
           <example>
 <![CDATA[

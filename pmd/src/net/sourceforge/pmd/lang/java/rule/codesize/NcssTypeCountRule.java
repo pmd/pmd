@@ -24,6 +24,7 @@ public class NcssTypeCountRule extends AbstractNcssCountRule {
      */
     public NcssTypeCountRule() {
 	super(ASTTypeDeclaration.class);
+	setProperty(MINIMUM_DESCRIPTOR, 1500d);
     }
 
     @Override

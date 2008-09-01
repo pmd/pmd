@@ -19,13 +19,6 @@ These rules deal with different problems that can occur with manipulation of the
 Code containing duplicate String literals can usually be improved by declaring the String as a constant field.
     </description>
         <priority>3</priority>
-   <properties>
-    <property name="threshold" description="The number of duplicate literals reporting threshold" value="4"/>
-    <property name="skipAnnotations" description="Skip literals within Annotations" value="false"/>
-    <property name="exceptionlist" description="Strings in that list are skipped"/>
-    <property name="separator" description="Separator used in the exceptionlist" value=","/>
-    <property name="exceptionfile" description="File containing strings to skip (one string per line), only used if exceptionlist is not set"/>
-   </properties>
     <example>
 <![CDATA[
 public class Foo {
@@ -189,9 +182,6 @@ public class Foo {
 Consecutively calling StringBuffer.append with String literals
     </description>
         <priority>3</priority>
-   <properties>
-    <property name="threshold" description="The report threshold" value="1"/>
-   </properties>
     <example>
 <![CDATA[
 public class Foo {

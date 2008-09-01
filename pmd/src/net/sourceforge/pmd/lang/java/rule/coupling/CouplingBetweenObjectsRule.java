@@ -4,10 +4,8 @@
 package net.sourceforge.pmd.lang.java.rule.coupling;
 
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -38,12 +36,13 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     private int couplingCount;
     private Set<String> typesFoundSoFar;
 
-    private static final PropertyDescriptor THRESHOLD_DESCRIPTOR = new IntegerProperty(
-    	"threshold", "Coupling threshold value", 2, 10, 2, 1.0f
+    private static final IntegerProperty THRESHOLD_DESCRIPTOR = new IntegerProperty(
+    	"threshold", "The unique type reporting threshold", 2, 10, 2, 1.0f
     	);
-    
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(THRESHOLD_DESCRIPTOR);
-        
+
+    public CouplingBetweenObjectsRule() {
+	definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
+    }
     
     public Object visit(ASTCompilationUnit cu, Object data) {
         typesFoundSoFar = new HashSet<String>();
@@ -51,7 +50,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
         Object returnObj = cu.childrenAccept(this, data);
 
-        if (couplingCount > getIntProperty(THRESHOLD_DESCRIPTOR)) {
+        if (couplingCount > getProperty(THRESHOLD_DESCRIPTOR)) {
             addViolation(data, cu, "A value of " + couplingCount + " may denote a high amount of coupling within the class");
         }
 
@@ -156,12 +155,5 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      */
     private boolean filterPrimitivesAndWrappers(String variableType) {
         return variableType.equals("int") || variableType.equals("Integer") || variableType.equals("char") || variableType.equals("Character") || variableType.equalsIgnoreCase("double") || variableType.equalsIgnoreCase("long") || variableType.equalsIgnoreCase("short") || variableType.equalsIgnoreCase("float") || variableType.equalsIgnoreCase("byte") || variableType.equalsIgnoreCase("boolean");
-    }
-    
-    /**
-     * @return Map
-     */
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-    	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

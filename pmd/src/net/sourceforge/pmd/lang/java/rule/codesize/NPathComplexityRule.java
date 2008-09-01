@@ -29,6 +29,11 @@ import net.sourceforge.pmd.util.NumericConstants;
  * @author Jason Bennett
  */
 public class NPathComplexityRule extends AbstractStatisticalJavaRule {
+    
+    public NPathComplexityRule() {
+	super();
+	setProperty(MINIMUM_DESCRIPTOR, 200d);
+    }
 
     private int complexityMultipleOf(JavaNode node, int npathStart, Object data) {
 

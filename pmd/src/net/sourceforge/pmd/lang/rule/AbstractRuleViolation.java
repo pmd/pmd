@@ -54,7 +54,7 @@ public abstract class AbstractRuleViolation implements RuleViolation {
 	// Apply Rule specific suppressions
 	if (node != null && rule != null) {
 	    // Regex
-	    String regex = rule.getStringProperty(Rule.VIOLATION_SUPPRESS_REGEX_PROPERTY);
+	    String regex = rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR);
 	    if (regex != null && description != null) {
 		if (Pattern.matches(regex, description)) {
 		    suppressed = true;
@@ -63,7 +63,7 @@ public abstract class AbstractRuleViolation implements RuleViolation {
 
 	    // XPath
 	    if (!suppressed) {
-		String xpath = rule.getStringProperty(Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY);
+		String xpath = rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR);
 		if (xpath != null) {
 		    suppressed = node.hasDescendantMatchingXPath(xpath);
 		}

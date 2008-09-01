@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.dfa.DataFlowNode;
@@ -35,20 +34,13 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
     private int maxRuleViolations;
     private int currentRuleViolationCount;
 
-    private static final PropertyDescriptor MAX_PATH_DESCRIPTOR = new IntegerProperty(
-            "maxpaths", "Maximum number of paths per method", 100, 8000, 5000, 1.0f
+    private static final IntegerProperty MAX_PATH_DESCRIPTOR = new IntegerProperty(
+            "maxpaths", "The maximum number of checked paths per method. A lower value will increase the performance of the rule but may decrease the number of found anomalies.", 100, 8000, 1000, 1.0f
             );
 
-    private static final PropertyDescriptor MAX_VIOLATIONS_DESCRIPTOR = new IntegerProperty(
-            "maxviolations", "Maximum number of anomalys per class", 1, 2000, 1000, 2.0f
+    private static final IntegerProperty MAX_VIOLATIONS_DESCRIPTOR = new IntegerProperty(
+            "maxviolations", "Maximum number of anomalies per class", 1, 2000, 100, 2.0f
             );
-
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(
-            new PropertyDescriptor[] { MAX_PATH_DESCRIPTOR, MAX_VIOLATIONS_DESCRIPTOR});
-
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-        return PROPERTY_DESCRIPTORS_BY_NAME;
-    }
 
     private static class Usage {
         public int accessType;
@@ -63,9 +55,14 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
             return "accessType = " + accessType + ", line = " + node.getLine();
         }
     }
+    
+    public DataflowAnomalyAnalysisRule() {
+	definePropertyDescriptor(MAX_PATH_DESCRIPTOR);
+	definePropertyDescriptor(MAX_VIOLATIONS_DESCRIPTOR);
+    }
 
     public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
-        this.maxRuleViolations = getIntProperty(MAX_VIOLATIONS_DESCRIPTOR);
+        this.maxRuleViolations = getProperty(MAX_VIOLATIONS_DESCRIPTOR);
         this.currentRuleViolationCount = 0;
         return super.visit(node, data);
     }
@@ -76,7 +73,7 @@ public class DataflowAnomalyAnalysisRule extends AbstractJavaRule implements Exe
 
         final DataFlowNode node = methodDeclaration.getDataFlowNode().getFlow().get(0);
 
-        final DAAPathFinder pathFinder = new DAAPathFinder(node, this, getIntProperty(MAX_PATH_DESCRIPTOR));
+        final DAAPathFinder pathFinder = new DAAPathFinder(node, this, getProperty(MAX_PATH_DESCRIPTOR));
         pathFinder.run();
 
         super.visit(methodDeclaration, data);

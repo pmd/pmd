@@ -20,9 +20,6 @@ This rule counts unique attributes, local variables and return types within an o
  higher than specified threshold can indicate a high degree of coupling.
     </description>
     <priority>3</priority>
-    <properties>
-      <property name="threshold" description="The unique type reporting threshold" value="20"/>
-    </properties>
     <example>
 <![CDATA[
 import com.Blah;
@@ -54,9 +51,6 @@ an object. Rule counts the number of unique imports and reports a violation
 if the count is above the user defined threshold.
   </description>
   <priority>3</priority>
-  <properties>
-      <property name="minimum" description="The import count reporting threshold" value="30"/>
-  </properties>
   <example>
       <![CDATA[
 import blah.blah.Baz;

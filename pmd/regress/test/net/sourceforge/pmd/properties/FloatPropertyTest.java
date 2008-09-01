@@ -1,6 +1,7 @@
 package test.net.sourceforge.pmd.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.lang.rule.properties.FloatMultiProperty;
 import net.sourceforge.pmd.lang.rule.properties.FloatProperty;
 
 /**
@@ -61,7 +62,7 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new FloatProperty("testFloat", "Test float property", MIN, MAX, new float[] {-1,0,1,2}, 1.0f) :
+			new FloatMultiProperty("testFloat", "Test float property", MIN, MAX, new Float[] {-1f,0f,1f,2f}, 1.0f) :
 			new FloatProperty("testFloat", "Test float property", MIN, MAX, 9.0f, 1.0f) ;					
 		}
 
@@ -73,7 +74,7 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 	protected PropertyDescriptor createBadProperty(boolean multiValue) {
 		
 		return multiValue ?
-			new FloatProperty("testFloat", "Test float property", 0f, 5f, new float[] {-1,0,1,2}, 1.0f) :
+			new FloatMultiProperty("testFloat", "Test float property", 0f, 5f, new Float[] {-1f,0f,1f,2f}, 1.0f) :
 			new FloatProperty("testFloat", "Test float property", 5f, 4f, 9.0f, 1.0f) ;
 		}
 	

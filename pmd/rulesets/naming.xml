@@ -21,7 +21,7 @@ Detects when a field, local, or parameter has a very short name.
     </description>
     <priority>3</priority>
       <properties>
-          <property name="xpath" pluginname="true">
+          <property name="xpath">
               <value>
                   <![CDATA[
 //VariableDeclaratorId[string-length(@Image) < 3]
@@ -57,8 +57,8 @@ Detects when a field, formal or local variable is declared with a long name.
     </description>
       <priority>3</priority>
       <properties>
-          <property name="minimum" description="The variable length reporting threshold" value="17"/>
-          <property name="xpath" pluginname="true">
+          <property name="minimum" type="Integer" description="The variable length reporting threshold" min="1" max="100" value="17"/>
+          <property name="xpath">
               <value>
                   <![CDATA[
 //VariableDeclaratorId[string-length(@Image) > $minimum]
@@ -122,19 +122,6 @@ A variable naming conventions rule - customize this to your liking.  Currently, 
  that should not include underscores.
         </description>
         <priority>1</priority>
-        <properties>
-            <property name="checkMembers" description="Check member variables" value="true"/>
-            <property name="checkLocals" description="Check local variables" value="true"/>
-            <property name="checkParameters" description="Check constructor and method parameter variables" value="true"/>
-            <property name="staticPrefix" description="A prefix for static variables" value=""/>
-            <property name="staticSuffix" description="A suffix for static variables" value=""/>
-            <property name="memberPrefix" description="A prefix for member variables" value=""/>
-            <property name="memberSuffix" description="A suffix for member variables" value=""/>
-            <property name="localPrefix" description="A prefix for local variables" value=""/>
-            <property name="localSuffix" description="A suffix for local variables" value=""/>
-            <property name="parameterPrefix" description="A prefix for method parameter variables" value=""/>
-            <property name="parameterSuffix" description="A suffix for method parameter variables" value=""/>
-        </properties>
         <example>
 <![CDATA[
 public class Foo {
@@ -409,7 +396,7 @@ Detects when a class or interface does not have a package definition.
     </description>
     <priority>3</priority>
       <properties>
-          <property name="xpath" pluginname="true">
+          <property name="xpath">
               <value>
                   <![CDATA[
 //ClassOrInterfaceDeclaration[count(preceding::PackageDeclaration) = 0]
@@ -437,7 +424,7 @@ public class ClassInDefaultPackage {
         </description>
         <priority>3</priority>
           <properties>
-              <property name="xpath" pluginname="true">
+              <property name="xpath">
                   <value>
                       <![CDATA[
 //PackageDeclaration/Name[lower-case(@Image)!=@Image]
@@ -466,7 +453,7 @@ indicates a field and thus is confusing.
       </description>
       <priority>3</priority>
         <properties>
-            <property name="xpath" pluginname="true">
+            <property name="xpath">
                 <value>
                     <![CDATA[
 //VariableDeclaratorId
@@ -512,7 +499,7 @@ ResultType/Type/PrimitiveType[@Image = 'boolean']
 ]]>
                 </value>
             </property>
-            <property name="checkParameterizedMethods">
+            <property name="checkParameterizedMethods" type="Boolean" description="Check parameterized methods">
                 <value>false</value>
             </property>
         </properties>
@@ -537,7 +524,7 @@ Detects if a classname if lower than 5 characters.
         </description>
         <priority>4</priority>
           <properties>
-              <property name="xpath" pluginname="true">
+              <property name="xpath">
                   <value>
                       <![CDATA[
 //ClassOrInterfaceDeclaration[string-length(@Image) < 5]

@@ -11,7 +11,7 @@ import java.util.Set;
  * 
  * @author Brian Remedios
  */
-public abstract class AbstractPackagedProperty extends AbstractProperty {
+public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 
 	private String[] legalPackageNames;
 
@@ -24,23 +24,10 @@ public abstract class AbstractPackagedProperty extends AbstractProperty {
 	 * @param theUIOrder
 	 * @throws IllegalArgumentException
 	 */
-	protected AbstractPackagedProperty(String theName, String theDescription, Object theDefault, String[] theLegalPackageNames, float theUIOrder) {
-		this(theName, theDescription, new Object[] {theDefault}, theLegalPackageNames, theUIOrder);
+	protected AbstractPackagedProperty(String theName, String theDescription, T theDefault, String[] theLegalPackageNames, float theUIOrder) {
+		super(theName, theDescription, theDefault, theUIOrder);
 		
-	}
-
-	/**
-	 * @param theName
-	 * @param theDescription
-	 * @param theDefaults
-	 * @param theLegalPackageNames
-	 * @param theUIOrder
-	 * @throws IllegalArgumentException
-	 */
-	protected AbstractPackagedProperty(String theName, String theDescription, Object[] theDefaults, String[] theLegalPackageNames, float theUIOrder) {
-		super(theName, theDescription, theDefaults, theUIOrder);
-		
-		checkValidPackages(theDefaults, theLegalPackageNames);
+		checkValidPackages(theDefault, theLegalPackageNames);
 		
 		legalPackageNames = theLegalPackageNames;
 	}
@@ -49,11 +36,17 @@ public abstract class AbstractPackagedProperty extends AbstractProperty {
 	 * Evaluates the names of the items against the allowable name prefixes. If one or more of them
 	 * do not have valid prefixes then an exception will be thrown.
 	 * 
-	 * @param items
+	 * @param item
 	 * @param legalNamePrefixes
 	 * @throws IllegalArgumentException
 	 */
-	private void checkValidPackages(Object[] items, String[] legalNamePrefixes) {
+	private void checkValidPackages(Object item, String[] legalNamePrefixes) {
+	    Object[] items;
+	    if (item.getClass().isArray()) {
+		items = (Object[])item;
+	    } else{
+		items = new Object[]{item};
+	    }
 		
 		String[] names = new String[items.length];
 		Set<String> nameSet = new HashSet<String>(items.length);

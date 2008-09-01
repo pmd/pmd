@@ -4,9 +4,7 @@
 package net.sourceforge.pmd.lang.java.typeresolution.rules;
 
 import java.util.List;
-import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
@@ -33,17 +31,14 @@ import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
  */
 public class SignatureDeclareThrowsException extends AbstractJavaRule {
 	
-    private static final PropertyDescriptor IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty("IgnoreJUnitCompletely",
+    private static final BooleanProperty IGNORE_JUNIT_COMPLETELY_DESCRIPTOR = new BooleanProperty("IgnoreJUnitCompletely",
         "If true, all methods in a JUnit testcase may throw Exception", false, 1.0f);
 
     //Set to true when the class is determined to be a JUnit testcase
     private boolean junitImported = false;
-
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR);
     
-    @Override
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-    	return PROPERTY_DESCRIPTORS_BY_NAME;
+    public SignatureDeclareThrowsException() {
+	definePropertyDescriptor(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR);
     }
     
     @Override
@@ -119,7 +114,7 @@ public class SignatureDeclareThrowsException extends AbstractJavaRule {
     }
 
     private boolean isAllowedMethod(ASTMethodDeclaration methodDeclaration) {
-        if (getBooleanProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)) {
+        if (getProperty(IGNORE_JUNIT_COMPLETELY_DESCRIPTOR)) {
 	    return true;
 	} else {
 	    return methodDeclaration.getMethodName().equals("setUp") || methodDeclaration

@@ -1,9 +1,5 @@
 package net.sourceforge.pmd;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Property value descriptor that defines the use & requirements for setting
  * property values for use within PMD and any associated GUIs. While concrete
@@ -13,13 +9,7 @@ import java.util.Map;
  * @author Brian Remedios
  * @version $Revision$
  */
-public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
-
-	PropertyDescriptor[] EMPTY_PROPERTY_SET = new PropertyDescriptor[0];
-
-	Map<PropertyDescriptor, Object> EMPTY_VALUE_MAP = Collections
-			.unmodifiableMap(new HashMap<PropertyDescriptor, Object>(0));
-
+public interface PropertyDescriptor<T extends Object> extends Comparable<PropertyDescriptor<?>> {
 	/**
 	 * The name of the property without spaces as it serves as the key into the
 	 * property map.
@@ -41,7 +31,7 @@ public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
 	 * 
 	 * @return Class
 	 */
-	Class<?> type();
+	Class<T> type();
 
 	/**
 	 * Returns whether the property is multi-valued, i.e. an array of strings,
@@ -61,7 +51,7 @@ public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
 	 * 
 	 * @return Object
 	 */
-	Object defaultValue();
+	T defaultValue();
 
 	/**
 	 * Denotes whether the value is required before the rule can be executed.
@@ -107,7 +97,7 @@ public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
 	 * @return Object
 	 * @throws IllegalArgumentException
 	 */
-	Object valueFrom(String propertyString) throws IllegalArgumentException;
+	T valueFrom(String propertyString) throws IllegalArgumentException;
 
 	/**
 	 * Formats the object onto a string suitable for storage within the property
@@ -117,7 +107,7 @@ public interface PropertyDescriptor extends Comparable<PropertyDescriptor> {
 	 *            Object
 	 * @return String
 	 */
-	String asDelimitedString(Object value);
+	String asDelimitedString(T value);
 
 	/**
 	 * Returns a set of choice tuples if available, returns null if none are

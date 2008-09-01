@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -18,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.PMDException;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleContext;
@@ -64,6 +66,7 @@ public abstract class RuleTst {
     /**
      * Run the rule on the given code, and check the expected number of violations.
      */
+    @SuppressWarnings("unchecked")
     public void runTest(TestDescriptor test) {
         Rule rule = test.getRule();
 
@@ -71,14 +74,22 @@ public abstract class RuleTst {
             rule = findRule(rule.getRuleSetName(), rule.getName());
         }
 
-        Properties ruleProperties = rule.getProperties();
-        Properties oldProperties = (Properties)ruleProperties.clone();
+        Map<PropertyDescriptor<?>, Object> oldProperties = rule.getPropertiesByPropertyDescriptor();
         try {
             int res;
             try {
+        	// Set test specific properties onto the Rule
                 if (test.getProperties() != null) {
-                    oldProperties = (Properties)ruleProperties.clone();
-                    ruleProperties.putAll(test.getProperties());
+                    for (Map.Entry<Object, Object> entry : test.getProperties().entrySet()) {
+                	String propertyName = (String)entry.getKey();
+                	String strValue = (String)entry.getValue();
+                	PropertyDescriptor propertyDescriptor = rule.getPropertyDescriptor(propertyName);
+                	if (propertyDescriptor == null) {
+                            throw new IllegalArgumentException("No such property '" + propertyName + "' on Rule " + rule.getName());
+                	}
+                	Object value = propertyDescriptor.valueFrom(strValue);
+                	rule.setProperty(propertyDescriptor, value);
+                    }
                 }
 
                 res = processUsingStringReader(test.getCode(), rule, test.getLanguageVersion()).size();
@@ -90,8 +101,11 @@ public abstract class RuleTst {
                     test.getNumberOfProblemsExpected(), res);
         } finally {
             //Restore old properties
-            ruleProperties.clear();
-            ruleProperties.putAll(oldProperties);
+            // TODO Tried to use generics here, but there's a compiler bug doing so in a finally block.
+            // Neither 1.5.0_16-b02 or 1.6.0_07-b06 works, but 1.7.0-ea-b34 seems to work.   
+            for (Map.Entry entry: oldProperties.entrySet()) {
+        	rule.setProperty((PropertyDescriptor)entry.getKey(), entry.getValue());
+            }
         }
     }
 

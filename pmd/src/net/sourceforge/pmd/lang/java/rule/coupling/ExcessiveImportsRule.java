@@ -21,6 +21,7 @@ public class ExcessiveImportsRule extends ExcessiveNodeCountRule {
 
     public ExcessiveImportsRule() {
         super(ASTCompilationUnit.class);
+        setProperty(MINIMUM_DESCRIPTOR, 30d);
     }
 
     /**

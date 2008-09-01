@@ -80,7 +80,10 @@
       <xs:attribute name="name" type="xs:NMTOKEN" use="required" />
       <xs:attribute name="value" type="xs:string" use="optional" />
       <xs:attribute name="description" type="xs:string" use="optional" />
-      <xs:attribute name="pluginname" type="xs:NMTOKEN" use="optional" />
+      <xs:attribute name="type" type="xs:string" use="optional" />
+      <xs:attribute name="delimiter" type="xs:string" use="optional" />
+      <xs:attribute name="min" type="xs:string" use="optional" />
+      <xs:attribute name="max" type="xs:string" use="optional" />
     </xs:complexType>
   </xs:element>
 

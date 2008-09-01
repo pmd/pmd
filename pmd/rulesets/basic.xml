@@ -559,7 +559,7 @@ public class Test {
 	    </description>
 	    <priority>3</priority>
 	     <properties>
-            <property name="pattern" description="Regular Expression" value='^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$'/>
+            <property name="pattern" type="String" description="Regular Expression" value='^"[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"$'/>
         </properties>
 	    <example>
 	    <![CDATA[
@@ -660,27 +660,6 @@ public class Test {
             ]]>
         </description>
         <priority>2</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-		        	<![CDATA[
-//UnaryExpression[
-		./UnaryExpression
-		or ./UnaryExpressionNotPlusMinus
-		or ./PrimaryExpression/PrimaryPrefix/Expression/UnaryExpression
-		or ./PrimaryExpression/PrimaryPrefix/Expression/UnaryExpressionNotPlusMinus
-	]
-|
-//UnaryExpressionNotPlusMinus[
-		./UnaryExpression
-		or ./UnaryExpressionNotPlusMinus
-		or ./PrimaryExpression/PrimaryPrefix/Expression/UnaryExpression
-		or ./PrimaryExpression/PrimaryPrefix/Expression/UnaryExpressionNotPlusMinus
-	]
-		        	]]>
-            	</value>
-            </property>
-        </properties>
         <example>
             <![CDATA[
             // These are typo bugs, or at best needlessly complex and confusing:

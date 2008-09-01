@@ -17,6 +17,7 @@ public class NcssConstructorCountRule extends AbstractNcssCountRule {
    */
   public NcssConstructorCountRule() {
     super( ASTConstructorDeclaration.class );
+    setProperty(MINIMUM_DESCRIPTOR, 100d);
   }
 
   public Object visit(ASTExplicitConstructorInvocation node, Object data) {

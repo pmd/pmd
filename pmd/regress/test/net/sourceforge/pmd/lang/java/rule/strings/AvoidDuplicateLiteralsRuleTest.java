@@ -19,7 +19,7 @@ import java.util.Set;
      @Test
      public void testAll() {
          Rule rule = findRule("strings", "AvoidDuplicateLiterals");
-         rule.addProperty("threshold", "2");
+         rule.setProperty(AvoidDuplicateLiteralsRule.THRESHOLD_DESCRIPTOR, 2);
          runTests(rule);
      }
  

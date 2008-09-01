@@ -10,6 +10,7 @@ import java.util.Iterator;
 import net.sourceforge.pmd.Report;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleViolation;
+import net.sourceforge.pmd.lang.java.rule.codesize.NPathComplexityRule;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class NPathComplexityTest extends RuleTst {
 
     @Test
     public void testViolationMessage() throws Throwable {
-	rule.addProperty("minimum", "1");
+	rule.setProperty(NPathComplexityRule.MINIMUM_DESCRIPTOR, 1.0);
 	Report report = new Report();
 	runTestFromString(tests[0].getCode(), rule, report);
 	Iterator i = report.iterator();

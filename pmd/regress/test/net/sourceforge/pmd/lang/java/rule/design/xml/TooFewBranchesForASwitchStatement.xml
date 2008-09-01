@@ -4,7 +4,7 @@
         <description><![CDATA[
 Only one case, this is useless
      ]]></description>
-        <rule-property name="$minimumCaseForASwitch">3</rule-property>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class DumbSwitch {
@@ -23,7 +23,7 @@ public class DumbSwitch {
         <description><![CDATA[
 Even two branches is not enough for a switch statement
      ]]></description>
-        <rule-property name="$minimumCaseForASwitch">3</rule-property>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class DumbSwitch {
@@ -46,7 +46,7 @@ public class DumbSwitch {
         <description><![CDATA[
 Three branches in a switch statement is ok.
      ]]></description>
-        <rule-property name="$minimumCaseForASwitch">3</rule-property>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class ValidSwitch {

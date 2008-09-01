@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolation;
 import net.sourceforge.pmd.lang.java.symboltable.SourceFileScope;
 import net.sourceforge.pmd.lang.rule.MockRule;
+import net.sourceforge.pmd.lang.rule.properties.StringProperty;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
 import net.sourceforge.pmd.stat.Metric;
@@ -107,7 +108,7 @@ public class ReportTest extends RuleTst implements ReportListener {
     public void testExclusionsInReportWithRuleViolationSuppressRegex() throws Throwable {
         Report rpt = new Report();
         Rule rule =  new FooRule();
-        rule.getProperties().setProperty(Rule.VIOLATION_SUPPRESS_REGEX_PROPERTY, ".*blah.*");
+        rule.setProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR, ".*blah.*");
         runTestFromString(TEST1, rule, rpt);
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());
@@ -117,7 +118,7 @@ public class ReportTest extends RuleTst implements ReportListener {
     public void testExclusionsInReportWithRuleViolationSuppressXPath() throws Throwable {
         Report rpt = new Report();
         Rule rule =  new FooRule();
-        rule.getProperties().setProperty(Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY, ".[@Image = 'Foo']");
+        rule.setProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR, ".[@Image = 'Foo']");
         runTestFromString(TEST1, rule, rpt);
         assertTrue(rpt.isEmpty());
         assertEquals(1, rpt.getSuppressedRuleViolations().size());

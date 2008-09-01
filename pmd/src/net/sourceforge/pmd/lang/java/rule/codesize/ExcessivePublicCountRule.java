@@ -28,6 +28,7 @@ public class ExcessivePublicCountRule extends ExcessiveNodeCountRule {
 
     public ExcessivePublicCountRule() {
         super(ASTCompilationUnit.class);
+        setProperty(MINIMUM_DESCRIPTOR, 45d);
     }
 
     /**

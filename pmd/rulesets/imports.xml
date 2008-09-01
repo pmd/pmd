@@ -104,14 +104,12 @@ which class a static member comes from (Sun 1.5 Language Guide).
 		 ]]></description>
 			<priority>3</priority>
        		<properties>
+	            <property name="maximumStaticImports" type="Integer" 
+	            description="All static imports can be disallowed by setting this to 0" min="0" max="100" value="4"/>
 	            <property name="xpath">
 	                <value><![CDATA[
 .[count(ImportDeclaration[@Static = 'true']) > $maximumStaticImports]
 	             ]]></value>
-	            </property>
-	            <property name="maximumStaticImports" 
-	            description="All static imports can be disallowed by setting this to 0">
-	            	<value>4</value>
 	            </property>
 	        </properties>
     	 	<example><![CDATA[

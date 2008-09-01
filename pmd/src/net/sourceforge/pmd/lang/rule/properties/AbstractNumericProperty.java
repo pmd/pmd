@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.rule.properties;
  * 
  * @author Brian Remedios
  */
-public abstract class AbstractNumericProperty extends AbstractScalarProperty {
+public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<T> {
 
 	private Number lowerLimit;
 	private Number upperLimit;
@@ -21,7 +21,7 @@ public abstract class AbstractNumericProperty extends AbstractScalarProperty {
 	 * @param theUIOrder
 	 * @throws IllegalArgumentException
 	 */
-	protected AbstractNumericProperty(String theName, String theDescription, Number lower, Number upper, Object theDefault, float theUIOrder) {
+	protected AbstractNumericProperty(String theName, String theDescription, Number lower, Number upper, T theDefault, float theUIOrder) {
 		super(theName, theDescription, theDefault, theUIOrder);
 	
 		if (lower.doubleValue() > upper.doubleValue()) {
@@ -48,10 +48,6 @@ public abstract class AbstractNumericProperty extends AbstractScalarProperty {
 		return upperLimit;
 	}
 	
-	/**
-	 * Method rangeString.
-	 * @return String
-	 */
 	public String rangeString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append('(').append(lowerLimit);

@@ -3,16 +3,16 @@
  */
 package net.sourceforge.pmd.lang.rule.stat;
 
-import java.util.Map;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.MINIMUM_DESCRIPTOR;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.SIGMA_DESCRIPTOR;
+import static net.sourceforge.pmd.lang.rule.stat.StatisticalRule.TOP_SCORE_DESCRIPTOR;
+
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
-import net.sourceforge.pmd.lang.rule.properties.DoubleProperty;
-import net.sourceforge.pmd.lang.rule.properties.IntegerProperty;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.stat.Metric;
 
@@ -34,16 +34,11 @@ public class StatisticalRuleHelper {
     private int count = 0;
     private double total = 0.0;
 
-    public static final PropertyDescriptor SIGMA_DESCRIPTOR = new DoubleProperty("sigma", "Sigma value", 0, 100, 0,	1.0f );
-    public static final PropertyDescriptor MINIMUM_DESCRIPTOR = new DoubleProperty("minimum", "Minimum value", 0, 100,	0,	2.0f );
-    public static final PropertyDescriptor TOP_SCORE_DESCRIPTOR = new IntegerProperty("topscore", "Top score value", 1, 100, 0,	3.0f );
-
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = AbstractRule.asFixedMap( new PropertyDescriptor[] {
-    	SIGMA_DESCRIPTOR, MINIMUM_DESCRIPTOR, TOP_SCORE_DESCRIPTOR
-    	});
-
     public StatisticalRuleHelper(AbstractRule rule) {
     	this.rule = rule;
+    	rule.definePropertyDescriptor(SIGMA_DESCRIPTOR);
+    	rule.definePropertyDescriptor(MINIMUM_DESCRIPTOR);
+    	rule.definePropertyDescriptor(TOP_SCORE_DESCRIPTOR);
     }
 
     public void addDataPoint(DataPoint point) {
@@ -57,14 +52,14 @@ public class StatisticalRuleHelper {
         double deviation;
         double minimum = 0.0;
 
-        if (rule.hasProperty("sigma")) {	// TODO - need to come up with a good default value
+        if (rule.getProperty(SIGMA_DESCRIPTOR) != null) {	// TODO - need to come up with a good default value
             deviation = getStdDev();
-            double sigma = rule.getDoubleProperty(SIGMA_DESCRIPTOR);
+            double sigma = rule.getProperty(SIGMA_DESCRIPTOR);
             minimum = getMean() + (sigma * deviation);
         }
 
-        if (rule.hasProperty("minimum")) {	// TODO - need to come up with a good default value
-            double mMin = rule.getDoubleProperty(MINIMUM_DESCRIPTOR);
+        if (rule.getProperty(MINIMUM_DESCRIPTOR) != null) {	// TODO - need to come up with a good default value
+            double mMin = rule.getProperty(MINIMUM_DESCRIPTOR);
             if (mMin > minimum) {
                 minimum = mMin;
             }
@@ -72,8 +67,8 @@ public class StatisticalRuleHelper {
 
         SortedSet<DataPoint> newPoints = applyMinimumValue(dataPoints, minimum);
 
-        if (rule.hasProperty("topscore")) { // TODO - need to come up with a good default value
-            int topScore = rule.getIntProperty(TOP_SCORE_DESCRIPTOR);
+        if (rule.getProperty(TOP_SCORE_DESCRIPTOR) != null) {	// TODO - need to come up with a good default value
+            int topScore = rule.getProperty(TOP_SCORE_DESCRIPTOR);
             if (newPoints.size() >= topScore) {
                 newPoints = applyTopScore(newPoints, topScore);
             }
@@ -139,12 +134,5 @@ public class StatisticalRuleHelper {
         for (DataPoint point: p) {
             rule.addViolationWithMessage(ctx, point.getNode(), point.getMessage(), ((StatisticalRule)rule).getViolationParameters(point));
         }
-    }
-
-    /**
-     * Users of the helper should use this Map to describe their properties.
-     */
-    public Map<String, PropertyDescriptor> propertiesByName() {
-    	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

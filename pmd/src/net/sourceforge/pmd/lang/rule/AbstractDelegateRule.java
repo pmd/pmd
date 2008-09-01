@@ -5,7 +5,6 @@ package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
@@ -134,69 +133,31 @@ public abstract class AbstractDelegateRule implements Rule {
 		rule.setPriority(priority);
 	}
 
-	/**
-	 * @deprecated
-	 * */
-	 public Properties getProperties() {
-		return rule.getProperties();
+	public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) throws IllegalArgumentException {
+	    rule.definePropertyDescriptor(propertyDescriptor);
 	}
 
-	/**
-	 * @deprecated
-	 */
-	 public void addProperty(String name, String property) {
-		 rule.addProperty(name, property);
-	 }
+	public PropertyDescriptor<?> getPropertyDescriptor(String name) {
+	    return rule.getPropertyDescriptor(name);
+	}
 
-	 /**
-	  * @deprecated
-	  */
-	 public void addProperties(Properties properties) {
-		 rule.addProperties(properties);
-	 }
+	public List<PropertyDescriptor<?>> getPropertyDescriptors() {
+	    return rule.getPropertyDescriptors();
+	}
 
-	 /**
-	  * @deprecated
-	  */
-	 public boolean hasProperty(String name) {
-		 return rule.hasProperty(name);
-	 }
-	 /**
-	  * @deprecated
-	  */
-	 public boolean getBooleanProperty(String name) {
-		 return rule.getBooleanProperty(name);
-	 }
+	public <T> T getProperty(PropertyDescriptor<T> propertyDescriptor) {
+	    return rule.getProperty(propertyDescriptor);
+	}
 
-	 /**
-	  * @deprecated
-	  */
-	 public int getIntProperty(String name) {
-		 return rule.getIntProperty(name);
-	 }
+	public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
+	    rule.setProperty(propertyDescriptor, value);
+	}
 
-	 /**
-	  * @deprecated
-	  */
-	 public double getDoubleProperty(String name) {
-		 return rule.getDoubleProperty(name);
-	 }
+	public Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor() {
+	    return rule.getPropertiesByPropertyDescriptor();
+	}
 
-	 /**
-	  * @deprecated
-	  */
-	 public String getStringProperty(String name) {
-		 return rule.getStringProperty(name);
-	 }
-
-	 /**
-	  * @deprecated
-	  */
-	 public PropertyDescriptor propertyDescriptorFor(String name) {
-		 return rule.propertyDescriptorFor(name);
-	 }
-
-	 public void setUsesDFA() {
+	public void setUsesDFA() {
 		 rule.setUsesDFA();
 	 }
 
@@ -240,50 +201,4 @@ public abstract class AbstractDelegateRule implements Rule {
 		 rule.end(ctx);
 	 }
 
-	 public boolean[] getBooleanProperties(PropertyDescriptor key) {
-		 return rule.getBooleanProperties(key);
-	 }
-
-	 public boolean getBooleanProperty(PropertyDescriptor key) {
-		 return rule.getBooleanProperty(key);
-	 }
-
-	 public double[] getDoubleProperties(PropertyDescriptor key) {
-		 return rule.getDoubleProperties(key);
-	 }
-
-	 public double getDoubleProperty(PropertyDescriptor key) {
-		 return rule.getDoubleProperty(key);
-	 }
-
-	 public int[] getIntProperties(PropertyDescriptor key) {
-		 return rule.getIntProperties(key);
-	 }
-
-	 public int getIntProperty(PropertyDescriptor key) {
-		 return rule.getIntProperty(key);
-	 }
-
-	 public String[] getStringProperties(PropertyDescriptor key) {
-		 return rule.getStringProperties(key);
-	 }
-
-	 public String getStringProperty(PropertyDescriptor key) {
-		 return rule.getStringProperty(key);
-	 }
-
-	 public void setProperties(PropertyDescriptor key, Object[] values) {
-		 rule.setProperties(key, values);
-	 }
-
-	 public void setProperty(PropertyDescriptor key, Object value) {
-		 rule.setProperty(key, value);
-	 }
-
-	 /**
-	  * Returns all the property values keyed by the descriptors
-	  */
-	 public Map<PropertyDescriptor, Object> propertyValuesByDescriptor() {
-		 return rule.propertyValuesByDescriptor();
-	 }
 }

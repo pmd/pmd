@@ -1,9 +1,7 @@
 package net.sourceforge.pmd.lang.java.rule;
 
 import java.util.List;
-import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.stat.StatisticalRule;
@@ -26,10 +24,5 @@ public abstract class AbstractStatisticalJavaRule extends AbstractJavaRule imple
     public void apply(List<? extends Node> nodes, RuleContext ctx) {
 	super.apply(nodes, ctx);
 	helper.apply(ctx);
-    }
-
-    @Override
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-	return helper.propertiesByName();
     }
 }

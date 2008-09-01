@@ -29,7 +29,7 @@ public class XPathJspRuleTest extends RuleTst {
     @Test
     public void testExpressionMatching() throws Throwable {
         Rule rule = new XPathRule();
-        rule.addProperty("xpath", XPATH_EXPRESSION);
+        rule.setProperty(XPathRule.XPATH_DESCRIPTOR, XPATH_EXPRESSION);
         rule.setMessage("Test");
         RuleSet rules = new RuleSet();
         rules.addRule(rule);

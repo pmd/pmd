@@ -25,17 +25,13 @@ import org.junit.Test;
 public class AbstractRuleTest {
 	
     private static class MyRule extends AbstractJavaRule {
-    	private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
+    	private static final StringProperty pd = new StringProperty("foo", "foo property", "x", 1.0f);
 
-    	private static final PropertyDescriptor xpath = new StringProperty("xpath", "xpath property", "", 2.0f);
-
-        private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { pd, xpath });
-
-        protected Map<String, PropertyDescriptor> propertiesByName() {
-        	return propertyDescriptorsByName;
-        }
+    	private static final StringProperty xpath = new StringProperty("xpath", "xpath property", "", 2.0f);
 
         public MyRule() {
+            definePropertyDescriptor(pd);
+            definePropertyDescriptor(xpath);
             setName("MyRule");
             setMessage("my rule msg");
             setPriority(RulePriority.MEDIUM);
@@ -46,13 +42,8 @@ public class AbstractRuleTest {
     private static class MyOtherRule extends AbstractJavaRule {
     	private static final PropertyDescriptor pd = new StringProperty("foo", "foo property", "x", 1.0f);
 
-		private static final Map<String, PropertyDescriptor> propertyDescriptorsByName = asFixedMap(new PropertyDescriptor[] { pd });
-
-        protected Map<String, PropertyDescriptor> propertiesByName() {
-        	return propertyDescriptorsByName;
-        }
-
 		public MyOtherRule() {
+	            definePropertyDescriptor(pd);
             setName("MyOtherRule");
             setMessage("my other rule");
             setPriority(RulePriority.MEDIUM);

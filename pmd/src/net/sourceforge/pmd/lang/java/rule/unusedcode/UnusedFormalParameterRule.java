@@ -14,8 +14,15 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
+import net.sourceforge.pmd.lang.rule.properties.BooleanProperty;
 
 public class UnusedFormalParameterRule extends AbstractJavaRule {
+    
+    private static final BooleanProperty CHECKALL_DESCRIPTOR = new BooleanProperty("checkall", "Check all methods, including non-private methods.", false, 1.0f);
+    
+    public UnusedFormalParameterRule() {
+	definePropertyDescriptor(CHECKALL_DESCRIPTOR);
+    }
 
     public Object visit(ASTConstructorDeclaration node, Object data) {
         check(node, data);
@@ -23,7 +30,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRule {
     }
 
     public Object visit(ASTMethodDeclaration node, Object data) {
-        if (!node.isPrivate() && !hasProperty("checkall")) {
+        if (!node.isPrivate() && !getProperty(CHECKALL_DESCRIPTOR)) {
             return data;
         }
         if (!node.isNative()) {

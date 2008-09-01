@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -25,14 +24,16 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 
     private String prefixProperty;
 
-    private static final PropertyDescriptor PREFIX_DESCRIPTOR = new StringProperty("prefix", "Prefix somethingorother?",
+    private static final StringProperty PREFIX_DESCRIPTOR = new StringProperty("prefix", "A variable prefix to skip, i.e., m_",
 	    "", 1.0f);
-
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(PREFIX_DESCRIPTOR);
+    
+    public BeanMembersShouldSerializeRule() {
+	definePropertyDescriptor(PREFIX_DESCRIPTOR);
+    }
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
-	prefixProperty = getStringProperty(PREFIX_DESCRIPTOR);
+	prefixProperty = getProperty(PREFIX_DESCRIPTOR);
 	super.visit(node, data);
 	return data;
     }
@@ -107,13 +108,5 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 	    }
 	}
 	return false;
-    }
-
-    /**
-     * @return Map
-     */
-    @Override
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

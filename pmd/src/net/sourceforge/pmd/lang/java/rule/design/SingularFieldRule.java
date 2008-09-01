@@ -7,9 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
@@ -36,25 +34,21 @@ public class SingularFieldRule extends AbstractJavaRule {
 	/**
 	 * Restore old behavior by setting both properties to true, which will result in many false positives
 	 */
-    private static final PropertyDescriptor CHECK_INNER_CLASSES = new BooleanProperty(
-			"CheckInnerClasses", "Check inner classes", false, 1.0f);
-    private static final PropertyDescriptor DISALLOW_NOT_ASSIGNMENT = new BooleanProperty(
-			"DisallowNotAssignment", "Disallow violations where the first usage is not an assignment", false, 2.0f);
+    private static final BooleanProperty CHECK_INNER_CLASSES = new BooleanProperty(
+			"checkInnerClasses", "Check inner classes", false, 1.0f);
+    private static final BooleanProperty DISALLOW_NOT_ASSIGNMENT = new BooleanProperty(
+			"disallowNotAssignment", "Disallow violations where the first usage is not an assignment", false, 2.0f);
 
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(
-    		new PropertyDescriptor[] { CHECK_INNER_CLASSES, DISALLOW_NOT_ASSIGNMENT });
-
-    @Override
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-        return PROPERTY_DESCRIPTORS_BY_NAME;
+    public SingularFieldRule() {
+	definePropertyDescriptor(CHECK_INNER_CLASSES);
+	definePropertyDescriptor(DISALLOW_NOT_ASSIGNMENT);
     }
-    
     
     @SuppressWarnings("PMD.CompareObjectsWithEquals")
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-    	boolean checkInnerClasses = getBooleanProperty(CHECK_INNER_CLASSES);
-    	boolean disallowNotAssignment = getBooleanProperty(DISALLOW_NOT_ASSIGNMENT);
+    	boolean checkInnerClasses = getProperty(CHECK_INNER_CLASSES);
+    	boolean disallowNotAssignment = getProperty(DISALLOW_NOT_ASSIGNMENT);
 
         if (node.isPrivate() && !node.isStatic()) {
             for (ASTVariableDeclarator declarator: node.findChildrenOfType(ASTVariableDeclarator.class)) {

@@ -29,6 +29,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import junit.framework.JUnit4TestAdapter;
 import net.sourceforge.pmd.PMD;
+import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RulePriority;
 import net.sourceforge.pmd.RuleSet;
@@ -134,32 +135,25 @@ public class RuleSetFactoryTest {
 	assertEquals(RulePriority.MEDIUM, loadFirstRule(PRIORITY).getPriority());
     }
 
-/*		obsolete property accessors
-    @Test
+        @Test
+        @SuppressWarnings("unchecked")
     public void testProps() {
-	Rule r = loadFirstRule(PROPERTIES);
-	assertTrue(r.hasProperty("foo"));
-	assertEquals("bar", r.getStringProperty("foo"));
-	assertEquals(2, r.getIntProperty("fooint"));
-	assertTrue(r.hasProperty("fooBoolean"));
-	assertTrue(r.getBooleanProperty("fooBoolean"));
-	assertTrue(r.hasProperty("fooDouble"));
-	assertEquals(1.0, r.getDoubleProperty("fooDouble"), 0.05);
-	assertTrue(!r.hasProperty("BuggleFish"));
-	assertTrue(r.getDescription().indexOf("testdesc2") != -1);
-    }
-*/
-    @Test
-    public void testXPathPluginnameProperty() {
-	Rule r = loadFirstRule(XPATH_PLUGINNAME);
-	assertTrue(r.hasProperty("pluginname"));
+    	Rule r = loadFirstRule(PROPERTIES);
+    	assertEquals("bar", r.getProperty((PropertyDescriptor<String>)r.getPropertyDescriptor("foo")));
+    	assertEquals(new Integer(2), r.getProperty((PropertyDescriptor<Integer>)r.getPropertyDescriptor("fooint")));
+    	assertTrue(r.getProperty((PropertyDescriptor<Boolean>)r.getPropertyDescriptor("fooBoolean")));
+    	assertEquals(1.0, r.getProperty((PropertyDescriptor<Double>)r.getPropertyDescriptor("fooDouble")), 0.05);
+    	assertNull(r.getPropertyDescriptor("BuggleFish"));
+    	assertTrue(r.getDescription().indexOf("testdesc2") != -1);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testXPath() {
 	Rule r = loadFirstRule(XPATH);
-	assertTrue(r.hasProperty("xpath"));
-	assertTrue(r.getStringProperty(XPathRule.XPATH_DESCRIPTOR).indexOf(" //Block ") != -1);
+	PropertyDescriptor<String> xpathProperty = (PropertyDescriptor<String>)r.getPropertyDescriptor("xpath");
+	assertNotNull("xpath property descriptor", xpathProperty);
+	assertTrue(r.getProperty(xpathProperty).indexOf(" //Block ") != -1);
     }
 
     @Test
@@ -182,12 +176,15 @@ public class RuleSetFactoryTest {
 	assertEquals("Test that both example are stored", 2, r.getExamples().size());
 	assertEquals("Test example override", r.getExamples().get(1));
 	assertEquals(RulePriority.MEDIUM, r.getPriority());
-	assertTrue(r.hasProperty("test2"));
-	assertEquals("override2", r.getStringProperty("test2"));
-	assertTrue(r.hasProperty("test3"));
-	assertEquals("override3", r.getStringProperty("test3"));
-	assertTrue(r.hasProperty("test4"));
-	assertEquals("new property", r.getStringProperty("test4"));
+	PropertyDescriptor<?> test2Descriptor = r.getPropertyDescriptor("test2");
+	assertNotNull("test2 descriptor", test2Descriptor);
+	assertEquals("override2", r.getProperty(test2Descriptor));
+	PropertyDescriptor<?> test3Descriptor = r.getPropertyDescriptor("test3");
+	assertNotNull("test3 descriptor", test3Descriptor);
+	assertEquals("override3", r.getProperty(test3Descriptor));
+	PropertyDescriptor<?> test4Descriptor = r.getPropertyDescriptor("test4");
+	assertNotNull("test3 descriptor", test4Descriptor);
+	assertEquals("new property", r.getProperty(test4Descriptor));
     }
 
     @Test
@@ -353,17 +350,17 @@ public class RuleSetFactoryTest {
 			    + rule.getRuleClass() + "), it should be:" + expectedClassName + PMD.EOL;
 		}
 		// Should not have violation suppress regex property
-		if (rule.hasProperty(Rule.VIOLATION_SUPPRESS_REGEX_PROPERTY)) {
+		if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR) != null) {
 		    invalidRegexSuppress++;
 		    messages += "Rule " + fileName + "/" + rule.getName() + " should not have '"
-			    + Rule.VIOLATION_SUPPRESS_REGEX_PROPERTY
+			    + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name()
 			    + "', this is intended for end user customization only." + PMD.EOL;
 		}
 		// Should not have violation suppress xpath property
-		if (rule.hasProperty(Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY)) {
+		if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR) != null) {
 		    invalidXPathSuppress++;
 		    messages += "Rule " + fileName + "/" + rule.getName() + " should not have '"
-			    + Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY
+			    + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()
 			    + "', this is intended for end user customization only." + PMD.EOL;
 		}
 	    }
@@ -374,8 +371,8 @@ public class RuleSetFactoryTest {
 	    fail("All built-in PMD rules need 'since' attribute (" + invalidSinceAttributes
 		    + " are missing), a proper ExternalURLInfo (" + invalidExternalInfoURL
 		    + " are invalid), a class name meeting conventions (" + invalidClassName + " are invalid), no '"
-		    + Rule.VIOLATION_SUPPRESS_REGEX_PROPERTY + "' property (" + invalidRegexSuppress
-		    + " are invalid), and no '" + Rule.VIOLATION_SUPPRESS_XPATH_PROPERTY + "' property ("
+		    + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + "' property (" + invalidRegexSuppress
+		    + " are invalid), and no '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property ("
 		    + invalidXPathSuppress + " are invalid)" + PMD.EOL + messages);
 	}
     }
@@ -435,6 +432,7 @@ public class RuleSetFactoryTest {
 
 	// Load original XML
 	String xml1 = readFullyToString(ResourceLoader.loadResourceAsStream(fileName));
+	//System.out.println("xml1: " + xml1);
 
 	// Load the original RuleSet
 	RuleSet ruleSet1 = loadRuleSetByFileName(fileName);
@@ -445,6 +443,7 @@ public class RuleSetFactoryTest {
 	writer1.write(ruleSet1);
 	writer1.close();
 	String xml2 = new String(outputStream1.toByteArray());
+	//System.out.println("xml2: " + xml2);
 
 	// Read RuleSet from XML, first time
 	RuleSetFactory ruleSetFactory = new RuleSetFactory();
@@ -458,10 +457,7 @@ public class RuleSetFactoryTest {
 	writer2.write(ruleSet2);
 	writer2.close();
 	String xml3 = new String(outputStream2.toByteArray());
-
-	// System.out.println("xml1: " + xml1);
-	// System.out.println("xml2: " + xml2);
-	// System.out.println("xml3: " + xml3);
+	//System.out.println("xml3: " + xml3);
 
 	// Read RuleSet from XML, second time
 	RuleSet ruleSet3 = ruleSetFactory.createRuleSet(new ByteArrayInputStream(outputStream2.toByteArray()));
@@ -500,21 +496,21 @@ public class RuleSetFactoryTest {
 	    Rule rule1 = ((List<Rule>) ruleSet1.getRules()).get(i);
 	    Rule rule2 = ((List<Rule>) ruleSet2.getRules()).get(i);
 
-	    assertFalse(message + ", Different RuleReference",
-		    rule1 instanceof RuleReference && !(rule2 instanceof RuleReference)
-			    || !(rule1 instanceof RuleReference) && rule2 instanceof RuleReference);
+	    assertFalse(message + ", Different RuleReference", rule1 instanceof RuleReference
+		    && !(rule2 instanceof RuleReference) || !(rule1 instanceof RuleReference)
+		    && rule2 instanceof RuleReference);
 
 	    if (rule1 instanceof RuleReference) {
 		RuleReference ruleReference1 = (RuleReference) rule1;
 		RuleReference ruleReference2 = (RuleReference) rule2;
 		assertEquals(message + ", RuleReference overridden language", ruleReference1.getOverriddenLanguage(),
 			ruleReference2.getOverriddenLanguage());
-		assertEquals(message + ", RuleReference overridden minimum language version", ruleReference1.getOverriddenMinimumLanguageVersion(),
-			ruleReference2.getOverriddenMinimumLanguageVersion());
-		assertEquals(message + ", RuleReference overridden maximum language version", ruleReference1.getOverriddenMaximumLanguageVersion(),
-			ruleReference2.getOverriddenMaximumLanguageVersion());
-		assertEquals(message + ", RuleReference overridden deprecated", ruleReference1.isOverriddenDeprecated(),
-			ruleReference2.isOverriddenDeprecated());
+		assertEquals(message + ", RuleReference overridden minimum language version", ruleReference1
+			.getOverriddenMinimumLanguageVersion(), ruleReference2.getOverriddenMinimumLanguageVersion());
+		assertEquals(message + ", RuleReference overridden maximum language version", ruleReference1
+			.getOverriddenMaximumLanguageVersion(), ruleReference2.getOverriddenMaximumLanguageVersion());
+		assertEquals(message + ", RuleReference overridden deprecated",
+			ruleReference1.isOverriddenDeprecated(), ruleReference2.isOverriddenDeprecated());
 		assertEquals(message + ", RuleReference overridden name", ruleReference1.getOverriddenName(),
 			ruleReference2.getOverriddenName());
 		assertEquals(message + ", RuleReference overridden description", ruleReference1
@@ -527,8 +523,6 @@ public class RuleSetFactoryTest {
 			ruleReference2.getOverriddenPriority());
 		assertEquals(message + ", RuleReference overridden examples", ruleReference1.getOverriddenExamples(),
 			ruleReference2.getOverriddenExamples());
-		assertEquals(message + ", RuleReference overridden properties", ruleReference1
-			.getOverriddenProperties(), ruleReference2.getOverriddenProperties());
 	    }
 
 	    assertEquals(message + ", Rule name", rule1.getName(), rule2.getName());
@@ -539,11 +533,18 @@ public class RuleSetFactoryTest {
 	    assertEquals(message + ", Rule external info url", rule1.getExternalInfoUrl(), rule2.getExternalInfoUrl());
 	    assertEquals(message + ", Rule priority", rule1.getPriority(), rule2.getPriority());
 	    assertEquals(message + ", Rule examples", rule1.getExamples(), rule2.getExamples());
-	    for (Object key : rule1.getProperties().keySet()) {
-		assertEquals(message + ", Rule property " + key, rule1.getProperties().get(key), rule2.getProperties()
-			.get(key));
+	    
+	    List<PropertyDescriptor<?>> propertyDescriptors1 = rule1.getPropertyDescriptors();
+	    List<PropertyDescriptor<?>> propertyDescriptors2 = rule2.getPropertyDescriptors();
+	    try {
+	    assertEquals(message + ", Rule property descriptor ", propertyDescriptors1, propertyDescriptors2);
+	} catch (Error e) {
+	    throw e;
+	}
+	    for (int j = 0; j < propertyDescriptors1.size(); j++) {
+		assertEquals(message + ", Rule property value " + j, rule1.getProperty(propertyDescriptors1.get(j)), rule2.getProperty(propertyDescriptors2.get(j)));
 	    }
-	    assertEquals(message + ", Rule properties", rule1.getProperties(), rule2.getProperties());
+	    assertEquals(message + ", Rule property descriptor count", propertyDescriptors1.size(), propertyDescriptors2.size());
 	}
     }
 
@@ -683,9 +684,8 @@ public class RuleSetFactoryTest {
 		    System.err.println(e.getMessage());
 		    throw new IOException(e.getMessage());
 		}
-	    } 
-		throw new IllegalArgumentException("No clue how to handle: publicId=" + publicId + ", systemId="
-			+ systemId);
+	    }
+	    throw new IllegalArgumentException("No clue how to handle: publicId=" + publicId + ", systemId=" + systemId);
 	}
     }
 
@@ -722,9 +722,9 @@ public class RuleSetFactoryTest {
 	    + PMD.EOL + "  message=\"Test message override\"> " + PMD.EOL
 	    + "  <description>Test description override</description>" + PMD.EOL
 	    + "  <example>Test example override</example>" + PMD.EOL + "  <priority>3</priority>" + PMD.EOL
-	    + "  <properties>" + PMD.EOL + "   <property name=\"test2\" value=\"override2\"/>" + PMD.EOL
-	    + "   <property name=\"test3\"><value>override3</value></property>" + PMD.EOL
-	    + "   <property name=\"test4\" value=\"new property\"/>" + PMD.EOL + "  </properties>" + PMD.EOL
+	    + "  <properties>" + PMD.EOL + "   <property name=\"test2\" description=\"test2\" type=\"String\" value=\"override2\"/>" + PMD.EOL
+	    + "   <property name=\"test3\" description=\"test3\" type=\"String\"><value>override3</value></property>" + PMD.EOL
+	    + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>" + PMD.EOL + "  </properties>" + PMD.EOL
 	    + " </rule>" + PMD.EOL + "</ruleset>";
 
     private static final String EMPTY_RULESET = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
@@ -746,26 +746,19 @@ public class RuleSetFactoryTest {
 	    + "<description>testdesc</description>" + PMD.EOL + "<rule name=\"MockRuleName\" " + PMD.EOL
 	    + "message=\"avoid the mock rule\" " + PMD.EOL + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">"
 	    + PMD.EOL + "<description>testdesc2</description>" + PMD.EOL + "<properties>" + PMD.EOL
-	    + "<property name=\"fooBoolean\" value=\"true\"/>" + PMD.EOL
-	    + "<property name=\"fooDouble\" value=\"1.0\" />" + PMD.EOL + "<property name=\"foo\" value=\"bar\"/>"
-	    + PMD.EOL + "<property name=\"fooint\" value=\"2\"/>" + PMD.EOL + "</properties>" + PMD.EOL
+	    + "<property name=\"fooBoolean\" description=\"test\" type=\"Boolean\" value=\"true\"/>" + PMD.EOL
+	    + "<property name=\"fooDouble\" description=\"test\" type=\"Double\" min=\"1.0\" max=\"1.0\" value=\"1.0\" />" + PMD.EOL
+	    + "<property name=\"foo\" description=\"test\" type=\"String\" value=\"bar\"/>"
+	    + PMD.EOL + "<property name=\"fooint\" description=\"test\" type=\"Integer\" min=\"1\" max=\"10\" value=\"2\"/>" + PMD.EOL + "</properties>" + PMD.EOL
 	    + "</rule></ruleset>";
 
     private static final String XPATH = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
-	    + "<description>testdesc</description>" + PMD.EOL + "<priority>3</priority>" + PMD.EOL
+	    + "<description>testdesc</description>" + PMD.EOL
 	    + "<rule name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">" + PMD.EOL + "<description>testdesc2</description>"
-	    + PMD.EOL + "<properties>" + PMD.EOL + "<property name=\"xpath\">" + PMD.EOL + "<value>" + PMD.EOL
+	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">" + "<priority>3</priority>" + PMD.EOL + PMD.EOL + "<description>testdesc2</description>"
+	    + PMD.EOL + "<properties>" + PMD.EOL + "<property name=\"xpath\" description=\"test\" type=\"String\">" + PMD.EOL + "<value>" + PMD.EOL
 	    + "<![CDATA[ //Block ]]>" + PMD.EOL + "</value>" + PMD.EOL + "</property>" + PMD.EOL + "</properties>"
 	    + PMD.EOL + "</rule></ruleset>";
-
-    private static final String XPATH_PLUGINNAME = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">"
-	    + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<priority>3</priority>" + PMD.EOL
-	    + "<rule name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">" + PMD.EOL + "<description>testdesc2</description>"
-	    + PMD.EOL + "<properties>" + PMD.EOL + "<property name=\"xpath\" pluginname=\"true\">" + PMD.EOL
-	    + "<value>" + PMD.EOL + "<![CDATA[ //Block ]]>" + PMD.EOL + "</value>" + PMD.EOL + "</property>" + PMD.EOL
-	    + "</properties>" + PMD.EOL + "</rule></ruleset>";
 
     private static final String PRIORITY = "<?xml version=\"1.0\"?>" + PMD.EOL + "<ruleset name=\"test\">" + PMD.EOL
 	    + "<description>testdesc</description>" + PMD.EOL + "<rule " + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL
@@ -815,11 +808,9 @@ public class RuleSetFactoryTest {
 	    + "</rule></ruleset>";
 
     private static final String DIRECT_DEPRECATED_RULE = "<?xml version=\"1.0\"?>" + PMD.EOL
-	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL
-	    + "<rule "
+	    + "<ruleset name=\"test\">" + PMD.EOL + "<description>testdesc</description>" + PMD.EOL + "<rule "
 	    + PMD.EOL + "name=\"MockRuleName\" " + PMD.EOL + "message=\"avoid the mock rule\" " + PMD.EOL
-	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" deprecated=\"true\">" + PMD.EOL
-	    + "</rule></ruleset>";
+	    + "class=\"net.sourceforge.pmd.lang.rule.MockRule\" deprecated=\"true\">" + PMD.EOL + "</rule></ruleset>";
 
     // Note: Update this RuleSet name to a different RuleSet with deprecated Rules when the Rules are finally removed.
     private static final String DEPRECATED_RULE_RULESET_NAME = "rulesets/basic.xml";

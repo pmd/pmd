@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentOperator;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -30,24 +29,26 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
     private boolean checkNonStaticMethods = true;
     private boolean checkNonStaticFields = true;
 
-    private static final PropertyDescriptor CHECK_NON_STATIC_METHODS_DESCRIPTOR = new BooleanProperty(
-	    "checkNonStaticMethods", "Check for non-static methods.", true, 1.0f);
-    private static final PropertyDescriptor CHECK_NON_STATIC_FIELDS_DESCRIPTOR = new BooleanProperty(
-	    "checkNonStaticFields", "Check for non-static fields.", true, 2.0f);
-
-    private static final Map<String, PropertyDescriptor> PROPERTY_DESCRIPTORS_BY_NAME = asFixedMap(new PropertyDescriptor[] {
-	    CHECK_NON_STATIC_METHODS_DESCRIPTOR, CHECK_NON_STATIC_FIELDS_DESCRIPTOR });
+    private static final BooleanProperty CHECK_NON_STATIC_METHODS_DESCRIPTOR = new BooleanProperty(
+	    "checkNonStaticMethods", "Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.", true, 1.0f);
+    private static final BooleanProperty CHECK_NON_STATIC_FIELDS_DESCRIPTOR = new BooleanProperty(
+	    "checkNonStaticFields", "Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.", false, 2.0f);
 
     //    public NonThreadSafeSingleton() {
     //        checkNonStaticMethods = super.getBooleanProperty("checkNonStaticMethods");
     //        checkNonStaticFields = super.getBooleanProperty("checkNonStaticFields");
     //    }
+    
+    public NonThreadSafeSingletonRule() {
+	definePropertyDescriptor(CHECK_NON_STATIC_METHODS_DESCRIPTOR);
+	definePropertyDescriptor(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
+    }
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
 	fieldDecls.clear();
-	checkNonStaticMethods = getBooleanProperty(CHECK_NON_STATIC_METHODS_DESCRIPTOR);
-	checkNonStaticFields = getBooleanProperty(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
+	checkNonStaticMethods = getProperty(CHECK_NON_STATIC_METHODS_DESCRIPTOR);
+	checkNonStaticFields = getProperty(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
 	return super.visit(node, data);
     }
 
@@ -108,13 +109,5 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
 	    }
 	}
 	return super.visit(node, data);
-    }
-
-    /**
-     * @return Map
-     */
-    @Override
-    protected Map<String, PropertyDescriptor> propertiesByName() {
-	return PROPERTY_DESCRIPTORS_BY_NAME;
     }
 }

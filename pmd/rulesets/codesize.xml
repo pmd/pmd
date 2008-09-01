@@ -20,9 +20,6 @@ The Code Size Ruleset contains a collection of rules that find code size related
    A threshold of 200 is generally considered the point where measures should be taken to reduce complexity.
    </description>
      <priority>3</priority>
-   <properties>
-    <property name="minimum" description="The npath reporting threshold" value="200"/>
-   </properties>
     <example>
  <![CDATA[
  public class Foo {
@@ -44,9 +41,6 @@ Violations of this rule usually indicate that the method is doing
 too much.  Try to reduce the method size by creating helper methods and removing any copy/pasted code.
    </description>
      <priority>3</priority>
-   <properties>
-    <property name="minimum" description="The method size reporting threshold" value="100"/>
-   </properties>
    <example>
 <![CDATA[
 public class Foo {
@@ -72,9 +66,6 @@ Long parameter lists can indicate that a new object should be created to
  wrap the numerous parameters.  Basically, try to group the parameters together.
    </description>
      <priority>3</priority>
-   <properties>
-    <property name="minimum" description="The parameter count reporting threshold" value="10"/>
-   </properties>
    <example>
 <![CDATA[
 public class Foo {
@@ -101,9 +92,6 @@ do too much.  Try to break it down, and reduce the size to something
 manageable.
    </description>
      <priority>3</priority>
-       <properties>
-        <property name="minimum" description="The class size reporting threshold"  value="1000"/>
-       </properties>
    <example>
 <![CDATA[
 public class Foo {
@@ -130,16 +118,6 @@ method entry.  The decision points are 'if', 'while', 'for', and 'case labels'. 
 		]]>
    </description>
    <priority>3</priority>
-   <properties>
-      <property name="reportLevel" description="The Cyclomatic Complexity reporting threshold"  value="10"/>
-      <property name="showClassesComplexity"
-      			description="Indicate if class average violation should be added to the report"
-      			value="true"/>
-      <property name="showMethodsComplexity"
-      			description="Indicate if class average violation should be added to the report"
-      			value="true"/>
-
-   </properties>
    <example>
 <![CDATA[
 // Cyclomatic Complexity = 12
@@ -193,9 +171,6 @@ A large number of public methods and attributes declared in a class can indicate
  class may need to be broken up as increased effort will be required to thoroughly test it.
     </description>
     <priority>3</priority>
-    <properties>
-    <property name="minimum"  description="The public item reporting threshold" value="45"/>
-    </properties>
     <example>
     <![CDATA[
 public class Foo {
@@ -223,9 +198,6 @@ Classes that have too many fields could be redesigned to have fewer fields, poss
  city/state/zip fields could instead have one Address field.
       </description>
         <priority>3</priority>
-      <properties>
-       <property name="maxfields"  description="The field count reporting threshold " value="15"/>
-      </properties>
       <example>
    <![CDATA[
 public class Person {
@@ -248,9 +220,6 @@ of code for a given method. NCSS ignores comments, and counts actual statements.
 lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
-    <properties>
-        <property name="minimum" description="The method NCSS count reporting threshold" value="100"/>
-    </properties>
    <example>
 <![CDATA[
 public class Foo extends Bar {
@@ -279,9 +248,6 @@ of code for a given type. NCSS ignores comments, and counts actual statements. U
 lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
-    <properties>
-        <property name="minimum" description="The type NCSS count reporting threshold" value="1500"/>
-    </properties>
    <example>
 <![CDATA[
 public class Foo extends Bar {
@@ -309,9 +275,6 @@ of code for a given constructor. NCSS ignores comments, and counts actual statem
 lines of code that are split are counted as one.
     </description>
     <priority>3</priority>
-    <properties>
-        <property name="minimum" description="The constructor NCSS count reporting threshold" value="100"/>
-    </properties>
    <example>
 <![CDATA[
 public class Foo extends Bar {
@@ -345,7 +308,7 @@ have more fine grained objects.
         </description>
         <priority>3</priority>
         <properties>
-                <property name="maxmethods"  description="The method count reporting threshold " value="10"/>
+                <property name="maxmethods" type="Integer" description="The method count reporting threshold" min="1" max="1000" value="10"/>
                 <property name="xpath">
                 <value>
                     <!--  FIXME: Refine XPath to discard 'get' and 'set' methods with Block no more than 3 lines,

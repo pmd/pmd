@@ -5,12 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
-import net.sourceforge.pmd.lang.rule.properties.StringProperty;
+import net.sourceforge.pmd.lang.rule.properties.StringMultiProperty;
 
 /**
  * The loose package coupling Rule can be used to ensure coupling outside of
@@ -33,10 +32,10 @@ import net.sourceforge.pmd.lang.rule.properties.StringProperty;
  */
 public class LoosePackageCouplingRule extends AbstractJavaRule {
 
-    private static final PropertyDescriptor PACKAGES_DESCRIPTOR = new StringProperty("packages", "Restricted Packages",
+    private static final StringMultiProperty PACKAGES_DESCRIPTOR = new StringMultiProperty("packages", "Restricted Packages",
 	    new String[] {}, 1.0f, ',');
 
-    private static final PropertyDescriptor CLASSES_DESCRIPTOR = new StringProperty("classes", "Allowed Classes",
+    private static final StringMultiProperty CLASSES_DESCRIPTOR = new StringMultiProperty("classes", "Allowed Classes",
 	    new String[] {}, 2.0f, ',');
 
     // The package of this source file
@@ -46,6 +45,9 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
     private List<String> restrictedPackages;
 
     public LoosePackageCouplingRule() {
+	definePropertyDescriptor(PACKAGES_DESCRIPTOR);
+	definePropertyDescriptor(CLASSES_DESCRIPTOR);
+
 	addRuleChainVisit(ASTCompilationUnit.class);
 	addRuleChainVisit(ASTPackageDeclaration.class);
 	addRuleChainVisit(ASTImportDeclaration.class);
@@ -57,7 +59,7 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 
 	// Sort the restricted packages in reverse order.  This will ensure the
 	// child packages are in the list before their parent packages.
-	this.restrictedPackages = new ArrayList<String>(Arrays.asList(super.getStringProperties(PACKAGES_DESCRIPTOR)));
+	this.restrictedPackages = new ArrayList<String>(Arrays.asList(super.getProperty(PACKAGES_DESCRIPTOR)));
 	Collections.sort(restrictedPackages, Collections.reverseOrder());
 
 	return data;
@@ -111,7 +113,7 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
 
     protected boolean isAllowedClass(ASTImportDeclaration node) {
 	String importedName = node.getImportedName();
-	for (String clazz : getStringProperties(CLASSES_DESCRIPTOR)) {
+	for (String clazz : getProperty(CLASSES_DESCRIPTOR)) {
 	    if (importedName.equals(clazz)) {
 		return true;
 	    }

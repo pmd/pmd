@@ -75,7 +75,7 @@ around, with the restriction that the logger needs to be passed into the constru
      ]]>
                      </value>
              </property>
-             <property name="staticLoggerName">
+             <property name="staticLoggerName" type="String" description="Name of the static Logger variable">
                      <value>LOG</value>
              </property>
              </properties>
