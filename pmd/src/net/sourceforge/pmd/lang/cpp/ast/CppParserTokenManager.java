@@ -366,7 +366,7 @@ private int jjMoveStringLiteralDfa1_0(long active0, long active1, long active2)
 private int jjMoveStringLiteralDfa2_0(long old0, long active0, long old1, long active1, long old2, long active2)
 {
    if (((active0 &= old0) | (active1 &= old1) | (active2 &= old2)) == 0L)
-      return jjStartNfa_0(0, old0, old1, old2); 
+      return jjStartNfa_0(0, old0, old1, old2);
    try { curChar = input_stream.readChar(); }
    catch(java.io.IOException e) {
       jjStopStringLiteralDfa_0(1, active0, active1, active2);
@@ -442,7 +442,7 @@ private int jjMoveStringLiteralDfa2_0(long old0, long active0, long old1, long a
 private int jjMoveStringLiteralDfa3_0(long old0, long active0, long old1, long active1, long old2, long active2)
 {
    if (((active0 &= old0) | (active1 &= old1) | (active2 &= old2)) == 0L)
-      return jjStartNfa_0(1, old0, old1, old2); 
+      return jjStartNfa_0(1, old0, old1, old2);
    try { curChar = input_stream.readChar(); }
    catch(java.io.IOException e) {
       jjStopStringLiteralDfa_0(2, 0L, active1, active2);
@@ -512,7 +512,7 @@ private int jjMoveStringLiteralDfa3_0(long old0, long active0, long old1, long a
 private int jjMoveStringLiteralDfa4_0(long old1, long active1, long old2, long active2)
 {
    if (((active1 &= old1) | (active2 &= old2)) == 0L)
-      return jjStartNfa_0(2, 0L, old1, old2); 
+      return jjStartNfa_0(2, 0L, old1, old2);
    try { curChar = input_stream.readChar(); }
    catch(java.io.IOException e) {
       jjStopStringLiteralDfa_0(3, 0L, active1, active2);
@@ -580,7 +580,7 @@ private int jjMoveStringLiteralDfa4_0(long old1, long active1, long old2, long a
 private int jjMoveStringLiteralDfa5_0(long old1, long active1, long old2, long active2)
 {
    if (((active1 &= old1) | (active2 &= old2)) == 0L)
-      return jjStartNfa_0(3, 0L, old1, old2); 
+      return jjStartNfa_0(3, 0L, old1, old2);
    try { curChar = input_stream.readChar(); }
    catch(java.io.IOException e) {
       jjStopStringLiteralDfa_0(4, 0L, active1, active2);
@@ -640,7 +640,7 @@ private int jjMoveStringLiteralDfa5_0(long old1, long active1, long old2, long a
 private int jjMoveStringLiteralDfa6_0(long old1, long active1, long old2, long active2)
 {
    if (((active1 &= old1) | (active2 &= old2)) == 0L)
-      return jjStartNfa_0(4, 0L, old1, old2); 
+      return jjStartNfa_0(4, 0L, old1, old2);
    try { curChar = input_stream.readChar(); }
    catch(java.io.IOException e) {
       jjStopStringLiteralDfa_0(5, 0L, active1, active2);
@@ -682,7 +682,7 @@ private int jjMoveStringLiteralDfa6_0(long old1, long active1, long old2, long a
 private int jjMoveStringLiteralDfa7_0(long old1, long active1, long old2, long active2)
 {
    if (((active1 &= old1) | (active2 &= old2)) == 0L)
-      return jjStartNfa_0(5, 0L, old1, old2); 
+      return jjStartNfa_0(5, 0L, old1, old2);
    try { curChar = input_stream.readChar(); }
    catch(java.io.IOException e) {
       jjStopStringLiteralDfa_0(6, 0L, active1, 0L);
@@ -1425,11 +1425,11 @@ null, null, null, null, null, null, null, null, null, null, null, null, null, nu
 
 /** Lexer state names. */
 public static final String[] lexStateNames = {
-   "DEFAULT", 
-   "IN_LINE_COMMENT", 
-   "IN_COMMENT", 
-   "IN_PREPROCESSOR_OUTPUT_COMMENT", 
-   "PREPROCESSOR_OUTPUT", 
+   "DEFAULT",
+   "IN_LINE_COMMENT",
+   "IN_COMMENT",
+   "IN_PREPROCESSOR_OUTPUT_COMMENT",
+   "PREPROCESSOR_OUTPUT",
 };
 
 /** Lex State array. */
@@ -1536,13 +1536,13 @@ public Token getNextToken()
 
   EOFLoop :
   for (;;)
-  {   
-   try   
-   {     
+  {
+   try
+   {
       curChar = input_stream.BeginToken();
-   }     
+   }
    catch(java.io.IOException e)
-   {        
+   {
       jjmatchedKind = 0;
       matchedToken = jjFillToken();
       return matchedToken;

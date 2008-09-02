@@ -174,7 +174,7 @@ public class JavaCharStream implements CharStream
 
 /** @return starting character for token. */
   public char BeginToken() throws java.io.IOException
-  {     
+  {
      if (inBuf > 0)
      {
         --inBuf;
@@ -190,7 +190,7 @@ public class JavaCharStream implements CharStream
      bufpos = -1;
 
      return readChar();
-  }     
+  }
 
   protected void AdjustBuffSize()
   {
@@ -346,7 +346,7 @@ public class JavaCharStream implements CharStream
   }
 
   /**
-   * @deprecated 
+   * @deprecated
    * @see #getEndColumn
    */
   public int getColumn() {
@@ -354,7 +354,7 @@ public class JavaCharStream implements CharStream
   }
 
   /**
-   * @deprecated 
+   * @deprecated
    * @see #getEndLine
    */
   public int getLine() {
@@ -590,7 +590,7 @@ public class JavaCharStream implements CharStream
         bufcolumn[j] = newCol + columnDiff;
         columnDiff = nextColDiff;
         i++;
-     } 
+     }
 
      if (i < len)
      {
@@ -611,4 +611,4 @@ public class JavaCharStream implements CharStream
   }
 
 }
-/* JavaCC - OriginalChecksum=16325c5a3e39d8d2b22472102f938c3a (do not edit this line) */
+/* JavaCC - OriginalChecksum=ba589f97766842ef9df90042be56217a (do not edit this line) */

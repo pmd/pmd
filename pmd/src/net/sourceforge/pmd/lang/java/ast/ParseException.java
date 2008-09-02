@@ -126,7 +126,7 @@ public class ParseException extends net.sourceforge.pmd.lang.ast.ParseException 
       retval += " \"";
       retval += add_escapes(tok.image);
       retval += " \"";
-      tok = tok.next; 
+      tok = tok.next;
     }
     retval += "\" at line " + currentToken.next.beginLine + ", column " + currentToken.next.beginColumn;
     retval += "." + eol;
@@ -143,7 +143,7 @@ public class ParseException extends net.sourceforge.pmd.lang.ast.ParseException 
    * The end of line string for this machine.
    */
   protected String eol = System.getProperty("line.separator", "\n");
- 
+
   /**
    * Used to convert raw characters to their escaped version
    * when these raw version cannot be used as part of an ASCII
@@ -195,4 +195,4 @@ public class ParseException extends net.sourceforge.pmd.lang.ast.ParseException 
    }
 
 }
-/* JavaCC - OriginalChecksum=29236f8f6c91a233e4875e6687062604 (do not edit this line) */
+/* JavaCC - OriginalChecksum=a63a6feef75bb2f43f87818b3b26b2af (do not edit this line) */
