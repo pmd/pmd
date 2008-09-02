@@ -2,7 +2,7 @@
 /* JavaCCOptions:STATIC=false */
 /** 
  * JSP Parser for PMD.
- * @author Pieter  Application Engineers NV/SA  http://www.ae.be
+ * @author Pieter ï¿½ Application Engineers NV/SA ï¿½ http://www.ae.be
  */
 
 package net.sourceforge.pmd.jsp.ast;
@@ -33,14 +33,14 @@ public interface CharStream extends net.sourceforge.pmd.ast.CharStream {
 
   /**
    * Returns the column position of the character last read.
-   * @deprecated 
+   * @deprecated
    * @see #getEndColumn
    */
   int getColumn();
 
   /**
    * Returns the line number of the character last read.
-   * @deprecated 
+   * @deprecated
    * @see #getEndLine
    */
   int getLine();
@@ -85,7 +85,7 @@ public interface CharStream extends net.sourceforge.pmd.ast.CharStream {
   char BeginToken() throws java.io.IOException;
 
   /**
-   * Returns a string made up of characters from the marked token beginning 
+   * Returns a string made up of characters from the marked token beginning
    * to the current buffer position. Implementations have the choice of returning
    * anything that they want to. For example, for efficiency, one might decide
    * to just return null, which is a valid implementation.
@@ -114,4 +114,4 @@ public interface CharStream extends net.sourceforge.pmd.ast.CharStream {
   void Done();
 
 }
-/* JavaCC - OriginalChecksum=0d5725708d0b141caf38f96f60294a08 (do not edit this line) */
+/* JavaCC - OriginalChecksum=41ae2339795c47e740cf9814e6433c13 (do not edit this line) */

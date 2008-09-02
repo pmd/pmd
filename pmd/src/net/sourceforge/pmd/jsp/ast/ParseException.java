@@ -2,7 +2,7 @@
 /* JavaCCOptions:KEEP_LINE_COL=null */
 /** 
  * JSP Parser for PMD.
- * @author Pieter  Application Engineers NV/SA  http://www.ae.be
+ * @author Pieter ï¿½ Application Engineers NV/SA ï¿½ http://www.ae.be
  */
 
 package net.sourceforge.pmd.jsp.ast;
@@ -131,7 +131,7 @@ public class ParseException extends net.sourceforge.pmd.ast.ParseException {
       retval += " \"";
       retval += add_escapes(tok.image);
       retval += " \"";
-      tok = tok.next; 
+      tok = tok.next;
     }
     retval += "\" at line " + currentToken.next.beginLine + ", column " + currentToken.next.beginColumn;
     retval += "." + eol;
@@ -148,7 +148,7 @@ public class ParseException extends net.sourceforge.pmd.ast.ParseException {
    * The end of line string for this machine.
    */
   protected String eol = System.getProperty("line.separator", "\n");
- 
+
   /**
    * Used to convert raw characters to their escaped version
    * when these raw version cannot be used as part of an ASCII
@@ -200,4 +200,4 @@ public class ParseException extends net.sourceforge.pmd.ast.ParseException {
    }
 
 }
-/* JavaCC - OriginalChecksum=70f5b5d9705860bc89dbfcb72b2ec12d (do not edit this line) */
+/* JavaCC - OriginalChecksum=47ba7a613b44c98f64aa3789642241bf (do not edit this line) */

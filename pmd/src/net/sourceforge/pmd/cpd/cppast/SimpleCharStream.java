@@ -204,7 +204,7 @@ public class SimpleCharStream
   }
 
   /**
-   * @deprecated 
+   * @deprecated
    * @see #getEndColumn
    */
 
@@ -213,7 +213,7 @@ public class SimpleCharStream
   }
 
   /**
-   * @deprecated 
+   * @deprecated
    * @see #getEndLine
    */
 
@@ -452,7 +452,7 @@ public class SimpleCharStream
         bufcolumn[j] = newCol + columnDiff;
         columnDiff = nextColDiff;
         i++;
-     } 
+     }
 
      if (i < len)
      {
@@ -473,4 +473,4 @@ public class SimpleCharStream
   }
 
 }
-/* JavaCC - OriginalChecksum=bfb5dc9cfd9314c4fbb1c692a7c1b7cb (do not edit this line) */
+/* JavaCC - OriginalChecksum=9bbb8cb4295bb8f7d58e31ce57dc2e0f (do not edit this line) */

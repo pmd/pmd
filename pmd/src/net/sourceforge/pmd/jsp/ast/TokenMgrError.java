@@ -2,7 +2,7 @@
 /* JavaCCOptions: */
 /** 
  * JSP Parser for PMD.
- * @author Pieter  Application Engineers NV/SA  http://www.ae.be
+ * @author Pieter ï¿½ Application Engineers NV/SA ï¿½ http://www.ae.be
  */
 
 package net.sourceforge.pmd.jsp.ast;
@@ -93,7 +93,7 @@ public class TokenMgrError extends RuntimeException
    /**
     * Returns a detailed message for the Error when it is thrown by the
     * token manager to indicate a lexical error.
-    * Parameters : 
+    * Parameters :
     *    EOFSeen     : indicates if EOF caused the lexical error
     *    curLexState : lexical state in which this error occurred
     *    errorLine   : line number when the error occurred
@@ -113,7 +113,7 @@ public class TokenMgrError extends RuntimeException
    /**
     * You can also modify the body of this method to customize your error messages.
     * For example, cases like LOOP_DETECTED and INVALID_LEXICAL_STATE are not
-    * of end-users concern, so you can return something like : 
+    * of end-users concern, so you can return something like :
     *
     *     "Internal Error : Please file a bug report .... "
     *
@@ -142,4 +142,4 @@ public class TokenMgrError extends RuntimeException
       this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
    }
 }
-/* JavaCC - OriginalChecksum=b824a74d3d17c0bf0b8be3096d1f54d2 (do not edit this line) */
+/* JavaCC - OriginalChecksum=56dfce4188771884defbd50c7c708c54 (do not edit this line) */

@@ -88,7 +88,7 @@ public class TokenMgrError extends Error
    /**
     * Returns a detailed message for the Error when it is thrown by the
     * token manager to indicate a lexical error.
-    * Parameters : 
+    * Parameters :
     *    EOFSeen     : indicates if EOF caused the lexical error
     *    curLexState : lexical state in which this error occurred
     *    errorLine   : line number when the error occurred
@@ -108,7 +108,7 @@ public class TokenMgrError extends Error
    /**
     * You can also modify the body of this method to customize your error messages.
     * For example, cases like LOOP_DETECTED and INVALID_LEXICAL_STATE are not
-    * of end-users concern, so you can return something like : 
+    * of end-users concern, so you can return something like :
     *
     *     "Internal Error : Please file a bug report .... "
     *
@@ -137,4 +137,4 @@ public class TokenMgrError extends Error
       this(LexicalError(EOFSeen, lexState, errorLine, errorColumn, errorAfter, curChar), reason);
    }
 }
-/* JavaCC - OriginalChecksum=b0129d5335e815c6a210c18024b1ca54 (do not edit this line) */
+/* JavaCC - OriginalChecksum=7925b33c412b4bfa3a7147ae3e790276 (do not edit this line) */
