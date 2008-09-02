@@ -42,8 +42,6 @@
    The code is currently in CVS in the net.sourceforge.pmd.dfa packages, and we're going through
     it now figuring out what rules we can write that use it.  We should be able to
              use it to simplify some current rules, as well. </p>
-             <p>Raik's advisor, Dr. Gero Wedemann, has also mentioned that he may be able to find
-             a student who is interested in working on a PMD GUI.  That'd be great!</p>
          </subsection>
 
       <subsection name="Code cleanups">
