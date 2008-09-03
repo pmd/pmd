@@ -340,6 +340,18 @@ public class PMDTask extends Task {
             ruleSetFiles = getNestedRuleSetFiles();
         }
 
+        // convert relative paths and substitute env variables/properties
+        final StringBuffer sb = new StringBuffer();
+        for(String s: ruleSetFiles.split(",")) {
+            Path p = new Path(getProject());
+            p.setPath(getProject().replaceProperties(s));
+            if (sb.length() > 0) {
+                sb.append(',');
+            }
+            sb.append(p);
+        }
+        ruleSetFiles = sb.toString();
+
         if (!targetJDK.equals("1.3") && !targetJDK.equals("1.4") && !targetJDK.equals("1.5") && !targetJDK.equals("1.6") && !targetJDK.equals("1.7") && !targetJDK.equals("jsp")) {
             throw new BuildException("The targetjdk attribute, if used, must be set to either '1.3', '1.4', '1.5', '1.6', '1.7' or 'jsp'");
         }
