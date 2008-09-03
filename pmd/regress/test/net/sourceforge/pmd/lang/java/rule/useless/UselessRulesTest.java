@@ -16,7 +16,6 @@ public class UselessRulesTest extends SimpleAggregatorTst {
         addRule("useless", "UnnecessaryFinalModifier");
         addRule("useless", "UselessOverridingMethod");
         addRule("useless", "UselessOperationOnImmutable");
-        addRule("useless", "UnusedNullCheckInEquals");
         addRule("useless", "UselessParentheses");	
     }
 
