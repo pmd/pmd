@@ -873,8 +873,8 @@ public class Foo {
         <value>
         <![CDATA[
 //PrimarySuffix[@Image='equals' and not(../PrimaryPrefix/Literal)]
- /../PrimarySuffix/Arguments/ArgumentList/Expression
- /PrimaryExpression/PrimaryPrefix
+ /following-sibling::PrimarySuffix/Arguments/ArgumentList/Expression
+ /PrimaryExpression[count(PrimarySuffix)=0]/PrimaryPrefix
  /Name[@Image = ./../../../../../../../../../../Expression/ConditionalAndExpression
  /EqualityExpression[@Image="!=" and count(./preceding-sibling::*)=0 and
  ./PrimaryExpression/PrimaryPrefix/Literal/NullLiteral]

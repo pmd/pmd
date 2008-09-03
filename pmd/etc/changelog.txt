@@ -1,5 +1,7 @@
 ???? - 4.2.4:
 
+Fixed bug 1481051 - false + UnusedNullCheckInEquals (and other false positives too)
+
 August 31, 2008 - 4.2.3:
 
 JavaCC generated artifacts updated to JavaCC 4.1d1.
