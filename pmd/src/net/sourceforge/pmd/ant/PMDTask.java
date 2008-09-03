@@ -181,6 +181,7 @@ public class PMDTask extends Task {
 
         final ClassLoader classLoader = cl;
         RuleSetFactory ruleSetFactory = new RuleSetFactory() {
+            @Override
             public RuleSets createRuleSets(String ruleSetFileNames) throws RuleSetNotFoundException {
                 return createRuleSets(ruleSetFiles, classLoader);
             }
@@ -222,20 +223,23 @@ public class PMDTask extends Task {
             List<DataSource> files = new LinkedList<DataSource>();
             DirectoryScanner ds = fs.getDirectoryScanner(getProject());
             String[] srcFiles = ds.getIncludedFiles();
-            for (int j = 0; j < srcFiles.length; j++) {
-                File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFiles[j]);
+            for (String srcFile : srcFiles) {
+                File file = new File(ds.getBasedir() + System.getProperty("file.separator") + srcFile);
                 files.add(new FileDataSource(file));
             }
 
             final String inputPath = ds.getBasedir().getPath();
 
             Renderer logRenderer = new AbstractRenderer() {
+                @Override
                 public void start() {}
 
+                @Override
                 public void startFileAnalysis(DataSource dataSource) {
                     log("Processing file " + dataSource.getNiceFileName(false, inputPath), Project.MSG_VERBOSE);
                 }
 
+                @Override
                 public void renderFileReport(Report r) {
                     int size = r.size();
                     if (size > 0) {
@@ -243,6 +247,7 @@ public class PMDTask extends Task {
                     }
                 }
 
+                @Override
                 public void end() {}
 
                 public void render(Writer writer, Report r) {}
@@ -293,6 +298,7 @@ public class PMDTask extends Task {
         }
     }
 
+    @Override
     public void execute() throws BuildException {
         validate();
         final Handler antLogHandler = new AntLogHandler(this);
@@ -308,9 +314,7 @@ public class PMDTask extends Task {
         log("Using these rulesets: " + ruleSetFiles, Project.MSG_VERBOSE);
 
         RuleSet[] ruleSets = rules.getAllRuleSets();
-        for (int j = 0; j < ruleSets.length; j++) {
-            RuleSet ruleSet = ruleSets[j];
-
+        for (RuleSet ruleSet : ruleSets) {
             for (Rule rule: ruleSet.getRules()) {
                 log("Using rule " + rule.getName(), Project.MSG_VERBOSE);
             }
@@ -331,6 +335,18 @@ public class PMDTask extends Task {
             }
             ruleSetFiles = getNestedRuleSetFiles();
         }
+
+        // convert relative paths and substitute env variables/properties
+        final StringBuffer sb = new StringBuffer();
+        for(String s: ruleSetFiles.split(",")) {
+            Path p = new Path(getProject());
+            p.setPath(getProject().replaceProperties(s));
+            if (sb.length() > 0) {
+                sb.append(',');
+            }
+            sb.append(p);
+        }
+        ruleSetFiles = sb.toString();
 
         if (!targetJDK.equals("1.3") && !targetJDK.equals("1.4") && !targetJDK.equals("1.5") && !targetJDK.equals("1.6") && !targetJDK.equals("1.7") && !targetJDK.equals("jsp")) {
             throw new BuildException("The targetjdk attribute, if used, must be set to either '1.3', '1.4', '1.5', '1.6', '1.7' or 'jsp'");
