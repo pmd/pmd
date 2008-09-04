@@ -1,0 +1,47 @@
+<project name="pmdtasktest">
+
+	<property name="pmd.home" value="../../../../../../.."/>
+
+	<path id="pmd.path">
+		<fileset dir="${pmd.home}/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.path"/>
+
+	<target name="testBasic">
+		<pmd rulesetfiles="${pmd.home}/rulesets/basic.xml"/>
+	</target>
+
+	<target name="testInvalidJDK">
+		<pmd rulesetfiles="${pmd.home}/rulesets/design.xml" targetjdk="42"/>
+	</target>
+
+	<target name="testFormatterWithNoToFileAttribute">
+		<pmd rulesetfiles="${pmd.home}/rulesets/design.xml">
+			<formatter/>
+		</pmd>
+	</target>
+
+	<target name="testNoRuleSets">
+		<pmd/>
+	</target>
+
+	<target name="testNestedRuleset">
+		<pmd>
+			<ruleset>${pmd.home}/rulesets/codesize.xml</ruleset>
+			<ruleset>${pmd.home}/rulesets/design.xml</ruleset>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testNoFormattersValidation">
+		<pmd rulesetfiles="${pmd.home}/rulesets/design.xml">
+		</pmd>
+	</target>
+
+</project>

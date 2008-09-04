@@ -12,6 +12,10 @@
 	<property name="dir.api" value="docs/api" />
 	<property name="version" value="5.0" />
 
+	<property environment="env"/>
+	<property name="ant.jar" value="${env.ANT_HOME}/lib/ant.jar" />
+	<property name="ant-testutil.jar" value="${env.ANT_HOME}/lib/ant-testutil.jar" />
+
 	<property name="asm.version" value="3.1" />
 	<property name="jaxen.version" value="1.1.1" />
 	<property name="junit.version" value="4.4" />
@@ -138,6 +142,7 @@
 			<pathelement location="${dir.lib}/jaxen-${jaxen.version}.jar" />
 			<pathelement location="${dir.lib14}/junit.jar" />
 			<pathelement location="${ant.jar}" />
+			<pathelement location="${ant-testutil.jar}" />
 		</path>
 
 		<retroweaver inputjar="${dir.lib}/pmd-${version}.jar" outputjar="${dir.lib14}/pmd14-${version}.jar" target="1.4" failonerror="true" verify="true">
@@ -292,6 +297,7 @@
 				<path refid="${test.dependencies}" />
 				<path path="${dir.regress}"/>
 				<path path="${clover.jar}"/>
+				<path path="${ant-testutil.jar}"/>
 			</classpath>
 			<batchtest fork="yes" todir="${test.outputdir}/xml">
 				<fileset dir="${dir.regress}">
