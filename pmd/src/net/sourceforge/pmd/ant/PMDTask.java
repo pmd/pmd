@@ -187,13 +187,20 @@ public class PMDTask extends Task {
             log("Using the AntClassLoader", Project.MSG_VERBOSE);
             cl = new AntClassLoader(getProject(), classpath);
         }
+        /*
+         * 'basedir' is added to the path to make sure that relative paths
+         * such as "<ruleset>resources/custom_ruleset.xml</ruleset>" still
+         * work when ant is invoked from a different directory using "-f"
+         */
+        String extraPath = getProject().getBaseDir().toString();
         if (auxClasspath != null) {
             log("Using auxclasspath: " + auxClasspath, Project.MSG_VERBOSE);
-            try {
-                cl = new ClasspathClassLoader(auxClasspath.toString(), cl);
-            } catch (IOException ioe) {
-                throw new BuildException(ioe.getMessage());
-            }
+            extraPath = auxClasspath.toString() + File.pathSeparator + extraPath;
+        }
+        try {
+            cl = new ClasspathClassLoader(extraPath, cl);
+        } catch (IOException ioe) {
+            throw new BuildException(ioe.getMessage());
         }
 
         final ClassLoader classLoader = cl;

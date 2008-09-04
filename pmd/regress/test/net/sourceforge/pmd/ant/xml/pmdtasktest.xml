@@ -70,7 +70,7 @@
 
 	<target name="testRelativeRulesets">
 		<pmd>
-			<ruleset>rulesets/codesize.xml</ruleset>
+			<ruleset>custom_ruleset.xml</ruleset>
 			<ruleset>rulesets/design.xml</ruleset>
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
@@ -80,7 +80,7 @@
 	</target>
 
 	<target name="testRelativeRulesetsInRulesetfiles">
-		<pmd rulesetfiles="rulesets/codesize.xml,rulesets/design.xml">
+		<pmd rulesetfiles="custom_ruleset.xml,rulesets/design.xml">
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
 				<include name="*.java"/>
