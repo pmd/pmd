@@ -17,68 +17,91 @@ import java.util.logging.Logger;
  * Create a ClassLoader which loads classes using a CLASSPATH like String.
  * If the String looks like a URL to a file (e.g. starts with <code>file://</code>)
  * the file will be read with each line representing an path on the classpath.
- * 
+ *
  * @author Edwin Chan
  */
 public class ClasspathClassLoader extends URLClassLoader {
 
-	private static final Logger LOG = Logger.getLogger(ClasspathClassLoader.class.getName());
+    private static final Logger LOG = Logger.getLogger(ClasspathClassLoader.class.getName());
 
-	public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
-		super(initURLs(classpath), parent);
-	}
+    public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
+        super(initURLs(classpath), parent);
+    }
 
-	private static URL[] initURLs(String classpath) throws IOException {
-		if (classpath == null) {
-			throw new IllegalArgumentException("classpath argument cannot be null");
-		}
-		final List<URL> urls = new ArrayList<URL>();
-		if (classpath.startsWith("file://")) {
-			// Treat as file URL
-			addFileURLs(urls, new URL(classpath));
-		} else {
-			// Treat as classpath
-			addClasspathURLs(urls, classpath);
-		}
-		return urls.toArray(new URL[urls.size()]);
-	}
+    private static URL[] initURLs(String classpath) throws IOException {
+        if (classpath == null) {
+            throw new IllegalArgumentException("classpath argument cannot be null");
+        }
+        final List<URL> urls = new ArrayList<URL>();
+        if (classpath.startsWith("file://")) {
+            // Treat as file URL
+            addFileURLs(urls, new URL(classpath));
+        } else {
+            // Treat as classpath
+            addClasspathURLs(urls, classpath);
+        }
+        return urls.toArray(new URL[urls.size()]);
+    }
 
-	private static void addClasspathURLs(final List<URL> urls, final String classpath) throws MalformedURLException {
-		StringTokenizer toker = new StringTokenizer(classpath, File.pathSeparator);
-		while (toker.hasMoreTokens()) {
-			String token = toker.nextToken();
-			LOG.log(Level.FINE, "Adding classpath entry: <{0}>", token);
-			urls.add(createURLFromPath(token));
-		}
-	}
+    private static void addClasspathURLs(final List<URL> urls, final String classpath) throws MalformedURLException {
+        StringTokenizer toker = new StringTokenizer(classpath, File.pathSeparator);
+        while (toker.hasMoreTokens()) {
+            String token = toker.nextToken();
+            LOG.log(Level.FINE, "Adding classpath entry: <{0}>", token);
+            urls.add(createURLFromPath(token));
+        }
+    }
 
-	private static void addFileURLs(List<URL> urls, URL fileURL) throws IOException {
-		BufferedReader in = null;
-		try {
-			in = new BufferedReader(new InputStreamReader(fileURL.openStream()));
-			String line;
-			while ((line = in.readLine()) != null) {
-				LOG.log(Level.FINE, "Read classpath entry line: <{0}>", line);
-				line = line.trim();
-				if (line.length() > 0) {
-					LOG.log(Level.FINE, "Adding classpath entry: <{0}>", line);
-					urls.add(createURLFromPath(line));
-				}
-			}
-			in.close();
-		} finally {
-			if (in != null) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					LOG.log(Level.SEVERE, "IOException while closing InputStream", e);
-				}
-			}
-		}
-	}
+    private static void addFileURLs(List<URL> urls, URL fileURL) throws IOException {
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new InputStreamReader(fileURL.openStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                LOG.log(Level.FINE, "Read classpath entry line: <{0}>", line);
+                line = line.trim();
+                if (line.length() > 0) {
+                    LOG.log(Level.FINE, "Adding classpath entry: <{0}>", line);
+                    urls.add(createURLFromPath(line));
+                }
+            }
+            in.close();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    LOG.log(Level.SEVERE, "IOException while closing InputStream", e);
+                }
+            }
+        }
+    }
 
-	private static URL createURLFromPath(String path) throws MalformedURLException {
-		File file = new File(path);
-		return file.getAbsoluteFile().toURI().toURL();
-	}
+    private static URL createURLFromPath(String path) throws MalformedURLException {
+        File file = new File(path);
+        return file.getAbsoluteFile().toURI().toURL();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append("[[");
+        boolean first = true;
+        for (URL url : getURLs()) {
+            if (!first) {
+                sb.append(':');
+            }
+            first = false;
+            sb.append(url);
+        }
+        sb.append("] parent: ");
+        sb.append(getParent());
+        sb.append(']');
+
+        return sb.toString();
+    }
 }
