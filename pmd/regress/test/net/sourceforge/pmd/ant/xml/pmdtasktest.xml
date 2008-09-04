@@ -1,6 +1,6 @@
 <project name="pmdtasktest">
 
-	<property name="pmd.home" value="../../../../../../.."/>
+	<property name="pmd.home" value="${user.dir}"/>
 
 	<path id="pmd.path">
 		<fileset dir="${pmd.home}/lib">
@@ -32,6 +32,55 @@
 		<pmd>
 			<ruleset>${pmd.home}/rulesets/codesize.xml</ruleset>
 			<ruleset>${pmd.home}/rulesets/design.xml</ruleset>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testAbstractNames">
+		<pmd rulesetfiles="codesize,design">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testAbstractNamesInNestedRuleset">
+		<pmd>
+			<ruleset>codesize</ruleset>
+			<ruleset>design</ruleset>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testCommaInRulesetfiles">
+		<pmd rulesetfiles="${pmd.home}/rulesets/codesize.xml,${pmd.home}/rulesets/design.xml">
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testRelativeRulesets">
+		<pmd>
+			<ruleset>rulesets/codesize.xml</ruleset>
+			<ruleset>rulesets/design.xml</ruleset>
+			<formatter type="text" toConsole="true"/>
+			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
+				<include name="*.java"/>
+			</fileset>
+		</pmd>
+	</target>
+
+	<target name="testRelativeRulesetsInRulesetfiles">
+		<pmd rulesetfiles="rulesets/codesize.xml,rulesets/design.xml">
 			<formatter type="text" toConsole="true"/>
 			<fileset dir="${pmd.home}/src/net/sourceforge/pmd/ant">
 				<include name="*.java"/>

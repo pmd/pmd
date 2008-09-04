@@ -44,6 +44,41 @@ public class PMDTaskTest extends BuildFileTest {
     }
 
     @Test
+    public void testAbstractNames() {
+        executeTarget("testAbstractNames");
+        assertOutputContaining("Position literals first in String comparisons");
+        assertOutputContaining("Too many fields");
+    }
+
+    @Test
+    public void testAbstractNamesInNestedRuleset() {
+        executeTarget("testAbstractNamesInNestedRuleset");
+        assertOutputContaining("Position literals first in String comparisons");
+        assertOutputContaining("Too many fields");
+    }
+
+    @Test
+    public void testCommaInRulesetfiles() {
+        executeTarget("testCommaInRulesetfiles");
+        assertOutputContaining("Position literals first in String comparisons");
+        assertOutputContaining("Too many fields");
+    }
+
+    @Test
+    public void testRelativeRulesets() {
+        executeTarget("testRelativeRulesets");
+        assertOutputContaining("Position literals first in String comparisons");
+        assertOutputContaining("Too many fields");
+    }
+
+    @Test
+    public void testRelativeRulesetsInRulesetfiles() {
+        executeTarget("testRelativeRulesetsInRulesetfiles");
+        assertOutputContaining("Position literals first in String comparisons");
+        assertOutputContaining("Too many fields");
+    }
+
+    @Test
     public void testBasic() {
         executeTarget("testBasic");
     }
