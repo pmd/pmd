@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 public class SimpleRuleSetNameMapper {
 
     private StringBuffer rulesets = new StringBuffer();
-    private Map<String, String> nameMap = new HashMap<String, String>();
+    protected Map<String, String> nameMap = new HashMap<String, String>();
 
     public SimpleRuleSetNameMapper(String ruleString) {
         populateNameMap();
@@ -25,7 +25,7 @@ public class SimpleRuleSetNameMapper {
         return rulesets.toString();
     }
 
-    private void check(String name) {
+    protected void check(String name) {
         if (name.indexOf("rulesets") == -1 && nameMap.containsKey(name)) {
             append(nameMap.get(name));
         } else {
@@ -33,7 +33,7 @@ public class SimpleRuleSetNameMapper {
         }
     }
 
-    private void append(String name) {
+    protected void append(String name) {
         if (rulesets.length() > 0) {
             rulesets.append(',');
         }
