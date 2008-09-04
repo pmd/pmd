@@ -243,7 +243,7 @@
 
 	<target name="cpdOnPmd" description="Runs CPD on PMD" depends="copy, compile">
 		<taskdef name="cpd" classname="net.sourceforge.pmd.cpd.CPDTask" classpathref="dependencies.path" />
-		<cpd language="java" minimumTokenCount="50" format="text">
+		<cpd language="java" minimumTokenCount="100" format="text">
 			<fileset dir="${dir.src}">
 				<include name="**/*.java" />
 				<exclude name="**/*ast/ParseException.java" />
