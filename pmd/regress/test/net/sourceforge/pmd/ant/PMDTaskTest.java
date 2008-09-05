@@ -85,7 +85,7 @@ public class PMDTaskTest extends BuildFileTest {
 
     @Test
     public void testInvalidJDK() {
-        expectBuildExceptionContaining("testInvalidJDK", "Fail requested.", "The targetjdk attribute, if used, must be set to either ");
+        expectBuildExceptionContaining("testInvalidJDK", "Fail requested.", "The targetjdk attribute, if used, must be one of ");
     }
 
     public static junit.framework.Test suite() {
