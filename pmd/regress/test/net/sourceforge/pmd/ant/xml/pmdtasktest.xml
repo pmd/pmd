@@ -1,4 +1,4 @@
-<project name="pmdtasktest">
+<project name="pmdtasktest" default="all">
 
 	<property name="pmd.home" value="${user.dir}"/>
 
@@ -9,6 +9,8 @@
 	</path>
 
 	<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.path"/>
+
+	<target name="all" depends="testBasic, testNestedRuleset, testAbstractNames, testAbstractNamesInNestedRuleset, testCommaInRulesetfiles, testRelativeRulesets, testRelativeRulesetsInRulesetfiles, testNoFormattersValidation"/>
 
 	<target name="testBasic">
 		<pmd rulesetfiles="${pmd.home}/rulesets/basic.xml"/>
