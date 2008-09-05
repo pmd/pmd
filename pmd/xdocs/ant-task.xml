@@ -4,6 +4,7 @@
   <properties>
     <author email="dpeugh@users.sourceforge.net">David Dixon-Peugh</author>
     <author email="tom@infoether.com">Tom Copeland</author>
+    <author email="xlv@users.sourceforge.net">Xavier Le Vourch</author>
     <title>Ant Task</title>
   </properties>
 
@@ -47,7 +48,7 @@
     </tr>
     <tr>
       <td valign="top">targetjdk</td>
-      <td valign="top">Target JDK 1.3, 1.4, 1.5, 1.6, or jsp.  "1.5" is the default.</td>
+      <td valign="top">Target JDK 1.3, 1.4, 1.5, 1.6, 1.7 or jsp.  "1.5" is the default.</td>
       <td valign="top" align="center">No</td>
     </tr>
     <tr>
@@ -57,7 +58,7 @@
     </tr>
     <tr>
       <td valign="top">encoding</td>
-      <td valign="top">The character set encoding (i.e., UTF-8) to use when reading the source code files</td>
+      <td valign="top">The character set encoding (e.g. UTF-8) to use when reading the source code files</td>
       <td valign="top" align="center">No</td>
     </tr>
     <tr>
@@ -284,9 +285,11 @@ Total time: 2 seconds
 
       </subsection>
       <subsection name="Memory Usage">
-      <p>On quite large project ( generally more than 500 classes ), the Ant task may fail with a OutOfMemoryError. There is a very easy
-      to fix this :
-      On Windows:
+      <p>Memory usage has been reduced significantly starting with the PMD 4.0 release.
+      When testing all Java rules on the jdk 1.6 source code (about 7000 classes), the allocated heap space does not go over 60M.</p>
+      <p>However, on very large projects, the Ant task may still fail with a OutOfMemoryError. To prevent this from happening, increase
+      the maximum memory usable by ant using the ANT_OPTS variable (adjust the size according to your available memory):</p>
+      <p>On Windows:
       <source>
       	<![CDATA[
       		  set ANT_OPTS=-Xmx1024m -Xms512m
@@ -298,7 +301,6 @@ Total time: 2 seconds
       		export ANT_OPTS="-Xmx1024m -Xms512m"
       	]]>
       </source>
-      Of course, you should adjust the size according to your available memory.
       </p>
       </subsection>
    </section>

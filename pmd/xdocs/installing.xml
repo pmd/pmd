@@ -3,6 +3,7 @@
 <document>
   <properties>
     <author>Tom Copeland</author>
+    <author email="xlv@users.sourceforge.net">Xavier Le Vourch</author>
     <title>Installing PMD</title>
   </properties>
 
@@ -11,9 +12,9 @@
 
       <subsection name="Windows">
           <p>
-          Prerequisites:
+          Requirements:
               <ul>
-                  <li>JDK 1.4 or higher</li>
+                  <li>Java JRE 1.5 or higher (see section below for Java JRE 1.4 support)</li>
                   <li><a href="http://winzip.com">Winzip</a></li>
               </ul>
           </p>
@@ -24,9 +25,9 @@
 
       <subsection name="Unix">
           <p>
-          Prerequisites:
+          Requirements:
               <ul>
-                  <li>JDK 1.4 or higher</li>
+                  <li>Java JRE 1.5 or higher (see section below for Java JRE 1.4 support)</li>
                   <li>The Unix "zip" utility <a href="http://www.info-zip.org/pub/infozip/">InfoZip</a></li>
               </ul>
           </p>
@@ -44,7 +45,16 @@
           </p>
           <p>Note that the PMD jar file contains the <a href="cpd.html">CPD</a> utility as well.</p>
       </subsection>
-
-  </section>
-</body>
+      <subsection name="Java JRE 1.4 support">
+        <p>
+        By default PMD requires a 1.5 JRE but thanks to <a href="http://retroweaver.sourceforge.net/">retroweaver</a>,
+        you can still use PMD with a 1.4 JRE.
+        </p><p>
+        You do not need to download any extra library or application as the PMD releases are self contained.
+        Instead of using the executables located in the "bin" directory, you should just use the equivalent
+        ones from the "java14/bin" directory instead.
+        </p>
+      </subsection>
+    </section>
+  </body>
 </document>

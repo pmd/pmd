@@ -3,17 +3,21 @@
 <document>
   <properties>
     <author>Tom Copeland</author>
+    <author email="xlv@users.sourceforge.net">Xavier Le Vourch</author>
     <title>Compiling PMD</title>
   </properties>
 
   <body>
-  <section name="Compiling PMD">
+<section name="Requirements">
+  <ul>
+    <li>JDK 1.5 or higher</li>
+    <li><a href="http://ant.apache.org/bindownload.cgi">Apache Ant</a> 1.7.0 or higher</li>
+    <li><a href="http://www.junit.org/">JUnit</a> 4.0 or higher (included in the lib directory)</li>
+  </ul>
+</section>
+<section name="Compiling PMD">
 <p>
-First, you'll need to download and install <a href="http://ant.apache.org/bindownload.cgi">Ant</a> 1.6
-    and <a href="http://www.junit.org/">JUnit</a> 3.8.2.  I put the junit jar file in my ANT_HOME/lib/
-    directory and all was well, your mileage may vary.</p>
-<p>
-Now you'll need to either check out the source code or download the latest source release.
+You'll need to either check out the source code or download the latest source release.
     Assuming you've got the latest source release, unzip it to a directory:
     <pre>
         [tom@hal building]$ ls -l
@@ -24,9 +28,9 @@ Now you'll need to either check out the source code or download the latest sourc
     </pre>
 </p>
 <p>
-    Now cd down into the <code>pmd/bin</code> directory:
+    Now cd down into the <code>pmd</code> directory:
     <pre>
-        [tom@hal building]$ cd pmd-5.0/bin/
+        [tom@hal building]$ cd pmd-5.0
         [tom@hal bin]$ ls -l | grep build.xml
         -rw-rw-r--    1 tom      tom          5736 Jun 19 15:36 build.xml
         [tom@hal bin]$
@@ -49,8 +53,6 @@ Now you'll need to either check out the source code or download the latest sourc
 <p>
     Notes:
     <ul>
-        <li>There's also a build.xml in the top-level directory, but it's for Maven.  Renaming it made Maven
-            do odd things; anybody know how to get around that?</li>
         <li>The rules that have already been written are specified in the rulesets/ directory in the
             source distribution.  They're also in the jar file that's included with both the
             source and binary distributions.</li>
