@@ -360,8 +360,15 @@ public class PMDTask extends Task {
             ruleSetFiles = getNestedRuleSetFiles();
         }
 
-        if (!targetJDK.equals("1.3") && !targetJDK.equals("1.4") && !targetJDK.equals("1.5") && !targetJDK.equals("1.6") && !targetJDK.equals("1.7") && !targetJDK.equals("jsp")) {
-            throw new BuildException("The targetjdk attribute, if used, must be set to either '1.3', '1.4', '1.5', '1.6', '1.7' or 'jsp'");
+        LanguageVersion languageVersion = Language.JAVA.getVersion(targetJDK);
+        if (languageVersion == null && !targetJDK.equals("jsp")) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("The targetjdk attribute, if used, must be one of ");
+            for (LanguageVersion v: Language.JAVA.getVersions()) {
+                sb.append('\'').append(v.getVersion()).append("', ");
+            }
+            sb.append("'jsp'.");
+            throw new BuildException(sb.toString());
         }
     }
 
