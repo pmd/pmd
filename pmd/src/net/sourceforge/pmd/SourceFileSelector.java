@@ -2,6 +2,8 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 
+import net.sourceforge.pmd.lang.Language;
+
 /**
  * Filtering of wanted source files.
  *
@@ -9,12 +11,17 @@ import java.io.File;
  */
 // FUTURE This needs to be worked into a LanguageFileSelector
 public class SourceFileSelector {
+    
+    private Language language;
 
-    private boolean selectJavaFiles = true;
-
-    // TODO: is false the wanted default option?
-    private boolean selectJspFiles = false;
-
+    public SourceFileSelector() {
+	language = Language.getDefaultLanguage();
+    }
+    
+    public SourceFileSelector (Language language) {
+	this.language = language;
+    }
+    
     /**
      * Check if a file with given fileName should be checked by PMD.
      *
@@ -22,28 +29,21 @@ public class SourceFileSelector {
      * @return True if the file must be checked; false otherwise
      */
     public boolean isWantedFile(String fileName) {
-        int lastDotIndex = fileName.lastIndexOf('.');
+        // Any source file should have a '.' in its name...
+	int lastDotIndex = fileName.lastIndexOf('.');
         if (lastDotIndex < 0) {
             return false;
         }
+        
+        return isExtensionValid( fileName.substring( 1 + lastDotIndex).toUpperCase() );
+    }
 
-        String extensionUppercase = fileName.substring(1 + lastDotIndex)
-                .toUpperCase();
-
-        if (selectJavaFiles
-                && extensionUppercase
-                .equals(SourceFileConstants.JAVA_EXTENSION_UPPERCASE)) {
-            return true;
-        }
-
-        if (selectJspFiles
-                && (extensionUppercase
-                .equals(SourceFileConstants.JSP_EXTENSION_UPPERCASE) || extensionUppercase
-                .equals(SourceFileConstants.JSPX_EXTENSION_UPPERCASE))) {
-            return true;
-        }
-
-        return false;
+    private boolean isExtensionValid(String fileExtension) {
+	if ( fileExtension != null )
+	    for ( String extension : language.getExtensions() )
+		if ( fileExtension.equalsIgnoreCase(extension) )
+		    return true;
+	return false;
     }
 
     /**
@@ -54,33 +54,5 @@ public class SourceFileSelector {
      */
     public boolean isWantedFile(File file) {
         return isWantedFile(file.getAbsolutePath());
-    }
-
-    /**
-     * @return Returns the selectJavaFiles.
-     */
-    public boolean isSelectJavaFiles() {
-        return selectJavaFiles;
-    }
-
-    /**
-     * @param selectJavaFiles The selectJavaFiles to set.
-     */
-    public void setSelectJavaFiles(boolean selectJavaFiles) {
-        this.selectJavaFiles = selectJavaFiles;
-    }
-
-    /**
-     * @return Returns the selectJspFiles.
-     */
-    public boolean isSelectJspFiles() {
-        return selectJspFiles;
-    }
-
-    /**
-     * @param selectJspFiles The selectJspFiles to set.
-     */
-    public void setSelectJspFiles(boolean selectJspFiles) {
-        this.selectJspFiles = selectJspFiles;
     }
 }

@@ -22,7 +22,8 @@
 	<property name="retroweaver.version" value="2.0.5" />
 	<property name="javacc-home.path" value="${dir.lib}" />
 	<!--
-		running PMD on pmd sources is a bit pointless, you should modify this value to pmd on something else
+		running PMD on pmd sources is a bit pointless, you should modify 
+		this value to pmd on something else
 		FUTURE: Test if the property is set, if not set it to src.
 	-->
 	<property name="test.src.for.pmd"	value="src"/>

@@ -25,16 +25,19 @@ public class CommandLineOptionsTest {
 
     @Test
     public void testTargetJDKVersion() {
+	// Testing command line default behavior (no -lang option, means Java 1.5)
         CommandLineOptions opt = new CommandLineOptions(new String[]{"file", "format", "basic"});
-        assertEquals("1.5", opt.getTargetJDK());
-        opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-targetjdk", "1.3"});
-        assertEquals("1.3", opt.getTargetJDK());
-        opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-targetjdk", "1.5"});
-        assertEquals("1.5", opt.getTargetJDK());
-        opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-targetjdk", "1.6"});
-        assertEquals("1.6", opt.getTargetJDK());
-        opt = new CommandLineOptions(new String[]{"-targetjdk", "1.6", "file", "format", "ruleset"});
-        assertEquals("1.6", opt.getTargetJDK());
+        assertEquals("LanguageVersion[Java 1.5]", opt.getVersion().toString());
+        opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-lang","java", "1.3"});
+        assertEquals("LanguageVersion[Java 1.3]", opt.getVersion().toString());
+        opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-lang","java", "1.5"});
+        assertEquals("LanguageVersion[Java 1.5]", opt.getVersion().toString());
+        opt = new CommandLineOptions(new String[]{"file", "format", "ruleset", "-lang","java", "1.6"});
+        assertEquals("LanguageVersion[Java 1.6]", opt.getVersion().toString());
+        opt = new CommandLineOptions(new String[]{"-lang","java","1.6","file", "format", "ruleset"});
+        assertEquals("LanguageVersion[Java 1.6]", opt.getVersion().toString());
+        opt = new CommandLineOptions(new String[]{"file", "format", "ruleset","-lang","java","1.7"});
+        assertEquals("LanguageVersion[Java 1.7]", opt.getVersion().toString());
     }
 
     @Test
@@ -171,7 +174,7 @@ public class CommandLineOptionsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testAuxilaryClasspathIllegal() {
-		CommandLineOptions opt = new CommandLineOptions(new String[] { "file", "format", "basic", "-auxclasspath" });
+		new CommandLineOptions(new String[] { "file", "format", "basic", "-auxclasspath" });
 	}
 
     public static junit.framework.Test suite() {

@@ -245,7 +245,7 @@ public enum Language {
      * @return The Language with this terse name, <code>null</code> if there is
      * no Language with this terse name.
      */
-    public static Language findByTerseName(String terseName) {
+    public static Language findByExactTerseName(String terseName) {
 	for (Language language : Language.values()) {
 	    if (language.getTerseName().equals(terseName)) {
 		return language;
@@ -254,6 +254,23 @@ public enum Language {
 	return null;
     }
 
+
+    /**
+     * A utility method to find the Language associated with the given
+     * terse name, whatever the case is.
+     * @param terseName The Language terse name.
+     * @return The Language with this terse name, <code>null</code> if there is
+     * no Language with this terse name.
+     */
+    public static Language findByTerseName(String terseName) {
+	for (Language language : Language.values()) {
+	    if (language.getTerseName().equalsIgnoreCase(terseName)) {
+		return language;
+	    }
+	}
+	return null;
+    }
+    
     /**
      * Return a comma separated list of Language terse names.
      * @param languages The languages.
@@ -269,10 +286,34 @@ public enum Language {
 	}
 	return builder.toString();
     }
+    
+    /**
+     * Return a comma separated list of all languages actually known by pmd.
+     * @return a string with the comma separated list.
+     */
+    public static String getCommaSeparatedOfAllSupportedLanguages() {
+	String commaSeparatedLanguagesString = "";
+	Language[] supportedLanguages = Language.values();
+	for (int idLanguage = 0; idLanguage < supportedLanguages.length ; idLanguage++ ) {
+	    commaSeparatedLanguagesString += "," + supportedLanguages[idLanguage];
+	}
+	// Remove the extra first comma before returning strings
+	return commaSeparatedLanguagesString.substring(1,commaSeparatedLanguagesString.length());
+    }
+    
+    
 
     private static void init() {
 	// Force initialization of the LanguageVersion enum.
 	// This must be done before the versions can be accessed on this enum.
 	LanguageVersion.values();
+    }
+
+    /**
+     * Return the default language for PMD.
+     * @return the proper default language
+     */
+    public static Language getDefaultLanguage() {
+	return Language.JAVA;
     }
 }

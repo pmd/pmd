@@ -197,11 +197,20 @@ public class PMD {
 
     private static void doPMD(CommandLineOptions opts) {
 	long startFiles = System.nanoTime();
-	SourceFileSelector fileSelector = new SourceFileSelector();
-
-	fileSelector.setSelectJavaFiles(opts.isCheckJavaFiles());
-	fileSelector.setSelectJspFiles(opts.isCheckJspFiles());
-
+	// Language & version of the analyses code
+	List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
+	Language language = opts.getLanguage();
+	LanguageVersion languageVersion = opts.getVersion();
+	if ( language == null )
+	{
+	    language = Language.getDefaultLanguage();
+	    languageVersion = language.getDefaultVersion();
+	}
+	languageVersions.add(languageVersion);
+	LOG.fine("Using " + languageVersion.getShortName());
+	
+	// Setting up files filter
+	SourceFileSelector fileSelector = new SourceFileSelector(opts.getLanguage());
 	List<DataSource> files;
 	if (opts.containsCommaSeparatedFileList()) {
 	    files = collectFromCommaDelimitedString(opts.getInputPath(), fileSelector);
@@ -211,15 +220,7 @@ public class PMD {
 	long endFiles = System.nanoTime();
 	Benchmark.mark(Benchmark.TYPE_COLLECT_FILES, endFiles - startFiles, 0);
 
-	List<LanguageVersion> languageVersions = new ArrayList<LanguageVersion>();
-	Language language = Language.JAVA;
-	LanguageVersion languageVersion = language.getVersion(opts.getTargetJDK());
-	if (languageVersion == null) {
-	    languageVersion = language.getDefaultVersion();
-	}
-	languageVersions.add(languageVersion);
-	LOG.fine("Using " + languageVersion.getShortName());
-
+	// Setting up appropriate classloader....
 	final ClassLoader classLoader;
 	try {
 	    classLoader = createClasspathClassLoader(opts.getAuxClasspath());

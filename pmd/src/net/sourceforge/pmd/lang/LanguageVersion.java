@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -180,6 +181,26 @@ public enum LanguageVersion {
 	return null;
     }
 
+    
+    /**
+     * A utility method to find the all version associated with the given
+     * terse name.
+     * @param terseName The LanguageVersion terse name.
+     * @return The LanguageVersion with this terse name, <code>null</code> if there is
+     * no LanguageVersion with this terse name.
+     * @return A list of versions associated with the terse name
+     */
+    public static List<LanguageVersion> findVersionsForLanguageTerseName(String languageTerseName) {
+	List<LanguageVersion> versionsAvailable = new ArrayList<LanguageVersion>(0);
+	for (LanguageVersion languageVersion : LanguageVersion.values()) {	    
+	    if (languageVersion.getLanguage().getTerseName().equals(languageTerseName)) {
+		versionsAvailable.add(languageVersion);
+	    }
+	}
+	return versionsAvailable;
+    }
+    
+
     /**
      * Return a comma-separated list of LanguageVersion terse names.
      * @param languageVersions The language versions.
@@ -197,5 +218,14 @@ public enum LanguageVersion {
     		builder.append(", ").append(languageVersions.get(i).getTerseName());
     	}
     	return builder.toString();
+    }
+
+    /**
+     * Return the default version for PMD.
+     *
+     * @return the proper instance of LanguageVersion 
+     */
+    public static LanguageVersion getDefaultVersion() {
+	return LanguageVersion.JAVA_15;
     }
 }

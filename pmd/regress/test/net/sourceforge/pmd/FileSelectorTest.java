@@ -2,6 +2,7 @@ package test.net.sourceforge.pmd;
 
 import static org.junit.Assert.assertEquals;
 import net.sourceforge.pmd.SourceFileSelector;
+import net.sourceforge.pmd.lang.Language;
 
 import org.junit.Test;
 
@@ -14,38 +15,25 @@ import java.io.File;
 public class FileSelectorTest {
 
     /**
-     * Test default selection of .java files.
+     * Test wanted selection of a source file.
      */
     @Test
-    public void testSelectJavaFile() {
-        SourceFileSelector fileSelector = new SourceFileSelector();
+    public void testWantedFile() {
+        SourceFileSelector fileSelector = new SourceFileSelector(Language.JAVA);
 
-        File javaFile = new File("/path/to/MyClass.java");
-
-        boolean selected = fileSelector.isWantedFile(javaFile);
-        assertEquals("Java file must be selected!", true, selected);
-    }
-
-    /**
-     * Test wanted selection of .jsp files.
-     */
-    @Test
-    public void testSelectJspFile() {
-        SourceFileSelector fileSelector = new SourceFileSelector();
-        fileSelector.setSelectJspFiles(true);
-
-        File javaFile = new File("/path/to/MyPage.jsp");
+        File javaFile = new File("/path/to/myFile.java");
 
         boolean selected = fileSelector.isWantedFile(javaFile);
-        assertEquals("Jsp file must be selected!", true, selected);
+        assertEquals("This file should be selected !",true, selected);
     }
 
+    
     /**
      * Test unwanted selection of a non source file.
      */
     @Test
     public void testUnwantedFile() {
-        SourceFileSelector fileSelector = new SourceFileSelector();
+        SourceFileSelector fileSelector = new SourceFileSelector(Language.JAVA);
 
         File javaFile = new File("/path/to/myFile.txt");
 
@@ -58,8 +46,7 @@ public class FileSelectorTest {
      */
     @Test
     public void testUnwantedJavaFile() {
-        SourceFileSelector fileSelector = new SourceFileSelector();
-        fileSelector.setSelectJavaFiles(false);
+        SourceFileSelector fileSelector = new SourceFileSelector(Language.XML);
 
         File javaFile = new File("/path/to/MyClass.java");
 
