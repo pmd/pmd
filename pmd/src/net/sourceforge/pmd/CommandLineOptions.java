@@ -175,11 +175,11 @@ public class CommandLineOptions {
 	    throw new IllegalArgumentException("language '" + languageSpecified + "' is not recognized. Availaible language are : " + Language.getCommaSeparatedOfAllSupportedLanguages());
 	}
 	else {
-	    if ( args.length < (optionsIndex + LANG_VERSION_INDEX) ) {
+	    if ( args.length > (optionsIndex + LANG_VERSION_INDEX) ) {
         	    String specifiedVersion = args[optionsIndex + LANG_VERSION_INDEX];
         	    List<LanguageVersion> versions = LanguageVersion.findVersionsForLanguageTerseName(language.getTerseName());
         	    // If there is versions for this language, it should be a valid one...
-        	    if ( versions.size() == 0 ) {
+        	    if ( versions.size() != 0 ) {
         		for (LanguageVersion version : versions ) {
                 	    	if ( specifiedVersion.equals( version.getVersion() ) ) {
                 	    	    this.version = version;
