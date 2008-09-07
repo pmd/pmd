@@ -48,9 +48,9 @@ java net.sourceforge.pmd.PMD /path/to/source text basic,imports,unusedcode
        			</source>
        		<li>The command line interface also accepts the following optional arguments:</li>
          	<ul>
+             <li><code>-lang</code> - allow to change analysed language, and, if needed, language version ("-lang java 1.3" or "-lang xml").</li>
              <li><code>-debug</code> - prints a stacktrace if an error is encountered</li>
              <li><code>-shortnames</code> - puts shortened names in the report.  This only works if the filename argument is a single directory</li>
-             <li><code>-targetjdk [1.3|1.4|1.5|1.6]</code> - selects either JDK 1.3, 1.4, 1.5 or 1.6 language compatibility; default is 1.5</li>
              <li><code>-encoding Cp1252</code> - uses the specified encoding for reading the source code files</li>
              <li><code>-excludemarker NOPMDFORME</code> - uses the specified string of characters as the marker for PMD to ignore.  The default string is "NOPMD".</li>
              <li><code>-linkprefix</code> - path to HTML source, for summary html renderer only.</li>
