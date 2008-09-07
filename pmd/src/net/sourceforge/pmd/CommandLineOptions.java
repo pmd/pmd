@@ -130,8 +130,12 @@ public class CommandLineOptions {
             }
         }
         // If no language has been specified, we fall back to default value
-        if ( language == null )	language = Language.getDefaultLanguage();
-        if ( version == null )	version = LanguageVersion.getDefaultVersion();
+        if ( language == null )	{
+            language = Language.getDefaultLanguage();
+        }
+        if ( version == null )	{
+            version = LanguageVersion.getDefaultVersion();
+        }
     }
     
     private void settingAuxClasspath(int optionsIndex) {
@@ -155,7 +159,7 @@ public class CommandLineOptions {
             minPriority = RulePriority.valueOf(Integer.parseInt(args[++optionsIndex]));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(MessageFormat.format(
-                    "minimumpriority parameter must be a whole number between " + RulePriority.HIGH + " and " + RulePriority.LOW + ", {0} received", args[optionsIndex]));
+                    "minimumpriority parameter must be a whole number between " + RulePriority.HIGH + " and " + RulePriority.LOW + ", {0} received", args[optionsIndex]),e);
         }
     }
 
@@ -179,7 +183,7 @@ public class CommandLineOptions {
         	    String specifiedVersion = args[optionsIndex + LANG_VERSION_INDEX];
         	    List<LanguageVersion> versions = LanguageVersion.findVersionsForLanguageTerseName(language.getTerseName());
         	    // If there is versions for this language, it should be a valid one...
-        	    if ( versions.size() != 0 ) {
+        	    if ( ! versions.isEmpty() ) {
         		for (LanguageVersion version : versions ) {
                 	    	if ( specifiedVersion.equals( version.getVersion() ) ) {
                 	    	    this.version = version;

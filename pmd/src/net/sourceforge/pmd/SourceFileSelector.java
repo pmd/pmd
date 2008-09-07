@@ -39,10 +39,13 @@ public class SourceFileSelector {
     }
 
     private boolean isExtensionValid(String fileExtension) {
-	if ( fileExtension != null )
-	    for ( String extension : language.getExtensions() )
-		if ( fileExtension.equalsIgnoreCase(extension) )
+	if ( fileExtension != null ) {
+	    for ( String extension : language.getExtensions() ) {
+		if ( fileExtension.equalsIgnoreCase(extension) ) {
 		    return true;
+		}
+	    }
+	}
 	return false;
     }
 
