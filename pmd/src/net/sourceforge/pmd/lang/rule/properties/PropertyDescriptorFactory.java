@@ -4,6 +4,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 import net.sourceforge.pmd.PropertyDescriptor;
+import net.sourceforge.pmd.util.StringUtil;
 
 public class PropertyDescriptorFactory {
     /**
@@ -34,13 +35,12 @@ public class PropertyDescriptorFactory {
     private static PropertyDescriptor<?> createRawPropertyDescriptor(String name, String description, String type,
 	    String delimiter, String min, String max, String value) {
 	if ("Boolean".equals(type)) {
-	    return new BooleanProperty(name, description, Boolean.valueOf(value), 0.0f);
+	    return new BooleanProperty(name, description, value, 0.0f);
 	} else if ("Boolean[]".equals(type)) {
 	    BooleanMultiProperty property = new BooleanMultiProperty(name, description, null, 0.0f);
 	    return new BooleanMultiProperty(name, description, property.valueFrom(value), 0.0f);
 	} else if ("Character".equals(type)) {
-	    CharacterProperty property = new CharacterProperty(name, description, null, 0.0f);
-	    return new CharacterProperty(name, description, property.valueFrom(value), 0.0f);
+	    return new CharacterProperty(name, description, CharacterProperty.charFrom(value), 0.0f);
 	} else if ("Character[]".equals(type)) {
 	    checkDelimiter(name, type, delimiter);
 	    char delim = delimiter.charAt(0);
@@ -48,51 +48,34 @@ public class PropertyDescriptorFactory {
 	    return new CharacterMultiProperty(name, description, property.valueFrom(value), 0.0f, delim);
 	} else if ("Double".equals(type)) {
 	    checkMinMax(name, type, min, max);
-	    DoubleProperty property = new DoubleProperty(name, description, 0d, 0d, null, 0.0f);
-	    return new DoubleProperty(name, description, property.valueFrom(min), property.valueFrom(max), property
-		    .valueFrom(value), 0.0f);
+	    return new DoubleProperty(name, description, min, max, value, 0.0f);
 	} else if ("Double[]".equals(type)) {
-	    checkMinMax(name, type, min, max);
-	    DoubleProperty propertySingle = new DoubleProperty(name, description, 0d, 0d, null, 0.0f);
+	    checkMinMax(name, type, min, max);	    
 	    DoubleMultiProperty property = new DoubleMultiProperty(name, description, 0d, 0d, null, 0.0f);
-	    return new DoubleMultiProperty(name, description, propertySingle.valueFrom(min), propertySingle
-		    .valueFrom(max), property.valueFrom(value), 0.0f);
+	    return new DoubleMultiProperty(name, description, DoubleProperty.doubleFrom(min), DoubleProperty.doubleFrom(max), property.valueFrom(value), 0.0f);
 	} else if ("Float".equals(type)) {
 	    checkMinMax(name, type, min, max);
-	    FloatProperty property = new FloatProperty(name, description, 0f, 0f, null, 0.0f);
-	    return new FloatProperty(name, description, property.valueFrom(min), property.valueFrom(max), property
-		    .valueFrom(value), 0.0f);
+	    return new FloatProperty(name, description, min, max, value, 0.0f);
 	} else if ("Float[]".equals(type)) {
 	    checkMinMax(name, type, min, max);
-	    FloatProperty propertySingle = new FloatProperty(name, description, 0f, 0f, null, 0.0f);
 	    FloatMultiProperty property = new FloatMultiProperty(name, description, 0f, 0f, null, 0.0f);
-	    return new FloatMultiProperty(name, description, propertySingle.valueFrom(min), propertySingle
-		    .valueFrom(max), property.valueFrom(value), 0.0f);
+	    return new FloatMultiProperty(name, description, FloatProperty.floatFrom(min), FloatProperty.floatFrom(max), property.valueFrom(value), 0.0f);
 	} else if ("Integer".equals(type)) {
-	    checkMinMax(name, type, min, max);
-	    IntegerProperty property = new IntegerProperty(name, description, 0, 0, null, 0.0f);
-	    return new IntegerProperty(name, description, property.valueFrom(min), property.valueFrom(max), property
-		    .valueFrom(value), 0.0f);
+	    checkMinMax(name, type, min, max);	    
+	    return new IntegerProperty(name, description, min, max, value, 0.0f);
 	} else if ("Integer[]".equals(type)) {
 	    checkMinMax(name, type, min, max);
-	    IntegerProperty propertySingle = new IntegerProperty(name, description, 0, 0, null, 0.0f);
 	    IntegerMultiProperty property = new IntegerMultiProperty(name, description, 0, 0, null, 0.0f);
-	    return new IntegerMultiProperty(name, description, propertySingle.valueFrom(min), propertySingle
-		    .valueFrom(max), property.valueFrom(value), 0.0f);
+	    return new IntegerMultiProperty(name, description, IntegerProperty.intFrom(min), IntegerProperty.intFrom(max), property.valueFrom(value), 0.0f);
 	} else if ("Long".equals(type)) {
 	    checkMinMax(name, type, min, max);
-	    LongProperty property = new LongProperty(name, description, 0l, 0l, null, 0.0f);
-	    return new LongProperty(name, description, property.valueFrom(min), property.valueFrom(max), property
-		    .valueFrom(value), 0.0f);
+	    return new LongProperty(name, description, min, max, value, 0.0f);
 	} else if ("Long[]".equals(type)) {
-	    checkMinMax(name, type, min, max);
-	    LongProperty propertySingle = new LongProperty(name, description, 0l, 0l, null, 0.0f);
+	    checkMinMax(name, type, min, max);	    
 	    LongMultiProperty property = new LongMultiProperty(name, description, 0l, 0l, null, 0.0f);
-	    return new LongMultiProperty(name, description, propertySingle.valueFrom(min), propertySingle
-		    .valueFrom(max), property.valueFrom(value), 0.0f);
-	} else if ("String".equals(type)) {
-	    StringProperty property = new StringProperty(name, description, null, 0.0f);
-	    return new StringProperty(name, description, property.valueFrom(value), 0.0f);
+	    return new LongMultiProperty(name, description, LongProperty.longFrom(min), LongProperty.longFrom(max), property.valueFrom(value), 0.0f);
+	} else if ("String".equals(type)) {	  
+	    return new StringProperty(name, description, value, 0.0f);
 	} else if ("String[]".equals(type)) {
 	    checkDelimiter(name, type, delimiter);
 	    char delim = delimiter.charAt(0);
@@ -111,11 +94,11 @@ public class PropertyDescriptorFactory {
     }
 
     private static void checkMinMax(String name, String type, String min, String max) {
-	if (min == null || min.length() == 0) {
+	if (StringUtil.isEmpty(min)) {
 	    throw new IllegalArgumentException("Min must be provided to create PropertyDescriptor for " + name
 		    + " of type " + type + ".");
 	}
-	if (max == null || max.length() == 0) {
+	if (StringUtil.isEmpty(max)) {
 	    throw new IllegalArgumentException("Max must be provided to create PropertyDescriptor for " + name
 		    + " of type " + type + ".");
 	}

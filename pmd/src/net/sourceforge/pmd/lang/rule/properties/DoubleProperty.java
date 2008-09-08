@@ -26,6 +26,25 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
 	}
 	
 	/**
+     * Constructor for DoubleProperty.
+     * @param theName String
+     * @param theDescription String
+     * @param minStr String
+     * @param maxStr String
+     * @param theDefault String
+     * @param theUIOrder float
+     * @throws IllegalArgumentException
+     */
+    public DoubleProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr, float theUIOrder) {
+        this(theName, theDescription, doubleFrom(minStr), doubleFrom(maxStr), doubleFrom(defaultStr), theUIOrder);       
+    }
+	
+    
+    public static Double doubleFrom(String numberString) {
+        return Double.valueOf(numberString);
+    }
+    
+	/**
 	 * Method type.
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
@@ -41,6 +60,6 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
 	 * @return Object
 	 */
 	protected Object createFrom(String value) {
-		return Double.valueOf(value);
+		return doubleFrom(value);
 	}
 }

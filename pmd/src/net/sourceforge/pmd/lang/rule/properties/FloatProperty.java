@@ -26,6 +26,26 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
 	}
 	
 	/**
+     * Constructor for FloatProperty that limits itself to a single value within the specified limits. 
+     * Converts string arguments into the Float values.
+     * 
+     * @param theName String
+     * @param theDescription String
+     * @param minStr String
+     * @param maxStr String
+     * @param defaultStr String
+     * @param theUIOrder float
+     * @throws IllegalArgumentException
+     */
+    public FloatProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr, float theUIOrder) {
+        this(theName, theDescription, floatFrom(minStr), floatFrom(maxStr), floatFrom(defaultStr), theUIOrder);      
+    }
+	
+    public static Float floatFrom(String numberString) {
+        return Float.valueOf(numberString);
+    }
+    
+	/**
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -40,6 +60,6 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
 	 * @return Object
 	 */
 	protected Object createFrom(String value) {
-		return Float.valueOf(value);
+		return floatFrom(value);
 	}
 }

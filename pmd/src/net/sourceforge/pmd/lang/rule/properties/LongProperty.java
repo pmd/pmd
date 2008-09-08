@@ -18,11 +18,32 @@ public class LongProperty extends AbstractNumericProperty<Long> {
 	 * @param max Long
 	 * @param theDefault Long
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
 	public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
 		super(theName, theDescription, min, max, theDefault, theUIOrder);		
 	}
 	
+	/**
+     * Constructor for LongProperty that limits itself to a single value within the specified limits. 
+     * Converts string arguments into the Long values.
+     * 
+     * @param theName String
+     * @param theDescription String
+     * @param minStr String
+     * @param maxStr String
+     * @param defaultStr String
+     * @param theUIOrder float
+     * @throws IllegalArgumentException
+     */
+    public LongProperty(String theName, String theDescription, String minStr, String maxStr, String defaultStr, float theUIOrder) {
+        this(theName, theDescription, longFrom(minStr), longFrom(maxStr), longFrom(defaultStr), theUIOrder);       
+    }
+	
+    public static Long longFrom(String numberString) {
+        return Long.valueOf(numberString);
+    }
+    
 	/**
 	 * Method type.
 	 * @return Class
@@ -38,6 +59,6 @@ public class LongProperty extends AbstractNumericProperty<Long> {
 	 * @return Object
 	 */
 	protected Object createFrom(String value) {
-		return Long.valueOf(value);
+		return longFrom(value);
 	}
 }

@@ -15,13 +15,28 @@ public class CharacterProperty extends AbstractProperty<Character> {
 	 * Constructor for CharacterProperty.
 	 * @param theName String
 	 * @param theDescription String
-	 * @param theDefault char
+	 * @param theDefault Character
 	 * @param theUIOrder float
 	 */
 	public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
-		super(theName, theDescription, Character.valueOf(theDefault), theUIOrder);
+		super(theName, theDescription, theDefault, theUIOrder);
 	}
 	
+	/**
+     * Constructor for CharacterProperty.
+     * @param theName String
+     * @param theDescription String
+     * @param defaultStr String
+     * @param theUIOrder float
+     */
+    public CharacterProperty(String theName, String theDescription, String defaultStr, float theUIOrder) {
+        this(theName, theDescription, charFrom(defaultStr), theUIOrder);
+    }
+	
+    public static Character charFrom(String charStr) {
+        return charStr.charAt(0);
+    }
+    
 	/**
 	 * Method type.
 	 * @return Class
