@@ -240,23 +240,6 @@ public enum Language {
 
     /**
      * A utility method to find the Language associated with the given
-     * terse name.
-     * @param terseName The Language terse name.
-     * @return The Language with this terse name, <code>null</code> if there is
-     * no Language with this terse name.
-     */
-    public static Language findByExactTerseName(String terseName) {
-	for (Language language : Language.values()) {
-	    if (language.getTerseName().equals(terseName)) {
-		return language;
-	    }
-	}
-	return null;
-    }
-
-
-    /**
-     * A utility method to find the Language associated with the given
      * terse name, whatever the case is.
      * @param terseName The Language terse name.
      * @return The Language with this terse name, <code>null</code> if there is
@@ -286,22 +269,6 @@ public enum Language {
 	}
 	return builder.toString();
     }
-    
-    /**
-     * Return a comma separated list of all languages actually known by pmd.
-     * @return a string with the comma separated list.
-     */
-    public static String getCommaSeparatedOfAllSupportedLanguages() {
-	String commaSeparatedLanguagesString = "";
-	Language[] supportedLanguages = Language.values();
-	for (int idLanguage = 0; idLanguage < supportedLanguages.length ; idLanguage++ ) {
-	    commaSeparatedLanguagesString += "," + supportedLanguages[idLanguage];
-	}
-	// Remove the extra first comma before returning strings
-	return commaSeparatedLanguagesString.substring(1,commaSeparatedLanguagesString.length());
-    }
-    
-    
 
     private static void init() {
 	// Force initialization of the LanguageVersion enum.

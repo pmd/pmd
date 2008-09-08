@@ -176,7 +176,7 @@ public class CommandLineOptions {
 	String languageSpecified = args[optionsIndex + LANG_NAME_INDEX];
 	this.language = Language.findByTerseName(languageSpecified);
 	if ( language == null ) {
-	    throw new IllegalArgumentException("language '" + languageSpecified + "' is not recognized. Availaible language are : " + Language.getCommaSeparatedOfAllSupportedLanguages());
+	    throw new IllegalArgumentException("language '" + languageSpecified + "' is not recognized. Availaible language are : " + Language.commaSeparatedTerseNames(Language.findWithRuleSupport()));
 	}
 	else {
 	    if ( args.length > (optionsIndex + LANG_VERSION_INDEX) ) {

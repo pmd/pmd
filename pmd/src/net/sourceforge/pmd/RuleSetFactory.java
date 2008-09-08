@@ -212,7 +212,7 @@ public class RuleSetFactory {
 	    RuleSet ruleSet = new RuleSet();
 	    ruleSet.setFileName(fileName);
 	    ruleSet.setName(ruleSetElement.getAttribute("name"));
-	    ruleSet.setLanguage(Language.findByExactTerseName(ruleSetElement.getAttribute("language")));
+	    ruleSet.setLanguage(Language.findByTerseName(ruleSetElement.getAttribute("language")));
 
 	    NodeList nodeList = ruleSetElement.getChildNodes();
 	    for (int i = 0; i < nodeList.getLength(); i++) {
@@ -337,7 +337,7 @@ public class RuleSetFactory {
 
 	if (ruleElement.hasAttribute("language")) {
 	    String languageName = ruleElement.getAttribute("language");
-	    Language language = Language.findByExactTerseName(languageName);
+	    Language language = Language.findByTerseName(languageName);
 	    if (language == null) {
 		throw new IllegalArgumentException("Unknown Language '" + languageName + "' for Rule " + rule.getName()
 			+ ", supported Languages are "

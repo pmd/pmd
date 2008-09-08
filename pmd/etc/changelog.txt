@@ -9,7 +9,8 @@ TODO - Release blockers - Must implement before this release can be finished
    o Additional changes to Rule organization withing RuleSets as discussed on
      this forum thread:
      http://sourceforge.net/forum/forum.php?thread_id=1323593&forum_id=188194
-   o Change PMD AntTask options to allow specifying both language and if
+   o Adapt PMD command line to have multiple -lang options  (should be cummulative). 
+   	 Change PMD AntTask options to allow specifying both language and if
      relevant language version. (assigned to rpelisse)
    o CPD needs work on use of Language.  It currently is hardcoded to only
      handled Java 1.4.  Integrate CPD needs into core PMD where appropriate.
