@@ -17,6 +17,16 @@ public class FloatPropertyTest extends AbstractPropertyDescriptorTester {
 	private static final float MAX = 11.0f;
 	private static final float SHIFT = 3.0f;
 	
+	public static FloatProperty randomProperty(int nameLength, int descLength, boolean multiValue) {
+		
+		float defalt = randomFloat(0, 1000f);
+		
+		return new FloatProperty(
+			randomString(nameLength), randomString(descLength),
+			defalt - 1000f, defalt + 1000, defalt, 0f
+			);
+	}
+	
 	public FloatPropertyTest() {
 		super();
 	}

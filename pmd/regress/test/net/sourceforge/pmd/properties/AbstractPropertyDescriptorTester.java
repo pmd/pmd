@@ -169,6 +169,15 @@ public abstract class AbstractPropertyDescriptorTester {
 		return x + min;
 	}
 	
+	public static String randomString(int length) {
+		
+		final char[] chars = alphaChars.toCharArray();
+		
+		StringBuilder sb = new StringBuilder(length);
+		for (int i=0; i<length; i++) sb.append(randomChar(chars));
+		return sb.toString();
+	}
+	
 	/**
 	 * Method randomFloat.
 	 * @param min float
