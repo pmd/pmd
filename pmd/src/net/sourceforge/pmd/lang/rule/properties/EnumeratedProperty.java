@@ -28,7 +28,7 @@ public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object>
 	}
 	
 	/**
-	 * Method type.
+	 * 
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -37,36 +37,36 @@ public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object>
 	}
 	
 	/**
-	 * Method errorFor.
+	 *
 	 * @param value Object
 	 * @return String
 	 * @see net.sourceforge.pmd.PropertyDescriptor#errorFor(Object)
 	 */
 	@Override
 	public String errorFor(Object value) {
-			return labelsByChoice.containsKey(value) ?
-				null : nonLegalValueMsgFor(value);
+		return labelsByChoice.containsKey(value) ?
+			null : nonLegalValueMsgFor(value);
 	}
 	
 	/**
-	 * Method valueFrom.
+	 *
 	 * @param value String
 	 * @return Object
 	 * @throws IllegalArgumentException
 	 * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
 	 */
 	public Object valueFrom(String value) throws IllegalArgumentException {
-		    return choiceFrom(value);
+	    return choiceFrom(value);
 	}
 	
 	/**
-	 * Method asDelimitedString.
+	 *
 	 * @param value Object
 	 * @return String
 	 * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(Object)
 	 */
 	@Override
 	public String asDelimitedString(Object value) {
-		    return labelsByChoice.get(value);
+	    return labelsByChoice.get(value);
 	}
 }

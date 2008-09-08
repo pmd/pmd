@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 import net.sourceforge.pmd.util.ClassUtil;
 
 /**
- * Defines a property that supports class types, even for primitive values!
+ * Defines a property that supports single class types, even for primitive values!
  * 
  * TODO - untested for array types
  *
@@ -25,11 +25,8 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
      * @param theUIOrder float
      * @throws IllegalArgumentException
      */
-    public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames,
-            float theUIOrder) {
+    public TypeProperty(String theName, String theDescription, Class<?> theDefault, String[] legalPackageNames, float theUIOrder) {
         super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
-
-        isMultiValue(false);
     }
 
     /**

@@ -1,12 +1,14 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
+import net.sourceforge.pmd.NumericPropertyDescriptor;
+
 /**
  * Maintains a pair of boundary limit values between which all values managed
  * by the subclasses must fit.
  * 
  * @author Brian Remedios
  */
-public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<T> {
+public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<T> implements NumericPropertyDescriptor<T> {
 
 	private Number lowerLimit;
 	private Number upperLimit;

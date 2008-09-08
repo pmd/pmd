@@ -33,7 +33,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 	}
 	
 	/**
-	 * Evaluates the names of the items against the allowable name prefixes. If one or more of them
+	 * Evaluates the names of the items against the allowable name prefixes. If one or more
 	 * do not have valid prefixes then an exception will be thrown.
 	 * 
 	 * @param item

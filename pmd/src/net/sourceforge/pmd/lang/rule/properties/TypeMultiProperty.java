@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Defines a property that supports class types, even for primitive values!
+ * Defines a property that supports multiple class types, even for primitive values!
  * 
  * TODO - untested for array types
  *
@@ -29,7 +29,6 @@ public class TypeMultiProperty extends AbstractPackagedProperty<Class[]> {
             float theUIOrder) {
         super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
 
-        isMultiValue(true);
     }
 
     /**
@@ -42,6 +41,15 @@ public class TypeMultiProperty extends AbstractPackagedProperty<Class[]> {
         return ((Class<?>) item).getName();
     }
 
+    /**
+	 * @return boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+	 */
+	@Override
+	public boolean isMultiValue() {
+	    return true;
+	}
+    
     /**
      * Method type.
      * @return Class

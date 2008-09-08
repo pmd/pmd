@@ -5,10 +5,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 
 /**
- * Defines a datatype that supports String values.
- * 
- * When capturing multiple values, all strings must be filtered to eliminate
- * occurrences of the delimiter character.
+ * Defines a datatype that supports single String values.
  * 
  * @author Brian Remedios
  */

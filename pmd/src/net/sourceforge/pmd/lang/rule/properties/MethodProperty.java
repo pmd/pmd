@@ -11,7 +11,7 @@ import net.sourceforge.pmd.util.ClassUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Defines a property type that can specify one or more methods to use as part of a rule.
+ * Defines a property type that can specify a single method to use as part of a rule.
  *
  * Rule developers can limit the rules to those within designated packages per the
  * 'legalPackages' argument in the constructor which can be an array of partial
@@ -200,11 +200,9 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
      * @param legalPackageNames String[]
      * @param theUIOrder     float
      */
-    public MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames,
-            float theUIOrder) {
+    public MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames, float theUIOrder) {
         super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
 
-        isMultiValue(false);
         multiValueDelimiter(' ');
     }
 

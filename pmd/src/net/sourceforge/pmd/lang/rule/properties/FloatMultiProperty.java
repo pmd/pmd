@@ -22,8 +22,6 @@ public class FloatMultiProperty extends AbstractNumericProperty<Float[]> {
 	 */
 	public FloatMultiProperty(String theName, String theDescription, Float min, Float max, Float[] defaultValues, float theUIOrder) {
 		super(theName, theDescription, min, max, defaultValues, theUIOrder);
-		
-		isMultiValue(true);
 	}
 	
 	/**
@@ -34,6 +32,15 @@ public class FloatMultiProperty extends AbstractNumericProperty<Float[]> {
 		return Float[].class;
 	}
 
+	/**
+	 * @return boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+	 */
+	@Override
+	public boolean isMultiValue() {
+		return true;
+	}
+	
 	/**
 	 * Creates an property value of the right type from a raw string.
 	 * 

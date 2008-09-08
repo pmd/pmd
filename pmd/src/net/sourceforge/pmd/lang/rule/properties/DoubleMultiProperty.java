@@ -5,7 +5,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 
 /**
- * Defines a property type that support double-type property values.
+ * Defines a property type that supports multiple double-type property values within an upper and lower boundary.
  * 
  * @author Brian Remedios
  */
@@ -19,8 +19,6 @@ public class DoubleMultiProperty extends AbstractNumericProperty<Double[]> {
 	 */
 	public DoubleMultiProperty(String theName, String theDescription, Double min, Double max, Double[] defaultValues, float theUIOrder) {
 		super(theName, theDescription, min, max, defaultValues, theUIOrder);
-		
-		isMultiValue(true);
 	}
 	
 	/**
@@ -30,6 +28,15 @@ public class DoubleMultiProperty extends AbstractNumericProperty<Double[]> {
 	 */
 	public Class<Double[]> type() {
 		return Double[].class;
+	}
+
+	/**
+	 * @return boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+	 */
+	@Override
+	public boolean isMultiValue() {
+		return true;
 	}
 
 	/**

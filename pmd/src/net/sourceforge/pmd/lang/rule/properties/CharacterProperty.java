@@ -5,7 +5,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 
 /**
- * Defines a property type that supports Character values.
+ * Defines a property type that supports single Character values.
  * 
  * @author Brian Remedios
  */
@@ -20,8 +20,6 @@ public class CharacterProperty extends AbstractProperty<Character> {
 	 */
 	public CharacterProperty(String theName, String theDescription, Character theDefault, float theUIOrder) {
 		super(theName, theDescription, Character.valueOf(theDefault), theUIOrder);
-		
-		isMultiValue(false);
 	}
 	
 	/**

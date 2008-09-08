@@ -17,7 +17,6 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	private final String	description;
 	private final T 	defaultValue;
 	private final boolean 	isRequired;
-	private boolean			isMultiValue = false;
 	private final float		uiOrder;
 	
 	protected char	multiValueDelimiter = '|';
@@ -120,7 +119,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 			return true;
 		}
 		
-		if (isMultiValue && isArray(defaultValue)) {
+		if (isMultiValue() && isArray(defaultValue)) {
 			Object[] defaults = (Object[])defaultValue;
 			for (int i=0; i<defaults.length; i++) {
 				if (defaults[i] == null) { return true; }
@@ -131,22 +130,15 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	}
 	
 	/**
-	 * Method isMultiValue.
+	 * Return false, override in appropriate subclasses as necessary.
+	 * 
 	 * @return boolean
 	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
 	 */
 	public boolean isMultiValue() {
-		return isMultiValue;
+		return false;
 	}
-	
-	/**
-	 * Method isMultiValue.
-	 * @param flag
-	 */
-	protected void isMultiValue(boolean flag) {
-		isMultiValue = flag;
-	}
-	
+
 	/**
 	 * Method isRequired.
 	 * @return boolean
@@ -233,7 +225,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 		if (typeError != null) {
 		    return typeError;
 		}
-		return isMultiValue ?
+		return isMultiValue() ?
 			valuesErrorFor(value) :
 			valueErrorFor(value);
 	}
@@ -297,7 +289,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 		    return null;
 		}
 		
-		if (isMultiValue) {
+		if (isMultiValue()) {
 			if (!isArray(value)) {
 				return "Value is not an array of type: " + type();
 			}

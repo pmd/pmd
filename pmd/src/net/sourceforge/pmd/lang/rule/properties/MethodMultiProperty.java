@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Defines a property type that can specify one or more methods to use as part of a rule.
+ * Defines a property type that can specify multiple methods to use as part of a rule.
  *
  * Rule developers can limit the rules to those within designated packages per the
  * 'legalPackages' argument in the constructor which can be an array of partial
@@ -26,11 +26,9 @@ public class MethodMultiProperty extends AbstractPackagedProperty<Method[]> {
      * @param legalPackageNames String[]
      * @param theUIOrder     float
      */
-    public MethodMultiProperty(String theName, String theDescription, Method[] theDefaults, String[] legalPackageNames,
-            float theUIOrder) {
+    public MethodMultiProperty(String theName, String theDescription, Method[] theDefaults, String[] legalPackageNames, float theUIOrder) {
         super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
 
-        isMultiValue(true);
         multiValueDelimiter(' ');
     }
 
@@ -67,8 +65,16 @@ public class MethodMultiProperty extends AbstractPackagedProperty<Method[]> {
         return "method";
     }
 
+	/**
+	 * @return boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+	 */
+	@Override
+	public boolean isMultiValue() {
+		return true;
+	}
+    
     /**
-     * Method type.
      *
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
@@ -78,7 +84,6 @@ public class MethodMultiProperty extends AbstractPackagedProperty<Method[]> {
     }
 
     /**
-     * Method valueFrom.
      *
      * @param valueString  String
      * @return Object

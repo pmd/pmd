@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
- * Defines a property type that supports Boolean values.
+ * Defines a property type that supports single Boolean values.
  * 
  * @author Brian Remedios
  */
@@ -20,8 +20,6 @@ public class BooleanProperty extends AbstractScalarProperty<Boolean> {
 	 */
 	public BooleanProperty(String theName, String theDescription, Boolean defaultValue, float theUIOrder) {
 		super(theName, theDescription, Boolean.valueOf(defaultValue), theUIOrder);
-		
-		isMultiValue(false);
 	}
 
 	/**

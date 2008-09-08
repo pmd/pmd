@@ -6,7 +6,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Defines a property type that supports Character values.
+ * Defines a property type that supports multiple Character values.
  * 
  * @author Brian Remedios
  */
@@ -32,7 +32,6 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
 		}
 		
 		multiValueDelimiter(delimiter);
-		isMultiValue(true);
 	}
 	
 	/**
@@ -42,6 +41,15 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
 	 */
 	public Class<Character[]> type() {
 		return Character[].class;
+	}
+	
+	/**
+	 * @return boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+	 */
+	@Override
+	public boolean isMultiValue() {
+		return true;
 	}
 	
 	/**

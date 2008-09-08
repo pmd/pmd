@@ -17,8 +17,6 @@ public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
 	 */
 	public BooleanMultiProperty(String theName, String theDescription, Boolean[] defaultValues, float theUIOrder) {
 		super(theName, theDescription, defaultValues, theUIOrder);
-		
-		isMultiValue(true);
 	}
 	
 	/**
@@ -29,6 +27,15 @@ public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
 		return Boolean[].class;
 	}
 
+	/**
+	 * @return boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+	 */
+	@Override
+	public boolean isMultiValue() {
+		return true;
+	}
+	
 	/**
 	 * Creates and returns a Boolean instance from a raw string
 	 * 

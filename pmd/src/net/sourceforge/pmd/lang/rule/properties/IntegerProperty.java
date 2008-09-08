@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
- * Defines a datatype that supports the Integer property values.
+ * Defines a datatype that supports single Integer property values within an upper and lower boundary.
  * 
  * @author Brian Remedios
  */
@@ -21,9 +21,7 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
 	 * @throws IllegalArgumentException
 	 */
 	public IntegerProperty(String theName, String theDescription, Integer min, Integer max, Integer theDefault, float theUIOrder) {
-		super(theName, theDescription, min, max, theDefault, theUIOrder);
-		
-		isMultiValue(false);
+		super(theName, theDescription, min, max, theDefault, theUIOrder);		
 	}
 	
 	/**

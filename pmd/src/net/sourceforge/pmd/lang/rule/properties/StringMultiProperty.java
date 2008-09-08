@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.rule.properties;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Defines a datatype that supports String values.
- * When capturing multiple values, all strings must be filtered by the delimiter character.
+ * Defines a datatype that supports multiple String values.
+ * Note that all strings must be filtered by the delimiter character.
  * 
  * @author Brian Remedios
  */
@@ -26,8 +26,7 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
 	 */
 	public StringMultiProperty(String theName, String theDescription, String[] theDefaults, float theUIOrder, char aMultiValueDelimiter) {
 		super(theName, theDescription, theDefaults, theUIOrder);
-			
-		isMultiValue(true);
+
 		multiValueDelimiter(aMultiValueDelimiter);
 
 		checkDefaults(theDefaults, aMultiValueDelimiter);
@@ -57,6 +56,15 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
 	 */
 	public Class<String[]> type() {
 		return String[].class;
+	}
+	
+	/**
+	 * @return boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+	 */
+	@Override
+	public boolean isMultiValue() {
+		return true;
 	}
 	
 	/**

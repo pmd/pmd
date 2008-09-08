@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
- * Defines a property type that support float property values within an upper and lower boundary.
+ * Defines a property type that supports single float property values within an upper and lower boundary.
  * 
  * @author Brian Remedios
  */
@@ -22,9 +22,7 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
 	 * @throws IllegalArgumentException
 	 */
 	public FloatProperty(String theName, String theDescription,	Float min, Float max, Float theDefault, float theUIOrder) {
-		super(theName, theDescription, Float.valueOf(min), Float.valueOf(max), Float.valueOf(theDefault), theUIOrder);
-		
-		isMultiValue(false);
+		super(theName, theDescription, Float.valueOf(min), Float.valueOf(max), Float.valueOf(theDefault), theUIOrder);		
 	}
 	
 	/**

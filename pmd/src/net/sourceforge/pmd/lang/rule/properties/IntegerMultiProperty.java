@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
- * Defines a datatype that supports the Integer property values.
+ * Defines a datatype that supports multiple Integer property values within an upper and lower boundary.
  * 
  * @author Brian Remedios
  */
@@ -18,8 +18,6 @@ public class IntegerMultiProperty extends AbstractNumericProperty<Integer[]> {
 	 */
 	public IntegerMultiProperty(String theName, String theDescription, Integer min, Integer max, Integer[] theDefaults, float theUIOrder) {
 		super(theName, theDescription, min, max, theDefaults, theUIOrder);
-		
-		isMultiValue(true);
 	}
 	
 	/**
@@ -31,6 +29,15 @@ public class IntegerMultiProperty extends AbstractNumericProperty<Integer[]> {
 		return Integer[].class;
 	}
 
+	/**
+	 * @return boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+	 */
+	@Override
+	public boolean isMultiValue() {
+		return true;
+	}
+	
 	/**
 	 * Method createFrom.
 	 * @param value String

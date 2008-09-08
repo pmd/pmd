@@ -5,7 +5,7 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 
 /**
- * Defines a property type that support double-type property values.
+ * Defines a property type that support single double-type property values within an upper and lower boundary.
  * 
  * @author Brian Remedios
  */
@@ -22,9 +22,7 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
 	 * @throws IllegalArgumentException
 	 */
 	public DoubleProperty(String theName, String theDescription, Double min, Double max, Double theDefault, float theUIOrder) {
-		super(theName, theDescription, min, max, theDefault, theUIOrder);
-		
-		isMultiValue(false);
+		super(theName, theDescription, min, max, theDefault, theUIOrder);		
 	}
 	
 	/**

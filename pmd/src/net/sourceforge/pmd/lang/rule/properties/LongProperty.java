@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
- * Defines a datatype that supports the Long property values.
+ * Defines a datatype that supports the single Long property values within an upper and lower boundary.
  * 
  * @author Brian Remedios
  */
@@ -20,9 +20,7 @@ public class LongProperty extends AbstractNumericProperty<Long> {
 	 * @param theUIOrder float
 	 */
 	public LongProperty(String theName, String theDescription, Long min, Long max, Long theDefault, float theUIOrder) {
-		super(theName, theDescription, min, max, theDefault, theUIOrder);
-		
-		isMultiValue(false);
+		super(theName, theDescription, min, max, theDefault, theUIOrder);		
 	}
 	
 	/**

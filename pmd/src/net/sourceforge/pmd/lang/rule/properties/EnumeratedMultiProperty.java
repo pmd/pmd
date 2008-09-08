@@ -27,11 +27,10 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 	 */
 	public EnumeratedMultiProperty(String theName, String theDescription, String[] theLabels, E[] theChoices, int[] choiceIndices, float theUIOrder) {
 		super(theName, theDescription, theLabels, theChoices, choiceIndices, theUIOrder, true);
-		isMultiValue(true);
 	}
 	
 	/**
-	 * Method type.
+	 * 
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -40,7 +39,16 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 	}
 	
 	/**
-	 * Method errorFor.
+	 * @return boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+	 */
+	@Override
+	public boolean isMultiValue() {
+		return true;
+	}
+	
+	/**
+	 * 
 	 * @param value Object
 	 * @return String
 	 * @see net.sourceforge.pmd.PropertyDescriptor#errorFor(Object)
@@ -58,7 +66,7 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 	}
 	
 	/**
-	 * Method valueFrom.
+	 * 
 	 * @param value String
 	 * @return Object
 	 * @throws IllegalArgumentException
@@ -75,7 +83,7 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 	}
 	
 	/**
-	 * Method asDelimitedString.
+	 * 
 	 * @param value Object
 	 * @return String
 	 * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(Object)

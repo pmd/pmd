@@ -4,7 +4,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 /**
- * Defines a datatype that supports the Long property values.
+ * Defines a datatype that supports multiple Long property values within an upper and lower boundary.
  * 
  * @author Brian Remedios
  */
@@ -21,8 +21,6 @@ public class LongMultiProperty extends AbstractNumericProperty<Long[]> {
 	 */
 	public LongMultiProperty(String theName, String theDescription, Long min, Long max, Long[] theDefault, float theUIOrder) {
 		super(theName, theDescription, min, max, theDefault, theUIOrder);
-		
-		isMultiValue(false);
 	}
 	
 	/**
@@ -34,6 +32,15 @@ public class LongMultiProperty extends AbstractNumericProperty<Long[]> {
 		return Long[].class;
 	}
 
+	/**
+	 * @return boolean
+	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
+	 */
+	@Override
+	public boolean isMultiValue() {
+		return true;
+	}
+	
 	/**
 	 * Method createFrom.
 	 * @param value String
