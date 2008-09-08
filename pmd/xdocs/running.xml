@@ -29,7 +29,7 @@ C:\tmp\pmd-5.0\pmd\bin&gt;
  above looks like a filesystem reference, it's really being used by a getResourceAsStream() call
  to load it out of the PMD jar file.  And the same applies to the example below.</p>
 
-       <li>If you are want to run PMD without the batch file, you can do a:</li>
+       <li>If you want to run PMD without the batch file, you can do a:</li>
        <source>
 C:\data\pmd\pmd>java -cp lib\pmd-5.0.jar;lib\jaxen-1.1.1.jar;lib\asm-3.1.jar
                      net.sourceforge.pmd.PMD
@@ -41,7 +41,7 @@ C:\data\pmd\pmd>java -cp lib\pmd-5.0.jar;lib\jaxen-1.1.1.jar;lib\asm-3.1.jar
 	</subsection>
 	<subsection name="Other options">
 		<ul>
-	    	<li>Notice that in this case the output is in XML, so you can redirect it to a file and XSLT it or whatever</li>
+	    	<li>Notice that in this case the output is in XML, so you can redirect it to a file and optionally transform it via XSLT</li>
 	        <li>You can also use shortened names to refer to the built-in rulesets, like this:</li>
 				<source>
 java net.sourceforge.pmd.PMD /path/to/source text basic,imports,unusedcode
@@ -61,12 +61,12 @@ java net.sourceforge.pmd.PMD /path/to/source text basic,imports,unusedcode
 		</ul>
 	</subsection>
 	<subsection name="Renderers">
-	<p>PMD comes with 4 differents type of renderers:
+	<p>PMD comes with four different renderer types:
 	<ul>
-		<li><b>text</b>, which does a basic text ouput of pmd's report.</li>
-		<li><b>xml</b>, which format as XML the report.</li>
-		<li><b>html</b>, which format the result as a very basic HTML page.</li>
-		<li><b>nicehtml</b>, which is "better" html view of the result.
+		<li><b>text</b>, provides a basic text output.</li>
+		<li><b>xml</b>, provides report output in XML format.</li>
+		<li><b>html</b>, provides report as a basic HTML page.</li>
+		<li><b>nicehtml</b>, provides an enhanced HTML output page.
 		As this feature use an XSLT transformation, it also possible to override the default stylesheet using the -xslt parameter.</li>
 	</ul>
 	</p>
@@ -74,7 +74,7 @@ java net.sourceforge.pmd.PMD /path/to/source text basic,imports,unusedcode
 				<source>
 java net.sourceforge.pmd.PMD /path/to/source nicehtml basic,imports,unusedcode -xslt my-own-stylesheet.xsl
        			</source>
-		<i>Note that the stylesheet should be an readable file for PMD.</i>
+		<i>Note that the stylesheet should be a readable file for PMD.</i>
 	</p>
 	</subsection>
    </section>
