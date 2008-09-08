@@ -28,12 +28,17 @@ public class CharacterProperty extends AbstractProperty<Character> {
      * @param theDescription String
      * @param defaultStr String
      * @param theUIOrder float
+     * @throws IllegalArgumentException
      */
     public CharacterProperty(String theName, String theDescription, String defaultStr, float theUIOrder) {
         this(theName, theDescription, charFrom(defaultStr), theUIOrder);
     }
 	
     public static Character charFrom(String charStr) {
+        
+        if (charStr == null || charStr.length() != 1) {
+            throw new IllegalArgumentException("missing/invalid character value");
+        }
         return charStr.charAt(0);
     }
     
@@ -54,9 +59,6 @@ public class CharacterProperty extends AbstractProperty<Character> {
 	 * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
 	 */
 	public Character valueFrom(String valueString) throws IllegalArgumentException {
-			if (valueString.length() > 1) {
-			    throw new IllegalArgumentException(valueString);
-			}
-			return Character.valueOf(valueString.charAt(0));
+			return charFrom(valueString);
 	}
 }
