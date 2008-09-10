@@ -11,6 +11,7 @@ import java.util.Map;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.lang.java.ast.ASTResultType;
@@ -101,7 +102,7 @@ public class BeanMembersShouldSerializeRule extends AbstractJavaRule {
 	    return true;
 	}
 	if (methodName.startsWith("is")) {
-	    ASTResultType ret = (ASTResultType) meth.jjtGetParent().jjtGetChild(0);
+	    ASTResultType ret = ((ASTMethodDeclaration) meth.jjtGetParent()).getResultType();
 	    List<ASTPrimitiveType> primitives = ret.findDescendantsOfType(ASTPrimitiveType.class);
 	    if (!primitives.isEmpty() && primitives.get(0).isBoolean()) {
 		return true;

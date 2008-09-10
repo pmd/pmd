@@ -390,6 +390,7 @@ Ant requirement is now 1.7.0 or higher for compilation
 All comment types are now stored in ASTCompilationUnit, not just formal ones
 Fixed false negative in UselessOverridingMethod
 Fixed handling of escape characters in UseIndexOfChar and AppendCharacterWithChar
+Fixed ClassCastException on generic method in BeanMembersShouldSerialize
 
 New rules:
 
