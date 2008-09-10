@@ -12,6 +12,7 @@ import net.sourceforge.pmd.AbstractRule;
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.ast.ASTPrimitiveType;
 import net.sourceforge.pmd.ast.ASTResultType;
@@ -97,7 +98,7 @@ public class BeanMembersShouldSerializeRule extends AbstractRule {
             return true;
         }
         if (methodName.startsWith("is")) {
-            ASTResultType ret = (ASTResultType) meth.jjtGetParent().jjtGetChild(0);
+            ASTResultType ret = ((ASTMethodDeclaration) meth.jjtGetParent()).getResultType();
             List primitives = ret.findChildrenOfType(ASTPrimitiveType.class);
             if (!primitives.isEmpty() && ((ASTPrimitiveType) primitives.get(0)).isBoolean()) {
                 return true;
