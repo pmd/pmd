@@ -54,7 +54,12 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         return sb.toString();
     }
 
+    @Override
     public boolean equals(Object o) {
+        if (!(o instanceof MethodNameDeclaration)) {
+            return false;
+        }
+
         MethodNameDeclaration other = (MethodNameDeclaration) o;
 
         // compare name
@@ -63,7 +68,7 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         }
 
         // compare parameter count - this catches the case where there are no params, too
-        if (((ASTMethodDeclarator) (other.node)).getParameterCount() != ((ASTMethodDeclarator) node).getParameterCount()) {
+        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node).getParameterCount()) {
             return false;
         }
 
@@ -110,10 +115,12 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         return true;
     }
 
+    @Override
     public int hashCode() {
         return node.getImage().hashCode() + ((ASTMethodDeclarator) node).getParameterCount();
     }
 
+    @Override
     public String toString() {
         return "Method " + node.getImage() + ", line " + node.getBeginLine() + ", params = " + ((ASTMethodDeclarator) node).getParameterCount();
     }

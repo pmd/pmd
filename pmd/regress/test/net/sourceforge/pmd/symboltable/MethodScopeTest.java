@@ -1,6 +1,10 @@
 package test.net.sourceforge.pmd.symboltable;
 
 import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+import java.util.Map;
+
 import net.sourceforge.pmd.PMD;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.symboltable.MethodScope;
@@ -8,9 +12,6 @@ import net.sourceforge.pmd.lang.java.symboltable.NameOccurrence;
 import net.sourceforge.pmd.lang.java.symboltable.VariableNameDeclaration;
 
 import org.junit.Test;
-
-import java.util.List;
-import java.util.Map;
 
 public class MethodScopeTest extends STBBaseTst {
 
@@ -33,12 +34,25 @@ public class MethodScopeTest extends STBBaseTst {
         assertEquals(ms.getName(), "foo");
     }
 
+    @Test
+    public void testGenerics() {
+        parseCode(TEST_GENERICS);
+    }
+
     public static final String TEST1 =
             "public class Foo {" + PMD.EOL +
             " void foo(int bar) {" + PMD.EOL +
             "  bar = 2;" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
+
+
+    private static final String TEST_GENERICS =
+        "public class Tree {" + PMD.EOL +
+        "  private List<Object> subForest;" + PMD.EOL +
+        "  public <B> Tree<B> fmap(final F<B> f) { return Tree.<B>foo(); }" + PMD.EOL +
+        "  public List<Object> subForest() { return null; }" + PMD.EOL +
+        "}" + PMD.EOL;
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(MethodScopeTest.class);

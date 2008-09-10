@@ -69,6 +69,9 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
 
     @Override
     public boolean equals(Object o) {
+        if (!(o instanceof VariableNameDeclaration)) {
+            return false;
+        }
 	VariableNameDeclaration n = (VariableNameDeclaration) o;
 	return n.node.getImage().equals(node.getImage());
     }
