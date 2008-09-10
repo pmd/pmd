@@ -55,6 +55,10 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
     }
 
     public boolean equals(Object o) {
+        if (!(o instanceof MethodNameDeclaration)) {
+            return false;
+        }
+
         MethodNameDeclaration other = (MethodNameDeclaration) o;
 
         // compare name

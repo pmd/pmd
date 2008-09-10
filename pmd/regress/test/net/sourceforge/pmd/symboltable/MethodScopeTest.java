@@ -32,6 +32,10 @@ public class MethodScopeTest extends STBBaseTst {
         MethodScope ms = (MethodScope) meth.getScope();
         assertEquals(ms.getName(), "foo");
     }
+    @Test
+    public void testGenerics() {
+        parseCode15(TEST_GENERICS);
+    }
 
     public static final String TEST1 =
             "public class Foo {" + PMD.EOL +
@@ -39,6 +43,13 @@ public class MethodScopeTest extends STBBaseTst {
             "  bar = 2;" + PMD.EOL +
             " }" + PMD.EOL +
             "}";
+
+    private static final String TEST_GENERICS =
+        "public class Tree {" + PMD.EOL +
+        "  private List<Object> subForest;" + PMD.EOL +
+        "  public <B> Tree<B> fmap(final F<B> f) { return Tree.<B>foo(); }" + PMD.EOL +
+        "  public List<Object> subForest() { return null; }" + PMD.EOL +
+        "}" + PMD.EOL;
 
     public static junit.framework.Test suite() {
         return new junit.framework.JUnit4TestAdapter(MethodScopeTest.class);
