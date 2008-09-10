@@ -596,6 +596,6 @@ public class]]></replacevalue>
 		</javadoc>
 	</target>
 
-	<target name="qa" depends="dist, regress, regress14, pmdOnPmd, cpdOnPmd, symtabtest, dfatest, cpdtest, javadoc" description="Runs all tests (used for continuous integration tests with cruise control)"/>
+	<target name="qa" depends="dist, regress, regress14, pmdOnPmd, cpdOnPmd, symtabtest, dfatest, cpdtest, javadoc" description="Runs all tests (used for continuous integration tests)"/>
 
 </project>
