@@ -31,7 +31,7 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
      * @param theDescription String
      * @param minStr String
      * @param maxStr String
-     * @param theDefault String
+     * @param defaultStr String
      * @param theUIOrder float
      * @throws IllegalArgumentException
      */

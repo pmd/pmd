@@ -185,7 +185,7 @@ public enum LanguageVersion {
     /**
      * A utility method to find the all version associated with the given
      * terse name.
-     * @param terseName The LanguageVersion terse name.
+     * @param languageTerseName The LanguageVersion terse name.
      * @return The LanguageVersion with this terse name, <code>null</code> if there is
      * no LanguageVersion with this terse name.
      * @return A list of versions associated with the terse name
