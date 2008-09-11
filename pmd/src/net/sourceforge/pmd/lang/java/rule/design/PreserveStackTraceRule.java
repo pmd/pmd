@@ -47,9 +47,9 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
         List<ASTThrowStatement> lstThrowStatements = catchStmt.findDescendantsOfType(ASTThrowStatement.class);
         for (ASTThrowStatement throwStatement : lstThrowStatements) {
             Node n = throwStatement.jjtGetChild(0).jjtGetChild(0);
-            if (n.getClass().equals(ASTCastExpression.class)) {
+            if (n instanceof ASTCastExpression) {
                 ASTPrimaryExpression expr = (ASTPrimaryExpression) n.jjtGetChild(1);
-                if (expr.jjtGetNumChildren() > 1 && expr.jjtGetChild(1).getClass().equals(ASTPrimaryPrefix.class)) {
+                if (expr.jjtGetNumChildren() > 1 && expr.jjtGetChild(1) instanceof ASTPrimaryPrefix) {
                     RuleContext ctx = (RuleContext) data;
                     addViolation(ctx, throwStatement);
                 }
@@ -66,11 +66,11 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 	            else {
 	        	Node child = throwStatement.jjtGetChild(0);
 	                while (child != null && child.jjtGetNumChildren() > 0
-	                        && !child.getClass().equals(ASTName.class)) {
+	                        && !(child instanceof ASTName)) {
 	                    child = child.jjtGetChild(0);
 	                }
 	                if (child != null){
-	                    if( child.getClass().equals(ASTName.class) && !target.equals(child.getImage()) && !child.hasImageEqualTo(target + FILL_IN_STACKTRACE)) {
+	                    if ((child instanceof ASTName) && !target.equals(child.getImage()) && !child.hasImageEqualTo(target + FILL_IN_STACKTRACE)) {
 	                        Map<VariableNameDeclaration, List<NameOccurrence>> vars = ((ASTName) child).getScope().getVariableDeclarations();
 		                    for (VariableNameDeclaration decl: vars.keySet()) {
 		                        args = decl.getNode().jjtGetParent()
@@ -79,7 +79,7 @@ public class PreserveStackTraceRule extends AbstractJavaRule {
 		                            ck(data, target, throwStatement, args);
 		                        }
 		                    }
-	                    } else if(child.getClass().equals(ASTClassOrInterfaceType.class)){
+	                    } else if (child instanceof ASTClassOrInterfaceType){
 	                       addViolation(data, throwStatement);
 	                    }
 	                }

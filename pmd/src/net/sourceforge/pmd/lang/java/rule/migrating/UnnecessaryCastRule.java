@@ -68,7 +68,7 @@ public class UnnecessaryCastRule extends AbstractJavaRule {
         for (NameOccurrence no: usages) {
             ASTName name = (ASTName) no.getLocation();
             Node n = name.jjtGetParent().jjtGetParent().jjtGetParent();
-            if (ASTCastExpression.class.equals(n.getClass())) {
+            if (n instanceof ASTCastExpression) {
                 addViolation(data, n);
             }
         }

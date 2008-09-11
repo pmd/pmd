@@ -47,14 +47,14 @@ public class JUnitUseExpectedRule extends AbstractJUnitRule {
         boolean inAnnotation = false;
         for (int i = 0; i < node.jjtGetNumChildren(); i++) {
             Node child = node.jjtGetChild(i);
-            if (ASTAnnotation.class.equals(child.getClass())) {
+            if (child instanceof ASTAnnotation) {
                 ASTName annotationName = child.getFirstDescendantOfType(ASTName.class);
                 if ("Test".equals(annotationName.getImage())) {
                     inAnnotation = true;
                     continue;
                 }
             }
-            if (ASTMethodDeclaration.class.equals(child.getClass())) {
+            if (child instanceof ASTMethodDeclaration) {
                 boolean isJUnitMethod = isJUnitMethod((ASTMethodDeclaration) child, data);
                 if (inAnnotation || isJUnitMethod) {
                     List<Node> found = new ArrayList<Node>();

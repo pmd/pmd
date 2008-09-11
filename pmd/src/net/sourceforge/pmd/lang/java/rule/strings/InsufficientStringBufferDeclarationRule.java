@@ -117,11 +117,11 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
      */
     private void storeBlockStatistics(Map<Node, Map<Node, Integer>> blocks, int thisSize, Node block) {
         Node statement = block.jjtGetParent();
-        if (ASTIfStatement.class.equals(block.jjtGetParent().getClass())) {
+        if (block.jjtGetParent() instanceof ASTIfStatement) {
             // Else Ifs are their own subnode in AST. So we have to
             // look a little farther up the tree to find the IF statement
             Node possibleStatement = statement.getFirstParentOfType(ASTIfStatement.class);
-            while(possibleStatement != null && possibleStatement.getClass().equals(ASTIfStatement.class)) {
+            while (possibleStatement instanceof ASTIfStatement) {
                 statement = possibleStatement;
                 possibleStatement = possibleStatement.getFirstParentOfType(ASTIfStatement.class);
             }
@@ -180,7 +180,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
     private int processNode(Node sn) {
         int anticipatedLength = 0;
         ASTPrimaryPrefix xn = sn.getFirstDescendantOfType(ASTPrimaryPrefix.class);
-        if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0).getClass().equals(ASTLiteral.class)) {
+        if (xn.jjtGetNumChildren() != 0 && xn.jjtGetChild(0) instanceof ASTLiteral) {
             String str = xn.jjtGetChild(0).getImage();
             if (str != null) {
 	            if(isLiteral(str)){
@@ -294,9 +294,9 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
             lastNode = parentNode;
             parentNode = parentNode.jjtGetParent();
         }
-        if (parentNode != null && ASTIfStatement.class.equals(parentNode.getClass())) {
+        if (parentNode instanceof ASTIfStatement) {
             parentNode = lastNode;
-        } else if (parentNode != null && parentNode.getClass().equals(ASTSwitchStatement.class)) {
+        } else if (parentNode instanceof ASTSwitchStatement) {
             parentNode = getSwitchParent(parentNode, lastNode);
         }
         return parentNode;
@@ -316,7 +316,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRule {
         ASTSwitchLabel label = null;
         for (int ix = 0; ix < allChildren; ix++) {
             Node n = parentNode.jjtGetChild(ix);
-            if (n.getClass().equals(ASTSwitchLabel.class)) {
+            if (n instanceof ASTSwitchLabel) {
                 label = (ASTSwitchLabel) n;
             } else if (n.equals(lastNode)) {
                 parentNode = label;

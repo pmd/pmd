@@ -48,7 +48,7 @@ public class CloneMethodMustImplementCloneable extends AbstractJavaRule {
 		}
 	    }
 	}
-	if (node.jjtGetNumChildren() != 0 && node.jjtGetChild(0).getClass().equals(ASTExtendsList.class)) {
+	if (node.jjtGetNumChildren() != 0 && node.jjtGetChild(0) instanceof ASTExtendsList) {
 	    ASTClassOrInterfaceType type = (ASTClassOrInterfaceType) node.jjtGetChild(0).jjtGetChild(0);
 	    Class clazz = type.getType();
 	    if (clazz != null && clazz.equals(Cloneable.class)) {

@@ -240,9 +240,9 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 	    lastNode = parentNode;
 	    parentNode = parentNode.jjtGetParent();
 	}
-	if (parentNode != null && parentNode.getClass().equals(ASTIfStatement.class)) {
+	if (parentNode instanceof ASTIfStatement) {
 	    parentNode = lastNode;
-	} else if (parentNode != null && parentNode.getClass().equals(ASTSwitchStatement.class)) {
+	} else if (parentNode instanceof ASTSwitchStatement) {
 	    parentNode = getSwitchParent(parentNode, lastNode);
 	}
 	return parentNode;
@@ -260,7 +260,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 	ASTSwitchLabel label = null;
 	for (int ix = 0; ix < allChildren; ix++) {
 	    Node n = parentNode.jjtGetChild(ix);
-	    if (n.getClass().equals(ASTSwitchLabel.class)) {
+	    if (n instanceof ASTSwitchLabel) {
 		label = (ASTSwitchLabel) n;
 	    } else if (n.equals(lastNode)) {
 		parentNode = label;
@@ -283,10 +283,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRule {
 
     private boolean isAppendingStringLiteral(Node node) {
 	Node n = node;
-	while (n.jjtGetNumChildren() != 0 && !n.getClass().equals(ASTLiteral.class)) {
+	while (n.jjtGetNumChildren() != 0 && !(n instanceof ASTLiteral)) {
 	    n = n.jjtGetChild(0);
 	}
-	return n.getClass().equals(ASTLiteral.class);
+	return n instanceof ASTLiteral;
     }
 
     private static boolean isStringBuffer(ASTVariableDeclaratorId node) {

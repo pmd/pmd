@@ -21,7 +21,7 @@ public class StringToStringRule extends AbstractJavaRule {
             if (qualifier != null) {
                 if (!isArray && qualifier.getImage().indexOf("toString") != -1) {
                     addViolation(data, occ.getLocation());
-                } else if (isArray && qualifier.getLocation() != null && !ASTName.class.equals(qualifier.getLocation().getClass()) && qualifier.getImage().equals("toString")) {
+                } else if (isArray && qualifier.getLocation() != null && !(qualifier.getLocation() instanceof ASTName) && qualifier.getImage().equals("toString")) {
                     addViolation(data, occ.getLocation());
                 }
             }

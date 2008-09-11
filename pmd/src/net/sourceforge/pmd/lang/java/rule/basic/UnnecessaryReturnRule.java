@@ -18,8 +18,8 @@ public class UnnecessaryReturnRule extends AbstractJavaRule {
     }
 
     public Object visit(ASTReturnStatement node, Object data) {
-        if (node.jjtGetParent().getClass().equals(ASTStatement.class) && node.jjtGetParent().jjtGetParent().getClass().equals(ASTBlockStatement.class) && node.jjtGetParent().jjtGetParent().jjtGetParent().getClass().equals(ASTBlock.class)
-                && node.jjtGetParent().jjtGetParent().jjtGetParent().jjtGetParent().getClass().equals(ASTMethodDeclaration.class)) {
+        if (node.jjtGetParent() instanceof ASTStatement && node.getNthParent(2) instanceof ASTBlockStatement && node.getNthParent(3) instanceof ASTBlock
+                && node.getNthParent(4) instanceof ASTMethodDeclaration) {
             addViolation(data, node);
         }
         return data;

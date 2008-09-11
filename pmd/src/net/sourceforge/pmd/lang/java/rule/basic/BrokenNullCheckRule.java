@@ -125,20 +125,20 @@ public class BrokenNullCheckRule extends AbstractJavaRule {
         for (int i = 0; i < nullCompareVariable.jjtGetNumChildren(); i++) {
             Node child = nullCompareVariable.jjtGetChild(i);
 
-            if (child.getClass().equals(ASTName.class)) {                   //Variable names and some method calls
+            if (child instanceof ASTName) {                   //Variable names and some method calls
                 results.add( ((ASTName)child).getImage() );
-            } else if (child.getClass().equals(ASTLiteral.class)) {         //Array arguments
+            } else if (child instanceof ASTLiteral) {         //Array arguments
                 String literalImage = ((ASTLiteral)child).getImage();
                 //Skip other null checks
                 if (literalImage != null) {
                     results.add( literalImage );
                 }
-            } else if (child.getClass().equals(ASTPrimarySuffix.class)) {   //More method calls
+            } else if (child instanceof ASTPrimarySuffix) {   //More method calls
                 String name = ((ASTPrimarySuffix)child).getImage();
                 if (name != null && !name.equals("")) {
                     results.add(name);
                 }
-            } else if (child.getClass().equals(ASTClassOrInterfaceType.class)) {    //A class can be an argument too
+            } else if (child instanceof ASTClassOrInterfaceType) {    //A class can be an argument too
                 String name = ((ASTClassOrInterfaceType)child).getImage();
                 results.add(name);
             }

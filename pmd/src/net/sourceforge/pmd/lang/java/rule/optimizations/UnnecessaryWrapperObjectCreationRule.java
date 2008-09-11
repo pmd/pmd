@@ -35,7 +35,7 @@ public class UnnecessaryWrapperObjectCreationRule extends AbstractJavaRule {
     });
 
     public Object visit(ASTPrimaryPrefix node, Object data) {
-        if (node.jjtGetNumChildren() == 0 || !node.jjtGetChild(0).getClass().equals(ASTName.class)) {
+        if (node.jjtGetNumChildren() == 0 || !(node.jjtGetChild(0) instanceof ASTName)) {
             return super.visit(node, data);
         }
 

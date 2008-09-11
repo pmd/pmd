@@ -20,7 +20,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
             return data;
         }
         Node parent = node.jjtGetParent().jjtGetParent();
-        if (!parent.getClass().equals(ASTLocalVariableDeclaration.class)) {
+        if (!(parent instanceof ASTLocalVariableDeclaration)) {
             return data;
         }
         for (NameOccurrence no: node.getUsages()) {
@@ -34,7 +34,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRule {
                 // used in method call
                 continue;
             }
-            if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0).getClass().equals(ASTPrimaryExpression.class)) {
+            if (statement.jjtGetNumChildren() > 0 && statement.jjtGetChild(0) instanceof ASTPrimaryExpression) {
                 ASTName astName = statement.jjtGetChild(0).getFirstDescendantOfType(ASTName.class);
                 if(astName != null){
                     if (astName.equals(name)) {

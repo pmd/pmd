@@ -47,7 +47,7 @@ public class JavaRuleViolation extends AbstractRuleViolation {
 	    Scope scope = node.getScope();
 
 	    // Source file does not have an enclosing class scope...
-	    if (!SourceFileScope.class.equals(scope.getClass())) {
+	    if (!(scope instanceof SourceFileScope)) {
 		className = scope.getEnclosingClassScope().getClassName() == null ? "" : scope.getEnclosingClassScope()
 			.getClassName();
 	    }
@@ -64,7 +64,7 @@ public class JavaRuleViolation extends AbstractRuleViolation {
 	    packageName = scope.getEnclosingSourceFileScope().getPackageName() == null ? "" : scope
 		    .getEnclosingSourceFileScope().getPackageName();
 	    // Source file does not have an enclosing class scope...
-	    if (!SourceFileScope.class.equals(scope.getClass())) {
+	    if (!(scope instanceof SourceFileScope)) {
 		className = scope.getEnclosingClassScope().getClassName() == null ? "" : qualifiedName;
 	    }
 	    methodName = node.getFirstParentOfType(ASTMethodDeclaration.class) == null ? "" : scope

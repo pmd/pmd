@@ -81,13 +81,12 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRule {
 		boolean violation = false;
 		for (int ix = 0; ix < assigmnents.size(); ix++) {
 		    ASTAssignmentOperator oper = assigmnents.get(ix);
-		    if (!oper.jjtGetParent().getClass().equals(ASTStatementExpression.class)) {
+		    if (!(oper.jjtGetParent() instanceof ASTStatementExpression)) {
 			continue;
 		    }
 		    ASTStatementExpression expr = (ASTStatementExpression) oper.jjtGetParent();
-		    if (expr.jjtGetChild(0).getClass().equals(ASTPrimaryExpression.class)
-			    && ((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetChild(0).getClass().equals(
-				    ASTPrimaryPrefix.class)) {
+		    if ((expr.jjtGetChild(0) instanceof ASTPrimaryExpression)
+			    && (((ASTPrimaryExpression) expr.jjtGetChild(0)).jjtGetChild(0) instanceof ASTPrimaryPrefix)) {
 			ASTPrimaryPrefix pp = (ASTPrimaryPrefix) ((ASTPrimaryExpression) expr.jjtGetChild(0))
 				.jjtGetChild(0);
 			String name = null;
