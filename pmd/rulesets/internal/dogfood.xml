@@ -20,6 +20,8 @@
 	   EmptyCatchBlock
 	-->
 
+	<rule ref="rulesets/internal/pmdspecific.xml"/>
+
 	<rule ref="rulesets/basic.xml">
     	<exclude name="CollapsibleIfStatements"/>
 	</rule>

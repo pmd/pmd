@@ -12,6 +12,8 @@
 	<exclude-pattern>.*lang/.*/ast/.*.java</exclude-pattern>
 	<exclude-pattern>.*cppast/.*.java</exclude-pattern>
 
+	<rule ref="rulesets/internal/pmdspecific.xml"/>
+
 	<rule ref="rulesets/basic.xml">
     	<exclude name="CollapsibleIfStatements"/>
 	</rule>
