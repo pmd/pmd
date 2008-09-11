@@ -36,7 +36,7 @@ public class BigIntegerInstantiationRule extends AbstractJavaRule {
                 }
 
                 String img = literal.getImage();
-                if (img.length() > 2 && img.charAt(0) == '"') {
+                if (literal.isStringLiteral()) {
                     img = img.substring(1, img.length() - 1);
                 }
 

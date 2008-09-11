@@ -19,13 +19,13 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
     /**
      * This method checks if the Literal matches the pattern. If it does, a violation is logged.
      */
+    @Override
     public Object visit(ASTLiteral node, Object data) {
-        String image = node.getImage();
-        if (image == null || image.length() < 3 || image.charAt(0) != '"' ||
-                image.charAt(image.length()-1) != '"') {
+        if (!node.isStringLiteral()) {
             return data;
         }
-        
+        String image = node.getImage();
+
 	/* Tests before calls to matches() ensure that the literal is '"[0-9:].*"' */
         char c = image.charAt(1);
         if ((Character.isDigit(c) || c == ':') &&
@@ -35,7 +35,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRule {
             try {
                 // as patterns are not 100% accurate, test address
                 InetAddress.getByName(image.substring(1, image.length()-1));
-                
+
                 // no error creating address object, pattern must be valid
                 addViolation(data, node);
             } catch (Exception e) {
