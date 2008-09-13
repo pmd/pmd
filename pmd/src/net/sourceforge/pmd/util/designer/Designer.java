@@ -902,7 +902,7 @@ public class Designer implements ClipboardOwner {
     private String getXmlString(Node node) throws TransformerException {
 	StringWriter writer = new StringWriter();
 
-	Source source = new DOMSource(node.getAsXml());
+	Source source = new DOMSource(node.getAsDocument());
 	Result result = new StreamResult(writer);
 	TransformerFactory transformerFactory = TransformerFactory.newInstance();
 	try {
