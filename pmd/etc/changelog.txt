@@ -393,6 +393,7 @@ Fixed false negative in UselessOverridingMethod
 Fixed handling of escape characters in UseIndexOfChar and AppendCharacterWithChar
 Fixed ClassCastException on generic method in BeanMembersShouldSerialize
 Fixed ClassCastException in symbol table code
+retroweaver updated to version 2.0.6.
 
 New rules:
 
