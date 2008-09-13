@@ -3,34 +3,15 @@
  */
 package net.sourceforge.pmd.lang.rule;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Stack;
-import java.util.Map.Entry;
 
-import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.rule.properties.EnumeratedProperty;
 import net.sourceforge.pmd.lang.rule.properties.StringProperty;
-
-import org.jaxen.BaseXPath;
-import org.jaxen.JaxenException;
-import org.jaxen.Navigator;
-import org.jaxen.SimpleVariableContext;
-import org.jaxen.XPath;
-import org.jaxen.expr.AllNodeStep;
-import org.jaxen.expr.DefaultXPathFactory;
-import org.jaxen.expr.Expr;
-import org.jaxen.expr.LocationPath;
-import org.jaxen.expr.NameStep;
-import org.jaxen.expr.Predicate;
-import org.jaxen.expr.Step;
-import org.jaxen.expr.UnionExpr;
-import org.jaxen.expr.XPathFactory;
-import org.jaxen.saxpath.Axis;
+import net.sourceforge.pmd.lang.rule.xpath.JaxenXPathRuleQuery;
+import net.sourceforge.pmd.lang.rule.xpath.SaxonXPathRuleQuery;
+import net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery;
 
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
@@ -39,179 +20,16 @@ import org.jaxen.saxpath.Axis;
  */
 public class XPathRule extends AbstractRule {
 
-    private static enum InitializationStatus { NONE, PARTIAL, FULL };
-
-    // Mapping from Node name to applicable XPath queries
-    private InitializationStatus initializationStatus = InitializationStatus.NONE;
-    private Map<String, List<XPath>> nodeNameToXPaths;
-
-    private static final String AST_ROOT = "_AST_ROOT_";
-
     public static final StringProperty XPATH_DESCRIPTOR = new StringProperty("xpath", "XPATH value", "", 1.0f);
+    public static final EnumeratedProperty<String> VERSION_DESCRIPTOR = new EnumeratedProperty<String>("version",
+	    "The XPath specification version.", new String[] { "1.0", "1.0 compatibility", "2.0" }, new String[] {
+		    "XPath 1.0", "XPath 2.0 in XPath 1.0 compatability mode", "XPath 2.0" }, 0, 2.0f);
+
+    private XPathRuleQuery xpathRuleQuery;
 
     public XPathRule() {
 	definePropertyDescriptor(XPATH_DESCRIPTOR);
-    }
-
-    /**
-     * Evaluate the AST with a root node, against the XPath expression found as
-     * property with name "xpath".  All matches are reported as violations.
-     *
-     * @param node the Node that is the root of the AST to be checked
-     * @param data
-     */
-    public void evaluate(Node node, RuleContext data) {
-	try {
-	    initializeXPathExpression(
-	    		data.getLanguageVersion().getLanguageVersionHandler().getXPathHandler().getNavigator()
-	    		);
-	    List<XPath> xpaths = nodeNameToXPaths.get(node.toString());
-	    if (xpaths == null) {
-		xpaths = nodeNameToXPaths.get(AST_ROOT);
-	    }
-	    for (XPath xpath : xpaths) {
-		List<Node> results = xpath.selectNodes(node);
-		for (Node node2 : results) {
-		    Node n = node2;
-		    addViolation(data, n, n.getImage());
-		}
-	    }
-	} catch (JaxenException ex) {
-	    throw new RuntimeException(ex);
-	}
-    }
-
-    @Override
-    public List<String> getRuleChainVisits() {
-	try {
-	    // No Navigator available in this context
-	    initializeXPathExpression(null);
-	    return super.getRuleChainVisits();
-	} catch (JaxenException ex) {
-	    throw new RuntimeException(ex);
-	}
-    }
-
-    private void initializeXPathExpression(Navigator navigator) throws JaxenException {
-	if (initializationStatus == InitializationStatus.FULL
-		|| (initializationStatus == InitializationStatus.PARTIAL && navigator == null)) {
-	    return;
-	}
-
-	//
-	// Attempt to use the RuleChain with this XPath query.  To do so, the queries
-	// should generally look like //TypeA or //TypeA | //TypeB.  We will look at the
-	// parsed XPath AST using the Jaxen APIs to make this determination.
-	// If the query is not exactly what we are looking for, do not use the RuleChain.
-	//
-	nodeNameToXPaths = new HashMap<String, List<XPath>>();
-
-	BaseXPath originalXPath = createXPath(getProperty(XPATH_DESCRIPTOR), navigator);
-	indexXPath(originalXPath, AST_ROOT);
-
-	boolean useRuleChain = true;
-	Stack<Expr> pending = new Stack<Expr>();
-	pending.push(originalXPath.getRootExpr());
-	while (!pending.isEmpty()) {
-	    Expr node = pending.pop();
-
-	    // Need to prove we can handle this part of the query
-	    boolean valid = false;
-
-	    // Must be a LocationPath... that is something like //Type
-	    if (node instanceof LocationPath) {
-		LocationPath locationPath = (LocationPath) node;
-		if (locationPath.isAbsolute()) {
-		    // Should be at least two steps
-		    List<Step> steps = locationPath.getSteps();
-		    if (steps.size() >= 2) {
-			Step step1 = steps.get(0);
-			Step step2 = steps.get(1);
-			// First step should be an AllNodeStep using the descendant or self axis
-			if (step1 instanceof AllNodeStep && ((AllNodeStep) step1).getAxis() == Axis.DESCENDANT_OR_SELF) {
-			    // Second step should be a NameStep using the child axis.
-			    if (step2 instanceof NameStep && ((NameStep) step2).getAxis() == Axis.CHILD) {
-				// Construct a new expression that is appropriate for RuleChain use
-				XPathFactory xpathFactory = new DefaultXPathFactory();
-
-				// Instead of an absolute location path, we'll be using a relative path
-				LocationPath relativeLocationPath = xpathFactory.createRelativeLocationPath();
-				// The first step will be along the self axis
-				Step allNodeStep = xpathFactory.createAllNodeStep(Axis.SELF);
-				// Retain all predicates from the original name step
-				for (Iterator<Predicate> i = step2.getPredicates().iterator(); i.hasNext();) {
-				    allNodeStep.addPredicate(i.next());
-				}
-				relativeLocationPath.addStep(allNodeStep);
-
-				// Retain the remaining steps from the original location path
-				for (int i = 2; i < steps.size(); i++) {
-				    relativeLocationPath.addStep(steps.get(i));
-				}
-
-				BaseXPath xpath = createXPath(relativeLocationPath.getText(), navigator);
-				indexXPath(xpath, ((NameStep) step2).getLocalName());
-				valid = true;
-			    }
-			}
-		    }
-		}
-	    } else if (node instanceof UnionExpr) { // Or a UnionExpr, that is something like //TypeA | //TypeB
-		UnionExpr unionExpr = (UnionExpr) node;
-		pending.push(unionExpr.getLHS());
-		pending.push(unionExpr.getRHS());
-		valid = true;
-	    }
-	    if (!valid) {
-		useRuleChain = false;
-		break;
-	    }
-	}
-
-	if (useRuleChain) {
-	    // Use the RuleChain for all the nodes extracted from the xpath queries
-	    for (String s : nodeNameToXPaths.keySet()) {
-		addRuleChainVisit(s);
-	    }
-	} else { // Use original XPath if we cannot use the rulechain
-	    nodeNameToXPaths.clear();
-	    indexXPath(originalXPath, AST_ROOT);
-	    //System.err.println("Unable to use RuleChain for " + this.getName() + " for XPath: " + getStringProperty("xpath"));
-	}
-
-	if (navigator == null) {
-	    this.initializationStatus = InitializationStatus.PARTIAL;
-	    // Clear the node data, because we did not have a Navigator
-	    nodeNameToXPaths = null;
-	} else {
-	    this.initializationStatus = InitializationStatus.FULL;
-	}
-
-    }
-
-    private void indexXPath(XPath xpath, String nodeName) {
-	List<XPath> xpaths = nodeNameToXPaths.get(nodeName);
-	if (xpaths == null) {
-	    xpaths = new ArrayList<XPath>();
-	    nodeNameToXPaths.put(nodeName, xpaths);
-	}
-	xpaths.add(xpath);
-    }
-
-    private BaseXPath createXPath(String xpathQueryString, Navigator navigator) throws JaxenException {
-	BaseXPath xpath = new BaseXPath(xpathQueryString, navigator);
-	Map<PropertyDescriptor<?>, Object> properties = getPropertiesByPropertyDescriptor();
-	if (properties.size() > 1) {
-	    SimpleVariableContext vc = new SimpleVariableContext();
-	    for (Entry<PropertyDescriptor<?>, Object> e : properties.entrySet()) {
-		if (!"xpath".equals(e.getKey())) {
-		    Object value = e.getValue();
-		    vc.setVariableValue(e.getKey().name(), value != null ? value.toString() : null);
-		}
-	    }
-	    xpath.setVariableContext(vc);
-	}
-	return xpath;
+	definePropertyDescriptor(VERSION_DESCRIPTOR);
     }
 
     /**
@@ -221,5 +39,50 @@ public class XPathRule extends AbstractRule {
 	for (Node node : nodes) {
 	    evaluate(node, ctx);
 	}
+    }
+
+    /**
+     * Evaluate the XPath query with the AST node.
+     * All matches are reported as violations.
+     *
+     * @param node The Node that to be checked.
+     * @param data The RuleContext.
+     */
+    public void evaluate(Node node, RuleContext data) {
+	init();
+	List<Node> nodes = xpathRuleQuery.evaluate(node, data);
+	if (nodes != null) {
+	    for (Node n : nodes) {
+		addViolation(data, n, n.getImage());
+	    }
+	}
+
+    }
+
+    @Override
+    public List<String> getRuleChainVisits() {
+	if (init()) {
+	    for (String nodeName : xpathRuleQuery.getRuleChainVisits()) {
+		super.addRuleChainVisit(nodeName);
+	    }
+	}
+	return super.getRuleChainVisits();
+    }
+
+    private boolean init() {
+	if (xpathRuleQuery == null) {
+	    String xpath = getProperty(XPATH_DESCRIPTOR);
+	    String version = (String) getProperty(VERSION_DESCRIPTOR);
+	    if ("1.0".equals(version)) {
+		xpathRuleQuery = new JaxenXPathRuleQuery();
+	    } else {
+		xpathRuleQuery = new SaxonXPathRuleQuery();
+	    }
+	    xpathRuleQuery.setXPath(xpath);
+	    xpathRuleQuery.setVersion(version);
+	    xpathRuleQuery.setProperties(this.getPropertiesByPropertyDescriptor());
+	    return true;
+	}
+	return false;
     }
 }
