@@ -22,20 +22,16 @@ then, run the script that will generate the proper rulesets/rulesets.properties
 
 ensure all the new rules are listed in a rulesets/releases/<version>.xml file
 
-ant pmdOnPmd
-
 ant recompile regress test
 Check in everything
 
-ant dist regress regress14
-Do all the JUnit tests run?  OK, then:
+Run all regression tests and various ant tasks:
 
-TESTS: Can you
-1) run 1 file and get a report
+ant qa
+
+TESTS: Can you run 1 file and get a report
 ./bin/pmd.sh ~/tmp/Test.java xml unusedcode
 ./bin/pmd.sh ~/tmp/Test.java html rulesets/unusedcode.xml
-2) run the Ant 'pmd' task and get a report
-ant pmd
 
 run "./generate_release.sh <version> release" in tools/shell
 
