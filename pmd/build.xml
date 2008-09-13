@@ -21,12 +21,6 @@
 	<property name="junit.version" value="4.4" />
 	<property name="retroweaver.version" value="2.0.5" />
 	<property name="javacc-home.path" value="${dir.lib}" />
-	<!--
-		running PMD on pmd sources is a bit pointless, you should modify 
-		this value to pmd on something else
-		FUTURE: Test if the property is set, if not set it to src.
-	-->
-	<property name="test.src.for.pmd"	value="src"/>
 
 	<!--Settings-->
 	<property name="outputTestResultsToFile" value="true" />
@@ -157,16 +151,6 @@
 
 	<target name="jarsrc" depends="copy,compile" description="Jars up the source directory">
 		<jar jarfile="${dir.lib}/pmd-src-${version}.jar" basedir="${dir.src}" />
-	</target>
-
-	<target name="pmd" description="Runs PMD" depends="copy, compile">
-		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="dependencies.path" />
-		<pmd rulesetfiles="unusedcode" shortFilenames="true">
-			<formatter type="csv" toFile="rpt.csv" toConsole="true" linkPrefix="http://pmd.sf.net/xref/" />
-			<fileset dir="${test.src.for.pmd}">
-				<include name="**/*.java" />
-			</fileset>
-		</pmd>
 	</target>
 
 	<target name="pmdOnPmd" description="Runs PMD on PMD" depends="copy, compile">
