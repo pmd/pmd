@@ -301,6 +301,7 @@ The following is relatively complete list of the major changes (this may not be
       Renamed - findChildrenOfType() as findDescendantsOfType()
       Renamed - getFirstChildOfType() as getFirstDescendantOfType()
       Renamed - containsChildOfType() as hasDescendantOfType()
+      Renamed - getAsXml() as getAsDocument()
       Added - findChildrenOfType(), non recursive version
       Added - getFirstChildOfType(), non recursive version
 

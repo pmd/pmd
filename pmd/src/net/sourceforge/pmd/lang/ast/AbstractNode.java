@@ -250,7 +250,7 @@ public abstract class AbstractNode implements Node {
 	return false;
     }
 
-    public Document getAsXml() {
+    public Document getAsDocument() {
 	try {
 	    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder db = dbf.newDocumentBuilder();

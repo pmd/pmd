@@ -153,6 +153,11 @@ public interface Node {
      */
     boolean hasDescendantMatchingXPath(String xpathString);
 
-    // TODO Does this need to be here?
-    Document getAsXml();
+    /**
+     * Get a DOM Document which contains Elements and Attributes representative
+     * of this Node and it's children.  Essentially a DOM tree representation of
+     * the Node AST, thereby allowing tools which can operate upon DOM to
+     * also indirectly operate on the AST.
+     */
+    Document getAsDocument();
 }
