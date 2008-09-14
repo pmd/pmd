@@ -34,7 +34,7 @@
 			<dependency>
 				<groupId>net.sourceforge.retroweaver</groupId>
 				<artifactId>retroweaver-rt</artifactId>
-				<version>2.0.3</version>
+				<version>2.0.6</version>
 			</dependency>
 	</xsl:template>
 
