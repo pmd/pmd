@@ -16,7 +16,8 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 
 	private String[] legalPackageNames;
 
-	private static final char packageNameDelimiter = ' ';
+	private static final char PACKAGE_NAME_DELIMITER = ' ';
+	
 	/**
 	 * 
 	 * @param theName
@@ -48,13 +49,13 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
      */
     private final String delimitedPackageNames() {
         
-        if (legalPackageNames == null || legalPackageNames.length == 0) return "";
-        if (legalPackageNames.length == 1) return legalPackageNames[0];
+        if (legalPackageNames == null || legalPackageNames.length == 0) { return ""; }
+        if (legalPackageNames.length == 1) { return legalPackageNames[0];  }
         
         StringBuilder sb = new StringBuilder();
         sb.append(legalPackageNames[0]);
         for (int i=1; i<legalPackageNames.length; i++) {
-            sb.append(packageNameDelimiter).append(legalPackageNames[i]);
+            sb.append(PACKAGE_NAME_DELIMITER).append(legalPackageNames[i]);
         }
         return sb.toString();
     }
