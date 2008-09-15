@@ -21,8 +21,15 @@ public class StringProperty extends AbstractProperty<String> {
 		super(theName, theDescription, theDefaultValue, theUIOrder);
 	}
 	
+    /**
+     * @return String
+     */
+    protected String defaultAsString() {
+        return defaultValue();
+    }
+	
 	/**
-	 * Method type.
+	 *
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -31,7 +38,7 @@ public class StringProperty extends AbstractProperty<String> {
 	}
 	
 	/**
-	 * Method valueFrom.
+	 *
 	 * @param valueString String
 	 * @return Object
 	 * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)

@@ -41,12 +41,15 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
         this(theName, theDescription, intFrom(minStr), intFrom(maxStr), intFrom(defaultStr), theUIOrder);       
     }
 	
+	/**
+	 * @param numberString String
+	 * @return Integer
+	 */
 	public static Integer intFrom(String numberString) {
 	    return Integer.valueOf(numberString);
 	}
 	
 	/**
-	 * Method type.
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -55,7 +58,6 @@ public class IntegerProperty extends AbstractNumericProperty<Integer> {
 	}
 
 	/**
-	 * Method createFrom.
 	 * @param value String
 	 * @return Object
 	 */

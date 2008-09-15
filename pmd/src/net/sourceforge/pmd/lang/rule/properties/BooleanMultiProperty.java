@@ -5,6 +5,8 @@ package net.sourceforge.pmd.lang.rule.properties;
 
 /**
  * Defines a property type that supports multiple Boolean values.
+ * 
+ * @author Brian Remedios
  */
 public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
 	/**
@@ -53,4 +55,11 @@ public class BooleanMultiProperty extends AbstractScalarProperty<Boolean[]> {
 	protected Boolean[] arrayFor(int size) {
 		return new Boolean[size];
 	}
+	
+    /**
+     * @return String
+     */
+    protected String defaultAsString() {
+        return asDelimitedString(defaultValue());
+    }
 }

@@ -40,12 +40,15 @@ public class DoubleProperty extends AbstractNumericProperty<Double> {
     }
 	
     
+    /**
+     * @param numberString String
+     * @return Double
+     */
     public static Double doubleFrom(String numberString) {
         return Double.valueOf(numberString);
     }
     
 	/**
-	 * Method type.
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */

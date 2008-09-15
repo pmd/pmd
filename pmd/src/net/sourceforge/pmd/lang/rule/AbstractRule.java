@@ -40,7 +40,7 @@ public abstract class AbstractRule implements Rule {
     private RulePriority priority = RulePriority.LOW;
     private List<PropertyDescriptor<?>> propertyDescriptors = new ArrayList<PropertyDescriptor<?>>();
     // Map of explicitly set property values.
-    private Map<PropertyDescriptor<?>, Object> propertyValues = new HashMap<PropertyDescriptor<?>, Object>();
+    private Map<PropertyDescriptor<?>, Object> propertyValuesByDescriptor = new HashMap<PropertyDescriptor<?>, Object>();
     private boolean usesDFA;
     private boolean usesTypeResolution;
     private List<String> ruleChainVisits = new ArrayList<String>();
@@ -279,8 +279,8 @@ public abstract class AbstractRule implements Rule {
     public <T> T getProperty(PropertyDescriptor<T> propertyDescriptor) {
 	checkValidPropertyDescriptor(propertyDescriptor);
 	T value;
-	if (propertyValues.containsKey(propertyDescriptor)) {
-	    value = (T) propertyValues.get(propertyDescriptor);
+	if (propertyValuesByDescriptor.containsKey(propertyDescriptor)) {
+	    value = (T) propertyValuesByDescriptor.get(propertyDescriptor);
 	} else {
 	    value = propertyDescriptor.defaultValue();
 	}
@@ -292,7 +292,7 @@ public abstract class AbstractRule implements Rule {
      */
     public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
 	checkValidPropertyDescriptor(propertyDescriptor);
-	propertyValues.put(propertyDescriptor, value);
+	propertyValuesByDescriptor.put(propertyDescriptor, value);
     }
 
     private void checkValidPropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
@@ -312,7 +312,7 @@ public abstract class AbstractRule implements Rule {
 	Map<PropertyDescriptor<?>, Object> propertiesByPropertyDescriptor = new HashMap<PropertyDescriptor<?>, Object>(
 		propertyDescriptors.size());
 	// Fill with existing explicitly values
-	propertiesByPropertyDescriptor.putAll(this.propertyValues);
+	propertiesByPropertyDescriptor.putAll(this.propertyValuesByDescriptor);
 
 	// Add default values for anything not yet set
 	for (PropertyDescriptor<?> propertyDescriptor : this.propertyDescriptors) {

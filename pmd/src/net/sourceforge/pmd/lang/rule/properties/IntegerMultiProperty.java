@@ -8,38 +8,30 @@ package net.sourceforge.pmd.lang.rule.properties;
  * 
  * @author Brian Remedios
  */
-public class IntegerMultiProperty extends AbstractNumericProperty<Integer[]> {
+public class IntegerMultiProperty extends AbstractMultiNumericProperty<Integer[]> {
 	/**
 	 * Constructor for IntegerProperty.
 	 * @param theName String
 	 * @param theDescription String
+	 * @param min Integer
+	 * @param max Integer
 	 * @param theDefaults Integer[]
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
 	public IntegerMultiProperty(String theName, String theDescription, Integer min, Integer max, Integer[] theDefaults, float theUIOrder) {
 		super(theName, theDescription, min, max, theDefaults, theUIOrder);
 	}
 	
 	/**
-	 * Method type.
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
 	public Class<Integer[]> type() {
 		return Integer[].class;
 	}
-
-	/**
-	 * @return boolean
-	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-	 */
-	@Override
-	public boolean isMultiValue() {
-		return true;
-	}
 	
 	/**
-	 * Method createFrom.
 	 * @param value String
 	 * @return Object
 	 */
@@ -48,7 +40,6 @@ public class IntegerMultiProperty extends AbstractNumericProperty<Integer[]> {
 	}
 
 	/**
-	 * Method arrayFor.
 	 * @param size int
 	 * @return Object[]
 	 */

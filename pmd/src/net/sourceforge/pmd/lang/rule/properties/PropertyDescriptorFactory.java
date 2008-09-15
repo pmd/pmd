@@ -14,7 +14,8 @@ public class PropertyDescriptorFactory {
     public static String getPropertyDescriptorType(PropertyDescriptor<?> propertyDescriptor) {
 	Class<?> type = propertyDescriptor.type();
 	String typeName = null;
-	if (propertyDescriptor instanceof EnumeratedProperty || propertyDescriptor instanceof MethodProperty
+	if (propertyDescriptor instanceof EnumeratedProperty || 
+	       propertyDescriptor instanceof MethodProperty    // TODO - yes we can, investigate
 		|| propertyDescriptor instanceof TypeProperty) {
 	    // Cannot serialize these kinds of PropertyDescriptors
 	} else if ("java.lang".equals(type.getPackage().getName())) {
@@ -74,6 +75,17 @@ public class PropertyDescriptorFactory {
 	    checkMinMax(name, type, min, max);	    
 	    LongMultiProperty property = new LongMultiProperty(name, description, 0l, 0l, null, 0.0f);
 	    return new LongMultiProperty(name, description, LongProperty.longFrom(min), LongProperty.longFrom(max), property.valueFrom(value), 0.0f);
+        
+	 // TODO - include legal package names for next four types
+	} else if ("Type".equals(type)) {
+	    return new TypeProperty(name, description, value, null, 0.0f);
+	} else if ("Type[]".equals(type)) {
+        return new TypeMultiProperty(name, description, value, null, 0.0f);
+	} else if ("Method".equals(type)) {
+	    return new MethodProperty(name, description, value, null, 0.0f);
+    } else if ("Method[]".equals(type)) {
+        return new MethodMultiProperty(name, description, value, null, 0.0f);
+        
 	} else if ("String".equals(type)) {	  
 	    return new StringProperty(name, description, value, 0.0f);
 	} else if ("String[]".equals(type)) {

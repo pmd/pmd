@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 
@@ -88,11 +90,10 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
 
     @Override
     public boolean equals(Object obj) {
-	if (obj instanceof PropertyDescriptorWrapper) {
-	    return this.getPropertyDescriptor().equals(((PropertyDescriptorWrapper) obj).getPropertyDescriptor());
-	} else {
-	    return this.getPropertyDescriptor().equals(obj);
-	}
+    	if (obj instanceof PropertyDescriptorWrapper) {
+    	    return this.getPropertyDescriptor().equals(((PropertyDescriptorWrapper) obj).getPropertyDescriptor());
+    	} 
+    	return this.getPropertyDescriptor().equals(obj);
     }
 
     @Override
@@ -103,5 +104,10 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     @Override
     public String toString() {
 	return "wrapped:" + propertyDescriptor.toString();
+    }
+
+    @Override
+    public Map<String, String> attributeValuesById() {
+        return propertyDescriptor.attributeValuesById();
     }
 }

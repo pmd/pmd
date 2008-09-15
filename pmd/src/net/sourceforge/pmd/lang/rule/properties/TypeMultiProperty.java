@@ -12,9 +12,7 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public class TypeMultiProperty extends AbstractPackagedProperty<Class[]> {
-
-    private static final char DELIMITER = '|';
+public class TypeMultiProperty extends AbstractMultiPackagedProperty<Class[]> {
 
     /**
      * Constructor for TypeProperty.
@@ -25,14 +23,40 @@ public class TypeMultiProperty extends AbstractPackagedProperty<Class[]> {
      * @param theUIOrder float
      * @throws IllegalArgumentException
      */
-    public TypeMultiProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames,
-            float theUIOrder) {
+    public TypeMultiProperty(String theName, String theDescription, Class<?>[] theDefaults, String[] legalPackageNames, float theUIOrder) {
         super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
 
     }
 
     /**
-     * Method packageNameOf.
+     * Constructor for TypeProperty.
+     * @param theName String
+     * @param theDescription String
+     * @param theTypeDefaults String
+     * @param legalPackageNames String[]
+     * @param theUIOrder float
+     * @throws IllegalArgumentException
+     */
+    public TypeMultiProperty(String theName, String theDescription, String theTypeDefaults, String[] legalPackageNames, float theUIOrder) {
+        this(theName, theDescription, typesFrom(theTypeDefaults), legalPackageNames, theUIOrder);
+
+    }
+    
+    /**
+     * @param classesStr String
+     * @return Class[]
+     */
+    public static Class[] typesFrom(String classesStr) {
+        String[] values = StringUtil.substringsOf(classesStr, DELIMITER);
+
+        Class<?>[] classes = new Class<?>[values.length];
+        for (int i = 0; i < values.length; i++) {
+            classes[i] = TypeProperty.classFrom(values[i]);
+        }
+        return classes;
+    }
+    
+    /**
      * @param item Object
      * @return String
      */
@@ -40,18 +64,8 @@ public class TypeMultiProperty extends AbstractPackagedProperty<Class[]> {
     protected String packageNameOf(Object item) {
         return ((Class<?>) item).getName();
     }
-
-    /**
-	 * @return boolean
-	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-	 */
-	@Override
-	public boolean isMultiValue() {
-	    return true;
-	}
     
     /**
-     * Method type.
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
@@ -60,7 +74,6 @@ public class TypeMultiProperty extends AbstractPackagedProperty<Class[]> {
     }
 
     /**
-     * Method itemTypeName.
      * @return String
      */
     @Override
@@ -69,7 +82,6 @@ public class TypeMultiProperty extends AbstractPackagedProperty<Class[]> {
     }
 
     /**
-     * Method asString.
      * @param value Object
      * @return String
      */
@@ -79,18 +91,11 @@ public class TypeMultiProperty extends AbstractPackagedProperty<Class[]> {
     }
 
     /**
-     * Method valueFrom.
      * @param valueString String
      * @return Object
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
     public Class<?>[] valueFrom(String valueString) {
-        String[] values = StringUtil.substringsOf(valueString, DELIMITER);
-
-        Class<?>[] classes = new Class<?>[values.length];
-        for (int i = 0; i < values.length; i++) {
-            classes[i] = TypeProperty.classFrom(values[i]);
-        }
-        return classes;
+        return typesFrom(valueString);
     }
 }

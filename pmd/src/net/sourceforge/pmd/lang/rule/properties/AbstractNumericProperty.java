@@ -1,5 +1,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
 import net.sourceforge.pmd.NumericPropertyDescriptor;
 
 /**
@@ -37,19 +39,31 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
 	/**
 	 * Returns the minimum value that instances of the property can have
 	 * @return The minimum value.
+	 * @see net.sourceforge.pmd.NumericPropertyDescriptor#lowerLimit()
 	 */
 	public Number lowerLimit() {
 		return lowerLimit;
 	}
 	
+    /**
+     * @return String
+     */
+    protected String defaultAsString() {
+        return defaultValue().toString();
+    }
+	
 	/**
 	 * Returns the maximum value that instances of the property can have
 	 * @return The maximum value.
+	 * @see net.sourceforge.pmd.NumericPropertyDescriptor#upperLimit()
 	 */
 	public Number upperLimit() {
 		return upperLimit;
 	}
 	
+	/**
+	 * @return String
+	 */
 	public String rangeString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append('(').append(lowerLimit);
@@ -74,5 +88,16 @@ public abstract class AbstractNumericProperty<T> extends AbstractScalarProperty<
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Method addAttributesTo.
+	 * @param attributes Map<String,String>
+	 */
+	protected void addAttributesTo(Map<String, String> attributes) {
+		super.addAttributesTo(attributes);
+		
+		attributes.put("min", lowerLimit.toString());
+		attributes.put("max", upperLimit.toString());
 	}
 }

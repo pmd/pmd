@@ -29,7 +29,6 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     private static final Map<Class, String> TYPE_SHORTCUTS = ClassUtil.getClassShortNames();
 
     /**
-     * Method shortestNameFor.
      * @param cls Class<?>
      * @return String
      */
@@ -39,9 +38,9 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * Return the value of `method' as a string that can be easily recognized and parsed
-         * when we see it again.
-         *
+     * Return the value of `method' as a string that can be easily recognized
+     * and parsed when we see it again.
+     *
      * @param method the method to convert
      * @return the string value
      */
@@ -52,7 +51,12 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * Method serializedTypeIdOn.
+     * @return String
+     */
+    protected String defaultAsString() {
+        return asStringFor(defaultValue());
+    }
+    /**
      * @param type Class<?>
      * @param sb StringBuilder
      */
@@ -97,7 +101,6 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * Method typeFor.
      * @param typeName String
      * @return Class<?>
      */
@@ -192,6 +195,14 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
+     * @param methodStr String
+     * @return Method
+     */
+    public static Method methodFrom(String methodStr) {
+    	return methodFrom(methodStr, CLASS_METHOD_DELIMITER, METHOD_ARG_DELIMITER);
+    }
+    
+    /**
      * Constructor for MethodProperty.
      *
      * @param theName        String
@@ -199,13 +210,26 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
      * @param theDefault     Method
      * @param legalPackageNames String[]
      * @param theUIOrder     float
+     * @throws IllegalArgumentException
      */
     public MethodProperty(String theName, String theDescription, Method theDefault, String[] legalPackageNames, float theUIOrder) {
         super(theName, theDescription, theDefault, legalPackageNames, theUIOrder);
-
-        multiValueDelimiter(' ');
     }
 
+    /**
+     * Constructor for MethodProperty.
+     *
+     * @param theName        String
+     * @param theDescription String
+     * @param defaultStr     String
+     * @param legalPackageNames String[]
+     * @param theUIOrder     float
+     * @throws IllegalArgumentException
+     */
+    public MethodProperty(String theName, String theDescription, String defaultStr, String[] legalPackageNames, float theUIOrder) {
+        super(theName, theDescription, methodFrom(defaultStr), legalPackageNames, theUIOrder);
+    }
+    
     /**
      * Return the value as a string that can be easily recognized and parsed
      * when we see it again.
@@ -219,7 +243,6 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * Method packageNameOf.
      * @param item Object
      * @return String
      */
@@ -231,7 +254,6 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * Method itemTypeName.
      * @return String
      */
     @Override
@@ -240,8 +262,6 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * Method type.
-     *
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
@@ -250,14 +270,12 @@ public class MethodProperty extends AbstractPackagedProperty<Method> {
     }
 
     /**
-     * Method valueFrom.
-     *
      * @param valueString  String
      * @return Object
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
     public Method valueFrom(String valueString) throws IllegalArgumentException {
-       return methodFrom(valueString, CLASS_METHOD_DELIMITER, METHOD_ARG_DELIMITER);
+       return methodFrom(valueString);
     }
 }

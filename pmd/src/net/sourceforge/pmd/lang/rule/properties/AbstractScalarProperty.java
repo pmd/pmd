@@ -25,27 +25,23 @@ public abstract class AbstractScalarProperty<T> extends AbstractProperty<T> {
 	}
 
 	/**
-	 * Method createFrom.
 	 * @param value String
 	 * @return Object
 	 */
 	protected abstract Object createFrom(String value);
 	
 	/**
-	 * Method arrayFor.
 	 * @param size int
 	 * @return Object[]
 	 */
 	protected Object[] arrayFor(int size) {
 	    if (isMultiValue()) {
 		throw new IllegalStateException("Subclass '" + this.getClass().getSimpleName() + "' must implement the arrayFor(int) method.");
-	    } else {
-		throw new UnsupportedOperationException("Arrays not supported on single valued property descriptors.");
 	    }
+		throw new UnsupportedOperationException("Arrays not supported on single valued property descriptors.");
 	}
 	
 	/**
-	 * Method valueFrom.
 	 * @param valueString String
 	 * @return Object[]
 	 * @throws IllegalArgumentException
@@ -58,7 +54,7 @@ public abstract class AbstractScalarProperty<T> extends AbstractProperty<T> {
 		    return (T)createFrom(valueString);
 		}
 		
-		String[] strValues = StringUtil.substringsOf(valueString, multiValueDelimiter);
+		String[] strValues = StringUtil.substringsOf(valueString, multiValueDelimiter());
 		
 		Object[] values = arrayFor(strValues.length);
 		for (int i=0; i<strValues.length; i++) {

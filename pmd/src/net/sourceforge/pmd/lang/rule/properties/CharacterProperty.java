@@ -34,6 +34,10 @@ public class CharacterProperty extends AbstractProperty<Character> {
         this(theName, theDescription, charFrom(defaultStr), theUIOrder);
     }
 	
+    /**
+     * @param charStr String
+     * @return Character
+     */
     public static Character charFrom(String charStr) {
         
         if (charStr == null || charStr.length() != 1) {
@@ -43,7 +47,6 @@ public class CharacterProperty extends AbstractProperty<Character> {
     }
     
 	/**
-	 * Method type.
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -52,13 +55,20 @@ public class CharacterProperty extends AbstractProperty<Character> {
 	}
 	
 	/**
-	 * Method valueFrom.
 	 * @param valueString String
 	 * @return Object
 	 * @throws IllegalArgumentException
 	 * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
 	 */
 	public Character valueFrom(String valueString) throws IllegalArgumentException {
-			return charFrom(valueString);
+		return charFrom(valueString);
 	}
+	
+    /**
+     * Method defaultAsString.
+     * @return String
+     */
+    protected String defaultAsString() {
+        return Character.toString(defaultValue());
+    }
 }

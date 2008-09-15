@@ -30,7 +30,6 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 	}
 	
 	/**
-	 * 
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -48,7 +47,6 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 	}
 	
 	/**
-	 * 
 	 * @param value Object
 	 * @return String
 	 * @see net.sourceforge.pmd.PropertyDescriptor#errorFor(Object)
@@ -73,7 +71,7 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 	 * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
 	 */
 	public Object[] valueFrom(String value) throws IllegalArgumentException {
-		String[] strValues = StringUtil.substringsOf(value, multiValueDelimiter);
+		String[] strValues = StringUtil.substringsOf(value, multiValueDelimiter());
 		
 		Object[] values = new Object[strValues.length];
 		for (int i=0;i<values.length; i++) {
@@ -97,7 +95,7 @@ public class EnumeratedMultiProperty<E> extends AbstractEnumeratedProperty<E, Ob
 		sb.append(labelsByChoice.get(choices[0]));
 		
 		for (int i=1; i<choices.length; i++) {
-			sb.append(multiValueDelimiter);
+			sb.append(multiValueDelimiter());
 			sb.append(labelsByChoice.get(choices[i]));
 		}
 

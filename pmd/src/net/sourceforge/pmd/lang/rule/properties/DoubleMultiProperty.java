@@ -9,11 +9,13 @@ package net.sourceforge.pmd.lang.rule.properties;
  * 
  * @author Brian Remedios
  */
-public class DoubleMultiProperty extends AbstractNumericProperty<Double[]> {
+public class DoubleMultiProperty extends AbstractMultiNumericProperty<Double[]> {
 	/**
 	 * Constructor for DoubleProperty.
 	 * @param theName String
 	 * @param theDescription String
+	 * @param min Double
+	 * @param max Double
 	 * @param defaultValues Double[]
 	 * @param theUIOrder float
 	 */
@@ -22,7 +24,6 @@ public class DoubleMultiProperty extends AbstractNumericProperty<Double[]> {
 	}
 	
 	/**
-	 * Method type.
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -31,16 +32,6 @@ public class DoubleMultiProperty extends AbstractNumericProperty<Double[]> {
 	}
 
 	/**
-	 * @return boolean
-	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-	 */
-	@Override
-	public boolean isMultiValue() {
-		return true;
-	}
-
-	/**
-	 * Method createFrom.
 	 * @param value String
 	 * @return Object
 	 */
@@ -49,7 +40,6 @@ public class DoubleMultiProperty extends AbstractNumericProperty<Double[]> {
 	}
 
 	/**
-	 * Method arrayFor.
 	 * @param size int
 	 * @return Object[]
 	 */

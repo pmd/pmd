@@ -28,7 +28,6 @@ public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object>
 	}
 	
 	/**
-	 * 
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -37,7 +36,6 @@ public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object>
 	}
 	
 	/**
-	 *
 	 * @param value Object
 	 * @return String
 	 * @see net.sourceforge.pmd.PropertyDescriptor#errorFor(Object)
@@ -49,7 +47,6 @@ public class EnumeratedProperty<E> extends AbstractEnumeratedProperty<E, Object>
 	}
 	
 	/**
-	 *
 	 * @param value String
 	 * @return Object
 	 * @throws IllegalArgumentException

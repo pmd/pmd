@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.rule.properties;
  * 
  * @author Brian Remedios
  */
-public class FloatMultiProperty extends AbstractNumericProperty<Float[]> {
+public class FloatMultiProperty extends AbstractMultiNumericProperty<Float[]> {
 	/**
 	 * Constructor for FloatProperty that configures it to accept multiple values and any number of defaults.
 	 * 
@@ -30,15 +30,6 @@ public class FloatMultiProperty extends AbstractNumericProperty<Float[]> {
 	 */
 	public Class<Float[]> type() {
 		return Float[].class;
-	}
-
-	/**
-	 * @return boolean
-	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-	 */
-	@Override
-	public boolean isMultiValue() {
-		return true;
 	}
 	
 	/**

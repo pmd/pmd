@@ -16,7 +16,8 @@ import net.sourceforge.pmd.util.StringUtil;
  *
  * @author Brian Remedios
  */
-public class MethodMultiProperty extends AbstractPackagedProperty<Method[]> {
+public class MethodMultiProperty extends AbstractMultiPackagedProperty<Method[]> {
+        
     /**
      * Constructor for MethodProperty.
      *
@@ -25,13 +26,41 @@ public class MethodMultiProperty extends AbstractPackagedProperty<Method[]> {
      * @param theDefaults    Method[]
      * @param legalPackageNames String[]
      * @param theUIOrder     float
+     * @throws IllegalArgumentException
      */
     public MethodMultiProperty(String theName, String theDescription, Method[] theDefaults, String[] legalPackageNames, float theUIOrder) {
         super(theName, theDescription, theDefaults, legalPackageNames, theUIOrder);
-
-        multiValueDelimiter(' ');
     }
 
+    /**
+     * Constructor for MethodProperty.
+     *
+     * @param theName        String
+     * @param theDescription String
+     * @param methodDefaults    String
+     * @param legalPackageNames String[]
+     * @param theUIOrder     float
+     * @throws IllegalArgumentException
+     */
+    public MethodMultiProperty(String theName, String theDescription, String methodDefaults, String[] legalPackageNames, float theUIOrder) {
+        super(theName, theDescription, methodsFrom(methodDefaults), legalPackageNames, theUIOrder);
+    }
+    
+    /**
+     * @param methodsStr String
+     * @return Method[]
+     */
+    public static Method[] methodsFrom(String methodsStr) {      
+    
+        String[] values = StringUtil.substringsOf(methodsStr, DELIMITER);
+    
+        Method[] methods = new Method[values.length];
+        for (int i = 0; i < methods.length; i++) {
+            methods[i] = MethodProperty.methodFrom(values[i], MethodProperty.CLASS_METHOD_DELIMITER, MethodProperty.METHOD_ARG_DELIMITER);
+        }
+        return methods;
+    }
+    
     /**
      * Return the value as a string that can be easily recognized and parsed
      * when we see it again.
@@ -45,7 +74,6 @@ public class MethodMultiProperty extends AbstractPackagedProperty<Method[]> {
     }
 
     /**
-     * Method packageNameOf.
      * @param item Object
      * @return String
      */
@@ -57,22 +85,12 @@ public class MethodMultiProperty extends AbstractPackagedProperty<Method[]> {
     }
 
     /**
-     * Method itemTypeName.
      * @return String
      */
     @Override
     protected String itemTypeName() {
         return "method";
     }
-
-	/**
-	 * @return boolean
-	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-	 */
-	@Override
-	public boolean isMultiValue() {
-		return true;
-	}
     
     /**
      *
@@ -84,19 +102,12 @@ public class MethodMultiProperty extends AbstractPackagedProperty<Method[]> {
     }
 
     /**
-     *
      * @param valueString  String
      * @return Object
      * @throws IllegalArgumentException
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
      */
     public Method[] valueFrom(String valueString) throws IllegalArgumentException {
-        String[] values = StringUtil.substringsOf(valueString, multiValueDelimiter());
-
-        Method[] methods = new Method[values.length];
-        for (int i = 0; i < methods.length; i++) {
-            methods[i] = MethodProperty.methodFrom(values[i], MethodProperty.CLASS_METHOD_DELIMITER, MethodProperty.METHOD_ARG_DELIMITER);
-        }
-        return methods;
+        return methodsFrom(valueString);
     }
 }

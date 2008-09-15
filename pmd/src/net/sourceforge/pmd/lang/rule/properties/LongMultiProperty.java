@@ -8,7 +8,7 @@ package net.sourceforge.pmd.lang.rule.properties;
  * 
  * @author Brian Remedios
  */
-public class LongMultiProperty extends AbstractNumericProperty<Long[]> {
+public class LongMultiProperty extends AbstractMultiNumericProperty<Long[]> {
 
 	/**
 	 * Constructor for LongProperty.
@@ -16,33 +16,23 @@ public class LongMultiProperty extends AbstractNumericProperty<Long[]> {
 	 * @param theDescription String
 	 * @param min Long
 	 * @param max Long
-	 * @param theDefault Long
+	 * @param theDefaults Long[]
 	 * @param theUIOrder float
+	 * @throws IllegalArgumentException
 	 */
-	public LongMultiProperty(String theName, String theDescription, Long min, Long max, Long[] theDefault, float theUIOrder) {
-		super(theName, theDescription, min, max, theDefault, theUIOrder);
+	public LongMultiProperty(String theName, String theDescription, Long min, Long max, Long[] theDefaults, float theUIOrder) {
+		super(theName, theDescription, min, max, theDefaults, theUIOrder);
 	}
 	
 	/**
-	 * Method type.
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
 	public Class<Long[]> type() {
 		return Long[].class;
 	}
-
-	/**
-	 * @return boolean
-	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-	 */
-	@Override
-	public boolean isMultiValue() {
-		return true;
-	}
 	
 	/**
-	 * Method createFrom.
 	 * @param value String
 	 * @return Object
 	 */

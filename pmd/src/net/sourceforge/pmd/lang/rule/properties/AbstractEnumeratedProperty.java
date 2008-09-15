@@ -7,6 +7,8 @@ import java.util.Map;
 
 import net.sourceforge.pmd.util.CollectionUtil;
 
+/**
+ */
 public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<T> {
 
     protected Map<String, E> choicesByLabel;
@@ -24,6 +26,7 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
      * @param choiceIndices
      * @param theUIOrder
      * @param isMulti
+     * @throws IllegalArgumentException
      */
     @SuppressWarnings("unchecked")
     public AbstractEnumeratedProperty(String theName, String theDescription, String[] theLabels, E[] theChoices, int[] choiceIndices, float theUIOrder, boolean isMulti) {
@@ -34,6 +37,13 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
         orderedLabels = theLabels;
     }
 
+    /**
+     * Method selectionsIn.
+     * @param items String[]
+     * @param selectionIndices int[]
+     * @param isMulti boolean
+     * @return Object
+     */
     private static Object selectionsIn(String[] items, int[] selectionIndices, boolean isMulti) {
         String[] selections = new String[selectionIndices.length];
         final int maxIdx = items.length - 1;
@@ -46,10 +56,30 @@ public abstract class AbstractEnumeratedProperty<E, T> extends AbstractProperty<
         return isMulti ? selections : selections[0];
     }
 
+    /**
+     * @return String
+     */
+    protected String defaultAsString() {
+        
+        return isMultiValue() ? 
+                (String)defaultValue() :
+                asDelimitedString(defaultValue(), '|');
+    }
+    
+    /**
+     * Method nonLegalValueMsgFor.
+     * @param value Object
+     * @return String
+     */
     protected String nonLegalValueMsgFor(Object value) {
         return value + " is not a legal value";
     }
 
+    /**
+     * Method choiceFrom.
+     * @param label String
+     * @return E
+     */
     protected E choiceFrom(String label) {
         E result = choicesByLabel.get(label);
         if (result != null) {

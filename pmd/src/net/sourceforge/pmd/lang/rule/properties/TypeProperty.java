@@ -14,8 +14,6 @@ import net.sourceforge.pmd.util.ClassUtil;
  */
 public class TypeProperty extends AbstractPackagedProperty<Class> {
 
-    private static final char DELIMITER = '|';
-
     /**
      * Constructor for TypeProperty.
      * @param theName String
@@ -30,6 +28,26 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
     /**
+     * 
+     * @param theName String
+     * @param theDescription String
+     * @param defaultTypeStr String
+     * @param legalPackageNames String[]
+     * @param theUIOrder float
+     * @throws IllegalArgumentException
+     */
+    public TypeProperty(String theName, String theDescription, String defaultTypeStr, String[] legalPackageNames, float theUIOrder) {
+        super(theName, theDescription, classFrom(defaultTypeStr), legalPackageNames, theUIOrder);
+    }
+    
+    /**
+     * @return String
+     */
+    protected String defaultAsString() {
+        return asString(defaultValue());
+    }
+    
+    /**
      * Method packageNameOf.
      * @param item Object
      * @return String
@@ -40,7 +58,6 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
     /**
-     * Method type.
      * @return Class
      * @see net.sourceforge.pmd.PropertyDescriptor#type()
      */
@@ -49,7 +66,6 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
     /**
-     * Method itemTypeName.
      * @return String
      */
     @Override
@@ -58,7 +74,6 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
     /**
-     * Method asString.
      * @param value Object
      * @return String
      */
@@ -68,7 +83,6 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
     /**
-     * Method classFrom.
      * @param className String
      * @return Class
      * @throws IllegalArgumentException
@@ -88,7 +102,6 @@ public class TypeProperty extends AbstractPackagedProperty<Class> {
     }
 
     /**
-     * Method valueFrom.
      * @param valueString String
      * @return Object
      * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)

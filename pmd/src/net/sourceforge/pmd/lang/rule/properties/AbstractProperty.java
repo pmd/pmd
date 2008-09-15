@@ -3,6 +3,9 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sourceforge.pmd.PropertyDescriptor;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.util.StringUtil;
@@ -15,11 +18,11 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 
 	private final String	name;
 	private final String	description;
-	private final T 	defaultValue;
+	private final T 		defaultValue;
 	private final boolean 	isRequired;
 	private final float		uiOrder;
 	
-	protected char	multiValueDelimiter = '|';
+	private static final char DELIMITER = '|';
 	
 	/**
 	 * Constructor for AbstractPMDProperty.
@@ -66,20 +69,12 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	}
 	
 	/**
-	 * Method multiValueDelimiter.
-	 * @param aDelimiter char
-	 */
-	protected void multiValueDelimiter(char aDelimiter) {
-		multiValueDelimiter = aDelimiter;
-	}
-	
-	/**
-	 * Method multiValueDelimiter.
+	 *
 	 * @return char
 	 * @see net.sourceforge.pmd.PropertyDescriptor#multiValueDelimiter()
 	 */
 	public char multiValueDelimiter() {
-		return multiValueDelimiter;
+		return DELIMITER;
 	}
 	
 	/**
@@ -138,7 +133,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	public boolean isMultiValue() {
 		return false;
 	}
-
+	
 	/**
 	 * Method isRequired.
 	 * @return boolean
@@ -171,11 +166,22 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	
 	/**
 	 * Method asDelimitedString.
+	 * @param values T
+	 * @return String
+	 * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(T)
+	 */
+	public String asDelimitedString(T values) {
+	    return asDelimitedString(values, multiValueDelimiter());
+	}
+	
+	/**
+	 * Return the specified values as a single string using the delimiter.
 	 * @param values Object
+	 * @param delimiter char
 	 * @return String
 	 * @see net.sourceforge.pmd.PropertyDescriptor#asDelimitedString(Object)
 	 */
-	public String asDelimitedString(T values) {
+	public String asDelimitedString(T values, char delimiter) {
 		
 		if (values == null) {
 		    return "";
@@ -193,7 +199,7 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 			StringBuilder sb = new StringBuilder();
 			sb.append(asString(valueSet[0]));
 			for (int i=1; i<valueSet.length; i++) {
-				sb.append(multiValueDelimiter);
+				sb.append(delimiter);
 				sb.append(asString(valueSet[i]));
 			}
 			return sb.toString();
@@ -214,7 +220,6 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	}
 	
 	/**
-	 * Method errorFor.
 	 * @param value Object
 	 * @return String
 	 * @see net.sourceforge.pmd.PropertyDescriptor#errorFor(Object)
@@ -231,7 +236,6 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	}
 	
 	/**
-	 * Method valueErrorFor.
 	 * @param value Object
 	 * @return String
 	 */
@@ -240,15 +244,13 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 		if (value == null) {
 			if (defaultHasNullValue()) {
 				return null;
-			} else {
-				return "missing value";
-				}
+			}
+			return "missing value";
 		}
 		return null;
 	}
 	
 	/**
-	 * Method valuesErrorFor.
 	 * @param value Object
 	 * @return String
 	 */
@@ -270,7 +272,6 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	}
 	
 	/**
-	 * Method isArray.
 	 * @param value Object
 	 * @return boolean
 	 */
@@ -279,7 +280,6 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	}
 	
 	/**
-	 * Method typeErrorFor.
 	 * @param value Object
 	 * @return String
 	 */
@@ -323,7 +323,8 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	}
 	
 	/**
-	 * Method choices.
+	 * Most property types do not provide a set of value choices, override
+	 * as necessary in concrete subclasses.
 	 * @return Object[][]
 	 * @see net.sourceforge.pmd.PropertyDescriptor#choices()
 	 */
@@ -332,7 +333,6 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	}
 	
 	/**
-	 * Method preferredRowCount.
 	 * @return int
 	 * @see net.sourceforge.pmd.PropertyDescriptor#preferredRowCount()
 	 */
@@ -340,6 +340,10 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 		return 1;
 	}
 	
+	/**
+	 * @param obj Object
+	 * @return boolean
+	 */
 	@Override
 	public boolean equals(Object obj) {
 	    if (this == obj) {
@@ -354,18 +358,29 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 	    return false;
 	}
 
+	/**
+	 * @return int
+	 */
 	@Override
 	public int hashCode() {
 	    return name.hashCode();
 	}
 
+	/**
+	 * Method toString.
+	 * @return String
+	 */
 	@Override
 	public String toString() {
 	    return "[PropertyDescriptor: name=" + name() + ", type=" + type() + ", defaultValue=" + defaultValue() + "]";
 	}
 	
 	/**
-	 * Method areEqual.
+	 * @return String
+	 */
+	protected abstract String defaultAsString();
+	
+	/**
 	 * @param value Object
 	 * @param otherValue Object
 	 * @return boolean
@@ -384,4 +399,24 @@ public abstract class AbstractProperty<T> implements PropertyDescriptor<T> {
 
 		return value.equals(otherValue);
 	}
+	
+	/**
+	 * @return Map<String,String>
+	 * @see
+	 */
+	public Map<String, String> attributeValuesById() {
+		
+		Map<String, String> values = new HashMap<String, String>();
+		addAttributesTo(values);		
+		return values;
+	}
+	
+	/**
+	 * @param attributes Map<String,String>
+	 */
+	protected void addAttributesTo(Map<String, String> attributes) {
+		attributes.put("description", description);
+		attributes.put("default", defaultAsString());
+	}
+	
 }

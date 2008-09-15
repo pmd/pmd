@@ -1,6 +1,7 @@
 package net.sourceforge.pmd.lang.rule.properties;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -15,6 +16,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 
 	private String[] legalPackageNames;
 
+	private static final char packageNameDelimiter = ' ';
 	/**
 	 * 
 	 * @param theName
@@ -32,6 +34,31 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 		legalPackageNames = theLegalPackageNames;
 	}
 	
+    /**
+     * @param attributes Map<String,String>
+     */
+    protected void addAttributesTo(Map<String, String> attributes) {
+        super.addAttributesTo(attributes);
+        
+        attributes.put("legalPackageNames", delimitedPackageNames());
+    }
+	
+    /**
+     * @return String
+     */
+    private final String delimitedPackageNames() {
+        
+        if (legalPackageNames == null || legalPackageNames.length == 0) return "";
+        if (legalPackageNames.length == 1) return legalPackageNames[0];
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append(legalPackageNames[0]);
+        for (int i=1; i<legalPackageNames.length; i++) {
+            sb.append(packageNameDelimiter).append(legalPackageNames[i]);
+        }
+        return sb.toString();
+    }
+    
 	/**
 	 * Evaluates the names of the items against the allowable name prefixes. If one or more
 	 * do not have valid prefixes then an exception will be thrown.
@@ -78,7 +105,7 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 	abstract protected String itemTypeName();
 	
 	/**
-	 * Method valueErrorFor.
+	 *
 	 * @param value Object
 	 * @return String
 	 */
@@ -105,14 +132,14 @@ public abstract class AbstractPackagedProperty<T> extends AbstractProperty<T> {
 	}
 	
 	/**
-	 * Method packageNameOf.
+	 *
 	 * @param item Object
 	 * @return String
 	 */
 	abstract protected String packageNameOf(Object item);
 	
 	/**
-	 * Method legalPackageNames.
+	 *
 	 * @return String[]
 	 */
 	public String[] legalPackageNames() {

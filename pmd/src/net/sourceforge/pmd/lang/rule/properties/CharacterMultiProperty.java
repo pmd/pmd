@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -10,7 +12,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * 
  * @author Brian Remedios
  */
-public class CharacterMultiProperty extends AbstractProperty<Character[]> {
+public class CharacterMultiProperty extends AbstractDelimitedProperty<Character[]> {
 	/**
 	 * Constructor for CharacterProperty.
 	 * @param theName String
@@ -21,7 +23,7 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
 	 * @throws IllegalArgumentException
 	 */
 	public CharacterMultiProperty(String theName, String theDescription, Character[] theDefaults, float theUIOrder, char delimiter) {
-		super(theName, theDescription, theDefaults, theUIOrder);
+		super(theName, theDescription, theDefaults, delimiter, theUIOrder);
 		
 		if (theDefaults != null) {
 			for (int i=0; i<theDefaults.length; i++) {
@@ -30,37 +32,50 @@ public class CharacterMultiProperty extends AbstractProperty<Character[]> {
 				}
 			}
 		}
-		
-		multiValueDelimiter(delimiter);
 	}
 	
 	/**
-	 * Method type.
+	 * Constructor for CharacterProperty that accepts additional params from a map.
+	 * 
+	 * @param theName
+	 * @param theDescription
+	 * @param theDefaults
+	 * @param otherParams
+	 */
+	public CharacterMultiProperty(String theName, String theDescription, String theDefaults, Map<String, String> otherParams) {
+	    this(theName, theDescription, charsIn(theDefaults, delimiterIn(otherParams)), 0.0f, delimiterIn(otherParams));
+	}
+	
+	private static Character[] charsIn(String charString, char delimiter) {
+	    
+	    String[] values = StringUtil.substringsOf(charString, delimiter);
+	    Character[] chars = new Character[values.length];
+	    
+	    for (int i=0; i<values.length;i++) {
+	        if (values.length != 1) {
+	            throw new IllegalArgumentException("missing/ambiguous character value");
+	        }
+	        chars[i] = values[i].charAt(0);
+	    }
+	    return chars;
+	}
+	
+	/**
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
 	public Class<Character[]> type() {
 		return Character[].class;
 	}
-	
+		
 	/**
-	 * @return boolean
-	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-	 */
-	@Override
-	public boolean isMultiValue() {
-		return true;
-	}
-	
-	/**
-	 * Method valueFrom.
 	 * @param valueString String
 	 * @return Object
 	 * @throws IllegalArgumentException
 	 * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
 	 */
 	public Character[] valueFrom(String valueString) throws IllegalArgumentException {
-		String[] values = StringUtil.substringsOf(valueString, multiValueDelimiter);
+		String[] values = StringUtil.substringsOf(valueString, multiValueDelimiter());
 		
 		Character[] chars = new Character[values.length];
 		for (int i=0; i<values.length; i++) {

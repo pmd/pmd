@@ -3,6 +3,8 @@
  */
 package net.sourceforge.pmd.lang.rule.properties;
 
+import java.util.Map;
+
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
@@ -11,7 +13,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * 
  * @author Brian Remedios
  */
-public class StringMultiProperty extends AbstractProperty<String[]> {
+public class StringMultiProperty extends AbstractDelimitedProperty<String[]> {
 		
 	public static final char DEFAULT_DELIMITER = '|';
 		
@@ -21,19 +23,28 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
 	 * @param theDescription String
 	 * @param theDefaults String[]
 	 * @param theUIOrder float
-	 * @param aMultiValueDelimiter String
+	 * @param delimiter String
 	 * @throws IllegalArgumentException
 	 */
-	public StringMultiProperty(String theName, String theDescription, String[] theDefaults, float theUIOrder, char aMultiValueDelimiter) {
-		super(theName, theDescription, theDefaults, theUIOrder);
+	public StringMultiProperty(String theName, String theDescription, String[] theDefaults, float theUIOrder, char delimiter) {
+		super(theName, theDescription, theDefaults, delimiter, theUIOrder);
 
-		multiValueDelimiter(aMultiValueDelimiter);
-
-		checkDefaults(theDefaults, aMultiValueDelimiter);
+		checkDefaults(theDefaults, delimiter);
 	}
 	
 	/**
-	 * 
+     * Constructor for CharacterProperty that accepts additional params from a map.
+     * 
+	 * @param theName
+	 * @param theDescription
+	 * @param theDefaults
+	 * @param otherParams
+	 */
+	public StringMultiProperty(String theName, String theDescription, String theDefaults, Map<String, String> otherParams) {
+	    this(theName, theDescription, StringUtil.substringsOf(theDefaults, delimiterIn(otherParams)), 0.0f, delimiterIn(otherParams));
+	}
+	
+	/**
 	 * @param defaultValue
 	 * @param delim
 	 * @throws IllegalArgumentException
@@ -50,7 +61,6 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
 	}
 	
 	/**
-	 * Method type.
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -59,35 +69,27 @@ public class StringMultiProperty extends AbstractProperty<String[]> {
 	}
 	
 	/**
-	 * @return boolean
-	 * @see net.sourceforge.pmd.PropertyDescriptor#isMultiValue()
-	 */
-	@Override
-	public boolean isMultiValue() {
-		return true;
-	}
-	
-	/**
-	 * Method valueFrom.
 	 * @param valueString String
 	 * @return Object
 	 * @see net.sourceforge.pmd.PropertyDescriptor#valueFrom(String)
 	 */
 	public String[] valueFrom(String valueString) {
-		    return StringUtil.substringsOf(valueString, multiValueDelimiter);
+		return StringUtil.substringsOf(valueString, multiValueDelimiter());
 	}
 	
 	/**
-	 * Method containsDelimiter.
 	 * @param value String
 	 * @return boolean
 	 */
 	private boolean containsDelimiter(String value) {
-		return value.indexOf(multiValueDelimiter) >= 0;
+		return value.indexOf(multiValueDelimiter()) >= 0;
 	}
 	
+	/**
+	 * @return String
+	 */
 	private final String illegalCharMsg() {
-		return "Value cannot contain the '" + multiValueDelimiter + "' character";
+		return "Value cannot contain the '" + multiValueDelimiter() + "' character";
 	}
 	
 	/**

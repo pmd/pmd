@@ -40,12 +40,15 @@ public class LongProperty extends AbstractNumericProperty<Long> {
         this(theName, theDescription, longFrom(minStr), longFrom(maxStr), longFrom(defaultStr), theUIOrder);       
     }
 	
+    /**
+     * @param numberString String
+     * @return Long
+     */
     public static Long longFrom(String numberString) {
         return Long.valueOf(numberString);
     }
     
 	/**
-	 * Method type.
 	 * @return Class
 	 * @see net.sourceforge.pmd.PropertyDescriptor#type()
 	 */
@@ -54,7 +57,6 @@ public class LongProperty extends AbstractNumericProperty<Long> {
 	}
 
 	/**
-	 * Method createFrom.
 	 * @param value String
 	 * @return Object
 	 */

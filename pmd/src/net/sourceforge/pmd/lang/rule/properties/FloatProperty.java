@@ -41,6 +41,10 @@ public class FloatProperty extends AbstractNumericProperty<Float> {
         this(theName, theDescription, floatFrom(minStr), floatFrom(maxStr), floatFrom(defaultStr), theUIOrder);      
     }
 	
+    /**
+     * @param numberString String
+     * @return Float
+     */
     public static Float floatFrom(String numberString) {
         return Float.valueOf(numberString);
     }
