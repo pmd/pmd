@@ -88,6 +88,10 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
 	return propertyDescriptor.valueFrom(propertyString);
     }
 
+    public Map<String, String> attributeValuesById() {
+        return propertyDescriptor.attributeValuesById();
+    }
+
     @Override
     public boolean equals(Object obj) {
     	if (obj instanceof PropertyDescriptorWrapper) {
@@ -104,10 +108,5 @@ public class PropertyDescriptorWrapper<T> implements PropertyDescriptor<T> {
     @Override
     public String toString() {
 	return "wrapped:" + propertyDescriptor.toString();
-    }
-
-    @Override
-    public Map<String, String> attributeValuesById() {
-        return propertyDescriptor.attributeValuesById();
     }
 }
