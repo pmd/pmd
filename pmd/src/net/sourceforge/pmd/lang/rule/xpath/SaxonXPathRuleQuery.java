@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.saxon.expr.Expression;
 import net.sf.saxon.om.ValueRepresentation;
 import net.sf.saxon.sxpath.AbstractStaticContext;
 import net.sf.saxon.sxpath.IndependentContext;
