@@ -104,8 +104,6 @@ public class SaxonXPathRuleQuery extends AbstractXPathRuleQuery {
 		}
 	    }
 
-	    Expression expression = xpathExpression.getInternalExpression();
-
 	    List<ElementNode> nodes = xpathExpression.evaluate(xpathDynamicContext);
 	    for (ElementNode elementNode : nodes) {
 		results.add((Node) elementNode.getUnderlyingNode());
