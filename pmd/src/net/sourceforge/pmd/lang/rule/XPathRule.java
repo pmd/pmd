@@ -3,6 +3,10 @@
  */
 package net.sourceforge.pmd.lang.rule;
 
+import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_1_0;
+import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_1_0_COMPATIBILITY;
+import static net.sourceforge.pmd.lang.rule.xpath.XPathRuleQuery.XPATH_2_0;
+
 import java.util.List;
 
 import net.sourceforge.pmd.RuleContext;
@@ -22,8 +26,8 @@ public class XPathRule extends AbstractRule {
 
     public static final StringProperty XPATH_DESCRIPTOR = new StringProperty("xpath", "XPATH value", "", 1.0f);
     public static final EnumeratedProperty<String> VERSION_DESCRIPTOR = new EnumeratedProperty<String>("version",
-	    "The XPath specification version.", new String[] { "1.0", "1.0 compatibility", "2.0" }, new String[] {
-		    "XPath 1.0", "XPath 2.0 in XPath 1.0 compatability mode", "XPath 2.0" }, 0, 2.0f);
+	    "The XPath specification version.", new String[] { XPATH_1_0, XPATH_1_0_COMPATIBILITY, XPATH_2_0 },
+	    new String[] { "XPath 1.0", "XPath 2.0 in XPath 1.0 compatability mode", "XPath 2.0" }, 2, 2.0f);
 
     private XPathRuleQuery xpathRuleQuery;
 

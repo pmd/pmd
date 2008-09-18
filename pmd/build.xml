@@ -18,6 +18,7 @@
 
 	<property name="asm.version" value="3.1" />
 	<property name="jaxen.version" value="1.1.1" />
+	<property name="saxon.version" value="9" />
 	<property name="junit.version" value="4.4" />
 	<property name="retroweaver.version" value="2.0.6" />
 	<property name="javacc-home.path" value="${dir.lib}" />
@@ -29,6 +30,7 @@
 		<pathelement location="${dir.build}" />
 		<fileset dir="${dir.lib}">
 			<include name="jaxen-${jaxen.version}.jar" />
+			<include name="saxon${saxon.version}.jar" />
 			<include name="asm-${asm.version}.jar" />
 			<include name="junit-${junit.version}.jar" />
 		</fileset>
@@ -86,7 +88,7 @@
 			<zipfileset dir="etc" includes="ruleset.dtd,ruleset_xml_schema.xsd" prefix="rulesets"/>
 			<manifest>
 				<attribute name="Main-Class" value="net.sourceforge.pmd.PMD" />
-				<attribute name="Class-Path" value="jaxen-${jaxen.version}.jar asm-${asm.version}.jar" />
+				<attribute name="Class-Path" value="jaxen-${jaxen.version}.jar saxon${saxon.version}.jar asm-${asm.version}.jar" />
 			</manifest>
 		</jar>
 
@@ -113,9 +115,7 @@
 			<pathelement location="${dir.lib14}/backport-util-concurrent.jar"/>
 			<pathelement location="${dir.lib}/asm-${asm.version}.jar"/>
 			<pathelement location="${jvm14.runtime}" />
-			<pathelement location="${dir.lib}/jaxen-${jaxen.version}.jar" />
 			<pathelement location="${dir.lib14}/junit.jar" />
-			<pathelement location="${ant.jar}" />
 		</path>
 
 		<retroweaver inputjar="${dir.lib}/junit-${junit.version}.jar" outputjar="${dir.lib14}/junit.jar" target="1.4" failonerror="true" verify="true">
@@ -135,6 +135,7 @@
 			<pathelement location="${dir.lib}/asm-${asm.version}.jar"/>
 			<pathelement location="${jvm14.runtime}" />
 			<pathelement location="${dir.lib}/jaxen-${jaxen.version}.jar" />
+			<pathelement location="${dir.lib}/saxon${saxon.version}.jar" />
 			<pathelement location="${dir.lib14}/junit.jar" />
 			<pathelement location="${ant.jar}" />
 			<pathelement location="${ant-testutil.jar}" />
@@ -322,6 +323,7 @@
 		</fileset>
 		<fileset dir="${dir.lib}">
 			<include name="jaxen-${jaxen.version}.jar" />
+			<include name="saxon${saxon.version}.jar" />
 			<include name="asm-${asm.version}.jar" />
 		</fileset>
 	</path>

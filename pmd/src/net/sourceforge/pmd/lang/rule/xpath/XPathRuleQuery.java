@@ -21,6 +21,22 @@ import net.sourceforge.pmd.lang.ast.Node;
  * over AST Nodes in a fashion which facilities high performance (e.g. caching).
  */
 public interface XPathRuleQuery {
+
+    /**
+     * XPath 1.0 version.
+     */
+    String XPATH_1_0 = "1.0";
+
+    /**
+     * XPath 1.0 compatibility version.
+     */
+    String XPATH_1_0_COMPATIBILITY = "1.0 compatibility";
+
+    /**
+     * XPath 2.0 version.
+     */
+    String XPATH_2_0 = "2.0";
+
     /**
      * Set the XPath query string to be used.
      * @param xpath The XPath query string.

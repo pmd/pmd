@@ -2,7 +2,9 @@ package net.sourceforge.pmd.lang.java;
 
 import java.io.Writer;
 
+import net.sf.saxon.sxpath.IndependentContext;
 import net.sourceforge.pmd.lang.DataFlowHandler;
+import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.VisitorStarter;
 import net.sourceforge.pmd.lang.XPathHandler;
@@ -15,6 +17,7 @@ import net.sourceforge.pmd.lang.java.dfa.DataFlowFacade;
 import net.sourceforge.pmd.lang.java.rule.JavaRuleViolationFactory;
 import net.sourceforge.pmd.lang.java.symboltable.SymbolFacade;
 import net.sourceforge.pmd.lang.java.typeresolution.TypeResolutionFacade;
+import net.sourceforge.pmd.lang.java.xpath.JavaFunctions;
 import net.sourceforge.pmd.lang.java.xpath.TypeOfFunction;
 import net.sourceforge.pmd.lang.rule.RuleViolationFactory;
 
@@ -34,6 +37,10 @@ public abstract class AbstractJavaHandler implements LanguageVersionHandler {
 	return new AbstractASTXPathHandler() {
 	    public void initialize() {
 		TypeOfFunction.registerSelfInSimpleContext();
+	    }
+
+	    public void initialize(IndependentContext context) {
+		super.initialize(context, Language.JAVA, JavaFunctions.class);
 	    }
 	};
     }

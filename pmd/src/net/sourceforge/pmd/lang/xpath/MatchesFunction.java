@@ -39,4 +39,15 @@ public class MatchesFunction implements Function {
         }
         return Boolean.FALSE;
     }
+
+    public static boolean matches(String s, String... patterns) {
+	for (String pattern: patterns) {
+            Pattern check = Pattern.compile(pattern);
+            Matcher matcher = check.matcher(s);
+            if (matcher.find()) {
+        	return true;
+            }
+        }
+        return false;
+    }
 }

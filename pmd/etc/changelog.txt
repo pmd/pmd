@@ -109,6 +109,11 @@ TODO - Release blockers - Must implement before this release can be finished
      consistent regardless of how many parens are presented, or how many blocks
      have been created (e.g. default block inserted, duplicates collapsed).
      This should be configurable on per Rule basis similar to TR and SymbolTable.
+   o Need to get licenses for Saxon in place.  Organize all PMD licenses into a
+     /license folder?
+   o Need to enhance documentation to cover Global and Language specific
+     function namespaces required for XPath 2.0 use (e.g. pmd:matches
+     and pmd-java:typeof).
 ---
 
 This version of PMD breaks API compatibility with prior versions of PMD, as well
@@ -312,6 +317,7 @@ Rules can now define a 'violationSuppressRegex' property to universally suppress
 Rules can now define a 'violationSuppressXPath' property to universally suppress violations on nodes which match the given relative XPath expression
 Rules are now directly associated with a corresponding Language, and a can also be associated with a specific Language Version range if desired.
 Rules can now be flagged with deprecated='true' in the RuleSet XML to allow the PMD Project to indicate a Rule (1) is scheduled for removal, (2) has been removed, or (3) has been renamed/moved.
+XPathRules can now query using XPath 2.0 with 'version=2.0"', or XPath 2.0 in XPath 1.0 compatibility mode using 'version="1.0 compatibility"'.
 
 Other changes:
 Rule property API upgrades:

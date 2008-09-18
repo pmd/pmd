@@ -3,6 +3,7 @@
  */
 package net.sourceforge.pmd.lang.xpath;
 
+import net.sf.saxon.sxpath.IndependentContext;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
@@ -19,26 +20,41 @@ public class Initializer {
      * Perform all initialization.
      */
     public static void initialize() {
-        // noop as initialization is done in static block below
+	// noop as initialization is done in static block below
+    }
+
+    /**
+     * Perform all initialization.
+     */
+    public static void initialize(IndependentContext context) {
+	context.declareNamespace("pmd", "java:" + PMDFunctions.class.getName());
+	for (Language language : Language.values()) {
+	    for (LanguageVersion languageVersion : language.getVersions()) {
+		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+		if (languageVersionHandler != null) {
+		    languageVersionHandler.getXPathHandler().initialize(context);
+		}
+	    }
+	}
     }
 
     static {
-        initializeGlobal();
-        initializeLanguages();
+	initializeGlobal();
+	initializeLanguages();
     }
 
     private static void initializeGlobal() {
-        MatchesFunction.registerSelfInSimpleContext();
+	MatchesFunction.registerSelfInSimpleContext();
     }
 
     private static void initializeLanguages() {
-        for (Language language : Language.values()) {
-            for (LanguageVersion languageVersion : language.getVersions()) {
-                LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
-                if (languageVersionHandler != null) {
-                    languageVersionHandler.getXPathHandler().initialize();
-                }
-            }
-        }
+	for (Language language : Language.values()) {
+	    for (LanguageVersion languageVersion : language.getVersions()) {
+		LanguageVersionHandler languageVersionHandler = languageVersion.getLanguageVersionHandler();
+		if (languageVersionHandler != null) {
+		    languageVersionHandler.getXPathHandler().initialize();
+		}
+	    }
+	}
     }
 }

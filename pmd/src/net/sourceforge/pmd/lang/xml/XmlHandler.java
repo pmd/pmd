@@ -5,6 +5,7 @@ package net.sourceforge.pmd.lang.xml;
 
 import java.io.Writer;
 
+import net.sf.saxon.sxpath.IndependentContext;
 import net.sourceforge.pmd.lang.DataFlowHandler;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.Parser;
@@ -31,6 +32,9 @@ public class XmlHandler implements LanguageVersionHandler {
     public XPathHandler getXPathHandler() {
 	return new XPathHandler() {
 	    public void initialize() {
+	    }
+
+	    public void initialize(IndependentContext context) {
 	    }
 
 	    public Navigator getNavigator() {

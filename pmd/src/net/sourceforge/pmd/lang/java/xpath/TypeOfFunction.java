@@ -19,59 +19,68 @@ import org.jaxen.XPathFunctionContext;
 public class TypeOfFunction implements Function {
 
     public static void registerSelfInSimpleContext() {
-        ((SimpleFunctionContext) XPathFunctionContext.getInstance()).registerFunction(null, "typeof", new TypeOfFunction());
+	((SimpleFunctionContext) XPathFunctionContext.getInstance()).registerFunction(null, "typeof",
+		new TypeOfFunction());
+    }
+
+    public Object call(Context context, List args) throws FunctionCallException {
+	Node n = (Node) context.getNodeSet().get(0);
+	String nodeTypeName = null;
+	String fullTypeName = null;
+	String shortTypeName = null;
+	Attribute attr = null;
+	for (int i = 0; i < args.size(); i++) {
+	    if (args.get(i) instanceof List) {
+		if (attr == null) {
+		    attr = (Attribute) ((List) args.get(i)).get(0);
+		    nodeTypeName = attr.getValue();
+		} else {
+		    throw new IllegalArgumentException(
+			    "typeof function can take only a single argument which is an Attribute.");
+		}
+	    } else {
+		if (fullTypeName == null) {
+		    fullTypeName = (String) args.get(i);
+		} else if (shortTypeName == null) {
+		    shortTypeName = (String) args.get(i);
+		} else {
+		    break;
+		}
+	    }
+	}
+	if (fullTypeName == null) {
+	    throw new IllegalArgumentException(
+		    "typeof function must be given at least one String argument for the fully qualified type name.");
+	}
+	return typeof(n, nodeTypeName, fullTypeName, shortTypeName);
     }
 
     // TEST //ClassOrInterfaceType[typeof(@Image, 'java.lang.String')]
-    public Object call(Context context, List args) throws FunctionCallException {
-        if (args.isEmpty()) {
-            return Boolean.FALSE;
-        }
-        Node n = (Node) context.getNodeSet().get(0);
-        if (n instanceof TypeNode) {
-            Attribute attr = null;
-            String typeName = null;
-            String shortName = null;
-            for (int i = 0; i < args.size(); i++) {
-        	if (args.get(i) instanceof List) {
-        	    if (attr == null) {
-        		attr = (Attribute)((List)args.get(i)).get(0);
-        	    } else {
-        		throw new IllegalArgumentException("typeof function can take only a single argument which is an Attribute.");
-        	    }
-        	}
-        	else {
-        	    if (typeName == null) {
-        		typeName = (String)args.get(i);
-        	    } else if (shortName == null) {
-        		shortName = (String)args.get(i);
-        	    } else {
-        		break;
-        	    }
-        	}
-            }
-            if (typeName == null) {
-        	throw new IllegalArgumentException("typeof function must be given at least one String argument for the type name.");
-            }
-            Class type = ((TypeNode) n).getType();
-            if (type == null) {
-                return attr != null && (typeName.equals(attr.getValue()) || (shortName != null && shortName.equals(attr.getValue())));
-            }
-            if (type.getName().equals(typeName) || (attr != null && type.getName().equals(attr.getValue()))) {
-                return Boolean.TRUE;
-            }
-            List<Class> implementors = Arrays.asList(type.getInterfaces());
-            if (implementors.contains(type)) {
-                return Boolean.TRUE;
-            }
-            Class<?> superC = type.getSuperclass();
-            while (superC != null && !superC.equals(Object.class)) {
-                if (superC.getName().equals(typeName)) {
-                    return Boolean.TRUE;
-                }
-                superC = superC.getSuperclass();
-            }
-        }
-        return Boolean.FALSE;
+    public static boolean typeof(Node n, String nodeTypeName, String fullTypeName, String shortTypeName) {
+	if (n instanceof TypeNode) {
+	    Class type = ((TypeNode) n).getType();
+	    if (type == null) {
+		return nodeTypeName != null
+			&& (nodeTypeName.equals(fullTypeName) || (shortTypeName != null && shortTypeName
+				.equals(nodeTypeName)));
+	    }
+	    if (type.getName().equals(fullTypeName) || (nodeTypeName != null && nodeTypeName.equals(type.getName()))) {
+		return true;
+	    }
+	    List<Class> implementors = Arrays.asList(type.getInterfaces());
+	    if (implementors.contains(type)) {
+		return true;
+	    }
+	    Class<?> superC = type.getSuperclass();
+	    while (superC != null && !superC.equals(Object.class)) {
+		if (superC.getName().equals(fullTypeName)) {
+		    return true;
+		}
+		superC = superC.getSuperclass();
+	    }
+	} else {
+	    throw new IllegalArgumentException("typeof function may only be called on a TypeNode.");
+	}
+	return true;
     }
 }

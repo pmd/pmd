@@ -711,7 +711,7 @@ behavior with Javadoc.
                 <value>
                     <![CDATA[
 //MethodDeclaration/MethodDeclarator/FormalParameters/FormalParameter/VariableDeclaratorId[
-        matches(@Image,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
+        pmd:matches(@Image,'^in[A-Z].*','^out[A-Z].*','^in$','^out$')
 ]
                     ]]>
                 </value>

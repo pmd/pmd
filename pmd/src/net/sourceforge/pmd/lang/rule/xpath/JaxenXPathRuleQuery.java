@@ -55,7 +55,7 @@ public class JaxenXPathRuleQuery extends AbstractXPathRuleQuery {
      */
     @Override
     public boolean isSupportedVersion(String version) {
-	return "1.0".equals(version);
+	return XPATH_1_0.equals(version);
     }
 
     /**
