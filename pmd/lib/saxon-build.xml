@@ -1,0 +1,57 @@
+<project name="Saxon repackaging" default="disable-saxon-transformerfactory" basedir=".">
+
+	<target name="disable-saxon-transformerfactory">
+		<description>
+			Re-jar Saxon to only exclude the file which allows Saxon to be the default TransformerFactory.
+			The reason to do this is that the open source versio of Saxon we are using is not Schema aware.
+			This causes problems for JUnit tests, and perhaps for anyone elese which is using PMD.
+		</description>
+		<antcall target="extract-saxon" />
+		<delete file="saxon9-temp.jar" />
+		<jar jarfile="saxon9-temp.jar">
+			<fileset dir="temp">
+				<include name="**" />
+				<exclude name="META-INF/services/javax.xml.transform.TransformerFactory" />
+			</fileset>
+		</jar>
+		<move file="saxon9-temp.jar" tofile="saxon9.jar" />
+		<antcall target="clean" />
+	</target>
+
+	<target name="minimize-saxon">
+		<description>
+			Re-jar Saxon to be as small as possible, only including those parts which are needed by PMD.
+			PMD only uses Saxon as an XPath engine, not as a full blown XSLT engine.
+		</description>
+		<antcall target="extract-saxon" />
+		<jar jarfile="saxon9.jar">
+			<fileset dir="temp">
+				<include name="**/saxon/Configuration*.class" />
+				<!--
+				<include name="**/saxon/OutputURIResolver.class" />
+				-->
+				<include name="**/saxon/SourceResolver*.class" />
+				<include name="**/saxon/expr/**" />
+				<include name="**/saxon/event/Receiver*.class" />
+				<include name="**/saxon/evpull/PullEvent*.class" />
+				<include name="**/saxon/functions/**" />
+				<include name="**/saxon/om/**" />
+				<include name="**/saxon/pattern/NodeTest*.class" />
+				<include name="**/saxon/trans/XPathException*.class" />
+				<include name="**/saxon/type/**" />
+				<include name="**/saxon/value/**" />
+			</fileset>
+		</jar>
+		<antcall target="clean" />
+	</target>
+
+	<target name="extract-saxon">
+		<antcall target="clean" />
+		<unjar src="saxon9.jar" dest="temp" />
+	</target>
+
+	<target name="clean">
+		<delete dir="temp" />
+	</target>
+
+</project>
