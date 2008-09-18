@@ -20,7 +20,7 @@ public class AttributeToolkit {
      * @return formmated value
      */
     public static String formatValueForXPath(Attribute attribute) {
-        return '\'' + attribute.getValue() + '\'';
+        return '\'' + attribute.getStringValue() + '\'';
     }
 
     /**

@@ -274,7 +274,7 @@ public abstract class AbstractNode implements Node {
 	parentNode.appendChild(element);
 	for (Iterator<Attribute> iter = docNav.getAttributeAxisIterator(this); iter.hasNext();) {
 	    Attribute attr = iter.next();
-	    element.setAttribute(attr.getName(), attr.getValue());
+	    element.setAttribute(attr.getName(), attr.getStringValue());
 	}
 	for (Iterator<Node> iter = docNav.getChildAxisIterator(this); iter.hasNext();) {
 	    AbstractNode child = (AbstractNode) iter.next();

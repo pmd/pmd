@@ -32,7 +32,7 @@ public class MatchesFunction implements Function {
 
         for(int i = 1; i < args.size(); i++) {
             Pattern check = Pattern.compile((String) args.get(i));
-            Matcher matcher = check.matcher(attr.getValue());
+            Matcher matcher = check.matcher(attr.getStringValue());
             if (matcher.find()) {
                 return context.getNodeSet();
             }

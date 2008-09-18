@@ -4,6 +4,8 @@ import net.sf.saxon.om.NodeInfo;
 import net.sf.saxon.om.SequenceIterator;
 import net.sf.saxon.trans.XPathException;
 import net.sf.saxon.type.Type;
+import net.sf.saxon.value.BooleanValue;
+import net.sf.saxon.value.Int64Value;
 import net.sf.saxon.value.StringValue;
 import net.sf.saxon.value.Value;
 import net.sourceforge.pmd.lang.ast.xpath.Attribute;
@@ -39,15 +41,27 @@ public class AttributeNode extends AbstractNodeInfo {
     @Override
     public Value atomize() throws XPathException {
 	if (value == null) {
-	    // TODO Need better typing on the Attribute class?
-	    value = new StringValue(attribute.getValue());
+	    Object v = attribute.getValue();
+	    // TODO Need to handle the full range of types, is there something Saxon can do to help?
+	    if (v instanceof String) {
+		value = new StringValue((String) v);
+	    } else if (v instanceof Boolean) {
+		value = BooleanValue.get(((Boolean) v).booleanValue());
+	    } else if (v instanceof Integer) {
+		value = Int64Value.makeIntegerValue((Integer) v);
+	    } else if (v == null) {
+		// Ok
+	    } else {
+		throw new RuntimeException("Unable to create ValueRepresentaton for attribute value: " + v
+			+ " of type " + v.getClass());
+	    }
 	}
 	return value;
     }
 
     @Override
     public CharSequence getStringValueCS() {
-	return attribute.getValue();
+	return attribute.getStringValue();
     }
 
     @Override

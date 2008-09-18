@@ -26,7 +26,8 @@ public class AttributeTest{
         }
         Attribute a = new Attribute(p, "BeginLine", m);
         assertEquals("BeginLine", a.getName());
-        assertEquals("5", a.getValue());
+        assertEquals(5, a.getValue());
+        assertEquals("5", a.getStringValue());
         assertEquals(p, a.getParent());
     }
 

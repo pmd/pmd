@@ -33,7 +33,7 @@ public class TypeOfFunction implements Function {
 	    if (args.get(i) instanceof List) {
 		if (attr == null) {
 		    attr = (Attribute) ((List) args.get(i)).get(0);
-		    nodeTypeName = attr.getValue();
+		    nodeTypeName = attr.getStringValue();
 		} else {
 		    throw new IllegalArgumentException(
 			    "typeof function can take only a single argument which is an Attribute.");

@@ -33,7 +33,7 @@ public class DocumentNavigator extends DefaultNavigator {
     }
 
     public String getAttributeStringValue(Object arg0) {
-	return ((Attribute) arg0).getValue();
+	return ((Attribute) arg0).getStringValue();
     }
 
     public String getCommentStringValue(Object arg0) {
