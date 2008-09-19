@@ -40,6 +40,10 @@ if [ buildtype = "release" ]; then
 fi
 
 export MAVEN_OPTS="-Xmx512m -Xms192m"
+
+#making sure saxon9.jar is available as it's not in standard repositories
+mvn install:install-file -Dfile=lib/saxon9.jar -DgroupId=net.sf.saxon -DartifactId=saxon -Dversion=9.1.0.2b -Dpackaging=jar
+
 mvn clean site
 
 cd etc
