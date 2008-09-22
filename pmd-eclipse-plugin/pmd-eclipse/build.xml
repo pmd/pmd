@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="net.sourceforge.pmd.eclipse" default="build.jars" basedir=".">
+
+	<property name="basews" value="${ws}"/>
+	<property name="baseos" value="${os}"/>
+	<property name="basearch" value="${arch}"/>
+	<property name="basenl" value="${nl}"/>
+	<property name="bundleId" value="net.sourceforge.pmd.eclipse"/>
+	<property name="bundleVersion" value="3.2.4.v200804111600"/>
+
+	<!-- Compiler settings. -->
+	<property name="javacFailOnError" value="false"/>
+	<property name="javacDebugInfo" value="on"/>
+	<property name="javacVerbose" value="false"/>
+	<property name="logExtension" value=".log"/>
+	<property name="compilerArg" value=""/>
+	<property name="javacSource" value="1.3"/>
+	<property name="javacTarget" value="1.2"/>
+	<condition property="dir_bootclasspath" value="${java.home}/../Classes">
+		<os family="mac"/>
+	</condition>
+	<property name="dir_bootclasspath" value="${java.home}/lib"/>
+	<path id="path_bootclasspath">
+		<fileset dir="${dir_bootclasspath}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	<property name="bootclasspath" refid="path_bootclasspath"/>
+	<property name="bundleJavacSource" value="${javacSource}"/>
+	<property name="bundleJavacTarget" value="${javacTarget}"/>
+	<property name="bundleBootClasspath" value="${bootclasspath}"/>
+
+	<target name="init" depends="properties">
+<condition property="pluginTemp" value="${buildTempFolder}/plugins"		>
+			<isset property="buildTempFolder"/>
+		</condition>
+		<property name="pluginTemp" value="${basedir}"/>
+<condition property="build.result.folder" value="${pluginTemp}/net.sourceforge.pmd.eclipse_3.2.4.v200804111600"		>
+			<isset property="buildTempFolder"/>
+		</condition>
+		<property name="build.result.folder" value="${basedir}"/>
+		<property name="temp.folder" value="${basedir}/temp.folder"/>
+		<property name="plugin.destination" value="${basedir}"/>
+	</target>
+
+	<target name="properties" if="eclipse.running">
+		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+
+	</target>
+
+	<target name="build.update.jar" depends="init" description="Build the plug-in: net.sourceforge.pmd.eclipse for an update site.">
+		<delete dir="${temp.folder}"/>
+		<mkdir dir="${temp.folder}"/>
+		<antcall target="build.jars"/>
+		<antcall target="gather.bin.parts">
+			<param name="destination.temp.folder" value="${temp.folder}/"/>
+		</antcall>
+		<jar destfile="${plugin.destination}/net.sourceforge.pmd.eclipse_3.2.4.v200804111600.jar" basedir="${temp.folder}/net.sourceforge.pmd.eclipse_3.2.4.v200804111600" filesetmanifest="merge"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+	<target name="build.jars" depends="init" description="Compile classes and build nested jars for the plug-in: net.sourceforge.pmd.eclipse.">
+	</target>
+
+	<target name="build.sources" depends="init">
+	</target>
+
+	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
+		<mkdir dir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_3.2.4.v200804111600"/>
+		<copy todir="${destination.temp.folder}/net.sourceforge.pmd.eclipse_3.2.4.v200804111600" failonerror="true" overwrite="false">
+			<fileset dir="${basedir}">
+				<include name="CHANGELOG.txt"/>
+				<include name="LICENSE.txt"/>
+				<include name="RELNOTES.txt"/>
+				<include name="PATTERNS LIBRARY LICENSE.txt"/>
+				<include name="about.ini"/>
+				<include name="doc.zip"/>
+				<include name="plugin.xml"/>
+				<include name="toc.xml"/>
+				<include name="welcome.xml"/>
+				<include name="CREDITS.txt"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build.zips" depends="init">
+	</target>
+
+	<target name="gather.sources" depends="init" if="destination.temp.folder">
+		<antcall target="copy.src.includes">
+			<param name="source.destination.folder" value="${destination.temp.folder}/net.sourceforge.pmd.eclipse_3.2.4.v200804111600"/>
+		</antcall>
+	</target>
+
+	<target name="gather.individual.sources" depends="init">
+		<antcall target="copy.src.includes">
+			<param name="source.destination.folder" value="${destination.temp.folder}"/>
+		</antcall>
+	</target>
+
+	<target name="copy.src.includes" depends="init">
+		<copy todir="${source.destination.folder}" failonerror="false" overwrite="false">
+			<fileset dir="${basedir}">
+				<include name="about.ini"/>
+				<include name="doc.zip"/>
+				<include name="plugin.xml"/>
+				<include name="toc.xml"/>
+				<include name="welcome.xml"/>
+				<include name="CHANGELOG.txt"/>
+				<include name="CREDITS.txt"/>
+				<include name="LICENSE.txt"/>
+				<include name="PATTERNS LIBRARY LICENSE.txt"/>
+				<include name="RELNOTES.txt"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="gather.logs" depends="init" if="destination.temp.folder">
+	</target>
+
+	<target name="clean" depends="init" description="Clean the plug-in: net.sourceforge.pmd.eclipse of all the zips, jars and logs created.">
+		<delete file="${plugin.destination}/net.sourceforge.pmd.eclipse_3.2.4.v200804111600.jar"/>
+		<delete file="${plugin.destination}/net.sourceforge.pmd.eclipse_3.2.4.v200804111600.zip"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+	<target name="refresh" depends="init" if="eclipse.running" description="Refresh this folder.">
+		<eclipse.convertPath fileSystemPath="/home/xlv/dev/pmd/all/pmd-eclipse-plugin/pmd-eclipse" property="resourcePath"/>
+		<eclipse.refreshLocal resource="${resourcePath}" depth="infinite"/>
+	</target>
+
+	<target name="zip.plugin" depends="init" description="Create a zip containing all the elements for the plug-in: net.sourceforge.pmd.eclipse.">
+		<delete dir="${temp.folder}"/>
+		<mkdir dir="${temp.folder}"/>
+		<antcall target="build.jars"/>
+		<antcall target="build.sources"/>
+		<antcall target="gather.bin.parts">
+			<param name="destination.temp.folder" value="${temp.folder}/"/>
+		</antcall>
+		<antcall target="gather.sources">
+			<param name="destination.temp.folder" value="${temp.folder}/"/>
+		</antcall>
+		<delete>
+			<fileset dir="${temp.folder}">
+				<include name="**/*.bin${logExtension}"/>
+			</fileset>
+		</delete>
+		<zip destfile="${plugin.destination}/net.sourceforge.pmd.eclipse_3.2.4.v200804111600.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+</project>
