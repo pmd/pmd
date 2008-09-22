@@ -125,7 +125,7 @@
 	</target>
 
 	<target name="refresh" depends="init" if="eclipse.running" description="Refresh this folder.">
-		<eclipse.convertPath fileSystemPath="/home/xlv/dev/pmd/all/pmd-eclipse-plugin/pmd-eclipse" property="resourcePath"/>
+		<eclipse.convertPath fileSystemPath="${basedir}" property="resourcePath"/>
 		<eclipse.refreshLocal resource="${resourcePath}" depth="infinite"/>
 	</target>
 
