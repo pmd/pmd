@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="net.sourceforge.pmd.eclipse"
+      id="net.sourceforge.pmd.eclipse.feature"
       label="%feature.label"
       version="3.2.4.v200804111600"
       provider-name="%feature.provider_name"
@@ -32,28 +32,11 @@
    </requires>
 
    <plugin
-         id="net.sourceforge.pmd.eclipse"
+         id="net.sourceforge.pmd.eclipse.plugin"
          download-size="0"
          install-size="0"
          version="3.2.4.v200804111600"
-         unpack="false"/>
-
-   <plugin
-         id="net.sourceforge.pmd.ui"
-         download-size="0"
-         install-size="0"
-         version="3.2.4.v200804111600"/>
-
-   <plugin
-         id="net.sourceforge.pmd.runtime"
-         download-size="0"
-         install-size="0"
-         version="3.2.4.v200804111600"/>
-
-   <plugin
-         id="net.sourceforge.pmd.core"
-         download-size="0"
-         install-size="0"
-         version="4.2.3.v200809021135"/>
+         unpack="false"
+	/>
 
 </feature>
