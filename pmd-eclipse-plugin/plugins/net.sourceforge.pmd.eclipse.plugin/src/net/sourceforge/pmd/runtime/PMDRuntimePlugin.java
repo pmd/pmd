@@ -36,32 +36,7 @@
 
 package net.sourceforge.pmd.runtime;
 
-import java.io.IOException;
-
-import net.sourceforge.pmd.runtime.preferences.IPreferences;
-import net.sourceforge.pmd.runtime.preferences.IPreferencesFactory;
-import net.sourceforge.pmd.runtime.preferences.IPreferencesManager;
-import net.sourceforge.pmd.runtime.preferences.impl.PreferencesFactoryImpl;
-import net.sourceforge.pmd.runtime.properties.IProjectProperties;
-import net.sourceforge.pmd.runtime.properties.IProjectPropertiesManager;
-import net.sourceforge.pmd.runtime.properties.IPropertiesFactory;
-import net.sourceforge.pmd.runtime.properties.PropertiesException;
-import net.sourceforge.pmd.runtime.properties.impl.PropertiesFactoryImpl;
-import net.sourceforge.pmd.runtime.writer.IAstWriter;
-import net.sourceforge.pmd.runtime.writer.IRuleSetWriter;
-import net.sourceforge.pmd.runtime.writer.impl.WriterFactoryImpl;
-
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.RollingFileAppender;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
+import net.sourceforge.pmd.eclipse.plugin.PMDActivator;
 
 /**
  * Plugin class for the PMD for Eclipse Runtime plugin. This is the entry point to get access to that plugin features, such as
@@ -74,144 +49,15 @@ import org.osgi.framework.BundleContext;
  * @version $Revision: $
  */
 
-public class PMDRuntimePlugin extends AbstractUIPlugin {
-    public static final String PLUGIN_ID = "net.sourceforge.pmd.runtime";
-    public static final String ROOT_LOG_ID = "net.sourceforge.pmd";
-    private static final String PMD_ECLIPSE_APPENDER_NAME = "PMDEclipseAppender";
-    private static PMDRuntimePlugin plugin;
-    private IPreferencesFactory preferencesFactory = new PreferencesFactoryImpl();
-    private IPropertiesFactory propertiesFactory = new PropertiesFactoryImpl();
-    
-    /**
-     * The constructor.
-     */
-    public PMDRuntimePlugin() {
-        plugin = this;
-    }
+public class PMDRuntimePlugin {
 
-    /**
-     * This method is called upon plug-in activation
-     */
-    public void start(BundleContext context) throws Exception {
-        super.start(context);
-        configureLogs(loadPreferences());
-    }
+	public static final String PLUGIN_ID = PMDActivator.PLUGIN_ID;
 
-    /**
-     * This method is called when the plug-in is stopped
-     */
-    public void stop(BundleContext context) throws Exception {
-        super.stop(context);
-        plugin = null;
-    }
-
-    /**
-     * Returns the shared instance.
-     */
-    public static PMDRuntimePlugin getDefault() {
-        return plugin;
-    }
-
-    /**
-     * Load the PMD plugin preferences
-     */
-    public IPreferences loadPreferences() {
-        return getPreferencesManager().loadPreferences();
-    }
-    
-    /**
-     * @return the plugin preferences manager
-     */
-    public IPreferencesManager getPreferencesManager() {
-        return this.preferencesFactory.getPreferencesManager();
-    }
-    
-    /**
-     * @return the plugin project properties manager
-     */
-    public IProjectPropertiesManager getPropertiesManager() {
-        return this.propertiesFactory.getProjectPropertiesManager();
-    }
-    
-    /**
-     * @param project a workspace project
-     * @return the PMD properties for that project
-     */
-    public IProjectProperties loadProjectProperties(IProject project) throws PropertiesException {
-        return getPropertiesManager().loadProjectProperties(project);
-    }
-
-    /**
-     * Helper method to log error
-     * 
-     * @see IStatus
-     */
-    public void logError(String message, Throwable t) {
-        getLog().log(new Status(IStatus.ERROR, getBundle().getSymbolicName(), 0, message + ": " + t.getMessage(), t));
-    }
-
-    /**
-     * Helper method to log information
-     * 
-     * @see IStatus
-     */
-    public void logInformation(String message) {
-        getLog().log(new Status(IStatus.INFO, getBundle().getSymbolicName(), 0, message, null));
-    }
-    
-    /**
-     * @return an instance of an AST writer
-     */
-    public IAstWriter getAstWriter() {
-        return new WriterFactoryImpl().getAstWriter();
-    }
-    
-    /**
-     * @return an instance of a ruleset writer
-     */
-    public IRuleSetWriter getRuleSetWriter() {
-        return new WriterFactoryImpl().getRuleSetWriter();
-    }
-    
-    /**
-     * Apply the log preferencs
-     */
-    public void applyLogPreferences(IPreferences preferences) {
-        Logger log = Logger.getLogger(ROOT_LOG_ID);
-        log.setLevel(preferences.getLogLevel());
-        RollingFileAppender appender = (RollingFileAppender) log.getAppender(PMD_ECLIPSE_APPENDER_NAME);
-        if (appender == null) {
-            configureLogs(preferences);
-        } else if (!appender.getFile().equals(preferences.getLogFileName())) {
-            appender.setFile(preferences.getLogFileName());
-            appender.activateOptions();
-        }
-    }
-
-    /**
-     * Configure the logging
-     *
-     */
-    private void configureLogs(IPreferences preferences) {
-        try {
-            Layout layout = new PatternLayout("%d{yyyy/MM/dd HH:mm:ss,SSS} %-5p %-32c{1} %m%n");
-            
-            RollingFileAppender appender = new RollingFileAppender(layout, preferences.getLogFileName());
-            appender.setName(PMD_ECLIPSE_APPENDER_NAME);
-            appender.setMaxBackupIndex(1);
-            appender.setMaxFileSize("10MB");
-            
-            Logger.getRootLogger().addAppender(new ConsoleAppender(layout));
-            Logger.getRootLogger().setLevel(Level.WARN);
-            Logger.getRootLogger().setAdditivity(false);
-            
-            Logger.getLogger(ROOT_LOG_ID).addAppender(appender);            
-            Logger.getLogger(ROOT_LOG_ID).setLevel(preferences.getLogLevel());
-            Logger.getLogger(ROOT_LOG_ID).setAdditivity(false);
-
-        } catch (IOException e) {
-            logError("IO Exception when configuring logging.", e);
-        }
-    }
+	/**
+	 * Returns the shared instance.
+	 */
+	public static PMDActivator getDefault() {
+		return PMDActivator.getDefault();
+	}
 
 }

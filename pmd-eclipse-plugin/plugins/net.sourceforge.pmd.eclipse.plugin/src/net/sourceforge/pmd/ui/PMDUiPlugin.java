@@ -36,172 +36,23 @@
 
 package net.sourceforge.pmd.ui;
 
-import net.sourceforge.pmd.ui.nls.StringKeys;
-import net.sourceforge.pmd.ui.nls.StringTable;
+import net.sourceforge.pmd.eclipse.plugin.PMDActivator;
 
-import org.apache.log4j.Logger;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
- * 
- * @author Philippe Herlin
- * @version $Revision$
- * 
- * $Log$
- * Revision 1.3  2006/10/10 22:31:01  phherlin
- * Fix other PMD warnings
- *
- * Revision 1.2  2006/10/09 13:26:40  phherlin
- * Review Sebastian code... and fix most PMD warnings
  *
  */
-public class PMDUiPlugin extends AbstractUIPlugin {
-    private static final Logger log = Logger.getLogger(PMDUiPlugin.class);
-
-	//The shared instance.
-	private static PMDUiPlugin plugin; // NOPMD by Herlin on 11/10/06 00:21
-    
-    private StringTable stringTable; // NOPMD by Herlin on 11/10/06 00:22
-    private String[] priorityLabels; // NOPMD by Herlin on 11/10/06 00:22
-	
-	/**
-	 * The constructor.
-	 */
-	public PMDUiPlugin() {
-        super();
-		plugin = this;
-	}
-
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	public void stop(BundleContext context) throws Exception { // NOPMD by Herlin on 11/10/06 00:21
-		super.stop(context);
-		plugin = null; // NOPMD by Herlin on 11/10/06 00:21
-	}
-
+public class PMDUiPlugin {
 	/**
 	 * Returns the shared instance.
 	 */
-	public static PMDUiPlugin getDefault() {
-		return plugin;
+	public static PMDActivator getDefault() {
+		return PMDActivator.getDefault();
 	}
 
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path.
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin("net.sourceforge.pmd.ui", path);
+		return PMDActivator.getImageDescriptor(path);
 	}
-    
-    /**
-     * Get an image corresponding to the severity
-     */
-    public Image getImage(String key, String iconPath) {
-        final ImageRegistry registry = getImageRegistry();
-        Image image = registry.get(key);
-        if (image == null) {
-            final ImageDescriptor descriptor = getImageDescriptor(iconPath);
-            if (descriptor != null) {
-                registry.put(key, descriptor);
-                image = registry.get(key);
-            }
-        }
-
-        return image;
-    }
-
-    /**
-     * Helper method to log error
-     * 
-     * @see IStatus
-     */
-    public void logError(String message, Throwable t) {
-        getLog().log(new Status(IStatus.ERROR, getBundle().getSymbolicName(), 0, message + t.getMessage(), t));
-        if (log != null) {
-            log.error(message, t);
-        }
-    }
-
-    /**
-     * Helper method to log error
-     * 
-     * @see IStatus
-     */
-    public void logError(IStatus status) {
-        getLog().log(status);
-        if (log != null) {
-            log.error(status.getMessage(), status.getException());
-        }
-    }
-
-    /**
-     * Helper method to display error
-     */
-    public void showError(final String message, final Throwable t) {
-        logError(message, t);
-        Display.getDefault().syncExec(new Runnable() {
-
-            public void run() {
-                
-                MessageDialog.openError(Display.getCurrent().getActiveShell(), getStringTable().getString(StringKeys.MSGKEY_ERROR_TITLE), message
-                        + String.valueOf(t));
-            }
-        });
-    }
-    
-    /**
-     * @return an instance of the string table
-     */
-    public StringTable getStringTable() {
-        if (this.stringTable == null) {
-            this.stringTable = new StringTable();
-        }
-        
-        return this.stringTable;
-    }
-
-    /**
-     * @return the priority values
-     */
-    public Integer[] getPriorityValues() {
-        return new Integer[] {
-                new Integer(1),
-                new Integer(2),
-                new Integer(3),
-                new Integer(4),
-                new Integer(5)
-        };
-    }
-
-    /**
-     * Return the priority labels
-     */
-    public String[] getPriorityLabels() {
-        if (this.priorityLabels == null) {
-            final StringTable stringTable = getStringTable();
-            this.priorityLabels = new String[]{
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_ERROR_HIGH),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_ERROR),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_WARNING_HIGH),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_WARNING),
-                stringTable.getString(StringKeys.MSGKEY_PRIORITY_INFORMATION)
-            };
-        }
-
-        return this.priorityLabels; // NOPMD by Herlin on 11/10/06 00:22
-    }
 }

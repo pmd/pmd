@@ -1,0 +1,42 @@
+<project name="pmd" default="plugin" basedir=".">
+
+  <property file="local.properties" />
+
+  <property name="dir.build" value="build"/>
+
+  <property name="eclipse.home" value="/usr/java/eclipse"/>
+  <property name="eclipse.pde.version" value="3.4.0.v20080604"/>
+  <property name="eclipse.launcher.version" value="1.0.100.v20080509-1800"/>
+
+  <target name="clean">
+    <delete dir="${dir.build}" />
+  </target>
+
+  <target name="init">
+    <mkdir dir="${dir.build}" />
+    <copy file="${eclipse.home}/plugins/org.eclipse.pde.build_${eclipse.pde.version}/templates/headless-build/build.properties" tofile="build.properties" overwrite="true" />
+
+    <concat destfile="build.properties" append="true">
+      <fileset dir="." includes="custom_build.properties"/>
+    </concat>
+    <replace file="build.properties" token="buildDirectory=buildDir" value="buildDirectory=${basedir}"/>
+  </target>
+
+  <target name="plugin" depends="init">
+    <java jar="${eclipse.home}/plugins/org.eclipse.equinox.launcher_${eclipse.launcher.version}.jar" fork="true">
+      <arg value="-application"/>
+      <arg value="org.eclipse.ant.core.antRunner"/>
+      <arg value="-buildfile"/>
+      <arg value="${eclipse.home}/plugins/org.eclipse.pde.build_${eclipse.pde.version}/scripts/build.xml"/>
+      <arg value="-Dbuilder=${basedir}"/>
+    </java>
+    <move todir="${dir.build}">
+      <fileset dir="${basedir}">
+        <include name="assemble.net.sourceforge.pmd.eclipse.*"/>
+        <include name="final*Versions.*"/>
+        <include name="package.net.sourceforge.pmd.eclipse.*"/>
+      </fileset>
+    </move>
+  </target>
+
+</project>
