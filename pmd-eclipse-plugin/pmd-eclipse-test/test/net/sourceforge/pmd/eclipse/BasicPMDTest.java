@@ -49,7 +49,7 @@ import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.RuleViolation;
 import net.sourceforge.pmd.SourceType;
-import net.sourceforge.pmd.core.PluginConstants;
+import net.sourceforge.pmd.eclipse.core.PluginConstants;
 
 /**
  * Test if PMD can be run correctly

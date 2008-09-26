@@ -43,8 +43,8 @@ import java.util.Properties;
 import java.util.Set;
 
 import net.sourceforge.pmd.Rule;
-import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.runtime.builder.PMDNature;
+import net.sourceforge.pmd.eclipse.runtime.PMDRuntimeConstants;
+import net.sourceforge.pmd.eclipse.runtime.builder.PMDNature;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;

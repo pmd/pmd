@@ -43,7 +43,7 @@ import org.eclipse.core.runtime.IStatus;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.core.IRuleSetsExtension;
+import net.sourceforge.pmd.eclipse.core.IRuleSetsExtension;
 import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
@@ -69,7 +69,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
 
     /**
      * Replace the core plugin fragment with our own rulesets
-     * @see net.sourceforge.pmd.core.IRuleSetsExtension#registerRuleSets(java.util.Set)
+     * @see net.sourceforge.pmd.eclipse.core.IRuleSetsExtension#registerRuleSets(java.util.Set)
      */
     public void registerRuleSets(Set registeredRuleSets) {
         try {
@@ -87,7 +87,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
     /**
      * Replace the default rule sets. These rule sets are the one loaded if no rule sets has been configured yet
      * (for instance when creating a new workspace)
-     * @see net.sourceforge.pmd.core.IRuleSetsExtension#registerDefaultRuleSets(java.util.Set)
+     * @see net.sourceforge.pmd.eclipse.core.IRuleSetsExtension#registerDefaultRuleSets(java.util.Set)
      */
     public void registerDefaultRuleSets(Set defaultRuleSets) {
         try {
