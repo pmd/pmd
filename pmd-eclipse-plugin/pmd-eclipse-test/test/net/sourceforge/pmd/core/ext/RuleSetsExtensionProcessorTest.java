@@ -42,7 +42,7 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.core.PMDCorePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
  * Test the ruleset extension
@@ -66,7 +66,7 @@ public class RuleSetsExtensionProcessorTest extends TestCase {
      * 
      */
     public void testAdditionalRuleSetsRegistered() throws RuleSetNotFoundException {
-        Set registeredRuleSets = PMDCorePlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+        Set registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
@@ -83,7 +83,7 @@ public class RuleSetsExtensionProcessorTest extends TestCase {
      * 
      */
     public void testAdditionalDefaultRuleSetsRegistered() throws RuleSetNotFoundException {
-        Set registeredRuleSets = PMDCorePlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
+        Set registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
         assertFalse("No registered default rulesets!", registeredRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();

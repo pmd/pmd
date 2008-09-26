@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -57,10 +57,10 @@ import net.sourceforge.pmd.core.rulesets.vo.RuleSets;
 
 /**
  * RuleSetsManager unit tests
- * 
+ *
  * @author Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.2  2006/10/06 16:42:04  phherlin
  * Continue refactoring of rullesets management
@@ -69,14 +69,14 @@ import net.sourceforge.pmd.core.rulesets.vo.RuleSets;
  * Move the new rule sets management to the core plugin instead of the runtime.
  * Continue the development.
  *
- * 
+ *
  */
 
 public class RuleSetsManagerImplTest extends TestCase {
 
     /**
      * Test the valueOf method in its expected usage.
-     * 
+     *
      * @throws RuleSetNotFoundException
      */
     public void testValueOf1() throws PMDCoreException, RuleSetNotFoundException {
@@ -95,9 +95,9 @@ public class RuleSetsManagerImplTest extends TestCase {
 
     /**
      * Passing a null array to valueOf is not allowed
-     * 
+     *
      * @throws RuleSetNotFoundException
-     * 
+     *
      */
     public void testValueOf2() throws PMDCoreException {
         try {
@@ -111,9 +111,9 @@ public class RuleSetsManagerImplTest extends TestCase {
 
     /**
      * Passing an empty array to valueOf is not allowed
-     * 
+     *
      * @throws RuleSetNotFoundException
-     * 
+     *
      */
     public void testValueOf3() throws PMDCoreException {
         try {
@@ -121,10 +121,10 @@ public class RuleSetsManagerImplTest extends TestCase {
             RuleSet ruleSet = rsm.valueOf(new String[] {});
             fail("Getting a rule set from an empty array is not allowed");
         } catch (IllegalArgumentException e) {
-            // Sucess
+            // Success
         }
     }
-    
+
     /**
      * Basically test the writeToXml operation.
      *
@@ -135,37 +135,37 @@ public class RuleSetsManagerImplTest extends TestCase {
         if (in == null) {
             throw new IllegalStateException("The test file testRuleSetsManager.rulesets cannot be found. The test cannot be performed.");
         }
-        
+
         byte[] bytes = new byte[in.available()];
         in.read(bytes);
-        
+
         String reference = new String(bytes, "UTF-8");
         in.close();
-        
+
         System.out.println("--reference");
         System.out.println(reference);
-        
+
         try {
             IRuleSetsManager rsm = new RuleSetsManagerImpl();
             RuleSet ruleSet = rsm.valueOf(new String[] { "rulesets/basic.xml" });
             ruleSet.setName("basic");
             ruleSet.setLanguage(RuleSet.LANGUAGE_JAVA);
-            
+
             List ruleSetsList = new ArrayList();
             ruleSetsList.add(ruleSet);
-            
+
             RuleSets ruleSets = new RuleSets();
             ruleSets.setRuleSets(ruleSetsList);
             ruleSets.setDefaultRuleSet(ruleSet);
 
             out = new ByteArrayOutputStream();
             rsm.writeToXml(ruleSets, out);
-            
+
             String result = new String(out.toByteArray(), "UTF-8");
-            
+
             System.out.println("--result");
             System.out.println(result);
-            
+
             assertEquals("The outpout rulesets is not the expected one", reference, result);
         } finally {
             if (out != null) {
@@ -176,7 +176,7 @@ public class RuleSetsManagerImplTest extends TestCase {
 
     /**
      * Dump a collection of rules
-     * 
+     *
      * @param message
      * @param rules
      */

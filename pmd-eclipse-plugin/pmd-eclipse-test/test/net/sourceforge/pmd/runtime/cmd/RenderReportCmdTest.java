@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -43,8 +43,6 @@ import name.herlin.command.UnsetInputPropertiesException;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
 import net.sourceforge.pmd.renderers.HTMLRenderer;
 import net.sourceforge.pmd.runtime.PMDRuntimeConstants;
-import net.sourceforge.pmd.runtime.cmd.RenderReportCmd;
-import net.sourceforge.pmd.runtime.cmd.ReviewCodeCmd;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -55,27 +53,27 @@ import org.eclipse.core.runtime.CoreException;
 
 /**
  * Test the report rendering
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.1  2006/06/18 22:29:51  phherlin
  * Begin refactoring the unit tests for the plugin
  * Revision 1.2 2005/12/30 16:29:15 phherlin
  * Implement a new preferences model and review some tests
- * 
+ *
  * Revision 1.1 2005/06/15 21:14:57 phherlin Create the project for the Eclipse
  * plugin unit tests
- * 
- * 
+ *
+ *
  */
 public class RenderReportCmdTest extends TestCase {
     private IProject testProject;
 
     /**
      * Default constructor
-     * 
+     *
      * @param name
      */
     public RenderReportCmdTest(String name) {
@@ -84,7 +82,7 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test the basic usage of the report rendering command
-     * 
+     *
      */
     public void testRenderReportCmdBasic() throws CommandException, CoreException {
         ReviewCodeCmd reviewCmd = new ReviewCodeCmd();
@@ -93,8 +91,7 @@ public class RenderReportCmdTest extends TestCase {
 
         RenderReportCmd cmd = new RenderReportCmd();
         cmd.setProject(this.testProject);
-        cmd.setRenderer(new HTMLRenderer());
-        cmd.setReportName(PMDRuntimeConstants.HTML_REPORT_NAME);
+        cmd.registerRenderer(new HTMLRenderer(), PMDRuntimeConstants.HTML_REPORT_NAME);
         cmd.performExecute();
         cmd.join();
 
@@ -117,15 +114,14 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #1
-     * 
+     *
      * @throws CommandException
      */
     public void testRenderReportCmdNullArg1() throws CommandException {
         try {
             RenderReportCmd cmd = new RenderReportCmd();
             cmd.setProject(null);
-            cmd.setRenderer(new HTMLRenderer());
-            cmd.setReportName(PMDRuntimeConstants.HTML_REPORT_NAME);
+            cmd.registerRenderer(new HTMLRenderer(), PMDRuntimeConstants.HTML_REPORT_NAME);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -135,15 +131,14 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #2
-     * 
+     *
      * @throws CommandException
      */
     public void testRenderReportCmdNullArg2() throws CommandException {
         try {
             RenderReportCmd cmd = new RenderReportCmd();
             cmd.setProject(this.testProject);
-            cmd.setRenderer(null);
-            cmd.setReportName(PMDRuntimeConstants.HTML_REPORT_NAME);
+            cmd.registerRenderer(null, PMDRuntimeConstants.HTML_REPORT_NAME);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -153,15 +148,14 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #3
-     * 
+     *
      * @throws CommandException
      */
     public void testRenderReportCmdNullArg3() throws CommandException {
         try {
             RenderReportCmd cmd = new RenderReportCmd();
             cmd.setProject(this.testProject);
-            cmd.setRenderer(new HTMLRenderer());
-            cmd.setReportName(null);
+            cmd.registerRenderer(new HTMLRenderer(), null);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -171,15 +165,14 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #4
-     * 
+     *
      * @throws CommandException
      */
     public void testRenderReportCmdNullArg4() throws CommandException {
         try {
             RenderReportCmd cmd = new RenderReportCmd();
             cmd.setProject(null);
-            cmd.setRenderer(null);
-            cmd.setReportName(PMDRuntimeConstants.HTML_REPORT_NAME);
+            cmd.registerRenderer(null, PMDRuntimeConstants.HTML_REPORT_NAME);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -189,15 +182,14 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #5
-     * 
+     *
      * @throws CommandException
      */
     public void testRenderReportCmdNullArg5() throws CommandException {
         try {
             RenderReportCmd cmd = new RenderReportCmd();
             cmd.setProject(null);
-            cmd.setRenderer(new HTMLRenderer());
-            cmd.setReportName(null);
+            cmd.registerRenderer(new HTMLRenderer(), null);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -207,15 +199,14 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #6
-     * 
+     *
      * @throws CommandException
      */
     public void testRenderReportCmdNullArg6() throws CommandException {
         try {
             RenderReportCmd cmd = new RenderReportCmd();
             cmd.setProject(this.testProject);
-            cmd.setRenderer(null);
-            cmd.setReportName(null);
+            cmd.registerRenderer(null, null);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -225,15 +216,14 @@ public class RenderReportCmdTest extends TestCase {
 
     /**
      * Test robustness #7
-     * 
+     *
      * @throws CommandException
      */
     public void testRenderReportCmdNullArg7() throws CommandException {
         try {
             RenderReportCmd cmd = new RenderReportCmd();
             cmd.setProject(null);
-            cmd.setRenderer(null);
-            cmd.setReportName(null);
+            cmd.registerRenderer(null, null);
             cmd.performExecute();
             fail();
         } catch (UnsetInputPropertiesException e) {
@@ -249,7 +239,7 @@ public class RenderReportCmdTest extends TestCase {
 
         // 1. Create a Java project
         this.testProject = EclipseUtils.createJavaProject("PMDTestProject");
-        assertTrue("A test project cannot be created; the tests cannot be performed.", (this.testProject != null)
+        assertTrue("A test project cannot be created; the tests cannot be performed.", this.testProject != null
                 && this.testProject.exists() && this.testProject.isAccessible());
 
         // 2. Create a test source file inside that project

@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -39,14 +39,13 @@ import java.util.Iterator;
 import java.util.Set;
 
 import junit.framework.TestCase;
-import net.sourceforge.pmd.AbstractRule;
+import net.sourceforge.pmd.AbstractJavaRule;
 import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.core.PMDCorePlugin;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.builder.PMDNature;
 import net.sourceforge.pmd.runtime.preferences.IPreferencesManager;
 
@@ -58,10 +57,10 @@ import org.eclipse.ui.IWorkingSet;
 
 /**
  * Test the project properties model.
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.3  2006/10/08 22:19:16  phherlin
  * Fix last Java warnings
@@ -73,16 +72,16 @@ import org.eclipse.ui.IWorkingSet;
  * Begin refactoring the unit tests for the plugin
  * Revision 1.4 2005/12/30 16:29:16
  * phherlin Implement a new preferences model and review some tests
- * 
+ *
  * Revision 1.3 2005/07/02 14:31:11 phherlin Fixing equals assertion to test on
  * rules collection instead
- * 
+ *
  * Revision 1.2 2005/07/01 00:06:38 phherlin Refactoring and writing more tests
- * 
+ *
  * Revision 1.1 2005/06/15 21:14:56 phherlin Create the project for the Eclipse
  * plugin unit tests
- * 
- * 
+ *
+ *
  */
 public class ProjectPropertiesModelTest extends TestCase {
     private IProject testProject;
@@ -90,7 +89,7 @@ public class ProjectPropertiesModelTest extends TestCase {
 
     /**
      * Test case constructor
-     * 
+     *
      * @param name of the test case
      */
     public ProjectPropertiesModelTest(String name) {
@@ -100,10 +99,10 @@ public class ProjectPropertiesModelTest extends TestCase {
     /**
      * A property should be used to know if PMD is enabled for a project. Set to
      * TRUE
-     * 
+     *
      */
     public void testPmdEnabledTRUE() throws CoreException, PropertiesException {
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         model.setPmdEnabled(true);
@@ -115,10 +114,10 @@ public class ProjectPropertiesModelTest extends TestCase {
     /**
      * A property should be used to know id PMD is enabled for a project. Set to
      * FALSE.
-     * 
+     *
      */
     public void testPmdEnabledFALSE() throws PropertiesException, CoreException {
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         model.setPmdEnabled(true);
@@ -135,13 +134,13 @@ public class ProjectPropertiesModelTest extends TestCase {
     /**
      * A brand new project should be affected the Plugin ruleset in the global
      * ruleset.
-     * 
+     *
      */
     public void testProjectRuleSet() throws PropertiesException {
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
-        IPreferencesManager pmgr = PMDRuntimePlugin.getDefault().getPreferencesManager();
+        IPreferencesManager pmgr = PMDPlugin.getDefault().getPreferencesManager();
 
         assertSame("A new project is not set the plugin ruleset", model.getProjectRuleSet(), pmgr.getRuleSet());
     }
@@ -150,7 +149,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      * Set another ruleset.
      */
     public void testProjectRuleSet1() throws PropertiesException, RuleSetNotFoundException, CoreException {
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         RuleSetFactory factory = new RuleSetFactory();
@@ -179,7 +178,7 @@ public class ProjectPropertiesModelTest extends TestCase {
 /*
         // First ensure that the plugin initial ruleset is equal to the project
         // ruleset
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         RuleSet projectRuleSet = model.getProjectRuleSet();
@@ -190,7 +189,7 @@ public class ProjectPropertiesModelTest extends TestCase {
         RuleSetFactory factory = new RuleSetFactory();
         RuleSet basicRuleSet = factory.createSingleRuleSet("rulesets/basic.xml");
 
-        IPreferencesManager pmgr = PMDRuntimePlugin.getDefault().getPreferencesManager();
+        IPreferencesManager pmgr = PMDPlugin.getDefault().getPreferencesManager();
         pmgr.setRuleSet(basicRuleSet);
 
         projectRuleSet = model.getProjectRuleSet();
@@ -198,7 +197,7 @@ public class ProjectPropertiesModelTest extends TestCase {
         dumpRuleSet(basicRuleSet);
         dumpRuleSet(projectRuleSet);
         assertEquals("The project ruleset is not equal to the plugin ruleset", basicRuleSet.getRules(), projectRuleSet.getRules());
-*/    
+*/
     }
 
     /**
@@ -209,14 +208,14 @@ public class ProjectPropertiesModelTest extends TestCase {
 
         // First ensure that the plugin initial ruleset is equal to the project
         // ruleset
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         RuleSet projectRuleSet = model.getProjectRuleSet();
         assertEquals("The project ruleset is not equal to the plugin ruleset", this.initialPluginRuleSet.getRules(), projectRuleSet.getRules());
 
         // 2. add a rule to the plugin rule set
-        Rule myRule = new AbstractRule() {
+        Rule myRule = new AbstractJavaRule() {
             public String getName() {
                 return "MyRule";
             }
@@ -226,13 +225,13 @@ public class ProjectPropertiesModelTest extends TestCase {
         newRuleSet.setName("foo");
         newRuleSet.addRuleSet(this.initialPluginRuleSet);
         newRuleSet.addRule(myRule);
-        PMDRuntimePlugin.getDefault().getPreferencesManager().setRuleSet(newRuleSet);
+        PMDPlugin.getDefault().getPreferencesManager().setRuleSet(newRuleSet);
 
         // Test that the project rule set should still be the same as the plugin
         // rule set
         model = mgr.loadProjectProperties(this.testProject);
         projectRuleSet = model.getProjectRuleSet();
-        assertEquals("The project ruleset is not equal to the plugin ruleset", PMDRuntimePlugin.getDefault()
+        assertEquals("The project ruleset is not equal to the plugin ruleset", PMDPlugin.getDefault()
                 .getPreferencesManager().getRuleSet().getRules(), projectRuleSet.getRules());
     }
 
@@ -244,7 +243,7 @@ public class ProjectPropertiesModelTest extends TestCase {
 
         // First ensure that the plugin initial ruleset is equal to the project
         // ruleset
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         RuleSet projectRuleSet = model.getProjectRuleSet();
@@ -267,10 +266,10 @@ public class ProjectPropertiesModelTest extends TestCase {
 
     /**
      * It should not be possible to set to null a project ruleset
-     * 
+     *
      */
     public void testProjectRuleSetNull() throws PropertiesException {
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         try {
@@ -287,7 +286,7 @@ public class ProjectPropertiesModelTest extends TestCase {
      * set to TRUE.
      */
     public void testRuleSetStoredInProjectTRUE() throws PropertiesException, RuleSetNotFoundException {
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         RuleSetFactory factory = new RuleSetFactory();
@@ -313,10 +312,10 @@ public class ProjectPropertiesModelTest extends TestCase {
     /**
      * A project may have its ruleset stored in the project own directory. Test
      * set to FALSE.
-     * 
+     *
      */
     public void testRuleSetStoredInProjectFALSE() throws PropertiesException, RuleSetNotFoundException {
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         RuleSetFactory factory = new RuleSetFactory();
@@ -339,10 +338,10 @@ public class ProjectPropertiesModelTest extends TestCase {
 
     /**
      * A project may work only on a subset of files defined by a working set
-     * 
+     *
      */
     public void testProjectWorkingSetNull() throws PropertiesException {
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         model.setProjectWorkingSet(null);
@@ -352,10 +351,10 @@ public class ProjectPropertiesModelTest extends TestCase {
 
     /**
      * A project may know if it should be rebuilt or not
-     * 
+     *
      */
     public void testRebuild1() throws PropertiesException {
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         model.setPmdEnabled(false);
@@ -367,10 +366,10 @@ public class ProjectPropertiesModelTest extends TestCase {
 
     /**
      * A project may know if it should be rebuilt or not
-     * 
+     *
      */
     public void testRebuild2() throws PropertiesException {
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         model.setPmdEnabled(true);
@@ -379,15 +378,15 @@ public class ProjectPropertiesModelTest extends TestCase {
 
     /**
      * A project may know if it should be rebuilt or not
-     * 
+     *
      */
     public void testRebuild3() throws PropertiesException {
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         model.setPmdEnabled(true);
 
-        RuleSet pmdRuleSet = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet();
+        RuleSet pmdRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
         RuleSet fooRuleSet = new RuleSet();
 
         Rule rule1 = pmdRuleSet.getRuleByName("EmptyCatchBlock");
@@ -406,13 +405,13 @@ public class ProjectPropertiesModelTest extends TestCase {
 
         // 1. Create a Java project
         this.testProject = EclipseUtils.createJavaProject("PMDTestProject");
-        assertTrue("A test project cannot be created; the tests cannot be performed.", (this.testProject != null)
+        assertTrue("A test project cannot be created; the tests cannot be performed.", this.testProject != null
                 && this.testProject.exists() && this.testProject.isAccessible());
 
         // 2. Keep the plugin ruleset
-        this.initialPluginRuleSet = PMDRuntimePlugin.getDefault().getPreferencesManager().getRuleSet();
+        this.initialPluginRuleSet = PMDPlugin.getDefault().getPreferencesManager().getRuleSet();
         this.initialPluginRuleSet.getRules().clear();
-        Set defaultRuleSets = PMDCorePlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
+        Set defaultRuleSets = PMDPlugin.getDefault().getRuleSetManager().getDefaultRuleSets();
         for (Iterator i = defaultRuleSets.iterator(); i.hasNext();) {
             this.initialPluginRuleSet.addRuleSet((RuleSet) i.next());
         }
@@ -431,7 +430,7 @@ public class ProjectPropertiesModelTest extends TestCase {
         }
 
         // 2. Restore the plugin initial rule set
-        PMDRuntimePlugin.getDefault().getPreferencesManager().setRuleSet(this.initialPluginRuleSet);
+        PMDPlugin.getDefault().getPreferencesManager().setRuleSet(this.initialPluginRuleSet);
 
         super.tearDown();
     }
@@ -445,5 +444,5 @@ public class ProjectPropertiesModelTest extends TestCase {
         }
         System.out.println();
     }
-    
+
 }

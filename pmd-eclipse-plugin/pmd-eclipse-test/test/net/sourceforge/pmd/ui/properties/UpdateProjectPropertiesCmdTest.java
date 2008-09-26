@@ -8,7 +8,7 @@ import net.sourceforge.pmd.Rule;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.eclipse.EclipseUtils;
-import net.sourceforge.pmd.runtime.PMDRuntimePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 import net.sourceforge.pmd.runtime.properties.IProjectProperties;
 import net.sourceforge.pmd.runtime.properties.IProjectPropertiesManager;
 import net.sourceforge.pmd.runtime.properties.PropertiesException;
@@ -54,11 +54,11 @@ public class UpdateProjectPropertiesCmdTest extends TestCase {
 
         // First ensure that the plugin initial ruleset is equal to the project
         // ruleset
-        IProjectPropertiesManager mgr = PMDRuntimePlugin.getDefault().getPropertiesManager();
+        IProjectPropertiesManager mgr = PMDPlugin.getDefault().getPropertiesManager();
         IProjectProperties model = mgr.loadProjectProperties(this.testProject);
 
         RuleSet projectRuleSet = model.getProjectRuleSet();
-        assertEquals("The project ruleset is not equal to the plugin ruleset", PMDRuntimePlugin.getDefault()
+        assertEquals("The project ruleset is not equal to the plugin ruleset", PMDPlugin.getDefault()
                 .getPreferencesManager().getRuleSet().getRules(), projectRuleSet.getRules());
 
         // 2. remove the first rule (keep its name for assertion)

@@ -44,7 +44,7 @@ import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
 import net.sourceforge.pmd.core.IRuleSetsExtension;
-import net.sourceforge.pmd.core.PMDCorePlugin;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
  * Sample of an RuleSets extension.
@@ -80,7 +80,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
             registeredRuleSets.add(ruleSet1);
             registeredRuleSets.add(ruleSet2);
         } catch (RuleSetNotFoundException e) {
-            PMDCorePlugin.getDefault().log(IStatus.ERROR, "Unable to load rulesets", e);
+            PMDPlugin.getDefault().log(IStatus.ERROR, "Unable to load rulesets", e);
         }        
     }
 
@@ -98,7 +98,7 @@ public class RuleSetsExtension implements IRuleSetsExtension {
             defaultRuleSets.add(ruleSet1);
             defaultRuleSets.add(ruleSet2);
         } catch (RuleSetNotFoundException e) {
-            PMDCorePlugin.getDefault().log(IStatus.ERROR, "Unable to load rulesets", e);
+            PMDPlugin.getDefault().log(IStatus.ERROR, "Unable to load rulesets", e);
         }        
     }
     

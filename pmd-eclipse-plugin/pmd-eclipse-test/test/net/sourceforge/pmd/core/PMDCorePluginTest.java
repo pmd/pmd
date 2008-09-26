@@ -7,7 +7,7 @@
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  *     * Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
  *     * Redistributions in binary form must reproduce the above copyright
@@ -20,7 +20,7 @@
  *     * Neither the name of "PMD for Eclipse Development Team" nor the names of its
  *       contributors may be used to endorse or promote products derived from
  *       this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
  * IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
  * TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
@@ -42,31 +42,30 @@ import junit.framework.TestCase;
 import net.sourceforge.pmd.RuleSet;
 import net.sourceforge.pmd.RuleSetFactory;
 import net.sourceforge.pmd.RuleSetNotFoundException;
-import net.sourceforge.pmd.core.PMDCorePlugin;
-import net.sourceforge.pmd.core.PluginConstants;
+import net.sourceforge.pmd.eclipse.plugin.PMDPlugin;
 
 /**
  * Test the PMD Core plugin
- * 
+ *
  * @author Philippe Herlin
  * @version $Revision$
- * 
+ *
  * $Log$
  * Revision 1.1  2006/06/18 22:29:52  phherlin
  * Begin refactoring the unit tests for the plugin
  * Revision 1.2 2005/07/02 14:32:01 phherlin
  * Implement the RuleSets extension points new tests
- * 
+ *
  * Revision 1.1 2005/06/15 21:14:56 phherlin Create the project for the Eclipse
  * plugin unit tests
- * 
- * 
+ *
+ *
  */
 public class PMDCorePluginTest extends TestCase {
 
     /**
-     * Constructor for PMDCorePluginTest.
-     * 
+     * Constructor for PMDPluginTest.
+     *
      * @param name
      */
     public PMDCorePluginTest(String name) {
@@ -75,27 +74,27 @@ public class PMDCorePluginTest extends TestCase {
 
     /**
      * Test that the core plugin has been instantiated
-     * 
+     *
      */
-    public void testPMDCorePluginNotNull() {
-        assertNotNull("The Core Plugin has not been instantiated", PMDCorePlugin.getDefault());
+    public void testPMDPluginNotNull() {
+        assertNotNull("The Core Plugin has not been instantiated", PMDPlugin.getDefault());
     }
 
     /**
      * Test that we can get a ruleset manager
-     * 
+     *
      */
     public void testRuleSetManagerNotNull() {
-        assertNotNull("Cannot get a ruleset manager", PMDCorePlugin.getDefault().getRuleSetManager());
+        assertNotNull("Cannot get a ruleset manager", PMDPlugin.getDefault().getRuleSetManager());
     }
 
     /**
      * Test all the known PMD rulesets has been registered For this test to
      * work, no fragement or only the test plugin fragment should be installed.
-     * 
+     *
      */
     public void testStandardPMDRuleSetsRegistered() throws RuleSetNotFoundException {
-        Set registeredRuleSets = PMDCorePlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+        Set registeredRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         assertFalse("No registered rulesets!", registeredRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
@@ -109,10 +108,10 @@ public class PMDCorePluginTest extends TestCase {
     /**
      * Test the default rulesets has been registered For this test to work, no
      * fragement or only the test plugin fragment should be installed.
-     * 
+     *
      */
     public void testDefaultPMDRuleSetsRegistered() throws RuleSetNotFoundException {
-        Set defaultRuleSets = PMDCorePlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
+        Set defaultRuleSets = PMDPlugin.getDefault().getRuleSetManager().getRegisteredRuleSets();
         assertFalse("No registered default rulesets!", defaultRuleSets.isEmpty());
 
         RuleSetFactory factory = new RuleSetFactory();
@@ -125,7 +124,7 @@ public class PMDCorePluginTest extends TestCase {
 
     /**
      * test if a ruleset is registered
-     * 
+     *
      * @param ruleSet
      * @param set
      * @return true if ok
