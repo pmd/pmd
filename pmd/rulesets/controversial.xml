@@ -630,7 +630,7 @@ starts-with(@Image,'Runtime.getRuntime') and
             </property>
         </properties>
         <example>
-            <![CDATA[[
+            <![CDATA[
             public class GCCall
             {
      	public GCCall()

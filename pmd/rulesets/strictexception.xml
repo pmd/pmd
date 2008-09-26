@@ -229,7 +229,7 @@ public class Foo {
     class="net.sourceforge.pmd.lang.rule.XPathRule"
     externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#DoNotExtendJavaLangError">
     <description>
-      <![CDATA[[
+      <![CDATA[
         Errors are system exceptions. Do not extend them.
       ]]>
     </description>
@@ -256,7 +256,7 @@ public class Foo {
 		    class="net.sourceforge.pmd.lang.rule.XPathRule"
 		    externalInfoUrl="http://pmd.sourceforge.net/rules/strictexception.html#DoNotThrowExceptionInFinally">
     	<description>
-			<![CDATA[[
+			<![CDATA[
 			      Throwing exception in a finally block is confusing. It may mask exception or a defect of the code,
 			      it also render code cleanup uninstable.
 			Note: This is a PMD implementation of the Lint4j rule "A throw in a finally block"

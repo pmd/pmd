@@ -626,7 +626,7 @@ public class Test {
             </property>
         </properties>
         <example>
-            <![CDATA[[
+            <![CDATA[
             // This is NOT appropriate !
             Statement stat = conn.createStatement();
             ResultSet rst = stat.executeQuery("SELECT name FROM person");
