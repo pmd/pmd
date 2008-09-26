@@ -5,8 +5,8 @@
   <property name="dir.build" value="build"/>
 
   <property name="eclipse.home" value="/usr/java/eclipse"/>
-  <property name="eclipse.pde.version" value="3.4.0.v20080604"/>
-  <property name="eclipse.launcher.version" value="1.0.100.v20080509-1800"/>
+  <property name="eclipse.pde.version" value="3.4.1.R34x_v20080805"/>
+  <property name="eclipse.launcher.version" value="1.0.101.R34x_v20080819"/>
 
   <target name="clean">
     <delete dir="${dir.build}" />
